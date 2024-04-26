@@ -1,9 +1,4 @@
 ﻿using DevExpress.Xpo;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 ////Artigos Compostos [IN:016522]
 namespace logicpos.datalayer.DataLayer.Xpo.Articles

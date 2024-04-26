@@ -1,5 +1,4 @@
 ﻿using Gtk;
-using logicpos.App;
 using logicpos.datalayer.App;
 using System.Collections.Generic;
 
@@ -10,20 +9,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //Log4Net
         protected static log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        //Public Properties
-        private List<RadioButton> _radioButtonList;
-        public List<RadioButton> RadioButtonList
-        {
-            get { return _radioButtonList; }
-            set { _radioButtonList = value; }
-        }
+        public List<RadioButton> RadioButtonList { get; set; }
 
-        private string _value;
-        public string Value
-        {
-            get { return _value; }
-            set { _value = value; }
-        }
+        public string Value { get; set; }
 
         public LittleAddsRadioButtonTouch(List<LittleAddsWidget> pLittleAddsList)
             : this(pLittleAddsList, "") { }
@@ -37,18 +25,18 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             RadioButton groupButton = null;
 
             //Init WidgetList
-            _radioButtonList = new List<RadioButton>();
+            RadioButtonList = new List<RadioButton>();
 
             //Start Processing List
             if (pLittleAddsList.Count > 0)
             {
                 //Always Assign First item has initial Value
-                if (pLittleAddsList.Count > 0) _value = pLittleAddsList[0].Value;
+                if (pLittleAddsList.Count > 0) Value = pLittleAddsList[0].Value;
 
                 for (int i = 0; i < pLittleAddsList.Count; i++)
                 {
                     //Store reference to ButtonGroup
-                    if (_radioButtonList.Count <= 0)
+                    if (RadioButtonList.Count <= 0)
                     {
                         pLittleAddsList[i].RadioButton = new RadioButton(null, pLittleAddsList[i].Value);
                         //References
@@ -68,13 +56,13 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     pLittleAddsList[i].PackStart(pLittleAddsList[i].LabelDimensions);
 
                     //Add to RadioButton List
-                    _radioButtonList.Add(pLittleAddsList[i].RadioButton);
+                    RadioButtonList.Add(pLittleAddsList[i].RadioButton);
 
                     //Initial Value/Active Radio
                     if (pLittleAddsList[i].Value == pInitialValue)
                     {
-                        _value = pLittleAddsList[i].Value;
-                        _radioButtonList[i].Active = true;
+                        Value = pLittleAddsList[i].Value;
+                        RadioButtonList[i].Active = true;
                     }
 
                     //Change Font
@@ -84,7 +72,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     eventBox.Add(pLittleAddsList[i]);
                     PackStart(eventBox);
                     //Event
-                    _radioButtonList[i].Clicked += radiobutton_Clicked;
+                    RadioButtonList[i].Clicked += radiobutton_Clicked;
                 };
             };
         }
@@ -92,8 +80,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         private void radiobutton_Clicked(object sender, System.EventArgs e)
         {
             RadioButton radiobutton = (RadioButton)sender;
-            _value = radiobutton.Label;
-            _logger.Debug(string.Format("_value: [{0}]", _value));
+            Value = radiobutton.Label;
+            _logger.Debug(string.Format("_value: [{0}]", Value));
         }
     }
 }

@@ -994,8 +994,8 @@ namespace logicpos.shared.App
                     //get AuditType Object
                     sys_systemaudittype xpoAuditType = (sys_systemaudittype)DataLayerUtils.GetXPGuidObject(typeof(sys_systemaudittype), guidAuditType);
                     string description = (pDescription != string.Empty) ? pDescription
-                      : (xpoAuditType.ResourceString != null && resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], xpoAuditType.ResourceString) != null)
-                      ? resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], xpoAuditType.ResourceString) : xpoAuditType.Designation;
+                      : (xpoAuditType.ResourceString != null && resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], xpoAuditType.ResourceString) != null)
+                      ? resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], xpoAuditType.ResourceString) : xpoAuditType.Designation;
 
                     sys_systemaudit systemAudit = new sys_systemaudit(pSession)
                     {
@@ -1970,7 +1970,7 @@ namespace logicpos.shared.App
                                 "- {0} : {1} : {2} {3} : (#{4})", 
                                 item.DocumentNumber, item.Date, 
                                 documentBackUtilDays, 
-                                resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], 
+                                resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], 
                                 "global_day_days"), 
                                 item.Notifications.Count + 1);
 
@@ -2099,7 +2099,7 @@ namespace logicpos.shared.App
                         //Cut Text
                         result.Text = pValue.Substring(0, pMaxLength);
                     }
-                    lengthLabelText = string.Format("{0}: {1}/{2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_characters"), result.Length, pMaxLength);
+                    lengthLabelText = string.Format("{0}: {1}/{2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_characters"), result.Length, pMaxLength);
                 }
 
                 result.Words = GetNumWords(result.Text);
@@ -2111,7 +2111,7 @@ namespace logicpos.shared.App
                         result.Words = pMaxWords;
                         result.Text = GetWords(result.Text, pMaxWords);
                     }
-                    maxWordsLabelText = string.Format("{0}: {1}/{2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_words"), result.Words, pMaxWords);
+                    maxWordsLabelText = string.Format("{0}: {1}/{2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_words"), result.Words, pMaxWords);
                 }
 
                 if (result.Length > 0)

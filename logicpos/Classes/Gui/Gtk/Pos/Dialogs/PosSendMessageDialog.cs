@@ -13,40 +13,30 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         //UI EntryBox
         private readonly XPOEntryBoxSelectRecordValidation<sys_userdetail, TreeViewUser> _entryBoxSelectUser;
         private readonly XPOEntryBoxSelectRecordValidation<pos_configurationplaceterminal, TreeViewConfigurationPlaceTerminal> _entryBoxSelectTerminal;
-        //Default Values
-        private sys_userdetail _valueUser = null;
-        public sys_userdetail ValueUser
-        {
-            get { return _valueUser; }
-            set { _valueUser = value; }
-        }
 
-        private pos_configurationplaceterminal _valueTerminal = null;
-        public pos_configurationplaceterminal ValueTerminal
-        {
-            get { return _valueTerminal; }
-            set { _valueTerminal = value; }
-        }
+        public sys_userdetail ValueUser { get; set; } = null;
+
+        public pos_configurationplaceterminal ValueTerminal { get; set; } = null;
 
         public PosSendMessageDialog(Window pSourceWindow, DialogFlags pDialogFlags, string pWindowIcon)
         //public PosInputTextDialog(Window pSourceWindow, DialogFlags pDialogFlags, string pWindowTitle, string pEntryLabel, string pDefaultValue, string pRule, bool pRequired)            
-            : base(pSourceWindow, pDialogFlags, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_send_message"), pWindowIcon, "Label", "Default", SharedSettings.RegexAlfaNumericEmail, true)
+            : base(pSourceWindow, pDialogFlags, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_send_message"), pWindowIcon, "Label", "Default", SharedSettings.RegexAlfaNumericEmail, true)
         {
             this.HeightRequest = 320;
 
             //UserDetail
             CriteriaOperator criteriaOperatorUser = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1)");
-            _entryBoxSelectUser = new XPOEntryBoxSelectRecordValidation<sys_userdetail, TreeViewUser>(_sourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_user"), "Designation", "Oid", _valueUser, criteriaOperatorUser, SharedSettings.RegexGuid, false);
+            _entryBoxSelectUser = new XPOEntryBoxSelectRecordValidation<sys_userdetail, TreeViewUser>(_sourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_user"), "Designation", "Oid", ValueUser, criteriaOperatorUser, SharedSettings.RegexGuid, false);
             _entryBoxSelectUser.EntryValidation.IsEditable = false;
             //Public Reference
-            _valueUser = _entryBoxSelectUser.Value;
+            ValueUser = _entryBoxSelectUser.Value;
 
             //Terminal
             CriteriaOperator criteriaOperatorTerminal = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1)");
-            _entryBoxSelectTerminal = new XPOEntryBoxSelectRecordValidation<pos_configurationplaceterminal, TreeViewConfigurationPlaceTerminal>(_sourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_user"), "Designation", "Oid", _valueTerminal, criteriaOperatorTerminal, SharedSettings.RegexGuid, false);
+            _entryBoxSelectTerminal = new XPOEntryBoxSelectRecordValidation<pos_configurationplaceterminal, TreeViewConfigurationPlaceTerminal>(_sourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_user"), "Designation", "Oid", ValueTerminal, criteriaOperatorTerminal, SharedSettings.RegexGuid, false);
             _entryBoxSelectTerminal.EntryValidation.IsEditable = false;
             //Public Reference
-            _valueTerminal = _entryBoxSelectTerminal.Value;
+            ValueTerminal = _entryBoxSelectTerminal.Value;
 
             _vbox.PackStart(_entryBoxSelectTerminal, true, true, 0);
             _vbox.PackStart(_entryBoxSelectUser, true, true, 0);

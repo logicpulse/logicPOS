@@ -1,16 +1,12 @@
 ﻿using DevExpress.Data.Filtering;
 using Gtk;
-using logicpos.App;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
-using logicpos.resources.Resources.Localization;
-using logicpos.shared;
 using logicpos.datalayer.Enums;
 using logicpos.shared.Classes.Finance;
 using logicpos.shared.Enums;
@@ -66,13 +62,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private GenericCRUDWidgetDataTable _crudWidgetSelectVatExemptionReason;
         private GenericCRUDWidgetDataTable _crudWidgetSelectArticleSubFamily;
         private GenericCRUDWidgetDataTable _crudWidgetSelectArticleFamily;
-        private readonly GenericCRUDWidgetDataTable _crudWidgetSelectArticleSerialNumber;
+
         //Document Types
         private readonly fin_documentfinancetype _documentFinanceType;
         private readonly List<string> _listSaftDocumentType = new List<string>();
         //Store Current Price without ExchangeRate, the price used in all Logic, price from Entry is only for Display
         private decimal _articlePrice = 0.0m;
-        private readonly bool _priceWithVat = false;
+
         //Working Currency
         private readonly cfg_configurationcurrency _currencyDefaultSystem;
         private readonly cfg_configurationcurrency _currencyDisplay;
@@ -86,13 +82,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         //Consignation Invoice Article Default Values
         private readonly fin_configurationvatrate _vatRateConsignationInvoice;
         private readonly fin_configurationvatexemptionreason _vatRateConsignationInvoiceExemptionReason;
-        //Logic
-        private decimal _discountGlobal = 0.0m;
-        public decimal DiscountGlobal
-        {
-            get { return _discountGlobal; }
-            set { _discountGlobal = value; }
-        }
+
+        public decimal DiscountGlobal { get; set; } = 0.0m;
 
         public PosDocumentFinanceArticleDialog(Window pSourceWindow, GenericTreeViewDataTable pTreeView, DialogFlags pDialogFlags, DialogMode pDialogMode, DataRow pDataSourceRow)
                     : base(pSourceWindow, pDialogFlags, pDialogMode, pDataSourceRow)
@@ -111,7 +102,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _documentFinanceType = ((_sourceWindow as PosDocumentFinanceDialog).PagePad.Pages[0] as DocumentFinanceDialogPage1).EntryBoxSelectDocumentFinanceType.Value;
 
             //Init Local Vars
-            string windowTitle = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_insert_articles");
+            string windowTitle = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_insert_articles");
             //Get Default System Currency
             _currencyDefaultSystem = SharedSettings.ConfigurationSystemCurrency;
             //Consignation Invoice default values
@@ -124,7 +115,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             string fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_finance_article.png");
 
             //Get Discount from Select Customer
-            _discountGlobal = SharedUtils.StringToDecimal(((pSourceWindow as PosDocumentFinanceDialog).PagePad.Pages[1] as DocumentFinanceDialogPage2).EntryBoxCustomerDiscount.EntryValidation.Text);
+            DiscountGlobal = SharedUtils.StringToDecimal(((pSourceWindow as PosDocumentFinanceDialog).PagePad.Pages[1] as DocumentFinanceDialogPage2).EntryBoxCustomerDiscount.EntryValidation.Text);
             //Get PriceType from Customer
             var customerObject = ((pSourceWindow as PosDocumentFinanceDialog).PagePad.Pages[1] as DocumentFinanceDialogPage2).EntryBoxSelectCustomerName;
             if (customerObject.Value != null)
@@ -241,7 +232,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             if(_articleWarehouse == null) _articleWarehouse = new fin_articlewarehouse(_article.Session);
 
             CriteriaOperator criteriaOperatorSelectArticle = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1)");
-            _entryBoxSelectArticleCode = new XPOEntryBoxSelectRecord<fin_article, TreeViewArticle>(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_code"), "Code", "Oid", initialValueSelectArticle, criteriaOperatorSelectArticle);
+            _entryBoxSelectArticleCode = new XPOEntryBoxSelectRecord<fin_article, TreeViewArticle>(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_code"), "Code", "Oid", initialValueSelectArticle, criteriaOperatorSelectArticle);
             _entryBoxSelectArticleCode.Entry.IsEditable = true;
             _entryBoxSelectArticleCode.WidthRequest = 149;
 
@@ -249,14 +240,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _crudWidgetList.Add(_crudWidgetSelectArticleCode);
 
             CriteriaOperator criteriaOperatorSelectArticleWarehouse = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1) AND (Quantity > 0)");
-            _entryBoxSelectArticleWarehouse = new XPOEntryBoxSelectRecord<fin_articlewarehouse, TreeViewArticleWarehouse>(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_serial_number"), "ArticleSerialNumber", "Oid", _articleWarehouse, criteriaOperatorSelectArticleWarehouse);
+            _entryBoxSelectArticleWarehouse = new XPOEntryBoxSelectRecord<fin_articlewarehouse, TreeViewArticleWarehouse>(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_serial_number"), "ArticleSerialNumber", "Oid", _articleWarehouse, criteriaOperatorSelectArticleWarehouse);
             _entryBoxSelectArticleWarehouse.Entry.IsEditable = true;            
             _entryBoxSelectArticleWarehouse.WidthRequest = 149;
             //_crudWidgetSelectArticleSerialNumber = new GenericCRUDWidgetDataTable(_entryBoxSelectArticleSerialNumber, _entryBoxSelectArticleSerialNumber.Label, _dataSourceRow, "SerialNumber", _regexAlfaNumericExtended, false);
             //_crudWidgetList.Add(_crudWidgetSelectArticleSerialNumber);
 
             CriteriaOperator criteriaOperatorSelectArticleFamily = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1)");
-            _entryBoxSelectArticleFamily = new XPOEntryBoxSelectRecord<fin_articlefamily, TreeViewArticleFamily>(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_family"), "Designation", "Oid", initialValueSelectArticle.Family, criteriaOperatorSelectArticle);
+            _entryBoxSelectArticleFamily = new XPOEntryBoxSelectRecord<fin_articlefamily, TreeViewArticleFamily>(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_family"), "Designation", "Oid", initialValueSelectArticle.Family, criteriaOperatorSelectArticle);
             _entryBoxSelectArticleFamily.Entry.IsEditable = false;
             _entryBoxSelectArticleFamily.Entry.Sensitive = false;
             _entryBoxSelectArticleFamily.WidthRequest = 160;
@@ -267,7 +258,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             fin_articlesubfamily initialValueSelectArticleSubFamily = (_dataSourceRow["Article.SubFamily"] as fin_articlesubfamily);
             CriteriaOperator criteriaOperatorSelectArticleSubFamily = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1)");            
-            _entryBoxSelectArticleSubFamily = new XPOEntryBoxSelectRecord<fin_articlesubfamily, TreeViewArticleSubFamily>(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_subfamily"), "Designation", "Oid", initialValueSelectArticle.SubFamily, criteriaOperatorSelectArticle);
+            _entryBoxSelectArticleSubFamily = new XPOEntryBoxSelectRecord<fin_articlesubfamily, TreeViewArticleSubFamily>(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_subfamily"), "Designation", "Oid", initialValueSelectArticle.SubFamily, criteriaOperatorSelectArticle);
             _entryBoxSelectArticleSubFamily.Entry.IsEditable = false;
             _entryBoxSelectArticleSubFamily.Entry.Sensitive = false;
             _entryBoxSelectArticleSubFamily.WidthRequest = 160;
@@ -294,7 +285,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _entryBoxSelectArticleWarehouse.ClosePopup += _entryBoxSelectArticleCode_ClosePopup;
 
             //Select Article Name
-            _entryBoxSelectArticle = new XPOEntryBoxSelectRecord<fin_article, TreeViewArticle>(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article"), "Designation", "Oid", initialValueSelectArticle, criteriaOperatorSelectArticle);
+            _entryBoxSelectArticle = new XPOEntryBoxSelectRecord<fin_article, TreeViewArticle>(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article"), "Designation", "Oid", initialValueSelectArticle, criteriaOperatorSelectArticle);
             _entryBoxSelectArticle.Entry.IsEditable = true;
 
             //Add to WidgetList
@@ -331,7 +322,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //PriceDisplay
             //Note #1
             //If not Saft Document Type 2, required greater than zero in Price, else we can have zero or greater from Document Type 2 (ex Transportation Guide)
-            _entryBoxValidationPriceDisplay = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_price"), KeyboardMode.Money, regExPrice, true);
+            _entryBoxValidationPriceDisplay = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_price"), KeyboardMode.Money, regExPrice, true);
             _entryBoxValidationPriceDisplay.EntryValidation.Text = initialValuePriceDisplay;
             //Add to WidgetList
             _crudWidgetPriceDisplay = new GenericCRUDWidgetDataTable(_entryBoxValidationPriceDisplay, _entryBoxValidationPriceDisplay.Label, _dataSourceRow, "PriceDisplay", regExPrice, true);
@@ -359,7 +350,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //    ;
 
             //Quantity
-            _entryBoxValidationQuantity = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quantity"), KeyboardMode.Numeric, _regexDecimalGreaterThanZero, true);
+            _entryBoxValidationQuantity = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quantity"), KeyboardMode.Numeric, _regexDecimalGreaterThanZero, true);
             _entryBoxValidationQuantity.EntryValidation.Text = initialValueQuantity;
             //Add to WidgetList
             _crudWidgetQuantity = new GenericCRUDWidgetDataTable(_entryBoxValidationQuantity, _entryBoxValidationQuantity.Label, _dataSourceRow, "Quantity", _regexDecimalGreaterThanZero, true);
@@ -389,7 +380,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             };
 
             //Discount
-            _entryBoxValidationDiscount = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_discount"), KeyboardMode.Numeric, _regexPercentage, true);
+            _entryBoxValidationDiscount = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_discount"), KeyboardMode.Numeric, _regexPercentage, true);
             _entryBoxValidationDiscount.EntryValidation.Text = initialValueDiscount;
             //Add to WidgetList
             _crudWidgetDiscount = new GenericCRUDWidgetDataTable(_entryBoxValidationDiscount, _entryBoxValidationDiscount.Label, _dataSourceRow, "Discount", _regexPercentage, true);
@@ -399,14 +390,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _entryBoxValidationDiscount.EntryValidation.FocusOutEvent += delegate { _entryBoxValidationDiscount.EntryValidation.Text = SharedUtils.StringToDecimalAndToStringAgain(_entryBoxValidationDiscount.EntryValidation.Text); };
 
             //TotalNet
-            _entryBoxValidationTotalNet = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_article_tab"), KeyboardMode.None);/* IN009206 */
+            _entryBoxValidationTotalNet = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_article_tab"), KeyboardMode.None);/* IN009206 */
             _entryBoxValidationTotalNet.EntryValidation.Text = initialValueTotalNet;
             _entryBoxValidationTotalNet.EntryValidation.Sensitive = false;
             //Used only to Update DataRow Column from Widget
             _crudWidgetList.Add(new GenericCRUDWidgetDataTable(_entryBoxValidationTotalNet, new Label(), _dataSourceRow, "TotalNet"));
 
             //TotalFinal
-            _entryBoxValidationTotalFinal = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_per_item_vat"), KeyboardMode.None); /* IN009206 */
+            _entryBoxValidationTotalFinal = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_per_item_vat"), KeyboardMode.None); /* IN009206 */
             _entryBoxValidationTotalFinal.EntryValidation.Text = initialValueTotalFinal;
             _entryBoxValidationTotalFinal.EntryValidation.Sensitive = false;
             //Used only to Update DataRow Column from Widget
@@ -436,7 +427,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             //SelectVatRate
             CriteriaOperator criteriaOperatorSelectVatRate = CriteriaOperator.Parse("(Disabled = 0 OR Disabled IS NULL)");
-            _entryBoxSelectVatRate = new XPOEntryBoxSelectRecord<fin_configurationvatrate, TreeViewConfigurationVatRate>(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_vat_rate"), "Designation", "Oid", initialValueSelectConfigurationVatRate, criteriaOperatorSelectVatRate);
+            _entryBoxSelectVatRate = new XPOEntryBoxSelectRecord<fin_configurationvatrate, TreeViewConfigurationVatRate>(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_vat_rate"), "Designation", "Oid", initialValueSelectConfigurationVatRate, criteriaOperatorSelectVatRate);
             _entryBoxSelectVatRate.WidthRequest = 149;
             _entryBoxSelectVatRate.Entry.Changed += _entryBoxSelectVatRate_EntryValidation_Changed;
             //Add to WidgetList
@@ -445,7 +436,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             //SelectVatExemptionReason
             CriteriaOperator criteriaOperatorSelectVatExemptionReason = CriteriaOperator.Parse("(Disabled = 0 OR Disabled IS NULL)");
-            _entryBoxSelectVatExemptionReason = new XPOEntryBoxSelectRecord<fin_configurationvatexemptionreason, TreeViewConfigurationVatExceptionReason>(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_vat_exemption_reason"), "Designation", "Oid", initialValueSelectConfigurationVatExemptionReason, criteriaOperatorSelectVatExemptionReason);
+            _entryBoxSelectVatExemptionReason = new XPOEntryBoxSelectRecord<fin_configurationvatexemptionreason, TreeViewConfigurationVatExceptionReason>(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_vat_exemption_reason"), "Designation", "Oid", initialValueSelectConfigurationVatExemptionReason, criteriaOperatorSelectVatExemptionReason);
             _entryBoxSelectVatExemptionReason.Entry.IsEditable = false;
             //Add to WidgetList
             _crudWidgetSelectVatExemptionReason = new GenericCRUDWidgetDataTable(_entryBoxSelectVatExemptionReason, _entryBoxSelectVatExemptionReason.Label, _dataSourceRow, "VatExemptionReason.Acronym", _regexGuid, true);
@@ -546,7 +537,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             else if ((pResponse == ResponseType.Ok && (string.IsNullOrEmpty(_entryBoxSelectArticleCode.Entry.Text) || string.IsNullOrEmpty(_entryBoxSelectArticle.Entry.Text))))
             {
-                logicpos.Utils.ShowMessageTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_insert_articles"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_insert_new_article_code_error"));
+                logicpos.Utils.ShowMessageTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_insert_articles"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_insert_new_article_code_error"));
                 this.Run();
             }
 
@@ -618,11 +609,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             _entryBoxSelectArticle.Value = _article;
                             _entryBoxSelectArticle_ClosePopup(null, null);
 
-                            logicpos.Utils.ShowMessageTouch(this, DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_insert_articles"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_insert_new_article"));
+                            logicpos.Utils.ShowMessageTouch(this, DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_insert_articles"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_insert_new_article"));
                         }
                         else
                         {
-                            logicpos.Utils.ShowMessageTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_insert_articles"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_insert_new_article_code_error"));
+                            logicpos.Utils.ShowMessageTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_insert_articles"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_insert_new_article_code_error"));
                             this.Run();
                         }
 
@@ -630,7 +621,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     //Codigo ou designação vazias
                     if (string.IsNullOrEmpty(_entryBoxSelectArticleCode.Entry.Text) || string.IsNullOrEmpty(_entryBoxSelectArticle.Entry.Text))
                     {
-                        logicpos.Utils.ShowMessageTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_insert_articles"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_insert_new_article_code_error"));
+                        logicpos.Utils.ShowMessageTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_insert_articles"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_insert_new_article_code_error"));
                         this.Run();
                     }
                 }
@@ -683,7 +674,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                     if (article != null && article.Type.HavePrice && article.Oid != Guid.Empty)
                     {
-                        this.WindowTitle = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_insert_articles"));
+                        this.WindowTitle = string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_insert_articles"));
                         if (string.IsNullOrEmpty(_entryBoxSelectArticle.Entry.Text) || _entryBoxSelectArticle.Entry.Text != article.Designation)
                         {
                             _entryBoxSelectArticle.Value = article;
@@ -793,13 +784,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                     else
                     {
-                        logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent, new Size(450, 350), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_already_exited"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "article_type_without_price"));
+                        logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent, new Size(450, 350), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_already_exited"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "article_type_without_price"));
                     }
 
                 }
                 else
                 {
-                    this.WindowTitle = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_insert_articles") + " :: " + resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_new_article"));
+                    this.WindowTitle = string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_insert_articles") + " :: " + resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_new_article"));
                     CleanArticleFields(false);
                 }
 
@@ -842,7 +833,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         //    }
                         //}
 
-                        this.WindowTitle = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_insert_articles"));
+                        this.WindowTitle = string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_insert_articles"));
 
                         if (string.IsNullOrEmpty(_entryBoxSelectArticleCode.Entry.Text) || _entryBoxSelectArticleCode.Entry.Text != article.Code)
                         {
@@ -936,13 +927,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                     else
                     {
-                        logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent, new Size(450, 350), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_already_exited"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "article_type_without_price"));
+                        logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent, new Size(450, 350), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_already_exited"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "article_type_without_price"));
                     }
 
                 }
                 else
                 {
-                    this.WindowTitle = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_insert_articles") + " :: " + resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_new_article"));
+                    this.WindowTitle = string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_insert_articles") + " :: " + resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_new_article"));
                     CleanArticleFields(false);
                 }
 
@@ -1070,7 +1061,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     _articlePrice,
                     SharedUtils.StringToDecimal(_entryBoxValidationQuantity.EntryValidation.Text),
                     SharedUtils.StringToDecimal(_entryBoxValidationDiscount.EntryValidation.Text),
-                    _discountGlobal,
+                    DiscountGlobal,
                     _entryBoxSelectVatRate.Value.Value
                 );
                 _dataSourceRow["PriceFinal"] = priceProperties.PriceNet;
@@ -1101,7 +1092,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         {
                             if (!string.IsNullOrEmpty(_dataSourceRow["SerialNumber"].ToString()) && (item.Value as ArticleBagProperties).SerialNumber.Contains(_dataSourceRow["SerialNumber"].ToString()) && _dialogMode != DialogMode.Update)
                             {
-                                logicpos.Utils.ShowMessageTouch(this, DialogFlags.DestroyWithParent, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), "Artigo com o nº série: " + _dataSourceRow["SerialNumber"].ToString() + " Já foi inserido");
+                                logicpos.Utils.ShowMessageTouch(this, DialogFlags.DestroyWithParent, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), "Artigo com o nº série: " + _dataSourceRow["SerialNumber"].ToString() + " Já foi inserido");
                                 return false;
                             }
                         }

@@ -1,10 +1,7 @@
-﻿using Gtk;
-using logicpos.App;
+﻿using logicpos.App;
 using logicpos.Classes.Enums.App;
 using logicpos.Classes.Logic.Others;
 using logicpos.datalayer.App;
-using logicpos.resources.Resources.Localization;
-using logicpos.shared.App;
 using System;
 using System.Drawing;
 

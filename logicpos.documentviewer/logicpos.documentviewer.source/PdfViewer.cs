@@ -22,15 +22,12 @@ namespace Patagames.Pdf.Net.Controls.WinForms
         #region Private fields
         private int _dpi = -1;
         private SelectInfo _selectInfo = new SelectInfo() { StartPage = -1 };
-        private readonly SortedDictionary<int, List<HighlightInfo>> _highlightedText = new SortedDictionary<int, List<HighlightInfo>>();
         private bool _mousePressed = false;
         private bool _mousePressedInLink = false;
         private bool _isShowSelection = false;
         private int _onstartPageIndex = 0;
         private Point _panToolInitialScrollPosition;
         private Point _panToolInitialMousePosition;
-
-        private readonly PdfForms _fillForms;
         private readonly List<Rectangle> _selectedRectangles = new List<Rectangle>();
         private Pen _pageBorderColorPen;
         private Pen _pageSeparatorColorPen;
@@ -575,7 +572,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
         /// Gets the Forms object associated with the current PdfViewer control.
         /// </summary>
         /// <remarks>The FillForms object are used for the correct processing of forms within the PdfViewer control</remarks>
-        public PdfForms FillForms { get { return _fillForms; } }
+        public PdfForms FillForms { get; }
 
         /// <summary>
         /// Gets or sets the PDF document associated with the current PdfViewer control.
@@ -611,7 +608,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
                     }
                     SetScrollExtent(0, 0);
                     _selectInfo = new SelectInfo() { StartPage = -1 };
-                    _highlightedText.Clear();
+                    HighlightedTextInfo.Clear();
                     _onstartPageIndex = 0;
                     _renderRects = null;
                     _loadedByViewer = false;
@@ -620,7 +617,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
                     UpdateLayout();
                     if (_document != null)
                     {
-                        if (_document.FormFill != _fillForms)
+                        if (_document.FormFill != FillForms)
                             _externalDocCapture = CaptureFillForms(_document.FormFill);
                         _document.Pages.CurrentPageChanged += Pages_CurrentPageChanged;
                         _document.Pages.PageInserted += Pages_PageInserted;
@@ -777,8 +774,8 @@ namespace Patagames.Pdf.Net.Controls.WinForms
                 if (_formHighlightColor != value)
                 {
                     _formHighlightColor = value;
-                    if (_fillForms != null)
-                        _fillForms.SetHighlightColorEx(FormFieldTypes.FPDF_FORMFIELD_UNKNOWN, _formHighlightColor.ToArgb());
+                    if (FillForms != null)
+                        FillForms.SetHighlightColorEx(FormFieldTypes.FPDF_FORMFIELD_UNKNOWN, _formHighlightColor.ToArgb());
                     if(Document!= null && !_loadedByViewer && _externalDocCapture.forms!= null)
                         _externalDocCapture.forms.SetHighlightColorEx(FormFieldTypes.FPDF_FORMFIELD_UNKNOWN, _formHighlightColor.ToArgb());
                     Invalidate();
@@ -1056,7 +1053,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
         /// <summary>
         /// Gets information about highlighted text in a PdfView control
         /// </summary>
-        public SortedDictionary<int, List<HighlightInfo>> HighlightedTextInfo { get { return _highlightedText; } }
+        public SortedDictionary<int, List<HighlightInfo>> HighlightedTextInfo { get; } = new SortedDictionary<int, List<HighlightInfo>>();
 
         /// <summary>
         /// Gets or sets mouse mode for pdf viewer control
@@ -1415,17 +1412,17 @@ namespace Patagames.Pdf.Net.Controls.WinForms
 
             var newEntry = new HighlightInfo() { CharIndex = charIndex, CharsCount = charsCount, Color = color };
 
-            if (!_highlightedText.ContainsKey(pageIndex))
+            if (!HighlightedTextInfo.ContainsKey(pageIndex))
             {
                 if (color != Color.Empty)
                 {
-                    _highlightedText.Add(pageIndex, new List<HighlightInfo>());
-                    _highlightedText[pageIndex].Add(newEntry);
+                    HighlightedTextInfo.Add(pageIndex, new List<HighlightInfo>());
+                    HighlightedTextInfo[pageIndex].Add(newEntry);
                 }
             }
             else
             {
-                var entries = _highlightedText[pageIndex];
+                var entries = HighlightedTextInfo[pageIndex];
                 //Analize exists entries and remove overlapped and trancate intersecting entries
                 for (int i = entries.Count - 1; i >= 0; i--)
                 {
@@ -1455,7 +1452,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
         /// </summary>
         public void RemoveHighlightFromText()
         {
-            _highlightedText.Clear();
+            HighlightedTextInfo.Clear();
             Invalidate();
         }
 
@@ -1632,7 +1629,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
                 CloseDocument();
                 if (Document != null)
                     return; //closing or changing was canceled
-                Document = doc = PdfDocument.Load(path, _fillForms, password);
+                Document = doc = PdfDocument.Load(path, FillForms, password);
                 if (Document == null)
                     return; //closing or changing was canceled
                 _loadedByViewer = true;
@@ -1675,7 +1672,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
                 CloseDocument();
                 if (Document != null)
                     return; //closing or changing was canceled
-                Document = doc = PdfDocument.Load(stream, _fillForms, password);
+                Document = doc = PdfDocument.Load(stream, FillForms, password);
                 if (Document == null)
                     return; //closing or changing was canceled
                 _loadedByViewer = true;
@@ -1780,8 +1777,8 @@ namespace Patagames.Pdf.Net.Controls.WinForms
 
             InitializeComponent();
 
-            _fillForms = new PdfForms();
-            CaptureFillForms(_fillForms);
+            FillForms = new PdfForms();
+            CaptureFillForms(FillForms);
         }
         #endregion
 
@@ -1926,8 +1923,8 @@ namespace Patagames.Pdf.Net.Controls.WinForms
                         //Draw fillform selection
                         DrawFillFormsSelection(formsBitmap, _selectedRectangles);
                         //Draw text highlight
-                        if (_highlightedText.ContainsKey(i))
-                            DrawTextHighlight(formsBitmap, _highlightedText[i], i);
+                        if (HighlightedTextInfo.ContainsKey(i))
+                            DrawTextHighlight(formsBitmap, HighlightedTextInfo[i], i);
                         //Draw text selection
                         DrawTextSelection(formsBitmap, selTmp, i);
                     }
@@ -1959,8 +1956,8 @@ namespace Patagames.Pdf.Net.Controls.WinForms
                     //Draw fillforms selection
                     DrawFillFormsSelection(e.Graphics, _selectedRectangles);
                     //Draw text highlight
-                    if (_highlightedText.ContainsKey(i))
-                        DrawTextHighlight(e.Graphics, _highlightedText[i], i);
+                    if (HighlightedTextInfo.ContainsKey(i))
+                        DrawTextHighlight(e.Graphics, HighlightedTextInfo[i], i);
                     //Draw text selectionn
                     DrawTextSelection(e.Graphics, selTmp, i);
                     //Draw current page highlight
@@ -2455,7 +2452,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
         #region Private methods
         private bool CanDisposePage(int i)
         {
-            if (_highlightedText.ContainsKey(i))
+            if (HighlightedTextInfo.ContainsKey(i))
                 return false;
             if (_selectInfo.StartPage < 0 || _selectInfo.EndPage < 0 || _selectInfo.StartIndex < 0 || _selectInfo.EndIndex < 0)
                 return true;

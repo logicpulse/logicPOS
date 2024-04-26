@@ -18,15 +18,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         //Private Members
         //UI
         private readonly Fixed _fixedContent;
-        private readonly XPOComboBox _priceComboBox;
-        //Public Properties
-        private fin_article _article;
 
-        public fin_article Article
-        {
-            get { return _article; }
-            set { _article = value; }
-        }
+        public fin_article Article { get; set; }
 
         public static string PriceType;
 
@@ -37,10 +30,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pDialogFlags)
         {
             //Parameters
-            _article = pArticle;
+            Article = pArticle;
 
             //Init Local Vars
-            string windowTitle = string.Format("{0}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_filepicker"));
+            string windowTitle = string.Format("{0}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_filepicker"));
             _windowSize = new Size(300, 473);
             string fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_select_record.png");
 

@@ -1,10 +1,8 @@
 ﻿using logicpos.financial.service.Objects.Modules.AT;
 using System;
-using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.ServiceModel.Web;
-using System.Text;
 
 namespace logicpos.financial.servicewcf
 {
@@ -28,15 +26,10 @@ namespace logicpos.financial.servicewcf
     [DataContract]
     public class CompositeType
     {
-        private bool boolValue = true;
         private string stringValue = "Hello ";
 
         [DataMember]
-        public bool BoolValue
-        {
-            get { return boolValue; }
-            set { boolValue = value; }
-        }
+        public bool BoolValue { get; set; } = true;
 
         [DataMember]
         public string StringValue

@@ -1,9 +1,7 @@
 ﻿using Gtk;
-using logicpos.App;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.App;
 using logicpos.Extensions;
-using System;
 using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
@@ -19,19 +17,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         private readonly Color _colorKeyboardPadKeyBackground = DataLayerFramework.Settings["colorKeyboardPadKeyBackground"].StringToColor();
         private readonly Color _colorKeyboardPadKeyBackgroundActive = DataLayerFramework.Settings["colorKeyboardPadKeyBackgroundActive"].StringToColor();
 
-        //Public Properties
-        private Label _labelL1;
-        public Label LabelL1
-        {
-            get { return _labelL1; }
-            set { _labelL1 = value; }
-        }
-        private Label _labelL2;
-        public Label LabelL2
-        {
-            get { return _labelL2; }
-            set { _labelL2 = value; }
-        }
+        public Label LabelL1 { get; set; }
+        public Label LabelL2 { get; set; }
         //Store VirtualKey in Properties
         public VirtualKey Properties { get; set; }
         //Active Modifier Key, Change Color
@@ -85,33 +72,33 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             VBox vbox = new VBox(true, 0);
             vbox.BorderWidth = 2;
             //Labels
-            _labelL1 = new Label();
-            _labelL1.Text = _l1LabelText;
+            LabelL1 = new Label();
+            LabelL1.Text = _l1LabelText;
             //Align
             switch (virtualKey.L1.HAlign)
             {
                 case "left":
-                    _labelL1.SetAlignment(0.00F, 0.5F);
+                    LabelL1.SetAlignment(0.00F, 0.5F);
                     break;
                 case "right":
-                    _labelL1.SetAlignment(1.00F, 0.5F);
+                    LabelL1.SetAlignment(1.00F, 0.5F);
                     break;
             }
-            _labelL1.ModifyFg(StateType.Normal, _colorKeyboardPadKeyDefaultFont.ToGdkColor());
-            _labelL1.ModifyFont(fontDescriptionPrimaryKey);
-            vbox.PackEnd(_labelL1);
+            LabelL1.ModifyFg(StateType.Normal, _colorKeyboardPadKeyDefaultFont.ToGdkColor());
+            LabelL1.ModifyFont(fontDescriptionPrimaryKey);
+            vbox.PackEnd(LabelL1);
             //HideL2 dont show L2
             if (_l2LabelText != string.Empty && !virtualKey.L1.HideL2)
             {
-                _labelL2 = new Label();
-                _labelL2.Text = _l2LabelText;
-                _labelL1.ModifyFg(StateType.Normal, _colorKeyboardPadKeyDefaultFont.ToGdkColor());
-                _labelL2.ModifyFg(StateType.Normal, _colorKeyboardPadKeySecondaryFont.ToGdkColor());
-                _labelL1.ModifyFont(fontDescriptionSecondaryKey);
-                _labelL2.ModifyFont(fontDescriptionSecondaryKey);
-                _labelL1.SetAlignment(0.60F, 0.50F);
-                _labelL2.SetAlignment(0.40F, 0.50F);
-                vbox.PackStart(_labelL2);
+                LabelL2 = new Label();
+                LabelL2.Text = _l2LabelText;
+                LabelL1.ModifyFg(StateType.Normal, _colorKeyboardPadKeyDefaultFont.ToGdkColor());
+                LabelL2.ModifyFg(StateType.Normal, _colorKeyboardPadKeySecondaryFont.ToGdkColor());
+                LabelL1.ModifyFont(fontDescriptionSecondaryKey);
+                LabelL2.ModifyFont(fontDescriptionSecondaryKey);
+                LabelL1.SetAlignment(0.60F, 0.50F);
+                LabelL2.SetAlignment(0.40F, 0.50F);
+                vbox.PackStart(LabelL2);
             };
 
             //InitObject("", _colorKeyboardPadKeyBackground, vbox, sizeKeyboardPadDefaultKey.Width, sizeKeyboardPadDefaultKey.Height);

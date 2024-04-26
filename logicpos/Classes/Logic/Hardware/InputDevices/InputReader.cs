@@ -1,5 +1,4 @@
 ﻿using Gtk;
-using logicpos.App;
 using logicpos.Classes.Enums.Hardware;
 using logicpos.datalayer.App;
 using logicpos.shared.App;
@@ -19,25 +18,10 @@ namespace logicpos.Classes.Logic.Hardware
         private static List<int> _cardReaderList;
         private static Dictionary<int, InputReaderDevice> _readers;
 
-        //Buffer
-        private string _captureBuffer = string.Empty;
-        public string Buffer
-        {
-            get { return _captureBuffer; }
-            set { _captureBuffer = value; }
-        }
-        private Window _sourceWindow;
-        public Window Window
-        {
-            get { return _sourceWindow; }
-            set { _sourceWindow = value; }
-        }
-        private InputReaderDevice _inputReaderDevice;
-        public InputReaderDevice Device
-        {
-            get { return _inputReaderDevice; }
-            set { _inputReaderDevice = value; }
-        }
+        public string Buffer { get; set; } = string.Empty;
+
+        public Window Window { get; set; }
+        public InputReaderDevice Device { get; set; }
 
         //Public Event
         public event EventHandler Captured;
@@ -108,26 +92,26 @@ namespace logicpos.Classes.Logic.Hardware
             _timerEnabled = false;
 
             //Reset to Default
-            _inputReaderDevice = InputReaderDevice.None;
+            Device = InputReaderDevice.None;
 
             //Search For Valid InputReaderDevice
             foreach (var item in _readers)
             {
-                if (_captureBuffer.Length == item.Key)
+                if (Buffer.Length == item.Key)
                 {
                     //Assign Detected InputReaderDevice
-                    _inputReaderDevice = item.Value;
+                    Device = item.Value;
                 }
             }
 
             //Trigger Event
-            if (_inputReaderDevice != InputReaderDevice.None)
+            if (Device != InputReaderDevice.None)
             {
                 OnCapture();
             }
 
             //Always Clean Buffer
-            _captureBuffer = string.Empty;
+            Buffer = string.Empty;
         }
 
         private bool UpdateTimer()
@@ -160,7 +144,7 @@ namespace logicpos.Classes.Logic.Hardware
                     string input = args.Event.Key.ToString();
                     keyChar = input[input.Length - 1];
                     //Add to Buffer
-                    _captureBuffer += keyChar;
+                    Buffer += keyChar;
                     break;
                 default:
                     break;

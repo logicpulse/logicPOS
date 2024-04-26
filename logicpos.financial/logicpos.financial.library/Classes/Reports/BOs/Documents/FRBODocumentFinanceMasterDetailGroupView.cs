@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace logicpos.financial.library.Classes.Reports.BOs.Documents
+﻿namespace logicpos.financial.library.Classes.Reports.BOs.Documents
 {
     // Note: Agregate Fields must have same name has in FRBODocumentFinanceMasterDetailView
     // This is a requirement for Shared Reports that use same Field Name

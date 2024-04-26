@@ -25,19 +25,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             get { return _maxImagesAllowed; }
             set { _maxImagesAllowed = value; }
         }
-        //Public
-        private EntryBoxValidationFilePickerDialog _entryBoxAddFile;
-        internal EntryBoxValidationFilePickerDialog EntryBoxAddFile
-        {
-            get { return _entryBoxAddFile; }
-            set { _entryBoxAddFile = value; }
-        }
-        private List<string> _fileList;
-        public List<string> Value
-        {
-            get { return _fileList; }
-            set { _fileList = value; }
-        }
+
+        internal EntryBoxValidationFilePickerDialog EntryBoxAddFile { get; set; }
+        public List<string> Value { get; set; }
 
         //Events
         public event EventHandler Changed;
@@ -53,14 +43,14 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             _sourceWindow = pSourceWindow;
 
             //Init Dates List
-            _fileList = pInitialFileList;
+            Value = pInitialFileList;
             //Init Dates VBox
             _vbox = new VBox(false, 0);
 
             //Init AddFile
-            _entryBoxAddFile = new EntryBoxValidationFilePickerDialog(pSourceWindow, pLabelText, SharedSettings.RegexAlfaNumericFilePath, false, pFileFilter);
-            _entryBoxAddFile.EntryValidation.Validate();
-            _entryBoxAddFile.ClosePopup += _entryBoxAddFile_ClosePopup;
+            EntryBoxAddFile = new EntryBoxValidationFilePickerDialog(pSourceWindow, pLabelText, SharedSettings.RegexAlfaNumericFilePath, false, pFileFilter);
+            EntryBoxAddFile.EntryValidation.Validate();
+            EntryBoxAddFile.ClosePopup += _entryBoxAddFile_ClosePopup;
 
             VBox vboxOuter = new VBox(false, 0);
 
@@ -72,30 +62,30 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             scrolledWindow.Add(viewport);
 
             //Initial Values
-            if (_fileList.Count > 0)
+            if (Value.Count > 0)
             {
-                for (int i = 0; i < _fileList.Count; i++)
+                for (int i = 0; i < Value.Count; i++)
                 {
                     //Assign current fileName to _entryBoxAddFile, the last added is the Visible One
-                    _entryBoxAddFile.EntryValidation.Text = _fileList[i];
-                    AddFileEntry(_fileList[i], false);
+                    EntryBoxAddFile.EntryValidation.Text = Value[i];
+                    AddFileEntry(Value[i], false);
                 }
             }
 
-            vboxOuter.PackStart(_entryBoxAddFile, false, false, 0);
+            vboxOuter.PackStart(EntryBoxAddFile, false, false, 0);
             vboxOuter.PackStart(scrolledWindow, true, true, 0);
             Add(vboxOuter);
         }
 
         private void _entryBoxAddFile_ClosePopup(object sender, EventArgs e)
         {
-            if (_fileList.Contains(_entryBoxAddFile.Value))
+            if (Value.Contains(EntryBoxAddFile.Value))
             {
-                logicpos.Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_filepicker_existing_file_error"));
+                logicpos.Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_filepicker_existing_file_error"));
             }
             else
             {
-                AddFileEntry(_entryBoxAddFile.EntryValidation.Text, true);
+                AddFileEntry(EntryBoxAddFile.EntryValidation.Text, true);
 
                 //Trigger Event
                 OnChange();
@@ -107,7 +97,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //if AddFileNameToList true, add the File to the list, else skip add, usefull when we Initialize List from Constructor pInitialFileList
         private void AddFileEntry(string pFileName, bool pAddFileNameToList)
         {
-            EntryBoxValidationButton entryBoxValidationButton = new EntryBoxValidationButton(_sourceWindow, string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_file_image"), _fileList.Count + 1), KeyboardMode.None, SharedSettings.RegexAlfaNumericFilePath, true);
+            EntryBoxValidationButton entryBoxValidationButton = new EntryBoxValidationButton(_sourceWindow, string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_file_image"), Value.Count + 1), KeyboardMode.None, SharedSettings.RegexAlfaNumericFilePath, true);
             entryBoxValidationButton.EntryValidation.Validate();
             entryBoxValidationButton.EntryValidation.Sensitive = false;
 
@@ -126,7 +116,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             //Pack
             _vbox.PackStart(entryBoxValidationButton, false, false, 0);
             entryBoxValidationButton.ShowAll();
-            if (pAddFileNameToList) _fileList.Add(_entryBoxAddFile.Value);
+            if (pAddFileNameToList) Value.Add(EntryBoxAddFile.Value);
         }
 
         private void Button_Clicked(object sender, EventArgs e)
@@ -146,7 +136,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     if (curentrEntryBox == entryBoxValidationButton)
                     {
                         currentFileListIndexPosition = i;
-                        if (_debug) _logger.Debug(string.Format("Current file List Index [{0}]: [{1}]", currentFileListIndexPosition, _fileList[currentFileListIndexPosition]));
+                        if (_debug) _logger.Debug(string.Format("Current file List Index [{0}]: [{1}]", currentFileListIndexPosition, Value[currentFileListIndexPosition]));
                     }
                 }
 
@@ -158,14 +148,14 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     {
                         //Do Nothing
                     }
-                    else if (_fileList.Contains(dialog.FilePicker.Filename))
+                    else if (Value.Contains(dialog.FilePicker.Filename))
                     {
-                        logicpos.Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_filepicker_existing_file_error"));
+                        logicpos.Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_filepicker_existing_file_error"));
                     }
                     else
                     {
                         //Update fileList with Changed Value
-                        _fileList[currentFileListIndexPosition] = dialog.FilePicker.Filename;
+                        Value[currentFileListIndexPosition] = dialog.FilePicker.Filename;
                         //Update and Validate Entry
                         entryBoxValidationButton.EntryValidation.Text = dialog.FilePicker.Filename;
                         entryBoxValidationButton.EntryValidation.Validate();
@@ -189,7 +179,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             TouchButtonIcon button = (TouchButtonIcon)sender;
             EntryBoxValidationButton entryBoxValidationButton = (button.Parent.Parent.Parent as EntryBoxValidationButton);
             _vbox.Remove(entryBoxValidationButton);
-            _fileList.Remove(entryBoxValidationButton.EntryValidation.Text);
+            Value.Remove(entryBoxValidationButton.EntryValidation.Text);
 
             //Trigger Event
             OnChange();
@@ -199,19 +189,19 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         private void ListValue()
         {
-            for (int i = 0; i < _fileList.Count; i++)
+            for (int i = 0; i < Value.Count; i++)
             {
-                _logger.Debug(string.Format("_filesList[{0}/{1}]", _fileList[i], _fileList.Count));
+                _logger.Debug(string.Format("_filesList[{0}/{1}]", Value[i], Value.Count));
             }
         }
 
         override public string ToString()
         {
             string result = string.Empty;
-            for (int i = 0; i < _fileList.Count; i++)
+            for (int i = 0; i < Value.Count; i++)
             {
-                result += _fileList[i];
-                if (i < _fileList.Count - 1) result += ';';
+                result += Value[i];
+                if (i < Value.Count - 1) result += ';';
             }
             return result;
         }
@@ -226,7 +216,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 Changed(this, EventArgs.Empty);
 
 
-                if ((_fileList.Count < _maxImagesAllowed) || (_maxImagesAllowed == -1))
+                if ((Value.Count < _maxImagesAllowed) || (_maxImagesAllowed == -1))
                 {
                     EntryBoxAddFile.Sensitive = true;
                 }

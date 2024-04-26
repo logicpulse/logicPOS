@@ -1,23 +1,12 @@
 ﻿using Gtk;
-using System;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
     internal class CheckButtonExtended : CheckButton
     {
-        private int _index;
-        public int Index
-        {
-            get { return _index; }
-            set { _index = value; }
-        }
+        public int Index { get; set; }
 
-        private string _value;
-        public string Value
-        {
-            get { return _value; }
-            set { _value = value; }
-        }
+        public string Value { get; set; }
 
         public CheckButtonExtended(string pLabel) 
             : this (pLabel, pLabel) { }

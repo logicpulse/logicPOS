@@ -10,30 +10,26 @@ namespace logicpos.App
 {
     public static class GlobalApp
     {
-        public static StartupWindow StartupWindow;
-        public static PosMainWindow PosMainWindow;
-        public static BackOfficeMainWindow BackOfficeMainWindow;
-        public static BackOfficeReportWindow BackOfficeReportWindow;
-        public static EventBox EventBoxDashboard;
-        public static Dialog DialogThreadWork;
-        public static ThreadNotify DialogThreadNotify;
-        public static PosKeyboardDialog DialogPosKeyboard;
-        public static Dictionary<string, bool> Notifications;
-        public static bool MultiUserEnvironment;
-        public static bool UseVirtualKeyBoard;
-        public static dynamic Theme;
-        public static ExpressionEvaluator ExpressionEvaluator = new ExpressionEvaluator();
-        public static System.Drawing.Size ScreenSize;
-        public static System.Drawing.Size MaxWindowSize;
-        public static System.Drawing.Size boScreenSize;
-        public static string FilePickerStartPath;
-
-        public static UsbDisplayDevice UsbDisplay;
-        public static InputReader BarCodeReader;
-        public static WeighingBalance WeighingBalance;
-
-        public static ProtectedFiles ProtectedFiles;
-
-        public static ParkingTicket ParkingTicket;
+        public static StartupWindow StartupWindow { get; set; }
+        public static PosMainWindow PosMainWindow { get; set; }
+        public static BackOfficeMainWindow BackOfficeMainWindow { get; set; }
+        public static BackOfficeReportWindow BackOfficeReportWindow { get; set; }
+        public static Dialog DialogThreadWork { get; set; }
+        public static ThreadNotify DialogThreadNotify { get; set; }
+        public static PosKeyboardDialog DialogPosKeyboard { get; set; }
+        public static Dictionary<string, bool> Notifications { get; set; }
+        public static bool MultiUserEnvironment { get; set; }
+        public static bool UseVirtualKeyBoard { get; set; }
+        public static dynamic Theme { get; set; }
+        public static ExpressionEvaluator ExpressionEvaluator { get; set; } = new ExpressionEvaluator();
+        public static System.Drawing.Size ScreenSize { get; set; }
+        public static System.Drawing.Size MaxWindowSize { get; set; }
+        public static System.Drawing.Size BoScreenSize { get; set; }
+        public static string FilePickerStartPath { get; set; }
+        public static UsbDisplayDevice UsbDisplay { get; set; }
+        public static InputReader BarCodeReader { get; set; }
+        public static WeighingBalance WeighingBalance { get; set; }
+        public static ProtectedFiles ProtectedFiles { get; set; }
+        public static ParkingTicket ParkingTicket { get; set; }
     }
 }

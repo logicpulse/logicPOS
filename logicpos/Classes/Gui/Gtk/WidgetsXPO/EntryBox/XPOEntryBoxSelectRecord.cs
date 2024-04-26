@@ -9,7 +9,6 @@ using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.resources.Resources.Localization;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -52,65 +51,29 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             get { return _previousValue; }
             set { _previousValue = value; }
         }
-        //UI
-        private TouchButtonIcon _buttonSelectValue;
-        public TouchButtonIcon ButtonSelectValue
-        {
-            get { return _buttonSelectValue; }
-            set { _buttonSelectValue = value; }
-        }
 
-        private TouchButtonIcon _buttonClearValue;
-        public TouchButtonIcon ButtonClearValue
-        {
-            get { return _buttonClearValue; }
-            set { _buttonClearValue = value; }
-        }
+        public TouchButtonIcon ButtonSelectValue { get; set; }
 
-        private TouchButtonIcon _buttonAddValue;
-        public TouchButtonIcon ButtonAddValue
-        {
-            get { return _buttonAddValue; }
-            set { _buttonAddValue = value; }
-        }
+        public TouchButtonIcon ButtonClearValue { get; set; }
 
-        
+        public TouchButtonIcon ButtonAddValue { get; set; }
+
+
         //Custom Events
         public event EventHandler OpenPopup;
         public event EventHandler ClosePopup;
         public event EventHandler CleanArticleEvent;
         public event EventHandler AddNewEntryEvent;
-        //Param: Optional 
-        private CriteriaOperator _criteriaOperator;
-        public CriteriaOperator CriteriaOperator
-        {
-            get { return _criteriaOperator; }
-            set { _criteriaOperator = value; }
-        }
+
+        public CriteriaOperator CriteriaOperator { get; set; }
         //Defaults
         private Size _dialogSize;
         private bool _articleCode;
-        //Public Properties
-        private Entry _entry;
-        public Entry Entry
-        {
-            get { return _entry; }
-            set { _entry = value; }
-        }
-		//Artigos Compostos [IN:016522]
-        private Entry _qtdentry;
-        public Entry QtdEntry
-        {
-            get { return _qtdentry; }
-            set { _qtdentry = value; }
-        }
 
-        private Entry _codeEntry;
-        public Entry CodeEntry
-        {
-            get { return _codeEntry; }
-            set { _codeEntry = value; }
-        }
+        public Entry Entry { get; set; }
+        public Entry QtdEntry { get; set; }
+
+        public Entry CodeEntry { get; set; }
 
         public ICollection dropdownTextCollection;
 
@@ -134,33 +97,32 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             _sourceWindow = pSourceWindow;
             _fieldDisplayValue = (pFieldDisplayValue != string.Empty) ? pFieldDisplayValue : "Designation";
             _value = pValue;
-            _criteriaOperator = pCriteriaOperator;
+            CriteriaOperator = pCriteriaOperator;
             //Init Private
             _dialogSize = GlobalApp.MaxWindowSize;
 
             //Add Entry if is BaseClass XPOEntryBoxSelectRecord, Else Leave it for SubClassed Classes (Create Diferente Entry Types:)
             if (this.GetType() == typeof(XPOEntryBoxSelectRecord<T1, T2>))
             {
-                _entry = new Entry();
-                InitEntry(_entry);
+                Entry = new Entry();
+                InitEntry(Entry);
             }
         }
 		//Artigos Compostos [IN:016522]
         protected void InitEntryBOSource(Entry pCodeEntry, Entry pEntry, Entry pQtdentry)
         {
             //params
-            _entry = pEntry;
-            _qtdentry = pQtdentry;
-            _codeEntry = pCodeEntry;
-            ListStore store = null;
+            Entry = pEntry;
+            QtdEntry = pQtdentry;
+            CodeEntry = pCodeEntry;
             //Settings
             string iconSelectRecord = SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/Windows/icon_window_select_record.png"));
             string iconClearRecord = SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/Windows/icon_window_delete_record.png"));
             string iconAddRecord = SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/icon_pos_nav_new.png"));
             //Init Button
-            _buttonSelectValue = new TouchButtonIcon("touchButtonIcon", Color.Transparent, iconSelectRecord, new Size(20, 20), 30, 30);
-            _buttonClearValue = new TouchButtonIcon("touchButtonIcon", Color.Transparent, iconClearRecord, new Size(20, 20), 30, 30);
-            _buttonAddValue = new TouchButtonIcon("touchButtonIcon", Color.Transparent, iconAddRecord, new Size(20, 20), 30, 30);
+            ButtonSelectValue = new TouchButtonIcon("touchButtonIcon", Color.Transparent, iconSelectRecord, new Size(20, 20), 30, 30);
+            ButtonClearValue = new TouchButtonIcon("touchButtonIcon", Color.Transparent, iconClearRecord, new Size(20, 20), 30, 30);
+            ButtonAddValue = new TouchButtonIcon("touchButtonIcon", Color.Transparent, iconAddRecord, new Size(20, 20), 30, 30);
 
             //UI/Pack
             //Assign Initial Value
@@ -172,20 +134,20 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                     {
                         if((_value as fin_articlewarehouse).ArticleSerialNumber != null)
                         {
-                            _entry.Text = (_value as fin_articlewarehouse).ArticleSerialNumber.SerialNumber;
+                            Entry.Text = (_value as fin_articlewarehouse).ArticleSerialNumber.SerialNumber;
                         }
                         else if((_value as fin_articlewarehouse).Article != null)
                         {
-                            _entry.Text = (_value as fin_articlewarehouse).Article.Designation;
+                            Entry.Text = (_value as fin_articlewarehouse).Article.Designation;
                         }
-                        else _entry.Text = (string)Convert.ChangeType(_value.GetMemberValue(_fieldDisplayValue), typeof(string));
+                        else Entry.Text = (string)Convert.ChangeType(_value.GetMemberValue(_fieldDisplayValue), typeof(string));
                     }
-                    else _entry.Text = (string)Convert.ChangeType(_value.GetMemberValue(_fieldDisplayValue), typeof(string));
+                    else Entry.Text = (string)Convert.ChangeType(_value.GetMemberValue(_fieldDisplayValue), typeof(string));
                 }
                 catch (Exception ex)
                 {
                     _logger.Error(ex.Message, ex);
-                    _entry.Text = string.Empty;
+                    Entry.Text = string.Empty;
                 }
             }
             //TK016251 - FrontOffice - Criar novo documento com auto-complete para artigos e clientes 
@@ -203,9 +165,9 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             //_entry.Completion.InlineCompletion = true;
             //_entry.Completion.PopupSingleMatch = true;
             //_entry.Completion.InlineSelection = true;
-            _entry.ModifyFont(_fontDescription);
-            _codeEntry.ModifyFont(_fontDescription);
-            _qtdentry.ModifyFont(_fontDescription);
+            Entry.ModifyFont(_fontDescription);
+            CodeEntry.ModifyFont(_fontDescription);
+            QtdEntry.ModifyFont(_fontDescription);
             //_articleCode = true;
             //_codeEntry.Completion = new EntryCompletion();
             //_codeEntry.Completion.Model = fillDropDowntext(_value, _criteriaOperator);
@@ -215,19 +177,19 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             //_codeEntry.Completion.PopupSingleMatch = true;
             //_codeEntry.Completion.InlineSelection = true;
             //_codeEntry.ModifyFont(_fontDescription);
-            _codeEntry.WidthRequest = 50;
-            _qtdentry.WidthRequest = 50;
+            CodeEntry.WidthRequest = 50;
+            QtdEntry.WidthRequest = 50;
 
-            _hbox.PackStart(_codeEntry, false, false, 0);
-            _hbox.PackStart(_entry, true, true, 0);
-            _hbox.PackStart(_qtdentry, false, false, 0);
-            _hbox.PackStart(_buttonSelectValue, false, false, 0);
-            _hbox.PackStart(_buttonClearValue, false, false, 0);
-            _hbox.PackStart(_buttonAddValue, false, false, 0);
+            _hbox.PackStart(CodeEntry, false, false, 0);
+            _hbox.PackStart(Entry, true, true, 0);
+            _hbox.PackStart(QtdEntry, false, false, 0);
+            _hbox.PackStart(ButtonSelectValue, false, false, 0);
+            _hbox.PackStart(ButtonClearValue, false, false, 0);
+            _hbox.PackStart(ButtonAddValue, false, false, 0);
             //Events
-            _buttonSelectValue.Clicked += delegate { PopupDialog(_entry); };
-            _buttonClearValue.Clicked += delegate { OnCleanArticleEvent();  };
-            _buttonAddValue.Clicked += delegate { OnAddNewEntryEvent(); };
+            ButtonSelectValue.Clicked += delegate { PopupDialog(Entry); };
+            ButtonClearValue.Clicked += delegate { OnCleanArticleEvent();  };
+            ButtonAddValue.Clicked += delegate { OnAddNewEntryEvent(); };
 
             //_entry.Changed += delegate
             //{
@@ -237,15 +199,16 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             //_entry.FocusGrabbed += delegate { PopupDialog(_entry); };
         }
 
+        [Obsolete]
         protected void InitEntry(Entry pEntry)
         {
             //params
-            _entry = pEntry;
+            Entry = pEntry;
             ListStore store = null;
             //Settings
             string iconSelectRecord = SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/Windows/icon_window_select_record.png"));
             //Init Button
-            _buttonSelectValue = new TouchButtonIcon("touchButtonIcon", Color.Transparent, iconSelectRecord, new Size(20, 20), 30, 30);
+            ButtonSelectValue = new TouchButtonIcon("touchButtonIcon", Color.Transparent, iconSelectRecord, new Size(20, 20), 30, 30);
             //UI/Pack
             //Assign Initial Value
             if (_value != null && _value.GetMemberValue(_fieldDisplayValue) != null)
@@ -256,20 +219,20 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                     {
                         if ((_value as fin_articlewarehouse).ArticleSerialNumber != null)
                         {
-                            _entry.Text = (_value as fin_articlewarehouse).ArticleSerialNumber.SerialNumber;
+                            Entry.Text = (_value as fin_articlewarehouse).ArticleSerialNumber.SerialNumber;
                         }
                         else if ((_value as fin_articlewarehouse).Article != null)
                         {
-                            _entry.Text = (_value as fin_articlewarehouse).Article.Designation;
+                            Entry.Text = (_value as fin_articlewarehouse).Article.Designation;
                         }
-                        else _entry.Text = (string)Convert.ChangeType(_value.GetMemberValue(_fieldDisplayValue), typeof(string));
+                        else Entry.Text = (string)Convert.ChangeType(_value.GetMemberValue(_fieldDisplayValue), typeof(string));
                     }
-                    else _entry.Text = (string)Convert.ChangeType(_value.GetMemberValue(_fieldDisplayValue), typeof(string));
+                    else Entry.Text = (string)Convert.ChangeType(_value.GetMemberValue(_fieldDisplayValue), typeof(string));
                 }
                 catch (Exception ex)
                 {
                     _logger.Error(ex.Message, ex);
-                    _entry.Text = string.Empty;
+                    Entry.Text = string.Empty;
                 }
             }
 			//TK016251 - FrontOffice - Criar novo documento com auto-complete para artigos e clientes 
@@ -278,32 +241,33 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             else _articleCode = false;
 
             //Preenche o dropdown de auto-complete
-            store = fillDropDowntext(_value, _criteriaOperator);
+            store = fillDropDowntext(_value, CriteriaOperator);
 
-            _entry.Completion = new EntryCompletion();
-            _entry.Completion.Model = store;
-            _entry.Completion.TextColumn = 0;
-            _entry.Completion.PopupCompletion = true;
-            _entry.Completion.InlineCompletion = false;
-            _entry.Completion.PopupSingleMatch = true;
-            _entry.Completion.InlineSelection = false;
+            Entry.Completion = new EntryCompletion();
+            Entry.Completion.Model = store;
+            Entry.Completion.TextColumn = 0;
+            Entry.Completion.PopupCompletion = true;
+            Entry.Completion.InlineCompletion = false;
+            Entry.Completion.PopupSingleMatch = true;
+            Entry.Completion.InlineSelection = false;
 
 
-            _entry.ModifyFont(_fontDescription);
-            _hbox.PackStart(_entry, true, true, 0);
-            _hbox.PackStart(_buttonSelectValue, false, false, 0);
+            Entry.ModifyFont(_fontDescription);
+            _hbox.PackStart(Entry, true, true, 0);
+            _hbox.PackStart(ButtonSelectValue, false, false, 0);
             //Events
-            _buttonSelectValue.Clicked += delegate { PopupDialog(_entry); };
+            ButtonSelectValue.Clicked += delegate { PopupDialog(Entry); };
 
-            _entry.Changed += delegate
+            Entry.Changed += delegate
             {
-                SelectRecordDropDown(_entry);
+                SelectRecordDropDown(Entry);
             };
 
             //_entry.FocusGrabbed += delegate { PopupDialog(_entry); };
         }
 
-		//TK016251 - FrontOffice - Criar novo documento com auto-complete para artigos e clientes 	
+        //TK016251 - FrontOffice - Criar novo documento com auto-complete para artigos e clientes 	
+        [Obsolete]
         private ListStore fillDropDowntext(T1 value, CriteriaOperator pCriteria = null)
         {
             ListStore store = new ListStore(typeof(string));
@@ -423,10 +387,10 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                 }
                 
 
-                pEntry.Text = (value != null) ? value.ToString() : resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
+                pEntry.Text = (value != null) ? value.ToString() : resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
 
-                pEntryCode.Text = (value != null) ? value.Code.ToString() : resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
-                pEntryQtd.Text = (value != null) ? value.DefaultQuantity.ToString() : resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
+                pEntryCode.Text = (value != null) ? value.Code.ToString() : resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
+                pEntryQtd.Text = (value != null) ? value.DefaultQuantity.ToString() : resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
                 
                 OnClosePopup();
             }
@@ -520,7 +484,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                 }
                 if (value != null && value.GetType() == typeof(fin_articleserialnumber))
                 {
-                    _entry.Text = (value as fin_articleserialnumber).SerialNumber;
+                    Entry.Text = (value as fin_articleserialnumber).SerialNumber;
                 }
                 else if(propertyInfo.Name == "ArticleSerialNumber") 
                 {
@@ -528,7 +492,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                 }
                 else
                 {
-                    pEntry.Text = (value != null) ? value.ToString() : resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
+                    pEntry.Text = (value != null) ? value.ToString() : resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
                 }           
                 OnClosePopup();
             }
@@ -560,10 +524,10 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                   dialog = new PosSelectRecordDialog<XPCollection, XPGuidObject, T2>(
                     _sourceWindow,
                     DialogFlags.DestroyWithParent,
-                    resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_select_record"),
+                    resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_select_record"),
                     _dialogSize,
                     _value,
-                    _criteriaOperator,
+                    CriteriaOperator,
                     GenericTreeViewMode.Default,
                     null //ActionAreaButtons
                   );
@@ -631,7 +595,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             }
             if (value != null && value.GetType() == typeof(fin_articleserialnumber))
             {
-                _entry.Text = (value as fin_articleserialnumber).SerialNumber;
+                Entry.Text = (value as fin_articleserialnumber).SerialNumber;
             }
             else
             {
@@ -700,7 +664,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
 
                 List<string> result = new List<string>();
 				//Titulo nas janelas de filtro de relatório [IN:014328]
-                PosReportsQueryDialog dialogFilter = new PosReportsQueryDialog(dialog, DialogFlags.DestroyWithParent, ReportsQueryDialogMode.FILTER_DOCUMENTS_PAGINATION, "fin_documentfinancemaster", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_report_filter"));
+                PosReportsQueryDialog dialogFilter = new PosReportsQueryDialog(dialog, DialogFlags.DestroyWithParent, ReportsQueryDialogMode.FILTER_DOCUMENTS_PAGINATION, "fin_documentfinancemaster", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_report_filter"));
                 DialogResponseType responseFilter = (DialogResponseType)dialogFilter.Run();
 
                 //If button Clean Filter Clicked

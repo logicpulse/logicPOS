@@ -1,10 +1,8 @@
 ﻿using Gtk;
-using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.App;
-using logicpos.resources.Resources.Localization;
 using logicpos.shared.App;
 using System;
 using System.Drawing;
@@ -20,18 +18,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private TouchButtonIconWithText _buttonOk;
         private TouchButtonIconWithText _buttonCancel;
 
-        private DateTime _dateStart;
-        public DateTime DateStart
-        {
-            get { return _dateStart; }
-            set { _dateStart = value; }
-        }
-        private DateTime _dateEnd;
-        public DateTime DateEnd
-        {
-            get { return _dateEnd; }
-            set { _dateEnd = value; }
-        }
+        public DateTime DateStart { get; set; }
+        public DateTime DateEnd { get; set; }
 
         //Overload : Default Dates Start: 1st Day of Month, End Last Day Of Month
         public PosDatePickerStartEndDateDialog(Window pSourceWindow, DialogFlags pDialogFlags)
@@ -58,11 +46,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private void InitUI(DialogFlags pDialogFlags, DateTime pDateStart, DateTime pDateEnd)
         {
             //Parameters
-            _dateStart = pDateStart;
-            _dateEnd = pDateEnd;
+            DateStart = pDateStart;
+            DateEnd = pDateEnd;
 
             //Init Local Vars
-            string windowTitle = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_datepicket_startend");
+            string windowTitle = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_datepicket_startend");
             Size windowSize = new Size(300, 255);
             string fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_date_picker.png");
 
@@ -70,14 +58,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _fixedContent = new Fixed();
 
             //Init DateEntry Start
-            _entryBoxDateStart = new EntryBoxValidationDatePickerDialog(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date_start"), _dateStart, SharedSettings.RegexDate, true);
-            _entryBoxDateStart.EntryValidation.Text = _dateStart.ToString(SharedSettings.DateFormat);
+            _entryBoxDateStart = new EntryBoxValidationDatePickerDialog(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date_start"), DateStart, SharedSettings.RegexDate, true);
+            _entryBoxDateStart.EntryValidation.Text = DateStart.ToString(SharedSettings.DateFormat);
             _entryBoxDateStart.EntryValidation.Validate();
             _entryBoxDateStart.ClosePopup += entryBoxDateStart_ClosePopup;
             _entryBoxDateStart.EntryValidation.Changed += entryBoxDateStartEntryValidation_Changed;
             //Init DateEntry End
-            _entryBoxDateEnd = new EntryBoxValidationDatePickerDialog(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date_end"), _dateEnd, SharedSettings.RegexDate, true);
-            _entryBoxDateEnd.EntryValidation.Text = _dateEnd.ToString(SharedSettings.DateFormat);
+            _entryBoxDateEnd = new EntryBoxValidationDatePickerDialog(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date_end"), DateEnd, SharedSettings.RegexDate, true);
+            _entryBoxDateEnd.EntryValidation.Text = DateEnd.ToString(SharedSettings.DateFormat);
             _entryBoxDateEnd.EntryValidation.Validate();
             _entryBoxDateEnd.ClosePopup += entryBoxDateEnd_ClosePopup;
             _entryBoxDateEnd.EntryValidation.Changed += entryBoxDateEndEntryValidation_Changed;
@@ -110,7 +98,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             try
             {
-                _dateEnd = Convert.ToDateTime(_entryBoxDateEnd.EntryValidation.Text).AddHours(23).AddMinutes(59).AddSeconds(59);
+                DateEnd = Convert.ToDateTime(_entryBoxDateEnd.EntryValidation.Text).AddHours(23).AddMinutes(59).AddSeconds(59);
                 Validate();
             }
             catch { _buttonOk.Sensitive = false; }
@@ -120,7 +108,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             try
             {
-                _dateStart = Convert.ToDateTime(_entryBoxDateStart.EntryValidation.Text);
+                DateStart = Convert.ToDateTime(_entryBoxDateStart.EntryValidation.Text);
                 Validate();
             }
             catch { _buttonOk.Sensitive = false; }
@@ -129,20 +117,20 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         private void entryBoxDateStart_ClosePopup(object sender, EventArgs e)
         {
-            _dateStart = _entryBoxDateStart.Value;
+            DateStart = _entryBoxDateStart.Value;
             Validate();
 
         }
 
         private void entryBoxDateEnd_ClosePopup(object sender, EventArgs e)
         {
-            _dateEnd = _entryBoxDateEnd.Value.AddHours(23).AddMinutes(59).AddSeconds(59);
+            DateEnd = _entryBoxDateEnd.Value.AddHours(23).AddMinutes(59).AddSeconds(59);
             Validate();
         }
 
         private void Validate()
         {
-            _buttonOk.Sensitive = (_dateStart < _dateEnd);
+            _buttonOk.Sensitive = (DateStart < DateEnd);
         }
     }
 }

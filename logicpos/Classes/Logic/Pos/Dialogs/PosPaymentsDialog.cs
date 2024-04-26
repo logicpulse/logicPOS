@@ -14,7 +14,6 @@ using logicpos.datalayer.Enums;
 using logicpos.Extensions;
 using logicpos.financial.library.App;
 using logicpos.financial.library.Classes.Finance;
-using logicpos.resources.Resources.Localization;
 using logicpos.shared.App;
 using logicpos.shared.Classes.Finance;
 using System;
@@ -64,7 +63,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     //SaveOrUpdateCustomer Before use _selectedCustomer (Can be null)
                     resultObject = logicpos.Utils.SaveOrUpdateCustomer(
                         this,
-                        _selectedCustomer,
+                        Customer,
                         _entryBoxSelectCustomerName.EntryValidation.Text,
                         _entryBoxCustomerAddress.EntryValidation.Text,
                         _entryBoxCustomerLocality.EntryValidation.Text,
@@ -72,7 +71,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         _entryBoxCustomerCity.EntryValidation.Text,
                         null,// Phone : Used only in PosDocumentFinanceDialog
                         null,// Email : Used only in PosDocumentFinanceDialog 
-                        _selectedCountry,
+                        Country,
                         _entryBoxSelectCustomerFiscalNumber.EntryValidation.Text,
                         _entryBoxSelectCustomerCardNumber.EntryValidation.Text,
                         SharedUtils.StringToDecimal(_entryBoxCustomerDiscount.EntryValidation.Text),
@@ -81,19 +80,19 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                     if (resultObject.GetType() == typeof(erp_customer))
                     {
-                        _selectedCustomer = (erp_customer)resultObject;
+                        Customer = (erp_customer)resultObject;
 
                         //Prevent Default Customer Entity and Hidden Customer (Only with Name Filled) to Process CC Documents
                         if (
-                            _selectedPaymentMethod != null && _selectedPaymentMethod.Token == "CURRENT_ACCOUNT" &&
+                            PaymentMethod != null && PaymentMethod.Token == "CURRENT_ACCOUNT" &&
                             (
-                                _selectedCustomer.Oid == SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity ||
+                                Customer.Oid == SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity ||
                                 _entryBoxSelectCustomerName.EntryValidation.Text == string.Empty ||
                                 _entryBoxSelectCustomerFiscalNumber.EntryValidation.Text == string.Empty
                             )
                         )
                         {
-                            logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_cant_create_cc_document_with_default_entity"));
+                            logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_cant_create_cc_document_with_default_entity"));
                             //Prevent Parent Dialog Payments from Close
                             this.Run();
                         }
@@ -101,19 +100,19 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         else
                         {
                             //Get Document Type to Emmit, based on Payment Mode
-                            _processDocumentType = (_selectedPaymentMethod.Token == "CURRENT_ACCOUNT")
+                            _processDocumentType = (PaymentMethod.Token == "CURRENT_ACCOUNT")
                                 ? SharedSettings.XpoOidDocumentFinanceTypeInvoice
                                 : SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice;
 
                             ArticleBag processArticleBag;
 
-                            if (_articleBagPartialPayment == null)
+                            if (ArticleBagPartialPayment == null)
                             {
-                                processArticleBag = _articleBagFullPayment;
+                                processArticleBag = ArticleBagFullPayment;
                             }
                             else
                             {
-                                processArticleBag = _articleBagPartialPayment;
+                                processArticleBag = ArticleBagPartialPayment;
                             }
 
                             //Default UnAssigned Value
@@ -172,22 +171,22 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             }
                             //Protection to prevent Exceed Customer CardCredit
                             else if (
-                                _selectedPaymentMethod.Token == "CUSTOMER_CARD" &&
+                                PaymentMethod.Token == "CUSTOMER_CARD" &&
                                 (
-                                    processArticleBag.TotalFinal > _selectedCustomer.CardCredit
+                                    processArticleBag.TotalFinal > Customer.CardCredit
                                 )
                             )
                             {
-                                logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_value_exceed_customer_card_credit"), SharedUtils.DecimalToStringCurrency(_selectedCustomer.CardCredit), SharedUtils.DecimalToStringCurrency(processArticleBag.TotalFinal)));
+                                logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_value_exceed_customer_card_credit"), SharedUtils.DecimalToStringCurrency(Customer.CardCredit), SharedUtils.DecimalToStringCurrency(processArticleBag.TotalFinal)));
 
                                 //Prevent Parent Dialog Payments from Close
                                 this.Run();
                             }
                             //Protection to Prevent Recharge Customer Card with Invalid User (User without Card or FinalConsumer...)
                             //Check if Article Bag Full|Partial has Recharge Article and Valid customer Card
-                            else if (!FinancialLibraryUtils.IsCustomerCardValidForArticleBag(processArticleBag, _selectedCustomer))
+                            else if (!FinancialLibraryUtils.IsCustomerCardValidForArticleBag(processArticleBag, Customer))
                             {
-                                logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_invalid_customer_card_detected"));
+                                logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_invalid_customer_card_detected"));
 
                                 //Prevent Parent Dialog Payments from Close
                                 this.Run();
@@ -195,15 +194,15 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             else
                             {
                                 //Prepare ProcessFinanceDocumentParameter : Shared for PartialPayment and FullPayment
-                                _processFinanceDocumentParameter = new ProcessFinanceDocumentParameter(
+                                ProcessFinanceDocumentParameter = new ProcessFinanceDocumentParameter(
                                     _processDocumentType, processArticleBag
                                 )
                                 {
-                                    PaymentMethod = _selectedPaymentMethod.Oid,
+                                    PaymentMethod = PaymentMethod.Oid,
                                     PaymentCondition = POSSettings.XpoOidConfigurationPaymentConditionDefaultInvoicePaymentCondition,
-                                    Customer = _selectedCustomer.Oid,
-                                    TotalDelivery = _totalDelivery,
-                                    TotalChange = _totalChange
+                                    Customer = Customer.Oid,
+                                    TotalDelivery = TotalDelivery,
+                                    TotalChange = TotalChange
                                 };
 
                                 //Get Latest DocumentConference Document if Exists, and assign if (REMOVED Total Equality, Request from Carlos)
@@ -213,8 +212,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 /*&& (conferenceDocument.TotalFinal.Equals(processArticleBag.TotalFinal) && conferenceDocument.DocumentDetail.Count.Equals(processArticleBag.Count))*/
                                 )
                                 {
-                                    _processFinanceDocumentParameter.DocumentParent = conferenceDocument.Oid;
-                                    _processFinanceDocumentParameter.OrderReferences = new List<fin_documentfinancemaster>
+                                    ProcessFinanceDocumentParameter.DocumentParent = conferenceDocument.Oid;
+                                    ProcessFinanceDocumentParameter.OrderReferences = new List<fin_documentfinancemaster>
                                     {
                                         conferenceDocument
                                     };
@@ -223,7 +222,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 // PreventPersistFinanceDocument : Used in SplitPayments, to get ProcessFinanceDocumentParameter and Details without PreventPersistFinanceDocument
                                 if (!_skipPersistFinanceDocument)
                                 {
-                                    fin_documentfinancemaster resultDocument = FrameworkCalls.PersistFinanceDocument(this, _processFinanceDocumentParameter);
+                                    fin_documentfinancemaster resultDocument = FrameworkCalls.PersistFinanceDocument(this, ProcessFinanceDocumentParameter);
                                     //If Errors Occurs, return null Document, Keep Running until user cancel or a Valid Document is Returned
                                     if (resultDocument == null)
                                     {
@@ -232,7 +231,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                     else
                                     {
                                         //Update Display
-                                        if (GlobalApp.UsbDisplay != null) GlobalApp.UsbDisplay.ShowPayment(_selectedPaymentMethod.Designation, _totalDelivery, _totalChange);
+                                        if (GlobalApp.UsbDisplay != null) GlobalApp.UsbDisplay.ShowPayment(PaymentMethod.Designation, TotalDelivery, TotalChange);
                                     }
                                 }
                             }
@@ -242,7 +241,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     else if (resultObject.GetType() == typeof(ConstraintViolationException))
                     {
                         Exception ex = (Exception)resultObject;
-                        ResponseType response = logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Warning, ButtonsType.Close, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_exception_error"), ex.InnerException.Message);
+                        ResponseType response = logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Warning, ButtonsType.Close, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_exception_error"), ex.InnerException.Message);
                         //Prevent Parent Dialog Payments from Close
                         this.Run();
                     }
@@ -254,7 +253,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     UpdateUIWhenAlternateFullToPartialPayment(false, false);
 
                     //Clean _articleBagPartialPayment, this Enable Normal mode
-                    _articleBagPartialPayment = null;
+                    ArticleBagPartialPayment = null;
 
                     //Prevent Parent Dialog Payments from Close 
                     this.Run();
@@ -271,8 +270,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 {
                     //Clear Customer Details
                     ClearCustomer();
-                    if (_selectedPaymentMethod != null) _selectedPaymentMethod = null;
-                    if (_selectedPaymentMethodButton != null) _selectedPaymentMethodButton.Sensitive = true;
+                    if (PaymentMethod != null) PaymentMethod = null;
+                    if (SelectedPaymentMethodButton != null) SelectedPaymentMethodButton.Sensitive = true;
                     
                     //Prevent Parent Dialog Payments from Close 
                     this.Run();
@@ -283,19 +282,19 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     _buttonCurrentAccount.CurrentButtonOid = SharedSettings.XpoOidConfigurationPaymentMethodCurrentAccount;
                     //Prevent Default Customer Entity and Hidden Customer (Only with Name Filled) to Process CC Documents
                     if (                      
-                        (_selectedCustomer != null &&(
-                            _selectedCustomer.Oid == SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity ||
+                        (Customer != null &&(
+                            Customer.Oid == SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity ||
                             _entryBoxSelectCustomerName.EntryValidation.Text == string.Empty ||
                             _entryBoxSelectCustomerFiscalNumber.EntryValidation.Text == string.Empty)
                         )
                     )
                     {
-                        logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_cant_create_cc_document_with_default_entity"));
+                        logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_cant_create_cc_document_with_default_entity"));
                         //Prevent Parent Dialog Payments from Close
                         this.Run();
                     }else if (_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text == string.Empty || _entryBoxSelectCustomerName.EntryValidation.Text == string.Empty)
                     {
-                        logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_cant_create_cc_document_with_default_entity"));
+                        logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_cant_create_cc_document_with_default_entity"));
                         //Prevent Parent Dialog Payments from Close
                         this.Run();
                     }
@@ -322,10 +321,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 switch (ex.Message)
                 {
                     case "ERROR_MISSING_SERIE":
-                        errorMessage = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document_missing_series"));
+                        errorMessage = string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document_missing_series"));
                         break;
                     default:
-                        errorMessage = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document"), ex.Message);
+                        errorMessage = string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document"), ex.Message);
                         break;
                 }
                 logicpos.Utils.ShowMessageTouch(
@@ -334,7 +333,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     new Size(600, 400),
                     MessageType.Error,
                     ButtonsType.Close,
-                    resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"),
+                    resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"),
                     errorMessage
                 );
 
@@ -348,14 +347,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             int decimalRoundTo = SharedSettings.DecimalRoundTo;
 
             //If Has a _articleBagPartialPayment Defined use its Total else use _articleBagFullPayment TotalFinal
-            decimal _totalOrder = (_articleBagPartialPayment == null) ? _articleBagFullPayment.TotalFinal : _articleBagPartialPayment.TotalFinal;
+            decimal _totalOrder = (ArticleBagPartialPayment == null) ? ArticleBagFullPayment.TotalFinal : ArticleBagPartialPayment.TotalFinal;
 
             MoneyPadResult result = PosMoneyPadDialog.RequestDecimalValue(this, _totalOrder);
             if (result.Response == ResponseType.Ok)
             {
-                _totalDelivery = result.Value;
+                TotalDelivery = result.Value;
                 //Round currentOrderMain.GlobalTotalFinal, else we can have values like _totalChange -0.000000000000069
-                _totalChange = Math.Round(_totalDelivery, decimalRoundTo) - Math.Round(_totalOrder, decimalRoundTo);
+                TotalChange = Math.Round(TotalDelivery, decimalRoundTo) - Math.Round(_totalOrder, decimalRoundTo);
                 AssignPaymentMethod(sender);
             }
         }
@@ -375,21 +374,21 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private void _entryBoxCustomerDiscount_Changed(object sender, EventArgs e)
         {
             //Get Current ArticleBag
-            ArticleBag articleBag = (_partialPaymentEnabled) ? _articleBagPartialPayment : _articleBagFullPayment;
+            ArticleBag articleBag = (_partialPaymentEnabled) ? ArticleBagPartialPayment : ArticleBagFullPayment;
             if (articleBag != null)
             {
                 //Required to Update articleBag.
-                _discountGlobal = (_selectedCustomer != null && _selectedCustomer.Discount > 0) ? _selectedCustomer.Discount : 0;
-                articleBag.DiscountGlobal = _discountGlobal;
+                DiscountGlobal = (Customer != null && Customer.Discount > 0) ? Customer.Discount : 0;
+                articleBag.DiscountGlobal = DiscountGlobal;
                 articleBag.UpdateTotals();
                 //Update UI
                 UpdateUIWhenAlternateFullToPartialPayment(_partialPaymentEnabled, false);
                 //Require to Update _totalDelivery when Discount is Changed, if no Money
                 //If Has a _articleBagPartialPayment Defined use its Total else use _articleBagFullPayment TotalFinal
-                if (_selectedPaymentMethod != null && _selectedPaymentMethod.Token != "MONEY")
+                if (PaymentMethod != null && PaymentMethod.Token != "MONEY")
                 {
-                    _totalDelivery = (_articleBagPartialPayment == null) ? _articleBagFullPayment.TotalFinal : _articleBagPartialPayment.TotalFinal;
-                    if (_labelDeliveryValue.Text != SharedUtils.DecimalToStringCurrency(_totalDelivery)) _labelDeliveryValue.Text = SharedUtils.DecimalToStringCurrency(_totalDelivery);
+                    TotalDelivery = (ArticleBagPartialPayment == null) ? ArticleBagFullPayment.TotalFinal : ArticleBagPartialPayment.TotalFinal;
+                    if (_labelDeliveryValue.Text != SharedUtils.DecimalToStringCurrency(TotalDelivery)) _labelDeliveryValue.Text = SharedUtils.DecimalToStringCurrency(TotalDelivery);
                 }
                 //Update Change Value
                 UpdateChangeValue();
@@ -427,8 +426,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             EntryValidation entryValidation = (EntryValidation)sender;
             //Initialize Country DeafultValue
-            cfg_configurationcountry defaultValue = (_selectedCustomer.Country != null)
-              ? _selectedCustomer.Country
+            cfg_configurationcountry defaultValue = (Customer.Country != null)
+              ? Customer.Country
               : DataLayerSettings.ConfigurationSystemCountry
             ;
 
@@ -437,7 +436,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
               dialog = new PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewConfigurationCountry>(
                 this.SourceWindow,
                 DialogFlags.DestroyWithParent,
-                resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_select_country"),
+                resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_select_country"),
                 //TODO:THEME
                 GlobalApp.MaxWindowSize,
                 defaultValue,
@@ -450,8 +449,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             if (response == (int)ResponseType.Ok)
             {
                 //Get Object from dialog else Mixing Sessions, Both belong to diferente Sessions
-                _selectedCountry = (cfg_configurationcountry)DataLayerUtils.GetXPGuidObject(typeof(cfg_configurationcountry), dialog.GenericTreeView.DataSourceRow.Oid);
-                entryValidation.Text = _selectedCountry.Designation;
+                Country = (cfg_configurationcountry)DataLayerUtils.GetXPGuidObject(typeof(cfg_configurationcountry), dialog.GenericTreeView.DataSourceRow.Oid);
+                entryValidation.Text = Country.Designation;
                 Validate();
             }
             dialog.Destroy();
@@ -463,19 +462,19 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private void AssignPaymentMethod(object pSender)
         {
             //Disable old selectedPaymentMethodButton, if is Selected
-            if (_selectedPaymentMethodButton != null) _selectedPaymentMethodButton.Sensitive = true;
+            if (SelectedPaymentMethodButton != null) SelectedPaymentMethodButton.Sensitive = true;
 
             //Enable Sender
-            _selectedPaymentMethodButton = (TouchButtonBase)pSender;
-            _selectedPaymentMethod = (fin_configurationpaymentmethod)DataLayerUtils.GetXPGuidObject(typeof(fin_configurationpaymentmethod), _selectedPaymentMethodButton.CurrentButtonOid);
+            SelectedPaymentMethodButton = (TouchButtonBase)pSender;
+            PaymentMethod = (fin_configurationpaymentmethod)DataLayerUtils.GetXPGuidObject(typeof(fin_configurationpaymentmethod), SelectedPaymentMethodButton.CurrentButtonOid);
             //_logger.Debug(string.Format("AssignPaymentMethod: ButtonName: [{0}], PaymentMethodToken: [{1}]", _selectedPaymentMethodButton.Name, _selectedPaymentMethod.Token));
 
-            if (_selectedPaymentMethod.Token == "MONEY")
+            if (PaymentMethod.Token == "MONEY")
             {
-                if (_labelDeliveryValue.Text != SharedUtils.DecimalToStringCurrency(_totalDelivery)) _labelDeliveryValue.Text = SharedUtils.DecimalToStringCurrency(_totalDelivery);
-                if (_labelChangeValue.Text != SharedUtils.DecimalToStringCurrency(_totalChange)) _labelChangeValue.Text = SharedUtils.DecimalToStringCurrency(_totalChange);
+                if (_labelDeliveryValue.Text != SharedUtils.DecimalToStringCurrency(TotalDelivery)) _labelDeliveryValue.Text = SharedUtils.DecimalToStringCurrency(TotalDelivery);
+                if (_labelChangeValue.Text != SharedUtils.DecimalToStringCurrency(TotalChange)) _labelChangeValue.Text = SharedUtils.DecimalToStringCurrency(TotalChange);
                 //Only Disable Money Button if Delivery is Greater than Total
-                if (_totalDelivery >= ((_articleBagPartialPayment == null) ? _articleBagFullPayment.TotalFinal : _articleBagPartialPayment.TotalFinal)) _selectedPaymentMethodButton.Sensitive = false;
+                if (TotalDelivery >= ((ArticleBagPartialPayment == null) ? ArticleBagFullPayment.TotalFinal : ArticleBagPartialPayment.TotalFinal)) SelectedPaymentMethodButton.Sensitive = false;
             }
             else
             {
@@ -483,11 +482,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if (_labelChangeValue.Text != SharedUtils.DecimalToStringCurrency(0)) _labelChangeValue.Text = SharedUtils.DecimalToStringCurrency(0);
 
                 //If Has a _articleBagPartialPayment Defined use its Total else use _articleBagFullPayment TotalFinal
-                _totalDelivery = (_articleBagPartialPayment == null) ? _articleBagFullPayment.TotalFinal : _articleBagPartialPayment.TotalFinal;
+                TotalDelivery = (ArticleBagPartialPayment == null) ? ArticleBagFullPayment.TotalFinal : ArticleBagPartialPayment.TotalFinal;
 
-                _totalChange = 0.0m;
+                TotalChange = 0.0m;
 
-                if (_selectedPaymentMethod.Token == "CURRENT_ACCOUNT")
+                if (PaymentMethod.Token == "CURRENT_ACCOUNT")
                 {
                     ////Hide Partial Payment
                     //_buttonPartialPayment.HideAll();
@@ -502,10 +501,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 }
             }
 
-            _selectedPaymentMethodButton.Sensitive = false;
+            SelectedPaymentMethodButton.Sensitive = false;
 
             //Force Required CustomerCardNumber if Payment is CUSTOMER_CARD
-            _entryBoxSelectCustomerCardNumber.EntryValidation.Required = (_selectedPaymentMethod.Token == "CUSTOMER_CARD");
+            _entryBoxSelectCustomerCardNumber.EntryValidation.Required = (PaymentMethod.Token == "CUSTOMER_CARD");
             _entryBoxSelectCustomerCardNumber.EntryValidation.Validate();
 
             Validate();
@@ -520,14 +519,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     _buttonOk.Sensitive =
                       (
                         (
-                            _selectedCustomer != null
+                            Customer != null
                             ||
                             (
                                 _entryBoxSelectCustomerName.EntryValidation.Text != string.Empty || _entryBoxSelectCustomerFiscalNumber.EntryValidation.Text != string.Empty
                             )
                         ) &&
-                        _selectedPaymentMethod != null &&
-                        _totalChange >= 0 &&
+                        PaymentMethod != null &&
+                        TotalChange >= 0 &&
                         (
                             _entryBoxSelectCustomerName.EntryValidation.Validated &&
                             _entryBoxCustomerDiscount.EntryValidation.Validated &&
@@ -543,7 +542,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                       );
 
                 //Validate Change Value
-                if (_totalChange >= 0)
+                if (TotalChange >= 0)
                 {
                     _labelChangeValue.ModifyFg(StateType.Normal, Color.White.ToGdkColor());
                 }
@@ -586,33 +585,33 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 if (customerGuid != Guid.Empty)
                 {
-                    _selectedCustomer = (erp_customer)DataLayerUtils.GetXPGuidObject(typeof(erp_customer), customerGuid);
+                    Customer = (erp_customer)DataLayerUtils.GetXPGuidObject(typeof(erp_customer), customerGuid);
                 }
                 else
                 {
-                    _selectedCustomer = null;
+                    Customer = null;
                 }
 
                 //If Valid Customer, and not Not SimplifiedInvoice, and ! isSingularEntity
                 if (
-                    _selectedCustomer != null
+                    Customer != null
                 )
                 {
-                    _selectedCountry = _selectedCustomer.Country;
-                    _discountGlobal = (_selectedCustomer.Discount > 0) ? _selectedCustomer.Discount : 0;
+                    Country = Customer.Country;
+                    DiscountGlobal = (Customer.Discount > 0) ? Customer.Discount : 0;
                     //Update EntryBoxs
-                    _entryBoxSelectCustomerName.EntryValidation.Text = (_selectedCustomer != null) ? _selectedCustomer.Name : string.Empty;
-                    _entryBoxCustomerDiscount.EntryValidation.Text = SharedUtils.DecimalToString(_discountGlobal);
+                    _entryBoxSelectCustomerName.EntryValidation.Text = (Customer != null) ? Customer.Name : string.Empty;
+                    _entryBoxCustomerDiscount.EntryValidation.Text = SharedUtils.DecimalToString(DiscountGlobal);
 
-                    _entryBoxSelectCustomerFiscalNumber.EntryValidation.Text = (_selectedCustomer.FiscalNumber != null) ? _selectedCustomer.FiscalNumber.ToString() : string.Empty;
-                    _entryBoxSelectCustomerCardNumber.EntryValidation.Text = (_selectedCustomer.CardNumber != null) ? _selectedCustomer.CardNumber.ToString() : string.Empty;
-                    _entryBoxCustomerAddress.EntryValidation.Text = (_selectedCustomer.Address != null) ? _selectedCustomer.Address.ToString() : string.Empty;
-                    _entryBoxCustomerLocality.EntryValidation.Text = (_selectedCustomer.Locality != null) ? _selectedCustomer.Locality.ToString() : string.Empty;
-                    _entryBoxCustomerZipCode.EntryValidation.Text = (_selectedCustomer.ZipCode != null) ? _selectedCustomer.ZipCode.ToString() : string.Empty;
-                    _entryBoxCustomerCity.EntryValidation.Text = (_selectedCustomer.City != null) ? _selectedCustomer.City.ToString() : string.Empty;
-                    _entryBoxSelectCustomerCountry.Value = _selectedCountry;
-                    _entryBoxSelectCustomerCountry.EntryValidation.Text = (_selectedCountry != null) ? _selectedCountry.Designation : string.Empty;
-                    _entryBoxCustomerNotes.EntryValidation.Text = (_selectedCustomer.Notes != null) ? _selectedCustomer.Notes.ToString() : string.Empty;
+                    _entryBoxSelectCustomerFiscalNumber.EntryValidation.Text = (Customer.FiscalNumber != null) ? Customer.FiscalNumber.ToString() : string.Empty;
+                    _entryBoxSelectCustomerCardNumber.EntryValidation.Text = (Customer.CardNumber != null) ? Customer.CardNumber.ToString() : string.Empty;
+                    _entryBoxCustomerAddress.EntryValidation.Text = (Customer.Address != null) ? Customer.Address.ToString() : string.Empty;
+                    _entryBoxCustomerLocality.EntryValidation.Text = (Customer.Locality != null) ? Customer.Locality.ToString() : string.Empty;
+                    _entryBoxCustomerZipCode.EntryValidation.Text = (Customer.ZipCode != null) ? Customer.ZipCode.ToString() : string.Empty;
+                    _entryBoxCustomerCity.EntryValidation.Text = (Customer.City != null) ? Customer.City.ToString() : string.Empty;
+                    _entryBoxSelectCustomerCountry.Value = Country;
+                    _entryBoxSelectCustomerCountry.EntryValidation.Text = (Country != null) ? Country.Designation : string.Empty;
+                    _entryBoxCustomerNotes.EntryValidation.Text = (Customer.Notes != null) ? Customer.Notes.ToString() : string.Empty;
                 }
                 //IN:009275 Use Euro VAT Info 
                 else if (logicpos.Utils.UseVatAutocomplete())
@@ -628,7 +627,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         _entryBoxCustomerZipCode.EntryValidation.Text = zip;
                         _entryBoxCustomerCity.EntryValidation.Text = city;
                         _entryBoxSelectCustomerName.EntryValidation.Text = EuropeanVatInformation.Get(cod_FiscalNumber).Name;
-                        _entryBoxCustomerDiscount.EntryValidation.Text = SharedUtils.DecimalToString(_discountGlobal);
+                        _entryBoxCustomerDiscount.EntryValidation.Text = SharedUtils.DecimalToString(DiscountGlobal);
                         if (pFieldName != "CardNumber")
                         {
                             _entryBoxSelectCustomerCardNumber.Value = null;
@@ -656,11 +655,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //New User
                 else
                 {
-                    _selectedCustomer = null;
-                    _discountGlobal = 0;
+                    Customer = null;
+                    DiscountGlobal = 0;
                     //Update EntryBoxs
                     _entryBoxSelectCustomerName.EntryValidation.Text = string.Empty;
-                    _entryBoxCustomerDiscount.EntryValidation.Text = SharedUtils.DecimalToString(_discountGlobal);
+                    _entryBoxCustomerDiscount.EntryValidation.Text = SharedUtils.DecimalToString(DiscountGlobal);
                     _entryBoxCustomerAddress.EntryValidation.Text = string.Empty;
                     _entryBoxCustomerLocality.EntryValidation.Text = string.Empty;
                     _entryBoxCustomerZipCode.EntryValidation.Text = string.Empty;
@@ -712,7 +711,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _enableGetCustomerDetails = false;
 
                 //Clear Reference
-                _selectedCustomer = null;
+                Customer = null;
 
                 //Clear Fields
                 _entryBoxSelectCustomerName.Value = null;
@@ -762,8 +761,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             try
             {
                 //Init Variables
-                decimal totalDocument = (_articleBagPartialPayment == null) ? _articleBagFullPayment.TotalFinal : _articleBagPartialPayment.TotalFinal;
-                bool isFinalConsumerEntity = (_selectedCustomer != null && _selectedCustomer.Oid == SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity);
+                decimal totalDocument = (ArticleBagPartialPayment == null) ? ArticleBagFullPayment.TotalFinal : ArticleBagPartialPayment.TotalFinal;
+                bool isFinalConsumerEntity = (Customer != null && Customer.Oid == SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity);
                 bool isSingularEntity = (isFinalConsumerEntity || FiscalNumber.IsSingularEntity(_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text, _entryBoxSelectCustomerCountry.Value.Code2));
                 // Encrypt pFieldValue to use in Sql Filter
                 string fiscalNumberFilterValue = string.Empty;
@@ -877,8 +876,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 }
 
                 //Always update Discount Global
-                _discountGlobal = (customer != null && customer.Discount > 0) ? customer.Discount : 0;
-                _entryBoxCustomerDiscount.EntryValidation.Text = SharedUtils.DecimalToString(_discountGlobal);
+                DiscountGlobal = (customer != null && customer.Discount > 0) ? customer.Discount : 0;
+                _entryBoxCustomerDiscount.EntryValidation.Text = SharedUtils.DecimalToString(DiscountGlobal);
 
                 //Always Validate All Fields
                 //EntryBox
@@ -916,7 +915,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         //Update Address And FiscalNumber Require Fields
         private void UpdateCustomerAddressAndFiscalNumberRequireFields()
         {
-            bool isFinalConsumerEntity = (_selectedCustomer != null && _selectedCustomer.Oid == SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity);
+            bool isFinalConsumerEntity = (Customer != null && Customer.Oid == SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity);
             bool isSingularEntity = (
                 isFinalConsumerEntity ||
                 _entryBoxSelectCustomerFiscalNumber.EntryValidation.Validated &&
@@ -975,13 +974,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         private void UpdateChangeValue()
         {
-            if (_selectedPaymentMethod != null && _selectedPaymentMethod.Token == "MONEY")
+            if (PaymentMethod != null && PaymentMethod.Token == "MONEY")
             {
                 int decimalRoundTo = SharedSettings.DecimalRoundTo;
                 //If Has a _articleBagPartialPayment Defined use its Total else use _articleBagFullPayment TotalFinal
-                decimal _totalOrder = (_articleBagPartialPayment == null) ? _articleBagFullPayment.TotalFinal : _articleBagPartialPayment.TotalFinal;
-                _totalChange = Math.Round(_totalDelivery, decimalRoundTo) - Math.Round(_totalOrder, decimalRoundTo);
-                if (_labelChangeValue.Text != SharedUtils.DecimalToStringCurrency(_totalChange)) _labelChangeValue.Text = SharedUtils.DecimalToStringCurrency(_totalChange);
+                decimal _totalOrder = (ArticleBagPartialPayment == null) ? ArticleBagFullPayment.TotalFinal : ArticleBagPartialPayment.TotalFinal;
+                TotalChange = Math.Round(TotalDelivery, decimalRoundTo) - Math.Round(_totalOrder, decimalRoundTo);
+                if (_labelChangeValue.Text != SharedUtils.DecimalToStringCurrency(TotalChange)) _labelChangeValue.Text = SharedUtils.DecimalToStringCurrency(TotalChange);
             }
         }
 
@@ -998,7 +997,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             TouchButtonIconWithText buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
             
             //Pagamentos parciais -Escolher valor a pagar por artigo[TK: 019295]
-            TouchButtonIconWithText touchButtonChangePrice = new TouchButtonIconWithText("touchButtonChangePrice", Color.Transparent, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_price"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, buttonIconChangePrice, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height);
+            TouchButtonIconWithText touchButtonChangePrice = new TouchButtonIconWithText("touchButtonChangePrice", Color.Transparent, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_price"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, buttonIconChangePrice, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height);
             buttonOk.Sensitive = false;
 
             //ActionArea Buttons
@@ -1025,7 +1024,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
               new PosSelectRecordDialog<DataTable, DataRow, TreeViewPartialPayment>(
                 this,
                 DialogFlags.DestroyWithParent,
-                resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_partial_payment"),
+                resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_partial_payment"),
                 //TODO:THEME
                 GlobalApp.MaxWindowSize,
                 //new Guid(), //use this to test pDefaultValue 
@@ -1063,7 +1062,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     bool itemChecked = (bool)_dialogPartialPayment.GenericTreeView.DataSourceRow.ItemArray[indexColumnCheckBox];
                     decimal currentRowPrice = (decimal)_dialogPartialPayment.GenericTreeView.DataSourceRow.ItemArray[indexColumnPriceFinal];
                     _totalPartialPaymentItems += (itemChecked) ? currentRowPrice : -currentRowPrice;
-                    _dialogPartialPayment.WindowTitle = (_totalPartialPaymentItems > 0) ? string.Format("{0} : {1}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_partial_payment"), SharedUtils.DecimalToStringCurrency(_totalPartialPaymentItems)) : resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_partial_payment");
+                    _dialogPartialPayment.WindowTitle = (_totalPartialPaymentItems > 0) ? string.Format("{0} : {1}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_partial_payment"), SharedUtils.DecimalToStringCurrency(_totalPartialPaymentItems)) : resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_partial_payment");
                 }
             };
 
@@ -1096,28 +1095,28 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     else if (dialog.GenericTreeViewMode == GenericTreeViewMode.CheckBox)
                     {
                         //Init Global ArticleBag
-                        _articleBagPartialPayment = new ArticleBag();
+                        ArticleBagPartialPayment = new ArticleBag();
                         //Fill articleBagPartialPayment with checked items
                         //Required to use ListStoreModel and not ListStoreModelFilterSort, we only loop the visible filtered rows, and not The hidden Checked Rows
                         dialog.GenericTreeView.ListStoreModel.Foreach(new TreeModelForeachFunc(TreeModelForEachTask));
                         //Process ArticleBag
-                        ProcessPartialPayment(_articleBagPartialPayment);
+                        ProcessPartialPayment(ArticleBagPartialPayment);
                     }
                 }
                 //Pagamentos parciais - Escolher valor a pagar por artigo [TK:019295]
                 if (args.ResponseId == ResponseType.Apply)
                 {
                     //Init Global ArticleBag
-                    if(_articleBagPartialPayment == null)
+                    if(ArticleBagPartialPayment == null)
                     {
-                        _articleBagPartialPayment = new ArticleBag();
+                        ArticleBagPartialPayment = new ArticleBag();
                     }
 
                     dialog.GenericTreeView.ListStoreModel.Foreach(new TreeModelForeachFunc(TreeModelForEachTaskDivide));
 
                     if(newValuePrice > 0)
                     {
-                        ProcessPartialPayment(_articleBagPartialPayment, false);
+                        ProcessPartialPayment(ArticleBagPartialPayment, false);
                     }
                     //dialog.Run();
                 }
@@ -1171,7 +1170,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     if (token1 != string.Empty) articleBagProps.Token1 = token1;
                     if (token2 != string.Empty) articleBagProps.Token2 = token2;
                     //Send to Bag
-                    _articleBagPartialPayment.Add(articleBagKey, articleBagProps);
+                    ArticleBagPartialPayment.Add(articleBagKey, articleBagProps);
                 }
             }
             catch (Exception ex)
@@ -1201,7 +1200,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     decimal priceFinal = decimal.Round((decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("PriceFinal")], 2);
                     string priceFinalText = SharedUtils.DecimalToStringCurrency(priceFinal);
 
-                    string moneyPadTitle = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_moneypad_product_price") + " :: " + (string)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Designation")] + " :: " +
+                    string moneyPadTitle = string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_moneypad_product_price") + " :: " + (string)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Designation")] + " :: " +
                         priceFinalText); 
 
 
@@ -1258,7 +1257,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             if (token2 != string.Empty) articleBagProps.Token2 = token2;
 
                             //Send to Bag
-                            _articleBagPartialPayment.Add(articleBagKey, articleBagProps);
+                            ArticleBagPartialPayment.Add(articleBagKey, articleBagProps);
 
                         }
                     }
@@ -1295,23 +1294,23 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Shared: Update Total Delivery and TotalChange 
             if (pResetPaymentMethodButton) 
             {
-                _totalDelivery = 0;
-                _totalChange = 0;
+                TotalDelivery = 0;
+                TotalChange = 0;
             }
             //Discount
-            _discountGlobal = SharedUtils.StringToDecimal(_entryBoxCustomerDiscount.EntryValidation.Text);
+            DiscountGlobal = SharedUtils.StringToDecimal(_entryBoxCustomerDiscount.EntryValidation.Text);
 
             //PartialPayment
             if (_partialPaymentEnabled)
             {
                 //Update Discount
-                _articleBagPartialPayment.DiscountGlobal = _discountGlobal;
+                ArticleBagPartialPayment.DiscountGlobal = DiscountGlobal;
                 //Update Totals after Change Discount
-                _articleBagPartialPayment.UpdateTotals();
+                ArticleBagPartialPayment.UpdateTotals();
                 //Update UI
-                _labelTotalValue.Text = SharedUtils.DecimalToStringCurrency(_articleBagPartialPayment.TotalFinal);
-                _labelDeliveryValue.Text = SharedUtils.DecimalToStringCurrency(_totalDelivery);
-                _labelChangeValue.Text = SharedUtils.DecimalToStringCurrency(_totalChange);
+                _labelTotalValue.Text = SharedUtils.DecimalToStringCurrency(ArticleBagPartialPayment.TotalFinal);
+                _labelDeliveryValue.Text = SharedUtils.DecimalToStringCurrency(TotalDelivery);
+                _labelChangeValue.Text = SharedUtils.DecimalToStringCurrency(TotalChange);
                 //Update UI Buttons
                 _buttonFullPayment.Sensitive = true;
                 _buttonPartialPayment.Sensitive = false;
@@ -1320,13 +1319,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             else
             {
                 //Update Discount
-                _articleBagFullPayment.DiscountGlobal = _discountGlobal;
+                ArticleBagFullPayment.DiscountGlobal = DiscountGlobal;
                 //Update Totals after Change Discount
-                _articleBagFullPayment.UpdateTotals();
+                ArticleBagFullPayment.UpdateTotals();
                 //Update UI to Default From OrderMain
-                _labelTotalValue.Text = SharedUtils.DecimalToStringCurrency(_articleBagFullPayment.TotalFinal);
-                _labelDeliveryValue.Text = SharedUtils.DecimalToStringCurrency(_totalDelivery);
-                _labelChangeValue.Text = SharedUtils.DecimalToStringCurrency(_totalChange);
+                _labelTotalValue.Text = SharedUtils.DecimalToStringCurrency(ArticleBagFullPayment.TotalFinal);
+                _labelDeliveryValue.Text = SharedUtils.DecimalToStringCurrency(TotalDelivery);
+                _labelChangeValue.Text = SharedUtils.DecimalToStringCurrency(TotalChange);
                 //Update UI Buttons
                 if (_buttonFullPayment != null) _buttonFullPayment.Sensitive = false;
                 if (_buttonPartialPayment != null) _buttonPartialPayment.Sensitive = true;
@@ -1335,8 +1334,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Shared: Disable Payment Method if it is Assigned
             if (pResetPaymentMethodButton)
             {
-                if (_selectedPaymentMethodButton != null && !_selectedPaymentMethodButton.Sensitive) _selectedPaymentMethodButton.Sensitive = true;
-                if (_selectedPaymentMethod != null) _selectedPaymentMethod = null;
+                if (SelectedPaymentMethodButton != null && !SelectedPaymentMethodButton.Sensitive) SelectedPaymentMethodButton.Sensitive = true;
+                if (PaymentMethod != null) PaymentMethod = null;
             }
 
             Validate();

@@ -49,12 +49,8 @@ namespace PCComm
 
         #region Manager Variables
         //property variables
-        private string _baudRate = string.Empty;
-        private string _parity = string.Empty;
-        private string _stopBits = string.Empty;
-        private string _dataBits = string.Empty;
         private string _portName = string.Empty;
-        private TransmissionType _transType;
+
         //private RichTextBox _displayWindow;
         //global manager variables
         private readonly Color[] MessageColor = { Color.Blue, Color.Green, Color.Black, Color.Orange, Color.Red };
@@ -66,41 +62,25 @@ namespace PCComm
         /// Property to hold the BaudRate
         /// of our manager class
         /// </summary>
-        public string BaudRate
-        {
-            get { return _baudRate; }
-            set { _baudRate = value; }
-        }
+        public string BaudRate { get; set; } = string.Empty;
 
         /// <summary>
         /// property to hold the Parity
         /// of our manager class
         /// </summary>
-        public string Parity
-        {
-            get { return _parity; }
-            set { _parity = value; }
-        }
+        public string Parity { get; set; } = string.Empty;
 
         /// <summary>
         /// property to hold the StopBits
         /// of our manager class
         /// </summary>
-        public string StopBits
-        {
-            get { return _stopBits; }
-            set { _stopBits = value; }
-        }
+        public string StopBits { get; set; } = string.Empty;
 
         /// <summary>
         /// property to hold the DataBits
         /// of our manager class
         /// </summary>
-        public string DataBits
-        {
-            get { return _dataBits; }
-            set { _dataBits = value; }
-        }
+        public string DataBits { get; set; } = string.Empty;
 
         /// <summary>
         /// property to hold the PortName
@@ -116,11 +96,7 @@ namespace PCComm
         /// property to hold our TransmissionType
         /// of our manager class
         /// </summary>
-        public TransmissionType CurrentTransmissionType
-        {
-            get { return _transType; }
-            set { _transType = value; }
-        }
+        public TransmissionType CurrentTransmissionType { get; set; }
 
         /// <summary>
         /// property to hold our display window
@@ -144,10 +120,10 @@ namespace PCComm
         /// <param name="portName">Desired PortName</param>
         public CommunicationManager(string baudRate, string parity, string stopBits, string dataBits, string portName)
         {
-            _baudRate = baudRate;
-            _parity = parity;
-            _stopBits = stopBits;
-            _dataBits = dataBits;
+            BaudRate = baudRate;
+            Parity = parity;
+            StopBits = stopBits;
+            DataBits = dataBits;
             _portName = portName;
             // Removed we must handle event outside of this class, to receive data in context
             //now add an event handler
@@ -160,10 +136,10 @@ namespace PCComm
         /// </summary>
         public CommunicationManager()
         {
-            _baudRate = string.Empty;
-            _parity = string.Empty;
-            _stopBits = string.Empty;
-            _dataBits = string.Empty;
+            BaudRate = string.Empty;
+            Parity = string.Empty;
+            StopBits = string.Empty;
+            DataBits = string.Empty;
             _portName = "COM6";
             //_displayWindow = null;
             //add event handler
@@ -303,10 +279,10 @@ namespace PCComm
                 if (comPort.IsOpen == true) comPort.Close();
 
                 //set the properties of our SerialPort Object
-                comPort.BaudRate = int.Parse(_baudRate);    //BaudRate
-                comPort.DataBits = int.Parse(_dataBits);    //DataBits
-                comPort.StopBits = (StopBits)Enum.Parse(typeof(StopBits), _stopBits);    //StopBits
-                comPort.Parity = (Parity)Enum.Parse(typeof(Parity), _parity);    //Parity
+                comPort.BaudRate = int.Parse(BaudRate);    //BaudRate
+                comPort.DataBits = int.Parse(DataBits);    //DataBits
+                comPort.StopBits = (StopBits)Enum.Parse(typeof(StopBits), StopBits);    //StopBits
+                comPort.Parity = (Parity)Enum.Parse(typeof(Parity), Parity);    //Parity
                 comPort.PortName = _portName;   //PortName
                 //now open the port
                 comPort.Open();

@@ -1,6 +1,5 @@
 ﻿using DevExpress.Xpo.DB;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial.library.App;
 using logicpos.shared.App;
 using System;
 using System.Collections;
@@ -21,12 +20,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs
         //Used to Store if Object Has Attributes Defined or Not
         private readonly bool _objectHaveAttributes;
 
-        private List<T> _list = new List<T>();
-        public List<T> List
-        {
-            get { return _list; }
-            set { _list = value; }
-        }
+        public List<T> List { get; set; } = new List<T>();
 
         //Constructors
         public FRBOGenericCollection() : this("", "", "", "", 0,"") { }
@@ -196,23 +190,23 @@ namespace logicpos.financial.library.Classes.Reports.BOs
 
         public void Add(T pObject)
         {
-            _list.Add(pObject);
+            List.Add(pObject);
         }
 
         public T Get(int pIndex)
         {
-            return _list[pIndex];
+            return List[pIndex];
         }
 
         //Foreach Support
         IEnumerator<T> IEnumerable<T>.GetEnumerator()
         {
-            return _list.GetEnumerator();
+            return List.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return _list.GetEnumerator();
+            return List.GetEnumerator();
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

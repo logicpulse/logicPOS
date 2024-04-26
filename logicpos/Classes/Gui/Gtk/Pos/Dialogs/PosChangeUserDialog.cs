@@ -1,13 +1,9 @@
 ﻿using System;
 using Gtk;
 using System.Drawing;
-using logicpos.financial;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.App;
-using logicpos.resources.Resources.Localization;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.shared;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.datalayer.App;
 using logicpos.shared.App;
@@ -31,19 +27,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         //TouchButtonIconWithText _buttonOk;
         private readonly TouchButtonIconWithText _buttonCancel;
-        //Public Properties
-        private sys_userdetail _selectedUserDetail;
-        public sys_userdetail UserDetail
-        {
-            get { return _selectedUserDetail; }
-            set { _selectedUserDetail = value; }
-        }
+
+        public sys_userdetail UserDetail { get; set; }
 
         public PosChangeUserDialog(Window pSourceWindow, DialogFlags pDialogFlags)
             : base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
-            string windowTitle = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_change_user");
+            string windowTitle = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_change_user");
             Size windowSize = new Size(559, 562);
             string fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_users.png");
 
@@ -116,13 +107,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Assign CurrentId to TablePad.CurrentId, to Know last Clicked Button Id
             _tablePadUsers.SelectedButtonOid = button.CurrentButtonOid;
             //To be Used in Dialog Result
-            _selectedUserDetail = (sys_userdetail)DataLayerUtils.GetXPGuidObject(typeof(sys_userdetail), button.CurrentButtonOid);
+            UserDetail = (sys_userdetail)DataLayerUtils.GetXPGuidObject(typeof(sys_userdetail), button.CurrentButtonOid);
 
-            if (_selectedUserDetail.PasswordReset)
+            if (UserDetail.PasswordReset)
             {
                 //_logger.Debug(string.Format("Name: [{0}], PasswordReset: [{1}]", _selectedUserDetail.Name, _selectedUserDetail.PasswordReset));
-                logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_information"),
-                    string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_user_request_change_password"), _selectedUserDetail.Name, DataLayerSettings.DefaultValueUserDetailAccessPin)
+                logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_information"),
+                    string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_user_request_change_password"), UserDetail.Name, DataLayerSettings.DefaultValueUserDetailAccessPin)
                 );
             }
 

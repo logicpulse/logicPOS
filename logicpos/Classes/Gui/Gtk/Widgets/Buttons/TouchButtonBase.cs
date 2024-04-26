@@ -12,13 +12,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
 
         //Protected Fields
         protected EventBox _eventboxBackgroundColor;
-        //Public Properties
-        private string _token;
-        public string Token
-        {
-            get { return _token; }
-            set { _token = value; }
-        }
+
+        public string Token { get; set; }
         private Guid _currentButtonOid;
         public Guid CurrentButtonOid
         {

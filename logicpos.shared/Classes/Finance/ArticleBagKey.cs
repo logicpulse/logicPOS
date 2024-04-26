@@ -12,33 +12,13 @@ namespace logicpos.shared.Classes.Finance
             set { _articleOid = value; }
         }
 
-        private string _designation;
-        public string Designation
-        {
-            get { return _designation; }
-            set { _designation = value; }
-        }
+        public string Designation { get; set; }
 
-        private decimal _price;
-        public decimal Price
-        {
-            get { return _price; }
-            set { _price = value; }
-        }
+        public decimal Price { get; set; }
 
-        private decimal _discount;
-        public decimal Discount
-        {
-            get { return _discount; }
-            set { _discount = value; }
-        }
+        public decimal Discount { get; set; }
 
-        private decimal _vat;
-        public decimal Vat
-        {
-            get { return _vat; }
-            set { _vat = value; }
-        }
+        public decimal Vat { get; set; }
 
         private Guid _vatExemptionReasonOid;
         public Guid VatExemptionReasonOid
@@ -55,10 +35,10 @@ namespace logicpos.shared.Classes.Finance
         public ArticleBagKey(Guid pArticleOid, string pDesignation, decimal pPrice, decimal pDiscount, decimal pVat, Guid pVatExemptionReasonOid)
         {
             _articleOid = pArticleOid;
-            _designation = pDesignation;
-            _price = pPrice;
-            _discount = pDiscount;
-            _vat = pVat;
+            Designation = pDesignation;
+            Price = pPrice;
+            Discount = pDiscount;
+            Vat = pVat;
             _vatExemptionReasonOid = pVatExemptionReasonOid;
         }
 
@@ -68,17 +48,17 @@ namespace logicpos.shared.Classes.Finance
             bool IEqualityComparer<ArticleBagKey>.Equals(ArticleBagKey x, ArticleBagKey y)
             {
                 return x._articleOid == y._articleOid
-                  && x._designation == y._designation
-                  && x._price == y._price
-                  && x._discount == y._discount
-                  && x._vat == y._vat
+                  && x.Designation == y.Designation
+                  && x.Price == y.Price
+                  && x.Discount == y.Discount
+                  && x.Vat == y.Vat
                   && x._vatExemptionReasonOid == y._vatExemptionReasonOid
                 ;
             }
 
             int IEqualityComparer<ArticleBagKey>.GetHashCode(ArticleBagKey obj)
             {
-                int hashCode = string.Format("{0}{1}{2}{3}{4}{5}", obj._articleOid, obj._designation, obj._price, obj._discount, obj._vat, obj._vatExemptionReasonOid).GetHashCode();
+                int hashCode = string.Format("{0}{1}{2}{3}{4}{5}", obj._articleOid, obj.Designation, obj.Price, obj.Discount, obj.Vat, obj._vatExemptionReasonOid).GetHashCode();
                 return hashCode;
             }
         }

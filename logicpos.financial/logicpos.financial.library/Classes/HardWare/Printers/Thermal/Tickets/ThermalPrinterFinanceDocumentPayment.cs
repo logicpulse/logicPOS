@@ -1,11 +1,9 @@
 ﻿using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial.library.App;
 using logicpos.financial.library.Classes.Finance;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Enums;
 using logicpos.financial.library.Classes.Reports.BOs;
 using logicpos.financial.library.Classes.Reports.BOs.Documents;
-using logicpos.resources.Resources.Localization;
 using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
@@ -87,10 +85,10 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             {
                 List<TicketColumn> columns = new List<TicketColumn>
                 {
-                    new TicketColumn("DocumentDate", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date"), 11, TicketColumnsAlign.Left),
-                    new TicketColumn("DocumentNumber", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_document_number_acronym"), 0, TicketColumnsAlign.Left),
-                    new TicketColumn("DocumentTotal", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_document_total"), 10, TicketColumnsAlign.Right, typeof(decimal), "{0:00.00}"),
-                    new TicketColumn("TotalPayed", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_payed_acronym"), 10, TicketColumnsAlign.Right, typeof(decimal), "{0:00.00}"),
+                    new TicketColumn("DocumentDate", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date"), 11, TicketColumnsAlign.Left),
+                    new TicketColumn("DocumentNumber", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_document_number_acronym"), 0, TicketColumnsAlign.Left),
+                    new TicketColumn("DocumentTotal", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_document_total"), 10, TicketColumnsAlign.Right, typeof(decimal), "{0:00.00}"),
+                    new TicketColumn("TotalPayed", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_payed_acronym"), 10, TicketColumnsAlign.Right, typeof(decimal), "{0:00.00}"),
                     new TicketColumn("Payed", "L", 1, TicketColumnsAlign.Right, typeof(bool))
                 };
                 //Prepare Table with Padding
@@ -165,7 +163,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 
                 //Add Row : TotalFinal
                 dataRow = dataTable.NewRow();
-                dataRow[0] = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total");
+                dataRow[0] = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total");
                 dataRow[1] = SharedUtils.DecimalToString(_documentFinancePaymentList[0].PaymentAmount * _documentFinancePaymentList[0].ExchangeRate);
                 dataTable.Rows.Add(dataRow);
 
@@ -204,7 +202,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 }
 
                 //ExtendedValue
-                _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_extended_label"), WriteLineTextMode.Bold);
+                _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_extended_label"), WriteLineTextMode.Bold);
                 _thermalPrinterGeneric.WriteLine(extended);
 
                 //Line Feed

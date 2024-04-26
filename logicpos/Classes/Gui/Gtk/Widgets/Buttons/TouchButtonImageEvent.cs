@@ -1,5 +1,4 @@
 ﻿using Gtk;
-using System;
 using System.IO;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons

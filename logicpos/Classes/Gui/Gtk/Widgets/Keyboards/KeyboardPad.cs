@@ -4,7 +4,6 @@ using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.datalayer.App;
 using logicpos.Extensions;
-using logicpos.resources.Resources.Localization;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -20,18 +19,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         //Public Properties
         public PosKeyboardDialog ParentDialog { get; set; }
-        private KeyboardMode _activeKeyboardMode = KeyboardMode.AlfaNumeric;
-        public KeyboardMode KeyboardMode
-        {
-            get { return _activeKeyboardMode; }
-            set { _activeKeyboardMode = value; }
-        }
-        private EntryValidation _textEntry;
-        public EntryValidation TextEntry
-        {
-            get { return _textEntry; }
-            set { _textEntry = value; }
-        }
+        public KeyboardMode KeyboardMode { get; set; } = KeyboardMode.AlfaNumeric;
+
+        public EntryValidation TextEntry { get; set; }
 
         //Private Members
         private readonly string _fontKeyboardPadTextEntry = DataLayerFramework.Settings["fontKeyboardPadTextEntry"];
@@ -119,13 +109,13 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             hboxResultReyboard.PackStart(_vboxNumPadRows, false, false, 0);
             //Init _textEntry
             Pango.FontDescription fontDescriptiontextEntry = Pango.FontDescription.FromString(_fontKeyboardPadTextEntry);
-            _textEntry = new EntryValidation();
-            _textEntry.ModifyFont(fontDescriptiontextEntry);
+            TextEntry = new EntryValidation();
+            TextEntry.ModifyFont(fontDescriptiontextEntry);
             //Change Selected Text, when looses entry focus
-            _textEntry.ModifyBase(StateType.Active, Color.Gray.ToGdkColor());
+            TextEntry.ModifyBase(StateType.Active, Color.Gray.ToGdkColor());
             //Final Pack KeyBoard + TextEntry
             VBox vboxResult = new VBox(false, _spacing);
-            vboxResult.PackStart(_textEntry);
+            vboxResult.PackStart(TextEntry);
             vboxResult.PackStart(hboxResultReyboard);
 
             //Events
@@ -140,13 +130,13 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             if (args.Event.Key.ToString().Equals("Return"))
             {
                 //KeyboardKey vKey = (KeyboardKey)args.Event.Key;
-                if (_textEntry.Validated)
+                if (TextEntry.Validated)
                 {
                     ParentDialog.Respond(ResponseType.Ok);
                 }
                 else
                 {
-                    logicpos.Utils.ShowMessageTouch(ParentDialog, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_field_validation_error_keyboardpad"));
+                    logicpos.Utils.ShowMessageTouch(ParentDialog, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_field_validation_error_keyboardpad"));
                 }
             }
         }
@@ -274,7 +264,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //Update Keyboard Mode Default, Alfa, Numeric
         private void UpdateKeyboardMode()
         {
-            switch (_activeKeyboardMode)
+            switch (KeyboardMode)
             {
                 case KeyboardMode.Alfa:
                     if (ParentDialog != null) ParentDialog.WidthRequest -= _vboxNumPadRows.Allocation.Width + _spacing;
@@ -288,7 +278,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
             //Hide Numeric KeyPad if in 800x600
             //TODO:THEME
-            if (_activeKeyboardMode.Equals(KeyboardMode.AlfaNumeric) && GlobalApp.ScreenSize.Width == 800 && GlobalApp.ScreenSize.Height == 600)
+            if (KeyboardMode.Equals(KeyboardMode.AlfaNumeric) && GlobalApp.ScreenSize.Width == 800 && GlobalApp.ScreenSize.Height == 600)
             {
                 if (ParentDialog != null) ParentDialog.WidthRequest -= _vboxNumPadRows.Allocation.Width + _spacing;
                 _vboxNumPadRows.HideAll();
@@ -306,8 +296,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             string _stringChar;
 
             int selectionStart, selectionEnd;
-            _textEntry.GetSelectionBounds(out selectionStart, out selectionEnd);
-            if (selectionStart > 0 || selectionEnd > 0) _textEntry.DeleteSelection();
+            TextEntry.GetSelectionBounds(out selectionStart, out selectionEnd);
+            if (selectionStart > 0 || selectionEnd > 0) TextEntry.DeleteSelection();
 
             VirtualKeyProperties vKeyProperties;
             //Get Level and Assign Level Properties to current vKeyProperties
@@ -361,7 +351,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     break;
                 //Modal Confirm
                 case "enter":
-                    if (_textEntry.Validated)
+                    if (TextEntry.Validated)
                     {
                         // This Will Crash only in Debug, if Run Outside it Wont Crash (Simply disappear without log error)
                         try
@@ -375,12 +365,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     }
                     else
                     {
-                        logicpos.Utils.ShowMessageTouch(ParentDialog, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_field_validation_error_keyboardpad"));
+                        logicpos.Utils.ShowMessageTouch(ParentDialog, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_field_validation_error_keyboardpad"));
                     };
                     break;
                 //Show/Hide Number Lock
                 case "tab":
-                    if (_activeKeyboardMode == KeyboardMode.AlfaNumeric)
+                    if (KeyboardMode == KeyboardMode.AlfaNumeric)
                     {
                         if (_vboxNumPadRows.Visible)
                         {
@@ -399,15 +389,15 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     break;
                 //Delete
                 case "back":
-                    _textEntry.DeleteText(_textEntry.Position - 1, _textEntry.Position);
+                    TextEntry.DeleteText(TextEntry.Position - 1, TextEntry.Position);
                     break;
                 //Cursor Move to Start
                 case "home":
-                    _textEntry.Position = 0;
+                    TextEntry.Position = 0;
                     break;
                 //Cursor Move to End
                 case "end":
-                    _textEntry.Position = _textEntry.Text.Length;
+                    TextEntry.Position = TextEntry.Text.Length;
                     break;
                 //Does Nothing
                 case "up":
@@ -417,11 +407,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     break;
                 //Move Cursor to Left
                 case "left":
-                    if (_textEntry.Position > 0) _textEntry.Position -= 1;
+                    if (TextEntry.Position > 0) TextEntry.Position -= 1;
                     break;
                 //Move Cursor to Right
                 case "right":
-                    if (_textEntry.Position < _textEntry.Text.Length) _textEntry.Position += 1;
+                    if (TextEntry.Position < TextEntry.Text.Length) TextEntry.Position += 1;
                     break;
                 //All Other Keys
                 default:
@@ -450,15 +440,15 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                                 switch (Convert.ToString(_unicodeChar).ToUpper())
                                 {
                                     case "X":
-                                        _textEntry.CutClipboard();
+                                        TextEntry.CutClipboard();
                                         _skipInsert = true;
                                         break;
                                     case "C":
-                                        _textEntry.CopyClipboard();
+                                        TextEntry.CopyClipboard();
                                         _skipInsert = true;
                                         break;
                                     case "V":
-                                        _textEntry.PasteClipboard();
+                                        TextEntry.PasteClipboard();
                                         _skipInsert = true;
                                         break;
                                 }
@@ -474,7 +464,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     //_logger.Debug(string.Format("keyboardKey_Clicked(): L1.Glyph:[{1}] L1.UnicodeId:[{2}] L1.CharacterName:[{3}] unicodeChar[{4}]", vKey.Properties.Type, vKeyProperties.Glyph, vKeyProperties.UnicodeId, vKeyProperties.CharacterName, _unicodeChar));
 
                     //Add to TextEntry
-                    _tempCursorPosition = _textEntry.Position;
+                    _tempCursorPosition = TextEntry.Position;
 
                     if (!_skipInsert)
                     {
@@ -488,17 +478,17 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                             //Reset activeDiacritical
                             _activeDiacritical = null;
                         }
-                        _textEntry.InsertText(_stringChar, ref _tempCursorPosition);
-                        _textEntry.Text.Normalize();
+                        TextEntry.InsertText(_stringChar, ref _tempCursorPosition);
+                        TextEntry.Text.Normalize();
                     };
-                    _textEntry.Position = _tempCursorPosition;
+                    TextEntry.Position = _tempCursorPosition;
                     break;
             }
 
             //HACK: to Activate TextEntry and place Cursor
-            _tempCursorPosition = _textEntry.Position;
-            _textEntry.GrabFocus();
-            _textEntry.Position = _tempCursorPosition;
+            _tempCursorPosition = TextEntry.Position;
+            TextEntry.GrabFocus();
+            TextEntry.Position = _tempCursorPosition;
 
             //Update Keyboard if ModifierKey has Changed
             if (_requireUpdate) UpdateKeyboard();

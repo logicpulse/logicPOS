@@ -6,11 +6,9 @@ using logicpos.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.Classes.Formatters;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
-using logicpos.resources.Resources.Localization;
 using System;
 using System.Collections.Generic;
 using logicpos.Classes.Enums.GenericTreeView;
-using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.datalayer.App;
 using logicpos.shared.App;
 
@@ -21,10 +19,12 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         //Public Parametless Constructor Required by Generics
         public TreeViewDocumentFinanceMaster() { }
 
+        [Obsolete]
         public TreeViewDocumentFinanceMaster(Window pSourceWindow)
             : this(pSourceWindow, null, null, null) { }
 
         //XpoMode
+        [Obsolete]
         public TreeViewDocumentFinanceMaster(Window pSourceWindow, XPGuidObject pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default)
         {
             //Init Vars
@@ -40,27 +40,27 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
             {
-                new GenericTreeViewColumnProperty("Date") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_document_date"), MinWidth = 140 },
-                new GenericTreeViewColumnProperty("DocumentNumber") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_document_number"), MinWidth = 120 }, /* IN009067 */
+                new GenericTreeViewColumnProperty("Date") { Title = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_document_date"), MinWidth = 140 },
+                new GenericTreeViewColumnProperty("DocumentNumber") { Title = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_document_number"), MinWidth = 120 }, /* IN009067 */
                 //#if (DEBUG)
-                new GenericTreeViewColumnProperty("DocumentStatusStatus") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_document_status"), MinWidth = 50, MaxWidth = 50 },
+                new GenericTreeViewColumnProperty("DocumentStatusStatus") { Title = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_document_status"), MinWidth = 50, MaxWidth = 50 },
                 //#endif
                 new GenericTreeViewColumnProperty("EntityName")
                 {
-                    Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_entity"),
+                    Title = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_entity"),
                     MinWidth = 260,
                     MaxWidth = 260,
                     FormatProvider = new FormatterDecrypt() /* IN009075 - FormatterDecrypt() created */
                 }, /* IN009067 */
                 new GenericTreeViewColumnProperty("EntityFiscalNumber")
                 {
-                    Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_fiscal_number"),
+                    Title = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_fiscal_number"),
                     MinWidth = 100,
                     FormatProvider = new FormatterDecrypt() /* IN009075 - FormatterDecrypt() created */
                 }, /* IN009067 */
                 new GenericTreeViewColumnProperty("TotalFinal")
                 { /* IN009166 */
-                    Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_final"),
+                    Title = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_final"),
                     MinWidth = 100,
                     //Alignment = 1.0F,
                     FormatProvider = new FormatterDecimalCurrency(),
@@ -119,7 +119,7 @@ GROUP BY
             columnProperties.Add(new GenericTreeViewColumnProperty("TotalOfCredit")
             {
                 Query = queryForTotalOfCredit,
-                Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_column_total_credit_rc_nc_based"),
+                Title = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_column_total_credit_rc_nc_based"),
                 MinWidth = 100,
                 //Alignment = 1.0F,
                 FormatProvider = new FormatterDecimalCurrency(),
@@ -264,7 +264,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
             {
                 //This Query Exists 3 Locations, Find it and change in all Locations - Required "GROUP BY fmaOid,fmaTotalFinal" to work with SQLServer
                 Query = queryForTotalDebit,
-                Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_debit"),
+                Title = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_debit"),
                 MinWidth = 100,
                 //Alignment = 1.0F,
                 FormatProvider = new FormatterDecimalCurrency(),
@@ -282,7 +282,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
             columnProperties.Add(new GenericTreeViewColumnProperty("RelatedDocuments")
             {
                 Query = relatedDocumentsQuery,
-                Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_column_related_doc"),
+                Title = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_column_related_doc"),
                 MinWidth = 100
             });
 

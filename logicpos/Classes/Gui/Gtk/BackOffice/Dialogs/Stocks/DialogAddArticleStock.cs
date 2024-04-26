@@ -29,8 +29,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
     {
         //UI Components Dialog
         private VBox _vbox;
-        private readonly TouchButtonIconWithText _buttonOk;
-        private readonly TouchButtonIconWithText _buttonCancel;
         //UI Components Form
         private XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer> _entryBoxSelectSupplier;
         private EntryBoxValidationDatePickerDialog _entryBoxDocumentDate;
@@ -45,8 +43,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private readonly string _initialDocumentNumber;
         //MultiArticles
         private ICollection<VBox> _articleEntryWidgetCollection;
-        //private ICollection<fin_article> _articleCollection;
-        private Dictionary<fin_article, Tuple<decimal, Dictionary<EntryValidation, List<fin_articleserialnumber>>, decimal, fin_warehouselocation>> _articleCollection;
         public ICollection _dropdownTextCollection;
         private XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle> _entryBoxSelectArticle1;
         private EntryBoxValidation _entryBoxSerialNumber1;
@@ -76,10 +72,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         }
         public fin_article Article;
 
-        public Dictionary<fin_article, Tuple<decimal, Dictionary<EntryValidation, List<fin_articleserialnumber>>, decimal, fin_warehouselocation>> ArticleCollection
-        {
-            get { return _articleCollection; }
-        }
+        public Dictionary<fin_article, Tuple<decimal, Dictionary<EntryValidation, List<fin_articleserialnumber>>, decimal, fin_warehouselocation>> ArticleCollection { get; private set; }
         public decimal Quantity;
 
         public byte[] AttachedFile;
@@ -93,7 +86,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pTreeView, DialogFlags.Modal, pDialogMode, pXPGuidObject)
         {
             //Init Local Vars
-            string windowTitle = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_article_stock");
+            string windowTitle = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_article_stock");
 
             this.Title = windowTitle;
 
@@ -123,10 +116,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _vbox.ModifyBase(StateType.Normal, Color.White.ToGdkColor());
                 _articleEntryWidgetCollection = new List<VBox>();
                 //_articleCollection = new List<fin_article>();
-                _articleCollection = new Dictionary<fin_article, Tuple<decimal, Dictionary<EntryValidation, List<fin_articleserialnumber>>, decimal, fin_warehouselocation>>();
+                ArticleCollection = new Dictionary<fin_article, Tuple<decimal, Dictionary<EntryValidation, List<fin_articleserialnumber>>, decimal, fin_warehouselocation>>();
                 //Supplier
                 CriteriaOperator criteriaOperatorSupplier = CriteriaOperator.Parse("(Supplier = 1)");
-                _entryBoxSelectSupplier = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_supplier"), "Name", "Oid", _initialSupplier, criteriaOperatorSupplier, SharedSettings.RegexGuid, true, true);
+                _entryBoxSelectSupplier = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_supplier"), "Name", "Oid", _initialSupplier, criteriaOperatorSupplier, SharedSettings.RegexGuid, true, true);
                 _entryBoxSelectSupplier.EntryValidation.IsEditable = true;
                 _entryBoxSelectSupplier.EntryValidation.Completion.PopupCompletion = true;
                 _entryBoxSelectSupplier.EntryValidation.Completion.InlineCompletion = false;
@@ -135,7 +128,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _entryBoxSelectSupplier.EntryValidation.Changed += delegate { ValidateDialog(); };
 
                 //DocumentDate
-                _entryBoxDocumentDate = new EntryBoxValidationDatePickerDialog(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date"), _initialDocumentDate, SharedSettings.RegexDate, true, SharedSettings.DateFormat, true);
+                _entryBoxDocumentDate = new EntryBoxValidationDatePickerDialog(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date"), _initialDocumentDate, SharedSettings.RegexDate, true, SharedSettings.DateFormat, true);
                 //_entryBoxDocumentDate.EntryValidation.Sensitive = true;
                 _entryBoxDocumentDate.EntryValidation.Text = _initialDocumentDate.ToString(SharedSettings.DateFormat);
                 _entryBoxDocumentDate.EntryValidation.Validate();
@@ -146,7 +139,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 Color colorBaseDialogEntryBoxBackground = DataLayerFramework.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
                 string _fileIconListFinanceDocuments = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_toolbar_finance_document.png");
                 HBox hBoxDocument = new HBox(false, 0);
-                _entryBoxDocumentNumber = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_document_number"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericExtended, false, true);
+                _entryBoxDocumentNumber = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_document_number"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericExtended, false, true);
                 if (_initialDocumentNumber != string.Empty) _entryBoxDocumentNumber.EntryValidation.Text = _initialDocumentNumber;
                 _entryBoxDocumentNumber.EntryValidation.Changed += delegate { ValidateDialog(); };
                 TouchButtonIcon attachPDFButton = new TouchButtonIcon("attachPDFButton", colorBaseDialogEntryBoxBackground, _fileIconListFinanceDocuments, new Size(20, 20), 30, 30);
@@ -170,11 +163,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _viewport.ModifyBg(StateType.Normal, Color.White.ToGdkColor());
                 _totalCompositeEntrys++;
                 CriteriaOperator criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Class = '{0}')", DataLayerSettings.XpoOidArticleDefaultClass));
-                _entryBoxSelectArticle1 = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article"), "Designation", "Oid", null, criteriaOperatorSelectArticle, KeyboardMode.None, SharedSettings.RegexAlfaNumericExtended, true, true, SharedSettings.RegexAlfaNumericArticleCode, SharedSettings.RegexDecimalPositiveAndNegative, _totalCompositeEntrys);
+                _entryBoxSelectArticle1 = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article"), "Designation", "Oid", null, criteriaOperatorSelectArticle, KeyboardMode.None, SharedSettings.RegexAlfaNumericExtended, true, true, SharedSettings.RegexAlfaNumericArticleCode, SharedSettings.RegexDecimalPositiveAndNegative, _totalCompositeEntrys);
 
                 //SerialNumber
                 HBox hBoxSerialNumber = new HBox(false, 0);
-                _entryBoxSerialNumber1 = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_serial_number"), KeyboardMode.None, SharedSettings.RegexAlfaNumericExtended, false, true);
+                _entryBoxSerialNumber1 = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_serial_number"), KeyboardMode.None, SharedSettings.RegexAlfaNumericExtended, false, true);
                 _entryBoxSerialNumber1.EntryValidation.Changed += EntrySerialNumberValidation_Changed;
                 _entryBoxSerialNumber1.EntryValidation.FocusGrabbed += EntryValidation_FocusGrabbed;
                 _entryBoxSerialNumber1.Sensitive = true;
@@ -182,7 +175,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
 
                 //Price
-                _entryBoxPrice1 = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_price"), KeyboardMode.None, SharedSettings.RegexDecimalGreaterEqualThanZeroFinancial, false, true);
+                _entryBoxPrice1 = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_price"), KeyboardMode.None, SharedSettings.RegexDecimalGreaterEqualThanZeroFinancial, false, true);
                 _entryBoxPrice1.EntryValidation.TooltipText = "Ultimo preço inserido";
                 _entryBoxPrice1.WidthRequest = 40;
                 _entryBoxPrice1.Sensitive = true;
@@ -192,7 +185,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 CriteriaOperator defaultWarehouseCriteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND IsDefault == '1'"));
                 fin_warehouse defaultWareHouse = (fin_warehouse)DataLayerFramework.SessionXpo.FindObject(typeof(fin_warehouse), defaultWarehouseCriteria);
                 XPOComboBox xpoComboBoxWarehouse = new XPOComboBox(DataLayerFramework.SessionXpo, typeof(fin_warehouse), defaultWareHouse, "Designation", null);
-                BOWidgetBox boxWareHouse = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warehouse"), xpoComboBoxWarehouse);
+                BOWidgetBox boxWareHouse = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warehouse"), xpoComboBoxWarehouse);
                 xpoComboBoxWarehouse.Changed += XpoComboBoxWarehouse_Changed;
 
                 //Location
@@ -200,11 +193,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if (defaultWareHouse != null) criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND Warehouse == '{0}'", defaultWareHouse.Oid.ToString()));
                 fin_warehouselocation defaultLocation = (fin_warehouselocation)DataLayerFramework.SessionXpo.FindObject(typeof(fin_warehouselocation), criteria);
                 XPOComboBox xpoComboBoxWarehouseLocation = new XPOComboBox(DataLayerFramework.SessionXpo, typeof(fin_warehouselocation), defaultLocation, "Designation", criteria);
-                BOWidgetBox boxWareHouseLocation = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationDevice_PlaceTerminal"), xpoComboBoxWarehouseLocation);
+                BOWidgetBox boxWareHouseLocation = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationDevice_PlaceTerminal"), xpoComboBoxWarehouseLocation);
                 xpoComboBoxWarehouseLocation.Changed += XpoComboBoxWarehouselocation_Changed;
 
                 //Unique Articles (Have multi S/N)
-                CheckButton _checkButtonUniqueArticles = new CheckButton(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_unique_articles"));
+                CheckButton _checkButtonUniqueArticles = new CheckButton(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_unique_articles"));
                 _checkButtonUniqueArticles.Sensitive = false;
                 _checkButtonUniqueArticles.Toggled += CheckButtonUniqueArticles_Toggled;
 
@@ -270,7 +263,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _articleEntryWidgetCollection.Add(_vboxArticles);
 
                 //Notes
-                _entryBoxNotes = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_notes"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericExtended, false, true);
+                _entryBoxNotes = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_notes"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericExtended, false, true);
                 _entryBoxNotes.EntryValidation.Changed += delegate { ValidateDialog(); };
 
                 //Final Pack
@@ -330,9 +323,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 if (!string.IsNullOrEmpty(entrySerialNumberSelected.Text))
                 {
-                    if (_articleCollection.ContainsKey(entryArticleSelected.Value as fin_article))
+                    if (ArticleCollection.ContainsKey(entryArticleSelected.Value as fin_article))
                     {
-                        SelectedAssocietedArticles = _articleCollection[entryArticleSelected.Value as fin_article].Item2[entrySerialNumberSelected];
+                        SelectedAssocietedArticles = ArticleCollection[entryArticleSelected.Value as fin_article].Item2[entrySerialNumberSelected];
 
                         entrySerialNumberSelected.Text = logicpos.Utils.OpenNewSerialNumberCompositePopUpWindow(this, entryArticleSelected.Value, out SelectedAssocietedArticles, entrySerialNumberSelected.Text, SelectedAssocietedArticles);
                     }
@@ -345,10 +338,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 fin_article selectedArticle = new fin_article();
                 selectedArticle = ((entrySerialNumberSelected.Parent.Parent.Parent.Parent as VBox).Children[0] as XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>).Value;
-                if (_articleCollection.Count > 0)
+                if (ArticleCollection.Count > 0)
                 {
                     Dictionary<EntryValidation, List<fin_articleserialnumber>> serialNumberList;
-                    if (_articleCollection[selectedArticle].Item2 == null)
+                    if (ArticleCollection[selectedArticle].Item2 == null)
                     {
                         serialNumberList = new Dictionary<EntryValidation, List<fin_articleserialnumber>>
                         {
@@ -357,15 +350,15 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     }
                     else
                     {
-                        serialNumberList = _articleCollection[selectedArticle].Item2;
+                        serialNumberList = ArticleCollection[selectedArticle].Item2;
                         serialNumberList[entrySerialNumberSelected] = SelectedAssocietedArticles;
                         if (!serialNumberList.ContainsKey(entrySerialNumberSelected))
                         {
                             serialNumberList.Add(entrySerialNumberSelected, SelectedAssocietedArticles);
                         }
                     }
-                    var newTuple = new Tuple<decimal, Dictionary<EntryValidation, List<fin_articleserialnumber>>, decimal, fin_warehouselocation>(_articleCollection[selectedArticle].Item1, serialNumberList, _articleCollection[selectedArticle].Item3, _articleCollection[selectedArticle].Item4);
-                    _articleCollection[selectedArticle] = newTuple;
+                    var newTuple = new Tuple<decimal, Dictionary<EntryValidation, List<fin_articleserialnumber>>, decimal, fin_warehouselocation>(ArticleCollection[selectedArticle].Item1, serialNumberList, ArticleCollection[selectedArticle].Item3, ArticleCollection[selectedArticle].Item4);
+                    ArticleCollection[selectedArticle] = newTuple;
                     ValidateDialog();
                     return;
                 }
@@ -420,7 +413,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _entryBoxDocumentDate.EntryValidation.Validated &&
                 _entryBoxDocumentNumber.EntryValidation.Validated &&
                 _entryBoxSelectArticle1.EntryValidation.Validated &&
-                _entryBoxNotes.EntryValidation.Validated && multiEntrysValidated && _articleCollection.Count > 0
+                _entryBoxNotes.EntryValidation.Validated && multiEntrysValidated && ArticleCollection.Count > 0
             );
         }
 
@@ -523,11 +516,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     {
                         pXPOEntry.EntryValidation.Changed -= delegate { pXPOEntry.EntryValidation.Validate(); };
 
-                        pXPOEntry.EntryValidation.Text = (newArticle != null) ? newArticle.Designation.ToString() : resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
+                        pXPOEntry.EntryValidation.Text = (newArticle != null) ? newArticle.Designation.ToString() : resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
 
                         pXPOEntry.EntryValidation.Changed += delegate { pXPOEntry.EntryValidation.Validate(); };
 
-                        pXPOEntry.EntryQtdValidation.Text = (newArticle != null) ? string.Format("{0:0.##}", newArticle.DefaultQuantity) : resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
+                        pXPOEntry.EntryQtdValidation.Text = (newArticle != null) ? string.Format("{0:0.##}", newArticle.DefaultQuantity) : resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
 
                         pXPOEntry.EntryCodeValidation.Validate();
 
@@ -559,13 +552,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     }
                     pXPOEntry.EntryValidation.Changed -= delegate { pXPOEntry.EntryValidation.Validate(); };
 
-                    pXPOEntry.EntryValidation.Text = (newArticle != null) ? newArticle.Designation.ToString() : resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
+                    pXPOEntry.EntryValidation.Text = (newArticle != null) ? newArticle.Designation.ToString() : resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
 
                     pXPOEntry.EntryValidation.Changed += delegate { pXPOEntry.EntryValidation.Validate(); };
 
-                    pXPOEntry.EntryCodeValidation.Text = (newArticle != null) ? newArticle.Code.ToString() : resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
+                    pXPOEntry.EntryCodeValidation.Text = (newArticle != null) ? newArticle.Code.ToString() : resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
 
-                    pXPOEntry.EntryQtdValidation.Text = (newArticle != null) ? string.Format("{0:0.##}", newArticle.DefaultQuantity) : resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
+                    pXPOEntry.EntryQtdValidation.Text = (newArticle != null) ? string.Format("{0:0.##}", newArticle.DefaultQuantity) : resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
 
                     pXPOEntry.Value = newArticle;
 
@@ -583,7 +576,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     //Clean previous value from colection
                     if (_previousValue != null)
                     {
-                        _articleCollection.Remove(_previousValue);
+                        ArticleCollection.Remove(_previousValue);
                         //foreach (var articleLine in _articleCollection)
                         //{
                         //    if (articleLine.Key == _previousValue)
@@ -598,14 +591,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     if (pXPOEntry.Value == _article)
                     {
                         pXPOEntry.Value = null;
-                        logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_composite_article_same"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"));
+                        logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_composite_article_same"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"));
                         pXPOEntry.EntryValidation.Text = "";
                         ValidateDialog();
                         return;
                     }
                     var newSerialNumberList = new Dictionary<EntryValidation, List<fin_articleserialnumber>>();
                     decimal price = Convert.ToDecimal(pPurchasePrice.EntryValidation.Text);
-                    _articleCollection.Add(pXPOEntry.Value, new Tuple<decimal, Dictionary<EntryValidation, List<fin_articleserialnumber>>, decimal, fin_warehouselocation>(0, newSerialNumberList, price, pWarehouselocation));
+                    ArticleCollection.Add(pXPOEntry.Value, new Tuple<decimal, Dictionary<EntryValidation, List<fin_articleserialnumber>>, decimal, fin_warehouselocation>(0, newSerialNumberList, price, pWarehouselocation));
 
                     //if (_article.IsComposed)
                     //{
@@ -681,18 +674,18 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _totalCompositeEntrys++;
                 //var entrySelected = (XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>)sender;
                 CriteriaOperator criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1)"));
-                XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle> NewEntryBoxSelectArticle = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article"), "Designation", "Oid", null, criteriaOperatorSelectArticle, KeyboardMode.None, SharedSettings.RegexAlfaNumericExtended, true, true, SharedSettings.RegexAlfaNumericArticleCode, SharedSettings.RegexDecimalPositiveAndNegative, _totalCompositeEntrys);
+                XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle> NewEntryBoxSelectArticle = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article"), "Designation", "Oid", null, criteriaOperatorSelectArticle, KeyboardMode.None, SharedSettings.RegexAlfaNumericExtended, true, true, SharedSettings.RegexAlfaNumericArticleCode, SharedSettings.RegexDecimalPositiveAndNegative, _totalCompositeEntrys);
 
                 HBox hBoxArticles = new HBox(false, 0);
 
                 //SerialNumber
-                EntryBoxValidation NewEntryBoxSerialNumber = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_serial_number"), KeyboardMode.None, SharedSettings.RegexAlfaNumericExtended, false, true);
+                EntryBoxValidation NewEntryBoxSerialNumber = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_serial_number"), KeyboardMode.None, SharedSettings.RegexAlfaNumericExtended, false, true);
                 NewEntryBoxSerialNumber.EntryValidation.Changed += delegate { ValidateDialog(); };
                 NewEntryBoxSerialNumber.EntryValidation.Changed += EntrySerialNumberValidation_Changed;
                 NewEntryBoxSerialNumber.EntryValidation.FocusGrabbed += EntryValidation_FocusGrabbed;
 
                 //Price
-                EntryBoxValidation NewEntryBoxPrice = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_price"), KeyboardMode.None, SharedSettings.RegexDecimalGreaterEqualThanZeroFinancial, false, true);
+                EntryBoxValidation NewEntryBoxPrice = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_price"), KeyboardMode.None, SharedSettings.RegexDecimalGreaterEqualThanZeroFinancial, false, true);
                 NewEntryBoxPrice.EntryValidation.Changed += EntryPurchasedPriceValidation_Changed;
                 NewEntryBoxPrice.WidthRequest = 40;
 
@@ -700,7 +693,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 CriteriaOperator defaultWarehouseCriteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND IsDefault == '1'"));
                 fin_warehouse defaultWareHouse = (fin_warehouse)DataLayerFramework.SessionXpo.FindObject(typeof(fin_warehouse), defaultWarehouseCriteria);
                 XPOComboBox xpoComboBoxWarehouse = new XPOComboBox(DataLayerFramework.SessionXpo, typeof(fin_warehouse), defaultWareHouse, "Designation", null);
-                BOWidgetBox boxWareHouse = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warehouse"), xpoComboBoxWarehouse);
+                BOWidgetBox boxWareHouse = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warehouse"), xpoComboBoxWarehouse);
                 xpoComboBoxWarehouse.Changed += XpoComboBoxWarehouse_Changed;
 
                 //Location
@@ -708,7 +701,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if (defaultWareHouse != null) criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND Warehouse == '{0}'", defaultWareHouse.Oid.ToString()));
                 fin_warehouselocation defaultLocation = (fin_warehouselocation)DataLayerFramework.SessionXpo.FindObject(typeof(fin_warehouselocation), criteria);
                 XPOComboBox xpoComboBoxWarehouseLocation = new XPOComboBox(DataLayerFramework.SessionXpo, typeof(fin_warehouselocation), defaultLocation, "Designation", criteria);
-                BOWidgetBox boxWareHouseLocation = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationDevice_PlaceTerminal"), xpoComboBoxWarehouseLocation);
+                BOWidgetBox boxWareHouseLocation = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationDevice_PlaceTerminal"), xpoComboBoxWarehouseLocation);
                 xpoComboBoxWarehouseLocation.Changed += XpoComboBoxWarehouselocation_Changed;
 
                 NewEntryBoxSelectArticle.EntryValidation.IsEditable = true;
@@ -858,7 +851,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         {
                             auxArticle = entrySelected.Value;
                         }
-                        _articleCollection.Remove(auxArticle);
+                        ArticleCollection.Remove(auxArticle);
                         //foreach (var articleLine in _articleCollection)
                         //{
                         //    if (articleLine.Key == auxArticle)
@@ -894,7 +887,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if (entrySelected.Value == _article)
                 {
                     entrySelected.Value = null;
-                    logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_composite_article_same"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"));
+                    logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_composite_article_same"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"));
                     entrySelected.EntryValidation.Text = "";
                     return;
                 }
@@ -918,10 +911,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 var entrySelected = (XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>)entryQtdSelect.Parent.Parent.Parent;
                 entrySelected.EntryQtdValidation.Validate();
 
-                if (entrySelected.Value != null && _articleCollection.Count > 0)
+                if (entrySelected.Value != null && ArticleCollection.Count > 0)
                 {
-                    var iTuple = new Tuple<decimal, Dictionary<EntryValidation, List<fin_articleserialnumber>>, decimal, fin_warehouselocation>(Convert.ToDecimal(entrySelected.EntryQtdValidation.Text), _articleCollection[entrySelected.Value].Item2, _articleCollection[entrySelected.Value].Item3, _articleCollection[entrySelected.Value].Item4);
-                    _articleCollection[entrySelected.Value] = iTuple;
+                    var iTuple = new Tuple<decimal, Dictionary<EntryValidation, List<fin_articleserialnumber>>, decimal, fin_warehouselocation>(Convert.ToDecimal(entrySelected.EntryQtdValidation.Text), ArticleCollection[entrySelected.Value].Item2, ArticleCollection[entrySelected.Value].Item3, ArticleCollection[entrySelected.Value].Item4);
+                    ArticleCollection[entrySelected.Value] = iTuple;
                 }
                 ValidateDialog();
                 int countSerialNumberEntrys = 0;
@@ -1001,20 +994,20 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if((_collectionSavedArticleSerialNumber != null && _collectionSavedArticleSerialNumber.Count > 0) || (_serialNumbersInCache.ContainsValue(entrySerialNumber.Text)))
                 {
                     entrySerialNumber.Validated = false;
-                    entrySerialNumber.TooltipText = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_serial_number") + " já existe!";
+                    entrySerialNumber.TooltipText = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_serial_number") + " já existe!";
                     buttonOk.Sensitive = false;
                     return;
                 }
                 else
                 {
                     entrySerialNumber.Validated = true;
-                    entrySerialNumber.TooltipText = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_serial_number");
+                    entrySerialNumber.TooltipText = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_serial_number");
                 }
 
-                if (_articleCollection.Count > 0 && entrySerialNumber.Validated)
+                if (ArticleCollection.Count > 0 && entrySerialNumber.Validated)
                 {
                     
-                    if (_articleCollection[selectedArticle].Item2 == null)
+                    if (ArticleCollection[selectedArticle].Item2 == null)
                     {
                         _entrySerialNumberCacheList = new Dictionary<EntryValidation, List<fin_articleserialnumber>>
                         {
@@ -1023,14 +1016,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     }
                     else
                     {
-                        _entrySerialNumberCacheList = _articleCollection[selectedArticle].Item2;
+                        _entrySerialNumberCacheList = ArticleCollection[selectedArticle].Item2;
                         if (!_entrySerialNumberCacheList.ContainsKey(entrySerialNumber))
                         {
                             _entrySerialNumberCacheList.Add(entrySerialNumber, null);
                         }
                     }
-                    var newTuple = new Tuple<decimal, Dictionary<EntryValidation, List<fin_articleserialnumber>>, decimal, fin_warehouselocation>(_articleCollection[selectedArticle].Item1, _entrySerialNumberCacheList, _articleCollection[selectedArticle].Item3, _articleCollection[selectedArticle].Item4);
-                    _articleCollection[selectedArticle] = newTuple;
+                    var newTuple = new Tuple<decimal, Dictionary<EntryValidation, List<fin_articleserialnumber>>, decimal, fin_warehouselocation>(ArticleCollection[selectedArticle].Item1, _entrySerialNumberCacheList, ArticleCollection[selectedArticle].Item3, ArticleCollection[selectedArticle].Item4);
+                    ArticleCollection[selectedArticle] = newTuple;
 
                     if (!_serialNumbersInCache.ContainsKey(entrySerialNumber))
                     {
@@ -1076,11 +1069,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 var entryPrice = (EntryValidation)sender;
                 fin_article selectedArticle = new fin_article();
-                if (_articleCollection.Count > 0)
+                if (ArticleCollection.Count > 0)
                 {
                     selectedArticle = ((entryPrice.Parent.Parent.Parent.Parent.Parent as VBox).Children[0] as XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>).Value;
-                    var newTuple = new Tuple<decimal, Dictionary<EntryValidation, List<fin_articleserialnumber>>, decimal, fin_warehouselocation>(_articleCollection[selectedArticle].Item1, _articleCollection[selectedArticle].Item2, Convert.ToDecimal(entryPrice.Text), _articleCollection[selectedArticle].Item4);
-                    _articleCollection[selectedArticle] = newTuple;
+                    var newTuple = new Tuple<decimal, Dictionary<EntryValidation, List<fin_articleserialnumber>>, decimal, fin_warehouselocation>(ArticleCollection[selectedArticle].Item1, ArticleCollection[selectedArticle].Item2, Convert.ToDecimal(entryPrice.Text), ArticleCollection[selectedArticle].Item4);
+                    ArticleCollection[selectedArticle] = newTuple;
                     ValidateDialog();
                     return;
                 }
@@ -1106,11 +1099,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if (wareHouseLocationCB.Value != null) criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND Warehouse == '{0}'", selectedWareHouseCB.Value.Oid.ToString()));
                 wareHouseLocationCB.UpdateModel(criteria, null);
 
-                if (_articleCollection.Count > 0)
+                if (ArticleCollection.Count > 0)
                 {
                     selectedArticle = ((selectedWareHouseCB.Parent.Parent.Parent as VBox).Children[0] as XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>).Value;
-                    var newTuple = new Tuple<decimal, Dictionary<EntryValidation, List<fin_articleserialnumber>>, decimal, fin_warehouselocation>(_articleCollection[selectedArticle].Item1, _articleCollection[selectedArticle].Item2, _articleCollection[selectedArticle].Item3, wareHouseLocationCB.Value as fin_warehouselocation);
-                    _articleCollection[selectedArticle] = newTuple;                
+                    var newTuple = new Tuple<decimal, Dictionary<EntryValidation, List<fin_articleserialnumber>>, decimal, fin_warehouselocation>(ArticleCollection[selectedArticle].Item1, ArticleCollection[selectedArticle].Item2, ArticleCollection[selectedArticle].Item3, wareHouseLocationCB.Value as fin_warehouselocation);
+                    ArticleCollection[selectedArticle] = newTuple;                
                 }
 
                 if (selectedWareHouseCB.Value != null)
@@ -1140,11 +1133,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 fin_article selectedArticle = new fin_article();
 
-                if (_articleCollection.Count > 0)
+                if (ArticleCollection.Count > 0)
                 {
                     selectedArticle = ((selectedWareHouseLocationCB.Parent.Parent.Parent as VBox).Children[0] as XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>).Value;
-                    var newTuple = new Tuple<decimal, Dictionary<EntryValidation, List<fin_articleserialnumber>>, decimal, fin_warehouselocation>(_articleCollection[selectedArticle].Item1, _articleCollection[selectedArticle].Item2, _articleCollection[selectedArticle].Item3, selectedWareHouseLocationCB.Value as fin_warehouselocation);
-                    _articleCollection[selectedArticle] = newTuple;
+                    var newTuple = new Tuple<decimal, Dictionary<EntryValidation, List<fin_articleserialnumber>>, decimal, fin_warehouselocation>(ArticleCollection[selectedArticle].Item1, ArticleCollection[selectedArticle].Item2, ArticleCollection[selectedArticle].Item3, selectedWareHouseLocationCB.Value as fin_warehouselocation);
+                    ArticleCollection[selectedArticle] = newTuple;
                     ValidateDialog();
                     return;
                 }

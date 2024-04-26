@@ -1,10 +1,6 @@
 ﻿using Gtk;
-using logicpos.App;
-using logicpos.financial;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.resources.Resources.Localization;
-using logicpos.shared;
 using System;
 using System.Drawing;
 using logicpos.Classes.Enums.Dialogs;
@@ -20,12 +16,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private readonly TouchButtonIconWithText _buttonCancel;
         private readonly EntryBoxValidation _entryBoxMovementDescription;
 
-        private string _cardNumber;
-        public string CardNumber
-        {
-            get { return _cardNumber; }
-            set { _cardNumber = value; }
-        }
+        public string CardNumber { get; set; }
 
         public PosReadCardDialog(Window pSourceWindow, DialogFlags pDialogFlags)
             : base(pSourceWindow, pDialogFlags)
@@ -34,12 +25,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             string regexAlfaNumericExtended = SharedSettings.RegexAlfaNumericExtended;
 
             //Init Local Vars
-            string windowTitle = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_readcard");
+            string windowTitle = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_readcard");
             Size windowSize = new Size(462, 320);//400 With Other Payments
             string fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_read_card.png");
 
             //EntryDescription
-            _entryBoxMovementDescription = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_read_card"), KeyboardMode.AlfaNumeric, regexAlfaNumericExtended, false);
+            _entryBoxMovementDescription = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_read_card"), KeyboardMode.AlfaNumeric, regexAlfaNumericExtended, false);
             //_entryBoxMovementDescription.EntryValidation.Changed += delegate { ValidateDialog(); };
             //VBox
             VBox vbox = new VBox(true, 0);

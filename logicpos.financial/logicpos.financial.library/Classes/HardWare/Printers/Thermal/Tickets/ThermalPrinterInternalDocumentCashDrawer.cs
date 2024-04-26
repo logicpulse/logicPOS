@@ -1,8 +1,6 @@
 ﻿using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial.library.App;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Enums;
-using logicpos.resources.Resources.Localization;
 using logicpos.shared.App;
 using System;
 
@@ -56,18 +54,18 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 
         private void PrintDocumentDetails()
         {
-            _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_cashdrawer"));
+            _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_cashdrawer"));
             _thermalPrinterGeneric.WriteLine(SharedUtils.DecimalToString(_totalAmountInCashDrawer), WriteLineTextMode.Big);
             _thermalPrinterGeneric.LineFeed();
 
             if (_movementAmount < 0.0m || _movementAmount > 0.0m)  {
-                _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_movement_amount"));
+                _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_movement_amount"));
                 _thermalPrinterGeneric.WriteLine(SharedUtils.DecimalToString(_movementAmount), WriteLineTextMode.Big);
                 _thermalPrinterGeneric.LineFeed();
             }
 
             string description = (_movementDescription != string.Empty) ? _movementDescription : "________________________________";
-            _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_description"));
+            _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_description"));
             _thermalPrinterGeneric.WriteLine(description);
         }
     }

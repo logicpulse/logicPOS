@@ -9,7 +9,6 @@ using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.financial.library.App;
-using logicpos.resources.Resources.Localization;
 using logicpos.shared.App;
 using logicpos.shared.Classes.Finance;
 using System;
@@ -50,47 +49,18 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         {
             set { _pagePad5 = value; }
         }
-        //UI EntryBox
-        private readonly XPOEntryBoxSelectRecordValidation<fin_documentfinancetype, TreeViewDocumentFinanceType> _entryBoxSelectDocumentFinanceType;
-        public XPOEntryBoxSelectRecordValidation<fin_documentfinancetype, TreeViewDocumentFinanceType> EntryBoxSelectDocumentFinanceType
-        {
-            get { return _entryBoxSelectDocumentFinanceType; }
-        }
-        private readonly XPOEntryBoxSelectRecordValidation<fin_configurationpaymentcondition, TreeViewConfigurationPaymentCondition> _entryBoxSelectConfigurationPaymentCondition;
-        public XPOEntryBoxSelectRecordValidation<fin_configurationpaymentcondition, TreeViewConfigurationPaymentCondition> EntryBoxSelectConfigurationPaymentCondition
-        {
-            get { return _entryBoxSelectConfigurationPaymentCondition; }
-        }
-        private readonly XPOEntryBoxSelectRecordValidation<fin_configurationpaymentmethod, TreeViewConfigurationPaymentMethod> _entryBoxSelectConfigurationPaymentMethod;
-        public XPOEntryBoxSelectRecordValidation<fin_configurationpaymentmethod, TreeViewConfigurationPaymentMethod> EntryBoxSelectConfigurationPaymentMethod
-        {
-            get { return _entryBoxSelectConfigurationPaymentMethod; }
-        }
-        private readonly XPOEntryBoxSelectRecordValidation<cfg_configurationcurrency, TreeViewConfigurationCurrency> _entryBoxSelectConfigurationCurrency;
-        public XPOEntryBoxSelectRecordValidation<cfg_configurationcurrency, TreeViewConfigurationCurrency> EntryBoxSelectConfigurationCurrency
-        {
-            get { return _entryBoxSelectConfigurationCurrency; }
-        }
-        private readonly XPOEntryBoxSelectRecordValidation<fin_documentfinancemaster, TreeViewDocumentFinanceMaster> _entryBoxSelectSourceDocumentFinance;
-        public XPOEntryBoxSelectRecordValidation<fin_documentfinancemaster, TreeViewDocumentFinanceMaster> EntryBoxSelectSourceDocumentFinance
-        {
-            get { return _entryBoxSelectSourceDocumentFinance; }
-        }
-        private readonly XPOEntryBoxSelectRecordValidation<fin_documentfinancemaster, TreeViewDocumentFinanceMaster> _entryBoxSelectCopyDocumentFinance;
-        public XPOEntryBoxSelectRecordValidation<fin_documentfinancemaster, TreeViewDocumentFinanceMaster> EntryBoxSelectCopyDocumentFinance
-        {
-            get { return _entryBoxSelectCopyDocumentFinance; }
-        }
-        private readonly EntryBoxValidation _entryBoxDocumentMasterNotes;
-        public EntryBoxValidation EntryBoxDocumentMasterNotes
-        {
-            get { return _entryBoxDocumentMasterNotes; }
-        }
-        private readonly EntryBoxValidation _entryBoxReason;
-        public EntryBoxValidation EntryBoxReason
-        {
-            get { return _entryBoxReason; }
-        }
+
+        public XPOEntryBoxSelectRecordValidation<fin_documentfinancetype, TreeViewDocumentFinanceType> EntryBoxSelectDocumentFinanceType { get; }
+        public XPOEntryBoxSelectRecordValidation<fin_configurationpaymentcondition, TreeViewConfigurationPaymentCondition> EntryBoxSelectConfigurationPaymentCondition { get; }
+
+        public XPOEntryBoxSelectRecordValidation<fin_configurationpaymentmethod, TreeViewConfigurationPaymentMethod> EntryBoxSelectConfigurationPaymentMethod { get; }
+        public XPOEntryBoxSelectRecordValidation<cfg_configurationcurrency, TreeViewConfigurationCurrency> EntryBoxSelectConfigurationCurrency { get; }
+
+        public XPOEntryBoxSelectRecordValidation<fin_documentfinancemaster, TreeViewDocumentFinanceMaster> EntryBoxSelectSourceDocumentFinance { get; }
+        public XPOEntryBoxSelectRecordValidation<fin_documentfinancemaster, TreeViewDocumentFinanceMaster> EntryBoxSelectCopyDocumentFinance { get; }
+
+        public EntryBoxValidation EntryBoxDocumentMasterNotes { get; }
+        public EntryBoxValidation EntryBoxReason { get; }
 
         //Private Initial SelectedValues
         private readonly fin_documentfinancetype _defaultValueDocumentFinanceType;
@@ -127,17 +97,17 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //DocumentFinanceType
             string documentFinanceTypeExtraCriteria = GetDocumentFinanceTypeExtraCriteria();
             CriteriaOperator criteriaOperatorDocumentFinanceType = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND ({0})", documentFinanceTypeExtraCriteria));
-            _entryBoxSelectDocumentFinanceType = new XPOEntryBoxSelectRecordValidation<fin_documentfinancetype, TreeViewDocumentFinanceType>(_sourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinanceseries_documenttype"), "Designation", "Oid", _defaultValueDocumentFinanceType, criteriaOperatorDocumentFinanceType, SharedSettings.RegexGuid, true);
+            EntryBoxSelectDocumentFinanceType = new XPOEntryBoxSelectRecordValidation<fin_documentfinancetype, TreeViewDocumentFinanceType>(_sourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinanceseries_documenttype"), "Designation", "Oid", _defaultValueDocumentFinanceType, criteriaOperatorDocumentFinanceType, SharedSettings.RegexGuid, true);
             //_entryBoxSelectDocumentFinanceType.EntryValidation.Changed += DocumentFinanceType_EntryValidation_Changed;//+= delegate { Validate(); };
-            _entryBoxSelectDocumentFinanceType.EntryValidation.IsEditable = false;
+            EntryBoxSelectDocumentFinanceType.EntryValidation.IsEditable = false;
             //Capture ClosePopup
-            _entryBoxSelectDocumentFinanceType.ClosePopup += _entryBoxSelectDocumentFinanceType_ClosePopup;
+            EntryBoxSelectDocumentFinanceType.ClosePopup += _entryBoxSelectDocumentFinanceType_ClosePopup;
 
             //ConfigurationPaymentCondition
             CriteriaOperator criteriaOperatorConfigurationPaymentCondition = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1)");
-            _entryBoxSelectConfigurationPaymentCondition = new XPOEntryBoxSelectRecordValidation<fin_configurationpaymentcondition, TreeViewConfigurationPaymentCondition>(_sourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_payment_condition"), "Designation", "Oid", _defaultValueConfigurationPaymentCondition, criteriaOperatorConfigurationPaymentCondition, SharedSettings.RegexGuid, true);
-            _entryBoxSelectConfigurationPaymentCondition.EntryValidation.Changed += delegate { Validate(); };
-            _entryBoxSelectConfigurationPaymentCondition.EntryValidation.IsEditable = false;
+            EntryBoxSelectConfigurationPaymentCondition = new XPOEntryBoxSelectRecordValidation<fin_configurationpaymentcondition, TreeViewConfigurationPaymentCondition>(_sourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_payment_condition"), "Designation", "Oid", _defaultValueConfigurationPaymentCondition, criteriaOperatorConfigurationPaymentCondition, SharedSettings.RegexGuid, true);
+            EntryBoxSelectConfigurationPaymentCondition.EntryValidation.Changed += delegate { Validate(); };
+            EntryBoxSelectConfigurationPaymentCondition.EntryValidation.IsEditable = false;
 
             //ConfigurationPaymentMethod
             /* IN009142 - Begin
@@ -183,18 +153,18 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 SharedSettings.XpoOidConfigurationPaymentMethodCurrentAccount.ToString(),
                 filterValidPaymentMethod));
             /* IN009142 - End */
-            _entryBoxSelectConfigurationPaymentMethod = new XPOEntryBoxSelectRecordValidation<fin_configurationpaymentmethod, TreeViewConfigurationPaymentMethod>(_sourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_payment_method"), "Designation", "Oid", null, criteriaOperatorConfigurationPaymentMethod, SharedSettings.RegexGuid, false);
-            _entryBoxSelectConfigurationPaymentMethod.EntryValidation.Changed += delegate { Validate(); };
-            _entryBoxSelectConfigurationPaymentMethod.EntryValidation.IsEditable = false;
+            EntryBoxSelectConfigurationPaymentMethod = new XPOEntryBoxSelectRecordValidation<fin_configurationpaymentmethod, TreeViewConfigurationPaymentMethod>(_sourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_payment_method"), "Designation", "Oid", null, criteriaOperatorConfigurationPaymentMethod, SharedSettings.RegexGuid, false);
+            EntryBoxSelectConfigurationPaymentMethod.EntryValidation.Changed += delegate { Validate(); };
+            EntryBoxSelectConfigurationPaymentMethod.EntryValidation.IsEditable = false;
             //Start Disabled and Validated
-            _entryBoxSelectConfigurationPaymentMethod.EntryValidation.Sensitive = false;
-            _entryBoxSelectConfigurationPaymentMethod.ButtonSelectValue.Sensitive = false;
+            EntryBoxSelectConfigurationPaymentMethod.EntryValidation.Sensitive = false;
+            EntryBoxSelectConfigurationPaymentMethod.ButtonSelectValue.Sensitive = false;
 
             //ConfigurationCurrency
             CriteriaOperator criteriaOperatorConfigurationCurrency = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (ExchangeRate IS NOT NULL OR Oid = '{0}')", SharedSettings.ConfigurationSystemCurrency.Oid.ToString()));
-            _entryBoxSelectConfigurationCurrency = new XPOEntryBoxSelectRecordValidation<cfg_configurationcurrency, TreeViewConfigurationCurrency>(_sourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_currency"), "Designation", "Oid", _defaultValueConfigurationCurrency, criteriaOperatorConfigurationCurrency, SharedSettings.RegexGuid, false);
-            _entryBoxSelectConfigurationCurrency.EntryValidation.IsEditable = false;
-            _entryBoxSelectConfigurationCurrency.EntryValidation.Changed += delegate
+            EntryBoxSelectConfigurationCurrency = new XPOEntryBoxSelectRecordValidation<cfg_configurationcurrency, TreeViewConfigurationCurrency>(_sourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_currency"), "Designation", "Oid", _defaultValueConfigurationCurrency, criteriaOperatorConfigurationCurrency, SharedSettings.RegexGuid, false);
+            EntryBoxSelectConfigurationCurrency.EntryValidation.IsEditable = false;
+            EntryBoxSelectConfigurationCurrency.EntryValidation.Changed += delegate
             {
                 //Update Article Tree, After we change Currency
                 ArticleBag articleBag = (_pagePad.Pages[2] as DocumentFinanceDialogPage3).ArticleBag;
@@ -211,45 +181,45 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
             //DocumentFinanceSource
             CriteriaOperator criteriaOperatorSourceDocumentFinance = GetDocumentFinanceTypeSourceDocumentCriteria();
-            _entryBoxSelectSourceDocumentFinance = new XPOEntryBoxSelectRecordValidation<fin_documentfinancemaster, TreeViewDocumentFinanceMaster>(_sourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_source_finance_document"), "DocumentNumber", "Oid", null, criteriaOperatorSourceDocumentFinance, SharedSettings.RegexGuid, false);
-            _entryBoxSelectSourceDocumentFinance.Name = "SourceDocument";
-            _entryBoxSelectSourceDocumentFinance.EntryValidation.IsEditable = false;
+            EntryBoxSelectSourceDocumentFinance = new XPOEntryBoxSelectRecordValidation<fin_documentfinancemaster, TreeViewDocumentFinanceMaster>(_sourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_source_finance_document"), "DocumentNumber", "Oid", null, criteriaOperatorSourceDocumentFinance, SharedSettings.RegexGuid, false);
+            EntryBoxSelectSourceDocumentFinance.Name = "SourceDocument";
+            EntryBoxSelectSourceDocumentFinance.EntryValidation.IsEditable = false;
             //Capture ClosePopup
-            _entryBoxSelectSourceDocumentFinance.ClosePopup += _entryBoxSelectSourceDocumentFinance_ClosePopup;
+            EntryBoxSelectSourceDocumentFinance.ClosePopup += _entryBoxSelectSourceDocumentFinance_ClosePopup;
 
             //DocumentFinanceCopy
             CriteriaOperator criteriaOperatorCopyDocumentFinance = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1)");
-            _entryBoxSelectCopyDocumentFinance = new XPOEntryBoxSelectRecordValidation<fin_documentfinancemaster, TreeViewDocumentFinanceMaster>(_sourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_copy_finance_document"), "DocumentNumber", "Oid", null, criteriaOperatorCopyDocumentFinance, SharedSettings.RegexGuid, false);
-            _entryBoxSelectCopyDocumentFinance.Name = "CopyDocument";
-            _entryBoxSelectCopyDocumentFinance.EntryValidation.IsEditable = false;
+            EntryBoxSelectCopyDocumentFinance = new XPOEntryBoxSelectRecordValidation<fin_documentfinancemaster, TreeViewDocumentFinanceMaster>(_sourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_copy_finance_document"), "DocumentNumber", "Oid", null, criteriaOperatorCopyDocumentFinance, SharedSettings.RegexGuid, false);
+            EntryBoxSelectCopyDocumentFinance.Name = "CopyDocument";
+            EntryBoxSelectCopyDocumentFinance.EntryValidation.IsEditable = false;
             //Capture ClosePopup
-            _entryBoxSelectCopyDocumentFinance.ClosePopup += _entryBoxSelectSourceDocumentFinance_ClosePopup;
+            EntryBoxSelectCopyDocumentFinance.ClosePopup += _entryBoxSelectSourceDocumentFinance_ClosePopup;
 
             //Customer Notes
-            _entryBoxDocumentMasterNotes = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_notes"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericExtended, false);
+            EntryBoxDocumentMasterNotes = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_notes"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericExtended, false);
 
             //Reason
-            _entryBoxReason = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_reason"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericExtendedForMotive, false);
-            _entryBoxReason.EntryValidation.Changed += delegate { Validate(); };
+            EntryBoxReason = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_reason"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericExtendedForMotive, false);
+            EntryBoxReason.EntryValidation.Changed += delegate { Validate(); };
 
             // Fill Default Notes From DocumentFinanceType, usefull for IBANS and Other Custom/Generic Notes : After all Components ex entryBoxReason, else we trigger a NPE
             UpdateDocumentMasterNotesFromDocumentFinanceTypeNotes();
             // Only call Notes Validation after call above Method that will Trigger Validate()
-            _entryBoxDocumentMasterNotes.EntryValidation.Changed += delegate { Validate(); };
+            EntryBoxDocumentMasterNotes.EntryValidation.Changed += delegate { Validate(); };
 
             //HBox SourceAndCopyDocument
             HBox hboxSourceAndCopyDocument = new HBox(true, 0);
-            hboxSourceAndCopyDocument.PackStart(_entryBoxSelectSourceDocumentFinance, true, true, 0);
-            hboxSourceAndCopyDocument.PackStart(_entryBoxSelectCopyDocumentFinance, true, true, 0);
+            hboxSourceAndCopyDocument.PackStart(EntryBoxSelectSourceDocumentFinance, true, true, 0);
+            hboxSourceAndCopyDocument.PackStart(EntryBoxSelectCopyDocumentFinance, true, true, 0);
 
             //Pack VBOX
             _vbox = new VBox(false, 2);
-            _vbox.PackStart(_entryBoxSelectDocumentFinanceType, false, false, 0);
-            _vbox.PackStart(_entryBoxSelectConfigurationPaymentCondition, false, false, 0);
-            _vbox.PackStart(_entryBoxSelectConfigurationPaymentMethod, false, false, 0);
-            _vbox.PackStart(_entryBoxSelectConfigurationCurrency, false, false, 0);
+            _vbox.PackStart(EntryBoxSelectDocumentFinanceType, false, false, 0);
+            _vbox.PackStart(EntryBoxSelectConfigurationPaymentCondition, false, false, 0);
+            _vbox.PackStart(EntryBoxSelectConfigurationPaymentMethod, false, false, 0);
+            _vbox.PackStart(EntryBoxSelectConfigurationCurrency, false, false, 0);
             _vbox.PackStart(hboxSourceAndCopyDocument, false, false, 0);
-            _vbox.PackStart(_entryBoxDocumentMasterNotes, false, false, 0);
+            _vbox.PackStart(EntryBoxDocumentMasterNotes, false, false, 0);
             PackStart(_vbox);
         }
 
@@ -260,11 +230,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         public override void Validate()
         {
             _validated = (
-                _entryBoxSelectDocumentFinanceType.EntryValidation.Validated &&
-                _entryBoxSelectConfigurationPaymentCondition.EntryValidation.Validated &&
-                _entryBoxSelectConfigurationPaymentMethod.EntryValidation.Validated &&
-                _entryBoxSelectSourceDocumentFinance.EntryValidation.Validated &&
-                _entryBoxReason.EntryValidation.Validated
+                EntryBoxSelectDocumentFinanceType.EntryValidation.Validated &&
+                EntryBoxSelectConfigurationPaymentCondition.EntryValidation.Validated &&
+                EntryBoxSelectConfigurationPaymentMethod.EntryValidation.Validated &&
+                EntryBoxSelectSourceDocumentFinance.EntryValidation.Validated &&
+                EntryBoxReason.EntryValidation.Validated
             );
 
             //Enable Next Button, If not In Last Page
@@ -300,13 +270,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 (_pagePad.Pages[2] as DocumentFinanceDialogPage3).ArticleBag = new ArticleBag();
 
                 //When Change DocumentFinanceType always Clean EntryBoxSelectSourceDocumentFinance, EntryBoxDocumentMasterNotes and EntryBoxReason
-                if (_entryBoxSelectSourceDocumentFinance.Value != null) { _entryBoxSelectSourceDocumentFinance.Value = null; _entryBoxSelectSourceDocumentFinance.EntryValidation.Text = string.Empty; };
+                if (EntryBoxSelectSourceDocumentFinance.Value != null) { EntryBoxSelectSourceDocumentFinance.Value = null; EntryBoxSelectSourceDocumentFinance.EntryValidation.Text = string.Empty; };
                 //if (_entryBoxSelectCopyDocumentFinance.Value != null) { _entryBoxSelectCopyDocumentFinance.Value = null; _entryBoxSelectCopyDocumentFinance.EntryValidation.Text = string.Empty; };
                 //if (_entryBoxDocumentMasterNotes.EntryValidation.Text != string.Empty) { _entryBoxDocumentMasterNotes.EntryValidation.Text = string.Empty; };
                 //if (_entryBoxReason.EntryValidation.Text != string.Empty) { _entryBoxReason.EntryValidation.Text = string.Empty; };
 
                 // Fill Default Notes From DocumentFinanceType, usefull for IBANS and Other Custom/Generic Notes
-                if(_entryBoxSelectCopyDocumentFinance.Value == null)
+                if(EntryBoxSelectCopyDocumentFinance.Value == null)
                 {
                     UpdateDocumentMasterNotesFromDocumentFinanceTypeNotes();
                 }
@@ -314,13 +284,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 string filterBaseCustomer = "(Disabled IS NULL OR Disabled  <> 1) AND (Hidden IS NULL OR Hidden = 0)";
 
                 //If Not SimplifiedInvoice
-                if (_entryBoxSelectDocumentFinanceType.Value.Oid != SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice && _entryBoxSelectDocumentFinanceType.Value.Oid != SharedSettings.XpoOidDocumentFinanceTypeCreditNote)
+                if (EntryBoxSelectDocumentFinanceType.Value.Oid != SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice && EntryBoxSelectDocumentFinanceType.Value.Oid != SharedSettings.XpoOidDocumentFinanceTypeCreditNote)
                 {
                     filterBaseCustomer = filterBaseCustomer + string.Format(" AND Oid <> '{0}'", SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity);
                     //If FinalConsumerEntity, Clean it
                     if (_pagePad2.EntryBoxSelectCustomerName != null || _pagePad2.EntryBoxSelectCustomerName.Value.Oid == SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity)
                     {
-                        if (_entryBoxSelectCopyDocumentFinance.Value == null)
+                        if (EntryBoxSelectCopyDocumentFinance.Value == null)
                         {
                             _pagePad2.ClearCustomerAndWayBill();
                         }
@@ -351,24 +321,24 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
                 //Detected SourceDocumentFinance:CreditNote
                 if (
-                    _entryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeCreditNote
+                    EntryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeCreditNote
                 )
                 {
                     //Set Required EntryBoxSelectSourceDocumentFinance
-                    if (_entryBoxSelectSourceDocumentFinance.EntryValidation.Required != true)
+                    if (EntryBoxSelectSourceDocumentFinance.EntryValidation.Required != true)
                     {
-                        _entryBoxSelectSourceDocumentFinance.EntryValidation.Required = true;
-                        _entryBoxSelectSourceDocumentFinance.EntryValidation.Validate();
+                        EntryBoxSelectSourceDocumentFinance.EntryValidation.Required = true;
+                        EntryBoxSelectSourceDocumentFinance.EntryValidation.Validate();
                     }
 
                     //Exchange Notes with Reason
-                    if (_vbox.Children[5] == _entryBoxDocumentMasterNotes)
+                    if (_vbox.Children[5] == EntryBoxDocumentMasterNotes)
                     {
-                        _vbox.Remove(_entryBoxDocumentMasterNotes);
-                        _vbox.PackStart(_entryBoxReason, false, false, 0);
-                        _entryBoxReason.EntryValidation.Required = true;
-                        _entryBoxReason.EntryValidation.Validate();
-                        _entryBoxReason.ShowAll();
+                        _vbox.Remove(EntryBoxDocumentMasterNotes);
+                        _vbox.PackStart(EntryBoxReason, false, false, 0);
+                        EntryBoxReason.EntryValidation.Required = true;
+                        EntryBoxReason.EntryValidation.Validate();
+                        EntryBoxReason.ShowAll();
                     }
 
                     //TreeViewArticles Work
@@ -378,20 +348,20 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 else
                 {
                     //Unset Required EntryBoxSelectSourceDocumentFinance
-                    if (_entryBoxSelectSourceDocumentFinance.EntryValidation.Required != false)
+                    if (EntryBoxSelectSourceDocumentFinance.EntryValidation.Required != false)
                     {
-                        _entryBoxSelectSourceDocumentFinance.EntryValidation.Required = false;
-                        _entryBoxSelectSourceDocumentFinance.EntryValidation.Validate();
+                        EntryBoxSelectSourceDocumentFinance.EntryValidation.Required = false;
+                        EntryBoxSelectSourceDocumentFinance.EntryValidation.Validate();
                     }
 
                     //Exchange Reason with Notes
-                    if (_vbox.Children[5] == _entryBoxReason)
+                    if (_vbox.Children[5] == EntryBoxReason)
                     {
-                        _vbox.Remove(_entryBoxReason);
-                        _vbox.PackStart(_entryBoxDocumentMasterNotes, false, false, 0);
-                        _entryBoxReason.EntryValidation.Required = false;
-                        _entryBoxReason.EntryValidation.Validate();
-                        _entryBoxReason.ShowAll();
+                        _vbox.Remove(EntryBoxReason);
+                        _vbox.PackStart(EntryBoxDocumentMasterNotes, false, false, 0);
+                        EntryBoxReason.EntryValidation.Required = false;
+                        EntryBoxReason.EntryValidation.Validate();
+                        EntryBoxReason.ShowAll();
                     }
 
                     //TreeViewArticles Work
@@ -401,13 +371,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
                 //Detected SourceDocumentFinance:WayBill
                 if (
-                    _entryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeInvoice ||
-                    _entryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeDeliveryNote ||
-                    _entryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeTransportationGuide ||
-                    _entryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeOwnAssetsDriveGuide ||
-                    _entryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeConsignmentGuide ||
-                    _entryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeInvoiceWayBill ||
-                    _entryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeReturnGuide
+                    EntryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeInvoice ||
+                    EntryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeDeliveryNote ||
+                    EntryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeTransportationGuide ||
+                    EntryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeOwnAssetsDriveGuide ||
+                    EntryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeConsignmentGuide ||
+                    EntryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeInvoiceWayBill ||
+                    EntryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeReturnGuide
                 )
                 {
                     _pagePad2.AssignShipToDetails();
@@ -418,21 +388,21 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
                 //Detected SourceDocumentFinance:Budget/ProForma Invoice
                 if (
-                    _entryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeBudget ||
-                    _entryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeProformaInvoice
+                    EntryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeBudget ||
+                    EntryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeProformaInvoice
                 )
                 {
-                    _entryBoxSelectSourceDocumentFinance.EntryValidation.Sensitive = false;
-                    _entryBoxSelectSourceDocumentFinance.ButtonSelectValue.Sensitive = false;
+                    EntryBoxSelectSourceDocumentFinance.EntryValidation.Sensitive = false;
+                    EntryBoxSelectSourceDocumentFinance.ButtonSelectValue.Sensitive = false;
                 }
                 else
                 {
-                    _entryBoxSelectSourceDocumentFinance.EntryValidation.Sensitive = true;
-                    _entryBoxSelectSourceDocumentFinance.ButtonSelectValue.Sensitive = true;
+                    EntryBoxSelectSourceDocumentFinance.EntryValidation.Sensitive = true;
+                    EntryBoxSelectSourceDocumentFinance.ButtonSelectValue.Sensitive = true;
                 }
 
                 //Get and Assign Criteria for Source Documents
-                _entryBoxSelectSourceDocumentFinance.CriteriaOperator = GetDocumentFinanceTypeSourceDocumentCriteria();
+                EntryBoxSelectSourceDocumentFinance.CriteriaOperator = GetDocumentFinanceTypeSourceDocumentCriteria();
 
                 //Update Dialog Title
                 _posDocumentFinanceDialog.WindowTitle = _posDocumentFinanceDialog.GetPageTitle(_pagePad.CurrentPageIndex);
@@ -462,23 +432,23 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 // SourceDocument
                 if (selectRecordValidation.Name.Equals("SourceDocument"))
                 {
-                    sourceDocument = _entryBoxSelectSourceDocumentFinance.Value;
+                    sourceDocument = EntryBoxSelectSourceDocumentFinance.Value;
                     // Reset CopyDocument
-                    _entryBoxSelectCopyDocumentFinance.Value = null;
-                    _entryBoxSelectCopyDocumentFinance.EntryValidation.Text = string.Empty;
+                    EntryBoxSelectCopyDocumentFinance.Value = null;
+                    EntryBoxSelectCopyDocumentFinance.EntryValidation.Text = string.Empty;
                 }
                 // CopyDocument
                 else
                 {
-                    sourceDocument = _entryBoxSelectCopyDocumentFinance.Value;
+                    sourceDocument = EntryBoxSelectCopyDocumentFinance.Value;
                     // Reset SourceDocument
-                    _entryBoxSelectSourceDocumentFinance.Value = null;
-                    _entryBoxSelectSourceDocumentFinance.EntryValidation.Text = string.Empty;
+                    EntryBoxSelectSourceDocumentFinance.Value = null;
+                    EntryBoxSelectSourceDocumentFinance.EntryValidation.Text = string.Empty;
                     // In Copy Document we must Assign DocumentFinanceType to SelectionBox
-                    _entryBoxSelectDocumentFinanceType.Value = sourceDocument.DocumentType;
-                    _entryBoxSelectDocumentFinanceType.EntryValidation.Text = sourceDocument.DocumentType.Designation;
+                    EntryBoxSelectDocumentFinanceType.Value = sourceDocument.DocumentType;
+                    EntryBoxSelectDocumentFinanceType.EntryValidation.Text = sourceDocument.DocumentType.Designation;
                     //Copy notes from Copy Document #Lindote
-                    if(sourceDocument.Notes != null) _entryBoxDocumentMasterNotes.EntryValidation.Text = sourceDocument.Notes;
+                    if(sourceDocument.Notes != null) EntryBoxDocumentMasterNotes.EntryValidation.Text = sourceDocument.Notes;
                     // Call Update SelectionBox Shared Method
                     SharedUpdateSelectionBoxsAndPageNavigatorOnChangeDocumentType();
                 }
@@ -520,7 +490,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         //Get WayBillMode : Called from other pages and base dialog
         public bool GetAndUpdateUIWayBillMode()
         {
-            bool result = _entryBoxSelectDocumentFinanceType.Value.WayBill;
+            bool result = EntryBoxSelectDocumentFinanceType.Value.WayBill;
 
             //Update UI
 
@@ -573,7 +543,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //Hide Cancelled and Invoiced Documents from Source
             string filterBase = "(Disabled IS NULL OR Disabled  <> 1) AND (DocumentStatusStatus <> 'A' AND DocumentStatusStatus <> 'F') {0}";
             string filterDocs = string.Empty;
-            Guid[] listDocumentTypes = FinancialLibraryUtils.GetDocumentTypeValidSourceDocuments(_entryBoxSelectDocumentFinanceType.Value.Oid);
+            Guid[] listDocumentTypes = FinancialLibraryUtils.GetDocumentTypeValidSourceDocuments(EntryBoxSelectDocumentFinanceType.Value.Oid);
 
             //Generate Filter Docs from listDocumentTypes Array
             for (int i = 0; i < listDocumentTypes.Length; i++)
@@ -636,7 +606,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
                 //If Working on a CreditNote Document(Target), we must Check Already Credited Items in Reference Table, to prevent to Add same items to TreeView 
                 /* IN009206 - Added GT and GR */
-				Guid oid = _entryBoxSelectDocumentFinanceType.Value.Oid;
+				Guid oid = EntryBoxSelectDocumentFinanceType.Value.Oid;
                 if (SharedSettings.XpoOidDocumentFinanceTypeCreditNote.Equals(oid) 
                     || SharedSettings.XpoOidDocumentFinanceTypeTransportationGuide.Equals(oid)
                     || SharedSettings.XpoOidDocumentFinanceTypeDeliveryNote.Equals(oid))
@@ -648,23 +618,23 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                         //Restore Old Value
                         //if all items are already credited in another CreditNote (Count=0), we must keep entryBoxSelectSourceDocumentFinance with old value
                         //and show Info Message alerting user that current invoice is already credited in CreditNote DocumentNumber
-                        _entryBoxSelectSourceDocumentFinance.Value = _entryBoxSelectSourceDocumentFinance.PreviousValue;
-                        if (_entryBoxSelectSourceDocumentFinance.PreviousValue != null)
+                        EntryBoxSelectSourceDocumentFinance.Value = EntryBoxSelectSourceDocumentFinance.PreviousValue;
+                        if (EntryBoxSelectSourceDocumentFinance.PreviousValue != null)
                         {
-                            _entryBoxSelectSourceDocumentFinance.EntryValidation.Text = _entryBoxSelectSourceDocumentFinance.PreviousValue.DocumentNumber;
-                            _entryBoxSelectSourceDocumentFinance.EntryValidation.Validate(_entryBoxSelectSourceDocumentFinance.Value.Oid.ToString());
+                            EntryBoxSelectSourceDocumentFinance.EntryValidation.Text = EntryBoxSelectSourceDocumentFinance.PreviousValue.DocumentNumber;
+                            EntryBoxSelectSourceDocumentFinance.EntryValidation.Validate(EntryBoxSelectSourceDocumentFinance.Value.Oid.ToString());
                         }
                         else
                         {
-                            _entryBoxSelectSourceDocumentFinance.EntryValidation.Text = string.Empty;
-                            _entryBoxSelectSourceDocumentFinance.EntryValidation.Validate(new Guid().ToString());
+                            EntryBoxSelectSourceDocumentFinance.EntryValidation.Text = string.Empty;
+                            EntryBoxSelectSourceDocumentFinance.EntryValidation.Validate(new Guid().ToString());
                         }
                         //Show Message and Return
 						/* IN009241 */
                         string message = string.Format(
-                            resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_info_all_lines_from_this_document_was_already_credited"),
+                            resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_info_all_lines_from_this_document_was_already_credited"),
                             DocumentType.GetDocumentTypeByOid(oid).Designation, 
-                            resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_source_finance_document"), 
+                            resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_source_finance_document"), 
                             creditedDocuments);
 
                         logicpos.Utils.ShowMessageTouch(
@@ -672,7 +642,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                             new System.Drawing.Size(550, 450),
                             MessageType.Info,
                             ButtonsType.Close,
-                            resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_information"),
+                            resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_information"),
                             message);
 
                         return;
@@ -705,14 +675,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 if (_treeViewArticles == null) { _treeViewArticles = (_pagePad.Pages[2] as DocumentFinanceDialogPage3).TreeViewArticles; }
 
                 //If SourceDocument is diferent from Selected Currency Update It to SourceDocument Currency, And Validate it
-                if (_entryBoxSelectConfigurationCurrency.Value != sourceDocument.Currency)
+                if (EntryBoxSelectConfigurationCurrency.Value != sourceDocument.Currency)
                 {
-                    _entryBoxSelectConfigurationCurrency.Value = sourceDocument.Currency;
-                    _entryBoxSelectConfigurationCurrency.EntryValidation.Text = sourceDocument.Currency.Acronym;
-                    _entryBoxSelectConfigurationCurrency.EntryValidation.Validate(sourceDocument.Currency.Oid.ToString());
+                    EntryBoxSelectConfigurationCurrency.Value = sourceDocument.Currency;
+                    EntryBoxSelectConfigurationCurrency.EntryValidation.Text = sourceDocument.Currency.Acronym;
+                    EntryBoxSelectConfigurationCurrency.EntryValidation.Validate(sourceDocument.Currency.Oid.ToString());
                 }
                 //Page1: Notes from Source document
-                _entryBoxDocumentMasterNotes.EntryValidation.Text = sourceDocument.Notes;
+                EntryBoxDocumentMasterNotes.EntryValidation.Text = sourceDocument.Notes;
 
                 //Page2:Customer
                 erp_customer customer = (erp_customer)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(erp_customer), sourceDocument.EntityOid);
@@ -777,14 +747,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                     dataRow["Article.Designation"] = item.Article;
                     dataRow["Quantity"] = item.Quantity;
                     dataRow["Price"] = item.Price;
-                    dataRow["PriceDisplay"] = item.Price * _entryBoxSelectConfigurationCurrency.Value.ExchangeRate;
+                    dataRow["PriceDisplay"] = item.Price * EntryBoxSelectConfigurationCurrency.Value.ExchangeRate;
                     dataRow["ConfigurationVatRate.Value"] = item.VatRate;
                     dataRow["VatExemptionReason.Acronym"] = item.VatExemptionReason;
                     dataRow["Discount"] = item.Discount;
 					/* IN009206 */
-                    dataRow["TotalNet"] = item.TotalNet * _entryBoxSelectConfigurationCurrency.Value.ExchangeRate;
-                    dataRow["TotalFinal"] = item.TotalFinal * _entryBoxSelectConfigurationCurrency.Value.ExchangeRate;
-                    dataRow["PriceFinal"] = item.PriceFinal * _entryBoxSelectConfigurationCurrency.Value.ExchangeRate;
+                    dataRow["TotalNet"] = item.TotalNet * EntryBoxSelectConfigurationCurrency.Value.ExchangeRate;
+                    dataRow["TotalFinal"] = item.TotalFinal * EntryBoxSelectConfigurationCurrency.Value.ExchangeRate;
+                    dataRow["PriceFinal"] = item.PriceFinal * EntryBoxSelectConfigurationCurrency.Value.ExchangeRate;
                     dataRow["PriceType"] = item.PriceType;
                     // Required to add string, if assign null value we have problems with updates and DBNull Type
                     dataRow["Token1"] = (item.Token1 != null) ? item.Token1 : string.Empty;
@@ -816,7 +786,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
         public void UnProtectChildDocumentChanges()
         {
-            _entryBoxSelectConfigurationCurrency.ButtonSelectValue.Sensitive = true;
+            EntryBoxSelectConfigurationCurrency.ButtonSelectValue.Sensitive = true;
             _pagePad3.TreeViewArticles.ReadOnly = false;
             _pagePad3.TreeViewArticles.AllowRecordUpdate = true;
             _pagePad3.TreeViewArticles.AllowRecordInsert = true;
@@ -833,7 +803,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //if (_entryBoxSelectSourceDocumentFinance.Value.DocumentType.Oid == SettingsApp.XpoOidDocumentFinanceTypeConsignationInvoice)
             //Protect Edits all Documents Articled Except Credit and Debit Notes
 			/* IN009206 - Added GT and GR */
-            Guid oid = _entryBoxSelectDocumentFinanceType.Value.Oid;
+            Guid oid = EntryBoxSelectDocumentFinanceType.Value.Oid;
             if (
                 !SharedSettings.XpoOidDocumentFinanceTypeDebitNote.Equals(oid)
                 && !SharedSettings.XpoOidDocumentFinanceTypeCreditNote.Equals(oid)
@@ -841,16 +811,16 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 && !SharedSettings.XpoOidDocumentFinanceTypeDeliveryNote.Equals(oid)
             )
             {
-                _entryBoxSelectConfigurationCurrency.ButtonSelectValue.Sensitive = false;
+                EntryBoxSelectConfigurationCurrency.ButtonSelectValue.Sensitive = false;
                 //_pagePad2.EntryBoxCustomerDiscount.EntryValidation.Sensitive = false;
                 _pagePad3.TreeViewArticles.ReadOnly = true;
 
                 // SourceDocument
                 // Edit articles from pro-forma
-                if(_entryBoxSelectSourceDocumentFinance.Value != null)
+                if(EntryBoxSelectSourceDocumentFinance.Value != null)
                 {
                     fin_documentfinancemaster sourceDocument;
-                    sourceDocument = _entryBoxSelectSourceDocumentFinance.Value;
+                    sourceDocument = EntryBoxSelectSourceDocumentFinance.Value;
                     if (sourceDocument != null && (sourceDocument.DocumentType.Oid == SharedSettings.XpoOidDocumentFinanceTypeProformaInvoice || 
                         sourceDocument.DocumentType.Oid == SharedSettings.XpoOidDocumentFinanceTypeBudget))
                     {
@@ -863,7 +833,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             }
             else
             {
-                _entryBoxSelectConfigurationCurrency.ButtonSelectValue.Sensitive = true;
+                EntryBoxSelectConfigurationCurrency.ButtonSelectValue.Sensitive = true;
                 //_pagePad2.EntryBoxCustomerDiscount.EntryValidation.Sensitive = true;
                 _pagePad3.TreeViewArticles.ReadOnly = false;
                 //Disable Insert and Update
@@ -880,8 +850,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         private void UpdateDocumentMasterNotesFromDocumentFinanceTypeNotes()
         {
             // Fill Default Notes From DocumentFinanceType, usefull for IBANS and Other Custom/Generic Notes
-            _entryBoxDocumentMasterNotes.EntryValidation.Text = (_entryBoxSelectDocumentFinanceType.Value != null && _entryBoxSelectDocumentFinanceType.Value.Notes != null)
-                ? _entryBoxSelectDocumentFinanceType.Value.Notes
+            EntryBoxDocumentMasterNotes.EntryValidation.Text = (EntryBoxSelectDocumentFinanceType.Value != null && EntryBoxSelectDocumentFinanceType.Value.Notes != null)
+                ? EntryBoxSelectDocumentFinanceType.Value.Notes
                 : null;
         }
         
@@ -899,80 +869,80 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
             //ConfigurationPaymentCondition
             if (
-                _entryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeInvoice ||
-                _entryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeConsignationInvoice ||
-                _entryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeBudget ||
-                _entryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeProformaInvoice ||
-                _entryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeCurrentAccountInput
+                EntryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeInvoice ||
+                EntryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeConsignationInvoice ||
+                EntryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeBudget ||
+                EntryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeProformaInvoice ||
+                EntryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeCurrentAccountInput
             )
             {
                 //Enable Widget
-                _entryBoxSelectConfigurationPaymentCondition.EntryValidation.Sensitive = true;
-                _entryBoxSelectConfigurationPaymentCondition.ButtonSelectValue.Sensitive = true;
+                EntryBoxSelectConfigurationPaymentCondition.EntryValidation.Sensitive = true;
+                EntryBoxSelectConfigurationPaymentCondition.ButtonSelectValue.Sensitive = true;
 
                 //Set Defaults
-                if (_entryBoxSelectConfigurationPaymentCondition.Value == null)
+                if (EntryBoxSelectConfigurationPaymentCondition.Value == null)
                 {
-                    _entryBoxSelectConfigurationPaymentCondition.Value = _defaultValueConfigurationPaymentCondition;
-                    _entryBoxSelectConfigurationPaymentCondition.EntryValidation.Text = _defaultValueConfigurationPaymentCondition.Designation;
+                    EntryBoxSelectConfigurationPaymentCondition.Value = _defaultValueConfigurationPaymentCondition;
+                    EntryBoxSelectConfigurationPaymentCondition.EntryValidation.Text = _defaultValueConfigurationPaymentCondition.Designation;
                 }
                 //Set Null
-                if (_entryBoxSelectConfigurationPaymentMethod.Value != null)
+                if (EntryBoxSelectConfigurationPaymentMethod.Value != null)
                 {
-                    _entryBoxSelectConfigurationPaymentMethod.Value = null;
-                    _entryBoxSelectConfigurationPaymentMethod.EntryValidation.Text = string.Empty;
-                    _entryBoxSelectConfigurationPaymentMethod.EntryValidation.Sensitive = false;
-                    _entryBoxSelectConfigurationPaymentMethod.ButtonSelectValue.Sensitive = false;
-                    _entryBoxSelectConfigurationPaymentMethod.EntryValidation.Required = false;
-                    _entryBoxSelectConfigurationPaymentMethod.EntryValidation.Validate();
+                    EntryBoxSelectConfigurationPaymentMethod.Value = null;
+                    EntryBoxSelectConfigurationPaymentMethod.EntryValidation.Text = string.Empty;
+                    EntryBoxSelectConfigurationPaymentMethod.EntryValidation.Sensitive = false;
+                    EntryBoxSelectConfigurationPaymentMethod.ButtonSelectValue.Sensitive = false;
+                    EntryBoxSelectConfigurationPaymentMethod.EntryValidation.Required = false;
+                    EntryBoxSelectConfigurationPaymentMethod.EntryValidation.Validate();
                 }
             }
             //ConfigurationPaymentMethod
             else if (
-                _entryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice ||
-                _entryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment
+                EntryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice ||
+                EntryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment
             )
             {
                 //Enable Widget
-                _entryBoxSelectConfigurationPaymentMethod.EntryValidation.Sensitive = true;
-                _entryBoxSelectConfigurationPaymentMethod.ButtonSelectValue.Sensitive = true;
+                EntryBoxSelectConfigurationPaymentMethod.EntryValidation.Sensitive = true;
+                EntryBoxSelectConfigurationPaymentMethod.ButtonSelectValue.Sensitive = true;
 
                 //Set Defaults
-                if (_entryBoxSelectConfigurationPaymentMethod.Value == null)
+                if (EntryBoxSelectConfigurationPaymentMethod.Value == null)
                 {
-                    _entryBoxSelectConfigurationPaymentMethod.Value = _defaultValueConfigurationPaymentMethod;
-                    _entryBoxSelectConfigurationPaymentMethod.EntryValidation.Text = _defaultValueConfigurationPaymentMethod.Designation;
+                    EntryBoxSelectConfigurationPaymentMethod.Value = _defaultValueConfigurationPaymentMethod;
+                    EntryBoxSelectConfigurationPaymentMethod.EntryValidation.Text = _defaultValueConfigurationPaymentMethod.Designation;
                 }
                 //Set Null
-                if (_entryBoxSelectConfigurationPaymentCondition.Value != null)
+                if (EntryBoxSelectConfigurationPaymentCondition.Value != null)
                 {
-                    _entryBoxSelectConfigurationPaymentCondition.Value = null;
-                    _entryBoxSelectConfigurationPaymentCondition.EntryValidation.Text = string.Empty;
-                    _entryBoxSelectConfigurationPaymentCondition.EntryValidation.Sensitive = false;
-                    _entryBoxSelectConfigurationPaymentCondition.ButtonSelectValue.Sensitive = false;
-                    _entryBoxSelectConfigurationPaymentCondition.EntryValidation.Required = false;
-                    _entryBoxSelectConfigurationPaymentCondition.EntryValidation.Validate();
+                    EntryBoxSelectConfigurationPaymentCondition.Value = null;
+                    EntryBoxSelectConfigurationPaymentCondition.EntryValidation.Text = string.Empty;
+                    EntryBoxSelectConfigurationPaymentCondition.EntryValidation.Sensitive = false;
+                    EntryBoxSelectConfigurationPaymentCondition.ButtonSelectValue.Sensitive = false;
+                    EntryBoxSelectConfigurationPaymentCondition.EntryValidation.Required = false;
+                    EntryBoxSelectConfigurationPaymentCondition.EntryValidation.Validate();
                 }
             }
             else
             {
                 //Set Null:EntryBoxSelectConfigurationPaymentCondition
-                _entryBoxSelectConfigurationPaymentCondition.Value = null;
-                _entryBoxSelectConfigurationPaymentCondition.EntryValidation.Text = string.Empty;
-                _entryBoxSelectConfigurationPaymentCondition.EntryValidation.Sensitive = false;
-                _entryBoxSelectConfigurationPaymentCondition.ButtonSelectValue.Sensitive = false;
-                _entryBoxSelectConfigurationPaymentCondition.EntryValidation.Required = false;
-                _entryBoxSelectConfigurationPaymentCondition.EntryValidation.Validate();
+                EntryBoxSelectConfigurationPaymentCondition.Value = null;
+                EntryBoxSelectConfigurationPaymentCondition.EntryValidation.Text = string.Empty;
+                EntryBoxSelectConfigurationPaymentCondition.EntryValidation.Sensitive = false;
+                EntryBoxSelectConfigurationPaymentCondition.ButtonSelectValue.Sensitive = false;
+                EntryBoxSelectConfigurationPaymentCondition.EntryValidation.Required = false;
+                EntryBoxSelectConfigurationPaymentCondition.EntryValidation.Validate();
                 //Set Null:EntryBoxSelectConfigurationPaymentMethod
-                _entryBoxSelectConfigurationPaymentMethod.Value = null;
-                _entryBoxSelectConfigurationPaymentMethod.EntryValidation.Text = string.Empty;
-                _entryBoxSelectConfigurationPaymentMethod.EntryValidation.Sensitive = false;
-                _entryBoxSelectConfigurationPaymentMethod.ButtonSelectValue.Sensitive = false;
-                _entryBoxSelectConfigurationPaymentMethod.EntryValidation.Required = false;
-                _entryBoxSelectConfigurationPaymentMethod.EntryValidation.Validate();
+                EntryBoxSelectConfigurationPaymentMethod.Value = null;
+                EntryBoxSelectConfigurationPaymentMethod.EntryValidation.Text = string.Empty;
+                EntryBoxSelectConfigurationPaymentMethod.EntryValidation.Sensitive = false;
+                EntryBoxSelectConfigurationPaymentMethod.ButtonSelectValue.Sensitive = false;
+                EntryBoxSelectConfigurationPaymentMethod.EntryValidation.Required = false;
+                EntryBoxSelectConfigurationPaymentMethod.EntryValidation.Validate();
                 //Set UnRequired:EntryBoxSelectSourceDocumentFinance
-                _entryBoxSelectSourceDocumentFinance.EntryValidation.Required = false;
-                _entryBoxSelectSourceDocumentFinance.EntryValidation.Validate();
+                EntryBoxSelectSourceDocumentFinance.EntryValidation.Required = false;
+                EntryBoxSelectSourceDocumentFinance.EntryValidation.Validate();
             };
         }
     }

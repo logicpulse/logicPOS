@@ -1,9 +1,6 @@
 ﻿using Gtk;
-using logicpos.App;
-using logicpos.financial;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
-using logicpos.shared;
 using System;
 using System.Drawing;
 using System.Reflection;

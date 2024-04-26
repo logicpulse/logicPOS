@@ -14,12 +14,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {
     internal class GenericTreeViewXPO : GenericTreeView<XPCollection, XPGuidObject>
     {
-        private Type _xpoGuidObjectType;
-        public Type XPObjectType
-        {
-            get { return _xpoGuidObjectType; }
-            set { _xpoGuidObjectType = value; }
-        }
+        public Type XPObjectType { get; set; }
         //Protected Records
         protected List<Guid> _protectedRecords = new List<Guid>();
         public List<Guid> ProtectedRecords
@@ -62,7 +57,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                 _dataSourceRow = pXpoDefaultValue;
             }
             _guidDefaultValue = (_dataSourceRow != null) ? _dataSourceRow.Oid : default;
-            _xpoGuidObjectType = pXpoCollection.ObjectType;
+            XPObjectType = pXpoCollection.ObjectType;
             _dialogType = pDialogType;
             _columnProperties = pColumnProperties;
             _treeViewMode = pGenericTreeViewMode;
@@ -102,7 +97,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 
             //Prepare CRUD Privileges
             //Require to use Object Name Without Prefixs (Remove Prefixs PFX_)
-            string objectNameWithoutPrefix = _xpoGuidObjectType.UnderlyingSystemType.Name.Substring(4, _xpoGuidObjectType.UnderlyingSystemType.Name.Length - 4);
+            string objectNameWithoutPrefix = XPObjectType.UnderlyingSystemType.Name.Substring(4, XPObjectType.UnderlyingSystemType.Name.Length - 4);
             string tokenAllowDelete = string.Format("{0}_{1}", string.Format(POSSettings.PrivilegesBackOfficeCRUDOperationPrefix, objectNameWithoutPrefix), "DELETE").ToUpper();
             string tokenAllowInsert = string.Format("{0}_{1}", string.Format(POSSettings.PrivilegesBackOfficeCRUDOperationPrefix, objectNameWithoutPrefix), "CREATE").ToUpper();
             string tokenAllowUpdate = string.Format("{0}_{1}", string.Format(POSSettings.PrivilegesBackOfficeCRUDOperationPrefix, objectNameWithoutPrefix), "EDIT").ToUpper();
@@ -297,7 +292,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                                 if (GetXPGuidObjectChildValue(dataRow.GetMemberValue(_columnProperties[i].Name), fieldName, _columnProperties[i].ChildName).Equals("False") || GetXPGuidObjectChildValue(dataRow.GetMemberValue(_columnProperties[i].Name), fieldName, _columnProperties[i].ChildName).Equals("True"))
                                 {
                                     bool booleanValue = Convert.ToBoolean(GetXPGuidObjectChildValue(dataRow.GetMemberValue(_columnProperties[i].Name), fieldName, _columnProperties[i].ChildName));
-                                    columnValues[i] = (booleanValue) ? resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_treeview_true") : resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_treeview_false");
+                                    columnValues[i] = (booleanValue) ? resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_treeview_true") : resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_treeview_false");
                                 }
                                 else
                                 {
@@ -326,12 +321,12 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                                 else if (dataRow.GetMemberValue(_columnProperties[i].Name).GetType().Name.Equals("Boolean"))
                                 {
                                     bool booleanValue = Convert.ToBoolean(dataRow.GetMemberValue(_columnProperties[i].Name));
-                                    columnValues[i] = (booleanValue) ? resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_treeview_true") : resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_treeview_false");
+                                    columnValues[i] = (booleanValue) ? resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_treeview_true") : resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_treeview_false");
                                 }
                                 else if (dataRow.GetMemberValue(_columnProperties[i].Name).Equals("False") || dataRow.GetMemberValue(_columnProperties[i].Name).Equals("True"))
                                 {
                                     bool booleanValue = Convert.ToBoolean(dataRow.GetMemberValue(_columnProperties[i].Name));
-                                    columnValues[i] = (booleanValue) ? resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_treeview_true") : resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_treeview_false");
+                                    columnValues[i] = (booleanValue) ? resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_treeview_true") : resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_treeview_false");
                                 }
                                 //Enum
                                 else if (dataRow.GetType() == typeof(fin_articleserialnumber) && _columnProperties[i].Name == "Status")
@@ -367,12 +362,12 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                             // Try to get ResourceString Value, this is required to replace value, but only if it a valid resourceString (not replaced yet after update)
                             // After an Update and Refresh it turns into a string(non resource token), this protection prevents the replace double with a null resourceString, 
                             // leaving tree cell value with an empty value
-                            bool checkIfResourceStringExist = (resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], columnValues[i].ToString()) != null);
+                            bool checkIfResourceStringExist = (resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], columnValues[i].ToString()) != null);
                             // Only Replace resourceString if value is resourceString is not Yet been replaced, ex after an update
                             //_logger.Debug(string.Format("columnValues[i]#1: [{0}]", columnValues[i]));
                             if (checkIfResourceStringExist)
                             {
-                                columnValues[i] = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], columnValues[i].ToString());
+                                columnValues[i] = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], columnValues[i].ToString());
                             }
                             //_logger.Debug(string.Format("columnValues[i]#2: [{0}]", columnValues[i]));
                         }
@@ -429,7 +424,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                       pDataSourceRow.GetMemberValue(_columnProperties[pColumnIndex].Name).GetType().Name.Equals("Boolean"))
                     {
                         bool boolValue = Convert.ToBoolean(pDataSourceRow.GetMemberValue(_columnProperties[pColumnIndex].Name));
-                        fieldValue = (boolValue) ? resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_treeview_true") : resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_treeview_false");
+                        fieldValue = (boolValue) ? resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_treeview_true") : resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_treeview_false");
                     }
                     //All Other Fields
                     else
@@ -450,7 +445,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 
         public override XPGuidObject DataSourceRowGetNewRecord()
         {
-            XPGuidObject newXPGuidObject = (XPGuidObject)Activator.CreateInstance(_xpoGuidObjectType);
+            XPGuidObject newXPGuidObject = (XPGuidObject)Activator.CreateInstance(XPObjectType);
 
             foreach (GenericTreeViewColumnProperty column in _columnProperties)
             {

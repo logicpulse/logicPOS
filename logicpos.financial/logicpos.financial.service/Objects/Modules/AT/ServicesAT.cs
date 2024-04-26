@@ -22,15 +22,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
         //Log4Net
         protected log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        //WebService and Files
-        //Pub
-        
-        private bool _validCerificates = false;
-        public bool ValidCerificates
-        {
-            get { return _validCerificates; }
-            set { _validCerificates = value; }
-        }
+        public bool ValidCerificates { get; set; } = false;
         private readonly bool _wayBillMode;
         private readonly Uri _urlWebService;
         private readonly Uri _urlSoapAction;
@@ -215,7 +207,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
 
             if (File.Exists(_pathPublicKey) && File.Exists(_pathCertificate))
             {
-                _validCerificates = true;
+                ValidCerificates = true;
             }
             else
             {
@@ -650,7 +642,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
             Utils.Log(string.Format("Send Document DocumentNumber: [{0}]/WayBillMode: [{1}]", _documentMaster.DocumentNumber, _wayBillMode));
 
             //Check Certificates
-            if (!_validCerificates)
+            if (!ValidCerificates)
             {
                 string msg = string.Format("Invalid Certificates: [{0}], [{1}] in current Directory [{2}]", _pathPublicKey, _pathCertificate, Directory.GetCurrentDirectory());
                 Utils.Log(msg);

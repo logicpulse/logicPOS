@@ -1,6 +1,5 @@
 ﻿using Gtk;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.resources.Resources.Localization;
 using logicpos.datalayer.Enums;
 using logicpos.shared.Enums;
 using System;
@@ -165,7 +164,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 case TableViewMode.Orders:
                     /* IN008024 */
-                    _labelWindowTitle.Text = resources.CustomResources.GetCustomResources("", string.Format("window_title_dialog_tables_appmode_{0}", DataLayerSettings.CustomAppOperationMode.AppOperationTheme).ToLower());
+                    _labelWindowTitle.Text = resources.CustomResources.GetCustomResource("", string.Format("window_title_dialog_tables_appmode_{0}", DataLayerSettings.CustomAppOperationMode.AppOperationTheme).ToLower());
                     //Tables
                     _currentViewMode = TableViewMode.Tables;
                     _buttonTableViewOrders.Visible = true;
@@ -185,7 +184,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     _tablePadPlace.Sql = _sqlPlaceBaseTable;
                     break;
                 case TableViewMode.Tables:
-                    _labelWindowTitle.Text = resources.CustomResources.GetCustomResources("", "window_title_dialog_orders");
+                    _labelWindowTitle.Text = resources.CustomResources.GetCustomResource("", "window_title_dialog_orders");
                     //Orders
                     _currentViewMode = TableViewMode.Orders;
                     _buttonTableViewOrders.Visible = false;

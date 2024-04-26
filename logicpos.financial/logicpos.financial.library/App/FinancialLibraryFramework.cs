@@ -1,5 +1,4 @@
 ﻿using logicpos.financial.library.Classes.Finance;
-using logicpos.financial.library.Classes.Stocks;
 
 namespace logicpos.financial.library.App
 {
@@ -8,9 +7,6 @@ namespace logicpos.financial.library.App
     /// </summary>
     public static class FinancialLibraryFramework 
     {
-        //Modules
-        private static IStockManagementModule stockManagementModule;
-
-        internal static IStockManagementModule StockManagementModule { get => stockManagementModule; set => stockManagementModule = value; }
+        internal static IStockManagementModule StockManagementModule { get; set; }
     }
 }

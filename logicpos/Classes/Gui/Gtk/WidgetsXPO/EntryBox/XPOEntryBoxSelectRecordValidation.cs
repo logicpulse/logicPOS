@@ -1,7 +1,6 @@
 ﻿using DevExpress.Data.Filtering;
 using Gtk;
 using logicpos.Classes.Enums.Keyboard;
-using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.datalayer.DataLayer.Xpo;
 using System;
@@ -20,42 +19,14 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
         public new Entry Entry { get; set; }
+        public EntryValidation EntryValidation { get; set; }
+        public EntryValidation EntryCodeValidation { get; set; }
 
-        //Public Fields
-        private EntryValidation _entryValidation;
-        public EntryValidation EntryValidation
-        {
-            get { return _entryValidation; }
-            set { _entryValidation = value; }
-        }
-		//Artigos Compostos [IN:016522]
-        private EntryValidation _entryCodeValidation;
-        public EntryValidation EntryCodeValidation
-        {
-            get { return _entryCodeValidation; }
-            set { _entryCodeValidation = value; }
-        }
+        public EntryValidation EntryQtdValidation { get; set; }
 
-        private EntryValidation _qtdEntryValidation;
-        public EntryValidation EntryQtdValidation
-        {
-            get { return _qtdEntryValidation; }
-            set { _qtdEntryValidation = value; }
-        }
+        public int EntryNumber { get; set; }
 
-        private int _entryNumber;
-        public int EntryNumber
-        {
-            get { return _entryNumber; }
-            set { _entryNumber = value; }
-        }
-
-        private fin_article _article;
-        public fin_article Article
-        {
-            get { return _article; }
-            set { _article = value; }
-        }
+        public fin_article Article { get; set; }
 
         //Constructor/OverLoads
         public XPOEntryBoxSelectRecordValidation(Window pSourceWindow, string pLabelText, string pFieldDisplayValue, string pRule)
@@ -76,44 +47,44 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
         public XPOEntryBoxSelectRecordValidation(Window pSourceWindow, string pLabelText, string pFieldDisplayValue, string pFieldValidateValue, T1 pCurrentValue, CriteriaOperator pCriteriaOperator, KeyboardMode pKeyboardMode, string pRule, bool pRequired, bool pBOSource = false, string pFieldValidateValueCode = "", string pFieldValidateValueQtd = "", int pEntryNumber = 0)
             : base(pSourceWindow, pLabelText, pFieldDisplayValue, pFieldValidateValue, pCurrentValue, pCriteriaOperator, pBOSource)
         {
-            _entryNumber = pEntryNumber;
+            EntryNumber = pEntryNumber;
 
             //Entry: Required to Assign BaseClass _label Reference to EntryValidation.Label :)
-            _entryValidation = new EntryValidation(pSourceWindow, pKeyboardMode, pRule, pRequired) { Label = _label, Label2 = _label2, Label3 = _label3 };
+            EntryValidation = new EntryValidation(pSourceWindow, pKeyboardMode, pRule, pRequired) { Label = _label, Label2 = _label2, Label3 = _label3 };
 
             //Start Validated
-            _entryValidation.Validate(GetValue(pFieldValidateValue));
+            EntryValidation.Validate(GetValue(pFieldValidateValue));
 
             //Always validate when we Change Values
-            _entryValidation.Changed += delegate
+            EntryValidation.Changed += delegate
             {
-                _entryValidation.Validate(GetValue(pFieldValidateValue));
+                EntryValidation.Validate(GetValue(pFieldValidateValue));
             };
 			//Artigos Compostos [IN:016522]
             if (pBOSource && pEntryNumber > 0)
             {
-                _entryCodeValidation = new EntryValidation(pSourceWindow, pKeyboardMode, pFieldValidateValueCode, pRequired) { Label = _label, Label2 = _label2, Label3 = _label3 };
+                EntryCodeValidation = new EntryValidation(pSourceWindow, pKeyboardMode, pFieldValidateValueCode, pRequired) { Label = _label, Label2 = _label2, Label3 = _label3 };
 
-                _qtdEntryValidation = new EntryValidation(pSourceWindow, KeyboardMode.None, pFieldValidateValueQtd, pRequired) { Label = _label, Label2 = _label2, Label3 = _label3 };
+                EntryQtdValidation = new EntryValidation(pSourceWindow, KeyboardMode.None, pFieldValidateValueQtd, pRequired) { Label = _label, Label2 = _label2, Label3 = _label3 };
 
-                InitEntryBOSource(_entryCodeValidation,_entryValidation, _qtdEntryValidation);                
+                InitEntryBOSource(EntryCodeValidation,EntryValidation, EntryQtdValidation);                
             }
             else
             {
-                InitEntry(_entryValidation);
+                InitEntry(EntryValidation);
             }
             
             //Init Keyboard
-            InitKeyboard(_entryValidation);
+            InitKeyboard(EntryValidation);
         }
 
         //Work in Keyboard Mode or XPOObject Mode
         private string GetValue(string pFieldValidateValue)
         {
             //Work in Keyboard Mode or XPOObject Mode
-            if (_entryValidation.KeyboardMode != KeyboardMode.None)
+            if (EntryValidation.KeyboardMode != KeyboardMode.None)
             {
-                return _entryValidation.Text;
+                return EntryValidation.Text;
             }
             else
             {

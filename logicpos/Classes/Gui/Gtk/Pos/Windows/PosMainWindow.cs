@@ -24,7 +24,7 @@ namespace logicpos
 
         /* IN006045 */
         //private string _clockFormat = DataLayerFramework.Settings["dateTimeFormatStatusBar"];
-        private readonly string _clockFormat = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "frontoffice_datetime_format_status_bar");
+        private readonly string _clockFormat = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "frontoffice_datetime_format_status_bar");
 
         private readonly Color _colorPosNumberPadLeftButtonBackground = DataLayerFramework.Settings["colorPosNumberPadLeftButtonBackground"].StringToColor();
         private readonly Color _colorPosNumberRightButtonBackground = DataLayerFramework.Settings["colorPosNumberRightButtonBackground"].StringToColor();
@@ -33,11 +33,9 @@ namespace logicpos
         private readonly Fixed _fixedWindow;
         private Label _labelClock;
         private TextView _textviewLog;
-        private TicketList _ticketList;
-        public TicketList TicketList
-        {
-            get { return _ticketList; }
-        }
+
+        public TicketList TicketList { get; private set; }
+
         private TouchButtonIconWithText _touchButtonPosToolbarApplicationClose;
         private TouchButtonIconWithText _touchButtonPosToolbarBackOffice;
         private TouchButtonIconWithText _touchButtonPosToolbarReports;
@@ -46,65 +44,23 @@ namespace logicpos
         private TouchButtonIconWithText _touchButtonPosToolbarShowChangeUserDialog;
         private TouchButtonIconWithText _touchButtonPosToolbarCashDrawer;
         private TouchButtonIconWithText _touchButtonPosToolbarFinanceDocuments;
-        private TouchButtonIconWithText _touchButtonPosToolbarNewFinanceDocument;
-        public TouchButtonIconWithText TouchButtonPosToolbarNewFinanceDocument
-        {
-            get { return _touchButtonPosToolbarNewFinanceDocument; }
-            set { _touchButtonPosToolbarNewFinanceDocument = value; }
-        }
+
+        public TouchButtonIconWithText TouchButtonPosToolbarNewFinanceDocument { get; set; }
+       
         private TicketPad _ticketPad;
         //Others
         private readonly uint _borderWidth = 5;
 
-        //Public Properties
-        private TablePad _tablePadFamily;
-        internal TablePad TablePadFamily
-        {
-            get { return _tablePadFamily; }
-            set { _tablePadFamily = value; }
-        }
-        //SubFamily TablePad
-        private TablePad _tablePadSubFamily;
-        internal TablePad TablePadSubFamily
-        {
-            get { return _tablePadSubFamily; }
-            set { _tablePadSubFamily = value; }
-        }
-        //Article TablePad
-        private TablePad _tablePadArticle;
-        internal TablePad TablePadArticle
-        {
-            get { return _tablePadArticle; }
-            set { _tablePadArticle = value; }
-        }
-        //BufferTextView
-        private TextBuffer _bufferTextView;
-        public TextBuffer BufferTextView
-        {
-            get { return _bufferTextView; }
-            set { _bufferTextView = value; }
-        }
-        //LabelCurrentUserName
-        private Label _labelTerminalInfo;
-        public Label LabelTerminalInfo
-        {
-            get { return _labelTerminalInfo; }
-            set { _labelTerminalInfo = value; }
-        }
-        //LabelCurrentTable
-        private Label _labelCurrentTable;
-        public Label LabelCurrentTable
-        {
-            get { return _labelCurrentTable; }
-            set { _labelCurrentTable = value; }
-        }
-        //LabelTotalTable
-        private Label _labelTotalTable;
-        public Label LabelTotalTable
-        {
-            get { return _labelTotalTable; }
-            set { _labelTotalTable = value; }
-        }
+        internal TablePad TablePadFamily { get; set; }
+        internal TablePad TablePadSubFamily { get; set; }
+
+        internal TablePad TablePadArticle { get; set; }
+        public TextBuffer BufferTextView { get; set; }
+
+        public Label LabelTerminalInfo { get; set; }
+        public Label LabelCurrentTable { get; set; }
+
+        public Label LabelTotalTable { get; set; }
 
         //Constructor
         public PosMainWindow(string pBackgroundImage)
@@ -130,7 +86,7 @@ namespace logicpos
                 //GlobalApp.DialogThreadWork.Run();
 
                 //Call - To Update start _labelCurrentTable.Text
-                _ticketList.UpdateOrderStatusBar();
+                TicketList.UpdateOrderStatusBar();
 
                 //Update WorkSessionUI Before Clock
                 UpdateWorkSessionUI();
@@ -139,10 +95,10 @@ namespace logicpos
                 StartClock();
 
                 //Startup Filter
-                _tablePadArticle.Filter = " AND (Favorite = 1)";
+                TablePadArticle.Filter = " AND (Favorite = 1)";
 
                 //Always update buttons when construct window, may return from a program crash
-                _ticketList.UpdateTicketListButtons();
+                TicketList.UpdateTicketListButtons();
 
                 this.ScreenArea.Add(_fixedWindow);
 
@@ -224,7 +180,7 @@ namespace logicpos
                         ICollection collectionDocumentFinanceSeries = DataLayerFramework.SessionXpo.GetObjects(DataLayerFramework.SessionXpo.GetClassInfo(typeof(fin_documentfinanceyearserieterminal)), criteria, sortCollection, int.MaxValue, false, true);
                         if (collectionDocumentFinanceSeries.Count == 0)
                         {
-                            Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warning"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warning_open_fiscal_year"));
+                            Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warning"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warning_open_fiscal_year"));
                         }
                     }
                     catch (Exception ex)
@@ -318,10 +274,10 @@ namespace logicpos
             eventBoxStatusBar1.ModifyBg(StateType.Normal, eventBoxStatusBar1BackgroundColor);
 
             //EventBoxStatusBar1:LabelTerminalInfo
-            _labelTerminalInfo = new Label(string.Format("{0} : {1}", DataLayerFramework.LoggedTerminal.Designation, DataLayerFramework.LoggedUser.Name));
-            _labelTerminalInfo.ModifyFont(labelTerminalInfoFont);
-            _labelTerminalInfo.ModifyFg(StateType.Normal, labelTerminalInfoFontColor);
-            _labelTerminalInfo.SetAlignment(labelTerminalInfoAlignmentX, 0.5F);
+            LabelTerminalInfo = new Label(string.Format("{0} : {1}", DataLayerFramework.LoggedTerminal.Designation, DataLayerFramework.LoggedUser.Name));
+            LabelTerminalInfo.ModifyFont(labelTerminalInfoFont);
+            LabelTerminalInfo.ModifyFg(StateType.Normal, labelTerminalInfoFontColor);
+            LabelTerminalInfo.SetAlignment(labelTerminalInfoAlignmentX, 0.5F);
 
             //EventBoxStatusBar1:LabelClock
             _labelClock = new Label(SharedUtils.CurrentDateTime(_clockFormat));
@@ -331,7 +287,7 @@ namespace logicpos
 
             //Pack HBox EventBoxStatusBar1
             HBox hboxStatusBar1 = new HBox(false, 0) { BorderWidth = _borderWidth };
-            hboxStatusBar1.PackStart(_labelTerminalInfo, false, false, 0);
+            hboxStatusBar1.PackStart(LabelTerminalInfo, false, false, 0);
             hboxStatusBar1.PackStart(_labelClock, true, true, 0);
             eventBoxStatusBar1.Add(hboxStatusBar1);
 
@@ -381,39 +337,39 @@ namespace logicpos
             eventBoxStatusBar2.ModifyBg(StateType.Normal, eventBoxStatusBar2BackgroundColor);
 
             //EventBoxStatusBar2:vboxCurrentTable:LabelCurrentTableLabel
-            string global_table = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], string.Format("global_table_appmode_{0}", DataLayerSettings.CustomAppOperationMode.AppOperationTheme).ToLower()); /* IN008024 */
+            string global_table = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], string.Format("global_table_appmode_{0}", DataLayerSettings.CustomAppOperationMode.AppOperationTheme).ToLower()); /* IN008024 */
             Label labelCurrentTableLabel = new Label(global_table);
             labelCurrentTableLabel.ModifyFont(labelCurrentTableLabelFont);
             labelCurrentTableLabel.ModifyFg(StateType.Normal, labelCurrentTableLabelFontColor);
             labelCurrentTableLabel.SetAlignment(labelCurrentTableLabelAlignmentX, 0.5F);
 
             //EventBoxStatusBar2:vboxCurrentTable:LabelCurrentTable
-            _labelCurrentTable = new Label();//Text assigned on TicketList.UpdateOrderStatusBar()
-            _labelCurrentTable.ModifyFont(labelCurrentTableFont);
-            _labelCurrentTable.ModifyFg(StateType.Normal, labelCurrentTableFontColor);
-            _labelCurrentTable.SetAlignment(labelCurrentTableAlignmentX, 0.5F);
+            LabelCurrentTable = new Label();//Text assigned on TicketList.UpdateOrderStatusBar()
+            LabelCurrentTable.ModifyFont(labelCurrentTableFont);
+            LabelCurrentTable.ModifyFg(StateType.Normal, labelCurrentTableFontColor);
+            LabelCurrentTable.SetAlignment(labelCurrentTableAlignmentX, 0.5F);
 
             //Pack
             VBox vboxCurrentTable = new VBox(false, 1);
             vboxCurrentTable.PackStart(labelCurrentTableLabel);
-            vboxCurrentTable.PackStart(_labelCurrentTable);
+            vboxCurrentTable.PackStart(LabelCurrentTable);
 
             //EventBoxStatusBar2:vboxTotalTable:LabelTotalTableLabel
-            Label labelTotalTableLabel = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_price_to_pay"));
+            Label labelTotalTableLabel = new Label(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_price_to_pay"));
             labelTotalTableLabel.ModifyFont(labelTotalTableLabelFont);
             labelTotalTableLabel.ModifyFg(StateType.Normal, labelTotalTableLabelFontColor);
             labelTotalTableLabel.SetAlignment(labelTotalTableLabelAlignmentX, 0.5F);
 
             //EventBoxStatusBar2:vboxTotalTable:LabelTotalTable
-            _labelTotalTable = new Label(SharedUtils.DecimalToStringCurrency(0));
-            _labelTotalTable.ModifyFont(labelTotalTableFont);
-            _labelTotalTable.ModifyFg(StateType.Normal, labelTotalTableFontColor);
-            _labelTotalTable.SetAlignment(labelTotalTableAlignmentX, 0.5F);
+            LabelTotalTable = new Label(SharedUtils.DecimalToStringCurrency(0));
+            LabelTotalTable.ModifyFont(labelTotalTableFont);
+            LabelTotalTable.ModifyFg(StateType.Normal, labelTotalTableFontColor);
+            LabelTotalTable.SetAlignment(labelTotalTableAlignmentX, 0.5F);
 
             //Pack
             VBox vboxTotalTable = new VBox(false, 1);
             vboxTotalTable.PackStart(labelTotalTableLabel);
-            vboxTotalTable.PackStart(_labelTotalTable);
+            vboxTotalTable.PackStart(LabelTotalTable);
 
             //Pack HBox StatusBar
             HBox hboxStatusBar2 = new HBox(false, 0) { BorderWidth = _borderWidth };
@@ -520,7 +476,7 @@ namespace logicpos
                 WHERE 
                     (Disabled IS NULL or Disabled <> 1)
             ";
-            _tablePadFamily = new TablePad(
+            TablePadFamily = new TablePad(
                 sqlTablePadFamily,
                 "ORDER BY Ord",
                 "",
@@ -535,14 +491,14 @@ namespace logicpos
                 TablePadFamilyButtonPrev,
                 TablePadFamilyButtonNext
             );
-            _tablePadFamily.SourceWindow = this;
-            _tablePadFamily.Clicked += _tablePadFamily_Clicked;
+            TablePadFamily.SourceWindow = this;
+            TablePadFamily.Clicked += _tablePadFamily_Clicked;
             //Put
             if (tablePadFamilyVisible)
             {
                 _fixedWindow.Put(TablePadFamilyButtonPrev, TablePadFamilyButtonPrevPosition.X, TablePadFamilyButtonPrevPosition.Y);
                 _fixedWindow.Put(TablePadFamilyButtonNext, TablePadFamilyButtonNextPosition.X, TablePadFamilyButtonNextPosition.Y);
-                _fixedWindow.Put(_tablePadFamily, tablePadFamilyPosition.X, tablePadFamilyPosition.Y);
+                _fixedWindow.Put(TablePadFamily, tablePadFamilyPosition.X, tablePadFamilyPosition.Y);
             }
 
             //Objects:TablePadSubFamilyButtonPrev
@@ -566,7 +522,7 @@ namespace logicpos
                     (Disabled IS NULL or Disabled <> 1)
             ";
             string filterTablePadSubFamily = " AND (Family = '" + TablePadFamily.SelectedButtonOid + "')";
-            _tablePadSubFamily = new TablePad(
+            TablePadSubFamily = new TablePad(
                 sqlTablePadSubFamily,
                 "ORDER BY Ord",
                 filterTablePadSubFamily,
@@ -581,14 +537,14 @@ namespace logicpos
                 TablePadSubFamilyButtonPrev,
                 TablePadSubFamilyButtonNext
             );
-            _tablePadSubFamily.SourceWindow = this;
-            _tablePadSubFamily.Clicked += _tablePadSubFamily_Clicked;
+            TablePadSubFamily.SourceWindow = this;
+            TablePadSubFamily.Clicked += _tablePadSubFamily_Clicked;
             //Put
             if (tablePadSubFamilyVisible)
             {
                 _fixedWindow.Put(TablePadSubFamilyButtonPrev, TablePadSubFamilyButtonPrevPosition.X, TablePadSubFamilyButtonPrevPosition.Y);
                 _fixedWindow.Put(TablePadSubFamilyButtonNext, TablePadSubFamilyButtonNextPosition.X, TablePadSubFamilyButtonNextPosition.Y);
-                _fixedWindow.Put(_tablePadSubFamily, tablePadSubFamilyPosition.X, tablePadSubFamilyPosition.Y);
+                _fixedWindow.Put(TablePadSubFamily, tablePadSubFamilyPosition.X, tablePadSubFamilyPosition.Y);
             }
 
             //Objects:TablePadArticleButtonPrev
@@ -611,7 +567,7 @@ namespace logicpos
                     (Disabled IS NULL or Disabled <> 1)
             ";
             string filterTablePadArticle = " AND (SubFamily = '" + TablePadSubFamily.SelectedButtonOid + "')";
-            _tablePadArticle = new TablePadArticle(
+            TablePadArticle = new TablePadArticle(
                 sql,
                 "ORDER BY Ord",
                 filterTablePadArticle,
@@ -627,14 +583,14 @@ namespace logicpos
                 TablePadArticleButtonNext
             )
             { Sensitive = false };
-            _tablePadArticle.SourceWindow = this;
-            _tablePadArticle.Clicked += _tablePadArticle_Clicked;
+            TablePadArticle.SourceWindow = this;
+            TablePadArticle.Clicked += _tablePadArticle_Clicked;
             //Put
             if (tablePadArticleVisible)
             {
                 _fixedWindow.Put(TablePadArticleButtonPrev, TablePadArticleButtonPrevPosition.X, TablePadArticleButtonPrevPosition.Y);
                 _fixedWindow.Put(TablePadArticleButtonNext, TablePadArticleButtonNextPosition.X, TablePadArticleButtonNextPosition.Y);
-                _fixedWindow.Put(_tablePadArticle, tablePadArticlePosition.X, tablePadArticlePosition.Y);
+                _fixedWindow.Put(TablePadArticle, tablePadArticlePosition.X, tablePadArticlePosition.Y);
             }
         }
 
@@ -742,10 +698,10 @@ namespace logicpos
             _touchButtonPosToolbarShowChangeUserDialog = getButton(buttonShowChangeUserDialogName, buttonShowChangeUserDialogText, buttonShowChangeUserDialogImageFileName);
             _touchButtonPosToolbarCashDrawer = getButton(buttonCashDrawerName, buttonCashDrawerText, buttonCashDrawerImageFileName);
             _touchButtonPosToolbarFinanceDocuments = getButton(buttonFinanceDocumentsName, buttonFinanceDocumentsText, buttonFinanceDocumentsImageFileName);
-            _touchButtonPosToolbarNewFinanceDocument = getButton(buttonNewFinanceDocumentName, buttonNewFinanceDocumentText, buttonNewFinanceDocumentImageFileName);
+            TouchButtonPosToolbarNewFinanceDocument = getButton(buttonNewFinanceDocumentName, buttonNewFinanceDocumentText, buttonNewFinanceDocumentImageFileName);
 
             //Toggle Sensitive Buttons
-            _touchButtonPosToolbarNewFinanceDocument.Sensitive = (SharedFramework.WorkSessionPeriodTerminal != null && SharedFramework.WorkSessionPeriodTerminal.SessionStatus == WorkSessionPeriodStatus.Open);
+            TouchButtonPosToolbarNewFinanceDocument.Sensitive = (SharedFramework.WorkSessionPeriodTerminal != null && SharedFramework.WorkSessionPeriodTerminal.SessionStatus == WorkSessionPeriodStatus.Open);
             //Pack Buttons
             HBox hboxToolbar = new HBox(false, 0);
             hboxToolbar.BorderWidth = 10;
@@ -758,22 +714,22 @@ namespace logicpos
             if (buttonCashDrawerVisible) hboxToolbar.PackStart(_touchButtonPosToolbarCashDrawer, false, false, 0);
             if (buttonReportsVisible) hboxToolbar.PackStart(_touchButtonPosToolbarReports, false, false, 0);
             if (buttonFinanceDocumentsVisible) hboxToolbar.PackStart(_touchButtonPosToolbarFinanceDocuments, false, false, 0);
-            if (buttonNewFinanceDocumentVisible) hboxToolbar.PackStart(_touchButtonPosToolbarNewFinanceDocument, false, false, 0);
+            if (buttonNewFinanceDocumentVisible) hboxToolbar.PackStart(TouchButtonPosToolbarNewFinanceDocument, false, false, 0);
 
             //PackIt
             eventboxToolbar.Add(hboxToolbar);
 
             //Assign Toolbar Button references to TicketList
-            _ticketList.ToolbarApplicationClose = _touchButtonPosToolbarApplicationClose;
-            _ticketList.ToolbarBackOffice = _touchButtonPosToolbarBackOffice;
+            TicketList.ToolbarApplicationClose = _touchButtonPosToolbarApplicationClose;
+            TicketList.ToolbarBackOffice = _touchButtonPosToolbarBackOffice;
             // Deprecated
-            _ticketList.ToolbarReports = _touchButtonPosToolbarReports;
-            _ticketList.ToolbarShowSystemDialog = _touchButtonPosToolbarShowSystemDialog;
-            _ticketList.ToolbarLogoutUser = _touchButtonPosToolbarLogoutUser;
-            _ticketList.ToolbarShowChangeUserDialog = _touchButtonPosToolbarShowChangeUserDialog;
-            _ticketList.ToolbarCashDrawer = _touchButtonPosToolbarCashDrawer;
-            _ticketList.ToolbarFinanceDocuments = _touchButtonPosToolbarFinanceDocuments;
-            _ticketList.ToolbarNewFinanceDocument = _touchButtonPosToolbarNewFinanceDocument;
+            TicketList.ToolbarReports = _touchButtonPosToolbarReports;
+            TicketList.ToolbarShowSystemDialog = _touchButtonPosToolbarShowSystemDialog;
+            TicketList.ToolbarLogoutUser = _touchButtonPosToolbarLogoutUser;
+            TicketList.ToolbarShowChangeUserDialog = _touchButtonPosToolbarShowChangeUserDialog;
+            TicketList.ToolbarCashDrawer = _touchButtonPosToolbarCashDrawer;
+            TicketList.ToolbarFinanceDocuments = _touchButtonPosToolbarFinanceDocuments;
+            TicketList.ToolbarNewFinanceDocument = TouchButtonPosToolbarNewFinanceDocument;
 
             //Events
             _touchButtonPosToolbarApplicationClose.Clicked += touchButtonPosToolbarApplicationClose_Clicked;
@@ -784,7 +740,7 @@ namespace logicpos
             _touchButtonPosToolbarLogoutUser.Clicked += touchButtonPosToolbarLogoutUser_Clicked;
             _touchButtonPosToolbarShowChangeUserDialog.Clicked += touchButtonPosToolbarShowChangeUserDialog_Clicked;
             _touchButtonPosToolbarCashDrawer.Clicked += touchButtonPosToolbarCashDrawer_Clicked;
-            _touchButtonPosToolbarNewFinanceDocument.Clicked += touchButtonPosToolbarNewFinanceDocument_Clicked;
+            TouchButtonPosToolbarNewFinanceDocument.Clicked += touchButtonPosToolbarNewFinanceDocument_Clicked;
             _touchButtonPosToolbarFinanceDocuments.Clicked += touchButtonPosToolbarFinanceDocuments_Clicked;
         }
 
@@ -803,7 +759,7 @@ namespace logicpos
             //UI
             _ticketPad = new TicketPad(
                 "posTicketPad",
-                _ticketList,
+                TicketList,
                 themeWindow.Objects.EventBoxPosTicketPad.Buttons,
                 eventBoxPosTicketPadPosition
              )
@@ -837,8 +793,8 @@ namespace logicpos
 
             //Get ThemeObject to send to TicketList Constructor
             dynamic themeEventBoxPosTicketList = themeWindow.Objects.EventBoxPosTicketList;
-            _ticketList = new TicketList(themeEventBoxPosTicketList) { SourceWindow = this };
-            eventBoxPosTicketList.Add(_ticketList);
+            TicketList = new TicketList(themeEventBoxPosTicketList) { SourceWindow = this };
+            eventBoxPosTicketList.Add(TicketList);
             if (eventBoxPosTicketListVisible) _fixedWindow.Put(eventBoxPosTicketList, eventBoxPosTicketListPosition.X, eventBoxPosTicketListPosition.Y);
         }
 
@@ -853,7 +809,7 @@ namespace logicpos
             _textviewLog = new TextView();
             _textviewLog.SizeAllocated += new SizeAllocatedHandler(ScrollTextViewLog);
             _textviewLog.BorderWidth = 0;
-            _bufferTextView = _textviewLog.Buffer;
+            BufferTextView = _textviewLog.Buffer;
             ScrolledWindow scrolledWindowTextviewLog = new ScrolledWindow();
             scrolledWindowTextviewLog.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
             scrolledWindowTextviewLog.Add(_textviewLog);

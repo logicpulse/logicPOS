@@ -1,7 +1,5 @@
 ﻿using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial.library.App;
-using logicpos.resources.Resources.Localization;
 using logicpos.shared.App;
 using System;
 
@@ -50,10 +48,10 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             _thermalPrinterGeneric.SetAlignCenter();
 
             //Extended Footer Text
-            _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_internal_document_footer1"));
-            _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_internal_document_footer2"));
+            _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_internal_document_footer1"));
+            _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_internal_document_footer2"));
             _thermalPrinterGeneric.LineFeed();
-            _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_internal_document_footer3"));
+            _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_internal_document_footer3"));
 
             //Reset to Left
             _thermalPrinterGeneric.SetAlignLeft();

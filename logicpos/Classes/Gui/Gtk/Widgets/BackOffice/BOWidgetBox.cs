@@ -1,26 +1,11 @@
 ﻿using Gtk;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets.BackOffice
 {
     public class BOWidgetBox : VBox
     {
-        private Label _label;
-        public Label LabelComponent
-        {
-            get { return _label; }
-            set { _label = value; }
-        }
-        private Widget _widget;
-        public Widget WidgetComponent
-        {
-            get { return _widget; }
-            set { _widget = value; }
-        }
+        public Label LabelComponent { get; set; }
+        public Widget WidgetComponent { get; set; }
 
         public BOWidgetBox(string pLabel, Widget pWidget)
             : this(pLabel, pWidget, false, false)
@@ -30,11 +15,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.BackOffice
         public BOWidgetBox(string pLabel, Widget pWidget, bool pExpand, bool pFill)
             : base(false, 2)//Homogeneous False
         {
-            _label = new Label(pLabel);
-            _label.SetAlignment(0.0F, 0.0F);
-            _widget = pWidget;
+            LabelComponent = new Label(pLabel);
+            LabelComponent.SetAlignment(0.0F, 0.0F);
+            WidgetComponent = pWidget;
 
-            PackStart(_label, false, false, 0);
+            PackStart(LabelComponent, false, false, 0);
             PackStart(pWidget, pExpand, pFill, 0);
         }
     }

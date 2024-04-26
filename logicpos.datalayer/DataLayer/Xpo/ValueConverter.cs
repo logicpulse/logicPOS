@@ -2,7 +2,6 @@
 using DevExpress.Xpo.Metadata;
 using System.Security.Cryptography;
 using System.Text;
-using System.Collections;
 using System.IO;
 
 namespace logicpos.datalayer.DataLayer.Xpo

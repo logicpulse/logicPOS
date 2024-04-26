@@ -1,5 +1,4 @@
 ﻿using logicpos.datalayer.App;
-using logicpos.shared;
 using logicpos.shared.Enums;
 using System;
 using System.IO;
@@ -17,12 +16,7 @@ namespace logicpos.shared.Classes.Finance
 {
     public class PriceProperties
     {
-        private PricePropertiesSourceMode _sourceMode;
-        public PricePropertiesSourceMode SourceMode
-        {
-            get { return _sourceMode; }
-            set { _sourceMode = value; }
-        }
+        public PricePropertiesSourceMode SourceMode { get; set; }
 
         private decimal _quantity;
         public decimal Quantity
@@ -32,9 +26,9 @@ namespace logicpos.shared.Classes.Finance
             {
                 _quantity = value;
                 //If Change Quantity, change mode to PriceNet, Require Update()
-                if (_sourceMode != PricePropertiesSourceMode.FromPriceNet)
+                if (SourceMode != PricePropertiesSourceMode.FromPriceNet)
                 {
-                    _sourceMode = PricePropertiesSourceMode.FromPriceNet;
+                    SourceMode = PricePropertiesSourceMode.FromPriceNet;
                 }
             }
         }
@@ -47,40 +41,20 @@ namespace logicpos.shared.Classes.Finance
             {
                 _priceUser = value;
                 //If Change PriceUser, change mode to PriceUser, Require Update()
-                if (_sourceMode != PricePropertiesSourceMode.FromPriceUser)
+                if (SourceMode != PricePropertiesSourceMode.FromPriceUser)
                 {
-                    _sourceMode = PricePropertiesSourceMode.FromPriceUser;
+                    SourceMode = PricePropertiesSourceMode.FromPriceUser;
                 }
             }
         }
 
-        private decimal _discountArticle;
-        public decimal DiscountArticle
-        {
-            get { return _discountArticle; }
-            set { _discountArticle = value; }
-        }
+        public decimal DiscountArticle { get; set; }
 
-        private decimal _discountGlobal;
-        public decimal DiscountGlobal
-        {
-            get { return _discountGlobal; }
-            set { _discountGlobal = value; }
-        }
+        public decimal DiscountGlobal { get; set; }
 
-        private bool _priceWithVat;
-        public bool PriceWithVat
-        {
-            get { return _priceWithVat; }
-            set { _priceWithVat = value; }
-        }
+        public bool PriceWithVat { get; set; }
 
-        private decimal _vat;
-        public decimal Vat
-        {
-            get { return _vat; }
-            set { _vat = value; }
-        }
+        public decimal Vat { get; set; }
 
         private Guid _vatExemptionReason;
         public Guid VatExemptionReason
@@ -97,78 +71,38 @@ namespace logicpos.shared.Classes.Finance
             {
                 _priceNet = value;
                 //If Change PriceNet, change mode to PriceNet, Require Update()
-                if (_sourceMode != PricePropertiesSourceMode.FromPriceNet)
+                if (SourceMode != PricePropertiesSourceMode.FromPriceNet)
                 {
-                    _sourceMode = PricePropertiesSourceMode.FromPriceNet;
+                    SourceMode = PricePropertiesSourceMode.FromPriceNet;
                 }
             }
         }
 
-        private decimal _priceWithDiscount;
-        public decimal PriceWithDiscount
-        {
-            get { return _priceWithDiscount; }
-            set { _priceWithDiscount = value; }
-        }
+        public decimal PriceWithDiscount { get; set; }
 
-        private decimal _totalNetBeforeDiscountGlobal;
         /// <summary>
         /// Represents the total net after applying Customer Discount and before Global Discount (discount registered for customer).
         /// Used when showing price details from item level.
-		/// See #IN009235 for further details.
+        /// See #IN009235 for further details.
         /// </summary>
-        public decimal TotalNetBeforeDiscountGlobal
-        {
-            get { return _totalNetBeforeDiscountGlobal; }
-            set { _totalNetBeforeDiscountGlobal = value; }
-        }
+        public decimal TotalNetBeforeDiscountGlobal { get; set; }
 
-        private decimal _totalFinalBeforeDiscountGlobal;
         /// <summary>
         /// Represents the total final after applying Customer Discount and before Global Discount (discount registered for customer).
         /// Used when showing price details from item level.
-		/// See #IN009235 for further details.
+        /// See #IN009235 for further details.
         /// </summary>
-        public decimal TotalFinalBeforeDiscountGlobal
-        {
-            get { return _totalFinalBeforeDiscountGlobal; }
-            set { _totalFinalBeforeDiscountGlobal = value; }
-        }
+        public decimal TotalFinalBeforeDiscountGlobal { get; set; }
 
-        private decimal _priceWithDiscountGlobal;
-        public decimal PriceWithDiscountGlobal
-        {
-            get { return _priceWithDiscountGlobal; }
-            set { _priceWithDiscountGlobal = value; }
-        }
+        public decimal PriceWithDiscountGlobal { get; set; }
 
-        private decimal _totalGross;
-        public decimal TotalGross
-        {
-            get { return _totalGross; }
-            set { _totalGross = value; }
-        }
+        public decimal TotalGross { get; set; }
 
-        private decimal _totalNet;
-        public decimal TotalNet
-        {
-            get { return _totalNet; }
-            set { _totalNet = value; }
-        }
+        public decimal TotalNet { get; set; }
 
-        private decimal _totalDiscount;
-        public decimal TotalDiscount
-        {
-            get { return _totalDiscount; }
-            set { _totalDiscount = value; }
-        }
+        public decimal TotalDiscount { get; set; }
 
-        private decimal _totalTax;
-        public decimal TotalTax
-        {
-            get { return _totalTax; }
-            set { _totalTax = value; }
-        }
+        public decimal TotalTax { get; set; }
 
         private decimal _totalFinal;
         public decimal TotalFinal
@@ -178,29 +112,24 @@ namespace logicpos.shared.Classes.Finance
             {
                 _totalFinal = value;
                 //If Change TotalFinal, change mode to TotalFinal, Require Update()
-                if (_sourceMode != PricePropertiesSourceMode.FromTotalFinal)
+                if (SourceMode != PricePropertiesSourceMode.FromTotalFinal)
                 {
-                    _sourceMode = PricePropertiesSourceMode.FromTotalFinal;
+                    SourceMode = PricePropertiesSourceMode.FromTotalFinal;
                 }
             }
         }
 
-        private decimal _priceFinal;
-        public decimal PriceFinal
-        {
-            get { return _priceFinal; }
-            set { _priceFinal = value; }
-        }
+        public decimal PriceFinal { get; set; }
 
         public PriceProperties(PricePropertiesSourceMode pSourceMode, bool pPriceWithVat, decimal pSource, decimal pQuantity, decimal pDiscountArticle, decimal pDiscountGlobal, decimal pVat)
         {
             //Fixed, Never Change
-            _sourceMode = pSourceMode;
-            _priceWithVat = pPriceWithVat;
+            SourceMode = pSourceMode;
+            PriceWithVat = pPriceWithVat;
             _quantity = pQuantity;
-            _discountArticle = pDiscountArticle;
-            _discountGlobal = pDiscountGlobal;
-            _vat = pVat;
+            DiscountArticle = pDiscountArticle;
+            DiscountGlobal = pDiscountGlobal;
+            Vat = pVat;
 
             switch (pSourceMode)
             {
@@ -219,68 +148,68 @@ namespace logicpos.shared.Classes.Finance
 
         public void Update()
         {
-            switch (_sourceMode)
+            switch (SourceMode)
             {
                 case PricePropertiesSourceMode.FromPriceUser:
                 case PricePropertiesSourceMode.FromPriceNet:
-                    switch (_sourceMode)
+                    switch (SourceMode)
                     {
                         case PricePropertiesSourceMode.FromPriceUser:
                             //=IF(PriceWithVat=1;Price/(Vat/100+1);Price)
-                            _priceNet = (_priceWithVat) ? _priceUser / (_vat / 100 + 1) : _priceUser;
+                            _priceNet = (PriceWithVat) ? _priceUser / (Vat / 100 + 1) : _priceUser;
                             break;
                         case PricePropertiesSourceMode.FromPriceNet:
                             //=IF(PriceWithVat=1;PriceNet*(Vat/100+1);PriceNet)
-                            _priceUser = (_priceWithVat) ? _priceNet * (_vat / 100 + 1) : _priceNet;
+                            _priceUser = (PriceWithVat) ? _priceNet * (Vat / 100 + 1) : _priceNet;
                             break;
                     }
                     //=PriceNet - ((PriceNet * Discount) / 100)
-                    _priceWithDiscount = _priceNet - (_priceNet * _discountArticle) / 100;
+                    PriceWithDiscount = _priceNet - (_priceNet * DiscountArticle) / 100;
                     //=PriceWithDiscount - ((PriceWithDiscount * GlobalDiscount) / 100)
-                    _priceWithDiscountGlobal = _priceWithDiscount - ((_priceWithDiscount * _discountGlobal) / 100);
+                    PriceWithDiscountGlobal = PriceWithDiscount - ((PriceWithDiscount * DiscountGlobal) / 100);
                     //=Quantity*PriceNet
-                    _totalGross = _quantity * _priceNet;
+                    TotalGross = _quantity * _priceNet;
                     //=Quantity*PriceWithDiscountGlobal
-                    _totalNet = _quantity * _priceWithDiscountGlobal;
+                    TotalNet = _quantity * PriceWithDiscountGlobal;
 
                     /* IN009235 - Total Net before applying Discount Global (discount registered for customer) */
-                    _totalNetBeforeDiscountGlobal = _quantity * _priceWithDiscount;
+                    TotalNetBeforeDiscountGlobal = _quantity * PriceWithDiscount;
 
                     //=TotalGross-TotalNet
-                    _totalDiscount = _totalGross - _totalNet;
+                    TotalDiscount = TotalGross - TotalNet;
                     //=(TotalNet*(Vat/100+1))-TotalNet
-                    _totalTax = (_totalNet * (_vat / 100 + 1)) - _totalNet;
+                    TotalTax = (TotalNet * (Vat / 100 + 1)) - TotalNet;
                     //=TotalGross-TotalDiscount+TotalTax
-                    _totalFinal = _totalGross - _totalDiscount + _totalTax;
+                    _totalFinal = TotalGross - TotalDiscount + TotalTax;
 
                     /* IN009235 - Total Final before applying Discount Global (discount registered for customer) */
-                    decimal totalTaxBeforeDiscountGlobal = _totalNetBeforeDiscountGlobal * (_vat / 100);
-                    decimal totalDiscountBeforeDiscountGlobal = _totalGross - _totalNetBeforeDiscountGlobal;
-                    _totalFinalBeforeDiscountGlobal = _totalGross - totalDiscountBeforeDiscountGlobal + totalTaxBeforeDiscountGlobal;
+                    decimal totalTaxBeforeDiscountGlobal = TotalNetBeforeDiscountGlobal * (Vat / 100);
+                    decimal totalDiscountBeforeDiscountGlobal = TotalGross - TotalNetBeforeDiscountGlobal;
+                    TotalFinalBeforeDiscountGlobal = TotalGross - totalDiscountBeforeDiscountGlobal + totalTaxBeforeDiscountGlobal;
 
                     break;
                 case PricePropertiesSourceMode.FromTotalFinal:
                     //=TotalFinal-(TotalFinal/(Vat/100+1))
-                    _totalTax = _totalFinal - (_totalFinal / (_vat / 100 + 1));
+                    TotalTax = _totalFinal - (_totalFinal / (Vat / 100 + 1));
                     //=TotalFinal-TotalTax
-                    _totalNet = _totalFinal - _totalTax;
+                    TotalNet = _totalFinal - TotalTax;
                     //=TotalNet/Quantity
-                    _priceWithDiscountGlobal = _totalNet / _quantity;
+                    PriceWithDiscountGlobal = TotalNet / _quantity;
                     //=PriceWithDiscountGlobal/(-GlobalDiscount/100+1)
-                    _priceWithDiscount = _priceWithDiscountGlobal / (-_discountGlobal / 100 + 1);
+                    PriceWithDiscount = PriceWithDiscountGlobal / (-DiscountGlobal / 100 + 1);
                     //=PriceWithDiscount/(-Discount/100+1)
-                    _priceNet = _priceWithDiscount / (-_discountArticle / 100 + 1);
+                    _priceNet = PriceWithDiscount / (-DiscountArticle / 100 + 1);
                     //=Quantity*PriceNet
-                    _totalGross = _quantity * _priceNet;
+                    TotalGross = _quantity * _priceNet;
                     //=TotalGross-TotalNet
-                    _totalDiscount = _totalGross - _totalNet;
+                    TotalDiscount = TotalGross - TotalNet;
                     //=IF(PriceWithVat=1;PriceNet*(Vat/100+1);PriceNet)
-                    _priceUser = (_priceWithVat) ? _priceNet * (_vat / 100 + 1) : _priceNet;
+                    _priceUser = (PriceWithVat) ? _priceNet * (Vat / 100 + 1) : _priceNet;
                     break;
             }
             //Shared
             //=IF(TotalFinal>0;TotalFinal/Quantity;0)
-            _priceFinal = (_totalFinal > 0) ? _totalFinal / _quantity : 0.0m;
+            PriceFinal = (_totalFinal > 0) ? _totalFinal / _quantity : 0.0m;
         }
 
         public void SendToLog(string pLabel)

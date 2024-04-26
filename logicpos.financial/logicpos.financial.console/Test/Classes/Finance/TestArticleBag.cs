@@ -1,5 +1,4 @@
 ﻿using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial.console.App;
 using logicpos.datalayer.Enums;
 using logicpos.shared.Classes.Finance;
 using System;

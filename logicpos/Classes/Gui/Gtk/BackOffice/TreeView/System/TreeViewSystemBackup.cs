@@ -2,10 +2,8 @@
 using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
 using Gtk;
-using logicpos.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
-using logicpos.resources.Resources.Localization;
 using System;
 using System.Collections.Generic;
 using logicpos.Classes.Enums.GenericTreeView;
@@ -18,10 +16,12 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         //Public Parametless Constructor Required by Generics
         public TreeViewSystemBackup() { }
 
+        [Obsolete]
         public TreeViewSystemBackup(Window pSourceWindow)
             : this(pSourceWindow, null, null, null) { }
 
         //XpoMode
+        [Obsolete]
         public TreeViewSystemBackup(Window pSourceWindow, XPGuidObject pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default)
         {
             //Init Vars
@@ -36,7 +36,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             {
                 new GenericTreeViewColumnProperty("Version")
                 {
-                    Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_version"),
+                    Title = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_version"),
                     MinWidth = 60,
                     CellRenderer = new CellRendererText()
                     {
@@ -44,9 +44,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         Xalign = 1.0F
                     }
                 },
-                new GenericTreeViewColumnProperty("CreatedAt") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date"), MinWidth = 180 },
-                new GenericTreeViewColumnProperty("FileNamePacked") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_file"), MinWidth = 240 },
-                new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
+                new GenericTreeViewColumnProperty("CreatedAt") { Title = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date"), MinWidth = 180 },
+                new GenericTreeViewColumnProperty("FileNamePacked") { Title = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_file"), MinWidth = 240 },
+                new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
             };
 
             //Sort Order

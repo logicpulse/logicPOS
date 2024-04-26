@@ -3,7 +3,6 @@ using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
 using Gtk;
 using logicpos.App;
-using logicpos.Classes.Enums;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Enums.Reports;
@@ -13,7 +12,6 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.financial.library.Classes.Finance;
 using logicpos.financial.library.Classes.Stocks;
-using logicpos.resources.Resources.Localization;
 using logicpos.shared.Classes.Finance;
 using logicpos.shared.Enums;
 using System;
@@ -22,9 +20,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using logicpos.documentviewer;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Threading;
 using logicpos.datalayer.App;
 using logicpos.shared.App;
 
@@ -101,17 +96,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private ActionAreaButton _actionAreaButtonSendEmailDocument;
         private ActionAreaButton _actionAreaButtonCancelPayment;
 
-        //Public Members
-        private decimal _totalDialogFinanceMasterDocuments = 0;
-		
-		// IN009223 IN009227
+        // IN009223 IN009227
         private ReportsQueryDialogMode _filterChoice;
 
-        public decimal TotalDialogFinanceMasterDocuments
-        {
-            get { return _totalDialogFinanceMasterDocuments; }
-            set { _totalDialogFinanceMasterDocuments = value; }
-        }
+        public decimal TotalDialogFinanceMasterDocuments { get; set; } = 0;
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //FinanceMaster: Click Event
@@ -135,12 +123,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             //Default/Shared ActionArea Buttons
             // IN009223 IN009227
-            TouchButtonIconWithText buttonMore = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(PosBaseDialogButtonType.More, "touchButtonMore_Grey", string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_more") ,POSSettings.PaginationRowsPerPage), fileActionMore);
+            TouchButtonIconWithText buttonMore = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(PosBaseDialogButtonType.More, "touchButtonMore_Grey", string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_more") ,POSSettings.PaginationRowsPerPage), fileActionMore);
             TouchButtonIconWithText buttonFilter = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(PosBaseDialogButtonType.Filter, "touchButtonFilter_Green", "Filter", fileActionFilter);            
 			TouchButtonIconWithText buttonClose = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(PosBaseDialogButtonType.Close);
             TouchButtonIconWithText buttonPrintDocument = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(PosBaseDialogButtonType.Print, "touchButtonPrintDocument_Green");
             TouchButtonIconWithText buttonPrintDocumentAs = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(PosBaseDialogButtonType.PrintAs, "touchButtonPrintDocumentAs_Green");
-            TouchButtonIconWithText buttonCancelDocument = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButtonCancelDocument_Green", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_cancel_document"), _fileActionCancel);
+            TouchButtonIconWithText buttonCancelDocument = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButtonCancelDocument_Green", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_cancel_document"), _fileActionCancel);
             TouchButtonIconWithText buttonOpenDocument = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(PosBaseDialogButtonType.OpenDocument, "touchButtonOpenDocument_Green");
             TouchButtonIconWithText buttonSendEmailDocument = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(PosBaseDialogButtonType.SendEmailDocument, "touchButtonSendEmailDocument_Green");
             buttonPrintDocument.Sensitive = false;
@@ -198,12 +186,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     {
                         sqlCountResultTopResults = POSSettings.PaginationRowsPerPage.ToString();
                     }
-                    windowTitleDefault = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_select_finance_document");
-                    string showResults = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_show_results"), sqlCountResultTopResults, countResult.ToString());
+                    windowTitleDefault = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_select_finance_document");
+                    string showResults = string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_show_results"), sqlCountResultTopResults, countResult.ToString());
                     _selectRecordWindowTitle = string.Format("{0} :: {1}", windowTitleDefault, showResults);
 
                     //Add aditional Buttons to ActionArea
-                    TouchButtonIconWithText buttonNewDocument = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButtonNewDocument_Green", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_new_financial_document"), fileActionNewDocument);
+                    TouchButtonIconWithText buttonNewDocument = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButtonNewDocument_Green", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_new_financial_document"), fileActionNewDocument);
                     _actionAreaButtonNewDocument = new ActionAreaButton(buttonNewDocument, _responseTypeNewDocument);
                     TouchButtonIconWithText buttonCloneDocument = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(PosBaseDialogButtonType.CloneDocument, "touchButtonCloneDocument_Green");
                     buttonCloneDocument.Sensitive = false;
@@ -377,8 +365,8 @@ WHERE
                     criteriaOperator = CriteriaOperator.And(criteriaOperator, new InOperator("Oid", resultList));
                     CriteriaOperatorBase = criteriaOperator;// IN009223 IN009227
 
-                    windowTitleDefault = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_select_finance_document_ft_unpaid");
-                    showResults = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_show_results"), sqlCountResultTopResults, countResult);
+                    windowTitleDefault = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_select_finance_document_ft_unpaid");
+                    showResults = string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_show_results"), sqlCountResultTopResults, countResult);
                     if (!string.IsNullOrEmpty(showResults))
                     {
                         _selectRecordWindowTitle = string.Format("{0} :: {1}", windowTitleDefault, showResults);
@@ -389,7 +377,7 @@ WHERE
                     }
 
                     //Add aditional Buttons to ActionArea
-                    TouchButtonIconWithText buttonPayInvoice = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButtonPayInvoice_Green", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_pay_invoice"), fileActionPayInvoice);
+                    TouchButtonIconWithText buttonPayInvoice = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButtonPayInvoice_Green", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_pay_invoice"), fileActionPayInvoice);
                     buttonPayInvoice.Sensitive = false;
                     _actionAreaButtonPayInvoice = new ActionAreaButton(buttonPayInvoice, _responseTypePayInvoice);
                     actionAreaButtons.Add(_actionAreaButtonPayInvoice);
@@ -419,12 +407,12 @@ WHERE
 
 
 
-                    windowTitleDefault = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_select_finance_document_cc");
-                    showResults = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_show_results"), sqlCountResultTopResults, countResult);
+                    windowTitleDefault = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_select_finance_document_cc");
+                    showResults = string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_show_results"), sqlCountResultTopResults, countResult);
                     _selectRecordWindowTitle = string.Format("{0} :: {1}", windowTitleDefault, showResults);
 
                     //Add aditional Buttons to ActionArea
-                    TouchButtonIconWithText buttonPayCurrentAcountDocument = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButtonPayCurrentAcountDocument_Green", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_pay"), fileActionPayInvoice);
+                    TouchButtonIconWithText buttonPayCurrentAcountDocument = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButtonPayCurrentAcountDocument_Green", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_pay"), fileActionPayInvoice);
                     buttonPayCurrentAcountDocument.Sensitive = false;
                     _actionAreaButtonPayCurrentAcountsDocument = new ActionAreaButton(buttonPayCurrentAcountDocument, _responseTypePayCurrentAcountsDocument);
                     actionAreaButtons.Add(_actionAreaButtonPayCurrentAcountsDocument);
@@ -448,7 +436,7 @@ WHERE
             actionAreaButtons.Add(_actionAreaButtonSendEmailDocument);
             actionAreaButtons.Add(_actionAreaButtonClose);
             //Reset totalDialogFinanceMasterDocuments
-            _totalDialogFinanceMasterDocuments = 0;
+            TotalDialogFinanceMasterDocuments = 0;
             _dialogDocumentFinanceMaster = new PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewDocumentFinanceMaster>(
                 this,
                 DialogFlags.DestroyWithParent,
@@ -487,7 +475,7 @@ WHERE
                     if (_dialogDocumentFinanceMaster.GenericTreeView.DataSourceRow != null)
                     {
                         documentFinanceMaster = (fin_documentfinancemaster)_dialogDocumentFinanceMaster.GenericTreeView.DataSourceRow;
-                        _totalDialogFinanceMasterDocuments = documentFinanceMaster.TotalFinal;
+                        TotalDialogFinanceMasterDocuments = documentFinanceMaster.TotalFinal;
                         //Enable/Disable Buttons
                         _actionAreaButtonPrintDocument.Button.Sensitive = hasOpenWorkStation;
                         _actionAreaButtonPrintDocumentAs.Button.Sensitive = hasOpenWorkStation;
@@ -498,7 +486,7 @@ WHERE
                     else
                     {
                         //Reset Total
-                        _totalDialogFinanceMasterDocuments = 0.0m;
+                        TotalDialogFinanceMasterDocuments = 0.0m;
                         //Enable/Disable Buttons
                         _actionAreaButtonPrintDocument.Button.Sensitive = false;
                         _actionAreaButtonPrintDocumentAs.Button.Sensitive = false;
@@ -603,7 +591,7 @@ WHERE
                                 /* IN009166 */
                                 documentValue = -documentFinanceMaster.TotalFinal;
                             };
-                            _totalDialogFinanceMasterDocuments += (itemChecked) ? documentValue : -documentValue;
+                            TotalDialogFinanceMasterDocuments += (itemChecked) ? documentValue : -documentValue;
                         }
 
                         //Enable/Disable Buttons for all Modes
@@ -619,7 +607,7 @@ WHERE
                         _actionAreaButtonSendEmailDocument.Button.Sensitive = validMarkedDocumentTypesForSendEmailSensitive;
                         if (_actionAreaButtonPayCurrentAcountsDocument != null && _dialogFinanceMasterCallerButton.Token == "CC") _actionAreaButtonPayCurrentAcountsDocument.Button.Sensitive = hasOpenWorkStation;
                         //Must Greater than zero to Pay Something or Zero to Issue Zero Payment Document and Set Payed to Documents
-                        if (_actionAreaButtonPayInvoice != null && _dialogFinanceMasterCallerButton.Token == "FT_UNPAYED" && documentFinanceMaster.DocumentStatusStatus != "F") _actionAreaButtonPayInvoice.Button.Sensitive = (hasOpenWorkStation && _totalDialogFinanceMasterDocuments >= 0);
+                        if (_actionAreaButtonPayInvoice != null && _dialogFinanceMasterCallerButton.Token == "FT_UNPAYED" && documentFinanceMaster.DocumentStatusStatus != "F") _actionAreaButtonPayInvoice.Button.Sensitive = (hasOpenWorkStation && TotalDialogFinanceMasterDocuments >= 0);
                         //Cancel Documents must me in ALL, CC, or FT_UNPAYED Mode 
                         if (_actionAreaButtonCancelDocument != null && (
                                 _dialogFinanceMasterCallerButton.Token == "ALL" ||
@@ -633,7 +621,7 @@ WHERE
                     else
                     {
                         //Reset Helper Vars
-                        _totalDialogFinanceMasterDocuments = 0.0m;
+                        TotalDialogFinanceMasterDocuments = 0.0m;
                         //Reset Selected Customer to Blank
                         _selectedDocumentEntityOid = new Guid();
                         //Enable/Disable Buttons for all Modes
@@ -663,10 +651,10 @@ WHERE
 
                 var countResult = DataLayerFramework.SessionXpo.Evaluate(typeof(fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), criteriaCount);
                 string nDocs = _dialogDocumentFinanceMaster.GenericTreeView.DataSource.Count.ToString();
-                string showResults = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_show_results"), nDocs, countResult);
+                string showResults = string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_show_results"), nDocs, countResult);
 
                 //Finish Updating Title
-                _dialogDocumentFinanceMaster.WindowTitle = (_totalDialogFinanceMasterDocuments != 0) ? string.Format("{0} :: {1} - {2}", windowTitleDefault, SharedUtils.DecimalToStringCurrency(_totalDialogFinanceMasterDocuments), showResults) : string.Format("{0} :: {1}", windowTitleDefault, showResults);
+                _dialogDocumentFinanceMaster.WindowTitle = (TotalDialogFinanceMasterDocuments != 0) ? string.Format("{0} :: {1} - {2}", windowTitleDefault, SharedUtils.DecimalToStringCurrency(TotalDialogFinanceMasterDocuments), showResults) : string.Format("{0} :: {1}", windowTitleDefault, showResults);
             }
             catch (Exception ex)
             {
@@ -761,7 +749,7 @@ WHERE
                     else if (args.ResponseId == _responseTypePayInvoice)
                     {
                         //Start Processing Documents
-                        resultDocument = CallPayInvoicesDialog(_dialogFinanceDocumentsResponse, _totalDialogFinanceMasterDocuments);
+                        resultDocument = CallPayInvoicesDialog(_dialogFinanceDocumentsResponse, TotalDialogFinanceMasterDocuments);
                         //UnCheck all Marked CheckBoxs
                         if (resultDocument != null) UnCheckAll_FinanceMasterDocuments(_dialogFinanceDocumentsResponse, false);
 
@@ -781,14 +769,14 @@ WHERE
 
                             var countResult = DataLayerFramework.SessionXpo.Evaluate(typeof(fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), CriteriaOperatorBase);
                             nDocs = _dialogDocumentFinanceMaster.GenericTreeView.DataSource.Count.ToString();
-                            var showResults = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_show_results"), nDocs, countResult);
+                            var showResults = string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_show_results"), nDocs, countResult);
                             _selectRecordWindowTitle = string.Format("{0} :: {1}", windowTitleDefault, showResults);
                             _dialogDocumentFinanceMaster.WindowTitle = _selectRecordWindowTitle;
                         }
                         else
                         {
                             var countResult = DataLayerFramework.SessionXpo.Evaluate(typeof(fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), criteriaOperatorFilter);
-                            string showResults = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_show_results"), nDocs, countResult);
+                            string showResults = string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_show_results"), nDocs, countResult);
                             _selectRecordWindowTitle = string.Format("{0} :: {1}", windowTitleDefault, showResults);
                             _dialogDocumentFinanceMaster.WindowTitle = _selectRecordWindowTitle;
                             _afterFilterTitle = null;
@@ -825,8 +813,8 @@ WHERE
                         }
 
                         // Call Dialog
-                        ResponseType dialogResponse = logicpos.Utils.ShowMessageTouch(_dialogFinanceDocumentsResponse, DialogFlags.Modal, new Size(700, 440), MessageType.Question, ButtonsType.OkCancel, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_question"),
-                            string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_clone_documents_confirmation"), documentList)
+                        ResponseType dialogResponse = logicpos.Utils.ShowMessageTouch(_dialogFinanceDocumentsResponse, DialogFlags.Modal, new Size(700, 440), MessageType.Question, ButtonsType.OkCancel, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_question"),
+                            string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_clone_documents_confirmation"), documentList)
                         );
 
                         if (dialogResponse == ResponseType.Ok)
@@ -839,7 +827,7 @@ WHERE
 
                             //IN009255 Usabilidade - Opção de Copiar Documentos não apresenta mensagem de sucesso ao usuário. 
                             //Mensagem de sucesso clone
-                            logicpos.Utils.ShowMessageTouch(this, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_clone_document"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_operation_successfully"));
+                            logicpos.Utils.ShowMessageTouch(this, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_clone_document"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_operation_successfully"));
                         }
                     }
                     //SendEmail Documents
@@ -862,7 +850,7 @@ WHERE
                         //Reset CheckBoxs
                         _dialogFinanceDocumentsResponse.GenericTreeView.MarkedCheckBoxs = 0;
                         //Update Total
-                        _totalDialogFinanceMasterDocuments = 0.0m;
+                        TotalDialogFinanceMasterDocuments = 0.0m;
                         //Reset Customer
                         _selectedDocumentEntityOid = new Guid();
                         //Finish Updating Title
@@ -913,7 +901,7 @@ WHERE
 
                     var countResult = DataLayerFramework.SessionXpo.Evaluate(typeof(fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), criteriaCount);
                     string nDocs = _dialogDocumentFinanceMaster.GenericTreeView.DataSource.Count.ToString();
-                    string showResults = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_show_results"), nDocs, countResult);
+                    string showResults = string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_show_results"), nDocs, countResult);
 
                     _dialogDocumentFinanceMaster.WindowTitle = string.Format("{0} :: {1}", windowTitleDefault, showResults);
                     //_dialogDocumentFinanceMaster.WindowTitle = _selectRecordWindowTitle;
@@ -930,7 +918,7 @@ WHERE
 
                     List<string> result = new List<string>();
 
-                    PosReportsQueryDialog dialog = new PosReportsQueryDialog(_dialogFinanceDocumentsResponse, DialogFlags.Modal, _filterChoice, "fin_documentfinancemaster", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_report_filter"));
+                    PosReportsQueryDialog dialog = new PosReportsQueryDialog(_dialogFinanceDocumentsResponse, DialogFlags.Modal, _filterChoice, "fin_documentfinancemaster", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_report_filter"));
                     DialogResponseType response = (DialogResponseType)dialog.Run();
 
                     //IF button Clean Filter Clicked
@@ -944,7 +932,7 @@ WHERE
 
                         var countResult = DataLayerFramework.SessionXpo.Evaluate(typeof(fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), CriteriaOperatorBase);
                         string nDocs = _dialogDocumentFinanceMaster.GenericTreeView.DataSource.Count.ToString();
-                        string showResults = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_show_results"), nDocs, countResult);
+                        string showResults = string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_show_results"), nDocs, countResult);
 
                         _selectRecordWindowTitle = string.Format("{0} :: {1}", windowTitleDefault, showResults);
                         _dialogDocumentFinanceMaster.WindowTitle = _selectRecordWindowTitle;
@@ -981,7 +969,7 @@ WHERE
 
                         var countResult = DataLayerFramework.SessionXpo.Evaluate(typeof(fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), criteriaOperatorFilter);
                         string nDocs = _dialogDocumentFinanceMaster.GenericTreeView.DataSource.Count.ToString();
-                        string showResults = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_show_results"), nDocs, countResult);
+                        string showResults = string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_show_results"), nDocs, countResult);
 
                         _dialogDocumentFinanceMaster.WindowTitle = string.Format("{0} :: {1}", windowTitleDefault, showResults);
                         _afterFilterTitle = _dialogDocumentFinanceMaster.WindowTitle;
@@ -1126,7 +1114,7 @@ WHERE
                     parentDialog.GenericTreeView.Refresh();
                     parentDialog.WindowTitle = _selectRecordWindowTitle;// resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_select_finance_document_cc;
                                                                         //Reset Totals
-                    _totalDialogFinanceMasterDocuments = 0.0m;
+                    TotalDialogFinanceMasterDocuments = 0.0m;
                     //Disable Action Buttons Liquidar(0)/Print(0) after Refresh
                     parentDialog.ActionAreaButtons[0].Button.Sensitive = false;
                     parentDialog.ActionAreaButtons[1].Button.Sensitive = false;
@@ -1252,11 +1240,11 @@ WHERE
                 {
                     if (document.SourceOrderMain != null)
                     {
-                        logicpos.Utils.ShowMessageTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warning_cant_open_title")), string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_dialog_cant_open_document"), document.DocumentNumber));
+                        logicpos.Utils.ShowMessageTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warning_cant_open_title")), string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_dialog_cant_open_document"), document.DocumentNumber));
                     }
                     else if (!LicenceManagement.IsLicensed || !LicenceManagement.CanPrint)
                     {
-                        logicpos.Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_printing_function_disabled"));
+                        logicpos.Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_printing_function_disabled"));
                     }
                     else
                     {
@@ -1268,7 +1256,7 @@ WHERE
                 {
                     if (!LicenceManagement.IsLicensed || !LicenceManagement.CanPrint)
                     {
-                        logicpos.Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_printing_function_disabled"));
+                        logicpos.Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_printing_function_disabled"));
                     }
                     else if (File.Exists(item))
                     {
@@ -1355,7 +1343,7 @@ WHERE
                     pSourceWindow,
                     DialogFlags.Modal,
                     new System.Drawing.Size(800, 640),
-                    resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_send_email"),
+                    resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_send_email"),
                     subject,
                     customerEmail,
                     mailBody,
@@ -1415,7 +1403,7 @@ WHERE
                     pSourceWindow,
                     DialogFlags.Modal,
                     new System.Drawing.Size(800, 640),
-                    resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_send_email"),
+                    resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_send_email"),
                     "Subject",
                     customerEmail,
                     mailBody,
@@ -1571,7 +1559,7 @@ WHERE
                         string fileWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_input_text_default.png");
 
                         //Call Request Motive Dialog
-                        dialogResponse = logicpos.Utils.GetInputText(pDialog, DialogFlags.Modal, fileWindowIcon, string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_cancel_document_input_text_label"), documentMaster.DocumentNumber), string.Empty, SharedSettings.RegexAlfaNumericExtendedForMotive, true);
+                        dialogResponse = logicpos.Utils.GetInputText(pDialog, DialogFlags.Modal, fileWindowIcon, string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_cancel_document_input_text_label"), documentMaster.DocumentNumber), string.Empty, SharedSettings.RegexAlfaNumericExtendedForMotive, true);
 
                         if (dialogResponse.ResponseType == ResponseType.Ok)
                         {
@@ -1651,7 +1639,7 @@ WHERE
                                 }
 
                                 _logger.Debug("void PosDocumentFinanceSelectRecordDialog.CallCancelFinanceMasterDocumentsDialog(Window pDialog, List<fin_documentfinancemaster> pListSelectDocuments) :: AT Document Cancellation Process: real time process cancelled by user [" + documentMaster.DocumentNumber + "]");
-                                ignoredDocuments.Add(string.Format("{0} [{1}]", documentMaster.DocumentNumber, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_in_at_ws_call_status")));
+                                ignoredDocuments.Add(string.Format("{0} [{1}]", documentMaster.DocumentNumber, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_in_at_ws_call_status")));
                             }
                             try
                             {
@@ -1678,7 +1666,7 @@ WHERE
                             documentMaster.Save();
 
                             //Audit
-                            SharedUtils.Audit("FINANCE_DOCUMENT_CANCELLED", string.Format("{0} {1}: {2}", documentMaster.DocumentType.Designation, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_document_cancelled"), documentMaster.DocumentNumber));
+                            SharedUtils.Audit("FINANCE_DOCUMENT_CANCELLED", string.Format("{0} {1}: {2}", documentMaster.DocumentType.Designation, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_document_cancelled"), documentMaster.DocumentNumber));
                         }
                         else
                         {
@@ -1699,52 +1687,6 @@ WHERE
             catch (Exception ex)
             {
                 _logger.Error("void PosDocumentFinanceSelectRecordDialog.CallCancelFinanceMasterDocumentsDialog(Window pDialog, List<fin_documentfinancemaster> pListSelectDocuments) :: " + ex.Message, ex);
-            }
-        }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //FinanceMaster: Open Documents
-
-        /// <summary>
-        /// Split FinanceDocuments into Invoices and CreditNotes, Ready to send to PersistFinanceDocumentPayment
-        /// </summary>
-        /// <param name="SourceWindow"></param>
-        /// <param name="FinanceDocuments"></param>
-        /// <returns>Payment Document from PersistFinanceDocumentPayment Method</returns>
-        private fin_documentfinancepayment OpenDocument(
-            PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewDocumentFinanceMaster> pSourceWindow,
-            List<fin_documentfinancemaster> pFinanceDocuments,
-            Guid pCustomer,
-            Guid pPaymentMethod,
-            Guid pConfigurationCurrency,
-            decimal pPaymentAmount,
-            string pPaymentNotes = ""
-        )
-        {
-            //Local Vars
-            fin_documentfinancepayment resultDocument = null;
-            List<fin_documentfinancemaster> listInvoices = new List<fin_documentfinancemaster>();
-            List<fin_documentfinancemaster> listCreditNotes = new List<fin_documentfinancemaster>();
-
-            try
-            {
-                foreach (fin_documentfinancemaster document in pFinanceDocuments)
-                {
-                    if (document.DocumentType.Credit)
-                    {
-                        listInvoices.Add(document);
-                    }
-                    else
-                    {
-                        listCreditNotes.Add(document);
-                    }
-                }
-                return FrameworkCalls.PersistFinanceDocumentPayment(pSourceWindow, listInvoices, listCreditNotes, pCustomer, pPaymentMethod, pConfigurationCurrency, pPaymentAmount, pPaymentNotes);
-            }
-            catch (ProcessFinanceDocumentValidationException ex)
-            {
-                _logger.Error(ex.Message, ex);
-                return resultDocument;
             }
         }
 
@@ -1910,7 +1852,7 @@ WHERE
               dialogWorkSessionPeriods = new PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewWorkSessionPeriod>(
                 this,
                 DialogFlags.DestroyWithParent,
-                resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_select_worksession_period_day"),
+                resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_select_worksession_period_day"),
                 GlobalApp.MaxWindowSize,
                 null, //XpoDefaultValue
                 criteriaOperator,
@@ -2019,7 +1961,7 @@ WHERE
             //Restore Title, without Totals
             pDialog.WindowTitle = _selectRecordWindowTitle;
             //Reset Totals
-            _totalDialogFinanceMasterDocuments = 0.0m;
+            TotalDialogFinanceMasterDocuments = 0.0m;
 
             //Dont Disable First and Last button (New and Close)
             for (int i = 2; i < pDialog.ActionAreaButtons.Count - 1; i++)
@@ -2048,7 +1990,7 @@ WHERE
             TouchButtonIconWithText buttonClose = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(PosBaseDialogButtonType.Close);
             TouchButtonIconWithText buttonPrintDocument = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(PosBaseDialogButtonType.Print, "touchButtonPrintDocument_Green");
             TouchButtonIconWithText buttonPrintDocumentAs = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(PosBaseDialogButtonType.PrintAs, "touchButtonPrintDocumentAs_Green");
-            TouchButtonIconWithText buttonCancelDocument = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButtonCancelDocument_Green", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_cancel_document"), _fileActionCancel);
+            TouchButtonIconWithText buttonCancelDocument = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButtonCancelDocument_Green", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_cancel_document"), _fileActionCancel);
             TouchButtonIconWithText buttonOpenDocument = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(PosBaseDialogButtonType.OpenDocument, "touchButtonOpenDocument_Green");
             TouchButtonIconWithText buttonSendEmailDocument = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(PosBaseDialogButtonType.SendEmailDocument, "touchButtonSendEmailDocument_Green");
             buttonPrintDocument.Sensitive = false;
@@ -2102,9 +2044,9 @@ WHERE
             }
 
 
-            windowTitleDefault = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_payment");
+            windowTitleDefault = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_payment");
             //NOT IN USE string nDocs = _dialogDocumentFinanceMaster.GenericTreeView.DataSource.Count.ToString();
-            string showResults = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_show_results"), sqlCountResultTopResults, countResult);
+            string showResults = string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_show_results"), sqlCountResultTopResults, countResult);
             _selectRecordWindowTitle = string.Format("{0} :: {1}", windowTitleDefault, showResults);
 
             PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewDocumentFinancePayment>
@@ -2286,7 +2228,7 @@ WHERE
 
                         var countResult = DataLayerFramework.SessionXpo.Evaluate(typeof(fin_documentfinancepayment), CriteriaOperator.Parse("Count()"), criteriaCount);
                         string nDocs = dialog.GenericTreeView.DataSource.Count.ToString();
-                        string showResults = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_show_results"), nDocs, countResult);
+                        string showResults = string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_show_results"), nDocs, countResult);
 
                         _selectRecordWindowTitle = string.Format("{0} :: {1}", windowTitleDefault, showResults);
                         dialog.WindowTitle = _selectRecordWindowTitle;
@@ -2296,7 +2238,7 @@ WHERE
                         //Reset current page to 1 ( Pagination go to defined initialy )
                         dialog.GenericTreeView.CurrentPageNumber = 1;
 
-                        PosReportsQueryDialog dialogPayedDocuments = new PosReportsQueryDialog(dialog, DialogFlags.Modal, ReportsQueryDialogMode.FILTER_PAYMENT_DOCUMENTS, typeof(fin_documentfinancepayment).Name, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_report_filter"));
+                        PosReportsQueryDialog dialogPayedDocuments = new PosReportsQueryDialog(dialog, DialogFlags.Modal, ReportsQueryDialogMode.FILTER_PAYMENT_DOCUMENTS, typeof(fin_documentfinancepayment).Name, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_report_filter"));
                         DialogResponseType response = (DialogResponseType)dialogPayedDocuments.Run();
                         List<string> result = new List<string>();
 
@@ -2315,7 +2257,7 @@ WHERE
 
                             var countResult = DataLayerFramework.SessionXpo.Evaluate(typeof(fin_documentfinancepayment), CriteriaOperator.Parse("Count()"), CriteriaOperatorBase);
                             string nDocs = dialog.GenericTreeView.DataSource.Count.ToString();
-                            string showResults = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_show_results"), nDocs, countResult);
+                            string showResults = string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_show_results"), nDocs, countResult);
                             //Finish Updating Title
                             dialog.WindowTitle = string.Format("{0} :: {1} ", windowTitleDefault, showResults);
                         }
@@ -2357,7 +2299,7 @@ WHERE
 
                             var countResult = DataLayerFramework.SessionXpo.Evaluate(typeof(fin_documentfinancepayment), CriteriaOperator.Parse("Count()"), criteriaOperatorFilter);
                             string nDocs = dialog.GenericTreeView.DataSource.Count.ToString();
-                            string showResults = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_show_results"), nDocs, countResult);
+                            string showResults = string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_show_results"), nDocs, countResult);
                             //Finish Updating Title
                             dialog.WindowTitle = string.Format("{0} :: {1} ", windowTitleDefault, showResults);
                         }
@@ -2486,7 +2428,7 @@ WHERE
                     {
                         string fileWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_input_text_default.png");
 
-                        dialogResponse =  logicpos.Utils.GetInputText(pDialog, DialogFlags.Modal, fileWindowIcon, string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_cancel_document_input_text_label"), document.PaymentRefNo), string.Empty, SharedSettings.RegexAlfaNumericExtendedForMotive, true);
+                        dialogResponse =  logicpos.Utils.GetInputText(pDialog, DialogFlags.Modal, fileWindowIcon, string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_cancel_document_input_text_label"), document.PaymentRefNo), string.Empty, SharedSettings.RegexAlfaNumericExtendedForMotive, true);
                         if (dialogResponse.ResponseType == ResponseType.Ok)
                         {
                             //_logger.Debug(string.Format("PaymentRefNo:[{0}], DocumentStatusStatus:[{1}], reason:[{2}]", document.PaymentRefNo, document.PaymentStatus, dialogResponse.InputText));
@@ -2498,7 +2440,7 @@ WHERE
                             document.Save();
 
                             //Audit
-                            SharedUtils.Audit("FINANCE_DOCUMENT_CANCELLED", string.Format("{0} {1}: {2}", document.DocumentType.Designation, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_document_cancelled"), document.PaymentRefNo));
+                            SharedUtils.Audit("FINANCE_DOCUMENT_CANCELLED", string.Format("{0} {1}: {2}", document.DocumentType.Designation, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_document_cancelled"), document.PaymentRefNo));
 
                             //Removed Payed BIT to all DocumentPayment Documents (FT and NC)
                             foreach (fin_documentfinancemasterpayment documentPayment in document.DocumentPayment)
@@ -2558,7 +2500,7 @@ WHERE
                 {
                     if (!LicenceManagement.IsLicensed || !LicenceManagement.CanPrint)
                     {
-                        logicpos.Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_printing_function_disabled"));
+                        logicpos.Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_printing_function_disabled"));
                     }
                     else documents.Add(ProcessFinanceDocument.GenerateDocumentFinancePaymentPDFIfNotExists(document));
                 }
@@ -2567,7 +2509,7 @@ WHERE
                 {
                     if (!LicenceManagement.IsLicensed || !LicenceManagement.CanPrint)
                     {
-                        logicpos.Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_printing_function_disabled"));
+                        logicpos.Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_printing_function_disabled"));
                     }
                     else if (File.Exists(item))
                     {
@@ -2609,8 +2551,8 @@ WHERE
                     ignoredDocumentsMessage += string.Format("{0}{1}", Environment.NewLine, pIgnoredDocuments[i]);
                 }
 
-                string infoMessage = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "app_info_show_ignored_cancelled_documents"), ignoredDocumentsMessage);
-                logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(600, 400), MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_information"), infoMessage);
+                string infoMessage = string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "app_info_show_ignored_cancelled_documents"), ignoredDocumentsMessage);
+                logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(600, 400), MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_information"), infoMessage);
             }
         }
 

@@ -27,9 +27,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         private bool _isNewRecord = false;
 
-        private bool _isEncrypted = false;
         [NonPersistentAttribute]
-        public bool IsEncrypted { get => _isEncrypted; set => _isEncrypted = value; }
+        public bool IsEncrypted { get; set; } = false;
 
         // Assigned by Childs and Store Properties References
         protected Dictionary<string, PropertyInfo> _encryptedAttributes;
@@ -197,7 +196,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         protected virtual void OnNewRecordSaving()
         {
             // This Only Occurs on BO Edits, and Not in Object Code Creation, else it Trigger Double Encryption
-            if (!_isEncrypted && _encryptedAttributes != null && _encryptedAttributes.Count > 0)
+            if (!IsEncrypted && _encryptedAttributes != null && _encryptedAttributes.Count > 0)
             {
                 // Call SharedEncryptedDecryptProperties
                 EncryptProperties();
@@ -206,7 +205,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         protected virtual void OnRecordSaving()
         {
-            if (!_isEncrypted && _encryptedAttributes != null && _encryptedAttributes.Count > 0)
+            if (!IsEncrypted && _encryptedAttributes != null && _encryptedAttributes.Count > 0)
             {
                 // Call SharedEncryptedDecryptProperties
                 // This will ReEncrypt "item.Key.EncryptProperties();" in genericcrudwidgetlistxpo.cs
@@ -232,7 +231,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         protected override void OnSaved()
         {
             // This will do the Trick to Decrypt InMemory Values after Save Decrypted Values, and Will Show UI Decrypted Strings
-            if (_isEncrypted && _encryptedAttributes != null && _encryptedAttributes.Count > 0)
+            if (IsEncrypted && _encryptedAttributes != null && _encryptedAttributes.Count > 0)
             {
                 // DecryptProperties
                 DecryptProperties();
@@ -369,7 +368,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
                                 _encryptedAttributes[attr.Key].SetValue(this, targetPropertValue);
 
                                 // Change Object Property 
-                                _isEncrypted = encrypt;
+                                IsEncrypted = encrypt;
 
                                 // Show Log
                                 if (debug) _logger.Debug(string.Format("{0} Property type :[{1}]: [{2}], value: [{3}] to [{4}]", modeString, propertyType, attr.Key, sourcePropertValue, targetPropertValue));

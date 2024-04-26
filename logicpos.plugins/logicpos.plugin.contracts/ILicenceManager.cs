@@ -1,7 +1,5 @@
 ﻿using System.Collections;
 using System.Data;
-using System.Drawing;
-using System.IO;
 
 namespace logicpos.plugin.contracts
 {

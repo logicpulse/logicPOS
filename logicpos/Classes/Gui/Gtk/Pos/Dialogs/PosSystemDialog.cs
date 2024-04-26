@@ -1,12 +1,6 @@
-﻿using System;
-using Gtk;
+﻿using Gtk;
 using System.Drawing;
-using logicpos.financial;
-using logicpos.Classes.Gui.Gtk.Widgets;
-using logicpos.resources.Resources.Localization;
-using logicpos.shared;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.App;
 using logicpos.datalayer.App;
 using logicpos.shared.App;
 
@@ -18,7 +12,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
-            string windowTitle = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_system");
+            string windowTitle = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_system");
             Size windowSize = new Size(620, 205/*321 2 rows*/);
             string fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_system.png");
 
@@ -33,9 +27,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             string fileIconReports = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_reports.png");
 
             //Buttons
-            TouchButtonIconWithText buttonSetup = new TouchButtonIconWithText("touchButtonSetup_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_application_setup"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, fileIconConfiguration, sizeIcon, buttonWidth, buttonHeight);
-            TouchButtonIconWithText buttonCash = new TouchButtonIconWithText("touchButtonCash_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_button_label_cashdrawer"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, fileIconCashRegister, sizeIcon, buttonWidth, buttonHeight);
-            TouchButtonIconWithText buttonReports = new TouchButtonIconWithText("touchButtonReports_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_reports"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, fileIconReports, sizeIcon, buttonWidth, buttonHeight);
+            TouchButtonIconWithText buttonSetup = new TouchButtonIconWithText("touchButtonSetup_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_application_setup"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, fileIconConfiguration, sizeIcon, buttonWidth, buttonHeight);
+            TouchButtonIconWithText buttonCash = new TouchButtonIconWithText("touchButtonCash_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_button_label_cashdrawer"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, fileIconCashRegister, sizeIcon, buttonWidth, buttonHeight);
+            TouchButtonIconWithText buttonReports = new TouchButtonIconWithText("touchButtonReports_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_reports"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, fileIconReports, sizeIcon, buttonWidth, buttonHeight);
             //buttonDisable1.Sensitive = false;
 
             //Table

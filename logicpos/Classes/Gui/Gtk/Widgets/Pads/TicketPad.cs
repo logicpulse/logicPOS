@@ -35,14 +35,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //private TouchButtonIconWithText _buttonSendTicket;
         //Public Properties
         public Window SourceWindow { get; set; }
-
-        //Public UI
-        private TouchButtonIconWithText _buttonSelectTable;
-        public TouchButtonIconWithText ButtonKeySelectTable
-        {
-            get { return _buttonSelectTable; }
-            set { _buttonSelectTable = value; }
-        }
+        public TouchButtonIconWithText ButtonKeySelectTable { get; set; }
 
         public TicketPad(string pName, TicketList pTicketList, dynamic pThemeButtons, Position pPosition)
         {
@@ -238,7 +231,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             _buttonWeight = getButton(buttonWeightName, buttonWeightText, buttonWeightSize, buttonWeightImageFileName);
             _buttonGifts = getButton(buttonGiftsName, buttonGiftsText, buttonGiftsSize, buttonGiftsImageFileName);
             _buttonChangeTable = getButton(buttonChangeTableName, buttonChangeTableText, buttonChangeTableSize, buttonChangeTableImageFileName);
-            _buttonSelectTable = getButton(buttonSelectTableName, buttonSelectTableText, buttonSelectTableSize, buttonSelectTableImageFileName);
+            ButtonKeySelectTable = getButton(buttonSelectTableName, buttonSelectTableText, buttonSelectTableSize, buttonSelectTableImageFileName);
             _buttonFinishOrder = getButton(buttonFinishOrderName, buttonFinishOrderText, buttonFinishOrderSize, buttonFinishOrderImageFileName);
             _buttonPayments = getButton(buttonPaymentsName, buttonPaymentsText, buttonPaymentsSize, buttonPaymentsImageFileName);
             _buttonBarCode = getButton(buttonBarCodeName, buttonBarCodeText, buttonBarCodeSize, buttonBarCodeImageFileName);
@@ -271,7 +264,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             //Put Buttons/Theme
             Fixed fix = new Fixed() { BorderWidth = 10 };
 
-            if (buttonSelectTableVisible) fix.Put(_buttonSelectTable, buttonSelectTablePosition.X, buttonSelectTablePosition.Y);
+            if (buttonSelectTableVisible) fix.Put(ButtonKeySelectTable, buttonSelectTablePosition.X, buttonSelectTablePosition.Y);
             if (buttonPrevVisible) fix.Put(_buttonPrev, buttonPrevPosition.X, buttonPrevPosition.Y);
             if (buttonNextVisible) fix.Put(_buttonNext, buttonNextPosition.X, buttonNextPosition.Y);
             if (buttonDecreaseVisible) fix.Put(_buttonDecrease, buttonDecreasePosition.X, buttonDecreasePosition.Y);
@@ -295,7 +288,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             Add(fix);
 
             //Events
-            _buttonSelectTable.Clicked += buttonKeySelectTable_Clicked;
+            ButtonKeySelectTable.Clicked += buttonKeySelectTable_Clicked;
             //Assign _ticketList Button References, EventHandlers logic in _ticketList
             _ticketList.ButtonKeyPrev = _buttonPrev;
             _ticketList.ButtonKeyNext = _buttonNext;

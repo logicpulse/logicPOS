@@ -2,17 +2,16 @@
 using Patagames.Pdf.Net.Exceptions;
 using System;
 using System.ComponentModel;
-using System.Drawing.Printing;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 
 namespace Patagames.Pdf.Net.Controls.WinForms.ToolBars
 {
-	/// <summary>
-	/// Provides a container for Windows toolbar objects with predefined functionality for opening and printing
-	/// </summary>
-	public class PdfToolStripMain : PdfToolStrip
+    /// <summary>
+    /// Provides a container for Windows toolbar objects with predefined functionality for opening and printing
+    /// </summary>
+    public class PdfToolStripMain : PdfToolStrip
 	{
         #region private members
         private delegate void ShowPrintDialogDelegate(PrintDialog dlg);

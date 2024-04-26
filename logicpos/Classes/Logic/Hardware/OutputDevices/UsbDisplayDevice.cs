@@ -580,7 +580,7 @@ namespace logicpos.Classes.Logic.Hardware
             string price = string.Format("{0}", SharedUtils.DecimalToString(pPrice));
             string line1 = TextJustified(article, price, Convert.ToInt16(_charactersPerLine));
             Write(RemoveAccents(line1), 1);
-            WriteJustified(RemoveAccents(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_pole_display_global_total")), SharedUtils.DecimalToString(pTotal), 2);
+            WriteJustified(RemoveAccents(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_pole_display_global_total")), SharedUtils.DecimalToString(pTotal), 2);
             EnableStandBy();
         }
 

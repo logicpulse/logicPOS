@@ -1,6 +1,5 @@
 ﻿using FastReport.Utils;
 using logicpos.datalayer.App;
-using logicpos.financial.library.App;
 using logicpos.financial.library.Classes.Finance;
 using logicpos.resources.Resources.Localization;
 using logicpos.shared.App;
@@ -58,14 +57,6 @@ namespace logicpos.financial.library.Classes.Reports
             RegisteredObjects.AddFunction(funcLog, "Custom");
             RegisteredObjects.AddFunction(funcDebug, "Custom");
             RegisteredObjects.AddFunction(funcExtendedValue, "Custom");
-        }
-
-        /// <summary>
-        /// Register Custom Variables to Use With Func Var
-        /// </summary>
-        private static void RegisterSystemVars()
-        {
-            RegisterSystemVars(string.Empty);
         }
 
         private static void RegisterSystemVars(string pAppName)
@@ -192,7 +183,7 @@ namespace logicpos.financial.library.Classes.Reports
                   : string.Format("UNDEFINED [{0}]", resourceName);
                 if(resourceName == "global_documentfinance_type_title_fs")
                 {
-                    result = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type_title_fs");
+                    result = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type_title_fs");
                 }
 
                 //_logger.Debug(string.Format("Message: [{0}]", resourceName));

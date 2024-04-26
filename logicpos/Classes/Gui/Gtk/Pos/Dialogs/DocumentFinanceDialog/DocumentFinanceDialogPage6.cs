@@ -1,5 +1,4 @@
 ﻿using Gtk;
-using System;
 using logicpos.Classes.Gui.Gtk.Widgets;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog

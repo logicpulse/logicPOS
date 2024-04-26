@@ -18,19 +18,9 @@ namespace logicpos.shared.Classes.Orders
             set { _oid = value; }
         }
 
-        private string _name;
-        public string Name
-        {
-            get { return _name; }
-            set { _name = value; }
-        }
+        public string Name { get; set; }
 
-        private PriceType _priceType;
-        public PriceType PriceType
-        {
-            get { return _priceType; }
-            set { _priceType = value; }
-        }
+        public PriceType PriceType { get; set; }
 
         private Guid _placeId;
         public Guid PlaceId
@@ -62,9 +52,9 @@ namespace logicpos.shared.Classes.Orders
                 {
                     table = (pos_configurationplacetable)SharedUtils.GetXPGuidObjectFromCriteria(typeof(pos_configurationplacetable), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Code = '{0}')", "10")) as pos_configurationplacetable;
                 }
-                _name = table.Designation;
+                Name = table.Designation;
                 //Enum is not Zero Indexed
-                _priceType = (PriceType)table.Place.PriceType.EnumValue;
+                PriceType = (PriceType)table.Place.PriceType.EnumValue;
                 _placeId = table.Place.Oid;
             }
             catch (Exception ex)

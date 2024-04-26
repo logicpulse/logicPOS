@@ -1,5 +1,4 @@
-﻿using logicpos.App;
-using logicpos.datalayer.App;
+﻿using logicpos.datalayer.App;
 using logicpos.shared.App;
 using System;
 using System.Collections.Generic;

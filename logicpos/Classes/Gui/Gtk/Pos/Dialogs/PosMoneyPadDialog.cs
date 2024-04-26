@@ -11,24 +11,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
     internal class MoneyPadResult
     {
-        private ResponseType _response;
-        public ResponseType Response
-        {
-            get { return _response; }
-            set { _response = value; }
-        }
+        public ResponseType Response { get; set; }
 
-        private decimal _value;
-        public decimal Value
-        {
-            get { return _value; }
-            set { _value = value; }
-        }
+        public decimal Value { get; set; }
 
         public MoneyPadResult(ResponseType pResponse, decimal pValue)
         {
-            _response = pResponse;
-            _value = pValue;
+            Response = pResponse;
+            Value = pValue;
         }
     }
 
@@ -38,20 +28,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private MoneyPad _moneyPad;
         private TouchButtonIconWithText _buttonOk;
         private TouchButtonIconWithText _buttonCancel;
-        private decimal _amount = 0.0m;
-        public decimal Amount
-        {
-            get { return _amount; }
-            set { _amount = value; }
-        }
 
-        //Pagamentos parciais - Escolher valor a pagar por artigo [TK:019295]
-        private decimal _totalOrder = 0.0m;
-        public decimal TotalOrder
-        {
-            get { return _totalOrder; }
-            set { _totalOrder = value; }
-        }
+        public decimal Amount { get; set; } = 0.0m;
+
+        public decimal TotalOrder { get; set; } = 0.0m;
 
         public PosMoneyPadDialog(Window pSourceWindow, DialogFlags pDialogFlags, decimal pInitialValue = 0.0m, decimal pTotalOrder = 0.0m)
             : base(pSourceWindow, pDialogFlags)
@@ -60,11 +40,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             string windowTitle;
             if (pTotalOrder > 0)
             {
-                windowTitle = string.Format("{0} - {1} : {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_moneypad"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_table_tickets"), SharedUtils.DecimalToStringCurrency(pTotalOrder));
+                windowTitle = string.Format("{0} - {1} : {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_moneypad"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_table_tickets"), SharedUtils.DecimalToStringCurrency(pTotalOrder));
             }
             else
             {
-                windowTitle = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_moneypad");
+                windowTitle = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_moneypad");
             }
 
             this.InitObject(pSourceWindow, pDialogFlags, windowTitle, pInitialValue, pTotalOrder);
@@ -86,8 +66,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _moneyPad = new MoneyPad(pSourceWindow, pInitialValue);
             _moneyPad.EntryChanged += _moneyPad_EntryChanged;
             //If pInitialValue defined, Assign it
-            _amount = (pInitialValue > 0) ? pInitialValue : 0.0m;
-            _totalOrder = pTotalOrder;
+            Amount = (pInitialValue > 0) ? pInitialValue : 0.0m;
+            TotalOrder = pTotalOrder;
 
             //Init Content
             Fixed fixedContent = new Fixed();
@@ -115,11 +95,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         //Pagamentos parciais - Escolher valor a pagar por artigo [TK:019295]
         private void _moneyPad_EntryChanged(object sender, EventArgs e)
         {
-            _amount = _moneyPad.DeliveryValue;
+            Amount = _moneyPad.DeliveryValue;
 
-            if (_totalOrder != 0)
+            if (TotalOrder != 0)
             {
-                if (_amount <= _totalOrder)
+                if (Amount <= TotalOrder)
                     _buttonOk.Sensitive = _moneyPad.Validated;
                 else { _buttonOk.Sensitive = false; }
             }

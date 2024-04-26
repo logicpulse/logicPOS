@@ -1,6 +1,4 @@
 ﻿using Gtk;
-using logicpos.resources.Resources.Localization;
-using System;
 using System.Collections.Generic;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
@@ -13,19 +11,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //Private Members
         private ListStore _comboBoxListStore;
         private Dictionary<int, TreeIter> _treeInterDictionary;
-        //Public Members
-        private CellRendererText _comboBoxCell;
-        public CellRendererText ComboBoxCell
-        {
-            get { return _comboBoxCell; }
-            set { _comboBoxCell = value; }
-        }
-        private string _value;
-        public string Value
-        {
-            get { return _value; }
-            set { _value = value; }
-        }
+
+        public CellRendererText ComboBoxCell { get; set; }
+        public string Value { get; set; }
 
         public ListComboBox(List<string> pItemList)
             : this(pItemList, "", true, false) { }
@@ -39,9 +27,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         public ListComboBox(List<string> pItemList, string pInitialValue, bool pAddUndefinedValue, bool pRequired)
         {
             //Init CellRenderer
-            _comboBoxCell = new CellRendererText();
-            PackStart(_comboBoxCell, true);
-            AddAttribute(_comboBoxCell, "text", 1);
+            ComboBoxCell = new CellRendererText();
+            PackStart(ComboBoxCell, true);
+            AddAttribute(ComboBoxCell, "text", 1);
             //Create/Update Model
             CreateModel(pItemList, pInitialValue, pAddUndefinedValue);
             //Events
@@ -65,9 +53,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             //Aways Default to UNDEFINED Value - even if Collection is Empty, and if Used
             if (pAddUndefinedValue)
             {
-                tempItemIter = _comboBoxListStore.AppendValues(0, resources.CustomResources.GetCustomResources("", "widget_combobox_undefined"));
+                tempItemIter = _comboBoxListStore.AppendValues(0, resources.CustomResources.GetCustomResource("", "widget_combobox_undefined"));
                 _treeInterDictionary.Add(0, tempItemIter);
-                initialValueDefault = resources.CustomResources.GetCustomResources("", "widget_combobox_undefined");
+                initialValueDefault = resources.CustomResources.GetCustomResource("", "widget_combobox_undefined");
                 positionOffset = 1;
             }
             else
@@ -77,7 +65,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             }
 
             //LINQ: Default Selected, Check if Inital Exist else use Undefined
-            _value = (pItemList.Exists(element => element == pInitialValue)) ? pInitialValue : initialValueDefault;
+            Value = (pItemList.Exists(element => element == pInitialValue)) ? pInitialValue : initialValueDefault;
 
             //Assign CurrentIter
             //currentItemIter = tempItemIter;
@@ -95,7 +83,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     if (pInitialValue != null && pInitialValue == pItemList[i])
                     {
                         currentItemIter = tempItemIter;
-                        _value = pItemList[i];
+                        Value = pItemList[i];
                     };
                 }
             };
@@ -114,7 +102,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
             if (combo.GetActiveIter(out iter))
             {
-                _value = (string)combo.Model.GetValue(iter, 1);
+                Value = (string)combo.Model.GetValue(iter, 1);
             };
             //_logger.Debug(string.Format("_value: [{0}]", _value));
         }

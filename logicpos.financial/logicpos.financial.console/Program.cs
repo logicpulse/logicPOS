@@ -16,7 +16,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
-using System.Threading;
 
 namespace logicpos.financial.console
 {

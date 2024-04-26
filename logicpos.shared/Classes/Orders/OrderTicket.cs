@@ -1,5 +1,4 @@
 ﻿using logicpos.datalayer.Enums;
-using logicpos.shared.App;
 using Newtonsoft.Json;
 using System;
 
@@ -7,46 +6,24 @@ namespace logicpos.shared.Classes.Orders
 {
     public class OrderTicket
     {
-        //Public Properties
-        private PriceType _priceType;
-        public PriceType PriceType
-        {
-            get { return _priceType; }
-            set { _priceType = value; }
-        }
+        public PriceType PriceType { get; set; }
 
-        private DateTime _dateStart;
-        public DateTime DateStart
-        {
-            get { return _dateStart; }
-            set { _dateStart = value; }
-        }
+        public DateTime DateStart { get; set; }
 
-        private OrderDetail _orderDetails;
-        public OrderDetail OrderDetails
-        {
-            get { return _orderDetails; }
-            set { _orderDetails = value; }
-        }
+        public OrderDetail OrderDetails { get; set; }
 
-        //Store Reference to Parent OrderMain
-        private OrderMain _orderMain;
         [JsonIgnore]
-        public OrderMain OrderMain
-        {
-            get { return _orderMain; }
-            set { _orderMain = value; }
-        }
+        public OrderMain OrderMain { get; set; }
 
         //Required Parameterless Constructor for Json.NET (Load)
         public OrderTicket() { }
         public OrderTicket(OrderMain pOrderMain, PriceType pPriceType)
         {
             //Reference to Parent OrderMain
-            _orderMain = pOrderMain;
-            _priceType = pPriceType;
-            _dateStart = datalayer.App.DataLayerUtils.CurrentDateTimeAtomic();
-            _orderDetails = new OrderDetail(this);
+            OrderMain = pOrderMain;
+            PriceType = pPriceType;
+            DateStart = datalayer.App.DataLayerUtils.CurrentDateTimeAtomic();
+            OrderDetails = new OrderDetail(this);
         }
     }
 }

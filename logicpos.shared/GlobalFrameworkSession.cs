@@ -1,7 +1,6 @@
 ﻿using DansCSharpLibrary.JsonSerialization;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
-using logicpos.resources.Resources.Localization;
 using logicpos.shared.App;
 using logicpos.shared.Classes.Orders;
 using Newtonsoft.Json;
@@ -20,27 +19,11 @@ namespace logicpos.shared
         private string _file;
         private Formatting _jsonIndented;
 
-        //Public Properties
-        private DateTime _sessionDateStart;
-        public DateTime SessionDateStart
-        {
-            get { return _sessionDateStart; }
-            set { _sessionDateStart = value; }
-        }
+        public DateTime SessionDateStart { get; set; }
 
-        private DateTime _sessionUpdatedAt;
-        public DateTime SessionUpdatedAt
-        {
-            get { return _sessionUpdatedAt; }
-            set { _sessionUpdatedAt = value; }
-        }
+        public DateTime SessionUpdatedAt { get; set; }
 
-        private Dictionary<Guid, DateTime> _loggergedUsers;
-        public Dictionary<Guid, DateTime> LoggedUsers
-        {
-            get { return _loggergedUsers; }
-            set { _loggergedUsers = value; }
-        }
+        public Dictionary<Guid, DateTime> LoggedUsers { get; set; }
 
         private Guid _currentOrderMainOid;
         public Guid CurrentOrderMainOid
@@ -49,20 +32,9 @@ namespace logicpos.shared
             set { _currentOrderMainOid = value; }
         }
 
-        private Dictionary<Guid, OrderMain> _ordersMain;
-        public Dictionary<Guid, OrderMain> OrdersMain
-        {
-            get { return _ordersMain; }
-            set { _ordersMain = value; }
-        }
+        public Dictionary<Guid, OrderMain> OrdersMain { get; set; }
 
-        //Use Tokens ex WINDOWNAME_VALUE | POSARTICLESTOCKDIALOG_SUPPLIER with SetToken and GetToken
-        private Dictionary<string, object> _tokens;
-        public Dictionary<string, object> Tokens
-        {
-            get { return _tokens; }
-            set { _tokens = value; }
-        }
+        public Dictionary<string, object> Tokens { get; set; }
 
         public GlobalFrameworkSession() { }
         public GlobalFrameworkSession(string pFile)
@@ -71,9 +43,9 @@ namespace logicpos.shared
             _file = pFile;
             //Default
             _currentOrderMainOid = Guid.Empty;
-            _sessionDateStart = datalayer.App.DataLayerUtils.CurrentDateTimeAtomic();
-            _loggergedUsers = new Dictionary<Guid, DateTime>();
-            _ordersMain = new Dictionary<Guid, OrderMain>();
+            SessionDateStart = datalayer.App.DataLayerUtils.CurrentDateTimeAtomic();
+            LoggedUsers = new Dictionary<Guid, DateTime>();
+            OrdersMain = new Dictionary<Guid, OrderMain>();
         }
 
         public bool Write()
@@ -97,7 +69,7 @@ namespace logicpos.shared
                 //Write Session
                 try
                 {
-                    _sessionUpdatedAt = datalayer.App.DataLayerUtils.CurrentDateTimeAtomic();
+                    SessionUpdatedAt = datalayer.App.DataLayerUtils.CurrentDateTimeAtomic();
                     JsonSerialization.WriteToJsonFile<GlobalFrameworkSession>(_file, this, false, _jsonIndented);
                     return true;
                 }
@@ -122,7 +94,7 @@ namespace logicpos.shared
                 foreach (Guid item in SharedFramework.SessionApp.LoggedUsers.Keys)
                 {
                     sys_userdetail user = (sys_userdetail)datalayer.App.DataLayerUtils.GetXPGuidObject(typeof(sys_userdetail), item);
-                    SharedUtils.Audit("USER_loggerOUT", string.Format(resources.CustomResources.GetCustomResources(datalayer.App.DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_used_forced_loggerout"), user.Name));
+                    SharedUtils.Audit("USER_loggerOUT", string.Format(resources.CustomResources.GetCustomResource(datalayer.App.DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_used_forced_loggerout"), user.Name));
                 }
                 SharedFramework.SessionApp.LoggedUsers.Clear();
             }
@@ -136,14 +108,14 @@ namespace logicpos.shared
         {
             Guid latestNonEmptyOrder = Guid.Empty;
 
-            if (_ordersMain != null && _ordersMain.Count > 0)
+            if (OrdersMain != null && OrdersMain.Count > 0)
             {
                 //Used to store List of Items to Remove after foreach, we cant remove it inside a foreach
                 List<Guid> removeItems = new List<Guid>();
-                foreach (Guid orderIndex in _ordersMain.Keys)
+                foreach (Guid orderIndex in OrdersMain.Keys)
                 {
                     //Remove if Not Open and if Dont have Lines
-                    if (_ordersMain[orderIndex].OrderStatus != OrderStatus.Open && _ordersMain[orderIndex].OrderTickets[_ordersMain[orderIndex].CurrentTicketId].OrderDetails.Lines.Count == 0)
+                    if (OrdersMain[orderIndex].OrderStatus != OrderStatus.Open && OrdersMain[orderIndex].OrderTickets[OrdersMain[orderIndex].CurrentTicketId].OrderDetails.Lines.Count == 0)
                     {
                         removeItems.Add(orderIndex);
                     }
@@ -154,7 +126,7 @@ namespace logicpos.shared
                 };
                 foreach (var item in removeItems)
                 {
-                    _ordersMain.Remove(item);
+                    OrdersMain.Remove(item);
                     break;
                 }
             }
@@ -185,16 +157,16 @@ namespace logicpos.shared
             try
             {
                 //Init Dictionary
-                if (_tokens == null) _tokens = new Dictionary<string, object>();
+                if (Tokens == null) Tokens = new Dictionary<string, object>();
                 //Update Token
-                if (_tokens.ContainsKey(pToken))
+                if (Tokens.ContainsKey(pToken))
                 {
-                    _tokens[pToken] = pValue;
+                    Tokens[pToken] = pValue;
                 }
                 //Add Token
                 else
                 {
-                    _tokens.Add(pToken, pValue);
+                    Tokens.Add(pToken, pValue);
                 }
 
                 result = true;
@@ -213,7 +185,7 @@ namespace logicpos.shared
 
             try
             {
-                if (_tokens != null && _tokens.Count > 0 && _tokens.ContainsKey(pToken)) result = _tokens[pToken];
+                if (Tokens != null && Tokens.Count > 0 && Tokens.ContainsKey(pToken)) result = Tokens[pToken];
             }
             catch (Exception ex)
             {

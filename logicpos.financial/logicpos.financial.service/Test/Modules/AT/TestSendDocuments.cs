@@ -2,7 +2,6 @@
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.financial.service.App;
 using logicpos.financial.service.Objects;
-using logicpos.shared;
 using System;
 
 namespace logicpos.financial.service.Test.Modules.AT

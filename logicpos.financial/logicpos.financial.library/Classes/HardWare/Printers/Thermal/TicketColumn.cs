@@ -5,36 +5,23 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
 {
     public class TicketColumn
     {
-        private string _name;
-        public string Name
-        {
-            get { return _name; }
-            set { _name = value; }
-        }
+        public string Name { get; set; }
         private string _title;
         public string Title
         {
             get { return _title; }
             set { _title = value; }
         }
-        private int _width;
-        public int Width
-        {
-            get { return _width; }
-            set { _width = value; }
-        }
+
+        public int Width { get; set; }
         private TicketColumnsAlign _align;
         public TicketColumnsAlign Align
         {
             get { return _align; }
             set { _align = value; }
         }
-        private Type _dataType;
-        public Type DataType
-        {
-            get { return _dataType; }
-            set { _dataType = value; }
-        }
+
+        public Type DataType { get; set; }
         private string _format;
         public string Format
         {
@@ -59,11 +46,11 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
 
         public TicketColumn(string pName, string pText, int pWidth, TicketColumnsAlign pAlign, Type pDateType, string pFormat)
         {
-            _name = pName;
+            Name = pName;
             _title = pText;
-            _width = pWidth;
+            Width = pWidth;
             _align = pAlign;
-            _dataType = pDateType;
+            DataType = pDateType;
             _format = pFormat;
         }
     }

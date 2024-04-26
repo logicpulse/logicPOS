@@ -1,14 +1,12 @@
 ﻿using DevExpress.Data.Filtering;
 using DevExpress.Xpo;
 using Gtk;
-using logicpos.App;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.resources.Resources.Localization;
 using logicpos.shared.App;
 using System;
 
@@ -19,60 +17,24 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         private readonly Session _session;
         private readonly DocumentFinanceDialogPagePad _pagePad;
         private readonly cfg_configurationcountry _intialValueConfigurationCountry;
-        //UI
-        private readonly EntryBoxValidationDatePickerDialog _entryBoxShipToDeliveryDate;
-        public EntryBoxValidationDatePickerDialog EntryBoxShipToDeliveryDate
-        {
-            get { return _entryBoxShipToDeliveryDate; }
-        }
 
-        private readonly EntryBoxValidation _entryBoxShipToDeliveryID;
-        public EntryBoxValidation EntryBoxShipToDeliveryID
-        {
-            get { return _entryBoxShipToDeliveryID; }
-        }
+        public EntryBoxValidationDatePickerDialog EntryBoxShipToDeliveryDate { get; }
 
-        private readonly EntryBoxValidation _entryBoxShipToWarehouseID;
-        public EntryBoxValidation EntryBoxShipToWarehouseID
-        {
-            get { return _entryBoxShipToWarehouseID; }
-        }
+        public EntryBoxValidation EntryBoxShipToDeliveryID { get; }
 
-        private readonly EntryBoxValidation _entryBoxShipToLocationID;
-        public EntryBoxValidation EntryBoxShipToLocationID
-        {
-            get { return _entryBoxShipToLocationID; }
-        }
+        public EntryBoxValidation EntryBoxShipToWarehouseID { get; }
 
-        private readonly EntryBoxValidation _entryBoxShipToAddressDetail;
-        public EntryBoxValidation EntryBoxShipToAddressDetail
-        {
-            get { return _entryBoxShipToAddressDetail; }
-        }
+        public EntryBoxValidation EntryBoxShipToLocationID { get; }
 
-        private readonly EntryBoxValidation _entryBoxShipToRegion;
-        public EntryBoxValidation EntryBoxShipToRegion
-        {
-            get { return _entryBoxShipToRegion; }
-        }
+        public EntryBoxValidation EntryBoxShipToAddressDetail { get; }
 
-        private readonly EntryBoxValidation _entryBoxShipToPostalCode;
-        public EntryBoxValidation EntryBoxShipToPostalCode
-        {
-            get { return _entryBoxShipToPostalCode; }
-        }
+        public EntryBoxValidation EntryBoxShipToRegion { get; }
 
-        private readonly EntryBoxValidation _entryBoxShipToCity;
-        public EntryBoxValidation EntryBoxShipToCity
-        {
-            get { return _entryBoxShipToCity; }
-        }
+        public EntryBoxValidation EntryBoxShipToPostalCode { get; }
 
-        private readonly XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry> _entryBoxSelectShipToCountry;
-        public XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry> EntryBoxSelectShipToCountry
-        {
-            get { return _entryBoxSelectShipToCountry; }
-        }
+        public EntryBoxValidation EntryBoxShipToCity { get; }
+
+        public XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry> EntryBoxSelectShipToCountry { get; }
 
         //Constructor
         public DocumentFinanceDialogPage4(Window pSourceWindow, string pPageName) 
@@ -90,79 +52,79 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             _intialValueConfigurationCountry = DataLayerSettings.ConfigurationSystemCountry;
 
             //ShipTo Address
-            _entryBoxShipToAddressDetail = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_address"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericPlus, true);/* IN009253 */
-            _entryBoxShipToAddressDetail.EntryValidation.Changed += delegate { Validate(); };
+            EntryBoxShipToAddressDetail = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_address"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericPlus, true);/* IN009253 */
+            EntryBoxShipToAddressDetail.EntryValidation.Changed += delegate { Validate(); };
 
             //ShipTo Region
-            _entryBoxShipToRegion = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_region"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericPlus, false);/* IN009253 */
-            _entryBoxShipToRegion.EntryValidation.Changed += delegate { Validate(); };
+            EntryBoxShipToRegion = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_region"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericPlus, false);/* IN009253 */
+            EntryBoxShipToRegion.EntryValidation.Changed += delegate { Validate(); };
 
             //ShipTo PostalCode
-            _entryBoxShipToPostalCode = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_zipcode"), KeyboardMode.Alfa, DataLayerSettings.ConfigurationSystemCountry.RegExZipCode, true);
-            _entryBoxShipToPostalCode.EntryValidation.Changed += delegate { Validate(); };
+            EntryBoxShipToPostalCode = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_zipcode"), KeyboardMode.Alfa, DataLayerSettings.ConfigurationSystemCountry.RegExZipCode, true);
+            EntryBoxShipToPostalCode.EntryValidation.Changed += delegate { Validate(); };
 
             //ShipTo City
-            _entryBoxShipToCity = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_city"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericPlus, true);/* IN009253 */
-            _entryBoxShipToCity.EntryValidation.Changed += delegate { Validate(); };
+            EntryBoxShipToCity = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_city"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericPlus, true);/* IN009253 */
+            EntryBoxShipToCity.EntryValidation.Changed += delegate { Validate(); };
 
             //ShipTo Country
             CriteriaOperator criteriaOperatorCustomerCountry = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1)");
-            _entryBoxSelectShipToCountry = new XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry>(_sourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_country"), "Designation", "Oid", _intialValueConfigurationCountry, criteriaOperatorCustomerCountry, SharedSettings.RegexGuid, true);
-            _entryBoxSelectShipToCountry.EntryValidation.Validate(_entryBoxSelectShipToCountry.Value.Oid.ToString());
-            _entryBoxSelectShipToCountry.EntryValidation.IsEditable = false;
-            _entryBoxSelectShipToCountry.EntryValidation.Changed += delegate { Validate(); };
-            _entryBoxSelectShipToCountry.ClosePopup += delegate
+            EntryBoxSelectShipToCountry = new XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry>(_sourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_country"), "Designation", "Oid", _intialValueConfigurationCountry, criteriaOperatorCustomerCountry, SharedSettings.RegexGuid, true);
+            EntryBoxSelectShipToCountry.EntryValidation.Validate(EntryBoxSelectShipToCountry.Value.Oid.ToString());
+            EntryBoxSelectShipToCountry.EntryValidation.IsEditable = false;
+            EntryBoxSelectShipToCountry.EntryValidation.Changed += delegate { Validate(); };
+            EntryBoxSelectShipToCountry.ClosePopup += delegate
             {
                 //Require to Update RegExZipCode
-                _entryBoxShipToPostalCode.EntryValidation.Rule = _entryBoxSelectShipToCountry.Value.RegExZipCode;
-                _entryBoxShipToPostalCode.EntryValidation.Validate();
+                EntryBoxShipToPostalCode.EntryValidation.Rule = EntryBoxSelectShipToCountry.Value.RegExZipCode;
+                EntryBoxShipToPostalCode.EntryValidation.Validate();
             };
 
             //ShipToDeliveryDate
-            _entryBoxShipToDeliveryDate = new EntryBoxValidationDatePickerDialog(_sourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ship_to_delivery_date"), _pagePad.DateTimeFormat, _pagePad.InitalDateTime, KeyboardMode.AlfaNumeric, SharedSettings.RegexDateTime, true, _pagePad.DateTimeFormat);
-            _entryBoxShipToDeliveryDate.EntryValidation.Sensitive = true;
+            EntryBoxShipToDeliveryDate = new EntryBoxValidationDatePickerDialog(_sourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ship_to_delivery_date"), _pagePad.DateTimeFormat, _pagePad.InitalDateTime, KeyboardMode.AlfaNumeric, SharedSettings.RegexDateTime, true, _pagePad.DateTimeFormat);
+            EntryBoxShipToDeliveryDate.EntryValidation.Sensitive = true;
             //_entryBoxShipToDeliveryDate.EntryValidation.Text = _pagePad.InitalDateTime.ToString(_pagePad.DateTimeFormat);
-            _entryBoxShipToDeliveryDate.EntryValidation.Validate();
+            EntryBoxShipToDeliveryDate.EntryValidation.Validate();
             //Assign Min Date to Validation
-            _entryBoxShipToDeliveryDate.DateTimeMin = DataLayerUtils.CurrentDateTimeAtomic();
-            _entryBoxShipToDeliveryDate.EntryValidation.Changed += _entryBoxShipToDeliveryDate_Changed;
-            _entryBoxShipToDeliveryDate.ClosePopup += _entryBoxShipToDeliveryDate_Changed;
+            EntryBoxShipToDeliveryDate.DateTimeMin = DataLayerUtils.CurrentDateTimeAtomic();
+            EntryBoxShipToDeliveryDate.EntryValidation.Changed += _entryBoxShipToDeliveryDate_Changed;
+            EntryBoxShipToDeliveryDate.ClosePopup += _entryBoxShipToDeliveryDate_Changed;
 
             //ShipToDeliveryID
-            _entryBoxShipToDeliveryID = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ship_to_delivery_id"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericExtended, false);
-            _entryBoxShipToDeliveryID.EntryValidation.Changed += delegate { Validate(); };
+            EntryBoxShipToDeliveryID = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ship_to_delivery_id"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericExtended, false);
+            EntryBoxShipToDeliveryID.EntryValidation.Changed += delegate { Validate(); };
 
             //ShipToWarehouseID
-            _entryBoxShipToWarehouseID = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ship_to_warehouse_id"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericExtended, false);
-            _entryBoxShipToWarehouseID.EntryValidation.MaxLength = 50;
-            _entryBoxShipToWarehouseID.EntryValidation.Changed += delegate { Validate(); };
+            EntryBoxShipToWarehouseID = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ship_to_warehouse_id"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericExtended, false);
+            EntryBoxShipToWarehouseID.EntryValidation.MaxLength = 50;
+            EntryBoxShipToWarehouseID.EntryValidation.Changed += delegate { Validate(); };
 
             //ShipToLocationID
-            _entryBoxShipToLocationID = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ship_to_location_id"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericExtended, false);
-            _entryBoxShipToLocationID.EntryValidation.MaxLength = 30;
-            _entryBoxShipToLocationID.EntryValidation.Changed += delegate { Validate(); };
+            EntryBoxShipToLocationID = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ship_to_location_id"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericExtended, false);
+            EntryBoxShipToLocationID.EntryValidation.MaxLength = 30;
+            EntryBoxShipToLocationID.EntryValidation.Changed += delegate { Validate(); };
 
             //HBox ZipCode+City+Country
             HBox hboxZipCodeAndCityAndCountry = new HBox(true, 0);
-            hboxZipCodeAndCityAndCountry.PackStart(_entryBoxShipToPostalCode, true, true, 0);
-            hboxZipCodeAndCityAndCountry.PackStart(_entryBoxShipToCity, true, true, 0);
-            hboxZipCodeAndCityAndCountry.PackStart(_entryBoxSelectShipToCountry, true, true, 0);
+            hboxZipCodeAndCityAndCountry.PackStart(EntryBoxShipToPostalCode, true, true, 0);
+            hboxZipCodeAndCityAndCountry.PackStart(EntryBoxShipToCity, true, true, 0);
+            hboxZipCodeAndCityAndCountry.PackStart(EntryBoxSelectShipToCountry, true, true, 0);
 
             //HBox hboxDeliveryDate+DeliveryID
             HBox hboxDeliveryDateAndDeliveryID = new HBox(true, 0);
-            hboxDeliveryDateAndDeliveryID.PackStart(_entryBoxShipToDeliveryDate, true, true, 0);
-            hboxDeliveryDateAndDeliveryID.PackStart(_entryBoxShipToDeliveryID, true, true, 0);
+            hboxDeliveryDateAndDeliveryID.PackStart(EntryBoxShipToDeliveryDate, true, true, 0);
+            hboxDeliveryDateAndDeliveryID.PackStart(EntryBoxShipToDeliveryID, true, true, 0);
 
             //HBox hboxWarehouseID+LocationID
             HBox hboxhboxWarehouseIDAndLocationID = new HBox(true, 0);
-            hboxhboxWarehouseIDAndLocationID.PackStart(_entryBoxShipToWarehouseID, true, true, 0);
-            hboxhboxWarehouseIDAndLocationID.PackStart(_entryBoxShipToLocationID, true, true, 0);
+            hboxhboxWarehouseIDAndLocationID.PackStart(EntryBoxShipToWarehouseID, true, true, 0);
+            hboxhboxWarehouseIDAndLocationID.PackStart(EntryBoxShipToLocationID, true, true, 0);
 
             //Pack VBOX
             VBox vbox = new VBox(false, 2);
 
-            vbox.PackStart(_entryBoxShipToAddressDetail, false, false, 0);
-            vbox.PackStart(_entryBoxShipToRegion, false, false, 0);
+            vbox.PackStart(EntryBoxShipToAddressDetail, false, false, 0);
+            vbox.PackStart(EntryBoxShipToRegion, false, false, 0);
             vbox.PackStart(hboxZipCodeAndCityAndCountry, false, false, 0);
             vbox.PackStart(hboxDeliveryDateAndDeliveryID, false, false, 0);
             vbox.PackStart(hboxhboxWarehouseIDAndLocationID, false, false, 0);
@@ -173,15 +135,15 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         public override void Validate()
         {
             _validated = (
-              _entryBoxShipToAddressDetail.EntryValidation.Validated &&
-              _entryBoxShipToRegion.EntryValidation.Validated &&
-              _entryBoxShipToPostalCode.EntryValidation.Validated &&
-              _entryBoxShipToCity.EntryValidation.Validated &&
-              _entryBoxSelectShipToCountry.EntryValidation.Validated &&
-              _entryBoxShipToDeliveryDate.EntryValidation.Validated &&
-              _entryBoxShipToDeliveryID.EntryValidation.Validated &&
-              _entryBoxShipToWarehouseID.EntryValidation.Validated &&
-              _entryBoxShipToLocationID.EntryValidation.Validated
+              EntryBoxShipToAddressDetail.EntryValidation.Validated &&
+              EntryBoxShipToRegion.EntryValidation.Validated &&
+              EntryBoxShipToPostalCode.EntryValidation.Validated &&
+              EntryBoxShipToCity.EntryValidation.Validated &&
+              EntryBoxSelectShipToCountry.EntryValidation.Validated &&
+              EntryBoxShipToDeliveryDate.EntryValidation.Validated &&
+              EntryBoxShipToDeliveryID.EntryValidation.Validated &&
+              EntryBoxShipToWarehouseID.EntryValidation.Validated &&
+              EntryBoxShipToLocationID.EntryValidation.Validated
             );
 
             //Enable Next Button, If not In Last Page
@@ -197,36 +159,36 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         public void ToggleValidation(bool pIsRequired)
         {
             //Toggle
-            _entryBoxShipToAddressDetail.EntryValidation.Required = pIsRequired;
+            EntryBoxShipToAddressDetail.EntryValidation.Required = pIsRequired;
             //_entryBoxShipToRegion.EntryValidation.Required = pIsRequired;
-            _entryBoxShipToPostalCode.EntryValidation.Required = pIsRequired;
-            _entryBoxShipToCity.EntryValidation.Required = pIsRequired;
-            _entryBoxShipToDeliveryDate.EntryValidation.Required = pIsRequired;
-            _entryBoxSelectShipToCountry.EntryValidation.Required = pIsRequired;
+            EntryBoxShipToPostalCode.EntryValidation.Required = pIsRequired;
+            EntryBoxShipToCity.EntryValidation.Required = pIsRequired;
+            EntryBoxShipToDeliveryDate.EntryValidation.Required = pIsRequired;
+            EntryBoxSelectShipToCountry.EntryValidation.Required = pIsRequired;
             //Call Validate
-            _entryBoxShipToAddressDetail.EntryValidation.Validate();
-            _entryBoxShipToRegion.EntryValidation.Validate();
-            _entryBoxShipToPostalCode.EntryValidation.Validate();
-            _entryBoxShipToCity.EntryValidation.Validate();
-            _entryBoxShipToDeliveryDate.EntryValidation.Validate();
-            _entryBoxSelectShipToCountry.EntryValidation.Validate(
-                (_entryBoxSelectShipToCountry.Value != null) ? _entryBoxSelectShipToCountry.Value.Oid.ToString() : string.Empty
+            EntryBoxShipToAddressDetail.EntryValidation.Validate();
+            EntryBoxShipToRegion.EntryValidation.Validate();
+            EntryBoxShipToPostalCode.EntryValidation.Validate();
+            EntryBoxShipToCity.EntryValidation.Validate();
+            EntryBoxShipToDeliveryDate.EntryValidation.Validate();
+            EntryBoxSelectShipToCountry.EntryValidation.Validate(
+                (EntryBoxSelectShipToCountry.Value != null) ? EntryBoxSelectShipToCountry.Value.Oid.ToString() : string.Empty
             );
         }
 
         public void ClearShipTo()
         {
             //Clear ShipTo
-            if (_entryBoxShipToDeliveryID.EntryValidation.Text != string.Empty) _entryBoxShipToDeliveryID.EntryValidation.Text = string.Empty;
-            if (_entryBoxShipToDeliveryDate.EntryValidation.Text != string.Empty) _entryBoxShipToDeliveryDate.EntryValidation.Text = string.Empty;
-            if (_entryBoxShipToWarehouseID.EntryValidation.Text != string.Empty) _entryBoxShipToWarehouseID.EntryValidation.Text = string.Empty;
-            if (_entryBoxShipToLocationID.EntryValidation.Text != string.Empty) _entryBoxShipToLocationID.EntryValidation.Text = string.Empty;
-            if (_entryBoxShipToAddressDetail.EntryValidation.Text != string.Empty) _entryBoxShipToAddressDetail.EntryValidation.Text = string.Empty;
-            if (_entryBoxShipToCity.EntryValidation.Text != string.Empty) _entryBoxShipToCity.EntryValidation.Text = string.Empty;
-            if (_entryBoxShipToPostalCode.EntryValidation.Text != string.Empty) _entryBoxShipToPostalCode.EntryValidation.Text = string.Empty;
-            if (_entryBoxShipToRegion.EntryValidation.Text != string.Empty) _entryBoxShipToRegion.EntryValidation.Text = string.Empty;
+            if (EntryBoxShipToDeliveryID.EntryValidation.Text != string.Empty) EntryBoxShipToDeliveryID.EntryValidation.Text = string.Empty;
+            if (EntryBoxShipToDeliveryDate.EntryValidation.Text != string.Empty) EntryBoxShipToDeliveryDate.EntryValidation.Text = string.Empty;
+            if (EntryBoxShipToWarehouseID.EntryValidation.Text != string.Empty) EntryBoxShipToWarehouseID.EntryValidation.Text = string.Empty;
+            if (EntryBoxShipToLocationID.EntryValidation.Text != string.Empty) EntryBoxShipToLocationID.EntryValidation.Text = string.Empty;
+            if (EntryBoxShipToAddressDetail.EntryValidation.Text != string.Empty) EntryBoxShipToAddressDetail.EntryValidation.Text = string.Empty;
+            if (EntryBoxShipToCity.EntryValidation.Text != string.Empty) EntryBoxShipToCity.EntryValidation.Text = string.Empty;
+            if (EntryBoxShipToPostalCode.EntryValidation.Text != string.Empty) EntryBoxShipToPostalCode.EntryValidation.Text = string.Empty;
+            if (EntryBoxShipToRegion.EntryValidation.Text != string.Empty) EntryBoxShipToRegion.EntryValidation.Text = string.Empty;
             //Reset to Default Country
-            _entryBoxSelectShipToCountry.Value = _intialValueConfigurationCountry;
+            EntryBoxSelectShipToCountry.Value = _intialValueConfigurationCountry;
         }
 
         //Equal to ShipFrom

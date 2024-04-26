@@ -1,7 +1,6 @@
 ﻿using LibUsbDotNet;
 using LibUsbDotNet.Main;
 using System;
-using System.Configuration;
 
 namespace logicpos.printer.genericusb
 {

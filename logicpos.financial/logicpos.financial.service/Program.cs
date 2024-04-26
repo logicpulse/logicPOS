@@ -40,11 +40,8 @@ namespace logicpos.financial.service
         public static string SERVICE_NAME = "LogicPulse LogicPos Financial Service";
         private static ServiceHost _serviceHost;
         private static Uri _baseAddress;
-        private static readonly int _servicePort = 50391;
-        public static int ServicePort
-        {
-            get { return _servicePort; }
-        }
+
+        public static int ServicePort { get; } = 50391;
         //Timer
         private static System.Timers.Timer _timer = null;
         private static bool _timerRunningTasks = false;
@@ -58,7 +55,7 @@ namespace logicpos.financial.service
             Init();
 
             //Service Initialization
-            string uri = string.Format("http://localhost:{0}/Service1.svc", _servicePort);
+            string uri = string.Format("http://localhost:{0}/Service1.svc", ServicePort);
             _logger.Debug(string.Format("Service URI: {0}", uri));
             _baseAddress = new Uri(uri);
 

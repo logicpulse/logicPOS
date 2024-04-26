@@ -8,27 +8,16 @@ namespace Patagames.Pdf.Net.Controls.WinForms.ToolBars
 	/// </summary>
 	public class PdfToolStripZoom : PdfToolStripZoomEx
 	{
-		#region Constructor, Destructor, Initialisation
-		private ToolStripItem CreateZoomCombo()
-		{
-			var btn = new ToolStripComboBox(Properties.PdfToolStrip.btnZoomComboText);
-			btn.Name = "btnComboBox";
-			btn.ToolTipText = Properties.PdfToolStrip.btnZoomComboToolTipText;
-			btn.KeyDown += ComboBox_KeyDown;
-			btn.ComboBox.SelectedIndexChanged += ComboBox_SelectedIndexChanged;
-			btn.ComboBox.Width = 70;
-			for (int i = 0; i<  ZoomLevel.Length; i++)
-				btn.Items.Add(string.Format("{0}%", ZoomLevel[i]));
-			return btn;
-		}
 
-		#endregion
+        #region Constructor, Destructor, Initialisation
 
-		#region Overriding
-		/// <summary>
-		/// Create all buttons and add its into toolbar. Override this method to create custom buttons
-		/// </summary>
-		protected override void InitializeButtons()
+        #endregion
+
+        #region Overriding
+        /// <summary>
+        /// Create all buttons and add its into toolbar. Override this method to create custom buttons
+        /// </summary>
+        protected override void InitializeButtons()
 		{
 			var btn = CreateButton("btnZoomOut",
 				Properties.PdfToolStrip.btnZoomOutText,

@@ -15,7 +15,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public DialogDocumentFinanceSeries(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
-            this.Title = logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_edit_documentfinanceseries"));
+            this.Title = logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_edit_documentfinanceseries"));
             SetSizeRequest(500, 466);
             InitUI();
             InitNotes();
@@ -31,48 +31,48 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //FiscalYear
                 XPOComboBox xpoComboBoxFiscalYear = new XPOComboBox(DataSourceRow.Session, typeof(fin_documentfinanceyears), (DataSourceRow as fin_documentfinanceseries).FiscalYear, "Designation", null);
-                BOWidgetBox boxFiscalYear = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_series"), xpoComboBoxFiscalYear);
+                BOWidgetBox boxFiscalYear = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_series"), xpoComboBoxFiscalYear);
                 vboxTab1.PackStart(boxFiscalYear, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxFiscalYear, DataSourceRow, "FiscalYear", SharedSettings.RegexGuid, true));
 
                 //DocumentType
                 XPOComboBox xpoComboBoxDocumentType = new XPOComboBox(DataSourceRow.Session, typeof(fin_documentfinancetype), (DataSourceRow as fin_documentfinanceseries).DocumentType, "Designation", null);
-                BOWidgetBox boxDocumentType = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type"), xpoComboBoxDocumentType);
+                BOWidgetBox boxDocumentType = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type"), xpoComboBoxDocumentType);
                 vboxTab1.PackStart(boxDocumentType, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDocumentType, DataSourceRow, "DocumentType", SharedSettings.RegexGuid, true));
 
                 //Designation
                 Entry entryDesignation = new Entry();
-                BOWidgetBox boxDesignation = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"), entryDesignation);
+                BOWidgetBox boxDesignation = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"), entryDesignation);
                 vboxTab1.PackStart(boxDesignation, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", SharedSettings.RegexAlfaNumericExtended, true));
 
                 //Acronym
                 Entry entryAcronym = new Entry();
-                BOWidgetBox boxAcronym = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_acronym"), entryAcronym);
+                BOWidgetBox boxAcronym = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_acronym"), entryAcronym);
                 vboxTab1.PackStart(boxAcronym, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxAcronym, _dataSourceRow, "Acronym", SharedSettings.RegexAlfaNumeric, false));
 
                 //NextDocumentNumber
                 Entry entryNextDocumentNumber = new Entry();
-                BOWidgetBox boxNextDocumentNumber = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinanceseries_NextDocumentNumber"), entryNextDocumentNumber);
+                BOWidgetBox boxNextDocumentNumber = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinanceseries_NextDocumentNumber"), entryNextDocumentNumber);
                 vboxTab1.PackStart(boxNextDocumentNumber, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxNextDocumentNumber, _dataSourceRow, "NextDocumentNumber", SharedSettings.RegexIntegerGreaterThanZero, false));
 
                 //DocumentNumberRangeBegin
                 Entry entryDocumentNumberRangeBegin = new Entry();
-                BOWidgetBox boxDocumentNumberRangeBegin = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinanceseries_DocumentNumberRangeBegin"), entryDocumentNumberRangeBegin);
+                BOWidgetBox boxDocumentNumberRangeBegin = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinanceseries_DocumentNumberRangeBegin"), entryDocumentNumberRangeBegin);
                 vboxTab1.PackStart(boxDocumentNumberRangeBegin, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDocumentNumberRangeBegin, _dataSourceRow, "DocumentNumberRangeBegin", SharedSettings.RegexIntegerGreaterThanZero, false));
 
                 //DocumentNumberRangeEnd
                 Entry entryDocumentNumberRangeEnd = new Entry();
-                BOWidgetBox boxDocumentNumberRangeEnd = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinanceseries_DocumentNumberRangeEnd"), entryDocumentNumberRangeEnd);
+                BOWidgetBox boxDocumentNumberRangeEnd = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinanceseries_DocumentNumberRangeEnd"), entryDocumentNumberRangeEnd);
                 vboxTab1.PackStart(boxDocumentNumberRangeEnd, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDocumentNumberRangeEnd, _dataSourceRow, "DocumentNumberRangeEnd", SharedSettings.RegexIntegerGreaterThanZero, false));
 
                 //Append Tab
-                _notebook.AppendPage(vboxTab1, new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_main_detail")));
+                _notebook.AppendPage(vboxTab1, new Label(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_main_detail")));
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 

@@ -1,6 +1,5 @@
 ﻿using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
-using Gtk;
 using logicpos.App;
 using logicpos.datalayer.App;
 using logicpos.datalayer.Enums;
@@ -9,7 +8,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 
 namespace logicpos
@@ -37,7 +35,6 @@ namespace logicpos
                 string databaseTypeString = Enum.GetName(typeof(DatabaseType), DataLayerFramework.DatabaseType);
                 string databaseName = pDatabaseName;
                 IDataLayer xpoDataLayer = null;
-                bool onErrorsDropDatabase = true;
                 string sql = string.Empty;
                 object resultCmd;
                 Hashtable commands = new Hashtable();
@@ -373,13 +370,13 @@ namespace logicpos
 
                 return result;
             }
-            catch(Exception Ex)
+            catch (Exception Ex)
             {
                 log.Error(Ex.Message, Ex);
                 needToUpdate = false;
                 return false;
             }
-            
+
         }
 
         /// <summary>
@@ -468,8 +465,6 @@ namespace logicpos
                         //view_articlestocksupplier && view_articlestock
                         result.Add("DATE_FORMAT(stm.Date, '%Y-%m-%d') AS stmDateDay,", "CONVERT(VARCHAR(19), stm.Date, 23) AS stmDateDay,");
                         result.Add("DATE_FORMAT(stk.CreatedAt, '%Y-%m-%d') AS stkDateDay,", "CONVERT(VARCHAR(19), stk.CreatedAt, 23) AS stkDateDay,");
-                        //ByPass Default commandSeparator ;
-                        string commandSeparator = "GO";
                         break;
                 }
             }
@@ -552,7 +547,7 @@ namespace logicpos
                             {
                                 //If alter Table Query get table and column affected
                                 var output = System.Text.RegularExpressions.Regex.Replace(executeCommand.Split()[0], @"[^0-9a-zA-Z\ ]+", "");
-                                if(output == "alter")
+                                if (output == "alter")
                                 {
                                     try
                                     {
@@ -567,7 +562,7 @@ namespace logicpos
                                             result = pXpoSession.ExecuteNonQuery(sqlCommandAfter);
                                         }
                                     }
-                                    catch(Exception ex)
+                                    catch (Exception ex)
                                     {
                                         log.Error(string.Format("Error trying to split command : {0}", ex.Message), ex);
                                     }
@@ -580,7 +575,7 @@ namespace logicpos
                             }
                             catch (Exception ex)
                             {
-                          
+
 
                                 string errorMessage = string.Format("bool ProcessDump(Session pXpoSession, string pFilename, string pCommandSeparator, Dictionary<string, string> pReplaceables) :: Error executing Sql Command: [{0}]{1}Exception: [{2}]", executeCommand, Environment.NewLine, ex.Message);
                                 log.Error(string.Format("{0} : {1}", errorMessage, ex.Message), ex);
@@ -594,7 +589,8 @@ namespace logicpos
                 }
 
                 return true;
-            }catch(Exception Ex)
+            }
+            catch (Exception Ex)
             {
                 log.Error(Ex.Message);
                 return false;
@@ -622,8 +618,9 @@ namespace logicpos
                     return false;
                 }
 
-            }catch(Exception Ex)
-            {               
+            }
+            catch (Exception)
+            {
                 return false;
             }
         }

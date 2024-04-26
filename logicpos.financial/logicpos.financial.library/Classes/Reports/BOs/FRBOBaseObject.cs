@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace logicpos.financial.library.Classes.Reports.BOs
+﻿namespace logicpos.financial.library.Classes.Reports.BOs
 {
     public abstract class FRBOBaseObject
     {

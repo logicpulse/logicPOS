@@ -14,35 +14,19 @@ namespace logicpos.shared.Classes.Orders
             set { _articleOid = value; }
         }
 
-        private string _designation;
-        public string Designation
-        {
-            get { return _designation; }
-            set { _designation = value; }
-        }
+        public string Designation { get; set; }
 
-        private PriceProperties _properties;
-        public PriceProperties Properties
-        {
-            get { return _properties; }
-            set { _properties = value; }
-        }
+        public PriceProperties Properties { get; set; }
 
-        //this TreeIter as object Type, to Remove Gtk from Framework, need to be cast as (TreeIter as TreeIter) when used
-        private object _treeIter;
         [JsonIgnore]
-        public object TreeIter
-        {
-            get { return _treeIter; }
-            set { _treeIter = value; }
-        }
+        public object TreeIter { get; set; }
 
         //public OrderDetailLine(Guid pArticleOid, String pDesignation, decimal pQnt, decimal pPrice, decimal pDiscount, decimal pVat, bool pHasPrice, bool pPriceWithVAT)
         public OrderDetailLine(Guid pArticleOid, string pDesignation, PriceProperties pPriceProperties)
         {
             _articleOid = pArticleOid;
-            _designation = pDesignation;
-            _properties = pPriceProperties;
+            Designation = pDesignation;
+            Properties = pPriceProperties;
         }
     }
 }

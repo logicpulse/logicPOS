@@ -1,5 +1,4 @@
 ﻿using Gtk;
-using logicpos.App;
 using logicpos.datalayer.App;
 using logicpos.shared.App;
 
@@ -10,17 +9,13 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         private readonly Image _connectionStatusImage;
         private readonly Gdk.Pixbuf _pixbufStatusOn = null;
         private readonly Gdk.Pixbuf _pixbufStatusOff = null;
-        private bool _connected = false;
-        public bool Connected
-        {
-            get { return _connected; }
-            set { _connected = value; }
-        }
+
+        public bool Connected { get; set; } = false;
 
         public ConnectionStatus(bool pIsConnected)
         {
             //Initialize Members
-            _connected = pIsConnected;
+            Connected = pIsConnected;
             _pixbufStatusOn = logicpos.Utils.FileToPixBuf(SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Other\connection_status_on.png"));
             _pixbufStatusOff = logicpos.Utils.FileToPixBuf(SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Other\connection_status_off.png"));
 
@@ -29,16 +24,16 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             VisibleWindow = false;
 
             //Start Initialized
-            SetStatus(_connected);
+            SetStatus(Connected);
 
             Add(_connectionStatusImage);
         }
 
         public bool SetStatus(bool pIsConnected)
         {
-            _connected = pIsConnected;
+            Connected = pIsConnected;
 
-            if (_connected)
+            if (Connected)
             {
                 _connectionStatusImage.Pixbuf = _pixbufStatusOn;
             }
@@ -47,13 +42,13 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 _connectionStatusImage.Pixbuf = _pixbufStatusOff;
             }
 
-            return _connected;
+            return Connected;
         }
 
         public bool ToggleStatus()
         {
-            _connected = !_connected;
-            return SetStatus(_connected);
+            Connected = !Connected;
+            return SetStatus(Connected);
         }
     }
 }

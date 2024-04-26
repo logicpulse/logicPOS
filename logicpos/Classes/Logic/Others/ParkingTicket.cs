@@ -162,18 +162,5 @@ namespace logicpos.Classes.Logic.Others
 
             return parkingTicketResult;
         }
-        //IN009279
-        private static ParkingTicketResult parkingCardInformation(System.Data.DataRow parkingCardInformation)
-        {
-
-            ParkingTicketResult parkingTicketResult = new ParkingTicketResult
-            {
-                Date = parkingCardInformation["date"].ToString(),
-                Quantity = parkingCardInformation["quantity"].ToString(),
-                Price = decimal.Parse(parkingCardInformation["price"].ToString()),
-            };
-
-            return parkingTicketResult;
-        }
     }
 }

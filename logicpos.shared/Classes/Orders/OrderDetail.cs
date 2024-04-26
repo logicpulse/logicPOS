@@ -13,52 +13,28 @@ namespace logicpos.shared.Classes.Orders
         //Log4Net
         private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        //Public Properties
-        private List<OrderDetailLine> _lines;
-        public List<OrderDetailLine> Lines
-        {
-            get { return _lines; }
-            set { _lines = value; }
-        }
+        public List<OrderDetailLine> Lines { get; set; }
 
-        //Total Items (Articles) in OrderDetail
-        private decimal _totalItems = 0;
-        public decimal TotalItems
-        {
-            get { return _totalItems; }
-            set { _totalItems = value; }
-        }
+        public decimal TotalItems { get; set; } = 0;
 
-        //TotalFinal
-        private decimal _totalFinal = 0;
-        public decimal TotalFinal
-        {
-            get { return _totalFinal; }
-            set { _totalFinal = value; }
-        }
+        public decimal TotalFinal { get; set; } = 0;
 
-        //Store Reference to Parent OrderTicket
-        private OrderTicket _orderTicket;
         [JsonIgnore]
-        public OrderTicket OrderTicket
-        {
-            get { return _orderTicket; }
-            set { _orderTicket = value; }
-        }
+        public OrderTicket OrderTicket { get; set; }
 
         //Required Parameterless Constructor for Json.NET (Load)
         public OrderDetail()
         {
             //Init TicketLines
-            _lines = new List<OrderDetailLine>();
+            Lines = new List<OrderDetailLine>();
         }
 
         public OrderDetail(OrderTicket pOrderTicket)
         {
             //Reference to Parent OrderTicket
-            _orderTicket = pOrderTicket;
+            OrderTicket = pOrderTicket;
             //Init TicketLines
-            _lines = new List<OrderDetailLine>();
+            Lines = new List<OrderDetailLine>();
         }
 
         public void Insert(Guid pArticleId, decimal pQuantity, TaxSellType pTaxSellType)
@@ -72,24 +48,24 @@ namespace logicpos.shared.Classes.Orders
         public void Insert(Guid pArticleId, string pDesignation, PriceProperties pPriceProperties)
         {
             OrderDetailLine line = new OrderDetailLine(pArticleId, pDesignation, pPriceProperties);
-            _lines.Add(line);
+            Lines.Add(line);
             CalculateTotals();
         }
 
         public void Update(int pLineIndex, decimal pQuantity)
         {
             //Change Properties
-            _lines[pLineIndex].Properties.Quantity = pQuantity;
-            _lines[pLineIndex].Properties.Update();
+            Lines[pLineIndex].Properties.Quantity = pQuantity;
+            Lines[pLineIndex].Properties.Update();
             CalculateTotals();
         }
 
         public void Update(int pLineIndex, decimal pQuantity, decimal pPrice)
         {
             //Change Properties
-            _lines[pLineIndex].Properties.Quantity = pQuantity;
-            _lines[pLineIndex].Properties.PriceUser = pPrice;
-            _lines[pLineIndex].Properties.Update();
+            Lines[pLineIndex].Properties.Quantity = pQuantity;
+            Lines[pLineIndex].Properties.PriceUser = pPrice;
+            Lines[pLineIndex].Properties.Update();
             CalculateTotals();
         }
 
@@ -97,7 +73,7 @@ namespace logicpos.shared.Classes.Orders
         {
             try
             {
-                _lines.RemoveAt(pLineIndex);
+                Lines.RemoveAt(pLineIndex);
                 CalculateTotals();
             }
             catch (Exception ex)
@@ -112,13 +88,13 @@ namespace logicpos.shared.Classes.Orders
         private void CalculateTotals()
         {
             //Reset Totals
-            _totalFinal = 0;
-            _totalItems = 0;
+            TotalFinal = 0;
+            TotalItems = 0;
 
-            foreach (OrderDetailLine line in _lines)
+            foreach (OrderDetailLine line in Lines)
             {
-                _totalFinal += line.Properties.TotalFinal;
-                _totalItems += line.Properties.Quantity;
+                TotalFinal += line.Properties.TotalFinal;
+                TotalItems += line.Properties.Quantity;
             }
             SharedFramework.SessionApp.Write();
         }

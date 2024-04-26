@@ -2,28 +2,22 @@
 using DevExpress.Xpo;
 using Gtk;
 using logicpos.App;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Enums;
+using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
+using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
-using logicpos.resources.Resources.Localization;
-using System;
-using logicpos.Classes.Enums.Dialogs;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.Classes.Enums.GenericTreeView;
-using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
-using System.Data;
+using logicpos.datalayer.App;
+using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
-using System.Collections;
-using static Medsphere.Widgets.GridView;
-using System.Collections.Generic;
-using System.Drawing;
-using Image = Gtk.Image;
 using logicpos.datalayer.DataLayer.Xpo.Documents;
 using logicpos.Extensions;
 using logicpos.shared.App;
-using logicpos.datalayer.App;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Drawing;
+using Image = Gtk.Image;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -33,12 +27,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         //Artigos Compostos [IN:016522]
         private VBox _vboxTab2;
 
-        private TouchButtonIconWithText _buttonInsert;
-        public TouchButtonIconWithText ButtonInsert
-        {
-            get { return _buttonInsert; }
-            set { _buttonInsert = value; }
-        }
+        public TouchButtonIconWithText ButtonInsert { get; set; }
         protected GenericTreeViewNavigator<fin_article, TreeViewArticle> _navigator;
         public GenericTreeViewNavigator<fin_article, TreeViewArticle> Navigator
         {
@@ -70,7 +59,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public ICollection _dropdownTextCollection;
         private CheckButton _checkButtonComposite;
         private CheckButton _checkButtonUniqueArticles;
-        private ICollection <Tuple<fin_articleserialnumber, Entry, GenericCRUDWidgetXPO, GenericCRUDWidgetXPO, GenericCRUDWidgetXPO, HBox>> _serialNumberCollection;
+        private ICollection<Tuple<fin_articleserialnumber, Entry, GenericCRUDWidgetXPO, GenericCRUDWidgetXPO, GenericCRUDWidgetXPO, HBox>> _serialNumberCollection;
         private readonly string iconAddRecord = SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/icon_pos_nav_new.png"));
         private readonly string iconClearRecord = SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/Windows/icon_window_delete_record.png"));
 
@@ -81,7 +70,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public DialogArticle(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pDialogFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pDialogFlags, pDialogMode, pXPGuidObject)
         {
-            this.Title = logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_edit_article"));
+            this.Title = logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_edit_article"));
 
             _entryCompositeLinesCollection = new List<XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>>();
             _articlecompositions = new List<fin_articlecomposition>();
@@ -98,7 +87,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             InitUI();
             InitNotes();
             ShowAll();
-            if(_scrolledWindowCompositionView != null) _scrolledWindowCompositionView.Visible = _checkButtonComposite.Active;
+            if (_scrolledWindowCompositionView != null) _scrolledWindowCompositionView.Visible = _checkButtonComposite.Active;
             if (_scrolledWindowSerialNumbersView != null) _scrolledWindowSerialNumbersView.Visible = _checkButtonUniqueArticles.Active;
             if (_checkButtonComposite.Active && _checkButtonUniqueArticles.Active) SetSizeRequest(550, 740); else { SetSizeRequest(500, 740); }
         }
@@ -159,32 +148,32 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //Ord
                 Entry entryOrd = new Entry();
-                BOWidgetBox boxLabel = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_order"), entryOrd);
+                BOWidgetBox boxLabel = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_order"), entryOrd);
                 vboxTab1.PackStart(boxLabel, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxLabel, _dataSourceRow, "Ord", SharedSettings.RegexIntegerGreaterThanZero, true));
 
                 //Code
                 Entry entryCode = new Entry();
-                BOWidgetBox boxCode = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_code"), entryCode);
+                BOWidgetBox boxCode = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_code"), entryCode);
                 vboxTab1.PackStart(boxCode, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCode, _dataSourceRow, "Code", SharedSettings.RegexAlfaNumericArticleCode, true));
 
                 //CodeDealer
                 Entry entryCodeDealer = new Entry();
-                BOWidgetBox boxCodeDealer = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_code_dealer"), entryCodeDealer);
+                BOWidgetBox boxCodeDealer = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_code_dealer"), entryCodeDealer);
                 vboxTab1.PackStart(boxCodeDealer, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCodeDealer, _dataSourceRow, "CodeDealer", SharedSettings.RegexAlfaNumeric, false));
 
                 //Designation
                 Entry entryDesignation = new Entry();
-                BOWidgetBox boxDesignation = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"), entryDesignation);
+                BOWidgetBox boxDesignation = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"), entryDesignation);
                 vboxTab1.PackStart(boxDesignation, false, false, 0);
                 // Changed from RegexAlfaNumeric to  RegexAlfaNumericExtended 2017-1011
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", SharedSettings.RegexAlfaNumericExtended, true));
 
                 //ButtonLabel
                 Entry entryButtonLabel = new Entry();
-                BOWidgetBox boxButtonLabel = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_name"), entryButtonLabel);
+                BOWidgetBox boxButtonLabel = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_name"), entryButtonLabel);
                 vboxTab1.PackStart(boxButtonLabel, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxButtonLabel, _dataSourceRow, "ButtonLabel", SharedSettings.RegexAlfaNumericArticleButtonLabel, false));
 
@@ -196,19 +185,19 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //Family
                 _xpoComboBoxFamily = new XPOComboBox(DataSourceRow.Session, typeof(fin_articlefamily), (DataSourceRow as fin_article).Family, "Designation", null);
-                BOWidgetBox boxFamily = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_family"), _xpoComboBoxFamily);
+                BOWidgetBox boxFamily = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_family"), _xpoComboBoxFamily);
                 vboxTab1.PackStart(boxFamily, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxFamily, DataSourceRow, "Family", SharedSettings.RegexGuid, true));
 
                 //SubFamily
                 _xpoComboBoxSubFamily = new XPOComboBox(DataSourceRow.Session, typeof(fin_articlesubfamily), (DataSourceRow as fin_article).SubFamily, "Designation", null);
-                BOWidgetBox boxSubFamily = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_subfamily"), _xpoComboBoxSubFamily);
+                BOWidgetBox boxSubFamily = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_subfamily"), _xpoComboBoxSubFamily);
                 vboxTab1.PackStart(boxSubFamily, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxSubFamily, DataSourceRow, "SubFamily", SharedSettings.RegexGuid, true));
 
                 //Type
                 XPOComboBox xpoComboBoxType = new XPOComboBox(DataSourceRow.Session, typeof(fin_articletype), (DataSourceRow as fin_article).Type, "Designation", null);
-                BOWidgetBox boxType = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_type"), xpoComboBoxType);
+                BOWidgetBox boxType = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_type"), xpoComboBoxType);
                 vboxTab1.PackStart(boxType, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxType, DataSourceRow, "Type", SharedSettings.RegexGuid, true));
 
@@ -221,7 +210,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 fileChooserButtonImage.SetFilename(((fin_article)DataSourceRow).ButtonImage);
                 fileChooserButtonImage.Filter = logicpos.Utils.GetFileFilterImages();
                 fileChooserButtonImage.SelectionChanged += (sender, eventArgs) => fileChooserImagePreviewButtonImage.Pixbuf = logicpos.Utils.ResizeAndCropFileToPixBuf((sender as FileChooserButton).Filename, new System.Drawing.Size(fileChooserImagePreviewButtonImage.WidthRequest, fileChooserImagePreviewButtonImage.HeightRequest));
-                BOWidgetBox boxfileChooserButtonImage = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_image"), fileChooserButtonImage);
+                BOWidgetBox boxfileChooserButtonImage = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_image"), fileChooserButtonImage);
                 HBox hboxfileChooserAndimagePreviewButtonImage = new HBox(false, _boxSpacing);
                 hboxfileChooserAndimagePreviewButtonImage.PackStart(boxfileChooserButtonImage, true, true, 0);
                 hboxfileChooserAndimagePreviewButtonImage.PackStart(fileChooserFrameImagePreviewButtonImage, false, false, 0);
@@ -230,13 +219,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //Artigos Compostos [IN:016522]
                 //Composite
-                _checkButtonComposite = new CheckButton(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"));
+                _checkButtonComposite = new CheckButton(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"));
                 vboxTab1.PackStart(_checkButtonComposite, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(_checkButtonComposite, _dataSourceRow, "IsComposed"));
-                if(_article.ArticleComposition.Count > 0) { _checkButtonComposite.Active = true; }
+                if (_article.ArticleComposition.Count > 0) { _checkButtonComposite.Active = true; }
 
                 //Unique Articles (Have multi S/N)
-                _checkButtonUniqueArticles = new CheckButton(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_unique_articles"));
+                _checkButtonUniqueArticles = new CheckButton(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_unique_articles"));
                 vboxTab1.PackStart(_checkButtonUniqueArticles, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(_checkButtonUniqueArticles, _dataSourceRow, "UniqueArticles"));
                 _dataSourceRow.Reload();
@@ -244,23 +233,23 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _checkButtonUniqueArticles.Sensitive = false;
 
                 //Favorite
-                CheckButton checkButtonFavorite = new CheckButton(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_favorite"));
+                CheckButton checkButtonFavorite = new CheckButton(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_favorite"));
                 vboxTab1.PackStart(checkButtonFavorite, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(checkButtonFavorite, _dataSourceRow, "Favorite"));
 
                 //UseWeighingBalance
-                CheckButton checkButtonUseWeighingBalance = new CheckButton(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_use_weighing_balance"));
+                CheckButton checkButtonUseWeighingBalance = new CheckButton(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_use_weighing_balance"));
                 vboxTab1.PackStart(checkButtonUseWeighingBalance, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(checkButtonUseWeighingBalance, _dataSourceRow, "UseWeighingBalance"));
 
                 //Disabled
-                CheckButton checkButtonDisabled = new CheckButton(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_disabled"));
+                CheckButton checkButtonDisabled = new CheckButton(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_disabled"));
                 if (_dialogMode == DialogMode.Insert) checkButtonDisabled.Active = POSSettings.BOXPOObjectsStartDisabled;
                 vboxTab1.PackStart(checkButtonDisabled, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(checkButtonDisabled, _dataSourceRow, "Disabled"));
 
                 //Append Tab
-                _notebook.AppendPage(vboxTab1, new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_main_detail")));
+                _notebook.AppendPage(vboxTab1, new Label(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_main_detail")));
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -271,9 +260,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //hboxPrices
                 Label labelPriceEmpty = new Label(string.Empty) { WidthRequest = col1width };
-                Label labelPriceNormal = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "article_normal_price")) { WidthRequest = col2width };
-                Label labelPricePromotion = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "article_promotion_price")) { WidthRequest = col3width };
-                Label labelPriceUsePromotionPrice = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "article_use_promotion_price")) { WidthRequest = col4width };
+                Label labelPriceNormal = new Label(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "article_normal_price")) { WidthRequest = col2width };
+                Label labelPricePromotion = new Label(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "article_promotion_price")) { WidthRequest = col3width };
+                Label labelPriceUsePromotionPrice = new Label(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "article_use_promotion_price")) { WidthRequest = col4width };
                 labelPriceNormal.SetAlignment(0.0F, 0.5F);
                 labelPricePromotion.SetAlignment(0.0F, 0.5F);
                 labelPriceUsePromotionPrice.SetAlignment(0.0F, 0.5F);
@@ -328,24 +317,24 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _vboxTab2.PackStart(vboxPrices, false, false, 0);
 
                 //PVPVariable
-                CheckButton checkButtonPVPVariable = new CheckButton(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_variable_price"));
+                CheckButton checkButtonPVPVariable = new CheckButton(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_variable_price"));
                 _vboxTab2.PackStart(checkButtonPVPVariable, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(checkButtonPVPVariable, _dataSourceRow, "PVPVariable"));
 
                 //PriceWithVat
-                CheckButton checkButtonPriceWithVat = new CheckButton(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_price_with_vat"));
+                CheckButton checkButtonPriceWithVat = new CheckButton(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_price_with_vat"));
                 _vboxTab2.PackStart(checkButtonPriceWithVat, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(checkButtonPriceWithVat, _dataSourceRow, "PriceWithVat"));
 
                 //Discount
                 Entry entryDiscount = new Entry();
-                BOWidgetBox boxDiscount = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_discount"), entryDiscount);
+                BOWidgetBox boxDiscount = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_discount"), entryDiscount);
                 _vboxTab2.PackStart(boxDiscount, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDiscount, _dataSourceRow, "Discount", SharedSettings.RegexPercentage, false));
 
                 //Class
                 XPOComboBox xpoComboBoxClass = new XPOComboBox(DataSourceRow.Session, typeof(fin_articleclass), (DataSourceRow as fin_article).Class, "Designation", null);
-                BOWidgetBox boxClass = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_class"), xpoComboBoxClass);
+                BOWidgetBox boxClass = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_class"), xpoComboBoxClass);
                 _vboxTab2.PackStart(boxClass, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxClass, DataSourceRow, "Class", SharedSettings.RegexGuid, true));
 
@@ -354,25 +343,25 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 {
                     //VatOnTable
                     _xpoComboBoxVatOnTable = new XPOComboBox(DataSourceRow.Session, typeof(fin_configurationvatrate), (DataSourceRow as fin_article).VatOnTable, "Designation", null);
-                    BOWidgetBox boxVatOnTable = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_vat_on_table"), _xpoComboBoxVatOnTable);
+                    BOWidgetBox boxVatOnTable = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_vat_on_table"), _xpoComboBoxVatOnTable);
                     _vboxTab2.PackStart(boxVatOnTable, false, false, 0);
                     _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxVatOnTable, DataSourceRow, "VatOnTable", SharedSettings.RegexGuid, true));
                 }
 
                 //VatDirectSelling
                 _xpoComboBoxVatDirectSelling = new XPOComboBox(DataSourceRow.Session, typeof(fin_configurationvatrate), (DataSourceRow as fin_article).VatDirectSelling, "Designation", null);
-                BOWidgetBox boxVatDirectSelling = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_vat_direct_selling"), _xpoComboBoxVatDirectSelling);
+                BOWidgetBox boxVatDirectSelling = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_vat_direct_selling"), _xpoComboBoxVatDirectSelling);
                 _vboxTab2.PackStart(boxVatDirectSelling, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxVatDirectSelling, DataSourceRow, "VatDirectSelling", SharedSettings.RegexGuid, true));
 
                 //VatExemptionReason
                 _xpoComboBoxVatExemptionReason = new XPOComboBox(DataSourceRow.Session, typeof(fin_configurationvatexemptionreason), (DataSourceRow as fin_article).VatExemptionReason, "Designation", null);
-                BOWidgetBox boxVatExemptionReason = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_vat_exemption_reason"), _xpoComboBoxVatExemptionReason);
+                BOWidgetBox boxVatExemptionReason = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_vat_exemption_reason"), _xpoComboBoxVatExemptionReason);
                 _vboxTab2.PackStart(boxVatExemptionReason, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxVatExemptionReason, DataSourceRow, "VatExemptionReason", SharedSettings.RegexGuid, true));
 
                 //Append Tab
-                _notebook.AppendPage(_vboxTab2, new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_edit_article_tab2_label")));
+                _notebook.AppendPage(_vboxTab2, new Label(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_edit_article_tab2_label")));
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -381,13 +370,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //BarCode
                 Entry entryBarCode = new Entry();
-                BOWidgetBox boxBarCode = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_barcode"), entryBarCode);
+                BOWidgetBox boxBarCode = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_barcode"), entryBarCode);
                 vboxTab3.PackStart(boxBarCode, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxBarCode, _dataSourceRow, "BarCode", SharedSettings.RegexEan12andEan4, false));
 
                 //Accounting
                 Entry entryAccounting = new Entry();
-                BOWidgetBox boxAccounting = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_stock"), entryAccounting);
+                BOWidgetBox boxAccounting = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_stock"), entryAccounting);
                 vboxTab3.PackStart(boxAccounting, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxAccounting, _dataSourceRow, "Accounting", SharedSettings.RegexDecimal, false));
                 //entryAccounting.Editable = false;
@@ -402,57 +391,57 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 }
                 //MinimumStock
                 Entry entryMinimumStock = new Entry();
-                BOWidgetBox boxMinimumStock = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_minimum_stock"), entryMinimumStock);
+                BOWidgetBox boxMinimumStock = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_minimum_stock"), entryMinimumStock);
                 vboxTab3.PackStart(boxMinimumStock, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxMinimumStock, _dataSourceRow, "MinimumStock", SharedSettings.RegexDecimal, false));
 
                 //Tare
                 Entry entryTare = new Entry();
-                BOWidgetBox boxTare = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_tare"), entryTare);
+                BOWidgetBox boxTare = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_tare"), entryTare);
                 vboxTab3.PackStart(boxTare, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxTare, _dataSourceRow, "Tare", SharedSettings.RegexDecimal, false));
 
                 //Weight
                 Entry entryWeight = new Entry();
-                BOWidgetBox boxWeight = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_weight"), entryWeight);
+                BOWidgetBox boxWeight = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_weight"), entryWeight);
                 vboxTab3.PackStart(boxWeight, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxWeight, _dataSourceRow, "Weight", SharedSettings.RegexDecimal, false));
 
                 //DefaultQuantity
                 Entry entryDefaultQuantity = new Entry();
-                BOWidgetBox boxDefaultQuantity = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_default_quantity"), entryDefaultQuantity);
+                BOWidgetBox boxDefaultQuantity = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_default_quantity"), entryDefaultQuantity);
                 vboxTab3.PackStart(boxDefaultQuantity, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDefaultQuantity, _dataSourceRow, "DefaultQuantity", SharedSettings.RegexDecimal, false));
 
                 //UnitMeasure
                 XPOComboBox xpoComboBoxUnitMeasure = new XPOComboBox(DataSourceRow.Session, typeof(cfg_configurationunitmeasure), (DataSourceRow as fin_article).UnitMeasure, "Designation", null);
-                BOWidgetBox boxUnitMeasure = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_unit_measure"), xpoComboBoxUnitMeasure);
+                BOWidgetBox boxUnitMeasure = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_unit_measure"), xpoComboBoxUnitMeasure);
                 vboxTab3.PackStart(boxUnitMeasure, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxUnitMeasure, DataSourceRow, "UnitMeasure", SharedSettings.RegexGuid, true));
 
                 //UnitSize
                 XPOComboBox xpoComboBoxUnitSize = new XPOComboBox(DataSourceRow.Session, typeof(cfg_configurationunitsize), (DataSourceRow as fin_article).UnitSize, "Designation", null);
-                BOWidgetBox boxUnitSize = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_unit_size"), xpoComboBoxUnitSize);
+                BOWidgetBox boxUnitSize = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_unit_size"), xpoComboBoxUnitSize);
                 vboxTab3.PackStart(boxUnitSize, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxUnitSize, DataSourceRow, "UnitSize", SharedSettings.RegexGuid, true));
 
                 //Printer
                 XPOComboBox xpoComboBoxPrinter = new XPOComboBox(DataSourceRow.Session, typeof(sys_configurationprinters), (DataSourceRow as fin_article).Printer, "Designation", null);
-                BOWidgetBox boxPrinter = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_device_printer"), xpoComboBoxPrinter);
+                BOWidgetBox boxPrinter = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_device_printer"), xpoComboBoxPrinter);
                 vboxTab3.PackStart(boxPrinter, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxPrinter, DataSourceRow, "Printer", SharedSettings.RegexGuid, false));
 
                 //Template
                 CriteriaOperator criteriaOperatorSelectTemplate = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (IsBarCode IS NULL OR IsBarCode = 0)"));
                 XPOComboBox xpoComboBoxTemplate = new XPOComboBox(DataSourceRow.Session, typeof(sys_configurationprinterstemplates), (DataSourceRow as fin_article).Template, "Designation", criteriaOperatorSelectTemplate);
-                BOWidgetBox boxTemplate = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationPrintersTemplates"), xpoComboBoxTemplate);
+                BOWidgetBox boxTemplate = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationPrintersTemplates"), xpoComboBoxTemplate);
                 vboxTab3.PackStart(boxTemplate, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxTemplate, DataSourceRow, "Template", SharedSettings.RegexGuid, false));
 
                 //TemplateBarCode
                 CriteriaOperator criteriaOperatorSelectTemplateBarCode = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND IsBarCode = 1"));
                 XPOComboBox xpoComboBoxTemplateBarCode = new XPOComboBox(DataSourceRow.Session, typeof(sys_configurationprinterstemplates), (DataSourceRow as fin_article).TemplateBarCode, "Designation", criteriaOperatorSelectTemplateBarCode);
-                BOWidgetBox boxTemplateBarCode = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationPrintersBarCodeTemplates"), xpoComboBoxTemplateBarCode);
+                BOWidgetBox boxTemplateBarCode = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationPrintersBarCodeTemplates"), xpoComboBoxTemplateBarCode);
                 vboxTab3.PackStart(boxTemplateBarCode, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxTemplateBarCode, DataSourceRow, "TemplateBarCode", SharedSettings.RegexGuid, false));
 
@@ -460,19 +449,19 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 {
                     //CommissionGroup
                     XPOComboBox xpoComboBoxCommissionGroup = new XPOComboBox(DataSourceRow.Session, typeof(pos_usercommissiongroup), (DataSourceRow as fin_article).CommissionGroup, "Designation", null);
-                    BOWidgetBox boxCommissionGroup = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_commission_group"), xpoComboBoxCommissionGroup);
+                    BOWidgetBox boxCommissionGroup = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_commission_group"), xpoComboBoxCommissionGroup);
                     vboxTab3.PackStart(boxCommissionGroup, false, false, 0);
                     _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCommissionGroup, DataSourceRow, "CommissionGroup", SharedSettings.RegexGuid, false));
 
                     //DiscountGroup
                     XPOComboBox xpoComboBoxDiscountGroup = new XPOComboBox(DataSourceRow.Session, typeof(erp_customerdiscountgroup), (DataSourceRow as fin_article).DiscountGroup, "Designation", null);
-                    BOWidgetBox boxDiscountGroup = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_discount_group"), xpoComboBoxDiscountGroup);
+                    BOWidgetBox boxDiscountGroup = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_discount_group"), xpoComboBoxDiscountGroup);
                     vboxTab3.PackStart(boxDiscountGroup, false, false, 0);
                     _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDiscountGroup, DataSourceRow, "DiscountGroup", SharedSettings.RegexGuid, false));
                 }
 
                 //Append Tab
-                _notebook.AppendPage(vboxTab3, new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_edit_article_tab3_label")));
+                _notebook.AppendPage(vboxTab3, new Label(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_edit_article_tab3_label")));
 
                 //Artigos Compostos [IN:016522]
                 //Tab4 Composite article
@@ -484,14 +473,14 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _scrolledWindowCompositionView.ShadowType = ShadowType.None;
                 _CompositionView = new Viewport();
 
-                _notebook.AppendPage(_scrolledWindowCompositionView, new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_edit_article_tab4_label1")));
+                _notebook.AppendPage(_scrolledWindowCompositionView, new Label(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_edit_article_tab4_label1")));
 
                 //vboxTab4.PackStart(_buttonInsert, false, false, 0);
                 //Add composite article #1
                 _totalCompositeEntrys++;
                 CriteriaOperator criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1)"));
                 if (_article != null) { criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Oid != '{0}')", _article.Oid.ToString())); }
-                _entryBoxSelectArticle1 = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article"), "Designation", "Oid", _article, criteriaOperatorSelectArticle, Enums.Keyboard.KeyboardMode.None, SharedSettings.RegexAlfaNumericExtended, true, true, "", SharedSettings.RegexDecimalGreaterThanZero, _totalCompositeEntrys);
+                _entryBoxSelectArticle1 = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article"), "Designation", "Oid", _article, criteriaOperatorSelectArticle, Enums.Keyboard.KeyboardMode.None, SharedSettings.RegexAlfaNumericExtended, true, true, "", SharedSettings.RegexDecimalGreaterThanZero, _totalCompositeEntrys);
                 _entryBoxSelectArticle1.EntryValidation.IsEditable = true;
                 _entryBoxSelectArticle1.EntryQtdValidation.IsEditable = true;
                 _entryBoxSelectArticle1.Value = null;
@@ -501,22 +490,22 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _entryBoxSelectArticle1.EntryCodeValidation.Validate();
                 _entryBoxSelectArticle1.EntryQtdValidation.Validate();
 
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryCodeValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), _totalCompositeEntrys, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_code")), SharedSettings.RegexAlfaNumericArticleCode, true));
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), _totalCompositeEntrys, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation")), SharedSettings.RegexAlfaNumericExtended, true));
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryQtdValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), _totalCompositeEntrys, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quantity")), SharedSettings.RegexDecimalGreaterThanZero, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryCodeValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), _totalCompositeEntrys, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_code")), SharedSettings.RegexAlfaNumericArticleCode, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), _totalCompositeEntrys, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation")), SharedSettings.RegexAlfaNumericExtended, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryQtdValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), _totalCompositeEntrys, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quantity")), SharedSettings.RegexDecimalGreaterThanZero, true));
 
-                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), _totalCompositeEntrys, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_code"))) as GenericCRUDWidgetXPO);
+                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), _totalCompositeEntrys, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_code"))) as GenericCRUDWidgetXPO);
                 if (_genericCRUDWidgetXPO != null) _genericCRUDWidgetXPO.Validated = true;
 
-                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), _totalCompositeEntrys, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"))) as GenericCRUDWidgetXPO);
+                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), _totalCompositeEntrys, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"))) as GenericCRUDWidgetXPO);
                 if (_genericCRUDWidgetXPO != null) _genericCRUDWidgetXPO.Validated = true;
 
-                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), _totalCompositeEntrys, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quantity"))) as GenericCRUDWidgetXPO);
+                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), _totalCompositeEntrys, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quantity"))) as GenericCRUDWidgetXPO);
                 if (_genericCRUDWidgetXPO != null) _genericCRUDWidgetXPO.Validated = true;
 
                 vboxTab4.PackStart(_entryBoxSelectArticle1, false, false, 0);
 
-                _entryCompositeLinesCollection.Add(_entryBoxSelectArticle1);                
+                _entryCompositeLinesCollection.Add(_entryBoxSelectArticle1);
 
                 _entryBoxSelectArticle1.BorderWidth = 0;
 
@@ -535,22 +524,23 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _scrolledWindowSerialNumbersView.ModifyBg(StateType.Normal, Color.White.ToGdkColor());
                 _scrolledWindowSerialNumbersView.ShadowType = ShadowType.None;
 
-                _notebook.AppendPage(_scrolledWindowSerialNumbersView, new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_serial_number")));
+                _notebook.AppendPage(_scrolledWindowSerialNumbersView, new Label(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_serial_number")));
 
                 //SerialNumber
-                _serialNumberCollection = new List<Tuple<fin_articleserialnumber, Entry, GenericCRUDWidgetXPO, GenericCRUDWidgetXPO, GenericCRUDWidgetXPO,   HBox>>();
+                _serialNumberCollection = new List<Tuple<fin_articleserialnumber, Entry, GenericCRUDWidgetXPO, GenericCRUDWidgetXPO, GenericCRUDWidgetXPO, HBox>>();
                 int snCount = 0;
                 if (_dataSourceRow != null && (_dataSourceRow as fin_article).ArticleSerialNumber.Count > 0)
                 {
-                    foreach(var serialNumber in (_dataSourceRow as fin_article).ArticleSerialNumber)
+                    foreach (var serialNumber in (_dataSourceRow as fin_article).ArticleSerialNumber)
                     {
                         if (serialNumber.Oid != Guid.Empty && !serialNumber.Disabled)
                         {
                             XPGuidObject dataSourceRowSerialNumber = DataLayerUtils.GetXPGuidObject(typeof(fin_articleserialnumber), serialNumber.Oid);
-                            if (dataSourceRowSerialNumber != null){                                
+                            if (dataSourceRowSerialNumber != null)
+                            {
                                 PopulateSerialNumberArticleEntrys(dataSourceRowSerialNumber);
                                 snCount++;
-                            } 
+                            }
                         }
                     }
                 }
@@ -560,7 +550,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 //}
 
                 if (snCount == 0)
-                {                    
+                {
                     _checkButtonUniqueArticles.Active = false;
                     _dataSourceRow.Session.Delete((_dataSourceRow as fin_article).ArticleSerialNumber);
                     _dataSourceRow.Session.Save((_dataSourceRow as fin_article).ArticleSerialNumber);
@@ -568,9 +558,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //Type typeDialogClass = (pDialogType != null) ? pDialogType : typeof(PosDocumentFinanceArticleDialog);
 
-                    //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+                //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-                    //Enable/Disable Components
+                //Enable/Disable Components
                 entryDesignation.Sensitive = _totalNumberOfFinanceDocuments == 0;
 
                 //IN009261 BackOffice - Inserir mais auto-completes nos forms
@@ -786,13 +776,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         _entryBoxSelectArticle1.EntryQtdValidation.Text = string.Format("{0:0.##}", articleLine.Quantity);
                         _entryBoxSelectArticle1.CodeEntry.Text = articleChild.Code;
 
-                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), 1, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_code"))) as GenericCRUDWidgetXPO);
+                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), 1, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_code"))) as GenericCRUDWidgetXPO);
                         _genericCRUDWidgetXPO.Validated = true;
 
-                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), 1, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"))) as GenericCRUDWidgetXPO);
+                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), 1, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"))) as GenericCRUDWidgetXPO);
                         _genericCRUDWidgetXPO.Validated = true;
 
-                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), 1, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quantity"))) as GenericCRUDWidgetXPO);
+                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), 1, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quantity"))) as GenericCRUDWidgetXPO);
                         if (_entryBoxSelectArticle1.EntryQtdValidation.Validated) _genericCRUDWidgetXPO.Validated = true;
                     }
                     else
@@ -841,11 +831,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                     if (isArticleCode)
                     {
-                        pXPOEntry.EntryValidation.Text = (newArticle != null) ? newArticle.Designation.ToString() : resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
+                        pXPOEntry.EntryValidation.Text = (newArticle != null) ? newArticle.Designation.ToString() : resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
 
                         var childQuantity = (pXPOEntry.Value.DefaultQuantity > 0) ? pXPOEntry.Value.DefaultQuantity : 1;
 
-                        pXPOEntry.EntryQtdValidation.Text = (newArticle != null) ? string.Format("{0:0.##}", childQuantity) : resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
+                        pXPOEntry.EntryQtdValidation.Text = (newArticle != null) ? string.Format("{0:0.##}", childQuantity) : resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
 
                         pXPOEntry.EntryCodeValidation.Validate();
 
@@ -853,26 +843,26 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                         pXPOEntry.EntryQtdValidation.Validate();
 
-                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), pXPOEntry.EntryNumber, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_code"))) as GenericCRUDWidgetXPO);
+                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), pXPOEntry.EntryNumber, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_code"))) as GenericCRUDWidgetXPO);
                         _genericCRUDWidgetXPO.Validated = true;
 
-                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), pXPOEntry.EntryNumber, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"))) as GenericCRUDWidgetXPO);
+                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), pXPOEntry.EntryNumber, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"))) as GenericCRUDWidgetXPO);
                         _genericCRUDWidgetXPO.Validated = true;
 
-                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), pXPOEntry.EntryNumber, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quantity"))) as GenericCRUDWidgetXPO);
+                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), pXPOEntry.EntryNumber, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quantity"))) as GenericCRUDWidgetXPO);
                         if (pXPOEntry.EntryQtdValidation.Validated) _genericCRUDWidgetXPO.Validated = true;
 
 
                         return;
                     }
 
-                    pXPOEntry.EntryValidation.Text = (newArticle != null) ? newArticle.Designation.ToString() : resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
+                    pXPOEntry.EntryValidation.Text = (newArticle != null) ? newArticle.Designation.ToString() : resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
 
-                    pXPOEntry.EntryCodeValidation.Text = (newArticle != null) ? newArticle.Code.ToString() : resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
+                    pXPOEntry.EntryCodeValidation.Text = (newArticle != null) ? newArticle.Code.ToString() : resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
 
                     decimal quantity = (pXPOEntry.Value.DefaultQuantity > 0) ? pXPOEntry.Value.DefaultQuantity : 1;
 
-                    pXPOEntry.EntryQtdValidation.Text = (newArticle != null) ? string.Format("{0:0.##}", quantity) : resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
+                    pXPOEntry.EntryQtdValidation.Text = (newArticle != null) ? string.Format("{0:0.##}", quantity) : resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
 
                     pXPOEntry.Value = newArticle;
 
@@ -882,13 +872,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                     pXPOEntry.EntryQtdValidation.Validate();
 
-                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), pXPOEntry.EntryNumber, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_code"))) as GenericCRUDWidgetXPO);
+                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), pXPOEntry.EntryNumber, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_code"))) as GenericCRUDWidgetXPO);
                     _genericCRUDWidgetXPO.Validated = true;
 
-                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), pXPOEntry.EntryNumber, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"))) as GenericCRUDWidgetXPO);
+                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), pXPOEntry.EntryNumber, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"))) as GenericCRUDWidgetXPO);
                     _genericCRUDWidgetXPO.Validated = true;
 
-                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), pXPOEntry.EntryNumber, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quantity"))) as GenericCRUDWidgetXPO);
+                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), pXPOEntry.EntryNumber, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quantity"))) as GenericCRUDWidgetXPO);
                     if (pXPOEntry.EntryQtdValidation.Validated) _genericCRUDWidgetXPO.Validated = true;
 
 
@@ -909,7 +899,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     if (pXPOEntry.Value == _article)
                     {
                         pXPOEntry.Value = null;
-                        logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_composite_article_same"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"));
+                        logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_composite_article_same"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"));
                         pXPOEntry.EntryValidation.Text = "";
                         return;
                     }
@@ -929,16 +919,16 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                                 pXPOEntry.EntryCodeValidation.Validate();
                                 pXPOEntry.EntryValidation.Validate();
                                 pXPOEntry.EntryQtdValidation.Validate();
-                                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), pXPOEntry.EntryNumber, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_code"))) as GenericCRUDWidgetXPO);
+                                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), pXPOEntry.EntryNumber, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_code"))) as GenericCRUDWidgetXPO);
                                 _genericCRUDWidgetXPO.Validated = false;
 
-                                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), pXPOEntry.EntryNumber, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"))) as GenericCRUDWidgetXPO);
+                                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), pXPOEntry.EntryNumber, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"))) as GenericCRUDWidgetXPO);
                                 _genericCRUDWidgetXPO.Validated = false;
 
-                                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), pXPOEntry.EntryNumber, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quantity"))) as GenericCRUDWidgetXPO);
+                                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), pXPOEntry.EntryNumber, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quantity"))) as GenericCRUDWidgetXPO);
                                 if (pXPOEntry.EntryQtdValidation.Validated) _genericCRUDWidgetXPO.Validated = false;
 
-                                logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_composite_article_already"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"));
+                                logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_composite_article_already"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"));
                                 return;
                             }
                         }
@@ -1008,11 +998,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             {
                 CriteriaOperator criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1)"));
                 if (_article != null) { criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1 AND Oid != '{0}')", _article.Oid)); }
-                XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle> NewEntryBoxSelectArticle = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article"), "Designation", "Oid", _article, criteriaOperatorSelectArticle, Enums.Keyboard.KeyboardMode.None, SharedSettings.RegexAlfaNumericExtended, true, true, "", SharedSettings.RegexDecimalGreaterThanZero, _totalCompositeEntrys);
+                XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle> NewEntryBoxSelectArticle = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article"), "Designation", "Oid", _article, criteriaOperatorSelectArticle, Enums.Keyboard.KeyboardMode.None, SharedSettings.RegexAlfaNumericExtended, true, true, "", SharedSettings.RegexDecimalGreaterThanZero, _totalCompositeEntrys);
 
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryCodeValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), NewEntryBoxSelectArticle.EntryNumber, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_code")), "", true));
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), NewEntryBoxSelectArticle.EntryNumber, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation")), SharedSettings.RegexAlfaNumericExtended, true));
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryQtdValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), NewEntryBoxSelectArticle.EntryNumber, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quantity")), SharedSettings.RegexDecimalGreaterThanZero, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryCodeValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), NewEntryBoxSelectArticle.EntryNumber, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_code")), "", true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), NewEntryBoxSelectArticle.EntryNumber, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation")), SharedSettings.RegexAlfaNumericExtended, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryQtdValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), NewEntryBoxSelectArticle.EntryNumber, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quantity")), SharedSettings.RegexDecimalGreaterThanZero, true));
 
                 NewEntryBoxSelectArticle.EntryValidation.IsEditable = true;
                 fin_article articleChild = pArticleComposition.ArticleChild;
@@ -1057,13 +1047,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     SelectRecordDropDownArticle(true, NewEntryBoxSelectArticle);
                 };
 
-                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), _totalCompositeEntrys, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_code"))) as GenericCRUDWidgetXPO);
+                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), _totalCompositeEntrys, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_code"))) as GenericCRUDWidgetXPO);
                 _genericCRUDWidgetXPO.Validated = true;
 
-                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), _totalCompositeEntrys, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"))) as GenericCRUDWidgetXPO);
+                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), _totalCompositeEntrys, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"))) as GenericCRUDWidgetXPO);
                 _genericCRUDWidgetXPO.Validated = true;
 
-                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), _totalCompositeEntrys, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quantity"))) as GenericCRUDWidgetXPO);
+                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), _totalCompositeEntrys, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quantity"))) as GenericCRUDWidgetXPO);
                 if (_entryBoxSelectArticle1.EntryQtdValidation.Validated) _genericCRUDWidgetXPO.Validated = true;
 
                 _entryCompositeLinesCollection.Add(NewEntryBoxSelectArticle);
@@ -1090,13 +1080,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 //var entrySelected = (XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>)sender;
                 CriteriaOperator criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1)"));
                 if (_article != null) { criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND Oid != '{0}'", _article.Oid.ToString())); }
-                XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle> NewEntryBoxSelectArticle = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article"), "Designation", "Oid", _article, criteriaOperatorSelectArticle, Enums.Keyboard.KeyboardMode.None, SharedSettings.RegexAlfaNumericExtended, true, true, SharedSettings.RegexAlfaNumericArticleCode, SharedSettings.RegexDecimalGreaterThanZero, _totalCompositeEntrys);
+                XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle> NewEntryBoxSelectArticle = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article"), "Designation", "Oid", _article, criteriaOperatorSelectArticle, Enums.Keyboard.KeyboardMode.None, SharedSettings.RegexAlfaNumericExtended, true, true, SharedSettings.RegexAlfaNumericArticleCode, SharedSettings.RegexDecimalGreaterThanZero, _totalCompositeEntrys);
 
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryCodeValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), _totalCompositeEntrys, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_code")), SharedSettings.RegexAlfaNumericArticleCode, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryCodeValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), _totalCompositeEntrys, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_code")), SharedSettings.RegexAlfaNumericArticleCode, true));
 
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), _totalCompositeEntrys, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation")), SharedSettings.RegexAlfaNumericExtended, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), _totalCompositeEntrys, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation")), SharedSettings.RegexAlfaNumericExtended, true));
 
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryQtdValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), _totalCompositeEntrys, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quantity")), SharedSettings.RegexDecimalGreaterThanZero, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryQtdValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), _totalCompositeEntrys, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quantity")), SharedSettings.RegexDecimalGreaterThanZero, true));
 
                 NewEntryBoxSelectArticle.EntryValidation.IsEditable = true;
                 NewEntryBoxSelectArticle.Value = null;
@@ -1184,13 +1174,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                                     _entryBoxSelectArticle1.EntryCodeValidation.Validate();
                                     _entryBoxSelectArticle1.EntryQtdValidation.Validate();
 
-                                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), 1, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_code"))) as GenericCRUDWidgetXPO);
+                                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), 1, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_code"))) as GenericCRUDWidgetXPO);
                                     if (_genericCRUDWidgetXPO != null && _entryBoxSelectArticle1.EntryCodeValidation.Validated) _genericCRUDWidgetXPO.Validated = true; else { _genericCRUDWidgetXPO.Validated = false; }
 
-                                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), 1, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"))) as GenericCRUDWidgetXPO);
+                                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), 1, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"))) as GenericCRUDWidgetXPO);
                                     if (_genericCRUDWidgetXPO != null && _entryBoxSelectArticle1.EntryValidation.Validated) _genericCRUDWidgetXPO.Validated = true; else { _genericCRUDWidgetXPO.Validated = false; }
 
-                                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), 1, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quantity"))) as GenericCRUDWidgetXPO);
+                                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), 1, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quantity"))) as GenericCRUDWidgetXPO);
                                     if (_genericCRUDWidgetXPO != null && _entryBoxSelectArticle1.EntryQtdValidation.Validated) _genericCRUDWidgetXPO.Validated = true; else { _genericCRUDWidgetXPO.Validated = false; }
 
                                     line.Hide();
@@ -1211,13 +1201,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                             _entryBoxSelectArticle1.EntryCodeValidation.Validate();
                             _entryBoxSelectArticle1.EntryQtdValidation.Validate();
 
-                            _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), 1, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_code"))) as GenericCRUDWidgetXPO);
+                            _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), 1, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_code"))) as GenericCRUDWidgetXPO);
                             if (_genericCRUDWidgetXPO != null && _entryBoxSelectArticle1.EntryCodeValidation.Validated) _genericCRUDWidgetXPO.Validated = true; else { _genericCRUDWidgetXPO.Validated = false; }
 
-                            _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), 1, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"))) as GenericCRUDWidgetXPO);
+                            _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), 1, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"))) as GenericCRUDWidgetXPO);
                             if (_genericCRUDWidgetXPO != null && _entryBoxSelectArticle1.EntryValidation.Validated) _genericCRUDWidgetXPO.Validated = true; else { _genericCRUDWidgetXPO.Validated = false; }
 
-                            _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), 1, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quantity"))) as GenericCRUDWidgetXPO);
+                            _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), 1, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quantity"))) as GenericCRUDWidgetXPO);
                             if (_genericCRUDWidgetXPO != null && _entryBoxSelectArticle1.EntryQtdValidation.Validated) _genericCRUDWidgetXPO.Validated = true; else { _genericCRUDWidgetXPO.Validated = false; }
                         }
                     }
@@ -1225,13 +1215,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     {
                         entrySelected.Hide();
 
-                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), entrySelected.EntryNumber, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_code"))) as GenericCRUDWidgetXPO);
+                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), entrySelected.EntryNumber, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_code"))) as GenericCRUDWidgetXPO);
                         _crudWidgetList.Remove(_genericCRUDWidgetXPO);
 
-                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), entrySelected.EntryNumber, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"))) as GenericCRUDWidgetXPO);
+                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), entrySelected.EntryNumber, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"))) as GenericCRUDWidgetXPO);
                         _crudWidgetList.Remove(_genericCRUDWidgetXPO);
 
-                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), entrySelected.EntryNumber, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quantity"))) as GenericCRUDWidgetXPO);
+                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), entrySelected.EntryNumber, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quantity"))) as GenericCRUDWidgetXPO);
                         _crudWidgetList.Remove(_genericCRUDWidgetXPO);
 
                         _totalCompositeEntrys--;
@@ -1286,7 +1276,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 if (entrySelected.Value == _article)
                 {
                     entrySelected.Value = null;
-                    logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_composite_article_same"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"));
+                    logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_composite_article_same"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"));
                     entrySelected.EntryValidation.Text = "";
                     return;
                 }
@@ -1306,7 +1296,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             {
                 var entryQtdSelect = (Entry)o;
                 var entrySelected = (XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>)entryQtdSelect.Parent.Parent.Parent;
-                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), entrySelected.EntryNumber, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quantity"))) as GenericCRUDWidgetXPO);
+                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), entrySelected.EntryNumber, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quantity"))) as GenericCRUDWidgetXPO);
                 entrySelected.EntryQtdValidation.Validate();
                 if (entrySelected.EntryQtdValidation.Validated) _genericCRUDWidgetXPO.Validated = true;
 
@@ -1343,20 +1333,20 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             var checkButtonToggled = (CheckButton)sender;
             if (checkButtonToggled.Active)
             {
-                if(_checkButtonComposite.Active && _checkButtonUniqueArticles.Active) SetSizeRequest(550, 690); else { SetSizeRequest(500, 690); }
+                if (_checkButtonComposite.Active && _checkButtonUniqueArticles.Active) SetSizeRequest(550, 690); else { SetSizeRequest(500, 690); }
                 _scrolledWindowCompositionView.Show();
 
                 _entryBoxSelectArticle1.EntryCodeValidation.Validate();
                 _entryBoxSelectArticle1.EntryValidation.Validate();
                 _entryBoxSelectArticle1.EntryQtdValidation.Validate();
 
-                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), 1, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_code"))) as GenericCRUDWidgetXPO);
+                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), 1, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_code"))) as GenericCRUDWidgetXPO);
                 if (_genericCRUDWidgetXPO != null && _entryBoxSelectArticle1.EntryCodeValidation.Validated) _genericCRUDWidgetXPO.Validated = true; else { _genericCRUDWidgetXPO.Validated = false; }
 
-                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), 1, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"))) as GenericCRUDWidgetXPO);
+                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), 1, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"))) as GenericCRUDWidgetXPO);
                 if (_genericCRUDWidgetXPO != null && _entryBoxSelectArticle1.EntryValidation.Validated) _genericCRUDWidgetXPO.Validated = true; else { _genericCRUDWidgetXPO.Validated = false; }
 
-                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), 1, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quantity"))) as GenericCRUDWidgetXPO);
+                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), 1, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quantity"))) as GenericCRUDWidgetXPO);
                 if (_genericCRUDWidgetXPO != null && _entryBoxSelectArticle1.EntryQtdValidation.Validated) _genericCRUDWidgetXPO.Validated = true; else { _genericCRUDWidgetXPO.Validated = false; }
 
             }
@@ -1367,13 +1357,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 for (int i = 1; i <= _totalCompositeEntrys; i++)
                 {
-                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), i, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_code"))) as GenericCRUDWidgetXPO);
+                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), i, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_code"))) as GenericCRUDWidgetXPO);
                     if (_genericCRUDWidgetXPO != null) _genericCRUDWidgetXPO.Validated = true;
 
-                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), i, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"))) as GenericCRUDWidgetXPO);
+                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), i, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"))) as GenericCRUDWidgetXPO);
                     if (_genericCRUDWidgetXPO != null) _genericCRUDWidgetXPO.Validated = true;
 
-                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), i, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quantity"))) as GenericCRUDWidgetXPO);
+                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), i, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quantity"))) as GenericCRUDWidgetXPO);
                     if (_genericCRUDWidgetXPO != null) _genericCRUDWidgetXPO.Validated = true;
                 }
             }
@@ -1401,7 +1391,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                     }
                     _scrolledWindowSerialNumbersView.Show();
-                    if(_serialNumberCollection.Count == 0)
+                    if (_serialNumberCollection.Count == 0)
                     {
                         PopulateSerialNumberArticleEntrys(null);
                     }
@@ -1446,7 +1436,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 if (pDataSourceRow != null && (pDataSourceRow as fin_articleserialnumber).ArticleWarehouse.Warehouse != null)
                 {
                     pWareHouseDataSourceRow = (pDataSourceRow as fin_articleserialnumber).ArticleWarehouse.Warehouse;
-                }                
+                }
 
 
                 //Stock Moviment In for serialNumber
@@ -1455,8 +1445,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     (pDataSourceRow as fin_articleserialnumber).StockMovimentIn = new fin_articlestock(_dataSourceRow.Session);
                     (pDataSourceRow as fin_articleserialnumber).StockMovimentIn.Article = _article;
                     (pDataSourceRow as fin_articleserialnumber).StockMovimentIn.ArticleSerialNumber = (pDataSourceRow as fin_articleserialnumber);
-                    (pDataSourceRow as fin_articleserialnumber).StockMovimentIn.Customer = (erp_customer) _dataSourceRow.Session.GetObjectByKey(typeof(erp_customer), SharedSettings.XpoOidUserRecord);
-                    (pDataSourceRow as fin_articleserialnumber).StockMovimentIn.DocumentNumber = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_internal_moviment");
+                    (pDataSourceRow as fin_articleserialnumber).StockMovimentIn.Customer = (erp_customer)_dataSourceRow.Session.GetObjectByKey(typeof(erp_customer), SharedSettings.XpoOidUserRecord);
+                    (pDataSourceRow as fin_articleserialnumber).StockMovimentIn.DocumentNumber = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_internal_moviment");
                     (pDataSourceRow as fin_articleserialnumber).StockMovimentIn.Quantity = 1;
                     (pDataSourceRow as fin_articleserialnumber).StockMovimentIn.Date = DateTime.Now;
                 }
@@ -1465,7 +1455,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 (pDataSourceRow as fin_articleserialnumber).Article = _article;
                 HBox hboxSerialNumber = new HBox(false, _boxSpacing);
                 Entry entrySerialNumber = new Entry();
-                BOWidgetBox boxSerialNumber = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_serial_number"), entrySerialNumber);
+                BOWidgetBox boxSerialNumber = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_serial_number"), entrySerialNumber);
                 GenericCRUDWidgetXPO serialnumberCRUDWidgetXPO = new GenericCRUDWidgetXPO(boxSerialNumber, pDataSourceRow, "SerialNumber", SharedSettings.RegexAlfaNumericExtended, true);
                 _crudWidgetList.Add(serialnumberCRUDWidgetXPO);
                 hboxSerialNumber.PackStart(boxSerialNumber);
@@ -1474,17 +1464,17 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 CriteriaOperator defaultWarehouseCriteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND IsDefault == '1'"));
                 fin_warehouse defaultWareHouse = ((pDataSourceRow as fin_articleserialnumber).ArticleWarehouse.Warehouse != null && (pDataSourceRow as fin_articleserialnumber).ArticleWarehouse.Warehouse.Oid != Guid.Empty) ? (pDataSourceRow as fin_articleserialnumber).ArticleWarehouse.Warehouse : (fin_warehouse)pDataSourceRow.Session.FindObject(typeof(fin_warehouse), defaultWarehouseCriteria);
                 XPOComboBox xpoComboBoxWarehouse = new XPOComboBox(DataSourceRow.Session, typeof(fin_warehouse), defaultWareHouse, "Designation", null);
-                BOWidgetBox boxWareHouse = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warehouse"), xpoComboBoxWarehouse);
+                BOWidgetBox boxWareHouse = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warehouse"), xpoComboBoxWarehouse);
                 GenericCRUDWidgetXPO warehouseCRUDWidgetXPO = new GenericCRUDWidgetXPO(boxWareHouse, (pDataSourceRow as fin_articleserialnumber).ArticleWarehouse, "Warehouse", SharedSettings.RegexAlfaNumeric, false);
                 _crudWidgetList.Add(warehouseCRUDWidgetXPO);
                 hboxSerialNumber.PackStart(boxWareHouse);
 
                 //Location
                 CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) "));
-                if(defaultWareHouse != null) criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND Warehouse == '{0}'", defaultWareHouse.Oid.ToString()));
+                if (defaultWareHouse != null) criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND Warehouse == '{0}'", defaultWareHouse.Oid.ToString()));
                 fin_warehouselocation defaultLocation = ((pDataSourceRow as fin_articleserialnumber).ArticleWarehouse.Location != null) ? (pDataSourceRow as fin_articleserialnumber).ArticleWarehouse.Location : (fin_warehouselocation)pDataSourceRow.Session.FindObject(typeof(fin_warehouselocation), criteria);
                 XPOComboBox xpoComboBoxWarehouseLocation = new XPOComboBox(DataSourceRow.Session, typeof(fin_warehouselocation), defaultLocation, "Designation", criteria);
-                BOWidgetBox boxWareHouseLocation = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationDevice_PlaceTerminal"), xpoComboBoxWarehouseLocation);
+                BOWidgetBox boxWareHouseLocation = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationDevice_PlaceTerminal"), xpoComboBoxWarehouseLocation);
                 GenericCRUDWidgetXPO warehouseLocationCRUDWidgetXPO = new GenericCRUDWidgetXPO(boxWareHouseLocation, (pDataSourceRow as fin_articleserialnumber).ArticleWarehouse, "Location", SharedSettings.RegexAlfaNumeric, false);
                 _crudWidgetList.Add(warehouseLocationCRUDWidgetXPO);
                 hboxSerialNumber.PackStart(boxWareHouseLocation);
@@ -1502,8 +1492,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     xpoComboBoxWarehouse.Sensitive = false;
                 }
 
-                    //Clear
-                    TouchButtonIcon buttonClearSerialNumber = new TouchButtonIcon("touchButtonIcon", Color.Transparent, iconClearRecord, new Size(20, 20), 30, 30);
+                //Clear
+                TouchButtonIcon buttonClearSerialNumber = new TouchButtonIcon("touchButtonIcon", Color.Transparent, iconClearRecord, new Size(20, 20), 30, 30);
                 hboxSerialNumber.PackEnd(buttonClearSerialNumber, false, false, 1);
 
                 //Add
@@ -1514,7 +1504,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _scrolledWindowSerialNumbersView.AddWithViewport(vboxTab5);
 
                 //Events
-                buttonAddSerialNumber.Clicked += delegate {
+                buttonAddSerialNumber.Clicked += delegate
+                {
                     PopulateSerialNumberArticleEntrys(null);
                 };
                 buttonClearSerialNumber.Sensitive = false;
@@ -1547,7 +1538,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 {
                     foreach (var child in serialNumber.Item6.Children)
                     {
-                        
+
                         if (!found && child.GetType() == typeof(BOWidgetBox) && (child as BOWidgetBox).Children[1] as XPOComboBox == sender as XPOComboBox)
                         {
                             found = true;
@@ -1574,7 +1565,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         {
             try
             {
-                ResponseType responseType = logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record"), string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warning"), SharedFramework.ServerVersion));
+                ResponseType responseType = logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record"), string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warning"), SharedFramework.ServerVersion));
 
                 if (responseType == ResponseType.Yes)
                 {
@@ -1590,7 +1581,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                             if (child.Equals(sender as TouchButtonIcon))
                             {
                                 var xpObject = serialNumber.Item1;
-                                _article.ArticleSerialNumber.Remove(xpObject);                                           
+                                _article.ArticleSerialNumber.Remove(xpObject);
                                 vboxTab5.Remove(serialNumber.Item6);
                                 _crudWidgetList.Remove(serialNumber.Item3);
                                 _crudWidgetList.Remove(serialNumber.Item4);
@@ -1609,6 +1600,6 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
         }
     }
-    
+
 }
 

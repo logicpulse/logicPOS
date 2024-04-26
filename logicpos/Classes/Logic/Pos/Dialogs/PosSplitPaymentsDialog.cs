@@ -1,20 +1,14 @@
 ﻿using Gtk;
 using logicpos.App;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.Classes.Logic.Others;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.financial.library.Classes.Finance;
-using logicpos.resources.Resources.Localization;
 using logicpos.shared.App;
 using logicpos.shared.Classes.Finance;
 using logicpos.shared.Classes.Orders;
-using logicpos.shared.Enums;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -295,26 +289,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                     // Update Window Title
                     //if (WindowTitle != null) WindowTitle = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_split_payment, numberOfSplits, SharedUtils.DecimalToStringCurrency(totalFinal));
-                    if (WindowTitle != null) WindowTitle = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_split_payment"), numberOfSplits, SharedUtils.DecimalToStringCurrency(_totalPerSplit));
+                    if (WindowTitle != null) WindowTitle = string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_split_payment"), numberOfSplits, SharedUtils.DecimalToStringCurrency(_totalPerSplit));
                 }
             }
             catch (Exception ex)
             {
                 _logger.Error(ex.Message, ex);
             }
-        }
-
-        private decimal CalculateTotal(ArrayList arrayList, bool showLog = false)
-        {
-            decimal result = 0;
-
-            foreach (SplitPaymentArticleComparable item in arrayList)
-            {
-                result += item.priceFinal;
-                //if (showLog) _logger.Debug(string.Format("\t{0}\t{1}\t{2}", result, item.designation, item.price));
-            }
-
-            return result;
         }
 
         private bool PersistFinanceDocuments()

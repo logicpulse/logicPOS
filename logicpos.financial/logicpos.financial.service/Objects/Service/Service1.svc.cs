@@ -1,15 +1,8 @@
 ﻿using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial.service.App;
 using logicpos.financial.service.Objects;
 using logicpos.financial.service.Objects.Modules.AT;
-using logicpos.shared;
 using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-using System.ServiceModel;
-using System.ServiceModel.Web;
-using System.Text;
 
 namespace logicpos.financial.servicewcf
 {

@@ -1,12 +1,10 @@
 ﻿using DevExpress.Data.Filtering;
 using Gtk;
-using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.resources.Resources.Localization;
 using logicpos.shared.App;
 using logicpos.shared.Enums;
 using System;
@@ -82,7 +80,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             List<string> result = GetComposedFilter();
             if (result.Count == 2)
             {
-                _filterValue = result[0];
+                FilterValue = result[0];
                 FilterValueHumanReadble = result[1];
             }
             else
@@ -99,7 +97,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             List<string> result = GetComposedFilter();
             if (result.Count == 2)
             {
-                _filterValue = result[0];
+                FilterValue = result[0];
                 FilterValueHumanReadble = result[1];
             }
             else
@@ -116,7 +114,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             List<string> result = GetComposedFilter();
             if (result.Count == 2)
             {
-                _filterValue = result[0];
+                FilterValue = result[0];
                 FilterValueHumanReadble = result[1];
             }
             else
@@ -143,10 +141,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 {
                     if (_databaseSourceObject == "fin_articleserialnumber" || _databaseSourceObject == "fin_articlewarehouse")
                     {
-                        _filterValue = _filterValue.Replace("Date", "CreatedAt");
+                        FilterValue = FilterValue.Replace("Date", "CreatedAt");
                     }
                     
-                     countQuerySql = string.Format("SELECT COUNT(*) AS Count FROM {0} WHERE {1};", _databaseSourceObject, _filterValue);
+                     countQuerySql = string.Format("SELECT COUNT(*) AS Count FROM {0} WHERE {1};", _databaseSourceObject, FilterValue);
 
                     DataTable dataTable = SharedUtils.GetDataTableFromQuery(countQuerySql);
                     count = Convert.ToInt32(Convert.ToDecimal(dataTable.Rows[0].ItemArray[0]));
@@ -164,7 +162,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if (count <= 0)
                 {
 					/* IN009062 */
-                    logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new Size(500, 240), MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_information"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_report_filter_no_records_with_criteria"));
+                    logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new Size(500, 240), MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_information"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_report_filter_no_records_with_criteria"));
                     //Keep Running
                     this.Run();
                 }
@@ -255,8 +253,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             else if ("UNDEFINED_DATE_FIELD".Equals(filterDateField))//TO DO
             {
                 filterDateField = "CustomerSinceDate";
-                _dateStart = new DateTime(1900, 1, 1, 0, 0, 0);// "1900-01-01 00:00:00"
-                _dateEnd = DateTime.Now;
+                DateStart = new DateTime(1900, 1, 1, 0, 0, 0);// "1900-01-01 00:00:00"
+                DateEnd = DateTime.Now;
             }
 
             if (Enums.Reports.ReportsQueryDialogMode.FINANCIAL_DETAIL_VAT.Equals(_reportsQueryDialogMode))
@@ -268,7 +266,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             // Combine final where Filter
             if (!Enums.Reports.ReportsQueryDialogMode.CUSTOMER_BALANCE_SUMMARY.Equals(_reportsQueryDialogMode))
             {
-                string datesFilter = string.Format("{0} >= '{1}' AND {0} <= '{2}'", filterDateField, _dateStart.ToString(SharedSettings.DateTimeFormat), _dateEnd.ToString(SharedSettings.DateTimeFormat));
+                string datesFilter = string.Format("{0} >= '{1}' AND {0} <= '{2}'", filterDateField, DateStart.ToString(SharedSettings.DateTimeFormat), DateEnd.ToString(SharedSettings.DateTimeFormat));
                 filter = (!string.IsNullOrEmpty(filterSelectionBoxs))
                     ? string.Format("({0}) AND ({1})", datesFilter, filterSelectionBoxs)
                     : string.Format("({0})", datesFilter);
@@ -282,7 +280,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //}
                 // HumanReadable
                 /* IN006004 */
-                string datesFilterHumanReadable = string.Format(" {0} '{1}', {2} '{3}' ", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date_start"), _dateStart.ToString(SharedSettings.DateTimeFormat), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date_end"), _dateEnd.ToString(SharedSettings.DateTimeFormat));
+                string datesFilterHumanReadable = string.Format(" {0} '{1}', {2} '{3}' ", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date_start"), DateStart.ToString(SharedSettings.DateTimeFormat), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date_end"), DateEnd.ToString(SharedSettings.DateTimeFormat));
                 filterHumanReadable = (!string.IsNullOrEmpty(filterSelectionBoxsHumanReadable))
                     ? string.Format("{0}, {1}", datesFilterHumanReadable, filterSelectionBoxsHumanReadable)
                     : datesFilterHumanReadable;
@@ -295,7 +293,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if (Enums.Reports.ReportsQueryDialogMode.COMPANY_BILLING.Equals(_reportsQueryDialogMode))
                 {
                     string documentTypeOid = SharedSettings.XpoOidDocumentFinanceTypePayment.ToString();
-                    string documentTypeDesignation = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type_title_rc");
+                    string documentTypeDesignation = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type_title_rc");
                     /* Based on "view_documentfinancecustomerbalancedetails" we are removing RCs ("a009168d-fed1-4f52-b9e3-77e280b18ff5") */
                     filter += $" AND DocumentTypeOid <> '{documentTypeOid}'";
                     // filterHumanReadable += $", {resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type} <> '{documentTypeDesignation}'";
@@ -303,7 +301,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
 
             result.Add(filter);
-            result.Add(string.Format("{0}: [{1}]", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_filter"), filterHumanReadable));
+            result.Add(string.Format("{0}: [{1}]", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_filter"), filterHumanReadable));
 
             // Return Result Filter List
             return result;

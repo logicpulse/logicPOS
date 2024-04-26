@@ -2,7 +2,6 @@
 using DevExpress.Xpo.DB;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial.library.App;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Enums;
 using logicpos.shared.App;
 using System;
@@ -20,14 +19,9 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
         private readonly List<TicketColumn> _columnsProperties;
         //Other
         private readonly char _columnDivider = ' ';
-        //Public
-        private int _tableWidth;
-        public int TableWidth
-        {
-            get { return _tableWidth; }
-            set { _tableWidth = value; }
-        }
-        
+
+        public int TableWidth { get; set; }
+
         public TicketTable(string pSql, List<TicketColumn> pColumnsProperties, int pTableWidth)
             : this(DataLayerFramework.SessionXpo, pSql, pColumnsProperties, pTableWidth)
         {
@@ -38,7 +32,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
             //Parameters
             _session = pSession;
             _columnsProperties = pColumnsProperties;
-            _tableWidth = pTableWidth;
+            TableWidth = pTableWidth;
 
             //Load Data
             Load(pSql);
@@ -58,7 +52,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
         public TicketTable(DataTable pDataTable, List<TicketColumn> pColumnsProperties, int pTableWidth)
         {
             _columnsProperties = pColumnsProperties;
-            _tableWidth = pTableWidth;
+            TableWidth = pTableWidth;
 
             //Load Data
             Load(pDataTable);
@@ -163,7 +157,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
         //Config Ticket Columns Properties
         private void ConfigColumns()
         {
-            ConfigColumns(_columnsProperties, _tableWidth);
+            ConfigColumns(_columnsProperties, TableWidth);
         }
 
         //Can be used Outside

@@ -16,13 +16,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private readonly FileChooserAction _fileChooserAction;
         //UI
         private readonly Fixed _fixedContent;
-        //Public Properties
-        private FileChooserWidget _filePicker;
-        public FileChooserWidget FilePicker
-        {
-            get { return _filePicker; }
-            set { _filePicker = value; }
-        }
+
+        public FileChooserWidget FilePicker { get; set; }
 
         public PosFilePickerDialog(Window pSourceWindow, DialogFlags pDialogFlags)
             : this(pSourceWindow, pDialogFlags, null, FileChooserAction.Open)
@@ -43,7 +38,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _fileChooserAction = pFileChooserAction;
 
             //Init Local Vars
-            string windowTitle = string.Format("{0} {1}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_filepicker"), windowName);
+            string windowTitle = string.Format("{0} {1}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_filepicker"), windowName);
             _windowSize = new Size(700, 473);
             string fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_select_record.png");
 
@@ -73,15 +68,15 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Init Font Description
             Pango.FontDescription fontDescription = Pango.FontDescription.FromString(DataLayerFramework.Settings["fontEntryBoxValue"]);
             //Init FileChooserWidget
-            _filePicker = new FileChooserWidget(_fileChooserAction, "none");
-            if (_fileFilter != null) _filePicker.Filter = _fileFilter;
+            FilePicker = new FileChooserWidget(_fileChooserAction, "none");
+            if (_fileFilter != null) FilePicker.Filter = _fileFilter;
             //Assign FilePicker StartPath
-            if (Directory.Exists(GlobalApp.FilePickerStartPath)) _filePicker.SetCurrentFolder(GlobalApp.FilePickerStartPath);
+            if (Directory.Exists(GlobalApp.FilePickerStartPath)) FilePicker.SetCurrentFolder(GlobalApp.FilePickerStartPath);
             //Size and Put
-            _filePicker.SetSizeRequest(_windowSize.Width - 13, _windowSize.Height - 120);
-            _fixedContent.Put(_filePicker, 0, 0);
+            FilePicker.SetSizeRequest(_windowSize.Width - 13, _windowSize.Height - 120);
+            _fixedContent.Put(FilePicker, 0, 0);
             //Events
-            _filePicker.CurrentFolderChanged += delegate { GlobalApp.FilePickerStartPath = _filePicker.CurrentFolder; };
+            FilePicker.CurrentFolderChanged += delegate { GlobalApp.FilePickerStartPath = FilePicker.CurrentFolder; };
         }
     }
 }

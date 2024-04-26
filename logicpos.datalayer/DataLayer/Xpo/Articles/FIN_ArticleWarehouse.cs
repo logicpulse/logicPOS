@@ -1,8 +1,6 @@
-﻿using System;
-using DevExpress.Xpo;
+﻿using DevExpress.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
 using logicpos.datalayer.DataLayer.Xpo.Documents;
-using logicpos.datalayer.Enums;
 
 namespace logicpos.datalayer.DataLayer.Xpo
 {

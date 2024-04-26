@@ -1,20 +1,11 @@
-﻿using System;
-using Gtk;
-using System.Drawing;
-using logicpos.financial;
+﻿using Gtk;
 using System.Collections.Generic;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
     internal class ListComboBoxTouch : EntryBoxBase
     {
-        //Public Properties
-        private ListComboBox _listComboBox;
-        public ListComboBox ListComboBox
-        {
-            get { return _listComboBox; }
-            set { _listComboBox = value; }
-        }
+        public ListComboBox ListComboBox { get; set; }
 
         public ListComboBoxTouch(Window pSourceWindow, string pLabelText, List<string> pItemList)
             : this(pSourceWindow, pLabelText, pItemList, string.Empty) { }
@@ -29,11 +20,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             : base(pSourceWindow, pLabelText)
         {
             //Entry
-            _listComboBox = new ListComboBox(pItemList, pInitialValue, pAddUndefinedValue, pRequired);
-            _listComboBox.ComboBoxCell.FontDesc = _fontDescription;
+            ListComboBox = new ListComboBox(pItemList, pInitialValue, pAddUndefinedValue, pRequired);
+            ListComboBox.ComboBoxCell.FontDesc = _fontDescription;
 
             //Pack
-            Vbox.PackStart(_listComboBox);
+            Vbox.PackStart(ListComboBox);
         }
     }
 }

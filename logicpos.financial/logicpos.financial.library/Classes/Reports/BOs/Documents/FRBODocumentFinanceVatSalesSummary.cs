@@ -15,8 +15,6 @@ VIEW
         GROUP BY fdVat
 */
 
-using System;
-
 namespace logicpos.financial.library.Classes.Reports.BOs.Documents
 {
     [FRBO(Entity = "view_documentfinance")]

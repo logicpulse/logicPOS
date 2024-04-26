@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace logicpos.financial.library.Classes.Reports.BOs.Customers
+﻿namespace logicpos.financial.library.Classes.Reports.BOs.Customers
 {
     [FRBO(Entity = "erp_customer")]
     public class FRBOCustomer : FRBOBaseObject

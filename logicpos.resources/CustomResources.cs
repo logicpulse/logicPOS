@@ -3,113 +3,93 @@ using System.Resources;
 
 namespace logicpos.resources
 {
-    public class CustomResources
+    public static class CustomResources
     {
-        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        public static ResXResourceSet ResourceSet { get; set; }
 
-        public static ResXResourceSet rsxr;
-
-        public static string GetCustomResources(string language, string value)
+        private static string GetResourcesFileByName(string resourceName)
         {
-            try
-            {
-                string result = value;
-
-                if (rsxr == null)
-                {
-                    if (language == "")
-                    {
-                        language = System.Configuration.ConfigurationManager.AppSettings["customCultureResourceDefinition"].ToString();
-                    }
-
-                    switch (language)
-                    {
-                        case "en-GB":
-                            rsxr = new ResXResourceSet("Resources" + Path.DirectorySeparatorChar + "Localization" + Path.DirectorySeparatorChar + "Resx.en-GB.resx");
-                            break;
-                        case "en-US":
-                            rsxr = new ResXResourceSet("Resources" + Path.DirectorySeparatorChar + "Localization" + Path.DirectorySeparatorChar + "Resx.en-US.resx");
-                            break;
-                        case "fr-FR":
-                            rsxr = new ResXResourceSet("Resources" + Path.DirectorySeparatorChar + "Localization" + Path.DirectorySeparatorChar + "Resx.fr-FR.resx");
-                            break;
-                        case "pt-BR":
-                            rsxr = new ResXResourceSet("Resources" + Path.DirectorySeparatorChar + "Localization" + Path.DirectorySeparatorChar + "Resx.pt-BR.resx");
-                            break;
-                        case "pt-AO":
-                            rsxr = new ResXResourceSet("Resources" + Path.DirectorySeparatorChar + "Localization" + Path.DirectorySeparatorChar + "Resx.pt-AO.resx");
-                            break;
-                        case "pt-MZ":
-                            rsxr = new ResXResourceSet("Resources" + Path.DirectorySeparatorChar + "Localization" + Path.DirectorySeparatorChar + "Resx.pt-MZ.resx");
-                            break;
-                        case "pt-PT":
-                            rsxr = new ResXResourceSet("Resources" + Path.DirectorySeparatorChar + "Localization" + Path.DirectorySeparatorChar + "Resx.pt-PT.resx");
-                            break;
-                        case "es-ES":
-                            rsxr = new ResXResourceSet("Resources" + Path.DirectorySeparatorChar + "Localization" + Path.DirectorySeparatorChar + "Resx.es-ES.resx");
-                            break;
-                        default:
-                            rsxr = new ResXResourceSet("Resources" + Path.DirectorySeparatorChar + "Localization" + Path.DirectorySeparatorChar + "Resx.resx");
-                            break;
-                    }
-                }
-
-                if ((result = rsxr.GetString(value)) != null)
-                {
-                    return result;
-                }
-            }
-            catch (System.Exception ex)
-            {
-                _logger.Error("", ex);
-            }
-            return value;
+            var directorySeparatorChar = Path.DirectorySeparatorChar;
+            return "Resources" + directorySeparatorChar + "Localization" + directorySeparatorChar + resourceName;
         }
-		//IN009296 BackOffice - Mudar a língua da aplicação
-        public static void UpdateLanguage(string language)
+
+        public static string GetCustomResource(string language, string value)
         {
-            try
+            if (ResourceSet == null)
             {
+                if (language == "")
+                {
+                    language = System.Configuration.ConfigurationManager.AppSettings["customCultureResourceDefinition"].ToString();
+                }
 
                 switch (language)
                 {
                     case "en-GB":
-                        rsxr = new ResXResourceSet("Resources" + Path.DirectorySeparatorChar + "Localization" + Path.DirectorySeparatorChar + "Resx.en-GB.resx");
+                        ResourceSet = new ResXResourceSet(GetResourcesFileByName("Resx.en-GB.resx"));
                         break;
                     case "en-US":
-                        rsxr = new ResXResourceSet("Resources" + Path.DirectorySeparatorChar + "Localization" + Path.DirectorySeparatorChar + "Resx.en-US.resx");
+                        ResourceSet = new ResXResourceSet(GetResourcesFileByName("Resx.en-US.resx"));
                         break;
                     case "fr-FR":
-                        rsxr = new ResXResourceSet("Resources" + Path.DirectorySeparatorChar + "Localization" + Path.DirectorySeparatorChar + "Resx.fr-FR.resx");
+                        ResourceSet = new ResXResourceSet(GetResourcesFileByName("Resx.fr-FR.resx"));
                         break;
                     case "pt-BR":
-                        rsxr = new ResXResourceSet("Resources" + Path.DirectorySeparatorChar + "Localization" + Path.DirectorySeparatorChar + "Resx.pt-BR.resx");
+                        ResourceSet = new ResXResourceSet(GetResourcesFileByName("Resx.pt-BR.resx"));
                         break;
                     case "pt-AO":
-                        rsxr = new ResXResourceSet("Resources" + Path.DirectorySeparatorChar + "Localization" + Path.DirectorySeparatorChar + "Resx.pt-AO.resx");
+                        ResourceSet = new ResXResourceSet(GetResourcesFileByName("Resx.pt-AO.resx"));
                         break;
                     case "pt-MZ":
-                        rsxr = new ResXResourceSet("Resources" + Path.DirectorySeparatorChar + "Localization" + Path.DirectorySeparatorChar + "Resx.pt-MZ.resx");
+                        ResourceSet = new ResXResourceSet(GetResourcesFileByName("Resx.pt-MZ.resx"));
                         break;
                     case "pt-PT":
-                        rsxr = new ResXResourceSet("Resources" + Path.DirectorySeparatorChar + "Localization" + Path.DirectorySeparatorChar + "Resx.pt-PT.resx");
+                        ResourceSet = new ResXResourceSet(GetResourcesFileByName("Resx.pt-PT.resx"));
                         break;
                     case "es-ES":
-                        rsxr = new ResXResourceSet("Resources" + Path.DirectorySeparatorChar + "Localization" + Path.DirectorySeparatorChar + "Resx.es-ES.resx");
+                        ResourceSet = new ResXResourceSet(GetResourcesFileByName("Resx.es-ES.resx"));
                         break;
                     default:
-                        rsxr = new ResXResourceSet("Resources" + Path.DirectorySeparatorChar + "Localization" + Path.DirectorySeparatorChar + "Resx.resx");
+                        ResourceSet = new ResXResourceSet(GetResourcesFileByName("Resx.resx"));
                         break;
                 }
-
-
-
             }
-            catch (System.Exception ex)
+
+            string result;
+            return (result = ResourceSet.GetString(value)) != null ? result : value;
+        }
+
+        public static void UpdateLanguage(string language)
+        {
+            switch (language)
             {
-                _logger.Error("", ex);
+                case "en-GB":
+                    ResourceSet = new ResXResourceSet(GetResourcesFileByName("Resx.en-GB.resx"));
+                    break;
+                case "en-US":
+                    ResourceSet = new ResXResourceSet(GetResourcesFileByName("Resx.en-US.resx"));
+                    break;
+                case "fr-FR":
+                    ResourceSet = new ResXResourceSet(GetResourcesFileByName("Resx.fr-FR.resx"));
+                    break;
+                case "pt-BR":
+                    ResourceSet = new ResXResourceSet(GetResourcesFileByName("Resx.pt-BR.resx"));
+                    break;
+                case "pt-AO":
+                    ResourceSet = new ResXResourceSet(GetResourcesFileByName("Resx.pt-AO.resx"));
+                    break;
+                case "pt-MZ":
+                    ResourceSet = new ResXResourceSet(GetResourcesFileByName("Resx.pt-MZ.resx"));
+                    break;
+                case "pt-PT":
+                    ResourceSet = new ResXResourceSet(GetResourcesFileByName("Resx.pt-PT.resx"));
+                    break;
+                case "es-ES":
+                    ResourceSet = new ResXResourceSet(GetResourcesFileByName("Resx.es-ES.resx"));
+                    break;
+                default:
+                    ResourceSet = new ResXResourceSet(GetResourcesFileByName("Resx.resx"));
+                    break;
             }
-
         }
     }
 }

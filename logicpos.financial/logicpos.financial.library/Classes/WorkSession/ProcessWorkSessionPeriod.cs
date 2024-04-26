@@ -3,7 +3,6 @@ using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial.library.App;
 using logicpos.shared.App;
 using System;
 using System.Collections;

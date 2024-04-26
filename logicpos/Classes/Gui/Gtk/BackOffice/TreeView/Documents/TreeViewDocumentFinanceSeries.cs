@@ -11,7 +11,6 @@ using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.financial.library.Classes.Finance;
 using logicpos.financial.library.Results;
-using logicpos.resources.Resources.Localization;
 using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
@@ -22,12 +21,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
     internal class TreeViewDocumentFinanceSeries : GenericTreeViewXPO
     {
-        private TouchButtonIconWithText _buttonCreateDocumentFinanceSeries;
-        public TouchButtonIconWithText ButtonCreateDocumentFinanceSeries
-        {
-            get { return _buttonCreateDocumentFinanceSeries; }
-            set { _buttonCreateDocumentFinanceSeries = value; }
-        }
+        public TouchButtonIconWithText ButtonCreateDocumentFinanceSeries { get; set; }
 
         //Public Parametless Constructor Required by Generics
         public TreeViewDocumentFinanceSeries() { }
@@ -51,10 +45,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
             {
-                new GenericTreeViewColumnProperty("FiscalYear") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_fiscal_year"), ChildName = "Designation", MinWidth = 160 },
-                new GenericTreeViewColumnProperty("DocumentType") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinanceseries_documenttype"), ChildName = "Designation", Expand = true },
-                new GenericTreeViewColumnProperty("Designation") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true },
-                new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
+                new GenericTreeViewColumnProperty("FiscalYear") { Title = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_fiscal_year"), ChildName = "Designation", MinWidth = 160 },
+                new GenericTreeViewColumnProperty("DocumentType") { Title = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinanceseries_documenttype"), ChildName = "Designation", Expand = true },
+                new GenericTreeViewColumnProperty("Designation") { Title = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true },
+                new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
             };
 
             //Configure Criteria/XPCollection/Model : Use Default Filter
@@ -78,16 +72,16 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             );
 
             //Add Extra Button to Navigator
-            _buttonCreateDocumentFinanceSeries = Navigator.GetNewButton("touchButtonCreateDocumentFinanceSeries_DialogActionArea", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_button_create_series"), @"Icons/icon_pos_nav_new.png");
+            ButtonCreateDocumentFinanceSeries = Navigator.GetNewButton("touchButtonCreateDocumentFinanceSeries_DialogActionArea", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_button_create_series"), @"Icons/icon_pos_nav_new.png");
             //_buttonCreateDocumentFinanceSeries.WidthRequest = 110;
             //Check if Has an Active Year Open before apply Permissions
             fin_documentfinanceyears currentDocumentFinanceYear = ProcessFinanceDocumentSeries.GetCurrentDocumentFinanceYear();
             //Apply Permissions 
-            _buttonCreateDocumentFinanceSeries.Sensitive = (currentDocumentFinanceYear != null && SharedUtils.HasPermissionTo("BACKOFFICE_MAN_DOCUMENTFINANCESERIES_MANAGE_SERIES"));
+            ButtonCreateDocumentFinanceSeries.Sensitive = (currentDocumentFinanceYear != null && SharedUtils.HasPermissionTo("BACKOFFICE_MAN_DOCUMENTFINANCESERIES_MANAGE_SERIES"));
             //Event
-            _buttonCreateDocumentFinanceSeries.Clicked += buttonCreateDocumentFinanceSeries_Clicked;
+            ButtonCreateDocumentFinanceSeries.Clicked += buttonCreateDocumentFinanceSeries_Clicked;
             //Add to Extra Slot
-            Navigator.ExtraSlot.PackStart(_buttonCreateDocumentFinanceSeries, false, false, 0);
+            Navigator.ExtraSlot.PackStart(ButtonCreateDocumentFinanceSeries, false, false, 0);
         }
 
         private void buttonCreateDocumentFinanceSeries_Clicked(object sender, EventArgs e)
@@ -138,11 +132,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         new Size(600, 400),
                         MessageType.Error,
                         ButtonsType.Close,
-                        resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_series_create_series"),
-                        resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_series_create_document_type_series_miss_year")
+                        resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_series_create_series"),
+                        resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_series_create_document_type_series_miss_year")
                     );
                     //Disable Button, Extra protection for deleted year outside App
-                    _buttonCreateDocumentFinanceSeries.Sensitive = false;
+                    ButtonCreateDocumentFinanceSeries.Sensitive = false;
                 }
             }
             catch (Exception ex)
@@ -203,8 +197,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                                 DialogFlags.Modal,
                                 MessageType.Question,
                                 ButtonsType.YesNo,
-                                resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_series_create_series"),
-                                resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_series_create_confirmation_text")
+                                resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_series_create_series"),
+                                resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_series_create_confirmation_text")
                             );
                         }
                         else
@@ -235,9 +229,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                                     DialogFlags.Modal,
                                     MessageType.Error,
                                     ButtonsType.Ok,
-                                    resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"),
+                                    resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"),
                                     string.Format("{0}{1}{1}{2}",
-                                        string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_series_create_error"), resultAcronym.Text),
+                                        string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_series_create_error"), resultAcronym.Text),
                                         Environment.NewLine,
                                         frameworkCallsResult.Exception.InnerException.Message
                                     )
@@ -275,16 +269,16 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     pSourceWindow,
                     DialogFlags.Modal,
                     new System.Drawing.Size(800, 600),
-                    resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_series_create_series"),
+                    resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_series_create_series"),
                     fileWindowIcon,
-                    resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_acronym"),
+                    resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_acronym"),
                     pInitialValue,
                     SharedSettings.RegexDocumentSeriesAcronym,
                     true
                     );
 
                 //Initialize EntryBoxValidationMultiLine
-                EntryBoxValidationMultiLine entryBoxValidationMultiLine = new EntryBoxValidationMultiLine(pSourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_preview"));
+                EntryBoxValidationMultiLine entryBoxValidationMultiLine = new EntryBoxValidationMultiLine(pSourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_preview"));
                 entryBoxValidationMultiLine.HeightRequest = 420;
                 entryBoxValidationMultiLine.EntryMultiline.TextView.WrapMode = WrapMode.Word;
                 entryBoxValidationMultiLine.EntryMultiline.TextView.Sensitive = false;

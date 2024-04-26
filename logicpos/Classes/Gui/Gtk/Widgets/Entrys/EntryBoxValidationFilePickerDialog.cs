@@ -1,5 +1,4 @@
 ﻿using Gtk;
-using logicpos.financial;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using System;
 using logicpos.Classes.Enums.Keyboard;
@@ -10,13 +9,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
     {
         //Private Properties
         private readonly FileFilter _fileFilter;
-        //Public Properties
-        private string _fileName;
-        public string Value
-        {
-            get { return _fileName; }
-            set { _fileName = value; }
-        }
+
+        public string Value { get; set; }
         //Custom Events
         public event EventHandler ClosePopup;
 
@@ -41,8 +35,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 ResponseType response = (ResponseType)dialog.Run();
                 if (response == ResponseType.Ok)
                 {
-                    _fileName = dialog.FilePicker.Filename;
-                    _entryValidation.Text = _fileName;
+                    Value = dialog.FilePicker.Filename;
+                    _entryValidation.Text = Value;
                     _entryValidation.Validate();
 
                     //Call Custom Event, Triggered only when Dialog Response is OK, else Ignored

@@ -174,32 +174,22 @@ namespace logicpos.financial.library.Classes.Finance
         //Log4Net
         private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        private readonly string _name;
-        public string Name
-        {
-            get { return _name; }
-        }
+        public string Name { get; }
         private object _value;
         public object Value
         {
             get { return _value; }
             set { _value = value; }
         }
-        private readonly string _rule;
-        public string Rule
-        {
-            get { return _rule; }
-        }
+
+        public string Rule { get; }
         private readonly bool _required;
         public bool Required
         {
             get { return _required; }
         }
-        private readonly Action _action;
-        public Action Action
-        {
-            get { return _action; }
-        }
+
+        public Action Action { get; }
 
         public ProcessFinanceDocumentValidationField(string pName, object pValue, string pRule, bool pRequired)
             : this(pName, pValue, pRule, pRequired, null)
@@ -208,11 +198,11 @@ namespace logicpos.financial.library.Classes.Finance
 
         public ProcessFinanceDocumentValidationField(string pName, object pValue, string pRule, bool pRequired, Action pAction)
         {
-            _name = pName;
+            Name = pName;
             _value = pValue;
-            _rule = pRule;
+            Rule = pRule;
             _required = pRequired;
-            _action = pAction;
+            Action = pAction;
         }
 
         public bool Validate()
@@ -1008,32 +998,6 @@ namespace logicpos.financial.library.Classes.Finance
             //value = Enum.GetName(typeof(FinanceValidationError), _resultEnum[_resultEnum.Count - 1]).ToUpper();
             string value = Enum.GetName(typeof(FinanceValidationError), pTokenEnum).ToUpper();
             if (_debug) _logger.Debug(value);
-        }
-
-        //Get List<string> form SortedDictionary<FinanceValidationError,object>
-        private static List<string> ResultToString()
-        {
-            List<string> result = new List<string>();
-            try
-            {
-                foreach (var item in _resultEnum)
-                {
-                    string key = Enum.GetName(typeof(FinanceValidationError), item.Key).ToString().ToUpper();
-                    if (item.Value != null && item.Value.GetType() == typeof(string))
-                    {
-                        string value = Convert.ToString(item.Value);
-                        if (value != string.Empty) key = string.Format("{0}_{1}", key, value);
-                    }
-
-                    result.Add(key);
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
-
-            return result;
         }
 
         private static void GetFieldErrors()

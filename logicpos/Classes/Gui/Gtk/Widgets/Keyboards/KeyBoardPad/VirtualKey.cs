@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace logicpos.Classes.Gui.Gtk.Widgets
+﻿namespace logicpos.Classes.Gui.Gtk.Widgets
 {
     //Non-UI - VirtualKey Position and Levels
 

@@ -5,12 +5,7 @@ namespace logicpos.financial.library.Classes.Finance
 {
     public class ProcessFinanceDocumentValidationException : Exception
     {
-        private Exception _exception;
-        public Exception Exception
-        {
-            get { return _exception; }
-            set { _exception = value; }
-        }
+        public Exception Exception { get; set; }
         private SortedDictionary<FinanceValidationError, object> _exceptionErrors = new SortedDictionary<FinanceValidationError, object>();
         public SortedDictionary<FinanceValidationError, object> ExceptionErrors
         {
@@ -33,7 +28,7 @@ namespace logicpos.financial.library.Classes.Finance
 
         public ProcessFinanceDocumentValidationException(Exception pException, SortedDictionary<FinanceValidationError, object> pExceptionErrors)
         {
-            _exception = new Exception(pException.Message, pException);
+            Exception = new Exception(pException.Message, pException);
             _exceptionErrors = pExceptionErrors;
         }
     }

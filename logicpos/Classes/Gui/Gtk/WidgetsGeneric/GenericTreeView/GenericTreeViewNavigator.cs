@@ -21,105 +21,32 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         private readonly GenericTreeView<T1, T2> _genericTreeView;
         private readonly GenericTreeViewNavigatorMode _navigatorMode;
 
-        //Public Properties
-        private HBox _hboxExtraSlot;
-        public HBox ExtraSlot
-        {
-            get { return _hboxExtraSlot; }
-            set { _hboxExtraSlot = value; }
-        }
+        public HBox ExtraSlot { get; set; }
 
-        private TouchButtonIconWithText _buttonFirstPage;
-        public TouchButtonIconWithText ButtonFirstPage
-        {
-            get { return _buttonFirstPage; }
-            set { _buttonFirstPage = value; }
-        }
+        public TouchButtonIconWithText ButtonFirstPage { get; set; }
 
-        private TouchButtonIconWithText _buttonPrevPage;
-        public TouchButtonIconWithText ButtonPrevPage
-        {
-            get { return _buttonPrevPage; }
-            set { _buttonPrevPage = value; }
-        }
+        public TouchButtonIconWithText ButtonPrevPage { get; set; }
 
-        private TouchButtonIconWithText _buttonNextPage;
-        public TouchButtonIconWithText ButtonNextPage
-        {
-            get { return _buttonNextPage; }
-            set { _buttonNextPage = value; }
-        }
+        public TouchButtonIconWithText ButtonNextPage { get; set; }
 
-        private TouchButtonIconWithText _buttonLastPage;
-        public TouchButtonIconWithText ButtonLastPage
-        {
-            get { return _buttonLastPage; }
-            set { _buttonLastPage = value; }
-        }
+        public TouchButtonIconWithText ButtonLastPage { get; set; }
 
-        private TouchButtonIconWithText _buttonPrevRecord;
-        public TouchButtonIconWithText ButtonPrevRecord
-        {
-            get { return _buttonPrevRecord; }
-            set { _buttonPrevRecord = value; }
-        }
+        public TouchButtonIconWithText ButtonPrevRecord { get; set; }
 
-        private TouchButtonIconWithText _buttonNextRecord;
-        public TouchButtonIconWithText ButtonNextRecord
-        {
-            get { return _buttonNextRecord; }
-            set { _buttonNextRecord = value; }
-        }
+        public TouchButtonIconWithText ButtonNextRecord { get; set; }
 
-        private TouchButtonIconWithText _buttonInsert;
-        public TouchButtonIconWithText ButtonInsert
-        {
-            get { return _buttonInsert; }
-            set { _buttonInsert = value; }
-        }
+        public TouchButtonIconWithText ButtonInsert { get; set; }
 
-        private TouchButtonIconWithText _buttonView;
-        public TouchButtonIconWithText ButtonView
-        {
-            get { return _buttonView; }
-            set { _buttonView = value; }
-        }
+        public TouchButtonIconWithText ButtonView { get; set; }
 
-        private TouchButtonIconWithText _buttonUpdate;
-        public TouchButtonIconWithText ButtonUpdate
-        {
-            get { return _buttonUpdate; }
-            set { _buttonUpdate = value; }
-        }
+        public TouchButtonIconWithText ButtonUpdate { get; set; }
 
-        private TouchButtonIconWithText _buttonDelete;
-        public TouchButtonIconWithText ButtonDelete
-        {
-            get { return _buttonDelete; }
-            set { _buttonDelete = value; }
-        }
+        public TouchButtonIconWithText ButtonDelete { get; set; }
 
-        private TouchButtonIconWithText _buttonRefresh;
-        public TouchButtonIconWithText ButtonRefresh
-        {
-            get { return _buttonRefresh; }
-            set { _buttonRefresh = value; }
-        }
+        public TouchButtonIconWithText ButtonRefresh { get; set; }
 
-        //private TouchButtonIconWithText _buttonClose;
-        //public TouchButtonIconWithText ButtonClose
-        //{
-        //  get { return _buttonClose; }
-        //  set { _buttonClose = value; }
-        //}
-
-        private GenericTreeViewSearch _genericTreeViewSearch;
         //private GenericTreeViewSearch _genericTreeViewSearchWithButtons;
-        public GenericTreeViewSearch TreeViewSearch
-        {
-            get { return _genericTreeViewSearch; }
-            set { _genericTreeViewSearch = value; }
-        }
+        public GenericTreeViewSearch TreeViewSearch { get; set; }
 
         //public GenericTreeViewSearch TreeViewSearchWithButtons
         //{
@@ -164,7 +91,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 
             //Initialize GenericTreeViewSearch
             //_genericTreeViewSearch = new GenericTreeViewSearch(_sourceWindow, _genericTreeView.TreeView, _genericTreeView.ListStoreModelFilter, _genericTreeView.Columns);
-            _genericTreeViewSearch = new GenericTreeViewSearch(_sourceWindow, _genericTreeView.TreeView, _genericTreeView.ListStoreModelFilter, _genericTreeView.Columns, buttonMoreFilterVisible);
+            TreeViewSearch = new GenericTreeViewSearch(_sourceWindow, _genericTreeView.TreeView, _genericTreeView.ListStoreModelFilter, _genericTreeView.Columns, buttonMoreFilterVisible);
             // Help to Debug some Kind of Types
             //if (_genericTreeView.GetType().Equals(typeof(TreeViewConfigurationPreferenceParameter)))
             //{
@@ -172,49 +99,49 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             //}
 
             //Initialize Buttons     
-            _buttonPrevRecord = GetNewButton("touchButtonPrev_DialogActionArea", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_record_prev"), @"Icons/icon_pos_nav_prev.png");
-            _buttonNextRecord = GetNewButton("touchButtonNext_DialogActionArea", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_record_next"), @"Icons/icon_pos_nav_next.png");
-            _buttonInsert = GetNewButton("touchButtonInsert_DialogActionArea", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_insert"), @"Icons/icon_pos_nav_new.png");
-            _buttonView = GetNewButton("touchButtonView_DialogActionArea", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_view"), @"Icons/icon_pos_nav_view.png");
-            _buttonUpdate = GetNewButton("touchButtonUpdate_DialogActionArea", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_update"), @"Icons/icon_pos_nav_update.png");
-            _buttonDelete = GetNewButton("touchButtonDelete_DialogActionArea", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_delete"), @"Icons/icon_pos_nav_delete.png");
-            _buttonRefresh = GetNewButton("touchButtonRefresh_DialogActionArea", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_refresh"), @"Icons/icon_pos_nav_refresh.png");
+            ButtonPrevRecord = GetNewButton("touchButtonPrev_DialogActionArea", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_record_prev"), @"Icons/icon_pos_nav_prev.png");
+            ButtonNextRecord = GetNewButton("touchButtonNext_DialogActionArea", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_record_next"), @"Icons/icon_pos_nav_next.png");
+            ButtonInsert = GetNewButton("touchButtonInsert_DialogActionArea", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_insert"), @"Icons/icon_pos_nav_new.png");
+            ButtonView = GetNewButton("touchButtonView_DialogActionArea", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_view"), @"Icons/icon_pos_nav_view.png");
+            ButtonUpdate = GetNewButton("touchButtonUpdate_DialogActionArea", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_update"), @"Icons/icon_pos_nav_update.png");
+            ButtonDelete = GetNewButton("touchButtonDelete_DialogActionArea", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_delete"), @"Icons/icon_pos_nav_delete.png");
+            ButtonRefresh = GetNewButton("touchButtonRefresh_DialogActionArea", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_refresh"), @"Icons/icon_pos_nav_refresh.png");
             //_buttonClose = GetNewButton("touchButtonPosToolbarApplicationClose_Red", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_pos, @"Icons/icon_pos_toolbar_application_close.png");
 
             //Events
             //GenericTreeView : Shared
-            _buttonPrevRecord.Clicked += delegate { _genericTreeView.PrevRecord(); };
-            _buttonNextRecord.Clicked += delegate { _genericTreeView.NextRecord(); };
+            ButtonPrevRecord.Clicked += delegate { _genericTreeView.PrevRecord(); };
+            ButtonNextRecord.Clicked += delegate { _genericTreeView.NextRecord(); };
             //GenericTreeView Overrides : Must Be Override by IGenericTreeView
-            _buttonInsert.Clicked += delegate { _genericTreeView.Insert(); };
-            _buttonView.Clicked += delegate { _genericTreeView.Update(DialogMode.View); };
-            _buttonUpdate.Clicked += delegate { _genericTreeView.Update(); };
-            _buttonDelete.Clicked += delegate { _genericTreeView.Delete(); };
-            _buttonRefresh.Clicked += delegate { _genericTreeView.Refresh(); };
+            ButtonInsert.Clicked += delegate { _genericTreeView.Insert(); };
+            ButtonView.Clicked += delegate { _genericTreeView.Update(DialogMode.View); };
+            ButtonUpdate.Clicked += delegate { _genericTreeView.Update(); };
+            ButtonDelete.Clicked += delegate { _genericTreeView.Delete(); };
+            ButtonRefresh.Clicked += delegate { _genericTreeView.Refresh(); };
             //_buttonClose.Clicked += delegate { GlobalApp.WindowBackOffice.Hide(); GlobalApp.WindowPos.ShowAll(); };
 
             //Pack Only if Default Navigator
             if (_navigatorMode == GenericTreeViewNavigatorMode.Default)
             {
                 //Init ExtraSlot
-                _hboxExtraSlot = new HBox(false, 0);
+                ExtraSlot = new HBox(false, 0);
                 //Pack NavButtons
-                hboxNavigatorButtons.PackStart(_buttonPrevRecord, false, false, 0);
-                hboxNavigatorButtons.PackStart(_buttonNextRecord, false, false, 0);
-                hboxNavigatorButtons.PackStart(_buttonInsert, false, false, 0);
+                hboxNavigatorButtons.PackStart(ButtonPrevRecord, false, false, 0);
+                hboxNavigatorButtons.PackStart(ButtonNextRecord, false, false, 0);
+                hboxNavigatorButtons.PackStart(ButtonInsert, false, false, 0);
                 //OnlyPack View Button if is BackOffice BOBaseDialog, (Generic TreeView with CrudWidgetList, to Loop Fields and Assign Sensitive=True to All)
                 if (_genericTreeView.DialogType != null && _genericTreeView.DialogType.BaseType == typeof(BOBaseDialog))
                 {
-                    hboxNavigatorButtons.PackStart(_buttonView, false, false, 0);
+                    hboxNavigatorButtons.PackStart(ButtonView, false, false, 0);
                 }
-                hboxNavigatorButtons.PackStart(_buttonUpdate, false, false, 0);
-                hboxNavigatorButtons.PackStart(_buttonDelete, false, false, 0);
-                hboxNavigatorButtons.PackStart(_buttonRefresh, false, false, 0);
+                hboxNavigatorButtons.PackStart(ButtonUpdate, false, false, 0);
+                hboxNavigatorButtons.PackStart(ButtonDelete, false, false, 0);
+                hboxNavigatorButtons.PackStart(ButtonRefresh, false, false, 0);
                 //hboxNav.PackStart(_buttonClose, false, false, 0);
                 //Pack Final Hbox
-                hboxNavigator.PackStart(_genericTreeViewSearch, false, false, 0);
+                hboxNavigator.PackStart(TreeViewSearch, false, false, 0);
                 //hboxNavigator.PackStart(_genericTreeViewSearchWithButtons, false, false, 0);
-                hboxNavigator.PackStart(_hboxExtraSlot, true, true, 0);
+                hboxNavigator.PackStart(ExtraSlot, true, true, 0);
                 hboxNavigator.PackStart(hboxNavigatorButtons, false, false, 0);
                 this.PackStart(hboxNavigator);
             }
@@ -248,57 +175,57 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                 //FirstPage/PrevPage
                 if (CurrentPage == 1 || TotalRecords == 0)
                 {
-                    if (_buttonFirstPage != null && _buttonFirstPage.Sensitive) _buttonFirstPage.Sensitive = false;
-                    if (_buttonPrevPage != null && _buttonPrevPage.Sensitive) _buttonPrevPage.Sensitive = false;
+                    if (ButtonFirstPage != null && ButtonFirstPage.Sensitive) ButtonFirstPage.Sensitive = false;
+                    if (ButtonPrevPage != null && ButtonPrevPage.Sensitive) ButtonPrevPage.Sensitive = false;
                 }
                 else
                 {
-                    if (_buttonFirstPage != null && !_buttonFirstPage.Sensitive) _buttonFirstPage.Sensitive = true;
-                    if (_buttonPrevPage != null && !_buttonPrevPage.Sensitive) _buttonPrevPage.Sensitive = true;
+                    if (ButtonFirstPage != null && !ButtonFirstPage.Sensitive) ButtonFirstPage.Sensitive = true;
+                    if (ButtonPrevPage != null && !ButtonPrevPage.Sensitive) ButtonPrevPage.Sensitive = true;
                 };
                 //NextPage/LastPage
                 if (CurrentPage == TotalPages || TotalRecords == 0)
                 {
-                    if (_buttonNextPage != null && _buttonNextPage.Sensitive) _buttonNextPage.Sensitive = false;
-                    if (_buttonLastPage != null && _buttonLastPage.Sensitive) _buttonLastPage.Sensitive = false;
+                    if (ButtonNextPage != null && ButtonNextPage.Sensitive) ButtonNextPage.Sensitive = false;
+                    if (ButtonLastPage != null && ButtonLastPage.Sensitive) ButtonLastPage.Sensitive = false;
                 }
                 else
                 {
-                    if (_buttonNextPage != null && !_buttonNextPage.Sensitive) _buttonNextPage.Sensitive = true;
-                    if (_buttonLastPage != null && !_buttonLastPage.Sensitive) _buttonLastPage.Sensitive = true;
+                    if (ButtonNextPage != null && !ButtonNextPage.Sensitive) ButtonNextPage.Sensitive = true;
+                    if (ButtonLastPage != null && !ButtonLastPage.Sensitive) ButtonLastPage.Sensitive = true;
                 }
                 //PrevRecord
                 if (CurrentRecord == 0 || TotalRecords == 0)
                 {
-                    if (_buttonPrevRecord != null && _buttonPrevRecord.Sensitive) _buttonPrevRecord.Sensitive = false;
+                    if (ButtonPrevRecord != null && ButtonPrevRecord.Sensitive) ButtonPrevRecord.Sensitive = false;
                 }
                 else
                 {
-                    if (_buttonPrevRecord != null && !_buttonPrevRecord.Sensitive) _buttonPrevRecord.Sensitive = true;
+                    if (ButtonPrevRecord != null && !ButtonPrevRecord.Sensitive) ButtonPrevRecord.Sensitive = true;
                 };
                 //NextRecord
                 if (CurrentRecord == TotalRecords || TotalRecords < 1 || TotalRecords == 0)
                 {
-                    if (_buttonNextRecord != null && _buttonNextRecord.Sensitive) _buttonNextRecord.Sensitive = false;
+                    if (ButtonNextRecord != null && ButtonNextRecord.Sensitive) ButtonNextRecord.Sensitive = false;
                 }
                 else
                 {
-                    if (_buttonNextRecord != null && !_buttonNextRecord.Sensitive) _buttonNextRecord.Sensitive = true;
+                    if (ButtonNextRecord != null && !ButtonNextRecord.Sensitive) ButtonNextRecord.Sensitive = true;
                 };
 
                 //View/Update/Delete
                 if (pTreeView.Model.IterNChildren() > 0 && _genericTreeView.DataSourceRow != null)
                 {
-                    if (_buttonView != null && !_buttonView.Sensitive && _genericTreeView.AllowRecordView) _buttonView.Sensitive = true;
-                    if (_buttonUpdate != null && !_buttonUpdate.Sensitive && _genericTreeView.AllowRecordUpdate) _buttonUpdate.Sensitive = true;
-                    if (_buttonDelete != null && !_buttonDelete.Sensitive && _genericTreeView.AllowRecordDelete) _buttonDelete.Sensitive = true;
+                    if (ButtonView != null && !ButtonView.Sensitive && _genericTreeView.AllowRecordView) ButtonView.Sensitive = true;
+                    if (ButtonUpdate != null && !ButtonUpdate.Sensitive && _genericTreeView.AllowRecordUpdate) ButtonUpdate.Sensitive = true;
+                    if (ButtonDelete != null && !ButtonDelete.Sensitive && _genericTreeView.AllowRecordDelete) ButtonDelete.Sensitive = true;
                 }
                 else
                 {
 
-                    if (_buttonView != null && _buttonView.Sensitive) _buttonView.Sensitive = false;
-                    if (_buttonUpdate != null && _buttonUpdate.Sensitive) _buttonUpdate.Sensitive = false;
-                    if (_buttonDelete != null && _buttonDelete.Sensitive) _buttonDelete.Sensitive = false;
+                    if (ButtonView != null && ButtonView.Sensitive) ButtonView.Sensitive = false;
+                    if (ButtonUpdate != null && ButtonUpdate.Sensitive) ButtonUpdate.Sensitive = false;
+                    if (ButtonDelete != null && ButtonDelete.Sensitive) ButtonDelete.Sensitive = false;
                 };
             }
             catch (Exception ex)

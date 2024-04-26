@@ -17,18 +17,12 @@ namespace logicpos.printer.generic
 
         private readonly MemoryStream _memStream = new MemoryStream();
 
-        private BinaryWriter _binaryStream;
+        public BinaryWriter BinaryStream { get; set; }
 
-        public BinaryWriter BinaryStream
-        {
-            get { return _binaryStream; }
-            set { _binaryStream = value; }
-        }
-		
-		/// <summary>
-		/// Delay between two picture lines. (in ms)
-		/// </summary>
-		public int PictureLineSleepTimeMs = 40;
+        /// <summary>
+        /// Delay between two picture lines. (in ms)
+        /// </summary>
+        public int PictureLineSleepTimeMs = 40;
 		/// <summary>
 		/// Delay between two text lines. (in ms)
 		/// </summary>
@@ -49,7 +43,7 @@ namespace logicpos.printer.generic
             UTF8Encoding utf8 = new UTF8Encoding();
 
             this.Encoding = encoding;
-            this._binaryStream = new BinaryWriter(this._memStream, utf8);
+            this.BinaryStream = new BinaryWriter(this._memStream, utf8);
 
             Reset();
 
@@ -82,7 +76,7 @@ namespace logicpos.printer.generic
 		{
             string textStrip = ReplaceDiacritics(text);
 
-            _binaryStream.Write(System.Text.Encoding.Default.GetBytes(textStrip));
+            BinaryStream.Write(System.Text.Encoding.Default.GetBytes(textStrip));
 		}
 
         public string ReplaceDiacritics(string source)
@@ -555,7 +549,7 @@ namespace logicpos.printer.generic
 				}
 				
 				for (int i = 0; i < length; i++) {
-					_binaryStream.Write('-');
+					BinaryStream.Write('-');
 				}
 
                 WriteByte(AsciiControlChars.PrintAndLineFeed);
@@ -1597,17 +1591,6 @@ namespace logicpos.printer.generic
         {
             return ((valueToTest & (byte)(1 << testBit)) == (byte)(1 << testBit));
         }
-		
-		/// <summary>
-        /// Return the given value with its n bit set.
-        /// </summary>
-        /// <param name="originalValue">The value to return</param>
-        /// <param name="bit">The bit number to set</param>
-        /// <returns></returns>
-        static private byte _BitSet(byte originalValue, byte bit)
-        {
-            return originalValue |= (byte)((byte)1 << bit);
-        }
 
         /// <summary>
         /// Return the given value with its n bit cleared.
@@ -1623,17 +1606,17 @@ namespace logicpos.printer.generic
         protected void WriteByte(byte valueToWrite)
         {
             byte[] tempArray = { valueToWrite };
-            _binaryStream.Write(tempArray);
+            BinaryStream.Write(tempArray);
         }
 
         private void WriteBytes(byte[] valueToWrite)
         {
-            _binaryStream.Write(valueToWrite);
+            BinaryStream.Write(valueToWrite);
         }
 
         public byte[] getByteArray()
         {
-            _binaryStream.Flush();
+            BinaryStream.Flush();
 
             return _memStream.ToArray();
         }

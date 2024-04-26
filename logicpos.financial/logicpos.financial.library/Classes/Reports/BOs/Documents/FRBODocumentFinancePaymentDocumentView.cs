@@ -1,6 +1,4 @@
-﻿using System;
-
-/* USED QUERY 
+﻿/* USED QUERY 
 SELECT 
       fpaOid AS Oid,  
       ftmDesignation AS DocumentTypeDesignation,

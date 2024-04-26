@@ -10,105 +10,40 @@ namespace logicpos.financial.library.Classes.Finance
 {
     public class DocumentReference
     {
-        private fin_documentfinancemaster _reference;
-        public fin_documentfinancemaster Reference
-        {
-            get { return _reference; }
-            set { _reference = value; }
-        }
+        public fin_documentfinancemaster Reference { get; set; }
 
-        private string _reason;
-        public string Reason
-        {
-            get { return _reason; }
-            set { _reason = value; }
-        }
+        public string Reason { get; set; }
 
         public DocumentReference(fin_documentfinancemaster pDocumentFinanceMaster, string pReason)
         {
-            _reference = pDocumentFinanceMaster;
-            _reason = pReason;
+            Reference = pDocumentFinanceMaster;
+            Reason = pReason;
         }
     }
 
     public class MovementOfGoodsProperties
     {
-        private string _deliveryID;
-        public string DeliveryID
-        {
-            get { return _deliveryID; }
-            set { _deliveryID = value; }
-        }
+        public string DeliveryID { get; set; }
 
-        private DateTime _deliveryDate;
-        public DateTime DeliveryDate
-        {
-            get { return _deliveryDate; }
-            set { _deliveryDate = value; }
-        }
+        public DateTime DeliveryDate { get; set; }
 
-        private string _warehouseID;
-        public string WarehouseID
-        {
-            get { return _warehouseID; }
-            set { _warehouseID = value; }
-        }
+        public string WarehouseID { get; set; }
 
-        private string _locationID;
-        public string LocationID
-        {
-            get { return _locationID; }
-            set { _locationID = value; }
-        }
+        public string LocationID { get; set; }
 
-        private string _buildingNumber;
-        public string BuildingNumber
-        {
-            get { return _buildingNumber; }
-            set { _buildingNumber = value; }
-        }
+        public string BuildingNumber { get; set; }
 
-        private string _streetName;
-        public string StreetName
-        {
-            get { return _streetName; }
-            set { _streetName = value; }
-        }
+        public string StreetName { get; set; }
 
-        private string _addressDetail;
-        public string AddressDetail
-        {
-            get { return _addressDetail; }
-            set { _addressDetail = value; }
-        }
+        public string AddressDetail { get; set; }
 
-        private string _postalCode;
-        public string PostalCode
-        {
-            get { return _postalCode; }
-            set { _postalCode = value; }
-        }
+        public string PostalCode { get; set; }
 
-        private string _city;
-        public string City
-        {
-            get { return _city; }
-            set { _city = value; }
-        }
+        public string City { get; set; }
 
-        private string _region;
-        public string Region
-        {
-            get { return _region; }
-            set { _region = value; }
-        }
+        public string Region { get; set; }
 
-        private string _country;
-        public string Country
-        {
-            get { return _country; }
-            set { _country = value; }
-        }
+        public string Country { get; set; }
 
         private Guid _countryGuid;
         public Guid CountryGuid
@@ -128,13 +63,7 @@ namespace logicpos.financial.library.Classes.Finance
             set { _documentType = value; }
         }
 
-        //Required: ArticleBag
-        private ArticleBag _articleBag;
-        public ArticleBag ArticleBag
-        {
-            get { return _articleBag; }
-            set { _articleBag = value; }
-        }
+        public ArticleBag ArticleBag { get; set; }
 
         //Required: Customer
         private Guid _customer;
@@ -144,13 +73,7 @@ namespace logicpos.financial.library.Classes.Finance
             set { _customer = value; }
         }
 
-        //Optional: DocumentDateTime
-        private DateTime _documentDateTime;
-        public DateTime DocumentDateTime
-        {
-            get { return _documentDateTime; }
-            set { _documentDateTime = value; }
-        }
+        public DateTime DocumentDateTime { get; set; }
 
         //Optional: PaymentConditions
         private Guid _paymentConditions;
@@ -176,29 +99,11 @@ namespace logicpos.financial.library.Classes.Finance
             set { _currency = value; }
         }
 
-        //Optional: ExchangeRate
-        private decimal _exchangeRate;
-        public decimal ExchangeRate
-        {
-            get { return _exchangeRate; }
-            set { _exchangeRate = value; }
-        }
+        public decimal ExchangeRate { get; set; }
 
-        //Optional: SourceMode
-        private PersistFinanceDocumentSourceMode _sourceMode;
-        public PersistFinanceDocumentSourceMode SourceMode
-        {
-            get { return _sourceMode; }
-            set { _sourceMode = value; }
-        }
+        public PersistFinanceDocumentSourceMode SourceMode { get; set; }
 
-        //Optional: DocumentOrderMain
-        private fin_documentordermain _sourceOrderMain;
-        public fin_documentordermain SourceOrderMain
-        {
-            get { return _sourceOrderMain; }
-            set { _sourceOrderMain = value; }
-        }
+        public fin_documentordermain SourceOrderMain { get; set; }
 
         //Optional: DocumentParent
         private Guid _documentParent;
@@ -208,76 +113,34 @@ namespace logicpos.financial.library.Classes.Finance
             set { _documentParent = value; }
         }
 
-        //Optional: FinanceDocuments
-        private List<fin_documentfinancemaster> _financeDocuments;
-        public List<fin_documentfinancemaster> FinanceDocuments
-        {
-            get { return _financeDocuments; }
-            set { _financeDocuments = value; }
-        }
+        public List<fin_documentfinancemaster> FinanceDocuments { get; set; }
 
-        //Optional: TotalDelivery
-        private decimal _totalDelivery;
-        public decimal TotalDelivery
-        {
-            get { return _totalDelivery; }
-            set { _totalDelivery = value; }
-        }
+        public decimal TotalDelivery { get; set; }
 
-        //Optional: TotalChange
-        private decimal _totalChange;
-        public decimal TotalChange
-        {
-            get { return _totalChange; }
-            set { _totalChange = value; }
-        }
+        public decimal TotalChange { get; set; }
 
-        //Optional: OrderReferences
-        private List<fin_documentfinancemaster> _orderReferences;
-        public List<fin_documentfinancemaster> OrderReferences
-        {
-            get { return _orderReferences; }
-            set { _orderReferences = value; }
-        }
+        public List<fin_documentfinancemaster> OrderReferences { get; set; }
 
-        //Optional: ShipTo
-        private MovementOfGoodsProperties _shipTo;
-        public MovementOfGoodsProperties ShipTo
-        {
-            get { return _shipTo; }
-            set { _shipTo = value; }
-        }
+        public MovementOfGoodsProperties ShipTo { get; set; }
 
-        //Optional: ShipFrom
-        private MovementOfGoodsProperties _shipFrom;
-        public MovementOfGoodsProperties ShipFrom
-        {
-            get { return _shipFrom; }
-            set { _shipFrom = value; }
-        }
+        public MovementOfGoodsProperties ShipFrom { get; set; }
 
-        //Optional: Notes
-        private string _notes;
-        public string Notes
-        {
-            get { return _notes; }
-            set { _notes = value; }
-        }
+        public string Notes { get; set; }
 
         public ProcessFinanceDocumentParameter(Guid pDocumentType, ArticleBag pArticleBag)
         {
             //Init Default Values
-            _documentDateTime = DataLayerUtils.CurrentDateTimeAtomic();
-            _sourceMode = PersistFinanceDocumentSourceMode.CurrentOrderMain;
-            _totalDelivery = 0.0m;
-            _totalChange = 0.0m;
+            DocumentDateTime = DataLayerUtils.CurrentDateTimeAtomic();
+            SourceMode = PersistFinanceDocumentSourceMode.CurrentOrderMain;
+            TotalDelivery = 0.0m;
+            TotalChange = 0.0m;
             _currency = SharedSettings.ConfigurationSystemCurrency.Oid;
             //_discount = 0.0m;
-            _exchangeRate = 1.0m;
+            ExchangeRate = 1.0m;
 
             //Init Parameters
             _documentType = pDocumentType;
-            _articleBag = pArticleBag;
+            ArticleBag = pArticleBag;
 
             //Validate();
         }

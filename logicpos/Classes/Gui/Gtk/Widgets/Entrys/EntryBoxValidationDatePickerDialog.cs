@@ -1,8 +1,5 @@
 ﻿using Gtk;
-using logicpos.financial;
-using logicpos.App;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
-using logicpos.resources.Resources.Localization;
 using System;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.datalayer.App;
@@ -15,32 +12,18 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //Private Properties
         private readonly string _windowTitle;
         private readonly string _dateFormat;
-        //Public Properties
-        private DateTime _dateTime;
-        public DateTime Value
-        {
-            get { return _dateTime; }
-            set { _dateTime = value; }
-        }
-        private DateTime _dateTimeMin = DateTime.MinValue;
-        public DateTime DateTimeMin
-        {
-            get { return _dateTimeMin; }
-            set { _dateTimeMin = value; }
-        }
-        private DateTime _dateTimeMax = DateTime.MaxValue;
-        public DateTime DateTimeMax
-        {
-            get { return _dateTimeMax; }
-            set { _dateTimeMax = value; }
-        }
+
+        public DateTime Value { get; set; }
+        public DateTime DateTimeMin { get; set; } = DateTime.MinValue;
+
+        public DateTime DateTimeMax { get; set; } = DateTime.MaxValue;
 
 
         //Custom Events
         public event EventHandler ClosePopup;
 
         public EntryBoxValidationDatePickerDialog(Window pSourceWindow, string pLabelText, string pRule, bool pRequired)
-            :this(pSourceWindow, pLabelText, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date"), DataLayerUtils.CurrentDateTimeAtomic(), pRule, pRequired)
+            :this(pSourceWindow, pLabelText, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date"), DataLayerUtils.CurrentDateTimeAtomic(), pRule, pRequired)
         {
         }
 
@@ -55,7 +38,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         }
 
         public EntryBoxValidationDatePickerDialog(Window pSourceWindow, string pLabelText, DateTime pDateTime, string pRule, bool pRequired)
-            :this(pSourceWindow, pLabelText, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date"), pDateTime, pRule, pRequired)
+            :this(pSourceWindow, pLabelText, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date"), pDateTime, pRule, pRequired)
         {
         }
 
@@ -75,7 +58,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             //Parameters
             _sourceWindow = pSourceWindow;
             _windowTitle = pWindowTitle;
-            _dateTime = pDateTime;
+            Value = pDateTime;
             _dateFormat = pDateFormat;
             //Events
             _button.Clicked += delegate { PopupDialog(); };
@@ -87,7 +70,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 {
                     try
                     {
-                        _dateTime = Convert.ToDateTime(_entryValidation.Text);
+                        Value = Convert.ToDateTime(_entryValidation.Text);
                         //Call Custom Validate for Data Ranges (Min/Max)
                         Validate();
                     }
@@ -107,11 +90,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 PosDatePickerDialog dialog = null;
                 if (_windowTitle == string.Empty)
                 {
-                    dialog = new PosDatePickerDialog(_sourceWindow, DialogFlags.DestroyWithParent, _dateTime);
+                    dialog = new PosDatePickerDialog(_sourceWindow, DialogFlags.DestroyWithParent, Value);
                 }
                 else
                 {
-                    dialog = new PosDatePickerDialog(_sourceWindow, DialogFlags.DestroyWithParent, _windowTitle, _dateTime);
+                    dialog = new PosDatePickerDialog(_sourceWindow, DialogFlags.DestroyWithParent, _windowTitle, Value);
                 }
 
                 ResponseType response = (ResponseType)dialog.Run();
@@ -121,9 +104,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     //Get Date from Calendar Widget
                     DateTime date = dialog.Calendar.Date;
                     //Transform Date to DateTime, Date + Current Hour
-                    _dateTime = new DateTime(date.Year, date.Month, date.Day, now.Hour, now.Minute, now.Second);
+                    Value = new DateTime(date.Year, date.Month, date.Day, now.Hour, now.Minute, now.Second);
                     //Apply with custom DateFormat, can assign any Format YYYYMMDD, YYYYMMDD HH:MM:SS etc
-                    _entryValidation.Text = _dateTime.ToString(_dateFormat);
+                    _entryValidation.Text = Value.ToString(_dateFormat);
                     _entryValidation.Validate();
                     //Call Custom Validate for Data Ranges (Min/Max)
                     Validate();
@@ -151,7 +134,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         private void Validate()
         {
             //Revalidate Min/Max Data Range
-            if (_entryValidation.Validated && (_dateTime < _dateTimeMin || _dateTime > _dateTimeMax))
+            if (_entryValidation.Validated && (Value < DateTimeMin || Value > DateTimeMax))
             {
                 _entryValidation.Validated = false;
             }

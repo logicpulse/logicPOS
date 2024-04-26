@@ -1,5 +1,4 @@
 ﻿using Gtk;
-using logicpos.App;
 using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.datalayer.App;
 using System;

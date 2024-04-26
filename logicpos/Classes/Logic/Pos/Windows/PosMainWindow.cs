@@ -1,5 +1,4 @@
-﻿using DevExpress.Xpo;
-using DevExpress.Xpo.DB;
+﻿using DevExpress.Xpo.DB;
 using Gtk;
 using logicpos.App;
 using logicpos.Classes.Enums.Hardware;
@@ -7,13 +6,11 @@ using logicpos.Classes.Enums.TicketList;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.Classes.Logic.Others;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.financial.library.Classes.Hardware.Printers;
 using logicpos.financial.library.Classes.WorkSession;
-using logicpos.resources.Resources.Localization;
 using logicpos.shared.App;
 using logicpos.shared.Classes.Orders;
 using System;
@@ -36,13 +33,13 @@ namespace logicpos
             {
                 //Always Reset tablePadFamily before Refresh, to Prevent Keep old selected when we delete articles and create a new Familiy 
                 //This way we always have the first family when we come from backoffice
-                _tablePadFamily.SelectedButtonOid = Guid.Empty;
-                _tablePadFamily.Refresh();
+                TablePadFamily.SelectedButtonOid = Guid.Empty;
+                TablePadFamily.Refresh();
                 //Always Apply Filter to prevent error when work in a clean database, and we create first Records
                 //Filter is "  AND (Family = '00000000-0000-0000-0000-000000000000')"
-                _tablePadSubFamily.Filter = string.Format("  AND (Family = '{0}')", _tablePadFamily.SelectedButtonOid);
-                _tablePadSubFamily.Refresh();
-                _tablePadArticle.Refresh();
+                TablePadSubFamily.Filter = string.Format("  AND (Family = '{0}')", TablePadFamily.SelectedButtonOid);
+                TablePadSubFamily.Refresh();
+                TablePadArticle.Refresh();
             }
         }
 
@@ -197,10 +194,10 @@ namespace logicpos
                     {
                         DataLayerFramework.LoggedUser = (sys_userdetail)DataLayerUtils.GetXPGuidObject(typeof(sys_userdetail), dialogChangeUser.UserDetail.Oid);
                         SharedFramework.LoggedUserPermissions = SharedUtils.GetUserPermissions();
-                        _ticketList.UpdateTicketListButtons();
-                        SharedUtils.Audit("USER_CHANGE", string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_user_change"), DataLayerFramework.LoggedUser.Name));
+                        TicketList.UpdateTicketListButtons();
+                        SharedUtils.Audit("USER_CHANGE", string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_user_change"), DataLayerFramework.LoggedUser.Name));
                         terminalInfo = string.Format("{0} : {1}", DataLayerFramework.LoggedTerminal.Designation, DataLayerFramework.LoggedUser.Name);
-                        if (_labelTerminalInfo.Text != terminalInfo) _labelTerminalInfo.Text = terminalInfo;
+                        if (LabelTerminalInfo.Text != terminalInfo) LabelTerminalInfo.Text = terminalInfo;
                     }
                     //Not Logged, Request Pin Login
                     else
@@ -215,10 +212,10 @@ namespace logicpos
                                 SharedFramework.SessionApp.Write();
                                 DataLayerFramework.LoggedUser = (sys_userdetail)DataLayerUtils.GetXPGuidObject(typeof(sys_userdetail), dialogChangeUser.UserDetail.Oid);
                                 SharedFramework.LoggedUserPermissions = SharedUtils.GetUserPermissions();
-                                _ticketList.UpdateTicketListButtons();
-                                SharedUtils.Audit("USER_loggerIN", string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_user_loggerin"), DataLayerFramework.LoggedUser.Name));
+                                TicketList.UpdateTicketListButtons();
+                                SharedUtils.Audit("USER_loggerIN", string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_user_loggerin"), DataLayerFramework.LoggedUser.Name));
                                 terminalInfo = string.Format("{0} : {1}", DataLayerFramework.LoggedTerminal.Designation, DataLayerFramework.LoggedUser.Name);
-                                if (_labelTerminalInfo.Text != terminalInfo) _labelTerminalInfo.Text = terminalInfo;
+                                if (LabelTerminalInfo.Text != terminalInfo) LabelTerminalInfo.Text = terminalInfo;
                                 //After First time Login ShowNotifications
                                 Utils.ShowNotifications(dialogPinPad);
                             }
@@ -244,10 +241,10 @@ namespace logicpos
 
         private void buttonFavorites_Clicked(object sender, EventArgs e)
         {
-            _tablePadArticle.Filter = " AND (Favorite = 1)";
+            TablePadArticle.Filter = " AND (Favorite = 1)";
             //Enable Buttons, else when we have only a Family or Subfamily, the buttons will never be enabled
-            if (_tablePadFamily.SelectedButton != null && !_tablePadFamily.SelectedButton.Sensitive) _tablePadFamily.SelectedButton.Sensitive = true;
-            if (_tablePadSubFamily.SelectedButton != null && !_tablePadSubFamily.SelectedButton.Sensitive) _tablePadSubFamily.SelectedButton.Sensitive = true;
+            if (TablePadFamily.SelectedButton != null && !TablePadFamily.SelectedButton.Sensitive) TablePadFamily.SelectedButton.Sensitive = true;
+            if (TablePadSubFamily.SelectedButton != null && !TablePadSubFamily.SelectedButton.Sensitive) TablePadSubFamily.SelectedButton.Sensitive = true;
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -258,20 +255,20 @@ namespace logicpos
             TouchButtonBase button = (TouchButtonBase)sender;
 
             //Assign CurrentId to TablePad.CurrentId, to Know last Clicked Button Id
-            _tablePadFamily.SelectedButtonOid = button.CurrentButtonOid;
+            TablePadFamily.SelectedButtonOid = button.CurrentButtonOid;
             //SubFamily Filter
-            _tablePadSubFamily.Filter = string.Format(" AND (Family = '{0}')", button.CurrentButtonOid);
+            TablePadSubFamily.Filter = string.Format(" AND (Family = '{0}')", button.CurrentButtonOid);
 
             //IN009277
             string getFirstSubFamily = "0";
             if (DataLayerFramework.DatabaseType.ToString() == "MySql" || DataLayerFramework.DatabaseType.ToString() == "SQLite")
             {
-                string mysql = string.Format("SELECT Oid FROM fin_articlesubfamily WHERE Family = '{0}' Order by CODE Asc LIMIT 1", _tablePadFamily.SelectedButtonOid);
+                string mysql = string.Format("SELECT Oid FROM fin_articlesubfamily WHERE Family = '{0}' Order by CODE Asc LIMIT 1", TablePadFamily.SelectedButtonOid);
                 getFirstSubFamily = DataLayerFramework.SessionXpo.ExecuteScalar(mysql).ToString();
             }
             else if (DataLayerFramework.DatabaseType.ToString() == "MSSqlServer")
             {
-                string mssqlServer = string.Format("SELECT TOP 1 Oid FROM fin_articlesubfamily WHERE Family = '{0}' Order by CODE Asc", _tablePadFamily.SelectedButtonOid);
+                string mssqlServer = string.Format("SELECT TOP 1 Oid FROM fin_articlesubfamily WHERE Family = '{0}' Order by CODE Asc", TablePadFamily.SelectedButtonOid);
                 getFirstSubFamily = DataLayerFramework.SessionXpo.ExecuteScalar(mssqlServer).ToString();
             }
 
@@ -293,10 +290,10 @@ namespace logicpos
             TouchButtonBase button = (TouchButtonBase)sender;
 
             //Assign CurrentId to TablePad.CurrentId, to Know last Clicked Button Id
-            _tablePadSubFamily.SelectedButtonOid = button.CurrentButtonOid;
+            TablePadSubFamily.SelectedButtonOid = button.CurrentButtonOid;
 
             //Article Filter
-            _tablePadArticle.Filter = string.Format(" AND (SubFamily = '{0}')", button.CurrentButtonOid);
+            TablePadArticle.Filter = string.Format(" AND (SubFamily = '{0}')", button.CurrentButtonOid);
 
             //Debug
             //_logger.Debug(string.Format("_tablePadSubFamily_Clicked(): S:CurrentId:[{0}], Name:[{1}]", button.CurrentId, button.Name));
@@ -314,17 +311,17 @@ namespace logicpos
                 //_logger.Debug(string.Format("_tablePadArticle_Clicked(): A:CurrentId:[{0}], Name:[{1}]", button.CurrentButtonOid, button.Name));
 
                 //Change Mode
-                if (_ticketList.ListMode != TicketListMode.Ticket)
+                if (TicketList.ListMode != TicketListMode.Ticket)
                 {
-                    _ticketList.ListMode = TicketListMode.Ticket;
-                    _ticketList.UpdateModel();
+                    TicketList.ListMode = TicketListMode.Ticket;
+                    TicketList.UpdateModel();
                 }
 
                 //Assign CurrentId to TablePad.CurrentId, to Know last Clicked Button Id
-                _tablePadArticle.SelectedButtonOid = button.CurrentButtonOid;
+                TablePadArticle.SelectedButtonOid = button.CurrentButtonOid;
 
                 //Send to TicketList
-                _ticketList.InsertOrUpdate(button.CurrentButtonOid);
+                TicketList.InsertOrUpdate(button.CurrentButtonOid);
             }
             catch (Exception ex)
             {
@@ -347,13 +344,13 @@ namespace logicpos
                     var resultOpenDoor = PrintRouter.OpenDoor(DataLayerFramework.LoggedTerminal.Printer);
                     if (!resultOpenDoor)
                     {
-                        Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_information"), string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "open_cash_draw_permissions")));
+                        Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_information"), string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "open_cash_draw_permissions")));
                     }
                     else
                     {
                         //Audit
                         SharedUtils.Audit("CASHDRAWER_OUT", string.Format(
-                            resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_cashdrawer_out"),
+                            resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_cashdrawer_out"),
                             DataLayerFramework.LoggedTerminal.Designation,
                             "Button Open Door"));
                     }
@@ -415,7 +412,7 @@ namespace logicpos
             TablePadSubFamily.UpdateSql();
             TablePadArticle.UpdateSql();
 
-            _ticketList.UpdateTicketListButtons();
+            TicketList.UpdateTicketListButtons();
         }
 
         public void UpdateWorkSessionUI()
@@ -472,9 +469,9 @@ namespace logicpos
                             //Create Reference to be used in Shared Code
                             OrderMain currentOrderMain = newOrderMain;
 
-                            _ticketList.UpdateArticleBag();
-                            _ticketList.UpdateTicketListOrderButtons();
-                            _ticketList.UpdateOrderStatusBar();
+                            TicketList.UpdateArticleBag();
+                            TicketList.UpdateTicketListOrderButtons();
+                            TicketList.UpdateOrderStatusBar();
 
                             //ALWAYS Update current PersistentOid and Status from database
                             currentOrderMain.PersistentOid = currentOrderMain.GetOpenTableFieldValueGuid(pTableOid, "Oid");
@@ -483,13 +480,13 @@ namespace logicpos
                             //Shared Code
                             SharedFramework.SessionApp.CurrentOrderMainOid = currentOrderMain.Table.OrderMainOid;
                             SharedFramework.SessionApp.Write();
-                            _ticketList.UpdateModel();
+                            TicketList.UpdateModel();
 
                             //GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid].Table.OrderMainOid = currentTableOid;
                             _ticketPad.Sensitive = true;
                         }
                         if (!SharedFramework.AppUseBackOfficeMode)
-                            _tablePadArticle.Sensitive = true;
+                            TablePadArticle.Sensitive = true;
 
                         if (!_ticketPad.Sensitive == true && !SharedFramework.AppUseBackOfficeMode)
                             _ticketPad.Sensitive = true;
@@ -499,8 +496,8 @@ namespace logicpos
                     {
                         if (!_ticketPad.Sensitive == false)
                             _ticketPad.Sensitive = false;
-                        if (!_tablePadArticle.Sensitive == false)
-                            _tablePadArticle.Sensitive = false;
+                        if (!TablePadArticle.Sensitive == false)
+                            TablePadArticle.Sensitive = false;
                     }
                 }
             }
@@ -513,8 +510,8 @@ namespace logicpos
                 //  _touchButtonPosToolbarCashDrawer.Sensitive = false;
                 if (!_ticketPad.Sensitive == false)
                     _ticketPad.Sensitive = false;
-                if (!_tablePadArticle.Sensitive == false)
-                    _tablePadArticle.Sensitive = false;
+                if (!TablePadArticle.Sensitive == false)
+                    TablePadArticle.Sensitive = false;
             }
         }
 
@@ -536,7 +533,7 @@ namespace logicpos
                 //Call Current OrderMain Update Status
                 if (SharedFramework.SessionApp.CurrentOrderMainOid != Guid.Empty && SharedFramework.SessionApp.OrdersMain.ContainsKey(SharedFramework.SessionApp.CurrentOrderMainOid))
                 {
-                    UpdateGUITimer(SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid], _ticketList);
+                    UpdateGUITimer(SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid], TicketList);
                 }
 
                 //Update UI Button and Get WorkSessionPeriodDay if is Opened by Other Terminal
@@ -621,15 +618,15 @@ namespace logicpos
               && SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid].Table != null)
             {
                 //Update Order Summary Status Bar
-                _ticketList.UpdateOrderStatusBar();
+                TicketList.UpdateOrderStatusBar();
             }
             else
             {
                 //Force Start With Default Table
                 _ticketPad.SelectTableOrder(POSSettings.XpoOidConfigurationPlaceTableDefaultOpenTable);
-                _ticketList.UpdateArticleBag();
-                _ticketList.UpdateTicketListOrderButtons();
-                _ticketList.UpdateOrderStatusBar();
+                TicketList.UpdateArticleBag();
+                TicketList.UpdateTicketListOrderButtons();
+                TicketList.UpdateOrderStatusBar();
             }
         }
 

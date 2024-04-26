@@ -11,159 +11,63 @@ namespace logicpos.printer.generic
     {
         //Log4Net
         private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private int _objectType = 0; //0 canvas //1 text //2 image //3 barcode
 
-        public int ObjectType
-        {
-            get { return _objectType; }
-            set { _objectType = value; }
-        }
+        public int ObjectType { get; set; } = 0;
 
-        private string _text = string.Empty;
-        public string Text
-        {
-            get { return _text; }
-            set { _text = value; }
-        }
+        public string Text { get; set; } = string.Empty;
 
-        private int index = 0;
-        public int Index
-        {
-            get { return index; }
-            set { index = value; }
-        }
+        public int Index { get; set; } = 0;
 
-        private double _fontSize = 0;
-        public double FontSize
-        {
-            get { return _fontSize; }
-            set { _fontSize = value; }
-        }
+        public double FontSize { get; set; } = 0;
 
-        private string _fontStyle = "normal";
         /// <summary>
         /// Normal; Bold; Italic
         /// </summary>
-        public string FontStyle
-        {
-            get { return _fontStyle; }
-            set { _fontStyle = value; }
-        }
+        public string FontStyle { get; set; } = "normal";
 
-        private string _style = "Normal";
         /// <summary>
         /// Normal; Bold; Italic
         /// </summary>
-        public string Style
-        {
-            get { return _style; }
-            set { _style = value; }
-        }
+        public string Style { get; set; } = "Normal";
 
-        private string _type = "";
         /// <summary>
         /// Normal; Bold; Italic
         /// </summary>
-        public string Type
-        {
-            get { return _type; }
-            set { _type = value; }
-        }
-
-        private string _text_Align = "Justify";
+        public string Type { get; set; } = "";
 
         /// <summary>
         /// "Center" , "Justify", "Left", "Right"
         /// </summary>
-        public string Text_Align
-        {
-            get { return _text_Align; }
-            set { _text_Align = value; }
-        }
+        public string Text_Align { get; set; } = "Justify";
 
-        private int _posX = 0;
-        public int PosX
-        {
-            get { return _posX; }
-            set { _posX = value; }
-        }
+        public int PosX { get; set; } = 0;
 
-        private int _posY = 0;
-        public int PosY
-        {
-            get { return _posY; }
-            set { _posY = value; }
-        }
+        public int PosY { get; set; } = 0;
 
-        private int _width = 0;
-        public int Width
-        {
-            get { return _width; }
-            set { _width = value; }
-        }
+        public int Width { get; set; } = 0;
 
-        private int _height = 0;
-        public int Height
-        {
-            get { return _height; }
-            set { _height = value; }
-        }
+        public int Height { get; set; } = 0;
 
-        private int _firstProductPosition = 0;
-        public int FirstProductPosition
-        {
-            get { return _firstProductPosition; }
-            set { _firstProductPosition = value; }
-        }
+        public int FirstProductPosition { get; set; } = 0;
 
-        private int _line = -1;
+        public int Line { get; set; } = -1;
 
-        public int Line
-        {
-            get { return _line; }
-            set { _line = value; }
-        }
+        public int Col { get; set; } = -1;
 
-        private int _col = -1;
+        public string Value { get; set; } = string.Empty;
 
-        public int Col
-        {
-            get { return _col; }
-            set { _col = value; }
-        }
+        public string BarcodeType { get; set; } = string.Empty;
 
-        private string _value = string.Empty;
-
-        public string Value
-        {
-            get { return _value; }
-            set { _value = value; }
-        }
-
-        private string _barcodeType = string.Empty;
-
-        public string BarcodeType
-        {
-            get { return _barcodeType; }
-            set { _barcodeType = value; }
-        }
-
-        private string _textLocation = string.Empty;
-
-        public string TextLocation
-        {
-            get { return _textLocation; }
-            set { _textLocation = value; }
-        }
+        public string TextLocation { get; set; } = string.Empty;
 
         public PrintObject(int objectType)
         {
-            _objectType = objectType;
+            ObjectType = objectType;
         }
 
         public int CompareTo(PrintObject other)
         {
-            return _posY.CompareTo(other._posY);
+            return PosY.CompareTo(other.PosY);
         }
 
         public void loadCanvasXML(XmlNode dev, int dataCount, PrintObject prtObj)
@@ -174,19 +78,19 @@ namespace logicpos.printer.generic
                 switch (elem.Name)
                 {
                     case "SizeX":
-                        _width = Convert.ToInt32(elem.InnerText);
+                        Width = Convert.ToInt32(elem.InnerText);
                         break;
 
                     case "SizeY":
-                        _height = Convert.ToInt32(elem.InnerText);
-                        _height += (valueToAdd * dataCount);
+                        Height = Convert.ToInt32(elem.InnerText);
+                        Height += (valueToAdd * dataCount);
                         break;
                     case "FirstProdutPosition":
-                        _firstProductPosition = Convert.ToInt32(elem.InnerText);
+                        FirstProductPosition = Convert.ToInt32(elem.InnerText);
                         break;
                 }
             }
-            prtObj.FirstProductPosition = _firstProductPosition;
+            prtObj.FirstProductPosition = FirstProductPosition;
             //this._width = _width + 20;
             //this._height = _height + 40;
         }
@@ -206,69 +110,69 @@ namespace logicpos.printer.generic
                         break;
 
                     case "Text":
-                        _text = elem.InnerText;
+                        Text = elem.InnerText;
                         break;
 
                     case "FontStyle":
-                        _fontStyle = elem.InnerText;
+                        FontStyle = elem.InnerText;
                         break;
 
                     case "TextAlign":
-                        _text_Align = elem.InnerText;
+                        Text_Align = elem.InnerText;
                         break;
 
                     case "FontWeight":
-                        _fontStyle = elem.InnerText;
+                        FontStyle = elem.InnerText;
                         break;
 
                     case "FontSize":
-                        _fontSize = Convert.ToDouble(elem.InnerText);
+                        FontSize = Convert.ToDouble(elem.InnerText);
                         break;
 
                     case "LocationX":
-                        _posX = Convert.ToInt32(elem.InnerText);
+                        PosX = Convert.ToInt32(elem.InnerText);
                         break;
 
                     case "LocationY":
-                        _posY = Convert.ToInt32(elem.InnerText);
+                        PosY = Convert.ToInt32(elem.InnerText);
                         break;
 
                     case "SizeX":
-                        _width = Convert.ToInt32(elem.InnerText);
+                        Width = Convert.ToInt32(elem.InnerText);
                         break;
 
                     case "SizeY":
-                        _height = Convert.ToInt32(elem.InnerText);
+                        Height = Convert.ToInt32(elem.InnerText);
                         break;
                     case "Size":
                         if (elem.InnerText.Equals("Normal"))
                         {
-                            _fontSize = 11;
+                            FontSize = 11;
                         }
                         else
                         {
-                            _fontSize = 16;
+                            FontSize = 16;
                         }
 
                         break;
                     case "Style":
-                        _style = elem.InnerText;
+                        Style = elem.InnerText;
                         break;
                     case "Type":
-                        _type = elem.InnerText;
+                        Type = elem.InnerText;
                         break;
                     case "Align":
                         if (elem.InnerText.Equals("Direita"))
                         {
-                            _text_Align = "Right";
+                            Text_Align = "Right";
                         }//"Center" , "Justify", "Left", "Right"
                         else if (elem.InnerText.Equals("Centro"))
                         {
-                            _text_Align = "Center";
+                            Text_Align = "Center";
                         }
                         else
                         {
-                            _text_Align = "Left";
+                            Text_Align = "Left";
                         }
                         //_type = elem.InnerText;
                         break;
@@ -285,35 +189,35 @@ namespace logicpos.printer.generic
                 switch (elem.Name)
                 {
                     case "Text":
-                        _text = elem.InnerText;
+                        Text = elem.InnerText;
                         break;
                     case "Value":
-                        _value = elem.InnerText;
+                        Value = elem.InnerText;
                         break;
                     case "LocationX":
-                        _posX = Convert.ToInt32(elem.InnerText);
+                        PosX = Convert.ToInt32(elem.InnerText);
                         break;
                     case "LocationY":
-                        _posY = Convert.ToInt32(elem.InnerText);
+                        PosY = Convert.ToInt32(elem.InnerText);
 
-                        if (_posY > _firstProductPosition)
+                        if (PosY > FirstProductPosition)
                         {
-                            _posY += (valueToAdd * dataCount);
+                            PosY += (valueToAdd * dataCount);
                         }
 
                         break;
                     case "SizeX":
-                        _width = Convert.ToInt32(elem.InnerText);
+                        Width = Convert.ToInt32(elem.InnerText);
                         break;
 
                     case "SizeY":
-                        _height = Convert.ToInt32(elem.InnerText);
+                        Height = Convert.ToInt32(elem.InnerText);
                         break;
                     case "Type":
-                        _barcodeType = elem.InnerText;
+                        BarcodeType = elem.InnerText;
                         break;
                     case "LocationText":
-                        _textLocation = elem.InnerText;
+                        TextLocation = elem.InnerText;
                         break;
 
                 }
@@ -329,23 +233,23 @@ namespace logicpos.printer.generic
                 switch (elem.Name)
                 {
                     case "Path":
-                        _value = elem.InnerText;
+                        Value = elem.InnerText;
                         break;
                     case "LocationX":
-                        _posX = Convert.ToInt32(elem.InnerText);
+                        PosX = Convert.ToInt32(elem.InnerText);
                         break;
                     case "LocationY":
-                        _posY = Convert.ToInt32(elem.InnerText);
-                        if (_posY > _firstProductPosition)
+                        PosY = Convert.ToInt32(elem.InnerText);
+                        if (PosY > FirstProductPosition)
                         {
-                            _posY += (valueToAdd * dataCount);
+                            PosY += (valueToAdd * dataCount);
                         }
                         break;
                     case "SizeX":
-                        _width = Convert.ToInt32(elem.InnerText);
+                        Width = Convert.ToInt32(elem.InnerText);
                         break;
                     case "SizeY":
-                        _height = Convert.ToInt32(elem.InnerText);
+                        Height = Convert.ToInt32(elem.InnerText);
                         break;
                     case "Name":
 
@@ -423,29 +327,6 @@ namespace logicpos.printer.generic
             XmlTextWriter xw = new XmlTextWriter(sw);
             xmlDoc.WriteTo(xw);
             return sw.ToString();
-        }
-
-        private XmlDocument replaceReservedStringsFromDatabase(System.Data.DataTable data, string xml)
-        {
-            XmlDocument xmlDoc = new XmlDocument();
-
-            //load all reserved strings and values from POS database
-            Hashtable ReserverHValues = new Hashtable
-            {
-                { "[DateTime]", DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss") },
-                { "[Date]", DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss") },
-                { "[Time]", DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss") }
-            };
-
-
-            foreach (DictionaryEntry pair in ReserverHValues)
-            {
-                xml = xml.Replace((string)pair.Key, (string)pair.Value);
-            }
-
-            xmlDoc.InnerXml = xml;
-
-            return xmlDoc;
         }
 
         private XmlDocument replaceReservedStrings(string xml)

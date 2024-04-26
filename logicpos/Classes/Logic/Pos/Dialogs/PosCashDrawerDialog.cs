@@ -1,11 +1,7 @@
 ﻿using Gtk;
-using logicpos.App;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial;
 using logicpos.financial.library.Classes.WorkSession;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.resources.Resources.Localization;
-using logicpos.shared;
 using System;
 using System.Drawing;
 using logicpos.Extensions;
@@ -20,15 +16,15 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             if (pResponse == ResponseType.Ok)
             {
-                _movementAmountMoney = SharedUtils.StringToDecimal(_entryBoxMovementAmountMoney.EntryValidation.Text);
-                _movementDescription = _entryBoxMovementDescription.EntryValidation.Text;
+                MovementAmountMoney = SharedUtils.StringToDecimal(_entryBoxMovementAmountMoney.EntryValidation.Text);
+                MovementDescription = _entryBoxMovementDescription.EntryValidation.Text;
 
                 decimal cashLastMovementTypeAmount;
-                if (_selectedMovementType.Token == "CASHDRAWER_OPEN")
+                if (MovementType.Token == "CASHDRAWER_OPEN")
                 {
                     cashLastMovementTypeAmount = ProcessWorkSessionPeriod.GetSessionPeriodCashDrawerOpenOrCloseAmount("CASHDRAWER_CLOSE");
                 }
-                else if (_selectedMovementType.Token == "CASHDRAWER_CLOSE")
+                else if (MovementType.Token == "CASHDRAWER_CLOSE")
                 {
 					//Alteração no funcionamento do Inicio/fecho Sessão [IN:014330]
                     cashLastMovementTypeAmount = ProcessWorkSessionPeriod.GetSessionPeriodCashDrawerOpenOrCloseAmount("CASHDRAWER_OPEN");
@@ -42,17 +38,17 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                       
                     //}
                 }
-                else if (_selectedMovementType.Token == "CASHDRAWER_OUT")
+                else if (MovementType.Token == "CASHDRAWER_OUT")
                 {
                     //Check if Value is Small than AmountInCashDrawer
-                    if (_movementAmountMoney > _totalAmountInCashDrawer)
+                    if (MovementAmountMoney > TotalAmountInCashDrawer)
                     {
-                        string movementAmountMoney = SharedUtils.DecimalToStringCurrency(_movementAmountMoney);
-                        string totalAmountInCashDrawer = SharedUtils.DecimalToStringCurrency(_totalAmountInCashDrawer);
+                        string movementAmountMoney = SharedUtils.DecimalToStringCurrency(MovementAmountMoney);
+                        string totalAmountInCashDrawer = SharedUtils.DecimalToStringCurrency(TotalAmountInCashDrawer);
                         
                         logicpos.Utils.ShowMessageTouch(
-                            this, DialogFlags.Modal, new Size(500, 350), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"),
-                            string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_cashdrawer_money_out_error"), movementAmountMoney, totalAmountInCashDrawer)
+                            this, DialogFlags.Modal, new Size(500, 350), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"),
+                            string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_cashdrawer_money_out_error"), movementAmountMoney, totalAmountInCashDrawer)
                         );
                         //Keep Running            
                         this.Run();
@@ -138,12 +134,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
 
             //Assign _selectedMovementType
-            _selectedMovementType = (pos_worksessionmovementtype)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(pos_worksessionmovementtype), pButton.CurrentButtonOid);
+            MovementType = (pos_worksessionmovementtype)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(pos_worksessionmovementtype), pButton.CurrentButtonOid);
 
             //Detect Cash open
-            if (_selectedMovementType.Token == "CASHDRAWER_OPEN")
+            if (MovementType.Token == "CASHDRAWER_OPEN")
             {
-                _entryBoxMovementAmountMoney.EntryValidation.Text = SharedUtils.DecimalToString(_totalAmountInCashDrawer);
+                _entryBoxMovementAmountMoney.EntryValidation.Text = SharedUtils.DecimalToString(TotalAmountInCashDrawer);
                 _entryBoxMovementAmountMoney.EntryValidation.Sensitive = true;
                 //Required to disable keyboard button
                 _entryBoxMovementAmountMoney.ButtonKeyBoard.Sensitive = true;
@@ -160,7 +156,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
 
             //Apply Requires Description for MONEY_IN and MONEY_OUT
-            _entryBoxMovementDescription.EntryValidation.Required = (_selectedMovementType.Token == "CASHDRAWER_IN" || _selectedMovementType.Token == "CASHDRAWER_OUT");
+            _entryBoxMovementDescription.EntryValidation.Required = (MovementType.Token == "CASHDRAWER_IN" || MovementType.Token == "CASHDRAWER_OUT");
             _entryBoxMovementDescription.EntryValidation.Validate();
 
             //Now we can UnToggle Old Selected Button
@@ -210,47 +206,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     //_entryBoxMovementAmountOtherPayments.EntryValidation.Text != string.Empty
                     )
                   );
-        }
-
-        /// <summary>
-        /// Check if Open and Close CashDrawer Amount is Valid, Totals are Equal
-        /// </summary>
-        /// <param name="pLastMovementTypeAmount"></param>
-        /// <returns></returns>
-        private bool IsCashDrawerAmountValid(decimal pLastMovementTypeAmount)
-        {
-            decimal totalInCashDrawer;
-
-            //With Drawer Opened
-            if (SharedFramework.WorkSessionPeriodTerminal != null)
-            {
-                decimal moneyCashTotalMovements = ProcessWorkSessionPeriod.GetSessionPeriodMovementTotal(SharedFramework.WorkSessionPeriodTerminal, MovementTypeTotal.MoneyInCashDrawer);
-                totalInCashDrawer = Math.Round(moneyCashTotalMovements, _decimalRoundTo);
-            }
-            //With Drawer Closed
-            else
-            {
-                totalInCashDrawer = Math.Round(pLastMovementTypeAmount, _decimalRoundTo);
-            }
-
-            decimal diference = Math.Round(_movementAmountMoney - totalInCashDrawer, _decimalRoundTo);
-            //_logger.Debug(string.Format("_movementAmountMoney: [{0}], pLastMovementTypeAmount:[{1}], totalInCashDrawer: [{2}], diference: [{3}]", _movementAmountMoney, pLastMovementTypeAmount, totalInCashDrawer, diference));
-
-            if (diference != 0)
-            {
-                string message = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_cashdrawer_open_close_total_enter_diferent_from_total_in_cashdrawer")
-      , SharedUtils.DecimalToStringCurrency(totalInCashDrawer)
-      , SharedUtils.DecimalToStringCurrency(_movementAmountMoney)
-      , SharedUtils.DecimalToStringCurrency(diference)
-    );
-                logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new Size(600, 450), MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), message);
-
-                return false;
-            }
-            else
-            {
-                return true;
-            }
         }
     }
 }

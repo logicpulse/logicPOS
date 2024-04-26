@@ -38,7 +38,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             : base(pLabel)
         {
             //Redimensionar altura do botão Parent do accordion para 1024
-            if (GlobalApp.boScreenSize.Height <= 800)
+            if (GlobalApp.BoScreenSize.Height <= 800)
             {
                 HeightRequest = 25;
             }
@@ -56,7 +56,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             : base(pHeader)
         {
             //Redimensionar altura do botão child do accordion para 1024
-            if (GlobalApp.boScreenSize.Height <= 800)
+            if (GlobalApp.BoScreenSize.Height <= 800)
             {
                 HeightRequest = 25;
             }
@@ -79,7 +79,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         public AccordionChildButton(string pLabel)
             : base(pLabel)
         {
-            if (GlobalApp.boScreenSize.Height <= 800)
+            if (GlobalApp.BoScreenSize.Height <= 800)
             {
                 HeightRequest = 23;
             }
@@ -93,7 +93,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         public AccordionChildButton(Widget pHeader)
             : base(pHeader)
         {
-            if (GlobalApp.boScreenSize.Height <= 800)
+            if (GlobalApp.BoScreenSize.Height <= 800)
             {
                 HeightRequest = 23;
             }
@@ -157,7 +157,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         protected void InitObject(Dictionary<string, AccordionNode> pAccordionDefinition, string pNodePrivilegesTokenFormat)
         {
             //get values of backoffice screen to set accordion font text size 
-            GlobalApp.boScreenSize = logicpos.Utils.GetScreenSize();
+            GlobalApp.BoScreenSize = logicpos.Utils.GetScreenSize();
             _label = new Label();
             
             //Parameters
@@ -179,7 +179,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     {
                         //Redimensionar Icons dos Botões Parent do accordion para 1024
                         HBox hboxParent = new HBox(false, 0);
-                        if (GlobalApp.boScreenSize.Height <= 800)
+                        if (GlobalApp.BoScreenSize.Height <= 800)
                         {
                             System.Drawing.Size sizeIcon = new System.Drawing.Size(20, 20);
                             System.Drawing.Image imageIcon;
@@ -366,12 +366,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
             if(accordionType == "Parent")
             {
-                if (GlobalApp.boScreenSize.Height <= 800) _label.ModifyFont(fontPosBackOfficeparentLowRes);
+                if (GlobalApp.BoScreenSize.Height <= 800) _label.ModifyFont(fontPosBackOfficeparentLowRes);
                 else _label.ModifyFont(fontPosBackOfficeParent);
             }
             else
             {
-                if (GlobalApp.boScreenSize.Height <= 800) _label.ModifyFont(fontPosBackOfficeChildLowRes);
+                if (GlobalApp.BoScreenSize.Height <= 800) _label.ModifyFont(fontPosBackOfficeChildLowRes);
                 else _label.ModifyFont(fontPosBackOfficeChild);
             }
             _label.ModifyFg(StateType.Normal, colNormal.ToGdkColor());

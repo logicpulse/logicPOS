@@ -14,16 +14,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private readonly DateTime _dateTime;
         //UI
         private readonly Fixed _fixedContent;
-        //Public Properties
-        private Calendar _calendar;
-        public Calendar Calendar
-        {
-            get { return _calendar; }
-            set { _calendar = value; }
-        }
+
+        public Calendar Calendar { get; set; }
 
         public PosDatePickerDialog(Window pSourceWindow, DialogFlags pDialogFlags)
-            : this(pSourceWindow, pDialogFlags, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_datepicker"), DataLayerUtils.CurrentDateTimeAtomic())
+            : this(pSourceWindow, pDialogFlags, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_datepicker"), DataLayerUtils.CurrentDateTimeAtomic())
         {
         }
 
@@ -33,7 +28,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         }
 
         public PosDatePickerDialog(Window pSourceWindow, DialogFlags pDialogFlags, DateTime pDateTime)
-            : this(pSourceWindow, pDialogFlags, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_datepicker"), pDateTime)
+            : this(pSourceWindow, pDialogFlags, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_datepicker"), pDateTime)
         {
         }
 
@@ -74,12 +69,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Init Font Description
             Pango.FontDescription fontDescription = Pango.FontDescription.FromString(DataLayerFramework.Settings["fontEntryBoxValue"]);
             //Init Calendar
-            _calendar = new Calendar();
-            _calendar.Date = _dateTime;
-            _calendar.ModifyFont(fontDescription);
-            _calendar.SetSizeRequest(_windowSize.Width - 13, _windowSize.Height - 120);
+            Calendar = new Calendar();
+            Calendar.Date = _dateTime;
+            Calendar.ModifyFont(fontDescription);
+            Calendar.SetSizeRequest(_windowSize.Width - 13, _windowSize.Height - 120);
 
-            _fixedContent.Put(_calendar, 0, 0);
+            _fixedContent.Put(Calendar, 0, 0);
         }
     }
 }

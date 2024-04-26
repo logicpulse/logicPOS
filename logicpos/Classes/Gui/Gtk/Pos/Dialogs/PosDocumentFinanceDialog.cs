@@ -21,33 +21,18 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private DocumentFinanceDialogPage3 _pagePad3;
         private DocumentFinanceDialogPage4 _pagePad4;
         private DocumentFinanceDialogPage5 _pagePad5;
-        //UI
-        private readonly TouchButtonIconWithText _buttonClearCustomer;
-        public TouchButtonIconWithText ButtonClearCustomer
-        {
-            get { return _buttonClearCustomer; }
-        }
+
+        public TouchButtonIconWithText ButtonClearCustomer { get; }
         private readonly TouchButtonIconWithText _buttonOk;
         private readonly TouchButtonIconWithText _buttonCancel;
         private readonly TouchButtonIconWithText _buttonPreview;
         //Custom Responses Types
         private readonly ResponseType _responseTypePreview = (ResponseType)11;
         private readonly ResponseType _responseTypeClearCustomer = (ResponseType)12;
-        //DocumentFinanceArticle MaxQuantities Validate
-        private Dictionary<Guid, decimal> _validateMaxQuantities;
-        public Dictionary<Guid, decimal> ValidateMaxQuantities
-        {
-            get { return _validateMaxQuantities; }
-            set { _validateMaxQuantities = value; }
-        }
 
-        //Public
-        private DocumentFinanceDialogPagePad _pagePad;
-        public DocumentFinanceDialogPagePad PagePad
-        {
-            get { return _pagePad; }
-            set { _pagePad = value; }
-        }
+        public Dictionary<Guid, decimal> ValidateMaxQuantities { get; set; }
+
+        public DocumentFinanceDialogPagePad PagePad { get; set; }
 
         public PosDocumentFinanceDialog(Window pSourceWindow, DialogFlags pDialogFlags)
             : base(pSourceWindow, pDialogFlags)
@@ -66,20 +51,20 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Init Content
             //Fixed fixedContent = new Fixed();
             VBox boxContent = new VBox();
-            boxContent.PackStart(_pagePad, true, true, 0);
+            boxContent.PackStart(PagePad, true, true, 0);
 
             //ActionArea Buttons
             _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);
             _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
-            _buttonClearCustomer = ActionAreaButton.FactoryGetDialogButtonType("touchButtonClearCustomer_DialogActionArea", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_payment_dialog_clear_client"), fileIconClearCustomer);
+            ButtonClearCustomer = ActionAreaButton.FactoryGetDialogButtonType("touchButtonClearCustomer_DialogActionArea", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_payment_dialog_clear_client"), fileIconClearCustomer);
 
-            _buttonPreview = ActionAreaButton.FactoryGetDialogButtonType("touchButtonPreview_DialogActionArea", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_preview"), fileActionPreview); /* IN009111 */
+            _buttonPreview = ActionAreaButton.FactoryGetDialogButtonType("touchButtonPreview_DialogActionArea", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_preview"), fileActionPreview); /* IN009111 */
             _buttonOk.Sensitive = false;
 
             //ActionArea
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons
             {
-                new ActionAreaButton(_buttonClearCustomer, _responseTypeClearCustomer),
+                new ActionAreaButton(ButtonClearCustomer, _responseTypeClearCustomer),
                 new ActionAreaButton(_buttonPreview, _responseTypePreview),
                 new ActionAreaButton(_buttonOk, ResponseType.Ok),
                 new ActionAreaButton(_buttonCancel, ResponseType.Cancel)
@@ -89,18 +74,18 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             this.InitObject(this, pDialogFlags, fileDefaultWindowIcon, _windowTitle, windowSize, boxContent, actionAreaButtons);
 
             //Hide After Init Show All
-            _buttonClearCustomer.Visible = false;
+            ButtonClearCustomer.Visible = false;
             _buttonPreview.Visible = false;
             //Hide Pages
-            _pagePad.Pages[3].NavigatorButton.Visible = false;
-            _pagePad.Pages[4].NavigatorButton.Visible = false;
+            PagePad.Pages[3].NavigatorButton.Visible = false;
+            PagePad.Pages[4].NavigatorButton.Visible = false;
         }
 
         private void InitPages()
         {
             //Init here before Creating Pages to Have PagePad Constructed for PagePadPage
-            _pagePad = new DocumentFinanceDialogPagePad(this);
-            _pagePad.PageChanged += _pagePad_PageChanged;
+            PagePad = new DocumentFinanceDialogPagePad(this);
+            PagePad.PageChanged += _pagePad_PageChanged;
 
             _listPages = new List<PagePadPage>();
             //Assign Page Title
@@ -112,12 +97,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             string icon4 = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_4_waybill_to.png");
             string icon5 = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_5_waybill_from.png");
 
-            _pagePad1 = new DocumentFinanceDialogPage1(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_page1"), icon1, null);
-            _pagePad2 = new DocumentFinanceDialogPage2(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_page2"), icon2, null);
-            _pagePad3 = new DocumentFinanceDialogPage3(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_page3"), icon3, null);
+            _pagePad1 = new DocumentFinanceDialogPage1(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_page1"), icon1, null);
+            _pagePad2 = new DocumentFinanceDialogPage2(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_page2"), icon2, null);
+            _pagePad3 = new DocumentFinanceDialogPage3(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_page3"), icon3, null);
             //Start in Invoice : Start Disabled
-            _pagePad4 = new DocumentFinanceDialogPage4(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_page4"), icon4, null, false);
-            _pagePad5 = new DocumentFinanceDialogPage5(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_page5"), icon5, null, false);
+            _pagePad4 = new DocumentFinanceDialogPage4(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_page4"), icon4, null, false);
+            _pagePad5 = new DocumentFinanceDialogPage5(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_page5"), icon5, null, false);
             //Assign Reference Here, After Construction
             //PagePad
             _pagePad1.PagePad2 = _pagePad2;
@@ -152,7 +137,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //listPages.Add(page8);
 
             //Init PagePage
-            _pagePad.Init(_listPages);
+            PagePad.Init(_listPages);
 
             //Start Validated
             _pagePad1.Validate();
@@ -168,8 +153,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         private void _pagePad_PageChanged(object sender, EventArgs e)
         {
-            this.WindowTitle = GetPageTitle(_pagePad.CurrentPageIndex);
-            _pagePad.ActivePage.Validate();
+            this.WindowTitle = GetPageTitle(PagePad.CurrentPageIndex);
+            PagePad.ActivePage.Validate();
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -178,12 +163,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public string GetPageTitle(int pPageIndex)
         {
             string result = string.Format("{0} :: {1}",
-  resources.CustomResources.GetCustomResources(datalayer.App.DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_new_finance_document"),
-  resources.CustomResources.GetCustomResources(datalayer.App.DataLayerFramework.Settings["customCultureResourceDefinition"], string.Format("window_title_dialog_document_finance_page{0}", pPageIndex + 1))
+  resources.CustomResources.GetCustomResource(datalayer.App.DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_new_finance_document"),
+  resources.CustomResources.GetCustomResource(datalayer.App.DataLayerFramework.Settings["customCultureResourceDefinition"], string.Format("window_title_dialog_document_finance_page{0}", pPageIndex + 1))
 );
 
             //Enable/Disable ClearCustomer
-            if (_buttonClearCustomer != null) _buttonClearCustomer.Visible = (_pagePad2 != null && pPageIndex == 1);
+            if (ButtonClearCustomer != null) ButtonClearCustomer.Visible = (_pagePad2 != null && pPageIndex == 1);
 
             //Enable/Disable Preview
             if (_pagePad3 != null && _pagePad3.ArticleBag != null)

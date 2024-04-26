@@ -330,7 +330,7 @@ namespace logicpos.financial.library.Classes.Finance
                         {
                             //Audit FINANCE_SERIES_CREATED
                             acronymAudit = string.Format("{0}{1}{2}{3}", "xx", item.Key, 0.ToString("00"), pAcronym);
-                            SharedUtils.Audit("FINANCE_SERIES_CREATED", string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_finance_series_created"), acronymAudit, item.Value, DataLayerFramework.LoggedUser.Name));
+                            SharedUtils.Audit("FINANCE_SERIES_CREATED", string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_finance_series_created"), acronymAudit, item.Value, DataLayerFramework.LoggedUser.Name));
                         }
                     }
                 }
@@ -360,35 +360,6 @@ namespace logicpos.financial.library.Classes.Finance
             long uintValue = Convert.ToInt64(date);
             //To Base36
             return Base10To36(uintValue);
-        }
-
-        private static DateTime AcronymPrefixToDate(int pYear, string pInput)
-        {
-            try
-            {
-                long baseX = Base36To10(pInput);
-                string uintString = Convert.ToString(baseX);
-                //#1 - Always Remove First 1;
-                uintString = uintString.Substring(1, uintString.Length - 1);
-
-                string date = string.Format(
-                    _acronymDateTimeFormat,
-                    uintString.Substring(0 * 2, 2),//hour
-                    uintString.Substring(1 * 2, 2),//minute
-                    uintString.Substring(2 * 2, 2),//second
-                    uintString.Substring(3 * 2, 2),//day
-                    uintString.Substring(4 * 2, 2) //month
-                );
-
-                date = date.Replace("YYYY", pYear.ToString());
-
-                return Convert.ToDateTime(date);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message, ex);
-                return new DateTime();
-            }
         }
 
         private static string Base10To36(long N)

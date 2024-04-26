@@ -11,7 +11,6 @@ using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.Extensions;
 using logicpos.financial.library.Classes.Finance;
-using logicpos.resources.Resources.Localization;
 using logicpos.shared.App;
 using logicpos.shared.Classes.Finance;
 using System;
@@ -66,68 +65,23 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private bool _partialPaymentEnabled = false;
         //Store PrequestProcessFinanceDocumentParameter
         private readonly bool _skipPersistFinanceDocument;
-        //Public Properties
-        private decimal _totalDelivery = 0.0m;
-        public decimal TotalDelivery
-        {
-            get { return _totalDelivery; }
-            set { _totalDelivery = value; }
-        }
-        private decimal _totalChange = 0.0m;
-        public decimal TotalChange
-        {
-            get { return _totalChange; }
-            set { _totalChange = value; }
-        }
-        private decimal _discountGlobal = 0.0m;
-        public decimal DiscountGlobal
-        {
-            get { return _discountGlobal; }
-            set { _discountGlobal = value; }
-        }
-        private TouchButtonBase _selectedPaymentMethodButton;
-        public TouchButtonBase SelectedPaymentMethodButton 
-        { 
-            get { return _selectedPaymentMethodButton; }
-            set { _selectedPaymentMethodButton = value; }
-        }
-        private fin_configurationpaymentmethod _selectedPaymentMethod;
-        public fin_configurationpaymentmethod PaymentMethod
-        {
-            get { return _selectedPaymentMethod; }
-            set { _selectedPaymentMethod = value; }
-        }
-        private erp_customer _selectedCustomer;
-        public erp_customer Customer
-        {
-            get { return _selectedCustomer; }
-            set { _selectedCustomer = value; }
-        }
-        private cfg_configurationcountry _selectedCountry;
-        public cfg_configurationcountry Country
-        {
-            get { return _selectedCountry; }
-            set { _selectedCountry = value; }
-        }
-        private ArticleBag _articleBagFullPayment;
-        public ArticleBag ArticleBagFullPayment
-        {
-            get { return _articleBagFullPayment; }
-            set { _articleBagFullPayment = value; }
-        }
-        private ArticleBag _articleBagPartialPayment;
-        public ArticleBag ArticleBagPartialPayment
-        {
-            get { return _articleBagPartialPayment; }
-            set { _articleBagPartialPayment = value; }
-        }
-        // To be used in SplitPayments on Call this Window
-        private ProcessFinanceDocumentParameter _processFinanceDocumentParameter;
-        public ProcessFinanceDocumentParameter ProcessFinanceDocumentParameter
-        {
-            get { return _processFinanceDocumentParameter; }
-            set { _processFinanceDocumentParameter = value; }
-        }
+
+        public decimal TotalDelivery { get; set; } = 0.0m;
+
+        public decimal TotalChange { get; set; } = 0.0m;
+
+        public decimal DiscountGlobal { get; set; } = 0.0m;
+
+        public TouchButtonBase SelectedPaymentMethodButton { get; set; }
+        public fin_configurationpaymentmethod PaymentMethod { get; set; }
+
+        public erp_customer Customer { get; set; }
+        public cfg_configurationcountry Country { get; set; }
+
+        public ArticleBag ArticleBagFullPayment { get; set; }
+        public ArticleBag ArticleBagPartialPayment { get; set; }
+
+        public ProcessFinanceDocumentParameter ProcessFinanceDocumentParameter { get; set; }
 
         //Constructors
         public PosPaymentsDialog(Window pSourceWindow, DialogFlags pDialogFlags, ArticleBag pArticleBag)
@@ -151,15 +105,15 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 //Init Local Vars
                 _sourceWindow = pSourceWindow;
-                string windowTitle = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_payments");
+                string windowTitle = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_payments");
                 //TODO:THEME
                 Size windowSize = new Size(633, 620);
                 string fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_payments.png");
 
                 //Parameters
-                _articleBagFullPayment = pArticleBag;
+                ArticleBagFullPayment = pArticleBag;
                 _skipPersistFinanceDocument = pSkipPersistFinanceDocument;
-                _processFinanceDocumentParameter = pProcessFinanceDocumentParameter;
+                ProcessFinanceDocumentParameter = pProcessFinanceDocumentParameter;
                 bool enablePartialPaymentButtons = true;
                 bool enableCurrentAccountButton = pEnableCurrentAccountButton;
                 //if (enablePartialPaymentButtons) enablePartialPaymentButtons = (_articleBagFullPayment.TotalQuantity > 1) ? true : false;
@@ -196,15 +150,15 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 fin_configurationpaymentmethod xpoCustomerCard = (fin_configurationpaymentmethod)xPSelectData.GetXPGuidObjectFromField(typeof(fin_configurationpaymentmethod), "Token", "CUSTOMER_CARD");
 
                 //Instantiate Buttons  //IN009257 Redimensionar botões para a resolução 1024 x 768. Alterei variável de tamanho de icons. era a mesma que documentos
-                TouchButtonIconWithText buttonMoney = new TouchButtonIconWithText("touchButtonMoney_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], xpoMoney.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], xpoMoney.ButtonIcon)), _sizeBasePaymentButtonIcon, _sizeBasePaymentButton.Width, _sizeBasePaymentButton.Height) { CurrentButtonOid = xpoMoney.Oid, Sensitive = !xpoMoney.Disabled };
-                TouchButtonIconWithText buttonCheck = new TouchButtonIconWithText("touchButtonCheck_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], xpoCheck.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], xpoCheck.ButtonIcon)), _sizeBasePaymentButtonIcon, _sizeBasePaymentButton.Width, _sizeBasePaymentButton.Height) { CurrentButtonOid = xpoCheck.Oid, Sensitive = !xpoCheck.Disabled };
-                TouchButtonIconWithText buttonMB = new TouchButtonIconWithText("touchButtonMB_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], xpoMB.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], xpoMB.ButtonIcon)), _sizeBasePaymentButtonIcon, _sizeBasePaymentButton.Width, _sizeBasePaymentButton.Height) { CurrentButtonOid = xpoMB.Oid, Sensitive = !xpoMB.Disabled };
-                TouchButtonIconWithText buttonCreditCard = new TouchButtonIconWithText("touchButtonCreditCard_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], xpoCreditCard.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], xpoCreditCard.ButtonIcon)), _sizeBasePaymentButtonIcon, _sizeBasePaymentButton.Width, _sizeBasePaymentButton.Height) { CurrentButtonOid = xpoCreditCard.Oid, Sensitive = !xpoCreditCard.Disabled };
+                TouchButtonIconWithText buttonMoney = new TouchButtonIconWithText("touchButtonMoney_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], xpoMoney.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], xpoMoney.ButtonIcon)), _sizeBasePaymentButtonIcon, _sizeBasePaymentButton.Width, _sizeBasePaymentButton.Height) { CurrentButtonOid = xpoMoney.Oid, Sensitive = !xpoMoney.Disabled };
+                TouchButtonIconWithText buttonCheck = new TouchButtonIconWithText("touchButtonCheck_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], xpoCheck.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], xpoCheck.ButtonIcon)), _sizeBasePaymentButtonIcon, _sizeBasePaymentButton.Width, _sizeBasePaymentButton.Height) { CurrentButtonOid = xpoCheck.Oid, Sensitive = !xpoCheck.Disabled };
+                TouchButtonIconWithText buttonMB = new TouchButtonIconWithText("touchButtonMB_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], xpoMB.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], xpoMB.ButtonIcon)), _sizeBasePaymentButtonIcon, _sizeBasePaymentButton.Width, _sizeBasePaymentButton.Height) { CurrentButtonOid = xpoMB.Oid, Sensitive = !xpoMB.Disabled };
+                TouchButtonIconWithText buttonCreditCard = new TouchButtonIconWithText("touchButtonCreditCard_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], xpoCreditCard.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], xpoCreditCard.ButtonIcon)), _sizeBasePaymentButtonIcon, _sizeBasePaymentButton.Width, _sizeBasePaymentButton.Height) { CurrentButtonOid = xpoCreditCard.Oid, Sensitive = !xpoCreditCard.Disabled };
                 /* IN009142 */
-                TouchButtonIconWithText buttonDebitCard = new TouchButtonIconWithText("touchButtonDebitCard_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], xpoDebitCard.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], xpoDebitCard.ButtonIcon)), _sizeBasePaymentButtonIcon, _sizeBasePaymentButton.Width, _sizeBasePaymentButton.Height) { CurrentButtonOid = xpoDebitCard.Oid, Sensitive = !xpoDebitCard.Disabled };
-                TouchButtonIconWithText buttonVisa = new TouchButtonIconWithText("touchButtonVisa_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], xpoVisa.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], xpoVisa.ButtonIcon)), _sizeBasePaymentButtonIcon, _sizeBasePaymentButton.Width, _sizeBasePaymentButton.Height) { CurrentButtonOid = xpoVisa.Oid, Sensitive = !xpoVisa.Disabled };
-                TouchButtonIconWithText buttonCurrentAccount = new TouchButtonIconWithText("touchButtonCurrentAccount_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], xpoCurrentAccount.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], xpoCurrentAccount.ButtonIcon)), _sizeBasePaymentButtonIcon, _sizeBaseDialogDefaultButton.Width, _sizeBaseDialogDefaultButton.Height) { CurrentButtonOid = xpoCurrentAccount.Oid, Sensitive = !xpoCurrentAccount.Disabled };
-                TouchButtonIconWithText buttonCustomerCard = new TouchButtonIconWithText("touchButtonCustomerCard_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], xpoCustomerCard.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], xpoCustomerCard.ButtonIcon)), _sizeBasePaymentButtonIcon, _sizeBaseDialogDefaultButton.Width, _sizeBaseDialogDefaultButton.Height) { CurrentButtonOid = xpoCustomerCard.Oid, Sensitive = !xpoCustomerCard.Disabled };
+                TouchButtonIconWithText buttonDebitCard = new TouchButtonIconWithText("touchButtonDebitCard_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], xpoDebitCard.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], xpoDebitCard.ButtonIcon)), _sizeBasePaymentButtonIcon, _sizeBasePaymentButton.Width, _sizeBasePaymentButton.Height) { CurrentButtonOid = xpoDebitCard.Oid, Sensitive = !xpoDebitCard.Disabled };
+                TouchButtonIconWithText buttonVisa = new TouchButtonIconWithText("touchButtonVisa_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], xpoVisa.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], xpoVisa.ButtonIcon)), _sizeBasePaymentButtonIcon, _sizeBasePaymentButton.Width, _sizeBasePaymentButton.Height) { CurrentButtonOid = xpoVisa.Oid, Sensitive = !xpoVisa.Disabled };
+                TouchButtonIconWithText buttonCurrentAccount = new TouchButtonIconWithText("touchButtonCurrentAccount_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], xpoCurrentAccount.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], xpoCurrentAccount.ButtonIcon)), _sizeBasePaymentButtonIcon, _sizeBaseDialogDefaultButton.Width, _sizeBaseDialogDefaultButton.Height) { CurrentButtonOid = xpoCurrentAccount.Oid, Sensitive = !xpoCurrentAccount.Disabled };
+                TouchButtonIconWithText buttonCustomerCard = new TouchButtonIconWithText("touchButtonCustomerCard_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], xpoCustomerCard.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], xpoCustomerCard.ButtonIcon)), _sizeBasePaymentButtonIcon, _sizeBaseDialogDefaultButton.Width, _sizeBaseDialogDefaultButton.Height) { CurrentButtonOid = xpoCustomerCard.Oid, Sensitive = !xpoCustomerCard.Disabled };
                 //Secondary Buttons
                 //Events
                 buttonMoney.Clicked += buttonMoney_Clicked;
@@ -240,10 +194,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
                 //Labels
-                Label labelTotal = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_price_to_pay") + ":");
-                Label labelDelivery = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_deliver") + ":");
-                Label labelChange = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_change") + ":");
-                _labelTotalValue = new Label(SharedUtils.DecimalToStringCurrency(_articleBagFullPayment.TotalFinal))
+                Label labelTotal = new Label(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_price_to_pay") + ":");
+                Label labelDelivery = new Label(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_deliver") + ":");
+                Label labelChange = new Label(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_change") + ":");
+                _labelTotalValue = new Label(SharedUtils.DecimalToStringCurrency(ArticleBagFullPayment.TotalFinal))
                 {
                     //Total Width
                     WidthRequest = 135
@@ -302,13 +256,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //Customer Name
                 CriteriaOperator criteriaOperatorCustomerName = null;
 				/* IN009202 */
-                _entryBoxSelectCustomerName = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(_sourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_customer"), "Name", "Name", null, criteriaOperatorCustomerName, KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericPlus, false);
+                _entryBoxSelectCustomerName = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(_sourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_customer"), "Name", "Name", null, criteriaOperatorCustomerName, KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericPlus, false);
                 _entryBoxSelectCustomerName.ClosePopup += delegate
                 {
                     //IN009284 POS - Pagamento conta-corrente - Cliente por defeito 
-                    if (_processFinanceDocumentParameter != null)
+                    if (ProcessFinanceDocumentParameter != null)
                     {
-                        GetCustomerDetails("Oid", _processFinanceDocumentParameter.Customer.ToString());
+                        GetCustomerDetails("Oid", ProcessFinanceDocumentParameter.Customer.ToString());
                         Validate();
                     }
                     //IN009284 ENDS
@@ -321,7 +275,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _entryBoxSelectCustomerName.EntryValidation.Changed += _entryBoxSelectCustomerName_Changed;
 
                 //Customer Discount
-                _entryBoxCustomerDiscount = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_discount"), KeyboardMode.Alfa, SharedSettings.RegexPercentage, true);
+                _entryBoxCustomerDiscount = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_discount"), KeyboardMode.Alfa, SharedSettings.RegexPercentage, true);
                 _entryBoxCustomerDiscount.EntryValidation.Text = SharedUtils.DecimalToString(0.0m);
                 _entryBoxCustomerDiscount.EntryValidation.Sensitive = false;
                 _entryBoxCustomerDiscount.EntryValidation.Changed += _entryBoxCustomerDiscount_Changed;
@@ -331,26 +285,26 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 };
 
                 //Address
-                _entryBoxCustomerAddress = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_address"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericPlus, false);/* IN009253 */
+                _entryBoxCustomerAddress = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_address"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericPlus, false);/* IN009253 */
                 _entryBoxCustomerAddress.EntryValidation.Changed += delegate { Validate(); };
 
                 //Locality
-                _entryBoxCustomerLocality = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_locality"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericPlus, false);/* IN009253 */
+                _entryBoxCustomerLocality = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_locality"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericPlus, false);/* IN009253 */
                 _entryBoxCustomerLocality.EntryValidation.Changed += delegate { Validate(); };
 
                 //ZipCode
-                _entryBoxCustomerZipCode = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_zipcode"), KeyboardMode.Alfa, DataLayerSettings.ConfigurationSystemCountry.RegExZipCode, false);
+                _entryBoxCustomerZipCode = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_zipcode"), KeyboardMode.Alfa, DataLayerSettings.ConfigurationSystemCountry.RegExZipCode, false);
                 _entryBoxCustomerZipCode.WidthRequest = 150;
                 _entryBoxCustomerZipCode.EntryValidation.Changed += delegate { Validate(); };
                 
                 //City
-                _entryBoxCustomerCity = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_city"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericPlus, false);/* IN009253 */
+                _entryBoxCustomerCity = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_city"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericPlus, false);/* IN009253 */
                 _entryBoxCustomerCity.WidthRequest = 200;
                 _entryBoxCustomerCity.EntryValidation.Changed += delegate { Validate(); };
 
                 //Country
                 CriteriaOperator criteriaOperatorCustomerCountry = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1) AND (RegExFiscalNumber IS NOT NULL AND RegExZipCode IS NOT NULL)");
-                _entryBoxSelectCustomerCountry = new XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry>(pSourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_country"), "Designation", "Oid", _intialValueConfigurationCountry, criteriaOperatorCustomerCountry, SharedSettings.RegexGuid, true);
+                _entryBoxSelectCustomerCountry = new XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry>(pSourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_country"), "Designation", "Oid", _intialValueConfigurationCountry, criteriaOperatorCustomerCountry, SharedSettings.RegexGuid, true);
                 _entryBoxSelectCustomerCountry.WidthRequest = 235;
                 //Extra Protection to prevent Customer without Country
                 if (_entryBoxSelectCustomerCountry.Value != null) _entryBoxSelectCustomerCountry.EntryValidation.Validate(_entryBoxSelectCustomerCountry.Value.Oid.ToString());
@@ -358,7 +312,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _entryBoxSelectCustomerCountry.ButtonSelectValue.Sensitive = false;
                 _entryBoxSelectCustomerCountry.ClosePopup += delegate
                 {
-                    _selectedCountry = _entryBoxSelectCustomerCountry.Value;
+                    Country = _entryBoxSelectCustomerCountry.Value;
                     //Require to Update RegEx and Criteria to filter Country Clients Only
                     _entryBoxSelectCustomerFiscalNumber.EntryValidation.Rule = _entryBoxSelectCustomerCountry.Value.RegExFiscalNumber;
                     _entryBoxCustomerZipCode.EntryValidation.Rule = _entryBoxSelectCustomerCountry.Value.RegExZipCode;
@@ -372,12 +326,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 //FiscalNumber
                 CriteriaOperator criteriaOperatorFiscalNumber = null;
-                _entryBoxSelectCustomerFiscalNumber = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(_sourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_fiscal_number"), "FiscalNumber", "FiscalNumber", null, criteriaOperatorFiscalNumber, KeyboardMode.AlfaNumeric, _intialValueConfigurationCountry.RegExFiscalNumber, false);
+                _entryBoxSelectCustomerFiscalNumber = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(_sourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_fiscal_number"), "FiscalNumber", "FiscalNumber", null, criteriaOperatorFiscalNumber, KeyboardMode.AlfaNumeric, _intialValueConfigurationCountry.RegExFiscalNumber, false);
                 _entryBoxSelectCustomerFiscalNumber.EntryValidation.Changed += _entryBoxSelectCustomerFiscalNumber_Changed;
 
                 //CardNumber
                 CriteriaOperator criteriaOperatorCardNumber = null;//Now Criteria is assigned in ApplyCriteriaToCustomerInputs();
-                _entryBoxSelectCustomerCardNumber = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(_sourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_card_number"), "CardNumber", "CardNumber", null, criteriaOperatorCardNumber, KeyboardMode.AlfaNumeric, SharedSettings.RegexAlfaNumericExtended, false);
+                _entryBoxSelectCustomerCardNumber = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(_sourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_card_number"), "CardNumber", "CardNumber", null, criteriaOperatorCardNumber, KeyboardMode.AlfaNumeric, SharedSettings.RegexAlfaNumericExtended, false);
                 _entryBoxSelectCustomerCardNumber.ClosePopup += delegate
                 {
                     if (_entryBoxSelectCustomerCardNumber.EntryValidation.Validated) GetCustomerDetails("CardNumber", _entryBoxSelectCustomerCardNumber.EntryValidation.Text);
@@ -385,11 +339,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 };
 
                 //Notes
-                _entryBoxCustomerNotes = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_notes"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericExtended, false);
+                _entryBoxCustomerNotes = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_notes"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericExtended, false);
                 _entryBoxCustomerNotes.EntryValidation.Changed += delegate { Validate(); };
 
                 //Fill Dialog Inputs with Defaults FinalConsumerEntity Values
-                if (_processFinanceDocumentParameter == null)
+                if (ProcessFinanceDocumentParameter == null)
                 {
                     //If ProcessFinanceDocumentParameter is not null fill Dialog with value from ProcessFinanceDocumentParameter, implemented for SplitPayments
                     GetCustomerDetails("Oid", SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity.ToString());
@@ -398,53 +352,53 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 else
                 {
                     //Apply Default Customer Entity
-                    GetCustomerDetails("Oid", _processFinanceDocumentParameter.Customer.ToString());
+                    GetCustomerDetails("Oid", ProcessFinanceDocumentParameter.Customer.ToString());
 
                     //Assign Totasl and Discounts Values
-                    _totalDelivery = _processFinanceDocumentParameter.TotalDelivery;
-                    _totalChange = _processFinanceDocumentParameter.TotalChange;
-                    _discountGlobal = _processFinanceDocumentParameter.ArticleBag.DiscountGlobal;
+                    TotalDelivery = ProcessFinanceDocumentParameter.TotalDelivery;
+                    TotalChange = ProcessFinanceDocumentParameter.TotalChange;
+                    DiscountGlobal = ProcessFinanceDocumentParameter.ArticleBag.DiscountGlobal;
                     // Update Visual Components
-                    _labelDeliveryValue.Text = SharedUtils.DecimalToStringCurrency(_totalDelivery);
-                    _labelChangeValue.Text = SharedUtils.DecimalToStringCurrency(_totalChange);
+                    _labelDeliveryValue.Text = SharedUtils.DecimalToStringCurrency(TotalDelivery);
+                    _labelChangeValue.Text = SharedUtils.DecimalToStringCurrency(TotalChange);
                     // Selects
-                    _selectedCustomer = (erp_customer)DataLayerUtils.GetXPGuidObject(typeof(erp_customer), _processFinanceDocumentParameter.Customer);
-                    _selectedCountry = _selectedCustomer.Country;
+                    Customer = (erp_customer)DataLayerUtils.GetXPGuidObject(typeof(erp_customer), ProcessFinanceDocumentParameter.Customer);
+                    Country = Customer.Country;
                     // PaymentMethod
-                    _selectedPaymentMethod = (fin_configurationpaymentmethod)DataLayerUtils.GetXPGuidObject(typeof(fin_configurationpaymentmethod), _processFinanceDocumentParameter.PaymentMethod);
+                    PaymentMethod = (fin_configurationpaymentmethod)DataLayerUtils.GetXPGuidObject(typeof(fin_configurationpaymentmethod), ProcessFinanceDocumentParameter.PaymentMethod);
                     // Restore Selected Payment Method, require to associate button reference to selectedPaymentMethodButton
                     if (!string.IsNullOrEmpty(pSelectedPaymentMethodButtonName)) {
                         switch (pSelectedPaymentMethodButtonName)
                         {
                             case "touchButtonMoney_Green" :
-                                _selectedPaymentMethodButton = buttonMoney;
+                                SelectedPaymentMethodButton = buttonMoney;
                                 break;
                             case "touchButtonCheck_Green" :
-                                _selectedPaymentMethodButton = buttonCheck;
+                                SelectedPaymentMethodButton = buttonCheck;
                                 break;
                             case "touchButtonMB_Green" :
-                                _selectedPaymentMethodButton = buttonMB;
+                                SelectedPaymentMethodButton = buttonMB;
                                 break;
                             case "touchButtonCreditCard_Green" :
-                                _selectedPaymentMethodButton = buttonCreditCard;
+                                SelectedPaymentMethodButton = buttonCreditCard;
                                 break;
                             /* IN009142 */
                             case "touchButtonDebitCard_Green" :
-                                _selectedPaymentMethodButton = buttonDebitCard;
+                                SelectedPaymentMethodButton = buttonDebitCard;
                                 break;
                             case "touchButtonVisa_Green":
-                                _selectedPaymentMethodButton = buttonVisa;
+                                SelectedPaymentMethodButton = buttonVisa;
                                 break;
                             case "touchButtonCurrentAccount_Green" :
-                                _selectedPaymentMethodButton = buttonCurrentAccount;
+                                SelectedPaymentMethodButton = buttonCurrentAccount;
                                 break;
                             case "touchButtonCustomerCard_Green" :
-                                _selectedPaymentMethodButton = buttonCustomerCard;
+                                SelectedPaymentMethodButton = buttonCustomerCard;
                                 break;
                         }
 
                         //Assign Payment Method after have Reference
-                        AssignPaymentMethod(_selectedPaymentMethodButton);
+                        AssignPaymentMethod(SelectedPaymentMethodButton);
                     }
 
                     //UpdateChangeValue, if we add/remove Splits we must recalculate ChangeValue
@@ -486,13 +440,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //ActionArea Buttons
                 _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);
                 _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
-                _buttonClearCustomer = ActionAreaButton.FactoryGetDialogButtonType("touchButtonClearCustomer_DialogActionArea", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_payment_dialog_clear_client"), fileIconClearCustomer);
-                _buttonNewCustomer = ActionAreaButton.FactoryGetDialogButtonType("touchButtonClearCustomer_DialogActionArea", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_button_label_new_client"), fileIconNewCustomer);
-                _buttonFullPayment = ActionAreaButton.FactoryGetDialogButtonType("touchButtonFullPayment_DialogActionArea", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_payment_dialog_full_payment"), fileIconFullPayment);
-                _buttonPartialPayment = ActionAreaButton.FactoryGetDialogButtonType("touchButtonPartialPayment_DialogActionArea", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_payment_dialog_partial_payment"), fileIconPartialPayment);
-                _buttonCurrentAccount = ActionAreaButton.FactoryGetDialogButtonType("touchButtonPartialPayment_DialogActionArea", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type_title_ft"), fileIconCurrentAccount);
+                _buttonClearCustomer = ActionAreaButton.FactoryGetDialogButtonType("touchButtonClearCustomer_DialogActionArea", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_payment_dialog_clear_client"), fileIconClearCustomer);
+                _buttonNewCustomer = ActionAreaButton.FactoryGetDialogButtonType("touchButtonClearCustomer_DialogActionArea", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_button_label_new_client"), fileIconNewCustomer);
+                _buttonFullPayment = ActionAreaButton.FactoryGetDialogButtonType("touchButtonFullPayment_DialogActionArea", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_payment_dialog_full_payment"), fileIconFullPayment);
+                _buttonPartialPayment = ActionAreaButton.FactoryGetDialogButtonType("touchButtonPartialPayment_DialogActionArea", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_payment_dialog_partial_payment"), fileIconPartialPayment);
+                _buttonCurrentAccount = ActionAreaButton.FactoryGetDialogButtonType("touchButtonPartialPayment_DialogActionArea", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type_title_ft"), fileIconCurrentAccount);
                 // Enable if has selectedPaymentMethod defined, ex when working with SplitPayments
-                _buttonOk.Sensitive = (_selectedPaymentMethod != null);
+                _buttonOk.Sensitive = (PaymentMethod != null);
                 _buttonFullPayment.Sensitive = false;
 
                 //ActionArea

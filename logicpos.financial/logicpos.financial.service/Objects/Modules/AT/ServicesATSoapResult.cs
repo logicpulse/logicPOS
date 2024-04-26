@@ -1,5 +1,4 @@
-﻿using System;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 
 namespace logicpos.financial.service.Objects.Modules.AT
 {
@@ -27,13 +26,9 @@ namespace logicpos.financial.service.Objects.Modules.AT
             get { return _returnMessage; }
             set { _returnMessage = value; }
         }
-        private string _documentNumber;
+
         [DataMember]
-        public string DocumentNumber
-        {
-            get { return _documentNumber; }
-            set { _documentNumber = value; }
-        }
+        public string DocumentNumber { get; set; }
         private string _aTDocCodeID;
         [DataMember]
         public string ATDocCodeID
@@ -65,7 +60,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
             _returnMessage = pReturnMessage;
             _returnRaw = pReturnRaw;
             //WB
-            _documentNumber = pDocumentNumber;
+            DocumentNumber = pDocumentNumber;
             _aTDocCodeID = pATDocCodeID;
         }
     }

@@ -1,7 +1,6 @@
 ﻿using DevExpress.Xpo;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial.library.App;
 using System;
 
 namespace logicpos.financial.library.Classes.WorkSession

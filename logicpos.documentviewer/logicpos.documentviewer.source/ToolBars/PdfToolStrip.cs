@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 
@@ -11,7 +10,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms.ToolBars
     /// Represents the base functionality for all PdfToolStrips
     /// </summary>
 
-    
+
 
     public class PdfToolStrip : ToolStrip
 	{

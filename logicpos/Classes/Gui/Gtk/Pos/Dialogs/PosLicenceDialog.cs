@@ -1,12 +1,10 @@
 ﻿using Gtk;
-using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Logic.License;
 using logicpos.datalayer.App;
-using logicpos.resources.Resources.Localization;
 using logicpos.shared.App;
 using Pango;
 using System;
@@ -24,49 +22,21 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private readonly TouchButtonIconWithText _buttonRegister;
         private readonly TouchButtonIconWithText _buttonContinue;
         private readonly TouchButtonIconWithText _buttonClose;
-        //UI Public
-        private EntryBoxValidation _entryBoxName;
-        public EntryBoxValidation EntryBoxName
-        {
-            get { return _entryBoxName; }
-            set { _entryBoxName = value; }
-        }
-        private EntryBoxValidation _entryBoxCompany;
-        public EntryBoxValidation EntryBoxCompany
-        {
-            get { return _entryBoxCompany; }
-            set { _entryBoxCompany = value; }
-        }
-        private EntryBoxValidation _entryBoxFiscalNumber;
-        public EntryBoxValidation EntryBoxFiscalNumber
-        {
-            get { return _entryBoxFiscalNumber; }
-            set { _entryBoxFiscalNumber = value; }
-        }
-        private EntryBoxValidation _entryBoxAddress;
-        public EntryBoxValidation EntryBoxAddress
-        {
-            get { return _entryBoxAddress; }
-            set { _entryBoxAddress = value; }
-        }
-        private EntryBoxValidation _entryBoxEmail;
-        public EntryBoxValidation EntryBoxEmail
-        {
-            get { return _entryBoxEmail; }
-            set { _entryBoxEmail = value; }
-        }
-        private EntryBoxValidation _entryBoxPhone;
-        public EntryBoxValidation EntryBoxPhone
-        {
-            get { return _entryBoxPhone; }
-            set { _entryBoxPhone = value; }
-        }
+
+        public EntryBoxValidation EntryBoxName { get; set; }
+        public EntryBoxValidation EntryBoxCompany { get; set; }
+
+        public EntryBoxValidation EntryBoxFiscalNumber { get; set; }
+        public EntryBoxValidation EntryBoxAddress { get; set; }
+
+        public EntryBoxValidation EntryBoxEmail { get; set; }
+        public EntryBoxValidation EntryBoxPhone { get; set; }
 
         public PosLicenceDialog(Window pSourceWindow, DialogFlags pDialogFlags, string pHardwareId)
                     : base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
-            string windowTitle = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_license");
+            string windowTitle = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_license");
             System.Drawing.Size windowSize = new System.Drawing.Size(890, 650);
             string fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_license.png");
 
@@ -85,8 +55,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             string fileActionContinue = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png");
 
             //ActionArea Buttons
-            _buttonRegister = new TouchButtonIconWithText("touchButtonRegister_DialogActionArea", System.Drawing.Color.Transparent, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_button_label_licence_register"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionRegister, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Sensitive = false };
-            _buttonContinue = new TouchButtonIconWithText("touchButtonContinue_DialogActionArea", System.Drawing.Color.Transparent, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_button_label_licence_continue"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionContinue, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height);
+            _buttonRegister = new TouchButtonIconWithText("touchButtonRegister_DialogActionArea", System.Drawing.Color.Transparent, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_button_label_licence_register"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionRegister, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Sensitive = false };
+            _buttonContinue = new TouchButtonIconWithText("touchButtonContinue_DialogActionArea", System.Drawing.Color.Transparent, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_button_label_licence_continue"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionContinue, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height);
             _buttonClose = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Close);
 
             //ActionArea
@@ -135,12 +105,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _hboxMain.PackStart(vboxMain, true, true, (uint)padding);
 
             //Pack VBoxMain : Welcome
-            Label labelWelcome = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_license_label_welcome"));
+            Label labelWelcome = new Label(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_license_label_welcome"));
             labelWelcome.SetAlignment(0.0F, 0.0F);
             labelWelcome.ModifyFont(FontDescription.FromString("Arial 9 bold"));
             vboxMain.PackStart(labelWelcome, false, false, (uint)padding);
             //Pack VBoxMain : Info
-            Label lableInfo = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_license_label_info"));
+            Label lableInfo = new Label(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_license_label_info"));
             lableInfo.WidthRequest = 630;
             lableInfo.ModifyFont(FontDescription.FromString("Arial 9"));
             lableInfo.Wrap = true;
@@ -159,55 +129,55 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             hboxInner.PackStart(vboxInnerRight, false, false, (uint)padding * 2);
 
             //VBoxInnerLeft 
-            Label labelInternetRegistration = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_license_label_internet_registration"));
+            Label labelInternetRegistration = new Label(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_license_label_internet_registration"));
             labelInternetRegistration.SetAlignment(0.0F, 0.0F);
             labelInternetRegistration.ModifyFont(FontDescription.FromString("Arial 10 bold"));
             vboxInnerLeft.PackStart(labelInternetRegistration, false, false, 0);
 
             //EntryBoxName
-            _entryBoxName = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_name"), KeyboardMode.AlfaNumeric, SharedSettings.RegexAlfaNumericExtended, true);
-            _entryBoxName.EntryValidation.ModifyFont(FontDescription.FromString("Courier 10"));
-            _entryBoxName.EntryValidation.Text = mockName;
-            _entryBoxName.EntryValidation.Changed += delegate { Validate(); };
-            vboxInnerLeft.PackStart(_entryBoxName, false, false, 0);
+            EntryBoxName = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_name"), KeyboardMode.AlfaNumeric, SharedSettings.RegexAlfaNumericExtended, true);
+            EntryBoxName.EntryValidation.ModifyFont(FontDescription.FromString("Courier 10"));
+            EntryBoxName.EntryValidation.Text = mockName;
+            EntryBoxName.EntryValidation.Changed += delegate { Validate(); };
+            vboxInnerLeft.PackStart(EntryBoxName, false, false, 0);
 
             //EntryBoxCompany
-            _entryBoxCompany = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_company"), KeyboardMode.AlfaNumeric, SharedSettings.RegexAlfaNumericExtended, true);
-            _entryBoxCompany.EntryValidation.Text = mockCompany;
-            _entryBoxCompany.EntryValidation.ModifyFont(FontDescription.FromString("Courier 10"));
-            _entryBoxCompany.EntryValidation.Changed += delegate { Validate(); };
-            vboxInnerLeft.PackStart(_entryBoxCompany, false, false, 0);
+            EntryBoxCompany = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_company"), KeyboardMode.AlfaNumeric, SharedSettings.RegexAlfaNumericExtended, true);
+            EntryBoxCompany.EntryValidation.Text = mockCompany;
+            EntryBoxCompany.EntryValidation.ModifyFont(FontDescription.FromString("Courier 10"));
+            EntryBoxCompany.EntryValidation.Changed += delegate { Validate(); };
+            vboxInnerLeft.PackStart(EntryBoxCompany, false, false, 0);
 
             //EntryFiscalNumber
-            _entryBoxFiscalNumber = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_fiscal_number"), KeyboardMode.Numeric, SharedSettings.RegexIntegerGreaterThanZero, true);
-            _entryBoxFiscalNumber.EntryValidation.ModifyFont(FontDescription.FromString("Courier 10"));
-            _entryBoxFiscalNumber.EntryValidation.Text = mockFiscalNumber;
-            _entryBoxFiscalNumber.EntryValidation.Changed += delegate { Validate(); };
-            vboxInnerLeft.PackStart(_entryBoxFiscalNumber, false, false, 0);
+            EntryBoxFiscalNumber = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_fiscal_number"), KeyboardMode.Numeric, SharedSettings.RegexIntegerGreaterThanZero, true);
+            EntryBoxFiscalNumber.EntryValidation.ModifyFont(FontDescription.FromString("Courier 10"));
+            EntryBoxFiscalNumber.EntryValidation.Text = mockFiscalNumber;
+            EntryBoxFiscalNumber.EntryValidation.Changed += delegate { Validate(); };
+            vboxInnerLeft.PackStart(EntryBoxFiscalNumber, false, false, 0);
 
             //EntryBoxAddress
-            _entryBoxAddress = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_address"), KeyboardMode.AlfaNumeric, SharedSettings.RegexAlfaNumericExtended, true);
-            _entryBoxAddress.EntryValidation.ModifyFont(FontDescription.FromString("Courier 10"));
-            _entryBoxAddress.EntryValidation.Text = mockAddress;
-            _entryBoxAddress.EntryValidation.Changed += delegate { Validate(); };
-            vboxInnerLeft.PackStart(_entryBoxAddress, false, false, 0);
+            EntryBoxAddress = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_address"), KeyboardMode.AlfaNumeric, SharedSettings.RegexAlfaNumericExtended, true);
+            EntryBoxAddress.EntryValidation.ModifyFont(FontDescription.FromString("Courier 10"));
+            EntryBoxAddress.EntryValidation.Text = mockAddress;
+            EntryBoxAddress.EntryValidation.Changed += delegate { Validate(); };
+            vboxInnerLeft.PackStart(EntryBoxAddress, false, false, 0);
 
             //EntryBoxEmail
-            _entryBoxEmail = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_email"), KeyboardMode.AlfaNumeric, SharedSettings.RegexEmail, true);
-            _entryBoxEmail.EntryValidation.ModifyFont(FontDescription.FromString("Courier 10"));
-            _entryBoxEmail.EntryValidation.Text = mockEmail;
-            _entryBoxEmail.EntryValidation.Changed += delegate { Validate(); };
-            vboxInnerLeft.PackStart(_entryBoxEmail, false, false, 0);
+            EntryBoxEmail = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_email"), KeyboardMode.AlfaNumeric, SharedSettings.RegexEmail, true);
+            EntryBoxEmail.EntryValidation.ModifyFont(FontDescription.FromString("Courier 10"));
+            EntryBoxEmail.EntryValidation.Text = mockEmail;
+            EntryBoxEmail.EntryValidation.Changed += delegate { Validate(); };
+            vboxInnerLeft.PackStart(EntryBoxEmail, false, false, 0);
 
             //EntryBoxPhone
-            _entryBoxPhone = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_phone"), KeyboardMode.AlfaNumeric, SharedSettings.RegexAlfaNumericExtended, true);
-            _entryBoxPhone.EntryValidation.ModifyFont(FontDescription.FromString("Courier 10"));
-            _entryBoxPhone.EntryValidation.Text = mockPhone;
-            _entryBoxPhone.EntryValidation.Changed += delegate { Validate(); };
-            vboxInnerLeft.PackStart(_entryBoxPhone, false, false, 0);
+            EntryBoxPhone = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_phone"), KeyboardMode.AlfaNumeric, SharedSettings.RegexAlfaNumericExtended, true);
+            EntryBoxPhone.EntryValidation.ModifyFont(FontDescription.FromString("Courier 10"));
+            EntryBoxPhone.EntryValidation.Text = mockPhone;
+            EntryBoxPhone.EntryValidation.Changed += delegate { Validate(); };
+            vboxInnerLeft.PackStart(EntryBoxPhone, false, false, 0);
 
             //EntryBoxHardwareId
-            _entryBoxHardwareId = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_hardware_id"), KeyboardMode.None, SharedSettings.RegexAlfaNumericExtended, true);
+            _entryBoxHardwareId = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_hardware_id"), KeyboardMode.None, SharedSettings.RegexAlfaNumericExtended, true);
             _entryBoxHardwareId.EntryValidation.ModifyFont(FontDescription.FromString("Courier 6 bold"));
             _entryBoxHardwareId.EntryValidation.Text = _hardwareId;
             _entryBoxHardwareId.EntryValidation.Sensitive = false;
@@ -215,27 +185,27 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             vboxInnerLeft.PackStart(_entryBoxHardwareId, false, false, 0);
 
             //EntryBoxSoftwareKey
-            _entryBoxSoftwareKey = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_software_key"), KeyboardMode.AlfaNumeric, SharedSettings.RegexAlfaNumericExtended, false);
+            _entryBoxSoftwareKey = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_software_key"), KeyboardMode.AlfaNumeric, SharedSettings.RegexAlfaNumericExtended, false);
             _entryBoxSoftwareKey.EntryValidation.ModifyFont(FontDescription.FromString("Courier 10"));
             _entryBoxSoftwareKey.EntryValidation.Text = mockSoftwareKey;
             _entryBoxSoftwareKey.EntryValidation.Changed += delegate { Validate(); };
             vboxInnerLeft.PackStart(_entryBoxSoftwareKey, false, false, 0);
 
             //VBoxInnerRight
-            Label labelWithoutInternetRegistration = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_license_label_without_internet_registration"));
+            Label labelWithoutInternetRegistration = new Label(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_license_label_without_internet_registration"));
             labelWithoutInternetRegistration.SetAlignment(0.0F, 0.0F);
             labelWithoutInternetRegistration.ModifyFont(FontDescription.FromString("Arial 9"));
             vboxInnerRight.PackStart(labelWithoutInternetRegistration, false, false, 0);
 
             //Info
-            Label labelWithoutInternetContactInfo = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_license_label_without_internet_contact_info"));
+            Label labelWithoutInternetContactInfo = new Label(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_license_label_without_internet_contact_info"));
             labelWithoutInternetContactInfo.Wrap = true;
             labelWithoutInternetContactInfo.ModifyFont(FontDescription.FromString("Arial 9"));
             labelWithoutInternetContactInfo.SetAlignment(0.0F, 0.0F);
             vboxInnerRight.PackStart(labelWithoutInternetContactInfo, false, false, 0);
 
             //Company
-            Label labelWithoutInternetContactCompanyNameLabel = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_company"));
+            Label labelWithoutInternetContactCompanyNameLabel = new Label(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_company"));
             labelWithoutInternetContactCompanyNameLabel.SetAlignment(0.0F, 0.0F);
             labelWithoutInternetContactCompanyNameLabel.ModifyFont(FontDescription.FromString("Arial 10 bold"));
             vboxInnerRight.PackStart(labelWithoutInternetContactCompanyNameLabel, false, false, (uint)padding * 2);
@@ -246,7 +216,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             //Phone
             string[] primaryPhones = SharedSettings.AppCompanyPhone.Split(new string[] { " / " }, StringSplitOptions.None);
-            Label labelWithoutInternetContactCompanyPhoneLabel = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_phone"));
+            Label labelWithoutInternetContactCompanyPhoneLabel = new Label(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_phone"));
             labelWithoutInternetContactCompanyPhoneLabel.SetAlignment(0.0F, 0.0F);
             labelWithoutInternetContactCompanyPhoneLabel.ModifyFont(FontDescription.FromString("Arial 10 bold"));
             vboxInnerRight.PackStart(labelWithoutInternetContactCompanyPhoneLabel, false, false, (uint)padding * 2);
@@ -256,7 +226,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             vboxInnerRight.PackStart(labelWithoutInternetContactCompanyPhoneValue, false, false, 0);
 
             //Email
-            Label labelWithoutInternetContactCompanyEmailLabel = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_email"));
+            Label labelWithoutInternetContactCompanyEmailLabel = new Label(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_email"));
             labelWithoutInternetContactCompanyEmailLabel.SetAlignment(0.0F, 0.0F);
             labelWithoutInternetContactCompanyEmailLabel.ModifyFont(FontDescription.FromString("Arial 10 bold"));
             vboxInnerRight.PackStart(labelWithoutInternetContactCompanyEmailLabel, false, false, (uint)padding * 2);
@@ -266,7 +236,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             vboxInnerRight.PackStart(labelWithoutInternetContactCompanyEmailValue, false, false, 0);
 
             //Email
-            Label labelWithoutInternetContactCompanyWebLabel = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_website"));
+            Label labelWithoutInternetContactCompanyWebLabel = new Label(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_website"));
             labelWithoutInternetContactCompanyWebLabel.SetAlignment(0.0F, 0.0F);
             labelWithoutInternetContactCompanyWebLabel.ModifyFont(FontDescription.FromString("Arial 10 bold"));
             vboxInnerRight.PackStart(labelWithoutInternetContactCompanyWebLabel, false, false, (uint)padding * 2);
@@ -280,12 +250,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private void Validate()
         {
             _buttonRegister.Sensitive = (
-                _entryBoxName.EntryValidation.Validated &&
-                _entryBoxCompany.EntryValidation.Validated &&
-                _entryBoxFiscalNumber.EntryValidation.Validated &&
-                _entryBoxAddress.EntryValidation.Validated &&
-                _entryBoxEmail.EntryValidation.Validated &&
-                _entryBoxPhone.EntryValidation.Validated && _entryBoxSoftwareKey.EntryValidation.Validated
+                EntryBoxName.EntryValidation.Validated &&
+                EntryBoxCompany.EntryValidation.Validated &&
+                EntryBoxFiscalNumber.EntryValidation.Validated &&
+                EntryBoxAddress.EntryValidation.Validated &&
+                EntryBoxEmail.EntryValidation.Validated &&
+                EntryBoxPhone.EntryValidation.Validated && _entryBoxSoftwareKey.EntryValidation.Validated
             );
         }
 
@@ -304,7 +274,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             if (!SharedFramework.PluginLicenceManager.ConnectToWS())
             {
-                logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new System.Drawing.Size(600, 300), MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_license_ws_connection_error"));
+                logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new System.Drawing.Size(600, 300), MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_license_ws_connection_error"));
 
                 return;
             }
@@ -320,12 +290,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 //Returns ByteWrite File
                 registredLicence =SharedFramework.PluginLicenceManager.ActivateLicense(
-                    _entryBoxName.EntryValidation.Text,
-                    _entryBoxCompany.EntryValidation.Text,
-                    _entryBoxFiscalNumber.EntryValidation.Text,
-                    _entryBoxAddress.EntryValidation.Text,
-                    _entryBoxEmail.EntryValidation.Text,
-                    _entryBoxPhone.EntryValidation.Text,
+                    EntryBoxName.EntryValidation.Text,
+                    EntryBoxCompany.EntryValidation.Text,
+                    EntryBoxFiscalNumber.EntryValidation.Text,
+                    EntryBoxAddress.EntryValidation.Text,
+                    EntryBoxEmail.EntryValidation.Text,
+                    EntryBoxPhone.EntryValidation.Text,
                     _entryBoxHardwareId.EntryValidation.Text,
                     System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(),
                     _entryBoxSoftwareKey.EntryValidation.Text
@@ -338,13 +308,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 if (!LicenseRouter.WriteByteArrayToFile(registredLicence, completeFilePath))
                 {
-                    logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new System.Drawing.Size(600, 300), MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_license_ws_save_license_error"));
+                    logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new System.Drawing.Size(600, 300), MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_license_ws_save_license_error"));
                     return;
                 }
                 else
                 {
                     this.Destroy();
-                    logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new System.Drawing.Size(600, 300), MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_information"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_license_aplication_registered"));
+                    logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new System.Drawing.Size(600, 300), MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_information"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_license_aplication_registered"));
                     this.Destroy();
                     Environment.Exit(0);
                 }
@@ -353,7 +323,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 _logger.Error(ex.Message, ex);
 
-                logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new System.Drawing.Size(600, 300), MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_license_ws_connection_timeout"));
+                logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new System.Drawing.Size(600, 300), MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_license_ws_connection_timeout"));
 
                 //Keep Running
                 this.Run();

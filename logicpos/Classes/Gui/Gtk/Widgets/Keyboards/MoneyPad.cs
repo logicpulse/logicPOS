@@ -41,19 +41,10 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //Helper Vars
         private MoneyPadMode _moneyPadMode = MoneyPadMode.Money;
         private int _tempCursorPosition = 0;
-        //Public Members
-        private decimal _deliveryValue = 0.0m;
-        public decimal DeliveryValue
-        {
-            get { return _deliveryValue; }
-            set { _deliveryValue = value; }
-        }
-        private bool _validated;
-        public bool Validated
-        {
-            get { return _validated; }
-            set { _validated = value; }
-        }
+
+        public decimal DeliveryValue { get; set; } = 0.0m;
+
+        public bool Validated { get; set; }
         //Public Event Handlers
         public event EventHandler EntryChanged;
 
@@ -84,7 +75,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             _entryDeliveryValue = new EntryValidation(pSourceWindow, KeyboardMode.None, SharedSettings.RegexDecimal, true) { Text = initialValue, Alignment = 0.5F };
             _entryDeliveryValue.ModifyFont(Pango.FontDescription.FromString(fontMoneyPadTextEntry));
             //Dialog Validated Equal to Entry, Its the Only Entry in Dialog
-            _validated = _entryDeliveryValue.Validated;
+            Validated = _entryDeliveryValue.Validated;
             //Event
             _entryDeliveryValue.Changed += _entry_Changed;
 
@@ -150,8 +141,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         private void _entry_Changed(object sender, EventArgs e)
         {
             EntryValidation entry = (EntryValidation)sender;
-            _validated = entry.Validated;
-            _deliveryValue = SharedUtils.StringToDecimal(_entryDeliveryValue.Text);
+            Validated = entry.Validated;
+            DeliveryValue = SharedUtils.StringToDecimal(_entryDeliveryValue.Text);
             EntryChanged?.Invoke(sender, e);
         }
 
@@ -228,12 +219,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             if (_moneyPadMode != MoneyPadMode.Money)
             {
-                _deliveryValue = 0.0m;
+                DeliveryValue = 0.0m;
                 _moneyPadMode = MoneyPadMode.Money;
             }
 
-            _deliveryValue += pAmount;
-            _entryDeliveryValue.Text = SharedUtils.DecimalToString(_deliveryValue);
+            DeliveryValue += pAmount;
+            _entryDeliveryValue.Text = SharedUtils.DecimalToString(DeliveryValue);
         }
     }
 }

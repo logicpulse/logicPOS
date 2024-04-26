@@ -11,7 +11,6 @@ using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.Extensions;
-using logicpos.resources.Resources.Localization;
 using logicpos.shared.App;
 using logicpos.shared.Classes.Finance;
 using logicpos.shared.Classes.Orders;
@@ -39,15 +38,15 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //Delete
         private void _buttonKeyDelete_Clicked(object sender, EventArgs e)
         {
-            if (_listMode == TicketListMode.OrderMain)
+            if (ListMode == TicketListMode.OrderMain)
             {
-                ResponseType responseType = logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, new System.Drawing.Size(400, 280), MessageType.Question, ButtonsType.YesNo, string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warning"), SharedFramework.ServerVersion), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message__pos_order_cancel"));
+                ResponseType responseType = logicpos.Utils.ShowMessageTouch(SourceWindow, DialogFlags.Modal, new System.Drawing.Size(400, 280), MessageType.Question, ButtonsType.YesNo, string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warning"), SharedFramework.ServerVersion), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message__pos_order_cancel"));
 
                 if (responseType == ResponseType.Yes)
                 {
                     try
                     {
-                        _listStoreModel.Clear();
+                        ListStoreModel.Clear();
                         _listStoreModelSelectedIndex = -1;
                         _listStoreModelTotalItems = 0;
                         //Get Reference to current OrderMain
@@ -75,7 +74,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                                 documentOrderMain = (fin_documentordermain)uowSession.GetObjectByKey(typeof(fin_documentordermain), orderMain.PersistentOid);
 
                                 placeTable.TableStatus = TableStatus.Free;
-                                SharedUtils.Audit("TABLE_OPEN", string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_table_open"), placeTable.Designation));
+                                SharedUtils.Audit("TABLE_OPEN", string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_table_open"), placeTable.Designation));
                                 placeTable.DateTableClosed = DateTime.Now;
                                 placeTable.TotalOpen = 0;
                                 placeTable.Save();
@@ -118,9 +117,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         CurrentOrderDetails = orderMain.OrderTickets[orderMain.CurrentTicketId].OrderDetails;
 
                         //Always Change to OrderMain ListMode before Update Model
-                        _listMode = TicketListMode.Ticket;
+                        ListMode = TicketListMode.Ticket;
                         orderMain.CleanSessionOrder();
-                        Gdk.Color colorListMode = (_listMode == TicketListMode.Ticket) ? colorListMode = _colorPosTicketListModeTicketBackground.ToGdkColor() : colorListMode = _colorPosTicketListModeOrderMainBackground.ToGdkColor();
+                        Gdk.Color colorListMode = (ListMode == TicketListMode.Ticket) ? colorListMode = _colorPosTicketListModeTicketBackground.ToGdkColor() : colorListMode = _colorPosTicketListModeOrderMainBackground.ToGdkColor();
                         _treeView.ModifyBase(StateType.Normal, colorListMode);
                         //UpdateModel();
                         UpdateOrderStatusBar();
@@ -148,7 +147,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             try
             {
                 int i = 0;
-                var price = Convert.ToDecimal(_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price));
+                var price = Convert.ToDecimal(ListStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price));
                 //_listStoreModelSelectedIndex = _currentOrderDetails.Lines.FindLastIndex(item => item.ArticleOid == _currentDetailArticleOid && item.Properties.PriceFinal == _currentDetailArticle.Price1);
                 foreach (var item in CurrentOrderDetails.Lines)
                 {
@@ -182,8 +181,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             {       
                 //Get Article defaultQuantity
                 decimal defaultQuantity = GetArticleDefaultQuantity(_currentDetailArticleOid);
-                int i = 0;
-                var price = Convert.ToDecimal(_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price));
+                var price = Convert.ToDecimal(ListStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price));
                 //_listStoreModelSelectedIndex = _currentOrderDetails.Lines.FindIndex(item => item.ArticleOid == _currentDetailArticleOid && item.Properties.PriceFinal == _currentDetailArticle.Price1);
                 //foreach (var item in CurrentOrderDetails.Lines)
                 //{
@@ -193,10 +191,10 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 //    }
                 //    i++;
                 //}
-                decimal oldValueQnt = Convert.ToDecimal(_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Quantity));
+                decimal oldValueQnt = Convert.ToDecimal(ListStoreModel.GetValue(_treeIter, (int)TicketListColumns.Quantity));
                 if (logicpos.Utils.CheckStocks())
                 {
-                    if (!logicpos.Utils.ShowMessageMinimumStock(_sourceWindow, CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].ArticleOid, (oldValueQnt + defaultQuantity)))
+                    if (!logicpos.Utils.ShowMessageMinimumStock(SourceWindow, CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].ArticleOid, (oldValueQnt + defaultQuantity)))
                     {
                         ChangeQuantity(oldValueQnt + defaultQuantity);
                         UpdateTicketListButtons();
@@ -225,13 +223,13 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             try
             {
                 decimal oldValueQnt = CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity;
-                decimal newValueQnt = PosKeyboardDialog.RequestDecimalValue(_sourceWindow, oldValueQnt);
+                decimal newValueQnt = PosKeyboardDialog.RequestDecimalValue(SourceWindow, oldValueQnt);
                 bool showMessage;
                 if (newValueQnt > 0)
                 {
                     if (logicpos.Utils.CheckStocks()) 
                     {
-                        if (!logicpos.Utils.ShowMessageMinimumStock(_sourceWindow, CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].ArticleOid, newValueQnt, out showMessage))
+                        if (!logicpos.Utils.ShowMessageMinimumStock(SourceWindow, CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].ArticleOid, newValueQnt, out showMessage))
                         {
                             if (showMessage)
                             {
@@ -256,13 +254,13 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             try
             {
                 //Get Index of article with correct final price
-                _listStoreModelSelectedIndex = _currentOrderDetails.Lines.FindIndex(item => item.ArticleOid == (Guid)_listStoreModel.GetValue(_treeIter, 
-                    (int)TicketListColumns.ArticleId) && Math.Round(Convert.ToDecimal(item.Properties.PriceFinal), SharedSettings.DecimalRoundTo) == Convert.ToDecimal(_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price)));
+                _listStoreModelSelectedIndex = CurrentOrderDetails.Lines.FindIndex(item => item.ArticleOid == (Guid)ListStoreModel.GetValue(_treeIter, 
+                    (int)TicketListColumns.ArticleId) && Math.Round(Convert.ToDecimal(item.Properties.PriceFinal), SharedSettings.DecimalRoundTo) == Convert.ToDecimal(ListStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price)));
 
                 decimal oldValueQuantity = CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity;
                 decimal oldValuePrice = CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.PriceFinal;
 
-                MoneyPadResult result = PosMoneyPadDialog.RequestDecimalValue(_sourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_moneypad_product_price"), oldValuePrice);
+                MoneyPadResult result = PosMoneyPadDialog.RequestDecimalValue(SourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_moneypad_product_price"), oldValuePrice);
                 decimal newValuePrice = result.Value;
 
                 if (result.Response == ResponseType.Ok && newValuePrice > 0)
@@ -279,7 +277,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     );
                     int countDuplicatedArticles = 0;
                     int i = 0;
-                    foreach (var line in _currentOrderDetails.Lines)
+                    foreach (var line in CurrentOrderDetails.Lines)
                     {
                         if (_listStoreModelSelectedIndex == i)
                         {
@@ -292,20 +290,20 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     if (countDuplicatedArticles > 1)
                     {
                         int oldIndex = _listStoreModelSelectedIndex;
-                        _listStoreModelSelectedIndex = _currentOrderDetails.Lines.FindIndex(item => item.ArticleOid == (Guid)_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.ArticleId) 
+                        _listStoreModelSelectedIndex = CurrentOrderDetails.Lines.FindIndex(item => item.ArticleOid == (Guid)ListStoreModel.GetValue(_treeIter, (int)TicketListColumns.ArticleId) 
                         && item.Properties.PriceFinal == priceProperties.PriceFinal);
                         oldValueQuantity += CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity;
                         CurrentOrderDetails.Delete(oldIndex);
-                        _listStoreModel.Remove(ref _treeIter);
+                        ListStoreModel.Remove(ref _treeIter);
                     }
 
                     //Update orderDetails 
                     CurrentOrderDetails.Update(_listStoreModelSelectedIndex, oldValueQuantity, priceProperties.PriceUser);
                     //Update TreeView Model Price
-                    _listStoreModel.SetValue(_treeIter, (int)TicketListColumns.Price, SharedUtils.DecimalToString(newValuePrice));
+                    ListStoreModel.SetValue(_treeIter, (int)TicketListColumns.Price, SharedUtils.DecimalToString(newValuePrice));
                     //Update Total
                     decimal totalLine = CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.TotalFinal;
-                    _listStoreModel.SetValue(_treeIter, (int)TicketListColumns.Total, SharedUtils.DecimalToString(totalLine));
+                    ListStoreModel.SetValue(_treeIter, (int)TicketListColumns.Total, SharedUtils.DecimalToString(totalLine));
                 }
                 UpdateTicketListTotal();                
                 UpdateModel();
@@ -354,13 +352,13 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     if (!SharedFramework.AppUseParkingTicketModule && logicpos.Utils.PrintTicket())
                     {
                         // TK016249 Impressoras - Diferenciação entre Tipos 
-                        FrameworkCalls.PrintOrderRequest(_sourceWindow, DataLayerFramework.LoggedTerminal.ThermalPrinter, orderMain, orderTicket);
+                        FrameworkCalls.PrintOrderRequest(SourceWindow, DataLayerFramework.LoggedTerminal.ThermalPrinter, orderMain, orderTicket);
                     }
-                    FrameworkCalls.PrintArticleRequest(_sourceWindow, orderTicket);
+                    FrameworkCalls.PrintArticleRequest(SourceWindow, orderTicket);
                 }
 
                 //Change Mode
-                _listMode = TicketListMode.OrderMain;
+                ListMode = TicketListMode.OrderMain;
                 //Reset TicketList TotalItems Counter
                 _listStoreModelTotalItemsTicketListMode = 0;
                 UpdateOrderStatusBar();
@@ -385,7 +383,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 //Request Finish Open Ticket
                 if (_listStoreModelTotalItemsTicketListMode > 0)
                 {
-                    ResponseType dialogResponse = logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.OkCancel, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_message_dialog"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_request_close_open_ticket"));
+                    ResponseType dialogResponse = logicpos.Utils.ShowMessageTouch(SourceWindow, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.OkCancel, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_message_dialog"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_request_close_open_ticket"));
                     if (dialogResponse != ResponseType.Ok)
                     {
                         return;
@@ -409,7 +407,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 }
 
                 //Always Change to OrderMain ListMode before Update Model
-                _listMode = TicketListMode.OrderMain;
+                ListMode = TicketListMode.OrderMain;
 
                 //Update Model and Gui
                 UpdateModel();
@@ -425,12 +423,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 // Get Dialog Reference
                 if (button.Name.Equals("touchButtonPosTicketPadPayments_Green"))
                 {
-                    dialog = new PosPaymentsDialog(_sourceWindow, DialogFlags.DestroyWithParent, articleBag);
+                    dialog = new PosPaymentsDialog(SourceWindow, DialogFlags.DestroyWithParent, articleBag);
                 }
                 else
                 if (button.Name.Equals("touchButtonPosTicketPadSplitAccount_Green"))
                 {
-                    dialog = new PosSplitPaymentsDialog(_sourceWindow, DialogFlags.DestroyWithParent, _articleBag, this);
+                    dialog = new PosSplitPaymentsDialog(SourceWindow, DialogFlags.DestroyWithParent, _articleBag, this);
                 }
 
                 // Shared code to call Both Dialogs
@@ -459,7 +457,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         private void _buttonKeyBarCode_Clicked(object sender, EventArgs e)
         {
             string fileWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_input_text_barcode.png");
-            logicpos.Utils.ResponseText dialogResponse = logicpos.Utils.GetInputText(_sourceWindow, DialogFlags.Modal, fileWindowIcon, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_barcode_articlecode"), string.Empty, SharedSettings.RegexAlfaNumericExtended, true);
+            logicpos.Utils.ResponseText dialogResponse = logicpos.Utils.GetInputText(SourceWindow, DialogFlags.Modal, fileWindowIcon, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_barcode_articlecode"), string.Empty, SharedSettings.RegexAlfaNumericExtended, true);
 
             if (dialogResponse.ResponseType == ResponseType.Ok)
             {
@@ -478,7 +476,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         private void _buttonKeyCardCode_Clicked(object sender, EventArgs e)
         {
             string fileWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_pos_ticketpad_card_entry.png");
-            logicpos.Utils.ResponseText dialogResponse = logicpos.Utils.GetInputText(_sourceWindow, DialogFlags.Modal, fileWindowIcon, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_cardcode_small"), string.Empty, SharedSettings.RegexAlfaNumericExtended, true);
+            logicpos.Utils.ResponseText dialogResponse = logicpos.Utils.GetInputText(SourceWindow, DialogFlags.Modal, fileWindowIcon, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_cardcode_small"), string.Empty, SharedSettings.RegexAlfaNumericExtended, true);
 
             if (dialogResponse.ResponseType == ResponseType.Ok)
             {
@@ -530,8 +528,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     if (xNewTable.TableStatus != TableStatus.Free)
                     {
                         logicpos.Utils.ShowMessageTouch(
-                            GlobalApp.PosMainWindow, DialogFlags.Modal, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"),
-                            resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_table_is_not_free")
+                            GlobalApp.PosMainWindow, DialogFlags.Modal, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"),
+                            resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_table_is_not_free")
                         );
                     }
                     else
@@ -539,12 +537,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         //Put Old table Status to Free
                         xOldTable.TableStatus = TableStatus.Free;
                         xOldTable.Save();
-                        SharedUtils.Audit("TABLE_OPEN", string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_table_open"), xOldTable.Designation));
+                        SharedUtils.Audit("TABLE_OPEN", string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_table_open"), xOldTable.Designation));
 
                         //Put New table Status to Open
                         xNewTable.TableStatus = TableStatus.Open;
                         xNewTable.Save();
-                        SharedUtils.Audit("TABLE_CLOSE", string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_table_close"), xNewTable.Designation));
+                        SharedUtils.Audit("TABLE_CLOSE", string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_table_close"), xNewTable.Designation));
 
                         //Change DocumentOrderMain table, If OpenOrder Exists in That table
                         Guid documentOrderMainOid = currentOrderMain.GetOpenTableFieldValueGuid(xOldTable.Oid, "Oid");
@@ -574,7 +572,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         private void _buttonKeyListMode_Clicked(object sender, EventArgs e)
         {
             //Toggle Mode
-            _listMode = (_listMode == TicketListMode.Ticket) ? TicketListMode.OrderMain : TicketListMode.Ticket;
+            ListMode = (ListMode == TicketListMode.Ticket) ? TicketListMode.OrderMain : TicketListMode.Ticket;
             //ArticleBag
             UpdateModel();
             //CurrentOrderDetails = CurrentOrderDetailsAll;
@@ -595,8 +593,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             try
             {
-                _listStoreModelSelectedIndex = _currentOrderDetails.Lines.FindIndex(item => item.ArticleOid == (Guid)_listStoreModel.GetValue(_treeIter,
-       (int)TicketListColumns.ArticleId) && item.Properties.PriceNet == Convert.ToDecimal(_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price)));
+                _listStoreModelSelectedIndex = CurrentOrderDetails.Lines.FindIndex(item => item.ArticleOid == (Guid)ListStoreModel.GetValue(_treeIter,
+       (int)TicketListColumns.ArticleId) && item.Properties.PriceNet == Convert.ToDecimal(ListStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price)));
                 //_logger.Debug(string.Format("PriceUser: [{0}]", _currentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.PriceUser));
                 // Round Price before Send to WeighingBalance
                 decimal articlePricePerKg = decimal.Round(CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.PriceFinal, 2, MidpointRounding.AwayFromZero);
@@ -631,7 +629,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 //_currentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity = quantity;
                 if (logicpos.Utils.CheckStocks())
                 {
-                    if(logicpos.Utils.ShowMessageMinimumStock(_sourceWindow, _currentOrderDetails.Lines[_listStoreModelSelectedIndex].ArticleOid, quantity))
+                    if(logicpos.Utils.ShowMessageMinimumStock(SourceWindow, CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].ArticleOid, quantity))
                     {
                         ChangeQuantity(quantity);
                     }
@@ -663,9 +661,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             CriteriaOperator criteria = CriteriaOperator.Parse("(Disabled = 0 OR Disabled IS NULL)");
             PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewConfigurationVatExceptionReason>
               dialog = new PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewConfigurationVatExceptionReason>(
-                _sourceWindow,
+                SourceWindow,
                 DialogFlags.DestroyWithParent,
-                    resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_vat_exemption_reason"),
+                    resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_vat_exemption_reason"),
                 GlobalApp.MaxWindowSize,
                 null, //XpoDefaultValue
                 criteria,

@@ -14,29 +14,18 @@ namespace logicpos.datalayer.DataLayer.Xpo
         //Private Members
         private readonly Dictionary<string, int> _fieldIndex;
 
-        //Public Properties
-        private SelectStatementResultRow[] _meta;
-        public SelectStatementResultRow[] Meta
-        {
-            get { return _meta; }
-            set { _meta = value; }
-        }
+        public SelectStatementResultRow[] Meta { get; set; }
 
-        private SelectStatementResultRow[] _data;
-        public SelectStatementResultRow[] Data
-        {
-            get { return _data; }
-            set { _data = value; }
-        }
+        public SelectStatementResultRow[] Data { get; set; }
 
         public XPSelectData(SelectedData pSelectedData)
         {
-            _meta = pSelectedData.ResultSet[0].Rows;
-            _data = pSelectedData.ResultSet[1].Rows;
+            Meta = pSelectedData.ResultSet[0].Rows;
+            Data = pSelectedData.ResultSet[1].Rows;
 
             int i = 0;
             _fieldIndex = new Dictionary<string, int>();
-            foreach (SelectStatementResultRow field in _meta)
+            foreach (SelectStatementResultRow field in Meta)
             {
                 //_logger.Debug(string.Format("FunctionName(): FieldName: {0}[{1}]", field.Values[0].ToString(), i));
                 _fieldIndex.Add(field.Values[0].ToString(), i++);
@@ -62,14 +51,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
             bool debug = false;
 
             //Find Key
-            foreach (SelectStatementResultRow rowFieldNames in _meta)
+            foreach (SelectStatementResultRow rowFieldNames in Meta)
             {
                 if (pSearchField.ToUpper() == rowFieldNames.Values[0].ToString().ToUpper())
                 {
                     if (debug) _logger.Debug(string.Format("GetValueFromField(): FindKey : [{0}]==[{1}]", pSearchField.ToUpper(), rowFieldNames.Values[0].ToString().ToUpper()));
 
                     //Find First Value
-                    foreach (SelectStatementResultRow rowData in _data)
+                    foreach (SelectStatementResultRow rowData in Data)
                     {
                         // Get Field, require to check if Null
                         var field = rowData.Values[GetFieldIndex(rowFieldNames.Values[0].ToString())];
@@ -100,7 +89,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         {
             string csvOutput = string.Empty;
 
-            foreach (SelectStatementResultRow row in _meta)
+            foreach (SelectStatementResultRow row in Meta)
                 csvOutput += string.Format("{0}\t{1}\t{2}{3}", row.Values[0], row.Values[1], row.Values[2], Environment.NewLine);
 
             if (pLogOutput) _logger.Debug(string.Format("GenMetaCsv():{0}{1}{2}", Environment.NewLine, csvOutput, Environment.NewLine));
@@ -112,15 +101,15 @@ namespace logicpos.datalayer.DataLayer.Xpo
         {
             string csvOutput = string.Empty;
 
-            foreach (SelectStatementResultRow rowFieldNames in _meta)
+            foreach (SelectStatementResultRow rowFieldNames in Meta)
             {
                 csvOutput += string.Format("{0}\t", rowFieldNames.Values[0]);
             }
             csvOutput += Environment.NewLine;
 
-            foreach (SelectStatementResultRow rowData in _data)
+            foreach (SelectStatementResultRow rowData in Data)
             {
-                foreach (SelectStatementResultRow rowFieldNames in _meta)
+                foreach (SelectStatementResultRow rowFieldNames in Meta)
                 {
                     csvOutput += string.Format("{0}\t", rowData.Values[GetFieldIndex(rowFieldNames.Values[0].ToString())]);
                 }

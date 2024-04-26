@@ -1,7 +1,6 @@
 ﻿using Gtk;
 using logicpos.App;
 using logicpos.Classes.Enums.App;
-using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.shared.App;
 using System;
 using System.Collections;
@@ -18,12 +17,7 @@ namespace logicpos.Classes.Logic.License
         public static bool showDebug = true;
         private readonly string hardwareID = string.Empty;
 
-        private bool _loadApp = false;
-        public bool LoadApp
-        {
-            get { return _loadApp; }
-            set { _loadApp = value; }
-        }
+        public bool LoadApp { get; set; } = false;
 
         public LicenseRouter()
         {
@@ -35,7 +29,7 @@ namespace logicpos.Classes.Logic.License
                 _logger.Debug("Debug Mode");
             }
 
-            _loadApp = true;
+            LoadApp = true;
 
 #if (DEBUG)
             SharedFramework.LicenseDate = DateTime.Now.ToString("dd/MM/yyyy");
@@ -177,11 +171,11 @@ namespace logicpos.Classes.Logic.License
 
             if (showDebug)
             {
-                _logger.Debug("loadPOS = " + _loadApp);
+                _logger.Debug("loadPOS = " + LoadApp);
                 //LicenseUIResult licenseUIResult = PosLicenceDialog.GetLicenseDetails(hardwareID);
             }
 
-            if (_loadApp)
+            if (LoadApp)
             {
                 if (showDebug)
                 {
@@ -348,20 +342,6 @@ namespace logicpos.Classes.Logic.License
             }
 
             return currentDir;
-        }
-
-        private static byte[] ReadFileToByteArray(string filePath)
-        {
-            try
-            {
-                byte[] bytes = File.ReadAllBytes(filePath);
-                return bytes;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error("Error ReadFileToByteArray!", ex);
-            }
-            return null;
         }
 
         public static bool WriteByteArrayToFile(byte[] buff, string filePath)

@@ -2,12 +2,13 @@ using Gtk;
 using logicpos.App;
 using logicpos.Classes.Enums.App;
 using logicpos.Classes.Logic.License;
+using logicpos.Classes.Utils;
 using logicpos.datalayer.App;
 using logicpos.plugin.contracts;
 using logicpos.plugin.library;
 using logicpos.shared.App;
+using Org.BouncyCastle.Bcpg;
 using System;
-using System.Collections;
 using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
@@ -17,56 +18,64 @@ using System.Threading;
 
 namespace logicpos
 {
-    internal class MainApp
+    internal class Program
     {
         private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-       
+
         private static readonly bool _forceShowPluginLicenceWithDebugger = false;
 
-        /* IN009203 - Mutex */
-        private static readonly string _appGuid = "bfb677c2-a44a-46f8-93ab-d2d6a54e0b53";
+        private static readonly SingleProgramInstance _singleProgramInstance = new SingleProgramInstance();
 
-        private static readonly SingleProgramInstance _singleProgramInstance = new SingleProgramInstance(_appGuid);
+        private static Thread _loadingThread;
 
-        private static Thread loadingThread;
+        public static Dialog DialogLoading { get; set; }
 
-        public static Dialog DialogLoading;
+        public static string ConfigurationFile => AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
+
+        public static void InitializeSettings()
+        {
+            DataLayerFramework.Settings = ConfigurationManager.AppSettings;
+        }
+
+        public static void InitializeGtk()
+        {
+            Application.Init();
+            Theme.ParseTheme(true, false);
+        }
+
+        public static void ShowSplashScreen()
+        {
+            _logger.Debug("void StartApp() :: Show 'loading'");
+            DialogLoading = Utils.GetThreadDialog(new Window("POS start loading"), true);
+            _loadingThread = new Thread(() => DialogLoading.Run());
+            _loadingThread.Start();
+        }
 
         [STAThread]
         public static void Main(string[] args)
         {
             try
             {
-                // Show current Configuration File
-                _logger.Debug(string.Format("Use configuration file: [{0}]", AppDomain.CurrentDomain.SetupInformation.ConfigurationFile));
+                _logger.Debug($"Use configuration file: [{ConfigurationFile}]");
 
-                /* IN009203 - Mutex block */
                 using (_singleProgramInstance)
                 {
-                    // Init Settings Main Config Settings
-                    DataLayerFramework.Settings = ConfigurationManager.AppSettings;
+                    InitializeSettings();
 
-                    // BootStrap Paths
-                    InitPaths();
+                    Paths.InitializePaths();
 
-                    // Required before LicenseRouter
-                    Application.Init();
-
-                    //Render GTK Theme : In Start to Style UI in BootStrap Dialogs Error
-                    Theme.ParseTheme(true, false);
-
-                    /* Show "loading" */
-                    _logger.Debug("void StartApp() :: Show 'loading'");
-                    DialogLoading = Utils.GetThreadDialog(new Window("POS start loading"), true);
-                    loadingThread = new Thread(() => DialogLoading.Run());
-                    loadingThread.Start();
-
+                    InitializeGtk();
+                    
+                    ShowSplashScreen();
+                   
                     //Start Loading plugins / resources
                     FirstSteps();
 
                     // Flush pending events to keep the GUI reponsive
                     while (Application.EventsPending())
+                    {
                         Application.RunIteration();
+                    }
 
                     /* IN009203 - prevent lauching multiple instances of application */
                     if (_singleProgramInstance.IsSingleInstance)
@@ -83,7 +92,7 @@ namespace logicpos
                             //logicpos.shared.App.CustomRegion.RegisterCustomRegion();
                             //Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(DataLayerFramework.Settings["customCultureResourceDefinition"]);
                         }
-                        Utils.ShowMessageNonTouch(null, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_pos_instance_already_running"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_information"));
+                        Utils.ShowMessageNonTouch(null, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_pos_instance_already_running"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_information"));
                         return;
                     }
                 }
@@ -105,7 +114,7 @@ namespace logicpos
                 SharedFramework.PluginContainer = new PluginContainer(DataLayerFramework.Path["plugins"].ToString());
 
                 // PluginSoftwareVendor
-                SharedFramework.PluginSoftwareVendor = (SharedFramework.PluginContainer.GetFirstPluginOfType<ISoftwareVendor>());
+                SharedFramework.PluginSoftwareVendor = SharedFramework.PluginContainer.GetFirstPluginOfType<ISoftwareVendor>();
                 if (SharedFramework.PluginSoftwareVendor != null)
                 {
                     // Show Loaded Plugin
@@ -118,11 +127,8 @@ namespace logicpos
                 else
                 {
                     // Show Loaded Plugin
-                    _logger.Error(string.Format("Error missing required plugin type Installed: [{0}]", typeof(ISoftwareVendor)));
+                    _logger.Error($"Error missing required plugin type Installed: [{typeof(ISoftwareVendor)}]");
                 }
-
-
-
 
                 // Init Stock Module
                 POSFramework.StockManagementModule = (SharedFramework.PluginContainer.GetFirstPluginOfType<IStockManagementModule>());
@@ -130,22 +136,22 @@ namespace logicpos
                 // Try to Get LicenceManager IntellilockPlugin if in Release 
                 if (!Debugger.IsAttached || _forceShowPluginLicenceWithDebugger)
                 {
-                   SharedFramework.PluginLicenceManager = (SharedFramework.PluginContainer.GetFirstPluginOfType<ILicenceManager>());
+                    SharedFramework.PluginLicenceManager = (SharedFramework.PluginContainer.GetFirstPluginOfType<ILicenceManager>());
                     // Show Loaded Plugin
                     if (SharedFramework.PluginLicenceManager != null)
                     {
-                        _logger.Debug(string.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ILicenceManager),SharedFramework.PluginLicenceManager.Name));
+                        _logger.Debug(string.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ILicenceManager), SharedFramework.PluginLicenceManager.Name));
                     }
                 }
 
-                loadingThread.Abort();
+                _loadingThread.Abort();
 
                 DialogLoading.Destroy();
             }
             catch (Exception ex)
             {
                 _logger.Error(ex.Message, ex);
-                loadingThread.Abort();
+                _loadingThread.Abort();
                 DialogLoading.Destroy();
             }
 
@@ -195,52 +201,6 @@ namespace logicpos
 
             LogicPos logicPos = new LogicPos();
             logicPos.StartApp(AppMode.FrontOffice);
-        }
-
-        private static void InitPaths()
-        {
-            // Init Paths
-            DataLayerFramework.Path = new Hashtable
-            {
-                { "assets", SharedUtils.OSSlash(DataLayerFramework.Settings["pathAssets"]) },
-                { "images", SharedUtils.OSSlash(DataLayerFramework.Settings["pathImages"]) },
-                { "keyboards", SharedUtils.OSSlash(DataLayerFramework.Settings["pathKeyboards"]) },
-                { "themes", SharedUtils.OSSlash(DataLayerFramework.Settings["pathThemes"]) },
-                { "sounds", SharedUtils.OSSlash(DataLayerFramework.Settings["pathSounds"]) },
-                { "resources", SharedUtils.OSSlash(DataLayerFramework.Settings["pathResources"]) },
-                { "reports", SharedUtils.OSSlash(DataLayerFramework.Settings["pathReports"]) },
-                { "temp", SharedUtils.OSSlash(DataLayerFramework.Settings["pathTemp"]) },
-                { "cache", SharedUtils.OSSlash(DataLayerFramework.Settings["pathCache"]) },
-                { "plugins", SharedUtils.OSSlash(DataLayerFramework.Settings["pathPlugins"]) },
-                { "documents", SharedUtils.OSSlash(DataLayerFramework.Settings["pathDocuments"]) },
-                { "certificates", SharedUtils.OSSlash(DataLayerFramework.Settings["pathCertificates"]) }
-            };
-            //Create Directories
-            SharedUtils.CreateDirectory(SharedUtils.OSSlash(Convert.ToString(DataLayerFramework.Path["temp"])));
-            SharedUtils.CreateDirectory(SharedUtils.OSSlash(Convert.ToString(DataLayerFramework.Path["cache"])));
-            SharedUtils.CreateDirectory(SharedUtils.OSSlash(Convert.ToString(DataLayerFramework.Path["documents"])));
-            SharedUtils.CreateDirectory(SharedUtils.OSSlash(string.Format(@"{0}Database\Other", Convert.ToString(DataLayerFramework.Path["resources"]))));
-            SharedUtils.CreateDirectory(SharedUtils.OSSlash(string.Format(@"{0}Database\{1}\Other", Convert.ToString(DataLayerFramework.Path["resources"]), DataLayerFramework.Settings["databaseType"], @"Database\MSSqlServer")));
-            SharedUtils.CreateDirectory(SharedUtils.OSSlash(string.Format(@"{0}Database\{1}\Other", Convert.ToString(DataLayerFramework.Path["resources"]), DataLayerFramework.Settings["databaseType"], @"Database\SQLite")));
-            SharedUtils.CreateDirectory(SharedUtils.OSSlash(string.Format(@"{0}Database\{1}\Other", Convert.ToString(DataLayerFramework.Path["resources"]), DataLayerFramework.Settings["databaseType"], @"Database\MySql")));
-        }
-
-        public static void InitPathsPrefs()
-        {
-            try
-            {
-                // PreferencesValues
-                // Require to add end Slash, Prefs DirChooser dont add extra Slash in the End
-                DataLayerFramework.Path.Add("backups", SharedUtils.OSSlash(SharedFramework.PreferenceParameters["PATH_BACKUPS"] + '/'));
-                DataLayerFramework.Path.Add("saftpt", SharedUtils.OSSlash(SharedFramework.PreferenceParameters["PATH_SAFTPT"] + '/'));
-                //Create Directories
-                SharedUtils.CreateDirectory(SharedUtils.OSSlash(Convert.ToString(DataLayerFramework.Path["backups"])));
-                SharedUtils.CreateDirectory(SharedUtils.OSSlash(Convert.ToString(DataLayerFramework.Path["saftpt"])));
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
         }
 
         //IN009296 BackOffice - Mudar o idioma da aplicação

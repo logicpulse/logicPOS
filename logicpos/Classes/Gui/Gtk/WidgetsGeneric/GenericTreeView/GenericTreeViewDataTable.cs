@@ -1,10 +1,8 @@
 ﻿using Gtk;
-using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.resources.Resources.Localization;
 using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
@@ -191,7 +189,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                     if (fieldValue.GetType() == typeof(bool))
                     {
                         bool boolValue = Convert.ToBoolean(fieldValue);
-                        fieldValue = (boolValue) ? resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_treeview_true") : resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_treeview_false");
+                        fieldValue = (boolValue) ? resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_treeview_true") : resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_treeview_false");
                     }
                     else
                     {

@@ -1,6 +1,4 @@
 ﻿using Gtk;
-using logicpos.financial;
-using System;
 using System.Data;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric

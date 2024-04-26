@@ -18,24 +18,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             get { return _keyboardMode; }
             set { _keyboardMode = value; }
         }
-        private TextView _textView;
-        public TextView TextView
-        {
-            get { return _textView; }
-            set { _textView = value; }
-        }
-        private TextBuffer _value;
-        public TextBuffer Value
-        {
-            get { return _value; }
-            set { _value = value; }
-        }
-        private ScrolledWindow _scrolledWindow;
-        public ScrolledWindow ScrolledWindow
-        {
-            get { return _scrolledWindow; }
-            set { _scrolledWindow = value; }
-        }
+
+        public TextView TextView { get; set; }
+        public TextBuffer Value { get; set; }
+
+        public ScrolledWindow ScrolledWindow { get; set; }
 
         //Constructor
         public EntryMultiline()
@@ -48,29 +35,29 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             _keyboardMode = pKeyboardMode;
 
             //Init
-            _textView = new TextView();
-            _textView.WrapMode = WrapMode.WordChar;
+            TextView = new TextView();
+            TextView.WrapMode = WrapMode.WordChar;
             //ScrolledWindow
-            _scrolledWindow = new ScrolledWindow();
-            _scrolledWindow.BorderWidth = 2;
-            _scrolledWindow.SetPolicy(PolicyType.Never, PolicyType.Automatic);
-            _scrolledWindow.Add(_textView);
+            ScrolledWindow = new ScrolledWindow();
+            ScrolledWindow.BorderWidth = 2;
+            ScrolledWindow.SetPolicy(PolicyType.Never, PolicyType.Automatic);
+            ScrolledWindow.Add(TextView);
 
             //Init Value Reference
-            _value = _textView.Buffer;
+            Value = TextView.Buffer;
 
             //Pack
-            Add(_scrolledWindow);
+            Add(ScrolledWindow);
 
             //Events
-            _textView.Buffer.Changed += Buffer_Changed;
-            _textView.KeyReleaseEvent += _textView_KeyReleaseEvent;
+            TextView.Buffer.Changed += Buffer_Changed;
+            TextView.KeyReleaseEvent += _textView_KeyReleaseEvent;
         }
 
         private void Buffer_Changed(object sender, EventArgs e)
         {
             //Update value Reference
-            _value = _textView.Buffer;
+            Value = TextView.Buffer;
         }
 
         private void _textView_KeyReleaseEvent(object o, KeyReleaseEventArgs args)

@@ -14,8 +14,6 @@ namespace logicpos.datalayer.DataLayer
         )]
     public class XPGuidObjectAttribute : Attribute
     {
-        // Valid on String Type Only, we need a String field to Store Encrypted Base64 Strings Like 'ng7cy5csklaIUIanFeOP7Q=='
-        private bool _encrypted;
-        public bool Encrypted { get => _encrypted; set => _encrypted = value; }
+        public bool Encrypted { get; set; }
     }
 }

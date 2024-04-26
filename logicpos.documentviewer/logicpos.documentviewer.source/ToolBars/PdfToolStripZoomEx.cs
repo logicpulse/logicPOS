@@ -57,88 +57,17 @@ namespace Patagames.Pdf.Net.Controls.WinForms.ToolBars
 				}
 			}
 		}
-		#endregion
 
-		#region Constructor, Destructor, Initialisation
+        #endregion
+        #region Constructor, Destructor, Initialisation
 
-		private ToolStripItem CreateZoomDropDown()
-		{
-			var btn = new ToolStripDropDownButton(Properties.PdfToolStrip.btnZoomComboText);
-			btn.Name = "btnDropDownZoomEx";
-			btn.ToolTipText = Properties.PdfToolStrip.btnZoomComboToolTipText;
-			btn.DisplayStyle = ToolStripItemDisplayStyle.Text;
-			btn.DropDownOpening += ZoomLevel_DropDownOpening;
+        #endregion
 
-			ToolStripMenuItem item = null;
-			for (int i = ZoomLevel.Length - 1; i >= 0; i--)
-			{
-				item = new ToolStripMenuItem(string.Format("{0:0.00}%", ZoomLevel[i]));
-				item.Name = "btnZoomLevel_" + ZoomLevel[i].ToString().Replace(".", "_").Replace(",", "_");
-				item.Tag = i;
-				item.Click += ZoomLevel_Click;
-				btn.DropDownItems.Add(item);
-			}
-			btn.DropDownItems.Add(new ToolStripSeparator());
-
-			item = new ToolStripMenuItem(
-				Properties.PdfToolStrip.btnExportDoc.Replace("\r\n", " "),
-				Properties.PdfToolStrip.btnActualSize16Image,
-				btn_ActualSizeClick,
-				"btnActualSizeEx");
-			item.ToolTipText = Properties.PdfToolStrip.btnActualSizeToolTipText;
-			btn.DropDownItems.Add(item);
-
-			item = new ToolStripMenuItem(
-				Properties.PdfToolStrip.btnFitPageText.Replace("\r\n", " "),
-				Properties.PdfToolStrip.btnFitPage16Image,
-				btn_FitPageClick,
-				"btnFitPageEx");
-			item.ToolTipText = Properties.PdfToolStrip.btnFitPageToolTipText;
-			btn.DropDownItems.Add(item);
-
-			item = new ToolStripMenuItem(
-				Properties.PdfToolStrip.btnFitWidthText.Replace("\r\n", " "),
-				Properties.PdfToolStrip.btnFitWidth16Image,
-				btn_FitWidthClick,
-				"btnFitWidthEx");
-			item.ToolTipText = Properties.PdfToolStrip.btnFitWidthToolTipText;
-			btn.DropDownItems.Add(item);
-
-			item = new ToolStripMenuItem(
-				Properties.PdfToolStrip.btnFitHeightText.Replace("\r\n", " "),
-				Properties.PdfToolStrip.btnFitHeight16Image,
-				btn_FitHeightClick,
-				"btnFitHeightEx");
-			item.ToolTipText = Properties.PdfToolStrip.btnFitHeightToolTipText;
-			btn.DropDownItems.Add(item);
-
-			return btn;
-		}
-
-		private ToolStripItem CreateTrackBar()
-		{
-			var btn = new ToolStripTrackBar();
-			btn.Name = "btnTrackBar";
-			btn.AutoSize = false;
-			btn.Size = new System.Drawing.Size(_trackBarWidth, _trackBarHeight);
-			var tb = btn.TrackBar;
-			tb.AutoSize = false;
-			tb.TickStyle = TickStyle.None;
-			tb.Maximum = ZoomLevel.Length - 1;
-			tb.Minimum = 0;
-			tb.LargeChange = 1;
-			tb.SmallChange = 1;
-			tb.ValueChanged += TrackBar_ValueChanged;
-			return btn;
-		}
-
-		#endregion
-
-		#region Overriding
-		/// <summary>
-		/// Create all buttons and add its into toolbar. Override this method to create custom buttons
-		/// </summary>
-		protected override void InitializeButtons()
+        #region Overriding
+        /// <summary>
+        /// Create all buttons and add its into toolbar. Override this method to create custom buttons
+        /// </summary>
+        protected override void InitializeButtons()
 		{
 			//var btn = CreateZoomDropDown();
 			//this.Items.Add(btn);

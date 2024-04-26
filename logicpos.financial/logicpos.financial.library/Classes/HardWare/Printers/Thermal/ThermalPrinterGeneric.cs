@@ -1,6 +1,5 @@
 ﻿using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial.library.App;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Enums;
 using logicpos.printer.generic;
 using logicpos.shared.App;
@@ -17,31 +16,18 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
         private readonly string _encoding = string.Empty;
         private readonly string _line = string.Empty;
         private readonly char _lineChar = '-';
-        //Public
-        private sys_configurationprinters _printer;
-        public sys_configurationprinters Printer
-        {
-            get { return _printer; }
-            set { _printer = value; }
-        }
+
+        public sys_configurationprinters Printer { get; set; }
         private int _maxCharsPerLineNormal = 0;
         public int MaxCharsPerLineNormal
         {
             get { return _maxCharsPerLineNormal; }
             set { _maxCharsPerLineNormal = value; }
         }
-        private int _maxCharsPerLineNormalBold = 0;
-        public int MaxCharsPerLineNormalBold
-        {
-            get { return _maxCharsPerLineNormalBold; }
-            set { _maxCharsPerLineNormalBold = value; }
-        }
-        private int _maxCharsPerLineSmall;
-        public int MaxCharsPerLineSmall
-        {
-            get { return _maxCharsPerLineSmall; }
-            set { _maxCharsPerLineSmall = value; }
-        }
+
+        public int MaxCharsPerLineNormalBold { get; set; } = 0;
+
+        public int MaxCharsPerLineSmall { get; set; }
 
         public ThermalPrinterGeneric(sys_configurationprinters pPrinter)
             : this(pPrinter, SharedSettings.PrinterThermalEncoding)
@@ -64,11 +50,11 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
             : base(pEncoding)
         {
             //Parameters
-            _printer = pPrinter;
+            Printer = pPrinter;
             _encoding = pEncoding;
             _maxCharsPerLineNormal = pMaxCharsPerLineNormal;
-            _maxCharsPerLineNormalBold = pMaxCharsPerLineNormalBold;
-            _maxCharsPerLineSmall = pMaxCharsPerLineSmall;
+            MaxCharsPerLineNormalBold = pMaxCharsPerLineNormalBold;
+            MaxCharsPerLineSmall = pMaxCharsPerLineSmall;
             //Other
             _line = new string(_lineChar, _maxCharsPerLineNormal);
         }
@@ -80,34 +66,34 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
 				//TK016310 Configuração Impressoras Windows 
                 if (IsLinux)
                 {
-                    _logger.Info(_printer.PrinterType.Token);
-                    _logger.Info(_printer.Designation);
-                    _logger.Info(_printer.NetworkName);
-                    switch (_printer.PrinterType.Token)
+                    _logger.Info(Printer.PrinterType.Token);
+                    _logger.Info(Printer.Designation);
+                    _logger.Info(Printer.NetworkName);
+                    switch (Printer.PrinterType.Token)
                     {
                         case "THERMAL_PRINTER_WINDOWS":
-                            printer.genericwindows.Print.WindowsPrint(_printer.NetworkName, getByteArray());
+                            printer.genericwindows.Print.WindowsPrint(Printer.NetworkName, getByteArray());
                             break;
                         case "THERMAL_PRINTER_LINUX":
-                            printer.genericlinux.Print.LinuxPrint(_printer.NetworkName, getByteArray());
+                            printer.genericlinux.Print.LinuxPrint(Printer.NetworkName, getByteArray());
                             break;
                         case "THERMAL_PRINTER_SOCKET":
-                            printer.genericsocket.Print.SocketPrint(_printer.NetworkName, getByteArray());
+                            printer.genericsocket.Print.SocketPrint(Printer.NetworkName, getByteArray());
                             break;
                     }
                 }
                 else
                 {
-                    switch (_printer.PrinterType.Token)
+                    switch (Printer.PrinterType.Token)
                     {
                         case "THERMAL_PRINTER_WINDOWS":
-                            printer.genericusb.Print.USBPrintWindows(_printer.Designation, getByteArray());
+                            printer.genericusb.Print.USBPrintWindows(Printer.Designation, getByteArray());
                             break;
                         case "THERMAL_PRINTER_LINUX":
-                            printer.genericusb.Print.USBPrintWindows(_printer.NetworkName, getByteArray());
+                            printer.genericusb.Print.USBPrintWindows(Printer.NetworkName, getByteArray());
                             break;
                         case "THERMAL_PRINTER_SOCKET":
-                            printer.genericusb.Print.USBPrintWindows(_printer.NetworkName, getByteArray());
+                            printer.genericusb.Print.USBPrintWindows(Printer.NetworkName, getByteArray());
                             break;
                     }
                 }
@@ -215,7 +201,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
             WriteLine(_line);
             WriteLine("ÁÉÍÓÚ-1234567890-1234567890-1234567890-1234567890-1234567890-1234567890".Substring(0, _maxCharsPerLineNormal));
             WriteLine("ÁÉÍÓÚ-1234567890-1234567890-1234567890-1234567890-1234567890-1234567890".Substring(0, _maxCharsPerLineNormal), (byte)PrintingStyle.Bold);
-            WriteLine("ÁÉÍÓÚ-1234567890-1234567890-1234567890-1234567890-1234567890-1234567890".Substring(0, _maxCharsPerLineSmall), (byte)PrintingStyle.DoubleWidth);
+            WriteLine("ÁÉÍÓÚ-1234567890-1234567890-1234567890-1234567890-1234567890-1234567890".Substring(0, MaxCharsPerLineSmall), (byte)PrintingStyle.DoubleWidth);
             WriteLine("LINE");
             LineFeed();
             Cut(true);

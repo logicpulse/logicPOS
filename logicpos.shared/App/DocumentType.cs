@@ -15,9 +15,9 @@ namespace logicpos.shared.App
         //Log4Net
         private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static readonly DocumentType TRANSPORT_DOCUMENT = new DocumentType(resources.CustomResources.GetCustomResources(datalayer.App.DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type_title_gt"), SharedSettings.XpoOidDocumentFinanceTypeTransportationGuide, Enums.DocumentType.WayBill, "GT", false, true, 0, true, true, true, 2, false);
-        public static readonly DocumentType CREDIT_SLIP = new DocumentType(resources.CustomResources.GetCustomResources(datalayer.App.DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type_title_nc"), SharedSettings.XpoOidDocumentFinanceTypeCreditNote, Enums.DocumentType.Invoice, "NC", false, false, 1, false, true, true, 1, false);
-        public static readonly DocumentType DELIVERY_NOTE = new DocumentType(resources.CustomResources.GetCustomResources(datalayer.App.DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type_title_gr"), SharedSettings.XpoOidDocumentFinanceTypeDeliveryNote, Enums.DocumentType.WayBill, "GR", false, true, 0, true, true, true, 2, false);
+        public static readonly DocumentType TRANSPORT_DOCUMENT = new DocumentType(resources.CustomResources.GetCustomResource(datalayer.App.DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type_title_gt"), SharedSettings.XpoOidDocumentFinanceTypeTransportationGuide, Enums.DocumentType.WayBill, "GT", false, true, 0, true, true, true, 2, false);
+        public static readonly DocumentType CREDIT_SLIP = new DocumentType(resources.CustomResources.GetCustomResource(datalayer.App.DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type_title_nc"), SharedSettings.XpoOidDocumentFinanceTypeCreditNote, Enums.DocumentType.Invoice, "NC", false, false, 1, false, true, true, 1, false);
+        public static readonly DocumentType DELIVERY_NOTE = new DocumentType(resources.CustomResources.GetCustomResource(datalayer.App.DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type_title_gr"), SharedSettings.XpoOidDocumentFinanceTypeDeliveryNote, Enums.DocumentType.WayBill, "GR", false, true, 0, true, true, true, 2, false);
 
         public static IEnumerable<DocumentType> Values
         {

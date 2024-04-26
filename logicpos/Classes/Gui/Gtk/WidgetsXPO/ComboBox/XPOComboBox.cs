@@ -26,30 +26,28 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
         private Dictionary<Guid, TreeIter> _treeInterDictionary;
         private ListStore _comboBoxListStore;
 
-        //Public Properties
-        private XPGuidObject _value;
-        public XPGuidObject Value
-        {
-            get { return _value; }
-            set { _value = value; }
-        }
+        public XPGuidObject Value { get; set; }
 
+        [Obsolete]
         public XPOComboBox(Session pXpoSession, Type pXPGuidObjectType, XPGuidObject pCurrentValue, string pFieldLabel, CriteriaOperator pCriteria)
         {
             InitComboBox(pXpoSession, pXPGuidObjectType, pCurrentValue, pFieldLabel, pCriteria);
         }
 
+        [Obsolete]
         public XPOComboBox(Session pXpoSession, Type pXPGuidObjectType, XPGuidObject pCurrentValue, string pFieldLabel, CriteriaOperator pCriteria, SortProperty[] pSortProperty = null)
         {
             InitComboBox(pXpoSession, pXPGuidObjectType, pCurrentValue, pFieldLabel, pCriteria, pSortProperty);
         }
 
         //IN:009261 Overload for default value selected
+        [Obsolete]
         public XPOComboBox(Session pXpoSession, Type pXPGuidObjectType, XPGuidObject pCurrentValue, string pFieldLabel, CriteriaOperator pCriteria, SortProperty[] pSortProperty = null, int active = 0, XPCollection pXPCollection = null)
         {
             InitComboBox(pXpoSession, pXPGuidObjectType, pCurrentValue, pFieldLabel, pCriteria, pSortProperty, active, pXPCollection);
         }
 
+        [Obsolete]
         public void InitComboBox(Session pXpoSession, Type pXPGuidObjectType, XPGuidObject pCurrentValue, string pFieldLabel, CriteriaOperator pCriteria, SortProperty[] pSortProperty = null, int active = 0, XPCollection pXPCollection = null)
         {
             //Required to Force Combo to be same Height has Entrys
@@ -125,7 +123,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             _comboBoxListStore = new ListStore(typeof(string), typeof(XPGuidObject));
 
             //Aways Default to Null Value - Undefined, even if Collection is Empty
-            tempItemIter = _comboBoxListStore.AppendValues(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_combobox_undefined"), null);
+            tempItemIter = _comboBoxListStore.AppendValues(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_combobox_undefined"), null);
             _treeInterDictionary.Add(new Guid(), tempItemIter);
             //Default Selected
             currentItemIter = tempItemIter;
@@ -163,7 +161,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
 
             if (combo.GetActiveIter(out iter))
             {
-                _value = (XPGuidObject)combo.Model.GetValue(iter, 1);
+                Value = (XPGuidObject)combo.Model.GetValue(iter, 1);
             };
         }
     }

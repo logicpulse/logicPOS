@@ -1,6 +1,4 @@
 ﻿using logicpos.datalayer.App;
-using logicpos.financial.library.App;
-using logicpos.resources.Resources.Localization;
 using logicpos.shared.App;
 using System;
 using System.Globalization;
@@ -119,7 +117,7 @@ namespace logicpos.Classes.Formatters
             try
             {
                 decimal quantity = Convert.ToDecimal(arg);
-                result = (quantity > 0) ? resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_stock_movement_in") : resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_stock_movement_out");
+                result = (quantity > 0) ? resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_stock_movement_in") : resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_stock_movement_out");
             }
             catch (Exception ex)
             {

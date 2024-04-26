@@ -22,37 +22,13 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         private HBox _navigator;
         private readonly Color _colorPagePadHotButtonBackground = DataLayerFramework.Settings["colorPagePadHotButtonBackground"].StringToColor();
 
-        //Public Properties
-        private TouchButtonIconWithText _buttonPrev;
-        public TouchButtonIconWithText ButtonPrev
-        {
-            get { return _buttonPrev; }
-        }
-        private TouchButtonIconWithText _buttonNext;
-        public TouchButtonIconWithText ButtonNext
-        {
-            get { return _buttonNext; }
-        }
+        public TouchButtonIconWithText ButtonPrev { get; private set; }
+        public TouchButtonIconWithText ButtonNext { get; private set; }
 
-        private List<PagePadPage> _pages;
-        internal List<PagePadPage> Pages
-        {
-            get { return _pages; }
-            set { _pages = value; }
-        }
-        private int _currentPageIndex = 0;
-        public int CurrentPageIndex
-        {
-            get { return _currentPageIndex; }
-            set { _currentPageIndex = value; }
-        }
+        internal List<PagePadPage> Pages { get; set; }
+        public int CurrentPageIndex { get; set; } = 0;
 
-        private PagePadPage _activePage;
-        internal PagePadPage ActivePage
-        {
-            get { return _activePage; }
-            set { _activePage = value; }
-        }
+        internal PagePadPage ActivePage { get; set; }
 
         //Custom Events
         public event EventHandler PageChanged;
@@ -74,19 +50,19 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             string iconNext = SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/icon_pos_pagepad_next.png"));
 
             //Parameters
-            _pages = pPages;
+            Pages = pPages;
 
             HBox navigatorButtons = new HBox(true, 0);
-            _buttonPrev = new TouchButtonIconWithText("buttonPrev", _colorPagePadHotButtonBackground, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_button_label_prev_pages_toolbar"), fontPagePadNavigatorButton, Color.White, iconPrev, sizePagesPadNavigatorButtonIcon, sizePagesPadNavigatorButton.Width, sizePagesPadNavigatorButton.Height) { Sensitive = false };
-            _buttonNext = new TouchButtonIconWithText("buttonNext", _colorPagePadHotButtonBackground, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_button_label_next_pages_toolbar"), fontPagePadNavigatorButton, Color.White, iconNext, sizePagesPadNavigatorButtonIcon, sizePagesPadNavigatorButton.Width, sizePagesPadNavigatorButton.Height);
+            ButtonPrev = new TouchButtonIconWithText("buttonPrev", _colorPagePadHotButtonBackground, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_button_label_prev_pages_toolbar"), fontPagePadNavigatorButton, Color.White, iconPrev, sizePagesPadNavigatorButtonIcon, sizePagesPadNavigatorButton.Width, sizePagesPadNavigatorButton.Height) { Sensitive = false };
+            ButtonNext = new TouchButtonIconWithText("buttonNext", _colorPagePadHotButtonBackground, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_button_label_next_pages_toolbar"), fontPagePadNavigatorButton, Color.White, iconNext, sizePagesPadNavigatorButtonIcon, sizePagesPadNavigatorButton.Width, sizePagesPadNavigatorButton.Height);
 
             //Events
-            _buttonPrev.Clicked += buttonPrev_Clicked;
-            _buttonNext.Clicked += buttonNext_Clicked;
+            ButtonPrev.Clicked += buttonPrev_Clicked;
+            ButtonNext.Clicked += buttonNext_Clicked;
 
             //Render/Pack Navigator Buttons
             int i = 0;
-            foreach (PagePadPage page in _pages)
+            foreach (PagePadPage page in Pages)
             {
                 i++;
                 page.NavigatorButton = new TouchButtonIconWithText(page.PageName, Color.Transparent, page.PageName, fontPagePadNavigatorButton, Color.White, page.PageIcon, sizePagesPadNavigatorButtonIcon, 0, sizePagesPadNavigatorButton.Height);
@@ -102,21 +78,21 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
             //Final Navigator
             _navigator = new HBox(false, 0);
-            _navigator.PackStart(_buttonPrev, false, false, 2);
+            _navigator.PackStart(ButtonPrev, false, false, 2);
             _navigator.PackStart(navigatorButtons, true, true, 2);
-            _navigator.PackStart(_buttonNext, false, false, 2);
+            _navigator.PackStart(ButtonNext, false, false, 2);
             //Pack Page Navigator
             PackStart(_navigator, false, false, 2);
 
             //Add ActivePage
-            _activePage = pPages[0];
-            PackStart(_activePage);
+            ActivePage = pPages[0];
+            PackStart(ActivePage);
         }
 
         //Implement IEnumerable Interface
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return _pages.GetEnumerator();
+            return Pages.GetEnumerator();
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -137,7 +113,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         private void buttonNext_Clicked(object sender, EventArgs e)
         {
-            if (_activePage.Validated) MovePage(true);
+            if (ActivePage.Validated) MovePage(true);
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -149,21 +125,21 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             {
                 //_logger.Debug(string.Format("_pageCurrent: [{0}/{1}]", _currentPageIndex + 1, _pages.Count));
 
-                if (_currentPageIndex == 0)
+                if (CurrentPageIndex == 0)
                 {
-                    _buttonPrev.Sensitive = false;
-                    _buttonNext.Sensitive = true;
+                    ButtonPrev.Sensitive = false;
+                    ButtonNext.Sensitive = true;
                 }
-                else if (_currentPageIndex == _pages.Count - 1)
+                else if (CurrentPageIndex == Pages.Count - 1)
                 {
-                    _buttonPrev.Sensitive = true;
+                    ButtonPrev.Sensitive = true;
                     //Enable if not in last page  && if next Page is Enabled
-                    _buttonNext.Sensitive = ((_currentPageIndex + 1 <= _pages.Count - 1) && (_pages[_currentPageIndex + 1].Enabled));
+                    ButtonNext.Sensitive = ((CurrentPageIndex + 1 <= Pages.Count - 1) && (Pages[CurrentPageIndex + 1].Enabled));
                 }
                 else
                 {
-                    _buttonPrev.Sensitive = true;
-                    _buttonNext.Sensitive = true;
+                    ButtonPrev.Sensitive = true;
+                    ButtonNext.Sensitive = true;
                 }
 
                 //Call Event Here
@@ -183,17 +159,17 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             try
             {
-                this.Remove(_activePage);
-                _activePage.NavigatorButton.Sensitive = false;
+                this.Remove(ActivePage);
+                ActivePage.NavigatorButton.Sensitive = false;
 
-                if (pNext) { _currentPageIndex++; } else { _currentPageIndex--; };
-                _activePage = _pages[_currentPageIndex];
-                this.PackStart(_activePage);
-                _activePage.NavigatorButton.Sensitive = true;
+                if (pNext) { CurrentPageIndex++; } else { CurrentPageIndex--; };
+                ActivePage = Pages[CurrentPageIndex];
+                this.PackStart(ActivePage);
+                ActivePage.NavigatorButton.Sensitive = true;
                 // Change color of current Button
-                _activePage.NavigatorButton.ModifyBg(StateType.Normal, _colorPagePadHotButtonBackground.ToGdkColor());
+                ActivePage.NavigatorButton.ModifyBg(StateType.Normal, _colorPagePadHotButtonBackground.ToGdkColor());
                 //The Trick to Show when Hidden, ex Not Packed in Dialog Expose, this way we need to ShowAll here
-                if (_activePage.Visible == false) _activePage.ShowAll();
+                if (ActivePage.Visible == false) ActivePage.ShowAll();
                 UpdateUI();
             }
             catch (Exception ex)

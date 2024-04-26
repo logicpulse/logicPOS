@@ -14,24 +14,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //Log4Net
         protected log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        //Private Fields
+        public string PageName { get; set; }
 
-        //Protected
-
-        //Public Fields
-        private string _pageName;
-        public string PageName
-        {
-            get { return _pageName; }
-            set { _pageName = value; }
-        }
-
-        private string _pageIcon;
-        public string PageIcon
-        {
-            get { return _pageIcon; }
-            set { _pageIcon = value; }
-        }
+        public string PageIcon { get; set; }
 
         protected Window _sourceWindow;
         public Window SourceWindow
@@ -47,20 +32,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             set { _validated = value; }
         }
 
-        private bool _enabled = true;
-        public bool Enabled
-        {
-            get { return _enabled; }
-            set { _enabled = value; }
-        }
+        public bool Enabled { get; set; } = true;
 
-        //Reference to Navigator Button
-        private TouchButtonIconWithText _navigatorButton;
-        public TouchButtonIconWithText NavigatorButton
-        {
-            get { return _navigatorButton; }
-            set { _navigatorButton = value; }
-        }
+        public TouchButtonIconWithText NavigatorButton { get; set; }
 
         //Required to Override Public Methods
         public abstract void Validate();
@@ -71,13 +45,13 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             //Parameters
             _sourceWindow = pSourceWindow;
-            _pageName = pPageName;
-            _pageIcon = (pPageIcon != string.Empty && File.Exists(pPageIcon))
+            PageName = pPageName;
+            PageIcon = (pPageIcon != string.Empty && File.Exists(pPageIcon))
               ? pPageIcon
               //DefaultIcon
               : SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/icon_pos_default.png"));
             if (pWidget != null) PackStart(pWidget);
-            _enabled = pEnabled;
+            Enabled = pEnabled;
         }
     }
 }

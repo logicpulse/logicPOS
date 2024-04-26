@@ -16,13 +16,7 @@ namespace logicpos.shared.Classes.Orders
     {
         private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        //Public Properties
-        private int _currentTicketId;
-        public int CurrentTicketId
-        {
-            get { return _currentTicketId; }
-            set { _currentTicketId = value; }
-        }
+        public int CurrentTicketId { get; set; }
 
         private Guid _persistentOid;
         public Guid PersistentOid
@@ -31,117 +25,51 @@ namespace logicpos.shared.Classes.Orders
             set { _persistentOid = value; }
         }
 
-        private OrderStatus _orderStatus;
-        public OrderStatus OrderStatus
-        {
-            get { return _orderStatus; }
-            set { _orderStatus = value; }
-        }
+        public OrderStatus OrderStatus { get; set; }
 
-        private OrderMainTable _table;
-        public OrderMainTable Table
-        {
-            get { return _table; }
-            set { _table = value; }
-        }
+        public OrderMainTable Table { get; set; }
 
-        private DateTime _dateStart;
-        public DateTime DateStart
-        {
-            get { return _dateStart; }
-            set { _dateStart = value; }
-        }
+        public DateTime DateStart { get; set; }
 
-        private DateTime _updatedAt;
-        public DateTime UpdatedAt
-        {
-            get { return _updatedAt; }
-            set { _updatedAt = value; }
-        }
+        public DateTime UpdatedAt { get; set; }
 
-        private Dictionary<int, OrderTicket> _orderTickets;
-        public Dictionary<int, OrderTicket> OrderTickets
-        {
-            get { return _orderTickets; }
-            set { _orderTickets = value; }
-        }
+        public Dictionary<int, OrderTicket> OrderTickets { get; set; }
 
-        //JsonIgnored Members for DB Results
-        private decimal _globalTotalGross;
         [JsonIgnore]
-        public decimal GlobalTotalGross
-        {
-            get { return _globalTotalGross; }
-            set { _globalTotalGross = value; }
-        }
+        public decimal GlobalTotalGross { get; set; }
 
-        private decimal _globalTotalDiscount;
         [JsonIgnore]
-        public decimal GlobalTotalDiscount
-        {
-            get { return _globalTotalDiscount; }
-            set { _globalTotalDiscount = value; }
-        }
+        public decimal GlobalTotalDiscount { get; set; }
 
-        private decimal _globalTotalTax;
         [JsonIgnore]
-        public decimal GlobalTotalTax
-        {
-            get { return _globalTotalTax; }
-            set { _globalTotalTax = value; }
-        }
+        public decimal GlobalTotalTax { get; set; }
 
-        private decimal _globalTotalFinal;
         [JsonIgnore]
-        public decimal GlobalTotalFinal
-        {
-            get { return _globalTotalFinal; }
-            set { _globalTotalFinal = value; }
-        }
+        public decimal GlobalTotalFinal { get; set; }
 
-        private decimal _globalTotalQuantity;
         [JsonIgnore]
-        public decimal GlobalTotalQuantity
-        {
-            get { return _globalTotalQuantity; }
-            set { _globalTotalQuantity = value; }
-        }
+        public decimal GlobalTotalQuantity { get; set; }
 
-        private int _globalTotalTickets;
         [JsonIgnore]
-        public int GlobalTotalTickets
-        {
-            get { return _globalTotalTickets; }
-            set { _globalTotalTickets = value; }
-        }
+        public int GlobalTotalTickets { get; set; }
 
-        private sys_userdetail _globalLastUser;
         [JsonIgnore]
-        public sys_userdetail GlobalLastUser
-        {
-            get { return _globalLastUser; }
-            set { _globalLastUser = value; }
-        }
+        public sys_userdetail GlobalLastUser { get; set; }
 
-        private pos_configurationplaceterminal _globalLastTerminal;
         [JsonIgnore]
-        public pos_configurationplaceterminal GlobalLastTerminal
-        {
-            get { return _globalLastTerminal; }
-            set { _globalLastTerminal = value; }
-        }
+        public pos_configurationplaceterminal GlobalLastTerminal { get; set; }
 
         //Required Parameterless Constructor for Json.NET (Load)
         public OrderMain() { }
         //Constructor without Json.NET Load, With Defaults
         public OrderMain(Guid pOrderMainOid, Guid pTableOid)
         {
-            _currentTicketId = 1;
+            CurrentTicketId = 1;
             _persistentOid = new Guid();
-            _orderStatus = OrderStatus.Null;
-            _table = new OrderMainTable(pOrderMainOid, pTableOid);
-            _dateStart = CurrentDateTimeAtomic();
-            _orderTickets = new Dictionary<int, OrderTicket>();
+            OrderStatus = OrderStatus.Null;
+            Table = new OrderMainTable(pOrderMainOid, pTableOid);
+            DateStart = CurrentDateTimeAtomic();
+            OrderTickets = new Dictionary<int, OrderTicket>();
         }
 
         /// <summary>
@@ -176,7 +104,7 @@ namespace logicpos.shared.Classes.Orders
             TaxSellType taxSellType = (datalayer.App.DataLayerSettings.AppMode == AppOperationMode.Retail || configurationPlace.MovementType.VatDirectSelling) ? TaxSellType.TakeAway : TaxSellType.Normal;
 
             //Open Table on First Finish OrderTicket
-            pos_configurationplacetable xTable = (pos_configurationplacetable)GetXPGuidObject(_sessionXpo, typeof(pos_configurationplacetable), _table.Oid);
+            pos_configurationplacetable xTable = (pos_configurationplacetable)GetXPGuidObject(_sessionXpo, typeof(pos_configurationplacetable), Table.Oid);
             //Proteção para mesas vazias, escolhe a primeira
             if (xTable == null)
             {
@@ -188,15 +116,15 @@ namespace logicpos.shared.Classes.Orders
             if (xTable.TableStatus != TableStatus.Open)
             {
                 xTable.TableStatus = TableStatus.Open;
-                SharedUtils.Audit("TABLE_OPEN", string.Format(resources.CustomResources.GetCustomResources(Settings["customCultureResourceDefinition"], "audit_message_table_open"), xTable.Designation));
+                SharedUtils.Audit("TABLE_OPEN", string.Format(resources.CustomResources.GetCustomResource(Settings["customCultureResourceDefinition"], "audit_message_table_open"), xTable.Designation));
                 xTable.DateTableOpen = CurrentDateTimeAtomic();
                 if (!isInUOW) xTable.Save();
             }
 
             //Get Current _persistentOid and _from Database
-            _persistentOid = GetOpenTableFieldValueGuid(_table.Oid, "Oid");
-            _orderStatus = (OrderStatus)GetOpenTableFieldValue(_table.Oid, "OrderStatus");
-            _updatedAt = CurrentDateTimeAtomic();
+            _persistentOid = GetOpenTableFieldValueGuid(Table.Oid, "Oid");
+            OrderStatus = (OrderStatus)GetOpenTableFieldValue(Table.Oid, "OrderStatus");
+            UpdatedAt = CurrentDateTimeAtomic();
             //Insert
             if (_persistentOid == Guid.Empty)
             {
@@ -213,7 +141,7 @@ namespace logicpos.shared.Classes.Orders
                 //After Save, Get Oid
                 _persistentOid = xOrderMain.Oid;
                 //Change to Open Status
-                _orderStatus = OrderStatus.Open;
+                OrderStatus = OrderStatus.Open;
             }
             //Update
             else
@@ -431,10 +359,10 @@ namespace logicpos.shared.Classes.Orders
             //Only increase in new ticket, else stays the same
             if (!pTicketDrecrease)
             {
-                _currentTicketId += 1;
+                CurrentTicketId += 1;
                 currentOrderMain.OrderTickets = new Dictionary<int, OrderTicket>
                 {
-                    { currentOrderMain.CurrentTicketId, new OrderTicket(this, _table.PriceType) }
+                    { currentOrderMain.CurrentTicketId, new OrderTicket(this, Table.PriceType) }
                 };
             }
 
@@ -475,20 +403,20 @@ namespace logicpos.shared.Classes.Orders
                 var totalTickets = SessionXpo.ExecuteScalar(sqlTotalTickets);
 
                 //Assign Totals
-                _globalTotalTickets = (totalTickets != null) ? Convert.ToInt32(totalTickets) : 0;
-                _globalTotalGross = articleBag.TotalFinal;
-                _globalTotalDiscount = articleBag.TotalDiscount;
-                _globalTotalTax = articleBag.TotalTax;
-                _globalTotalFinal = articleBag.TotalFinal;
-                _globalTotalQuantity = articleBag.TotalQuantity;
+                GlobalTotalTickets = (totalTickets != null) ? Convert.ToInt32(totalTickets) : 0;
+                GlobalTotalGross = articleBag.TotalFinal;
+                GlobalTotalDiscount = articleBag.TotalDiscount;
+                GlobalTotalTax = articleBag.TotalTax;
+                GlobalTotalFinal = articleBag.TotalFinal;
+                GlobalTotalQuantity = articleBag.TotalQuantity;
                 //Persist Final TotalOpen
-                pos_configurationplacetable currentTable = (pos_configurationplacetable)GetXPGuidObject(typeof(pos_configurationplacetable), _table.Oid);
+                pos_configurationplacetable currentTable = (pos_configurationplacetable)GetXPGuidObject(typeof(pos_configurationplacetable), Table.Oid);
 
                 if (currentTable != null)
                 {
                     //Required Reload, after ProcessFinanceDocument uowSession, else we get cached object, and apply changes to old object, ex we get a OpenedTable vs a ClosedTable by uowSession
                     currentTable.Reload();
-                    currentTable.TotalOpen = _globalTotalFinal;
+                    currentTable.TotalOpen = GlobalTotalFinal;
                     currentTable.Save();
                 }
 
@@ -706,16 +634,16 @@ namespace logicpos.shared.Classes.Orders
         /// </summary>
         public void CleanSessionOrder()
         {
-            _orderStatus = OrderStatus.Close;
-            _currentTicketId = 1;
+            OrderStatus = OrderStatus.Close;
+            CurrentTicketId = 1;
             _persistentOid = Guid.Empty;
-            _globalTotalGross = 0;
-            _globalTotalTax = 0;
-            _globalTotalFinal = 0;
-            _globalTotalTickets = 0;
-            _orderTickets = new Dictionary<int, OrderTicket>
+            GlobalTotalGross = 0;
+            GlobalTotalTax = 0;
+            GlobalTotalFinal = 0;
+            GlobalTotalTickets = 0;
+            OrderTickets = new Dictionary<int, OrderTicket>
             {
-                { _currentTicketId, new OrderTicket(this, _table.PriceType) }
+                { CurrentTicketId, new OrderTicket(this, Table.PriceType) }
             };
             SharedFramework.SessionApp.Write();
         }
@@ -725,14 +653,14 @@ namespace logicpos.shared.Classes.Orders
         /// </summary>
         public void AddNewTicket()
         {
-            _orderStatus = OrderStatus.Open;
-            _currentTicketId = _currentTicketId + 1;
+            OrderStatus = OrderStatus.Open;
+            CurrentTicketId = CurrentTicketId + 1;
             //_persistentOid = Guid.Empty;
-            _globalTotalGross = 0;
-            _globalTotalTax = 0;
-            _globalTotalFinal = 0;
-            _globalTotalTickets = 0;
-            _orderTickets.Add(_currentTicketId, new OrderTicket(this, _table.PriceType));
+            GlobalTotalGross = 0;
+            GlobalTotalTax = 0;
+            GlobalTotalFinal = 0;
+            GlobalTotalTickets = 0;
+            OrderTickets.Add(CurrentTicketId, new OrderTicket(this, Table.PriceType));
             SharedFramework.SessionApp.Write();
         }
 

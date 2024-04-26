@@ -1,5 +1,4 @@
-﻿using System;
-using DevExpress.Xpo;
+﻿using DevExpress.Xpo;
 
 namespace logicpos.datalayer.DataLayer.Xpo
 {

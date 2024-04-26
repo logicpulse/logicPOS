@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace logicpos.financial.library.Classes.Reports.BOs.Articles
+﻿namespace logicpos.financial.library.Classes.Reports.BOs.Articles
 {
     [FRBO(Entity = "fin_article")]
     public class FRBOArticle : FRBOBaseObject

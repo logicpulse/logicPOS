@@ -1,6 +1,4 @@
-﻿using Gtk;
-using System;
-using logicpos.datalayer.DataLayer.Xpo;
+﻿using System;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {

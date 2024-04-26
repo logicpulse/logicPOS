@@ -1,13 +1,10 @@
 ﻿using Gtk;
-using logicpos.App;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Enums.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Enums;
 using logicpos.Extensions;
-using logicpos.resources.Resources.Localization;
 using logicpos.shared.App;
 using System;
 using System.Drawing;
@@ -40,49 +37,16 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             }
         }
 
-        private EventBox _eventbox;
-        public EventBox Eventbox
-        {
-            get { return _eventbox; }
-            set { _eventbox = value; }
-        }
+        public EventBox Eventbox { get; set; }
 
-        private EntryValidation _entryPin;
-        public EntryValidation EntryPin
-        {
-            get { return _entryPin; }
-            set { _entryPin = value; }
-        }
-        private TouchButtonText _buttonKeyOK;
-        public TouchButtonText ButtonKeyOK
-        {
-            get { return _buttonKeyOK; }
-            set { _buttonKeyOK = value; }
-        }
-        private TouchButtonIcon _buttonKeyResetPassword;
-        public TouchButtonIcon ButtonKeyResetPassword
-        {
-            get { return _buttonKeyResetPassword; }
-            set { _buttonKeyResetPassword = value; }
-        }
-        private TouchButtonText _buttonKeyFrontOffice;
-        public TouchButtonText ButtonKeyFrontOffice
-        {
-            get { return _buttonKeyFrontOffice; }
-            set { _buttonKeyFrontOffice = value; }
-        }
-        private TouchButtonText _buttonKeyBackOffice;
-        public TouchButtonText ButtonKeyBackOffice
-        {
-            get { return _buttonKeyBackOffice; }
-            set { _buttonKeyBackOffice = value; }
-        }
-        private TouchButtonText _buttonKeyQuit;
-        public TouchButtonText ButtonKeyQuit
-        {
-            get { return _buttonKeyQuit; }
-            set { _buttonKeyQuit = value; }
-        }
+        public EntryValidation EntryPin { get; set; }
+        public TouchButtonText ButtonKeyOK { get; set; }
+
+        public TouchButtonIcon ButtonKeyResetPassword { get; set; }
+        public TouchButtonText ButtonKeyFrontOffice { get; set; }
+
+        public TouchButtonText ButtonKeyBackOffice { get; set; }
+        public TouchButtonText ButtonKeyQuit { get; set; }
 
         public NumberPadPin(Window pSourceWindow, string pName, Color pButtonColor, string pFont, string pFontLabelStatus, Color pFontColor, Color pFontColorLabelStatus, byte pButtonWidth, byte pButtonHeight, bool pNotLoginAuth, bool pShowSystemButtons = false, bool pVisibleWindow = false, uint pRowSpacingLabelStatus = 20, uint pRowSpacingSystemButtons = 40, byte pPadding = 3)
         {
@@ -92,28 +56,28 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             //Show or Hide System Buttons (Startup Visible, Pos Change User Invisible)
             uint tableRows = (pShowSystemButtons) ? (uint)5 : (uint)3;
 
-            _eventbox = new EventBox() { VisibleWindow = pVisibleWindow };
+            Eventbox = new EventBox() { VisibleWindow = pVisibleWindow };
 
             _table = new Table(tableRows, 3, true);
             _table.Homogeneous = false;
 
             //Pin Entry
-            _entryPin = new EntryValidation(pSourceWindow, KeyboardMode.None, SharedSettings.RegexLoginPin, true) { InvisibleChar = '*', Visibility = false };
-            _entryPin.ModifyFont(Pango.FontDescription.FromString(pFont));
-            _entryPin.Alignment = 0.5F;
+            EntryPin = new EntryValidation(pSourceWindow, KeyboardMode.None, SharedSettings.RegexLoginPin, true) { InvisibleChar = '*', Visibility = false };
+            EntryPin.ModifyFont(Pango.FontDescription.FromString(pFont));
+            EntryPin.Alignment = 0.5F;
 
             //ResetPassword
             string numberPadPinButtonPasswordResetImageFileName = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Other\pinpad_password_reset.png");
-            _buttonKeyResetPassword = new TouchButtonIcon("touchButtonKeyPasswordReset", Color.Transparent, numberPadPinButtonPasswordResetImageFileName, new Size(20, 20), 25, 25) { Sensitive = false };
+            ButtonKeyResetPassword = new TouchButtonIcon("touchButtonKeyPasswordReset", Color.Transparent, numberPadPinButtonPasswordResetImageFileName, new Size(20, 20), 25, 25) { Sensitive = false };
 
             //Start Validated
-            _entryPin.Validate();
+            EntryPin.Validate();
             //Event
-            _entryPin.Changed += _entryPin_Changed;
-            _entryPin.KeyReleaseEvent += _entryPin_KeyReleaseEvent;
+            EntryPin.Changed += _entryPin_Changed;
+            EntryPin.KeyReleaseEvent += _entryPin_KeyReleaseEvent;
 
             //Label Status
-            _labelStatus = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_pinpad_message_type_password"));
+            _labelStatus = new Label(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_pinpad_message_type_password"));
             _labelStatus.ModifyFont(Pango.FontDescription.FromString(pFontLabelStatus));
             _labelStatus.ModifyFg(StateType.Normal, pFontColorLabelStatus.ToGdkColor());
             _labelStatus.SetAlignment(0.5F, 0.5f);
@@ -135,19 +99,19 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             TouchButtonText _buttonQuitOrOk;
 
             //Outside Reference Buttons (Public)
-            _buttonKeyOK = new TouchButtonText("touchButtonKeyOK_Green", pButtonColor, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_pospinpad_ok"), pFont, pFontColor, pButtonWidth, pButtonHeight) { Sensitive = false };
+            ButtonKeyOK = new TouchButtonText("touchButtonKeyOK_Green", pButtonColor, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_pospinpad_ok"), pFont, pFontColor, pButtonWidth, pButtonHeight) { Sensitive = false };
             //_buttonKeyResetPassword = new TouchButtonText("touchButtonKeyReset_Red", pButtonColor, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_pospinpad_change_password, pFont, pFontColor, pButtonWidth, pButtonHeight) { Sensitive = false };
 
             if (pShowSystemButtons)
             {
-                _buttonKeyFrontOffice = new TouchButtonText("touchButtonKeyFrontOffice_DarkGrey", pButtonColor, "FO", pFont, pFontColor, pButtonWidth, pButtonHeight) { Sensitive = false, Visible = false };
-                _buttonKeyQuit = new TouchButtonText("touchButtonKeyQuit_DarkGrey", pButtonColor, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quit_title"), pFont, pFontColor, pButtonWidth, pButtonHeight);
-                _buttonKeyBackOffice = new TouchButtonText("touchButtonKeyBackOffice_DarkGrey", pButtonColor, "BO", pFont, pFontColor, pButtonWidth, pButtonHeight) { Sensitive = false, Visible = false };
-                _buttonQuitOrOk = _buttonKeyQuit;
+                ButtonKeyFrontOffice = new TouchButtonText("touchButtonKeyFrontOffice_DarkGrey", pButtonColor, "FO", pFont, pFontColor, pButtonWidth, pButtonHeight) { Sensitive = false, Visible = false };
+                ButtonKeyQuit = new TouchButtonText("touchButtonKeyQuit_DarkGrey", pButtonColor, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quit_title"), pFont, pFontColor, pButtonWidth, pButtonHeight);
+                ButtonKeyBackOffice = new TouchButtonText("touchButtonKeyBackOffice_DarkGrey", pButtonColor, "BO", pFont, pFontColor, pButtonWidth, pButtonHeight) { Sensitive = false, Visible = false };
+                _buttonQuitOrOk = ButtonKeyQuit;
             }
             else
             {
-                _buttonQuitOrOk = _buttonKeyOK;
+                _buttonQuitOrOk = ButtonKeyOK;
             }
 
             //_buttonKeyOK.Style.SetBgPixmap(StateType.Active, Utils.FileToPixmap("Assets/Themes/Default/Backgrounds/Windows/test.png"));
@@ -173,13 +137,13 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             //Without ResetPassword Button
             if (!pShowSystemButtons)
             {
-                _table.Attach(_entryPin, 0, 3, 0, 1, AttachOptions.Fill, AttachOptions.Fill, pPadding, pPadding);
+                _table.Attach(EntryPin, 0, 3, 0, 1, AttachOptions.Fill, AttachOptions.Fill, pPadding, pPadding);
             }
             //With ResetPassword Button
             else
             {
-                _table.Attach(_entryPin, 0, 2, 0, 1, AttachOptions.Fill, AttachOptions.Fill, pPadding, pPadding);
-                _table.Attach(_buttonKeyResetPassword, 2, 3, 0, 1, AttachOptions.Fill, AttachOptions.Fill, pPadding, pPadding);
+                _table.Attach(EntryPin, 0, 2, 0, 1, AttachOptions.Fill, AttachOptions.Fill, pPadding, pPadding);
+                _table.Attach(ButtonKeyResetPassword, 2, 3, 0, 1, AttachOptions.Fill, AttachOptions.Fill, pPadding, pPadding);
             }
             //row1
             _table.Attach(buttonKey7, 0, 1, 1, 2, AttachOptions.Fill, AttachOptions.Fill, pPadding, pPadding);
@@ -206,13 +170,13 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 //_table.Attach(_buttonKeyFrontOffice, 0, 1, 5, 6, AttachOptions.Fill, AttachOptions.Fill, pPadding, pPadding);
                 //_table.Attach(_buttonKeyOK, 0, 3, 7, 8, AttachOptions.Fill, AttachOptions.Fill, pPadding, pPadding);
                 //_table.Attach(_buttonKeyBackOffice, 2, 3, 5, 6, AttachOptions.Fill, AttachOptions.Fill, pPadding, pPadding);
-                _table.Attach(_buttonKeyOK, 0, 3, 7, 8, AttachOptions.Fill, AttachOptions.Fill, pPadding, pPadding);
+                _table.Attach(ButtonKeyOK, 0, 3, 7, 8, AttachOptions.Fill, AttachOptions.Fill, pPadding, pPadding);
                 //space between Status Message and POS Keys
                 _table.SetRowSpacing(5, pRowSpacingSystemButtons);
             }
 
-            _eventbox.Add(_table);
-            this.Add(_eventbox);
+            Eventbox.Add(_table);
+            this.Add(Eventbox);
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -222,8 +186,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             EntryValidation entry = (EntryValidation)sender;
             ClearEntryPinStatusMessage();
-            _buttonKeyOK.Sensitive = entry.Validated;
-            _buttonKeyResetPassword.Sensitive = (entry.Validated && _mode == NumberPadPinMode.Password);
+            ButtonKeyOK.Sensitive = entry.Validated;
+            ButtonKeyResetPassword.Sensitive = (entry.Validated && _mode == NumberPadPinMode.Password);
         }
 
         //Shared Button Key for Numbers
@@ -231,29 +195,29 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             TouchButtonText button = (TouchButtonText)sender;
             ClearEntryPinStatusMessage();
-            _entryPin.InsertText(button.LabelText, ref _tempCursorPosition);
+            EntryPin.InsertText(button.LabelText, ref _tempCursorPosition);
             //_entryPin.Position = _tempCursorPosition;
-            _entryPin.GrabFocus();
-            _entryPin.Position = _entryPin.Text.Length;
+            EntryPin.GrabFocus();
+            EntryPin.Position = EntryPin.Text.Length;
         }
 
         private void buttonKeyCE_Clicked(object sender, EventArgs e)
         {
             ClearEntryPinStatusMessage();
             //_entryPin.DeleteText(0, _entryPin.Text.Length);
-            _entryPin.DeleteText(_entryPin.Text.Length - 1, _entryPin.Text.Length);
+            EntryPin.DeleteText(EntryPin.Text.Length - 1, EntryPin.Text.Length);
             //_tempCursorPosition = _entryPin.Position;
-            _entryPin.GrabFocus();
-            _entryPin.Position = _entryPin.Text.Length;
+            EntryPin.GrabFocus();
+            EntryPin.Position = EntryPin.Text.Length;
         }
 
         private void _entryPin_KeyReleaseEvent(object o, KeyReleaseEventArgs args)
         {
             if (args.Event.Key.ToString().Equals("Return"))
             {
-                if (_entryPin.Validated)
+                if (EntryPin.Validated)
                 {
-                    _buttonKeyOK.Click();
+                    ButtonKeyOK.Click();
                 }
             }
         }
@@ -292,29 +256,29 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         break;
                     case NumberPadPinMode.PasswordNew:
                         //Check If New Password is Equal to Old Password using ValidatePassword
-                        if (CryptographyUtils.SaltedString.ValidateSaltedString(pUserDetail.AccessPin, _entryPin.Text))
+                        if (CryptographyUtils.SaltedString.ValidateSaltedString(pUserDetail.AccessPin, EntryPin.Text))
                         {
                             //Show Error Message
-                            ResponseType responseType = logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_change_password"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_pinpad_message_password_equal_error"));
+                            ResponseType responseType = logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_change_password"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_pinpad_message_password_equal_error"));
                             ClearEntryPinStatusMessage(true);
                         }
                         else
                         {
-                            _passwordNew = _entryPin.Text;
+                            _passwordNew = EntryPin.Text;
                             _mode = NumberPadPinMode.PasswordNewConfirm;
                             UpdateStatusLabels();
                         }
                         break;
                     case NumberPadPinMode.PasswordNewConfirm:
-                        if (_passwordNew == _entryPin.Text)
+                        if (_passwordNew == EntryPin.Text)
                         {
                             //Commit Changes
                             pUserDetail.AccessPin =  CryptographyUtils.SaltedString.GenerateSaltedString(_passwordNew);
                             pUserDetail.PasswordReset = false;
                             pUserDetail.PasswordResetDate = DataLayerUtils.CurrentDateTimeAtomic();
                             pUserDetail.Save();
-                            SharedUtils.Audit("USER_CHANGE_PASSWORD", string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_user_change_password"), pUserDetail.Name));
-                            ResponseType responseType = logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_change_password"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_pinpad_message_password_changed"));
+                            SharedUtils.Audit("USER_CHANGE_PASSWORD", string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_user_change_password"), pUserDetail.Name));
+                            ResponseType responseType = logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_change_password"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_pinpad_message_password_changed"));
                             //Start Application
                             ProcessLogin(pUserDetail);
                             //Finish Job usefull to PosPinDialog send Respond(ResponseType.Ok) when Done
@@ -322,7 +286,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         }
                         else { 
                             //Show Error Message
-                            ResponseType responseType = logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_change_password"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_pinpad_message_password_confirmation_error"));
+                            ResponseType responseType = logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_change_password"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_pinpad_message_password_confirmation_error"));
                             ClearEntryPinStatusMessage(true);
                             //Return to 
                             _mode = NumberPadPinMode.PasswordNew;
@@ -349,7 +313,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 }
 
                 //Always focus Entry
-                _entryPin.GrabFocus();
+                EntryPin.GrabFocus();
             }
             catch (Exception ex)
             {
@@ -362,7 +326,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         public bool ValidatePassword(sys_userdetail pUserDetail)
         {
             bool result = false;
-            string password = _entryPin.Text;
+            string password = EntryPin.Text;
 
             string sql = string.Format(@"
                 SELECT 
@@ -381,17 +345,17 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
                 if (resultObject != null && resultObject.GetType() == typeof(string) && CryptographyUtils.SaltedString.ValidateSaltedString(resultObject.ToString(), password))
                 {
-                    _entryPin.ModifyText(StateType.Normal, Color.Black.ToGdkColor());
-                    _entryPin.Visibility = false;
+                    EntryPin.ModifyText(StateType.Normal, Color.Black.ToGdkColor());
+                    EntryPin.Visibility = false;
                     _entryPinShowStatus = false;
                     result = true;
                 }
                 else
                 {
-                    SharedUtils.Audit("USER_loggerIN_ERROR", string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_user_loggerin_error"), pUserDetail.Name));                    
-                    _entryPin.ModifyText(StateType.Normal, Color.Red.ToGdkColor());
-                    _entryPin.Text = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "status_message_pin_error");
-                    _entryPin.Visibility = true;
+                    SharedUtils.Audit("USER_loggerIN_ERROR", string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_user_loggerin_error"), pUserDetail.Name));                    
+                    EntryPin.ModifyText(StateType.Normal, Color.Red.ToGdkColor());
+                    EntryPin.Text = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "status_message_pin_error");
+                    EntryPin.Visibility = true;
                     _entryPinShowStatus = true;
                     result = false;
                 }
@@ -410,9 +374,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             //Clean Error Message
             if (_entryPinShowStatus || pForceClear)
             {
-                _entryPin.ModifyText(StateType.Normal, Color.Black.ToGdkColor());
-                _entryPin.Text = string.Empty;
-                _entryPin.Visibility = false;
+                EntryPin.ModifyText(StateType.Normal, Color.Black.ToGdkColor());
+                EntryPin.Text = string.Empty;
+                EntryPin.Visibility = false;
                 _entryPinShowStatus = false;
             }
         }
@@ -422,23 +386,23 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             switch (_mode)
             {
                 case NumberPadPinMode.Password:
-                    _labelStatus.Text = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_pinpad_message_type_password");
+                    _labelStatus.Text = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_pinpad_message_type_password");
                     //_buttonKeyOK.LabelText = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_pospinpad_loggerin;
-                    _buttonKeyOK.LabelText = (!_notLoginAuth) ? resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_pospinpad_loggerin") : resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_pospinpad_ok");
+                    ButtonKeyOK.LabelText = (!_notLoginAuth) ? resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_pospinpad_loggerin") : resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_pospinpad_ok");
                     break;
                 case NumberPadPinMode.PasswordOld:
                     //Show message to user, to change old password
                     //ResponseType responseType = Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_change_password, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_pinpad_message_password_request_change_password);
-                    _labelStatus.Text = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_pinpad_message_type_old_password");
-                    _buttonKeyOK.LabelText = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_pospinpad_ok");
+                    _labelStatus.Text = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_pinpad_message_type_old_password");
+                    ButtonKeyOK.LabelText = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_pospinpad_ok");
                     break;
                 case NumberPadPinMode.PasswordNew:
-                    _labelStatus.Text = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_pinpad_message_type_new_password");
-                    _buttonKeyOK.LabelText = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_pospinpad_ok");
+                    _labelStatus.Text = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_pinpad_message_type_new_password");
+                    ButtonKeyOK.LabelText = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_pospinpad_ok");
                     break;
                 case NumberPadPinMode.PasswordNewConfirm:
-                    _labelStatus.Text = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_pinpad_message_type_new_password_confirm");
-                    _buttonKeyOK.LabelText = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_pospinpad_ok");
+                    _labelStatus.Text = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_pinpad_message_type_new_password_confirm");
+                    ButtonKeyOK.LabelText = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_pospinpad_ok");
                     break;
                 default:
                     break;
@@ -452,7 +416,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             DataLayerFramework.LoggedUser = pUserDetail;
             SharedFramework.LoggedUserPermissions = SharedUtils.GetUserPermissions();
-            SharedUtils.Audit("USER_loggerIN", string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_user_loggerin"), pUserDetail.Name));
+            SharedUtils.Audit("USER_loggerIN", string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_user_loggerin"), pUserDetail.Name));
 
             //SessionApp Add LoggedUser
             if (!SharedFramework.SessionApp.LoggedUsers.ContainsKey(DataLayerFramework.LoggedUser.Oid))

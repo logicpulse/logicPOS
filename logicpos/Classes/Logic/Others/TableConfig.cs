@@ -2,25 +2,15 @@
 {
     public class TableConfig
     {
-        private uint _rows;
-        public uint Rows
-        {
-            get { return _rows; }
-            set { _rows = value; }
-        }
+        public uint Rows { get; set; }
 
-        private uint _columns;
-        public uint Columns
-        {
-            get { return _columns; }
-            set { _columns = value; }
-        }
+        public uint Columns { get; set; }
 
         public TableConfig() { }
         public TableConfig(uint pRows, uint pColumns)
         {
-            _rows = pRows;
-            _columns = pColumns;
+            Rows = pRows;
+            Columns = pColumns;
         }
     }
 }

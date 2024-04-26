@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace logicpos.financial.library.Classes.Reports.BOs
+﻿namespace logicpos.financial.library.Classes.Reports.BOs
 {
     //Notes
     //Try to use same Types has XpoObjects

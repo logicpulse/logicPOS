@@ -1,5 +1,4 @@
 using Gtk;
-using logicpos.App;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.shared.App;
 using System;
@@ -9,21 +8,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 {
     internal class NumberPad : Box
     {
-        //Private Members
-        private Table _table;
-        public Table Table
-        {
-            get { return _table; }
-            set { _table = value; }
-        }
+        public Table Table { get; set; }
 
-        //Public Properties
-        private EntryValidation _textEntry;
-        public EntryValidation TextEntry
-        {
-            get { return _textEntry; }
-            set { _textEntry = value; }
-        }
+        public EntryValidation TextEntry { get; set; }
 
         //Public EventHandlers
         public event EventHandler Clicked;
@@ -36,8 +23,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             char decimalSeparator = (char)SharedFramework.CurrentCulture.NumberFormat.NumberDecimalSeparator[0];
 
             EventBox eventbox = new EventBox() { VisibleWindow = false };
-            _table = new Table(4, 3, true);
-            _table.Homogeneous = true;
+            Table = new Table(4, 3, true);
+            Table.Homogeneous = true;
 
             TouchButtonText buttonKey1 = new TouchButtonText("touchButtonKey1_DarkGrey", color, "1", font, colorFont, buttonWidth, buttonHeight);
             TouchButtonText buttonKey2 = new TouchButtonText("touchButtonKey2_DarkGrey", color, "2", font, colorFont, buttonWidth, buttonHeight);
@@ -54,24 +41,24 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
             //prepare _table
             //row0
-            _table.Attach(buttonKey7, 0, 1, 0, 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
-            _table.Attach(buttonKey8, 1, 2, 0, 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
-            _table.Attach(buttonKey9, 2, 3, 0, 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
+            Table.Attach(buttonKey7, 0, 1, 0, 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
+            Table.Attach(buttonKey8, 1, 2, 0, 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
+            Table.Attach(buttonKey9, 2, 3, 0, 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
             //row1
-            _table.Attach(buttonKey4, 0, 1, 1, 2, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
-            _table.Attach(buttonKey5, 1, 2, 1, 2, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
-            _table.Attach(buttonKey6, 2, 3, 1, 2, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
+            Table.Attach(buttonKey4, 0, 1, 1, 2, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
+            Table.Attach(buttonKey5, 1, 2, 1, 2, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
+            Table.Attach(buttonKey6, 2, 3, 1, 2, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
             //row2
-            _table.Attach(buttonKey1, 0, 1, 2, 3, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
-            _table.Attach(buttonKey2, 1, 2, 2, 3, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
-            _table.Attach(buttonKey3, 2, 3, 2, 3, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
+            Table.Attach(buttonKey1, 0, 1, 2, 3, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
+            Table.Attach(buttonKey2, 1, 2, 2, 3, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
+            Table.Attach(buttonKey3, 2, 3, 2, 3, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
             //row3
-            _table.Attach(buttonKey0, 0, 1, 3, 4, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
-            _table.Attach(buttonKeyDot, 1, 2, 3, 4, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
-            _table.Attach(buttonKeyCE, 2, 3, 3, 4, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
+            Table.Attach(buttonKey0, 0, 1, 3, 4, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
+            Table.Attach(buttonKeyDot, 1, 2, 3, 4, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
+            Table.Attach(buttonKeyCE, 2, 3, 3, 4, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
 
             //PackIt
-            eventbox.Add(_table);
+            eventbox.Add(Table);
             this.Add(eventbox);
 
             //Events

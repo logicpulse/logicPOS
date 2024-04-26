@@ -1,5 +1,4 @@
 ﻿using DevExpress.Xpo;
-using System;
 
 namespace logicpos.datalayer.DataLayer.Xpo
 {

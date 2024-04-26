@@ -4,7 +4,6 @@ using logicpos.App;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.resources.Resources.Localization;
 using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
@@ -66,12 +65,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             get { return _selectedButtonOid; }
             set { _selectedButtonOid = value; }
         }
-        private TouchButtonBase _selectedButton;
-        public TouchButtonBase SelectedButton
-        {
-            get { return _selectedButton; }
-            set { _selectedButton = value; }
-        }
+
+        public TouchButtonBase SelectedButton { get; set; }
         private string _sql;
         public string Sql
         {
@@ -92,12 +87,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 UpdateSql();
             }
         }
-        private string _order;
-        public string Order
-        {
-            get { return _order; }
-            set { _order = value; }
-        }
+
+        public string Order { get; set; }
 
         //Declare public Button Event, to Expose Button Clicks
         public event EventHandler Clicked;
@@ -109,7 +100,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
             //Assign parameters to fields/properties
             _sql = pSql;
-            _order = " " + pOrder;
+            Order = " " + pOrder;
             _filter = " " + pFilter;
             _initialActiveButtonOid = pActiveButtonOid;
             _toggleMode = pToggleMode;
@@ -155,7 +146,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
                 //Prepare executeSql for first time
                 if (_filter != string.Empty) { executeSql = _sql + _filter; } else { executeSql = _sql; };
-                if (_order != string.Empty) { executeSql += _order; };
+                if (Order != string.Empty) { executeSql += Order; };
                 executeSql = string.Format("{0};", SharedUtils.RemoveCarriageReturnAndExtraWhiteSpaces(executeSql));
                 //_logger.Debug(string.Format("TablePad(): executeSql: [{0}]", executeSql));
 
@@ -230,7 +221,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                             {
                                 if (_toggleMode) buttonCurrent.Sensitive = false;
                                 //Always assign selected reference to SelectedButton
-                                _selectedButton = buttonCurrent;
+                                SelectedButton = buttonCurrent;
                             }
 
                             //Childs
@@ -271,7 +262,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     }
                     else
                     {
-                        logicpos.Utils.ShowMessageTouch(GlobalApp.PosMainWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), "TablePad: Cant create TablePad, invalid query! You must supply mandatory fields name in Sql (id, name, label and image)!");
+                        logicpos.Utils.ShowMessageTouch(GlobalApp.PosMainWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), "TablePad: Cant create TablePad, invalid query! You must supply mandatory fields name in Sql (id, name, label and image)!");
                     };
                 }
                 else
@@ -382,10 +373,10 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             TouchButtonBase button = (TouchButtonBase)sender;
 
             //Restore old selected button Color
-            if (_toggleMode && _selectedButton != null) _selectedButton.Sensitive = true;
+            if (_toggleMode && SelectedButton != null) SelectedButton.Sensitive = true;
             //Change New Selected Button Reference
-            _selectedButton = button;
-            if (_toggleMode) _selectedButton.Sensitive = false;
+            SelectedButton = button;
+            if (_toggleMode) SelectedButton.Sensitive = false;
 
             Clicked?.Invoke(sender, e);
         }

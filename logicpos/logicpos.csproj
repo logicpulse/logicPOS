@@ -180,12 +180,13 @@
     <Compile Include="Classes\Logic\Pos\Dialogs\PosSplitPaymentsDialog.cs" />
     <Compile Include="Classes\Utils\ExcelProcessing.cs" />
     <Compile Include="Classes\Utils\ExpressionEvaluatorExtended.cs" />
-    <Compile Include="Classes\Utils\SingleProgramInstance.cs" />
+    <Compile Include="Classes\Mutex\SingleProgramInstance.cs" />
     <Compile Include="Classes\Utils\EuropeanVatInformation.cs" />
+    <Compile Include="Classes\Utils\Paths.cs" />
     <Compile Include="Classes\Utils\Win32APIWindowHelper.cs" />
     <Compile Include="Extensions\ColorExtension.cs" />
     <Compile Include="IStockManagementModule.cs" />
-    <Compile Include="Main.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="App\GlobalApp.cs">
       <SubType>Code</SubType>

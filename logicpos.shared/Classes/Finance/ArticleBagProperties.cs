@@ -21,171 +21,62 @@ namespace logicpos.shared.Classes.Finance
             set { _tableOid = value; }
         }
 
-        private PriceType _priceType;
-        public PriceType PriceType
-        {
-            get { return _priceType; }
-            set { _priceType = value; }
-        }
+        public PriceType PriceType { get; set; }
 
-        private string _code;
-        public string Code
-        {
-            get { return _code; }
-            set { _code = value; }
-        }
+        public string Code { get; set; }
 
-        private decimal _quantity;
-        public decimal Quantity
-        {
-            get { return _quantity; }
-            set { _quantity = value; }
-        }
+        public decimal Quantity { get; set; }
 
-        private string _unitMeasure;
-        public string UnitMeasure
-        {
-            get { return _unitMeasure; }
-            set { _unitMeasure = value; }
-        }
+        public string UnitMeasure { get; set; }
 
-        private decimal _priceWithDiscount = 0;
-        public decimal PriceWithDiscount
-        {
-            get { return _priceWithDiscount; }
-            set { _priceWithDiscount = value; }
-        }
+        public decimal PriceWithDiscount { get; set; } = 0;
 
-        private decimal _priceWithDiscountGlobal = 0;
-        public decimal PriceWithDiscountGlobal
-        {
-            get { return _priceWithDiscountGlobal; }
-            set { _priceWithDiscountGlobal = value; }
-        }
+        public decimal PriceWithDiscountGlobal { get; set; } = 0;
 
-        private decimal _totalGross = 0;
-        public decimal TotalGross
-        {
-            get { return _totalGross; }
-            set { _totalGross = value; }
-        }
+        public decimal TotalGross { get; set; } = 0;
 
-        private decimal _totalNet = 0;
-        public decimal TotalNet
-        {
-            get { return _totalNet; }
-            set { _totalNet = value; }
-        }
+        public decimal TotalNet { get; set; } = 0;
 
-        private decimal _totalDiscount = 0;
-        public decimal TotalDiscount
-        {
-            get { return _totalDiscount; }
-            set { _totalDiscount = value; }
-        }
+        public decimal TotalDiscount { get; set; } = 0;
 
-        private decimal _totalTax = 0;
-        public decimal TotalTax
-        {
-            get { return _totalTax; }
-            set { _totalTax = value; }
-        }
+        public decimal TotalTax { get; set; } = 0;
 
-        private decimal _totalFinal = 0;
-        public decimal TotalFinal
-        {
-            get { return _totalFinal; }
-            set { _totalFinal = value; }
-        }
+        public decimal TotalFinal { get; set; } = 0;
 
-        private decimal _priceFinal = 0;
-        public decimal PriceFinal
-        {
-            get { return _priceFinal; }
-            set { _priceFinal = value; }
-        }
+        public decimal PriceFinal { get; set; } = 0;
 
-        //Reference DocumentMaster usefull for <References> in CreditNotes, see SAF-T PT References
-        private fin_documentfinancemaster fReference;
-        public fin_documentfinancemaster Reference
-        {
-            get { return fReference; }
-            set { fReference = value; }
-        }
+        public fin_documentfinancemaster Reference { get; set; }
 
-        //Reference Reason
-        private string fReason;
         [Size(50)]
-        public string Reason
-        {
-            get { return fReason; }
-            set { fReason = value; }
-        }
+        public string Reason { get; set; }
 
-        private string fToken1;
         [Size(255)]
-        public string Token1
-        {
-            get { return fToken1; }
-            set { fToken1 = value; }
-        }
+        public string Token1 { get; set; }
 
-        private string fToken2;
         [Size(255)]
-        public string Token2
-        {
-            get { return fToken2; }
-            set { fToken2 = value; }
-        }
+        public string Token2 { get; set; }
 
-        private string fNotes;
         [Size(255)]
-        public string Notes
-        {
-            get { return fNotes; }
-            set { fNotes = value; }
-        }
+        public string Notes { get; set; }
 
-        private string fSerialNumber;
         [Size(255)]
-        public string SerialNumber
-        {
-            get { return fSerialNumber; }
-            set { fSerialNumber = value; }
-        }
+        public string SerialNumber { get; set; }
 
-        private string fWarehouse;
         [Size(255)]
-        public string Warehouse
-        {
-            get { return fWarehouse; }
-            set { fWarehouse = value; }
-        }
+        public string Warehouse { get; set; }
 
-        //this TreeIter as object Type, to Remove Gtk from Framework, need to be cast as (TreeIter as TreeIter) when used
-        private object _treeIter;
-        public object TreeIter
-        {
-            get { return _treeIter; }
-            set { _treeIter = value; }
-        }
+        public object TreeIter { get; set; }
 
-        //Used to store TreeView Index, Required to Get Current TreeView Position
-        private int _listIndex;
-        public int ListIndex
-        {
-            get { return _listIndex; }
-            set { _listIndex = value; }
-        }
+        public int ListIndex { get; set; }
 
         public ArticleBagProperties(Guid pPlaceOid, Guid pTableOid, PriceType pPriceType, string pCode, decimal pQuantity, string pUnitMeasure)
         {
             _placeOid = pPlaceOid;
             _tableOid = pTableOid;
-            _priceType = pPriceType;
-            _code = pCode;
-            _quantity = pQuantity;
-            _unitMeasure = pUnitMeasure;
+            PriceType = pPriceType;
+            Code = pCode;
+            Quantity = pQuantity;
+            UnitMeasure = pUnitMeasure;
         }
     }
 }

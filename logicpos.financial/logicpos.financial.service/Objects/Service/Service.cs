@@ -1,9 +1,4 @@
-﻿using logicpos.financial.service.App;
-using System;
-using System.Collections.Generic;
-using System.ServiceProcess;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ServiceProcess;
 
 namespace logicpos.financial.service.Objects.Service
 {

@@ -2,7 +2,6 @@
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.financial.library.App;
 using logicpos.financial.library.Classes.Reports.BOs.Documents;
-using logicpos.resources.Resources.Localization;
 using logicpos.shared.App;
 using System;
 using System.Reflection;
@@ -14,12 +13,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs
 
     public class ResultFRBODocumentFinanceMaster
     {
-        private FRBOGenericCollection<FRBODocumentFinanceMasterView> _documentFinanceMaster;
-        public FRBOGenericCollection<FRBODocumentFinanceMasterView> DocumentFinanceMaster
-        {
-            get { return _documentFinanceMaster; }
-            set { _documentFinanceMaster = value; }
-        }
+        public FRBOGenericCollection<FRBODocumentFinanceMasterView> DocumentFinanceMaster { get; set; }
 
         public ResultFRBODocumentFinanceMaster()
         {
@@ -27,7 +21,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs
 
         public ResultFRBODocumentFinanceMaster(FRBOGenericCollection<FRBODocumentFinanceMasterView> pFRBODocumentFinanceMaster)
         {
-            _documentFinanceMaster = pFRBODocumentFinanceMaster;
+            DocumentFinanceMaster = pFRBODocumentFinanceMaster;
         }
     }
 
@@ -36,12 +30,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs
 
     public class ResultFRBODocumentFinancePayment
     {
-        private FRBOGenericCollection<FRBODocumentFinancePaymentView> _documentFinancePayment;
-        public FRBOGenericCollection<FRBODocumentFinancePaymentView> DocumentFinancePayment
-        {
-            get { return _documentFinancePayment; }
-            set { _documentFinancePayment = value; }
-        }
+        public FRBOGenericCollection<FRBODocumentFinancePaymentView> DocumentFinancePayment { get; set; }
 
         public ResultFRBODocumentFinancePayment()
         {
@@ -49,7 +38,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs
 
         public ResultFRBODocumentFinancePayment(FRBOGenericCollection<FRBODocumentFinancePaymentView> pFRBODocumentFinancePayment)
         {
-            _documentFinancePayment = pFRBODocumentFinancePayment;
+            DocumentFinancePayment = pFRBODocumentFinancePayment;
         }
     }
 
@@ -140,7 +129,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                 /* IN009173 - add Parent document number to Notes field */
                 if (isTransportDocument && documentFinanceMaster.DocumentParent != null)
                 {
-                    string notes = string.Format("{0}: {1}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_source_document"), documentFinanceMaster.DocumentParent.DocumentNumber);
+                    string notes = string.Format("{0}: {1}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_source_document"), documentFinanceMaster.DocumentParent.DocumentNumber);
                     if (!string.IsNullOrEmpty(documentFinanceMasterView.Notes)) notes += " | ";
                     notes += documentFinanceMasterView.Notes;
                     documentFinanceMasterView.Notes = notes;
@@ -150,7 +139,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                 /* Add ATDocCodeID to Notes field */
                 if (!string.IsNullOrEmpty(documentFinanceMasterView.ATDocCodeID))
                 {
-                    string notes = string.Format("{0}: {1}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_at_atdoccodeid"), documentFinanceMasterView.ATDocCodeID);
+                    string notes = string.Format("{0}: {1}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_at_atdoccodeid"), documentFinanceMasterView.ATDocCodeID);
                     if (! string.IsNullOrEmpty(documentFinanceMasterView.Notes)) notes += " | "/*Environment.NewLine*/;
                     notes += documentFinanceMasterView.Notes;
                     documentFinanceMasterView.Notes = notes;
@@ -161,14 +150,14 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                 {
                     //TK016319 - Certificação Angola - Alterações para teste da AGT
 					//Notas de Credito
-                    string notes = string.Format("{0}: {1}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_source_document"), documentFinanceMaster.DocumentParent.DocumentNumber);
+                    string notes = string.Format("{0}: {1}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_source_document"), documentFinanceMaster.DocumentParent.DocumentNumber);
                     if (SharedSettings.XpoOidConfigurationCountryAngola.Equals(DataLayerSettings.ConfigurationSystemCountry.Oid))
                     {
-                        notes = string.Format("{0}: {1}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_source_document_NC_ND"), documentFinanceMaster.DocumentParent.DocumentNumber);
+                        notes = string.Format("{0}: {1}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_source_document_NC_ND"), documentFinanceMaster.DocumentParent.DocumentNumber);
                     }                        
                     /* IN009252 - "Reason" added to "fin_documentfinancemaster.Notes" */
                     if (! string.IsNullOrEmpty(documentFinanceMasterView.Notes)) notes += Environment.NewLine; /* " | " */
-                    notes += string.Format("{0}: {1}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_reason"), documentFinanceMasterView.Notes);
+                    notes += string.Format("{0}: {1}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_reason"), documentFinanceMasterView.Notes);
                     documentFinanceMasterView.Notes = notes;
                 }
 

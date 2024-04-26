@@ -12,49 +12,16 @@ namespace logicpos
         //Log4Net
         private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        //Reference parent EntryBox Label
-        private Label _label;
-        public Label Label
-        {
-            get { return _label; }
-            set { _label = value; }
-        }
-        private Label _label2;
-        public Label Label2
-        {
-            get { return _label2; }
-            set { _label2 = value; }
-        }
-        private Label _label3;
-        public Label Label3
-        {
-            get { return _label3; }
-            set { _label3 = value; }
-        }
-        private string _initialLabelText;
-        public string LabelText
-        {
-            get { return _initialLabelText; }
-            set { _initialLabelText = value; }
-        }
-        private int _length;
-        public int Length
-        {
-            get { return _length; }
-            set { _length = value; }
-        }
-        private int _words;
-        public int Words
-        {
-            get { return _words; }
-            set { _words = value; }
-        }
-        private int _maxLength = 0;
-        public int Maxlength
-        {
-            get { return _maxLength; }
-            set { _maxLength = value; }
-        }
+        public Label Label { get; set; }
+        public Label Label2 { get; set; }
+
+        public Label Label3 { get; set; }
+        public string LabelText { get; set; }
+
+        public int Length { get; set; }
+        public int Words { get; set; }
+
+        public int Maxlength { get; set; } = 0;
         private int _maxWords = 0;
         public int MaxWords
         {
@@ -69,7 +36,7 @@ namespace logicpos
             set
             {
                 _validated = value;
-                Utils.ValidateUpdateColors(this, _label, _validated, _label2, _label3);
+                Utils.ValidateUpdateColors(this, Label, _validated, Label2, Label3);
             }
         }
 
@@ -86,7 +53,7 @@ namespace logicpos
                 Changed += delegate { Validate(); };
 
                 //Get Initial Label Text
-                if (_label != null) _initialLabelText = _label.Text;
+                if (Label != null) LabelText = Label.Text;
             }
             catch (Exception ex)
             {
@@ -106,7 +73,7 @@ namespace logicpos
             _keyboardMode = pKeyboardMode;
             _rule = pRule;
             _required = pRequired;
-            _maxLength = pMaxLength;
+            Maxlength = pMaxLength;
             _maxWords = pMaxWords;
 
             //Assign MaxLength to Be Entry MaxLength
@@ -125,18 +92,18 @@ namespace logicpos
         {
             //Default FieldValidateValue is the Entry.Text
             _validated = SharedUtils.Validate(pValue, _rule, _required);
-            Utils.ValidateUpdateColors(this, _label, _validated, _label2, _label3);
+            Utils.ValidateUpdateColors(this, Label, _validated, Label2, Label3);
         }
 
         private void EntryValidation_Changed(object sender, EventArgs e)
         {
-            if (_maxLength > 0 || _maxWords > 0)
+            if (Maxlength > 0 || _maxWords > 0)
             {
-                ValidateMaxLenghtMaxWordsResult result = SharedUtils.ValidateMaxLenghtMaxWords(Text, _initialLabelText, _maxLength, _maxWords);
+                ValidateMaxLenghtMaxWordsResult result = SharedUtils.ValidateMaxLenghtMaxWords(Text, LabelText, Maxlength, _maxWords);
                 Text = result.Text;
                 Label.Text = result.LabelText;
-                _length = result.Length;
-                _words = result.Words;
+                Length = result.Length;
+                Words = result.Words;
             }
         }
     }

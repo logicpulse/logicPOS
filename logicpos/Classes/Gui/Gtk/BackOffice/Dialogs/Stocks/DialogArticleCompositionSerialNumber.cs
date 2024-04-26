@@ -1,5 +1,4 @@
 ﻿using DevExpress.Data.Filtering;
-using DevExpress.Xpo;
 using Gtk;
 using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
@@ -13,7 +12,6 @@ using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
 using logicpos.Extensions;
-using logicpos.financial.library.App;
 using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
@@ -46,12 +44,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
         private TouchButtonIconWithText _buttonArticleOut;
         private byte[] AttachedFile;
 
-        private TouchButtonIconWithText _buttonInsert;
-        public TouchButtonIconWithText ButtonInsert
-        {
-            get { return _buttonInsert; }
-            set { _buttonInsert = value; }
-        }
+        public TouchButtonIconWithText ButtonInsert { get; set; }
         protected GenericTreeViewNavigator<fin_article, TreeViewArticle> _navigator;
         public GenericTreeViewNavigator<fin_article, TreeViewArticle> Navigator
         {
@@ -59,27 +52,14 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
             set { _navigator = value; }
         }
 
-        private EntryBoxValidation _entryBoxSerialNumber1;
-        public EntryBoxValidation EntryBoxSerialNumber1
-        {
-            get { return _entryBoxSerialNumber1; }
-            set { _entryBoxSerialNumber1 = value; }
-        }
+        public EntryBoxValidation EntryBoxSerialNumber1 { get; set; }
 
-        private List<fin_articleserialnumber> _selectedAssocietedArticles;
-        public List<fin_articleserialnumber> SelectedAssocietedArticles
-        {
-            get { return _selectedAssocietedArticles; }
-            set { _selectedAssocietedArticles = value; }
-        }
+        public List<fin_articleserialnumber> SelectedAssocietedArticles { get; set; }
 
         private readonly List<fin_articleserialnumber> _backupAssocietedArticles;
 
         private readonly string _serialNumber;
         private ScrolledWindow _scrolledWindowView;
-
-
-        private readonly ICollection<XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>> _entryCompositeLinesCollection;
 
         public DialogArticleCompositionSerialNumber(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pDialogFlags, XPGuidObject pXPGuidObject, List<fin_articleserialnumber> pSelectedAssocietedArticles, string pSerialNumber = "")
             : base(pSourceWindow, pTreeView, pDialogFlags, DialogMode.Update, pXPGuidObject)
@@ -88,11 +68,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
             _xPGuidObject = pXPGuidObject;
             this.Title = "Editar Artigo Único";
             _serialNumber = pSerialNumber;
-            _selectedAssocietedArticles = new List<fin_articleserialnumber> ();
+            SelectedAssocietedArticles = new List<fin_articleserialnumber> ();
             _backupAssocietedArticles = new List<fin_articleserialnumber>();
             if (pSelectedAssocietedArticles != null)
             {
-                _selectedAssocietedArticles = pSelectedAssocietedArticles;
+                SelectedAssocietedArticles = pSelectedAssocietedArticles;
        
                 foreach (var line in pSelectedAssocietedArticles)
                 {
@@ -140,15 +120,15 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                 vboxTab1.PackStart(selectedArticleTitleLabel, false, false, 5);
 
                 //SerialNumber
-                _entryBoxSerialNumber1 = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_serial_number"), KeyboardMode.None, SharedSettings.RegexAlfaNumericExtended, true, true);
+                EntryBoxSerialNumber1 = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_serial_number"), KeyboardMode.None, SharedSettings.RegexAlfaNumericExtended, true, true);
 
                 if(_xPGuidObject.GetType() == typeof(fin_articleserialnumber) && (_xPGuidObject as fin_articleserialnumber).IsSold)
                 {
-                    _entryBoxSerialNumber1.Sensitive = false;
+                    EntryBoxSerialNumber1.Sensitive = false;
                 }
 
-                vboxTab1.PackStart(_entryBoxSerialNumber1, false, false, 0);
-                _entryBoxSerialNumber1.EntryValidation.Text = _serialNumber;
+                vboxTab1.PackStart(EntryBoxSerialNumber1, false, false, 0);
+                EntryBoxSerialNumber1.EntryValidation.Text = _serialNumber;
 
                 //Associated articles                
                 Label associatedArticlesTitleLabel = new Label("Artigos Associados");
@@ -237,7 +217,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 
                     //Supplier
                     CriteriaOperator criteriaOperatorSupplier = CriteriaOperator.Parse("(Supplier = 1)");
-                    _entryBoxSelectSupplier = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_supplier"), "Name", "Oid", (_dataSourceRow as fin_articleserialnumber).StockMovimentIn.Customer, criteriaOperatorSupplier, SharedSettings.RegexGuid, true, true);
+                    _entryBoxSelectSupplier = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_supplier"), "Name", "Oid", (_dataSourceRow as fin_articleserialnumber).StockMovimentIn.Customer, criteriaOperatorSupplier, SharedSettings.RegexGuid, true, true);
                     _entryBoxSelectSupplier.EntryValidation.IsEditable = true;
                     _entryBoxSelectSupplier.EntryValidation.Completion.PopupCompletion = true;
                     _entryBoxSelectSupplier.EntryValidation.Completion.InlineCompletion = false;
@@ -249,7 +229,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                     //_entryBoxSelectSupplier.EntryValidation.Changed += delegate { ValidateDialog(); };
 
                     //DocumentDate
-                    _entryBoxDocumentDateIn = new EntryBoxValidationDatePickerDialog(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date"), (_dataSourceRow as fin_articleserialnumber).StockMovimentIn.Date, SharedSettings.RegexDate, true, SharedSettings.DateFormat, true);
+                    _entryBoxDocumentDateIn = new EntryBoxValidationDatePickerDialog(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date"), (_dataSourceRow as fin_articleserialnumber).StockMovimentIn.Date, SharedSettings.RegexDate, true, SharedSettings.DateFormat, true);
                     //_entryBoxDocumentDate.EntryValidation.Sensitive = true;
                     _entryBoxDocumentDateIn.EntryValidation.Text = (_dataSourceRow as fin_articleserialnumber).StockMovimentIn.Date.ToString(SharedSettings.DateFormat);
                     _entryBoxDocumentDateIn.EntryValidation.Validate();
@@ -263,7 +243,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                     Color colorBaseDialogEntryBoxBackground = DataLayerFramework.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
                     string _fileIconListFinanceDocuments = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_toolbar_finance_document.png");
                     HBox hBoxDocument = new HBox(false, 0);
-                    _entryBoxDocumentNumber = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_document_number"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericExtended, false, true);
+                    _entryBoxDocumentNumber = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_document_number"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericExtended, false, true);
                     if ((_dataSourceRow as fin_articleserialnumber).StockMovimentIn.DocumentNumber != string.Empty) _entryBoxDocumentNumber.EntryValidation.Text = (_dataSourceRow as fin_articleserialnumber).StockMovimentIn.DocumentNumber;
                     //_entryBoxDocumentNumber.EntryValidation.Changed += delegate { ValidateDialog(); };
                     TouchButtonIcon attachPDFButton = new TouchButtonIcon("attachPDFButton", colorBaseDialogEntryBoxBackground, _fileIconListFinanceDocuments, new Size(20, 20), 30, 30);
@@ -273,7 +253,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                     vboxTab3.PackStart(_entryBoxDocumentNumber, false, false, 0);
 
                     //Price
-                    _entryBoxPrice1 = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_price"), KeyboardMode.None, SharedSettings.RegexDecimalGreaterEqualThanZeroFinancial, false, true);
+                    _entryBoxPrice1 = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_price"), KeyboardMode.None, SharedSettings.RegexDecimalGreaterEqualThanZeroFinancial, false, true);
                     _entryBoxPrice1.WidthRequest = 40;
                     _entryBoxPrice1.EntryValidation.Text = (_dataSourceRow as fin_articleserialnumber).StockMovimentIn.PurchasePrice.ToString();
                     //_entryBoxPrice1.EntryValidation.Changed += EntryPurchasedPriceValidation_Changed;
@@ -306,7 +286,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 
                     //DocumentDate
                     DateTime dateTime = ((_dataSourceRow as fin_articleserialnumber).StockMovimentOut != null) ? (_dataSourceRow as fin_articleserialnumber).StockMovimentOut.Date : DateTime.Now;
-                    _entryBoxDocumentDateOut = new EntryBoxValidationDatePickerDialog(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date"), (_dataSourceRow as fin_articleserialnumber).StockMovimentIn.Date, SharedSettings.RegexDate, true, SharedSettings.DateFormat, true);
+                    _entryBoxDocumentDateOut = new EntryBoxValidationDatePickerDialog(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date"), (_dataSourceRow as fin_articleserialnumber).StockMovimentIn.Date, SharedSettings.RegexDate, true, SharedSettings.DateFormat, true);
                     //_entryBoxDocumentDate.EntryValidation.Sensitive = true;
                     _entryBoxDocumentDateOut.EntryValidation.Text = dateTime.ToString(SharedSettings.DateFormat);
                     _entryBoxDocumentDateOut.EntryValidation.Validate();
@@ -331,7 +311,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 
                 LoadSavedValues();
 
-                _entryBoxSerialNumber1.EntryValidation.Changed += _entryBoxArticleSerialNumberCompositionArticles_Changed;
+                EntryBoxSerialNumber1.EntryValidation.Changed += _entryBoxArticleSerialNumberCompositionArticles_Changed;
             }
             catch (System.Exception ex)
             {
@@ -354,7 +334,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                     (_dataSourceRow as fin_articleserialnumber).StockMovimentIn.Save();
                     _logger.Debug("Sock Moviment In Changed with sucess");
 
-                    ResponseType responseType = logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_operation_successfully"), string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentticket_type_title_cs_short"), SharedFramework.ServerVersion));
+                    ResponseType responseType = logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_operation_successfully"), string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentticket_type_title_cs_short"), SharedFramework.ServerVersion));
                 }
 
             }
@@ -391,7 +371,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                     (_dataSourceRow as fin_articleserialnumber).SerialNumber, 
                     (_dataSourceRow as fin_articleserialnumber).StockMovimentIn.PurchasePrice, 
                     (_dataSourceRow as fin_articleserialnumber).ArticleWarehouse.Location, 
-                    null, _selectedAssocietedArticles, true, true);
+                    null, SelectedAssocietedArticles, true, true);
 
                 //Criar movimento de saida do artigo novo
                 sucess = POSFramework.StockManagementModule.Add(_dataSourceRow.Session, 
@@ -407,11 +387,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                     (_entryBoxArticleSerialNumberToChange.Value as fin_articleserialnumber).SerialNumber, 
                     (_entryBoxArticleSerialNumberToChange.Value as fin_articleserialnumber).StockMovimentIn.PurchasePrice,
                     (_entryBoxArticleSerialNumberToChange.Value as fin_articleserialnumber).ArticleWarehouse.Location, 
-                    null, _selectedAssocietedArticles, false, true);
+                    null, SelectedAssocietedArticles, false, true);
 
                 if (sucess)
                 {
-                    ResponseType responseType = logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_operation_successfully"), string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentticket_type_title_cs_short"), SharedFramework.ServerVersion));
+                    ResponseType responseType = logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_operation_successfully"), string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentticket_type_title_cs_short"), SharedFramework.ServerVersion));
                     _entryBoxArticleSerialNumberToChange.Sensitive = false;
                     _buttonChange.Sensitive = false;
                 }
@@ -448,11 +428,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                     (_dataSourceRow as fin_articleserialnumber).SerialNumber,
                     (_dataSourceRow as fin_articleserialnumber).StockMovimentIn.PurchasePrice,
                     (_dataSourceRow as fin_articleserialnumber).ArticleWarehouse.Location,
-                    null, _selectedAssocietedArticles, false, false);
+                    null, SelectedAssocietedArticles, false, false);
 
                 if (sucess)
                 {
-                    ResponseType responseType = logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_operation_successfully"), string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentticket_type_title_cs_short"), SharedFramework.ServerVersion));
+                    ResponseType responseType = logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_operation_successfully"), string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentticket_type_title_cs_short"), SharedFramework.ServerVersion));
                     _entryBoxArticleSerialNumberToChange.Sensitive = false;
                     _entryBoxSelectDocumentOut.EntryValidation.Sensitive = false;
                     _entryBoxDocumentDateOut.EntryValidation.Sensitive = false;
@@ -471,7 +451,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
             //Select SerialNumber
             CriteriaOperator serialNumberCriteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND IsSold == False AND Article == '{0}'", pArticlecomposition.ArticleChild.Oid));
 
-            _entryBoxArticleSerialNumberCompositionArticles = new XPOEntryBoxSelectRecordValidation<fin_articleserialnumber, TreeViewArticleSerialNumber>(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_serialnumber") + " :: " + pArticlecomposition.ArticleChild.Designation, "SerialNumber", "Oid", null, serialNumberCriteria, SharedSettings.RegexGuid, true, true);
+            _entryBoxArticleSerialNumberCompositionArticles = new XPOEntryBoxSelectRecordValidation<fin_articleserialnumber, TreeViewArticleSerialNumber>(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_serialnumber") + " :: " + pArticlecomposition.ArticleChild.Designation, "SerialNumber", "Oid", null, serialNumberCriteria, SharedSettings.RegexGuid, true, true);
             _entryBoxArticleSerialNumberCompositionArticles.EntryValidation.IsEditable = true;
             _entryBoxArticleSerialNumberCompositionArticles.EntryValidation.Completion.PopupCompletion = true;
             _entryBoxArticleSerialNumberCompositionArticles.EntryValidation.Completion.InlineCompletion = false;
@@ -488,52 +468,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 
         }
 
-        private void ModifySerialNumber(fin_articleserialnumber pArticleserialnumber)
-        {
-
-            //Select SerialNumber
-            CriteriaOperator serialNumberCriteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND IsSold == False AND Article == '{0}'", pArticleserialnumber.Article.Oid));
-
-            _entryBoxArticleSerialNumberToChange = new XPOEntryBoxSelectRecordValidation<fin_articleserialnumber, TreeViewArticleSerialNumber>(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_serialnumber") + " :: " + pArticleserialnumber.Article.Designation, "SerialNumber", "Oid", pArticleserialnumber, serialNumberCriteria, SharedSettings.RegexGuid, true, true);
-            _entryBoxArticleSerialNumberToChange.EntryValidation.IsEditable = true;
-            _entryBoxArticleSerialNumberToChange.EntryValidation.Completion.PopupCompletion = true;
-            _entryBoxArticleSerialNumberToChange.EntryValidation.Completion.InlineCompletion = false;
-            _entryBoxArticleSerialNumberToChange.EntryValidation.Completion.PopupSingleMatch = true;
-            _entryBoxArticleSerialNumberToChange.EntryValidation.Completion.InlineSelection = true;
-            _entryBoxArticleSerialNumberToChange.EntryValidation.Changed += _entryBoxArticleSerialNumberCompositionArticles_Changed;
-
-
-            //entrySerialNumber = new Entry();
-            ////entrySerialNumber.Text = (_dataSourceRow as fin_articlewarehouse).SerialNumber;
-            //SortProperty[] sortProperty = new SortProperty[1];
-            //sortProperty[0] = new SortProperty("SerialNumber", DevExpress.Xpo.DB.SortingDirection.Ascending);
-            //xpoComboBoxArticleSerialNumber = new XPOComboBox(DataSourceRow.Session, typeof(fin_articleserialnumber), null, "SerialNumber", serialNumberCriteria, sortProperty);
-            //BOWidgetBox boxArticleSerialNumber = new BOWidgetBox(string.Format(pArticleserialnumber.Article.Designation + " : " + resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_serial_number")), xpoComboBoxArticleSerialNumber);
-            //xpoComboBoxArticleSerialNumber.Sensitive = true;
-            //xpoComboBoxArticleSerialNumber.Value = pArticleserialnumber;
-            //TreeIter iter;
-            //xpoComboBoxArticleSerialNumber.Model.GetIterFirst(out iter);
-            //do
-            //{
-            //    GLib.Value thisRow = new GLib.Value();
-            //    xpoComboBoxArticleSerialNumber.Model.GetValue(iter, 0, ref thisRow);
-            //    if ((thisRow.Val as string).Equals(pArticleserialnumber.SerialNumber))
-            //    {
-            //        xpoComboBoxArticleSerialNumber.SetActiveIter(iter);
-            //        break;
-            //    }
-            //} while (xpoComboBoxArticleSerialNumber.Model.IterNext(ref iter));
-
-            //xpoComboBoxArticleSerialNumber.Changed += XpoComboBoxArticleSerialNumber_Changed;
-
-            vboxTab1.PackStart(_entryBoxArticleSerialNumberToChange, false, false, 0);
-        }
-
         private void _entryBoxArticleSerialNumberCompositionArticles_Changed(object sender, EventArgs e)
         {
             var selectedArticle = sender as EntryValidation;
             
-            _selectedAssocietedArticles.Clear();
+            SelectedAssocietedArticles.Clear();
             foreach (var entrySerialNumber in (selectedArticle.Parent.Parent.Parent.Parent as VBox).Children)
             {
                 if (entrySerialNumber.GetType() == typeof(XPOEntryBoxSelectRecordValidation<fin_articleserialnumber, TreeViewArticleSerialNumber>))
@@ -541,7 +480,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                     var selectedSerialNumber = (((entrySerialNumber as XPOEntryBoxSelectRecordValidation<fin_articleserialnumber, TreeViewArticleSerialNumber>).Value as fin_articleserialnumber));
                     if (selectedSerialNumber != null)
                     {
-                        _selectedAssocietedArticles.Add(selectedSerialNumber);
+                        SelectedAssocietedArticles.Add(selectedSerialNumber);
                     }
                 }
             }
@@ -571,7 +510,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
         private void XpoComboBoxArticleSerialNumber_Changed(object sender, EventArgs e)
         {
             var selectedArticle = sender as XPOComboBox;
-            _selectedAssocietedArticles.Clear();
+            SelectedAssocietedArticles.Clear();
             foreach (var comboBox in (selectedArticle.Parent.Parent as VBox).Children)
             {
                 if(comboBox.GetType() == typeof(BOWidgetBox))
@@ -579,7 +518,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                     var selectedSerialNumber = (((comboBox as BOWidgetBox).Children[1] as XPOComboBox).Value as fin_articleserialnumber);
                     if (selectedSerialNumber != null)
                     {
-                        _selectedAssocietedArticles.Add(selectedSerialNumber);
+                        SelectedAssocietedArticles.Add(selectedSerialNumber);
                     }
                 }
             }
@@ -599,58 +538,6 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                 dialog.Destroy();
             }
             else { dialog.Destroy(); }
-        }
-
-        //Get Criteria of included DocumentTypes for EntryBoxSelectSourceDocumentFinance related to EntryBoxSelectDocumentFinanceType
-        private CriteriaOperator GetDocumentFinanceTypeSourceDocumentCriteria()
-        {
-            bool debug = false;
-
-            //Hide Cancelled and Invoiced Documents from Source
-            string filterBase = "(Disabled IS NULL OR Disabled  <> 1) AND (DocumentStatusStatus <> 'A' AND DocumentStatusStatus <> 'F') {0}";
-            string filterDocs = string.Empty;
-            Guid[] listDocumentTypes = FinancialLibraryUtils.GetDocumentTypeValidSourceDocuments(SharedSettings.XpoOidDocumentFinanceTypeInvoice);
-
-            //Generate Filter Docs from listDocumentTypes Array
-            for (int i = 0; i < listDocumentTypes.Length; i++)
-            {
-                string filterDocumentType = string.Empty;
-
-                //COMMENTED, now all documents use "AND DocumentChild IS NULL" - Leave this Block Here, May be usefull to Use in Future
-                //
-                //              //Specific Extra Filter for ConsignationInvoice, When Document Type is Invoice, Must add DocumentChild IS NULL to DocumentType filter
-                //              if (listDocumentTypes[i] == _xpoOidDocumentFinanceTypeConsignationInvoice)
-                //              {
-                //                  //If DocumentFinanceTypeInvoice or WayBill, Show ConsignationInvoices, if not Invoiced Yet
-                //                  if (
-                //                      _entryBoxSelectDocumentFinanceType.Value.Oid.ToString() == _xpoOidDocumentFinanceTypeInvoice
-                //                      //|| (int) _entryBoxSelectDocumentFinanceType.Value.SaftDocumentType == 2
-                //                  )
-                //                  {
-                //                      filterDocumentType = string.Format("(DocumentType = '{0}' AND DocumentChild IS NULL)", listDocumentTypes[i]);
-                //                      filterDocs += filterDocumentType;
-                //                  }
-                //              }
-                //              //Default for all listDocumentTypes
-                //              else
-                //              {
-                filterDocumentType += string.Format("DocumentType = '{0}'", listDocumentTypes[i]);
-                filterDocs += filterDocumentType;
-                //              }
-
-                if (filterDocumentType != string.Empty && i < listDocumentTypes.Length - 1) filterDocs += " OR ";
-            }
-
-            //Add filterDocs if filterDocs is not Empty
-            if (filterDocs != string.Empty) filterDocs = string.Format("AND ({0})", filterDocs);
-
-            string filter = string.Format(filterBase, filterDocs);
-            if (debug) _logger.Debug(string.Format("GetDocumentFinanceTypeSourceDocumentCriteria.Filter: [{0}]", filter));
-
-            //Generate Final Result Criteria
-            CriteriaOperator result = CriteriaOperator.Parse(filter);
-
-            return result;
         }
     }
 

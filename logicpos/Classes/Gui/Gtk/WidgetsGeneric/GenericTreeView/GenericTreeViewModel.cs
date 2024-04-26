@@ -2,11 +2,6 @@
 using Gtk;
 using System.Reflection;
 using System.Collections.Generic;
-using DevExpress.Data.Filtering;
-using DevExpress.Xpo;
-using logicpos.datalayer.DataLayer.Xpo;
-using System.Data;
-using logicpos.financial;
 using logicpos.Classes.Enums.GenericTreeView;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric

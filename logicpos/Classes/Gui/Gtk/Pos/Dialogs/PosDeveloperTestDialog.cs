@@ -1,16 +1,12 @@
 ﻿using DevExpress.Data.Filtering;
 using Gtk;
-using logicpos.App;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial;
 using logicpos.financial.library.Classes.Reports;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.Widgets.Entrys;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
-using logicpos.resources.Resources.Localization;
-using logicpos.shared;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -34,7 +30,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
-            string windowTitle = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_template");
+            string windowTitle = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_template");
             string fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_default.png");
             _windowSize = new Size(595, 740);
 
@@ -103,7 +99,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Test XPOEntryBoxSelectRecordValidation without KeyBoard Input
             fin_documentfinancetype defaultValueDocumentFinanceType = (fin_documentfinancetype)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(fin_documentfinancetype), SharedSettings.XpoOidDocumentFinanceTypeInvoice);
             CriteriaOperator criteriaOperatorDocumentFinanceType = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1)");
-            XPOEntryBoxSelectRecordValidation<fin_documentfinancetype, TreeViewDocumentFinanceType> entryBoxSelectDocumentFinanceType = new XPOEntryBoxSelectRecordValidation<fin_documentfinancetype, TreeViewDocumentFinanceType>(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinanceseries_documenttype"), "Designation", "Oid", defaultValueDocumentFinanceType, criteriaOperatorDocumentFinanceType, SharedSettings.RegexGuid, true);
+            XPOEntryBoxSelectRecordValidation<fin_documentfinancetype, TreeViewDocumentFinanceType> entryBoxSelectDocumentFinanceType = new XPOEntryBoxSelectRecordValidation<fin_documentfinancetype, TreeViewDocumentFinanceType>(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinanceseries_documenttype"), "Designation", "Oid", defaultValueDocumentFinanceType, criteriaOperatorDocumentFinanceType, SharedSettings.RegexGuid, true);
             //entryBoxSelectDocumentFinanceType.EntryValidation.IsEditable = false;
             entryBoxSelectDocumentFinanceType.ClosePopup += delegate { };
             _vbox.PackStart(entryBoxSelectDocumentFinanceType, true, true, _padding);
@@ -125,7 +121,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             
             //Test DateTime Picker
             DateTime initalDateTime = DateTime.Now;
-            EntryBoxValidationDatePickerDialog entryBoxShipToDeliveryDate = new EntryBoxValidationDatePickerDialog(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ship_to_delivery_date"), "dateFormat", DateTime.Now, SharedSettings.RegexDate, true, SharedSettings.DateFormat);
+            EntryBoxValidationDatePickerDialog entryBoxShipToDeliveryDate = new EntryBoxValidationDatePickerDialog(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ship_to_delivery_date"), "dateFormat", DateTime.Now, SharedSettings.RegexDate, true, SharedSettings.DateFormat);
             //entryBoxShipToDeliveryDate.EntryValidation.Sensitive = true;
             entryBoxShipToDeliveryDate.EntryValidation.Text = initalDateTime.ToString(SharedSettings.DateFormat);
 
@@ -134,7 +130,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _vbox.PackStart(entryBoxShipToDeliveryDate, true, true, _padding);
 
             //Test DateTime Picker with KeyBoard
-            EntryBoxValidationDatePickerDialog entryBoxShipToDeliveryDateKeyboard = new EntryBoxValidationDatePickerDialog(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ship_to_delivery_date"), SharedSettings.DateTimeFormat, DateTime.Now, KeyboardMode.AlfaNumeric, SharedSettings.RegexDateTime, true, SharedSettings.DateTimeFormat);
+            EntryBoxValidationDatePickerDialog entryBoxShipToDeliveryDateKeyboard = new EntryBoxValidationDatePickerDialog(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ship_to_delivery_date"), SharedSettings.DateTimeFormat, DateTime.Now, KeyboardMode.AlfaNumeric, SharedSettings.RegexDateTime, true, SharedSettings.DateTimeFormat);
             entryBoxShipToDeliveryDateKeyboard.EntryValidation.Sensitive = false;
             entryBoxShipToDeliveryDateKeyboard.ButtonKeyBoard.Sensitive = false;
             //entryBoxShipToDeliveryDate.EntryValidation.Sensitive = true;
@@ -207,45 +203,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _xPOEntryBoxSelectRecordValidationTextMode.EntryValidation.Required = false;
             _xPOEntryBoxSelectRecordValidationTextMode.EntryValidation.Validate();
             _logger.Debug(string.Format("Validated: [{0}]", _entryBoxValidationCustomButton1.EntryValidation.Validated));
-        }
-
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-        private void InitUI_FilePicker()
-        {
-            FileFilter fileFilter = logicpos.Utils.GetFileFilterImages();
-
-            EntryBoxValidationFilePickerDialog entryFilePicker = new EntryBoxValidationFilePickerDialog(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_file_image"), "", false, fileFilter);
-            entryFilePicker.ClosePopup += delegate
-            {
-                _logger.Debug(string.Format("entryFilePicker.Value: [{0}]", entryFilePicker.Value));
-            };
-            _vbox.PackStart(entryFilePicker, true, true, _padding);
-
-            EntryBoxValidationFilePickerMultiImages entryFilePickerMultiImages = new EntryBoxValidationFilePickerMultiImages(this, "Multi", fileFilter);
-            entryFilePickerMultiImages.WidthRequest = 500;
-            entryFilePickerMultiImages.HeightRequest = 514;
-            _vbox.PackStart(entryFilePickerMultiImages, true, true, _padding);
-        }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-        private void InitUI2()
-        {
-            EntryBoxValidationDatePickerMultiDates entryBoxValidationDatePickerMultiDates = new EntryBoxValidationDatePickerMultiDates(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_datepicker_add_date"));
-            entryBoxValidationDatePickerMultiDates.WidthRequest = 400;
-            entryBoxValidationDatePickerMultiDates.HeightRequest = 400;
-            _vbox.PackStart(entryBoxValidationDatePickerMultiDates, true, true, _padding);
-        }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-        private void InitUI3()
-        {
-            Button buttonTestDocumentMasterCreatePDF = new Button("Test DocumentMasterCreatePDF");
-            buttonTestDocumentMasterCreatePDF.Clicked += buttonTestDocumentMasterCreatePDF_Clicked;
-            _vbox.PackStart(buttonTestDocumentMasterCreatePDF, true, true, _padding);
         }
 
         private void buttonTestDocumentMasterCreatePDF_Clicked(object sender, EventArgs e)

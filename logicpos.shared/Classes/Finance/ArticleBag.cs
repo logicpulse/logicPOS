@@ -1,6 +1,5 @@
 ﻿using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
-using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.shared.App;
@@ -17,77 +16,36 @@ namespace logicpos.shared.Classes.Finance
     {
         //Log4Net
         private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private decimal _discountGlobal = 0.0m;
-        public decimal DiscountGlobal
-        {
-            get { return _discountGlobal; }
-            set { _discountGlobal = value; }
-        }
 
-        private decimal _totalQuantity = 0.0m;
-        public decimal TotalQuantity
-        {
-            get { return _totalQuantity; }
-            set { _totalQuantity = value; }
-        }
+        public decimal DiscountGlobal { get; set; } = 0.0m;
 
-        private decimal _totalNet = 0;
-        public decimal TotalNet
-        {
-            get { return _totalNet; }
-            set { _totalNet = value; }
-        }
+        public decimal TotalQuantity { get; set; } = 0.0m;
 
-        private decimal _totalGross = 0;
-        public decimal TotalGross
-        {
-            get { return _totalGross; }
-            set { _totalGross = value; }
-        }
+        public decimal TotalNet { get; set; } = 0;
 
-        private decimal _totalDiscount = 0;
-        public decimal TotalDiscount
-        {
-            get { return _totalDiscount; }
-            set { _totalDiscount = value; }
-        }
+        public decimal TotalGross { get; set; } = 0;
 
-        private decimal _totalTax = 0;
-        public decimal TotalTax
-        {
-            get { return _totalTax; }
-            set { _totalTax = value; }
-        }
+        public decimal TotalDiscount { get; set; } = 0;
 
-        //Total Document with Taxs (TotalFinal)
-        private decimal _totalFinal = 0;
-        public decimal TotalFinal
-        {
-            get { return _totalFinal; }
-            set { _totalFinal = value; }
-        }
+        public decimal TotalTax { get; set; } = 0;
 
-        //TaxBag
-        private Dictionary<decimal, TaxBagProperties> _taxBag = new Dictionary<decimal, TaxBagProperties>();
-        public Dictionary<decimal, TaxBagProperties> TaxBag
-        {
-            get { return _taxBag; }
-            set { _taxBag = value; }
-        }
+        public decimal TotalFinal { get; set; } = 0;
+
+        public Dictionary<decimal, TaxBagProperties> TaxBag { get; set; } = new Dictionary<decimal, TaxBagProperties>();
 
         //New Override Dictionary EqualityComparer
         public ArticleBag()
             : base(new ArticleBagKey.EqualityComparer())
         {
             //Get Default Global Discount
-            _discountGlobal = SharedUtils.GetDiscountGlobal();
+            DiscountGlobal = SharedUtils.GetDiscountGlobal();
         }
 
         public ArticleBag(decimal pDiscountGlobal)
             : base(new ArticleBagKey.EqualityComparer())
         {
             //Get Discount from Parameter
-            _discountGlobal = pDiscountGlobal;
+            DiscountGlobal = pDiscountGlobal;
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -97,38 +55,38 @@ namespace logicpos.shared.Classes.Finance
         /// </summary>
         public void UpdateTotals()
         {
-            _totalNet = 0.0m;
-            _totalGross = 0.0m;
-            _totalTax = 0.0m;
-            _totalDiscount = 0.0m;
-            _totalFinal = 0.0m;
-            _totalQuantity = 0.0m;
+            TotalNet = 0.0m;
+            TotalGross = 0.0m;
+            TotalTax = 0.0m;
+            TotalDiscount = 0.0m;
+            TotalFinal = 0.0m;
+            TotalQuantity = 0.0m;
 
             //Require to ReCreate TaxBag else in Payment window when we change Discount, 
             //TaxBag Reflect totals without discount appyed, ex after ArticleBag costructed with one Discount and change it after construct
-            _taxBag = new Dictionary<decimal, TaxBagProperties>();
+            TaxBag = new Dictionary<decimal, TaxBagProperties>();
 
             foreach (var item in this)
             {
                 UpdateKeyProperties(item.Key);
-                _totalNet += item.Value.TotalNet;
-                _totalGross += item.Value.TotalGross;
-                _totalTax += item.Value.TotalTax;
-                _totalDiscount += item.Value.TotalDiscount;
-                _totalFinal += item.Value.TotalFinal;
-                _totalQuantity += item.Value.Quantity;
+                TotalNet += item.Value.TotalNet;
+                TotalGross += item.Value.TotalGross;
+                TotalTax += item.Value.TotalTax;
+                TotalDiscount += item.Value.TotalDiscount;
+                TotalFinal += item.Value.TotalFinal;
+                TotalQuantity += item.Value.Quantity;
 
                 //Required to Update TaxBag Totals
                 //TaxBag Add Key
-                if (!_taxBag.ContainsKey(item.Key.Vat))
+                if (!TaxBag.ContainsKey(item.Key.Vat))
                 {
-                    _taxBag.Add(item.Key.Vat, new TaxBagProperties(item.Key.Designation, item.Value.TotalTax, item.Value.TotalNet));
+                    TaxBag.Add(item.Key.Vat, new TaxBagProperties(item.Key.Designation, item.Value.TotalTax, item.Value.TotalNet));
                 }
                 //Update Key, Add Vat
                 else
                 {
-                    _taxBag[item.Key.Vat].Total += item.Value.TotalTax;
-                    _taxBag[item.Key.Vat].TotalBase += item.Value.TotalNet;
+                    TaxBag[item.Key.Vat].Total += item.Value.TotalTax;
+                    TaxBag[item.Key.Vat].TotalBase += item.Value.TotalNet;
                 }
             }
         }
@@ -150,7 +108,7 @@ namespace logicpos.shared.Classes.Finance
               pKey.Price,
               this[pKey].Quantity,
               pKey.Discount,
-              this._discountGlobal,
+              this.DiscountGlobal,
               pKey.Vat
             );
 
@@ -188,7 +146,7 @@ namespace logicpos.shared.Classes.Finance
               pKey.Price,
               pProps.Quantity,
               pKey.Discount,
-              this._discountGlobal,
+              this.DiscountGlobal,
               pKey.Vat
             );
 
@@ -219,28 +177,28 @@ namespace logicpos.shared.Classes.Finance
             UpdateKeyProperties(key);
 
             //TaxBag Add Key
-            if (!_taxBag.ContainsKey(key.Vat))
+            if (!TaxBag.ContainsKey(key.Vat))
             {
                 //Get Designation from Key
                 //Get VatRate formated for filter, in sql server gives error without this it filters 23,0000 and not 23.0000 resulting in null vatRate
                 string sql = string.Format("SELECT Designation FROM fin_configurationvatrate WHERE VALUE = '{0}'", SharedUtils.DecimalToString(key.Vat, SharedFramework.CurrentCultureNumberFormat));
                 string designation = SessionXpo.ExecuteScalar(sql).ToString();
                 //Now Add New Key with Designation
-                _taxBag.Add(key.Vat, new TaxBagProperties(designation, addPriceProperties.TotalTax, addPriceProperties.TotalNet));
+                TaxBag.Add(key.Vat, new TaxBagProperties(designation, addPriceProperties.TotalTax, addPriceProperties.TotalNet));
             }
             //Update Key, Add Vat
             else
             {
-                _taxBag[key.Vat].Total += addPriceProperties.TotalTax;
-                _taxBag[key.Vat].TotalBase += addPriceProperties.TotalNet;
+                TaxBag[key.Vat].Total += addPriceProperties.TotalTax;
+                TaxBag[key.Vat].TotalBase += addPriceProperties.TotalNet;
             }
 
-            _totalQuantity += addPriceProperties.Quantity;
-            _totalNet += addPriceProperties.TotalNet;
-            _totalGross += addPriceProperties.TotalGross;
-            _totalTax += addPriceProperties.TotalTax;
-            _totalDiscount += addPriceProperties.TotalDiscount;
-            _totalFinal += addPriceProperties.TotalFinal;
+            TotalQuantity += addPriceProperties.Quantity;
+            TotalNet += addPriceProperties.TotalNet;
+            TotalGross += addPriceProperties.TotalGross;
+            TotalTax += addPriceProperties.TotalTax;
+            TotalDiscount += addPriceProperties.TotalDiscount;
+            TotalFinal += addPriceProperties.TotalFinal;
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -255,7 +213,7 @@ namespace logicpos.shared.Classes.Finance
               pKey.Price,
               pRemoveQuantity,
               pKey.Discount,
-              this._discountGlobal,
+              this.DiscountGlobal,
               pKey.Vat
             );
 
@@ -279,16 +237,16 @@ namespace logicpos.shared.Classes.Finance
             }
 
             //Calc Article Grand Totals
-            _totalQuantity -= removePriceProperties.Quantity;
-            _totalNet -= removePriceProperties.TotalNet;
-            _totalGross -= removePriceProperties.TotalGross;
-            _totalTax -= removePriceProperties.TotalTax;
-            _totalDiscount -= removePriceProperties.TotalDiscount;
-            _totalFinal -= removePriceProperties.TotalFinal;
+            TotalQuantity -= removePriceProperties.Quantity;
+            TotalNet -= removePriceProperties.TotalNet;
+            TotalGross -= removePriceProperties.TotalGross;
+            TotalTax -= removePriceProperties.TotalTax;
+            TotalDiscount -= removePriceProperties.TotalDiscount;
+            TotalFinal -= removePriceProperties.TotalFinal;
 
             //TaxBag Update 
-            _taxBag[pKey.Vat].Total -= removePriceProperties.TotalTax;
-            _taxBag[pKey.Vat].TotalBase -= removePriceProperties.TotalNet;
+            TaxBag[pKey.Vat].Total -= removePriceProperties.TotalTax;
+            TaxBag[pKey.Vat].TotalBase -= removePriceProperties.TotalNet;
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -443,7 +401,7 @@ namespace logicpos.shared.Classes.Finance
 
                 //Audit
                 SharedUtils.Audit("ORDER_ARTICLE_REMOVED", string.Format(
-                        resources.CustomResources.GetCustomResources(Settings["customCultureResourceDefinition"], "audit_message_order_article_removed"),
+                        resources.CustomResources.GetCustomResource(Settings["customCultureResourceDefinition"], "audit_message_order_article_removed"),
                         articleDesignation,
                         1,
                         resultRemainQuantity - 1,
@@ -484,7 +442,7 @@ namespace logicpos.shared.Classes.Finance
                             //Open Table
                             deleteOrderMain.PlaceTable.TableStatus = TableStatus.Free;
                             //Audit
-                            SharedUtils.Audit("TABLE_OPEN", string.Format(resources.CustomResources.GetCustomResources(Settings["customCultureResourceDefinition"], "audit_message_table_open"), deleteOrderMain.PlaceTable.Designation));
+                            SharedUtils.Audit("TABLE_OPEN", string.Format(resources.CustomResources.GetCustomResource(Settings["customCultureResourceDefinition"], "audit_message_table_open"), deleteOrderMain.PlaceTable.Designation));
                             //Delete OrderMain
                             deleteOrderMain.Delete();
                         };
@@ -542,13 +500,13 @@ namespace logicpos.shared.Classes.Finance
             }
             //TaxBag
             _logger.Debug("\tVat\tTotal");
-            foreach (var item in this._taxBag)
+            foreach (var item in this.TaxBag)
             {
                 _logger.Debug(string.Format("\t{0}\t{1}", item.Key, item.Value));
             }
             //Totals
             _logger.Debug("\tTotalItems\tTotalNet\tTotalGross\tTotalDiscount\tTotalTax\tTotalFinal");
-            _logger.Debug(string.Format("\t{0}\t{1}\t{2}\t{3}\t{4}\t{5}", _totalQuantity, _totalNet, _totalGross, _totalDiscount, _totalTax, _totalFinal));
+            _logger.Debug(string.Format("\t{0}\t{1}\t{2}\t{3}\t{4}\t{5}", TotalQuantity, TotalNet, TotalGross, TotalDiscount, TotalTax, TotalFinal));
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
