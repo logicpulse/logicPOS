@@ -14,6 +14,7 @@ using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.shared.App;
 using logicpos.datalayer.App;
+using logicpos.datalayer.Xpo;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -97,7 +98,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _vbox.PackStart(entryBoxValidationButton, true, true, _padding);
 
             //Test XPOEntryBoxSelectRecordValidation without KeyBoard Input
-            fin_documentfinancetype defaultValueDocumentFinanceType = (fin_documentfinancetype)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(fin_documentfinancetype), SharedSettings.XpoOidDocumentFinanceTypeInvoice);
+            fin_documentfinancetype defaultValueDocumentFinanceType = (fin_documentfinancetype)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(fin_documentfinancetype), SharedSettings.XpoOidDocumentFinanceTypeInvoice);
             CriteriaOperator criteriaOperatorDocumentFinanceType = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1)");
             XPOEntryBoxSelectRecordValidation<fin_documentfinancetype, TreeViewDocumentFinanceType> entryBoxSelectDocumentFinanceType = new XPOEntryBoxSelectRecordValidation<fin_documentfinancetype, TreeViewDocumentFinanceType>(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinanceseries_documenttype"), "Designation", "Oid", defaultValueDocumentFinanceType, criteriaOperatorDocumentFinanceType, SharedSettings.RegexGuid, true);
             //entryBoxSelectDocumentFinanceType.EntryValidation.IsEditable = false;
@@ -208,7 +209,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private void buttonTestDocumentMasterCreatePDF_Clicked(object sender, EventArgs e)
         {
             Guid guidOid = new Guid("099EF525-FCEC-48D8-9EE8-FA0F34A34ED4");
-            fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), guidOid);
+            fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)XPOSettings.Session.GetObjectByKey(typeof(fin_documentfinancemaster), guidOid);
             string fileName = CustomReport.DocumentMasterCreatePDF(documentFinanceMaster);
             _logger.Debug(string.Format("fileName: [{0}]", fileName));
         }

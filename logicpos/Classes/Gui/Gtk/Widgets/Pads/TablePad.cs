@@ -4,6 +4,7 @@ using logicpos.App;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Xpo;
 using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
@@ -154,7 +155,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 if (_listButtons.Count > 0) _listButtons.Clear();
 
                 //Debug
-                SelectedData xpoSelectedData = DataLayerFramework.SessionXpo.ExecuteQueryWithMetadata(executeSql);
+                SelectedData xpoSelectedData = XPOSettings.Session.ExecuteQueryWithMetadata(executeSql);
 
                 SelectStatementResultRow[] selectStatementResultMeta = xpoSelectedData.ResultSet[0].Rows;
                 SelectStatementResultRow[] selectStatementResultData = xpoSelectedData.ResultSet[1].Rows;

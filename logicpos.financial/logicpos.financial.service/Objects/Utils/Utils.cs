@@ -1,6 +1,7 @@
 ﻿using DevExpress.Xpo.DB;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Xpo;
 using logicpos.financial.service.Objects.Modules.AT;
 using logicpos.shared.App;
 using System;
@@ -452,7 +453,7 @@ namespace logicpos.financial.service.Objects
                     foreach (SelectStatementResultRow row in xPSelectData.Data)
                     {
                         key = new Guid(row.Values[xPSelectData.GetFieldIndex("Oid")].ToString());
-                        documentMaster = (fin_documentfinancemaster)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), key);
+                        documentMaster = (fin_documentfinancemaster)XPOSettings.Session.GetObjectByKey(typeof(fin_documentfinancemaster), key);
                         //SendDocument
                         soapResult = SendDocument(documentMaster);
 
@@ -478,7 +479,7 @@ namespace logicpos.financial.service.Objects
                     foreach (SelectStatementResultRow row in xPSelectData.Data)
                     {
                         key = new Guid(row.Values[xPSelectData.GetFieldIndex("Oid")].ToString());
-                        documentMaster = (fin_documentfinancemaster)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), key);
+                        documentMaster = (fin_documentfinancemaster)XPOSettings.Session.GetObjectByKey(typeof(fin_documentfinancemaster), key);
                         //SendDocument
                         soapResult = SendDocument(documentMaster);
                         result.Add(documentMaster, soapResult);

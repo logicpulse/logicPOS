@@ -4,6 +4,7 @@ using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
+using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Finance;
 using logicpos.shared.App;
 using logicpos.shared.Classes.Finance;
@@ -196,7 +197,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 // Init Object to Use priceTax on above Loop
                 //Get Place Objects to extract TaxSellType Normal|TakeWay, Place, Tables etc
                 OrderMain currentOrderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];
-                pos_configurationplace configurationPlace = (pos_configurationplace)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(pos_configurationplace), currentOrderMain.Table.PlaceId);
+                pos_configurationplace configurationPlace = (pos_configurationplace)XPOSettings.Session.GetObjectByKey(typeof(pos_configurationplace), currentOrderMain.Table.PlaceId);
 
                 // Loop articleBag, and Add the quantity for Each Split (Total Article Quantity / numberOfSplits)
                 foreach (var article in articleBag)
@@ -341,7 +342,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     OrderDetail currentOrderDetails = currentOrderMain.OrderTickets[currentOrderMain.CurrentTicketId].OrderDetails;
 
                     // Get configurationPlace to get Tax
-                    pos_configurationplace configurationPlace = (pos_configurationplace)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(pos_configurationplace), currentOrderMain.Table.PlaceId);
+                    pos_configurationplace configurationPlace = (pos_configurationplace)XPOSettings.Session.GetObjectByKey(typeof(pos_configurationplace), currentOrderMain.Table.PlaceId);
                 }
 
                 return true;

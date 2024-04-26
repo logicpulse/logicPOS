@@ -2,6 +2,7 @@
 using DevExpress.Xpo.DB;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Enums;
 using logicpos.shared.App;
 using System;
@@ -23,7 +24,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
         public int TableWidth { get; set; }
 
         public TicketTable(string pSql, List<TicketColumn> pColumnsProperties, int pTableWidth)
-            : this(DataLayerFramework.SessionXpo, pSql, pColumnsProperties, pTableWidth)
+            : this(XPOSettings.Session, pSql, pColumnsProperties, pTableWidth)
         {
         }
 

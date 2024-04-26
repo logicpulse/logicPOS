@@ -8,6 +8,7 @@ using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Xpo;
 using logicpos.financial.library.App;
 using logicpos.shared.App;
 using logicpos.shared.Classes.Finance;
@@ -302,7 +303,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                     //If SimplifiedInvoice Update to it, If not FinalConsumerEntity, Update to it (Consumidor Final)
                     if (_pagePad2.EntryBoxSelectCustomerName.Value == null || _pagePad2.EntryBoxSelectCustomerName.Value.Oid != SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity)
                     {
-                        erp_customer customer = (erp_customer)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(erp_customer), SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity);
+                        erp_customer customer = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity);
                         //Assign Value From FiscalNumber
                         _pagePad2.GetCustomerDetails("Oid", customer.Oid.ToString());
                     }
@@ -685,7 +686,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 EntryBoxDocumentMasterNotes.EntryValidation.Text = sourceDocument.Notes;
 
                 //Page2:Customer
-                erp_customer customer = (erp_customer)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(erp_customer), sourceDocument.EntityOid);
+                erp_customer customer = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), sourceDocument.EntityOid);
                 //Require to assign DocumentFinanceDialogPagePad Customer
                 _pagePad.Customer = (customer != null) ? customer : null;
                 _pagePad2.EntryBoxSelectCustomerName.Value = (customer != null) ? customer : null;

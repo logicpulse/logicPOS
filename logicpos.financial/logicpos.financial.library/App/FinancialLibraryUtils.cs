@@ -4,6 +4,7 @@ using DevExpress.Xpo.DB;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
+using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Finance;
 using logicpos.financial.library.Classes.Reports;
 using logicpos.shared.App;
@@ -65,7 +66,7 @@ namespace logicpos.financial.library.App
             {
                 new SortProperty("Ord", SortingDirection.Ascending)
             };
-            XPCollection xpcDocumentFinanceType = SharedUtils.GetXPCollectionFromCriteria(DataLayerFramework.SessionXpo, typeof(fin_documentfinancetype), criteriaOperator, sortingCollection);
+            XPCollection xpcDocumentFinanceType = SharedUtils.GetXPCollectionFromCriteria(XPOSettings.Session, typeof(fin_documentfinancetype), criteriaOperator, sortingCollection);
 
             try
             {
@@ -336,11 +337,11 @@ namespace logicpos.financial.library.App
                     {
                         //Get Total Already Credit Items in this Document
                         sql = string.Format("SELECT Quantity AS Total FROM fin_documentfinancedetail WHERE DocumentMaster = '{0}' AND Article = '{1}';", pDocumentParent.Oid, item.Key.ArticleOid);
-                        resultParentDocument = DataLayerFramework.SessionXpo.ExecuteScalar(sql);
+                        resultParentDocument = XPOSettings.Session.ExecuteScalar(sql);
                         totalParentDocument = (resultParentDocument != null) ? Convert.ToDecimal(resultParentDocument) : 0.0m;
 
                         sql = string.Format("SELECT SUM(fdQuantity) AS Total FROM view_documentfinance WHERE ftOid = '{0}' AND fmDocumentParent = '{1}' AND fdArticle = '{2}';", SharedSettings.XpoOidDocumentFinanceTypeCreditNote, pDocumentParent.Oid, item.Key.ArticleOid);
-                        resultAlreadyCredited = DataLayerFramework.SessionXpo.ExecuteScalar(sql);
+                        resultAlreadyCredited = XPOSettings.Session.ExecuteScalar(sql);
                         totalAlreadyCredited = (resultAlreadyCredited != null) ? Convert.ToDecimal(resultAlreadyCredited) : 0.0m;
 
                         if (debug) _logger.Debug(string.Format(
@@ -401,7 +402,7 @@ namespace logicpos.financial.library.App
                     SharedSettings.XpoOidDocumentFinanceTypeDebitNote
                 );
 
-                SelectedData selectedData = DataLayerFramework.SessionXpo.ExecuteQuery(sql);
+                SelectedData selectedData = XPOSettings.Session.ExecuteQuery(sql);
 
                 //Add to result from SelectedData
                 foreach (var item in selectedData.ResultSet[0].Rows)
@@ -444,7 +445,7 @@ namespace logicpos.financial.library.App
                     pDocumentType
                 );
 
-                SelectedData selectedData = DataLayerFramework.SessionXpo.ExecuteQuery(sql);
+                SelectedData selectedData = XPOSettings.Session.ExecuteQuery(sql);
 
                 //Add to result from SelectedData
                 foreach (var item in selectedData.ResultSet[0].Rows)
@@ -473,7 +474,7 @@ namespace logicpos.financial.library.App
                 foreach (var item in pArticleBag)
                 {
                     //Get Article
-                    article = (fin_article)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_article), item.Key.ArticleOid);
+                    article = (fin_article)XPOSettings.Session.GetObjectByKey(typeof(fin_article), item.Key.ArticleOid);
                     //Assign Required if ArticleClassCustomerCard Detected
                     if (article.Type.Oid == SharedSettings.XpoOidArticleClassCustomerCard
                         && (
@@ -581,10 +582,10 @@ namespace logicpos.financial.library.App
                     , currentOrderMain.PersistentOid
                 );
 
-                var sqlResult = DataLayerFramework.SessionXpo.ExecuteScalar(sql);
+                var sqlResult = XPOSettings.Session.ExecuteScalar(sql);
 
                 //Get LastDocument Object
-                if (sqlResult != null) lastDocument = (fin_documentfinancemaster)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), new Guid(Convert.ToString(sqlResult)));
+                if (sqlResult != null) lastDocument = (fin_documentfinancemaster)XPOSettings.Session.GetObjectByKey(typeof(fin_documentfinancemaster), new Guid(Convert.ToString(sqlResult)));
 
                 //If GenerateNewIfDiferentFromArticleBag Enabled compare ArticleBag with Document and If is diferent Generate a New One
                 if (pGenerateNewIfDiferentFromArticleBag)
@@ -603,7 +604,7 @@ namespace logicpos.financial.library.App
                             Customer = SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity
                         };
 
-                        fin_documentordermain orderMain = (fin_documentordermain)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_documentordermain), currentOrderMain.PersistentOid);
+                        fin_documentordermain orderMain = (fin_documentordermain)XPOSettings.Session.GetObjectByKey(typeof(fin_documentordermain), currentOrderMain.PersistentOid);
                         processFinanceDocumentParameter.SourceOrderMain = orderMain;
                         if (lastDocument != null)
                         {
@@ -622,7 +623,7 @@ namespace logicpos.financial.library.App
                         {
                             //Assign Result Document to New Document
                             //Get Object outside UOW else we have a problem with "A first chance exception of type 'System.ObjectDisposedException'"
-                            result = (fin_documentfinancemaster)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), newDocument.Oid);
+                            result = (fin_documentfinancemaster)XPOSettings.Session.GetObjectByKey(typeof(fin_documentfinancemaster), newDocument.Oid);
 
                             ////Old Code that changes last Conference Document to Status "A", it is not Required, Confirmed with Carlos Bento, we must Leave it without status changes
                             //if (lastDocument != null) 

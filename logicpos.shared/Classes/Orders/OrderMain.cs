@@ -1,6 +1,7 @@
 ﻿using DevExpress.Xpo;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
+using logicpos.datalayer.Xpo;
 using logicpos.shared.App;
 using logicpos.shared.Classes.Finance;
 using logicpos.shared.Enums;
@@ -99,7 +100,7 @@ namespace logicpos.shared.Classes.Orders
             OrderTicket currentOrderTicket = currentOrderMain.OrderTickets[currentOrderMain.CurrentTicketId];
 
             //Get Place Object to extract TaxSellType Normal|TakeWay
-            pos_configurationplace configurationPlace = (pos_configurationplace)SessionXpo.GetObjectByKey(typeof(pos_configurationplace), currentOrderMain.Table.PlaceId);
+            pos_configurationplace configurationPlace = (pos_configurationplace)XPOSettings.Session.GetObjectByKey(typeof(pos_configurationplace), currentOrderMain.Table.PlaceId);
             //Use VatDirectSelling if in Retail or in TakeWay mode
             TaxSellType taxSellType = (datalayer.App.DataLayerSettings.AppMode == AppOperationMode.Retail || configurationPlace.MovementType.VatDirectSelling) ? TaxSellType.TakeAway : TaxSellType.Normal;
 
@@ -164,7 +165,7 @@ namespace logicpos.shared.Classes.Orders
             //_logger.Debug(string.Format("sql: [{0}]", sql));
             Guid orderTicketOid = SharedUtils.GetGuidFromQuery(sql);
             //Result
-            fin_documentorderticket xOrderTicket = (fin_documentorderticket)SessionXpo.GetObjectByKey(typeof(fin_documentorderticket), orderTicketOid);
+            fin_documentorderticket xOrderTicket = (fin_documentorderticket)XPOSettings.Session.GetObjectByKey(typeof(fin_documentorderticket), orderTicketOid);
 
             //xOrderTicket = (fin_documentorderticket)DataLayerUtils.GetXPGuidObject(_sessionXpo, typeof(fin_documentorderticket), currentOrderMain._persistentOid);
             if (xOrderTicket != null)
@@ -400,7 +401,7 @@ namespace logicpos.shared.Classes.Orders
                 ;"
                  , this.PersistentOid
                  );
-                var totalTickets = SessionXpo.ExecuteScalar(sqlTotalTickets);
+                var totalTickets = XPOSettings.Session.ExecuteScalar(sqlTotalTickets);
 
                 //Assign Totals
                 GlobalTotalTickets = (totalTickets != null) ? Convert.ToInt32(totalTickets) : 0;
@@ -501,7 +502,7 @@ namespace logicpos.shared.Classes.Orders
               }
 
               //sqlTotalTickets
-              var totalTickets = DataLayerFramework.SessionXpo.ExecuteScalar(sqlTotalTickets);
+              var totalTickets = XPOSettings.Session.ExecuteScalar(sqlTotalTickets);
               _globalTotalTickets = (totalTickets != null) ? Convert.ToInt32(totalTickets) : 0;
 
               //Persist Final TotalOpen 
@@ -534,7 +535,7 @@ namespace logicpos.shared.Classes.Orders
             if (_persistentOid != Guid.Empty)
             {
               CriteriaOperator binaryOperator = new BinaryOperator("OrderMain", _persistentOid, BinaryOperatorType.Equal);
-              XPCollection _xpcDocumentOrderTicket = new XPCollection(DataLayerFramework.SessionXpo, typeof(DocumentOrderTicket), binaryOperator);
+              XPCollection _xpcDocumentOrderTicket = new XPCollection(XPOSettings.Session, typeof(DocumentOrderTicket), binaryOperator);
 
               //Required to ByPass Cache
               _xpcDocumentOrderTicket.Reload();
@@ -565,7 +566,7 @@ namespace logicpos.shared.Classes.Orders
 
               //Process PartialPayed Items and Discount its Totals
               CriteriaOperator binaryOperatorDocumentFinanceMaster = new BinaryOperator("SourceOrderMain", _persistentOid, BinaryOperatorType.Equal);
-              XPCollection _xpcDocumentFinanceMaster = new XPCollection(DataLayerFramework.SessionXpo, typeof(DocumentFinanceMaster), binaryOperatorDocumentFinanceMaster);
+              XPCollection _xpcDocumentFinanceMaster = new XPCollection(XPOSettings.Session, typeof(DocumentFinanceMaster), binaryOperatorDocumentFinanceMaster);
               if (_xpcDocumentFinanceMaster.Count > 0)
               {
                 foreach (DocumentFinanceMaster master in _xpcDocumentFinanceMaster)
@@ -607,7 +608,7 @@ namespace logicpos.shared.Classes.Orders
         {
             int iResult;
             string sql = string.Format("SELECT {1} FROM fin_documentordermain WHERE PlaceTable = '{0}' and OrderStatus = {2};", pTableOid, pField, Convert.ToInt16(OrderStatus.Open));
-            var oResult = SessionXpo.ExecuteScalar(sql);
+            var oResult = XPOSettings.Session.ExecuteScalar(sql);
             iResult = (oResult != null) ? Convert.ToInt16(oResult) : -1;
 
             //Debug
@@ -620,7 +621,7 @@ namespace logicpos.shared.Classes.Orders
         {
             Guid iResult;
             string sql = string.Format("SELECT {1} FROM fin_documentordermain WHERE PlaceTable = '{0}' and OrderStatus = {2};", pTableOid, pField, Convert.ToInt16(OrderStatus.Open));
-            var oResult = SessionXpo.ExecuteScalar(sql);
+            var oResult = XPOSettings.Session.ExecuteScalar(sql);
             iResult = (oResult != null) ? new Guid(Convert.ToString(oResult)) : Guid.Empty;
 
             //Debug

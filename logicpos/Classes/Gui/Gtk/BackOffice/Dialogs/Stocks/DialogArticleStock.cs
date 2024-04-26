@@ -488,7 +488,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     //        var splitResult4 = splitResult3.Substring(splitResult3.IndexOf("'"));
                     //        string finalResult = splitResult4.Remove(splitResult4.Length - 1);
                     //        finalResult = finalResult.Replace("'", "");
-                    //        fin_articleserialnumber filterSerialNumber = (fin_articleserialnumber)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_articleserialnumber), Guid.Parse(finalResult));
+                    //        fin_articleserialnumber filterSerialNumber = (fin_articleserialnumber)XPOSettings.Session.GetObjectByKey(typeof(fin_articleserialnumber), Guid.Parse(finalResult));
                     //        if(filterSerialNumber != null)
                     //        {
                     //            var newstring = result[0].Replace(finalResult, finalResult);

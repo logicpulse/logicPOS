@@ -11,6 +11,7 @@ using SkiaSharp.QrCode.Image;
 using System.IO;
 using logicpos.datalayer.App;
 using logicpos.shared.App;
+using logicpos.datalayer.Xpo;
 
 namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 {
@@ -349,7 +350,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 {
                     cfg_configurationcurrency defaultCurrencyForExchangeRate =
                         (cfg_configurationcurrency)DataLayerUtils.GetXPGuidObject(
-                            DataLayerFramework.SessionXpo,
+                            XPOSettings.Session,
                             typeof(cfg_configurationcurrency),
                             SharedSettings.XpoOidConfigurationCurrencyUSDollar);
 

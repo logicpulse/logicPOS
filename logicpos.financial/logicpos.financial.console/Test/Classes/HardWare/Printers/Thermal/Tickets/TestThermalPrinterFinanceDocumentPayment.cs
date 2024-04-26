@@ -17,7 +17,7 @@ namespace logicpos.financial.console.Test.Classes.HardWare.Printer
             try
             {
                 //Parameters
-                fin_documentfinancepayment documentFinancePayment = (fin_documentfinancepayment)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancepayment), ConsoleSettings.XpoPrintFinanceDocumentPayment);
+                fin_documentfinancepayment documentFinancePayment = (fin_documentfinancepayment)XPOSettings.Session.GetObjectByKey(typeof(fin_documentfinancepayment), ConsoleSettings.XpoPrintFinanceDocumentPayment);
                 //Print Document
                 if (documentFinancePayment != null)
                 {

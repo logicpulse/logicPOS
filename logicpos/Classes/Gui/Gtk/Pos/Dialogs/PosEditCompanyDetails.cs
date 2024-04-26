@@ -10,6 +10,7 @@ using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Finance;
 using logicpos.shared.App;
 using System;
@@ -152,7 +153,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 CriteriaOperator criteriaOperator = CriteriaOperator.Parse("(Disabled = 0 OR Disabled is NULL) AND (FormType = 1 AND FormPageNo = 1)");
                 SortProperty[] sortProperty = new SortProperty[2];
                 sortProperty[0] = new SortProperty("Ord", SortingDirection.Ascending);
-                XPCollection xpCollection = new XPCollection(DataLayerFramework.SessionXpo, typeof(cfg_configurationpreferenceparameter), criteriaOperator, sortProperty);
+                XPCollection xpCollection = new XPCollection(XPOSettings.Session, typeof(cfg_configurationpreferenceparameter), criteriaOperator, sortProperty);
                 if (xpCollection.Count > 0)
                 {
                     string label = string.Empty;
@@ -334,10 +335,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     string commandSeparator = ";";
                     Dictionary<string, string> replaceables = logicpos.DataLayer.GetReplaceables(DataLayerFramework.DatabaseType);
                     string directoryCountry = SharedUtils.OSSlash(string.Format(@"{0}/{1}", POSSettings.FileDatabaseOtherCommonCountry, _entryBoxSelectSystemCountry.Value.Code2));
-                    logicpos.DataLayer.ProcessDumpDirectory(DataLayerFramework.SessionXpo, directoryCountry, commandSeparator, replaceables);
+                    logicpos.DataLayer.ProcessDumpDirectory(XPOSettings.Session, directoryCountry, commandSeparator, replaceables);
                     //Proccess Country Plugin Scripts
                     directoryCountry = SharedUtils.OSSlash(string.Format(@"{0}/{1}", POSSettings.FileDatabaseOtherCommonPluginsSoftwareVendorOtherCommonCountry, _entryBoxSelectSystemCountry.Value.Code2));
-                    logicpos.DataLayer.ProcessDumpDirectory(DataLayerFramework.SessionXpo, directoryCountry, commandSeparator, replaceables);
+                    logicpos.DataLayer.ProcessDumpDirectory(XPOSettings.Session, directoryCountry, commandSeparator, replaceables);
 
                     //Change Configuration : Currently only working outside Debugger, to prevent errors changing config with VS using app.config 
                     //System.ArgumentException: O nome de ficheiro 'c:\svn\logicpos\trunk\src\logicpos\bin\debug\logicpos.exe.config' é inválido porque o mesmo nome de ficheiro já é referido pela hierarquia de configuração aberta

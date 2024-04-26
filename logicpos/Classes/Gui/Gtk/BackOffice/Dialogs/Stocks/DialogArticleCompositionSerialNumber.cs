@@ -11,6 +11,7 @@ using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
+using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
 using logicpos.shared.App;
 using System;
@@ -354,7 +355,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
         {
             try
             {
-                var own_customer = (erp_customer)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(erp_customer), SharedSettings.XpoOidUserRecord);
+                var own_customer = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), SharedSettings.XpoOidUserRecord);
                 var stockMovimentOut = (_dataSourceRow as fin_articleserialnumber).StockMovimentOut;
                 bool sucess = false;;
 
@@ -407,7 +408,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
         {
             try
             {
-                var own_customer = (erp_customer)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(erp_customer), SharedSettings.XpoOidUserRecord);
+                var own_customer = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), SharedSettings.XpoOidUserRecord);
                 var stockMovimentOut = (_dataSourceRow as fin_articleserialnumber).StockMovimentOut;
                 bool sucess = false;
 

@@ -1,20 +1,16 @@
-﻿using DevExpress.Xpo;
-using logicpos.datalayer.App;
-using System;
+﻿using System;
 
-namespace logicpos.datalayer.XPO
+namespace logicpos.datalayer.Xpo
 {
     public static class XPOHelper
     {
-        public static Session Session;
-
         public static uint GetNextTableFieldID(string table, string field)
         {
             uint result = 0;
 
             string sql = string.Format("SELECT MAX({0}) FROM {1};", field, table);
 
-            var resultInt = DataLayerFramework.SessionXpo.ExecuteScalar(sql);
+            var resultInt = XPOSettings.Session.ExecuteScalar(sql);
             if (resultInt != null)
             {
                 result = Convert.ToUInt32(resultInt) + 1;

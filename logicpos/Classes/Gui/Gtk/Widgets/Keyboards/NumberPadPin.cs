@@ -4,6 +4,7 @@ using logicpos.Classes.Enums.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
 using logicpos.shared.App;
 using System;
@@ -341,7 +342,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
             try
             {
-                var resultObject = DataLayerFramework.SessionXpo.ExecuteScalar(sql);
+                var resultObject = XPOSettings.Session.ExecuteScalar(sql);
 
                 if (resultObject != null && resultObject.GetType() == typeof(string) && CryptographyUtils.SaltedString.ValidateSaltedString(resultObject.ToString(), password))
                 {

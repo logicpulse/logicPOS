@@ -7,6 +7,7 @@ using logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Xpo;
 using System;
 using System.Collections.Generic;
 
@@ -56,7 +57,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 TopReturnedObj = 100000000;
             }
 
-            XPCollection xpoCollection = new XPCollection(DataLayerFramework.SessionXpo, xpoGuidObjectType, criteria) { TopReturnedObjects = TopReturnedObj * CurrentPageNumber };
+            XPCollection xpoCollection = new XPCollection(XPOSettings.Session, xpoGuidObjectType, criteria) { TopReturnedObjects = TopReturnedObj * CurrentPageNumber };
             var sortingCollection = new SortingCollection
             {
                 new SortProperty("Warehouse", DevExpress.Xpo.DB.SortingDirection.Ascending)

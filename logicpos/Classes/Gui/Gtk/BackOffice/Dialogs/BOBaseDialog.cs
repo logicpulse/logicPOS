@@ -7,6 +7,7 @@ using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
+using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
 using logicpos.financial.library.Classes.Stocks;
 using logicpos.shared.App;
@@ -79,7 +80,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             if (pDataSourceRow != null) _dataSourceRow = pDataSourceRow;
 
             //TODO: try to prevent NULL Error
-            //_dataSourceRow = DataLayerFramework.SessionXpo.GetObjectByKey<XPGuidObject>(_dataSourceRow.Oid);
+            //_dataSourceRow = XPOSettings.Session.GetObjectByKey<XPGuidObject>(_dataSourceRow.Oid);
             //TODO: Validar se o erro de editar dá erro de acesso objecto eliminado.
             //APPEAR when we Try to ReEdit Terminal, after assign Printer
             //An exception of type 'System.NullReferenceException' occurred in logicpos.exe but was not handled in user code
@@ -231,7 +232,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                                 var getArticleStock = Convert.ToDecimal(_dataSourceRow.Session.ExecuteScalar(stockQuery));
                                 if (Convert.ToDecimal(getArticleStock.ToString()) != (_dataSourceRow as fin_article).Accounting)
                                 {
-                                    var own_customer = (erp_customer)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(erp_customer), SharedSettings.XpoOidUserRecord);
+                                    var own_customer = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), SharedSettings.XpoOidUserRecord);
                                     if (own_customer != null)
                                     {
                                         if (string.IsNullOrEmpty(own_customer.Name))
@@ -265,11 +266,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     }
                     //Delete Articles compositions with deleted Parents
                     string sqlDelete = string.Format("DELETE FROM [fin_articlecomposition] WHERE [Article] IS NULL;");
-                    DataLayerFramework.SessionXpo.ExecuteQuery(sqlDelete);
+                    XPOSettings.Session.ExecuteQuery(sqlDelete);
                     _logger.Debug("Delete() :: articles composition with null parents'" + "'  ");
                     //Delete Articles SerialNumber emptys 
                     //sqlDelete = string.Format("DELETE FROM [fin_articleserialnumber] WHERE [SerialNumber] IS NULL;");
-                    //DataLayerFramework.SessionXpo.ExecuteQuery(sqlDelete);
+                    //XPOSettings.Session.ExecuteQuery(sqlDelete);
                     //_logger.Debug("Delete() :: articles serialnumber with null value'" + "'  ");
 
                     _dataSourceRow.Reload();

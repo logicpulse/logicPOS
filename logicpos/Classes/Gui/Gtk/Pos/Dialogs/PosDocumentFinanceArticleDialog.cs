@@ -20,6 +20,7 @@ using DevExpress.Xpo;
 using System.Collections;
 using logicpos.shared.App;
 using logicpos.datalayer.App;
+using logicpos.datalayer.Xpo;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -106,8 +107,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Get Default System Currency
             _currencyDefaultSystem = SharedSettings.ConfigurationSystemCurrency;
             //Consignation Invoice default values
-            _vatRateConsignationInvoice = (fin_configurationvatrate)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_configurationvatrate), SharedSettings.XpoOidConfigurationVatRateDutyFree);
-            _vatRateConsignationInvoiceExemptionReason = (fin_configurationvatexemptionreason)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_configurationvatexemptionreason), SharedSettings.XpoOidConfigurationVatExemptionReasonM99);
+            _vatRateConsignationInvoice = (fin_configurationvatrate)XPOSettings.Session.GetObjectByKey(typeof(fin_configurationvatrate), SharedSettings.XpoOidConfigurationVatRateDutyFree);
+            _vatRateConsignationInvoiceExemptionReason = (fin_configurationvatexemptionreason)XPOSettings.Session.GetObjectByKey(typeof(fin_configurationvatexemptionreason), SharedSettings.XpoOidConfigurationVatExemptionReasonM99);
 
             //TODO:THEME
             _windowSize = new Size(900, 360);
@@ -121,7 +122,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             if (customerObject.Value != null)
             {
                 Guid customerOid = customerObject.Value.Oid;
-                _customer = (erp_customer)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(erp_customer), customerOid);
+                _customer = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), customerOid);
             }
 
             //ActionArea Buttons
@@ -171,7 +172,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             string initialValueTotalNet = SharedUtils.DecimalToString(0);
             string initialValueTotalFinal = SharedUtils.DecimalToString(0);
             string initialValueNotes = string.Empty;
-            fin_configurationvatrate initialValueSelectConfigurationVatRate = (fin_configurationvatrate)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_configurationvatrate), DataLayerSettings.XpoOidArticleDefaultVatDirectSelling);
+            fin_configurationvatrate initialValueSelectConfigurationVatRate = (fin_configurationvatrate)XPOSettings.Session.GetObjectByKey(typeof(fin_configurationvatrate), DataLayerSettings.XpoOidArticleDefaultVatDirectSelling);
             fin_configurationvatexemptionreason initialValueSelectConfigurationVatExemptionReason = null;
 
             //Update Record : Override Default Values
@@ -208,8 +209,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 new SortProperty("Code", DevExpress.Xpo.DB.SortingDirection.Ascending)
             };
             CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL)"));
-            ICollection collectionCustomers = DataLayerFramework.SessionXpo.GetObjects(DataLayerFramework.SessionXpo.GetClassInfo(typeof(fin_article)), criteria, sortCollection, int.MaxValue, false, true);
-            //_article = new fin_article(DataLayerFramework.SessionXpo);
+            ICollection collectionCustomers = XPOSettings.Session.GetObjects(XPOSettings.Session.GetClassInfo(typeof(fin_article)), criteria, sortCollection, int.MaxValue, false, true);
+            //_article = new fin_article(XPOSettings.Session);
             ////foreach (fin_article item in collectionCustomers)
             ////{
             ////    articles = item;
@@ -571,14 +572,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     if (_article == null || _article.Oid == Guid.Empty)
                     {
                         //Verifica se artigo já existe
-                        fin_configurationpricetype configurationPriceTypeDefault = (fin_configurationpricetype)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_configurationpricetype), SharedSettings.XpoOidConfigurationPriceTypeDefault);
+                        fin_configurationpricetype configurationPriceTypeDefault = (fin_configurationpricetype)XPOSettings.Session.GetObjectByKey(typeof(fin_configurationpricetype), SharedSettings.XpoOidConfigurationPriceTypeDefault);
 
-                        _article = new fin_article(DataLayerFramework.SessionXpo);
+                        _article = new fin_article(XPOSettings.Session);
                         //Prepare Objects
                         Guid haveCode = new Guid();
 
                         string sql = string.Format(@"SELECT Oid FROM fin_article WHERE Code = '{0}' ORDER BY Code; ", _entryBoxSelectArticleCode.Entry.Text);
-                        var result = DataLayerFramework.SessionXpo.ExecuteQuery(sql);
+                        var result = XPOSettings.Session.ExecuteQuery(sql);
                         if (result != null && result.ResultSet[0].Rows.Length > 0)
                         {
                             haveCode = Guid.Parse(result.ResultSet[0].Rows[0].Values[0].ToString());
@@ -593,16 +594,16 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             _article.Price1 = SharedUtils.StringToDecimal(_dataSourceRow["Price"].ToString());
                             _article.PriceWithVat = false;
                             _article.Discount = SharedUtils.StringToDecimal(_dataSourceRow["Discount"].ToString());
-                            _article.VatDirectSelling = (fin_configurationvatrate)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_configurationvatrate), _entryBoxSelectVatRate.Value.Oid);
+                            _article.VatDirectSelling = (fin_configurationvatrate)XPOSettings.Session.GetObjectByKey(typeof(fin_configurationvatrate), _entryBoxSelectVatRate.Value.Oid);
                             _article.VatOnTable = _article.VatDirectSelling;
                             if (_entryBoxSelectVatExemptionReason.Value != null)
                             {
-                                _article.VatExemptionReason = (fin_configurationvatexemptionreason)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_configurationvatexemptionreason), _entryBoxSelectVatExemptionReason.Value.Oid);
+                                _article.VatExemptionReason = (fin_configurationvatexemptionreason)XPOSettings.Session.GetObjectByKey(typeof(fin_configurationvatexemptionreason), _entryBoxSelectVatExemptionReason.Value.Oid);
                             }
                             _article.Notes = _entryBoxValidationNotes.EntryValidation.Text;
-                            _article.Family = (fin_articlefamily)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_articlefamily), _entryBoxSelectArticleFamily.Value.Oid);
-                            _article.SubFamily = (fin_articlesubfamily)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_articlesubfamily), _entryBoxSelectArticleSubFamily.Value.Oid);
-                            _article.Type = (fin_articletype)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_articletype), DataLayerSettings.XpoOidArticleDefaultType);
+                            _article.Family = (fin_articlefamily)XPOSettings.Session.GetObjectByKey(typeof(fin_articlefamily), _entryBoxSelectArticleFamily.Value.Oid);
+                            _article.SubFamily = (fin_articlesubfamily)XPOSettings.Session.GetObjectByKey(typeof(fin_articlesubfamily), _entryBoxSelectArticleSubFamily.Value.Oid);
+                            _article.Type = (fin_articletype)XPOSettings.Session.GetObjectByKey(typeof(fin_articletype), DataLayerSettings.XpoOidArticleDefaultType);
 
                             _article.Save();
 
@@ -660,7 +661,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 {
                     string sql = string.Format(@"SELECT Oid FROM fin_article WHERE Code = '{0}' ORDER BY Code; ", _entryBoxSelectArticleCode.Entry.Text);
 
-                    var result = DataLayerFramework.SessionXpo.ExecuteQuery(sql);
+                    var result = XPOSettings.Session.ExecuteQuery(sql);
                     if (result != null && result.ResultSet[0].Rows.Length > 0)
                     {
                         haveCode = Guid.Parse(result.ResultSet[0].Rows[0].Values[0].ToString());
@@ -669,8 +670,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 if (haveCode != null && haveCode != Guid.Empty)
                 {
-                    fin_article article = (fin_article)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_article), haveCode);
-                    fin_configurationpricetype configurationPriceTypeDefault = (fin_configurationpricetype)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_configurationpricetype), SharedSettings.XpoOidConfigurationPriceTypeDefault);
+                    fin_article article = (fin_article)XPOSettings.Session.GetObjectByKey(typeof(fin_article), haveCode);
+                    fin_configurationpricetype configurationPriceTypeDefault = (fin_configurationpricetype)XPOSettings.Session.GetObjectByKey(typeof(fin_configurationpricetype), SharedSettings.XpoOidConfigurationPriceTypeDefault);
 
                     if (article != null && article.Type.HavePrice && article.Oid != Guid.Empty)
                     {
@@ -810,7 +811,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 Guid haveCode = new Guid();
 
                 string sql = string.Format(@"SELECT Oid FROM fin_article WHERE Designation = '{0}' ORDER BY Code; ", _entryBoxSelectArticle.Entry.Text);
-                var result = DataLayerFramework.SessionXpo.ExecuteQuery(sql);
+                var result = XPOSettings.Session.ExecuteQuery(sql);
 
                 if (result != null && result.ResultSet[0].Rows.Length > 0)
                 {
@@ -819,8 +820,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 if (haveCode != null && haveCode != Guid.Empty)
                 {
-                    fin_article article = (fin_article)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_article), haveCode);
-                    fin_configurationpricetype configurationPriceTypeDefault = (fin_configurationpricetype)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_configurationpricetype), SharedSettings.XpoOidConfigurationPriceTypeDefault);
+                    fin_article article = (fin_article)XPOSettings.Session.GetObjectByKey(typeof(fin_article), haveCode);
+                    fin_configurationpricetype configurationPriceTypeDefault = (fin_configurationpricetype)XPOSettings.Session.GetObjectByKey(typeof(fin_configurationpricetype), SharedSettings.XpoOidConfigurationPriceTypeDefault);
 
                     if (article != null && article.Type.HavePrice && article.Oid != Guid.Empty)
                     {
@@ -952,7 +953,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         private void CleanArticleFields(bool cleanCodeAndDesignation)
         {
-            fin_configurationvatrate initialValueSelectConfigurationVatRate = (fin_configurationvatrate)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_configurationvatrate), DataLayerSettings.XpoOidArticleDefaultVatDirectSelling);
+            fin_configurationvatrate initialValueSelectConfigurationVatRate = (fin_configurationvatrate)XPOSettings.Session.GetObjectByKey(typeof(fin_configurationvatrate), DataLayerSettings.XpoOidArticleDefaultVatDirectSelling);
             fin_configurationvatexemptionreason initialValueSelectConfigurationVatExemptionReason = null;
             CriteriaOperator criteriaOperatorSelectVatRate = CriteriaOperator.Parse("(Disabled = 0 OR Disabled IS NULL)");
 

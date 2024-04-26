@@ -7,6 +7,7 @@ using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Documents;
+using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
 using logicpos.shared.App;
 using System;
@@ -47,17 +48,17 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
                     if (DataLayerFramework.DatabaseType.ToString() == "MSSqlServer")
                     {
                         string lastArticleSql = string.Format("SELECT MAX(CAST(Code AS INT))FROM fin_warehouse");
-                        lastArticleCode = DataLayerFramework.SessionXpo.ExecuteScalar(lastArticleSql).ToString();
+                        lastArticleCode = XPOSettings.Session.ExecuteScalar(lastArticleSql).ToString();
                     }
                     else if (DataLayerFramework.DatabaseType.ToString() == "SQLite")
                     {
                         string lastArticleSql = string.Format("SELECT MAX(CAST(Code AS INT))FROM fin_warehouse");
-                        lastArticleCode = DataLayerFramework.SessionXpo.ExecuteScalar(lastArticleSql).ToString();
+                        lastArticleCode = XPOSettings.Session.ExecuteScalar(lastArticleSql).ToString();
                     }
                     else if (DataLayerFramework.DatabaseType.ToString() == "MySql")
                     {
                         string lastArticleSql = string.Format("SELECT MAX(CAST(code AS UNSIGNED)) as Cast FROM fin_warehouse;");
-                        lastArticleCode = DataLayerFramework.SessionXpo.ExecuteScalar(lastArticleSql).ToString();
+                        lastArticleCode = XPOSettings.Session.ExecuteScalar(lastArticleSql).ToString();
                     }
 
                 }

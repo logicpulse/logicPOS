@@ -15,6 +15,7 @@ using logicpos.datalayer.DataLayer.Xpo.Articles;
 using logicpos.financial.library.Classes.Reports;
 using logicpos.shared.App;
 using logicpos.datalayer.App;
+using logicpos.datalayer.Xpo;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {
@@ -476,10 +477,10 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                                         res.AssociatedArticles = itemS.Value;
                                         POSFramework.StockManagementModule.Add(ProcessArticleStockMode.In, res);
                                         string sql = string.Format("SELECT Oid FROM fin_articleserialnumber WHERE SerialNumber = '{0}';", res.SerialNumber.ToString());
-                                        var serialNumberOid = DataLayerFramework.SessionXpo.ExecuteScalar(sql);
+                                        var serialNumberOid = XPOSettings.Session.ExecuteScalar(sql);
                                         if (serialNumberOid != null)
                                         {
-                                            fin_articleserialnumber serialNumber = (fin_articleserialnumber)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_articleserialnumber), Guid.Parse(serialNumberOid.ToString()));
+                                            fin_articleserialnumber serialNumber = (fin_articleserialnumber)XPOSettings.Session.GetObjectByKey(typeof(fin_articleserialnumber), Guid.Parse(serialNumberOid.ToString()));
                                             barCodeLabelList.Add(serialNumber);
                                         }
                                     }

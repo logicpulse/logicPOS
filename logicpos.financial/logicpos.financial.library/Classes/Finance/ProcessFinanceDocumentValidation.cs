@@ -1,6 +1,7 @@
 ﻿using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
+using logicpos.datalayer.Xpo;
 using logicpos.financial.library.App;
 using logicpos.shared.App;
 using logicpos.shared.Classes.Finance;
@@ -275,28 +276,28 @@ namespace logicpos.financial.library.Classes.Finance
             {
                 //Get XPGuidObjects from Parameters
                 fin_documentfinancetype documentType = (pParameters.DocumentType != null && pParameters.DocumentType != Guid.Empty)
-                    ? (fin_documentfinancetype)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(fin_documentfinancetype), pParameters.DocumentType)
+                    ? (fin_documentfinancetype)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(fin_documentfinancetype), pParameters.DocumentType)
                     : null;
                 erp_customer customer = (pParameters.Customer != null && pParameters.Customer != Guid.Empty)
-                    ? (erp_customer)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(erp_customer), pParameters.Customer)
+                    ? (erp_customer)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(erp_customer), pParameters.Customer)
                     : null;
                 fin_documentfinancemaster documentParent = (pParameters.DocumentParent != null && pParameters.DocumentParent != Guid.Empty)
-                    ? (fin_documentfinancemaster)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(fin_documentfinancemaster), pParameters.DocumentParent)
+                    ? (fin_documentfinancemaster)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(fin_documentfinancemaster), pParameters.DocumentParent)
                     : null;
                 erp_customer customerParentDocument = (documentParent != null && documentParent.EntityOid != Guid.Empty)
-                    ? (erp_customer)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(erp_customer), documentParent.EntityOid)
+                    ? (erp_customer)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(erp_customer), documentParent.EntityOid)
                     : null;
                 cfg_configurationcurrency configurationCurrency = (pParameters.Currency != null && pParameters.Currency != Guid.Empty)
-                    ? (cfg_configurationcurrency)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(cfg_configurationcurrency), pParameters.Currency)
+                    ? (cfg_configurationcurrency)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(cfg_configurationcurrency), pParameters.Currency)
                     : null;
                 cfg_configurationcountry countryShipTo = (pParameters.ShipTo != null && pParameters.ShipTo.CountryGuid != Guid.Empty)
-                    ? (cfg_configurationcountry)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(cfg_configurationcountry), pParameters.ShipTo.CountryGuid)
+                    ? (cfg_configurationcountry)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(cfg_configurationcountry), pParameters.ShipTo.CountryGuid)
                     : null;
                 cfg_configurationcountry countryShipFrom = (pParameters.ShipFrom != null && pParameters.ShipFrom.CountryGuid != Guid.Empty)
-                    ? (cfg_configurationcountry)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(cfg_configurationcountry), pParameters.ShipFrom.CountryGuid)
+                    ? (cfg_configurationcountry)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(cfg_configurationcountry), pParameters.ShipFrom.CountryGuid)
                     : null;
                 fin_configurationpaymentmethod configurationPaymentMethod = (pParameters.PaymentMethod != null && pParameters.PaymentMethod != Guid.Empty)
-                    ? (fin_configurationpaymentmethod)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(fin_configurationpaymentmethod), pParameters.PaymentMethod)
+                    ? (fin_configurationpaymentmethod)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(fin_configurationpaymentmethod), pParameters.PaymentMethod)
                     : null;
                 //Helper Variables
                 if (customer != null) _countryCode2 = customer.Country.Code2;
@@ -849,13 +850,13 @@ namespace logicpos.financial.library.Classes.Finance
             {
                 //Get XPGuidObjects from Parameters
                 erp_customer customer = (pCustomer != null && pCustomer != Guid.Empty)
-                    ? (erp_customer)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(erp_customer), pCustomer)
+                    ? (erp_customer)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(erp_customer), pCustomer)
                     : null;
                 fin_configurationpaymentmethod paymentMethod = (pPaymentMethod != null && pPaymentMethod != Guid.Empty)
-                    ? (fin_configurationpaymentmethod)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(fin_configurationpaymentmethod), pPaymentMethod)
+                    ? (fin_configurationpaymentmethod)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(fin_configurationpaymentmethod), pPaymentMethod)
                     : null;
                 cfg_configurationcurrency currency = (pConfigurationCurrency != null && pConfigurationCurrency != Guid.Empty)
-                    ? (cfg_configurationcurrency)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(cfg_configurationcurrency), pConfigurationCurrency)
+                    ? (cfg_configurationcurrency)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(cfg_configurationcurrency), pConfigurationCurrency)
                     : null;
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -932,7 +933,7 @@ namespace logicpos.financial.library.Classes.Finance
                     if (customer.Oid != item.EntityOid) hasDocumentsDiferentFromTargetCustomer = true;
                     //TotalInvoicesDebit
                     sqlInvoices = string.Format(sqlInvoicesBase, item.Oid);
-                    sqlResult = DataLayerFramework.SessionXpo.ExecuteScalar(sqlInvoices);
+                    sqlResult = XPOSettings.Session.ExecuteScalar(sqlInvoices);
                     totalInvoicesDebit += (sqlResult != null) ? Convert.ToDecimal(sqlResult) : item.TotalFinal;
                 }
 

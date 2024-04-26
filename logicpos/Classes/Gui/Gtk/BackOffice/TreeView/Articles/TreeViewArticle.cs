@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.datalayer.App;
+using logicpos.datalayer.Xpo;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -53,7 +54,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     //    Xalign = 1.0F
                     //}
                 },
-                //To Test XPGuidObject InitialValue (InitialValue = xArticleFamily) : ArticleFamily xArticleFamily = (ArticleFamily)DataLayerUtils.GetXPGuidObjectFromSession(DataLayerFramework.SessionXpoBackoffice, typeof(ArticleFamily), new Guid("471d8c1e-45c1-4dbe-8526-349c20bd53ef"));
+                //To Test XPGuidObject InitialValue (InitialValue = xArticleFamily) : ArticleFamily xArticleFamily = (ArticleFamily)DataLayerUtils.GetXPGuidObjectFromSession(XPOSettings.SessionBackoffice, typeof(ArticleFamily), new Guid("471d8c1e-45c1-4dbe-8526-349c20bd53ef"));
                 new GenericTreeViewColumnProperty("IsComposed") { Title = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article") },
                 //Artigos Compostos [IN:016522]
                 new GenericTreeViewColumnProperty("Family") { Title = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_family"), ChildName = "Designation" },
@@ -76,7 +77,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             //Custom Criteria hidding all Hidden Oids
             //CriteriaOperator criteria = CriteriaOperator.Parse($"(Oid = '{SettingsApp.XpoOidUndefinedRecord}' OR Oid NOT LIKE '{SettingsApp.XpoOidHiddenRecordsFilter}')");
-            XPCollection xpoCollection = new XPCollection(DataLayerFramework.SessionXpo, xpoGuidObjectType, criteria);
+            XPCollection xpoCollection = new XPCollection(XPOSettings.Session, xpoGuidObjectType, criteria);
 
             //Call Base Initializer
             base.InitObject(

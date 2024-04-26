@@ -6,6 +6,7 @@ using logicpos.App;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Reports;
 using logicpos.shared.App;
 using System;
@@ -92,7 +93,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 SortProperty[] sortProperty = new SortProperty[2];
                 sortProperty[0] = new SortProperty("Ord", SortingDirection.Ascending);
                 sortProperty[1] = new SortProperty("Designation", SortingDirection.Ascending);
-                XPCollection xpoCollection = new XPCollection(DataLayerFramework.SessionXpo, typeof(rpt_reporttype), criteriaOperator, sortProperty);
+                XPCollection xpoCollection = new XPCollection(XPOSettings.Session, typeof(rpt_reporttype), criteriaOperator, sortProperty);
 
                 // Report : Collection (ReportType Property Navigations)
                 SortingCollection sortingCollection = new SortingCollection

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.datalayer.App;
 using logicpos.shared.App;
+using logicpos.datalayer.Xpo;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -60,7 +61,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
 
             SortProperty sortPropertyForCustomer = new SortProperty(sortedColumn, DevExpress.Xpo.DB.SortingDirection.Descending);
-            XPCollection xpoCollection = new XPCollection(DataLayerFramework.SessionXpo, xpoGuidObjectType, criteria, sortPropertyForCustomer);
+            XPCollection xpoCollection = new XPCollection(XPOSettings.Session, xpoGuidObjectType, criteria, sortPropertyForCustomer);
 
             //Custom Events
             //WIP: this.CursorChanged += TreeViewCustomer_CursorChanged;

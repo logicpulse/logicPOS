@@ -5,6 +5,7 @@ using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Xpo;
 using logicpos.shared.App;
 using logicpos.shared.Enums;
 using System;
@@ -321,7 +322,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //{
             //    _logger.Debug("BREAK");
             //}
-            T1 defaultValue = (T1)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(T1), SharedSettings.XpoOidUndefinedRecord);            
+            T1 defaultValue = (T1)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(T1), SharedSettings.XpoOidUndefinedRecord);            
             CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("((Disabled IS NULL OR Disabled  <> 1) OR (Oid = '{0}') OR (Oid = '{1}')) {2}", SharedSettings.XpoOidUndefinedRecord,SharedSettings.XpoOidUserRecord, extraFilter));
             resultObject = new XPOEntryBoxSelectRecordValidation<T1, T2>(this, labelText, fieldDisplayValue, "Oid", (defaultValue as T1), criteriaOperator, SharedSettings.RegexGuid, true);
             resultObject.Name = typeof(T1).Name;

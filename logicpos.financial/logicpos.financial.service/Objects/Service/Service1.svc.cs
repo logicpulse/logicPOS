@@ -1,5 +1,6 @@
 ﻿using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Xpo;
 using logicpos.financial.service.Objects;
 using logicpos.financial.service.Objects.Modules.AT;
 using System;
@@ -39,7 +40,7 @@ namespace logicpos.financial.servicewcf
             ServicesATSoapResult result;
             try
             {
-                fin_documentfinancemaster documentMaster = (fin_documentfinancemaster)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), pDocumentMaster);
+                fin_documentfinancemaster documentMaster = (fin_documentfinancemaster)XPOSettings.Session.GetObjectByKey(typeof(fin_documentfinancemaster), pDocumentMaster);
 
                 if (documentMaster != null)
                 {

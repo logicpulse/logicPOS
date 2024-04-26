@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using logicpos.Extensions;
 using logicpos.shared.App;
 using logicpos.datalayer.App;
+using logicpos.datalayer.Xpo;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -92,7 +93,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             try
             {
                 string sql = string.Format("UPDATE cfg_configurationpreferenceparameter SET value = '{0}' WHERE token = 'CULTURE'", DataLayerFramework.Settings["customCultureResourceDefinition"]);
-                DataLayerFramework.SessionXpo.ExecuteScalar(sql);
+                XPOSettings.Session.ExecuteScalar(sql);
             }
             catch (Exception ex)
             {

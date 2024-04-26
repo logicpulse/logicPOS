@@ -3,6 +3,7 @@ using DevExpress.Xpo.DB;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
+using logicpos.datalayer.Xpo;
 using logicpos.financial.service.App;
 using logicpos.financial.service.Objects;
 using logicpos.financial.service.Objects.Service;
@@ -158,12 +159,12 @@ namespace logicpos.financial.service
                     _logger.Debug(string.Format("void Init() :: Init XpoDefault.DataLayer: [{0}]", connectionStringBuilder.ToString()));
 
                     XpoDefault.DataLayer = XpoDefault.GetDataLayer(xpoConnectionString, xpoAutoCreateOption);
-                    DataLayerFramework.SessionXpo = new Session(XpoDefault.DataLayer) { LockingOption = LockingOption.None };
+                    XPOSettings.Session = new Session(XpoDefault.DataLayer) { LockingOption = LockingOption.None };
 
                     //if (XpoDefault.DataLayer != null)
                     ////Utils.Log("DataLayer...");
-                    ////DataLayerFramework.SessionXpo = new Session(XpoDefault.DataLayer) { LockingOption = LockingOption.None };
-                    //if (DataLayerFramework.SessionXpo != null)
+                    ////XPOSettings.Session = new Session(XpoDefault.DataLayer) { LockingOption = LockingOption.None };
+                    //if (XPOSettings.Session != null)
                     //    //Utils.Log("SessionXpo...");
                 }
                 catch (Exception ex)
@@ -204,7 +205,7 @@ namespace logicpos.financial.service
                 {
                     //Get Culture from DB
                     string sql = "SELECT value FROM cfg_configurationpreferenceparameter where token = 'CULTURE';";
-                    string getCultureFromDB = DataLayerFramework.SessionXpo.ExecuteScalar(sql).ToString();
+                    string getCultureFromDB = XPOSettings.Session.ExecuteScalar(sql).ToString();
                     SharedFramework.CurrentCulture = new System.Globalization.CultureInfo(getCultureFromDB);
                     if (SharedFramework.CurrentCulture != null)
                         _logger.Debug(SharedFramework.CurrentCulture.DisplayName);
@@ -219,8 +220,8 @@ namespace logicpos.financial.service
                 //SettingsApp
                 string companyCountryOid = SharedFramework.PreferenceParameters["COMPANY_COUNTRY_OID"];
                 string systemCurrencyOid = SharedFramework.PreferenceParameters["SYSTEM_CURRENCY_OID"];
-                DataLayerSettings.ConfigurationSystemCountry = (cfg_configurationcountry)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(cfg_configurationcountry), new Guid(companyCountryOid));
-                SharedSettings.ConfigurationSystemCurrency = (cfg_configurationcurrency)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(cfg_configurationcurrency), new Guid(systemCurrencyOid));
+                DataLayerSettings.ConfigurationSystemCountry = (cfg_configurationcountry)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(cfg_configurationcountry), new Guid(companyCountryOid));
+                SharedSettings.ConfigurationSystemCurrency = (cfg_configurationcurrency)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(cfg_configurationcurrency), new Guid(systemCurrencyOid));
 
                 //After Construct Settings (ex Required path["certificates"])
                 Utils.Log(string.Format("BootStrap {0}....", FinancialServiceSettings.AppName));

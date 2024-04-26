@@ -68,7 +68,7 @@ namespace logicpos.financial.console
                 }
                 //SharedFramework.CurrentCulture = CultureInfo.CurrentUICulture;
                 string sql = "SELECT value FROM cfg_configurationpreferenceparameter where token = 'CULTURE';";                
-                string getCultureFromDB = DataLayerFramework.SessionXpo.ExecuteScalar(sql).ToString();
+                string getCultureFromDB = XPOSettings.Session.ExecuteScalar(sql).ToString();
                 SharedFramework.CurrentCulture = new System.Globalization.CultureInfo(getCultureFromDB);
 
                 //Always use en-US NumberFormat because of mySql Requirements
@@ -95,7 +95,7 @@ namespace logicpos.financial.console
                 {
                     _logger.Debug(string.Format("Init XpoDefault.DataLayer: [{0}]", xpoConnectionString));
                     XpoDefault.DataLayer = XpoDefault.GetDataLayer(xpoConnectionString, xpoAutoCreateOption);
-                    DataLayerFramework.SessionXpo = new Session(XpoDefault.DataLayer) { LockingOption = LockingOption.None };
+                    XPOSettings.Session = new Session(XpoDefault.DataLayer) { LockingOption = LockingOption.None };
                 }
                 catch (Exception ex)
                 {
@@ -107,8 +107,8 @@ namespace logicpos.financial.console
                 DataLayerFramework.LoggedTerminal = Utils.GetTerminal();
 
                 //SettingsApp
-                DataLayerSettings.ConfigurationSystemCountry = (cfg_configurationcountry)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(cfg_configurationcountry), new Guid(DataLayerFramework.Settings["xpoOidConfigurationCountrySystemCountry"]));
-                SharedSettings.ConfigurationSystemCurrency = (cfg_configurationcurrency)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(cfg_configurationcurrency), new Guid(DataLayerFramework.Settings["xpoOidConfigurationCurrencySystemCurrency"]));
+                DataLayerSettings.ConfigurationSystemCountry = (cfg_configurationcountry)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(cfg_configurationcountry), new Guid(DataLayerFramework.Settings["xpoOidConfigurationCountrySystemCountry"]));
+                SharedSettings.ConfigurationSystemCurrency = (cfg_configurationcurrency)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(cfg_configurationcurrency), new Guid(DataLayerFramework.Settings["xpoOidConfigurationCurrencySystemCurrency"]));
 
                 //PreferenceParameters
                SharedFramework.PreferenceParameters = SharedUtils.GetPreferencesParameters();
@@ -150,13 +150,13 @@ namespace logicpos.financial.console
                 DataLayerFramework.Path["assets"] = @"c:\SVN\logicpos\trunk\src\logicpos\Assets\";
                 DataLayerFramework.Path["reports"] = @"c:\SVN\logicpos\trunk\src\logicpos\Resources\Reports\";
                 //Get Terminal from DB
-                DataLayerFramework.LoggedUser = (sys_userdetail)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(sys_userdetail), new Guid(DataLayerFramework.Settings["xpoOidUserDetailDefaultLoggedUser"]));
+                DataLayerFramework.LoggedUser = (sys_userdetail)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(sys_userdetail), new Guid(DataLayerFramework.Settings["xpoOidUserDetailDefaultLoggedUser"]));
                 //Get Permissions
                 SharedFramework.LoggedUserPermissions = SharedUtils.GetUserPermissions();
                 //Override Terminal Printer (PDF)
-                //DataLayerFramework.LoggedTerminal.Printer = (sys_configurationprinters)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(sys_configurationprinters), SettingsApp.LoggedTerminalPrinter);
-                ConsoleGlobalApp.PrinterExportPDF = (sys_configurationprinters)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(sys_configurationprinters), ConsoleSettings.XpoOidPrinterExportPDF);
-                ConsoleGlobalApp.PrinterThermal = (sys_configurationprinters)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(sys_configurationprinters), ConsoleSettings.XpoOidPrinterThermal);
+                //DataLayerFramework.LoggedTerminal.Printer = (sys_configurationprinters)XPOSettings.Session.GetObjectByKey(typeof(sys_configurationprinters), SettingsApp.LoggedTerminalPrinter);
+                ConsoleGlobalApp.PrinterExportPDF = (sys_configurationprinters)XPOSettings.Session.GetObjectByKey(typeof(sys_configurationprinters), ConsoleSettings.XpoOidPrinterExportPDF);
+                ConsoleGlobalApp.PrinterThermal = (sys_configurationprinters)XPOSettings.Session.GetObjectByKey(typeof(sys_configurationprinters), ConsoleSettings.XpoOidPrinterThermal);
 
                 if (DataLayerFramework.LoggedTerminal == null) _logger.Debug("Invalid Printer. Working Without Printer");
                 //Override Licence

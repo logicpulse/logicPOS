@@ -4,6 +4,7 @@ using logicpos.Classes.Enums.App;
 using logicpos.Classes.Logic.License;
 using logicpos.Classes.Utils;
 using logicpos.datalayer.App;
+using logicpos.datalayer.Xpo;
 using logicpos.plugin.contracts;
 using logicpos.plugin.library;
 using logicpos.shared.App;
@@ -43,7 +44,7 @@ namespace logicpos
             Theme.ParseTheme(true, false);
         }
 
-        public static void ShowSplashScreen()
+        public static void ShowLoadingScreen()
         {
             _logger.Debug("void StartApp() :: Show 'loading'");
             DialogLoading = Utils.GetThreadDialog(new Window("POS start loading"), true);
@@ -66,7 +67,7 @@ namespace logicpos
 
                     InitializeGtk();
                     
-                    ShowSplashScreen();
+                    ShowLoadingScreen();
                    
                     //Start Loading plugins / resources
                     FirstSteps();
@@ -208,11 +209,11 @@ namespace logicpos
         {
             try
             {
-                if (!Utils.IsLinux)
+                if (Utils.IsLinux == false)
                 {
                     string sql = "SELECT value FROM cfg_configurationpreferenceparameter where token = 'CULTURE';";
-                    DataLayerFramework.SessionXpo = Utils.SessionXPO();
-                    string getCultureFromDB = DataLayerFramework.SessionXpo.ExecuteScalar(sql).ToString();
+                    XPOSettings.Session = Utils.SessionXPO();
+                    string getCultureFromDB = XPOSettings.Session.ExecuteScalar(sql).ToString();
                     if (!Utils.getCultureFromOS(getCultureFromDB))
                     {
                         SharedFramework.CurrentCulture = new CultureInfo("pt-PT");

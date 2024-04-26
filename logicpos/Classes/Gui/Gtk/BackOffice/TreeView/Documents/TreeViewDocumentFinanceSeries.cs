@@ -9,6 +9,7 @@ using logicpos.Classes.Gui.Gtk.Widgets.Entrys;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Finance;
 using logicpos.financial.library.Results;
 using logicpos.shared.App;
@@ -58,7 +59,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 // Add to Parameter Criteria
                 : CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND ({0})", pXpoCriteria.ToString()))
             ;
-            XPCollection xpoCollection = new XPCollection(DataLayerFramework.SessionXpo, xpoGuidObjectType, criteria);
+            XPCollection xpoCollection = new XPCollection(XPOSettings.Session, xpoGuidObjectType, criteria);
 
             //Call Base Initializer
             base.InitObject(
@@ -89,7 +90,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             try
             {
                 //Refresh Terminal XPO Object
-                XPCollection xpcDocumentFinanceYears = new XPCollection(DataLayerFramework.SessionXpo, typeof(fin_documentfinanceyears));
+                XPCollection xpcDocumentFinanceYears = new XPCollection(XPOSettings.Session, typeof(fin_documentfinanceyears));
                 xpcDocumentFinanceYears.Reload();
 
                 //Store Reference to BackOffice TreeViewDocumentFinanceYearSerieTerminal
@@ -155,7 +156,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             try
             {
                 //Refresh Terminal XPO Object
-                XPCollection xpcConfigurationPlaceTerminal = new XPCollection(DataLayerFramework.SessionXpo, typeof(pos_configurationplaceterminal));
+                XPCollection xpcConfigurationPlaceTerminal = new XPCollection(XPOSettings.Session, typeof(pos_configurationplaceterminal));
                 xpcConfigurationPlaceTerminal.Reload();
 
                 //Get Terminals
@@ -185,7 +186,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     {
                         int sqlCheckExistingSeriesResultInt = 0;
                         string sqlCheckExistingSeries = "SELECT COUNT(*) AS Count FROM fin_documentfinanceseries WHERE (Disabled = 0 OR Disabled IS NULL);";
-                        object sqlCheckExistingSeriesResult = DataLayerFramework.SessionXpo.ExecuteScalar(sqlCheckExistingSeries);
+                        object sqlCheckExistingSeriesResult = XPOSettings.Session.ExecuteScalar(sqlCheckExistingSeries);
                         if (sqlCheckExistingSeriesResult != null) sqlCheckExistingSeriesResultInt = Convert.ToInt16(sqlCheckExistingSeriesResult);
 
                         //Request User Confirmation if already has working Series

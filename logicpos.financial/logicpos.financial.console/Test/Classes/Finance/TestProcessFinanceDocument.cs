@@ -92,7 +92,7 @@ namespace logicpos.financial.console.Test.Classes
         {
             //SourceDocument for CreditNote
             Guid xpoOidParentDocument = new Guid("316528f6-bf9b-4a6d-aa5b-530379aaa6ef");
-            fin_documentfinancemaster sourceDocument = (fin_documentfinancemaster) DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), xpoOidParentDocument);
+            fin_documentfinancemaster sourceDocument = (fin_documentfinancemaster) XPOSettings.Session.GetObjectByKey(typeof(fin_documentfinancemaster), xpoOidParentDocument);
 
             ArticleBag articleBag = TestArticleBag.GetArticleBag(false);
 
@@ -152,7 +152,7 @@ namespace logicpos.financial.console.Test.Classes
             //Prepare listInvoices and listCreditNotes
             foreach (Guid item in listDocuments)
             {
-                fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), item);
+                fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)XPOSettings.Session.GetObjectByKey(typeof(fin_documentfinancemaster), item);
 
                 if (documentFinanceMaster.DocumentType.Credit)
                 {
@@ -169,7 +169,7 @@ namespace logicpos.financial.console.Test.Classes
             if (documentFinancePayment != null)
             {
                 Console.WriteLine(string.Format("documentFinancePayment.PaymentRefNo: [{0}]", documentFinancePayment.PaymentRefNo));
-                sys_configurationprinterstemplates template = ProcessFinanceDocumentSeries.GetDocumentFinanceYearSerieTerminal(DataLayerFramework.SessionXpo, documentFinancePayment.DocumentType.Oid).Template;
+                sys_configurationprinterstemplates template = ProcessFinanceDocumentSeries.GetDocumentFinanceYearSerieTerminal(XPOSettings.Session, documentFinancePayment.DocumentType.Oid).Template;
 				//TK016249 - Impressoras - Diferenciação entre Tipos
                 PrintRouter.PrintFinanceDocumentPayment(DataLayerFramework.LoggedTerminal.ThermalPrinter, documentFinancePayment);
             }

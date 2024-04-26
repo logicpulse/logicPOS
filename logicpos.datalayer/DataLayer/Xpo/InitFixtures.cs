@@ -2,6 +2,7 @@
 using DevExpress.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.App;
+using logicpos.datalayer.Xpo;
 
 namespace logicpos.datalayer.DataLayer.Xpo
 {
@@ -458,7 +459,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             cfg_configurationholidays configurationHolidays1 = new cfg_configurationholidays(_session) { Ord = 10, Code = 10, Designation = "Feriado", Day = 1, Month = 1, Year = 1, Fixed = true }; configurationHolidays1.Save();
 
             //SystemNotification      
-            sys_systemnotification systemNotification1 = new sys_systemnotification(DataLayerFramework.SessionXpo) { Message = "Welcome Message" };
+            sys_systemnotification systemNotification1 = new sys_systemnotification(XPOSettings.Session) { Message = "Welcome Message" };
             systemNotification1.Save();
 
             //SystemBackup

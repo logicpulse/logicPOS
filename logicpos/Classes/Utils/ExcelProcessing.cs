@@ -8,6 +8,7 @@ using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
+using logicpos.datalayer.Xpo;
 using logicpos.financial.library.App;
 using System;
 using System.Collections.Generic;
@@ -287,19 +288,19 @@ namespace logicpos
                 if (DataLayerFramework.DatabaseType.ToString() == "MSSqlServer")
                 {
                     string lastArticleSql = string.Format("SELECT MAX(CAST(Code AS INT))FROM {0}", tableName);
-                    lastArticleCode = DataLayerFramework.SessionXpo.ExecuteScalar(lastArticleSql).ToString();
+                    lastArticleCode = XPOSettings.Session.ExecuteScalar(lastArticleSql).ToString();
                     return lastArticleCode;
                 }
                 else if (DataLayerFramework.DatabaseType.ToString() == "SQLite")
                 {
                     string lastArticleSql = string.Format("SELECT MAX(CAST(Code AS INT))FROM {0}", tableName);
-                    lastArticleCode = DataLayerFramework.SessionXpo.ExecuteScalar(lastArticleSql).ToString();
+                    lastArticleCode = XPOSettings.Session.ExecuteScalar(lastArticleSql).ToString();
                     return lastArticleCode;
                 }
                 else if (DataLayerFramework.DatabaseType.ToString() == "MySql")
                 {
                     string lastArticleSql = string.Format("SELECT MAX(code) as max FROM {0}", tableName);
-                    lastArticleCode = DataLayerFramework.SessionXpo.ExecuteScalar(lastArticleSql).ToString();
+                    lastArticleCode = XPOSettings.Session.ExecuteScalar(lastArticleSql).ToString();
                 }
                 return lastArticleCode;
             }
@@ -323,7 +324,7 @@ namespace logicpos
             string articleSubFamily = "0";
 
             Dictionary<string, string> articlesInDbCollection = new Dictionary<string, string>();
-            var articlesInDb = DataLayerFramework.SessionXpo.ExecuteQueryWithMetadata(queryOrderedString);
+            var articlesInDb = XPOSettings.Session.ExecuteQueryWithMetadata(queryOrderedString);
 
 
             for (int w = 0; w < articlesInDb.ResultSet[0].Rows.Length; w++)
@@ -419,7 +420,7 @@ namespace logicpos
                             if (row.ItemArray.GetValue(5) != null || row.ItemArray.GetValue(5).ToString() != "")
                             {
                                 sql = string.Format("SELECT OID FROM fin_configurationvatrate where Value = '{0}'", Convert.ToDecimal(row.ItemArray.GetValue(5)).ToString("F").Replace(",", "."));
-                                articleVatOnTable = DataLayerFramework.SessionXpo.ExecuteScalar(sql).ToString();
+                                articleVatOnTable = XPOSettings.Session.ExecuteScalar(sql).ToString();
                                 articleVatDirectSelling = articleVatOnTable;
                             }
 
@@ -427,7 +428,7 @@ namespace logicpos
                             if (row.ItemArray.GetValue(2) != null || row.ItemArray.GetValue(2).ToString() != "")
                             {
                                 sql = string.Format("SELECT OID FROM fin_articlefamily where Designation = '{0}'", row.ItemArray.GetValue(2));
-                                var sqlquery = DataLayerFramework.SessionXpo.ExecuteScalar(sql);
+                                var sqlquery = XPOSettings.Session.ExecuteScalar(sql);
                                 if (sqlquery == null && row.ItemArray.GetValue(2) != null)
                                 {
                                     string tableName = "fin_articlefamily";
@@ -438,7 +439,7 @@ namespace logicpos
                                                          '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}')",
                                                                 oidFamily, articleCreatedAt, articleCreatedBy, articleUpdatedAt,
                                                                 articleUpdatedBy, lastCode, lastCode, row.ItemArray.GetValue(2));
-                                    DataLayerFramework.SessionXpo.ExecuteNonQuery(sqlInsertFamily);
+                                    XPOSettings.Session.ExecuteNonQuery(sqlInsertFamily);
                                     articleFamily = oidFamily.ToString();
                                 }
                                 else { articleFamily = sqlquery.ToString(); }
@@ -450,7 +451,7 @@ namespace logicpos
                             if (row.ItemArray.GetValue(3) != null)
                             {
                                 sql = string.Format("SELECT OID FROM fin_articlesubfamily where Designation = '{0}'", row.ItemArray.GetValue(3));
-                                var sqlquery = DataLayerFramework.SessionXpo.ExecuteScalar(sql);
+                                var sqlquery = XPOSettings.Session.ExecuteScalar(sql);
                                 if (sqlquery == null && row.ItemArray.GetValue(3) != null)
                                 {
                                     string tableName = "fin_articlesubfamily";
@@ -460,7 +461,7 @@ namespace logicpos
                                                          '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}')",
                                                                 oidSubFamily, articleCreatedAt, articleCreatedBy, articleUpdatedAt,
                                                                 articleUpdatedBy, lastCode, lastCode, row.ItemArray.GetValue(3), articleFamily);
-                                    DataLayerFramework.SessionXpo.ExecuteNonQuery(sqlInsertFamily);
+                                    XPOSettings.Session.ExecuteNonQuery(sqlInsertFamily);
                                     articleSubFamily = oidSubFamily.ToString();
                                 }
                                 else { articleSubFamily = sqlquery.ToString(); }
@@ -486,7 +487,7 @@ namespace logicpos
                                                                 article.Price5Promotion, article.Discount, article.DefaultQuantity, articleFavorite, articleType,
                                                                 articleClass, articleUnitMeasure, articleUnitSize, articleVatOnTable, articleVatDirectSelling,
                                                                 article.Code, article.Ord, article.Designation, articleFamily, articleSubFamily).Replace("''", "NULL");
-                                    DataLayerFramework.SessionXpo.ExecuteNonQuery(sql);
+                                    XPOSettings.Session.ExecuteNonQuery(sql);
                                 }
                                 else
                                 {
@@ -500,7 +501,7 @@ namespace logicpos
                                                                 article.Price5Promotion, article.Discount, article.DefaultQuantity, articleFavorite, articleType,
                                                                 articleClass, articleUnitMeasure, articleUnitSize, articleVatOnTable, articleVatDirectSelling,
                                                                 article.Code, article.Ord, article.Designation, articleFamily, articleSubFamily, Eoid).Replace("''", "NULL");
-                                    DataLayerFramework.SessionXpo.ExecuteNonQuery(sql);
+                                    XPOSettings.Session.ExecuteNonQuery(sql);
                                 }
                             }
                             catch (Exception ex)
@@ -544,7 +545,7 @@ namespace logicpos
             string dateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             string queryCostumerString = "SELECT * FROM erp_customer";
             Dictionary<string, string> costumersInDbCollection = new Dictionary<string, string>();
-            var costumersInDb = DataLayerFramework.SessionXpo.ExecuteQueryWithMetadata(queryCostumerString);
+            var costumersInDb = XPOSettings.Session.ExecuteQueryWithMetadata(queryCostumerString);
 
             for (int w = 0; w < costumersInDb.ResultSet[0].Rows.Length; w++)
             {
@@ -616,7 +617,7 @@ namespace logicpos
                                                 costumer.Address, costumer.Locality, costumer.ZipCode, costumer.City, costumer.Phone,
                                                 costumer.MobilePhone, costumer.Email, customerType, priceType, country, costumer.FiscalNumber, oid.ToString().Replace("-", "").Substring(0, 21)
                                                 ).Replace("''", "NULL");
-                            DataLayerFramework.SessionXpo.ExecuteNonQuery(sql);
+                            XPOSettings.Session.ExecuteNonQuery(sql);
                         }
                         else
                         {
@@ -628,7 +629,7 @@ namespace logicpos
                                                 costumerUpdatedAt, costumerUpdatedBy, costumer.UpdatedWhere, costumer.Code, costumer.Ord, costumer.Name,
                                                 costumer.Address, costumer.Locality, costumer.ZipCode, costumer.City, costumer.Phone,
                                                 costumer.MobilePhone, costumer.Email, customerType, priceType, country, costumer.FiscalNumber, Eoid).Replace("''", "NULL");
-                            DataLayerFramework.SessionXpo.ExecuteNonQuery(sql);
+                            XPOSettings.Session.ExecuteNonQuery(sql);
                         }
                     }
                     catch (Exception ex)
@@ -689,7 +690,7 @@ namespace logicpos
                 switch (pImportFrom)
                 {
                     case ImportExportFileOpen.ExportArticles:
-                        var articlesInDb = DataLayerFramework.SessionXpo.ExecuteQueryWithMetadata(queryOrderedString);
+                        var articlesInDb = XPOSettings.Session.ExecuteQueryWithMetadata(queryOrderedString);
 
                         for (int w = 0; w < articlesInDb.ResultSet[0].Rows.Length; w++)
                         {
@@ -750,7 +751,7 @@ namespace logicpos
 
                     case ImportExportFileOpen.ExportCustomers:
 
-                        var customersInDb = DataLayerFramework.SessionXpo.ExecuteQueryWithMetadata(queryCostumerString);
+                        var customersInDb = XPOSettings.Session.ExecuteQueryWithMetadata(queryCostumerString);
 
                         for (int w = 0; w < customersInDb.ResultSet[0].Rows.Length; w++)
                         {

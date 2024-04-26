@@ -18,7 +18,7 @@ namespace logicpos.financial.console.Test.Classes.HardWare.Printer
             try
             {
                 //Parameters
-                pos_worksessionperiod workSessionPeriod = (pos_worksessionperiod)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(pos_worksessionperiod), ConsoleSettings.XpoPrintWorkSessionPeriod);
+                pos_worksessionperiod workSessionPeriod = (pos_worksessionperiod)XPOSettings.Session.GetObjectByKey(typeof(pos_worksessionperiod), ConsoleSettings.XpoPrintWorkSessionPeriod);
 
                 //Print WorkSession
                 if (workSessionPeriod != null)
@@ -41,8 +41,8 @@ namespace logicpos.financial.console.Test.Classes.HardWare.Printer
                     string sqlNonCurrentAccount = string.Format(sqlShared, periodField, workSessionPeriod.Oid, "<>", SharedSettings.XpoOidDocumentFinanceTypeCurrentAccountInput);
                     string sqlCurrentAccount = string.Format(sqlShared, periodField, workSessionPeriod.Oid, "=", SharedSettings.XpoOidDocumentFinanceTypeCurrentAccountInput);
                     //Get Queries Results
-                    object totRecsNonCurrentAccount = DataLayerFramework.SessionXpo.ExecuteScalar(sqlNonCurrentAccount);
-                    object totRecsCurrentAccount = DataLayerFramework.SessionXpo.ExecuteScalar(sqlCurrentAccount);
+                    object totRecsNonCurrentAccount = XPOSettings.Session.ExecuteScalar(sqlNonCurrentAccount);
+                    object totRecsCurrentAccount = XPOSettings.Session.ExecuteScalar(sqlCurrentAccount);
                     //Shared
                     ThermalPrinterInternalDocumentWorkSession thermalPrinterInternalDocumentWorkSession;
                     //Tests

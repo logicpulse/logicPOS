@@ -6,6 +6,7 @@ using logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Xpo;
 using System;
 using System.Collections.Generic;
 
@@ -56,7 +57,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             //Custom Criteria hidding all Hidden Oids
             //CriteriaOperator criteria = CriteriaOperator.Parse($"(Oid = '{SettingsApp.XpoOidUndefinedRecord}' OR Oid NOT LIKE '{SettingsApp.XpoOidHiddenRecordsFilter}')");
-            XPCollection xpoCollection = new XPCollection(DataLayerFramework.SessionXpo, xpoGuidObjectType, criteria);
+            XPCollection xpoCollection = new XPCollection(XPOSettings.Session, xpoGuidObjectType, criteria);
             var sortingCollection = new SortingCollection
             {
                 new SortProperty("Code", DevExpress.Xpo.DB.SortingDirection.Ascending)

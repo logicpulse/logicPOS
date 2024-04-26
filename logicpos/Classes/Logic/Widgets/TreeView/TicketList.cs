@@ -10,6 +10,7 @@ using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
+using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
 using logicpos.shared.App;
 using logicpos.shared.Classes.Finance;
@@ -70,7 +71,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
                                 //Change Table Status to Free
                                 pos_configurationplacetable placeTable;
-                                placeTable = (pos_configurationplacetable)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(pos_configurationplacetable), orderMain.Table.Oid);
+                                placeTable = (pos_configurationplacetable)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(pos_configurationplacetable), orderMain.Table.Oid);
                                 documentOrderMain = (fin_documentordermain)uowSession.GetObjectByKey(typeof(fin_documentordermain), orderMain.PersistentOid);
 
                                 placeTable.TableStatus = TableStatus.Free;
@@ -81,13 +82,13 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                                 //Required to Reload Objects after has been changed in Another Session(uowSession)
                                 if (documentOrderMain != null)
                                 {
-                                    documentOrderMain = (fin_documentordermain)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(fin_documentordermain), orderMain.PersistentOid);
+                                    documentOrderMain = (fin_documentordermain)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(fin_documentordermain), orderMain.PersistentOid);
                                     documentOrderMain.OrderStatus = OrderStatus.Close;
                                     documentOrderMain.Save();
                                 }
 
                                 if (documentOrderMain != null) documentOrderMain.Reload();
-                                //aceTable = (pos_configurationplacetable)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(pos_configurationplacetable), orderMain.Table.Oid);
+                                //aceTable = (pos_configurationplacetable)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(pos_configurationplacetable), orderMain.Table.Oid);
                                 //placeTable.Reload();
                                 ArticleBag.TicketOrderToArticleBag(orderMain).Clear();
                                 //Clean Session if Commited without problems
@@ -329,10 +330,10 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                  */
                 if (SharedFramework.AppUseParkingTicketModule)
                 {
-                    orderMain.CheckForDuplicatedArticleInArticleBag(DataLayerFramework.SessionXpo);
+                    orderMain.CheckForDuplicatedArticleInArticleBag(XPOSettings.Session);
                 }
 
-                fin_documentorderticket orderTicket = orderMain.FinishOrder(DataLayerFramework.SessionXpo);
+                fin_documentorderticket orderTicket = orderMain.FinishOrder(XPOSettings.Session);
 
 
                 // If OrderTicket and has a ThermalPrinter connected
@@ -397,9 +398,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 if (orderMain.OrderTickets[orderMain.CurrentTicketId].OrderDetails.Lines.Count > 0)
                 {
                     //Before Use FrameworkCall
-                    orderMain.FinishOrder(DataLayerFramework.SessionXpo, printTicket);
+                    orderMain.FinishOrder(XPOSettings.Session, printTicket);
                     //TODO: Continue to implement FrameworkCall here
-                    //DocumentOrderTicket documentOrderTicket = orderMain.FinishOrder(DataLayerFramework.SessionXpo, printTicket);
+                    //DocumentOrderTicket documentOrderTicket = orderMain.FinishOrder(XPOSettings.Session, printTicket);
                     //if (printTicket) FrameworkCalls.PrintTableTicket(_sourceWindow, DataLayerFramework.LoggedTerminal.Printer, DataLayerFramework.LoggedTerminal.TemplateTicket, orderMain, documentOrderTicket.Oid);
 
                     //Reset TicketList TotalItems Counter

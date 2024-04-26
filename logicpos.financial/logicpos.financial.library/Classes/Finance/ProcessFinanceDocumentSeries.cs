@@ -2,6 +2,7 @@
 using DevExpress.Xpo;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Results;
 using logicpos.shared.App;
 using System;
@@ -23,7 +24,7 @@ namespace logicpos.financial.library.Classes.Finance
         //Get DocumentFinanceYearSerieTerminal for Logged Terminal
         public static fin_documentfinanceyearserieterminal GetDocumentFinanceYearSerieTerminal(Guid pDocumentType)
         {
-            return GetDocumentFinanceYearSerieTerminal(DataLayerFramework.SessionXpo, pDocumentType, DataLayerFramework.LoggedTerminal.Oid);
+            return GetDocumentFinanceYearSerieTerminal(XPOSettings.Session, pDocumentType, DataLayerFramework.LoggedTerminal.Oid);
         }
 
         public static fin_documentfinanceyearserieterminal GetDocumentFinanceYearSerieTerminal(Session pSession, Guid pDocumentType)
@@ -76,10 +77,10 @@ namespace logicpos.financial.library.Classes.Finance
             fin_documentfinanceyears result = null;
 
             string sql = @"SELECT Oid FROM fin_documentfinanceyears WHERE (Disabled = 0 OR Disabled IS NULL);";
-            var sqlResult = DataLayerFramework.SessionXpo.ExecuteScalar(sql);
+            var sqlResult = XPOSettings.Session.ExecuteScalar(sql);
             if (sqlResult != null)
             {
-                result = (fin_documentfinanceyears)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinanceyears), new Guid(sqlResult.ToString()));
+                result = (fin_documentfinanceyears)XPOSettings.Session.GetObjectByKey(typeof(fin_documentfinanceyears), new Guid(sqlResult.ToString()));
             }
 
             return result;
@@ -99,7 +100,7 @@ namespace logicpos.financial.library.Classes.Finance
             bool result = false;
             if (pFilter != String.Empty) pFilter = string.Format(" AND {0}", pFilter);
             string sql = string.Format(@"SELECT Count(*) as Count FROM fin_documentfinanceseries WHERE (Disabled = 0 OR Disabled IS NULL){0};", pFilter);
-            var sqlResult = DataLayerFramework.SessionXpo.ExecuteScalar(sql);
+            var sqlResult = XPOSettings.Session.ExecuteScalar(sql);
             if (sqlResult != null && Convert.ToInt16(sqlResult) > 0) result = true;
             return result;
         }

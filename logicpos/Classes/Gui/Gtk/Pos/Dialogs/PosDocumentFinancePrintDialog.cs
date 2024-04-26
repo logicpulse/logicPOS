@@ -5,6 +5,7 @@ using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Reports;
 using logicpos.shared.App;
 using System;
@@ -248,10 +249,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 //TODO: Xpo Required to use ExecuteScalar, else we dont have real value but a cached value
                 //Get Fresh Object to get Printed Status
-                //DocumentFinanceMaster documentFinanceMaster = (DocumentFinanceMaster)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(DocumentFinanceMaster), pDocumentFinanceMaster.Oid);
+                //DocumentFinanceMaster documentFinanceMaster = (DocumentFinanceMaster)XPOSettings.Session.GetObjectByKey(typeof(DocumentFinanceMaster), pDocumentFinanceMaster.Oid);
                 //bool printed = documentFinanceMaster.Printed;
                 //Fix Cache Problem
-                var sqlResPrinted = DataLayerFramework.SessionXpo.ExecuteScalar(string.Format(
+                var sqlResPrinted = XPOSettings.Session.ExecuteScalar(string.Format(
                     "SELECT Printed FROM fin_documentfinancemaster WHERE Oid = '{0}';",
                     pDocumentFinanceMaster.Oid)
                 );

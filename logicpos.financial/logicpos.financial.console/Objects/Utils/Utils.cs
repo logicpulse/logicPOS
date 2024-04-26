@@ -45,7 +45,7 @@ namespace logicpos.financial.console.Objects
                 try
                 {
                     //Persist Terminal in DB
-                    configurationPlaceTerminal = new pos_configurationplaceterminal(DataLayerFramework.SessionXpo)
+                    configurationPlaceTerminal = new pos_configurationplaceterminal(XPOSettings.Session)
                     {
                         Ord = DataLayerUtils.GetNextTableFieldID("pos_configurationplaceterminal", "Ord"),
                         Code = DataLayerUtils.GetNextTableFieldID("pos_configurationplaceterminal", "Code"),

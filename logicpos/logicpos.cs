@@ -10,10 +10,12 @@ using logicpos.Classes.Logic.Others;
 using logicpos.Classes.Utils;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
+using logicpos.datalayer.Xpo;
 using logicpos.financial.library.App;
 using logicpos.financial.library.Classes.Reports;
 using logicpos.financial.library.Classes.Utils;
 using logicpos.financial.library.Classes.WorkSession;
+using logicpos.plugin.contracts;
 using logicpos.shared;
 using logicpos.shared.App;
 using System;
@@ -176,7 +178,7 @@ namespace logicpos
                     _logger.Debug(string.Format("void Init() :: Init XpoDefault.DataLayer: [{0}]", connectionStringBuilder.ToString()));
 
                     XpoDefault.DataLayer = XpoDefault.GetDataLayer(xpoConnectionString, xpoAutoCreateOption);
-                    datalayer.App.DataLayerFramework.SessionXpo = new Session(XpoDefault.DataLayer) { LockingOption = LockingOption.None };
+                    XPOSettings.Session = new Session(XpoDefault.DataLayer) { LockingOption = LockingOption.None };
                 }
                 catch (Exception ex)
                 {
@@ -213,7 +215,7 @@ namespace logicpos
                     try
                     {
                         string sql = string.Format(@"SELECT Version FROM sys_databaseversion;", SharedFramework.DatabaseName);
-                        GlobalFramework.DatabaseVersion = DataLayerFramework.SessionXpo.ExecuteScalar(sql).ToString();
+                        GlobalFramework.DatabaseVersion = XPOSettings.Session.ExecuteScalar(sql).ToString();
 
                         string[] tmpDatabaseVersion = GlobalFramework.DatabaseVersion.Split('.');
                         long tmpDatabaseVersionNumber = int.Parse(tmpDatabaseVersion[0]) * 10000000 + int.Parse(tmpDatabaseVersion[1]) * 10000 + int.Parse(tmpDatabaseVersion[2]);
@@ -242,7 +244,7 @@ namespace logicpos
 #endif
                 // Assign PluginSoftwareVendor Reference to DataLayer SettingsApp to use In Date Protection, we Required to assign it Statically to Prevent Circular References
                 // Required to be here, before it is used in above lines, ex Utils.GetTerminal()
-                if (SharedFramework.PluginSoftwareVendor != null) datalayer.App.DataLayerSettings.PluginSoftwareVendor = SharedFramework.PluginSoftwareVendor;
+                if (SharedFramework.PluginSoftwareVendor != null) PluginContractsSettings.PluginSoftwareVendor = SharedFramework.PluginSoftwareVendor;
 
                 //If not in Xpo create database Scheme Mode, Get Terminal from Db
                 if (!xpoCreateDatabaseAndSchema)
@@ -253,10 +255,10 @@ namespace logicpos
                 //After Assigned LoggedUser
                 if (xpoCreateDatabaseObjectsWithFixtures)
                 {
-                    InitFixtures.InitUserAndTerminal(datalayer.App.DataLayerFramework.SessionXpo);
-                    InitFixtures.InitOther(datalayer.App.DataLayerFramework.SessionXpo);
-                    InitFixtures.InitDocumentFinance(datalayer.App.DataLayerFramework.SessionXpo);
-                    InitFixtures.InitWorkSession(datalayer.App.DataLayerFramework.SessionXpo);
+                    InitFixtures.InitUserAndTerminal(XPOSettings.Session);
+                    InitFixtures.InitOther(XPOSettings.Session);
+                    InitFixtures.InitDocumentFinance(XPOSettings.Session);
+                    InitFixtures.InitWorkSession(XPOSettings.Session);
                 }
 
                 //End Xpo Create Scheme and Fixtures, Terminate App and Request assign False to Developer Vars
@@ -689,7 +691,7 @@ namespace logicpos
                 SharedFramework.SessionApp.Write();
                 //GlobalFramework.SessionApp.DeleteSession();
                 //Disconnect SessionXpo
-                datalayer.App.DataLayerFramework.SessionXpo.Disconnect();
+                XPOSettings.Session.Disconnect();
             }
             catch (Exception ex)
             {

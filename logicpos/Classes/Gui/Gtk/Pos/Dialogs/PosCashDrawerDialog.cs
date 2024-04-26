@@ -12,6 +12,7 @@ using logicpos.Classes.Enums.Dialogs;
 using logicpos.Extensions;
 using logicpos.datalayer.App;
 using logicpos.shared.App;
+using logicpos.datalayer.Xpo;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -133,7 +134,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //Initial Dialog Values
                 _selectedCashDrawerButton = buttonBag[initialButtonToken];
                 _selectedCashDrawerButton.ModifyBg(StateType.Normal, _colorBaseDialogDefaultButtonBackground.Lighten(0.50f).ToGdkColor());
-                MovementType = (pos_worksessionmovementtype)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(pos_worksessionmovementtype), _selectedCashDrawerButton.CurrentButtonOid);
+                MovementType = (pos_worksessionmovementtype)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(pos_worksessionmovementtype), _selectedCashDrawerButton.CurrentButtonOid);
                 MovementType.Token = initialButtonToken;
 
                 //EntryAmountMoney

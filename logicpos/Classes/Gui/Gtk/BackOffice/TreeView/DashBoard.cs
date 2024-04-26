@@ -9,6 +9,7 @@ using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
 using logicpos.shared.App;
 using Medsphere.Widgets;
@@ -274,7 +275,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 try
                 {
                     string sqlCurrency = "SELECT Value FROM cfg_configurationpreferenceparameter where Token = 'SYSTEM_CURRENCY'";
-                    currency = DataLayerFramework.SessionXpo.ExecuteScalar(sqlCurrency).ToString();
+                    currency = XPOSettings.Session.ExecuteScalar(sqlCurrency).ToString();
                 }
                 catch
                 {
@@ -295,7 +296,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         new SortProperty("Date", SortingDirection.Ascending)
                     };
                     CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL AND (DocumentType.Oid = '{0}' OR DocumentType.Oid = '{1}' OR DocumentType.Oid = '{2}' OR DocumentType.Oid = '{3}') AND DocumentStatusReason != 'A')", invoiceOid, invoiceAndPaymentOid, simpleInvoiceOid, creditNoteOid));
-                    collectionDocuments = DataLayerFramework.SessionXpo.GetObjects(DataLayerFramework.SessionXpo.GetClassInfo(typeof(fin_documentfinancemaster)), criteria, sortCollection, int.MaxValue, false, true);
+                    collectionDocuments = XPOSettings.Session.GetObjects(XPOSettings.Session.GetClassInfo(typeof(fin_documentfinancemaster)), criteria, sortCollection, int.MaxValue, false, true);
 
                     datenow = DateTime.Now;
 

@@ -9,6 +9,7 @@ using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
+using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Hardware.Printers;
 using logicpos.financial.library.Classes.WorkSession;
 using logicpos.shared.App;
@@ -264,12 +265,12 @@ namespace logicpos
             if (DataLayerFramework.DatabaseType.ToString() == "MySql" || DataLayerFramework.DatabaseType.ToString() == "SQLite")
             {
                 string mysql = string.Format("SELECT Oid FROM fin_articlesubfamily WHERE Family = '{0}' Order by CODE Asc LIMIT 1", TablePadFamily.SelectedButtonOid);
-                getFirstSubFamily = DataLayerFramework.SessionXpo.ExecuteScalar(mysql).ToString();
+                getFirstSubFamily = XPOSettings.Session.ExecuteScalar(mysql).ToString();
             }
             else if (DataLayerFramework.DatabaseType.ToString() == "MSSqlServer")
             {
                 string mssqlServer = string.Format("SELECT TOP 1 Oid FROM fin_articlesubfamily WHERE Family = '{0}' Order by CODE Asc", TablePadFamily.SelectedButtonOid);
-                getFirstSubFamily = DataLayerFramework.SessionXpo.ExecuteScalar(mssqlServer).ToString();
+                getFirstSubFamily = XPOSettings.Session.ExecuteScalar(mssqlServer).ToString();
             }
 
             //Article Filter : When Change Family always change Article too
@@ -442,12 +443,12 @@ namespace logicpos
                         {
                             string sqlQuery = @"SELECT Oid FROM pos_configurationplacetable WHERE (Disabled IS NULL or Disabled  <> 1) ORDER BY Code asc LIMIT 1";
 
-                            xpoSelectedData = DataLayerFramework.SessionXpo.ExecuteQueryWithMetadata(sqlQuery);
+                            xpoSelectedData = XPOSettings.Session.ExecuteQueryWithMetadata(sqlQuery);
                         }
                         else if (DataLayerFramework.DatabaseType.ToString() == "MSSqlServer")
                         {
                             string sqlQuery = @"SELECT TOP 1 Oid FROM pos_configurationplacetable WHERE (Disabled IS NULL or Disabled  <> 1) ORDER BY Code asc";
-                            xpoSelectedData = DataLayerFramework.SessionXpo.ExecuteQueryWithMetadata(sqlQuery);
+                            xpoSelectedData = XPOSettings.Session.ExecuteQueryWithMetadata(sqlQuery);
                         }
 
                         SelectStatementResultRow[] selectStatementResultMeta = xpoSelectedData.ResultSet[0].Rows;
@@ -568,7 +569,7 @@ namespace logicpos
             bool debug = false;
 
             string sqlOrderMainUpdatedAt = string.Format("SELECT UpdatedAt FROM fin_documentordermain WHERE (PlaceTable = '{0}' AND OrderStatus = {1}) ORDER BY UpdatedAt DESC", orderMain.Table.Oid, Convert.ToInt16(OrderStatus.Open));
-            var oResultUpdatedAt = DataLayerFramework.SessionXpo.ExecuteScalar(sqlOrderMainUpdatedAt);
+            var oResultUpdatedAt = XPOSettings.Session.ExecuteScalar(sqlOrderMainUpdatedAt);
 
             if (oResultUpdatedAt != null)
             {

@@ -1,6 +1,7 @@
 ﻿using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
+using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Finance;
 using logicpos.financial.service.App;
 using logicpos.shared.App;
@@ -815,10 +816,10 @@ namespace logicpos.financial.service.Objects.Modules.AT
 
             try
             {
-                fin_documentfinancemaster documentMaster = (fin_documentfinancemaster)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), _documentMaster.Oid);
+                fin_documentfinancemaster documentMaster = (fin_documentfinancemaster)XPOSettings.Session.GetObjectByKey(typeof(fin_documentfinancemaster), _documentMaster.Oid);
                 //Always Add to sys_systemauditat Log
                 SystemAuditATWSType systemAuditATWSType = (!_wayBillMode) ? SystemAuditATWSType.Document : SystemAuditATWSType.DocumentWayBill;
-                var systemAuditATWS = new sys_systemauditat(DataLayerFramework.SessionXpo)
+                var systemAuditATWS = new sys_systemauditat(XPOSettings.Session)
                 {
                     Date = DateTime.Now,
                     Type = systemAuditATWSType,

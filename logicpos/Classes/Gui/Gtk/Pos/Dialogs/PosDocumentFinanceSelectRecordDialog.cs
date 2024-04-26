@@ -2,6 +2,7 @@
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Xpo;
 using logicpos.shared.App;
 using System;
 using System.Drawing;
@@ -103,7 +104,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     _touchButtonPosToolbarMerchandiseEntry.Clicked += _touchButtonPosToolbarMerchandiseEntry_Clicked;
 
                     //Reference Objects
-                    _printerGeneric = (sys_configurationprinters)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(sys_configurationprinters), SharedSettings.XpoOidConfigurationPrinterGeneric);
+                    _printerGeneric = (sys_configurationprinters)XPOSettings.Session.GetObjectByKey(typeof(sys_configurationprinters), SharedSettings.XpoOidConfigurationPrinterGeneric);
                     break;
             }
         }

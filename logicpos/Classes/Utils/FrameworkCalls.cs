@@ -15,6 +15,7 @@ using logicpos.datalayer.Enums;
 using logicpos.financial.service.Objects.Modules.AT;
 using logicpos.datalayer.App;
 using logicpos.shared.App;
+using logicpos.datalayer.Xpo;
 
 //Class to Link Project LogicPos to FrameWork API, used to Show Common Messages for LogicPos
 
@@ -101,7 +102,7 @@ namespace logicpos
 
                         //Number of months paid is passed by document notes
                         string sql = string.Format("SELECT Notes FROM fin_documentfinancemaster where SourceOrderMain = '{0}'", item.Value);
-                        var sqlResult = DataLayerFramework.SessionXpo.ExecuteScalar(sql);
+                        var sqlResult = XPOSettings.Session.ExecuteScalar(sql);
                         string sqlResultquantity = sqlResult.ToString();
 
                         string[] quantity = sqlResultquantity.Trim().Split(' ');
@@ -140,7 +141,7 @@ namespace logicpos
                     }
 
                     //Print Document
-                    fin_documentfinancemaster documentMaster = (fin_documentfinancemaster)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), documentFinanceMaster.Oid);
+                    fin_documentfinancemaster documentMaster = (fin_documentfinancemaster)XPOSettings.Session.GetObjectByKey(typeof(fin_documentfinancemaster), documentFinanceMaster.Oid);
                     //documentFinanceMaster.Reload();
                     if (printDocument) PrintFinanceDocument(pSourceWindow, documentMaster);
                 }

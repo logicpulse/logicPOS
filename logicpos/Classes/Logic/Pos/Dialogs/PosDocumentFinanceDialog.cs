@@ -12,6 +12,7 @@ using logicpos.Classes.Enums.Dialogs;
 using logicpos.datalayer.App;
 using logicpos.shared.App;
 using logicpos.financial.library.App;
+using logicpos.datalayer.Xpo;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -112,7 +113,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 Guid guidDocumentParent = _pagePad1.EntryBoxSelectSourceDocumentFinance.Value.Oid;
                 //Get Source Document
-                sourceFinanceMaster = (fin_documentfinancemaster)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), guidDocumentParent);
+                sourceFinanceMaster = (fin_documentfinancemaster)XPOSettings.Session.GetObjectByKey(typeof(fin_documentfinancemaster), guidDocumentParent);
                 referencesReason = _pagePad1.EntryBoxReason.EntryValidation.Text;
             };
 
@@ -306,7 +307,7 @@ _pagePad2.EntryBoxCustomerEmail.EntryValidation.Text,
             //TotalDelivery: If Money force TotalDelivery to be equal to TotalFinal
             if (result.PaymentMethod != null && result.PaymentMethod != new Guid())
             {
-                fin_configurationpaymentmethod paymentMethod = (fin_configurationpaymentmethod)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_configurationpaymentmethod), result.PaymentMethod);
+                fin_configurationpaymentmethod paymentMethod = (fin_configurationpaymentmethod)XPOSettings.Session.GetObjectByKey(typeof(fin_configurationpaymentmethod), result.PaymentMethod);
                 if (paymentMethod.Token == "MONEY")
                 {
                     result.TotalDelivery = _pagePad3.ArticleBag.TotalFinal;

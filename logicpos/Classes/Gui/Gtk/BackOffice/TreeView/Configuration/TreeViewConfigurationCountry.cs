@@ -6,6 +6,7 @@ using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Xpo;
 using System;
 using System.Collections.Generic;
 
@@ -41,7 +42,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             CriteriaOperator criteria = (ReferenceEquals(pXpoCriteria, null)) ? null : pXpoCriteria;
             SortProperty[] sortProperty = new SortProperty[1];
             sortProperty[0] = new SortProperty("Code", SortingDirection.Ascending);
-            XPCollection xpoCollection = new XPCollection(DataLayerFramework.SessionXpo, xpoGuidObjectType, criteria);
+            XPCollection xpoCollection = new XPCollection(XPOSettings.Session, xpoGuidObjectType, criteria);
 
             //Call Base Initializer
             base.InitObject(

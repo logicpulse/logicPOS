@@ -1,6 +1,7 @@
 ﻿using logicpos.App;
 using logicpos.Classes.Enums.TicketList;
 using logicpos.datalayer.App;
+using logicpos.datalayer.Xpo;
 using logicpos.shared.App;
 using System;
 using System.Net;
@@ -129,11 +130,11 @@ namespace logicpos.Classes.Logic.Others
                     accessTrackParkingTicketService.addInCard(ean, dateNow);
                 }
                 string sql = "SELECT Price1 FROM[logicposdb].[dbo].[fin_article] where Oid = '32829702-33fa-48d5-917c-4c1db8720777'";
-                var getCardPrice = DataLayerFramework.SessionXpo.ExecuteScalar(sql);
+                var getCardPrice = XPOSettings.Session.ExecuteScalar(sql);
                 parkingTicketResult.Price = Convert.ToInt32(getCardPrice);
                 parkingTicketResult.Ean = ean;
                 string sql2 = "SELECT DefaultQuantity FROM[logicposdb].[dbo].[fin_article] where Oid = '32829702-33fa-48d5-917c-4c1db8720777'";
-                var getDefaultQuantitysql = DataLayerFramework.SessionXpo.ExecuteScalar(sql2);
+                var getDefaultQuantitysql = XPOSettings.Session.ExecuteScalar(sql2);
 
                 int quantity = Convert.ToInt32(getDefaultQuantitysql);
                 parkingTicketResult.Quantity = quantity.ToString();

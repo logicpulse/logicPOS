@@ -7,6 +7,7 @@ using logicpos.Classes.Logic.Others;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
+using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
 using logicpos.shared.App;
 using logicpos.shared.Classes.Finance;
@@ -590,7 +591,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     }
 
 
-                    SharedFramework.SessionApp.OrdersMain[_currentOrderMainOid].FinishOrder(DataLayerFramework.SessionXpo, false, true);
+                    SharedFramework.SessionApp.OrdersMain[_currentOrderMainOid].FinishOrder(XPOSettings.Session, false, true);
                     //UpdateModel();
                     //UpdateOrderStatusBar();
                     _buttonKeyFinishOrder.Sensitive = true;
@@ -782,10 +783,10 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     }
                     //Get Place Object to extract TaxSellType Normal|TakeWay
                     OrderMain currentOrderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];
-                    pos_configurationplace configurationPlace = (pos_configurationplace)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(pos_configurationplace), currentOrderMain.Table.PlaceId);
-                    fin_articletype articletype = (fin_articletype)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_articletype), article.Type.Oid);
+                    pos_configurationplace configurationPlace = (pos_configurationplace)XPOSettings.Session.GetObjectByKey(typeof(pos_configurationplace), currentOrderMain.Table.PlaceId);
+                    fin_articletype articletype = (fin_articletype)XPOSettings.Session.GetObjectByKey(typeof(fin_articletype), article.Type.Oid);
 
-                    if (configurationPlace == null) { configurationPlace = (pos_configurationplace)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(pos_configurationplace), POSSettings.XpoOidConfigurationPlaceTableDefaultOpenTable); }
+                    if (configurationPlace == null) { configurationPlace = (pos_configurationplace)XPOSettings.Session.GetObjectByKey(typeof(pos_configurationplace), POSSettings.XpoOidConfigurationPlaceTableDefaultOpenTable); }
                     //Use VatDirectSelling if in Retail or in TakeWay mode
                     TaxSellType taxSellType = (DataLayerSettings.AppMode == AppOperationMode.Retail || configurationPlace.MovementType.VatDirectSelling) ? TaxSellType.TakeAway : TaxSellType.Normal;
                     decimal priceTax = (taxSellType == TaxSellType.Normal) ? article.VatOnTable.Value : article.VatDirectSelling.Value;
@@ -1509,7 +1510,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     // Get Article Oid from treeIter
                     _currentDetailArticleOid = (Guid)ListStoreModel.GetValue(_treeIter, 0);
                     // Get Article
-                    _currentDetailArticle = (fin_article)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_article), _currentDetailArticleOid);
+                    _currentDetailArticle = (fin_article)XPOSettings.Session.GetObjectByKey(typeof(fin_article), _currentDetailArticleOid);
 
                     //Ticket List Mode
                     if (ListMode == TicketListMode.Ticket)

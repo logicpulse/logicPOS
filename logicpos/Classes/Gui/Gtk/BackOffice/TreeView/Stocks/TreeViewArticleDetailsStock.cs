@@ -7,6 +7,7 @@ using logicpos.Classes.Formatters;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Stocks;
 using logicpos.shared.App;
 using System;
@@ -104,7 +105,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             SortProperty[] sortProperty = new SortProperty[2];
             sortProperty[0] = new SortProperty("CreatedAt", SortingDirection.Ascending);
             sortProperty[1] = new SortProperty("Ord", SortingDirection.Ascending);
-            xpoCollection = new XPCollection(DataLayerFramework.SessionXpo, xpoGuidObjectType, criteria, sortProperty);
+            xpoCollection = new XPCollection(XPOSettings.Session, xpoGuidObjectType, criteria, sortProperty);
 
             //Call Base Initializer
             base.InitObject(
@@ -171,7 +172,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     decimal getArticleStock = Convert.ToDecimal(_dataSourceRow.Session.ExecuteScalar(stockQuery).ToString());
                     if (getArticleStock != (_dataSourceRow as fin_article).Accounting)
                     {
-                        var own_customer = (erp_customer)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(erp_customer), SharedSettings.XpoOidUserRecord);
+                        var own_customer = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), SharedSettings.XpoOidUserRecord);
                         if (own_customer != null)
                         {
                             if (string.IsNullOrEmpty(own_customer.Name))

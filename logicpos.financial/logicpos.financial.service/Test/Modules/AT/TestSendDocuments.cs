@@ -1,5 +1,6 @@
 ﻿using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Xpo;
 using logicpos.financial.service.App;
 using logicpos.financial.service.Objects;
 using System;
@@ -16,12 +17,12 @@ namespace logicpos.financial.service.Test.Modules.AT
             //Guid forceDocument = Guid.Empty;
             Guid forceDocument = new Guid("0096E809-58E3-46E6-AB44-135F4585E6C9");
             string sql = Utils.GetDocumentsQuery(false, forceDocument);
-            object lastDocumentMaster = DataLayerFramework.SessionXpo.ExecuteScalar(sql);
+            object lastDocumentMaster = XPOSettings.Session.ExecuteScalar(sql);
             fin_documentfinancemaster documentMaster = null;
 
             if (lastDocumentMaster != null)
             {
-                documentMaster = (fin_documentfinancemaster) DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), new Guid(lastDocumentMaster.ToString()));
+                documentMaster = (fin_documentfinancemaster) XPOSettings.Session.GetObjectByKey(typeof(fin_documentfinancemaster), new Guid(lastDocumentMaster.ToString()));
                 if (documentMaster != null)
                 {
                     Utils.SendDocument(documentMaster);
@@ -39,12 +40,12 @@ namespace logicpos.financial.service.Test.Modules.AT
             //Guid forceDocument = Guid.Empty;
             Guid forceDocument = new Guid("afbcf434-672c-4b63-817f-021484f834bd");
             string sql = Utils.GetDocumentsQuery(true, forceDocument);
-            object lastDocumentMaster = DataLayerFramework.SessionXpo.ExecuteScalar(sql);
+            object lastDocumentMaster = XPOSettings.Session.ExecuteScalar(sql);
             fin_documentfinancemaster documentMaster = null;
 
             if (lastDocumentMaster != null)
             {
-                documentMaster = (fin_documentfinancemaster) DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), new Guid(lastDocumentMaster.ToString()));
+                documentMaster = (fin_documentfinancemaster) XPOSettings.Session.GetObjectByKey(typeof(fin_documentfinancemaster), new Guid(lastDocumentMaster.ToString()));
                 if (documentMaster != null)
                 {
                     Utils.SendDocument(documentMaster);

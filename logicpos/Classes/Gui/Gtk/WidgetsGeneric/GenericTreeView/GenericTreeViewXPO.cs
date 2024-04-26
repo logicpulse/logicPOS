@@ -6,6 +6,7 @@ using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
+using logicpos.datalayer.Xpo;
 using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
@@ -391,7 +392,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         public override void GetDataRow()
         {
             _dataSourceRow = DataLayerUtils.GetXPGuidObject(
-              DataLayerFramework.SessionXpo,
+              XPOSettings.Session,
               _dataSource.ObjectType,
               new Guid(Convert.ToString(_treeView.Model.GetValue(_treeIter, _modelFirstCustomFieldIndex)))
             );

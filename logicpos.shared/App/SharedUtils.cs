@@ -5,6 +5,7 @@ using DevExpress.Xpo.Metadata;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
+using logicpos.datalayer.Xpo;
 using logicpos.shared.Classes.Finance;
 using logicpos.shared.Classes.Orders;
 using logicpos.shared.Classes.Others;
@@ -153,7 +154,7 @@ namespace logicpos.shared.App
             {
                 new SortProperty("Ord", SortingDirection.Ascending)
             };
-            XPCollection xpcConfigurationHolidays = GetXPCollectionFromCriteria(DataLayerFramework.SessionXpo, typeof(cfg_configurationholidays), criteriaOperator, sortingCollection);
+            XPCollection xpcConfigurationHolidays = GetXPCollectionFromCriteria(XPOSettings.Session, typeof(cfg_configurationholidays), criteriaOperator, sortingCollection);
 
             if (xpcConfigurationHolidays.Count > 0)
             {
@@ -324,7 +325,7 @@ namespace logicpos.shared.App
                     //get CurrentOrderMain
                     OrderMain orderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];
                     //Get Table to Get Discount
-                    pos_configurationplacetable xConfigurationPlaceTable = (pos_configurationplacetable)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(pos_configurationplacetable), orderMain.Table.Oid);
+                    pos_configurationplacetable xConfigurationPlaceTable = (pos_configurationplacetable)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(pos_configurationplacetable), orderMain.Table.Oid);
                     //Get Fresh Discount From Table/Future 
                     if (xConfigurationPlaceTable != null)
                     {
@@ -611,20 +612,20 @@ namespace logicpos.shared.App
 
         public static XPGuidObject GetXPGuidObjectFromCriteria(Type pXPGuidObjectType, string pCriteriaFilter)
         {
-            return GetXPGuidObjectFromCriteria(DataLayerFramework.SessionXpo, pXPGuidObjectType, pCriteriaFilter);
+            return GetXPGuidObjectFromCriteria(XPOSettings.Session, pXPGuidObjectType, pCriteriaFilter);
         }
 
         public static XPGuidObject GetXPGuidObjectFromCriteria(Session pSession, Type pXPGuidObjectType, string pCriteriaFilter)
         {
             CriteriaOperator criteria = CriteriaOperator.Parse(pCriteriaFilter);
-            XPGuidObject result = (DataLayerFramework.SessionXpo.FindObject(pXPGuidObjectType, criteria) as XPGuidObject);
+            XPGuidObject result = (XPOSettings.Session.FindObject(pXPGuidObjectType, criteria) as XPGuidObject);
             return result;
         }
 
         //Helper Method to get XPCollections
         public static XPCollection GetXPCollectionFromCriteria(Type pXPGuidObjectType)
         {
-            return GetXPCollectionFromCriteria(DataLayerFramework.SessionXpo, pXPGuidObjectType, null, null);
+            return GetXPCollectionFromCriteria(XPOSettings.Session, pXPGuidObjectType, null, null);
         }
 
         public static XPCollection GetXPCollectionFromCriteria(Session pSession, Type pXPGuidObjectType)
@@ -651,7 +652,7 @@ namespace logicpos.shared.App
         //}
         public static XPSelectData GetSelectedDataFromQuery(string pSql)
         {
-            return GetSelectedDataFromQuery(DataLayerFramework.SessionXpo, pSql);
+            return GetSelectedDataFromQuery(XPOSettings.Session, pSql);
         }
 
         public static XPSelectData GetSelectedDataFromQuery(Session pSession, string pSql)
@@ -663,7 +664,7 @@ namespace logicpos.shared.App
 
         public static DataTable GetDataTableFromQuery(string pSql)
         {
-            return GetDataTableFromQuery(DataLayerFramework.SessionXpo, pSql);
+            return GetDataTableFromQuery(XPOSettings.Session, pSql);
         }
 
         public static DataTable GetDataTableFromQuery(Session pSession, string pSql)
@@ -765,7 +766,7 @@ namespace logicpos.shared.App
             try
             {
                 string sql = string.Format("SELECT MAX({0}) FROM {1}{2};", pField, pTable, filter);
-                var resultInt = DataLayerFramework.SessionXpo.ExecuteScalar(sql);
+                var resultInt = XPOSettings.Session.ExecuteScalar(sql);
                 if (resultInt != null)
                 {
                     _logger.Debug(string.Format("GetNextTableFieldInt(): resultInt.GetType(): [{0}]", resultInt.GetType()));
@@ -798,7 +799,7 @@ namespace logicpos.shared.App
         /// <returns></returns>
         public static Guid GetGuidFromQuery(string pSql)
         {
-            return GetGuidFromQuery(DataLayerFramework.SessionXpo, pSql);
+            return GetGuidFromQuery(XPOSettings.Session, pSql);
         }
 
         public static Guid GetGuidFromQuery(Session pSession, string pSql)
@@ -829,7 +830,7 @@ namespace logicpos.shared.App
 
         public static XPGuidObject GetXPGuidObjectFromField(Type pType, string pSearchField, string pSearchValue)
         {
-            return GetXPGuidObjectFromField(DataLayerFramework.SessionXpo, pType, pSearchField, pSearchValue);
+            return GetXPGuidObjectFromField(XPOSettings.Session, pType, pSearchField, pSearchValue);
         }
 
         public static XPGuidObject GetXPGuidObjectFromField(Session pSession, Type pType, string pSearchField, string pSearchValue)
@@ -959,7 +960,7 @@ namespace logicpos.shared.App
         public static bool Audit(string pAuditTypeToken, string pDescription = "")
         {
             return Audit(
-                DataLayerFramework.SessionXpo,
+                XPOSettings.Session,
                 DataLayerFramework.LoggedUser ?? null,
                 DataLayerFramework.LoggedTerminal ?? null,
                 pAuditTypeToken,
@@ -1370,7 +1371,7 @@ namespace logicpos.shared.App
 
         public static decimal GetPartialPaymentPayedItems(Guid pDocumentOrderMain, Guid pArticle)
         {
-            return GetPartialPaymentPayedItems(DataLayerFramework.SessionXpo, pDocumentOrderMain, pArticle);
+            return GetPartialPaymentPayedItems(XPOSettings.Session, pDocumentOrderMain, pArticle);
         }
 
         public static decimal GetPartialPaymentPayedItems(Session pSession, Guid pDocumentOrderMain, Guid pArticle)
@@ -1402,7 +1403,7 @@ namespace logicpos.shared.App
 
         public static Dictionary<string, string> GetPreferencesParameters()
         {
-            return GetPreferencesParameters(DataLayerFramework.SessionXpo);
+            return GetPreferencesParameters(XPOSettings.Session);
         }
 
         public static Dictionary<string, string> GetPreferencesParameters(Session pSession)
@@ -1717,7 +1718,7 @@ namespace logicpos.shared.App
         //Create SystemNotification
         public static void SystemNotification()
         {
-            SystemNotification(DataLayerFramework.SessionXpo);
+            SystemNotification(XPOSettings.Session);
         }
 
         public static void SystemNotification(Session pSession)

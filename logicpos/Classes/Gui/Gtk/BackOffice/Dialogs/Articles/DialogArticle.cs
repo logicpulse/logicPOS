@@ -11,6 +11,7 @@ using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
 using logicpos.datalayer.DataLayer.Xpo.Documents;
+using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
 using logicpos.shared.App;
 using System;
@@ -104,17 +105,17 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     if (DataLayerFramework.DatabaseType.ToString() == "MSSqlServer")
                     {
                         string lastArticleSql = string.Format("SELECT MAX(CAST(Code AS INT))FROM fin_article");
-                        lastArticleCode = DataLayerFramework.SessionXpo.ExecuteScalar(lastArticleSql).ToString();
+                        lastArticleCode = XPOSettings.Session.ExecuteScalar(lastArticleSql).ToString();
                     }
                     else if (DataLayerFramework.DatabaseType.ToString() == "SQLite")
                     {
                         string lastArticleSql = string.Format("SELECT MAX(CAST(Code AS INT))FROM fin_article");
-                        lastArticleCode = DataLayerFramework.SessionXpo.ExecuteScalar(lastArticleSql).ToString();
+                        lastArticleCode = XPOSettings.Session.ExecuteScalar(lastArticleSql).ToString();
                     }
                     else if (DataLayerFramework.DatabaseType.ToString() == "MySql")
                     {
                         string lastArticleSql = string.Format("SELECT MAX(CAST(code AS UNSIGNED)) as Cast FROM fin_article;");
-                        lastArticleCode = DataLayerFramework.SessionXpo.ExecuteScalar(lastArticleSql).ToString();
+                        lastArticleCode = XPOSettings.Session.ExecuteScalar(lastArticleSql).ToString();
                     }
 
                 }
@@ -137,7 +138,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 {
                     //Get totalNumberOfFinanceDocuments to check if article has already used in Finance Documents, to protect name changes etc
                     string sql = string.Format("SELECT COUNT(*) as Count FROM fin_documentfinancedetail WHERE Article = '{0}';", _article.Oid);
-                    var sqlResult = DataLayerFramework.SessionXpo.ExecuteScalar(sql);
+                    var sqlResult = XPOSettings.Session.ExecuteScalar(sql);
                     _totalNumberOfFinanceDocuments = Convert.ToUInt16(sqlResult);
                 }
 
@@ -966,7 +967,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 };
                 if (ReferenceEquals(pCriteria, null)) pCriteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL)"));
 
-                _dropdownTextCollection = DataLayerFramework.SessionXpo.GetObjects(DataLayerFramework.SessionXpo.GetClassInfo(typeof(fin_article)), pCriteria, sortCollection, int.MaxValue, false, true);
+                _dropdownTextCollection = XPOSettings.Session.GetObjects(XPOSettings.Session.GetClassInfo(typeof(fin_article)), pCriteria, sortCollection, int.MaxValue, false, true);
 
                 if (_dropdownTextCollection != null)
                 {

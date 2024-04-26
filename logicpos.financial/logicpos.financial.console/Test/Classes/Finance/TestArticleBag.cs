@@ -49,7 +49,7 @@ namespace logicpos.financial.console.Test.Classes
 
             foreach (var item in mockArticles)
             {
-                fin_article article = (fin_article)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(fin_article), item.Key);
+                fin_article article = (fin_article)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(fin_article), item.Key);
 
                 articleBagKey = new ArticleBagKey(
                   article.Oid,

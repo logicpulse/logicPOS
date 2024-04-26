@@ -2,6 +2,7 @@
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
+using logicpos.datalayer.Xpo;
 using logicpos.financial.library.App;
 using logicpos.financial.library.Classes.Reports;
 using logicpos.financial.library.Classes.Stocks;
@@ -648,9 +649,9 @@ namespace logicpos.financial.library.Classes.Finance
                                     placeTable.DateTableClosed = documentDateTime;
                                     placeTable.TotalOpen = 0;
                                     //Required to Reload Objects after has been changed in Another Session(uowSession)
-                                    if (documentOrderMain != null) documentOrderMain = (fin_documentordermain)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(fin_documentordermain), orderMain.PersistentOid);
+                                    if (documentOrderMain != null) documentOrderMain = (fin_documentordermain)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(fin_documentordermain), orderMain.PersistentOid);
                                     if (documentOrderMain != null) documentOrderMain.Reload();
-                                    placeTable = (pos_configurationplacetable)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(pos_configurationplacetable), orderMain.Table.Oid);
+                                    placeTable = (pos_configurationplacetable)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(pos_configurationplacetable), orderMain.Table.Oid);
                                     placeTable.Reload();
                                 }
                                 //Clean Session if Commited without problems
@@ -1232,7 +1233,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                             //sql = string.Format("SELECT fmaTotalFinal - SUM(fmpCreditAmount) as Result FROM view_documentfinancepayment WHERE fmaOid = '{0}' AND fpaPaymentStatus <> 'A' GROUP BY fmaOid,fmaTotalFinal;", item.Oid);
                             /* IN009182 - option #2 */
                             sql = string.Format(queryForTotalDebit, item.Oid);
-                            documentDebit = Convert.ToDecimal(DataLayerFramework.SessionXpo.ExecuteScalar(sql));
+                            documentDebit = Convert.ToDecimal(XPOSettings.Session.ExecuteScalar(sql));
                             //Get current Document remain value to Pay
                             documentTotalPayRemain = (documentDebit > 0) ? documentDebit : item.TotalFinal;
 
@@ -1291,7 +1292,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                             }
                             /* IN009182 - adding related documents for reference */
                             string relatedDocumentsQuery = GenerateRelatedDocumentsQueryByDocumentType(documentMaster.Oid.ToString());
-                            string relatedDocuments = Convert.ToString(DataLayerFramework.SessionXpo.ExecuteScalar(relatedDocumentsQuery));
+                            string relatedDocuments = Convert.ToString(XPOSettings.Session.ExecuteScalar(relatedDocumentsQuery));
                             if (!string.IsNullOrEmpty(relatedDocuments))
                             {
                                 if (!string.IsNullOrEmpty(documentFinancePayment.Notes))
@@ -1509,12 +1510,12 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
 
         public static DateTime GetLastDocumentDateTime()
         {
-            return GetLastDocumentDateTime(DataLayerFramework.SessionXpo, null);
+            return GetLastDocumentDateTime(XPOSettings.Session, null);
         }
 
         public static DateTime GetLastDocumentDateTime(string pFilter)
         {
-            return GetLastDocumentDateTime(DataLayerFramework.SessionXpo, pFilter);
+            return GetLastDocumentDateTime(XPOSettings.Session, pFilter);
         }
 
         public static DateTime GetLastDocumentDateTime(Session pSesssion)
@@ -1664,7 +1665,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
 
                     if (generatePdfDocuments)
                     {
-                        erp_customer customer = (erp_customer)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(erp_customer), documentFinancePayment.EntityOid);
+                        erp_customer customer = (erp_customer)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(erp_customer), documentFinancePayment.EntityOid);
                         string entityName = (customer != null && !string.IsNullOrEmpty(customer.Name)) ? string.Format("_{0}", customer.Name.ToLower().Replace(' ', '_')) : string.Empty;
                         string reportFilename = string.Format("{0}/{1}{2}.pdf",
                             DataLayerFramework.Path["documents"],

@@ -20,6 +20,7 @@ using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.financial.library.App;
 using logicpos.shared.App;
 using logicpos.datalayer.App;
+using logicpos.datalayer.Xpo;
 
 //Note: This component dont have Validation, is used to be the Base XPOEntryBoxSelectRecordValidation 
 //and to be used with CrudWidgetList Validation
@@ -300,7 +301,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                 };
                 if(pCriteria == null) pCriteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL)"));
 
-                dropdownTextCollection = DataLayerFramework.SessionXpo.GetObjects(DataLayerFramework.SessionXpo.GetClassInfo(value), pCriteria, sortCollection, int.MaxValue, false, true);
+                dropdownTextCollection = XPOSettings.Session.GetObjects(XPOSettings.Session.GetClassInfo(value), pCriteria, sortCollection, int.MaxValue, false, true);
 
                 if (dropdownTextCollection != null)
                 {

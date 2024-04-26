@@ -16,7 +16,7 @@ namespace logicpos.financial.console.Test.Classes.HardWare.Printer
         {
             try
             {
-                fin_documentorderticket orderTicket = (fin_documentorderticket)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_documentorderticket), ConsoleSettings.XpoPrintDocumentOrderTicket);
+                fin_documentorderticket orderTicket = (fin_documentorderticket)XPOSettings.Session.GetObjectByKey(typeof(fin_documentorderticket), ConsoleSettings.XpoPrintDocumentOrderTicket);
 
                 //Print Document
                 if (orderTicket != null)

@@ -1,6 +1,7 @@
 ﻿using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
 using logicpos.datalayer.App;
+using logicpos.datalayer.Xpo;
 using System;
 using System.Collections.Generic;
 
@@ -77,7 +78,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         public object GetXPGuidObjectFromField(Type pType, string pSearchField, string pSearchValue)
         {
-            return GetXPGuidObjectFromField(DataLayerFramework.SessionXpo, pType, pSearchField, pSearchValue);
+            return GetXPGuidObjectFromField(XPOSettings.Session, pType, pSearchField, pSearchValue);
         }
 
         public object GetXPGuidObjectFromField(Session pSession, Type pType, string pSearchField, string pSearchValue)

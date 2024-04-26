@@ -2,6 +2,7 @@
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
+using logicpos.datalayer.Xpo;
 using logicpos.financial.library.App;
 using logicpos.financial.library.Classes.Finance;
 using logicpos.financial.library.Classes.Reports.BOs;
@@ -539,7 +540,7 @@ namespace logicpos.financial.library.Classes.Reports
                 //TODO: Move This to CustomReport SubClasses ex Filename, Params, DataSources etc
 
                 //Get DocumentFinanceMaster
-                fin_documentfinancemaster documentMaster = (fin_documentfinancemaster)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), pDocumentFinanceMasterOid);
+                fin_documentfinancemaster documentMaster = (fin_documentfinancemaster)XPOSettings.Session.GetObjectByKey(typeof(fin_documentfinancemaster), pDocumentFinanceMasterOid);
 
 
                 /// <summary>
@@ -618,7 +619,7 @@ namespace logicpos.financial.library.Classes.Reports
                     //if (SharedFramework.CurrentCulture.Name.Equals("pt-MZ")){
                     cfg_configurationcurrency defaultCurrencyForExchangeRate =
                         (cfg_configurationcurrency)DataLayerUtils.GetXPGuidObject(
-                            DataLayerFramework.SessionXpo,
+                            XPOSettings.Session,
                             typeof(cfg_configurationcurrency),
                             SharedSettings.XpoOidConfigurationCurrencyUSDollar);
 
@@ -950,7 +951,7 @@ namespace logicpos.financial.library.Classes.Reports
                 foreach (FRBOArticleStockView line in gcArticleStock)
                 {
                     string sqlCount = string.Format("SELECT SUM(Quantity) as Result FROM fin_articlestock WHERE {0} AND Article = '{1}' AND (Disabled = 0 OR Disabled is NULL)", filter, line.Article);
-                    line.ArticleStockQuantity = Convert.ToDecimal(DataLayerFramework.SessionXpo.ExecuteScalar(sqlCount));
+                    line.ArticleStockQuantity = Convert.ToDecimal(XPOSettings.Session.ExecuteScalar(sqlCount));
                     line.ArticleStockDateDay = filterHumanReadable;
                     //Only add unique Articles to new collection
                     if (!listArticles.Contains(line.Article.ToString()))
@@ -1006,7 +1007,7 @@ namespace logicpos.financial.library.Classes.Reports
                 cfg_configurationcurrency defaultCurrency = SharedSettings.ConfigurationSystemCurrency;
                 //Currency - If Diferent from Default System Currency, get Currency Object from Parameter
                 cfg_configurationcurrency configurationCurrency;
-                configurationCurrency = (cfg_configurationcurrency)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(cfg_configurationcurrency), defaultCurrency.Oid);
+                configurationCurrency = (cfg_configurationcurrency)XPOSettings.Session.GetObjectByKey(typeof(cfg_configurationcurrency), defaultCurrency.Oid);
 
                 //Decrypt Name
                 foreach (FRBOArticleStockSupplierView line in gcArticleStockSupplier)
@@ -1064,7 +1065,7 @@ namespace logicpos.financial.library.Classes.Reports
                 cfg_configurationcurrency defaultCurrency = SharedSettings.ConfigurationSystemCurrency;
                 //Currency - If Diferent from Default System Currency, get Currency Object from Parameter
                 cfg_configurationcurrency configurationCurrency;
-                configurationCurrency = (cfg_configurationcurrency)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(cfg_configurationcurrency), defaultCurrency.Oid);
+                configurationCurrency = (cfg_configurationcurrency)XPOSettings.Session.GetObjectByKey(typeof(cfg_configurationcurrency), defaultCurrency.Oid);
                 customReport.SetParameterValue("Currency", configurationCurrency.Acronym);
 
                 //Prepare and Enable DataSources
@@ -1117,7 +1118,7 @@ namespace logicpos.financial.library.Classes.Reports
                 cfg_configurationcurrency defaultCurrency = SharedSettings.ConfigurationSystemCurrency;
                 //Currency - If Diferent from Default System Currency, get Currency Object from Parameter
                 cfg_configurationcurrency configurationCurrency;
-                configurationCurrency = (cfg_configurationcurrency)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(cfg_configurationcurrency), defaultCurrency.Oid);
+                configurationCurrency = (cfg_configurationcurrency)XPOSettings.Session.GetObjectByKey(typeof(cfg_configurationcurrency), defaultCurrency.Oid);
                 customReport.SetParameterValue("Currency", configurationCurrency.Acronym);
 
                 //Prepare and Enable DataSources
@@ -1261,7 +1262,7 @@ namespace logicpos.financial.library.Classes.Reports
                         if (item.EntityName != null) item.EntityName = SharedFramework.PluginSoftwareVendor.Decrypt(item.EntityName);
                         if (item.EntityFiscalNumber != null) item.EntityFiscalNumber = SharedFramework.PluginSoftwareVendor.Decrypt(item.EntityFiscalNumber);
 
-                        if (item.EntityOid != null) customer = (erp_customer)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(erp_customer), Guid.Parse(item.EntityOid));
+                        if (item.EntityOid != null) customer = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), Guid.Parse(item.EntityOid));
                         if (!customersList.Contains(customer))
                         {
                             customersList.Add(customer);

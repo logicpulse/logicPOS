@@ -9,6 +9,7 @@ using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Xpo;
 using System;
 using System.Collections.Generic;
 
@@ -76,7 +77,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             sortProperty[0] = new SortProperty("CreatedAt", SortingDirection.Descending);
             sortProperty[1] = new SortProperty("Ord", SortingDirection.Ascending);
 
-            XPCollection xpoCollection = new XPCollection(DataLayerFramework.SessionXpo, xpoGuidObjectType, criteria, sortProperty) { TopReturnedObjects = POSSettings.PaginationRowsPerPage * CurrentPageNumber };
+            XPCollection xpoCollection = new XPCollection(XPOSettings.Session, xpoGuidObjectType, criteria, sortProperty) { TopReturnedObjects = POSSettings.PaginationRowsPerPage * CurrentPageNumber };
 
             //Call Base Initializer
             base.InitObject(

@@ -277,7 +277,7 @@ namespace logicpos.App
                     Path["themes"],
                     string.Format(
                         FileFormatThemeFile
-                        , DataLayerSettings.AppTheme.ToLower() /* IN008024: Before, from Database :SharedFramework.PreferenceParameters["APP_THEME"].ToLower() */
+                        , LogicPOS.Settings.AppSettings.AppTheme.ToLower() /* IN008024: Before, from Database :SharedFramework.PreferenceParameters["APP_THEME"].ToLower() */
                         , customAppOperationMode.AppOperationTheme.ToLower()/*  From App.Config: Default|Coffee|Bakery|Fish|Butchery|Shoe|Clothing|Hardware */
                     )
                 );

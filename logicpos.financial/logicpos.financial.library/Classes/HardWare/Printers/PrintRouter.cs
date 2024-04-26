@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using logicpos.shared.App;
 using logicpos.datalayer.App;
+using logicpos.datalayer.Xpo;
 
 
 namespace logicpos.financial.library.Classes.Hardware.Printers
@@ -172,7 +173,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
 
         public static bool PrintFinanceDocument(fin_documentfinancemaster pDocumentFinanceMaster)
         {
-            return PrintFinanceDocument(DataLayerFramework.SessionXpo, pDocumentFinanceMaster);
+            return PrintFinanceDocument(XPOSettings.Session, pDocumentFinanceMaster);
         }
 
         public static bool PrintFinanceDocument(Session pSession, fin_documentfinancemaster pDocumentFinanceMaster)

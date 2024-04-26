@@ -3,6 +3,7 @@ using DevExpress.Xpo.DB;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
+using logicpos.datalayer.Xpo;
 using logicpos.shared.App;
 using System;
 using System.Text;
@@ -34,7 +35,7 @@ namespace logicpos.financial.library.Classes.Finance
         private static readonly string _decimalFormat = "0.000"; //SettingsApp.DecimalFormatGrossTotalSAFTAO;
         private static readonly string _decimalFormatTotals = "0.000";
         //Default Customer
-        private static readonly erp_customer _defaultCustomer = (erp_customer)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(erp_customer), SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity);
+        private static readonly erp_customer _defaultCustomer = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity);
         //Default Currency
         private static readonly cfg_configurationcurrency _defaultCurrency = SharedSettings.ConfigurationSystemCurrency;
 
@@ -346,7 +347,7 @@ namespace logicpos.financial.library.Classes.Finance
             //_logger.Debug(string.Format("sqlCheckDefaultCustomer: [{0}]", sqlCheckDefaultCustomer));
 
             //<NumberOfEntries>
-            object customerCount = DataLayerFramework.SessionXpo.ExecuteScalar(sqlCheckDefaultCustomer);
+            object customerCount = XPOSettings.Session.ExecuteScalar(sqlCheckDefaultCustomer);
 
             //RETURN if have Default Customer
             if (Convert.ToInt16(customerCount) > 0) return;
@@ -614,7 +615,7 @@ namespace logicpos.financial.library.Classes.Finance
                 //_logger.Debug(string.Format("SaftDocumentType:[{0}]: sqlNumberOfEntries: [{1}]", pSaftDocumentType, sqlNumberOfEntries));
 
                 //<NumberOfEntries>
-                object numberOfEntries = DataLayerFramework.SessionXpo.ExecuteScalar(sqlNumberOfEntries);
+                object numberOfEntries = XPOSettings.Session.ExecuteScalar(sqlNumberOfEntries);
 
                 //RETURN if we dont have any Documents/NumberOfEntries
                 if (Convert.ToInt16(numberOfEntries) <= 0) return;
@@ -651,14 +652,14 @@ namespace logicpos.financial.library.Classes.Finance
                         string sqlTotalDebit = string.Format(sqlTotalDebitTotalCredit, 0);
                         //_logger.Debug(string.Format("SaftDocumentType:[{0}]: sqlTotalDebit: [{1}]", pSaftDocumentType, sqlTotalDebit));
 
-                        object totalDebit = DataLayerFramework.SessionXpo.ExecuteScalar(sqlTotalDebit);
+                        object totalDebit = XPOSettings.Session.ExecuteScalar(sqlTotalDebit);
                         if (totalDebit == null) totalDebit = 0;
                         WriteElement("TotalDebit", SharedUtils.DecimalToString(Convert.ToDecimal(totalDebit), SharedFramework.CurrentCultureNumberFormat, _decimalFormat));
 
                         //<TotalCredit>
                         string sqlTotalCredit = string.Format(sqlTotalDebitTotalCredit, 1);
                         //_logger.Debug(string.Format("SaftDocumentType:[{0}]: sqlTotalCredit: [{1}]", pSaftDocumentType, sqlTotalCredit));
-                        object totalCredit = DataLayerFramework.SessionXpo.ExecuteScalar(sqlTotalCredit);
+                        object totalCredit = XPOSettings.Session.ExecuteScalar(sqlTotalCredit);
                         if (totalCredit == null) totalCredit = 0;
                         WriteElement("TotalCredit", SharedUtils.DecimalToString(Convert.ToDecimal(totalCredit), SharedFramework.CurrentCultureNumberFormat, _decimalFormat));
 
@@ -691,7 +692,7 @@ namespace logicpos.financial.library.Classes.Finance
                         string sqlTotalQuantity = string.Format(sqlTotalQuantityIssued, 0);
                         //_logger.Debug(string.Format("SaftDocumentType:[{0}]: sqlTotalQuantityIssued: [{1}]", pSaftDocumentType, sqlTotalQuantityIssued));
 
-                        object totalQuantity = DataLayerFramework.SessionXpo.ExecuteScalar(sqlTotalQuantity);
+                        object totalQuantity = XPOSettings.Session.ExecuteScalar(sqlTotalQuantity);
                         if (totalQuantity == null) totalDebit = 0;
 
                         //WriteElement("NumberOfMovementLines", numberOfEntries);
@@ -1286,7 +1287,7 @@ namespace logicpos.financial.library.Classes.Finance
             //</Line>
 
             //Protection to skip Export <OrderReferences> when Document Type is CreditNote
-            fin_documentfinancedetail documentFinanceDetail = (fin_documentfinancedetail)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancedetail), pDocumentMasterDetail);
+            fin_documentfinancedetail documentFinanceDetail = (fin_documentfinancedetail)XPOSettings.Session.GetObjectByKey(typeof(fin_documentfinancedetail), pDocumentMasterDetail);
             if (documentFinanceDetail.DocumentMaster.DocumentType.Oid != SharedSettings.XpoOidDocumentFinanceTypeCreditNote)
             {
                 try
@@ -1341,7 +1342,7 @@ namespace logicpos.financial.library.Classes.Finance
             //</Line>	
 
             //Protection to skip Export <References> when Document Type is NOT CreditNote
-            fin_documentfinancedetail documentFinanceDetail = (fin_documentfinancedetail)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancedetail), pDocumentMasterDetail);
+            fin_documentfinancedetail documentFinanceDetail = (fin_documentfinancedetail)XPOSettings.Session.GetObjectByKey(typeof(fin_documentfinancedetail), pDocumentMasterDetail);
             if (documentFinanceDetail.DocumentMaster.DocumentType.Oid == SharedSettings.XpoOidDocumentFinanceTypeCreditNote)
             {
                 try
@@ -1409,7 +1410,7 @@ namespace logicpos.financial.library.Classes.Finance
                 //_logger.Debug(string.Format("SaftDocumentType:[{0}]: sqlNumberOfEntries: [{1}]", SaftDocumentType.Payments, sqlNumberOfEntries));
 
                 //<NumberOfEntries>
-                object numberOfEntries = DataLayerFramework.SessionXpo.ExecuteScalar(sqlNumberOfEntries);
+                object numberOfEntries = XPOSettings.Session.ExecuteScalar(sqlNumberOfEntries);
 
                 //RETURN if we dont have any Documents/NumberOfEntries
                 if (Convert.ToInt16(numberOfEntries) <= 0) return;
@@ -1437,14 +1438,14 @@ namespace logicpos.financial.library.Classes.Finance
                 string sqlTotalDebit = string.Format(sqlTotalDebitTotalCredit, "Debit");
                 //_logger.Debug(string.Format("SaftDocumentType:[{0}]: sqlTotalDebit: [{1}]", SaftDocumentType.Payments, sqlTotalDebit));
 
-                object totalDebit = DataLayerFramework.SessionXpo.ExecuteScalar(sqlTotalDebit);
+                object totalDebit = XPOSettings.Session.ExecuteScalar(sqlTotalDebit);
                 if (totalDebit == null) totalDebit = 0;
                 WriteElement("TotalDebit", SharedUtils.DecimalToString(Convert.ToDecimal(totalDebit), SharedFramework.CurrentCultureNumberFormat, _decimalFormat));
 
                 //<TotalCredit>
                 string sqlTotalCredit = string.Format(sqlTotalDebitTotalCredit, "Credit");
                 //_logger.Debug(string.Format("SaftDocumentType:[{0}]: sqlTotalCredit: [{1}]", SaftDocumentType.Payments, sqlTotalCredit));
-                object totalCredit = DataLayerFramework.SessionXpo.ExecuteScalar(sqlTotalCredit);
+                object totalCredit = XPOSettings.Session.ExecuteScalar(sqlTotalCredit);
                 if (totalCredit == null) totalCredit = 0;
                 WriteElement("TotalCredit", SharedUtils.DecimalToString(Convert.ToDecimal(totalCredit), SharedFramework.CurrentCultureNumberFormat, _decimalFormat));
 

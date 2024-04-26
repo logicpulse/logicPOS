@@ -1,5 +1,6 @@
 ﻿using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Enums;
 using logicpos.financial.library.Classes.Reports;
 using logicpos.shared.App;
@@ -102,7 +103,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 _thermalPrinterGeneric.SetAlignCenter();
 
                 string sql = "SELECT value FROM cfg_configurationpreferenceparameter where token = 'TICKET_FILENAME_loggerO';";
-                string result = DataLayerFramework.SessionXpo.ExecuteScalar(sql).ToString();
+                string result = XPOSettings.Session.ExecuteScalar(sql).ToString();
 
                 string logo = string.Format(
                     @"{0}{1}",
@@ -111,7 +112,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 );
 
                 sql = "SELECT value FROM cfg_configurationpreferenceparameter where token = 'TICKET_PRINT_COMERCIAL_NAME';";
-                var printComercialName = DataLayerFramework.SessionXpo.ExecuteScalar(sql).ToString();
+                var printComercialName = XPOSettings.Session.ExecuteScalar(sql).ToString();
 
                 //Print Logo or Name + BusinessName
                 //TK016249 - Impressoras - Diferenciação entre Tipos

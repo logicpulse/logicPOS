@@ -1,6 +1,7 @@
 ﻿using DevExpress.Xpo;
 using logicpos.datalayer.App;
 using logicpos.datalayer.Enums;
+using logicpos.datalayer.Xpo;
 using System;
 
 namespace logicpos.datalayer.DataLayer.Xpo
@@ -111,9 +112,10 @@ namespace logicpos.datalayer.DataLayer.Xpo
         //IN:009268 Use Euro VAT Info 
         public static object GetCountryCode2
         {
-            get {
+            get
+            {
                 string sql = "SELECT Value FROM cfg_configurationpreferenceparameter WHERE (Disabled IS NULL OR Disabled  <> 1) AND (Token = 'COMPANY_COUNTRY_CODE2')";
-                var getCountryCode2 = DataLayerFramework.SessionXpo.ExecuteScalar(sql);
+                var getCountryCode2 = XPOSettings.Session.ExecuteScalar(sql);
                 return getCountryCode2;
             }
         }//IN:009268 ENDS

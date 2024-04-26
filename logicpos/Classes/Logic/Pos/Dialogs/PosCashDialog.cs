@@ -11,6 +11,7 @@ using System.Collections;
 using System.Drawing;
 using logicpos.datalayer.App;
 using logicpos.shared.App;
+using logicpos.datalayer.Xpo;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -80,7 +81,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 foreach (SelectStatementResultRow row in xPSelectDataTables.Data)
                 {
                     Guid tableOid = new Guid(row.Values[xPSelectDataTables.GetFieldIndex("PlaceTable")].ToString());
-                    currentOpenOrderTable = DataLayerFramework.SessionXpo.GetObjectByKey<pos_configurationplacetable>(tableOid);
+                    currentOpenOrderTable = XPOSettings.Session.GetObjectByKey<pos_configurationplacetable>(tableOid);
                     openOrderTables += string.Format("{0}{1}", currentOpenOrderTable.Designation, " ");
                 }
 
@@ -108,7 +109,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 foreach (SelectStatementResultRow row in xPSelectDataTerminals.Data)
                 {
                     Guid terminalOid = new Guid(row.Values[xPSelectDataTerminals.GetFieldIndex("Terminal")].ToString());
-                    currentOpenSessionTerminal = DataLayerFramework.SessionXpo.GetObjectByKey<pos_configurationplaceterminal>(terminalOid);
+                    currentOpenSessionTerminal = XPOSettings.Session.GetObjectByKey<pos_configurationplaceterminal>(terminalOid);
                     openTerminals += string.Format("{0}{1} - {2}", Environment.NewLine, currentOpenSessionTerminal.Designation, row.Values[xPSelectDataTerminals.GetFieldIndex("Designation")].ToString());
                 }
 
@@ -131,7 +132,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 );
 
                 if (responseType == ResponseType.Yes) {
-                    return logicpos.Utils.CloseAllOpenTerminals(this, DataLayerFramework.SessionXpo);
+                    return logicpos.Utils.CloseAllOpenTerminals(this, XPOSettings.Session);
 
                 } 
                 else
@@ -160,7 +161,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             if (response == (int)ResponseType.Ok)
             {
                 //Get Fresh XPO Objects, Prevent Deleted Object Bug
-                pos_worksessionperiod workSessionPeriodDay = DataLayerFramework.SessionXpo.GetObjectByKey<pos_worksessionperiod>(SharedFramework.WorkSessionPeriodDay.Oid);
+                pos_worksessionperiod workSessionPeriodDay = XPOSettings.Session.GetObjectByKey<pos_worksessionperiod>(SharedFramework.WorkSessionPeriodDay.Oid);
                 pos_worksessionperiod workSessionPeriodTerminal = SharedFramework.WorkSessionPeriodTerminal;
                 var originalMovType = dialogCashDrawer.MovementType;
                 decimal addedMoney;
@@ -178,7 +179,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                             //Here we already have GlobalFramework.WorkSessionPeriodTerminal, assigned on ProcessWorkSessionPeriod.SessionPeriodStart
                             //Get Fresh XPO Objects, Prevent Deleted Object Bug
-                            workSessionPeriodTerminal = DataLayerFramework.SessionXpo.GetObjectByKey<pos_worksessionperiod>(SharedFramework.WorkSessionPeriodTerminal.Oid);
+                            workSessionPeriodTerminal = XPOSettings.Session.GetObjectByKey<pos_worksessionperiod>(SharedFramework.WorkSessionPeriodTerminal.Oid);
 
                             result = ProcessWorkSessionMovement.PersistWorkSessionMovement(
                              workSessionPeriodTerminal,
@@ -233,7 +234,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 moneyInOutLabel = "ticket_title_worksession_money_out";
                                 moneyInOutLabelAudit = "audit_message_cashdrawer_out";
                                 audit = "CASHDRAWER_OUT";
-                                dialogCashDrawer.MovementType = (pos_worksessionmovementtype)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(pos_worksessionmovementtype), Guid.Parse("069564cb-074a-4c91-931e-554454b1ab7e"));
+                                dialogCashDrawer.MovementType = (pos_worksessionmovementtype)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(pos_worksessionmovementtype), Guid.Parse("069564cb-074a-4c91-931e-554454b1ab7e"));
                             }
                             else
                             {
@@ -242,14 +243,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 moneyInOutLabel = "ticket_title_worksession_money_in";
                                 moneyInOutLabelAudit = "audit_message_cashdrawer_in";
                                 audit = "CASHDRAWER_IN";
-                                dialogCashDrawer.MovementType = (pos_worksessionmovementtype)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(pos_worksessionmovementtype), Guid.Parse("2ef29ce6-314c-4f40-897f-e31802dbeef3"));
+                                dialogCashDrawer.MovementType = (pos_worksessionmovementtype)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(pos_worksessionmovementtype), Guid.Parse("2ef29ce6-314c-4f40-897f-e31802dbeef3"));
                             }
                             //Total = IN
                             dialogCashDrawer.TotalAmountInCashDrawer = dialogCashDrawer.MovementAmountMoney;
 
-                            // GlobalFramework.WorkSessionPeriodTerminal = DataLayerFramework.SessionXpo.GetObjectByKey<pos_worksessionperiod>(GlobalFramework.WorkSessionPeriodDay.Oid);
+                            // GlobalFramework.WorkSessionPeriodTerminal = XPOSettings.Session.GetObjectByKey<pos_worksessionperiod>(GlobalFramework.WorkSessionPeriodDay.Oid);
 
-                            workSessionPeriodTerminal = DataLayerFramework.SessionXpo.GetObjectByKey<pos_worksessionperiod>(SharedFramework.WorkSessionPeriodTerminal.Oid);
+                            workSessionPeriodTerminal = XPOSettings.Session.GetObjectByKey<pos_worksessionperiod>(SharedFramework.WorkSessionPeriodTerminal.Oid);
 
                             var resultProcess = ProcessWorkSessionMovement.PersistWorkSessionMovement(
                               workSessionPeriodTerminal,
@@ -309,7 +310,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 moneyInOutLabel = "ticket_title_worksession_money_out";
                                 moneyInOutLabelAudit = "audit_message_cashdrawer_out";
                                 audit = "CASHDRAWER_OUT";
-                                dialogCashDrawer.MovementType = (pos_worksessionmovementtype)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(pos_worksessionmovementtype), Guid.Parse("069564cb-074a-4c91-931e-554454b1ab7e"));
+                                dialogCashDrawer.MovementType = (pos_worksessionmovementtype)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(pos_worksessionmovementtype), Guid.Parse("069564cb-074a-4c91-931e-554454b1ab7e"));
                             }
                             else
                             {
@@ -318,16 +319,16 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 moneyInOutLabel = "ticket_title_worksession_money_in";
                                 moneyInOutLabelAudit = "audit_message_cashdrawer_in";
                                 audit = "CASHDRAWER_IN";
-                                dialogCashDrawer.MovementType = (pos_worksessionmovementtype)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(pos_worksessionmovementtype), Guid.Parse("2ef29ce6-314c-4f40-897f-e31802dbeef3"));
+                                dialogCashDrawer.MovementType = (pos_worksessionmovementtype)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(pos_worksessionmovementtype), Guid.Parse("2ef29ce6-314c-4f40-897f-e31802dbeef3"));
 
                             }
 
                             //Total = IN
                             dialogCashDrawer.TotalAmountInCashDrawer = dialogCashDrawer.MovementAmountMoney;
 
-                            // GlobalFramework.WorkSessionPeriodTerminal = DataLayerFramework.SessionXpo.GetObjectByKey<pos_worksessionperiod>(GlobalFramework.WorkSessionPeriodDay.Oid);
+                            // GlobalFramework.WorkSessionPeriodTerminal = XPOSettings.Session.GetObjectByKey<pos_worksessionperiod>(GlobalFramework.WorkSessionPeriodDay.Oid);
 
-                            workSessionPeriodTerminal = DataLayerFramework.SessionXpo.GetObjectByKey<pos_worksessionperiod>(SharedFramework.WorkSessionPeriodTerminal.Oid);
+                            workSessionPeriodTerminal = XPOSettings.Session.GetObjectByKey<pos_worksessionperiod>(SharedFramework.WorkSessionPeriodTerminal.Oid);
 
                             var resultProcess = ProcessWorkSessionMovement.PersistWorkSessionMovement(
                               workSessionPeriodTerminal,
@@ -362,7 +363,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 }
                             }
                         }
-                        //workSessionPeriodTerminal = DataLayerFramework.SessionXpo.GetObjectByKey<pos_worksessionperiod>(GlobalFramework.WorkSessionPeriodTerminal.Oid);
+                        //workSessionPeriodTerminal = XPOSettings.Session.GetObjectByKey<pos_worksessionperiod>(GlobalFramework.WorkSessionPeriodTerminal.Oid);
 
                         //Stop Terminal Period
                         result = ProcessWorkSessionPeriod.SessionPeriodClose(workSessionPeriodTerminal);
@@ -374,7 +375,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             GlobalApp.PosMainWindow.LabelCurrentTable.Text = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "status_message_open_cashdrawer");
 
                             //Get Fresh XPO Objects, Prevent Deleted Object Bug
-                            workSessionPeriodTerminal = DataLayerFramework.SessionXpo.GetObjectByKey<pos_worksessionperiod>(workSessionPeriodTerminal.Oid);
+                            workSessionPeriodTerminal = XPOSettings.Session.GetObjectByKey<pos_worksessionperiod>(workSessionPeriodTerminal.Oid);
 
                             //dialogCashDrawer.TotalAmountInCashDrawer -= dialogCashDrawer.MovementAmountMoney;
 
@@ -413,7 +414,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                         dialogCashDrawer.TotalAmountInCashDrawer += dialogCashDrawer.MovementAmountMoney;
 
-                        workSessionPeriodTerminal = DataLayerFramework.SessionXpo.GetObjectByKey<pos_worksessionperiod>(SharedFramework.WorkSessionPeriodTerminal.Oid);
+                        workSessionPeriodTerminal = XPOSettings.Session.GetObjectByKey<pos_worksessionperiod>(SharedFramework.WorkSessionPeriodTerminal.Oid);
 
                         result = ProcessWorkSessionMovement.PersistWorkSessionMovement(
                           workSessionPeriodTerminal,
@@ -459,7 +460,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                         dialogCashDrawer.TotalAmountInCashDrawer -= dialogCashDrawer.MovementAmountMoney;
 
-                        workSessionPeriodTerminal = DataLayerFramework.SessionXpo.GetObjectByKey<pos_worksessionperiod>(SharedFramework.WorkSessionPeriodTerminal.Oid);
+                        workSessionPeriodTerminal = XPOSettings.Session.GetObjectByKey<pos_worksessionperiod>(SharedFramework.WorkSessionPeriodTerminal.Oid);
 
                         //In Period Terminal
                         result = ProcessWorkSessionMovement.PersistWorkSessionMovement(

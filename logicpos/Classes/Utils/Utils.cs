@@ -20,6 +20,7 @@ using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
 using logicpos.datalayer.Enums;
+using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
 using logicpos.financial.library.Classes.Finance;
 using logicpos.shared.App;
@@ -436,12 +437,12 @@ namespace logicpos
         {
             showMessage = false;
             Size size = new Size(500, 350);
-            fin_article article = (fin_article)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_article), pArticleOid);
+            fin_article article = (fin_article)XPOSettings.Session.GetObjectByKey(typeof(fin_article), pArticleOid);
             decimal articleStock;
             try
             {
                 string stockQuery = string.Format("SELECT SUM(Quantity) as Result FROM fin_articlestock WHERE Article = '{0}' AND (Disabled = 0 OR Disabled is NULL) GROUP BY Article;", article.Oid);
-                articleStock = Convert.ToDecimal(DataLayerFramework.SessionXpo.ExecuteScalar(stockQuery));
+                articleStock = Convert.ToDecimal(XPOSettings.Session.ExecuteScalar(stockQuery));
             }
             catch
             {
@@ -461,7 +462,7 @@ namespace logicpos
                     try
                     {
                         string stockQuery = string.Format("SELECT SUM(Quantity) as Result FROM fin_articlestock WHERE Article = '{0}' AND (Disabled = 0 OR Disabled is NULL) GROUP BY Article;", item.ArticleChild.Oid);
-                        childStock = Convert.ToDecimal(DataLayerFramework.SessionXpo.ExecuteScalar(stockQuery));
+                        childStock = Convert.ToDecimal(XPOSettings.Session.ExecuteScalar(stockQuery));
                     }
                     catch
                     {
@@ -1908,7 +1909,7 @@ namespace logicpos
         //  if (terminalXpo == null)
         //  {
         //    //Persist Terminal in DB
-        //    terminalXpo = new ConfigurationPlaceTerminal(DataLayerFramework.SessionXpo)
+        //    terminalXpo = new ConfigurationPlaceTerminal(XPOSettings.Session)
         //    {
         //      Ord = DataLayerUtils.GetNextTableFieldID("pos_configurationplaceterminal", "Ord"),
         //      Code = DataLayerUtils.GetNextTableFieldID("pos_configurationplaceterminal", "Code"),
@@ -1961,7 +1962,7 @@ namespace logicpos
                     try
                     {
                         //Persist Terminal in DB
-                        configurationPlaceTerminal = new pos_configurationplaceterminal(DataLayerFramework.SessionXpo)
+                        configurationPlaceTerminal = new pos_configurationplaceterminal(XPOSettings.Session)
                         {
                             Ord = DataLayerUtils.GetNextTableFieldID("pos_configurationplaceterminal", "Ord"),
                             Code = DataLayerUtils.GetNextTableFieldID("pos_configurationplaceterminal", "Code"),
@@ -2123,7 +2124,7 @@ namespace logicpos
         {
             string pathThemes = DataLayerFramework.Path["themes"].ToString();
             /* IN008024 */
-            return SharedUtils.OSSlash(string.Format(@"{0}{1}\{2}", pathThemes, DataLayerSettings.AppTheme, pFile));
+            return SharedUtils.OSSlash(string.Format(@"{0}{1}\{2}", pathThemes, LogicPOS.Settings.AppSettings.AppTheme, pFile));
         }
 
         public static Gtk.Style GetThemeStyleBackground(string pFile)
@@ -2148,7 +2149,7 @@ namespace logicpos
             }
             else
             {
-                _logger.Error(string.Format("Missing Theme[{0}] Image: [{1}]", DataLayerSettings.AppTheme, fileImageBackground));
+                _logger.Error(string.Format("Missing Theme[{0}] Image: [{1}]", LogicPOS.Settings.AppSettings.AppTheme, fileImageBackground));
                 return null;
             }
         }
@@ -2175,7 +2176,7 @@ namespace logicpos
             }
             else
             {
-                _logger.Error(string.Format("Missing Theme[{0}] Image: [{1}]", DataLayerSettings.AppTheme, fileImageBackground));
+                _logger.Error(string.Format("Missing Theme[{0}] Image: [{1}]", LogicPOS.Settings.AppSettings.AppTheme, fileImageBackground));
                 return null;
             }
         }
@@ -2200,7 +2201,7 @@ namespace logicpos
             }
             else
             {
-                _logger.Error(string.Format("Missing Theme[{0}] Image: [{1}]", DataLayerSettings.AppTheme, pFile));
+                _logger.Error(string.Format("Missing Theme[{0}] Image: [{1}]", LogicPOS.Settings.AppSettings.AppTheme, pFile));
                 return null;
             }
         }
@@ -2228,7 +2229,7 @@ namespace logicpos
                 }
                 else
                 {
-                    _logger.Error(string.Format("Missing Theme[{0}] Image: [{1}]", DataLayerSettings.AppTheme, pFilename.ToString()));
+                    _logger.Error(string.Format("Missing Theme[{0}] Image: [{1}]", LogicPOS.Settings.AppSettings.AppTheme, pFilename.ToString()));
                     return null;
                 }
             }
@@ -2239,7 +2240,7 @@ namespace logicpos
 
         public static void ShowNotifications(Window pSourceWindow)
         {
-            ShowNotifications(pSourceWindow, DataLayerFramework.SessionXpo);
+            ShowNotifications(pSourceWindow, XPOSettings.Session);
         }
 
         public static void ShowNotifications(Window pSourceWindow, Session pSession)
@@ -2249,7 +2250,7 @@ namespace logicpos
 
         public static void ShowNotifications(Window pSourceWindow, Guid pLoggedUser)
         {
-            ShowNotifications(pSourceWindow, DataLayerFramework.SessionXpo, pLoggedUser);
+            ShowNotifications(pSourceWindow, XPOSettings.Session, pLoggedUser);
         }
 
         /// <summary>
@@ -2260,7 +2261,7 @@ namespace logicpos
         /// <param name="showNotificationOnDemand"></param>
         public static void ShowNotifications(Window pSourceWindow, bool showNotificationOnDemand)
         {
-            ShowNotifications(pSourceWindow, DataLayerFramework.SessionXpo, Guid.Empty, showNotificationOnDemand);
+            ShowNotifications(pSourceWindow, XPOSettings.Session, Guid.Empty, showNotificationOnDemand);
         }
 
         /// <summary>
@@ -2602,7 +2603,7 @@ namespace logicpos
             try
             {
                 string query = string.Format("SELECT Value FROM cfg_configurationpreferenceparameter WHERE Token = 'PRINT_QRCODE' AND (Disabled = 0 OR Disabled is NULL);");
-                result = Convert.ToBoolean(DataLayerFramework.SessionXpo.ExecuteScalar(query));
+                result = Convert.ToBoolean(XPOSettings.Session.ExecuteScalar(query));
                 SharedFramework.PrintQRCode = result;
             }
             catch (Exception ex)
@@ -2622,7 +2623,7 @@ namespace logicpos
             try
             {
                 string query = string.Format("SELECT Value FROM cfg_configurationpreferenceparameter WHERE Token = 'CHECK_STOCKS' AND (Disabled = 0 OR Disabled is NULL);");
-                result = Convert.ToBoolean(DataLayerFramework.SessionXpo.ExecuteScalar(query));
+                result = Convert.ToBoolean(XPOSettings.Session.ExecuteScalar(query));
                 SharedFramework.CheckStocks = result;
             }
             catch (Exception ex)
@@ -2642,7 +2643,7 @@ namespace logicpos
             try
             {
                 string query = string.Format("SELECT Value FROM cfg_configurationpreferenceparameter WHERE Token = 'CHECK_STOCKS_MESSAGE';");
-                result = Convert.ToBoolean(DataLayerFramework.SessionXpo.ExecuteScalar(query));
+                result = Convert.ToBoolean(XPOSettings.Session.ExecuteScalar(query));
                 SharedFramework.CheckStockMessage = result;
             }
             catch (Exception ex)
@@ -2825,7 +2826,7 @@ namespace logicpos
                 new SortProperty("Oid", SortingDirection.Ascending)
             };
             CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL)"));
-            ICollection collectionCustomers = DataLayerFramework.SessionXpo.GetObjects(DataLayerFramework.SessionXpo.GetClassInfo(typeof(erp_customer)), criteria, sortCollection, int.MaxValue, false, true);
+            ICollection collectionCustomers = XPOSettings.Session.GetObjects(XPOSettings.Session.GetClassInfo(typeof(erp_customer)), criteria, sortCollection, int.MaxValue, false, true);
 
             foreach (erp_customer item in collectionCustomers)
             {
@@ -2842,7 +2843,7 @@ namespace logicpos
                 changed = true;
                 //Front-end - Gravação de múltiplos clientes sem nome definido [IN:014367]
                 if (string.IsNullOrEmpty(pName)) pName = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "saft_value_unknown");
-                result = new erp_customer(DataLayerFramework.SessionXpo)
+                result = new erp_customer(XPOSettings.Session)
                 {
                     Ord = (pFiscalNumber != string.Empty) ? DataLayerUtils.GetNextTableFieldID("erp_customer", "Ord") : 0,
                     Code = (pFiscalNumber != string.Empty) ? DataLayerUtils.GetNextTableFieldID("erp_customer", "Code") : 0,
@@ -3185,9 +3186,9 @@ namespace logicpos
                     }
 
                     string query = string.Format("UPDATE cfg_configurationpreferenceparameter SET Value = 'False' WHERE Token = 'CHECK_STOCKS_MESSAGE';");
-                    DataLayerFramework.SessionXpo.ExecuteScalar(query);
+                    XPOSettings.Session.ExecuteScalar(query);
                     query = string.Format("UPDATE cfg_configurationpreferenceparameter SET Disabled = '1' WHERE Token = 'CHECK_STOCKS_MESSAGE';");
-                    DataLayerFramework.SessionXpo.ExecuteScalar(query);
+                    XPOSettings.Session.ExecuteScalar(query);
                     startDocumentsMenuFromBackOffice(pSourceWindow, 6);
                 }
                 else

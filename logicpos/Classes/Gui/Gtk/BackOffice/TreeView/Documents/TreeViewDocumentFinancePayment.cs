@@ -8,6 +8,7 @@ using logicpos.Classes.Formatters;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Xpo;
 using System;
 using System.Collections.Generic;
 
@@ -101,7 +102,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             sortProperty[0] = new SortProperty("CreatedAt", SortingDirection.Descending);            
             //Configure Criteria/XPCollection/Model              
             //New IN009223 IN009227         
-             XPCollection xpoCollection = new XPCollection(DataLayerFramework.SessionXpo, xpoGuidObjectType, criteria, sortProperty) { TopReturnedObjects = POSSettings.PaginationRowsPerPage };
+             XPCollection xpoCollection = new XPCollection(XPOSettings.Session, xpoGuidObjectType, criteria, sortProperty) { TopReturnedObjects = POSSettings.PaginationRowsPerPage };
 
             //Call Base Initializer
             base.InitObject(

@@ -7,6 +7,7 @@ using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Logic.Others;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
 using logicpos.shared.App;
 using System;
@@ -72,8 +73,8 @@ namespace logicpos
                 //Always Get Objects from Prefs to Singleton : with and without PosEditCompanyDetails
                 configurationPreferenceParameterCompanyCountryOid = (SharedUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY_OID")) as cfg_configurationpreferenceparameter);
                 configurationPreferenceParameterSystemCurrencyOid = (SharedUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "SYSTEM_CURRENCY_OID")) as cfg_configurationpreferenceparameter);
-                DataLayerSettings.ConfigurationSystemCountry = (cfg_configurationcountry)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(cfg_configurationcountry), new Guid(configurationPreferenceParameterCompanyCountryOid.Value));
-                SharedSettings.ConfigurationSystemCurrency = (cfg_configurationcurrency)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(cfg_configurationcurrency), new Guid(configurationPreferenceParameterSystemCurrencyOid.Value));
+                DataLayerSettings.ConfigurationSystemCountry = (cfg_configurationcountry)XPOSettings.Session.GetObjectByKey(typeof(cfg_configurationcountry), new Guid(configurationPreferenceParameterCompanyCountryOid.Value));
+                SharedSettings.ConfigurationSystemCurrency = (cfg_configurationcurrency)XPOSettings.Session.GetObjectByKey(typeof(cfg_configurationcurrency), new Guid(configurationPreferenceParameterSystemCurrencyOid.Value));
 
                 _logger.Debug(string.Format("Using System Country: [{0}], Currency: [{1}]", DataLayerSettings.ConfigurationSystemCountry.Designation, SharedSettings.ConfigurationSystemCurrency.Designation));
             }
@@ -327,7 +328,7 @@ namespace logicpos
 
             //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
             //Test DocumentPaymentCreatePDF
-            //DocumentFinancePayment documentFinancePayment = (DocumentFinancePayment) DataLayerFramework.SessionXpo.GetObjectByKey(typeof(DocumentFinancePayment), new Guid("e53e779d-4af4-4323-9b2b-48f4ebf6b0c6"));
+            //DocumentFinancePayment documentFinancePayment = (DocumentFinancePayment) XPOSettings.Session.GetObjectByKey(typeof(DocumentFinancePayment), new Guid("e53e779d-4af4-4323-9b2b-48f4ebf6b0c6"));
             //if (documentFinancePayment != null) {
             //    string fileName = CustomReport.DocumentPaymentCreatePDF(documentFinancePayment);
             //}
@@ -357,7 +358,7 @@ namespace logicpos
 
             //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
             //Create FiscalYear
-            //DocumentFinanceYears documentFinanceYears = (DocumentFinanceYears) DataLayerFramework.SessionXpo.GetObjectByKey(typeof(DocumentFinanceYears), new Guid("42204635-1c7b-4a13-a206-c997726009da"));
+            //DocumentFinanceYears documentFinanceYears = (DocumentFinanceYears) XPOSettings.Session.GetObjectByKey(typeof(DocumentFinanceYears), new Guid("42204635-1c7b-4a13-a206-c997726009da"));
             //ProcessFinanceDocumentSeries.DisableFiscalYear(documentFinanceYears);
 
             //DocumentFinanceYears documentFinanceYears = new DocumentFinanceYears();
@@ -388,7 +389,7 @@ namespace logicpos
             //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
             //Test PosDocumentFinancePrintDialog : Used to test StandAlone Dialog
             //Guid guidDocument = new Guid("7d08282c-d705-4f01-9047-36d6d65c15d7");
-            //DocumentFinanceMaster documentFinanceMaster = (DocumentFinanceMaster)DataLayerUtils.GetXPGuidObjectFromSession(DataLayerFramework.SessionXpo, typeof(DocumentFinanceMaster), guidDocument);
+            //DocumentFinanceMaster documentFinanceMaster = (DocumentFinanceMaster)DataLayerUtils.GetXPGuidObjectFromSession(XPOSettings.Session, typeof(DocumentFinanceMaster), guidDocument);
             //if (documentFinanceMaster != null)
             //{
             //    documentFinanceMaster.DocumentType.PrintRequestMotive = true;
@@ -398,7 +399,7 @@ namespace logicpos
 
             //DONT FORGET ToggleAction TEST DocumentMasterCreatePDF
             //Guid guidOid = new Guid("70c9cf6d-c212-4e3a-9c3a-641bb81da85c");
-            //DocumentFinanceMaster documentFinanceMaster = (DocumentFinanceMaster)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(DocumentFinanceMaster), guidOid);
+            //DocumentFinanceMaster documentFinanceMaster = (DocumentFinanceMaster)XPOSettings.Session.GetObjectByKey(typeof(DocumentFinanceMaster), guidOid);
             //string fileName = CustomReport.DocumentMasterCreatePDF(documentFinanceMaster);
             //_logger.Debug(string.Format("fileName: [{0}]", fileName));
 
@@ -438,7 +439,7 @@ namespace logicpos
             //Test Permissions
 
             /*
-            UserDetail userDetail = (UserDetail)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(UserDetail), new Guid("090c5684-52ba-4d7a-8bc3-a00320ef503d"));
+            UserDetail userDetail = (UserDetail)XPOSettings.Session.GetObjectByKey(typeof(UserDetail), new Guid("090c5684-52ba-4d7a-8bc3-a00320ef503d"));
             userDetail.Profile.Permissions.Reload();
             SharedFramework.LoggedUserPermissions = SharedUtils.GetUserPermissions(userDetail);
             bool BACKOFFICE_ACCESS = FrameworkUtils.HasPermissionTo("BACKOFFICE_ACCESS");
@@ -459,7 +460,7 @@ namespace logicpos
             //documentFinanceTypeList.Add(documentFinanceTypeGuid1);
             documentFinanceTypeList.Add(documentFinanceTypeGuid2);
             //documentFinanceTypeList.Add(documentFinanceTypeGuid3);
-            DocumentFinanceMaster documentFinanceMaster = (DocumentFinanceMaster)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(DocumentFinanceMaster), documentFinanceMasterGuid);
+            DocumentFinanceMaster documentFinanceMaster = (DocumentFinanceMaster)XPOSettings.Session.GetObjectByKey(typeof(DocumentFinanceMaster), documentFinanceMasterGuid);
             //From DocumentFinanceTypeList
             //bool result = FrameworkUtils.IsDocumentMasterChildOfDocumentType(documentFinanceMaster, documentFinanceTypeList);
             //_logger.Debug(string.Format("IsDocumentMasterChildOfDocumentType: [{0}]", result));
@@ -481,7 +482,7 @@ namespace logicpos
             /*
             string notificationTypeSaftDocumentTypeMovementOfGoods = "80a03838-0937-4ae3-921f-75a1e358f7bf";
             int defaultBackDaysForInvoice = 5;
-            SystemNotification systemNotification = FrameworkUtils.ProcessFinanceDocumentToInvoice(DataLayerFramework.SessionXpo, new Guid(notificationTypeSaftDocumentTypeMovementOfGoods), SaftDocumentType.MovementOfGoods, "(DocumentStatusStatus = 'N')", defaultBackDaysForInvoice);
+            SystemNotification systemNotification = FrameworkUtils.ProcessFinanceDocumentToInvoice(XPOSettings.Session, new Guid(notificationTypeSaftDocumentTypeMovementOfGoods), SaftDocumentType.MovementOfGoods, "(DocumentStatusStatus = 'N')", defaultBackDaysForInvoice);
             _logger.Debug(string.Format("Message: [{0}]", systemNotification.Message));
             */
 
@@ -531,10 +532,10 @@ namespace logicpos
             //Required a Valid LoggedUser
 
             /*
-            DataLayerFramework.LoggedUser = (UserDetail)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(UserDetail), new Guid("090c5684-52ba-4d7a-8bc3-a00320ef503d"));
+            DataLayerFramework.LoggedUser = (UserDetail)XPOSettings.Session.GetObjectByKey(typeof(UserDetail), new Guid("090c5684-52ba-4d7a-8bc3-a00320ef503d"));
             //Get DocumentMaster Oid
             //SELECT DocumentMaster,COUNT(*) AS Count FROM fin_documentfinancedetail GROUP BY DocumentMaster ORDER BY COUNT(*) DESC;
-            DocumentFinanceMaster documentFinanceMaster = (DocumentFinanceMaster)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(DocumentFinanceMaster), new Guid("814e8065-bcc1-49f2-86c0-bdbaeaf40e41"));
+            DocumentFinanceMaster documentFinanceMaster = (DocumentFinanceMaster)XPOSettings.Session.GetObjectByKey(typeof(DocumentFinanceMaster), new Guid("814e8065-bcc1-49f2-86c0-bdbaeaf40e41"));
             ArticleBag articleBag = ArticleBag.DocumentFinanceMasterToArticleBag(documentFinanceMaster);
             ProcessFinanceDocumentParameter processFinanceDocumentParameter = new ProcessFinanceDocumentParameter(SettingsApp.XpoOidDocumentFinanceTypeCreditNote, articleBag);
             //Change default DocumentDateTime
@@ -632,7 +633,7 @@ namespace logicpos
             //documentFinanceMasterGuid = documentFinanceMasterNewGuid;
 
             //On Save Modify Right Values with Bad Values
-            DocumentFinanceMaster documentFinanceMasterChange = (DocumentFinanceMaster)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(DocumentFinanceMaster), documentFinanceMasterGuid);
+            DocumentFinanceMaster documentFinanceMasterChange = (DocumentFinanceMaster)XPOSettings.Session.GetObjectByKey(typeof(DocumentFinanceMaster), documentFinanceMasterGuid);
             _logger.Debug(string.Format("DataLayer: [{0}]", documentFinanceMasterChange.Session.DataLayer));
             documentFinanceMasterChange.EntityLocality = "true";
             _logger.Debug(string.Format("Printed: [{0}], EntityName: [{1}]", 
@@ -641,7 +642,7 @@ namespace logicpos
             ));
             //documentFinanceMasterChange.Save();
 
-            DocumentFinanceMaster documentFinanceMasterCheck = (DocumentFinanceMaster)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(DocumentFinanceMaster), documentFinanceMasterGuid);
+            DocumentFinanceMaster documentFinanceMasterCheck = (DocumentFinanceMaster)XPOSettings.Session.GetObjectByKey(typeof(DocumentFinanceMaster), documentFinanceMasterGuid);
             _logger.Debug(string.Format("DataLayer: [{0}]", documentFinanceMasterCheck.Session.DataLayer));
             _logger.Debug(string.Format("Printed: [{0}], EntityName: [{1}], EntityLocality: [{2}]", 
                 documentFinanceMasterCheck.Printed, 
@@ -675,8 +676,8 @@ namespace logicpos
             //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
             //Test Country Code2
 
-            //cfg_configurationcountry countryPT = (cfg_configurationcountry)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(cfg_configurationcountry), new Guid("e7e8c325-a0d4-4908-b148-508ed750676a"));
-            //cfg_configurationcountry countryAO = (cfg_configurationcountry)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(cfg_configurationcountry), new Guid("9655510a-ff58-461e-9719-c037058f10ed"));
+            //cfg_configurationcountry countryPT = (cfg_configurationcountry)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(cfg_configurationcountry), new Guid("e7e8c325-a0d4-4908-b148-508ed750676a"));
+            //cfg_configurationcountry countryAO = (cfg_configurationcountry)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(cfg_configurationcountry), new Guid("9655510a-ff58-461e-9719-c037058f10ed"));
             //_logger.Debug(String.Format("countryPT: [{0}], [{1}]", countryPT.Designation, countryPT.Code2));
             //_logger.Debug(String.Format("countryAO: [{0}], [{1}]", countryAO.Designation, countryAO.Code2));
 
@@ -789,7 +790,7 @@ namespace logicpos
             //{
             //    int size = 10;
 
-            //    erp_customer customer = new erp_customer(DataLayerFramework.SessionXpo)
+            //    erp_customer customer = new erp_customer(XPOSettings.Session)
             //    {
             //        Name = Utils.GenerateRandomStringAlphaUpper(size),
             //        Address = Utils.GenerateRandomStringAlphaUpper(size),

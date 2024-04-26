@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.datalayer.App;
+using logicpos.datalayer.Xpo;
 
 //Note
 //1) To disable navigator butons ex INS,DEL, use privileges
@@ -55,7 +56,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             SortProperty[] sortProperty = new SortProperty[1];
             sortProperty[0] = new SortProperty("Designation", SortingDirection.Ascending);
-            XPCollection xpoCollection = new XPCollection(DataLayerFramework.SessionXpo, xpoGuidObjectType, criteria, sortProperty);
+            XPCollection xpoCollection = new XPCollection(XPOSettings.Session, xpoGuidObjectType, criteria, sortProperty);
 
             //Call Base Initializer
             base.InitObject(

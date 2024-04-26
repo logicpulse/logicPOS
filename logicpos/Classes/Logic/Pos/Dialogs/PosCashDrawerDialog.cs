@@ -7,6 +7,7 @@ using System.Drawing;
 using logicpos.Extensions;
 using logicpos.datalayer.App;
 using logicpos.shared.App;
+using logicpos.datalayer.Xpo;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -134,7 +135,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
 
             //Assign _selectedMovementType
-            MovementType = (pos_worksessionmovementtype)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(pos_worksessionmovementtype), pButton.CurrentButtonOid);
+            MovementType = (pos_worksessionmovementtype)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(pos_worksessionmovementtype), pButton.CurrentButtonOid);
 
             //Detect Cash open
             if (MovementType.Token == "CASHDRAWER_OPEN")

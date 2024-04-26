@@ -2,6 +2,7 @@
 using DevExpress.Xpo.Metadata;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
+using logicpos.datalayer.Xpo;
 using System;
 
 namespace logicpos.datalayer.App
@@ -75,7 +76,7 @@ namespace logicpos.datalayer.App
             {
                 string sql = string.Format("SELECT MAX({0}) FROM {1};", pField, pTable);
 
-                var resultInt = DataLayerFramework.SessionXpo.ExecuteScalar(sql);
+                var resultInt = XPOSettings.Session.ExecuteScalar(sql);
                 if (resultInt != null)
                 {
                     result = Convert.ToUInt32(resultInt) + 1;
@@ -100,7 +101,7 @@ namespace logicpos.datalayer.App
 
         public static XPGuidObject GetXPGuidObject(Type pXPGuidObjectType, Guid pOid)
         {
-            return GetXPGuidObject(DataLayerFramework.SessionXpo, pXPGuidObjectType, pOid);
+            return GetXPGuidObject(XPOSettings.Session, pXPGuidObjectType, pOid);
         }
 
         public static XPGuidObject GetXPGuidObject(Session pSession, Type pXPGuidObjectType, Guid pOid)
@@ -152,7 +153,7 @@ namespace logicpos.datalayer.App
             {
                 try
                 {
-                    result = (DateTime)DataLayerFramework.SessionXpo.ExecuteScalar(sql);
+                    result = (DateTime)XPOSettings.Session.ExecuteScalar(sql);
                 }
                 catch (Exception ex)
                 {

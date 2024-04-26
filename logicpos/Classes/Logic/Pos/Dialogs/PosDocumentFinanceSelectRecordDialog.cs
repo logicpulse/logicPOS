@@ -22,6 +22,7 @@ using System.IO;
 using logicpos.documentviewer;
 using logicpos.datalayer.App;
 using logicpos.shared.App;
+using logicpos.datalayer.Xpo;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -168,18 +169,18 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     criteriaOperator = CriteriaOperator.Parse(string.Format("{0} DocumentType <> '{1}'", criteriaOperatorShared, SharedSettings.XpoOidDocumentFinanceTypeCurrentAccountInput));
                     CriteriaOperatorBase = criteriaOperator;// IN009223 IN009227
 
-                    var countResult = DataLayerFramework.SessionXpo.Evaluate(typeof(fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), CriteriaOperatorBase);
+                    var countResult = XPOSettings.Session.Evaluate(typeof(fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), CriteriaOperatorBase);
 
                     if (DataLayerFramework.DatabaseType.ToString() == "MySql" || DataLayerFramework.DatabaseType.ToString() == "SQLite")
                     {
                         string filterCriteriaOperatorBase = CriteriaOperatorBase.ToString().Replace("[", "").Replace("]", "");
                         sqlCountTopResults = string.Format("SELECT COUNT(*) FROM (SELECT * FROM fin_documentfinancemaster WHERE {1}) AS Total LIMIT {0};", POSSettings.PaginationRowsPerPage, filterCriteriaOperatorBase);
-                        sqlCountResultTopResults = DataLayerFramework.SessionXpo.ExecuteScalar(sqlCountTopResults).ToString();
+                        sqlCountResultTopResults = XPOSettings.Session.ExecuteScalar(sqlCountTopResults).ToString();
                     }
                     else if (DataLayerFramework.DatabaseType.ToString() == "MSSqlServer")
                     {
                         sqlCountTopResults = string.Format("SELECT COUNT(*) FROM (SELECT TOP {0} * FROM fin_documentfinancemaster WHERE {1}) AS Total;", POSSettings.PaginationRowsPerPage, CriteriaOperatorBase);
-                        sqlCountResultTopResults = DataLayerFramework.SessionXpo.ExecuteScalar(sqlCountTopResults).ToString();
+                        sqlCountResultTopResults = XPOSettings.Session.ExecuteScalar(sqlCountTopResults).ToString();
                     }
                     //if count > Pagination Row/Page 
                     if (Convert.ToInt32(sqlCountResultTopResults) > Convert.ToInt32(POSSettings.PaginationRowsPerPage))
@@ -267,11 +268,11 @@ WHERE
                     //WHERE 
                     //    DocFinMaster.Oid = '{0}';", documentFinanceMaster.Oid);
 
-                    //documentDebit = Convert.ToDecimal(DataLayerFramework.SessionXpo.ExecuteScalar(sql));
+                    //documentDebit = Convert.ToDecimal(XPOSettings.Session.ExecuteScalar(sql));
                     /* IN009067 - creates a list of documents not payed, total or partial either */
 
 
-                    var sqlResult = DataLayerFramework.SessionXpo.ExecuteQuery(string.Format(sql, criteriaOperatorString));
+                    var sqlResult = XPOSettings.Session.ExecuteQuery(string.Format(sql, criteriaOperatorString));
                     var query = string.Format(sql, criteriaOperatorString);
                     List<Guid> resultList = new List<Guid>();
                     string inClause = string.Empty;
@@ -280,7 +281,7 @@ WHERE
                     foreach (var item in sqlResult.ResultSet[0].Rows)
                     {
                         //Mostrar notas crédito de documentos que já tenham sido liquidados
-                        var docMaster = (fin_documentfinancemaster)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), Guid.Parse(Convert.ToString(item.Values[0])));
+                        var docMaster = (fin_documentfinancemaster)XPOSettings.Session.GetObjectByKey(typeof(fin_documentfinancemaster), Guid.Parse(Convert.ToString(item.Values[0])));
                         string docParent = "";
                         bool showCreditNote = false;
                         if (item.Values[3] != null)
@@ -288,7 +289,7 @@ WHERE
                             docParent = item.Values[3].ToString();
                             if (!string.IsNullOrEmpty(docParent))
                             {
-                                var getDocParentXpoObject = (fin_documentfinancemaster)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), Guid.Parse(docParent));
+                                var getDocParentXpoObject = (fin_documentfinancemaster)XPOSettings.Session.GetObjectByKey(typeof(fin_documentfinancemaster), Guid.Parse(docParent));
                                 if (getDocParentXpoObject != null && getDocParentXpoObject.Payed == true && docMaster.Payed == false)
                                 {
                                     showCreditNote = true;
@@ -298,7 +299,7 @@ WHERE
 
                         //Mostrar notas de crédito apenas para para clientes com saldo positivo / Mostrar notas crédito de documentos que já tenham sido liquidados
                         var sqlbalanceTotal = string.Format("SELECT Balance FROM view_documentfinancecustomerbalancesummary WHERE (EntityOid = '{0}');", Convert.ToString(item.Values[1]));
-                        var getCustomerBalance = DataLayerFramework.SessionXpo.ExecuteScalar(sqlbalanceTotal);
+                        var getCustomerBalance = XPOSettings.Session.ExecuteScalar(sqlbalanceTotal);
                         if((getCustomerBalance != null && (Convert.ToDecimal(getCustomerBalance) > 0) && Guid.Parse(Convert.ToString(item.Values[2])) == SharedSettings.XpoOidDocumentFinanceTypeCreditNote) ||
                             (Guid.Parse(Convert.ToString(item.Values[2])) != SharedSettings.XpoOidDocumentFinanceTypeCreditNote) ||
                             showCreditNote
@@ -314,7 +315,7 @@ WHERE
                     //SortingCollection sortCollection = new SortingCollection();
                     //sortCollection.Add(new SortProperty("Oid", DevExpress.Xpo.DB.SortingDirection.Ascending));
                     //CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL)"));
-                    //ICollection collectionCustomers = DataLayerFramework.SessionXpo.GetObjects(DataLayerFramework.SessionXpo.GetClassInfo(typeof(fin_documentfinancemaster)), criteria, sortCollection, int.MaxValue, false, true);
+                    //ICollection collectionCustomers = XPOSettings.Session.GetObjects(XPOSettings.Session.GetClassInfo(typeof(fin_documentfinancemaster)), criteria, sortCollection, int.MaxValue, false, true);
                     //inClause = string.Empty;
                     //foreach (fin_documentfinancemaster item in collectionCustomers)
                     //{
@@ -345,7 +346,7 @@ WHERE
 
 
 
-                    //countResult = DataLayerFramework.SessionXpo.Evaluate(typeof(fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse(string.Format("{0} {1}", criteriaOperatorString, countQuery)));
+                    //countResult = XPOSettings.Session.Evaluate(typeof(fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse(string.Format("{0} {1}", criteriaOperatorString, countQuery)));
 
                     countResult = resultList.Count.ToString();
 
@@ -353,12 +354,12 @@ WHERE
                     {
                         string filterCriteriaOperatorBase = criteriaOperatorString.ToString().Replace("[", "").Replace("]", "");
                         sqlCountTopResults = string.Format("SELECT COUNT(*) FROM (SELECT * FROM fin_documentfinancemaster WHERE {1} {2}) AS Total LIMIT {0};", POSSettings.PaginationRowsPerPage, filterCriteriaOperatorBase, countQuery);
-                        sqlCountResultTopResults = DataLayerFramework.SessionXpo.ExecuteScalar(sqlCountTopResults).ToString();
+                        sqlCountResultTopResults = XPOSettings.Session.ExecuteScalar(sqlCountTopResults).ToString();
                     }
                     else if (DataLayerFramework.DatabaseType.ToString() == "MSSqlServer")
                     {
                         sqlCountTopResults = string.Format("SELECT COUNT(*) FROM (SELECT TOP {0} * FROM fin_documentfinancemaster WHERE {1} {2}) AS Total;", POSSettings.PaginationRowsPerPage, criteriaOperatorString, countQuery);
-                        sqlCountResultTopResults = DataLayerFramework.SessionXpo.ExecuteScalar(sqlCountTopResults).ToString();
+                        sqlCountResultTopResults = XPOSettings.Session.ExecuteScalar(sqlCountTopResults).ToString();
                     }
 
 
@@ -391,18 +392,18 @@ WHERE
                     criteriaOperator = CriteriaOperator.Parse(string.Format("{0} DocumentType = '{1}' AND Payed = 0", criteriaOperatorShared, SharedSettings.XpoOidDocumentFinanceTypeCurrentAccountInput));
                     CriteriaOperatorBase = criteriaOperator;// IN009223 IN009227
 
-                    countResult = DataLayerFramework.SessionXpo.Evaluate(typeof(fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), CriteriaOperatorBase);
+                    countResult = XPOSettings.Session.Evaluate(typeof(fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), CriteriaOperatorBase);
 
                     if (DataLayerFramework.DatabaseType.ToString() == "MySql" || DataLayerFramework.DatabaseType.ToString() == "SQLite")
                     {
                         string filterCriteriaOperatorBase = CriteriaOperatorBase.ToString().Replace("[", "").Replace("]", "");
                         sqlCountTopResults = string.Format("SELECT COUNT(*) FROM (SELECT * FROM fin_documentfinancemaster WHERE {1}) AS Total LIMIT {0};", POSSettings.PaginationRowsPerPage, filterCriteriaOperatorBase);
-                        sqlCountResultTopResults = DataLayerFramework.SessionXpo.ExecuteScalar(sqlCountTopResults).ToString();
+                        sqlCountResultTopResults = XPOSettings.Session.ExecuteScalar(sqlCountTopResults).ToString();
                     }
                     else if (DataLayerFramework.DatabaseType.ToString() == "MSSqlServer")
                     {
                         sqlCountTopResults = string.Format("SELECT COUNT(*) FROM (SELECT TOP {0} * FROM fin_documentfinancemaster WHERE {1}) AS Total;", POSSettings.PaginationRowsPerPage, CriteriaOperatorBase);
-                        sqlCountResultTopResults = DataLayerFramework.SessionXpo.ExecuteScalar(sqlCountTopResults).ToString();
+                        sqlCountResultTopResults = XPOSettings.Session.ExecuteScalar(sqlCountTopResults).ToString();
                     }
 
 
@@ -571,7 +572,7 @@ WHERE
         fin_documentfinancemaster DocFinMaster
     WHERE 
         DocFinMaster.Oid = '{0}';", documentFinanceMaster.Oid);
-                                    decimal documentDebit = Convert.ToDecimal(DataLayerFramework.SessionXpo.ExecuteScalar(sql));
+                                    decimal documentDebit = Convert.ToDecimal(XPOSettings.Session.ExecuteScalar(sql));
                                     /* IN009166 - forced to use "TotalFinalRound" and not "TotalFinal" instead */
                                     documentValue = (documentDebit != 0) ? documentDebit : documentFinanceMaster.TotalFinal;
                                 }
@@ -581,7 +582,7 @@ WHERE
                                      * When getting TotalFinal, the calculation returns a value different than the one is being shown.
                                      * Then, we selected TotalFinalRound as show on Documents window for each register.
                                      */
-                                    // documentDebit = Convert.ToDecimal(DataLayerFramework.SessionXpo.ExecuteScalar(sql));
+                                    // documentDebit = Convert.ToDecimal(XPOSettings.Session.ExecuteScalar(sql));
                                     // documentValue = (documentDebit != 0) ? documentDebit : documentFinanceMaster.TotalFinal;
                                     documentValue = documentFinanceMaster.TotalFinal;
                                 }
@@ -649,7 +650,7 @@ WHERE
                     criteriaCount = criteriaOperatorFilter;
                 }
 
-                var countResult = DataLayerFramework.SessionXpo.Evaluate(typeof(fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), criteriaCount);
+                var countResult = XPOSettings.Session.Evaluate(typeof(fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), criteriaCount);
                 string nDocs = _dialogDocumentFinanceMaster.GenericTreeView.DataSource.Count.ToString();
                 string showResults = string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_show_results"), nDocs, countResult);
 
@@ -767,7 +768,7 @@ WHERE
                             criteriaOperatorFilter = null;
                             _afterFilterTitle = null;
 
-                            var countResult = DataLayerFramework.SessionXpo.Evaluate(typeof(fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), CriteriaOperatorBase);
+                            var countResult = XPOSettings.Session.Evaluate(typeof(fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), CriteriaOperatorBase);
                             nDocs = _dialogDocumentFinanceMaster.GenericTreeView.DataSource.Count.ToString();
                             var showResults = string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_show_results"), nDocs, countResult);
                             _selectRecordWindowTitle = string.Format("{0} :: {1}", windowTitleDefault, showResults);
@@ -775,7 +776,7 @@ WHERE
                         }
                         else
                         {
-                            var countResult = DataLayerFramework.SessionXpo.Evaluate(typeof(fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), criteriaOperatorFilter);
+                            var countResult = XPOSettings.Session.Evaluate(typeof(fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), criteriaOperatorFilter);
                             string showResults = string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_show_results"), nDocs, countResult);
                             _selectRecordWindowTitle = string.Format("{0} :: {1}", windowTitleDefault, showResults);
                             _dialogDocumentFinanceMaster.WindowTitle = _selectRecordWindowTitle;
@@ -899,7 +900,7 @@ WHERE
                         criteriaCount = criteriaOperatorFilter;
                     }
 
-                    var countResult = DataLayerFramework.SessionXpo.Evaluate(typeof(fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), criteriaCount);
+                    var countResult = XPOSettings.Session.Evaluate(typeof(fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), criteriaCount);
                     string nDocs = _dialogDocumentFinanceMaster.GenericTreeView.DataSource.Count.ToString();
                     string showResults = string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_show_results"), nDocs, countResult);
 
@@ -930,7 +931,7 @@ WHERE
                         criteriaOperatorFilter = null;
                         _afterFilterTitle = null;
 
-                        var countResult = DataLayerFramework.SessionXpo.Evaluate(typeof(fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), CriteriaOperatorBase);
+                        var countResult = XPOSettings.Session.Evaluate(typeof(fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), CriteriaOperatorBase);
                         string nDocs = _dialogDocumentFinanceMaster.GenericTreeView.DataSource.Count.ToString();
                         string showResults = string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_show_results"), nDocs, countResult);
 
@@ -967,7 +968,7 @@ WHERE
                         _dialogFinanceDocumentsResponse.GenericTreeView.DataSource.TopReturnedObjects = POSSettings.PaginationRowsPerPage * _dialogFinanceDocumentsResponse.GenericTreeView.CurrentPageNumber;
                         _dialogFinanceDocumentsResponse.GenericTreeView.Refresh();
 
-                        var countResult = DataLayerFramework.SessionXpo.Evaluate(typeof(fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), criteriaOperatorFilter);
+                        var countResult = XPOSettings.Session.Evaluate(typeof(fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), criteriaOperatorFilter);
                         string nDocs = _dialogDocumentFinanceMaster.GenericTreeView.DataSource.Count.ToString();
                         string showResults = string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_show_results"), nDocs, countResult);
 
@@ -1297,7 +1298,7 @@ WHERE
             Dictionary<fin_documentfinancemaster, string> documents = new Dictionary<fin_documentfinancemaster, string>();
             List<string> attachmentFileNames = new List<string>();
             // Get Customer from first Document
-            erp_customer customer = (erp_customer)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(erp_customer), pDocuments[0].EntityOid);
+            erp_customer customer = (erp_customer)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(erp_customer), pDocuments[0].EntityOid);
             string customerEmail = (customer.Email != null) ? customer.Email : string.Empty;
             string documentList = string.Empty;
 
@@ -1378,7 +1379,7 @@ WHERE
             Dictionary<fin_documentfinancepayment, string> documents = new Dictionary<fin_documentfinancepayment, string>();
             List<string> attachmentFileNames = new List<string>();
             // Get Customer from first Document
-            erp_customer customer = (erp_customer)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(erp_customer), pDocuments[0].EntityOid);
+            erp_customer customer = (erp_customer)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(erp_customer), pDocuments[0].EntityOid);
             string customerEmail = (customer.Email != null) ? customer.Email : string.Empty;
             string mailBody = string.Empty;
 
@@ -1786,7 +1787,7 @@ WHERE
             {
                 /* IN009083 - we are considering here that we do not cancel Sales Documents if already received by AT */
                 string sql = string.Format("SELECT COUNT(*) FROM sys_systemauditat WHERE DocumentMaster = '{0}' AND ReturnCode = '0';", oid);
-                var sqlResult = DataLayerFramework.SessionXpo.ExecuteScalar(sql);
+                var sqlResult = XPOSettings.Session.ExecuteScalar(sql);
                 int countResult = Convert.ToUInt16(sqlResult);
                 /* if document already received successfully by AT */
                 if (countResult > 0)
@@ -2027,7 +2028,7 @@ WHERE
             CriteriaOperator criteriaOperator = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1)");
             CriteriaOperatorBase = criteriaOperator;// IN009223 IN009227
 
-            var countResult = DataLayerFramework.SessionXpo.Evaluate(typeof(fin_documentfinancepayment), CriteriaOperator.Parse("Count()"), CriteriaOperatorBase);
+            var countResult = XPOSettings.Session.Evaluate(typeof(fin_documentfinancepayment), CriteriaOperator.Parse("Count()"), CriteriaOperatorBase);
             string sqlCountTopResults = "0";
             string sqlCountResultTopResults = "0";
 
@@ -2035,12 +2036,12 @@ WHERE
             {
                 string filterCriteriaOperatorBase = CriteriaOperatorBase.ToString().Replace("[", "").Replace("]", "");
                 sqlCountTopResults = string.Format("SELECT COUNT(*) FROM (SELECT * FROM fin_documentfinancepayment WHERE {1}) AS Total LIMIT {0};", POSSettings.PaginationRowsPerPage, filterCriteriaOperatorBase);
-                sqlCountResultTopResults = DataLayerFramework.SessionXpo.ExecuteScalar(sqlCountTopResults).ToString();
+                sqlCountResultTopResults = XPOSettings.Session.ExecuteScalar(sqlCountTopResults).ToString();
             }
             else if (DataLayerFramework.DatabaseType.ToString() == "MSSqlServer")
             {
                 sqlCountTopResults = string.Format("SELECT COUNT(*) FROM (SELECT TOP {0} * FROM fin_documentfinancepayment WHERE {1}) AS Total;", POSSettings.PaginationRowsPerPage, CriteriaOperatorBase);
-                sqlCountResultTopResults = DataLayerFramework.SessionXpo.ExecuteScalar(sqlCountTopResults).ToString();
+                sqlCountResultTopResults = XPOSettings.Session.ExecuteScalar(sqlCountTopResults).ToString();
             }
 
 
@@ -2226,7 +2227,7 @@ WHERE
                             criteriaCount = criteriaOperatorFilter;
                         }
 
-                        var countResult = DataLayerFramework.SessionXpo.Evaluate(typeof(fin_documentfinancepayment), CriteriaOperator.Parse("Count()"), criteriaCount);
+                        var countResult = XPOSettings.Session.Evaluate(typeof(fin_documentfinancepayment), CriteriaOperator.Parse("Count()"), criteriaCount);
                         string nDocs = dialog.GenericTreeView.DataSource.Count.ToString();
                         string showResults = string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_show_results"), nDocs, countResult);
 
@@ -2255,7 +2256,7 @@ WHERE
                             dialog.GenericTreeView.Refresh();
                             criteriaOperatorFilter = null;
 
-                            var countResult = DataLayerFramework.SessionXpo.Evaluate(typeof(fin_documentfinancepayment), CriteriaOperator.Parse("Count()"), CriteriaOperatorBase);
+                            var countResult = XPOSettings.Session.Evaluate(typeof(fin_documentfinancepayment), CriteriaOperator.Parse("Count()"), CriteriaOperatorBase);
                             string nDocs = dialog.GenericTreeView.DataSource.Count.ToString();
                             string showResults = string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_show_results"), nDocs, countResult);
                             //Finish Updating Title
@@ -2297,7 +2298,7 @@ WHERE
                             criteriaOperatorFilter = criteriaOperator;
                             dialog.GenericTreeView.Refresh();
 
-                            var countResult = DataLayerFramework.SessionXpo.Evaluate(typeof(fin_documentfinancepayment), CriteriaOperator.Parse("Count()"), criteriaOperatorFilter);
+                            var countResult = XPOSettings.Session.Evaluate(typeof(fin_documentfinancepayment), CriteriaOperator.Parse("Count()"), criteriaOperatorFilter);
                             string nDocs = dialog.GenericTreeView.DataSource.Count.ToString();
                             string showResults = string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_show_results"), nDocs, countResult);
                             //Finish Updating Title

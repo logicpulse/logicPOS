@@ -14,6 +14,7 @@ using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
 using logicpos.datalayer.DataLayer.Xpo.Documents;
+using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
 using logicpos.financial.library.Classes.Stocks;
 using logicpos.shared.App;
@@ -183,16 +184,16 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 //Warehouse
                 CriteriaOperator defaultWarehouseCriteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND IsDefault == '1'"));
-                fin_warehouse defaultWareHouse = (fin_warehouse)DataLayerFramework.SessionXpo.FindObject(typeof(fin_warehouse), defaultWarehouseCriteria);
-                XPOComboBox xpoComboBoxWarehouse = new XPOComboBox(DataLayerFramework.SessionXpo, typeof(fin_warehouse), defaultWareHouse, "Designation", null);
+                fin_warehouse defaultWareHouse = (fin_warehouse)XPOSettings.Session.FindObject(typeof(fin_warehouse), defaultWarehouseCriteria);
+                XPOComboBox xpoComboBoxWarehouse = new XPOComboBox(XPOSettings.Session, typeof(fin_warehouse), defaultWareHouse, "Designation", null);
                 BOWidgetBox boxWareHouse = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warehouse"), xpoComboBoxWarehouse);
                 xpoComboBoxWarehouse.Changed += XpoComboBoxWarehouse_Changed;
 
                 //Location
                 CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) "));
                 if (defaultWareHouse != null) criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND Warehouse == '{0}'", defaultWareHouse.Oid.ToString()));
-                fin_warehouselocation defaultLocation = (fin_warehouselocation)DataLayerFramework.SessionXpo.FindObject(typeof(fin_warehouselocation), criteria);
-                XPOComboBox xpoComboBoxWarehouseLocation = new XPOComboBox(DataLayerFramework.SessionXpo, typeof(fin_warehouselocation), defaultLocation, "Designation", criteria);
+                fin_warehouselocation defaultLocation = (fin_warehouselocation)XPOSettings.Session.FindObject(typeof(fin_warehouselocation), criteria);
+                XPOComboBox xpoComboBoxWarehouseLocation = new XPOComboBox(XPOSettings.Session, typeof(fin_warehouselocation), defaultLocation, "Designation", criteria);
                 BOWidgetBox boxWareHouseLocation = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationDevice_PlaceTerminal"), xpoComboBoxWarehouseLocation);
                 xpoComboBoxWarehouseLocation.Changed += XpoComboBoxWarehouselocation_Changed;
 
@@ -428,8 +429,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Assign if Valid
             try
             {
-               //if (supplier != null) //_initialSupplier = (erp_customer)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(erp_customer), new Guid(supplier.ToString()));
-                var own_customer = (erp_customer)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(erp_customer), SharedSettings.XpoOidUserRecord);
+               //if (supplier != null) //_initialSupplier = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), new Guid(supplier.ToString()));
+                var own_customer = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), SharedSettings.XpoOidUserRecord);
                 if (own_customer != null && string.IsNullOrEmpty(own_customer.Name))
                 {
                     //update owner customer for internal stock moviments                        
@@ -532,16 +533,16 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                         if (Customer != null)
                         {
-                            getLastPrice = DataLayerFramework.SessionXpo.ExecuteScalar(string.Format("SELECT TOP(1) PurchasePrice FROM fin_articlestock WHERE Article = '{0}' AND Customer = '{1}'", articleOid, Customer.Oid));
+                            getLastPrice = XPOSettings.Session.ExecuteScalar(string.Format("SELECT TOP(1) PurchasePrice FROM fin_articlestock WHERE Article = '{0}' AND Customer = '{1}'", articleOid, Customer.Oid));
                             if (getLastPrice == null)
                             {
-                                getLastPrice = DataLayerFramework.SessionXpo.ExecuteScalar(string.Format("SELECT TOP(1) PurchasePrice FROM fin_articlestock WHERE Article = '{0}'", articleOid));
+                                getLastPrice = XPOSettings.Session.ExecuteScalar(string.Format("SELECT TOP(1) PurchasePrice FROM fin_articlestock WHERE Article = '{0}'", articleOid));
                             }
                             pPurchasePrice.EntryValidation.TooltipText = "Ultimo preço inserido do fornecedor";
                         }
                         else
                         {
-                            getLastPrice = DataLayerFramework.SessionXpo.ExecuteScalar(string.Format("SELECT TOP(1) PurchasePrice FROM fin_articlestock WHERE Article = '{0}'", articleOid));
+                            getLastPrice = XPOSettings.Session.ExecuteScalar(string.Format("SELECT TOP(1) PurchasePrice FROM fin_articlestock WHERE Article = '{0}'", articleOid));
                             pPurchasePrice.EntryValidation.TooltipText = "Ultimo preço inserido";
                         }
 
@@ -638,7 +639,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 };
                 if (ReferenceEquals(pCriteria, null)) pCriteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL)"));
 
-                _dropdownTextCollection = DataLayerFramework.SessionXpo.GetObjects(DataLayerFramework.SessionXpo.GetClassInfo(typeof(fin_article)), pCriteria, sortCollection, int.MaxValue, false, true);
+                _dropdownTextCollection = XPOSettings.Session.GetObjects(XPOSettings.Session.GetClassInfo(typeof(fin_article)), pCriteria, sortCollection, int.MaxValue, false, true);
 
                 if (_dropdownTextCollection != null)
                 {
@@ -691,16 +692,16 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 //Warehouse
                 CriteriaOperator defaultWarehouseCriteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND IsDefault == '1'"));
-                fin_warehouse defaultWareHouse = (fin_warehouse)DataLayerFramework.SessionXpo.FindObject(typeof(fin_warehouse), defaultWarehouseCriteria);
-                XPOComboBox xpoComboBoxWarehouse = new XPOComboBox(DataLayerFramework.SessionXpo, typeof(fin_warehouse), defaultWareHouse, "Designation", null);
+                fin_warehouse defaultWareHouse = (fin_warehouse)XPOSettings.Session.FindObject(typeof(fin_warehouse), defaultWarehouseCriteria);
+                XPOComboBox xpoComboBoxWarehouse = new XPOComboBox(XPOSettings.Session, typeof(fin_warehouse), defaultWareHouse, "Designation", null);
                 BOWidgetBox boxWareHouse = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warehouse"), xpoComboBoxWarehouse);
                 xpoComboBoxWarehouse.Changed += XpoComboBoxWarehouse_Changed;
 
                 //Location
                 CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) "));
                 if (defaultWareHouse != null) criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND Warehouse == '{0}'", defaultWareHouse.Oid.ToString()));
-                fin_warehouselocation defaultLocation = (fin_warehouselocation)DataLayerFramework.SessionXpo.FindObject(typeof(fin_warehouselocation), criteria);
-                XPOComboBox xpoComboBoxWarehouseLocation = new XPOComboBox(DataLayerFramework.SessionXpo, typeof(fin_warehouselocation), defaultLocation, "Designation", criteria);
+                fin_warehouselocation defaultLocation = (fin_warehouselocation)XPOSettings.Session.FindObject(typeof(fin_warehouselocation), criteria);
+                XPOComboBox xpoComboBoxWarehouseLocation = new XPOComboBox(XPOSettings.Session, typeof(fin_warehouselocation), defaultLocation, "Designation", criteria);
                 BOWidgetBox boxWareHouseLocation = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationDevice_PlaceTerminal"), xpoComboBoxWarehouseLocation);
                 xpoComboBoxWarehouseLocation.Changed += XpoComboBoxWarehouselocation_Changed;
 
@@ -845,7 +846,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                         if (cleanFirstEntry)
                         {
-                            auxArticle = (fin_article)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_article), articleToDeleteAux);
+                            auxArticle = (fin_article)XPOSettings.Session.GetObjectByKey(typeof(fin_article), articleToDeleteAux);
                         }
                         else
                         {
@@ -989,7 +990,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     new SortProperty("SerialNumber", DevExpress.Xpo.DB.SortingDirection.Ascending)
                 };
                 CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND SerialNumber == '{0}'", entrySerialNumber.Text));
-                _collectionSavedArticleSerialNumber = DataLayerFramework.SessionXpo.GetObjects(DataLayerFramework.SessionXpo.GetClassInfo(typeof(fin_articleserialnumber)), criteria, sortCollection, int.MaxValue, false, true);
+                _collectionSavedArticleSerialNumber = XPOSettings.Session.GetObjects(XPOSettings.Session.GetClassInfo(typeof(fin_articleserialnumber)), criteria, sortCollection, int.MaxValue, false, true);
 
                 if((_collectionSavedArticleSerialNumber != null && _collectionSavedArticleSerialNumber.Count > 0) || (_serialNumbersInCache.ContainsValue(entrySerialNumber.Text)))
                 {

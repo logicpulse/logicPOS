@@ -6,6 +6,7 @@ using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Xpo;
 using logicpos.financial.library.App;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets;
 using logicpos.shared.App;
@@ -94,7 +95,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             Guid orderTicketOid = new Guid();
 
             string sql = string.Format(@"SELECT COUNT(*) AS Count FROM fin_documentorderticket WHERE OrderMain = '{0}';", currentOrderMain.PersistentOid);
-            var countTickets = DataLayerFramework.SessionXpo.ExecuteScalar(sql);
+            var countTickets = XPOSettings.Session.ExecuteScalar(sql);
 
             //If has more than one ticket show requestTicket dialog
             if (countTickets != null && Convert.ToInt16(countTickets) > 1)
@@ -130,7 +131,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             if (orderTicketOid != new Guid())
             {
-                fin_documentorderticket orderTicket = (fin_documentorderticket)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_documentorderticket), orderTicketOid);
+                fin_documentorderticket orderTicket = (fin_documentorderticket)XPOSettings.Session.GetObjectByKey(typeof(fin_documentorderticket), orderTicketOid);
                 //POS front-end - Consulta Mesa + Impressão Ticket's + Gerar PDF em modo Thermal Printer [IN009344]
                 ThermalPrinterInternalDocumentOrderRequest thermalPrinterInternalDocumentOrderRequest = new ThermalPrinterInternalDocumentOrderRequest(DataLayerFramework.LoggedTerminal.ThermalPrinter, orderTicket);
                 thermalPrinterInternalDocumentOrderRequest.Print();

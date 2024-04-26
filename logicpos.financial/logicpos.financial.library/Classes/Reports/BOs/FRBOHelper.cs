@@ -1,5 +1,6 @@
 ﻿using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Xpo;
 using logicpos.financial.library.App;
 using logicpos.financial.library.Classes.Reports.BOs.Documents;
 using logicpos.shared.App;
@@ -58,7 +59,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs
 
             try
             {
-                fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(fin_documentfinancemaster), pDocumentFinanceMasterOid);
+                fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(fin_documentfinancemaster), pDocumentFinanceMasterOid);
 
                 bool retificationDocuments = (
                      documentFinanceMaster.DocumentType.Oid == SharedSettings.XpoOidDocumentFinanceTypeCreditNote
@@ -105,7 +106,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                     }
                     /* IN009230 - "If" content removed from here to the just before block of code */
                     //Detect if is FinalConsumer with FiscalNumber 999999990 and Hide it
-                    //erp_customer customer = (erp_customer)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(erp_customer), SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity);
+                    //erp_customer customer = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity);
                     //if (documentFinanceMasterView.EntityFiscalNumber == customer.FiscalNumber)
                     //{
                     //    documentFinanceMasterView.EntityFiscalNumber = SettingsApp.FinanceFinalConsumerFiscalNumberDisplay;
@@ -194,7 +195,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs
 
             try
             {
-                fin_documentfinancepayment documentFinancePayment = (fin_documentfinancepayment)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(fin_documentfinancepayment), pDocumentFinancePaymentOid);
+                fin_documentfinancepayment documentFinancePayment = (fin_documentfinancepayment)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(fin_documentfinancepayment), pDocumentFinancePaymentOid);
 
                 string sqlFilter = string.Format("fpaOid = '{0}'", pDocumentFinancePaymentOid.ToString());
 

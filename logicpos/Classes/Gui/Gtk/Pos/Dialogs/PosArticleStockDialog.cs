@@ -9,6 +9,7 @@ using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
 using logicpos.financial.library.Classes.Stocks;
 using logicpos.shared.App;
@@ -251,8 +252,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Assign if Valid
             try
             {
-                if (supplier != null) _initialSupplier = (erp_customer)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(erp_customer), new Guid(supplier.ToString()));
-                var own_customer = (erp_customer)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(erp_customer), SharedSettings.XpoOidUserRecord);
+                if (supplier != null) _initialSupplier = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), new Guid(supplier.ToString()));
+                var own_customer = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), SharedSettings.XpoOidUserRecord);
                 if (own_customer != null)
                 {
                     //update owner customer for internal stock moviments                        
@@ -420,7 +421,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 };
                 if (ReferenceEquals(pCriteria, null)) pCriteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL)"));
 
-                _dropdownTextCollection = DataLayerFramework.SessionXpo.GetObjects(DataLayerFramework.SessionXpo.GetClassInfo(typeof(fin_article)), pCriteria, sortCollection, int.MaxValue, false, true);
+                _dropdownTextCollection = XPOSettings.Session.GetObjects(XPOSettings.Session.GetClassInfo(typeof(fin_article)), pCriteria, sortCollection, int.MaxValue, false, true);
 
                 if (_dropdownTextCollection != null)
                 {
@@ -578,7 +579,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                         if (cleanFirstEntry)
                         {
-                            auxArticle = (fin_article)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_article), articleToDeleteAux);
+                            auxArticle = (fin_article)XPOSettings.Session.GetObjectByKey(typeof(fin_article), articleToDeleteAux);
                         }
                         else
                         {

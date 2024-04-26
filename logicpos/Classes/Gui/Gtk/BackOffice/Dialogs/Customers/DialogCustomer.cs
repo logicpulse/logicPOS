@@ -13,6 +13,7 @@ using System;
 using System.Collections;
 using logicpos.datalayer.App;
 using logicpos.shared.App;
+using logicpos.datalayer.Xpo;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -65,7 +66,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     string customerFiscalNumberCrypto = SharedFramework.PluginSoftwareVendor.Encrypt(_customer.FiscalNumber);
                     string countSQL = string.Format("EntityFiscalNumber = '{0}'", customerFiscalNumberCrypto);
 
-                    var countResult = DataLayerFramework.SessionXpo.Evaluate(typeof(fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse(countSQL));
+                    var countResult = XPOSettings.Session.Evaluate(typeof(fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse(countSQL));
                     _totalNumberOfFinanceDocuments = Convert.ToUInt16(countResult);
                     /* IN009249 - end */
                     
@@ -78,7 +79,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     new SortProperty("Code", SortingDirection.Ascending)
                 };
                 CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL)"));
-                ICollection collectionCustomers = DataLayerFramework.SessionXpo.GetObjects(DataLayerFramework.SessionXpo.GetClassInfo(typeof(erp_customer)), criteria, sortCollection, int.MaxValue, false, true);
+                ICollection collectionCustomers = XPOSettings.Session.GetObjects(XPOSettings.Session.GetClassInfo(typeof(erp_customer)), criteria, sortCollection, int.MaxValue, false, true);
                 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
                 //Tab1
@@ -377,7 +378,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 string encryptedFiscalNumber = SharedFramework.PluginSoftwareVendor.Encrypt(fiscalNumber);
 
                 string sqlForFiscalNumberCount = string.Format("SELECT COUNT(*) as Count FROM erp_customer WHERE FiscalNumber = '{0}';", encryptedFiscalNumber);
-                var sqlResult = DataLayerFramework.SessionXpo.ExecuteScalar(sqlForFiscalNumberCount);
+                var sqlResult = XPOSettings.Session.ExecuteScalar(sqlForFiscalNumberCount);
                 int count = Convert.ToUInt16(sqlResult);
 
                 if (count > 0)

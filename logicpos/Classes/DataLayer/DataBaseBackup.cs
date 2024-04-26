@@ -10,6 +10,7 @@ using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
+using logicpos.datalayer.Xpo;
 using logicpos.financial.library.App;
 using logicpos.financial.library.Classes.Finance;
 using logicpos.shared.App;
@@ -350,7 +351,7 @@ namespace logicpos.Classes.DataLayer
                         systemBackupGuid = SharedUtils.GetGuidFromQuery(sql);
                         if (systemBackupGuid != Guid.Empty)
                         {
-                            systemBackup = (sys_systembackup)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(sys_systembackup), systemBackupGuid);
+                            systemBackup = (sys_systembackup)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(sys_systembackup), systemBackupGuid);
                             currentFileName = systemBackup.FileName;
                             currentFileNamePacked = systemBackup.FileNamePacked;
                             currentFilePath = systemBackup.FilePath;
@@ -364,7 +365,7 @@ namespace logicpos.Classes.DataLayer
                             //Audit DATABASE_RESTORE
                             SharedUtils.Audit("DATABASE_RESTORE", string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_database_restore"), fileNamePacked));
                             //Required to DropIdentity before get currentDocumentFinanceYear Object, else it exists in old non restored Session
-                            DataLayerFramework.SessionXpo.DropIdentityMap();
+                            XPOSettings.Session.DropIdentityMap();
                             //Get Current Active FinanceYear
                             fin_documentfinanceyears currentDocumentFinanceYear = ProcessFinanceDocumentSeries.GetCurrentDocumentFinanceYear();
 
@@ -375,9 +376,9 @@ namespace logicpos.Classes.DataLayer
                             if (systemBackupGuid != Guid.Empty)
                             {
                                 //ReFresh UserDetail from Repository
-                                currentUserDetail = (currentUserDetail != null) ? (sys_userdetail)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(sys_userdetail), currentUserDetail.Oid) : null;
+                                currentUserDetail = (currentUserDetail != null) ? (sys_userdetail)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(sys_userdetail), currentUserDetail.Oid) : null;
                                 //Get Current Restored systemBackup Object
-                                systemBackup = (sys_systembackup)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(sys_systembackup), systemBackupGuid);
+                                systemBackup = (sys_systembackup)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(sys_systembackup), systemBackupGuid);
                                 systemBackup.FileName = currentFileName;
                                 systemBackup.FileNamePacked = currentFileNamePacked;
                                 systemBackup.FilePath = currentFilePath;
@@ -389,7 +390,7 @@ namespace logicpos.Classes.DataLayer
                             else
                             {
                                 sql = "DELETE FROM sys_systembackup WHERE FilePath IS NULL AND FileHash IS NULL AND User IS NULL;";
-                                DataLayerFramework.SessionXpo.ExecuteNonQuery(sql);
+                                XPOSettings.Session.ExecuteNonQuery(sql);
                             }
 
                             //Audit
@@ -646,7 +647,7 @@ namespace logicpos.Classes.DataLayer
             try
             {
                 //Disconnect From Database
-                DataLayerFramework.SessionXpo.Disconnect();
+                XPOSettings.Session.Disconnect();
                 File.Copy(filenameSource, filenameTarget, true);
                 return true;
             }
@@ -714,7 +715,7 @@ namespace logicpos.Classes.DataLayer
                 );
                 //_logger.Debug(string.Format("RestoreMSSqlServer.sql: [{0}]", sql));
 
-                DataLayerFramework.SessionXpo.ExecuteScalar(sql);
+                XPOSettings.Session.ExecuteScalar(sql);
 
                 //Direct Connection
                 //SqlConnection connection = new SqlConnection(pConnectionString);
@@ -909,7 +910,7 @@ namespace logicpos.Classes.DataLayer
                 //result = Convert.ToDateTime(createdAt);
 
                 string sql = "SELECT CreatedAt FROM sys_systembackup ORDER BY CreatedAt DESC";
-                var createdAt = DataLayerFramework.SessionXpo.ExecuteScalar(sql);
+                var createdAt = XPOSettings.Session.ExecuteScalar(sql);
                 //DateTime result = Convert.ToDateTime(createdAt);
                 result = Convert.ToDateTime(createdAt);
             }

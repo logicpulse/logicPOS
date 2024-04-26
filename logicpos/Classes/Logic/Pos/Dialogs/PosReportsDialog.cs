@@ -6,6 +6,7 @@ using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Finance;
 using logicpos.financial.library.Classes.Reports;
 using logicpos.shared.App;
@@ -25,7 +26,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private void TestDocumentReport()
         {
             Guid docOid = new Guid("6d44b0a8-6450-4245-b4ee-a6e971f4bcec");
-            fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), docOid);
+            fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)XPOSettings.Session.GetObjectByKey(typeof(fin_documentfinancemaster), docOid);
             if (documentFinanceMaster != null)
             {
                 //Generate Default CopyNames from DocumentType

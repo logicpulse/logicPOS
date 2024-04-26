@@ -3,6 +3,7 @@ using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Xpo;
 using logicpos.shared.App;
 using System;
 using System.Collections;
@@ -34,7 +35,7 @@ namespace logicpos.financial.library.Classes.WorkSession
             Guid workSessionPeriodOid = SharedUtils.GetGuidFromQuery(sql);
             if (workSessionPeriodOid != Guid.Empty)
             {
-                pos_worksessionperiod resultWorkSessionPeriod = DataLayerFramework.SessionXpo.GetObjectByKey<pos_worksessionperiod>(workSessionPeriodOid);
+                pos_worksessionperiod resultWorkSessionPeriod = XPOSettings.Session.GetObjectByKey<pos_worksessionperiod>(workSessionPeriodOid);
                 //Add Parent Reference, not used because we use GlobalFramework.WorkSessionPeriodDay and not GlobalFramework.WorkSessionPeriodTerminal.Parent
                 if (pWorkSessionPeriodType == WorkSessionPeriodType.Terminal)
                 {
@@ -56,10 +57,10 @@ namespace logicpos.financial.library.Classes.WorkSession
             {
                 string periodType = (pWorkSessionPeriodType == WorkSessionPeriodType.Day) ? "Day" : "Terminal";
                 string description = (pDescription != string.Empty) ? string.Format(" - {0}", pDescription) : string.Empty;
-                pos_configurationplaceterminal terminal = DataLayerFramework.SessionXpo.GetObjectByKey<pos_configurationplaceterminal>(DataLayerFramework.LoggedTerminal.Oid);
+                pos_configurationplaceterminal terminal = XPOSettings.Session.GetObjectByKey<pos_configurationplaceterminal>(DataLayerFramework.LoggedTerminal.Oid);
                 DateTime dateTime = DataLayerUtils.CurrentDateTimeAtomic();
 
-                pos_worksessionperiod workSessionPeriod = new pos_worksessionperiod(DataLayerFramework.SessionXpo)
+                pos_worksessionperiod workSessionPeriod = new pos_worksessionperiod(XPOSettings.Session)
                 {
                     PeriodType = pWorkSessionPeriodType,
                     SessionStatus = WorkSessionPeriodStatus.Open,
@@ -70,7 +71,7 @@ namespace logicpos.financial.library.Classes.WorkSession
                 //Assign Parent
                 if (pWorkSessionPeriodType == WorkSessionPeriodType.Terminal)
                 {
-                    workSessionPeriod.Parent = DataLayerFramework.SessionXpo.GetObjectByKey<pos_worksessionperiod>(SharedFramework.WorkSessionPeriodDay.Oid);
+                    workSessionPeriod.Parent = XPOSettings.Session.GetObjectByKey<pos_worksessionperiod>(SharedFramework.WorkSessionPeriodDay.Oid);
                 }
                 //Persist
                 workSessionPeriod.Save();
@@ -107,7 +108,7 @@ namespace logicpos.financial.library.Classes.WorkSession
             {
                 try
                 {
-                    pos_worksessionperiod workSessionPeriod = DataLayerFramework.SessionXpo.GetObjectByKey<pos_worksessionperiod>(pWorkSessionPeriod.Oid);
+                    pos_worksessionperiod workSessionPeriod = XPOSettings.Session.GetObjectByKey<pos_worksessionperiod>(pWorkSessionPeriod.Oid);
                     DateTime dateTime = DataLayerUtils.CurrentDateTimeAtomic();
                     workSessionPeriod.DateEnd = dateTime;
                     workSessionPeriod.SessionStatus = WorkSessionPeriodStatus.Close;
@@ -135,7 +136,7 @@ namespace logicpos.financial.library.Classes.WorkSession
 
         public static XPCollection GetSessionPeriodTotal(pos_worksessionperiod pWorkSessionPeriod)
         {
-            return GetSessionPeriodTotal(DataLayerFramework.SessionXpo, pWorkSessionPeriod);
+            return GetSessionPeriodTotal(XPOSettings.Session, pWorkSessionPeriod);
         }
 
         public static XPCollection GetSessionPeriodTotal(Session pSession, pos_worksessionperiod pWorkSessionPeriod)
@@ -284,7 +285,7 @@ namespace logicpos.financial.library.Classes.WorkSession
 
         public static decimal GetSessionPeriodMovementTotal(pos_worksessionperiod pWorkSessionPeriod, MovementTypeTotal pMovementTypeTotal)
         {
-            return GetSessionPeriodMovementTotal(DataLayerFramework.SessionXpo, pWorkSessionPeriod, pMovementTypeTotal);
+            return GetSessionPeriodMovementTotal(XPOSettings.Session, pWorkSessionPeriod, pMovementTypeTotal);
         }
 
         public static decimal GetSessionPeriodMovementTotal(Session pSession, pos_worksessionperiod pWorkSessionPeriod, MovementTypeTotal pMovementTypeTotal)
@@ -398,12 +399,12 @@ namespace logicpos.financial.library.Classes.WorkSession
 
         public static decimal GetSessionPeriodCashDrawerOpenOrCloseAmount(string pMoventTypeToken)
         {
-            return GetSessionPeriodTerminalCashDrawerOpenOrCloseAmount(DataLayerFramework.SessionXpo, SharedFramework.WorkSessionPeriodTerminal, pMoventTypeToken);
+            return GetSessionPeriodTerminalCashDrawerOpenOrCloseAmount(XPOSettings.Session, SharedFramework.WorkSessionPeriodTerminal, pMoventTypeToken);
         }
 
         public static decimal GetSessionPeriodCashDrawerOpenOrCloseAmount(pos_worksessionperiod pWorkSessionPeriod, string pMoventTypeToken)
         {
-            return GetSessionPeriodTerminalCashDrawerOpenOrCloseAmount(DataLayerFramework.SessionXpo, pWorkSessionPeriod, pMoventTypeToken);
+            return GetSessionPeriodTerminalCashDrawerOpenOrCloseAmount(XPOSettings.Session, pWorkSessionPeriod, pMoventTypeToken);
         }
 
         /// <summary>
@@ -460,7 +461,7 @@ namespace logicpos.financial.library.Classes.WorkSession
                 ;"
                   , pWorkSessionPeriod.Oid
                 );
-                SelectedData xpoSelectedDataTerminals = DataLayerFramework.SessionXpo.ExecuteQuery(sqlTerminals);
+                SelectedData xpoSelectedDataTerminals = XPOSettings.Session.ExecuteQuery(sqlTerminals);
 
                 //2) MODE OPEN - GET FIRST CashDrawer Period for WorkSession Day
                 //2) MODE CLOSE - GET LAST CashDrawer Period for WorkSession Day
@@ -487,7 +488,7 @@ namespace logicpos.financial.library.Classes.WorkSession
                         , currentTerminal
                         , orderBy
                     );
-                    listPeriod.Add(DataLayerFramework.SessionXpo.ExecuteScalar(sqlPeriod).ToString());
+                    listPeriod.Add(XPOSettings.Session.ExecuteScalar(sqlPeriod).ToString());
                 }
 
                 //If dont have periods return 0
@@ -525,7 +526,7 @@ namespace logicpos.financial.library.Classes.WorkSession
                 //Final Query
                 sqlCashDrawerAmount = string.Format(sqlCashDrawerAmount, whereClose, wherePeriod);
                 //_logger.Debug(string.Format("sqlCashDrawerAmount: [{0}]", sqlCashDrawerAmount));
-                var cashDrawerAmount = DataLayerFramework.SessionXpo.ExecuteScalar(sqlCashDrawerAmount);
+                var cashDrawerAmount = XPOSettings.Session.ExecuteScalar(sqlCashDrawerAmount);
                 result = (cashDrawerAmount != null) ? Convert.ToDecimal(cashDrawerAmount) : 0.0m;
             }
             catch (Exception ex)
@@ -581,12 +582,12 @@ namespace logicpos.financial.library.Classes.WorkSession
         //  Guid workSessionPeriodOid = Utils.GetGuidFromQuery(sql);
         //  if (workSessionPeriodOid != Guid.Empty)
         //  {
-        //    WorkSessionPeriod workSessionPeriod = DataLayerFramework.SessionXpo.GetObjectByKey<WorkSessionPeriod>(workSessionPeriodOid);
+        //    WorkSessionPeriod workSessionPeriod = XPOSettings.Session.GetObjectByKey<WorkSessionPeriod>(workSessionPeriodOid);
         //    foreach (WorkSessionPeriodTotal item in workSessionPeriod.TotalPeriod)
         //    {
         //      _logger.Debug(string.Format("Message: [{0}]", item.Total));
         //    }
-        //    //WorkSessionPeriodTotal  WorkSessionPeriodTotal = DataLayerFramework.SessionXpo.GetObjectByKey<WorkSessionPeriodTotal>(workSessionPeriodOid);
+        //    //WorkSessionPeriodTotal  WorkSessionPeriodTotal = XPOSettings.Session.GetObjectByKey<WorkSessionPeriodTotal>(workSessionPeriodOid);
         //    return 1.0m;
         //  }
         //  else

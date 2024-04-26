@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using static logicpos.datalayer.App.DataLayerUtils;
 using static logicpos.datalayer.App.DataLayerFramework;
+using logicpos.datalayer.Xpo;
 
 namespace logicpos.shared.Classes.Finance
 {
@@ -182,7 +183,7 @@ namespace logicpos.shared.Classes.Finance
                 //Get Designation from Key
                 //Get VatRate formated for filter, in sql server gives error without this it filters 23,0000 and not 23.0000 resulting in null vatRate
                 string sql = string.Format("SELECT Designation FROM fin_configurationvatrate WHERE VALUE = '{0}'", SharedUtils.DecimalToString(key.Vat, SharedFramework.CurrentCultureNumberFormat));
-                string designation = SessionXpo.ExecuteScalar(sql).ToString();
+                string designation = XPOSettings.Session.ExecuteScalar(sql).ToString();
                 //Now Add New Key with Designation
                 TaxBag.Add(key.Vat, new TaxBagProperties(designation, addPriceProperties.TotalTax, addPriceProperties.TotalNet));
             }
@@ -263,7 +264,7 @@ namespace logicpos.shared.Classes.Finance
             ArticleBagProperties articleBagProps;
 
             //Get Place Object to extract TaxSellType Normal|TakeWay
-            pos_configurationplace configurationPlace = (pos_configurationplace)SessionXpo.GetObjectByKey(typeof(pos_configurationplace), pPlaceOid);
+            pos_configurationplace configurationPlace = (pos_configurationplace)XPOSettings.Session.GetObjectByKey(typeof(pos_configurationplace), pPlaceOid);
             TaxSellType taxSellType = (configurationPlace.MovementType.VatDirectSelling) ? TaxSellType.TakeAway : TaxSellType.Normal;
 
             PriceProperties priceProperties = SharedUtils.GetArticlePrice(pArticle, taxSellType);
@@ -304,7 +305,7 @@ namespace logicpos.shared.Classes.Finance
             {
                 foreach (var item in this)
                 {
-                    article = (fin_article)SessionXpo.GetObjectByKey(typeof(fin_article), item.Key.ArticleOid);
+                    article = (fin_article)XPOSettings.Session.GetObjectByKey(typeof(fin_article), item.Key.ArticleOid);
                     if (!result.ContainsKey(article.Class.Acronym))
                     {
                         result.Add(article.Class.Acronym, item.Value.TotalFinal);
@@ -528,7 +529,7 @@ namespace logicpos.shared.Classes.Finance
             ArticleBagProperties articleBagProps;
 
             //Removed, gives problems, Avoid used DropIdentityMap
-            //DataLayerFramework.SessionXpo.DropIdentityMap();
+            //XPOSettings.Session.DropIdentityMap();
 
             try
             {

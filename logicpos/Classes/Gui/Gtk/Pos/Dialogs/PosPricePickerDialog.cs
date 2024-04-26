@@ -6,6 +6,7 @@ using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Xpo;
 using logicpos.shared.App;
 using System;
 using System.Drawing;
@@ -58,6 +59,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             this.InitObject(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, _windowSize, _fixedContent, actionAreaButtons);
         }
 
+        [Obsolete]
         private void InitUI()
         {
             try
@@ -69,7 +71,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 //Get PriceType Collection : Require Criteria to exclude SettingsApp.XpoOidUndefinedRecord, else we get a Price0 here
                 CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) OR (Oid <> '{0}')", SharedSettings.XpoOidUndefinedRecord));
-                XPCollection xpcConfigurationPriceType = new XPCollection(DataLayerFramework.SessionXpo, typeof(fin_configurationpricetype), criteriaOperator);
+                XPCollection xpcConfigurationPriceType = new XPCollection(XPOSettings.Session, typeof(fin_configurationpricetype), criteriaOperator);
 
                 xpcConfigurationPriceType.Sorting = SharedUtils.GetXPCollectionDefaultSortingCollection();
                 //Define Max 5 Rows : 5 Prices
@@ -77,7 +79,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 if (xpcConfigurationPriceType.Count > 0)
                 {
-                    XPOComboBox _priceComboBox = new XPOComboBox(DataLayerFramework.SessionXpo, typeof(fin_configurationpricetype), null, "Designation", criteriaOperator, null, 0);
+                    XPOComboBox _priceComboBox = new XPOComboBox(XPOSettings.Session, typeof(fin_configurationpricetype), null, "Designation", criteriaOperator, null, 0);
 
                     _vbox.PackStart(_priceComboBox, false, false, 0);
                 }

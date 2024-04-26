@@ -7,6 +7,7 @@ using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
+using logicpos.datalayer.Xpo;
 using logicpos.resources;
 using logicpos.shared.App;
 using System;
@@ -156,7 +157,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         try
                         {
                             string sql = "SELECT value FROM cfg_configurationpreferenceparameter where token = 'CULTURE';";
-                            getCultureFromDB = DataLayerFramework.SessionXpo.ExecuteScalar(sql).ToString();
+                            getCultureFromDB = XPOSettings.Session.ExecuteScalar(sql).ToString();
                         }
                         catch
                         {
