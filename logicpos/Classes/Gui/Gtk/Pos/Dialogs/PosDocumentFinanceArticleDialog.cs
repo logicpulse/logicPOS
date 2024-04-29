@@ -113,7 +113,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //TODO:THEME
             _windowSize = new Size(900, 360);
 
-            string fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_finance_article.png");
+            string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_finance_article.png";
 
             //Get Discount from Select Customer
             DiscountGlobal = SharedUtils.StringToDecimal(((pSourceWindow as PosDocumentFinanceDialog).PagePad.Pages[1] as DocumentFinanceDialogPage2).EntryBoxCustomerDiscount.EntryValidation.Text);

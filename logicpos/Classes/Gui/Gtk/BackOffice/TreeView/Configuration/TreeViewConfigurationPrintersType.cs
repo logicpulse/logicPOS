@@ -67,10 +67,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             //Protected Records
             ProtectedRecords.Add(SharedSettings.XpoOidConfigurationPrinterTypeThermalPrinterWindows);
-            ProtectedRecords.Add(SharedSettings.XpoOidConfigurationPrinterTypeThermalPrinterLinux);
             ProtectedRecords.Add(SharedSettings.XpoOidConfigurationPrinterTypeThermalPrinterSocket);
             ProtectedRecords.Add(SharedSettings.XpoOidConfigurationPrinterTypeGenericWindows);
-            ProtectedRecords.Add(SharedSettings.XpoOidConfigurationPrinterTypeGenericLinux);
             ProtectedRecords.Add(SharedSettings.XpoOidConfigurationPrinterTypeExportPdf);
         }
     }

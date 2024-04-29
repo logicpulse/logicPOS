@@ -19,8 +19,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "logicpos.datalayer", "logic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "logicpos.printer.generic", "logicpos.hardware\logicpos.printer.generic\logicpos.printer.generic.csproj", "{692407AF-FE0E-4D94-8DB1-BE8B210017BA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "logicpos.printer.genericlinux", "logicpos.hardware\logicpos.printer.genericlinux\logicpos.printer.genericlinux.csproj", "{07EF0127-5B26-431D-AA4E-3A9507D86893}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "logicpos.printer.genericsocket", "logicpos.hardware\logicpos.printer.genericsocket\logicpos.printer.genericsocket.csproj", "{7BC439DE-3799-461A-8FC1-D7F1644667FB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "logicpos.printer.genericusb", "logicpos.hardware\logicpos.printer.genericusb\logicpos.printer.genericusb.csproj", "{FF9298DD-4B4B-412F-A260-E504D0079EAD}"
@@ -49,7 +47,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "logicpos.documentviewer", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "logicpos.documentviewer.source", "logicpos.documentviewer\logicpos.documentviewer.source\logicpos.documentviewer.source.csproj", "{1C688B96-9FCC-465A-9347-1F933C703E21}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogicPOS.Settings", "LogicPOS.Settings\LogicPOS.Settings.csproj", "{A4E7F0EA-8360-41F2-A625-517F6E943A29}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicPOS.Settings", "LogicPOS.Settings\LogicPOS.Settings.csproj", "{A4E7F0EA-8360-41F2-A625-517F6E943A29}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -210,36 +208,6 @@ Global
 		{692407AF-FE0E-4D94-8DB1-BE8B210017BA}.WinForms|Mixed Platforms.Build.0 = Release|Any CPU
 		{692407AF-FE0E-4D94-8DB1-BE8B210017BA}.WinForms|x86.ActiveCfg = Release|Any CPU
 		{692407AF-FE0E-4D94-8DB1-BE8B210017BA}.WinForms|x86.Build.0 = Release|Any CPU
-		{07EF0127-5B26-431D-AA4E-3A9507D86893}.Basic|Any CPU.ActiveCfg = Release|Any CPU
-		{07EF0127-5B26-431D-AA4E-3A9507D86893}.Basic|Any CPU.Build.0 = Release|Any CPU
-		{07EF0127-5B26-431D-AA4E-3A9507D86893}.Basic|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{07EF0127-5B26-431D-AA4E-3A9507D86893}.Basic|Mixed Platforms.Build.0 = Release|Any CPU
-		{07EF0127-5B26-431D-AA4E-3A9507D86893}.Basic|x86.ActiveCfg = Release|Any CPU
-		{07EF0127-5B26-431D-AA4E-3A9507D86893}.Basic|x86.Build.0 = Release|Any CPU
-		{07EF0127-5B26-431D-AA4E-3A9507D86893}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{07EF0127-5B26-431D-AA4E-3A9507D86893}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{07EF0127-5B26-431D-AA4E-3A9507D86893}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{07EF0127-5B26-431D-AA4E-3A9507D86893}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{07EF0127-5B26-431D-AA4E-3A9507D86893}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{07EF0127-5B26-431D-AA4E-3A9507D86893}.Debug|x86.Build.0 = Debug|Any CPU
-		{07EF0127-5B26-431D-AA4E-3A9507D86893}.Demo|Any CPU.ActiveCfg = Debug|Any CPU
-		{07EF0127-5B26-431D-AA4E-3A9507D86893}.Demo|Any CPU.Build.0 = Debug|Any CPU
-		{07EF0127-5B26-431D-AA4E-3A9507D86893}.Demo|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{07EF0127-5B26-431D-AA4E-3A9507D86893}.Demo|Mixed Platforms.Build.0 = Debug|Any CPU
-		{07EF0127-5B26-431D-AA4E-3A9507D86893}.Demo|x86.ActiveCfg = Debug|Any CPU
-		{07EF0127-5B26-431D-AA4E-3A9507D86893}.Demo|x86.Build.0 = Debug|Any CPU
-		{07EF0127-5B26-431D-AA4E-3A9507D86893}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{07EF0127-5B26-431D-AA4E-3A9507D86893}.Release|Any CPU.Build.0 = Release|Any CPU
-		{07EF0127-5B26-431D-AA4E-3A9507D86893}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{07EF0127-5B26-431D-AA4E-3A9507D86893}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{07EF0127-5B26-431D-AA4E-3A9507D86893}.Release|x86.ActiveCfg = Release|Any CPU
-		{07EF0127-5B26-431D-AA4E-3A9507D86893}.Release|x86.Build.0 = Release|Any CPU
-		{07EF0127-5B26-431D-AA4E-3A9507D86893}.WinForms|Any CPU.ActiveCfg = Release|Any CPU
-		{07EF0127-5B26-431D-AA4E-3A9507D86893}.WinForms|Any CPU.Build.0 = Release|Any CPU
-		{07EF0127-5B26-431D-AA4E-3A9507D86893}.WinForms|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{07EF0127-5B26-431D-AA4E-3A9507D86893}.WinForms|Mixed Platforms.Build.0 = Release|Any CPU
-		{07EF0127-5B26-431D-AA4E-3A9507D86893}.WinForms|x86.ActiveCfg = Release|Any CPU
-		{07EF0127-5B26-431D-AA4E-3A9507D86893}.WinForms|x86.Build.0 = Release|Any CPU
 		{7BC439DE-3799-461A-8FC1-D7F1644667FB}.Basic|Any CPU.ActiveCfg = Release|Any CPU
 		{7BC439DE-3799-461A-8FC1-D7F1644667FB}.Basic|Any CPU.Build.0 = Release|Any CPU
 		{7BC439DE-3799-461A-8FC1-D7F1644667FB}.Basic|Mixed Platforms.ActiveCfg = Release|Any CPU
@@ -606,7 +574,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{692407AF-FE0E-4D94-8DB1-BE8B210017BA} = {A5B28328-FBED-45CE-A530-184308495E09}
-		{07EF0127-5B26-431D-AA4E-3A9507D86893} = {A5B28328-FBED-45CE-A530-184308495E09}
 		{7BC439DE-3799-461A-8FC1-D7F1644667FB} = {A5B28328-FBED-45CE-A530-184308495E09}
 		{FF9298DD-4B4B-412F-A260-E504D0079EAD} = {A5B28328-FBED-45CE-A530-184308495E09}
 		{D0F2B3C4-AE83-46E1-82F7-5FB9B6CA352F} = {A5B28328-FBED-45CE-A530-184308495E09}

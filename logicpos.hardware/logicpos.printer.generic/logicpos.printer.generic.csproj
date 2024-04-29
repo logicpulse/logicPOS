@@ -57,10 +57,6 @@
     <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\logicpos.printer.genericlinux\logicpos.printer.genericlinux.csproj">
-      <Project>{07ef0127-5b26-431d-aa4e-3a9507d86893}</Project>
-      <Name>logicpos.printer.genericlinux</Name>
-    </ProjectReference>
     <ProjectReference Include="..\logicpos.printer.genericsocket\logicpos.printer.genericsocket.csproj">
       <Project>{7bc439de-3799-461a-8fc1-d7f1644667fb}</Project>
       <Name>logicpos.printer.genericsocket</Name>

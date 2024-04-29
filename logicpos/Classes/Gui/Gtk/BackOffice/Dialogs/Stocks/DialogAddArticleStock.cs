@@ -99,7 +99,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 SetSizeRequest(500, 660);
             }
-            string fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_stocks.png");
+            string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_stocks.png";
             InitUI();
             //InitNotes();
             ValidateDialog();
@@ -138,7 +138,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 //DocumentNumber
                 Color colorBaseDialogEntryBoxBackground = DataLayerFramework.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
-                string _fileIconListFinanceDocuments = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_toolbar_finance_document.png");
+                string _fileIconListFinanceDocuments = DataLayerFramework.Path["images"] + @"Icons\icon_pos_toolbar_finance_document.png";
                 HBox hBoxDocument = new HBox(false, 0);
                 _entryBoxDocumentNumber = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_document_number"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericExtended, false, true);
                 if (_initialDocumentNumber != string.Empty) _entryBoxDocumentNumber.EntryValidation.Text = _initialDocumentNumber;

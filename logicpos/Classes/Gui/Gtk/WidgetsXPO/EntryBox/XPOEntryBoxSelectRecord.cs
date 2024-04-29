@@ -117,9 +117,9 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             QtdEntry = pQtdentry;
             CodeEntry = pCodeEntry;
             //Settings
-            string iconSelectRecord = SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/Windows/icon_window_select_record.png"));
-            string iconClearRecord = SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/Windows/icon_window_delete_record.png"));
-            string iconAddRecord = SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/icon_pos_nav_new.png"));
+            string iconSelectRecord = string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/Windows/icon_window_select_record.png");
+            string iconClearRecord = string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/Windows/icon_window_delete_record.png");
+            string iconAddRecord = string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/icon_pos_nav_new.png");
             //Init Button
             ButtonSelectValue = new TouchButtonIcon("touchButtonIcon", Color.Transparent, iconSelectRecord, new Size(20, 20), 30, 30);
             ButtonClearValue = new TouchButtonIcon("touchButtonIcon", Color.Transparent, iconClearRecord, new Size(20, 20), 30, 30);
@@ -207,7 +207,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             Entry = pEntry;
             ListStore store = null;
             //Settings
-            string iconSelectRecord = SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/Windows/icon_window_select_record.png"));
+            string iconSelectRecord = string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/Windows/icon_window_select_record.png");
             //Init Button
             ButtonSelectValue = new TouchButtonIcon("touchButtonIcon", Color.Transparent, iconSelectRecord, new Size(20, 20), 30, 30);
             //UI/Pack

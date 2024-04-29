@@ -32,7 +32,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             //Init Local Vars
             string windowTitle = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_template");
-            string fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_default.png");
+            string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_default.png";
             _windowSize = new Size(595, 740);
 
             //Init VBox

@@ -108,7 +108,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Init Local Vars
             string windowTitle = _windowTitle;
             Size windowSize = new Size(540, 568);
-            string fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_date_picker.png");
+            string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_date_picker.png";
 
             /* IN009010 */
             if (!ReportsQueryDialogMode.CUSTOMER_BALANCE_SUMMARY.Equals(_reportsQueryDialogMode))
@@ -158,9 +158,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _scrolledWindow.ResizeMode = ResizeMode.Parent;
             //ActionArea Buttons
             // IN009223 IN009227
-            string fileActionFilter = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_clean_filter.png");
-            string fileActionExportPdf = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_export_pdf.png");
-            string fileActionExportXls = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_export_xls.png");
+            string fileActionFilter = DataLayerFramework.Path["images"] + @"Icons\icon_pos_clean_filter.png";
+            string fileActionExportPdf = DataLayerFramework.Path["images"] + @"Icons\icon_pos_export_pdf.png";
+            string fileActionExportXls = DataLayerFramework.Path["images"] + @"Icons\icon_pos_export_xls.png";
 
             _buttonCleanFilter = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.CleanFilter, "Clean Filter", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_filter_clear"), fileActionFilter);
             //Export to Xls/pdf
@@ -191,11 +191,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     windowTitle = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_filter");
                 }
 
-            }
-            else if (logicpos.Utils.IsLinux)
-            {
-                actionAreaButtons.Add(new ActionAreaButton(_buttonExportXls, _responseTypeExportXls));
-                actionAreaButtons.Add(new ActionAreaButton(_buttonExportPdf, _responseTypeExportPdf));
             }
             else
             {

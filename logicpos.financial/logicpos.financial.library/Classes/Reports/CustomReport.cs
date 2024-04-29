@@ -239,13 +239,13 @@ namespace logicpos.financial.library.Classes.Reports
                         {
                             fileNameExport = string.Format("print_{0}{1}{2}", dateTime, reportName, ".xlsx");
                             fileNameExport = fileNameExport.Replace('/', '-').Replace(' ', '_');
-                            fileNameExport = SharedUtils.OSSlash(string.Format(@"{0}{1}", DataLayerFramework.Path["temp"], fileNameExport));
+                            fileNameExport = string.Format(@"{0}{1}", DataLayerFramework.Path["temp"], fileNameExport);
                         }
 
                         fileName = string.Format("print_{0}{1}{2}", dateTime, reportName, ".pdf");
                         fileName = fileName.Replace('/', '-').Replace(' ', '_');
                         //2015-06-12 apmuga
-                        fileName = SharedUtils.OSSlash(string.Format(@"{0}{1}", DataLayerFramework.Path["temp"], fileName));
+                        fileName = string.Format(@"{0}{1}", DataLayerFramework.Path["temp"], fileName);
 
                         //Mario
                         //fileName = (DataLayerFramework.Settings["AppEnvironment"].ToUpper() == "web".ToUpper()) 
@@ -263,10 +263,6 @@ namespace logicpos.financial.library.Classes.Reports
                         //{
                         this.Export(exportXlsx, fileNameExport);
                         //}
-                        if (SharedUtils.IsLinux)
-                        {
-                            System.Diagnostics.Process.Start(SharedUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileNameExport)));
-                        }
 
                     }
 
@@ -289,42 +285,40 @@ namespace logicpos.financial.library.Classes.Reports
                     //Impressão A4 abria Janela de impressão Fast Report [IN:009341]
                     if ((pViewMode == CustomReportDisplayMode.Print) && File.Exists(fileName))
                     {
-                        if (!SharedUtils.IsLinux)
+
+                        string docPath = string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileName);
+
+                        var pdf = PdfDocument.Load(docPath, null, null);
+
+                        var printDoc = new PdfPrintDocument(pdf);
+                        var dlg = new PrintDialog();
+                        dlg.AllowCurrentPage = true;
+                        dlg.AllowSomePages = true;
+                        dlg.UseEXDialog = true;
+                        dlg.Document = printDoc;
+                        //OnPdfPrinDocumentCreaded(new EventArgs<PdfPrintDocument>(printDoc));
+                        //ShowPrintDialogDelegate showprintdialog = ShowPrintDialog;
+
+                        //Initialize a new thread for print dialog
+                        Thread thread3 = new Thread(() =>
                         {
-                            string docPath = SharedUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileName));
-
-                            var pdf = PdfDocument.Load(docPath, null, null);
-
-                            var printDoc = new PdfPrintDocument(pdf);
-                            var dlg = new PrintDialog();
-                            dlg.AllowCurrentPage = true;
-                            dlg.AllowSomePages = true;
-                            dlg.UseEXDialog = true;
-                            dlg.Document = printDoc;
-                            //OnPdfPrinDocumentCreaded(new EventArgs<PdfPrintDocument>(printDoc));
-                            //ShowPrintDialogDelegate showprintdialog = ShowPrintDialog;
-
-                            //Initialize a new thread for print dialog
-                            Thread thread3 = new Thread(() =>
+                            if (dlg.ShowDialog() == DialogResult.OK)
                             {
-                                if (dlg.ShowDialog() == DialogResult.OK)
+                                try
                                 {
-                                    try
-                                    {
-                                        Application.Exit();
-                                        dlg.Document.Print();
-                                    }
-                                    catch (Exception)
-                                    {
-                                        //Printing was canceled
-                                    }
+                                    Application.Exit();
+                                    dlg.Document.Print();
                                 }
-                            });
-                            thread3.SetApartmentState(ApartmentState.STA);
-                            thread3.Start();
-                            thread3.Join();
-                        }
-                        else { this.PrintPrepared(); }
+                                catch (Exception)
+                                {
+                                    //Printing was canceled
+                                }
+                            }
+                        });
+                        thread3.SetApartmentState(ApartmentState.STA);
+                        thread3.Start();
+                        thread3.Join();
+
 
 
                     }
@@ -337,9 +331,9 @@ namespace logicpos.financial.library.Classes.Reports
                             //IN009240 Usar o PDF Viewer do POS                                                      
 
 
-                            if (!SharedUtils.IsLinux && SharedUtils.UsePosPDFViewer() == true)
+                            if (SharedUtils.UsePosPDFViewer() == true)
                             {
-                                string docPath = SharedUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileName));
+                                string docPath = string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileName);
                                 var ScreenSizePDF = SharedFramework.ScreenSize;
                                 int widthPDF = ScreenSizePDF.Width;
                                 int heightPDF = ScreenSizePDF.Height;
@@ -351,7 +345,7 @@ namespace logicpos.financial.library.Classes.Reports
                             }
                             else
                             {
-                                System.Diagnostics.Process.Start(SharedUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileName)));
+                                System.Diagnostics.Process.Start(string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileName));
                             }
                             //Use full Path, keep untoutched fileName for result
                             //System.Diagnostics.Process.Start(SharedUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileName)));
@@ -592,7 +586,7 @@ namespace logicpos.financial.library.Classes.Reports
                 {
                     fileName = fileName.Replace(".frx", "_QRCode.frx");
                 }
-                string fileUserReportDocumentFinance = SharedUtils.OSSlash(string.Format("{0}{1}\\{2}", DataLayerFramework.Path["reports"], "UserReports", fileName));
+                string fileUserReportDocumentFinance = string.Format("{0}{1}\\{2}", DataLayerFramework.Path["reports"], "UserReports", fileName);
 
                 CustomReport customReport = new CustomReport(fileUserReportDocumentFinance, FILENAME_TEMPLATE_BASE, pCopyNames);
                 customReport.DoublePass = (documentMaster.DocumentDetail.Count > SharedSettings.CustomReportReportDocumentFinanceMaxDetail);
@@ -712,7 +706,7 @@ namespace logicpos.financial.library.Classes.Reports
 
 
                 string fileFrxFromCulture = string.Format("ReportDocumentFinancePayment_" + currentCulture + ".frx");
-                string fileUserReportDocumentFinancePayment = SharedUtils.OSSlash(string.Format("{0}{1}\\{2}", DataLayerFramework.Path["reports"], "UserReports", fileFrxFromCulture));
+                string fileUserReportDocumentFinancePayment = string.Format("{0}{1}\\{2}", DataLayerFramework.Path["reports"], "UserReports", fileFrxFromCulture);
                 _logger.Debug("Current Culture: " + currentCulture);
                 CustomReport customReport = new CustomReport(fileUserReportDocumentFinancePayment, FILENAME_TEMPLATE_BASE, pCopyNames);
 
@@ -1902,29 +1896,9 @@ namespace logicpos.financial.library.Classes.Reports
             customReport.Dictionary.SystemVariables.FindByName("PreparedPages").Value = (customReport.PreparedPages != null) ? customReport.PreparedPages.Count : 0;
             //Call Report Prepare
             customReport.Prepare(true);
-            if (!SharedUtils.IsLinux)
-            {
-                customReport.ShowPrepared(true);
-            }
-            else
-            {
-                string dateTimeFileFormat = SharedSettings.FileFormatDateTime;
-                string dateTime = DataLayerUtils.CurrentDateTimeAtomic().ToString(dateTimeFileFormat);
-                string fileName = string.Format("print_{0}{1}{2}", dateTime, "barCodeLabel", ".pdf");
-                fileName = fileName.Replace('/', '-').Replace(' ', '_');
-                fileName = SharedUtils.OSSlash(string.Format(@"{0}{1}", DataLayerFramework.Path["temp"], fileName));
-                FastReport.Export.Pdf.PDFExport export = new FastReport.Export.Pdf.PDFExport();
-                try
-                {
-                    customReport.Export(export, fileName);
-                }
-                catch (Exception ex)
-                {
-                    _logger.Error("Error printing barcode label :: fileName [ " + fileName + " ]: " + ex.Message, ex);
-                }
 
-                System.Diagnostics.Process.Start(SharedUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileName)));
-            }
+            customReport.ShowPrepared(true);
+
 
             //customReport.Process(CustomReportDisplayMode.Print);
 
@@ -1983,7 +1957,7 @@ namespace logicpos.financial.library.Classes.Reports
 
         private static string GetReportFilePath(string fileName)
         {
-            string result = SharedUtils.OSSlash(string.Format("{0}{1}\\{2}", DataLayerFramework.Path["reports"], "UserReports", fileName));
+            string result = string.Format("{0}{1}\\{2}", DataLayerFramework.Path["reports"], "UserReports", fileName);
             if (!File.Exists(result))
             {
                 // Force Exception, Report must Exist else its hard to find errors, dont catch exception

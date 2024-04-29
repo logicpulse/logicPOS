@@ -88,10 +88,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         protected Color _colorBaseDialogActionAreaButtonFont = ("0, 0, 0").StringToColor();
         protected Color _colorBaseDialogActionAreaButtonBackground = DataLayerFramework.Settings["colorBaseDialogActionAreaButtonBackground"].StringToColor();
         //protected String _fontBaseDialogButton = SharedUtils.OSSlash(DataLayerFramework.Settings["fontBaseDialogButton"]);
-        protected string _fontBaseDialogActionAreaButton = SharedUtils.OSSlash(DataLayerFramework.Settings["fontBaseDialogActionAreaButton"]);
-        protected string _fileActionDefault = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_default.png");
-        protected string _fileActionOK = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png");
-        protected string _fileActionCancel = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png");
+        protected string _fontBaseDialogActionAreaButton = DataLayerFramework.Settings["fontBaseDialogActionAreaButton"];
+        protected string _fileActionDefault = DataLayerFramework.Path["images"] + @"Icons\icon_pos_default.png";
+        protected string _fileActionOK = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
+        protected string _fileActionCancel = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png";
 
         //Colors
         private readonly Color colorBackOfficeContentBackground = DataLayerFramework.Settings["colorBackOfficeContentBackground"].StringToColor();
@@ -132,25 +132,25 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             DateTime datenow = new DateTime();
 
             //Icons dos botões do dashboard
-            string _fileFiscalYearIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_configurations.png");
-            string _fileInsertFiscalYear = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_fiscal_year.png");
-            string _fileInsertIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_printer.png");
-            string _fileTerminalsIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_terminals.png");
+            string _fileFiscalYearIcon = DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_configurations.png";
+            string _fileInsertFiscalYear = DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_fiscal_year.png";
+            string _fileInsertIcon = DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_printer.png";
+            string _fileTerminalsIcon = DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_terminals.png";
 
-            string _fileArticlesIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_articles.png");
-            string _fileCostumersIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_costumers.png");
-            string _fileEmployeesIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_employees.png");
-            string _fileOtherTablesIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_other_tables.png");
+            string _fileArticlesIcon = DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_articles.png";
+            string _fileCostumersIcon = DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_costumers.png";
+            string _fileEmployeesIcon = DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_employees.png";
+            string _fileOtherTablesIcon = DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_other_tables.png";
 
-            string _fileDocumentsIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_documents.png");
-            string _fileNewDocumentIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_documents_new.png");
-            string _filePayedDocumentsIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_documents_new.png");
-            string _fileInsertMerchIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_documents_merch.png");
+            string _fileDocumentsIcon = DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_documents.png";
+            string _fileNewDocumentIcon = DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_documents_new.png";
+            string _filePayedDocumentsIcon = DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_documents_new.png";
+            string _fileInsertMerchIcon = DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_documents_merch.png";
 
-            string _fileReportsMenuIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_reports.png");
-            string _fileReportsTotalIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_reports_sales_report.png");
-            string _fileReportsClientsIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_reports_sales_client.png");
-            string _fileReportsDayIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_reports_sales_day.png");
+            string _fileReportsMenuIcon = DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_reports.png";
+            string _fileReportsTotalIcon = DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_reports_sales_report.png";
+            string _fileReportsClientsIcon = DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_reports_sales_client.png";
+            string _fileReportsDayIcon = DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_reports_sales_day.png";
 
             //Tamanho dos Icons e da Font do Texto dos botões
             Size sizeIcon = new Size(35, 35);
@@ -169,7 +169,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             try
             {
                 //Imagem carregada aqui para o dashboard
-                string fileImageBack = SharedUtils.OSSlash(string.Format("{0}Default/Backgrounds/Windows/LogicPOS_WorkFlow_{1}.png", DataLayerFramework.Path["themes"], DataLayerFramework.Settings["customCultureResourceDefinition"]));
+                string fileImageBack = string.Format("{0}Default/Backgrounds/Windows/LogicPOS_WorkFlow_{1}.png", DataLayerFramework.Path["themes"], DataLayerFramework.Settings["customCultureResourceDefinition"]);
                 System.Drawing.Image pImage = System.Drawing.Image.FromFile(fileImageBack);
                 Gdk.Pixbuf pixbuf = logicpos.Utils.ImageToPixbuf(pImage);
                 _eventboxDashboard.Style = logicpos.Utils.GetImageBackgroundDashboard(pixbuf);
@@ -420,11 +420,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                    fix.Put(drawSalesGraphic(DateTime.Parse(selectedDate), true), 55, 485);
 
                };
-                if (logicpos.Utils.IsLinux)
-                {
-                    fix.Put(selAno, 220, 650);
-                }
-                else fix.Put(selAno, 220, 665);
+
+                fix.Put(selAno, 220, 665);
 
                 //GRÁFICO         
                 fix.Put(drawSalesGraphic(datenow, false), 55, 485);

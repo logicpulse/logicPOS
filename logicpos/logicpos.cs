@@ -228,7 +228,7 @@ namespace logicpos
                             GlobalApp.DialogThreadNotify.WakeupMain();
                             //throw new InvalidOperationException(string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warning_message_database_version")) + " : " + GlobalFramework.DatabaseVersion);
                             string fileName = "\\LPUpdater\\LPUpdater.exe";
-                            string lPathToUpdater = SharedUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileName));
+                            string lPathToUpdater = string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileName);
                             Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(500, 300), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warning_message_database_version")) + " : " + GlobalFramework.DatabaseVersion);
                             System.Diagnostics.Process.Start(lPathToUpdater);
                             Environment.Exit(0);
@@ -501,7 +501,7 @@ namespace logicpos
         private void InitBackupTimerProcess()
         {
             bool xpoCreateDatabaseAndSchema = POSSettings.XPOCreateDatabaseAndSchema;
-            bool validDirectoryBackup = SharedUtils.CreateDirectory(SharedUtils.OSSlash(Convert.ToString(datalayer.App.DataLayerFramework.Path["backups"])));
+            bool validDirectoryBackup = SharedUtils.CreateDirectory(Convert.ToString(datalayer.App.DataLayerFramework.Path["backups"]));
             _logger.Debug("void InitBackupTimerProcess() :: xpoCreateDatabaseAndSchema [ " + xpoCreateDatabaseAndSchema + " ] :: validDirectoryBackup [ " + validDirectoryBackup + " ]");
 
             //Show Dialog if Cant Create Backups Directory (Extra Protection for Shared Network Folders)

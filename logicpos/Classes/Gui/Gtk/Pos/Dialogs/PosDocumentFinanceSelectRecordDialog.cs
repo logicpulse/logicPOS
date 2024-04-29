@@ -25,10 +25,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _sourceWindow = pSourceWindow;            
 
             //Settings
-            string _fileIconListFinanceDocuments = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_toolbar_finance_document.png");
-            string _fileIconListCurrentAccountDocuments = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_toolbar_reports.png");
-            string _fileIconListWorksessionPeriods = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_toolbar_cashdrawer.png");
-            string _fileIconListMerchandiseEntry = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_toolbar_merchandise_entry.png");
+            string _fileIconListFinanceDocuments = DataLayerFramework.Path["images"] + @"Icons\icon_pos_toolbar_finance_document.png";
+            string _fileIconListCurrentAccountDocuments = DataLayerFramework.Path["images"] + @"Icons\icon_pos_toolbar_reports.png";
+            string _fileIconListWorksessionPeriods = DataLayerFramework.Path["images"] + @"Icons\icon_pos_toolbar_cashdrawer.png";
+            string _fileIconListMerchandiseEntry = DataLayerFramework.Path["images"] + @"Icons\icon_pos_toolbar_merchandise_entry.png";
 
             //Sizes
             Size sizeIcon = new Size(50, 50);
@@ -41,7 +41,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Init Local Vars
             string windowTitle = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance");
             Size windowSize = new Size(windowSizeWidth, windowSizeHeight);
-            string fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_documents.png");
+            string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_documents.png";
 
             //Buttons
             _touchButtonPosToolbarFinanceDocuments = new TouchButtonIconWithText("touchButtonPosToolbarFinanceDocuments_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_button_label_select_record_finance_documents"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileIconListFinanceDocuments, sizeIcon, buttonWidth, buttonHeight) { Token = "ALL" };

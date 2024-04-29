@@ -44,14 +44,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             _XPGuidObject = pXPGuidObject;
             this.Title = logicpos.Utils.GetWindowTitle(CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_edit_configurationpreferenceparameter"));
             // Default windowHeight, InputTypes can Override this in Switch             
-            if (logicpos.Utils.IsLinux)
-            {
-                _windowHeight = 391;
-            }
-            else
-            {
-                _windowHeight = _windowHeightForTextComponent;
-            }
+           _windowHeight = _windowHeightForTextComponent;
+
             InitUI();
             SetSizeRequest(_windowWidth, _windowHeight);
             InitNotes();
@@ -217,10 +211,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         xpoComboBoxInputType.Changed += delegate
                         {
                             entryValue.Text = getCulturesValues[xpoComboBoxInputType.Active];
-                            if (logicpos.Utils.IsLinux)
-                            {
-                                SaveSettings(getCulturesValues[xpoComboBoxInputType.Active].ToString());
-                            }
+   
                             //SharedFramework.CurrentCulture = new System.Globalization.CultureInfo(getCulturesValues[xpoComboBoxInputType.Active]);
                             //DataLayerFramework.Settings["customCultureResourceDefinition"] = getCulturesValues[xpoComboBoxInputType.Active];
                             //CustomResources.UpdateLanguage(getCulturesValues[xpoComboBoxInputType.Active]);

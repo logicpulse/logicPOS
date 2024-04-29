@@ -33,8 +33,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Init Local Vars
             string windowTitle = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_virtual_keyboard");
             Size windowSize = new Size(916, 358);
-            string fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_keyboard.png");
-            string fileKeyboardXML = SharedUtils.OSSlash(DataLayerFramework.Path["keyboards"] + @"163.xml");
+            string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_keyboard.png";
+            string fileKeyboardXML = DataLayerFramework.Path["keyboards"] + @"163.xml";
 
             //Init Content
             Fixed fixedContent = new Fixed();

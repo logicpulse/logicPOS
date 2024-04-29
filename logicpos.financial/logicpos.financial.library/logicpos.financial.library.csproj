@@ -73,8 +73,6 @@
     <Compile Include="Classes\Finance\SaftPt.cs" />
     <Compile Include="Classes\Finance\FiscalNumber.cs" />
     <Compile Include="Classes\HardWare\Printers\PrintRouter.cs" />
-    <Compile Include="Classes\HardWare\Printers\PrintTicket.cs" />
-    <Compile Include="Classes\HardWare\Printers\Thermal\Enums\ThermalPrinterGenericType.cs" />
     <Compile Include="Classes\HardWare\Printers\Thermal\Enums\TicketColumnsAlign.cs" />
     <Compile Include="Classes\HardWare\Printers\Thermal\Enums\WriteLineTextMode.cs" />
     <Compile Include="Classes\HardWare\Printers\Thermal\PrintTransportObject.cs" />
@@ -148,10 +146,6 @@
     <ProjectReference Include="..\..\logicpos.documentviewer\logicpos.documentviewer\logicpos.documentviewer.csproj">
       <Project>{e39a7986-4c2f-4ebe-a31b-59c766150eac}</Project>
       <Name>logicpos.documentviewer</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\logicpos.hardware\logicpos.printer.genericlinux\logicpos.printer.genericlinux.csproj">
-      <Project>{07ef0127-5b26-431d-aa4e-3a9507d86893}</Project>
-      <Name>logicpos.printer.genericlinux</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\logicpos.hardware\logicpos.printer.genericsocket\logicpos.printer.genericsocket.csproj">
       <Project>{7bc439de-3799-461a-8fc1-d7f1644667fb}</Project>

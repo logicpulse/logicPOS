@@ -124,7 +124,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         private void AddDateTimeEntry(DateTime pDateTime, bool pAddDateTimeToList)
         {
-            string iconFileName = SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/Windows/icon_window_delete_record.png"));
+            string iconFileName = string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/Windows/icon_window_delete_record.png");
             EntryBoxValidationButton entryBoxValidation = new EntryBoxValidationButton(_sourceWindow, string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date"), Value.Count + 1), KeyboardMode.None, SharedSettings.RegexDate, true, iconFileName);
             entryBoxValidation.EntryValidation.Validate();
             entryBoxValidation.EntryValidation.Sensitive = false;

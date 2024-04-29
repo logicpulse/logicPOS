@@ -42,9 +42,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Init Local Vars
             Size windowSize = new Size(790, 546);
             //Image Icons
-            string fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_document_new.png");
-            string fileActionPreview = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_preview.png");
-            string fileIconClearCustomer = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_nav_delete.png");
+            string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_document_new.png";
+            string fileActionPreview = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_preview.png";
+            string fileIconClearCustomer = DataLayerFramework.Path["images"] + @"Icons\icon_pos_nav_delete.png";
 
             InitPages();
 
@@ -91,11 +91,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Assign Page Title
             _windowTitle = GetPageTitle(0);
 
-            string icon1 = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_1_new_document.png");
-            string icon2 = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_2_customer.png");
-            string icon3 = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_3_article.png");
-            string icon4 = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_4_waybill_to.png");
-            string icon5 = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_5_waybill_from.png");
+            string icon1 = DataLayerFramework.Path["images"] + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_1_new_document.png";
+            string icon2 = DataLayerFramework.Path["images"] + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_2_customer.png";
+            string icon3 = DataLayerFramework.Path["images"] + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_3_article.png";
+            string icon4 = DataLayerFramework.Path["images"] + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_4_waybill_to.png";
+            string icon5 = DataLayerFramework.Path["images"] + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_5_waybill_from.png";
 
             _pagePad1 = new DocumentFinanceDialogPage1(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_page1"), icon1, null);
             _pagePad2 = new DocumentFinanceDialogPage2(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_page2"), icon2, null);

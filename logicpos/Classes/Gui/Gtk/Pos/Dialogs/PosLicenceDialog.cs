@@ -38,7 +38,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Init Local Vars
             string windowTitle = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_license");
             System.Drawing.Size windowSize = new System.Drawing.Size(890, 650);
-            string fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_license.png");
+            string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_license.png";
 
             //If detected empty Hardware Id from Parameters, get it from IntelliLock
             if (string.IsNullOrEmpty(pHardwareId))
@@ -51,8 +51,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
 
             //Files
-            string fileActionRegister = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_register.png");
-            string fileActionContinue = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png");
+            string fileActionRegister = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_register.png";
+            string fileActionContinue = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
 
             //ActionArea Buttons
             _buttonRegister = new TouchButtonIconWithText("touchButtonRegister_DialogActionArea", System.Drawing.Color.Transparent, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_button_label_licence_register"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionRegister, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Sensitive = false };
@@ -80,7 +80,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private void InitUI()
         {
             //Files
-            string fileAppBanner = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Licence\licence.png");
+            string fileAppBanner = DataLayerFramework.Path["images"] + @"Licence\licence.png";
             //Init
             int padding = 2;
             //Init Fonts

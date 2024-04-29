@@ -104,7 +104,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             _clockFormat = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "backoffice_datetime_format_status_bar");
 
             string fontBackOfficeStatusBar = DataLayerFramework.Settings["fontPosStatusBar"];
-            string fileImageBackOfficeLogoLong = SharedUtils.OSSlash(DataLayerFramework.Path["themes"] + @"Default\Images\logo_backoffice_long.png");
+            string fileImageBackOfficeLogoLong = DataLayerFramework.Path["themes"] + @"Default\Images\logo_backoffice_long.png";
             string fileImageBackOfficeLogo = logicpos.Utils.GetThemeFileLocation(DataLayerFramework.Settings["fileImageBackOfficeLogo"]);
 
             //Colors
@@ -117,7 +117,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             ModifyBg(StateType.Normal, colorBackOfficeContentBackground.ToGdkColor());
 
             //Icon
-            string fileImageAppIcon = SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], POSSettings.AppIcon));
+            string fileImageAppIcon = string.Format("{0}{1}", DataLayerFramework.Path["images"], POSSettings.AppIcon);
             if (File.Exists(fileImageAppIcon)) Icon = logicpos.Utils.ImageToPixbuf(System.Drawing.Image.FromFile(fileImageAppIcon));
 
             //Start Pack UI
@@ -151,11 +151,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             //Style StatusBarFont
             Pango.FontDescription fontDescriptionStatusBar = Pango.FontDescription.FromString(fontBackOfficeStatusBar);
-            string _dashboardIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_dashboard.png");
-            string _updateIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_update.png");
-            string _exitIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_pos_close_backoffice.png");
-            string _backPOSIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_pos_front_office.png");
-            string _iconDashBoard = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_other_tables.png");
+            string _dashboardIcon = DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_dashboard.png";
+            string _updateIcon = DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_update.png";
+            string _exitIcon = DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_pos_close_backoffice.png";
+            string _backPOSIcon = DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_pos_front_office.png";
+            string _iconDashBoard = DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_other_tables.png";
 
             //Active Content
             _labelActiveContent = new Label() { WidthRequest = 300 };

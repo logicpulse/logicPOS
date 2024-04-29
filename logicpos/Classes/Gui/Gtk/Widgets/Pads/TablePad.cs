@@ -23,7 +23,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         private readonly int _posBaseButtonMaxCharsPerLabel = Convert.ToInt16(DataLayerFramework.Settings["posBaseButtonMaxCharsPerLabel"]);
         protected int _fontPosBaseButtonSize = Convert.ToInt16(DataLayerFramework.Settings["fontPosBaseButtonSize"]);
         //Paths/Files
-        protected string _fileBaseButtonOverlay = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Buttons\Pos\button_overlay.png");
+        protected string _fileBaseButtonOverlay = DataLayerFramework.Path["images"] + @"Buttons\Pos\button_overlay.png";
         //TouchButton List        
         private List<TouchButtonBase> _listButtons;
         //TouchButton Properties
@@ -207,7 +207,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
                             _strButtonName = string.Format("{0}_{1}", _buttonNamePrefix, _resultRow.Values[_fieldIndex["id"]].ToString());
                             _strButtonLabel = (_resultRow.Values[_fieldIndex["label"]] != null && _resultRow.Values[_fieldIndex["label"]].ToString() != string.Empty) ? _resultRow.Values[_fieldIndex["label"]].ToString() : _resultRow.Values[_fieldIndex["name"]].ToString();
-                            _strButtonImage = (_resultRow.Values[_fieldIndex["image"]] != null && _resultRow.Values[_fieldIndex["image"]].ToString() != string.Empty) ? SharedUtils.OSSlash(_resultRow.Values[_fieldIndex["image"]].ToString()) : "";
+                            _strButtonImage = (_resultRow.Values[_fieldIndex["image"]] != null && _resultRow.Values[_fieldIndex["image"]].ToString() != string.Empty) ? _resultRow.Values[_fieldIndex["image"]].ToString() : "";
                             if (_strButtonLabel.Length > _posBaseButtonMaxCharsPerLabel) { _strButtonLabel = _strButtonLabel.Substring(0, _posBaseButtonMaxCharsPerLabel) + "."; };
 
                             //Initialize Button

@@ -990,7 +990,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private void PartialPayment()
         {
             //Button icon source path
-            string buttonIconChangePrice = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_cashdrawer_out.png");
+            string buttonIconChangePrice = DataLayerFramework.Path["images"] + @"Icons\icon_pos_cashdrawer_out.png";
 
             //Default ActionArea Buttons
             TouchButtonIconWithText buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);

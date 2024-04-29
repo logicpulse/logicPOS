@@ -1,25 +1,25 @@
 ﻿using DevExpress.Data.Filtering;
 using Gtk;
 using logicpos.App;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
-using System;
 using logicpos.Classes.Enums.Dialogs;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Enums.GenericTreeView;
+using logicpos.Classes.Enums.Reports;
+using logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
+using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
+using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
+using logicpos.datalayer.App;
+using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
+using logicpos.documentviewer;
+using logicpos.Extensions;
+using logicpos.financial.library.Classes.Finance;
+using logicpos.financial.library.Classes.Reports;
+using logicpos.shared.App;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using logicpos.documentviewer;
-using logicpos.financial.library.Classes.Finance;
-using logicpos.Classes.Enums.Reports;
-using logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles;
-using logicpos.financial.library.Classes.Reports;
-using logicpos.Extensions;
-using logicpos.shared.App;
-using logicpos.datalayer.App;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -258,7 +258,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         _treeViewXPO_StockMov.AllowRecordDelete = false;
                     }
                 }
-             
+
             }
             catch (Exception ex)
             {
@@ -290,13 +290,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                     if (File.Exists(fileToOpen))
                     {
-                        if (logicpos.Utils.IsLinux)
+                        if (logicpos.Utils.UsePosPDFViewer() == true)
                         {
-                            System.Diagnostics.Process.Start(SharedUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileToOpen)));
-                        }
-                        else if (logicpos.Utils.UsePosPDFViewer() == true && !logicpos.Utils.IsLinux)
-                        {
-                            string docPath = SharedUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileToOpen));
+                            string docPath = string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileToOpen);
                             var ScreenSizePDF = GlobalApp.ScreenSize;
                             int widthPDF = ScreenSizePDF.Width;
                             int heightPDF = ScreenSizePDF.Height;
@@ -327,13 +323,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                     if (File.Exists(selecteRow.DocumentNumber + ".pdf"))
                     {
-                        if (logicpos.Utils.IsLinux)
+                       if (logicpos.Utils.UsePosPDFViewer() == true)
                         {
-                            System.Diagnostics.Process.Start(SharedUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, selecteRow.DocumentNumber + ".pdf")));
-                        }
-                        else if (logicpos.Utils.UsePosPDFViewer() == true && !logicpos.Utils.IsLinux)
-                        {
-                            string docPath = SharedUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, selecteRow.DocumentNumber + ".pdf"));
+                            string docPath = string.Format(@"{0}\{1}", Environment.CurrentDirectory, selecteRow.DocumentNumber + ".pdf");
                             var ScreenSizePDF = GlobalApp.ScreenSize;
                             int widthPDF = ScreenSizePDF.Width;
                             int heightPDF = ScreenSizePDF.Height;
@@ -380,7 +372,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 if (selectedRow != null)
                 {
                     _treeViewXPO_ArticleWarehouse.Navigator.ButtonDelete.Sensitive = selectedRow.ArticleSerialNumber == null;
-                    _treeViewXPO_ArticleWarehouse.Navigator.ButtonUpdate.Sensitive = selectedRow.ArticleSerialNumber == null ;
+                    _treeViewXPO_ArticleWarehouse.Navigator.ButtonUpdate.Sensitive = selectedRow.ArticleSerialNumber == null;
                 }
             }
             catch (Exception ex)
@@ -395,10 +387,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             {
                 DialogArticleWarehouse dialog = new DialogArticleWarehouse(this, _treeViewXPO_ArticleWarehouse, DialogFlags.DestroyWithParent, DialogMode.Update, _treeViewXPO_ArticleHistory.DataSourceRow);
                 ResponseType response = (ResponseType)dialog.Run();
-                if(response == ResponseType.Ok) _treeViewXPO_ArticleHistory.Refresh();
+                if (response == ResponseType.Ok) _treeViewXPO_ArticleHistory.Refresh();
 
                 dialog.Destroy();
-               
+
             }
             catch (System.Exception ex)
             {
@@ -561,9 +553,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             try
             {
                 var selectedRow = _treeViewXPO_ArticleHistory.DataSourceRow as fin_articleserialnumber;
-                if(_listArticleserialnumbers != null && _listArticleserialnumbers.Count > 0)
+                if (_listArticleserialnumbers != null && _listArticleserialnumbers.Count > 0)
                 {
-                    foreach(var item in _listArticleserialnumbers)
+                    foreach (var item in _listArticleserialnumbers)
                     {
                         DeleteArticleSerialNumber(item);
                     }
@@ -668,7 +660,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     _printSerialNumberbutton.Sensitive = false;
                     _openChangeArticleLocationbutton.Sensitive = false;
                 }
-                if(selectedRow.StockMovimentOut != null)
+                if (selectedRow.StockMovimentOut != null)
                 {
                     //_treeViewXPO_ArticleHistory.Navigator.ButtonUpdate.Sensitive = false;
                     _openChangeArticleLocationbutton.Sensitive = false;
@@ -679,11 +671,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 try
                 {
-                    bool itemChecked = Convert.ToBoolean(_treeViewXPO_ArticleHistory.ListStoreModel.GetValue((sender as TreeViewArticleSerialNumber).TreeIterModel, columnIndexCheckBox));                    
+                    bool itemChecked = Convert.ToBoolean(_treeViewXPO_ArticleHistory.ListStoreModel.GetValue((sender as TreeViewArticleSerialNumber).TreeIterModel, columnIndexCheckBox));
 
                     if (itemChecked)
                     {
-                        if(!_listArticleserialnumbers.Contains(selectedRow)) _listArticleserialnumbers.Add(selectedRow);
+                        if (!_listArticleserialnumbers.Contains(selectedRow)) _listArticleserialnumbers.Add(selectedRow);
 
                     }
                     else
@@ -755,16 +747,12 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 if (selecteRow.StockMovimentOut != null && selecteRow.StockMovimentOut.DocumentMaster != null)
                 {
                     var fileToOpen = ProcessFinanceDocument.GenerateDocumentFinanceMasterPDFIfNotExists(selecteRow.StockMovimentOut.DocumentMaster);
-                                       
+
                     if (File.Exists(fileToOpen))
                     {
-                        if (logicpos.Utils.IsLinux)
+                      if (logicpos.Utils.UsePosPDFViewer() == true)
                         {
-                            System.Diagnostics.Process.Start(SharedUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileToOpen)));
-                        }
-                        else if (logicpos.Utils.UsePosPDFViewer() == true && !logicpos.Utils.IsLinux)
-                        {
-                            string docPath = SharedUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileToOpen));
+                            string docPath = $@"{Environment.CurrentDirectory}\{fileToOpen}";
                             var ScreenSizePDF = GlobalApp.ScreenSize;
                             int widthPDF = ScreenSizePDF.Width;
                             int heightPDF = ScreenSizePDF.Height;
@@ -791,17 +779,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 {
                     var fileToOpen = selecteRow.StockMovimentIn.AttachedFile;
 
-                    File.WriteAllBytes(selecteRow.StockMovimentIn.DocumentNumber + ".pdf", fileToOpen);                    
-                    
+                    File.WriteAllBytes(selecteRow.StockMovimentIn.DocumentNumber + ".pdf", fileToOpen);
+
                     if (File.Exists(selecteRow.StockMovimentIn.DocumentNumber + ".pdf"))
                     {
-                        if (logicpos.Utils.IsLinux)
+                        if (logicpos.Utils.UsePosPDFViewer() == true)
                         {
-                            System.Diagnostics.Process.Start(SharedUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, selecteRow.StockMovimentIn.DocumentNumber + ".pdf")));
-                        }
-                        else if (logicpos.Utils.UsePosPDFViewer() == true && !logicpos.Utils.IsLinux)
-                        {
-                            string docPath = SharedUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, selecteRow.StockMovimentIn.DocumentNumber + ".pdf"));
+                            string docPath = string.Format(@"{0}\{1}", Environment.CurrentDirectory, selecteRow.StockMovimentIn.DocumentNumber + ".pdf");
                             var ScreenSizePDF = GlobalApp.ScreenSize;
                             int widthPDF = ScreenSizePDF.Width;
                             int heightPDF = ScreenSizePDF.Height;
@@ -848,9 +832,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             TouchButtonIconWithText result = null;
             try
             {
-                string fileIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + pIcon);
-                string fontBaseDialogActionAreaButton = SharedUtils.OSSlash(DataLayerFramework.Settings["fontBaseDialogActionAreaButton"]);
-                Color colorBaseDialogActionAreaButtonBackground = Color.Transparent;  
+                string fileIcon = DataLayerFramework.Path["images"] + pIcon;
+                string fontBaseDialogActionAreaButton = DataLayerFramework.Settings["fontBaseDialogActionAreaButton"];
+                Color colorBaseDialogActionAreaButtonBackground = Color.Transparent;
                 Color colorBaseDialogActionAreaButtonFont = DataLayerFramework.Settings["colorBaseDialogActionAreaButtonFont"].StringToColor();
                 Size sizeBaseDialogActionAreaBackOfficeNavigatorButton = logicpos.Utils.StringToSize(DataLayerFramework.Settings["sizeBaseDialogActionAreaBackOfficeNavigatorButton"]);
                 Size sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon = logicpos.Utils.StringToSize(DataLayerFramework.Settings["sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon"]);

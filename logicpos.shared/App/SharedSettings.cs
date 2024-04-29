@@ -330,21 +330,16 @@ namespace logicpos.shared.App
         public static Guid XpoOidConfigurationPrinterGeneric = new Guid("b0c917c7-2ea1-4e08-afa5-4744c19e1c5c");
         //Thermal Printer : Used in ThermalPrinterGeneric Class (Enum)
         public static Guid XpoOidConfigurationPrinterThermalWindows = new Guid("e7143ea5-391b-46ef-a28d-4843fd7e21ac");
-        public static Guid XpoOidConfigurationPrinterThermalLinux = new Guid("3fab75ce-e81f-4488-b0a0-962c9336f3bb");
         public static Guid XpoOidConfigurationPrinterThermalSocket = new Guid("faeb45cd-2989-4e92-9907-3038444e4849");
         public static Guid XpoOidConfigurationPrinterThermalUsb = new Guid("39b58a4e-b860-49c1-81a5-8bb5f7186940");
 
         //PrintersType
         //THERMAL_PRINTER_WINDOWS
         public static Guid XpoOidConfigurationPrinterTypeThermalPrinterWindows = new Guid("e7143ea5-391b-46ef-a28d-4843fd7e21ac");
-        //THERMAL_PRINTER_LINUX
-        public static Guid XpoOidConfigurationPrinterTypeThermalPrinterLinux = new Guid("3fab75ce-e81f-4488-b0a0-962c9336f3bb");
         //THERMAL_PRINTER_SOCKET
         public static Guid XpoOidConfigurationPrinterTypeThermalPrinterSocket = new Guid("faeb45cd-2989-4e92-9907-3038444e4849");
         //GENERIC_PRINTER_WINDOWS
         public static Guid XpoOidConfigurationPrinterTypeGenericWindows = new Guid("4be662e6-67c9-4063-bd6c-574ae4df7f3f");
-        //GENERIC_PRINTER_LINUX
-        public static Guid XpoOidConfigurationPrinterTypeGenericLinux = new Guid("3d38a3c3-667b-4c0c-b487-f18ddd3c8a4a");
         //REPORT_EXPORT_PDF
         public static Guid XpoOidConfigurationPrinterTypeExportPdf = new Guid("e5e20cd0-d9d2-443d-9d3f-3478949db30f");
         //THERMAL _PRINTER_USB

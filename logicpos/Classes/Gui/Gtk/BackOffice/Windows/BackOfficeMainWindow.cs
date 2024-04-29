@@ -107,7 +107,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 //if (actualDate <= GlobalFramework.LicenceUpdateDate)
                 //{
                 string fileName = "\\LPUpdater\\LPUpdater.exe";
-                string lPathToUpdater = SharedUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileName));
+                string lPathToUpdater = string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileName);
                 //string lPathToUpdater = "" + Utils.GetCurrentDirectory() + "\\LPUpdater\\LPUpdater.exe";
 
                 if (File.Exists(lPathToUpdater))

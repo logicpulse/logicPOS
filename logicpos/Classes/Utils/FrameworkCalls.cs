@@ -584,7 +584,6 @@ namespace logicpos
                     {
                         //ThermalPrinter : Ticket Files
                         case "THERMAL_PRINTER_WINDOWS":
-                        case "THERMAL_PRINTER_LINUX":
                         case "THERMAL_PRINTER_SOCKET":
                             //validFiles = IsValidProtectedFile(SharedUtils.OSSlash(template.FileTemplate), extraMessage);
                             break;
@@ -683,7 +682,6 @@ namespace logicpos
                     {
                         //ThermalPrinter : Ticket Files
                         case "THERMAL_PRINTER_WINDOWS":
-                        case "THERMAL_PRINTER_LINUX":
                         case "THERMAL_PRINTER_SOCKET":
                             break;
                         //FastReport : Report Files

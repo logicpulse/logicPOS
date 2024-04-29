@@ -46,8 +46,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             string fontPagePadNavigatorButton = DataLayerFramework.Settings["fontPagePadNavigatorButton"];
             Size sizePagesPadNavigatorButton = logicpos.Utils.StringToSize(DataLayerFramework.Settings["sizePagesPadNavigatorButton"]);
             Size sizePagesPadNavigatorButtonIcon = logicpos.Utils.StringToSize(DataLayerFramework.Settings["sizePagesPadNavigatorButtonIcon"]);
-            string iconPrev = SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/icon_pos_pagepad_prev.png"));
-            string iconNext = SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/icon_pos_pagepad_next.png"));
+            string iconPrev = string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/icon_pos_pagepad_prev.png");
+            string iconNext = string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/icon_pos_pagepad_next.png");
 
             //Parameters
             Pages = pPages;

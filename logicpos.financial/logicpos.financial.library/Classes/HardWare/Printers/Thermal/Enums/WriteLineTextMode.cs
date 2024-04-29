@@ -2,9 +2,14 @@
 {
     public enum WriteLineTextMode
     {
-        Normal, Small, Big, 
-        DoubleWidth, DoubleHeight, 
-        DoubleWidthBold, DoubleHeightBold, 
-        Bold, Invert
+        Normal, 
+        Small, 
+        Big, 
+        DoubleWidth, 
+        DoubleHeight, 
+        DoubleWidthBold, 
+        DoubleHeightBold, 
+        Bold, 
+        Invert
     }
 }

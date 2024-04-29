@@ -1,5 +1,4 @@
-﻿using logicpos.datalayer.App;
-using LogicPOS.Settings.Enums;
+﻿using LogicPOS.Settings.Enums;
 using System;
 
 namespace LogicPOS.Settings
@@ -15,7 +14,7 @@ namespace LogicPOS.Settings
         public static AppOperationMode GetAppMode()
         {
             AppOperationMode mode = AppOperationMode.Default;
-            string appOperationModeToken = DataLayerFramework.Settings["appOperationModeToken"];
+            string appOperationModeToken = AppSettings.Settings["appOperationModeToken"];
 
 
             if (!string.IsNullOrEmpty(appOperationModeToken))
@@ -29,7 +28,7 @@ namespace LogicPOS.Settings
 
         public static CustomAppOperationMode GetCustomAppOperationMode()
         {
-            return CustomAppOperationMode.GetAppOperationMode(DataLayerFramework.Settings["appOperationModeToken"]);
+            return CustomAppOperationMode.GetAppOperationMode(AppSettings.Settings["appOperationModeToken"]);
         }
 
         public static bool IsDefaultAppOperationTheme()
@@ -38,7 +37,8 @@ namespace LogicPOS.Settings
 
             if (AppOperationModeSettings.CustomAppOperationMode != null)
             {
-                isDefaultAppOperationTheme = CustomAppOperationMode.DEFAULT.AppOperationTheme.Equals(AppOperationModeSettings.CustomAppOperationMode.AppOperationTheme);
+                isDefaultAppOperationTheme = CustomAppOperationMode.DEFAULT.AppOperationTheme.Equals(
+                    AppOperationModeSettings.CustomAppOperationMode.AppOperationTheme);
             }
 
             return isDefaultAppOperationTheme;

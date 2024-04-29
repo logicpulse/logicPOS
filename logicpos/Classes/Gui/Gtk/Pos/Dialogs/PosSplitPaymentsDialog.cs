@@ -50,9 +50,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             // Title will be Overrided in CalculateTotalPerSplit
             string windowTitle = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_split_payment");
             Size windowSize = new Size(600, 460);
-            string fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_split_payments.png");
-            string fileAddSplitIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_nav_new.png");
-            string fileRemoveSplitIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_nav_delete.png");
+            string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_split_payments.png";
+            string fileAddSplitIcon = DataLayerFramework.Path["images"] + @"Icons\icon_pos_nav_new.png";
+            string fileRemoveSplitIcon = DataLayerFramework.Path["images"] + @"Icons\icon_pos_nav_delete.png";
 
             //Init Content : ViewPort
             _vbox = new VBox(false, 2);

@@ -111,13 +111,13 @@ namespace logicpos.financial.service
                 // Init Paths
                 DataLayerFramework.Path = new Hashtable
                 {
-                    { "temp", SharedUtils.OSSlash(DataLayerFramework.Settings["pathTemp"]) },
-                    { "certificates", SharedUtils.OSSlash(DataLayerFramework.Settings["pathCertificates"]) },
-                    { "plugins", SharedUtils.OSSlash(DataLayerFramework.Settings["pathPlugins"]) }
+                    { "temp", DataLayerFramework.Settings["pathTemp" ]},
+                    { "certificates", DataLayerFramework.Settings["pathCertificates"] },
+                    { "plugins", DataLayerFramework.Settings["pathPlugins"] }
                 };
                 //Create Directories
-                SharedUtils.CreateDirectory(SharedUtils.OSSlash(Convert.ToString(DataLayerFramework.Path["temp"])));
-                SharedUtils.CreateDirectory(SharedUtils.OSSlash(Convert.ToString(DataLayerFramework.Path["certificates"])));
+                SharedUtils.CreateDirectory(Convert.ToString(DataLayerFramework.Path["temp"]));
+                SharedUtils.CreateDirectory(Convert.ToString(DataLayerFramework.Path["certificates"]));
 
                 // Protection for plugins Path
                 if (DataLayerFramework.Path["plugins"] == null || !Directory.Exists(DataLayerFramework.Path["plugins"].ToString()))
@@ -139,7 +139,7 @@ namespace logicpos.financial.service
                 AutoCreateOption xpoAutoCreateOption = AutoCreateOption.None;
 
                 //Get DataBase Details
-               DataLayerFramework.DatabaseType = (DatabaseType)Enum.Parse(typeof(DatabaseType), DataLayerFramework.Settings["databaseType"]);
+                DataLayerFramework.DatabaseType = (DatabaseType)Enum.Parse(typeof(DatabaseType), DataLayerFramework.Settings["databaseType"]);
                 SharedFramework.DatabaseName = FinancialServiceSettings.DatabaseName;
                 //Override default Database name with parameter from config
                 string configDatabaseName = DataLayerFramework.Settings["databaseName"];
@@ -234,10 +234,9 @@ namespace logicpos.financial.service
                 {
                     throw new Exception($"Error! Invalid Parameters Met! Required parameters missing! Check parameters: AccountFiscalNumber: [{FinancialServiceSettings.ServicesATAccountFiscalNumber}], ATAccountPassword: [{FinancialServiceSettings.ServicesATAccountPassword}], TaxRegistrationNumber: [{FinancialServiceSettings.ServicesATTaxRegistrationNumber}]");
                 }
-                if (!Utils.IsLinux)
-                {
-                    SystemEvents.PowerModeChanged += OnPowerChange;
-                }
+
+                SystemEvents.PowerModeChanged += OnPowerChange;
+
 
             }
             catch (Exception ex)

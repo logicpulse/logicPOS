@@ -55,7 +55,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             if (!File.Exists(pWindowIcon))
             {
-                pWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_system.png");
+                pWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_system.png";
             }
 
             //Always assign  pInitialValue to Dialog.Value

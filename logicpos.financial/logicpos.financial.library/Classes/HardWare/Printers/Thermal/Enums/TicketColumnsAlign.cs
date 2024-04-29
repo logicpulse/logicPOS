@@ -3,6 +3,7 @@
     //Ticket Properties
     public enum TicketColumnsAlign
     {
-        Left, Right
+        Left, 
+        Right
     }
 }

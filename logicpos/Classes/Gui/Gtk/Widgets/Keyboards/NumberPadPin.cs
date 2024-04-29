@@ -68,7 +68,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             EntryPin.Alignment = 0.5F;
 
             //ResetPassword
-            string numberPadPinButtonPasswordResetImageFileName = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Other\pinpad_password_reset.png");
+            string numberPadPinButtonPasswordResetImageFileName = DataLayerFramework.Path["images"] + @"Icons\Other\pinpad_password_reset.png";
             ButtonKeyResetPassword = new TouchButtonIcon("touchButtonKeyPasswordReset", Color.Transparent, numberPadPinButtonPasswordResetImageFileName, new Size(20, 20), 25, 25) { Sensitive = false };
 
             //Start Validated

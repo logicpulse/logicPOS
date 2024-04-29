@@ -437,10 +437,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
             if (xpcConfigurationPrintersType.Count == 0)
             {
                 var configurationPrintersType1 = new sys_configurationprinterstype(_session) { Ord = 10, Code = 10, Designation = "Impressora SINOCAN em ambiente Windows", Token = "THERMAL_PRINTER_WINDOWS" }; configurationPrintersType1.Save();
-                var configurationPrintersType2 = new sys_configurationprinterstype(_session) { Ord = 20, Code = 20, Designation = "Impressora SINOCAN em ambiente Linux", Token = "THERMAL_PRINTER_LINUX" }; configurationPrintersType2.Save();
-
+               
                 var configurationPrinters1 = new sys_configurationprinters(_session) { Ord = 10, Code = 10, Designation = "Impressora teste Windows", PrinterType = configurationPrintersType1 }; configurationPrinters1.Save();
-                var configurationPrinters2 = new sys_configurationprinters(_session) { Ord = 20, Code = 20, Designation = "Impressora teste Linux", PrinterType = configurationPrintersType2 }; configurationPrinters2.Save();
             }
 
             //ConfigurationDevice

@@ -38,7 +38,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Init Local Vars
             string windowTitle = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_edit_configurationpreferenceparameter");
             Size windowSize = new Size(600, 600);
-            string fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_system.png");
+            string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_system.png";
 
             //References
             _sourceWindow = pSourceWindow;
@@ -334,10 +334,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     //Proccess Country Scripts
                     string commandSeparator = ";";
                     Dictionary<string, string> replaceables = logicpos.DataLayer.GetReplaceables(DataLayerFramework.DatabaseType);
-                    string directoryCountry = SharedUtils.OSSlash(string.Format(@"{0}/{1}", POSSettings.FileDatabaseOtherCommonCountry, _entryBoxSelectSystemCountry.Value.Code2));
+                    string directoryCountry = string.Format(@"{0}/{1}", POSSettings.FileDatabaseOtherCommonCountry, _entryBoxSelectSystemCountry.Value.Code2);
                     logicpos.DataLayer.ProcessDumpDirectory(XPOSettings.Session, directoryCountry, commandSeparator, replaceables);
                     //Proccess Country Plugin Scripts
-                    directoryCountry = SharedUtils.OSSlash(string.Format(@"{0}/{1}", POSSettings.FileDatabaseOtherCommonPluginsSoftwareVendorOtherCommonCountry, _entryBoxSelectSystemCountry.Value.Code2));
+                    directoryCountry = string.Format(@"{0}/{1}", POSSettings.FileDatabaseOtherCommonPluginsSoftwareVendorOtherCommonCountry, _entryBoxSelectSystemCountry.Value.Code2);
                     logicpos.DataLayer.ProcessDumpDirectory(XPOSettings.Session, directoryCountry, commandSeparator, replaceables);
 
                     //Change Configuration : Currently only working outside Debugger, to prevent errors changing config with VS using app.config 

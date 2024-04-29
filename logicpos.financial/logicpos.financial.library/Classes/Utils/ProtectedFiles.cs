@@ -25,7 +25,7 @@ namespace logicpos.financial.library.Classes.Utils
                 //Convert filename to Os filePaths
                 for (int i = 0; i < fileList.Count; i++)
                 {
-                    string fileName = SharedUtils.OSSlash(fileList[i]);
+                    string fileName = fileList[i];
                     fileList[i] = fileName;
                     if (File.Exists(fileName))
                     {
@@ -150,7 +150,7 @@ namespace logicpos.financial.library.Classes.Utils
             List<string> result = new List<string>();
             foreach (var item in pFileList)
             {
-                string fileName = SharedUtils.OSSlash(item);
+                string fileName = item;
                 if (! this.ContainsKey(fileName))
                 {
                     if (_debug) _logger.Debug(string.Format("Miss filename : [{0}]", fileName));

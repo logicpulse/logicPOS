@@ -137,7 +137,6 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                         //Impressora SINOCAN em ambiente Windows
                         case "THERMAL_PRINTER_WINDOWS":
                         //Impressora SINOCAN em ambiente Linux
-                        case "THERMAL_PRINTER_LINUX":
                         //Impressora SINOCAN em ambiente WindowsLinux/Socket
                         case "THERMAL_PRINTER_SOCKET":
                             ThermalPrinterFinanceDocumentMaster thermalPrinterFinanceDocument = new ThermalPrinterFinanceDocumentMaster(pPrinter, pDocumentFinanceMaster, pCopyNames, pSecondCopy, pMotive);
@@ -404,8 +403,6 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                                     printObjectSINOCAN.OpenDoor(DataLayerFramework.LoggedTerminal.ThermalPrinter.PrinterType.Token, DataLayerFramework.LoggedTerminal.ThermalPrinter.Designation, m, t1, t2);
                                     break;
                                 //Impressora SINOCAN em ambiente Linux
-                                case "THERMAL_PRINTER_LINUX":
-                                //Impressora SINOCAN em ambiente WindowsLinux/Socket
                                 case "THERMAL_PRINTER_SOCKET":
                                     // Deprecated
                                     //int m = Convert.ToInt32(DataLayerFramework.Settings["DoorValueM"]);

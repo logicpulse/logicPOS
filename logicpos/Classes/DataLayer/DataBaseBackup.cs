@@ -193,7 +193,7 @@ namespace logicpos.Classes.DataLayer
                         //systemBackup.FileSize = new FileInfo(fileName).Length;
                         systemBackup.FileNamePacked = Path.ChangeExtension(systemBackup.FileName, POSSettings.BackupExtension);
                         //Compress File : Required OSSlash
-                        fullFileNamePacked = SharedUtils.OSSlash(string.Format(@"{0}\{1}", systemBackup.FilePath, systemBackup.FileNamePacked));
+                        fullFileNamePacked = string.Format(@"{0}\{1}", systemBackup.FilePath, systemBackup.FileNamePacked);
                         // Old Method before PluginSoftwareVendor Implementation
                         //backupResult = Utils.ZipPack(new string[] { fileName }, fullFileNamePacked);
                         backupResult = SharedFramework.PluginSoftwareVendor.BackupDatabase(FinancialLibrarySettings.SecretKey, new string[] { fileName }, fullFileNamePacked);
@@ -579,8 +579,8 @@ namespace logicpos.Classes.DataLayer
                         }
                         else
                         {
-                            resultFileInfo.FileName = SharedUtils.OSSlash(string.Format(@"{0}{1}", _pathBackups, systemBackup.FileName));
-                            resultFileInfo.FileNamePacked = SharedUtils.OSSlash(string.Format(@"{0}{1}", _pathBackups, systemBackup.FileNamePacked));
+                            resultFileInfo.FileName = string.Format(@"{0}{1}", _pathBackups, systemBackup.FileName);
+                            resultFileInfo.FileNamePacked = string.Format(@"{0}{1}", _pathBackups, systemBackup.FileNamePacked);
                             resultFileInfo.FileHashDB = systemBackup.FileHash;
                             resultFileInfo.FileHashFile = SharedUtils.MD5HashFile(resultFileInfo.FileNamePacked);
                         }

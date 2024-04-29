@@ -152,8 +152,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             TouchButtonIconWithText result = null;
             try
             {
-                string fileIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + pIcon);
-                string fontBaseDialogActionAreaButton = SharedUtils.OSSlash(DataLayerFramework.Settings["fontBaseDialogActionAreaButton"]);
+                string fileIcon = DataLayerFramework.Path["images"] + pIcon;
+                string fontBaseDialogActionAreaButton = DataLayerFramework.Settings["fontBaseDialogActionAreaButton"];
                 Color colorBaseDialogActionAreaButtonBackground = Color.Transparent;
                 Color colorBaseDialogActionAreaButtonFont = DataLayerFramework.Settings["colorBaseDialogActionAreaButtonFont"].StringToColor();
                 Size sizeBaseDialogActionAreaBackOfficeNavigatorButton = logicpos.Utils.StringToSize(DataLayerFramework.Settings["sizeBaseDialogActionAreaBackOfficeNavigatorButton"]);

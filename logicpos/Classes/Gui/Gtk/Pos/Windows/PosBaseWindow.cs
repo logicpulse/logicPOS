@@ -39,7 +39,7 @@ namespace logicpos
 
         private string GetAppIconFileLocation()
         {
-            return SharedUtils.OSSlash(string.Format("{0}{1}", datalayer.App.DataLayerFramework.Path["images"], @"Icos\application.ico"));
+            return string.Format("{0}{1}", datalayer.App.DataLayerFramework.Path["images"], @"Icos\application.ico");
         }
 
         private void SetAppIcon()

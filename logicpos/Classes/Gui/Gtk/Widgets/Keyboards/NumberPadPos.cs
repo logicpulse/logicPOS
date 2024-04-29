@@ -13,10 +13,10 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             //Init Local Vars
             Size sizeIcon = new Size(28, 28);
-            string icon1 = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_numberpad_1_splitaccount.png");
-            string icon2 = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_numberpad_2_messages.png");
-            string icon3 = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_numberpad_3_gifts.png");
-            string icon4 = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_numberpad_4_weight.png");
+            string icon1 = DataLayerFramework.Path["images"] + @"Icons\icon_pos_numberpad_1_splitaccount.png";
+            string icon2 = DataLayerFramework.Path["images"] + @"Icons\icon_pos_numberpad_2_messages.png";
+            string icon3 = DataLayerFramework.Path["images"] + @"Icons\icon_pos_numberpad_3_gifts.png";
+            string icon4 = DataLayerFramework.Path["images"] + @"Icons\icon_pos_numberpad_4_weight.png";
 
             Color colorFont = Color.Black;
 

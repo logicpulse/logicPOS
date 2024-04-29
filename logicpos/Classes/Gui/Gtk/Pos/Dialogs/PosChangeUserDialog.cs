@@ -18,8 +18,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private Size _sizePosUserButton = logicpos.Utils.StringToSize(DataLayerFramework.Settings["sizePosUserButton"]);
         private Size _sizeIconScrollLeftRight = new Size(62, 31);
         //Files
-        private readonly string _fileScrollLeftImage = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Buttons\Pos\button_subfamily_article_scroll_left.png");
-        private readonly string _fileScrollRightImage = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Buttons\Pos\button_subfamily_article_scroll_right.png");
+        private readonly string _fileScrollLeftImage = DataLayerFramework.Path["images"] + @"Buttons\Pos\button_subfamily_article_scroll_left.png";
+        private readonly string _fileScrollRightImage = DataLayerFramework.Path["images"] + @"Buttons\Pos\button_subfamily_article_scroll_right.png";
 
         //Private Gui Members
         private readonly Fixed _fixedContent;
@@ -36,7 +36,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Init Local Vars
             string windowTitle = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_change_user");
             Size windowSize = new Size(559, 562);
-            string fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_users.png");
+            string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_users.png";
 
             //Init Content
             _fixedContent = new Fixed();

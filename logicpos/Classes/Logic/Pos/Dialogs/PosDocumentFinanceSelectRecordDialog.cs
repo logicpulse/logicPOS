@@ -112,14 +112,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Settings
 
 			// IN009223 IN009227
-            string fileActionMore = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_more.png");
-            string fileActionFilter = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_filter.png");
+            string fileActionMore = DataLayerFramework.Path["images"] + @"Icons\icon_pos_more.png";
+            string fileActionFilter = DataLayerFramework.Path["images"] + @"Icons\icon_pos_filter.png";
             
-			string fileActionClose = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_close.png");
-            string fileActionPrint = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_print.png");
-            string fileActionNewDocument = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_toolbar_finance_new_document.png");
-            string fileActionPayInvoice = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_payment_full.png");
-            string fileActionCancel = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_cancel_document.png");
+			string fileActionClose = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_close.png";
+            string fileActionPrint = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_print.png";
+            string fileActionNewDocument = DataLayerFramework.Path["images"] + @"Icons\icon_pos_toolbar_finance_new_document.png";
+            string fileActionPayInvoice = DataLayerFramework.Path["images"] + @"Icons\icon_pos_payment_full.png";
+            string fileActionCancel = DataLayerFramework.Path["images"] + @"Icons\icon_pos_cancel_document.png";
             bool generatePdfDocuments = Convert.ToBoolean(DataLayerFramework.Settings["generatePdfDocuments"]);
 
             //Default/Shared ActionArea Buttons
@@ -1261,13 +1261,9 @@ WHERE
                     }
                     else if (File.Exists(item))
                     {
-                        if(logicpos.Utils.IsLinux)
+                        if (logicpos.Utils.UsePosPDFViewer() == true)
                         {
-                            System.Diagnostics.Process.Start(SharedUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, item)));
-                        }
-                        else if (logicpos.Utils.UsePosPDFViewer() == true && !logicpos.Utils.IsLinux)
-                        {
-                            string docPath = SharedUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, item));
+                            string docPath = string.Format(@"{0}\{1}", Environment.CurrentDirectory, item);
                             var ScreenSizePDF = GlobalApp.ScreenSize;
                             int widthPDF = ScreenSizePDF.Width;
                             int heightPDF = ScreenSizePDF.Height;
@@ -1557,7 +1553,7 @@ WHERE
                     //Check if Can Cancell Document
                     if (CanCancelFinanceMasterDocument(documentMaster))
                     {
-                        string fileWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_input_text_default.png");
+                        string fileWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_input_text_default.png";
 
                         //Call Request Motive Dialog
                         dialogResponse = logicpos.Utils.GetInputText(pDialog, DialogFlags.Modal, fileWindowIcon, string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_cancel_document_input_text_label"), documentMaster.DocumentNumber), string.Empty, SharedSettings.RegexAlfaNumericExtendedForMotive, true);
@@ -2427,7 +2423,7 @@ WHERE
                 {
                     if (CanCancelFinancePaymentDocument(document))
                     {
-                        string fileWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_input_text_default.png");
+                        string fileWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_input_text_default.png";
 
                         dialogResponse =  logicpos.Utils.GetInputText(pDialog, DialogFlags.Modal, fileWindowIcon, string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_cancel_document_input_text_label"), document.PaymentRefNo), string.Empty, SharedSettings.RegexAlfaNumericExtendedForMotive, true);
                         if (dialogResponse.ResponseType == ResponseType.Ok)
@@ -2514,9 +2510,9 @@ WHERE
                     }
                     else if (File.Exists(item))
                     {
-                        if (logicpos.Utils.UsePosPDFViewer() == true && !logicpos.Utils.IsLinux)
+                        if (logicpos.Utils.UsePosPDFViewer() == true)
                         {
-                            string docPath = SharedUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, item));
+                            string docPath = string.Format(@"{0}\{1}", Environment.CurrentDirectory, item);
                             var ScreenSizePDF = GlobalApp.ScreenSize;
                             int widthPDF = ScreenSizePDF.Width;
                             int heightPDF = ScreenSizePDF.Height;
@@ -2524,7 +2520,7 @@ WHERE
                         }
                         else
                         {
-                            System.Diagnostics.Process.Start(SharedUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, item)));
+                            System.Diagnostics.Process.Start(string.Format(@"{0}\{1}", Environment.CurrentDirectory, item));
                         }
                     }
                 }

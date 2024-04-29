@@ -22,16 +22,16 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
         private fin_warehouse _Warehouse;
         private ScrolledWindow _scrolledWindow;
         private VBox vboxTab2;
-        private readonly string iconAddRecord = SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/icon_pos_nav_new.png"));
-        private readonly string iconClearRecord = SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/Windows/icon_window_delete_record.png"));
+        private readonly string iconAddRecord = string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/icon_pos_nav_new.png");
+        private readonly string iconClearRecord = string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/Windows/icon_window_delete_record.png");
 
         public DialogConfigurationWarehouse(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
             this.Title = logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warehouse"));
             _warehouseLocationCollection = new List<Tuple<fin_warehouselocation, Entry, BOWidgetBox, TouchButtonIcon, TouchButtonIcon, GenericCRUDWidgetXPO, HBox>>();
-            if (logicpos.Utils.IsLinux) SetSizeRequest(500, 373);
-            else SetSizeRequest(500, 450);
+            
+            SetSizeRequest(500, 450);
             InitUI();
             InitNotes();
             ShowAll();

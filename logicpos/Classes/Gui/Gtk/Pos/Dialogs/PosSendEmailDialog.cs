@@ -37,7 +37,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             // Init Local Vars
             string windowTitle = pWindowTitle;
             Size windowSize = pSize;
-            string windowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_send_email.png");
+            string windowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_send_email.png";
 
             AttachmentFileNames = attachmentFileNames;
 

@@ -49,7 +49,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             PageIcon = (pPageIcon != string.Empty && File.Exists(pPageIcon))
               ? pPageIcon
               //DefaultIcon
-              : SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/icon_pos_default.png"));
+              : string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/icon_pos_default.png");
             if (pWidget != null) PackStart(pWidget);
             Enabled = pEnabled;
         }

@@ -19,20 +19,14 @@ namespace logicpos
         {
             var identifier = _appGuid;
 
-            if (Utils.IsLinux == false)
-            {
-                var assemblyName = CurrentAssemblyName + identifier;
 
-                _mutex = new Mutex(
-                    initiallyOwned: true,
-                    name: assemblyName,
-                    createdNew: out _owned
-                    );
-            }
-            else
-            {
-                _owned = true;
-            }
+            var assemblyName = CurrentAssemblyName + identifier;
+
+            _mutex = new Mutex(
+                initiallyOwned: true,
+                name: assemblyName,
+                createdNew: out _owned
+                );
         }
 
         ~SingleProgramInstance()

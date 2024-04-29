@@ -8,7 +8,6 @@ using logicpos.datalayer.Xpo;
 using logicpos.plugin.contracts;
 using logicpos.plugin.library;
 using logicpos.shared.App;
-using Org.BouncyCastle.Bcpg;
 using System;
 using System.Configuration;
 using System.Diagnostics;
@@ -66,9 +65,9 @@ namespace logicpos
                     Paths.InitializePaths();
 
                     InitializeGtk();
-                    
+
                     ShowLoadingScreen();
-                   
+
                     //Start Loading plugins / resources
                     FirstSteps();
 
@@ -209,22 +208,21 @@ namespace logicpos
         {
             try
             {
-                if (Utils.IsLinux == false)
+
+                string sql = "SELECT value FROM cfg_configurationpreferenceparameter where token = 'CULTURE';";
+                XPOSettings.Session = Utils.SessionXPO();
+                string getCultureFromDB = XPOSettings.Session.ExecuteScalar(sql).ToString();
+                if (!Utils.getCultureFromOS(getCultureFromDB))
                 {
-                    string sql = "SELECT value FROM cfg_configurationpreferenceparameter where token = 'CULTURE';";
-                    XPOSettings.Session = Utils.SessionXPO();
-                    string getCultureFromDB = XPOSettings.Session.ExecuteScalar(sql).ToString();
-                    if (!Utils.getCultureFromOS(getCultureFromDB))
-                    {
-                        SharedFramework.CurrentCulture = new CultureInfo("pt-PT");
-                        DataLayerFramework.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
-                    }
-                    else
-                    {
-                        DataLayerFramework.Settings["customCultureResourceDefinition"] = getCultureFromDB;
-                        SharedFramework.CurrentCulture = new System.Globalization.CultureInfo(getCultureFromDB);
-                    }
+                    SharedFramework.CurrentCulture = new CultureInfo("pt-PT");
+                    DataLayerFramework.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
                 }
+                else
+                {
+                    DataLayerFramework.Settings["customCultureResourceDefinition"] = getCultureFromDB;
+                    SharedFramework.CurrentCulture = new System.Globalization.CultureInfo(getCultureFromDB);
+                }
+
             }
             catch
             {

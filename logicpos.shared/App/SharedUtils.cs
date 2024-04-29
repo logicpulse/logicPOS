@@ -1145,7 +1145,7 @@ namespace logicpos.shared.App
         {
             try
             {
-                string tmpPath = OSSlash(Convert.ToString(DataLayerFramework.Path["cache"]));
+                string tmpPath = Convert.ToString(DataLayerFramework.Path["cache"]);
                 if (Directory.Exists(tmpPath))
                 {
                     Directory.Delete(tmpPath, true);
@@ -1211,41 +1211,7 @@ namespace logicpos.shared.App
             return (result);
         }
 
-        public static bool IsLinux
-        {
-            get
-            {
-                int p = (int)Environment.OSVersion.Platform;
-                return (p == 4) || (p == 6) || (p == 128);
-            }
-        }
-
-        //Replace Slash with OSSlash ex windows=\ and Linux=/
-        public static string OSSlash(string pPath)
-        {
-            if (pPath == null)
-            {
-                return string.Empty;
-            }
-
-            //TODO: FIX
-            string result = pPath.Replace('\\', '/'/*Path.DirectorySeparatorChar*/);
-            //_logger.Debug(string.Format("OSSlash(): [{0}] : original pPath:[{1}] : result pPath: [{2}]", Path.DirectorySeparatorChar, pPath, result));
-            return result;
-
-        }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Colors
-
-        //Converts a Color to String using TypeConverter, used to Store values in Appsettings
-
-
-
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Financial 
-
+      
         public static string TranslateNumber(string pv_strNumber)
         {
             string[,] lv_strNumExt = new string[10, 30];

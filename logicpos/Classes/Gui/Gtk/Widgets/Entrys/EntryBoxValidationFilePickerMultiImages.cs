@@ -102,7 +102,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             entryBoxValidationButton.EntryValidation.Sensitive = false;
 
             //Add Aditional Button to EntryBoxValidationFilePickerDialog
-            string iconFileNameDelete = SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/Windows/icon_window_delete_record.png"));
+            string iconFileNameDelete = string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/Windows/icon_window_delete_record.png");
             TouchButtonIcon buttonDelete = new TouchButtonIcon("touchButtonIcon_Delete", Color.Transparent, iconFileNameDelete, new Size(20, 20), 30, 30);
             entryBoxValidationButton.Hbox.PackStart(buttonDelete, false, false, 0);
 

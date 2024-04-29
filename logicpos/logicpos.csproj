@@ -5964,15 +5964,6 @@
     <None Include="Resources\Reports\Styles\StyleMain.frs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Scripts\Linux\Cron.sh">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\Linux\PostInstall.sh">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\Linux\Run.sh">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="Service References\ServiceReference\Service1.wsdl" />
     <None Include="Service References\ServiceReference\Service1.xsd">
       <SubType>Designer</SubType>
@@ -5985,9 +5976,6 @@
     </None>
     <None Include="Service References\ServiceReference\Service13.xsd">
       <SubType>Designer</SubType>
-    </None>
-    <None Include="Scripts\Linux\Kiosk.sh">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <Content Include="Assets\Themes\Default\Backgrounds\Dialogs\dialog_default.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -6237,22 +6225,10 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Database\MSSqlServer\databaseschema.txt" />
-    <Content Include="Resources\Database\MSSqlServer\databaseschemalinux.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Resources\Database\MSSqlServer\databaseschemaupdate.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Database\MSSqlServer\databaseschemaupdatelinux.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\Database\MySql\databaseschemalinux.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Resources\Database\MySql\databaseschemaupdate.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\Database\MySql\databaseschemaupdatelinux.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Database\Other\configurationpreferenceparameter.sql">
@@ -6651,13 +6627,7 @@
     <Content Include="Resources\Database\Other\Country\US\configurationholidays.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Database\SQLite\databaseschemalinux.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Resources\Database\SQLite\databaseschemaupdate.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\Database\SQLite\databaseschemaupdatelinux.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Keyboards\163.xml">

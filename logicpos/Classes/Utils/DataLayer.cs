@@ -43,19 +43,17 @@ namespace logicpos
                 Session xpoSession;
                 Dictionary<string, string> replace = GetReplaceables(pDatabaseType);
 
-                string sqlDatabaseSchema = SharedUtils.OSSlash(string.Format(POSSettings.FileDatabaseSchema, databaseTypeString));
-                string sqlDatabaseSchemaLinux = SharedUtils.OSSlash(string.Format(POSSettings.FileDatabaseSchemaLinux, databaseTypeString));
-                string sqlDatabaseUpdate = SharedUtils.OSSlash(string.Format(POSSettings.FileDatabaseUpdate, databaseTypeString));
-                string sqlDatabaseUpdateLinux = SharedUtils.OSSlash(string.Format(POSSettings.FileDatabaseUpdateLinux, databaseTypeString));
+                string sqlDatabaseSchema = string.Format(POSSettings.FileDatabaseSchema, databaseTypeString);
+                string sqlDatabaseUpdate = string.Format(POSSettings.FileDatabaseUpdate, databaseTypeString);
                 //string sqlDatabaseOtherDatabaseType = SharedUtils.OSSlash(string.Format(SettingsApp.FileDatabaseOtherDatabaseType, databaseTypeString)); /* IN009045: Not in use */
-                string sqlDatabaseOtherCommon = SharedUtils.OSSlash(POSSettings.FileDatabaseOtherCommon);
+                string sqlDatabaseOtherCommon = POSSettings.FileDatabaseOtherCommon;
                 /* IN008024 and after IN009035: data being included by databasedata.sql accordingly to its specific theme/language */
                 // string sqlDatabaseOtherCommonAppMode = string.Format("{0}/{1}", SharedUtils.OSSlash(SettingsApp.FileDatabaseOtherCommonAppMode), SettingsApp.CustomAppOperationMode.AppOperationTheme.ToLower());
-                string sqlDatabaseOtherCommonPluginsSoftwareVendor = SharedUtils.OSSlash(POSSettings.FileDatabaseOtherCommonPluginsSoftwareVendor);
-                string FileDatabaseOtherCommonPluginsSoftwareVendorOtherCommonCountry = SharedUtils.OSSlash(POSSettings.FileDatabaseOtherCommonPluginsSoftwareVendor);
-                string sqlDatabaseData = SharedUtils.OSSlash(POSSettings.FileDatabaseData);
-                string sqlDatabaseDataDemo = SharedUtils.OSSlash(POSSettings.FileDatabaseDataDemo);
-                string sqlDatabaseViews = SharedUtils.OSSlash(POSSettings.FileDatabaseViews);
+                string sqlDatabaseOtherCommonPluginsSoftwareVendor = POSSettings.FileDatabaseOtherCommonPluginsSoftwareVendor;
+                string FileDatabaseOtherCommonPluginsSoftwareVendorOtherCommonCountry = POSSettings.FileDatabaseOtherCommonPluginsSoftwareVendor;
+                string sqlDatabaseData = POSSettings.FileDatabaseData;
+                string sqlDatabaseDataDemo = POSSettings.FileDatabaseDataDemo;
+                string sqlDatabaseViews = POSSettings.FileDatabaseViews;
                 bool useDatabaseDataDemo = Convert.ToBoolean(DataLayerFramework.Settings["useDatabaseDataDemo"]);
 
                 string version = SharedUtils.ProductVersion.Replace("v", "");
@@ -242,14 +240,8 @@ namespace logicpos
                             resultCmd = xpoSession.ExecuteScalar(sql);
                             log.Debug(string.Format("create_version resultCmd: [{0}]", resultCmd));
 
-                            if (osVersion == "unix")
-                            {
-                                result = ProcessDump(xpoSession, sqlDatabaseUpdateLinux, commandSeparator, replace);
-                            }
-                            else
-                            {
-                                result = ProcessDump(xpoSession, sqlDatabaseUpdate, commandSeparator, replace);
-                            }
+                            result = ProcessDump(xpoSession, sqlDatabaseUpdate, commandSeparator, replace);
+
 
                             if (result)
                             {
@@ -282,14 +274,7 @@ namespace logicpos
                             resultCmd = xpoSession.ExecuteQuery(sql);
                             log.Debug(string.Format("create_version resultCmd: [{0}]", resultCmd));
 
-                            if (osVersion == "unix")
-                            {
-                                result = ProcessDump(xpoSession, sqlDatabaseUpdateLinux, commandSeparator, replace);
-                            }
-                            else
-                            {
-                                result = ProcessDump(xpoSession, sqlDatabaseUpdate, commandSeparator, replace);
-                            }
+                            result = ProcessDump(xpoSession, sqlDatabaseUpdate, commandSeparator, replace);
 
                             if (result)
                             {
@@ -328,14 +313,8 @@ namespace logicpos
                             if (needToUpdate || osVersion == "unix")
                             {      //update                           
 
-                                if (osVersion == "unix")
-                                {
-                                    result = ProcessDump(xpoSession, sqlDatabaseUpdateLinux, commandSeparator, replace);
-                                }
-                                else
-                                {
-                                    result = ProcessDump(xpoSession, sqlDatabaseUpdate, commandSeparator, replace);
-                                }
+                                result = ProcessDump(xpoSession, sqlDatabaseUpdate, commandSeparator, replace);
+
 
                                 if (result)
                                 {
@@ -668,7 +647,7 @@ namespace logicpos
                             //Ignore File if is in ignoreFilesForDeveloper List
                             if (!ignoreFilesForDeveloper.Contains(filesArray[i]))
                             {
-                                result = ProcessDump(pXpoSession, SharedUtils.OSSlash(filesArray[i]), pCommandSeparator, pReplaceables);
+                                result = ProcessDump(pXpoSession,filesArray[i], pCommandSeparator, pReplaceables);
                             }
                         }
                     }

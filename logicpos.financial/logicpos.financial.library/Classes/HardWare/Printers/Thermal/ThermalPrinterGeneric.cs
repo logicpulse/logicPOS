@@ -36,7 +36,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
 
         public ThermalPrinterGeneric(sys_configurationprinters pPrinter, string pEncoding)
             // Old HardCoded Method Settings
-			//TK016249 - Impressoras - Diferenciação entre Tipos
+            //TK016249 - Impressoras - Diferenciação entre Tipos
             //: this(pPrinter, pEncoding, SettingsApp.PrinterThermalMaxCharsPerLineNormal, SettingsApp.PrinterThermalMaxCharsPerLineNormalBold, SettingsApp.PrinterThermalMaxCharsPerLineSmall)
             : this(pPrinter, pEncoding,
                   (DataLayerFramework.LoggedTerminal.ThermalPrinter != null && DataLayerFramework.LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineNormal > 0) ? DataLayerFramework.LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineNormal : SharedSettings.PrinterThermalMaxCharsPerLineNormal,
@@ -63,40 +63,17 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
         {
             try
             {
-				//TK016310 Configuração Impressoras Windows 
-                if (IsLinux)
+
+                switch (Printer.PrinterType.Token)
                 {
-                    _logger.Info(Printer.PrinterType.Token);
-                    _logger.Info(Printer.Designation);
-                    _logger.Info(Printer.NetworkName);
-                    switch (Printer.PrinterType.Token)
-                    {
-                        case "THERMAL_PRINTER_WINDOWS":
-                            printer.genericwindows.Print.WindowsPrint(Printer.NetworkName, getByteArray());
-                            break;
-                        case "THERMAL_PRINTER_LINUX":
-                            printer.genericlinux.Print.LinuxPrint(Printer.NetworkName, getByteArray());
-                            break;
-                        case "THERMAL_PRINTER_SOCKET":
-                            printer.genericsocket.Print.SocketPrint(Printer.NetworkName, getByteArray());
-                            break;
-                    }
+                    case "THERMAL_PRINTER_WINDOWS":
+                        printer.genericusb.Print.USBPrintWindows(Printer.Designation, getByteArray());
+                        break;
+                    case "THERMAL_PRINTER_SOCKET":
+                        printer.genericusb.Print.USBPrintWindows(Printer.NetworkName, getByteArray());
+                        break;
                 }
-                else
-                {
-                    switch (Printer.PrinterType.Token)
-                    {
-                        case "THERMAL_PRINTER_WINDOWS":
-                            printer.genericusb.Print.USBPrintWindows(Printer.Designation, getByteArray());
-                            break;
-                        case "THERMAL_PRINTER_LINUX":
-                            printer.genericusb.Print.USBPrintWindows(Printer.NetworkName, getByteArray());
-                            break;
-                        case "THERMAL_PRINTER_SOCKET":
-                            printer.genericusb.Print.USBPrintWindows(Printer.NetworkName, getByteArray());
-                            break;
-                    }
-                }
+
 
             }
             catch (Exception ex)
@@ -228,17 +205,6 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
         public static string TextCentered(string stringToCenter, int totalLength, char paddingCharacter)
         {
             return stringToCenter.PadLeft(((totalLength - stringToCenter.Length) / 2) + stringToCenter.Length, paddingCharacter).PadRight(totalLength, paddingCharacter);
-        }
-		
-		//TK016310 Configuração Impressoras Windows 
-        //Verifica se é linux
-        public static bool IsLinux
-        {
-            get
-            {
-                int p = (int)Environment.OSVersion.Platform;
-                return (p == 4) || (p == 6) || (p == 128);
-            }
         }
     }
 }

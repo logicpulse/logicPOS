@@ -68,8 +68,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //Init Local Vars
                 string windowTitle = string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_cashdrawer"), SharedUtils.DecimalToStringCurrency(TotalAmountInCashDrawer));
                 Size windowSize = new Size(462, 310);//400 With Other Payments
-                string fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_cash_drawer.png");
-                string fileActionPrint = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_print.png");
+                string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_cash_drawer.png";
+                string fileActionPrint = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_print.png";
 
                 //Get SeletedData from WorkSessionMovementType Buttons
                 string executeSql = @"SELECT Oid, Token, ResourceString, ButtonIcon, Disabled FROM pos_worksessionmovementtype WHERE (Token LIKE 'CASHDRAWER_%') AND (Disabled IS NULL or Disabled  <> 1) ORDER BY Ord;";
@@ -94,7 +94,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                       resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], row.Values[xPSelectData.GetFieldIndex("ResourceString")].ToString()),
                       _fontBaseDialogButton,
                       _colorBaseDialogDefaultButtonFont,
-                     SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], row.Values[xPSelectData.GetFieldIndex("ButtonIcon")].ToString())),
+                     string.Format("{0}{1}", DataLayerFramework.Path["images"], row.Values[xPSelectData.GetFieldIndex("ButtonIcon")].ToString()),
                       _sizeBaseDialogDefaultButtonIcon,
                       _sizeBaseDialogDefaultButton.Width,
                       _sizeBaseDialogDefaultButton.Height

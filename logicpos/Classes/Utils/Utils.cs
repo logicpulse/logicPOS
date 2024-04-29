@@ -141,16 +141,16 @@ namespace logicpos
             Color colorBaseDialogActionAreaButtonFont = DataLayerFramework.Settings["colorBaseDialogActionAreaButtonFont"].StringToColor();
             Size sizeBaseDialogActionAreaButtonIcon = StringToSize(DataLayerFramework.Settings["sizeBaseDialogActionAreaButtonIcon"]);
             Size sizeBaseDialogActionAreaButton = StringToSize(DataLayerFramework.Settings["sizeBaseDialogActionAreaButton"]);
-            string fontBaseDialogActionAreaButton = SharedUtils.OSSlash(DataLayerFramework.Settings["fontBaseDialogActionAreaButton"]);
+            string fontBaseDialogActionAreaButton = DataLayerFramework.Settings["fontBaseDialogActionAreaButton"];
             //Images
-            string fileImageDialogBaseMessageTypeImage = SharedUtils.OSSlash(DataLayerFramework.Settings["fileImageDialogBaseMessageTypeImage"]);
-            string fileImageDialogBaseMessageTypeIcon = SharedUtils.OSSlash(DataLayerFramework.Settings["fileImageDialogBaseMessageTypeIcon"]);
+            string fileImageDialogBaseMessageTypeImage = DataLayerFramework.Settings["fileImageDialogBaseMessageTypeImage"];
+            string fileImageDialogBaseMessageTypeIcon = DataLayerFramework.Settings["fileImageDialogBaseMessageTypeIcon"];
             //Files
-            string fileActionOK = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png");
-            string fileActionCancel = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png");
-            string fileActionYes = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_yes.png");
-            string fileActionNo = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_no.png");
-            string fileActionClose = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_close.png");
+            string fileActionOK = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
+            string fileActionCancel = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png";
+            string fileActionYes = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_yes.png";
+            string fileActionNo = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_no.png";
+            string fileActionClose = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_close.png";
             //Init Local Vars
             string fileImageDialog, fileImageWindowIcon;
             ResponseType resultResponse = ResponseType.None;
@@ -890,7 +890,7 @@ namespace logicpos
             proc.EnableRaisingEvents = false;
             proc.StartInfo.FileName = "aplay";
             //TODO: Put Sound in config
-            proc.StartInfo.Arguments = "-t wav " + SharedUtils.OSSlash(DataLayerFramework.Path["sounds"] + @"Clicks\button2.wav");
+            proc.StartInfo.Arguments = "-t wav " + DataLayerFramework.Path["sounds"] + @"Clicks\button2.wav";
             proc.Start();
         }
 
@@ -1427,7 +1427,7 @@ namespace logicpos
         public static EventBox GetMinimizeEventBox()
         {
 
-            string _fileDefaultWindowIconMinimize = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_window_minimize.png");
+            string _fileDefaultWindowIconMinimize = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_window_minimize.png";
             EventBox result = null;
 
             try
@@ -1466,9 +1466,6 @@ namespace logicpos
             }
         }
 
-        //Create and return Loading Dialog
-        //http://preloaders.net/en/search/circle
-        //http://www.mono-project.com/docs/gui/gtksharp/responsive-applications/
         public static Dialog GetThreadDialog(Window pSourceWindow, bool dbExists)
         {
             string backupProcess = string.Empty;
@@ -1478,7 +1475,7 @@ namespace logicpos
 
         public static Dialog GetThreadDialog(Window pSourceWindow, bool dbExists, string backupProcess)
         {
-            string fileWorking = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Other\working.gif");
+            string fileWorking = DataLayerFramework.Path["images"] + @"Other\working.gif";
 
             Dialog dialog = new Dialog("Working", pSourceWindow, DialogFlags.Modal | DialogFlags.DestroyWithParent);
             dialog.WindowPosition = WindowPosition.Center;
@@ -2124,7 +2121,7 @@ namespace logicpos
         {
             string pathThemes = DataLayerFramework.Path["themes"].ToString();
             /* IN008024 */
-            return SharedUtils.OSSlash(string.Format(@"{0}{1}\{2}", pathThemes, LogicPOS.Settings.AppSettings.AppTheme, pFile));
+            return string.Format(@"{0}{1}\{2}", pathThemes, LogicPOS.Settings.AppSettings.AppTheme, pFile);
         }
 
         public static Gtk.Style GetThemeStyleBackground(string pFile)
@@ -3245,14 +3242,6 @@ namespace logicpos
             return result;
         }
 
-        public static bool IsLinux
-        {
-            get
-            {
-                int p = (int)Environment.OSVersion.Platform;
-                return (p == 4) || (p == 6) || (p == 128);
-            }
-        }
         //Protecções de integridade das BD's e funcionamento da aplicação [IN:013327]
         public static bool IsPortOpen(string portName)
         {

@@ -32,9 +32,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private readonly uint _borderWidth = 5;
         //private Gtk.Style _styleBackground;
         //Assets
-        protected string _fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_default.png");
-        private readonly string _fileDefaultWindowIconClose = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_window_close.png");
-        private readonly string _fileDefaultWindowIconMinimize = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_window_minimize.png");
+        protected string _fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_default.png";
+        private readonly string _fileDefaultWindowIconClose = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_window_close.png";
+        private readonly string _fileDefaultWindowIconMinimize = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_window_minimize.png";
         //Colors
         private readonly System.Drawing.Color _colorBaseDialogTitleBackground = DataLayerFramework.Settings["colorBaseDialogTitleBackground"].StringToColor();
         private readonly System.Drawing.Color _colorBaseDialogWindowBackground = DataLayerFramework.Settings["colorBaseDialogWindowBackground"].StringToColor();
@@ -55,14 +55,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         protected System.Drawing.Color _colorBaseDialogDefaultButtonBackground = DataLayerFramework.Settings["colorBaseDialogDefaultButtonBackground"].StringToColor();
         protected System.Drawing.Color _colorBaseDialogActionAreaButtonFont = DataLayerFramework.Settings["colorBaseDialogActionAreaButtonFont"].StringToColor();
         protected System.Drawing.Color _colorBaseDialogActionAreaButtonBackground = DataLayerFramework.Settings["colorBaseDialogActionAreaButtonBackground"].StringToColor();
-        protected string _fontBaseDialogButton = SharedUtils.OSSlash(DataLayerFramework.Settings["fontBaseDialogButton"]);
-        protected string _fontBaseDialogActionAreaButton = SharedUtils.OSSlash(DataLayerFramework.Settings["fontBaseDialogActionAreaButton"]);
-        protected string _fileActionDefault = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_default.png");
-        protected string _fileActionOK = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png");
-        protected string _fileActionCancel = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png");
-        protected string _fileDemoData = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_demo.png");
+        protected string _fontBaseDialogButton = DataLayerFramework.Settings["fontBaseDialogButton"];
+        protected string _fontBaseDialogActionAreaButton = DataLayerFramework.Settings["fontBaseDialogActionAreaButton"];
+        protected string _fileActionDefault = DataLayerFramework.Path["images"] + @"Icons\icon_pos_default.png";
+        protected string _fileActionOK = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
+        protected string _fileActionCancel = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png";
+        protected string _fileDemoData = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_demo.png";
         //IN009223 IN009227
-        protected string _fileActionMore = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_nav_new.png");
+        protected string _fileActionMore = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_nav_new.png";
 
         //Public Properties
         protected Window _sourceWindow;
@@ -469,21 +469,21 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             System.Drawing.Size sizeBaseDialogActionAreaButtonIcon = logicpos.Utils.StringToSize(DataLayerFramework.Settings["sizeBaseDialogActionAreaButtonIcon"]);
             System.Drawing.Color colorBaseDialogActionAreaButtonFont = DataLayerFramework.Settings["colorBaseDialogActionAreaButtonFont"].StringToColor();
             //System.Drawing.Color colorBaseDialogActionAreaButtonBackground = FrameworkUtils.StringToColor(DataLayerFramework.Settings["colorBaseDialogActionAreaButtonBackground"]);
-            string fontBaseDialogActionAreaButton = SharedUtils.OSSlash(DataLayerFramework.Settings["fontBaseDialogActionAreaButton"]);
+            string fontBaseDialogActionAreaButton = DataLayerFramework.Settings["fontBaseDialogActionAreaButton"];
             //Icons
-            string fileActionDefault = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_default.png");
-            string fileActionOK = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png");
-            string fileActionCancel = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png");
-            string fileActionYes = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_yes.png");
-            string fileActionNo = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_no.png");
-            string fileActionClose = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_close.png");
-            string fileActionPrint = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_print.png");
-            string fileActionPrintAs = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_print_as.png");
-            string fileActionHelp = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_help.png");
-            string fileActionCloneDocument = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_clone_document.png ");
-            string fileActionOpenDocument = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_open_document.png");
-            string fileActionSendEmailDocument = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_dialog_send_email.png");
-            string fileActionCleanFilter = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_clean_filter.png");
+            string fileActionDefault = DataLayerFramework.Path["images"] + @"Icons\icon_pos_default.png";
+            string fileActionOK = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
+            string fileActionCancel = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png";
+            string fileActionYes = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_yes.png";
+            string fileActionNo = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_no.png";
+            string fileActionClose = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_close.png"  ;
+            string fileActionPrint = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_print.png";
+            string fileActionPrintAs = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_print_as.png";
+            string fileActionHelp = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_help.png";
+            string fileActionCloneDocument = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_clone_document.png ";
+            string fileActionOpenDocument = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_open_document.png";
+            string fileActionSendEmailDocument = DataLayerFramework.Path["images"] + @"Icons\icon_pos_dialog_send_email.png";
+            string fileActionCleanFilter = DataLayerFramework.Path["images"] + @"Icons\icon_pos_clean_filter.png";
 
             //Assign ButtonType to Name, Override After Switch
             string buttonName = (pButtonName != string.Empty) ? pButtonName : string.Format("touchButton{0}_DialogActionArea", pButtonType.ToString());
@@ -576,19 +576,19 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             System.Drawing.Color colorBaseDialogActionAreaButtonFont = DataLayerFramework.Settings["colorBaseDialogActionAreaButtonFont"].StringToColor();
             //Icons
-            string fileActionDefault = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_default.png");
-            string fileActionOK = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png");
-            string fileActionCancel = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png");
-            string fileActionYes = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_yes.png");
-            string fileActionNo = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_no.png");
-            string fileActionClose = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_close.png");
-            string fileActionPrint = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_print.png");
-            string fileActionPrintAs = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_print_as.png");
-            string fileActionHelp = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_help.png");
-            string fileActionCloneDocument = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_clone_document.png ");
-            string fileActionOpenDocument = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_open_document.png");
-            string fileActionSendEmailDocument = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_send_email.png");
-            string fileActionCleanFilter = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_clean_filter.png");
+            string fileActionDefault = DataLayerFramework.Path["images"] + @"Icons\icon_pos_default.png";
+            string fileActionOK = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
+            string fileActionCancel = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png";
+            string fileActionYes = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_yes.png";
+            string fileActionNo = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_no.png";
+            string fileActionClose = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_close.png";
+            string fileActionPrint = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_print.png";
+            string fileActionPrintAs = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_print_as.png";
+            string fileActionHelp = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_help.png";
+            string fileActionCloneDocument = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_clone_document.png ";
+            string fileActionOpenDocument = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_open_document.png";
+            string fileActionSendEmailDocument = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_send_email.png";
+            string fileActionCleanFilter = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_clean_filter.png";
 
             //Assign ButtonType to Name, Override After Switch
             string buttonName = (pButtonName != string.Empty) ? pButtonName : string.Format("touchButton{0}_DialogActionArea", pButtonType.ToString());

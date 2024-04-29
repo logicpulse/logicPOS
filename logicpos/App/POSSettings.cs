@@ -99,11 +99,9 @@ namespace logicpos.App
 
         //Database Script Files
         public static string FileDatabaseSchema = @"Resources\Database\{0}\databaseschema.sql";
-        public static string FileDatabaseSchemaLinux = @"Resources\Database\{0}\databaseschemalinux.sql";
 
         public static string FileDatabaseUpdate = @"Resources\Database\{0}\databaseschemaupdate.sql";
-        public static string FileDatabaseUpdateLinux = @"Resources\Database\{0}\databaseschemaupdatelinux.sql";
-        
+
         /* IN009035 */
         public static string FileDatabaseDataPath = @"Resources\Database\Data\{0}\{1}\databasedata.sql"; // "Resources\Database\Data\Default\en\databasedata.sql"
         public static string FileDatabaseData = GetDatabaseFileName(false, FileDatabaseDataPath);// Default Script: "databasedata.sql";

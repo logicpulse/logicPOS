@@ -297,10 +297,6 @@ namespace logicpos.printer.generic
 					//TK016310 Configuração Impressoras Windows 
                     genericwindows.Print.USBPrintWindows(pPrinterName, printer.getByteArray());
                     break;
-                case "THERMAL_PRINTER_LINUX":
-                    //Impressora SINOCAN em ambiente Linux 
-                    genericlinux.Print.LinuxPrint(pPrinterName, printer.getByteArray());
-                    break;
                 case "THERMAL_PRINTER_SOCKET":
                     //Impressora SINOCAN em ambiente Linux Socket
                     genericsocket.Print.SocketPrint(pPrinterName, printer.getByteArray());
@@ -378,11 +374,6 @@ namespace logicpos.printer.generic
                         //TK016310 Configuração Impressoras Windows 
                         genericusb.Print.USBPrintWindows(pPrinterName, printer.getByteArray(), defaultValue);
                         //genericwindows.Print.USBPrintWindows(pPrinterName, printer.getByteArray());
-                        break;
-
-                    case "THERMAL_PRINTER_LINUX":
-                        //Impressora SINOCAN em ambiente Linux 
-                        genericlinux.Print.LinuxPrint(pPrinterName, printer.getByteArray(), defaultValue);
                         break;
                     case "THERMAL_PRINTER_SOCKET":
                         //Impressora SINOCAN em ambiente Linux Socket

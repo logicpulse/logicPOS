@@ -14,7 +14,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Init Local Vars
             string windowTitle = string.Format("{0} : {1} #{2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_orders"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_place_table"), pTable);
             Size windowSize = new Size(429, 205);//618 (3buts)
-            string fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_orders.png");
+            string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_orders.png";
 
             Size sizeIcon = new Size(50, 50);
             int buttonWidth = 162;
@@ -22,8 +22,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             uint tablePadding = 15;
 
             //Icons
-            string fileIconListOrders = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_ticketpad_orderlist.png");
-            string fileIconPrintOrder = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_print.png");
+            string fileIconListOrders = DataLayerFramework.Path["images"] + @"Icons\icon_pos_ticketpad_orderlist.png";
+            string fileIconPrintOrder = DataLayerFramework.Path["images"] + @"Icons\icon_pos_print.png";
             //String fileIconListFinanceDocuments = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_default.png");
 
             //Buttons

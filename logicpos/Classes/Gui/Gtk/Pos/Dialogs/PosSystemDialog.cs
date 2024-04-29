@@ -14,7 +14,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Init Local Vars
             string windowTitle = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_system");
             Size windowSize = new Size(620, 205/*321 2 rows*/);
-            string fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_system.png");
+            string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_system.png";
 
             Size sizeIcon = new Size(50, 50);
             int buttonWidth = 162;
@@ -22,9 +22,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             uint tablePadding = 15;
 
             //Icons
-            string fileIconConfiguration = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_configuration.png");
-            string fileIconCashRegister = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_ticketpad_cashregister.png");
-            string fileIconReports = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_reports.png");
+            string fileIconConfiguration = DataLayerFramework.Path["images"] + @"Icons\icon_pos_configuration.png";
+            string fileIconCashRegister = DataLayerFramework.Path["images"] + @"Icons\icon_pos_ticketpad_cashregister.png";
+            string fileIconReports = DataLayerFramework.Path["images"] + @"Icons\icon_pos_reports.png";
 
             //Buttons
             TouchButtonIconWithText buttonSetup = new TouchButtonIconWithText("touchButtonSetup_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_application_setup"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, fileIconConfiguration, sizeIcon, buttonWidth, buttonHeight);

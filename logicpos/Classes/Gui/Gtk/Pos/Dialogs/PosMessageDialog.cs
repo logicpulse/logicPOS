@@ -32,7 +32,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public PosMessageDialog(Window pSourceWindow, DialogFlags pDialogFlags, System.Drawing.Size pSize, string pMessage, MessageType pMessageType, ResponseType pResponseType, string pButtonLabel, string pImageDialog = "", bool pCconfirmDialogOnEnter = true, bool pWindowTitleCloseButton = true)
             : base(pSourceWindow, pDialogFlags)
         {
-            string fileImageDialogBaseMessageTypeIcon = SharedUtils.OSSlash(DataLayerFramework.Settings["fileImageDialogBaseMessageTypeIcon"]);
+            string fileImageDialogBaseMessageTypeIcon = DataLayerFramework.Settings["fileImageDialogBaseMessageTypeIcon"];
             string fileImagePath = string.Format(fileImageDialogBaseMessageTypeIcon, Enum.GetName(typeof(MessageType), pMessageType).ToLower());
 
             TouchButtonIconWithText button = new TouchButtonIconWithText("touchButton_DialogActionArea", _colorBaseDialogActionAreaButtonBackground, pButtonLabel, _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, _fileActionOK, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height);
@@ -63,7 +63,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Init Local Vars
             string windowTitle = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_message_dialog");
             System.Drawing.Size windowSize = pSize;
-            string fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_default.png");
+            string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_default.png";
 
             if (!pTitle.Equals(string.Empty))
             {
@@ -72,7 +72,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             if (!pImageWindowIcon.Equals(string.Empty))
             {
-                fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + pImageWindowIcon);
+                fileDefaultWindowIcon = DataLayerFramework.Path["images"] + pImageWindowIcon;
             }
 
             //Text View
@@ -106,7 +106,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             Fixed fixedContent = new Fixed();
 
             //Add content, with or without ImageDialog
-            string fileImageDialog = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + pImageDialog);
+            string fileImageDialog = DataLayerFramework.Path["images"] + pImageDialog;
             if (pImageDialog != string.Empty && File.Exists(fileImageDialog))
             {
                 Gdk.Pixbuf pixBuf = logicpos.Utils.FileToPixBuf(fileImageDialog);

@@ -19,8 +19,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private Size _sizePosTableButton = logicpos.Utils.StringToSize(DataLayerFramework.Settings["sizePosTableButton"]);
         private Size _sizeIconScrollLeftRight = new Size(62, 31);
         //Files
-        private readonly string _fileScrollLeftImage = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Buttons\Pos\button_subfamily_article_scroll_left.png");
-        private readonly string _fileScrollRightImage = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Buttons\Pos\button_subfamily_article_scroll_right.png");
+        private readonly string _fileScrollLeftImage = DataLayerFramework.Path["images"] + @"Buttons\Pos\button_subfamily_article_scroll_left.png";
+        private readonly string _fileScrollRightImage = DataLayerFramework.Path["images"] + @"Buttons\Pos\button_subfamily_article_scroll_right.png";
         //UI
         private readonly Fixed _fixedContent;
         private TablePad _tablePadPlace;
@@ -76,22 +76,22 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             /* IN008024 */
             if (!DataLayerSettings.IsDefaultTheme)
             {
-                fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_tables_retail.png");
-                fileActionViewOrders = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_retail_view_order.png");
+                fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_tables_retail.png";
+                fileActionViewOrders = DataLayerFramework.Path["images"] + @"Icons\icon_pos_retail_view_order.png";
             }
             else
             {
-                fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_tables.png");
-                fileActionViewOrders = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_table_view_order.png");
+                fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_tables.png";
+                fileActionViewOrders = DataLayerFramework.Path["images"] + @"Icons\icon_pos_table_view_order.png";
             }
 
             //ActionArea Icons
-            string fileActionTableReservation = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_table_reservation.png");
-            string fileActionTableFilterAll = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_table_filter_all.png");
-            string fileActionTableFilterFree = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_table_filter_free.png");
-            string fileActionTableFilterOpen = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_table_filter_open.png");
-            string fileActionTableFilterReserved = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_table_filter_reserved.png");
-            string fileActionTableViewTables = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_table_view_tables.png");
+            string fileActionTableReservation = DataLayerFramework.Path["images"] + @"Icons\icon_pos_table_reservation.png";
+            string fileActionTableFilterAll = DataLayerFramework.Path["images"] + @"Icons\icon_pos_table_filter_all.png";
+            string fileActionTableFilterFree = DataLayerFramework.Path["images"] + @"Icons\icon_pos_table_filter_free.png";
+            string fileActionTableFilterOpen = DataLayerFramework.Path["images"] + @"Icons\icon_pos_table_filter_open.png"  ;
+            string fileActionTableFilterReserved = DataLayerFramework.Path["images"] + @"Icons\icon_pos_table_filter_reserved.png";
+            string fileActionTableViewTables = DataLayerFramework.Path["images"] + @"Icons\icon_pos_table_view_tables.png";
 
             //Parameters
             _FilterMode = pFilterMode;

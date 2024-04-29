@@ -110,7 +110,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             if (pDataSourceRow != null) _crudWidgetList = new GenericCRUDWidgetListXPO(_dataSourceRow.Session);
 
             //Icon
-            string fileImageAppIcon = SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], POSSettings.AppIcon));
+            string fileImageAppIcon = string.Format("{0}{1}", DataLayerFramework.Path["images"], POSSettings.AppIcon);
             if (File.Exists(fileImageAppIcon)) Icon = logicpos.Utils.ImageToPixbuf(System.Drawing.Image.FromFile(fileImageAppIcon));
 
             //Init StatusBar
@@ -130,9 +130,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         private void InitButtons()
         {
             //Settings
-            string fontBaseDialogActionAreaButton = SharedUtils.OSSlash(DataLayerFramework.Settings["fontBaseDialogActionAreaButton"]);
-            string tmpFileActionOK = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png");
-            string tmpFileActionCancel = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png");
+            string fontBaseDialogActionAreaButton = DataLayerFramework.Settings["fontBaseDialogActionAreaButton"];
+            string tmpFileActionOK = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
+            string tmpFileActionCancel = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png";
             System.Drawing.Size sizeBaseDialogActionAreaButtonIcon = logicpos.Utils.StringToSize(DataLayerFramework.Settings["sizeBaseDialogActionAreaButtonIcon"]);
             System.Drawing.Size sizeBaseDialogActionAreaButton = logicpos.Utils.StringToSize(DataLayerFramework.Settings["sizeBaseDialogActionAreaButton"]);
             System.Drawing.Color colorBaseDialogActionAreaButtonBackground = DataLayerFramework.Settings["colorBaseDialogActionAreaButtonBackground"].StringToColor();

@@ -15,13 +15,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pDialogFlags)
         {
             //Settings
-            string _fileToolbarStartStopWorkSessionPeriodDay = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_toolbar_start_stop_worksession_period_day.png");
-            string _fileToolbarCashDrawer = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_toolbar_cashdrawer.png");
+            string _fileToolbarStartStopWorkSessionPeriodDay = DataLayerFramework.Path["images"] + @"Icons\icon_pos_toolbar_start_stop_worksession_period_day.png";
+            string _fileToolbarCashDrawer = DataLayerFramework.Path["images"] + @"Icons\icon_pos_toolbar_cashdrawer.png";
 
             //Init Local Vars
             string windowTitle = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_cash");
             Size windowSize = new Size(428, 205);
-            string fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_cash_drawer.png");
+            string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_cash_drawer.png";
 
             Size sizeIcon = new Size(50, 50);
             int buttonWidth = 162;

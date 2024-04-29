@@ -48,7 +48,6 @@ namespace LogicPOS.Settings
                 yield return RESTAURANT;
                 yield return SEAFOOD_SHOP;
                 yield return SHOE_STORE;
-                //TK016235 BackOffice - Mode
                 yield return BACKOFFICE;
             }
         }

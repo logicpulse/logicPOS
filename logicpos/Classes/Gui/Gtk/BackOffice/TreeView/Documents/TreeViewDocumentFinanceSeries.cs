@@ -264,7 +264,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             try
             {
-                string fileWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_input_text_default.png");
+                string fileWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_input_text_default.png";
 
                 PosInputTextDialog dialog = new PosInputTextDialog(
                     pSourceWindow,

@@ -16,8 +16,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         {
             Title = logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_edit_configurationpricetype"));
 
-            if (logicpos.Utils.IsLinux) SetSizeRequest(500, 329);
-            else SetSizeRequest(500, 309);
+            SetSizeRequest(500, 309);
             InitUI();
             InitNotes();
             ShowAll();
