@@ -137,7 +137,7 @@ namespace logicpos
 
             if (SourceWindow == null)
             {
-                LogicPos.Quit(this);
+                LogicPOSApp.Quit(this);
             }
 
             SourceWindow.ShowAll();

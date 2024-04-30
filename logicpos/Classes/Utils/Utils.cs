@@ -1509,12 +1509,10 @@ namespace logicpos
             }
         }
 
-        //Get Cultures from OS
-        public static bool getCultureFromOS(string culture)
+        public static bool OSHasCulture(string culture)
         {
             foreach (CultureInfo ci in CultureInfo.GetCultures(CultureTypes.AllCultures))
             {
-
                 if (culture == CultureInfo.CreateSpecificCulture(ci.Name).Name)
                 {
                     return true;
@@ -1522,93 +1520,6 @@ namespace logicpos
 
             }
             return false;
-        }
-
-
-
-        //Get Windows Version
-        public static string getOSInfo()
-        {
-            //Get Operating system information.
-            OperatingSystem os = Environment.OSVersion;
-            //Get version information about the os.
-            Version vs = os.Version;
-
-            //Variable to hold our return value
-            string operatingSystem = "";
-
-            if (os.Platform == PlatformID.Win32Windows)
-            {
-                //This is a pre-NT version of Windows
-                switch (vs.Minor)
-                {
-                    case 0:
-                        operatingSystem = "95";
-                        break;
-                    case 10:
-                        if (vs.Revision.ToString() == "2222A")
-                            operatingSystem = "98SE";
-                        else
-                            operatingSystem = "98";
-                        break;
-                    case 90:
-                        operatingSystem = "Me";
-                        break;
-                    default:
-                        break;
-                }
-            }
-            else if (os.Platform == PlatformID.Win32NT)
-            {
-                switch (vs.Major)
-                {
-                    case 3:
-                        operatingSystem = "NT 3.51";
-                        break;
-                    case 4:
-                        operatingSystem = "NT 4.0";
-                        break;
-                    case 5:
-                        if (vs.Minor == 0)
-                            operatingSystem = "2000";
-                        else
-                            operatingSystem = "XP";
-                        break;
-                    case 6:
-                        if (vs.Minor == 0)
-                            operatingSystem = "Vista";
-                        else if (vs.Minor == 1)
-                            operatingSystem = "7";
-                        else if (vs.Minor == 2)
-                            operatingSystem = "8";
-                        else
-                            operatingSystem = "8.1";
-                        break;
-                    case 10:
-                        operatingSystem = "10";
-                        break;
-                    default:
-                        break;
-                }
-            }
-            //Make sure we actually got something in our OS check
-            //We don't want to just return " Service Pack 2" or " 32-bit"
-            //That information is useless without the OS version.
-            if (operatingSystem != "")
-            {
-                //Got something.  Let's prepend "Windows" and get more info.
-                operatingSystem = "Windows " + operatingSystem;
-                //See if there's a service pack installed.
-                if (os.ServicePack != "")
-                {
-                    //Append it to the OS name.  i.e. "Windows XP Service Pack 3"
-                    operatingSystem += " " + os.ServicePack;
-                }
-                //Append the OS architecture.  i.e. "Windows XP Service Pack 3 32-bit"
-                //operatingSystem += " " + getOSArchitecture().ToString() + "-bit";
-            }
-            //Return the information we've gathered.
-            return operatingSystem;
         }
 
         public static Session SessionXPO()
@@ -1647,7 +1558,7 @@ namespace logicpos
                         if (databaseExists) return true;
                         else break;
                     case "MySql":
-                        string sql = string.Format("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '{0}';", SharedFramework.DatabaseName);
+                        string sql = $"SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '{SharedFramework.DatabaseName}';";
                         var resultCmd = LocalSessionXpo.ExecuteScalar(sql);
                         if (resultCmd != null)
                         {
@@ -1680,48 +1591,6 @@ namespace logicpos
             }
         }
 
-
-        //Call With
-        //Thread thread = new Thread(new ThreadStart(LARGE_COMPUTATION_METHOD));
-        //GlobalApp.DialogThreadNotify = new ThreadNotify (new ReadyEvent (Utils.ThreadDialogReadyEvent));
-        //thread.Start();
-        //GlobalApp.DialogThreadWork = Utils.GetThreadDialog(this);
-        //GlobalApp.DialogThreadWork.Run();
-        //
-        //With Arguments
-        //Thread thread = new Thread(() => LARGE_COMPUTATION_METHOD(ARGUMENTS));
-        //
-        //Important Note: Dont Forget to call WakeupMain() in METHOD end of LARGE_COMPUTATION_METHOD else it never wakes
-        //GlobalApp.DialogThreadNotify.WakeupMain();
-        //In the end of LARGE_COMPUTATION_METHOD
-        //ex
-        //...
-        //    return true;
-        //}
-        //catch (Exception ex)
-        //{
-        //    _logger.Error(ex.Message, ex);
-        //    //Notify WakeupMain and Call ReadyEvent
-        //    GlobalApp.DialogThreadNotify.WakeupMain();
-        //    return false;
-        //}
-        //
-        //Quick Use
-        //Thread thread = new Thread(() => result = Utils.ThreadRoutine(3000));
-        //Utils.ThreadStart(pSourceWindow, thread);
-        //GlobalApp.DialogThreadNotify.WakeupMain();
-        //_logger.Debug(String.Format("Result: [{0}]", result));
-        //
-        //Links
-        //How to pass parameters to ThreadStart method in Thread?
-        //http://stackoverflow.com/questions/3360555/how-to-pass-parameters-to-threadstart-method-in-thread
-
-        public static void ThreadStart(Window pSourceWindow, Thread pThread)
-        {
-            string backupProcess = string.Empty;
-            ThreadStart(pSourceWindow, pThread, backupProcess);
-        }
-
         public static void ThreadStart(Window pSourceWindow, Thread pThread, string backupProcess)
         {
             try
@@ -1742,29 +1611,6 @@ namespace logicpos
             {
                 _logger.Error(ex.Message, ex);
             }
-        }
-
-        public static void ThreadLoading(Window pSourceWindow)
-        {
-            try
-            {
-                // Proptection for Startup Windows and Backup, If dont have a valid window, dont show loading (BackGround Thread)
-                if (pSourceWindow != null)
-                {
-                    GlobalApp.DialogThreadWork = GetThreadDialog(pSourceWindow, false);
-                    GlobalApp.DialogThreadWork.Run();
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
-        }
-
-        //Sample Test Routines : Used in Startup Window
-        public static bool ThreadRoutine()
-        {
-            return ThreadRoutine(2500);
         }
 
         public static bool ThreadRoutine(int pMilliseconds)
@@ -2151,60 +1997,6 @@ namespace logicpos
             }
         }
 
-        public static Gtk.Style GetImageBackground(string pFile)
-        {
-            /* IN008024 */
-            string fileImageBackground = GetThemeFileLocation(pFile);
-
-            if (fileImageBackground != null && File.Exists(fileImageBackground))
-            {
-                Gdk.Pixmap pixmap = FileToPixmap(fileImageBackground);
-
-                if (pixmap != null)
-                {
-                    Gtk.Style style = new Style();
-                    style.SetBgPixmap(StateType.Normal, pixmap);
-                    return style;
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            else
-            {
-                _logger.Error(string.Format("Missing Theme[{0}] Image: [{1}]", LogicPOS.Settings.AppSettings.AppTheme, fileImageBackground));
-                return null;
-            }
-        }
-
-        public static Gtk.Style GetImageBackgroundDash(string pFile)
-        {
-
-            if (pFile != null && File.Exists(pFile))
-            {
-                Gdk.Pixmap pixmap = FileToPixmap(pFile);
-
-                if (pixmap != null)
-                {
-                    Gtk.Style style = new Style();
-                    style.SetBgPixmap(StateType.Normal, pixmap);
-                    return style;
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            else
-            {
-                _logger.Error(string.Format("Missing Theme[{0}] Image: [{1}]", LogicPOS.Settings.AppSettings.AppTheme, pFile));
-                return null;
-            }
-        }
-
-
-
         public static Gtk.Style GetImageBackgroundDashboard(Gdk.Pixbuf pFilename)
         {
             using (MemoryStream stream = new MemoryStream())
@@ -2243,11 +2035,6 @@ namespace logicpos
         public static void ShowNotifications(Window pSourceWindow, Session pSession)
         {
             ShowNotifications(pSourceWindow, pSession, Guid.Empty);
-        }
-
-        public static void ShowNotifications(Window pSourceWindow, Guid pLoggedUser)
-        {
-            ShowNotifications(pSourceWindow, XPOSettings.Session, pLoggedUser);
         }
 
         /// <summary>
@@ -2526,23 +2313,6 @@ namespace logicpos
             return (result);
         }
 
-        internal static bool UseCCDailyTicket()
-        {
-            bool result = false;
-
-            try
-            {
-                result = Convert.ToBoolean(SharedFramework.PreferenceParameters["USE_CC_DAILY_TICKET"]);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
-
-            return (result);
-        }
-
-
         internal static bool UsePosPDFViewer()
         {
             bool result = false;
@@ -2558,7 +2328,7 @@ namespace logicpos
 
             return (result);
         }
-        //Criação de variável nas configurações para imprimir ou não ticket's [IN:013328]
+
         internal static bool PrintTicket()
         {
             bool result;
@@ -2574,23 +2344,6 @@ namespace logicpos
 
             return (result);
         }
-        //Criação de variável nas configurações para imprimir ou não ticket's com designação comercial da empresa
-        internal static bool PrintTicketComercialName()
-        {
-            bool result;
-            try
-            {
-                result = Convert.ToBoolean(SharedFramework.PreferenceParameters["TICKET_PRINT_COMERCIAL_NAME"]);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-                return true;
-            }
-
-            return (result);
-        }
-
 
         //ATCUD Documentos - Criação do QRCode e ATCUD IN016508
         //Criação de variável nas configurações para imprimir ou não QRCode
@@ -2653,8 +2406,6 @@ namespace logicpos
 
             return (result);
         }
-
-
 
 
         //Commented by Mario because its not used in Project
@@ -2730,22 +2481,6 @@ namespace logicpos
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Network
 
-        public static bool DownloadFileFromUrl(string pUrl, string pTargetFile)
-        {
-            using (WebClient webClient = new WebClient())
-            {
-                try
-                {
-                    webClient.DownloadFile(pUrl, pTargetFile);
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    _logger.Error(ex.Message, ex);
-                    return false;
-                }
-            }
-        }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //License
@@ -2800,15 +2535,6 @@ namespace logicpos
             }
 
             return result;
-        }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Customers
-
-        //Used to Save or Update Customers when Process Finance Documents
-        public static object SaveOrUpdateCustomer(Window pSourceWindow, string pName, string pAddress, string pLocality, string pZipCode, string pCity, string pPhone, string pEmail, cfg_configurationcountry pCountry, string pFiscalNumber, string pCardNumber, decimal pDiscount, string pNotes)
-        {
-            return SaveOrUpdateCustomer(pSourceWindow, null, pName, pAddress, pLocality, pZipCode, pCity, pPhone, pEmail, pCountry, pFiscalNumber, pCardNumber, pDiscount, pNotes);
         }
 
         public static object SaveOrUpdateCustomer(Window pSourceWindow, erp_customer pCustomer, string pName, string pAddress, string pLocality, string pZipCode, string pCity, string pPhone, string pEmail, cfg_configurationcountry pCountry, string pFiscalNumber, string pCardNumber, decimal pDiscount, string pNotes)
@@ -2939,14 +2665,6 @@ namespace logicpos
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Collections
-
-        public static bool ContainsKey(NameValueCollection pCollection, string pKey)
-        {
-            return pCollection.AllKeys.Contains(pKey);
-        }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //SessionApp
 
         public static string GetSessionFileName()
@@ -2995,33 +2713,6 @@ namespace logicpos
             {
                 _logger.Error(ex.Message, ex);
             }
-        }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //DataTable
-
-        //Init DataTable Structure/Columns from Dictionary
-        //Use like
-        //Dictionary<string, Type> dtColumns = new Dictionary<string, Type>();
-        //dtColumns.Add("VatRate", typeof(string));
-        public static DataTable InitDataTable(Dictionary<string, Type> pDataTableColumns)
-        {
-            DataTable result = new DataTable();
-
-            try
-            {
-                foreach (var item in pDataTableColumns)
-                {
-                    DataColumn dataColumn = new DataColumn(item.Key, item.Value);
-                    result.Columns.Add(dataColumn);
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
-
-            return result;
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -3109,21 +2800,6 @@ namespace logicpos
             }
         }
 
-        public static void openWorkSessionFromBackOffice(Window pSourceWindow)
-        {
-            try
-            {
-                PosCashDialog dialog = new PosCashDialog(pSourceWindow, DialogFlags.DestroyWithParent);
-                int response = dialog.Run();
-                dialog.Destroy();
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
-        }
-
-
         //TK016235 BackOffice - Mode
         public static void startNewDocumentFromBackOffice(Window pSourceWindow)
         {
@@ -3162,7 +2838,6 @@ namespace logicpos
             }
         }
 
-
         //TK016235 BackOffice - Mode
         public static void OpenArticleStockDialog(Window pSourceWindow)
         {
@@ -3199,49 +2874,6 @@ namespace logicpos
             }
         }
 
-
-        public static void startReportFromBackOffice(Window pSourceWindow)
-        {
-            //CustomReport.ProcessReportDocumentMasterList(displayMode
-            //           , resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], token.ToString().ToLower())
-            //           , "[DocumentFinanceMaster.DocumentType.Ord]"
-            //           , "([DocumentFinanceMaster.DocumentType.Code]) [DocumentFinanceMaster.DocumentType.Designation]",/* IN009066 */
-            //           reportFilter,
-            //           reportFilterHumanReadable
-            //           );
-        }
-
-
-        public static void startTreeViewFromBackOffice(Dictionary<string, AccordionNode> _accordionChildDocumentsTemp)
-        {
-            try
-            {
-
-
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
-        }
-
-        //UNDER CONSTRUCTION
-        public static bool CheckValidSystemProtection()
-        {
-            bool result = false;
-
-            try
-            {
-                result = true;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
-
-            return result;
-        }
-
         //Protecções de integridade das BD's e funcionamento da aplicação [IN:013327]
         public static bool IsPortOpen(string portName)
         {
@@ -3273,6 +2905,5 @@ namespace logicpos
 
             return new string(stringChars);
         }
-
     }
 }

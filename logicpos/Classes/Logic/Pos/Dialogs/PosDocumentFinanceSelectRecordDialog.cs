@@ -1334,7 +1334,7 @@ WHERE
                     SharedFramework.PreferenceParameters,
                     customTokensDictionary
                 };
-                string mailBody = shared.Classes.Utils.Utils.replaceTextTokens(mailBodyTemplate, tokensDictionaryList);
+                string mailBody = LogicPOS.Utility.StringUtils.ReplaceTextTokens(mailBodyTemplate, tokensDictionaryList);
 
                 PosSendEmailDialog dialog = new PosSendEmailDialog(
                     pSourceWindow,

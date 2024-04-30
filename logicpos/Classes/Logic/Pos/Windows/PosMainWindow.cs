@@ -61,7 +61,7 @@ namespace logicpos
 
         private void touchButtonPosToolbarApplicationClose_Clicked(object sender, EventArgs e)
         {
-            LogicPos.Quit(this);
+            LogicPOSApp.Quit(this);
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

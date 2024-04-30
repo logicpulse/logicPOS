@@ -208,12 +208,12 @@ namespace logicpos.Classes.Logic.License
         {
             if (!SharedFramework.AppUseBackOfficeMode)
             {
-                LogicPos logicPos = new LogicPos();
+                LogicPOSApp logicPos = new LogicPOSApp();
                 logicPos.StartApp(AppMode.FrontOffice);
             }
             else
             {
-                LogicPos logicPos = new LogicPos();
+                LogicPOSApp logicPos = new LogicPOSApp();
                 logicPos.StartApp(AppMode.Backoffice);
             }
         }

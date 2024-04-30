@@ -28,7 +28,7 @@ using static logicpos.datalayer.App.DataLayerUtils;
 
 namespace logicpos
 {
-    internal class LogicPos
+    internal class LogicPOSApp
     {
         //Log4Net
         private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -47,17 +47,11 @@ namespace logicpos
             try
             {
                 Init();
-                /* IN009005: this must stay here if "loading" is implemented */
                 GlobalApp.DialogThreadNotify.WakeupMain();
                 InitAppMode(pMode);
 
-                // Old Stub used to Init MediaNova Module
-                InitModules();
-
-                /* IN009164 */
                 InitBackupTimerProcess();
 
-                // Check if user cancel App Run on BootStrap and Launch Quit
                 if (!_quitAfterBootStrap) Application.Run();
             }
             catch (Exception ex)
@@ -91,8 +85,7 @@ namespace logicpos
             }
         }
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
+      
         private void Init()
         {
             try
@@ -621,7 +614,7 @@ namespace logicpos
                 files[pFileList.Count] = POSSettings.ProtectedFilesFileName;
 
                 //Empty password, to zip without password
-                result = shared.Classes.Utils.Utils.ZipPack(files, filename, string.Empty);
+                result = LogicPOS.Utility.Compression.ZipPack(files, filename, string.Empty);
             }
             catch (Exception ex)
             {
@@ -667,15 +660,6 @@ namespace logicpos
             };
         }
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-        // Old Stub used to Init MediaNova Module : Leave it here to House future Modules or Plugins Initialization
-        public void InitModules()
-        {
-        }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Static
 
         public static void QuitWithoutConfirmation(bool pAudit = true)
         {

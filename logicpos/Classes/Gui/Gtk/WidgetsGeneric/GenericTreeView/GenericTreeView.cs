@@ -1281,7 +1281,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                                         getCultureFromDB = DataLayerFramework.Settings["customCultureResourceDefinition"];
 
                                     }
-                                    if (!logicpos.Utils.getCultureFromOS(getCultureFromDB))
+                                    if (!logicpos.Utils.OSHasCulture(getCultureFromDB))
                                     {
                                         SharedFramework.CurrentCulture = new System.Globalization.CultureInfo(ConfigurationManager.AppSettings["customCultureResourceDefinition"]);
                                         DataLayerFramework.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];

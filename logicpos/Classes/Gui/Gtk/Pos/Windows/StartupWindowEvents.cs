@@ -47,7 +47,7 @@ namespace logicpos
 
         private void ButtonKeyQuit_Clicked(object sender, EventArgs e)
         {
-            LogicPos.Quit(this);
+            LogicPOSApp.Quit(this);
         }
 
         private void ButtonKeyFrontOffice_Clicked(object sender, EventArgs e)

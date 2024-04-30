@@ -124,6 +124,7 @@
   -->
   <ItemGroup>
     <Compile Include="App\POSFramework.cs" />
+    <Compile Include="Classes\DataLayer\DataBaseBackupFileInfo.cs" />
     <Compile Include="Classes\Enums\App\AppMode.cs" />
     <Compile Include="Classes\Enums\App\ScreenSize.cs" />
     <Compile Include="Classes\Enums\DataBaseRestoreFrom.cs" />
@@ -431,7 +432,7 @@
     <Compile Include="Classes\Utils\FrameworkCalls.cs" />
     <Compile Include="Classes\Utils\INIFile.cs" />
     <Compile Include="Classes\Utils\Utils.cs" />
-    <Compile Include="logicpos.cs" />
+    <Compile Include="LogicPOSApp.cs" />
     <Compile Include="Classes\Utils\UtilsGraphic.cs" />
     <Compile Include="Classes\Utils\XmlToObjectParser.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -2068,10 +2069,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Folder Include="Resources\Database\Data\BackOfficeMode\en\grb\" />
-    <Folder Include="Resources\Database\Data\BackOfficeMode\en\usa\" />
-    <Folder Include="Resources\Database\Data\BackOfficeMode\es\esp\" />
-    <Folder Include="Resources\Database\Data\BackOfficeMode\fr\fra\" />
     <Folder Include="Resources\Database\Data\Default\en\grb\" />
     <Folder Include="Resources\Database\Data\Default\en\usa\" />
     <Folder Include="Resources\Database\Data\Default\es\esp\" />
@@ -2093,7 +2090,6 @@
     <Folder Include="Resources\Database\Data\Retail\pt\ago\" />
     <Folder Include="Resources\Database\Data\Retail\pt\bra\" />
     <Folder Include="Resources\Database\Data\Retail\pt\moz\" />
-    <Folder Include="Resources\Database\Other\AppMode\" />
     <Folder Include="Resources\Database\Other\Country\ES\" />
     <Folder Include="Resources\Database\Other\Country\FR\" />
     <Folder Include="Resources\Database\Other\Country\PT\" />
@@ -6712,6 +6708,10 @@
     <ProjectReference Include="..\logicpos.shared\logicpos.shared.csproj">
       <Project>{fb74327c-1794-47ec-8f52-fd3f464f3258}</Project>
       <Name>logicpos.shared</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LogicPOS.Utility\LogicPOS.Utility.csproj">
+      <Project>{18488ce5-c06f-40f5-9339-0467a47d7985}</Project>
+      <Name>LogicPOS.Utility</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

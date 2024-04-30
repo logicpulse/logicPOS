@@ -51,6 +51,14 @@ namespace logicpos
             _loadingThread.Start();
         }
 
+        private static void KeepUIResponsive()
+        {
+            while (Application.EventsPending())
+            {
+                Application.RunIteration();
+            }
+        }
+
         [STAThread]
         public static void Main(string[] args)
         {
@@ -68,30 +76,17 @@ namespace logicpos
 
                     ShowLoadingScreen();
 
-                    //Start Loading plugins / resources
-                    FirstSteps();
+                    InitializePluguins();
 
-                    // Flush pending events to keep the GUI reponsive
-                    while (Application.EventsPending())
-                    {
-                        Application.RunIteration();
-                    }
+                    KeepUIResponsive();
 
-                    /* IN009203 - prevent lauching multiple instances of application */
+    
                     if (_singleProgramInstance.IsSingleInstance)
-                    {/* No app instance is running, start it */
-                        /* IN009034 */
+                    {
                         StartApp();
                     }
                     else
-                    {/* App already running, show info to user and ends the main flow. */
-
-                        {/* Forcing to load Custom Culture when showing proper message to user for Mutex implementation  */
-
-                            /* IN006018 and IN007009 */
-                            //logicpos.shared.App.CustomRegion.RegisterCustomRegion();
-                            //Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(DataLayerFramework.Settings["customCultureResourceDefinition"]);
-                        }
+                    {
                         Utils.ShowMessageNonTouch(null, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_pos_instance_already_running"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_information"));
                         return;
                     }
@@ -103,7 +98,7 @@ namespace logicpos
             }
         }
 
-        private static void FirstSteps()
+        private static void InitializePluguins()
         {
             try
             {
@@ -157,14 +152,8 @@ namespace logicpos
 
         }
 
-        /// <summary>
-        /// Start application.
-        /// Please see IN009005 and IN009034 for details.
-        /// </summary>
         private static void StartApp()
         {
-
-
             if (SharedFramework.PluginLicenceManager != null && (!Debugger.IsAttached || _forceShowPluginLicenceWithDebugger))
             {
                 _logger.Debug("void StartApp() :: Boot LogicPos after LicenceManager.IntellilockPlugin");
@@ -191,16 +180,19 @@ namespace logicpos
             }
         }
 
-        /// <summary>
-        /// Start application in FrontOffice mode.
-		/// See IN009034 for further details.
-        /// </summary>
         private static void StartFrontOffice()
         {
             _logger.Debug("void StartFrontOffice() :: StartApp: AppMode.FrontOffice");
 
-            LogicPos logicPos = new LogicPos();
+            LogicPOSApp logicPos = new LogicPOSApp();
             logicPos.StartApp(AppMode.FrontOffice);
+        }
+
+        private static string GetCultureFromDb()
+        {
+            string sql = "SELECT value FROM cfg_configurationpreferenceparameter where token = 'CULTURE';";
+            XPOSettings.Session = Utils.SessionXPO();
+            return XPOSettings.Session.ExecuteScalar(sql).ToString();
         }
 
         //IN009296 BackOffice - Mudar o idioma da aplicação
@@ -208,26 +200,24 @@ namespace logicpos
         {
             try
             {
+                string cultureFromDb = GetCultureFromDb();
 
-                string sql = "SELECT value FROM cfg_configurationpreferenceparameter where token = 'CULTURE';";
-                XPOSettings.Session = Utils.SessionXPO();
-                string getCultureFromDB = XPOSettings.Session.ExecuteScalar(sql).ToString();
-                if (!Utils.getCultureFromOS(getCultureFromDB))
+                if (Utils.OSHasCulture(cultureFromDb) == false)
                 {
                     SharedFramework.CurrentCulture = new CultureInfo("pt-PT");
                     DataLayerFramework.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
                 }
                 else
                 {
-                    DataLayerFramework.Settings["customCultureResourceDefinition"] = getCultureFromDB;
-                    SharedFramework.CurrentCulture = new System.Globalization.CultureInfo(getCultureFromDB);
+                    DataLayerFramework.Settings["customCultureResourceDefinition"] = cultureFromDb;
+                    SharedFramework.CurrentCulture = new System.Globalization.CultureInfo(cultureFromDb);
                 }
 
             }
             catch
             {
 
-                if (!Utils.getCultureFromOS(ConfigurationManager.AppSettings["customCultureResourceDefinition"]))
+                if (!Utils.OSHasCulture(ConfigurationManager.AppSettings["customCultureResourceDefinition"]))
                 {
                     SharedFramework.CurrentCulture = new CultureInfo("pt-PT");
                     DataLayerFramework.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];

@@ -98,7 +98,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //_dashboardButton.Clicked += ((AccordionNode)_accordionChildArticlesTemp["Article"]).Clicked;
             //_dashboardButton.Content = ((Widget)_accordionChildDocumentsTemp["DocumentsListall"].Content);
             //_dashboardButton.Content = Utils.GetGenericTreeViewXPO<DashBoard>(this);
-            _exitButton.Clicked += delegate { LogicPos.Quit(this); };
+            _exitButton.Clicked += delegate { LogicPOSApp.Quit(this); };
 
             //TK016248 BackOffice - Check New Version
             _NewVersion.Clicked += delegate
@@ -118,7 +118,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     {
                         System.Diagnostics.Process.Start(lPathToUpdater);
                         //Process.Start(lPathToUpdater);
-                        LogicPos.QuitWithoutConfirmation();
+                        LogicPOSApp.QuitWithoutConfirmation();
                     }
                 }
                 //}
