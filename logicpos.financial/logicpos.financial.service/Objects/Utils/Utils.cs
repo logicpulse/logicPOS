@@ -123,7 +123,7 @@ namespace logicpos.financial.service.Objects
                     AND (fm.EntityOid <> '{0}')
                 )"
                 // Skip FinalConsumer
-                , SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity
+                , SharedSettings.FinalConsumerId
                 );
             }
 

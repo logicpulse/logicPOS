@@ -292,7 +292,7 @@ namespace logicpos.shared.App
         public static Guid XpoOidArticleClassCustomerCard = new Guid("49ea35ba-35f3-440f-946e-ab32578ed741");
 
         //Customer | Final Consumer | 999999990
-        public static Guid XpoOidDocumentFinanceMasterFinalConsumerEntity = new Guid("0cf40622-578b-417d-b50f-e945fefb5d68");
+        public static Guid FinalConsumerId { get; set; } = new Guid("0cf40622-578b-417d-b50f-e945fefb5d68");
 
         //ConfigurationPaymentMethod
         public static Guid XpoOidConfigurationPaymentMethodCurrentAccount = new Guid("6db009fd-6729-4353-a4d0-d599c4c19297");

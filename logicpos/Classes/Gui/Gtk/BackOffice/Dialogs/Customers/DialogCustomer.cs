@@ -70,7 +70,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     _totalNumberOfFinanceDocuments = Convert.ToUInt16(countResult);
                     /* IN009249 - end */
                     
-                    if (_customer.Oid == SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity) _isFinalConsumerEntity = true;
+                    if (_customer.Oid == SharedSettings.FinalConsumerId) _isFinalConsumerEntity = true;
                 }
 
                 //erp_customer customers = null;

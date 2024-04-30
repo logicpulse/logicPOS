@@ -346,7 +346,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if (ProcessFinanceDocumentParameter == null)
                 {
                     //If ProcessFinanceDocumentParameter is not null fill Dialog with value from ProcessFinanceDocumentParameter, implemented for SplitPayments
-                    GetCustomerDetails("Oid", SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity.ToString());
+                    GetCustomerDetails("Oid", SharedSettings.FinalConsumerId.ToString());
                 }
                 //Fill Dialog Inputs with Stored Values, ex when we Work with SplitPayments
                 else

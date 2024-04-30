@@ -287,9 +287,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 //If Not SimplifiedInvoice
                 if (EntryBoxSelectDocumentFinanceType.Value.Oid != SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice && EntryBoxSelectDocumentFinanceType.Value.Oid != SharedSettings.XpoOidDocumentFinanceTypeCreditNote)
                 {
-                    filterBaseCustomer = filterBaseCustomer + string.Format(" AND Oid <> '{0}'", SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity);
+                    filterBaseCustomer = filterBaseCustomer + string.Format(" AND Oid <> '{0}'", SharedSettings.FinalConsumerId);
                     //If FinalConsumerEntity, Clean it
-                    if (_pagePad2.EntryBoxSelectCustomerName != null || _pagePad2.EntryBoxSelectCustomerName.Value.Oid == SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity)
+                    if (_pagePad2.EntryBoxSelectCustomerName != null || _pagePad2.EntryBoxSelectCustomerName.Value.Oid == SharedSettings.FinalConsumerId)
                     {
                         if (EntryBoxSelectCopyDocumentFinance.Value == null)
                         {
@@ -301,9 +301,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 else
                 {
                     //If SimplifiedInvoice Update to it, If not FinalConsumerEntity, Update to it (Consumidor Final)
-                    if (_pagePad2.EntryBoxSelectCustomerName.Value == null || _pagePad2.EntryBoxSelectCustomerName.Value.Oid != SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity)
+                    if (_pagePad2.EntryBoxSelectCustomerName.Value == null || _pagePad2.EntryBoxSelectCustomerName.Value.Oid != SharedSettings.FinalConsumerId)
                     {
-                        erp_customer customer = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity);
+                        erp_customer customer = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), SharedSettings.FinalConsumerId);
                         //Assign Value From FiscalNumber
                         _pagePad2.GetCustomerDetails("Oid", customer.Oid.ToString());
                     }

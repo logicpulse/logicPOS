@@ -86,7 +86,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         if (
                             PaymentMethod != null && PaymentMethod.Token == "CURRENT_ACCOUNT" &&
                             (
-                                Customer.Oid == SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity ||
+                                Customer.Oid == SharedSettings.FinalConsumerId ||
                                 _entryBoxSelectCustomerName.EntryValidation.Text == string.Empty ||
                                 _entryBoxSelectCustomerFiscalNumber.EntryValidation.Text == string.Empty
                             )
@@ -283,7 +283,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     //Prevent Default Customer Entity and Hidden Customer (Only with Name Filled) to Process CC Documents
                     if (                      
                         (Customer != null &&(
-                            Customer.Oid == SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity ||
+                            Customer.Oid == SharedSettings.FinalConsumerId ||
                             _entryBoxSelectCustomerName.EntryValidation.Text == string.Empty ||
                             _entryBoxSelectCustomerFiscalNumber.EntryValidation.Text == string.Empty)
                         )
@@ -762,7 +762,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 //Init Variables
                 decimal totalDocument = (ArticleBagPartialPayment == null) ? ArticleBagFullPayment.TotalFinal : ArticleBagPartialPayment.TotalFinal;
-                bool isFinalConsumerEntity = (Customer != null && Customer.Oid == SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity);
+                bool isFinalConsumerEntity = (Customer != null && Customer.Oid == SharedSettings.FinalConsumerId);
                 bool isSingularEntity = (isFinalConsumerEntity || FiscalNumber.IsSingularEntity(_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text, _entryBoxSelectCustomerCountry.Value.Code2));
                 // Encrypt pFieldValue to use in Sql Filter
                 string fiscalNumberFilterValue = string.Empty;
@@ -915,7 +915,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         //Update Address And FiscalNumber Require Fields
         private void UpdateCustomerAddressAndFiscalNumberRequireFields()
         {
-            bool isFinalConsumerEntity = (Customer != null && Customer.Oid == SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity);
+            bool isFinalConsumerEntity = (Customer != null && Customer.Oid == SharedSettings.FinalConsumerId);
             bool isSingularEntity = (
                 isFinalConsumerEntity ||
                 _entryBoxSelectCustomerFiscalNumber.EntryValidation.Validated &&

@@ -36,7 +36,7 @@ namespace logicpos.financial.library.Classes.Finance
         private static readonly string _decimalFormat = SharedSettings.DecimalFormatSAFTPT;
         private static readonly string _decimalFormatTotals = SharedSettings.DecimalFormatGrossTotalSAFTPT;
         //Default Customer
-        private static readonly erp_customer _defaultCustomer = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity);
+        private static readonly erp_customer _defaultCustomer = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), SharedSettings.FinalConsumerId);
         //Default Currency
         private static readonly cfg_configurationcurrency _defaultCurrency = SharedSettings.ConfigurationSystemCurrency;
 
@@ -365,7 +365,7 @@ namespace logicpos.financial.library.Classes.Finance
                 ;"
                 , _documentDateStart.ToString(SharedSettings.DateTimeFormat)
                 , _documentDateEnd.ToString(SharedSettings.DateTimeFormat)
-                , SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity
+                , SharedSettings.FinalConsumerId
             );
             //_logger.Debug(string.Format("sqlCheckDefaultCustomer: [{0}]", sqlCheckDefaultCustomer));
 

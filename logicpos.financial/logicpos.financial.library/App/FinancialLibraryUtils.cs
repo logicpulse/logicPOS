@@ -478,7 +478,7 @@ namespace logicpos.financial.library.App
                     //Assign Required if ArticleClassCustomerCard Detected
                     if (article.Type.Oid == SharedSettings.XpoOidArticleClassCustomerCard
                         && (
-                            pCustomer.Oid == SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity
+                            pCustomer.Oid == SharedSettings.FinalConsumerId
                             || string.IsNullOrEmpty(pCustomer.CardNumber)
                         )
                     )
@@ -601,7 +601,7 @@ namespace logicpos.financial.library.App
                         //Prepare ProcessFinanceDocumentParameter
                         ProcessFinanceDocumentParameter processFinanceDocumentParameter = new ProcessFinanceDocumentParameter(SharedSettings.XpoOidDocumentFinanceTypeConferenceDocument, articleBag)
                         {
-                            Customer = SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity
+                            Customer = SharedSettings.FinalConsumerId
                         };
 
                         fin_documentordermain orderMain = (fin_documentordermain)XPOSettings.Session.GetObjectByKey(typeof(fin_documentordermain), currentOrderMain.PersistentOid);
@@ -661,7 +661,7 @@ namespace logicpos.financial.library.App
 
             try
             {
-                string filterCriteria = string.Format("Oid = '{0}'", SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity.ToString());
+                string filterCriteria = string.Format("Oid = '{0}'", SharedSettings.FinalConsumerId.ToString());
                 result = (SharedUtils.GetXPGuidObjectFromCriteria(typeof(erp_customer), filterCriteria) as erp_customer);
             }
             catch (Exception ex)

@@ -746,7 +746,7 @@ namespace logicpos.financial.library.Classes.Finance
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
                 //ParentDocument : Customer <> ParentDocument Customer
 
-                if (documentType != null && customer != null && customer.Oid == SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity
+                if (documentType != null && customer != null && customer.Oid == SharedSettings.FinalConsumerId
                     && (
                         documentType.Oid != SharedSettings.XpoOidDocumentFinanceTypeInvoice
                         && documentType.Oid != SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice
@@ -755,7 +755,7 @@ namespace logicpos.financial.library.Classes.Finance
                     )
                 {
                     //Has an Exception to base Rule, is Valid if is Derived from a Parent Document 
-                    if (documentParent != null && documentParent.EntityOid != SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity)
+                    if (documentParent != null && documentParent.EntityOid != SharedSettings.FinalConsumerId)
                     {
                         ResultAdd(FinanceValidationError.ERROR_RULE_DOCUMENT_FINANCE_TYPE_WITH_FINAL_CONSUMER_INVALID);
                     }

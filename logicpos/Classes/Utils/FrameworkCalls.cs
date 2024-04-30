@@ -200,7 +200,7 @@ namespace logicpos
                     //If Enabled in Config and is not a FinalConsumer
                     //É obrigatório comunicar um documento de transporte à AT cujo destinatário seja um consumidor final?
                     //Não. Estão excluídos das obrigações de comunicação os documentos de transporte em que o destinatário ou adquirente seja consumidor final.
-                    result = (/*SettingsApp.ServiceATSendDocumentsWayBill &&*/ documentFinanceMaster.EntityOid != SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity);
+                    result = (/*SettingsApp.ServiceATSendDocumentsWayBill &&*/ documentFinanceMaster.EntityOid != SharedSettings.FinalConsumerId);
                 }
             }
 
@@ -350,7 +350,15 @@ namespace logicpos
         //ProcessFinanceDocument
         //Use: DocumentFinanceMaster resultDocument = FrameworkCalls.ProcessFinanceDocument(SourceWindow, Invoices, CreditNotes, Customer, PaymentMethod, pPaymentAmount, pPaymentNotes);
 
-        public static fin_documentfinancepayment PersistFinanceDocumentPayment(Window pSourceWindow, List<fin_documentfinancemaster> pInvoices, List<fin_documentfinancemaster> pCreditNotes, Guid pCustomer, Guid pPaymentMethod, Guid pConfigurationCurrency, decimal pPaymentAmount, string pPaymentNotes = "")
+        public static fin_documentfinancepayment PersistFinanceDocumentPayment(
+            Window pSourceWindow, 
+            List<fin_documentfinancemaster> pInvoices, 
+            List<fin_documentfinancemaster> pCreditNotes, 
+            Guid pCustomer, 
+            Guid pPaymentMethod, 
+            Guid pConfigurationCurrency, 
+            decimal pPaymentAmount, 
+            string pPaymentNotes = "")
         {
             fin_documentfinancepayment result = null;
 

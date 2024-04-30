@@ -78,7 +78,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             );
 
             //Protected Records
-            ProtectedRecords.Add(SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity);//FinalConsumerEntity
+            ProtectedRecords.Add(SharedSettings.FinalConsumerId);//FinalConsumerEntity
         }
     }
 }
