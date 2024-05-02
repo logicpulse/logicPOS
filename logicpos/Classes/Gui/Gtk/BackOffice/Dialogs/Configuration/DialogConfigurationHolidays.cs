@@ -33,43 +33,43 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 Entry entryOrd = new Entry();
                 BOWidgetBox boxLabel = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_order"), entryOrd);
                 vboxTab1.PackStart(boxLabel, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxLabel, _dataSourceRow, "Ord", SharedSettings.RegexIntegerGreaterThanZero, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxLabel, _dataSourceRow, "Ord", LogicPOS.Utility.RegexUtils.RegexIntegerGreaterThanZero, true));
 
                 //Code
                 Entry entryCode = new Entry();
                 BOWidgetBox boxCode = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_code"), entryCode);
                 vboxTab1.PackStart(boxCode, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCode, _dataSourceRow, "Code", SharedSettings.RegexIntegerGreaterThanZero, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCode, _dataSourceRow, "Code", LogicPOS.Utility.RegexUtils.RegexIntegerGreaterThanZero, true));
 
                 //Designation
                 Entry entryDesignation = new Entry();
                 BOWidgetBox boxDesignation = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"), entryDesignation);
                 vboxTab1.PackStart(boxDesignation, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", SharedSettings.RegexAlfaNumericExtended, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true));
 
                 //Description
                 Entry entryDescription = new Entry();
                 BOWidgetBox boxDescription = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_description"), entryDescription);
                 vboxTab1.PackStart(boxDescription, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDescription, _dataSourceRow, "Description", SharedSettings.RegexAlfaNumericExtended, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDescription, _dataSourceRow, "Description", LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false));
 
                 //Year
                 Entry entryYear = new Entry();
                 BOWidgetBox boxYear = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_year"), entryYear);
                 vboxTab1.PackStart(boxYear, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxYear, _dataSourceRow, "Year", SharedSettings.RegexDateYearHolidays, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxYear, _dataSourceRow, "Year", LogicPOS.Utility.RegexUtils.RegexDateYearHolidays, true));
 
                 //Month
                 Entry entryMonth = new Entry();
                 BOWidgetBox boxMonth = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_month"), entryMonth);
                 vboxTab1.PackStart(boxMonth, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxMonth, _dataSourceRow, "Month", SharedSettings.RegexDateMonth, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxMonth, _dataSourceRow, "Month", LogicPOS.Utility.RegexUtils.RegexDateMonth, true));
 
                 //Day
                 Entry entryDay = new Entry();
                 BOWidgetBox boxDay = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_day"), entryDay);
                 vboxTab1.PackStart(boxDay, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDay, _dataSourceRow, "Day", SharedSettings.RegexDateDay, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDay, _dataSourceRow, "Day", LogicPOS.Utility.RegexUtils.RegexDateDay, true));
 
                 //Disabled
                 CheckButton checkButtonDisabled = new CheckButton(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_disabled"));

@@ -458,7 +458,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         private void _buttonKeyBarCode_Clicked(object sender, EventArgs e)
         {
             string fileWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_input_text_barcode.png";
-            logicpos.Utils.ResponseText dialogResponse = logicpos.Utils.GetInputText(SourceWindow, DialogFlags.Modal, fileWindowIcon, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_barcode_articlecode"), string.Empty, SharedSettings.RegexAlfaNumericExtended, true);
+            logicpos.Utils.ResponseText dialogResponse = logicpos.Utils.GetInputText(SourceWindow, DialogFlags.Modal, fileWindowIcon, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_barcode_articlecode"), string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true);
 
             if (dialogResponse.ResponseType == ResponseType.Ok)
             {
@@ -477,7 +477,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         private void _buttonKeyCardCode_Clicked(object sender, EventArgs e)
         {
             string fileWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_pos_ticketpad_card_entry.png";
-            logicpos.Utils.ResponseText dialogResponse = logicpos.Utils.GetInputText(SourceWindow, DialogFlags.Modal, fileWindowIcon, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_cardcode_small"), string.Empty, SharedSettings.RegexAlfaNumericExtended, true);
+            logicpos.Utils.ResponseText dialogResponse = logicpos.Utils.GetInputText(SourceWindow, DialogFlags.Modal, fileWindowIcon, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_cardcode_small"), string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true);
 
             if (dialogResponse.ResponseType == ResponseType.Ok)
             {

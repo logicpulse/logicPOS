@@ -61,11 +61,6 @@ namespace logicpos.shared.App
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //DateTime
 
-        public static string CurrentDateTime()
-        {
-            return CurrentDateTime(SharedSettings.DateTimeFormat);
-        }
-
         public static string CurrentDateTime(string pDateTimeFormat)
         {
             return DataLayerUtils.CurrentDateTimeAtomic().ToString(pDateTimeFormat, CultureInfo.GetCultureInfo(SharedFramework.CurrentCulture.Name));
@@ -96,22 +91,6 @@ namespace logicpos.shared.App
             DateTime tmpData = Convert.ToDateTime(pValue);
             string result = "" + tmpData.ToString("" + SharedSettings.DateTimeFormatDocumentDate);
             return (result);
-        }
-
-        public static string DateToString(DateTime pValue)
-        {
-            string result = string.Empty;
-
-            try
-            {
-                result = pValue.ToString(SharedSettings.DateTimeFormatDocumentDate);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
-
-            return result;
         }
 
         public static string DateTimeToString(DateTime pValue)
@@ -192,17 +171,6 @@ namespace logicpos.shared.App
                 }
             }
             return result;
-        }
-
-        //From Date to Now
-        public static List<DateTime> GetUtilDays(DateTime pDateStart)
-        {
-            return GetUtilDays(pDateStart, CurrentDateTimeAtomicMidnight());
-        }
-
-        public static List<DateTime> GetUtilDays(DateTime pDateStart, DateTime pDateEnd)
-        {
-            return GetUtilDays(DateTimeToMidnightDate(pDateStart), DateTimeToMidnightDate(pDateEnd), false);
         }
 
         public static List<DateTime> GetUtilDays(DateTime pDateStart, bool pWithHoydays)
@@ -450,99 +418,6 @@ namespace logicpos.shared.App
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //UTF8
-
-        public static byte[] Utf8Encode(string pSource)
-        {
-            //Encode string to UTF8
-            return Encoding.UTF8.GetBytes(pSource);
-        }
-
-        public static string Utf8Decode(byte[] pSource)
-        {
-            //String from UTF8 encoding
-            return Encoding.UTF8.GetString(pSource);
-        }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Network/Hardware
-
-        public static PhysicalAddress GetMacAddress()
-        {
-            foreach (NetworkInterface nic in NetworkInterface.GetAllNetworkInterfaces())
-            {
-                //Skip, Get First Available MacAddress
-                //if (nic.NetworkInterfaceType == NetworkInterfaceType.Ethernet && nic.OperationalStatus == OperationalStatus.Up)
-                //{
-                return nic.GetPhysicalAddress();
-                //}
-            }
-            return null;
-        }
-
-        public static string GetMacAddressString()
-        {
-            PhysicalAddress physicalAddress = GetMacAddress();
-            return physicalAddress.ToString();
-        }
-
-        public static string GetFQDN()
-        {
-            string domainName = IPGlobalProperties.GetIPGlobalProperties().DomainName;
-            string hostName = Dns.GetHostName();
-            string fqdn;
-            if (!hostName.Contains(domainName))
-                fqdn = hostName + "." + domainName;
-            else
-                fqdn = hostName;
-
-            return fqdn;
-        }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        // RSA - Sign
-
-        //Test with
-        //string signedR1 = Utils.SHA1SignMessage(@"2010-05-18;2010-05-18T11:22:19;FAC 001/14;3.12;");
-        //returns [qE0NX1hZyl26hgP1woTiBM/sWCZZvCumH76IZ2J1MPnbAl......EvX+s4yBQAJhyN8N0aE=]
-        //public static string SignDataToSHA1Base64(string pEncryptData, bool pDebug = false)
-        //{
-        //    return SHA1SignMessage(SettingsApp.RsaPrivateKey, Encoding.UTF8.GetBytes(pEncryptData), pDebug);
-        //}
-
-        public static string SignDataToSHA1Base64(string pPrivateKeyPT, string pPrivateKeyAO, string pEncryptData, bool pDebug = false)
-        {
-            if (ConfigurationManager.AppSettings["cultureFinancialRules"] == "pt-AO")
-                return SHA1SignMessage(pPrivateKeyAO, Encoding.UTF8.GetBytes(pEncryptData), pDebug);
-
-            else
-                return SHA1SignMessage(pPrivateKeyPT, Encoding.UTF8.GetBytes(pEncryptData), pDebug);
-        }
-
-        private static string SHA1SignMessage(string pPrivateKey, byte[] pMessage, bool pDebug = false)
-        {
-            string tempPath = Convert.ToString(DataLayerFramework.Path["temp"]);
-
-            //Init RSACryptoServiceProvider with Key
-            RSACryptoServiceProvider rsaCryptoServiceProvider = new RSACryptoServiceProvider();
-
-            rsaCryptoServiceProvider.FromXmlString(pPrivateKey);
-
-            //SHA1 Sign 
-            byte[] signature = rsaCryptoServiceProvider.SignData(pMessage, CryptoConfig.MapNameToOID("SHA1"));
-            string signatureBase64 = Convert.ToBase64String(signature);
-
-            if (pDebug)
-            {
-                File.WriteAllBytes(tempPath + "encrypt.txt", pMessage);
-                File.WriteAllBytes(tempPath + "encrypted.sha1", signature);
-                File.WriteAllText(tempPath + "encrypted.b64", signatureBase64);
-            }
-
-            return signatureBase64;
-        }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //MD5 Hash File
 
         public static string MD5HashFile(string file)
@@ -572,19 +447,6 @@ namespace logicpos.shared.App
             return result;
         }
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        // Streams
-
-        // Convert String to System.IO.Stream
-        public static MemoryStream StringToStream(string input)
-        {
-            // convert string to stream
-            byte[] byteArray = Encoding.UTF8.GetBytes(input);
-            MemoryStream stream = new MemoryStream(byteArray);
-
-            return stream;
-        }
-
         public static string StreamToString(Stream stream)
         {
             // convert stream to string
@@ -592,23 +454,6 @@ namespace logicpos.shared.App
             return reader.ReadToEnd();
         }
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //XPO
-
-        public static string GetValueFromResultSet(SelectedData pSelectedData, int pIndex, string pField)
-        {
-            string result = "";
-            for (int i = 0; i < pSelectedData.ResultSet[0].Rows.Length; i++)
-            {
-                if (("" + pSelectedData.ResultSet[0].Rows[i].Values[0]).Equals(pField, StringComparison.OrdinalIgnoreCase))
-                {
-                    result = "" + pSelectedData.ResultSet[1].Rows[pIndex].Values[i];
-                    break;
-                }
-            }
-            result = result.Replace("\\s", " ");
-            return (result);
-        }
 
         public static XPGuidObject GetXPGuidObjectFromCriteria(Type pXPGuidObjectType, string pCriteriaFilter)
         {
@@ -622,22 +467,6 @@ namespace logicpos.shared.App
             return result;
         }
 
-        //Helper Method to get XPCollections
-        public static XPCollection GetXPCollectionFromCriteria(Type pXPGuidObjectType)
-        {
-            return GetXPCollectionFromCriteria(XPOSettings.Session, pXPGuidObjectType, null, null);
-        }
-
-        public static XPCollection GetXPCollectionFromCriteria(Session pSession, Type pXPGuidObjectType)
-        {
-            return GetXPCollectionFromCriteria(pSession, pXPGuidObjectType, null, null);
-        }
-
-        public static XPCollection GetXPCollectionFromCriteria(Session pSession, Type pXPGuidObjectType, CriteriaOperator pCriteriaOperator)
-        {
-            return GetXPCollectionFromCriteria(pSession, pXPGuidObjectType, pCriteriaOperator, null);
-        }
-
         public static XPCollection GetXPCollectionFromCriteria(Session pSession, Type pXPGuidObjectType, CriteriaOperator pCriteriaOperator, SortingCollection pSortingCollection)
         {
             XPCollection result = new XPCollection(pSession, pXPGuidObjectType, pCriteriaOperator);
@@ -645,11 +474,6 @@ namespace logicpos.shared.App
             return result;
         }
 
-        //Use This Way
-        //foreach (SelectStatementResultRow row in xPSelectData.Data) 
-        //{
-        //  _logger.Debug(string.Format("Message: [{0}]", row.Values[xPSelectData.GetFieldIndex("ButtonLabel")].ToString()));
-        //}
         public static XPSelectData GetSelectedDataFromQuery(string pSql)
         {
             return GetSelectedDataFromQuery(XPOSettings.Session, pSql);
@@ -754,11 +578,6 @@ namespace logicpos.shared.App
             return sortingCollection;
         }
 
-        public static int GetNextTableFieldInt(string pTable, string pField)
-        {
-            return GetNextTableFieldInt(pTable, pField, string.Empty);
-        }
-
         public static int GetNextTableFieldInt(string pTable, string pField, string pFilter)
         {
             int result = -1;
@@ -847,26 +666,6 @@ namespace logicpos.shared.App
             }
         }
 
-        public static dynamic GetObjectFromField(Session pSession, Type pType, string pSearchField, string pSearchValue)
-        {
-            string executeSql = string.Format(@"SELECT Oid FROM {0} WHERE (Disabled IS NULL OR Disabled  <> 1) AND {1} = '{2}';", pType.Name, pSearchField, pSearchValue);
-            Guid guid = GetGuidFromQuery(pSession, executeSql);
-            if (guid != Guid.Empty)
-            {
-                XPClassInfo classInfo = pSession.GetClassInfo(pType);
-                return (pSession.GetObjectByKey(classInfo, guid));
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        public static dynamic GetObjectFromSession(Session pSession, Type pType, Guid pOid)
-        {
-            XPClassInfo classInfo = pSession.GetClassInfo(pType);
-            return (pSession.GetObjectByKey(classInfo, pOid));
-        }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Type Helpers
@@ -936,11 +735,6 @@ namespace logicpos.shared.App
             return pInput.ToString(SharedSettings.DecimalFormat, SharedFramework.CurrentCulture.NumberFormat);
         }
 
-        public static string DoubleToStringCurrency(double pInput)
-        {
-            return string.Format("{0}{1}", DoubleToString(pInput), SharedSettings.ConfigurationSystemCurrency.Acronym);
-        }
-
         //Used to Format a String into a Decimal Format String ex (string) 1 converted to (string) 1.00
         public static string StringToDecimalAndToStringAgain(string pInput)
         {
@@ -966,11 +760,6 @@ namespace logicpos.shared.App
                 pAuditTypeToken,
                 pDescription
             );
-        }
-
-        public static bool Audit(Session pSession, sys_userdetail pLoggedUser, pos_configurationplaceterminal pLoggedTerminal, string pAuditTypeToken)
-        {
-            return Audit(pSession, pLoggedUser, pLoggedTerminal, pAuditTypeToken, string.Empty);
         }
 
         public static bool Audit(Session pSession, sys_userdetail pLoggedUser, pos_configurationplaceterminal pLoggedTerminal, string pAuditTypeToken, string pDescription = "")
@@ -1054,16 +843,6 @@ namespace logicpos.shared.App
             return result;
         }
 
-        public static void ExecuteUnixCommand(string pFileName, string pArguments = "")
-        {
-            System.Diagnostics.Process proc = new System.Diagnostics.Process();
-            proc.EnableRaisingEvents = false;
-            proc.StartInfo.FileName = pFileName;
-            if (pArguments != string.Empty) proc.StartInfo.Arguments = pArguments;
-            proc.Start();
-            proc.WaitForExit();
-        }
-
         /* ERR201810#15 - Database backup issues */
         //public static String RelativePath(string pFileOrPath)
         //{
@@ -1099,16 +878,6 @@ namespace logicpos.shared.App
             }
         }
 
-        //Mono CLR version + Windows CLR version
-        public static string ProductVersionCLR
-        {
-            get
-            {
-                return Assembly.GetExecutingAssembly().ImageRuntimeVersion;
-            }
-        }
-
-        //Get Product Assembly
         public static Assembly ProductAssembly
         {
             get
@@ -1140,26 +909,6 @@ namespace logicpos.shared.App
                 _logger.Error(ex.Message, ex);
             }
         }
-
-        public static void ClearCache()
-        {
-            try
-            {
-                string tmpPath = Convert.ToString(DataLayerFramework.Path["cache"]);
-                if (Directory.Exists(tmpPath))
-                {
-                    Directory.Delete(tmpPath, true);
-                }
-                CreateDirectory(tmpPath);
-            }
-            catch (IOException ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
-        }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Cross Plataform
 
         public static bool IsRunningOnMono()
         {
@@ -1211,134 +960,8 @@ namespace logicpos.shared.App
             return (result);
         }
 
-      
-        public static string TranslateNumber(string pv_strNumber)
-        {
-            string[,] lv_strNumExt = new string[10, 30];
-            lv_strNumExt[0, 0] = "zero";
-            lv_strNumExt[0, 1] = "um";
-            lv_strNumExt[0, 2] = "dois";
-            lv_strNumExt[0, 3] = "três";
-            lv_strNumExt[0, 4] = "quatro";
-            lv_strNumExt[0, 5] = "cinco";
-            lv_strNumExt[0, 6] = "seis";
-            lv_strNumExt[0, 7] = "sete";
-            lv_strNumExt[0, 8] = "oito";
-            lv_strNumExt[0, 9] = "nove";
-            lv_strNumExt[0, 10] = "dez";
-            lv_strNumExt[0, 11] = "onze";
-            lv_strNumExt[0, 12] = "doze";
-            lv_strNumExt[0, 13] = "treze";
-            lv_strNumExt[0, 14] = "quatorze";
-            lv_strNumExt[0, 15] = "quinze";
-            lv_strNumExt[0, 16] = "dezaseis";
-            lv_strNumExt[0, 17] = "dezasete";
-            lv_strNumExt[0, 18] = "dezoito";
-            lv_strNumExt[0, 19] = "dezanove";
-            lv_strNumExt[1, 2] = "vinte";
-            lv_strNumExt[1, 3] = "trinta";
-            lv_strNumExt[1, 4] = "quarenta";
-            lv_strNumExt[1, 5] = "cinquenta";
-            lv_strNumExt[1, 6] = "sessenta";
-            lv_strNumExt[1, 7] = "setenta";
-            lv_strNumExt[1, 8] = "oitenta";
-            lv_strNumExt[1, 9] = "noventa";
-            lv_strNumExt[2, 1] = "cento";
-            lv_strNumExt[2, 2] = "duzentos";
-            lv_strNumExt[2, 3] = "trezentos";
-            lv_strNumExt[2, 4] = "quatrocentos";
-            lv_strNumExt[2, 5] = "quinhentos";
-            lv_strNumExt[2, 6] = "seicentos";
-            lv_strNumExt[2, 7] = "setecentos";
-            lv_strNumExt[2, 8] = "oitocentos";
-            lv_strNumExt[2, 9] = "novecentos";
-            lv_strNumExt[3, 1] = "mil";
-            for (int lv_intI = 2; lv_intI < 10; lv_intI++)
-            {
-                lv_strNumExt[3, lv_intI] = lv_strNumExt[0, lv_intI] + " mil";
-            }
-
-            lv_strNumExt[4, 1] = "mil";
-            for (int lv_intI = 1; lv_intI < 10; lv_intI++)
-            {
-                lv_strNumExt[4, lv_intI] = lv_strNumExt[1, lv_intI] + " mil";
-            }
-
-            string lv_strResult = "";
-            string lv_strNumber = pv_strNumber.Trim().Replace(",", ".");
-            string lv_strTmp = "";
-            for (int lv_intI = lv_strNumber.Length - 1; lv_intI >= 0; lv_intI--)
-            {
-                lv_strTmp += lv_strNumber.Substring(lv_intI, 1);
-            }
-
-            lv_strNumber = lv_strTmp;
-            for (int lv_intI = lv_strNumber.Length - 1; lv_intI >= 0; lv_intI--)
-            {
-                switch (lv_intI)
-                {
-
-                    case 0:
-                        int lv_intNum = int.Parse(lv_strNumber.Substring(lv_intI, 1));
-                        lv_strResult += lv_strNumExt[lv_intI, lv_intNum] + " e ";
-                        break;
-
-                    case 1:
-                        lv_intNum = int.Parse(lv_strNumber.Substring(lv_intI, 1));
-                        if (lv_intNum > 1)
-                        {
-                            lv_strResult += lv_strNumExt[lv_intI, lv_intNum] + " e ";
-                            if (int.Parse(lv_strNumber.Substring(lv_intI - 1, 1)) == 0)
-                            {
-                                lv_intI = 0;
-                            }
-                        }
-                        else if (lv_intNum == 1)
-                        {
-                            lv_intNum = int.Parse(lv_strNumber.Substring(0, 1));
-                            lv_strResult += lv_strNumExt[lv_intI - 1, 10 + lv_intNum] + " e ";
-                            lv_intI = 0;
-                        }
-                        break;
-
-                    case 2:
-                        lv_intNum = int.Parse(lv_strNumber.Substring(lv_intI, 1));
-                        if (lv_intNum >= 1)
-                        {
-                            lv_strResult += lv_strNumExt[lv_intI, lv_intNum] + " e ";
-                        }
-                        break;
-
-                    case 3:
-                        lv_intNum = int.Parse(lv_strNumber.Substring(lv_intI, 1));
-                        if (lv_intNum >= 1)
-                        {
-                            lv_strResult += lv_strNumExt[lv_intI, lv_intNum] + " e ";
-                        }
-
-                        break;
-                }
-            }
-
-            if (lv_strResult.EndsWith(" e "))
-            {
-                lv_strResult = lv_strResult.Substring(0, lv_strResult.Length - 3) + " ";
-            }
-            if (lv_strResult.Equals("cento "))
-            {
-                lv_strResult = "cem ";
-            }
-
-            return (lv_strResult);
-        }
-
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //PartialPayments
-
-        public static decimal GetPartialPaymentPayedItems(Guid pDocumentOrderMain, Guid pArticle)
-        {
-            return GetPartialPaymentPayedItems(XPOSettings.Session, pDocumentOrderMain, pArticle);
-        }
 
         public static decimal GetPartialPaymentPayedItems(Session pSession, Guid pDocumentOrderMain, Guid pArticle)
         {
@@ -1398,68 +1021,6 @@ namespace logicpos.shared.App
             }
         }
 
-        /// <summary>
-        /// Get value from dictionary with LINQ
-        /// Deprecated: better to get it with key exLogicPOS.Settings.AppSettings.PreferenceParameters[token]
-        /// </summary>
-        /// <param name="token"></param>
-        /// <returns></returns>
-        //public static string GetPreferencesValue(string token)
-        //{
-        //    string result = string.Empty;
-
-        //    try
-        //    {
-        //        result =LogicPOS.Settings.AppSettings.PreferenceParameters.FirstOrDefault(k => k.Key.Contains(token)).Value;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.Debug(ex.Message, ex);
-        //    }
-
-        //    return result;
-        //}
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //File
-
-        public static void WriteTextToFile(string pFileName, string pText)
-        {
-            WriteTextToFile(pFileName, pText, FileMode.Append);
-        }
-
-        public static void WriteTextToFile(string pFileName, string pText, FileMode pFileMode)
-        {
-            using (FileStream fs = new FileStream(pFileName, FileMode.Append, FileAccess.Write))
-            {
-                using (StreamWriter sw = new StreamWriter(fs))
-                {
-                    sw.WriteLine(pText);
-                }
-            }
-        }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //CSV and Comma Delimited Strings
-
-        //Convert a CommaDelimited String into List of Strings
-        public static List<string> CommaDelimitedStringToStringList(string pInput)
-        {
-            return CommaDelimitedStringToStringList(pInput, ';');
-        }
-
-        public static List<string> CommaDelimitedStringToStringList(string pInput, char pSeparator)
-        {
-            string[] arrayString = pInput.Split(pSeparator);
-            List<string> listResult = new List<string>();
-
-            for (int i = 0; i < arrayString.Length; i++)
-            {
-                listResult.Add(arrayString[i]);
-            }
-            return listResult;
-        }
-
         public static List<int> CommaDelimitedStringToIntList(string pInput)
         {
             return CommaDelimitedStringToIntList(pInput, ',');
@@ -1482,12 +1043,6 @@ namespace logicpos.shared.App
 
             }
             return listResult;
-        }
-
-        //Convert a CommaDelimited Generic List into a Comma Delimited String
-        public static string StringListToCommaDelimitedString<T>(List<T> pList)
-        {
-            return StringListToCommaDelimitedString(pList, ';');
         }
 
         public static string StringListToCommaDelimitedString<T>(List<T> pList, char pSeparator)
@@ -1583,40 +1138,6 @@ namespace logicpos.shared.App
             }
 
             return result.Distinct().ToList();
-        }
-
-        public static List<string> FilterList(List<string> pMessageList, string pSearch)
-        {
-            return FilterList(pMessageList, new List<string> { pSearch });
-        }
-
-        public static List<string> FilterList(List<string> pMessageList, List<string> pSearchList)
-        {
-            bool debug = false;
-            List<string> result = new List<string>();
-
-            try
-            {
-                var resultFromLinq =
-                    from name in pMessageList
-                    from startWithWord in pSearchList
-                    where name.StartsWith(startWithWord)
-                    select name
-                ;
-
-                foreach (string str in resultFromLinq)
-                {
-                    result.Add(str);
-                    if (debug) _logger.Debug(string.Format("Message: [{0}]", str));
-                }
-
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
-
-            return result;
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -2121,7 +1642,7 @@ namespace logicpos.shared.App
             };
 
             //Check if is a Blank GUID 
-            if (pValidate == new Guid().ToString() && pRegExRule == SharedSettings.RegexGuid)
+            if (pValidate == new Guid().ToString() && pRegExRule == LogicPOS.Utility.RegexUtils.RegexGuid)
             {
                 return false;
             }
@@ -2164,94 +1685,6 @@ namespace logicpos.shared.App
                 }
             }
             return false;
-        }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //WebServices
-
-        //Get <endpoint address="http://localhost:59735/Service1.svc" binding="basicHttpBinding"
-        //ex http://localhost:59735/Service1.svc
-        public static string GetEndpointAddress()
-        {
-            string result = string.Empty;
-
-            try
-            {
-                Configuration configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal);
-                ServiceModelSectionGroup serviceModelSectionGroup = ServiceModelSectionGroup.GetSectionGroup(configuration);
-                ClientSection clientSection = serviceModelSectionGroup.Client;
-                var el = clientSection.Endpoints[0];
-                result = el.Address.ToString();
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
-
-            return result;
-        }
-
-        public static bool IsWebServiceOnline(string pUrl)
-        {
-            bool result = false;
-
-            try
-            {
-                HttpWebRequest httpReq = (HttpWebRequest)WebRequest.Create(pUrl);
-                httpReq.AllowAutoRedirect = false;
-                HttpWebResponse httpRes = (HttpWebResponse)httpReq.GetResponse();
-                if (httpRes.StatusCode != HttpStatusCode.OK)
-                {
-                    result = false;
-                }
-                else
-                {
-                    result = true;
-                }
-
-                httpRes.Close();
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
-
-            return result;
-        }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Reflection
-
-        //Get Property value from String
-        public static object GetPropValue(object pObject, string pProperty)
-        {
-            return pObject.GetType().GetProperty(pProperty).GetValue(pObject, null);
-        }
-
-        public static object GetPropertyValueFromType(Type pType, string pPropertyName)
-        {
-            object result = null;
-
-            try
-            {
-                // Get a PropertyInfo of specific property type(T).GetProperty(....)
-                PropertyInfo propertyInfo = pType.GetProperty(pPropertyName, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
-                // Use the PropertyInfo to retrieve the value from the type by not passing in an instance
-                // Note: use first parameter has null, static classes cannot be instanced, else use object
-                result = propertyInfo.GetValue(null, null);
-
-                //PropertyInfo[] properties = type.GetProperties(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
-                //foreach (PropertyInfo property in properties)
-                //{
-                //    _logger.Debug(String.Format("[{0}] == [{1}]", property.Name, pFieldName));
-                //}
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
-
-            return result;
         }
 
         public static object GetFieldValueFromType(Type pType, string pFieldName)

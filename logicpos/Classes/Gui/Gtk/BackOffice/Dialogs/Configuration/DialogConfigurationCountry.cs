@@ -33,31 +33,31 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 Entry entryOrd = new Entry();
                 BOWidgetBox boxLabel = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_order"), entryOrd);
                 vboxTab1.PackStart(boxLabel, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxLabel, _dataSourceRow, "Ord", SharedSettings.RegexIntegerGreaterThanZero, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxLabel, _dataSourceRow, "Ord", LogicPOS.Utility.RegexUtils.RegexIntegerGreaterThanZero, true));
 
                 //Code
                 Entry entryCode = new Entry();
                 BOWidgetBox boxCode = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_code"), entryCode);
                 vboxTab1.PackStart(boxCode, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCode, _dataSourceRow, "Code", SharedSettings.RegexIntegerGreaterThanZero, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCode, _dataSourceRow, "Code", LogicPOS.Utility.RegexUtils.RegexIntegerGreaterThanZero, true));
 
                 //Designation
                 Entry entryDesignation = new Entry();
                 BOWidgetBox boxDesignation = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"), entryDesignation);
                 vboxTab1.PackStart(boxDesignation, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", SharedSettings.RegexAlfaNumericExtended, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true));
 
                 //Capital
                 Entry entryCapital = new Entry();
                 BOWidgetBox boxCapital = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_country_capital"), entryCapital);
                 vboxTab1.PackStart(boxCapital, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCapital, _dataSourceRow, "Capital", SharedSettings.RegexAlfaNumericExtended, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCapital, _dataSourceRow, "Capital", LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false));
 
                 //Currency
                 Entry entryCurrency = new Entry();
                 BOWidgetBox boxCurrency = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_currency"), entryCurrency);
                 vboxTab1.PackStart(boxCurrency, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCurrency, _dataSourceRow, "Currency", SharedSettings.RegexAlfa, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCurrency, _dataSourceRow, "Currency", LogicPOS.Utility.RegexUtils.RegexAlfa, false));
 
                 //Disabled
                 CheckButton checkButtonDisabled = new CheckButton(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_disabled"));
@@ -77,19 +77,19 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 Entry entryCode2 = new Entry();
                 BOWidgetBox boxCode2 = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_country_code2"), entryCode2);
                 vboxTab2.PackStart(boxCode2, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCode2, _dataSourceRow, "Code2", SharedSettings.RegexAlfaCountryCode2, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCode2, _dataSourceRow, "Code2", LogicPOS.Utility.RegexUtils.RegexAlfaCountryCode2, true));
 
                 //Code3
                 Entry entryCode3 = new Entry();
                 BOWidgetBox boxCode3 = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_country_code3"), entryCode3);
                 vboxTab2.PackStart(boxCode3, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCode3, _dataSourceRow, "Code3", SharedSettings.RegexAlfaCountryCode3, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCode3, _dataSourceRow, "Code3", LogicPOS.Utility.RegexUtils.RegexAlfaCountryCode3, true));
 
                 //CurrencyCode
                 Entry entryCurrencyCode = new Entry();
                 BOWidgetBox boxCurrencyCode = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_currency_code"), entryCurrencyCode);
                 vboxTab2.PackStart(boxCurrencyCode, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCurrencyCode, _dataSourceRow, "CurrencyCode", SharedSettings.RegexAcronym3Chars, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCurrencyCode, _dataSourceRow, "CurrencyCode", LogicPOS.Utility.RegexUtils.RegexAcronym3Chars, false));
 
                 //RegExFiscalNumber
                 Entry entryRegExFiscalNumber = new Entry() { Sensitive = false };

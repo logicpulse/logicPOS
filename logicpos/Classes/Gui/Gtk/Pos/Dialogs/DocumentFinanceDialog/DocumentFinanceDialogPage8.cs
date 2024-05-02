@@ -51,19 +51,19 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             ValueCustomer = (erp_customer)DataLayerUtils.GetXPGuidObject(_session, typeof(erp_customer), customerGuid);
 
             //Client (Used in _crudWidgetList)
-            _entryBoxClient = new EntryBoxValidation(_sourceWindow, string.Format("{0}/WL", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_customer")), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericExtended, true);
+            _entryBoxClient = new EntryBoxValidation(_sourceWindow, string.Format("{0}/WL", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_customer")), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true);
             _entryBoxClient.EntryValidation.Changed += delegate { Validate(); };
-            _entryBoxClientValidation = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_customer"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericExtended, true);
+            _entryBoxClientValidation = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_customer"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true);
             _entryBoxClientValidation.EntryValidation.Changed += delegate { Validate(); };
             //FiscalNumber
             _entryBoxFiscalNumber = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_fiscal_number"), KeyboardMode.Alfa, ValueCustomer.Country.RegExFiscalNumber, true);
             _entryBoxFiscalNumber.EntryValidation.Changed += delegate { /*ValidateFiscalNumber();*/ Validate(); };
             //Address
-            _entryBoxAddress = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_address"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericExtended, false);
+            _entryBoxAddress = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_address"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false);
             //_entryBoxAddress.WidthRequest = _pagePad.EntryBoxMaxWidth;
             _entryBoxAddress.EntryValidation.Changed += delegate { Validate(); };
             //Locality
-            _entryBoxLocality = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_locality"), KeyboardMode.Alfa, SharedSettings.RegexAlfa, false);
+            _entryBoxLocality = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_locality"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfa, false);
             //_entryBoxLocality.WidthRequest = _pagePad.EntryBoxMaxWidth;
             _entryBoxLocality.EntryValidation.Changed += delegate { Validate(); };
             //ZipCode
@@ -71,7 +71,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             _entryBoxZipCode.WidthRequest = 200;
             _entryBoxZipCode.EntryValidation.Changed += delegate { Validate(); };
             //City
-            _entryBoxCity = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_city"), KeyboardMode.Alfa, SharedSettings.RegexAlfa, false);
+            _entryBoxCity = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_city"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfa, false);
             //_entryBoxCity.WidthRequest = _pagePad.EntryBoxMaxWidth - 200;
             _entryBoxCity.EntryValidation.Changed += delegate { Validate(); };
 
@@ -81,7 +81,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //_entryBoxSelectCountry.WidthRequest = _pagePad.EntryBoxMaxWidth;
             _entryBoxSelectCountry.Entry.IsEditable = false;
             //CountryValidation
-            _entryBoxSelectCountryValidation = new XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry>(_sourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_country"), "Designation", "Oid", ValueCustomer.Country, criteriaOperator, SharedSettings.RegexGuid, true);
+            _entryBoxSelectCountryValidation = new XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry>(_sourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_country"), "Designation", "Oid", ValueCustomer.Country, criteriaOperator, LogicPOS.Utility.RegexUtils.RegexGuid, true);
             //_entryBoxSelectCountryValidation.WidthRequest = _pagePad.EntryBoxMaxWidth;
             _entryBoxSelectCountryValidation.EntryValidation.IsEditable = false;
             //Test _selectedXPGuidObject :)
@@ -90,7 +90,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //};
 
             //Notes
-            _entryBoxNotes = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_notes"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericExtended, false);
+            _entryBoxNotes = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_notes"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false);
             //_entryBoxNotes.WidthRequest = _pagePad.EntryBoxMaxWidth;
             _entryBoxNotes.EntryValidation.Changed += delegate { Validate(); };
 
@@ -105,8 +105,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //_entryBoxCountryValidation.EntryValidation.Text = xCustomer.Country.Designation;
 
             //Using Labels ;)
-            GenericCRUDWidget<XPGuidObject> crudWidgetClientName = new GenericCRUDWidgetXPO(_entryBoxClient, _entryBoxClient.Label, ValueCustomer, "Name", SharedSettings.RegexAlfaNumericExtended, true);
-            GenericCRUDWidget<XPGuidObject> crudWidgetClientCountry = new GenericCRUDWidgetXPO(_entryBoxSelectCountry, _entryBoxSelectCountry.Label, ValueCustomer, "Country", SharedSettings.RegexGuid, true);
+            GenericCRUDWidget<XPGuidObject> crudWidgetClientName = new GenericCRUDWidgetXPO(_entryBoxClient, _entryBoxClient.Label, ValueCustomer, "Name", LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true);
+            GenericCRUDWidget<XPGuidObject> crudWidgetClientCountry = new GenericCRUDWidgetXPO(_entryBoxSelectCountry, _entryBoxSelectCountry.Label, ValueCustomer, "Country", LogicPOS.Utility.RegexUtils.RegexGuid, true);
             _crudWidgetList.Add(crudWidgetClientName);
             _crudWidgetList.Add(crudWidgetClientCountry);
 

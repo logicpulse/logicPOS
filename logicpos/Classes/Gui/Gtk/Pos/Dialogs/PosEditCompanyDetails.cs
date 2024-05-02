@@ -107,7 +107,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 //Country
                 CriteriaOperator criteriaOperatorSystemCountry = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1) AND (RegExFiscalNumber IS NOT NULL)");
-                _entryBoxSelectSystemCountry = new XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry>(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_country"), "Designation", "Oid", intialValueConfigurationCountry, criteriaOperatorSystemCountry, SharedSettings.RegexGuid, true);
+                _entryBoxSelectSystemCountry = new XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry>(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_country"), "Designation", "Oid", intialValueConfigurationCountry, criteriaOperatorSystemCountry, LogicPOS.Utility.RegexUtils.RegexGuid, true);
                 _entryBoxSelectSystemCountry.EntryValidation.IsEditable = false;
                 _entryBoxSelectSystemCountry.EntryValidation.Validate(_entryBoxSelectSystemCountry.Value.Oid.ToString());
                 //Disabled, Now Country and Currency are disabled
@@ -132,7 +132,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 //Currency
                 CriteriaOperator criteriaOperatorSystemCurrency = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1)");
-                _entryBoxSelectSystemCurrency = new XPOEntryBoxSelectRecordValidation<cfg_configurationcurrency, TreeViewConfigurationCurrency>(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_currency"), "Designation", "Oid", intialValueConfigurationCurrency, criteriaOperatorSystemCurrency, SharedSettings.RegexGuid, true);
+                _entryBoxSelectSystemCurrency = new XPOEntryBoxSelectRecordValidation<cfg_configurationcurrency, TreeViewConfigurationCurrency>(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_currency"), "Designation", "Oid", intialValueConfigurationCurrency, criteriaOperatorSystemCurrency, LogicPOS.Utility.RegexUtils.RegexGuid, true);
                 _entryBoxSelectSystemCurrency.EntryValidation.IsEditable = false;
                 _entryBoxSelectSystemCurrency.EntryValidation.Validate(_entryBoxSelectSystemCurrency.Value.Oid.ToString());
 

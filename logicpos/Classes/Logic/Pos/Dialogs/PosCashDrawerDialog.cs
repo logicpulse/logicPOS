@@ -150,7 +150,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             else
             {
                 _entryBoxMovementAmountMoney.EntryValidation.Required = true;
-                _entryBoxMovementAmountMoney.EntryValidation.Rule = SharedSettings.RegexDecimalGreaterEqualThanZero;
+                _entryBoxMovementAmountMoney.EntryValidation.Rule = LogicPOS.Utility.RegexUtils.RegexDecimalGreaterEqualThanZero;
                 _entryBoxMovementAmountMoney.EntryValidation.Sensitive = true;
                 //Required to enable keyboard button
                 _entryBoxMovementAmountMoney.ButtonKeyBoard.Sensitive = true;

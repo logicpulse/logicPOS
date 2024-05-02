@@ -58,13 +58,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _fixedContent = new Fixed();
 
             //Init DateEntry Start
-            _entryBoxDateStart = new EntryBoxValidationDatePickerDialog(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date_start"), DateStart, SharedSettings.RegexDate, true);
+            _entryBoxDateStart = new EntryBoxValidationDatePickerDialog(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date_start"), DateStart, LogicPOS.Utility.RegexUtils.RegexDate, true);
             _entryBoxDateStart.EntryValidation.Text = DateStart.ToString(SharedSettings.DateFormat);
             _entryBoxDateStart.EntryValidation.Validate();
             _entryBoxDateStart.ClosePopup += entryBoxDateStart_ClosePopup;
             _entryBoxDateStart.EntryValidation.Changed += entryBoxDateStartEntryValidation_Changed;
             //Init DateEntry End
-            _entryBoxDateEnd = new EntryBoxValidationDatePickerDialog(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date_end"), DateEnd, SharedSettings.RegexDate, true);
+            _entryBoxDateEnd = new EntryBoxValidationDatePickerDialog(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date_end"), DateEnd, LogicPOS.Utility.RegexUtils.RegexDate, true);
             _entryBoxDateEnd.EntryValidation.Text = DateEnd.ToString(SharedSettings.DateFormat);
             _entryBoxDateEnd.EntryValidation.Validate();
             _entryBoxDateEnd.ClosePopup += entryBoxDateEnd_ClosePopup;

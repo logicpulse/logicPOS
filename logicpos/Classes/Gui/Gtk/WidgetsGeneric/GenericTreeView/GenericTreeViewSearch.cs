@@ -93,7 +93,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             Size sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon = ExpressionEvaluatorExtended.sizePosToolbarButtonIconSizeDefault;
             //WIP: String fileIconSearchAdvanced = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_search_advanced.png");
 
-            string regexAlfaNumericExtended = SharedSettings.RegexAlfaNumericExtended;
+            string regexAlfaNumericExtended = LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended;
 
             //SearchCriteria
             _entryBoxSearchCriteria = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewsearch_search_label"), KeyboardMode.AlfaNumeric, regexAlfaNumericExtended, false);

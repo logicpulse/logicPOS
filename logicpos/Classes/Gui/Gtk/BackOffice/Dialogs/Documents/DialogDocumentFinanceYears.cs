@@ -32,19 +32,19 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 Entry entryAcronym = new Entry();
                 BOWidgetBox boxAcronym = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_acronym"), entryAcronym);
                 vboxTab1.PackStart(boxAcronym, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxAcronym, _dataSourceRow, "Acronym", SharedSettings.RegexDocumentSeriesYearAcronym, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxAcronym, _dataSourceRow, "Acronym", LogicPOS.Utility.RegexUtils.RegexDocumentSeriesYearAcronym, true));
 
                 //Designation
                 Entry entryDesignation = new Entry();
                 BOWidgetBox boxDesignation = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"), entryDesignation);
                 vboxTab1.PackStart(boxDesignation, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", SharedSettings.RegexAlfaNumericExtended, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true));
 
                 //FiscalYear
                 Entry entryFiscalYear = new Entry();
                 BOWidgetBox boxFiscalYear = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_fiscal_year"), entryFiscalYear);
                 vboxTab1.PackStart(boxFiscalYear, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxFiscalYear, _dataSourceRow, "FiscalYear", SharedSettings.RegexDecimalGreaterThanZero, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxFiscalYear, _dataSourceRow, "FiscalYear", LogicPOS.Utility.RegexUtils.RegexDecimalGreaterThanZero, true));
 
                 //Append Tab
                 _notebook.AppendPage(vboxTab1, new Label(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_main_detail")));

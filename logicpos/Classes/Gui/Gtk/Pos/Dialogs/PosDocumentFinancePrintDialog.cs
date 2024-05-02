@@ -94,7 +94,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //Pack EntryBox with CheckBox into Dialog
                 _vboxContent.PackStart(_checkButtonBoxSecondCopy);
 
-                _entryBoxValidationBoxMotive = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_reprint_original_motive"), KeyboardMode.AlfaNumeric, SharedSettings.RegexAlfaNumeric, false);
+                _entryBoxValidationBoxMotive = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_reprint_original_motive"), KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexAlfaNumeric, false);
                 //Start Disabled
                 _entryBoxValidationBoxMotive.EntryValidation.Label.Sensitive = false;
                 _entryBoxValidationBoxMotive.EntryValidation.Sensitive = false;

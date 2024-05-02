@@ -37,49 +37,49 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 Entry entryOrd = new Entry();
                 BOWidgetBox boxLabel = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_order"), entryOrd);
                 vboxTab1.PackStart(boxLabel, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxLabel, _dataSourceRow, "Ord", SharedSettings.RegexIntegerGreaterThanZero, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxLabel, _dataSourceRow, "Ord", LogicPOS.Utility.RegexUtils.RegexIntegerGreaterThanZero, true));
 
                 //Code
                 Entry entryCode = new Entry();
                 BOWidgetBox boxCode = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_code"), entryCode);
                 vboxTab1.PackStart(boxCode, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCode, _dataSourceRow, "Code", SharedSettings.RegexIntegerGreaterThanZero, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCode, _dataSourceRow, "Code", LogicPOS.Utility.RegexUtils.RegexIntegerGreaterThanZero, true));
 
                 //Designation
                 Entry entryDesignation = new Entry();
                 BOWidgetBox boxDesignation = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"), entryDesignation);
                 vboxTab1.PackStart(boxDesignation, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", SharedSettings.RegexAlfaNumericExtended, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true));
 
                 //Value
                 Entry entryValue = new Entry();
                 BOWidgetBox boxValue = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_vat_rate_value"), entryValue);
                 vboxTab1.PackStart(boxValue, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxValue, _dataSourceRow, "Value", SharedSettings.RegexDecimalGreaterThanZero, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxValue, _dataSourceRow, "Value", LogicPOS.Utility.RegexUtils.RegexDecimalGreaterThanZero, true));
 
                 //TaxType
                 Entry entryTaxType = new Entry();
                 BOWidgetBox boxTaxType = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_vat_rate_tax_type"), entryTaxType);
                 vboxTab1.PackStart(boxTaxType, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxTaxType, _dataSourceRow, "TaxType", SharedSettings.RegexAlfa, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxTaxType, _dataSourceRow, "TaxType", LogicPOS.Utility.RegexUtils.RegexAlfa, true));
 
                 //TaxCode
                 Entry entryTaxCode = new Entry();
                 BOWidgetBox boxTaxCode = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_vat_rate_tax_code"), entryTaxCode);
                 vboxTab1.PackStart(boxTaxCode, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxTaxCode, _dataSourceRow, "TaxCode", SharedSettings.RegexAlfa, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxTaxCode, _dataSourceRow, "TaxCode", LogicPOS.Utility.RegexUtils.RegexAlfa, true));
 
                 //TaxCountryRegion
                 Entry entryTaxCountryRegion = new Entry();
                 BOWidgetBox boxTaxCountryRegion = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_vat_rate_tax_country_region"), entryTaxCountryRegion);
                 vboxTab1.PackStart(boxTaxCountryRegion, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxTaxCountryRegion, _dataSourceRow, "TaxCountryRegion", SharedSettings.RegexAlfaNumericExtended, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxTaxCountryRegion, _dataSourceRow, "TaxCountryRegion", LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true));
 
                 //TaxDescription
                 Entry entryTaxDescription = new Entry();
                 BOWidgetBox boxTaxDescription = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_description"), entryTaxDescription);
                 vboxTab1.PackStart(boxTaxDescription, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxTaxDescription, _dataSourceRow, "TaxDescription", SharedSettings.RegexAlfaNumericExtended, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxTaxDescription, _dataSourceRow, "TaxDescription", LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true));
 
                 //Disabled
                 CheckButton checkButtonDisabled = new CheckButton(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_disabled"));

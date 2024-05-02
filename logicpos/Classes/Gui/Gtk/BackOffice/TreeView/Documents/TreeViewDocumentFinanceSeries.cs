@@ -274,7 +274,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     fileWindowIcon,
                     resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_acronym"),
                     pInitialValue,
-                    SharedSettings.RegexDocumentSeriesAcronym,
+                    LogicPOS.Utility.RegexUtils.RegexDocumentSeriesAcronym,
                     true
                     );
 

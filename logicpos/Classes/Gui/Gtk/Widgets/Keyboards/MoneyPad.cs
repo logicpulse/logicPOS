@@ -72,7 +72,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
             //Delivery Entry
             string initialValue = (pInitialValue > 0) ? SharedUtils.DecimalToString(pInitialValue) : string.Empty;
-            _entryDeliveryValue = new EntryValidation(pSourceWindow, KeyboardMode.None, SharedSettings.RegexDecimal, true) { Text = initialValue, Alignment = 0.5F };
+            _entryDeliveryValue = new EntryValidation(pSourceWindow, KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexDecimal, true) { Text = initialValue, Alignment = 0.5F };
             _entryDeliveryValue.ModifyFont(Pango.FontDescription.FromString(fontMoneyPadTextEntry));
             //Dialog Validated Equal to Entry, Its the Only Entry in Dialog
             Validated = _entryDeliveryValue.Validated;

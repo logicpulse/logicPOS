@@ -256,7 +256,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //Customer Name
                 CriteriaOperator criteriaOperatorCustomerName = null;
 				/* IN009202 */
-                _entryBoxSelectCustomerName = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(_sourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_customer"), "Name", "Name", null, criteriaOperatorCustomerName, KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericPlus, false);
+                _entryBoxSelectCustomerName = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(_sourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_customer"), "Name", "Name", null, criteriaOperatorCustomerName, KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, false);
                 _entryBoxSelectCustomerName.ClosePopup += delegate
                 {
                     //IN009284 POS - Pagamento conta-corrente - Cliente por defeito 
@@ -275,7 +275,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _entryBoxSelectCustomerName.EntryValidation.Changed += _entryBoxSelectCustomerName_Changed;
 
                 //Customer Discount
-                _entryBoxCustomerDiscount = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_discount"), KeyboardMode.Alfa, SharedSettings.RegexPercentage, true);
+                _entryBoxCustomerDiscount = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_discount"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexPercentage, true);
                 _entryBoxCustomerDiscount.EntryValidation.Text = SharedUtils.DecimalToString(0.0m);
                 _entryBoxCustomerDiscount.EntryValidation.Sensitive = false;
                 _entryBoxCustomerDiscount.EntryValidation.Changed += _entryBoxCustomerDiscount_Changed;
@@ -285,11 +285,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 };
 
                 //Address
-                _entryBoxCustomerAddress = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_address"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericPlus, false);/* IN009253 */
+                _entryBoxCustomerAddress = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_address"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, false);/* IN009253 */
                 _entryBoxCustomerAddress.EntryValidation.Changed += delegate { Validate(); };
 
                 //Locality
-                _entryBoxCustomerLocality = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_locality"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericPlus, false);/* IN009253 */
+                _entryBoxCustomerLocality = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_locality"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, false);/* IN009253 */
                 _entryBoxCustomerLocality.EntryValidation.Changed += delegate { Validate(); };
 
                 //ZipCode
@@ -298,13 +298,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _entryBoxCustomerZipCode.EntryValidation.Changed += delegate { Validate(); };
                 
                 //City
-                _entryBoxCustomerCity = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_city"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericPlus, false);/* IN009253 */
+                _entryBoxCustomerCity = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_city"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, false);/* IN009253 */
                 _entryBoxCustomerCity.WidthRequest = 200;
                 _entryBoxCustomerCity.EntryValidation.Changed += delegate { Validate(); };
 
                 //Country
                 CriteriaOperator criteriaOperatorCustomerCountry = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1) AND (RegExFiscalNumber IS NOT NULL AND RegExZipCode IS NOT NULL)");
-                _entryBoxSelectCustomerCountry = new XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry>(pSourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_country"), "Designation", "Oid", _intialValueConfigurationCountry, criteriaOperatorCustomerCountry, SharedSettings.RegexGuid, true);
+                _entryBoxSelectCustomerCountry = new XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry>(pSourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_country"), "Designation", "Oid", _intialValueConfigurationCountry, criteriaOperatorCustomerCountry, LogicPOS.Utility.RegexUtils.RegexGuid, true);
                 _entryBoxSelectCustomerCountry.WidthRequest = 235;
                 //Extra Protection to prevent Customer without Country
                 if (_entryBoxSelectCustomerCountry.Value != null) _entryBoxSelectCustomerCountry.EntryValidation.Validate(_entryBoxSelectCustomerCountry.Value.Oid.ToString());
@@ -331,7 +331,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 //CardNumber
                 CriteriaOperator criteriaOperatorCardNumber = null;//Now Criteria is assigned in ApplyCriteriaToCustomerInputs();
-                _entryBoxSelectCustomerCardNumber = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(_sourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_card_number"), "CardNumber", "CardNumber", null, criteriaOperatorCardNumber, KeyboardMode.AlfaNumeric, SharedSettings.RegexAlfaNumericExtended, false);
+                _entryBoxSelectCustomerCardNumber = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(_sourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_card_number"), "CardNumber", "CardNumber", null, criteriaOperatorCardNumber, KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false);
                 _entryBoxSelectCustomerCardNumber.ClosePopup += delegate
                 {
                     if (_entryBoxSelectCustomerCardNumber.EntryValidation.Validated) GetCustomerDetails("CardNumber", _entryBoxSelectCustomerCardNumber.EntryValidation.Text);
@@ -339,7 +339,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 };
 
                 //Notes
-                _entryBoxCustomerNotes = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_notes"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericExtended, false);
+                _entryBoxCustomerNotes = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_notes"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false);
                 _entryBoxCustomerNotes.EntryValidation.Changed += delegate { Validate(); };
 
                 //Fill Dialog Inputs with Defaults FinalConsumerEntity Values

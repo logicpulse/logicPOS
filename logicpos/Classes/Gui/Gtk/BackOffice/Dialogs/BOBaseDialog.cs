@@ -186,7 +186,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             entryMultiline.ScrolledWindow.BorderWidth = 0;
             Label labelMultiline = new Label(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_notes"));
             vbox.PackStart(entryMultiline, true, true, 0);
-            _crudWidgetList.Add(new GenericCRUDWidgetXPO(entryMultiline, labelMultiline, DataSourceRow, "Notes", SharedSettings.RegexAlfaNumericExtended, false));
+            _crudWidgetList.Add(new GenericCRUDWidgetXPO(entryMultiline, labelMultiline, DataSourceRow, "Notes", LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false));
 
             //Append Tab
             _notebook.AppendPage(vbox, new Label(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_notes")));

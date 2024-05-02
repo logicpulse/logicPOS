@@ -33,31 +33,31 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 Entry entryOrd = new Entry();
                 BOWidgetBox boxLabel = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_order"), entryOrd);
                 vboxTab1.PackStart(boxLabel, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxLabel, _dataSourceRow, "Ord", SharedSettings.RegexIntegerGreaterThanZero, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxLabel, _dataSourceRow, "Ord", LogicPOS.Utility.RegexUtils.RegexIntegerGreaterThanZero, true));
 
                 //Code
                 Entry entryCode = new Entry();
                 BOWidgetBox boxCode = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_code"), entryCode);
                 vboxTab1.PackStart(boxCode, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCode, _dataSourceRow, "Code", SharedSettings.RegexIntegerGreaterThanZero, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCode, _dataSourceRow, "Code", LogicPOS.Utility.RegexUtils.RegexIntegerGreaterThanZero, true));
 
                 //Designation
                 Entry entryDesignation = new Entry();
                 BOWidgetBox boxDesignation = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"), entryDesignation);
                 vboxTab1.PackStart(boxDesignation, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", SharedSettings.RegexAlfaNumeric, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", LogicPOS.Utility.RegexUtils.RegexAlfaNumeric, true));
 
                 //ButtonLabel
                 Entry entryButtonLabel = new Entry();
                 BOWidgetBox boxButtonLabel = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_name"), entryButtonLabel);
                 vboxTab1.PackStart(boxButtonLabel, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxButtonLabel, _dataSourceRow, "ButtonLabel", SharedSettings.RegexAlfaNumericExtended, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxButtonLabel, _dataSourceRow, "ButtonLabel", LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false));
 
                 //Family
                 XPOComboBox xpoComboBoxFamily = new XPOComboBox(DataSourceRow.Session, typeof(fin_articlefamily), (DataSourceRow as fin_articlesubfamily).Family, "Designation", null);
                 BOWidgetBox boxFamily = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_families"), xpoComboBoxFamily);
                 vboxTab1.PackStart(boxFamily, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxFamily, DataSourceRow, "Family", SharedSettings.RegexGuid, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxFamily, DataSourceRow, "Family", LogicPOS.Utility.RegexUtils.RegexGuid, true));
 
                 //ButtonImage
                 FileChooserButton fileChooserButtonImage = new FileChooserButton(string.Empty, FileChooserAction.Open) { HeightRequest = 23 };
@@ -93,38 +93,38 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 XPOComboBox xpoComboBoxCommissionGroup = new XPOComboBox(DataSourceRow.Session, typeof(pos_usercommissiongroup), (DataSourceRow as fin_articlesubfamily).CommissionGroup, "Designation", null);
                 BOWidgetBox boxCommissionGroup = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_commission_group"), xpoComboBoxCommissionGroup);
                 vboxTab2.PackStart(boxCommissionGroup, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCommissionGroup, DataSourceRow, "CommissionGroup", SharedSettings.RegexGuid, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCommissionGroup, DataSourceRow, "CommissionGroup", LogicPOS.Utility.RegexUtils.RegexGuid, false));
 
                 //Printer
                 XPOComboBox xpoComboBoxPrinter = new XPOComboBox(DataSourceRow.Session, typeof(sys_configurationprinters), (DataSourceRow as fin_articlesubfamily).Printer, "Designation", null);
                 BOWidgetBox boxPrinter = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_device_printer"), xpoComboBoxPrinter);
                 vboxTab2.PackStart(boxPrinter, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxPrinter, DataSourceRow, "Printer", SharedSettings.RegexGuid, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxPrinter, DataSourceRow, "Printer", LogicPOS.Utility.RegexUtils.RegexGuid, false));
 
                 //Template
                 XPOComboBox xpoComboBoxTemplate = new XPOComboBox(DataSourceRow.Session, typeof(sys_configurationprinterstemplates), (DataSourceRow as fin_articlesubfamily).Template, "Designation", null);
                 BOWidgetBox boxTemplate = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationPrintersTemplates"), xpoComboBoxTemplate);
                 vboxTab2.PackStart(boxTemplate, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxTemplate, DataSourceRow, "Template", SharedSettings.RegexGuid, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxTemplate, DataSourceRow, "Template", LogicPOS.Utility.RegexUtils.RegexGuid, false));
 
                 //DiscountGroup
                 XPOComboBox xpoComboBoxDiscountGroup = new XPOComboBox(DataSourceRow.Session, typeof(erp_customerdiscountgroup), (DataSourceRow as fin_articlesubfamily).DiscountGroup, "Designation", null);
                 BOWidgetBox boxDiscountGroup = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_discount_group"), xpoComboBoxDiscountGroup);
                 vboxTab2.PackStart(boxDiscountGroup, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDiscountGroup, DataSourceRow, "DiscountGroup", SharedSettings.RegexGuid, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDiscountGroup, DataSourceRow, "DiscountGroup", LogicPOS.Utility.RegexUtils.RegexGuid, false));
 
                 //VatOnTable
                 XPOComboBox xpoComboBoxVatOnTable = new XPOComboBox(DataSourceRow.Session, typeof(fin_configurationvatrate), (DataSourceRow as fin_articlesubfamily).VatOnTable, "Designation", null);
                 BOWidgetBox boxVatOnTable = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_vat_on_table"), xpoComboBoxVatOnTable);
                 vboxTab2.PackStart(boxVatOnTable, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxVatOnTable, DataSourceRow, "VatOnTable", SharedSettings.RegexGuid, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxVatOnTable, DataSourceRow, "VatOnTable", LogicPOS.Utility.RegexUtils.RegexGuid, false));
 
                 //VatDirectSelling
 
                 XPOComboBox xpoComboBoxVatDirectSelling = new XPOComboBox(DataSourceRow.Session, typeof(fin_configurationvatrate), (DataSourceRow as fin_articlesubfamily).VatDirectSelling, "Designation", null);
                 BOWidgetBox boxVatDirectSelling = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_vat_direct_selling"), xpoComboBoxVatDirectSelling);
                 vboxTab2.PackStart(boxVatDirectSelling, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxVatDirectSelling, DataSourceRow, "VatDirectSelling", SharedSettings.RegexGuid, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxVatDirectSelling, DataSourceRow, "VatDirectSelling", LogicPOS.Utility.RegexUtils.RegexGuid, false));
 
                 //Append Tab
                 _notebook.AppendPage(vboxTab2, new Label(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_edit_articlesubfamily_tab2_label")));

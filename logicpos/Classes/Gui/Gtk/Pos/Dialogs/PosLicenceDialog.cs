@@ -135,49 +135,49 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             vboxInnerLeft.PackStart(labelInternetRegistration, false, false, 0);
 
             //EntryBoxName
-            EntryBoxName = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_name"), KeyboardMode.AlfaNumeric, SharedSettings.RegexAlfaNumericExtended, true);
+            EntryBoxName = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_name"), KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true);
             EntryBoxName.EntryValidation.ModifyFont(FontDescription.FromString("Courier 10"));
             EntryBoxName.EntryValidation.Text = mockName;
             EntryBoxName.EntryValidation.Changed += delegate { Validate(); };
             vboxInnerLeft.PackStart(EntryBoxName, false, false, 0);
 
             //EntryBoxCompany
-            EntryBoxCompany = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_company"), KeyboardMode.AlfaNumeric, SharedSettings.RegexAlfaNumericExtended, true);
+            EntryBoxCompany = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_company"), KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true);
             EntryBoxCompany.EntryValidation.Text = mockCompany;
             EntryBoxCompany.EntryValidation.ModifyFont(FontDescription.FromString("Courier 10"));
             EntryBoxCompany.EntryValidation.Changed += delegate { Validate(); };
             vboxInnerLeft.PackStart(EntryBoxCompany, false, false, 0);
 
             //EntryFiscalNumber
-            EntryBoxFiscalNumber = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_fiscal_number"), KeyboardMode.Numeric, SharedSettings.RegexIntegerGreaterThanZero, true);
+            EntryBoxFiscalNumber = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_fiscal_number"), KeyboardMode.Numeric, LogicPOS.Utility.RegexUtils.RegexIntegerGreaterThanZero, true);
             EntryBoxFiscalNumber.EntryValidation.ModifyFont(FontDescription.FromString("Courier 10"));
             EntryBoxFiscalNumber.EntryValidation.Text = mockFiscalNumber;
             EntryBoxFiscalNumber.EntryValidation.Changed += delegate { Validate(); };
             vboxInnerLeft.PackStart(EntryBoxFiscalNumber, false, false, 0);
 
             //EntryBoxAddress
-            EntryBoxAddress = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_address"), KeyboardMode.AlfaNumeric, SharedSettings.RegexAlfaNumericExtended, true);
+            EntryBoxAddress = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_address"), KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true);
             EntryBoxAddress.EntryValidation.ModifyFont(FontDescription.FromString("Courier 10"));
             EntryBoxAddress.EntryValidation.Text = mockAddress;
             EntryBoxAddress.EntryValidation.Changed += delegate { Validate(); };
             vboxInnerLeft.PackStart(EntryBoxAddress, false, false, 0);
 
             //EntryBoxEmail
-            EntryBoxEmail = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_email"), KeyboardMode.AlfaNumeric, SharedSettings.RegexEmail, true);
+            EntryBoxEmail = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_email"), KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexEmail, true);
             EntryBoxEmail.EntryValidation.ModifyFont(FontDescription.FromString("Courier 10"));
             EntryBoxEmail.EntryValidation.Text = mockEmail;
             EntryBoxEmail.EntryValidation.Changed += delegate { Validate(); };
             vboxInnerLeft.PackStart(EntryBoxEmail, false, false, 0);
 
             //EntryBoxPhone
-            EntryBoxPhone = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_phone"), KeyboardMode.AlfaNumeric, SharedSettings.RegexAlfaNumericExtended, true);
+            EntryBoxPhone = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_phone"), KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true);
             EntryBoxPhone.EntryValidation.ModifyFont(FontDescription.FromString("Courier 10"));
             EntryBoxPhone.EntryValidation.Text = mockPhone;
             EntryBoxPhone.EntryValidation.Changed += delegate { Validate(); };
             vboxInnerLeft.PackStart(EntryBoxPhone, false, false, 0);
 
             //EntryBoxHardwareId
-            _entryBoxHardwareId = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_hardware_id"), KeyboardMode.None, SharedSettings.RegexAlfaNumericExtended, true);
+            _entryBoxHardwareId = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_hardware_id"), KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true);
             _entryBoxHardwareId.EntryValidation.ModifyFont(FontDescription.FromString("Courier 6 bold"));
             _entryBoxHardwareId.EntryValidation.Text = _hardwareId;
             _entryBoxHardwareId.EntryValidation.Sensitive = false;
@@ -185,7 +185,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             vboxInnerLeft.PackStart(_entryBoxHardwareId, false, false, 0);
 
             //EntryBoxSoftwareKey
-            _entryBoxSoftwareKey = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_software_key"), KeyboardMode.AlfaNumeric, SharedSettings.RegexAlfaNumericExtended, false);
+            _entryBoxSoftwareKey = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_software_key"), KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false);
             _entryBoxSoftwareKey.EntryValidation.ModifyFont(FontDescription.FromString("Courier 10"));
             _entryBoxSoftwareKey.EntryValidation.Text = mockSoftwareKey;
             _entryBoxSoftwareKey.EntryValidation.Changed += delegate { Validate(); };

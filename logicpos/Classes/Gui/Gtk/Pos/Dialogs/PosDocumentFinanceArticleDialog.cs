@@ -462,7 +462,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _crudWidgetList.Add(new GenericCRUDWidgetDataTable(_entryBoxValidationToken2, new Label(), _dataSourceRow, "Token2"));
 
             //Notes
-            _entryBoxValidationNotes = new EntryBoxValidation(this, "Notes", KeyboardMode.AlfaNumeric, SharedSettings.RegexAlfaNumericExtended, false);
+            _entryBoxValidationNotes = new EntryBoxValidation(this, "Notes", KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false);
             _entryBoxValidationNotes.EntryValidation.Text = initialValueNotes;
             _crudWidgetList.Add(new GenericCRUDWidgetDataTable(_entryBoxValidationNotes, new Label(), _dataSourceRow, "Notes"));
 

@@ -10,14 +10,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         //Protected Members
         protected DialogMode _dialogMode;
         //Validation Rules
-        protected string _regexAlfa = SharedSettings.RegexAlfa;
-        protected string _regexAlfaNumeric = SharedSettings.RegexAlfaNumeric;
-        protected string _regexAlfaNumericExtended = SharedSettings.RegexAlfaNumericExtended;
-        protected string _regexDecimal = SharedSettings.RegexDecimal;
-        protected string _regexDecimalGreaterThanZero = SharedSettings.RegexDecimalGreaterThanZero;
-        protected string _regexDecimalGreaterEqualThanZero = SharedSettings.RegexDecimalGreaterEqualThanZero;
-        protected string _regexGuid = SharedSettings.RegexGuid;
-        protected string _regexPercentage = SharedSettings.RegexPercentage;
+        protected string _regexAlfa = LogicPOS.Utility.RegexUtils.RegexAlfa;
+        protected string _regexAlfaNumeric = LogicPOS.Utility.RegexUtils.RegexAlfaNumeric;
+        protected string _regexAlfaNumericExtended = LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended;
+        protected string _regexDecimal = LogicPOS.Utility.RegexUtils.RegexDecimal;
+        protected string _regexDecimalGreaterThanZero = LogicPOS.Utility.RegexUtils.RegexDecimalGreaterThanZero;
+        protected string _regexDecimalGreaterEqualThanZero = LogicPOS.Utility.RegexUtils.RegexDecimalGreaterEqualThanZero;
+        protected string _regexGuid = LogicPOS.Utility.RegexUtils.RegexGuid;
+        protected string _regexPercentage = LogicPOS.Utility.RegexUtils.RegexPercentage;
 
         //Public Properties, to have access to/from TreeView EventHandlers
         protected T _dataSourceRow;

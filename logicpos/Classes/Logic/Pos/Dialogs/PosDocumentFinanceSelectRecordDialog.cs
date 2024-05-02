@@ -1556,7 +1556,7 @@ WHERE
                         string fileWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_input_text_default.png";
 
                         //Call Request Motive Dialog
-                        dialogResponse = logicpos.Utils.GetInputText(pDialog, DialogFlags.Modal, fileWindowIcon, string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_cancel_document_input_text_label"), documentMaster.DocumentNumber), string.Empty, SharedSettings.RegexAlfaNumericExtendedForMotive, true);
+                        dialogResponse = logicpos.Utils.GetInputText(pDialog, DialogFlags.Modal, fileWindowIcon, string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_cancel_document_input_text_label"), documentMaster.DocumentNumber), string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtendedForMotive, true);
 
                         if (dialogResponse.ResponseType == ResponseType.Ok)
                         {
@@ -2425,7 +2425,7 @@ WHERE
                     {
                         string fileWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_input_text_default.png";
 
-                        dialogResponse =  logicpos.Utils.GetInputText(pDialog, DialogFlags.Modal, fileWindowIcon, string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_cancel_document_input_text_label"), document.PaymentRefNo), string.Empty, SharedSettings.RegexAlfaNumericExtendedForMotive, true);
+                        dialogResponse =  logicpos.Utils.GetInputText(pDialog, DialogFlags.Modal, fileWindowIcon, string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_cancel_document_input_text_label"), document.PaymentRefNo), string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtendedForMotive, true);
                         if (dialogResponse.ResponseType == ResponseType.Ok)
                         {
                             //_logger.Debug(string.Format("PaymentRefNo:[{0}], DocumentStatusStatus:[{1}], reason:[{2}]", document.PaymentRefNo, document.PaymentStatus, dialogResponse.InputText));

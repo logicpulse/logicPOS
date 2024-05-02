@@ -63,7 +63,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             _table.Homogeneous = false;
 
             //Pin Entry
-            EntryPin = new EntryValidation(pSourceWindow, KeyboardMode.None, SharedSettings.RegexLoginPin, true) { InvisibleChar = '*', Visibility = false };
+            EntryPin = new EntryValidation(pSourceWindow, KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexLoginPin, true) { InvisibleChar = '*', Visibility = false };
             EntryPin.ModifyFont(Pango.FontDescription.FromString(pFont));
             EntryPin.Alignment = 0.5F;
 

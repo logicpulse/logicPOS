@@ -33,43 +33,43 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 Entry entryOrd = new Entry();
                 BOWidgetBox boxLabel = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_order"), entryOrd);
                 vboxTab1.PackStart(boxLabel, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxLabel, _dataSourceRow, "Ord", SharedSettings.RegexIntegerGreaterThanZero, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxLabel, _dataSourceRow, "Ord", LogicPOS.Utility.RegexUtils.RegexIntegerGreaterThanZero, true));
 
                 //Code
                 Entry entryCode = new Entry();
                 BOWidgetBox boxCode = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_code"), entryCode);
                 vboxTab1.PackStart(boxCode, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCode, _dataSourceRow, "Code", SharedSettings.RegexIntegerGreaterThanZero, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCode, _dataSourceRow, "Code", LogicPOS.Utility.RegexUtils.RegexIntegerGreaterThanZero, true));
 
                 //Designation
                 Entry entryDesignation = new Entry();
                 BOWidgetBox boxDesignation = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"), entryDesignation);
                 vboxTab1.PackStart(boxDesignation, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", SharedSettings.RegexAlfaNumericExtended, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true));
 
                 //Date
                 Entry entryDate = new Entry();
                 BOWidgetBox boxDate = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationMaintenance_Date"), entryDate);
                 vboxTab1.PackStart(boxDate, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDate, _dataSourceRow, "Date", SharedSettings.RegexAlfaNumeric, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDate, _dataSourceRow, "Date", LogicPOS.Utility.RegexUtils.RegexAlfaNumeric, false));
                 
                 //Time
                 Entry entryTime = new Entry();
                 BOWidgetBox boxTime = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationMaintenance_Time"), entryTime);
                 vboxTab1.PackStart(boxTime, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxTime, _dataSourceRow, "Time", SharedSettings.RegexAlfaNumeric, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxTime, _dataSourceRow, "Time", LogicPOS.Utility.RegexUtils.RegexAlfaNumeric, false));
 
                 //PasswordAccess
                 Entry entryPasswordAccess = new Entry();
                 BOWidgetBox boxPasswordAccess = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationMaintenance_PasswordAccess"), entryPasswordAccess);
                 vboxTab1.PackStart(boxPasswordAccess, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxPasswordAccess, _dataSourceRow, "PasswordAccess", SharedSettings.RegexAlfaNumeric, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxPasswordAccess, _dataSourceRow, "PasswordAccess", LogicPOS.Utility.RegexUtils.RegexAlfaNumeric, false));
 
                 //Remarks
                 Entry entryRemarks = new Entry();
                 BOWidgetBox boxRemarks = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationMaintenance_Remarks"), entryRemarks);
                 vboxTab1.PackStart(boxRemarks, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxRemarks, _dataSourceRow, "Remarks", SharedSettings.RegexAlfaNumeric, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxRemarks, _dataSourceRow, "Remarks", LogicPOS.Utility.RegexUtils.RegexAlfaNumeric, false));
 
                 //Disabled
                 CheckButton checkButtonDisabled = new CheckButton(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_disabled"));

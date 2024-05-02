@@ -138,7 +138,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 MovementType.Token = initialButtonToken;
 
                 //EntryAmountMoney
-                _entryBoxMovementAmountMoney = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_money"), KeyboardMode.Money, SharedSettings.RegexDecimalGreaterEqualThanZero, true);
+                _entryBoxMovementAmountMoney = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_money"), KeyboardMode.Money, LogicPOS.Utility.RegexUtils.RegexDecimalGreaterEqualThanZero, true);
                 _entryBoxMovementAmountMoney.EntryValidation.Changed += delegate { ValidateDialog(); };
 				//Alteração no funcionamento do Inicio/fecho Sessão [IN:014330]
                 _entryBoxMovementAmountMoney.EntryValidation.Text = SharedUtils.DecimalToString(TotalAmountInCashDrawer);
@@ -149,7 +149,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //_entryBoxMovementAmountOtherPayments.EntryValidation.Changed += delegate { ValidateDialog(); };
 
                 //EntryDescription
-                _entryBoxMovementDescription = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_description"), KeyboardMode.AlfaNumeric, SharedSettings.RegexAlfaNumericExtended, false);
+                _entryBoxMovementDescription = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_description"), KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false);
                 _entryBoxMovementDescription.EntryValidation.Changed += delegate { ValidateDialog(); };
 
                 //VBox

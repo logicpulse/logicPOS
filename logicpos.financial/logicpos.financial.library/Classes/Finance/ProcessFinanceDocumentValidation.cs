@@ -310,7 +310,7 @@ namespace logicpos.financial.library.Classes.Finance
 || FiscalNumber.IsSingularEntity(customer.FiscalNumber, customer.Country.Code2);
                 //RegEx
                 //If not Saft Document Type 2, required greater than zero in Price, else we can have zero or greater from Document Type 2 (ex Transportation Guide)
-                string regExArticlePrice = (documentType != null && documentType.SaftDocumentType != SaftDocumentType.MovementOfGoods) ? SharedSettings.RegexDecimalGreaterThanZero : SharedSettings.RegexDecimalGreaterEqualThanZero;
+                string regExArticlePrice = (documentType != null && documentType.SaftDocumentType != SaftDocumentType.MovementOfGoods) ? LogicPOS.Utility.RegexUtils.RegexDecimalGreaterThanZero : LogicPOS.Utility.RegexUtils.RegexDecimalGreaterEqualThanZero;
                 //Never Override SettingsApp.FinanceRuleSimplifiedInvoiceMaxValue|FinanceRuleRequiredCustomerDetailsAboveValue values to be Sync with LogicPos UI
                 int financeRuleSimplifiedInvoiceMaxTotal = SharedSettings.FinanceRuleSimplifiedInvoiceMaxTotal;
                 int financeRuleSimplifiedInvoiceMaxTotalServices = SharedSettings.FinanceRuleSimplifiedInvoiceMaxTotalServices;
@@ -358,117 +358,117 @@ namespace logicpos.financial.library.Classes.Finance
 
                 //Global
                 _fields.Add(FinanceValidationError.ERROR_RULE_ARTICLEBAG_GLOBAL_DISCOUNT_INVALID,
-                    new ProcessFinanceDocumentValidationField("ArticleBag.Discount", (pParameters.ArticleBag != null) ? pParameters.ArticleBag.DiscountGlobal : 0.0m, SharedSettings.RegexPercentage, true)
+                    new ProcessFinanceDocumentValidationField("ArticleBag.Discount", (pParameters.ArticleBag != null) ? pParameters.ArticleBag.DiscountGlobal : 0.0m, LogicPOS.Utility.RegexUtils.RegexPercentage, true)
                 );
                 //P1
                 _fields.Add(FinanceValidationError.ERROR_FIELD_DOCUMENT_TYPE_INVALID,
-                    new ProcessFinanceDocumentValidationField("DocumentType", pParameters.DocumentType, SharedSettings.RegexGuid, true)
+                    new ProcessFinanceDocumentValidationField("DocumentType", pParameters.DocumentType, LogicPOS.Utility.RegexUtils.RegexGuid, true)
                 );
                 _fields.Add(FinanceValidationError.ERROR_FIELD_PAYMENT_CONDITION_INVALID,
-                    new ProcessFinanceDocumentValidationField("PaymentCondition", pParameters.PaymentCondition, SharedSettings.RegexGuid, requiredPaymentCondition)
+                    new ProcessFinanceDocumentValidationField("PaymentCondition", pParameters.PaymentCondition, LogicPOS.Utility.RegexUtils.RegexGuid, requiredPaymentCondition)
                 );
                 _fields.Add(FinanceValidationError.ERROR_FIELD_PAYMENT_METHOD_INVALID,
-                    new ProcessFinanceDocumentValidationField("PaymentMethod", pParameters.PaymentMethod, SharedSettings.RegexGuid, requiredPaymentMethod)
+                    new ProcessFinanceDocumentValidationField("PaymentMethod", pParameters.PaymentMethod, LogicPOS.Utility.RegexUtils.RegexGuid, requiredPaymentMethod)
                 );
                 _fields.Add(FinanceValidationError.ERROR_FIELD_CURRENCY_INVALID,
-                    new ProcessFinanceDocumentValidationField("Currency", pParameters.Currency, SharedSettings.RegexGuid, true)
+                    new ProcessFinanceDocumentValidationField("Currency", pParameters.Currency, LogicPOS.Utility.RegexUtils.RegexGuid, true)
                 );
                 _fields.Add(FinanceValidationError.ERROR_FIELD_DOCUMENT_PARENT_INVALID,
-                    new ProcessFinanceDocumentValidationField("DocumentParent", pParameters.DocumentParent, SharedSettings.RegexGuid, requireParentDocument)
+                    new ProcessFinanceDocumentValidationField("DocumentParent", pParameters.DocumentParent, LogicPOS.Utility.RegexUtils.RegexGuid, requireParentDocument)
                 );
                 _fields.Add(FinanceValidationError.ERROR_FIELD_NOTES_INVALID,
-                    new ProcessFinanceDocumentValidationField("Notes", pParameters.Notes, SharedSettings.RegexAlfaNumericExtended, false)
+                    new ProcessFinanceDocumentValidationField("Notes", pParameters.Notes, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false)
                 );
                 //P2
                 _fields.Add(FinanceValidationError.ERROR_FIELD_CUSTOMER_NAME_INVALID,
-                    new ProcessFinanceDocumentValidationField("Customer.Name", (customer != null) ? customer.Name : string.Empty, SharedSettings.RegexAlfaNumericExtended, requireCustomerName)
+                    new ProcessFinanceDocumentValidationField("Customer.Name", (customer != null) ? customer.Name : string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, requireCustomerName)
                 );
                 _fields.Add(FinanceValidationError.ERROR_FIELD_CUSTOMER_ADDRESS_INVALID,
-                    new ProcessFinanceDocumentValidationField("Customer.Address", (customer != null) ? customer.Address : string.Empty, SharedSettings.RegexAlfaNumericExtended, requireAllCustomerFields)
+                    new ProcessFinanceDocumentValidationField("Customer.Address", (customer != null) ? customer.Address : string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, requireAllCustomerFields)
                 );
                 _fields.Add(FinanceValidationError.ERROR_FIELD_CUSTOMER_LOCALITY_INVALID,
-                    new ProcessFinanceDocumentValidationField("Customer.Locality", (customer != null) ? customer.Locality : string.Empty, SharedSettings.RegexAlfaNumericExtended, false)
+                    new ProcessFinanceDocumentValidationField("Customer.Locality", (customer != null) ? customer.Locality : string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false)
                 );
                 //If customer undefined Defaults to SettingsApp.ConfigurationSystemCountry.RegExZipCode
                 _fields.Add(FinanceValidationError.ERROR_FIELD_CUSTOMER_ZIPCODE_INVALID,
                 new ProcessFinanceDocumentValidationField("Customer.ZipCode", (customer != null && customer.ZipCode != null) ? customer.ZipCode : string.Empty, (customer != null && customer.Country != null) ? customer.Country.RegExZipCode : DataLayerSettings.ConfigurationSystemCountry.RegExZipCode, requireAllCustomerFields)
                 );
                 _fields.Add(FinanceValidationError.ERROR_FIELD_CUSTOMER_CITY_INVALID,
-                    new ProcessFinanceDocumentValidationField("Customer.City", (customer != null && customer.City != null) ? customer.City : string.Empty, SharedSettings.RegexAlfa, requireAllCustomerFields)
+                    new ProcessFinanceDocumentValidationField("Customer.City", (customer != null && customer.City != null) ? customer.City : string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfa, requireAllCustomerFields)
                 );
                 _fields.Add(FinanceValidationError.ERROR_FIELD_CUSTOMER_COUNTRY_INVALID,
-                    new ProcessFinanceDocumentValidationField("Customer.Country", (customer != null && customer.Country != null) ? customer.Country.Oid : Guid.Empty, SharedSettings.RegexGuid, true)
+                    new ProcessFinanceDocumentValidationField("Customer.Country", (customer != null && customer.Country != null) ? customer.Country.Oid : Guid.Empty, LogicPOS.Utility.RegexUtils.RegexGuid, true)
                 );
                 //If customer undefined Defaults to SettingsApp.ConfigurationSystemCountry.RegExFiscalNumber
                 _fields.Add(FinanceValidationError.ERROR_FIELD_CUSTOMER_FISCAL_NUMBER_INVALID,
                     new ProcessFinanceDocumentValidationField("Customer.FiscalNumber", (customer != null && customer.FiscalNumber != null) ? customer.FiscalNumber : string.Empty, (customer != null && customer.Country != null) ? customer.Country.RegExFiscalNumber : DataLayerSettings.ConfigurationSystemCountry.RegExFiscalNumber, requireFiscalNumber)
                 );
                 _fields.Add(FinanceValidationError.ERROR_FIELD_CUSTOMER_CARDNUMBER_INVALID,
-                    new ProcessFinanceDocumentValidationField("Customer.CardNumber", (customer != null && customer.CardNumber != null) ? customer.CardNumber : string.Empty, SharedSettings.RegexAlfaNumericExtended, false)
+                    new ProcessFinanceDocumentValidationField("Customer.CardNumber", (customer != null && customer.CardNumber != null) ? customer.CardNumber : string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false)
                 );
                 _fields.Add(FinanceValidationError.ERROR_FIELD_CUSTOMER_DISCOUNT_INVALID,
-                    new ProcessFinanceDocumentValidationField("Customer.Discount", (customer != null) ? customer.Discount : 0.0m, SharedSettings.RegexPercentage, true)
+                    new ProcessFinanceDocumentValidationField("Customer.Discount", (customer != null) ? customer.Discount : 0.0m, LogicPOS.Utility.RegexUtils.RegexPercentage, true)
                 );
                 //P4
                 if (pParameters.ShipTo != null && countryShipTo != null)
                 {
                     _fields.Add(FinanceValidationError.ERROR_FIELD_SHIPTO_ADDRESS_DETAIL_INVALID,
-                        new ProcessFinanceDocumentValidationField("ShipTo.AddressDetail", (pParameters.ShipTo != null) ? pParameters.ShipTo.AddressDetail : string.Empty, SharedSettings.RegexAlfaNumericExtended, requiredWayBillModeFields)
+                        new ProcessFinanceDocumentValidationField("ShipTo.AddressDetail", (pParameters.ShipTo != null) ? pParameters.ShipTo.AddressDetail : string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, requiredWayBillModeFields)
                     );
                     _fields.Add(FinanceValidationError.ERROR_FIELD_SHIPTO_REGION_INVALID,
-                        new ProcessFinanceDocumentValidationField("ShipTo.Region", (pParameters.ShipTo != null) ? pParameters.ShipTo.Region : string.Empty, SharedSettings.RegexAlfa, false)
+                        new ProcessFinanceDocumentValidationField("ShipTo.Region", (pParameters.ShipTo != null) ? pParameters.ShipTo.Region : string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfa, false)
                     );
                     _fields.Add(FinanceValidationError.ERROR_FIELD_SHIPTO_POSTALCODE_INVALID,
                         new ProcessFinanceDocumentValidationField("ShipTo.PostalCode", (pParameters.ShipTo != null) ? pParameters.ShipTo.PostalCode : string.Empty, countryShipTo.RegExZipCode, requiredWayBillModeFields)
                     );
                     _fields.Add(FinanceValidationError.ERROR_FIELD_SHIPTO_CITY_INVALID,
-                        new ProcessFinanceDocumentValidationField("ShipTo.City", (pParameters.ShipTo != null) ? pParameters.ShipTo.City : string.Empty, SharedSettings.RegexAlfa, requiredWayBillModeFields)
+                        new ProcessFinanceDocumentValidationField("ShipTo.City", (pParameters.ShipTo != null) ? pParameters.ShipTo.City : string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfa, requiredWayBillModeFields)
                     );
                     _fields.Add(FinanceValidationError.ERROR_FIELD_SHIPTO_COUNTRY_INVALID,
-                        new ProcessFinanceDocumentValidationField("ShipTo.Country", (pParameters.ShipTo != null) ? pParameters.ShipTo.CountryGuid : Guid.Empty, SharedSettings.RegexGuid, requiredWayBillModeFields)
+                        new ProcessFinanceDocumentValidationField("ShipTo.Country", (pParameters.ShipTo != null) ? pParameters.ShipTo.CountryGuid : Guid.Empty, LogicPOS.Utility.RegexUtils.RegexGuid, requiredWayBillModeFields)
                     );
                     _fields.Add(FinanceValidationError.ERROR_FIELD_SHIPTO_DELIVERYDATE_INVALID,
-                        new ProcessFinanceDocumentValidationField("ShipTo.DeliveryDate", (pParameters.ShipTo != null && pParameters.ShipTo.DeliveryDate != DateTime.MinValue) ? pParameters.ShipTo.DeliveryDate.ToString(SharedSettings.DateTimeFormat) : string.Empty, SharedSettings.RegexDateTime, requiredWayBillModeFields)
+                        new ProcessFinanceDocumentValidationField("ShipTo.DeliveryDate", (pParameters.ShipTo != null && pParameters.ShipTo.DeliveryDate != DateTime.MinValue) ? pParameters.ShipTo.DeliveryDate.ToString(SharedSettings.DateTimeFormat) : string.Empty, LogicPOS.Utility.RegexUtils.RegexDateTime, requiredWayBillModeFields)
                     );
                     _fields.Add(FinanceValidationError.ERROR_FIELD_SHIPTO_DELIVERYID_INVALID,
-                        new ProcessFinanceDocumentValidationField("ShipTo.DeliveryID", (pParameters.ShipTo != null) ? pParameters.ShipTo.DeliveryID : string.Empty, SharedSettings.RegexAlfaNumericExtended, false)
+                        new ProcessFinanceDocumentValidationField("ShipTo.DeliveryID", (pParameters.ShipTo != null) ? pParameters.ShipTo.DeliveryID : string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false)
                     );
                     _fields.Add(FinanceValidationError.ERROR_FIELD_SHIPTO_WAREHOUSEID_INVALID,
-                        new ProcessFinanceDocumentValidationField("ShipTo.WarehouseID", (pParameters.ShipTo != null) ? pParameters.ShipTo.WarehouseID : string.Empty, SharedSettings.RegexAlfaNumericExtended, false)
+                        new ProcessFinanceDocumentValidationField("ShipTo.WarehouseID", (pParameters.ShipTo != null) ? pParameters.ShipTo.WarehouseID : string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false)
                     );
                     _fields.Add(FinanceValidationError.ERROR_FIELD_SHIPTO_LOCATIONID_INVALID,
-                        new ProcessFinanceDocumentValidationField("ShipTo.LocationID", (pParameters.ShipTo != null) ? pParameters.ShipTo.LocationID : string.Empty, SharedSettings.RegexAlfaNumericExtended, false)
+                        new ProcessFinanceDocumentValidationField("ShipTo.LocationID", (pParameters.ShipTo != null) ? pParameters.ShipTo.LocationID : string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false)
                     );
                 }
                 //P5
                 if (pParameters.ShipTo != null && countryShipFrom != null)
                 {
                     _fields.Add(FinanceValidationError.ERROR_FIELD_SHIPFROM_ADDRESS_DETAIL_INVALID,
-                        new ProcessFinanceDocumentValidationField("ShipFrom.AddressDetail", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.AddressDetail : string.Empty, SharedSettings.RegexAlfaNumericExtended, requiredWayBillModeFields)
+                        new ProcessFinanceDocumentValidationField("ShipFrom.AddressDetail", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.AddressDetail : string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, requiredWayBillModeFields)
                     );
                     _fields.Add(FinanceValidationError.ERROR_FIELD_SHIPFROM_REGION_INVALID,
-                        new ProcessFinanceDocumentValidationField("ShipFrom.Region", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.Region : string.Empty, SharedSettings.RegexAlfa, false)
+                        new ProcessFinanceDocumentValidationField("ShipFrom.Region", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.Region : string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfa, false)
                     );
                     _fields.Add(FinanceValidationError.ERROR_FIELD_SHIPFROM_POSTALCODE_INVALID,
                         new ProcessFinanceDocumentValidationField("ShipFrom.PostalCode", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.PostalCode : string.Empty, countryShipFrom.RegExZipCode, requiredWayBillModeFields)
                     );
                     _fields.Add(FinanceValidationError.ERROR_FIELD_SHIPFROM_CITY_INVALID,
-                        new ProcessFinanceDocumentValidationField("ShipFrom.City", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.City : string.Empty, SharedSettings.RegexAlfa, requiredWayBillModeFields)
+                        new ProcessFinanceDocumentValidationField("ShipFrom.City", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.City : string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfa, requiredWayBillModeFields)
                     );
                     _fields.Add(FinanceValidationError.ERROR_FIELD_SHIPFROM_COUNTRY_INVALID,
-                        new ProcessFinanceDocumentValidationField("ShipFrom.Country", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.CountryGuid : Guid.Empty, SharedSettings.RegexGuid, requiredWayBillModeFields)
+                        new ProcessFinanceDocumentValidationField("ShipFrom.Country", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.CountryGuid : Guid.Empty, LogicPOS.Utility.RegexUtils.RegexGuid, requiredWayBillModeFields)
                     );
                     _fields.Add(FinanceValidationError.ERROR_FIELD_SHIPFROM_DELIVERYDATE_INVALID,
-                        new ProcessFinanceDocumentValidationField("ShipFrom.DeliveryDate", (pParameters.ShipFrom != null && pParameters.ShipFrom.DeliveryDate != DateTime.MinValue) ? pParameters.ShipFrom.DeliveryDate.ToString(SharedSettings.DateTimeFormat) : string.Empty, SharedSettings.RegexDateTime, requiredWayBillModeFields)
+                        new ProcessFinanceDocumentValidationField("ShipFrom.DeliveryDate", (pParameters.ShipFrom != null && pParameters.ShipFrom.DeliveryDate != DateTime.MinValue) ? pParameters.ShipFrom.DeliveryDate.ToString(SharedSettings.DateTimeFormat) : string.Empty, LogicPOS.Utility.RegexUtils.RegexDateTime, requiredWayBillModeFields)
                     );
                     _fields.Add(FinanceValidationError.ERROR_FIELD_SHIPFROM_DELIVERYID_INVALID,
-                        new ProcessFinanceDocumentValidationField("ShipFrom.DeliveryID", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.DeliveryID : string.Empty, SharedSettings.RegexAlfaNumericExtended, false)
+                        new ProcessFinanceDocumentValidationField("ShipFrom.DeliveryID", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.DeliveryID : string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false)
                     );
                     _fields.Add(FinanceValidationError.ERROR_FIELD_SHIPFROM_WAREHOUSEID_INVALID,
-                        new ProcessFinanceDocumentValidationField("ShipFrom.WarehouseID", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.WarehouseID : string.Empty, SharedSettings.RegexAlfaNumericExtended, false)
+                        new ProcessFinanceDocumentValidationField("ShipFrom.WarehouseID", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.WarehouseID : string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false)
                     );
                     _fields.Add(FinanceValidationError.ERROR_FIELD_SHIPFROM_LOCATIONID_INVALID,
-                        new ProcessFinanceDocumentValidationField("ShipFrom.LocationID", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.LocationID : string.Empty, SharedSettings.RegexAlfaNumericExtended, false)
+                        new ProcessFinanceDocumentValidationField("ShipFrom.LocationID", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.LocationID : string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false)
                     );
                 }
 
@@ -481,7 +481,7 @@ namespace logicpos.financial.library.Classes.Finance
                     if (deliveryDate < shippingDate)
                     {
                         _fields.Add(FinanceValidationError.ERROR_FIELD_SHIPFROM_DELIVERYDATE_BEFORE_SHIPPINGDATE,
-                        new ProcessFinanceDocumentValidationField("ShipFrom.DeliveryDate", string.Empty, SharedSettings.RegexDateTime, true));
+                        new ProcessFinanceDocumentValidationField("ShipFrom.DeliveryDate", string.Empty, LogicPOS.Utility.RegexUtils.RegexDateTime, true));
                     }
                 }
 
@@ -490,32 +490,32 @@ namespace logicpos.financial.library.Classes.Finance
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
                 _fieldsArticle.Add(FinanceValidationError.ERROR_FIELD_ARTICLE_OID_INVALID,
-                    new ProcessFinanceDocumentValidationField("Oid", null, SharedSettings.RegexGuid, true)
+                    new ProcessFinanceDocumentValidationField("Oid", null, LogicPOS.Utility.RegexUtils.RegexGuid, true)
                 );
                 _fieldsArticle.Add(FinanceValidationError.ERROR_FIELD_ARTICLE_CODE_INVALID,
-                    new ProcessFinanceDocumentValidationField("Code", null, SharedSettings.RegexAlfaNumericArticleCode, true)
+                    new ProcessFinanceDocumentValidationField("Code", null, LogicPOS.Utility.RegexUtils.RegexAlfaNumericArticleCode, true)
                 );
                 _fieldsArticle.Add(FinanceValidationError.ERROR_FIELD_ARTICLE_DESIGNATION_INVALID,
-                    new ProcessFinanceDocumentValidationField("Designation", null, SharedSettings.RegexAlfaNumericExtended, true)
+                    new ProcessFinanceDocumentValidationField("Designation", null, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true)
                 );
                 _fieldsArticle.Add(FinanceValidationError.ERROR_FIELD_ARTICLE_PRICE_INVALID,
                     new ProcessFinanceDocumentValidationField("Price", null, regExArticlePrice, true)
                 );
                 _fieldsArticle.Add(FinanceValidationError.ERROR_FIELD_ARTICLE_QUANTITY_INVALID,
-                    new ProcessFinanceDocumentValidationField("Quantity", null, SharedSettings.RegexDecimalGreaterEqualThanZero, true)
+                    new ProcessFinanceDocumentValidationField("Quantity", null, LogicPOS.Utility.RegexUtils.RegexDecimalGreaterEqualThanZero, true)
                 );
                 //Removed : Framework LogicErp dont send ACRONYM : Search all ERROR_FIELD_ARTICLE_UNIT_MEASURE_ACRONYM_INVALID occurences
                 //_fieldsArticle.Add(FinanceValidationError.ERROR_FIELD_ARTICLE_UNIT_MEASURE_ACRONYM_INVALID,
                 //    new ProcessFinanceDocumentValidationField("UnitMeasure.Acronym", null, SettingsApp.RegexAlfaNumeric, true)
                 //);
                 _fieldsArticle.Add(FinanceValidationError.ERROR_FIELD_ARTICLE_DISCOUNT_INVALID,
-                    new ProcessFinanceDocumentValidationField("Discount", null, SharedSettings.RegexPercentage, true)
+                    new ProcessFinanceDocumentValidationField("Discount", null, LogicPOS.Utility.RegexUtils.RegexPercentage, true)
                 );
                 _fieldsArticle.Add(FinanceValidationError.ERROR_FIELD_ARTICLE_VAT_RATE_INVALID,
-                    new ProcessFinanceDocumentValidationField("VatRate", null, SharedSettings.RegexPercentage, true)
+                    new ProcessFinanceDocumentValidationField("VatRate", null, LogicPOS.Utility.RegexUtils.RegexPercentage, true)
                 );
                 _fieldsArticle.Add(FinanceValidationError.ERROR_FIELD_ARTICLE_VAT_EXEMPTION_REASON_INVALID,
-                    new ProcessFinanceDocumentValidationField("VatExemptionReason", null, SharedSettings.RegexGuid, false)
+                    new ProcessFinanceDocumentValidationField("VatExemptionReason", null, LogicPOS.Utility.RegexUtils.RegexGuid, false)
                 );
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::            
@@ -864,19 +864,19 @@ namespace logicpos.financial.library.Classes.Finance
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
                 _fields.Add(FinanceValidationError.ERROR_FIELD_CUSTOMER_INVALID,
-                    new ProcessFinanceDocumentValidationField("Customer", customer.Oid, SharedSettings.RegexGuid, true)
+                    new ProcessFinanceDocumentValidationField("Customer", customer.Oid, LogicPOS.Utility.RegexUtils.RegexGuid, true)
                 );
                 _fields.Add(FinanceValidationError.ERROR_FIELD_PAYMENT_METHOD_INVALID,
-                    new ProcessFinanceDocumentValidationField("PaymentMethod", paymentMethod.Oid, SharedSettings.RegexGuid, true)
+                    new ProcessFinanceDocumentValidationField("PaymentMethod", paymentMethod.Oid, LogicPOS.Utility.RegexUtils.RegexGuid, true)
                 );
                 _fields.Add(FinanceValidationError.ERROR_FIELD_CURRENCY_INVALID,
-                    new ProcessFinanceDocumentValidationField("Currency", currency.Oid, SharedSettings.RegexGuid, true)
+                    new ProcessFinanceDocumentValidationField("Currency", currency.Oid, LogicPOS.Utility.RegexUtils.RegexGuid, true)
                 );
                 _fields.Add(FinanceValidationError.ERROR_FIELD_PAYMENT_AMOUNT_INVALID,
-                    new ProcessFinanceDocumentValidationField("PaymentAmount", pPaymentAmount, SharedSettings.RegexDecimalGreaterEqualThanZero, true)
+                    new ProcessFinanceDocumentValidationField("PaymentAmount", pPaymentAmount, LogicPOS.Utility.RegexUtils.RegexDecimalGreaterEqualThanZero, true)
                 );
                 _fields.Add(FinanceValidationError.ERROR_FIELD_NOTES_INVALID,
-                    new ProcessFinanceDocumentValidationField("Notes", pPaymentNotes, SharedSettings.RegexAlfaNumericExtended, false)
+                    new ProcessFinanceDocumentValidationField("Notes", pPaymentNotes, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false)
                 );
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::            

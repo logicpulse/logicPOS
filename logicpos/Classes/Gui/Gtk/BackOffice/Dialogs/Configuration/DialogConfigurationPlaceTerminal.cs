@@ -35,31 +35,31 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 Entry entryOrd = new Entry();
                 BOWidgetBox boxLabel = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_order"), entryOrd);
                 vboxTab1.PackStart(boxLabel, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxLabel, _dataSourceRow, "Ord", SharedSettings.RegexIntegerGreaterThanZero, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxLabel, _dataSourceRow, "Ord", LogicPOS.Utility.RegexUtils.RegexIntegerGreaterThanZero, true));
 
                 //Code
                 Entry entryCode = new Entry();
                 BOWidgetBox boxCode = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_code"), entryCode);
                 vboxTab1.PackStart(boxCode, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCode, _dataSourceRow, "Code", SharedSettings.RegexIntegerGreaterThanZero, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCode, _dataSourceRow, "Code", LogicPOS.Utility.RegexUtils.RegexIntegerGreaterThanZero, true));
 
                 //Designation
                 Entry entryDesignation = new Entry();
                 BOWidgetBox boxDesignation = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"), entryDesignation);
                 vboxTab1.PackStart(boxDesignation, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", SharedSettings.RegexAlfaNumericExtended, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true));
 
                 //Place
                 XPOComboBox xpoComboBoxPlace = new XPOComboBox(DataSourceRow.Session, typeof(pos_configurationplace), (DataSourceRow as pos_configurationplaceterminal).Place, "Designation", null);
                 BOWidgetBox boxPlace = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_places"), xpoComboBoxPlace);
                 vboxTab1.PackStart(boxPlace, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxPlace, DataSourceRow, "Place", SharedSettings.RegexGuid, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxPlace, DataSourceRow, "Place", LogicPOS.Utility.RegexUtils.RegexGuid, false));
 
                 //HardwareId
                 Entry entryHardwareId = new Entry();
                 BOWidgetBox boxHardwareId = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_hardware_id"), entryHardwareId);
                 vboxTab1.PackStart(boxHardwareId, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxHardwareId, _dataSourceRow, "HardwareId", SharedSettings.RegexAlfaNumericExtended, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxHardwareId, _dataSourceRow, "HardwareId", LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false));
 
                 //Tab2
                 VBox vboxTab2 = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
@@ -82,7 +82,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 } while (xpoComboBoxPrinter.Model.IterNext(ref iter));
                 vboxTab2.PackStart(boxPrinter, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxPrinter, DataSourceRow, "Printer", SharedSettings.RegexGuid, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxPrinter, DataSourceRow, "Printer", LogicPOS.Utility.RegexUtils.RegexGuid, false));
 
                 //ThermalPrinter
                 pcriteria = CriteriaOperator.Parse($"(Oid <> '{SharedSettings.XpoOidUndefinedRecord}' AND (PrinterType = '{SharedSettings.XpoOidConfigurationPrinterTypeThermalPrinterWindows}'  OR PrinterType = '{SharedSettings.XpoOidConfigurationPrinterTypeThermalPrinterSocket}' OR PrinterType = '{SharedSettings.XpoOidConfigurationPrinterTypeThermalPrinterUsb}'))");
@@ -90,37 +90,37 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 XPOComboBox xpoComboBoxThermalPrinter = new XPOComboBox(DataSourceRow.Session, typeof(sys_configurationprinters), (DataSourceRow as pos_configurationplaceterminal).ThermalPrinter, "Designation", pcriteria);
                 BOWidgetBox boxThermalPrinter = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_printer_thermal_printer"), xpoComboBoxThermalPrinter);
                 vboxTab2.PackStart(boxThermalPrinter, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxThermalPrinter, DataSourceRow, "ThermalPrinter", SharedSettings.RegexGuid, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxThermalPrinter, DataSourceRow, "ThermalPrinter", LogicPOS.Utility.RegexUtils.RegexGuid, false));
 
                 //PoleDisplay
                 XPOComboBox xpoComboBoxPoleDisplay = new XPOComboBox(DataSourceRow.Session, typeof(sys_configurationpoledisplay), (DataSourceRow as pos_configurationplaceterminal).PoleDisplay, "Designation", null);
                 BOWidgetBox boxPoleDisplay = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationPoleDisplay"), xpoComboBoxPoleDisplay);
                 vboxTab2.PackStart(boxPoleDisplay, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxPoleDisplay, DataSourceRow, "PoleDisplay", SharedSettings.RegexGuid, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxPoleDisplay, DataSourceRow, "PoleDisplay", LogicPOS.Utility.RegexUtils.RegexGuid, false));
 
                 //WeighingMachine
                 XPOComboBox xpoComboBoxWeighingMachine = new XPOComboBox(DataSourceRow.Session, typeof(sys_configurationweighingmachine), (DataSourceRow as pos_configurationplaceterminal).WeighingMachine, "Designation", null);
                 BOWidgetBox boxWeighingMachine = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationWeighingMachine"), xpoComboBoxWeighingMachine);
                 vboxTab2.PackStart(boxWeighingMachine, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxWeighingMachine, DataSourceRow, "WeighingMachine", SharedSettings.RegexGuid, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxWeighingMachine, DataSourceRow, "WeighingMachine", LogicPOS.Utility.RegexUtils.RegexGuid, false));
 
                 //BarcodeReader
                 XPOComboBox xpoComboBoxBarcodeReader = new XPOComboBox(DataSourceRow.Session, typeof(sys_configurationinputreader), (DataSourceRow as pos_configurationplaceterminal).BarcodeReader, "Designation", null);
                 BOWidgetBox boxBarcodeReader = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_input_barcode_reader"), xpoComboBoxBarcodeReader);
                 vboxTab2.PackStart(boxBarcodeReader, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxBarcodeReader, DataSourceRow, "BarcodeReader", SharedSettings.RegexGuid, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxBarcodeReader, DataSourceRow, "BarcodeReader", LogicPOS.Utility.RegexUtils.RegexGuid, false));
 
                 //CardReader
                 XPOComboBox xpoComboBoxCardReader = new XPOComboBox(DataSourceRow.Session, typeof(sys_configurationinputreader), (DataSourceRow as pos_configurationplaceterminal).CardReader, "Designation", null);
                 BOWidgetBox boxCardReader = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_input_reader_card_reader"), xpoComboBoxCardReader);
                 vboxTab2.PackStart(boxCardReader, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCardReader, DataSourceRow, "CardReader", SharedSettings.RegexGuid, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCardReader, DataSourceRow, "CardReader", LogicPOS.Utility.RegexUtils.RegexGuid, false));
 
                 //InputReaderTimerInterval
                 Entry entryInputReaderTimerInterval = new Entry();
                 BOWidgetBox boxInputReaderTimerInterval = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_input_reader_timer_interval"), entryInputReaderTimerInterval);
                 vboxTab2.PackStart(boxInputReaderTimerInterval, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxInputReaderTimerInterval, _dataSourceRow, "InputReaderTimerInterval", SharedSettings.RegexInteger, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxInputReaderTimerInterval, _dataSourceRow, "InputReaderTimerInterval", LogicPOS.Utility.RegexUtils.RegexInteger, true));
 
                 ////TemplateTicket : Deprecated
                 //XPOComboBox xpoComboBoxTemplateTicket = new XPOComboBox(DataSourceRow.Session, typeof(sys_configurationprinterstemplates), (DataSourceRow as pos_configurationplaceterminal).TemplateTicket, "Designation", "FinancialTemplate = 0");

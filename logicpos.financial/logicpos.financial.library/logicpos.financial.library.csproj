@@ -183,6 +183,10 @@
       <Project>{fb74327c-1794-47ec-8f52-fd3f464f3258}</Project>
       <Name>logicpos.shared</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\LogicPOS.Utility\LogicPOS.Utility.csproj">
+      <Project>{18488ce5-c06f-40f5-9339-0467a47d7985}</Project>
+      <Name>LogicPOS.Utility</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

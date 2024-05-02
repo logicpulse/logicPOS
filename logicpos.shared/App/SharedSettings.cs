@@ -26,38 +26,25 @@ namespace logicpos.shared.App
         public static string AppSessionFile { get; set; } = "appsession_{0}.json";
         public static bool AppSessionFileJsonIndented { get; set; } = true;
 
-        public static bool EnablePosSessionApp { get; set; } = false;
-        public static bool EnablePosWorkSessionPeriod { get; set; } = false;
-        public static bool EnablePosTables { get; set; } = false;
-
         public static Guid XpoOidConfigurationCountryPortugal { get; set; } = new Guid("e7e8c325-a0d4-4908-b148-508ed750676a");
-        public static string XpoOidConfigurationCountryPortugalCode2 { get; set; } = "PT";
         public static Guid XpoOidConfigurationCurrencyEuro { get; set; } = new Guid("28dd2a3a-0083-11e4-96ce-00ff2353398c");
         public static cfg_configurationcurrency ConfigurationSystemCurrency { get; set; } = null;
 
         public static Guid XpoOidConfigurationCountryMozambique { get; set; } = new Guid("16fcd7f2-e885-48d8-9f8e-9d224cc36f32");
-        public static string XpoOidConfigurationCountryMozambiqueCode2 { get; set; } = "MZ";
-        public static Guid XpoOidConfigurationCurrencyMetical { get; set; } = new Guid("28d16be0-0083-11e4-96ce-00ff2353398c");
         public static Guid XpoOidConfigurationCurrencyUSDollar { get; set; } = new Guid("28d692ad-0083-11e4-96ce-00ff2353398c");
 
-
         public static Guid XpoOidConfigurationCountryAngola { get; set; } = new Guid("9655510a-ff58-461e-9719-c037058f10ed");
-        public static string XpoOidConfigurationCountryAngolaCode2 { get; set; } = "AO";
-        public static Guid XpoOidConfigurationCurrencyKwanza { get; set; } = new Guid("28da9212-3423-11e4-96ce-00ff2353398c");
 
         public static string DateFormat { get; set; } = "yyyy-MM-dd";
         public static string DateTimeFormat { get; set; } = "yyyy-MM-dd HH:mm:ss";
         public static string DateTimeFormatHour { get; set; } = "HH:mm:ss";
 
         public static string DecimalFormat { get; set; } = "0.00";
-        public static string DecimalFormatCurrency { get; set; } = "0.00";
         public static string DecimalFormatStockQuantity { get; set; } = "0.00000000";
 
         public static string FileFormatDateTime { get; set; }
         public static string FileFormatSaftPT { get; set; }
         public static string FileFormatSaftAO { get; set; }
-
-        public static string BackupPassword { get; set; }
 
         public static int DocumentsPadLength { get; set; }
         public static string DateTimeFormatDocumentDate { get; set; } = "yyyy-MM-dd";
@@ -65,221 +52,40 @@ namespace logicpos.shared.App
         public static string FinanceFinalConsumerFiscalNumber { get; set; }
         public static string FinanceFinalConsumerFiscalNumberDisplay { get; set; }
         public static string DecimalFormatSAFTPT { get; set; }
+        public static string DecimalFormatSAFTAO { get; private set; }
         public static string DecimalFormatGrossTotalSAFTPT { get; set; }
         public static int DecimalRoundTo { get; set; }
-        public static string RsaPrivateKey { get; set; }
         public static string SaftProductID { get { return GetSaftProductID(); } }
         public static string SaftProductCompanyTaxID { get; set; }
-        public static string SaftSoftwareCertificateNumber;
-        public static string SaftVersionPrefix;
-        public static string SaftVersion;
-        public static int HashControl;
+        public static string SaftSoftwareCertificateNumber { get; set; }
+        public static string SaftVersionPrefix { get; set; }
+        public static string SaftVersion { get; set; }
+        public static int HashControl { get; set; }
+        public static string TaxAccountingBasis { get; set; }
 
-        //C — Contabilidade;
-        //E — Faturação emitida por terceiros;
-        //F — Faturação;
-        //I — Contabilidade integrada com a faturação;
-        //P — Faturação parcial;
-        //R — Recibos (a);
-        //S — Autofaturação;
-        //T — Documentos de transporte (a).	
-        //Overrided by SoftwareVendor Plugin - ex: "F"
-        public static string TaxAccountingBasis;
+        public static string SaftCurrencyCode { get; set; }
+        public static string SaftCurrencyCodeAO { get; private set; }
 
-        public static string SaftCurrencyCode;
-
-        //SAFT(PT) : Country Rules
-        //Retalhistas e vendedores ambulantes é permitida a emissão de faturas simplificadas a não sujeitos passivos, 
-        //Até limite de 1000,00€ e a todas as outras atividades é apenas permitida a emissão de faturas até aos 100,00€
         public static int FinanceRuleSimplifiedInvoiceMaxTotal { get { return GetFinanceRuleSimplifiedInvoiceMaxTotal(); } }
         //Services
         public static int FinanceRuleSimplifiedInvoiceMaxTotalServices { get { return GetFinanceRuleSimplifiedInvoiceMaxTotalServices(); } }
         //This rule is to force fill Customer details if total document value is Greater or Equal to
         public static int FinanceRuleRequiredCustomerDetailsAboveValue { get { return GetFinanceRuleRequiredCustomerDetailsAboveValue(); } }
 
-
-        //SAF-T AO
-
-        //SAF-T(AO) : Formats 
-        //Overrided by SoftwareVendor Plugin - ex: 6
-        public static int DocumentsPadLengthAO;
-        //SAF-T(AO) : DateTime Formats 
-        //Overrided by SoftwareVendor Plugin - ex: "yyyy-MM-dd"
-        //Leave Default Here, in case we dont have Plugin Registered
-        public static string DateTimeFormatDocumentDateAO = "yyyy-MM-dd";
-        //Overrided by SoftwareVendor Plugin - ex: "yyyy-MM-ddTHH:mm:ss"
-        //Leave Default Here, in case we dont have Plugin Registered
-        public static string DateTimeFormatCombinedDateTimeAO = "yyyy-MM-ddTHH:mm:ss";
-        //Overrided by SoftwareVendor Plugin - ex: "999999990"
-        public static string FinanceFinalConsumerFiscalNumberAO;
-        //Overrided by SoftwareVendor Plugin - ex: "---------"
-        public static string FinanceFinalConsumerFiscalNumberDisplayAO;
-        //SAF-T(PT) : Decimal Format
-        //Overrided by SoftwareVendor Plugin - ex: "0.00000000"
-        public static string DecimalFormatSAFTAO;
-        //Overrided by SoftwareVendor Plugin - ex: "0.00"
-        public static string DecimalFormatGrossTotalSAFTAO;
-        //Used to Compare, Round first, Compare After
-        //Overrided by SoftwareVendor Plugin - ex: 2
-        public static int DecimalRoundToAO;
-        //RSA Private Key :Sign Finance Documents used in SHA1SignMessage()
-        //Overrided by SoftwareVendor Plugin - ex: 
-        //@"<RSAKeyValue>
-        //    <Modulus>PLACE VALUE HERE</Modulus>
-        //    <Exponent>PLACE VALUE HERE</Exponent>
-        //    <P>PLACE VALUE HERE</P>
-        //    <Q>PLACE VALUE HERE</Q>
-        //    <DP>PLACE VALUE HERE</DP>
-        //    <DQ>PLACE VALUE HERE</DQ>
-        //    <InverseQ>PLACE VALUE HERE</InverseQ>
-        //    <D>PLACE VALUE HERE</D>
-        //</RSAKeyValue>"
-        public static string RsaPrivateKeyAO;
         //SAFT-T XML Export Header
         public static string SaftProductIDAO { get { return GetSaftProductID_AO(); } }
-        //Overrided by SoftwareVendor Plugin - ex: "000000000" : Your Company FiscalNumber;
-        public static string SaftProductCompanyTaxIDAO;
+
         //Overrided by SoftwareVendor Plugin - ex: "0000" : Your Company CertificateNumber;
-        public static string SaftSoftwareCertificateNumberAO;
+        public static string SaftSoftwareCertificateNumberAO { get; set; }
         //Overrided by SoftwareVendor Plugin - ex: "PT"
-        public static string SaftVersionPrefixAO;
+        public static string SaftVersionPrefixAO { get; set; }
         //Overrided by SoftwareVendor Plugin - ex: "1.04_01"
-        public static string SaftVersionAO;
-        //Versão da Chave Privada utilizada na criação da Assinatura 
-        //Overrided by SoftwareVendor Plugin - ex: 1
-        public static int HashControlAO;
-        //C — Contabilidade;
-        //E — Faturação emitida por terceiros;
-        //F — Faturação;
-        //I — Contabilidade integrada com a faturação;
-        //P — Faturação parcial;
-        //R — Recibos (a);
-        //S — Autofaturação;
-        //T — Documentos de transporte (a).	
-        //Overrided by SoftwareVendor Plugin - ex: "F"
-        public static string TaxAccountingBasisAO;
-        //Currency Code
-        //Overrided by SoftwareVendor Plugin - ex: "EUR"
-        public static string SaftCurrencyCodeAO;
+        public static string SaftVersionAO { get; set; }
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Series
+        public static bool DocumentFinanceSeriesGenerationFactoryUseRandomAcronymPrefix { get; set; }
 
-        //Use Alphanumeric Random|Or Numeric Sequential 
-        //Overrided by SoftwareVendor Plugin - ex: false
-        public static bool DocumentFinanceSeriesGenerationFactoryUseRandomAcronymPrefix;
-        //Overrided by SoftwareVendor Plugin - ex: "000"
-        public static string DocumentFinanceSeriesGenerationFactoryAcronymLastSerieFormat;
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //RegEx
-
-        //RegEx : http://regex101.com | http://regexr.com
-        public static string RegexAlfa = @"^[A-Za-záéíóúÁÉÍÓÚàèìòùÀÈÌÒÙãõñÃÕÑâêîôûÂÊÎÔÛçÇ \s]*$";
-        public static string RegexAlfaNumeric = @"^[À-ÿ\-_ \s\w]*$";
-        /* IN009253 - for future use in addresses */
-        public static string RegexAlfaPlus = @"^[a-zA-ZÀ-ÿ&ºª'´\- ]*$";
-        /* IN005968 */
-        public static string RegexAlfaNumericPlus = @"^[À-ÿ&ºª,;'\.\\\/\*\- \w]*$"; /* IN009253 - '\w' includes '_' */
-        public static string RegexAlfaNumericExtendedForMotive = @"^[À-ÿ€$&@#%ºª(){}\[\]';:!?<>+\-_ \.\,\s\\\/\*\w]{1,50}$";
-        public static string RegexAlfaNumericExtended = @"^[À-ÿ€$&@#%ºª(){}\[\]';:!?<>+\-_ \.\,\s\\\/\*\w]{1,200}$";
-        public static string RegexAlfaNumericEmail = @"^[À-ÿ€$&@#%ºª(){}\[\]';:!?<>+\-_ \.\,\s\\\/\*\w]*$";
-        public static string RegexAlfaNumericFilePath = @"^[0-9A-Za-z\-\\\.:_\/ \s]*$";
-        public static string RegexInteger = @"^\d+$";
-        public static string RegexIntegerGreaterThanZero = @"^[1-9][0-9]*$";
-        public static string RegexIntegerGreaterEqualThanZero = @"^[0-9]*$";
-        public static string RegexIntegerColonSeparated = @"^(\d+(:\d+)*)?$";
-        //Used to detect Decimal Input Entrys in BackOffice XPOWidgets : , or . Culture Related
-        public static string RegexDecimal = @"^\s*(?=.*[0-9])\d*(?:[\.,]\d{1,4})?\s*$";
-        public static string RegexDecimalPositiveAndNegative = @"^-?\s*(?=.*[1-9])\d*(?:[\.,]\d{1,})?\s*$";//d{1,4}
-        public static string RegexDecimalGreaterThanZero = @"^\s*(?=.*[1-9])\d*(?:[\.,]\d{1,})?\s*$";//d{1,4}
-        public static string RegexDecimalGreaterEqualThanZero = @"^\s*(?=.*[0-9])\d*(?:[\.,]\d{1,})?\s*$";//d{1,4}
-        /* IN009183 - limits decimal to 2 places */
-        public static string RegexDecimalGreaterEqualThanZeroFinancial = @"^\s*(?=.*[0-9])\d*(?:[\.,]\d{1,2})?\s*$";
-        //http://www.nationwidebarcode.com/upc-country-codes/ 
-        public static string RegexEan12andEan4 = @"^[0-9A-Za-z]+";    /* @"^\d{12,14}$|^560\d{12,14}$";*/// <EAN12 a 14 any COUNTRY (^560\d{9}$|^560\d{11}$ < EAN11 PT, ^600\d{9}$|^560\d{11}$ < EAN11 AO)
-		//Ficha Cliente: Possibilidade de múltiplos email's [IN:016510]
-        public static string RegexEmail = @"^(|([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+([,.](([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+)*$";
-        public static string RegexGuid = @"^\b[a-fA-F0-9]{8}(?:-[a-fA-F0-9]{4}){3}-[a-fA-F0-9]{12}\b$";
-        //This will match valid dates in the format DD/MM/YYYY. It takes leap years into account when matching feb 29th and covers from 01/01/0000 to 31/12/9999
-        //public static string RegexDate = @"^(((0[1-9]|[12][0-9]|3[01])[- /\\.](0[13578]|1[02])|(0[1-9]|[12][0-9]|30)[- /\\.](0[469]|11)|(0[1-9]|1\d|2[0-8])[- /\\.]02)[- /\\.]\d{4}|29[- /\\.]02[- /\\.](\d{2}(0[48]|[2468][048]|[13579][26])|([02468][048]|[1359][26])00))$";
-        //Custom YYYY/MM/DD Leap Years
-        //public static string RegexDate = @"^((([0-9][0-9][0-9][1-9])|([1-9][0-9][0-9][0-9])|([0-9][1-9][0-9][0-9])|([0-9][0-9][1-9][0-9]))[-\/\\.]((0[13578])|(1[02]))[-\/\\.]((0[1-9])|([12][0-9])|(3[01])))|((([0-9][0-9][0-9][1-9])|([1-9][0-9][0-9][0-9])|([0-9][1-9][0-9][0-9])|([0-9][0-9][1-9][0-9]))-((0[469])|11)-((0[1-9])|([12][0-9])|(30)))|(((000[48])|([0-9]0-9)|([0-9][1-9][02468][048])|([1-9][0-9][02468][048])|([0-9]0-9)|([0-9][1-9][13579][26])|([1-9][0-9][13579][26]))-02-((0[1-9])|([12][0-9])))|((([0-9][0-9][0-9][1-9])|([1-9][0-9][0-9][0-9])|([0-9][1-9][0-9][0-9])|([0-9][0-9][1-9][0-9]))-02-((0[1-9])|([1][0-9])|([2][0-8])))$";
-        //Fixed some typos Regex in dates like 2017/11/11 that wont work
-		//IN009288 Componente - "Data de Nascimento" permite espaço 
-        public static string RegexDate = @"^(((([0-9][0-9][0-9][1-9])|([1-9][0-9][0-9][0-9])|([0-9][1-9][0-9][0-9])|([0-9][0-9][1-9][0-9]))[-\/\\.]((0[13578])|(1[02]))[-\/\\.]((0[1-9])|([12][0-9])|(3[01])))|((([0-9][0-9][0-9][1-9])|([1-9][0-9][0-9][0-9])|([0-9][1-9][0-9][0-9])|([0-9][0-9][1-9][0-9]))[-\/\\.]((0[469])|11)[-\/\\.]((0[1-9])|([12][0-9])|(30)))|(((000[48])|([0-9]0-9)|([0-9][1-9][02468][048])|([1-9][0-9][02468][048])|([0-9]0-9)|([0-9][1-9][13579][26])|([1-9][0-9][13579][26]))[-\/\\.]02[-\/\\.]((0[1-9])|([12][0-9])))|((([0-9][0-9][0-9][1-9])|([1-9][0-9][0-9][0-9])|([0-9][1-9][0-9][0-9])|([0-9][0-9][1-9][0-9]))[-\/\\.]02[-\/\\.]((0[1-9])|([1][0-9]\S*)|([2][0-8]\S*)\S*)\S*)\S*)$";
-        public static string RegexTime = @"^(0[0-9]|1[0-9]|2[0-3])(:[0-5]\d)(:[0-5]\d)$";
-        //public static string RegexDateTime = @"^(((\d\d)(([02468][048])|([13579][26]))-02-29)|(((\d\d)(\d\d)))-((((0\d)|(1[0-2]))-((0\d)|(1\d)|(2[0-8])))|((((0[13578])|(1[02]))-31)|(((0[1,3-9])|(1[0-2]))-(29|30)))))\s(([01]\d|2[0-3]):([0-5]\d):([0-5]\d))$";
-        //Custom YYYY/MM/DD 23:11:28 With Leap Years
-        public static string RegexDateTime = @"^(((\d\d)(([02468][048])|([13579][26]))[-\/\\.]02[-\/\\.]29)|(((\d\d)(\d\d)))[-\/\\.]((((0\d)|(1[0-2]))[-\/\\.]((0\d)|(1\d)|(2[0-8])))|((((0[13578])|(1[02]))-31)|(((0[1,3-9])|(1[0-2]))-(29|30)))))\s(([01]\d|2[0-3]):([0-5]\d):([0-5]\d))$";
-        //Year|Month|Day Splitted
-        public static string RegexDateYear = @"^((19|20)\d\d)$";
-        public static string RegexDateYearHolidays = @"^((19|20)\d\d)|0$";//Includes 0 for Holidays
-        public static string RegexDateMonth = @"^(0?[1-9]|1[012])$";
-        public static string RegexDateDay = @"^(0?[1-9]|[12][0-9]|3[01])$";
-        //Percentage
-        public static string RegexPercentage = @"^(100([\.\,][0]{1,})?$|[0-9]{1,2}([\.\,][0-9]{1,})?)$";
-        //Minimal 4 Chars
-        public static string RegexLoginPin = @"^[0-9]{4,}$";
-        //PrintCopies
-        public static string RegexPrintCopies = @"^[1-4]$";
-        //Minimal 8 Chars, Require one lower letter, one upper letter, and one number
-        //public static string RegexLoginPassword = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^ ]{8,}$";
-        //^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&'])[^ ]{8,}$
-        //Document Series Acronym
-
-        public static string RegexDocumentSeriesAcronym = @"^[0-9A-Za-z]{4,12}$";
-        public static string RegexDocumentSeriesYearAcronym = @"^[0-9A-Za-z]{4,12}$";
-        public static string RegexIPv4 = @"^(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]){3}$";
-        //BackOffice Specific Fields
-        public static string RegexAlfaNumericArticleCode = @"^[0-9A-Za-z€$&@#%()\[\]+\-_ \.\\\/]{2,25}$";
-        public static string RegexAlfaNumericArticleButtonLabel = @"^[0-9A-Za-zéúíóáÉÚÍÓÁèùìòàÈÙÌÒÀõãñÕÃÑêûîôâÊÛÎÔÂçÇ€$&@#%ºª()\[\]';:!?<>+\-_ \.\,\s\\\/\*]{2,35}$";
-        //ArticleClass Acronym 1 Char
-        public static string RegexAlfaAcronym1Char = @"^[A-Za-záéíóúÁÉÍÓÚàèìòùÀÈÌÒÙãõñÃÕÑâêîôûÂÊÎÔÛçÇ \s]{1}$";
-        //Country Codes - ISO 3166-1 alpha-2 - Incluedes -AC e -MA (Açores e Madeira)
-        public static string RegexAlfaCountryCode2 = @"^(AF|AX|AL|DZ|AS|AD|AO|AI|AQ|AG|AR|AM|AW|AU|AT|AZ|BS|BH|BD|BB|BY|BE|BZ|BJ|BM|BT|BO|BQ|BA|BW|BV|BR|IO|BN|BG|BF|BI|KH|CM|CA|CV|KY|CF|TD|CL|CN|CX|CC|CO|KM|CG|CD|CK|CR|CI|HR|CU|CW|CY|CZ|DK|DJ|DM|DO|EC|EG|SV|GQ|ER|EE|ET|FK|FO|FJ|FI|FR|GF|PF|TF|GA|GM|GE|DE|GH|GI|GR|GL|GD|GP|GU|GT|GG|GN|GW|GY|HT|HM|VA|HN|HK|HU|IS|IN|ID|IR|IQ|IE|IM|IL|IT|JM|JP|JE|JO|KZ|KE|KI|KP|KR|KW|KG|LA|LV|LB|LS|LR|LY|LI|LT|LU|MO|MK|MG|MW|MY|MV|ML|MT|MH|MQ|MR|MU|YT|MX|FM|MD|MC|MN|ME|MS|MA|MZ|MM|NA|NR|NP|NL|NC|NZ|NI|NE|NG|NU|NF|MP|NO|OM|PK|PW|PS|PA|PG|PY|PE|PH|PN|PL|PT|PR|QA|RE|RO|RU|RW|BL|SH|KN|LC|MF|PM|VC|WS|SM|ST|SA|SN|RS|SC|SL|SG|SX|SK|SI|SB|SO|ZA|GS|SS|ES|LK|SD|SR|SJ|SZ|SE|CH|SY|TW|TJ|TZ|TH|TL|TG|TK|TO|TT|TN|TR|TM|TC|TV|UG|UA|AE|GB|US|UM|UY|UZ|VU|VE|VN|VG|VI|WF|EH|YE|ZM|ZW|PT-AC|PT-MA)$";
-        public static string RegexAlfaCountryCode3 = @"^(ABW|AFG|AGO|AIA|ALA|ALB|AND|ARE|ARG|ARM|ASM|ATA|ATF|ATG|AUS|AUT|AZE|BDI|BEL|BEN|BES|BFA|BGD|BGR|BHR|BHS|BIH|BLM|BLR|BLZ|BMU|BOL|BRA|BRB|BRN|BTN|BVT|BWA|CAF|CAN|CCK|CHE|CHL|CHN|CIV|CMR|COD|COG|COK|COL|COM|CPV|CRI|CUB|CUW|CXR|CYM|CYP|CZE|DEU|DJI|DMA|DNK|DOM|DZA|ECU|EGY|ERI|ESH|ESP|EST|ETH|FIN|FJI|FLK|FRA|FRO|FSM|GAB|GBR|GEO|GGY|GHA|GIB|GIN|GLP|GMB|GNB|GNQ|GRC|GRD|GRL|GTM|GUF|GUM|GUY|HKG|HMD|HND|HRV|HTI|HUN|IDN|IMN|IND|IOT|IRL|IRN|IRQ|ISL|ISR|ITA|JAM|JEY|JOR|JPN|KAZ|KEN|KGZ|KHM|KIR|KNA|KOR|KWT|LAO|LBN|LBR|LBY|LCA|LIE|LKA|LSO|LTU|LUX|LVA|MAC|MAF|MAR|MCO|MDA|MDG|MDV|MEX|MHL|MKD|MLI|MLT|MMR|MNE|MNG|MNP|MOZ|MRT|MSR|MTQ|MUS|MWI|MYS|MYT|NAM|NCL|NER|NFK|NGA|NIC|NIU|NLD|NOR|NPL|NRU|NZL|OMN|PAK|PAN|PCN|PER|PHL|PLW|PNG|POL|PRI|PRK|PRT|PRY|PSE|PYF|QAT|REU|ROU|RUS|RWA|SAU|SDN|SEN|SGP|SGS|SHN|SJM|SLB|SLE|SLV|SMR|SOM|SPM|SRB|SSD|STP|SUR|SVK|SVN|SWE|SWZ|SXM|SYC|SYR|TCA|TCD|TGO|THA|TJK|TKL|TKM|TLS|TON|TTO|TUN|TUR|TUV|TWN|TZA|UGA|UKR|UMI|URY|USA|UZB|VAT|VCT|VEN|VGB|VIR|VNM|VUT|WLF|WSM|YEM|ZAF|ZMB|ZWE|PRT-AC|PRT-MA)$";
-        //Acronyms
-        public static string RegexAcronym2Chars = @"^[0-9A-Za-z]{2}$";
-        public static string RegexAcronym3Chars = @"^[0-9A-Za-z]{3}$";
-        public static string RegexAcronym2Or3Chars = @"^[0-9A-Za-z]{2,3}$";
-        // Printer Network Name or Usb Config ex "\\LP-MARIO-PC\GenericPrinter" or "0x0471|0x0055|Ep02"
-        public static string RegexHardwarePrinterNetworkNameAndUsbEndpoint = @"^[0-9A-Za-z\\|-]*$";
-        //Other
-        public static string RegexIntegerSplittedByComma = @"^(\d+(,\d+)*)?$";
-        // Hardware PoleDisplay : Ex 0x0F12
-        public static string RegexHardwareVidAndPid = @"^0x[0-9A-Fa-f]{4}$";
-        // Hardware PoleDisplay : Ex Ep01....Ep99
-        public static string RegexHardwareEndpoint = @"^Ep[0-9]{1,2}$";
-        // Hardware PoleDisplay : Ex 0x10
-        public static string RegexHardwareCodeTable = @"^0x[0-9]{1,2}$";
-
-        /* IN006030 - start */
-        // Hardware WeighingBalance
-        public static string RegexHardwarePortName = @"^(COM1|COM2|COM3|COM4|COM5|COM6|COM7|COM8|COM9|COM10|COM11|COM12|COM13|COM14|COM15)$";
-        public static string RegexHardwareBaudRate = @"^(300|600|1200|2400|4800|9600|14400|28800|36000|115000)$";
-        public static string RegexHardwareParity = @"^(None|Odd|Even|Mark|Space)$";
-        public static string RegexHardwareStopBits = @"^(None|One|Two|OnePointFive)$";
-        public static string RegexHardwareDataBits = @"^(7|8|9)$";
-        //Prefs
-        public static string RegexSize = @"^([0-9]{0,9}),([0-9]{0,9})$";
-        public static string RegexTheme = @"^(Default|Retail)$";
-        public static string RegexOperationMode = @"^(Default|Retail)$";
-        /* IN006030 - end */
-
-        /* IN006018 - changed from pattern 'pt-PT' RegEx based to fixed 'pt-PT' */
-        public static string RegexCulture = @"^(en-GB|en-US|es-ES|fr-FR|pt-AO|pt-BR|pt-MZ|pt-PT)$";
-        /* Matches +(optional) and a num(espace or hiphen, optional)351  */
-        public static string RegexTelephoneNumber = @"^\+?([- ]?\d)*$";
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Override From Config : Replaced by Country RegexFiscalNumber & RegexZipCode
-
-        //Used only in DialogUserDetail, else are used from regexFiscalNumber from Country Object
-        //public static string RegexFiscalNumber = (DataLayerFramework.Settings["RegexFiscalNumber"] == String.Empty) ? @"^(PT)?[0-9]{9}$" : DataLayerFramework.Settings["RegexFiscalNumber"];
-        //Move to Country Table
-        //public static string RegexZipCode = (DataLayerFramework.Settings["RegexZipCode"] == String.Empty) ? @"^\d{4}(-\d{3})?$" : DataLayerFramework.Settings["RegexZipCode"];
-
+        public static string DocumentFinanceSeriesGenerationFactoryAcronymLastSerieFormat { get; set; }
+        
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Developer Config
 

@@ -73,7 +73,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 
                 //Articles
                 CriteriaOperator articleCriteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL)"));
-                _articleBoxSelectRecord = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article"), "Designation", "Oid", (_dataSourceRow as fin_articlewarehouse).Article, articleCriteria, SharedSettings.RegexAlfaNumeric, true, true);
+                _articleBoxSelectRecord = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article"), "Designation", "Oid", (_dataSourceRow as fin_articlewarehouse).Article, articleCriteria, LogicPOS.Utility.RegexUtils.RegexAlfaNumeric, true, true);
                 GenericCRUDWidgetXPO genericCRUDWidgetXPO = new GenericCRUDWidgetXPO(_articleBoxSelectRecord, _dataSourceRow, "Article", "", true);
                 _crudWidgetList.Add(genericCRUDWidgetXPO);
                 _articleBoxSelectRecord.EntryValidation.IsEditable = true;
@@ -91,7 +91,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                     serialNumberCriteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND Article == '{0}'", (_dataSourceRow as fin_articlewarehouse).Article.Oid));
                 }
 
-                _entryBoxArticleSerialNumber = new XPOEntryBoxSelectRecordValidation<fin_articleserialnumber, TreeViewArticleSerialNumber>(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_serialnumber"), "SerialNumber", "Oid", (_dataSourceRow as fin_articlewarehouse).ArticleSerialNumber, serialNumberCriteria, SharedSettings.RegexGuid, true, true);
+                _entryBoxArticleSerialNumber = new XPOEntryBoxSelectRecordValidation<fin_articleserialnumber, TreeViewArticleSerialNumber>(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_serialnumber"), "SerialNumber", "Oid", (_dataSourceRow as fin_articlewarehouse).ArticleSerialNumber, serialNumberCriteria, LogicPOS.Utility.RegexUtils.RegexGuid, true, true);
                 _entryBoxArticleSerialNumber.EntryValidation.IsEditable = true;
                 _entryBoxArticleSerialNumber.EntryValidation.Completion.PopupCompletion = true;
                 _entryBoxArticleSerialNumber.EntryValidation.Completion.InlineCompletion = false;
@@ -108,7 +108,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                 fin_warehouse defaultWareHouse = ((_dataSourceRow as fin_articlewarehouse).Warehouse != null) ? (_dataSourceRow as fin_articlewarehouse).Warehouse : (fin_warehouse)_dataSourceRow.Session.FindObject(typeof(fin_warehouse), defaultWarehouseCriteria);
                 xpoComboBoxWarehouse = new XPOComboBox(DataSourceRow.Session, typeof(fin_warehouse), defaultWareHouse, "Designation", null);
                 BOWidgetBox boxWareHouse = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warehouse"), xpoComboBoxWarehouse);
-                genericCRUDWidgetXPO = new GenericCRUDWidgetXPO(boxWareHouse, _dataSourceRow, "Warehouse", SharedSettings.RegexAlfaNumeric, false);
+                genericCRUDWidgetXPO = new GenericCRUDWidgetXPO(boxWareHouse, _dataSourceRow, "Warehouse", LogicPOS.Utility.RegexUtils.RegexAlfaNumeric, false);
                 _crudWidgetList.Add(genericCRUDWidgetXPO);
                 vboxTab1.PackStart(boxWareHouse, false, false, 0);
 
@@ -121,7 +121,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                 fin_warehouselocation defaultLocation = ((_dataSourceRow as fin_articlewarehouse).Location != null) ? (_dataSourceRow as fin_articlewarehouse).Location : (fin_warehouselocation)_dataSourceRow.Session.FindObject(typeof(fin_warehouselocation), criteria);
                 xpoComboBoxWarehouseLocation = new XPOComboBox(DataSourceRow.Session, typeof(fin_warehouselocation), defaultLocation, "Designation", criteria);
                 BOWidgetBox boxWareHouseLocation = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationDevice_PlaceTerminal"), xpoComboBoxWarehouseLocation);
-                genericCRUDWidgetXPO = new GenericCRUDWidgetXPO(boxWareHouseLocation, _dataSourceRow, "Location", SharedSettings.RegexAlfaNumeric, false);
+                genericCRUDWidgetXPO = new GenericCRUDWidgetXPO(boxWareHouseLocation, _dataSourceRow, "Location", LogicPOS.Utility.RegexUtils.RegexAlfaNumeric, false);
                 _crudWidgetList.Add(genericCRUDWidgetXPO);
                 vboxTab1.PackStart(boxWareHouseLocation, false, false, 0);
 
@@ -129,7 +129,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                 entryQuantity = new Entry();
                 boxQuantity = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quantity"), entryQuantity);
                 vboxTab1.PackStart(boxQuantity, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxQuantity, _dataSourceRow, "Quantity", SharedSettings.RegexDecimal, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxQuantity, _dataSourceRow, "Quantity", LogicPOS.Utility.RegexUtils.RegexDecimal, false));
 
 
                 //Append Tab

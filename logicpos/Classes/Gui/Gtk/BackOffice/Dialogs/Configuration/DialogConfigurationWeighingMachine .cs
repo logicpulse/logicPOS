@@ -33,49 +33,49 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 Entry entryOrd = new Entry();
                 BOWidgetBox boxLabel = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_order"), entryOrd);
                 vboxTab1.PackStart(boxLabel, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxLabel, _dataSourceRow, "Ord", SharedSettings.RegexIntegerGreaterThanZero, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxLabel, _dataSourceRow, "Ord", LogicPOS.Utility.RegexUtils.RegexIntegerGreaterThanZero, true));
 
                 //Code
                 Entry entryCode = new Entry();
                 BOWidgetBox boxCode = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_code"), entryCode);
                 vboxTab1.PackStart(boxCode, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCode, _dataSourceRow, "Code", SharedSettings.RegexIntegerGreaterThanZero, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCode, _dataSourceRow, "Code", LogicPOS.Utility.RegexUtils.RegexIntegerGreaterThanZero, true));
 
                 //Designation
                 Entry entryDesignation = new Entry();
                 BOWidgetBox boxDesignation = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"), entryDesignation);
                 vboxTab1.PackStart(boxDesignation, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", SharedSettings.RegexAlfaNumericExtended, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true));
 
                 //PortName
                 Entry entryPortName = new Entry();
                 BOWidgetBox boxPortName = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_hardware_com_portname"), entryPortName);
                 vboxTab1.PackStart(boxPortName, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxPortName, _dataSourceRow, "PortName", SharedSettings.RegexHardwarePortName, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxPortName, _dataSourceRow, "PortName", LogicPOS.Utility.RegexUtils.RegexHardwarePortName, true));
 
                 //BaudRate
                 Entry entryBaudRate = new Entry();
                 BOWidgetBox boxBaudRate = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_hardware_com_baudrate"), entryBaudRate);
                 vboxTab1.PackStart(boxBaudRate, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxBaudRate, _dataSourceRow, "BaudRate", SharedSettings.RegexHardwareBaudRate, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxBaudRate, _dataSourceRow, "BaudRate", LogicPOS.Utility.RegexUtils.RegexHardwareBaudRate, true));
 
                 //Parity
                 Entry entryParity = new Entry();
                 BOWidgetBox boxParity = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_hardware_com_parity"), entryParity);
                 vboxTab1.PackStart(boxParity, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxParity, _dataSourceRow, "Parity", SharedSettings.RegexHardwareParity, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxParity, _dataSourceRow, "Parity", LogicPOS.Utility.RegexUtils.RegexHardwareParity, true));
 
                 //StopBits
                 Entry entryStopBits = new Entry();
                 BOWidgetBox boxStopBits = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_hardware_com_stopbits"), entryStopBits);
                 vboxTab1.PackStart(boxStopBits, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxStopBits, _dataSourceRow, "StopBits", SharedSettings.RegexHardwareStopBits, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxStopBits, _dataSourceRow, "StopBits", LogicPOS.Utility.RegexUtils.RegexHardwareStopBits, true));
 
                 //DataBits
                 Entry entryDataBits = new Entry();
                 BOWidgetBox boxDataBits = new BOWidgetBox(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_hardware_com_databits"), entryDataBits);
                 vboxTab1.PackStart(boxDataBits, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDataBits, _dataSourceRow, "DataBits", SharedSettings.RegexHardwareDataBits, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDataBits, _dataSourceRow, "DataBits", LogicPOS.Utility.RegexUtils.RegexHardwareDataBits, true));
 
                 //Disabled
                 CheckButton checkButtonDisabled = new CheckButton(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_disabled"));

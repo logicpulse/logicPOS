@@ -324,7 +324,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //}
             T1 defaultValue = (T1)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(T1), SharedSettings.XpoOidUndefinedRecord);            
             CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("((Disabled IS NULL OR Disabled  <> 1) OR (Oid = '{0}') OR (Oid = '{1}')) {2}", SharedSettings.XpoOidUndefinedRecord,SharedSettings.XpoOidUserRecord, extraFilter));
-            resultObject = new XPOEntryBoxSelectRecordValidation<T1, T2>(this, labelText, fieldDisplayValue, "Oid", (defaultValue as T1), criteriaOperator, SharedSettings.RegexGuid, true);
+            resultObject = new XPOEntryBoxSelectRecordValidation<T1, T2>(this, labelText, fieldDisplayValue, "Oid", (defaultValue as T1), criteriaOperator, LogicPOS.Utility.RegexUtils.RegexGuid, true);
             resultObject.Name = typeof(T1).Name;
             resultObject.EntryValidation.IsEditable = true;
             resultObject.ClosePopup += _entryBoxSelectShared_ClosePopup;

@@ -48,7 +48,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             _vbox = new VBox(false, 0);
 
             //Init AddFile
-            EntryBoxAddFile = new EntryBoxValidationFilePickerDialog(pSourceWindow, pLabelText, SharedSettings.RegexAlfaNumericFilePath, false, pFileFilter);
+            EntryBoxAddFile = new EntryBoxValidationFilePickerDialog(pSourceWindow, pLabelText, LogicPOS.Utility.RegexUtils.RegexAlfaNumericFilePath, false, pFileFilter);
             EntryBoxAddFile.EntryValidation.Validate();
             EntryBoxAddFile.ClosePopup += _entryBoxAddFile_ClosePopup;
 
@@ -97,7 +97,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //if AddFileNameToList true, add the File to the list, else skip add, usefull when we Initialize List from Constructor pInitialFileList
         private void AddFileEntry(string pFileName, bool pAddFileNameToList)
         {
-            EntryBoxValidationButton entryBoxValidationButton = new EntryBoxValidationButton(_sourceWindow, string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_file_image"), Value.Count + 1), KeyboardMode.None, SharedSettings.RegexAlfaNumericFilePath, true);
+            EntryBoxValidationButton entryBoxValidationButton = new EntryBoxValidationButton(_sourceWindow, string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_file_image"), Value.Count + 1), KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexAlfaNumericFilePath, true);
             entryBoxValidationButton.EntryValidation.Validate();
             entryBoxValidationButton.EntryValidation.Sensitive = false;
 
