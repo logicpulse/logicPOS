@@ -1,5 +1,4 @@
-﻿using DansCSharpLibrary.JsonSerialization;
-using logicpos.datalayer.DataLayer.Xpo;
+﻿using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.shared.App;
 using logicpos.shared.Classes.Orders;
@@ -15,35 +14,28 @@ namespace logicpos.shared
         //Log4Net
         private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        //Private Members
-        private string _file;
-        private Formatting _jsonIndented;
+        private string _jsonFile;
+        private Formatting _jsonFormatting;
 
-        public DateTime SessionDateStart { get; set; }
+        public DateTime SessionStartDate { get; set; }
 
         public DateTime SessionUpdatedAt { get; set; }
 
         public Dictionary<Guid, DateTime> LoggedUsers { get; set; }
 
-        private Guid _currentOrderMainOid;
-        public Guid CurrentOrderMainOid
-        {
-            get { return _currentOrderMainOid; }
-            set { _currentOrderMainOid = value; }
-        }
-
+        public Guid CurrentOrderMainOid { get; set; }
+       
         public Dictionary<Guid, OrderMain> OrdersMain { get; set; }
 
         public Dictionary<string, object> Tokens { get; set; }
 
-        public GlobalFrameworkSession() { }
         public GlobalFrameworkSession(string pFile)
         {
             //Init Parameters
-            _file = pFile;
+            _jsonFile = pFile;
             //Default
-            _currentOrderMainOid = Guid.Empty;
-            SessionDateStart = datalayer.App.DataLayerUtils.CurrentDateTimeAtomic();
+            CurrentOrderMainOid = Guid.Empty;
+            SessionStartDate = datalayer.App.DataLayerUtils.CurrentDateTimeAtomic();
             LoggedUsers = new Dictionary<Guid, DateTime>();
             OrdersMain = new Dictionary<Guid, OrderMain>();
         }
@@ -55,7 +47,7 @@ namespace logicpos.shared
                 //Empty Session May Delete
                 try
                 {
-                    if (File.Exists(_file)) File.Delete(_file);
+                    if (File.Exists(_jsonFile)) File.Delete(_jsonFile);
                     return true;
                 }
                 catch (Exception ex)
@@ -70,7 +62,11 @@ namespace logicpos.shared
                 try
                 {
                     SessionUpdatedAt = datalayer.App.DataLayerUtils.CurrentDateTimeAtomic();
-                    JsonSerialization.WriteToJsonFile<GlobalFrameworkSession>(_file, this, false, _jsonIndented);
+                    var jsonSerializer = new JsonSerializer();
+                    var contentsToWriteToFile = JsonConvert.SerializeObject(this, _jsonFormatting);
+                    var writer = new StreamWriter(_jsonFile,false);
+                    writer.Write(contentsToWriteToFile);
+                    writer.Close();
                     return true;
                 }
                 catch (Exception ex)
@@ -130,24 +126,8 @@ namespace logicpos.shared
                     break;
                 }
             }
-            if (!SharedFramework.SessionApp.OrdersMain.ContainsKey(SharedFramework.SessionApp._currentOrderMainOid))
-                SharedFramework.SessionApp._currentOrderMainOid = latestNonEmptyOrder;
-        }
-
-        public bool DeleteSession()
-        {
-            //Log4Net
-            log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-            bool result = false;
-
-            if (File.Exists(_file))
-            {
-                File.Delete(_file);
-                result = true;
-            }
-
-            return result;
+            if (!SharedFramework.SessionApp.OrdersMain.ContainsKey(SharedFramework.SessionApp.CurrentOrderMainOid))
+                SharedFramework.SessionApp.CurrentOrderMainOid = latestNonEmptyOrder;
         }
 
         public bool SetToken(string pToken, object pValue)
@@ -195,10 +175,7 @@ namespace logicpos.shared
             return result;
         }
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Static Helper Functions
-
-        public static GlobalFrameworkSession InitSession(string pFile)
+        public static GlobalFrameworkSession InitSession(string jsonFile)
         {
             //Log4Net
             log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -208,26 +185,27 @@ namespace logicpos.shared
             bool _appSessionFileJsonIndented = Convert.ToBoolean(SharedSettings.AppSessionFileJsonIndented);
             if (_appSessionFileJsonIndented) { jsonIndented = Formatting.Indented; } else { jsonIndented = Formatting.None; };
 
-            if (File.Exists(pFile))
+            if (File.Exists(jsonFile))
             {
                 try
                 {
-                    appSession = JsonSerialization.ReadFromJsonFile<GlobalFrameworkSession>(pFile);
-                    appSession._jsonIndented = jsonIndented;
-                    appSession._file = pFile;
+                    string jsonfileContents = File.ReadAllText(jsonFile);
+                    appSession = JsonConvert.DeserializeObject<GlobalFrameworkSession>(jsonFile);
+                    appSession._jsonFormatting = jsonIndented;
+                    appSession._jsonFile = jsonFile;
                 }
                 catch (Exception ex)
                 {
                     log.Error(string.Format("InitSession(): {0}", ex.Message), ex);
-                    appSession = new GlobalFrameworkSession(pFile);
-                    appSession._jsonIndented = jsonIndented;
+                    appSession = new GlobalFrameworkSession(jsonFile);
+                    appSession._jsonFormatting = jsonIndented;
                     appSession.Write();
                 };
             }
             else
             {
-                appSession = new GlobalFrameworkSession(pFile);
-                appSession._jsonIndented = jsonIndented;
+                appSession = new GlobalFrameworkSession(jsonFile);
+                appSession._jsonFormatting = jsonIndented;
                 appSession.Write();
             };
 

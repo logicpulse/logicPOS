@@ -1,33 +1,9 @@
 using System;
-using System.Text;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO.Ports;
-using System.Globalization;
-using System.Collections.Generic;
-//*****************************************************************************************
-//                           LICENSE INFORMATION
-//*****************************************************************************************
-//   PCCom.SerialCommunication Version 1.0.0.0
-//   Class file for managing serial port communication
-//
-//   Copyright (C) 2007  
-//   Richard L. McCutchen 
-//   Email: richard@psychocoder.net
-//   Created: 20OCT07
-//
-//   This program is free software: you can redistribute it and/or modify
-//   it under the terms of the GNU General Public License as published by
-//   the Free Software Foundation, either version 3 of the License, or
-//   (at your option) any later version.
-//
-//   This program is distributed in the hope that it will be useful,
-//   but WITHOUT ANY WARRANTY; without even the implied warranty of
-//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//   GNU General Public License for more details.
-//
-//   You should have received a copy of the GNU General Public License
-//   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//*****************************************************************************************
+using System.Text;
+
 namespace PCComm
 {
     public class CommunicationManager
@@ -236,8 +212,6 @@ namespace PCComm
         }
         #endregion
 
-        private readonly string command = string.Empty;
-
         #region DisplayData
         /// <summary>
         /// method to display the data to & from the port
@@ -368,39 +342,6 @@ namespace PCComm
         }
         #endregion
 
-        #region SetParityValues
-        public void SetParityValues(object obj)
-        {
-            foreach (string str in Enum.GetNames(typeof(Parity)))
-            {
-                //((ComboBox)obj).Items.Add(str);
-                _logger.Debug($"SetParityValues: {str}");
-            }
-        }
-        #endregion
-
-        #region SetStopBitValues
-        public void SetStopBitValues(object obj)
-        {
-            foreach (string str in Enum.GetNames(typeof(StopBits)))
-            {
-                //((ComboBox)obj).Items.Add(str);
-                _logger.Debug($"SetStopBitValues: {str}");
-            }
-        }
-        #endregion
-
-        #region SetPortNameValues
-        public void SetPortNameValues(object obj)
-        {
-            foreach (string str in SerialPort.GetPortNames())
-            {
-                //((ComboBox)obj).Items.Add(str);
-                _logger.Debug($"SetPortNameValues: {str}");
-            }
-        }
-        #endregion
-
         #region comPort_DataReceived
         /// <summary>
         /// method that will be called when theres data waiting in the buffer
@@ -445,30 +386,6 @@ namespace PCComm
         #endregion
 
         /// <summary>
-        /// 98: 0x38h y 0x39h
-        /// PPPPP: 5 dígitos para el precio.
-        /// C: Checksum, suma lógica (XOR) de todos los caracteres anteriores.
-        /// CR: 0x0Dh LF: 0x0Ah
-        /// </summary>
-        /// <param name="pesoHex"></param>
-        /// <returns></returns>
-        public string CalculateHexFromPrice(string pesoHex)
-        {
-            string checsum = Convert.ToString(0x39 ^ 0x38
-                ^ int.Parse(pesoHex.Substring(0, 2), NumberStyles.HexNumber)
-                ^ int.Parse(pesoHex.Substring(2, 2), NumberStyles.HexNumber)
-                ^ int.Parse(pesoHex.Substring(4, 2), NumberStyles.HexNumber)
-                ^ int.Parse(pesoHex.Substring(6, 2), NumberStyles.HexNumber)
-                ^ int.Parse(pesoHex.Substring(8, 2), NumberStyles.HexNumber)
-                , 2); //35
-
-            checsum = Convert.ToInt32(checsum, 2).ToString("X");
-
-            string send = "3938 " + pesoHex + checsum + "0D0A";
-
-            return send;
-        }
-        /// <summary>
         /// 99: 0x39h y 0x39h
         /// S: Estado del peso. S: 0x30h Correcto. S: 0x31h Error.
         /// WWWWW: 5 dígitos para el PESO.
@@ -490,45 +407,12 @@ namespace PCComm
             resultList.Add(Convert.ToInt16(WWWWW));
             // Sanitize : Must Remove last Charcters like detected ones [= >]
             //resultList.Add(Convert.ToInt16(IIIIII.Replace("=", string.Empty)));
-            IIIIII = IIIIII.Substring(0, IIIIII.Length -1);
+            IIIIII = IIIIII.Substring(0, IIIIII.Length - 1);
             resultList.Add(Convert.ToInt16(IIIIII));
 
             //return "Peso -" + WWWWW + "g --- Preço - " + IIIIII;
             return resultList;
         }
 
-        /// <summary>
-        /// Convert string to Hex
-        /// </summary>
-        /// <param name="str"></param>
-        /// <returns>"48656C6C6F20776F726C64" for "Hello world"</returns>
-        public string ToHexString(string str)
-        {
-            var sb = new StringBuilder();
-
-            var bytes = Encoding.ASCII.GetBytes(str);
-            foreach (var t in bytes)
-            {
-                sb.Append(t.ToString("X2"));
-            }
-
-            return sb.ToString();
-        }
-
-        /// <summary>
-        /// Convert Hex to string
-        /// </summary>
-        /// <param name="hexString"></param>
-        /// <returns>"Hello world" for "48656C6C6F20776F726C64"</returns>
-        public string FromHexString(string hexString)
-        {
-            var bytes = new byte[hexString.Length / 2];
-            for (var i = 0; i < bytes.Length; i++)
-            {
-                bytes[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 16);
-            }
-
-            return Encoding.ASCII.GetString(bytes);
-        }
     }
 }
