@@ -32,17 +32,16 @@ namespace logicpos.Classes.Logic.License
             LoadApp = true;
 
 #if (DEBUG)
-            SharedFramework.LicenseDate = DateTime.Now.ToString("dd/MM/yyyy");
-            SharedFramework.LicenseVersion = "POS_CORPORATE";
-            SharedFramework.LicenseName = "DEBUG";
-            SharedFramework.LicenseHardwareId = "####-####-####-####-####-####";
-            //Company Details
-            SharedFramework.LicenseCompany = "Empresa Demonstração";
-            SharedFramework.LicenseNif = "NIF Demonstração";
-            SharedFramework.LicenseAddress = "Morada Demonstração";
-            SharedFramework.LicenseEmail = "mail@demonstracao.tld";
-            SharedFramework.LicenseTelephone = "DEBUG";
-            SharedFramework.LicenseModuleStocks = true;
+            LogicPOS.Settings.LicenseSettings.LicenseDate = DateTime.Now.ToString("dd/MM/yyyy");
+            LogicPOS.Settings.LicenseSettings.LicenseVersion = "POS_CORPORATE";
+            LogicPOS.Settings.LicenseSettings.LicenseName = "DEBUG";
+            LogicPOS.Settings.LicenseSettings.LicenseHardwareId = "####-####-####-####-####-####";
+            LogicPOS.Settings.LicenseSettings.LicenseCompany = "Empresa Demonstração";
+            LogicPOS.Settings.LicenseSettings.LicenseNif = "NIF Demonstração";
+            LogicPOS.Settings.LicenseSettings.LicenseAddress = "Morada Demonstração";
+            LogicPOS.Settings.LicenseSettings.LicenseEmail = "mail@demonstracao.tld";
+            LogicPOS.Settings.LicenseSettings.LicenseTelephone = "DEBUG";
+            LogicPOS.Settings.LicenseSettings.LicenseModuleStocks = true;
 #else
             if (showDebug)
             {
@@ -220,39 +219,39 @@ namespace logicpos.Classes.Logic.License
 
         public static void GetLicenceInfo()
         {
-            if (SharedFramework.DtLicenseKeys == null)
+            if (LogicPOS.Settings.LicenseSettings.LicenseKeys == null)
             {
-                SharedFramework.DtLicenseKeys = new DataTable("keysLicence");
-                SharedFramework.DtLicenseKeys.Columns.Add("name", typeof(string));
-                SharedFramework.DtLicenseKeys.Columns.Add("value", typeof(string));
+                LogicPOS.Settings.LicenseSettings.LicenseKeys = new DataTable("keysLicence");
+                LogicPOS.Settings.LicenseSettings.LicenseKeys.Columns.Add("name", typeof(string));
+                LogicPOS.Settings.LicenseSettings.LicenseKeys.Columns.Add("value", typeof(string));
             }
-            SharedFramework.DtLicenseKeys.Rows.Clear();
+            LogicPOS.Settings.LicenseSettings.LicenseKeys.Rows.Clear();
 
-            SharedFramework.LicenseDate = DateTime.Now.ToString("dd/MM/yyyy");
-            SharedFramework.LicenseVersion = "LOGICPOS_LICENSED";
-            SharedFramework.LicenseName = "Nome DEMO";
-            SharedFramework.LicenseCompany = "Empresa DEMO";
-            SharedFramework.LicenseNif = "NIF DEMO";
-            SharedFramework.LicenseAddress = "Morada DEMO";
-            SharedFramework.LicenseEmail = "Email DEMO";
-            SharedFramework.LicenseTelephone = "Telefone DEMO";
-            SharedFramework.LicenseReseller = "LogicPulse";
+            LogicPOS.Settings.LicenseSettings.LicenseDate = DateTime.Now.ToString("dd/MM/yyyy");
+            LogicPOS.Settings.LicenseSettings.LicenseVersion = "LOGICPOS_LICENSED";
+            LogicPOS.Settings.LicenseSettings.LicenseName = "Nome DEMO";
+            LogicPOS.Settings.LicenseSettings.LicenseCompany = "Empresa DEMO";
+            LogicPOS.Settings.LicenseSettings.LicenseNif = "NIF DEMO";
+            LogicPOS.Settings.LicenseSettings.LicenseAddress = "Morada DEMO";
+            LogicPOS.Settings.LicenseSettings.LicenseEmail = "Email DEMO";
+            LogicPOS.Settings.LicenseSettings.LicenseTelephone = "Telefone DEMO";
+            LogicPOS.Settings.LicenseSettings.LicenseReseller = "LogicPulse";
             SharedFramework.ServerVersion = "1.0";
-            SharedFramework.LicenceUpdateDate = DateTime.Now.AddDays(-1);
+            LogicPOS.Settings.LicenseSettings.LicenceUpdateDate = DateTime.Now.AddDays(-1);
 #if DEBUG
-            SharedFramework.LicenseVersion = "LOGICPOS_CORPORATE";
-            SharedFramework.LicenseName = "DEBUG";
-            SharedFramework.LicenseCompany = "DEBUG";
-            SharedFramework.LicenseAddress = "DEBUG";
-            SharedFramework.LicenseEmail = "DEBUG";
-            SharedFramework.LicenseTelephone = "DEBUG";
-            SharedFramework.LicenseModuleStocks = true;
-            SharedFramework.LicenseReseller = "Logicpulse";
+            LogicPOS.Settings.LicenseSettings.LicenseVersion = "LOGICPOS_CORPORATE";
+            LogicPOS.Settings.LicenseSettings.LicenseName = "DEBUG";
+            LogicPOS.Settings.LicenseSettings.LicenseCompany = "DEBUG";
+            LogicPOS.Settings.LicenseSettings.LicenseAddress = "DEBUG";
+            LogicPOS.Settings.LicenseSettings.LicenseEmail = "DEBUG";
+            LogicPOS.Settings.LicenseSettings.LicenseTelephone = "DEBUG";
+            LogicPOS.Settings.LicenseSettings.LicenseModuleStocks = true;
+            LogicPOS.Settings.LicenseSettings.LicenseReseller = "Logicpulse";
 #endif
 
-            SortedList sortedList =SharedFramework.PluginLicenceManager.GetLicenseInformation();
+            SortedList sortedList = LogicPOS.Settings.PluginSettings.PluginLicenceManager.GetLicenseInformation();
 
-            SharedFramework.ServerVersion =SharedFramework.PluginLicenceManager.GetCurrentVersion();
+            SharedFramework.ServerVersion = LogicPOS.Settings.PluginSettings.PluginLicenceManager.GetCurrentVersion();
             //GlobalFramework.ServerVersion = "2.0.0.0";
 
             if (showDebug)
@@ -265,42 +264,42 @@ namespace logicpos.Classes.Logic.License
                 string key = sortedList.GetKey(i).ToString();
                 string value = sortedList.GetByIndex(i).ToString();
                 _logger.Debug("Licence Key:" + key + "=" + value);
-                SharedFramework.DtLicenseKeys.Rows.Add(key, value);
+                LogicPOS.Settings.LicenseSettings.LicenseKeys.Rows.Add(key, value);
                 switch (key)
                 {
                     case "version":
-                        SharedFramework.LicenseVersion = value;
+                        LogicPOS.Settings.LicenseSettings.LicenseVersion = value;
                         break;
                     case "data":
-                        SharedFramework.LicenseDate = value;
+                        LogicPOS.Settings.LicenseSettings.LicenseDate = value;
                         break;
                     case "name":
-                        SharedFramework.LicenseName = value;
+                        LogicPOS.Settings.LicenseSettings.LicenseName = value;
                         break;
                     case "company":
-                        SharedFramework.LicenseCompany = value;
+                        LogicPOS.Settings.LicenseSettings.LicenseCompany = value;
                         break;
                     case "nif":
-                        SharedFramework.LicenseNif = value;
+                        LogicPOS.Settings.LicenseSettings.LicenseNif = value;
                         break;
                     case "adress":
-                        SharedFramework.LicenseAddress = value;
+                        LogicPOS.Settings.LicenseSettings.LicenseAddress = value;
                         break;
                     case "email":
-                        SharedFramework.LicenseEmail = value;
+                        LogicPOS.Settings.LicenseSettings.LicenseEmail = value;
                         break;
                     case "telefone":
-                        SharedFramework.LicenseTelephone = value;
+                        LogicPOS.Settings.LicenseSettings.LicenseTelephone = value;
                         break;
                     case "reseller":
-                        SharedFramework.LicenseReseller = value;
+                        LogicPOS.Settings.LicenseSettings.LicenseReseller = value;
                         SharedSettings.AppCompanyName = value;
                         break;
                     case "logicpos_Module_Stocks":
-                        SharedFramework.LicenseModuleStocks = Convert.ToBoolean(value);
+                        LogicPOS.Settings.LicenseSettings.LicenseModuleStocks = Convert.ToBoolean(value);
                         break;
                     case "all_UpdateExpirationDate":
-                        SharedFramework.LicenceUpdateDate = Convert.ToDateTime(value);
+                        LogicPOS.Settings.LicenseSettings.LicenceUpdateDate = Convert.ToDateTime(value);
                         break;
                     default:
                         break;
@@ -310,7 +309,7 @@ namespace logicpos.Classes.Logic.License
 
         public static bool NeedToRegister()
         {
-            if (!SharedFramework.PluginLicenceManager.IsLicensed())
+            if (!LogicPOS.Settings.PluginSettings.PluginLicenceManager.IsLicensed())
             {
                 if (showDebug)
                 {

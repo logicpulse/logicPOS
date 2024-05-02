@@ -129,7 +129,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             //Reseller
             _reseller = new Label();
-            _reseller.Text = string.Format(" Powered by {0}©", SharedFramework.LicenseReseller);
+            _reseller.Text = string.Format(" Powered by {0}©", LogicPOS.Settings.LicenseSettings.LicenseReseller);
             _reseller.ModifyFont(Pango.FontDescription.FromString("Trebuchet MS 8 Bold"));
             _reseller.ModifyFg(StateType.Normal, colorBackOfficeStatusBarFont.ToGdkColor());
             _reseller.Justify = Justification.Left;
@@ -137,7 +137,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Logo
             try
             {
-                if (SharedFramework.LicenseReseller != null && SharedFramework.LicenseReseller.ToString() != "Logicpulse" && SharedFramework.LicenseReseller.ToString().ToLower() != "") 
+                if (LogicPOS.Settings.LicenseSettings.LicenseReseller != null && LogicPOS.Settings.LicenseSettings.LicenseReseller.ToString() != "Logicpulse" && LogicPOS.Settings.LicenseSettings.LicenseReseller.ToString().ToLower() != "") 
                     _imageLogo = new Image(fileImageBackOfficeLogo);
                 else _imageLogo = new Image(fileImageBackOfficeLogoLong);
                 //_imageLogo.WidthRequest = _widthAccordion + Convert.ToInt16(borderWidth) * 3;
@@ -178,7 +178,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Pack HBox StatusBar
             _hboxStatusBar = new HBox(false, 0) { BorderWidth = borderWidth };
             _hboxStatusBar.PackStart(_imageLogo, false, false, 0);
-            if (SharedFramework.LicenseReseller != null && SharedFramework.LicenseReseller.ToString() != "Logicpulse" && LicenceManagement.IsLicensed) _hboxStatusBar.PackStart(_reseller, false, false, 0);
+            if (LogicPOS.Settings.LicenseSettings.LicenseReseller != null && LogicPOS.Settings.LicenseSettings.LicenseReseller.ToString() != "Logicpulse" && LicenceManagement.IsLicensed) _hboxStatusBar.PackStart(_reseller, false, false, 0);
             _hboxStatusBar.PackStart(_labelActiveContent, false, false, 0);
             _hboxStatusBar.PackStart(_labelTerminalInfo, true, true, 0);
 

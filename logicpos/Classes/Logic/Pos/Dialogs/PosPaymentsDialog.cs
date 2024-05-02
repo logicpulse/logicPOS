@@ -567,12 +567,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 Guid customerGuid = new Guid();
 
                 // Encrypt pFieldValue to use in Sql Filter
-                if (SharedFramework.PluginSoftwareVendor != null)
+                if (LogicPOS.Settings.PluginSettings.PluginSoftwareVendor != null)
                 {
                     // Only Encrypt Encrypted Fields
                     if (pFieldName == nameof(erp_customer.FiscalNumber) || pFieldName == nameof(erp_customer.CardNumber))
                     {
-                        pFieldValue = SharedFramework.PluginSoftwareVendor.Encrypt(pFieldValue);
+                        pFieldValue = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Encrypt(pFieldValue);
                     }
                 }
 
@@ -766,9 +766,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 bool isSingularEntity = (isFinalConsumerEntity || FiscalNumber.IsSingularEntity(_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text, _entryBoxSelectCustomerCountry.Value.Code2));
                 // Encrypt pFieldValue to use in Sql Filter
                 string fiscalNumberFilterValue = string.Empty;
-                if (SharedFramework.PluginSoftwareVendor != null)
+                if (LogicPOS.Settings.PluginSettings.PluginSoftwareVendor != null)
                 {
-                    fiscalNumberFilterValue = SharedFramework.PluginSoftwareVendor.Encrypt(_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text);
+                    fiscalNumberFilterValue = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Encrypt(_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text);
                 }
                 //Used To Disable FiscalNumber Edits and to Get Customer
                 string sql = string.Format("SELECT Oid FROM erp_customer WHERE FiscalNumber = '{0}' AND (Hidden IS NULL OR Hidden = 0);", fiscalNumberFilterValue);

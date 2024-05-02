@@ -8,122 +8,43 @@ namespace PCComm
 {
     public class CommunicationManager
     {
-        //Log4Net
-        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-        #region Manager Enums
-        /// <summary>
-        /// enumeration to hold our transmission types
-        /// </summary>
         public enum TransmissionType { Text, Hex }
 
-        /// <summary>
-        /// enumeration to hold our message types
-        /// </summary>
         public enum MessageType { Incoming, Outgoing, Normal, Warning, Error };
-        #endregion
 
-        #region Manager Variables
-        //property variables
-        private string _portName = string.Empty;
-
-        //private RichTextBox _displayWindow;
-        //global manager variables
-        private readonly Color[] MessageColor = { Color.Blue, Color.Green, Color.Black, Color.Orange, Color.Red };
-        private readonly SerialPort comPort = new SerialPort();
-        #endregion
-
-        #region Manager Properties
-        /// <summary>
-        /// Property to hold the BaudRate
-        /// of our manager class
-        /// </summary>
+        private readonly SerialPort _comPort = new SerialPort();
+ 
         public string BaudRate { get; set; } = string.Empty;
-
-        /// <summary>
-        /// property to hold the Parity
-        /// of our manager class
-        /// </summary>
         public string Parity { get; set; } = string.Empty;
-
-        /// <summary>
-        /// property to hold the StopBits
-        /// of our manager class
-        /// </summary>
         public string StopBits { get; set; } = string.Empty;
-
-        /// <summary>
-        /// property to hold the DataBits
-        /// of our manager class
-        /// </summary>
         public string DataBits { get; set; } = string.Empty;
-
-        /// <summary>
-        /// property to hold the PortName
-        /// of our manager class
-        /// </summary>
-        public string PortName
-        {
-            get { return _portName; }
-            set { _portName = value; }
-        }
-
-        /// <summary>
-        /// property to hold our TransmissionType
-        /// of our manager class
-        /// </summary>
+        public string PortName { get; set; } = string.Empty;
         public TransmissionType CurrentTransmissionType { get; set; }
 
-        /// <summary>
-        /// property to hold our display window
-        /// value
-        /// </summary>
-        //public RichTextBox DisplayWindow
-        //{
-        //    get { return _displayWindow; }
-        //    set { _displayWindow = value; }
-        //}
-        #endregion
-
-        #region Manager Constructors
-        /// <summary>
-        /// Constructor to set the properties of our Manager Class
-        /// </summary>
-        /// <param name="baudRate">Desired BaudRate</param>
-        /// <param name="parity">Desired Parity</param>
-        /// <param name="stopBits">Desired StopBits</param>
-        /// <param name="dataBits">Desired DataBits</param>
-        /// <param name="portName">Desired PortName</param>
-        public CommunicationManager(string baudRate, string parity, string stopBits, string dataBits, string portName)
+        public CommunicationManager(
+            string baudRate, 
+            string parity, 
+            string stopBits, 
+            string dataBits, 
+            string portName)
         {
             BaudRate = baudRate;
             Parity = parity;
             StopBits = stopBits;
             DataBits = dataBits;
-            _portName = portName;
-            // Removed we must handle event outside of this class, to receive data in context
-            //now add an event handler
-            //comPort.DataReceived += new SerialDataReceivedEventHandler(comPort_DataReceived);
+            PortName = portName;
         }
 
-        /// <summary>
-        /// Comstructor to set the properties of our
-        /// serial port communicator to nothing
-        /// </summary>
         public CommunicationManager()
         {
             BaudRate = string.Empty;
             Parity = string.Empty;
             StopBits = string.Empty;
             DataBits = string.Empty;
-            _portName = "COM6";
-            //_displayWindow = null;
-            //add event handler
-            comPort.DataReceived += new SerialDataReceivedEventHandler(comPort_DataReceived);
+            PortName = "COM6";
+            _comPort.DataReceived += new SerialDataReceivedEventHandler(ComPort_DataReceived);
         }
-        #endregion
 
-        #region WriteData
         public void WriteData(string msg)
         {
             switch (CurrentTransmissionType)
@@ -131,9 +52,9 @@ namespace PCComm
                 case TransmissionType.Text:
                     //first make sure the port is open
                     //if its not open then open it
-                    if (!(comPort.IsOpen == true)) comPort.Open();
+                    if (!(_comPort.IsOpen == true)) _comPort.Open();
                     //send the message to the port
-                    comPort.Write(msg);
+                    _comPort.Write(msg);
                     //display the message
                     DisplayData(MessageType.Outgoing, msg + "\n");
                     break;
@@ -143,7 +64,7 @@ namespace PCComm
                         //convert the message to byte array
                         byte[] newMsg = HexToByte(msg);
                         //send the message to the port
-                        comPort.Write(newMsg, 0, newMsg.Length);
+                        _comPort.Write(newMsg, 0, newMsg.Length);
                         //convert back to hex and display
                         DisplayData(MessageType.Outgoing, ByteToHex(newMsg) + "\n");
                     }
@@ -160,22 +81,15 @@ namespace PCComm
                 default:
                     //first make sure the port is open
                     //if its not open then open it
-                    if (!(comPort.IsOpen == true)) comPort.Open();
+                    if (!(_comPort.IsOpen == true)) _comPort.Open();
                     //send the message to the port
-                    comPort.Write(msg);
+                    _comPort.Write(msg);
                     //display the message
                     DisplayData(MessageType.Outgoing, msg + "\n");
                     break;
             }
         }
-        #endregion
-
-        #region HexToByte
-        /// <summary>
-        /// method to convert hex string into a byte array
-        /// </summary>
-        /// <param name="msg">string to convert</param>
-        /// <returns>a byte array</returns>
+  
         private byte[] HexToByte(string msg)
         {
             //remove any spaces from the string
@@ -191,14 +105,7 @@ namespace PCComm
             //return the array
             return comBuffer;
         }
-        #endregion
 
-        #region ByteToHex
-        /// <summary>
-        /// method to convert a byte array into a hex string
-        /// </summary>
-        /// <param name="comByte">byte array to convert</param>
-        /// <returns>a hex string</returns>
         private string ByteToHex(byte[] comByte)
         {
             //create a new StringBuilder object
@@ -210,15 +117,7 @@ namespace PCComm
             //return the converted value
             return builder.ToString().ToUpper();
         }
-        #endregion
 
-        #region DisplayData
-        /// <summary>
-        /// method to display the data to & from the port
-        /// on the screen
-        /// </summary>
-        /// <param name="type">MessageType of the message</param>
-        /// <param name="msg">Message to display</param>
         [STAThread]
         private void DisplayData(MessageType type, string msg)
         {
@@ -241,62 +140,34 @@ namespace PCComm
             //    _displayWindow.ScrollToCaret();
             //}));
         }
-        #endregion
-
-        #region OpenPort
         public bool OpenPort()
         {
             try
             {
-                //first check if the port is already open
-                //if its open then close it
-                if (comPort.IsOpen == true) comPort.Close();
+                if (_comPort.IsOpen == true) _comPort.Close();
 
-                //set the properties of our SerialPort Object
-                comPort.BaudRate = int.Parse(BaudRate);    //BaudRate
-                comPort.DataBits = int.Parse(DataBits);    //DataBits
-                comPort.StopBits = (StopBits)Enum.Parse(typeof(StopBits), StopBits);    //StopBits
-                comPort.Parity = (Parity)Enum.Parse(typeof(Parity), Parity);    //Parity
-                comPort.PortName = _portName;   //PortName
-                //now open the port
-                comPort.Open();
-                //display message
-                //DisplayData(MessageType.Normal, "Port opened at " + DateTime.Now + "\n");
-                _logger.Debug(string.Format("Port {0} opened at {1}", _portName, DateTime.Now));
-                //return true
+                _comPort.BaudRate = int.Parse(BaudRate);   
+                _comPort.DataBits = int.Parse(DataBits);   
+                _comPort.StopBits = (StopBits)Enum.Parse(typeof(StopBits), StopBits);    
+                _comPort.Parity = (Parity)Enum.Parse(typeof(Parity), Parity);  
+                _comPort.PortName = PortName; 
+                _comPort.Open();
                 return true;
             }
             catch (Exception ex)
             {
-                //DisplayData(MessageType.Error, ex.Message);
-                //return false;
-                // Forward Exception to me handled Outside
                 throw ex;
             }
         }
-        #endregion
-
-        #region OpenDisplayPort
         public bool OpenDisplayPort(string port)
         {
             try
             {
-                comPort.PortName = port;
-                //first check if the port is already open
-                //if its open then close it
-                if (comPort.IsOpen == true) comPort.Close();
+                _comPort.PortName = port;
 
-                //set the properties of our SerialPort Object
-                //comPort.BaudRate = int.Parse(_baudRate);    //BaudRate
-                //comPort.DataBits = int.Parse(_dataBits);    //DataBits
-                //comPort.StopBits = (StopBits)Enum.Parse(typeof(StopBits), _stopBits);    //StopBits
-                //comPort.Parity = (Parity)Enum.Parse(typeof(Parity), _parity);    //Parity                
-                //now open the port
-                comPort.Open();
-                //display message
-                //DisplayData(MessageType.Normal, "Port opened at " + DateTime.Now + "\n");
-                _logger.Debug(string.Format("Port {0} opened at {1}", port, DateTime.Now));
-                //return true
+                if (_comPort.IsOpen == true) _comPort.Close();
+
+                _comPort.Open();
                 return true;
             }
             catch (Exception)
@@ -307,16 +178,13 @@ namespace PCComm
                 //throw ex;
             }
         }
-        #endregion
-
-        #region ClosePort
         public bool ClosePort()
         {
             try
             {
                 //first check if the port is already open
                 //if its open then close it
-                if (comPort.IsOpen == true) comPort.Close();
+                if (_comPort.IsOpen == true) _comPort.Close();
                 //return true
                 return true;
             }
@@ -326,29 +194,15 @@ namespace PCComm
                 return false;
             }
         }
-        #endregion
-
-        #region IsPortOpen
         public bool IsPortOpen()
         {
-            return comPort.IsOpen;
+            return _comPort.IsOpen;
         }
-        #endregion
-
-        #region ComPort
         public SerialPort ComPort()
         {
-            return comPort;
+            return _comPort;
         }
-        #endregion
-
-        #region comPort_DataReceived
-        /// <summary>
-        /// method that will be called when theres data waiting in the buffer
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void comPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        private void ComPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
             //determine the mode the user selected (binary/string)
             switch (CurrentTransmissionType)
@@ -356,14 +210,14 @@ namespace PCComm
                 //user chose string
                 case TransmissionType.Text:
                     //read data waiting in the buffer
-                    string msg = comPort.ReadExisting();
+                    string msg = _comPort.ReadExisting();
                     //display the data to the user
                     DisplayData(MessageType.Incoming, msg + "\n");
                     break;
                 //user chose binary
                 case TransmissionType.Hex:
 
-                    string inData = comPort.ReadLine();
+                    string inData = _comPort.ReadLine();
                     DisplayData(MessageType.Incoming, inData + "\n");
 
                     ////retrieve number of bytes in the buffer
@@ -377,23 +231,12 @@ namespace PCComm
                     break;
                 default:
                     //read data waiting in the buffer
-                    string str = comPort.ReadExisting();
+                    string str = _comPort.ReadExisting();
                     //display the data to the user
                     DisplayData(MessageType.Incoming, str + "\n");
                     break;
             }
         }
-        #endregion
-
-        /// <summary>
-        /// 99: 0x39h y 0x39h
-        /// S: Estado del peso. S: 0x30h Correcto. S: 0x31h Error.
-        /// WWWWW: 5 dígitos para el PESO.
-        /// E: Estado del importe. E: 0x30h Correcto. E: 0x31h Error.
-        /// IIIIII: 6 dígitos para el importe.
-        /// </summary>
-        /// <param name="resultHex"></param>
-        /// <returns></returns>
         public List<int> CalculateFromHex(string result)
         {
             List<int> resultList = new List<int>();

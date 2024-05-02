@@ -116,15 +116,15 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                 /* IN009075 - decrypt phase */
                 if (!customerDataHasBeenCleaned)
                 {
-                    documentFinanceMasterView.EntityName = SharedFramework.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityName);
-                    documentFinanceMasterView.EntityAddress = SharedFramework.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityAddress);
-                    documentFinanceMasterView.EntityZipCode = SharedFramework.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityZipCode);
-                    documentFinanceMasterView.EntityCity = SharedFramework.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityCity);
-                    documentFinanceMasterView.EntityLocality = SharedFramework.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityLocality);
-                    // documentFinanceMasterView.EntityCountry = SharedFramework.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityCountry);
+                    documentFinanceMasterView.EntityName = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityName);
+                    documentFinanceMasterView.EntityAddress = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityAddress);
+                    documentFinanceMasterView.EntityZipCode = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityZipCode);
+                    documentFinanceMasterView.EntityCity = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityCity);
+                    documentFinanceMasterView.EntityLocality = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityLocality);
+                    // documentFinanceMasterView.EntityCountry = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityCountry);
                     // EntityLocality???
                     /* IN009230 */
-                    documentFinanceMasterView.EntityFiscalNumber = SharedFramework.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityFiscalNumber);
+                    documentFinanceMasterView.EntityFiscalNumber = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityFiscalNumber);
                 }
 
                 /* IN009173 - add Parent document number to Notes field */

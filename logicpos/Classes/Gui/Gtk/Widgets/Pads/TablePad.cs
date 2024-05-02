@@ -165,7 +165,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 //    }
 
                 // Detect Encrypted Model
-                if (SharedFramework.PluginSoftwareVendor != null && executeSql.ToLower().Contains(nameof(sys_userdetail).ToLower()))
+                if (LogicPOS.Settings.PluginSettings.PluginSoftwareVendor != null && executeSql.ToLower().Contains(nameof(sys_userdetail).ToLower()))
                 {
                     // Inject nonPropertyFields that are outside of attributes Scope and are required to exists to be decrypted
                     string[] nonPropertyFields = { "label" };

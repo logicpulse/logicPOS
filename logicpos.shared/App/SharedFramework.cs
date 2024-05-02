@@ -15,43 +15,24 @@ namespace logicpos.shared.App
         private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Localization
-        public static CultureInfo CurrentCulture;
-        public static CultureInfo CurrentCultureNumberFormat;
-        //Licence
-        public static bool LicenceRegistered = false;
-        public static string LicenseVersion;
-        public static string LicenseDate;
-        public static string LicenseName;
-        public static string LicenseCompany;
-        public static string LicenseNif;
-        public static string LicenseAddress;
-        public static string LicenseEmail;
-        public static string LicenseTelephone;
-        public static string LicenseHardwareId;
-        public static string LicenseReseller;
-        public static bool LicenseModuleStocks;
-        public static DateTime LicenceUpdateDate;
-        public static DataTable DtLicenseKeys;
+        public static CultureInfo CurrentCulture { get; set; }
+        public static CultureInfo CurrentCultureNumberFormat { get; set; }
+
         //TK016248 - BackOffice - Check New Version 
-        public static string ServerVersion;
+        public static string ServerVersion { get; set; }
         //AT - Only Used in logicerp.Modules.FINANCIAL | LogicposHelper
         public static Hashtable AT;
         //Database
-        public static string DatabaseServer;
-        public static string DatabaseName;
-        public static string DatabaseUser;
-        public static string DatabasePassword;
-        public static string DatabaseVersion;
+        public static string DatabaseServer { get; set; }
+        public static string DatabaseName { get; set; }
+        public static string DatabaseUser { get; set; }
+        public static string DatabasePassword { get; set; }
         //WorkSession
         public static pos_worksessionperiod WorkSessionPeriodDay;
         public static pos_worksessionperiod WorkSessionPeriodTerminal;
         //Session
         public static GlobalFrameworkSession SessionApp;
-        // Plugins
-        public static PluginContainer PluginContainer;
-        // Plugins
-        public static ISoftwareVendor PluginSoftwareVendor;
-        public static ILicenceManager PluginLicenceManager;
+        
 
         //User/Terminal/Permissions
         public static Dictionary<string, bool> LoggedUserPermissions;
@@ -73,44 +54,8 @@ namespace logicpos.shared.App
         public static Dictionary<string, Guid> PendentPayedParkingCards = new Dictionary<string, Guid>();
         //TK016249 - Impressoras - Diferenciação entre Tipos
         public static bool UsingThermalPrinter;
-
-        //Get Screen Size to use in shared
         public static System.Drawing.Size ScreenSize { get; set; }
-
-        public static string AppRootFolder
-        {
-            get
-            {
-                //Log4Net
-                log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-                string result = Environment.CurrentDirectory + "/";
-                try
-                {
-                    if (datalayer.App.DataLayerFramework.Settings["AppRootFolder"] != null)
-                    {
-                        result = datalayer.App.DataLayerFramework.Settings["AppRootFolder"];
-                    }
-                }
-                catch (Exception ex)
-                {
-                    log.Error(ex.Message, ex);
-                }
-                return (result);
-            }
-        }
-
-        private static bool _canOpenFiles = true;
-        public static bool CanOpenFiles
-        {
-            get
-            {
-                return (_canOpenFiles);
-            }
-            set
-            {
-                _canOpenFiles = value;
-            }
-        }
+        public static bool CanOpenFiles { get; set; } = true;
+      
     }
 }

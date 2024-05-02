@@ -106,18 +106,18 @@ namespace logicpos
                 SetCulture();
 
                 // Init PluginContainer
-                SharedFramework.PluginContainer = new PluginContainer(DataLayerFramework.Path["plugins"].ToString());
+                LogicPOS.Settings.PluginSettings.PluginContainer = new PluginContainer(DataLayerFramework.Path["plugins"].ToString());
 
                 // PluginSoftwareVendor
-                SharedFramework.PluginSoftwareVendor = SharedFramework.PluginContainer.GetFirstPluginOfType<ISoftwareVendor>();
-                if (SharedFramework.PluginSoftwareVendor != null)
+                LogicPOS.Settings.PluginSettings.PluginSoftwareVendor = LogicPOS.Settings.PluginSettings.PluginContainer.GetFirstPluginOfType<ISoftwareVendor>();
+                if (LogicPOS.Settings.PluginSettings.PluginSoftwareVendor != null)
                 {
                     // Show Loaded Plugin
-                    _logger.Debug(string.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ISoftwareVendor), SharedFramework.PluginSoftwareVendor.Name));
+                    _logger.Debug(string.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ISoftwareVendor), LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Name));
                     // Init Plugin
                     SharedSettings.InitSoftwareVendorPluginSettings();
                     // Check if all Resources are Embedded
-                    SharedFramework.PluginSoftwareVendor.ValidateEmbeddedResources();
+                    LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.ValidateEmbeddedResources();
                 }
                 else
                 {
@@ -126,16 +126,16 @@ namespace logicpos
                 }
 
                 // Init Stock Module
-                POSFramework.StockManagementModule = (SharedFramework.PluginContainer.GetFirstPluginOfType<IStockManagementModule>());
+                POSFramework.StockManagementModule = (LogicPOS.Settings.PluginSettings.PluginContainer.GetFirstPluginOfType<IStockManagementModule>());
 
                 // Try to Get LicenceManager IntellilockPlugin if in Release 
                 if (!Debugger.IsAttached || _forceShowPluginLicenceWithDebugger)
                 {
-                    SharedFramework.PluginLicenceManager = (SharedFramework.PluginContainer.GetFirstPluginOfType<ILicenceManager>());
+                    LogicPOS.Settings.PluginSettings.PluginLicenceManager = (LogicPOS.Settings.PluginSettings.PluginContainer.GetFirstPluginOfType<ILicenceManager>());
                     // Show Loaded Plugin
-                    if (SharedFramework.PluginLicenceManager != null)
+                    if (LogicPOS.Settings.PluginSettings.PluginLicenceManager != null)
                     {
-                        _logger.Debug(string.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ILicenceManager), SharedFramework.PluginLicenceManager.Name));
+                        _logger.Debug(string.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ILicenceManager), LogicPOS.Settings.PluginSettings.PluginLicenceManager.Name));
                     }
                 }
 
@@ -154,7 +154,7 @@ namespace logicpos
 
         private static void StartApp()
         {
-            if (SharedFramework.PluginLicenceManager != null && (!Debugger.IsAttached || _forceShowPluginLicenceWithDebugger))
+            if (LogicPOS.Settings.PluginSettings.PluginLicenceManager != null && (!Debugger.IsAttached || _forceShowPluginLicenceWithDebugger))
             {
                 _logger.Debug("void StartApp() :: Boot LogicPos after LicenceManager.IntellilockPlugin");
                 // Boot LogicPos after LicenceManager.IntellilockPlugin

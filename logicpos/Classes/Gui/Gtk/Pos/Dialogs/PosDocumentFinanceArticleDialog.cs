@@ -409,7 +409,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             HBox ArticleCodeAndArticleName = new HBox(false, 0);
             //Invisible, only used to Debug, to View Values in System Currency
             //hboxPriceQuantityDiscountAndTotals.PackStart(_entryBoxValidationPrice, true, true, 0);
-            if(SharedFramework.AppUseBackOfficeMode && SharedFramework.LicenseModuleStocks) ArticleCodeAndArticleName.PackStart(_entryBoxSelectArticleWarehouse, false, false, 0); 
+            if(SharedFramework.AppUseBackOfficeMode && LogicPOS.Settings.LicenseSettings.LicenseModuleStocks) ArticleCodeAndArticleName.PackStart(_entryBoxSelectArticleWarehouse, false, false, 0); 
             ArticleCodeAndArticleName.PackStart(_entryBoxSelectArticleCode, false, false, 0);
             ArticleCodeAndArticleName.PackStart(_entryBoxSelectArticle, true, true, 0);
             ArticleCodeAndArticleName.PackStart(_entryBoxSelectArticleFamily, false, false, 0);

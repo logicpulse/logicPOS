@@ -164,7 +164,7 @@ namespace logicpos.Classes.DataLayer
                         fullFileNamePacked = string.Format(@"{0}\{1}", systemBackup.FilePath, systemBackup.FileNamePacked);
                         // Old Method before PluginSoftwareVendor Implementation
                         //backupResult = Utils.ZipPack(new string[] { fileName }, fullFileNamePacked);
-                        backupResult = SharedFramework.PluginSoftwareVendor.BackupDatabase(FinancialLibrarySettings.SecretKey, new string[] { fileName }, fullFileNamePacked);
+                        backupResult = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.BackupDatabase(FinancialLibrarySettings.SecretKey, new string[] { fileName }, fullFileNamePacked);
                         // Add FileHash
                         if (backupResult) systemBackup.FileHash = SharedUtils.MD5HashFile(fullFileNamePacked);
                     }
@@ -201,7 +201,7 @@ namespace logicpos.Classes.DataLayer
                          * IN007007
                          * 
                          * This implementation covers only "non-DatabaseType.MSSqlServer" database, when calling the method to secure-compact database file:
-                         * > SharedFramework.PluginSoftwareVendor.BackupDatabase...Utils.ZipPack
+                         * > LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.BackupDatabase...Utils.ZipPack
                          * 
                          * Please note that variable "backupResult" never changes its value when "DatabaseType.MSSqlServer", therefore is not being covered by this.
                          */
@@ -308,7 +308,7 @@ namespace logicpos.Classes.DataLayer
                     {
                         // Old Method before PluginSoftwareVendor Implementation
                         //restoreResult = Utils.ZipUnPack(fileNamePacked, pathBackups, true);
-                        restoreResult = SharedFramework.PluginSoftwareVendor.RestoreBackup(FinancialLibrarySettings.SecretKey, fileNamePacked, pathBackups, true);
+                        restoreResult = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.RestoreBackup(FinancialLibrarySettings.SecretKey, fileNamePacked, pathBackups, true);
                         if (_debug) _logger.Debug(string.Format("RestoreBackup: unpackResult:[{0}]", restoreResult));
                     }
 

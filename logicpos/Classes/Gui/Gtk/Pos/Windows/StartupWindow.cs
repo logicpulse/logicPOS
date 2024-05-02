@@ -226,10 +226,10 @@ namespace logicpos
 
                     //Label Version
                     string appVersion = "";
-                    if (SharedFramework.LicenseReseller != null && SharedFramework.LicenseReseller.ToString().ToLower() != "Logicpulse" && SharedFramework.LicenseReseller.ToString().ToLower() != "")
+                    if (LogicPOS.Settings.LicenseSettings.LicenseReseller != null && LogicPOS.Settings.LicenseSettings.LicenseReseller.ToString().ToLower() != "Logicpulse" && LogicPOS.Settings.LicenseSettings.LicenseReseller.ToString().ToLower() != "")
                     {
                         //appVersion = string.Format("Brough by {1}\n{0}",appVersion, GlobalFramework.LicenceReseller);
-                        appVersion = string.Format("Powered by {0}© Vers. {1}", SharedFramework.LicenseReseller, SharedUtils.ProductVersion);
+                        appVersion = string.Format("Powered by {0}© Vers. {1}", LogicPOS.Settings.LicenseSettings.LicenseReseller, SharedUtils.ProductVersion);
                     }
                     else
                     {
@@ -261,11 +261,11 @@ namespace logicpos
                         buttonDeveloper.Clicked += buttonDeveloper_Clicked;
                     }
                     //LOGO
-                    if (SharedFramework.PluginLicenceManager != null)
+                    if (LogicPOS.Settings.PluginSettings.PluginLicenceManager != null)
                     {
                         string fileImageBackOfficeLogo = string.Format(DataLayerFramework.Path["themes"] + @"Default\Images\logicPOS_loggericpulse_loggerin.png");
 
-                        if (!string.IsNullOrEmpty(SharedFramework.LicenseReseller) && SharedFramework.LicenseReseller == "NewTech")
+                        if (!string.IsNullOrEmpty(LogicPOS.Settings.LicenseSettings.LicenseReseller) && LogicPOS.Settings.LicenseSettings.LicenseReseller == "NewTech")
                         {
                             fileImageBackOfficeLogo = string.Format(DataLayerFramework.Path["themes"] + @"Default\Images\Branding\{0}\logicPOS_loggericpulse_loggerin.png", "NT");
                         }

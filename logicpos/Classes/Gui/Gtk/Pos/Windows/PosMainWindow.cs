@@ -215,11 +215,11 @@ namespace logicpos
 
             //LOGO
             Image imageLogo = new Image(Utils.GetThemeFileLocation(DataLayerFramework.Settings["fileImageBackOfficeLogo"]));
-            if (SharedFramework.PluginLicenceManager != null)
+            if (LogicPOS.Settings.PluginSettings.PluginLicenceManager != null)
             {
                 string fileImageBackOfficeLogo = string.Format(DataLayerFramework.Path["themes"] + @"Default\Images\logicPOS_loggericpulse_loggerin.png");
 
-                if (!string.IsNullOrEmpty(SharedFramework.LicenseReseller) && SharedFramework.LicenseReseller == "NewTech")
+                if (!string.IsNullOrEmpty(LogicPOS.Settings.LicenseSettings.LicenseReseller) && LogicPOS.Settings.LicenseSettings.LicenseReseller == "NewTech")
                 {
                     fileImageBackOfficeLogo = string.Format(DataLayerFramework.Path["themes"] + @"Default\Images\Branding\{0}\logicPOS_loggericpulse_loggerin.png", "NT");
                 }

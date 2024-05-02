@@ -117,7 +117,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
             //DataLayerFramework.Settings["servicesATProdModeCertificatePassword"];
             return (pTestMode)
                 ? "TESTEwebservice"
-                : SharedFramework.PluginSoftwareVendor.GetAppSoftwareATWSProdModeCertificatePassword();
+                : LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.GetAppSoftwareATWSProdModeCertificatePassword();
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -406,7 +406,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
 
             /* IN009150 (IN009075) */
             string entityFiscalNumber = "";
-            if (!string.IsNullOrEmpty(_documentMaster.EntityFiscalNumber)) { entityFiscalNumber = SharedFramework.PluginSoftwareVendor.Decrypt(_documentMaster.EntityFiscalNumber); }
+            if (!string.IsNullOrEmpty(_documentMaster.EntityFiscalNumber)) { entityFiscalNumber = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Decrypt(_documentMaster.EntityFiscalNumber); }
             /* IN009150 - end */
 
             //Init Local Vars
@@ -493,13 +493,13 @@ namespace logicpos.financial.service.Objects.Modules.AT
             // string entityCountry        = "";
             string entityFiscalNumber   = "";
 
-            if (!string.IsNullOrEmpty(_documentMaster.EntityName))          { entityName = SharedFramework.PluginSoftwareVendor.Decrypt(_documentMaster.EntityName); }
-            if (!string.IsNullOrEmpty(_documentMaster.EntityAddress))       { entityAddress = SharedFramework.PluginSoftwareVendor.Decrypt(_documentMaster.EntityAddress); }
-            if (!string.IsNullOrEmpty(_documentMaster.EntityZipCode))       { entityZipCode = SharedFramework.PluginSoftwareVendor.Decrypt(_documentMaster.EntityZipCode); }
-            if (!string.IsNullOrEmpty(_documentMaster.EntityCity))          { entityCity = SharedFramework.PluginSoftwareVendor.Decrypt(_documentMaster.EntityCity); }
-            if (!string.IsNullOrEmpty(_documentMaster.EntityLocality))      { entityCity = SharedFramework.PluginSoftwareVendor.Decrypt(_documentMaster.EntityLocality); }
-            // if (!string.IsNullOrEmpty(_documentMaster.EntityCountry))       { entityCountry = SharedFramework.PluginSoftwareVendor.Decrypt(_documentMaster.EntityCountry); }
-            if (!string.IsNullOrEmpty(_documentMaster.EntityFiscalNumber))  { entityFiscalNumber = SharedFramework.PluginSoftwareVendor.Decrypt(_documentMaster.EntityFiscalNumber); }
+            if (!string.IsNullOrEmpty(_documentMaster.EntityName))          { entityName = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Decrypt(_documentMaster.EntityName); }
+            if (!string.IsNullOrEmpty(_documentMaster.EntityAddress))       { entityAddress = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Decrypt(_documentMaster.EntityAddress); }
+            if (!string.IsNullOrEmpty(_documentMaster.EntityZipCode))       { entityZipCode = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Decrypt(_documentMaster.EntityZipCode); }
+            if (!string.IsNullOrEmpty(_documentMaster.EntityCity))          { entityCity = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Decrypt(_documentMaster.EntityCity); }
+            if (!string.IsNullOrEmpty(_documentMaster.EntityLocality))      { entityCity = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Decrypt(_documentMaster.EntityLocality); }
+            // if (!string.IsNullOrEmpty(_documentMaster.EntityCountry))       { entityCountry = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Decrypt(_documentMaster.EntityCountry); }
+            if (!string.IsNullOrEmpty(_documentMaster.EntityFiscalNumber))  { entityFiscalNumber = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Decrypt(_documentMaster.EntityFiscalNumber); }
             /* IN009150 - end */
 
             //Init Local Vars
@@ -672,7 +672,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
                 //cert.Import(_pathCertificate, _atPasswordCertificate, X509KeyStorageFlags.Exportable);
 
                 // New Method : Import Certificate From VendorPlugin
-                X509Certificate2 cert = SharedFramework.PluginSoftwareVendor.ImportCertificate(testMode, _pathCertificate);
+                X509Certificate2 cert = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.ImportCertificate(testMode, _pathCertificate);
 
                 // Output Certificate 
                 Utils.Log(string.Format("Cert Subject: [{0}], NotBefore: [{1}], NotAfter: [{2}]", cert.Subject, cert.NotBefore, cert.NotAfter));

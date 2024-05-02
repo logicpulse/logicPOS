@@ -1732,13 +1732,13 @@ namespace logicpos.shared.App
         {
             object resultObject = null;
 
-            if (SharedFramework.PluginSoftwareVendor != null)
+            if (LogicPOS.Settings.PluginSettings.PluginSoftwareVendor != null)
             {
-                Type thisType = SharedFramework.PluginSoftwareVendor.GetType();
+                Type thisType = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.GetType();
                 string methodName = string.Format("Get{0}", property);
                 MethodInfo methodInfo = thisType.GetMethod(methodName);
                 object[] methodParameters = null;
-                resultObject = methodInfo.Invoke(SharedFramework.PluginSoftwareVendor, methodParameters);
+                resultObject = methodInfo.Invoke(LogicPOS.Settings.PluginSettings.PluginSoftwareVendor, methodParameters);
             }
 
             if (debug) _logger.Debug(string.Format("SoftwareVendor {0} Value: [{1}]", property, resultObject));

@@ -259,14 +259,14 @@ namespace logicpos.financial.service
                 Environment.Exit(0);
             }
             // Init PluginContainer
-            SharedFramework.PluginContainer = new PluginContainer(DataLayerFramework.Path["plugins"].ToString());
+            LogicPOS.Settings.PluginSettings.PluginContainer = new PluginContainer(DataLayerFramework.Path["plugins"].ToString());
 
             // PluginSoftwareVendor
-            SharedFramework.PluginSoftwareVendor = (SharedFramework.PluginContainer.GetFirstPluginOfType<ISoftwareVendor>());
-            if (SharedFramework.PluginSoftwareVendor != null)
+            LogicPOS.Settings.PluginSettings.PluginSoftwareVendor = (LogicPOS.Settings.PluginSettings.PluginContainer.GetFirstPluginOfType<ISoftwareVendor>());
+            if (LogicPOS.Settings.PluginSettings.PluginSoftwareVendor != null)
             {
                 // Show Loaded Plugin
-                _logger.Debug(string.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ISoftwareVendor), SharedFramework.PluginSoftwareVendor.Name));
+                _logger.Debug(string.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ISoftwareVendor), LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Name));
                 // Init Plugin
                 SharedSettings.InitSoftwareVendorPluginSettings();
             }

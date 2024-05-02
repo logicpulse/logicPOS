@@ -1778,21 +1778,21 @@ namespace logicpos
                 // Use HardwareId from Settings, must be added manually, its a hack and its not there, in setuo, only in debug config
                 if (!string.IsNullOrEmpty(DataLayerFramework.Settings["appHardwareId"]))
                 {
-                    SharedFramework.LicenseHardwareId = DataLayerFramework.Settings["appHardwareId"];
+                    LogicPOS.Settings.LicenseSettings.LicenseHardwareId = DataLayerFramework.Settings["appHardwareId"];
                 }
                 //Debug Directive disabled by Mario, if enabled we cant force HardwareId in Release, 
                 //if we want to ignore appHardwareId from config we just delete it
                 //If assigned in Config use it, else does nothing and use default ####-####-####-####-####-####
                 else if (POSSettings.AppHardwareId != null && POSSettings.AppHardwareId != string.Empty)
                 {
-                    SharedFramework.LicenseHardwareId = POSSettings.AppHardwareId;
+                    LogicPOS.Settings.LicenseSettings.LicenseHardwareId = POSSettings.AppHardwareId;
                 }
 
                 try
                 {
                     //Try TerminalID from Database
                     _logger.Debug("pos_configurationplaceterminal GetTerminal() :: Try TerminalID from Database");
-                    configurationPlaceTerminal = (pos_configurationplaceterminal)SharedUtils.GetXPGuidObjectFromField(typeof(pos_configurationplaceterminal), "HardwareId", SharedFramework.LicenseHardwareId);
+                    configurationPlaceTerminal = (pos_configurationplaceterminal)SharedUtils.GetXPGuidObjectFromField(typeof(pos_configurationplaceterminal), "HardwareId", LogicPOS.Settings.LicenseSettings.LicenseHardwareId);
                 }
                 catch (Exception ex)
                 {
@@ -1810,7 +1810,7 @@ namespace logicpos
                             Ord = DataLayerUtils.GetNextTableFieldID("pos_configurationplaceterminal", "Ord"),
                             Code = DataLayerUtils.GetNextTableFieldID("pos_configurationplaceterminal", "Code"),
                             Designation = "Terminal #" + DataLayerUtils.GetNextTableFieldID("pos_configurationplaceterminal", "Code"),
-                            HardwareId = SharedFramework.LicenseHardwareId
+                            HardwareId = LogicPOS.Settings.LicenseSettings.LicenseHardwareId
                             //Fqdn = GetFQDN()
                         };
                         _logger.Debug("pos_configurationplaceterminal GetTerminal() :: configurationPlaceTerminal.Save()");
@@ -2497,23 +2497,23 @@ namespace logicpos
                     INIFile iNIFile = new INIFile(pFileName);
 
                     //Load
-                    SharedFramework.LicenseHardwareId = CryptorEngine.Decrypt(iNIFile.GetValue("Licence", "HardwareId", "Empresa Demonstração"), true);
-                    SharedFramework.LicenseCompany = CryptorEngine.Decrypt(iNIFile.GetValue("Licence", "Company", "NIF Demonstração"), true);
-                    SharedFramework.LicenseNif = CryptorEngine.Decrypt(iNIFile.GetValue("Licence", "Nif", "Morada Demonstração"), true);
-                    SharedFramework.LicenseAddress = CryptorEngine.Decrypt(iNIFile.GetValue("Licence", "Address", "mail@demonstracao.tld"), true);
-                    SharedFramework.LicenseEmail = CryptorEngine.Decrypt(iNIFile.GetValue("Licence", "Email", string.Empty), true);
-                    SharedFramework.LicenseTelephone = CryptorEngine.Decrypt(iNIFile.GetValue("Licence", "Telephone", "Telefone Demonstração"), true);
-                    SharedFramework.LicenseReseller = CryptorEngine.Decrypt(iNIFile.GetValue("Licence", "Reseller", "LogicPulse"), true);
+                    LogicPOS.Settings.LicenseSettings.LicenseHardwareId = CryptorEngine.Decrypt(iNIFile.GetValue("Licence", "HardwareId", "Empresa Demonstração"), true);
+                    LogicPOS.Settings.LicenseSettings.LicenseCompany = CryptorEngine.Decrypt(iNIFile.GetValue("Licence", "Company", "NIF Demonstração"), true);
+                    LogicPOS.Settings.LicenseSettings.LicenseNif = CryptorEngine.Decrypt(iNIFile.GetValue("Licence", "Nif", "Morada Demonstração"), true);
+                    LogicPOS.Settings.LicenseSettings.LicenseAddress = CryptorEngine.Decrypt(iNIFile.GetValue("Licence", "Address", "mail@demonstracao.tld"), true);
+                    LogicPOS.Settings.LicenseSettings.LicenseEmail = CryptorEngine.Decrypt(iNIFile.GetValue("Licence", "Email", string.Empty), true);
+                    LogicPOS.Settings.LicenseSettings.LicenseTelephone = CryptorEngine.Decrypt(iNIFile.GetValue("Licence", "Telephone", "Telefone Demonstração"), true);
+                    LogicPOS.Settings.LicenseSettings.LicenseReseller = CryptorEngine.Decrypt(iNIFile.GetValue("Licence", "Reseller", "LogicPulse"), true);
                     //Test
                     if (pDebug)
                     {
-                        _logger.Debug(string.Format("{0}:{1}", "HardwareId", SharedFramework.LicenseHardwareId));
-                        _logger.Debug(string.Format("{0}:{1}", "Company", SharedFramework.LicenseCompany));
-                        _logger.Debug(string.Format("{0}:{1}", "Nif", SharedFramework.LicenseNif));
-                        _logger.Debug(string.Format("{0}:{1}", "Address", SharedFramework.LicenseAddress));
-                        _logger.Debug(string.Format("{0}:{1}", "Email", SharedFramework.LicenseEmail));
-                        _logger.Debug(string.Format("{0}:{1}", "Telephone", SharedFramework.LicenseTelephone));
-                        _logger.Debug(string.Format("{0}:{1}", "Reseller", SharedFramework.LicenseReseller));
+                        _logger.Debug(string.Format("{0}:{1}", "HardwareId", LogicPOS.Settings.LicenseSettings.LicenseHardwareId));
+                        _logger.Debug(string.Format("{0}:{1}", "Company", LogicPOS.Settings.LicenseSettings.LicenseCompany));
+                        _logger.Debug(string.Format("{0}:{1}", "Nif", LogicPOS.Settings.LicenseSettings.LicenseNif));
+                        _logger.Debug(string.Format("{0}:{1}", "Address", LogicPOS.Settings.LicenseSettings.LicenseAddress));
+                        _logger.Debug(string.Format("{0}:{1}", "Email", LogicPOS.Settings.LicenseSettings.LicenseEmail));
+                        _logger.Debug(string.Format("{0}:{1}", "Telephone", LogicPOS.Settings.LicenseSettings.LicenseTelephone));
+                        _logger.Debug(string.Format("{0}:{1}", "Reseller", LogicPOS.Settings.LicenseSettings.LicenseReseller));
                     }
                     iNIFile.Flush();
 
@@ -2669,7 +2669,7 @@ namespace logicpos
 
         public static string GetSessionFileName()
         {
-            string result = Path.Combine(DataLayerFramework.Path["temp"].ToString(), string.Format(SharedSettings.AppSessionFile, SharedFramework.LicenseHardwareId));
+            string result = Path.Combine(DataLayerFramework.Path["temp"].ToString(), string.Format(SharedSettings.AppSessionFile, LogicPOS.Settings.LicenseSettings.LicenseHardwareId));
             return result;
         }
 
@@ -2843,13 +2843,13 @@ namespace logicpos
         {
             try
             {
-                if (SharedFramework.LicenseModuleStocks && POSFramework.StockManagementModule != null)
+                if (LogicPOS.Settings.LicenseSettings.LicenseModuleStocks && POSFramework.StockManagementModule != null)
                 {
                     DialogArticleStock dialog = new DialogArticleStock(pSourceWindow);
                     ResponseType response = (ResponseType)dialog.Run();
                     dialog.Destroy();
                 }
-                else if (CheckStockMessage() && !SharedFramework.LicenseModuleStocks)
+                else if (CheckStockMessage() && !LogicPOS.Settings.LicenseSettings.LicenseModuleStocks)
                 {
                     var messageDialog = ShowMessageTouch(pSourceWindow, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.OkCancel, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warning"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warning_acquire_module_stocks"));
                     if (messageDialog == ResponseType.Ok)

@@ -180,7 +180,7 @@ namespace logicpos.financial.service.App
             //DataLayerFramework.Settings["servicesATProdModeCertificatePassword"];
             return (pTestMode)
                 ? "TESTEwebservice"
-                : SharedFramework.PluginSoftwareVendor.GetAppSoftwareATWSProdModeCertificatePassword();
+                : LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.GetAppSoftwareATWSProdModeCertificatePassword();
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

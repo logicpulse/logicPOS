@@ -91,13 +91,13 @@ namespace logicpos.financial.library.Classes.Reports
                 customVars.Add("SYSTEM_CURRENCY_SYMBOL", SharedSettings.ConfigurationSystemCurrency.Symbol);
             }
             //Licence
-            customVars.Add("LICENCE_NAME", SharedFramework.LicenseName);
-            customVars.Add("LICENCE_COMPANY", SharedFramework.LicenseCompany);
-            customVars.Add("LICENCE_NIF", SharedFramework.LicenseNif);
-            customVars.Add("LICENCE_ADDRESS", SharedFramework.LicenseAddress);
-            customVars.Add("LICENCE_EMAIL", SharedFramework.LicenseEmail);
-            customVars.Add("LICENCE_TELEPHONE", SharedFramework.LicenseTelephone);
-            customVars.Add("LICENCE_RESELLER", SharedFramework.LicenseReseller);
+            customVars.Add("LICENCE_NAME", LogicPOS.Settings.LicenseSettings.LicenseName);
+            customVars.Add("LICENCE_COMPANY", LogicPOS.Settings.LicenseSettings.LicenseCompany);
+            customVars.Add("LICENCE_NIF", LogicPOS.Settings.LicenseSettings.LicenseNif);
+            customVars.Add("LICENCE_ADDRESS", LogicPOS.Settings.LicenseSettings.LicenseAddress);
+            customVars.Add("LICENCE_EMAIL", LogicPOS.Settings.LicenseSettings.LicenseEmail);
+            customVars.Add("LICENCE_TELEPHONE", LogicPOS.Settings.LicenseSettings.LicenseTelephone);
+            customVars.Add("LICENCE_RESELLER", LogicPOS.Settings.LicenseSettings.LicenseReseller);
             //PreferencesParameters
             customVars.Add("COMPANY_NAME", Pref("COMPANY_NAME"));
             customVars.Add("COMPANY_BUSINESS_NAME", Pref("COMPANY_BUSINESS_NAME"));

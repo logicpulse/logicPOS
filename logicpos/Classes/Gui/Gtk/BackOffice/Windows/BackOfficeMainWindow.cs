@@ -342,7 +342,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 // Add Menu Items Based On Plugins PluginSoftwareVendor
                 Dictionary<string, AccordionNode> _accordionChildExport = new Dictionary<string, AccordionNode>();
                 //Export
-                if (SharedFramework.PluginSoftwareVendor != null && (DataLayerSettings.ConfigurationSystemCountry.Oid == SharedSettings.XpoOidConfigurationCountryPortugal || DataLayerSettings.ConfigurationSystemCountry.Oid == SharedSettings.XpoOidConfigurationCountryAngola))
+                if (LogicPOS.Settings.PluginSettings.PluginSoftwareVendor != null && (DataLayerSettings.ConfigurationSystemCountry.Oid == SharedSettings.XpoOidConfigurationCountryPortugal || DataLayerSettings.ConfigurationSystemCountry.Oid == SharedSettings.XpoOidConfigurationCountryAngola))
                 {
                     if ((System.Configuration.ConfigurationManager.AppSettings["cultureFinancialRules"] == "pt-AO") || (System.Configuration.ConfigurationManager.AppSettings["cultureFinancialRules"] == "pt-PT"))
                     {
@@ -361,7 +361,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     { "System_ChangeLog", new AccordionNode(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "change_logger")) { Clicked = delegate { logicpos.Utils.ShowChangeLog(this); } } }
                 };
                 // Add Menu Items Based On Plugins PluginSoftwareVendor
-                if (SharedFramework.PluginSoftwareVendor != null)
+                if (LogicPOS.Settings.PluginSettings.PluginSoftwareVendor != null)
                 {
                     _accordionChildSystem.Add("System_DataBaseBackup", new AccordionNode(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_database_backup")) { Clicked = delegate { DataBaseBackup.Backup(this); } });
                     _accordionChildSystem.Add("System_DataBaseRestore_FromSystem", new AccordionNode(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_database_restore")) { Clicked = delegate { DataBaseBackup.Restore(this, DataBaseRestoreFrom.SystemBackup); } });

@@ -289,9 +289,9 @@ namespace logicpos.shared.App
                 }
                 else
                 {
-                    result = (SharedFramework.PluginSoftwareVendor != null)
+                    result = (LogicPOS.Settings.PluginSettings.PluginSoftwareVendor != null)
                         // From Vendor Plugin
-                        ? SharedFramework.PluginSoftwareVendor.GetFinanceRuleSimplifiedInvoiceMaxTotal()
+                        ? LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.GetFinanceRuleSimplifiedInvoiceMaxTotal()
                         // Default
                         : 1000;
                 }
@@ -320,9 +320,9 @@ namespace logicpos.shared.App
                 }
                 else
                 {
-                    result = (SharedFramework.PluginSoftwareVendor != null)
+                    result = (LogicPOS.Settings.PluginSettings.PluginSoftwareVendor != null)
                         // From Vendor Plugin
-                        ? SharedFramework.PluginSoftwareVendor.GetFinanceRuleSimplifiedInvoiceMaxTotalServices()
+                        ? LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.GetFinanceRuleSimplifiedInvoiceMaxTotalServices()
                         // Default
                         : 100;
                     ;
@@ -344,9 +344,9 @@ namespace logicpos.shared.App
             //PT : Override Defaults
             if (DataLayerSettings.ConfigurationSystemCountry.Oid == XpoOidConfigurationCountryPortugal)
             {
-                result = (SharedFramework.PluginSoftwareVendor != null)
+                result = (LogicPOS.Settings.PluginSettings.PluginSoftwareVendor != null)
                     // From Vendor Plugin
-                    ? SharedFramework.PluginSoftwareVendor.GetFinanceRuleRequiredCustomerDetailsAboveValue()
+                    ? LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.GetFinanceRuleRequiredCustomerDetailsAboveValue()
                     // Default
                     : 1000;
                 ;

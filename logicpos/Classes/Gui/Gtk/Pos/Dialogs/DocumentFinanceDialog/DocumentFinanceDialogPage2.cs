@@ -396,12 +396,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 EnableGetCustomerDetails = false;
 
                 // Encrypt pFieldValue to use in Sql Filter
-                if (SharedFramework.PluginSoftwareVendor != null)
+                if (LogicPOS.Settings.PluginSettings.PluginSoftwareVendor != null)
                 {
                     // Only Encrypt Encrypted Fields
                     if (pFieldName == nameof(Erp_customer.FiscalNumber) || pFieldName == nameof(Erp_customer.CardNumber))
                     {
-                        pFieldValue = SharedFramework.PluginSoftwareVendor.Encrypt(pFieldValue);
+                        pFieldValue = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Encrypt(pFieldValue);
                     }
                 }
 
@@ -659,9 +659,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 //Used To Disable FiscalNumber Edits
                 // Encrypt pFieldValue to use in Sql Filter
                 string fiscalNumberFilterValue = string.Empty;
-                if (SharedFramework.PluginSoftwareVendor != null)
+                if (LogicPOS.Settings.PluginSettings.PluginSoftwareVendor != null)
                 {
-                    fiscalNumberFilterValue = SharedFramework.PluginSoftwareVendor.Encrypt(EntryBoxSelectCustomerFiscalNumber.EntryValidation.Text);
+                    fiscalNumberFilterValue = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Encrypt(EntryBoxSelectCustomerFiscalNumber.EntryValidation.Text);
                 }
                 string sql = string.Format("SELECT Oid FROM erp_customer WHERE FiscalNumber = '{0}' AND (Hidden IS NULL OR Hidden = 0);", fiscalNumberFilterValue);
                 Guid customerGuid = SharedUtils.GetGuidFromQuery(sql);

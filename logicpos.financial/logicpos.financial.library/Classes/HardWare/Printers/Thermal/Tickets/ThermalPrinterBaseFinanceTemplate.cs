@@ -414,11 +414,11 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             _thermalPrinterGeneric.WriteLine(copyRightText, WriteLineTextMode.Small);
 
             /* IN009211 - it was printing empty label */
-            if (!string.IsNullOrEmpty(SharedFramework.LicenseCompany))
+            if (!string.IsNullOrEmpty(LogicPOS.Settings.LicenseSettings.LicenseCompany))
             {
                 string licenseText = string.Format(
                     resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_licensed_to"),
-                    SharedFramework.LicenseCompany
+                    LogicPOS.Settings.LicenseSettings.LicenseCompany
             );
                 _thermalPrinterGeneric.WriteLine(licenseText, WriteLineTextMode.Small);
             }

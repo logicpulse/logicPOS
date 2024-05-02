@@ -126,7 +126,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             bool reportSensitive = true;
                             userpermissionitemToken = report.Token;
                             //Prevent Reports to non-licenced Module stocks
-                            if (report.ReportType.Oid == Guid.Parse("751c9e56-26bb-4fc8-8110-6c1e3b7c84e6") && report.Token != "REPORT_LIST_STOCK_MOVEMENTS" && !SharedFramework.LicenseModuleStocks)
+                            if (report.ReportType.Oid == Guid.Parse("751c9e56-26bb-4fc8-8110-6c1e3b7c84e6") && report.Token != "REPORT_LIST_STOCK_MOVEMENTS" && !LogicPOS.Settings.LicenseSettings.LicenseModuleStocks)
                             {
                                 reportSensitive = false;
                             }

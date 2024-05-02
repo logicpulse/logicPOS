@@ -1645,7 +1645,7 @@ WHERE
                                 {
                                     //Process Stock : Restore Stock after Cancelling Documents
                                     _logger.Debug("void PosDocumentFinanceSelectRecordDialog.CallCancelFinanceMasterDocumentsDialog(Window pDialog, List<fin_documentfinancemaster> pListSelectDocuments) :: Process Stock : restoring stock after cancelling [" + documentMaster.DocumentNumber + "] document");
-                                    if (SharedFramework.LicenseModuleStocks && POSFramework.StockManagementModule != null)
+                                    if (LogicPOS.Settings.LicenseSettings.LicenseModuleStocks && POSFramework.StockManagementModule != null)
                                     {
                                         POSFramework.StockManagementModule.Add(documentMaster, true);
                                     }

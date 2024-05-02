@@ -43,7 +43,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //If detected empty Hardware Id from Parameters, get it from IntelliLock
             if (string.IsNullOrEmpty(pHardwareId))
             {
-                _hardwareId =SharedFramework.PluginLicenceManager.GetHardwareID();
+                _hardwareId =LogicPOS.Settings.PluginSettings.PluginLicenceManager.GetHardwareID();
             }
             else
             {
@@ -272,14 +272,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         private void ActionRegister()
         {
-            if (!SharedFramework.PluginLicenceManager.ConnectToWS())
+            if (!LogicPOS.Settings.PluginSettings.PluginLicenceManager.ConnectToWS())
             {
                 logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new System.Drawing.Size(600, 300), MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_license_ws_connection_error"));
 
                 return;
             }
 
-            if (SharedFramework.PluginLicenceManager == null)
+            if (LogicPOS.Settings.PluginSettings.PluginLicenceManager == null)
             {
                 return;
             }
@@ -289,7 +289,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             try
             {
                 //Returns ByteWrite File
-                registredLicence =SharedFramework.PluginLicenceManager.ActivateLicense(
+                registredLicence =LogicPOS.Settings.PluginSettings.PluginLicenceManager.ActivateLicense(
                     EntryBoxName.EntryValidation.Text,
                     EntryBoxCompany.EntryValidation.Text,
                     EntryBoxFiscalNumber.EntryValidation.Text,
@@ -301,7 +301,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     _entryBoxSoftwareKey.EntryValidation.Text
                 );
 
-                string completeFilePath = string.Format("{0}{1}", LicenseRouter.GetCurrentDirectory(),SharedFramework.PluginLicenceManager.GetLicenseFilename());
+                string completeFilePath = string.Format("{0}{1}", LicenseRouter.GetCurrentDirectory(),LogicPOS.Settings.PluginSettings.PluginLicenceManager.GetLicenseFilename());
                 completeFilePath = completeFilePath.Replace("\\", "/");
                 //Used to generate diferent license file names per HardwareId : to Enable find "completeFilePath"
                 //string completeFilePath = GetCurrentDirectory() + string.Format("logicpos_{0}.license", textBoxHardwareID.Text);

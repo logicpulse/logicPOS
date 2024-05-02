@@ -55,8 +55,8 @@ namespace logicpos.financial.library.Classes.Finance
                 }
 
                 //Settings
-                //string dateTimeFormatDocumentDate = (SharedFramework.PluginSoftwareVendor != null) ? SharedFramework.PluginSoftwareVendor.GetDateTimeFormatDocumentDate() : null;//SettingsApp.DateTimeFormatDocumentDate;
-                //string dateTimeFormatCombinedDateTime = (SharedFramework.PluginSoftwareVendor != null) ? SharedFramework.PluginSoftwareVendor.GetDateTimeFormatCombinedDateTime() : null;//SettingsApp.DateTimeFormatCombinedDateTime;
+                //string dateTimeFormatDocumentDate = (LogicPOS.Settings.PluginSettings.PluginSoftwareVendor != null) ? LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.GetDateTimeFormatDocumentDate() : null;//SettingsApp.DateTimeFormatDocumentDate;
+                //string dateTimeFormatCombinedDateTime = (LogicPOS.Settings.PluginSettings.PluginSoftwareVendor != null) ? LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.GetDateTimeFormatCombinedDateTime() : null;//SettingsApp.DateTimeFormatCombinedDateTime;
 
                 //If has DocumentDateTime from Parameters use it, else use Current Atomic DateTime : This is Optional, Now DocumentDateTime is assigned on Parameter Constructor
                 DateTime documentDateTime = (pParameters.DocumentDateTime != DateTime.MinValue) ? pParameters.DocumentDateTime : DataLayerUtils.CurrentDateTimeAtomic();
@@ -175,7 +175,7 @@ namespace logicpos.financial.library.Classes.Finance
                         documentFinanceMaster.EntityOid = customer.Oid;
                         //Store CodeInternal to use in SAF-T
                         documentFinanceMaster.EntityInternalCode = customer.CodeInternal;
-                        documentFinanceMaster.EntityFiscalNumber = SharedFramework.PluginSoftwareVendor.Encrypt(customer.FiscalNumber); /* IN009075 */
+                        documentFinanceMaster.EntityFiscalNumber = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Encrypt(customer.FiscalNumber); /* IN009075 */
                         //Always Update EntityCountryOid, usefull to AT WebServices to detect Country
                         if (customer.Country != null)
                         {
@@ -201,11 +201,11 @@ namespace logicpos.financial.library.Classes.Finance
                             )
                         {
                             /* IN009075 - encrypting customer datum when persisting finance document */
-                            documentFinanceMaster.EntityName = SharedFramework.PluginSoftwareVendor.Encrypt(customer.Name);
-                            documentFinanceMaster.EntityAddress = SharedFramework.PluginSoftwareVendor.Encrypt(customer.Address);
-                            documentFinanceMaster.EntityLocality = SharedFramework.PluginSoftwareVendor.Encrypt(customer.Locality);
-                            documentFinanceMaster.EntityZipCode = SharedFramework.PluginSoftwareVendor.Encrypt(customer.ZipCode);
-                            documentFinanceMaster.EntityCity = SharedFramework.PluginSoftwareVendor.Encrypt(customer.City);
+                            documentFinanceMaster.EntityName = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Encrypt(customer.Name);
+                            documentFinanceMaster.EntityAddress = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Encrypt(customer.Address);
+                            documentFinanceMaster.EntityLocality = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Encrypt(customer.Locality);
+                            documentFinanceMaster.EntityZipCode = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Encrypt(customer.ZipCode);
+                            documentFinanceMaster.EntityCity = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Encrypt(customer.City);
                             //Deprecated Now Always assign Country, usefull to AT WebServices to detect Country 
                             //if (customer.Country != null)
                             //{
@@ -216,7 +216,7 @@ namespace logicpos.financial.library.Classes.Finance
                         //Persist Name if is has a FinalConsumer NIF and Name (Hidden Customer)
                         else if (FinancialLibraryUtils.IsFinalConsumerEntity(customer.FiscalNumber) && customer.Name != string.Empty)
                         {
-                            documentFinanceMaster.EntityName = SharedFramework.PluginSoftwareVendor.Encrypt(customer.Name); /* IN009075 */
+                            documentFinanceMaster.EntityName = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Encrypt(customer.Name); /* IN009075 */
                         }
                     }
 
@@ -710,8 +710,8 @@ namespace logicpos.financial.library.Classes.Finance
                         //Process Stock
                         try
                         {
-                            FinancialLibraryFramework.StockManagementModule = (SharedFramework.PluginContainer.GetFirstPluginOfType<IStockManagementModule>());
-                            if (SharedFramework.LicenseModuleStocks && FinancialLibraryFramework.StockManagementModule != null)
+                            FinancialLibraryFramework.StockManagementModule = (LogicPOS.Settings.PluginSettings.PluginContainer.GetFirstPluginOfType<IStockManagementModule>());
+                            if (LogicPOS.Settings.LicenseSettings.LicenseModuleStocks && FinancialLibraryFramework.StockManagementModule != null)
                             {
                                 FinancialLibraryFramework.StockManagementModule.Add(documentFinanceMaster);
                             }
@@ -782,9 +782,9 @@ namespace logicpos.financial.library.Classes.Finance
             // Old Method without Plugin
             //resultSignedHash = FrameworkUtils.SignDataToSHA1Base64(signTargetString, debug);
             // Sign Document if has a valid PluginSoftwareVendor 
-            if (SharedFramework.PluginSoftwareVendor != null)
+            if (LogicPOS.Settings.PluginSettings.PluginSoftwareVendor != null)
             {
-                resultSignedHash = SharedFramework.PluginSoftwareVendor.SignDataToSHA1Base64(FinancialLibrarySettings.SecretKey, signTargetString, debug);
+                resultSignedHash = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.SignDataToSHA1Base64(FinancialLibrarySettings.SecretKey, signTargetString, debug);
             }
             else
             {
@@ -863,7 +863,7 @@ namespace logicpos.financial.library.Classes.Finance
             //S Outras informações Exemplo S: NU; 0.80 ++
 
             string A = "A:" + LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_FISCALNUMBER"] + "*";
-            string B = "B:" + SharedFramework.PluginSoftwareVendor.Decrypt(doc.EntityFiscalNumber) + "*";
+            string B = "B:" + LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Decrypt(doc.EntityFiscalNumber) + "*";
             string C = "C:" + doc.EntityCountry + "*";
             string D = "D:" + pDocType.Acronym + "*";
             string E = "E:" + doc.DocumentStatusStatus + "*";
@@ -883,9 +883,9 @@ namespace logicpos.financial.library.Classes.Finance
 
             //byte[] resultQRCode = new byte[64]; 
             string resultQRCode;
-            if (SharedFramework.PluginSoftwareVendor != null && (pDocType.SaftDocumentType == SaftDocumentType.SalesInvoices || pDocType.SaftDocumentType == SaftDocumentType.Payments))
+            if (LogicPOS.Settings.PluginSettings.PluginSoftwareVendor != null && (pDocType.SaftDocumentType == SaftDocumentType.SalesInvoices || pDocType.SaftDocumentType == SaftDocumentType.Payments))
             {
-                //resultSignedHash = SharedFramework.PluginSoftwareVendor.SignDataToSHA1Base64(SettingsApp.SecretKey, signTargetString, debug);
+                //resultSignedHash = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.SignDataToSHA1Base64(SettingsApp.SecretKey, signTargetString, debug);
 
                 //A elaboração do código de barras bidimensional (código QR) deve obedecer àsseguintes especificações:
                 //a) Taxa de Recuperação de Erro(ECC): “M”;
@@ -1615,7 +1615,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                     if (generatePdfDocuments)
                     {
                         string entityName = (!string.IsNullOrEmpty(documentFinanceMaster.EntityName))
-                            ? string.Format("_{0}", SharedFramework.PluginSoftwareVendor.Decrypt(documentFinanceMaster.EntityName).ToLower().Replace(' ', '_')) /* IN009075 */
+                            ? string.Format("_{0}", LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Decrypt(documentFinanceMaster.EntityName).ToLower().Replace(' ', '_')) /* IN009075 */
                             : string.Empty;
                         string reportFilename = string.Format("{0}/{1}{2}.pdf",
                             DataLayerFramework.Path["documents"],

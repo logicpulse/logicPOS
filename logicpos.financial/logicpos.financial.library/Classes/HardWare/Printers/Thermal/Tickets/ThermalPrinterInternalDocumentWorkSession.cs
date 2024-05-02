@@ -288,9 +288,9 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                                     unitMeasure = Convert.ToString(row.Values[xPSelectData.GetFieldIndex("UnitMeasure")]);
                                     total = Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("Total")]);
                                     // Override Encrypted values
-                                    if (SharedFramework.PluginSoftwareVendor != null && item.Key.Equals(DataTableGroupPropertiesType.DocumentsUser) || item.Key.Equals(DataTableGroupPropertiesType.PaymentsUser))
+                                    if (LogicPOS.Settings.PluginSettings.PluginSoftwareVendor != null && item.Key.Equals(DataTableGroupPropertiesType.DocumentsUser) || item.Key.Equals(DataTableGroupPropertiesType.PaymentsUser))
                                     {
-                                        designation = SharedFramework.PluginSoftwareVendor.Decrypt(designation);
+                                        designation = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Decrypt(designation);
                                     }
                                     //Sum Summary Totals
                                     summaryTotalQuantity += quantity;

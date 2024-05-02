@@ -237,7 +237,7 @@ namespace logicpos
 #endif
                 // Assign PluginSoftwareVendor Reference to DataLayer SettingsApp to use In Date Protection, we Required to assign it Statically to Prevent Circular References
                 // Required to be here, before it is used in above lines, ex Utils.GetTerminal()
-                if (SharedFramework.PluginSoftwareVendor != null) PluginContractsSettings.PluginSoftwareVendor = SharedFramework.PluginSoftwareVendor;
+                if (LogicPOS.Settings.PluginSettings.PluginSoftwareVendor != null) PluginContractsSettings.PluginSoftwareVendor = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor;
 
                 //If not in Xpo create database Scheme Mode, Get Terminal from Db
                 if (!xpoCreateDatabaseAndSchema)
@@ -407,7 +407,7 @@ namespace logicpos
                 if (databaseCreated) SharedUtils.Audit("DATABASE_CREATE");
 
                 // Plugin Errors Messages
-                if (SharedFramework.PluginSoftwareVendor == null || !SharedFramework.PluginSoftwareVendor.IsValidSecretKey(FinancialLibrarySettings.SecretKey))
+                if (LogicPOS.Settings.PluginSettings.PluginSoftwareVendor == null || !LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.IsValidSecretKey(FinancialLibrarySettings.SecretKey))
                 {
                     /* IN009034 */
                     GlobalApp.DialogThreadNotify.WakeupMain();
@@ -454,8 +454,8 @@ namespace logicpos
 
                 //Activate stock module for debug
 #if DEBUG 
-                SharedFramework.LicenseModuleStocks = true;
-                SharedSettings.AppCompanyName = SharedFramework.LicenseCompany = SharedFramework.LicenseReseller = "Logicpulse";
+                LogicPOS.Settings.LicenseSettings.LicenseModuleStocks = true;
+                SharedSettings.AppCompanyName = LogicPOS.Settings.LicenseSettings.LicenseCompany = LogicPOS.Settings.LicenseSettings.LicenseReseller = "Logicpulse";
 #endif
 
                 //Clean Documents Folder on New Database, else we have Document files that dont correspond to Database
@@ -506,7 +506,7 @@ namespace logicpos
             }
 
             //Start Database Backup Timer if not create XPO Schema and SoftwareVendor is Active
-            if (SharedFramework.PluginSoftwareVendor != null && validDirectoryBackup && !xpoCreateDatabaseAndSchema)
+            if (LogicPOS.Settings.PluginSettings.PluginSoftwareVendor != null && validDirectoryBackup && !xpoCreateDatabaseAndSchema)
             {
                 /* IN009163 and IN009164 - Opt to auto-backup flow */
                 _autoBackupFlowIsEnabled = bool.Parse(LogicPOS.Settings.AppSettings.PreferenceParameters["DATABASE_BACKUP_AUTOMATIC_ENABLED"]);

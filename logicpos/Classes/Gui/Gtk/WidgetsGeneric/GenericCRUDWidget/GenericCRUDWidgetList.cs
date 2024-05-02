@@ -451,7 +451,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         {
             if (pResponse == ResponseType.Ok)
             {
-                if (pDialog.GetType() == typeof(DialogAddArticleStock) && SharedFramework.LicenseModuleStocks)
+                if (pDialog.GetType() == typeof(DialogAddArticleStock) && LogicPOS.Settings.LicenseSettings.LicenseModuleStocks)
                 {
                     ProcessArticleStockParameter res = DialogAddArticleStock.GetProcessArticleStockParameter(pDialog as DialogAddArticleStock);
                     List<fin_articleserialnumber> barCodeLabelList = new List<fin_articleserialnumber>();

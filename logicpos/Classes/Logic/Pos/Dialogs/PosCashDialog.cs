@@ -27,7 +27,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if (resultCanClose == false) return;
 
                 // ShowRequestBackupDialog and Backup only if PluginSoftwareVendor is Active
-                if (SharedFramework.PluginSoftwareVendor != null)
+                if (LogicPOS.Settings.PluginSettings.PluginSoftwareVendor != null)
                 {
                     //Request User to do a DatabaseBackup, After Check Can Close
                     DataBaseBackup.ShowRequestBackupDialog(this);

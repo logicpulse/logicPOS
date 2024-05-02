@@ -30,7 +30,7 @@ namespace logicpos.plugin.library
         }
 
         // Get Pluggin Use With:
-        // SharedFramework.PluginSoftwareVendor = (SharedFramework.PluginContainer.GetPlugin("logicpulse.licencemanager.plugin.LogicpulseLicenceManagerPlugin") as ISoftwareVendor);
+        // LogicPOS.Settings.PluginSettings.PluginSoftwareVendor = (LogicPOS.Settings.PluginSettings.PluginContainer.GetPlugin("logicpulse.licencemanager.plugin.LogicpulseLicenceManagerPlugin") as ISoftwareVendor);
         public IPlugin GetPlugin(string plugginType)
         {
             IPlugin result = null;
@@ -44,7 +44,7 @@ namespace logicpos.plugin.library
         }
 
         // Get First Pluggin Use with : 
-        // ILicenceManager licenceManager = (SharedFramework.PluginContainer.GetFirstPluginOfType<ILicenceManager>());
+        // ILicenceManager licenceManager = (LogicPOS.Settings.PluginSettings.PluginContainer.GetFirstPluginOfType<ILicenceManager>());
         public T GetFirstPluginOfType<T>()
         {
             List<T> founded = new List<T>();
