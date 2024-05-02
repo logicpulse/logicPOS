@@ -59,7 +59,6 @@
     <Compile Include="Classes\Orders\OrderMainTable.cs" />
     <Compile Include="Classes\Orders\OrderTicket.cs" />
     <Compile Include="Classes\Others\ValidateMaxLenghtMaxWordsResult.cs" />
-    <Compile Include="Classes\Utils\Utils.cs" />
     <Compile Include="Enums\CustomReportDisplayMode.cs" />
     <Compile Include="Enums\DocumentType.cs" />
     <Compile Include="Enums\PersistFinanceDocumentSourceMode.cs" />
@@ -115,6 +114,9 @@
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.3</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Classes\Utils\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

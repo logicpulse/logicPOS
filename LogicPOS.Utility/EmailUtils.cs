@@ -1,61 +1,60 @@
-﻿using logicpos.shared.App;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Mail;
 
-namespace logicpos.shared.Classes.Utils
+namespace LogicPOS.Utility
 {
-    public class Utils
+    public static class EmailUtils
     {
         public static void SendMail(
+            Dictionary<string, string> preferenceParameters,
             SmtpDeliveryMethod deliveryMethod,
-            string to, 
-            string cc, 
-            string bcc, 
-            string subject, 
+            string to,
+            string cc,
+            string bcc,
+            string subject,
             string body,
             List<string> attachmentFileNames,
-            int timeOut = 5
-            )
+            int timeOut = 5)
         {
             // Get Defaults fromLogicPOS.Settings.AppSettings.PreferenceParameters
-            string smtpServer = LogicPOS.Settings.AppSettings.PreferenceParameters["SEND_MAIL_SMTP_SERVER"];
-            string username = LogicPOS.Settings.AppSettings.PreferenceParameters["SEND_MAIL_SMTP_USERNAME"];
-            string password = LogicPOS.Settings.AppSettings.PreferenceParameters["SEND_MAIL_SMTP_PASSWORD"];
-            int port = Convert.ToInt16(LogicPOS.Settings.AppSettings.PreferenceParameters["SEND_MAIL_SMTP_PORT"]);
-            bool enableSsl = Convert.ToBoolean(LogicPOS.Settings.AppSettings.PreferenceParameters["SEND_MAIL_SMTP_ENABLE_SSL"]);
-            bool useHtmlBody = Convert.ToBoolean(LogicPOS.Settings.AppSettings.PreferenceParameters["SEND_MAIL_FINANCE_DOCUMENTS_HTML_BODY"]);
+            string smtpServer = preferenceParameters["SEND_MAIL_SMTP_SERVER"];
+            string username = preferenceParameters["SEND_MAIL_SMTP_USERNAME"];
+            string password = preferenceParameters["SEND_MAIL_SMTP_PASSWORD"];
+            int port = Convert.ToInt16(preferenceParameters["SEND_MAIL_SMTP_PORT"]);
+            bool enableSsl = Convert.ToBoolean(preferenceParameters["SEND_MAIL_SMTP_ENABLE_SSL"]);
+            bool useHtmlBody = Convert.ToBoolean(preferenceParameters["SEND_MAIL_FINANCE_DOCUMENTS_HTML_BODY"]);
 
             SendMail(
-                smtpServer, 
-                username, 
-                password, 
-                port, 
-                enableSsl, 
-                deliveryMethod, 
-                to, 
-                cc, 
-                bcc, 
-                subject, 
-                body, 
-                useHtmlBody, 
-                attachmentFileNames, 
+                smtpServer,
+                username,
+                password,
+                port,
+                enableSsl,
+                deliveryMethod,
+                to,
+                cc,
+                bcc,
+                subject,
+                body,
+                useHtmlBody,
+                attachmentFileNames,
                 timeOut);
         }
 
         public static void SendMail(
-            string smtpServer, 
-            string username, 
-            string password, 
-            int port, 
+            string smtpServer,
+            string username,
+            string password,
+            int port,
             bool enableSsl,
             SmtpDeliveryMethod deliveryMethod,
-            string to, 
-            string cc, 
-            string bcc, 
-            string subject, 
-            string body, 
+            string to,
+            string cc,
+            string bcc,
+            string subject,
+            string body,
             bool htmlBody,
             List<string> attachmentFileNames,
             int timeOut = 5
@@ -98,7 +97,6 @@ namespace logicpos.shared.Classes.Utils
 
             smtpClient.Send(message);
         }
-
 
     }
 }

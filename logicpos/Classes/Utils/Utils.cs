@@ -46,7 +46,7 @@ using System.Threading;
 
 namespace logicpos
 {
-    internal class Utils : logicpos.shared.Classes.Utils.Utils
+    internal class Utils 
     {
         private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 

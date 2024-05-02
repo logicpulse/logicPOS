@@ -123,19 +123,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 try
                 {
-                    shared.Classes.Utils.Utils.SendMail(
-                        //Logicpulse STMP
-                        //"mail.logicpulse.com",
-                        //"mario.monteiro@logicpulse.com",
-                        //"monteiro#2015",
-                        //465,//Server responds to your request from unprotected 25 and then throws connection to protected 465
-                        //false,
-                        //Gmail SMTP
-                        //"smtp.gmail.com",
-                        //"suporte.logicpulse@gmail.com",
-                        //"logicpulse#2015",
-                        //587,
-                        //true,
+                    LogicPOS.Utility.EmailUtils.SendMail(
+                        LogicPOS.Settings.AppSettings.PreferenceParameters,
                         SmtpDeliveryMethod.Network,
                         To,
                         Cc,
