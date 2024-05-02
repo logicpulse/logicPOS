@@ -73,14 +73,14 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             try
             {
-                // We Must ModifySharedFramework.PreferenceParameters after user Change Value, if Value is Changed, this will Update in MemorySharedFramework.PreferenceParameters Dictionary
-                if (SharedFramework.PreferenceParameters[configurationPreferenceParameter.Token] == null ||
-                    !SharedFramework.PreferenceParameters[configurationPreferenceParameter.Token].Equals(configurationPreferenceParameter.Value)
+                // We Must ModifyLogicPOS.Settings.AppSettings.PreferenceParameters after user Change Value, if Value is Changed, this will Update in MemoryLogicPOS.Settings.AppSettings.PreferenceParameters Dictionary
+                if (LogicPOS.Settings.AppSettings.PreferenceParameters[configurationPreferenceParameter.Token] == null ||
+                    !LogicPOS.Settings.AppSettings.PreferenceParameters[configurationPreferenceParameter.Token].Equals(configurationPreferenceParameter.Value)
                     )
                 {
-                    if (_debug) _logger.Debug($"TreeViewConfigurationPreferenceParameter: Previous Value: [{SharedFramework.PreferenceParameters[configurationPreferenceParameter.Token]}]");
-                    SharedFramework.PreferenceParameters[configurationPreferenceParameter.Token] = configurationPreferenceParameter.Value;
-                    if (_debug) _logger.Debug($"TreeViewConfigurationPreferenceParameter: Current Value: [{SharedFramework.PreferenceParameters[configurationPreferenceParameter.Token]}]");
+                    if (_debug) _logger.Debug($"TreeViewConfigurationPreferenceParameter: Previous Value: [{LogicPOS.Settings.AppSettings.PreferenceParameters[configurationPreferenceParameter.Token]}]");
+                    LogicPOS.Settings.AppSettings.PreferenceParameters[configurationPreferenceParameter.Token] = configurationPreferenceParameter.Value;
+                    if (_debug) _logger.Debug($"TreeViewConfigurationPreferenceParameter: Current Value: [{LogicPOS.Settings.AppSettings.PreferenceParameters[configurationPreferenceParameter.Token]}]");
                 }
             }
             catch (Exception ex)

@@ -1201,7 +1201,7 @@ namespace logicpos.shared.App
 
             try
             {
-                result = Convert.ToBoolean(SharedFramework.PreferenceParameters["USE_POS_PDF_VIEWER"]);
+                result = Convert.ToBoolean(LogicPOS.Settings.AppSettings.PreferenceParameters["USE_POS_PDF_VIEWER"]);
             }
             catch (Exception ex)
             {
@@ -1400,7 +1400,7 @@ namespace logicpos.shared.App
 
         /// <summary>
         /// Get value from dictionary with LINQ
-        /// Deprecated: better to get it with key exSharedFramework.PreferenceParameters[token]
+        /// Deprecated: better to get it with key exLogicPOS.Settings.AppSettings.PreferenceParameters[token]
         /// </summary>
         /// <param name="token"></param>
         /// <returns></returns>
@@ -1410,7 +1410,7 @@ namespace logicpos.shared.App
 
         //    try
         //    {
-        //        result =SharedFramework.PreferenceParameters.FirstOrDefault(k => k.Key.Contains(token)).Value;
+        //        result =LogicPOS.Settings.AppSettings.PreferenceParameters.FirstOrDefault(k => k.Key.Contains(token)).Value;
         //    }
         //    catch (Exception ex)
         //    {
@@ -1882,7 +1882,7 @@ namespace logicpos.shared.App
             int ignoreNotificationsAfterHaveBeenNotificatedNumberOfTimes = 0;
             try
             {
-                ignoreNotificationsAfterHaveBeenNotificatedNumberOfTimes = Convert.ToInt16(SharedFramework.PreferenceParameters["NOTIFICATION_DOCUMENTS_TO_INVOICE_IGNORE_AFTER_SHOW_NUMBER_OF_TIMES"]);
+                ignoreNotificationsAfterHaveBeenNotificatedNumberOfTimes = Convert.ToInt16(LogicPOS.Settings.AppSettings.PreferenceParameters["NOTIFICATION_DOCUMENTS_TO_INVOICE_IGNORE_AFTER_SHOW_NUMBER_OF_TIMES"]);
             }
             catch (Exception)
             {

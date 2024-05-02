@@ -268,12 +268,12 @@ namespace logicpos
                 }
 
                 //Init PreferenceParameters
-                SharedFramework.PreferenceParameters = SharedUtils.GetPreferencesParameters();
+                LogicPOS.Settings.AppSettings.PreferenceParameters = SharedUtils.GetPreferencesParameters();
                 //Init Preferences Path
                 Paths.InitializePathsPrefs();
 
                 //CultureInfo/Localization
-                string culture = SharedFramework.PreferenceParameters["CULTURE"];
+                string culture = LogicPOS.Settings.AppSettings.PreferenceParameters["CULTURE"];
 
                 /* IN008013 */
                 if (string.IsNullOrEmpty(culture))
@@ -312,7 +312,7 @@ namespace logicpos
 
                 //Use Detected ScreenSize
                 string appScreenSize = string.IsNullOrEmpty(datalayer.App.DataLayerFramework.Settings["appScreenSize"])
-                    ? SharedFramework.PreferenceParameters["APP_SCREEN_SIZE"]
+                    ? LogicPOS.Settings.AppSettings.PreferenceParameters["APP_SCREEN_SIZE"]
                     : datalayer.App.DataLayerFramework.Settings["appScreenSize"];
                 if (appScreenSize.Replace(" ", string.Empty).Equals("0,0") || string.IsNullOrEmpty(appScreenSize))
                 {
@@ -509,15 +509,15 @@ namespace logicpos
             if (SharedFramework.PluginSoftwareVendor != null && validDirectoryBackup && !xpoCreateDatabaseAndSchema)
             {
                 /* IN009163 and IN009164 - Opt to auto-backup flow */
-                _autoBackupFlowIsEnabled = bool.Parse(SharedFramework.PreferenceParameters["DATABASE_BACKUP_AUTOMATIC_ENABLED"]);
+                _autoBackupFlowIsEnabled = bool.Parse(LogicPOS.Settings.AppSettings.PreferenceParameters["DATABASE_BACKUP_AUTOMATIC_ENABLED"]);
 
                 /* IN009164 */
                 if (_autoBackupFlowIsEnabled)
                 {
                     /* IN009164 - considering these variables are only used for automatic backup purposes, will be settled only when Auto-Backup Flow is enabled */
-                    _backupDatabaseTimeSpan = TimeSpan.Parse(SharedFramework.PreferenceParameters["DATABASE_BACKUP_TIMESPAN"]);
-                    _databaseBackupTimeSpanRangeStart = TimeSpan.Parse(SharedFramework.PreferenceParameters["DATABASE_BACKUP_TIME_SPAN_RANGE_START"]);
-                    _databaseBackupTimeSpanRangeEnd = TimeSpan.Parse(SharedFramework.PreferenceParameters["DATABASE_BACKUP_TIME_SPAN_RANGE_END"]);
+                    _backupDatabaseTimeSpan = TimeSpan.Parse(LogicPOS.Settings.AppSettings.PreferenceParameters["DATABASE_BACKUP_TIMESPAN"]);
+                    _databaseBackupTimeSpanRangeStart = TimeSpan.Parse(LogicPOS.Settings.AppSettings.PreferenceParameters["DATABASE_BACKUP_TIME_SPAN_RANGE_START"]);
+                    _databaseBackupTimeSpanRangeEnd = TimeSpan.Parse(LogicPOS.Settings.AppSettings.PreferenceParameters["DATABASE_BACKUP_TIME_SPAN_RANGE_END"]);
                     /* IN009164 - TimeoutHandler() for UpdateBackupTimer() will not be created if Auto-Backup Flow is enabled */
                     StartBackupTimer();
                 }

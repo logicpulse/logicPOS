@@ -104,6 +104,10 @@
       <Project>{43c879d1-31ae-424f-91d1-92cf286d5497}</Project>
       <Name>logicpos.plugin.contracts</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\LogicPOS.Settings\LogicPOS.Settings.csproj">
+      <Project>{a4e7f0ea-8360-41f2-a625-517f6e943a29}</Project>
+      <Name>LogicPOS.Settings</Name>
+    </ProjectReference>
     <ProjectReference Include="..\logicpos.financial.library\logicpos.financial.library.csproj">
       <Project>{7f643f3c-0f7b-451a-aa16-a9a25a56ccf3}</Project>
       <Name>logicpos.financial.library</Name>

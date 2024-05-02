@@ -56,7 +56,7 @@ namespace logicpos.shared.App
         //User/Terminal/Permissions
         public static Dictionary<string, bool> LoggedUserPermissions;
         //PreferenceParameters
-        public static Dictionary<string, string> PreferenceParameters;
+       
         //FastReport
         public static Dictionary<string, string> FastReportSystemVars;
         public static Dictionary<string, string> FastReportCustomVars;

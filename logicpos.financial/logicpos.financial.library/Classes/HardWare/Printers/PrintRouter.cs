@@ -284,7 +284,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                             thermalPrinterInternalDocumentWorkSession.Print();
                             //CurrentAcount
                             //Use Config to print this
-                            if(Convert.ToBoolean(SharedFramework.PreferenceParameters["USE_CC_DAILY_TICKET"]))
+                            if(Convert.ToBoolean(LogicPOS.Settings.AppSettings.PreferenceParameters["USE_CC_DAILY_TICKET"]))
                             {
                                 thermalPrinterInternalDocumentWorkSession = new ThermalPrinterInternalDocumentWorkSession(pPrinter, pWorkSessionPeriod, SplitCurrentAccountMode.CurrentAcount);
                                 thermalPrinterInternalDocumentWorkSession.Print();

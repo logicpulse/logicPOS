@@ -435,8 +435,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 {
                     //update owner customer for internal stock moviments                        
                     //own_customer.FiscalNumber = CryptorEngine.Encrypt(GlobalFramework.PreferenceParameters["COMPANY_FISCALNUMBER"], true, SettingsApp.SecretKey);
-                    own_customer.FiscalNumber = SharedFramework.PreferenceParameters["COMPANY_FISCALNUMBER"];
-                    own_customer.Name = SharedFramework.PreferenceParameters["COMPANY_NAME"];
+                    own_customer.FiscalNumber = LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_FISCALNUMBER"];
+                    own_customer.Name = LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_NAME"];
                     own_customer.Save();
                     _logger.Debug("Updating own supplier name and fiscal number");
                     //if (supplier == null) { supplier = own_customer; }

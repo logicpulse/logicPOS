@@ -275,7 +275,7 @@ namespace logicpos.App
                     Path["themes"],
                     string.Format(
                         FileFormatThemeFile
-                        , LogicPOS.Settings.AppSettings.AppTheme.ToLower() /* IN008024: Before, from Database :SharedFramework.PreferenceParameters["APP_THEME"].ToLower() */
+                        , LogicPOS.Settings.AppSettings.AppTheme.ToLower() /* IN008024: Before, from Database :LogicPOS.Settings.AppSettings.PreferenceParameters["APP_THEME"].ToLower() */
                         , customAppOperationMode.AppOperationTheme.ToLower()/*  From App.Config: Default|Coffee|Bakery|Fish|Butchery|Shoe|Clothing|Hardware */
                     )
                 );
@@ -290,12 +290,12 @@ namespace logicpos.App
 
         private static bool GetServiceATSendDocuments()
         {
-            return Convert.ToBoolean(SharedFramework.PreferenceParameters["SERVICE_AT_SEND_DOCUMENTS"]);
+            return Convert.ToBoolean(LogicPOS.Settings.AppSettings.PreferenceParameters["SERVICE_AT_SEND_DOCUMENTS"]);
         }
 
         private static bool GetServiceATSendDocumentsWayBill()
         {
-            return Convert.ToBoolean(SharedFramework.PreferenceParameters["SERVICE_AT_SEND_DOCUMENTS_WAYBILL"]);
+            return Convert.ToBoolean(LogicPOS.Settings.AppSettings.PreferenceParameters["SERVICE_AT_SEND_DOCUMENTS_WAYBILL"]);
         }
 
         /// <summary>

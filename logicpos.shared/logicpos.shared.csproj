@@ -97,6 +97,10 @@
       <Project>{b9e8d813-d694-4a7f-955e-ccc4b10f3774}</Project>
       <Name>logicpos.resources</Name>
     </ProjectReference>
+    <ProjectReference Include="..\LogicPOS.Settings\LogicPOS.Settings.csproj">
+      <Project>{a4e7f0ea-8360-41f2-a625-517f6e943a29}</Project>
+      <Name>LogicPOS.Settings</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="DevExpress.Xpo">

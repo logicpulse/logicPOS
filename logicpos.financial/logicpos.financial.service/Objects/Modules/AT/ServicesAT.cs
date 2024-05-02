@@ -93,7 +93,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
         {
             return (pTestMode)
                 ? "599999993"
-                :SharedFramework.PreferenceParameters["COMPANY_FISCALNUMBER"];
+                :LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_FISCALNUMBER"];
         }
 
         private static string GetServicesATAccountFiscalNumber(bool pTestMode)
@@ -101,7 +101,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
             //DataLayerFramework.Settings["servicesATProdModeAccountFiscalNumber"];
             return (pTestMode)
                 ? "599999993/0037"
-                :SharedFramework.PreferenceParameters["SERVICE_AT_PRODUCTION_ACCOUNT_FISCAL_NUMBER"];
+                :LogicPOS.Settings.AppSettings.PreferenceParameters["SERVICE_AT_PRODUCTION_ACCOUNT_FISCAL_NUMBER"];
         }
 
         private static string GetServicesATAccountPassword(bool pTestMode)
@@ -109,7 +109,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
             //DataLayerFramework.Settings["servicesATProdModeAccountPassword"];
             return (pTestMode)
                 ? "testes1234"
-                :SharedFramework.PreferenceParameters["SERVICE_AT_PRODUCTION_ACCOUNT_PASSWORD"];
+                :LogicPOS.Settings.AppSettings.PreferenceParameters["SERVICE_AT_PRODUCTION_ACCOUNT_PASSWORD"];
         }
 
         private static string GetServicesATCertificatePassword(bool pTestMode)

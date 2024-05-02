@@ -111,7 +111,7 @@ namespace logicpos.financial.console
                 SharedSettings.ConfigurationSystemCurrency = (cfg_configurationcurrency)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(cfg_configurationcurrency), new Guid(DataLayerFramework.Settings["xpoOidConfigurationCurrencySystemCurrency"]));
 
                 //PreferenceParameters
-               SharedFramework.PreferenceParameters = SharedUtils.GetPreferencesParameters();
+               LogicPOS.Settings.AppSettings.PreferenceParameters = SharedUtils.GetPreferencesParameters();
 
                 //Try to Get open Session Day/Terminal for this Terminal
                 SharedFramework.WorkSessionPeriodDay = ProcessWorkSessionPeriod.GetSessionPeriod(WorkSessionPeriodType.Day);

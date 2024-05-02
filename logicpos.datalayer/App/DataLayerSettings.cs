@@ -12,7 +12,7 @@ namespace logicpos.datalayer.App
         public static CustomAppOperationMode CustomAppOperationMode = DataLayerUtils.GetCustomAppOperationMode();
         public static bool IsDefaultTheme = DataLayerUtils.IsDefaultAppOperationTheme();
         /* IN008024: It has been opted to remove old themes (based on database properties "cfg_configurationpreferenceparameter.APP_THEME") implementation 
-         * SharedFramework.PreferenceParameters["APP_THEME"] >>> The only option here was "Default" because we don't had other themes available.
+         * LogicPOS.Settings.AppSettings.PreferenceParameters["APP_THEME"] >>> The only option here was "Default" because we don't had other themes available.
          */
 
         //Used in Application : Assigned on InitPlataformParameters()

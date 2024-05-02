@@ -238,8 +238,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                                         if (string.IsNullOrEmpty(own_customer.Name))
                                         {
                                             //update owner customer for internal stock moviments
-                                            own_customer.FiscalNumber = SharedFramework.PreferenceParameters["COMPANY_FISCALNUMBER"];
-                                            own_customer.Name = SharedFramework.PreferenceParameters["COMPANY_NAME"];
+                                            own_customer.FiscalNumber = LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_FISCALNUMBER"];
+                                            own_customer.Name = LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_NAME"];
                                             own_customer.Save();
                                         }
                                     }

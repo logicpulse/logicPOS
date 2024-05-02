@@ -1321,8 +1321,8 @@ WHERE
 
                 // Do the same for Payments
                 // Dont forget ResponseType responseType
-                string subject = SharedFramework.PreferenceParameters["SEND_MAIL_FINANCE_DOCUMENTS_SUBJECT"];
-                string mailBodyTemplate = SharedFramework.PreferenceParameters["SEND_MAIL_FINANCE_DOCUMENTS_BODY"];
+                string subject = LogicPOS.Settings.AppSettings.PreferenceParameters["SEND_MAIL_FINANCE_DOCUMENTS_SUBJECT"];
+                string mailBodyTemplate = LogicPOS.Settings.AppSettings.PreferenceParameters["SEND_MAIL_FINANCE_DOCUMENTS_BODY"];
 
                 Dictionary<string, string> customTokensDictionary = new Dictionary<string, string>
                 {
@@ -1331,7 +1331,7 @@ WHERE
                 // Prepare List of Dictionaries to send to replaceTextTokens
                 List<Dictionary<string, string>> tokensDictionaryList = new List<Dictionary<string, string>>
                 {
-                    SharedFramework.PreferenceParameters,
+                    LogicPOS.Settings.AppSettings.PreferenceParameters,
                     customTokensDictionary
                 };
                 string mailBody = LogicPOS.Utility.StringUtils.ReplaceTextTokens(mailBodyTemplate, tokensDictionaryList);

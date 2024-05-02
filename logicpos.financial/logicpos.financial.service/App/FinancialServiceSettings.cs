@@ -89,9 +89,9 @@ namespace logicpos.financial.service.App
         {
             bool result = false;
 
-            if (!string.IsNullOrEmpty(SharedFramework.PreferenceParameters["SERVICE_AT_PRODUCTION_MODE_ENABLED"]))
+            if (!string.IsNullOrEmpty(LogicPOS.Settings.AppSettings.PreferenceParameters["SERVICE_AT_PRODUCTION_MODE_ENABLED"]))
             {
-                result = !Convert.ToBoolean(SharedFramework.PreferenceParameters["SERVICE_AT_PRODUCTION_MODE_ENABLED"]);
+                result = !Convert.ToBoolean(LogicPOS.Settings.AppSettings.PreferenceParameters["SERVICE_AT_PRODUCTION_MODE_ENABLED"]);
             }
 
             return result;
@@ -101,9 +101,9 @@ namespace logicpos.financial.service.App
         {
             bool result = false;
 
-            if (!string.IsNullOrEmpty(SharedFramework.PreferenceParameters["SERVICE_AT_SEND_DOCUMENTS"]))
+            if (!string.IsNullOrEmpty(LogicPOS.Settings.AppSettings.PreferenceParameters["SERVICE_AT_SEND_DOCUMENTS"]))
             {
-                result = Convert.ToBoolean(SharedFramework.PreferenceParameters["SERVICE_AT_SEND_DOCUMENTS"]);
+                result = Convert.ToBoolean(LogicPOS.Settings.AppSettings.PreferenceParameters["SERVICE_AT_SEND_DOCUMENTS"]);
             }
 
             return result;
@@ -113,9 +113,9 @@ namespace logicpos.financial.service.App
         {
             bool result = false;
 
-            if (!string.IsNullOrEmpty(SharedFramework.PreferenceParameters["SERVICE_AT_SEND_DOCUMENTS_WAYBILL"]))
+            if (!string.IsNullOrEmpty(LogicPOS.Settings.AppSettings.PreferenceParameters["SERVICE_AT_SEND_DOCUMENTS_WAYBILL"]))
             {
-                result = Convert.ToBoolean(SharedFramework.PreferenceParameters["SERVICE_AT_SEND_DOCUMENTS_WAYBILL"]);
+                result = Convert.ToBoolean(LogicPOS.Settings.AppSettings.PreferenceParameters["SERVICE_AT_SEND_DOCUMENTS_WAYBILL"]);
             }
 
             return result;
@@ -125,9 +125,9 @@ namespace logicpos.financial.service.App
         {
             bool result = false;
 
-            if (!string.IsNullOrEmpty(SharedFramework.PreferenceParameters["SERVICE_AT_WAYBILL_AGRICULTURAL_MODE_ENABLED"]))
+            if (!string.IsNullOrEmpty(LogicPOS.Settings.AppSettings.PreferenceParameters["SERVICE_AT_WAYBILL_AGRICULTURAL_MODE_ENABLED"]))
             {
-                result = Convert.ToBoolean(SharedFramework.PreferenceParameters["SERVICE_AT_WAYBILL_AGRICULTURAL_MODE_ENABLED"]);
+                result = Convert.ToBoolean(LogicPOS.Settings.AppSettings.PreferenceParameters["SERVICE_AT_WAYBILL_AGRICULTURAL_MODE_ENABLED"]);
             }
 
             return result;
@@ -156,7 +156,7 @@ namespace logicpos.financial.service.App
         {
             return (pTestMode)
                 ? "599999993"
-                : SharedFramework.PreferenceParameters["COMPANY_FISCALNUMBER"];
+                : LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_FISCALNUMBER"];
         }
 
         private static string GetServicesATAccountFiscalNumber(bool pTestMode)
@@ -164,7 +164,7 @@ namespace logicpos.financial.service.App
             //DataLayerFramework.Settings["servicesATProdModeAccountFiscalNumber"];
             return (pTestMode)
                 ? "599999993/0037"
-                : SharedFramework.PreferenceParameters["SERVICE_AT_PRODUCTION_ACCOUNT_FISCAL_NUMBER"];
+                : LogicPOS.Settings.AppSettings.PreferenceParameters["SERVICE_AT_PRODUCTION_ACCOUNT_FISCAL_NUMBER"];
         }
 
         private static string GetServicesATAccountPassword(bool pTestMode)
@@ -172,7 +172,7 @@ namespace logicpos.financial.service.App
             //DataLayerFramework.Settings["servicesATProdModeAccountPassword"];
             return (pTestMode)
                 ? "testes1234"
-                : SharedFramework.PreferenceParameters["SERVICE_AT_PRODUCTION_ACCOUNT_PASSWORD"];
+                : LogicPOS.Settings.AppSettings.PreferenceParameters["SERVICE_AT_PRODUCTION_ACCOUNT_PASSWORD"];
         }
 
         private static string GetServicesATCertificatePassword(bool pTestMode)

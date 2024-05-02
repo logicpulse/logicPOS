@@ -557,9 +557,9 @@ namespace logicpos.financial.library.Classes.Finance
                     documentFinanceMaster.ATCUD = "0"; //A preencher pelo WS da AT Julho 2021?
                     documentFinanceMaster.ATDocQRCode = GenDocumentQRCode(uowSession, documentFinanceType, documentFinanceSerie, documentFinanceMaster, true);
                     //CAE is Deprecated, this will prevent triggering Errors
-                    if (SharedFramework.PreferenceParameters.ContainsKey("COMPANY_CAE") && !string.IsNullOrEmpty(SharedFramework.PreferenceParameters["COMPANY_CAE"].ToString()))
+                    if (LogicPOS.Settings.AppSettings.PreferenceParameters.ContainsKey("COMPANY_CAE") && !string.IsNullOrEmpty(LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_CAE"].ToString()))
                     {
-                        documentFinanceMaster.EACCode = SharedFramework.PreferenceParameters["COMPANY_CAE"];
+                        documentFinanceMaster.EACCode = LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_CAE"];
                     }
 
                     //Currency Congo K
@@ -862,7 +862,7 @@ namespace logicpos.financial.library.Classes.Finance
             //R Nº do certificado Exemplo R:9999 +
             //S Outras informações Exemplo S: NU; 0.80 ++
 
-            string A = "A:" + SharedFramework.PreferenceParameters["COMPANY_FISCALNUMBER"] + "*";
+            string A = "A:" + LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_FISCALNUMBER"] + "*";
             string B = "B:" + SharedFramework.PluginSoftwareVendor.Decrypt(doc.EntityFiscalNumber) + "*";
             string C = "C:" + doc.EntityCountry + "*";
             string D = "D:" + pDocType.Acronym + "*";

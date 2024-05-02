@@ -88,7 +88,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                         PrintDocumentTypeFooterString(_documentFinanceMasterList[0].DocumentTypeResourceStringReport);
                         //ATCUD Documentos - Criação do QRCode e ATCUD IN016508
                         //Print QRCode
-                        if (Convert.ToBoolean(SharedFramework.PreferenceParameters["PRINT_QRCODE"]) && !string.IsNullOrEmpty(_documentMaster.ATDocQRCode))
+                        if (Convert.ToBoolean(LogicPOS.Settings.AppSettings.PreferenceParameters["PRINT_QRCODE"]) && !string.IsNullOrEmpty(_documentMaster.ATDocQRCode))
                         {
                             //PrintQRCode with buffer
                             //base.PrintQRCode(_documentMaster.ATDocQRCode);

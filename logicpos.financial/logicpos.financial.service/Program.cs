@@ -181,19 +181,19 @@ namespace logicpos.financial.service
                 }
 
                 //PreferenceParameters
-                SharedFramework.PreferenceParameters = SharedUtils.GetPreferencesParameters();
+                LogicPOS.Settings.AppSettings.PreferenceParameters = SharedUtils.GetPreferencesParameters();
 
                 //Check parameters in debug
                 //try
                 //{
-                //    foreach (var pref inSharedFramework.PreferenceParameters)
+                //    foreach (var pref inLogicPOS.Settings.AppSettings.PreferenceParameters)
                 //    {
                 //        _logger.Debug(string.Format(pref.Key + ": " + pref.Value));
                 //    }
                 //}catch(Exception Ex) { _logger.Debug(Ex.Message); }
 
                 //CultureInfo/Localization
-                string culture = SharedFramework.PreferenceParameters["CULTURE"];
+                string culture = LogicPOS.Settings.AppSettings.PreferenceParameters["CULTURE"];
                 if (!string.IsNullOrEmpty(culture))
                 {
                     /* IN006018 and IN007009 */
@@ -218,8 +218,8 @@ namespace logicpos.financial.service
                 SharedFramework.CurrentCultureNumberFormat = CultureInfo.GetCultureInfo(FinancialServiceSettings.CultureNumberFormat);
 
                 //SettingsApp
-                string companyCountryOid = SharedFramework.PreferenceParameters["COMPANY_COUNTRY_OID"];
-                string systemCurrencyOid = SharedFramework.PreferenceParameters["SYSTEM_CURRENCY_OID"];
+                string companyCountryOid = LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_COUNTRY_OID"];
+                string systemCurrencyOid = LogicPOS.Settings.AppSettings.PreferenceParameters["SYSTEM_CURRENCY_OID"];
                 DataLayerSettings.ConfigurationSystemCountry = (cfg_configurationcountry)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(cfg_configurationcountry), new Guid(companyCountryOid));
                 SharedSettings.ConfigurationSystemCurrency = (cfg_configurationcurrency)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(cfg_configurationcurrency), new Guid(systemCurrencyOid));
 

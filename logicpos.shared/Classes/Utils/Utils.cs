@@ -10,18 +10,22 @@ namespace logicpos.shared.Classes.Utils
     {
         public static void SendMail(
             SmtpDeliveryMethod deliveryMethod,
-            string to, string cc, string bcc, string subject, string body,
+            string to, 
+            string cc, 
+            string bcc, 
+            string subject, 
+            string body,
             List<string> attachmentFileNames,
             int timeOut = 5
             )
         {
-            // Get Defaults fromSharedFramework.PreferenceParameters
-            string smtpServer = SharedFramework.PreferenceParameters["SEND_MAIL_SMTP_SERVER"];
-            string username = SharedFramework.PreferenceParameters["SEND_MAIL_SMTP_USERNAME"];
-            string password = SharedFramework.PreferenceParameters["SEND_MAIL_SMTP_PASSWORD"];
-            int port = Convert.ToInt16(SharedFramework.PreferenceParameters["SEND_MAIL_SMTP_PORT"]);
-            bool enableSsl = Convert.ToBoolean(SharedFramework.PreferenceParameters["SEND_MAIL_SMTP_ENABLE_SSL"]);
-            bool useHtmlBody = Convert.ToBoolean(SharedFramework.PreferenceParameters["SEND_MAIL_FINANCE_DOCUMENTS_HTML_BODY"]);
+            // Get Defaults fromLogicPOS.Settings.AppSettings.PreferenceParameters
+            string smtpServer = LogicPOS.Settings.AppSettings.PreferenceParameters["SEND_MAIL_SMTP_SERVER"];
+            string username = LogicPOS.Settings.AppSettings.PreferenceParameters["SEND_MAIL_SMTP_USERNAME"];
+            string password = LogicPOS.Settings.AppSettings.PreferenceParameters["SEND_MAIL_SMTP_PASSWORD"];
+            int port = Convert.ToInt16(LogicPOS.Settings.AppSettings.PreferenceParameters["SEND_MAIL_SMTP_PORT"]);
+            bool enableSsl = Convert.ToBoolean(LogicPOS.Settings.AppSettings.PreferenceParameters["SEND_MAIL_SMTP_ENABLE_SSL"]);
+            bool useHtmlBody = Convert.ToBoolean(LogicPOS.Settings.AppSettings.PreferenceParameters["SEND_MAIL_FINANCE_DOCUMENTS_HTML_BODY"]);
 
             SendMail(
                 smtpServer, 
@@ -41,9 +45,18 @@ namespace logicpos.shared.Classes.Utils
         }
 
         public static void SendMail(
-            string smtpServer, string username, string password, int port, bool enableSsl,
+            string smtpServer, 
+            string username, 
+            string password, 
+            int port, 
+            bool enableSsl,
             SmtpDeliveryMethod deliveryMethod,
-            string to, string cc, string bcc, string subject, string body, bool htmlBody,
+            string to, 
+            string cc, 
+            string bcc, 
+            string subject, 
+            string body, 
+            bool htmlBody,
             List<string> attachmentFileNames,
             int timeOut = 5
             )

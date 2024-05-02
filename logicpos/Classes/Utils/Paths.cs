@@ -38,8 +38,8 @@ namespace logicpos.Classes.Utils
         {
             // PreferencesValues
             // Require to add end Slash, Prefs DirChooser dont add extra Slash in the End
-            DataLayerFramework.Path.Add("backups", SharedFramework.PreferenceParameters["PATH_BACKUPS"] + '/');
-            DataLayerFramework.Path.Add("saftpt", SharedFramework.PreferenceParameters["PATH_SAFTPT"] + '/');
+            DataLayerFramework.Path.Add("backups", LogicPOS.Settings.AppSettings.PreferenceParameters["PATH_BACKUPS"] + '/');
+            DataLayerFramework.Path.Add("saftpt", LogicPOS.Settings.AppSettings.PreferenceParameters["PATH_SAFTPT"] + '/');
             //Create Directories
             SharedUtils.CreateDirectory(Convert.ToString(DataLayerFramework.Path["backups"]));
             SharedUtils.CreateDirectory(Convert.ToString(DataLayerFramework.Path["saftpt"]));

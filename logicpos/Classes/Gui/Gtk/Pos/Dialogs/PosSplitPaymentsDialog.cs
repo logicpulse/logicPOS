@@ -138,11 +138,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             // Settings : intSplitPaymentStartClients
             try
             {
-                _intSplitPaymentStartClients = Convert.ToInt16(SharedFramework.PreferenceParameters["SPLIT_PAYMENT_START_CLIENTS"]);
+                _intSplitPaymentStartClients = Convert.ToInt16(LogicPOS.Settings.AppSettings.PreferenceParameters["SPLIT_PAYMENT_START_CLIENTS"]);
             }
             catch (Exception)
             {
-                _logger.Debug(string.Format("Error in Config value SPLIT_PAYMENT_START_CLIENTS: [{0}]", Convert.ToInt16(SharedFramework.PreferenceParameters["SPLIT_PAYMENT_START_CLIENTS"])));
+                _logger.Debug(string.Format("Error in Config value SPLIT_PAYMENT_START_CLIENTS: [{0}]", Convert.ToInt16(LogicPOS.Settings.AppSettings.PreferenceParameters["SPLIT_PAYMENT_START_CLIENTS"])));
                 // Use Defaults
                 _intSplitPaymentStartClients = 2;
             }
@@ -150,11 +150,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             // Settings : intSplitPaymentMinClients
             try
             {
-                _intSplitPaymentMinClients = Convert.ToInt16(SharedFramework.PreferenceParameters["SPLIT_PAYMENT_MIN_CLIENTS"]);
+                _intSplitPaymentMinClients = Convert.ToInt16(LogicPOS.Settings.AppSettings.PreferenceParameters["SPLIT_PAYMENT_MIN_CLIENTS"]);
             }
             catch (Exception)
             {
-                _logger.Debug(string.Format("Error in Config value SPLIT_PAYMENT_MIN_CLIENTS: [{0}]", Convert.ToInt16(SharedFramework.PreferenceParameters["SPLIT_PAYMENT_MIN_CLIENTS"])));
+                _logger.Debug(string.Format("Error in Config value SPLIT_PAYMENT_MIN_CLIENTS: [{0}]", Convert.ToInt16(LogicPOS.Settings.AppSettings.PreferenceParameters["SPLIT_PAYMENT_MIN_CLIENTS"])));
                 // Use Defaults
                 _intSplitPaymentMinClients = 2;
             }
@@ -162,11 +162,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             // Settings : intSplitPaymentMaxClients
             try
             {
-                _intSplitPaymentMaxClients = Convert.ToInt16(SharedFramework.PreferenceParameters["SPLIT_PAYMENT_MAX_CLIENTS"]);
+                _intSplitPaymentMaxClients = Convert.ToInt16(LogicPOS.Settings.AppSettings.PreferenceParameters["SPLIT_PAYMENT_MAX_CLIENTS"]);
             }
             catch (Exception)
             {
-                _logger.Debug(string.Format("Error in Config value SPLIT_PAYMENT_MAX_CLIENTS: [{0}]", Convert.ToInt16(SharedFramework.PreferenceParameters["SPLIT_PAYMENT_MAX_CLIENTS"])));
+                _logger.Debug(string.Format("Error in Config value SPLIT_PAYMENT_MAX_CLIENTS: [{0}]", Convert.ToInt16(LogicPOS.Settings.AppSettings.PreferenceParameters["SPLIT_PAYMENT_MAX_CLIENTS"])));
                 // Use Defaults
                 _intSplitPaymentMaxClients = 10;
             }

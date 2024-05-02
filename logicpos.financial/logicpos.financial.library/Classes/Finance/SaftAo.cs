@@ -129,23 +129,23 @@ namespace logicpos.financial.library.Classes.Finance
                 WriteElement("AuditFileVersion", SharedSettings.SaftVersionAO);
                 //Deprecated now We use NIF
                 //string companyID = string.Format("{0} {1}"
-                //    ,SharedFramework.PreferenceParameters["COMPANY_CIVIL_REGISTRATION"].Replace(' ', '_')
-                //    ,SharedFramework.PreferenceParameters["COMPANY_CIVIL_REGISTRATION_ID"].Replace(' ', '_')
+                //    ,LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_CIVIL_REGISTRATION"].Replace(' ', '_')
+                //    ,LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_CIVIL_REGISTRATION_ID"].Replace(' ', '_')
                 //);
-                string companyID = SharedFramework.PreferenceParameters["COMPANY_FISCALNUMBER"];
+                string companyID = LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_FISCALNUMBER"];
                 WriteElement("CompanyID", companyID);
-                WriteElement("TaxRegistrationNumber", SharedFramework.PreferenceParameters["COMPANY_FISCALNUMBER"]);
+                WriteElement("TaxRegistrationNumber", LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_FISCALNUMBER"]);
                 WriteElement("TaxAccountingBasis", SharedSettings.TaxAccountingBasis);
-                WriteElement("CompanyName", SharedFramework.PreferenceParameters["COMPANY_NAME"]);
-                WriteElement("BusinessName", SharedFramework.PreferenceParameters["COMPANY_BUSINESS_NAME"]);
+                WriteElement("CompanyName", LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_NAME"]);
+                WriteElement("BusinessName", LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_BUSINESS_NAME"]);
 
                 //<CompanyAddress>
                 _xmlWriter.WriteStartElement("CompanyAddress");
-                WriteElement("AddressDetail", SharedFramework.PreferenceParameters["COMPANY_ADDRESS"]);
-                WriteElement("City", SharedFramework.PreferenceParameters["COMPANY_CITY"]);
-                WriteElement("PostalCode", SharedFramework.PreferenceParameters["COMPANY_POSTALCODE"]);
-                //WriteElement("Region",SharedFramework.PreferenceParameters["COMPANY_REGION"]);
-                WriteElement("Country", SharedFramework.PreferenceParameters["COMPANY_COUNTRY_CODE2"]);
+                WriteElement("AddressDetail", LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_ADDRESS"]);
+                WriteElement("City", LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_CITY"]);
+                WriteElement("PostalCode", LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_POSTALCODE"]);
+                //WriteElement("Region",LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_REGION"]);
+                WriteElement("Country", LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_COUNTRY_CODE2"]);
                 _xmlWriter.WriteEndElement();
                 //</CompanyAddress>
 
@@ -154,7 +154,7 @@ namespace logicpos.financial.library.Classes.Finance
                 WriteElement("EndDate", _documentDateEnd.ToString(_dateTimeFormatDocumentDate));
                 WriteElement("CurrencyCode", SharedSettings.SaftCurrencyCodeAO);
                 WriteElement("DateCreated", _currentDate.ToString(_dateTimeFormatDocumentDate));
-                WriteElement("TaxEntity", SharedFramework.PreferenceParameters["COMPANY_TAX_ENTITY"]);
+                WriteElement("TaxEntity", LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_TAX_ENTITY"]);
                 WriteElement("ProductCompanyTaxID", SharedSettings.SaftProductCompanyTaxID);
                 //WriteElement("SoftwareCertificateNumber", SettingsApp.SaftSoftwareCertificateNumber);
                 WriteElement("SoftwareValidationNumber", "221/AGT/2019");
@@ -163,11 +163,11 @@ namespace logicpos.financial.library.Classes.Finance
 
                 //WriteElement("HeaderComment", "Comentários ao SAFT exportado");
                 //Max Lenght 20 cut
-                //string telephone =SharedFramework.PreferenceParameters["COMPANY_TELEPHONE"].ToString().Substring(0, 20);
-                WriteElement("Telephone", SharedFramework.PreferenceParameters["COMPANY_TELEPHONE"]);
-                WriteElement("Fax", SharedFramework.PreferenceParameters["COMPANY_FAX"]);
-                WriteElement("Email", SharedFramework.PreferenceParameters["COMPANY_EMAIL"]);
-                WriteElement("Website", SharedFramework.PreferenceParameters["COMPANY_WEBSITE"]);
+                //string telephone =LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_TELEPHONE"].ToString().Substring(0, 20);
+                WriteElement("Telephone", LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_TELEPHONE"]);
+                WriteElement("Fax", LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_FAX"]);
+                WriteElement("Email", LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_EMAIL"]);
+                WriteElement("Website", LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_WEBSITE"]);
 
                 //</Header>
                 _xmlWriter.WriteEndElement();

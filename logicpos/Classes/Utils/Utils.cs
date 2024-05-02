@@ -2287,7 +2287,7 @@ namespace logicpos
 
             try
             {
-                result = Convert.ToBoolean(SharedFramework.PreferenceParameters["USE_CACHED_IMAGES"]);
+                result = Convert.ToBoolean(LogicPOS.Settings.AppSettings.PreferenceParameters["USE_CACHED_IMAGES"]);
             }
             catch (Exception ex)
             {
@@ -2303,7 +2303,7 @@ namespace logicpos
 
             try
             {
-                result = Convert.ToBoolean(SharedFramework.PreferenceParameters["USE_EUROPEAN_VAT_AUTOCOMPLETE"]);
+                result = Convert.ToBoolean(LogicPOS.Settings.AppSettings.PreferenceParameters["USE_EUROPEAN_VAT_AUTOCOMPLETE"]);
             }
             catch (Exception ex)
             {
@@ -2319,7 +2319,7 @@ namespace logicpos
 
             try
             {
-                result = Convert.ToBoolean(SharedFramework.PreferenceParameters["USE_POS_PDF_VIEWER"]);
+                result = Convert.ToBoolean(LogicPOS.Settings.AppSettings.PreferenceParameters["USE_POS_PDF_VIEWER"]);
             }
             catch (Exception ex)
             {
@@ -2334,7 +2334,7 @@ namespace logicpos
             bool result;
             try
             {
-                result = Convert.ToBoolean(SharedFramework.PreferenceParameters["TICKET_PRINT_TICKET"]);
+                result = Convert.ToBoolean(LogicPOS.Settings.AppSettings.PreferenceParameters["TICKET_PRINT_TICKET"]);
             }
             catch (Exception ex)
             {
@@ -2359,7 +2359,7 @@ namespace logicpos
             catch (Exception ex)
             {
                 _logger.Error(ex.Message, ex);
-                result = Convert.ToBoolean(SharedFramework.PreferenceParameters["PRINT_QRCODE"]);
+                result = Convert.ToBoolean(LogicPOS.Settings.AppSettings.PreferenceParameters["PRINT_QRCODE"]);
                 SharedFramework.PrintQRCode = result;
                 return true;
             }
@@ -2379,7 +2379,7 @@ namespace logicpos
             catch (Exception ex)
             {
                 _logger.Error(ex.Message, ex);
-                result = Convert.ToBoolean(SharedFramework.PreferenceParameters["CHECK_STOCKS"]);
+                result = Convert.ToBoolean(LogicPOS.Settings.AppSettings.PreferenceParameters["CHECK_STOCKS"]);
                 SharedFramework.CheckStocks = result;
                 return true;
             }
@@ -2399,7 +2399,7 @@ namespace logicpos
             catch (Exception ex)
             {
                 _logger.Error(ex.Message, ex);
-                result = Convert.ToBoolean(SharedFramework.PreferenceParameters["CHECK_STOCKS_MESSAGE"]);
+                result = Convert.ToBoolean(LogicPOS.Settings.AppSettings.PreferenceParameters["CHECK_STOCKS_MESSAGE"]);
                 SharedFramework.CheckStockMessage = result;
                 return true;
             }

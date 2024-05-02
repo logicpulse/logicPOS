@@ -219,8 +219,8 @@ namespace logicpos.financial.library.Classes.Reports
         {
             try
             {
-                string result = (SharedFramework.PreferenceParameters.ContainsKey(pToken.ToUpper()))
-                  ? SharedFramework.PreferenceParameters[pToken.ToUpper()]
+                string result = (LogicPOS.Settings.AppSettings.PreferenceParameters.ContainsKey(pToken.ToUpper()))
+                  ? LogicPOS.Settings.AppSettings.PreferenceParameters[pToken.ToUpper()]
                   : string.Format("UNDEFINED [{0}]", pToken);
 
                 return result;
