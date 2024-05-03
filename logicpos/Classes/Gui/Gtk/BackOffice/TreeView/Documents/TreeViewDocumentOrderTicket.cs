@@ -35,10 +35,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
             {
-                new GenericTreeViewColumnProperty("TicketId") { Title = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ticket_number"), MinWidth = 50 },
-                new GenericTreeViewColumnProperty("DateStart") { Title = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date"), MinWidth = 100 },
-                new GenericTreeViewColumnProperty("UpdatedBy") { Title = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_user_name"), ChildName = "Name", MinWidth = 100 },
-                new GenericTreeViewColumnProperty("UpdatedWhere") { Title = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_terminal_name"), ChildName = "Designation", MinWidth = 100 }
+                new GenericTreeViewColumnProperty("TicketId") { Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_ticket_number"), MinWidth = 50 },
+                new GenericTreeViewColumnProperty("DateStart") { Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_date"), MinWidth = 100 },
+                new GenericTreeViewColumnProperty("UpdatedBy") { Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_user_name"), ChildName = "Name", MinWidth = 100 },
+                new GenericTreeViewColumnProperty("UpdatedWhere") { Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_terminal_name"), ChildName = "Designation", MinWidth = 100 }
             };
 
             //Sort Order

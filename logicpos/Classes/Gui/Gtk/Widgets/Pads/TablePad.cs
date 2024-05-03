@@ -19,9 +19,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         protected log4net.ILog _logger = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         //Settings
-        private readonly int _posBaseButtonScrollerHeight = Convert.ToInt32(DataLayerFramework.Settings["posBaseButtonScrollerHeight"]);
-        private readonly int _posBaseButtonMaxCharsPerLabel = Convert.ToInt16(DataLayerFramework.Settings["posBaseButtonMaxCharsPerLabel"]);
-        protected int _fontPosBaseButtonSize = Convert.ToInt16(DataLayerFramework.Settings["fontPosBaseButtonSize"]);
+        private readonly int _posBaseButtonScrollerHeight = Convert.ToInt32(LogicPOS.Settings.GeneralSettings.Settings["posBaseButtonScrollerHeight"]);
+        private readonly int _posBaseButtonMaxCharsPerLabel = Convert.ToInt16(LogicPOS.Settings.GeneralSettings.Settings["posBaseButtonMaxCharsPerLabel"]);
+        protected int _fontPosBaseButtonSize = Convert.ToInt16(LogicPOS.Settings.GeneralSettings.Settings["fontPosBaseButtonSize"]);
         //Paths/Files
         protected string _fileBaseButtonOverlay = DataLayerFramework.Path["images"] + @"Buttons\Pos\button_overlay.png";
         //TouchButton List        
@@ -130,7 +130,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             try
             {
-                bool useImageOverlay = Convert.ToBoolean(DataLayerFramework.Settings["useImageOverlay"]);
+                bool useImageOverlay = Convert.ToBoolean(LogicPOS.Settings.GeneralSettings.Settings["useImageOverlay"]);
                 if (!useImageOverlay) _fileBaseButtonOverlay = null;
 
                 //When update always set page 1, start page
@@ -148,7 +148,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 //Prepare executeSql for first time
                 if (_filter != string.Empty) { executeSql = _sql + _filter; } else { executeSql = _sql; };
                 if (Order != string.Empty) { executeSql += Order; };
-                executeSql = string.Format("{0};", SharedUtils.RemoveCarriageReturnAndExtraWhiteSpaces(executeSql));
+                executeSql = string.Format("{0};", LogicPOS.Utility.StringUtils.RemoveCarriageReturnAndExtraWhiteSpaces(executeSql));
                 //_logger.Debug(string.Format("TablePad(): executeSql: [{0}]", executeSql));
 
                 //Always clear listItems
@@ -263,7 +263,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     }
                     else
                     {
-                        logicpos.Utils.ShowMessageTouch(GlobalApp.PosMainWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), "TablePad: Cant create TablePad, invalid query! You must supply mandatory fields name in Sql (id, name, label and image)!");
+                        logicpos.Utils.ShowMessageTouch(GlobalApp.PosMainWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error"), "TablePad: Cant create TablePad, invalid query! You must supply mandatory fields name in Sql (id, name, label and image)!");
                     };
                 }
                 else

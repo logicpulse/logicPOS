@@ -60,8 +60,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             );
 
             //Settings
-            string fontGenericTreeViewFinanceDocumentArticleColumnTitle = DataLayerFramework.Settings["fontGenericTreeViewFinanceDocumentArticleColumnTitle"];
-            string fontGenericTreeViewFinanceDocumentArticleColumn = DataLayerFramework.Settings["fontGenericTreeViewFinanceDocumentArticleColumn"];
+            string fontGenericTreeViewFinanceDocumentArticleColumnTitle = LogicPOS.Settings.GeneralSettings.Settings["fontGenericTreeViewFinanceDocumentArticleColumnTitle"];
+            string fontGenericTreeViewFinanceDocumentArticleColumn = LogicPOS.Settings.GeneralSettings.Settings["fontGenericTreeViewFinanceDocumentArticleColumn"];
             //Format Columns FontSizes for Touch
             TreeViewArticles.FormatColumnPropertiesForTouch(fontGenericTreeViewFinanceDocumentArticleColumnTitle, fontGenericTreeViewFinanceDocumentArticleColumn);
             //Disable View Button

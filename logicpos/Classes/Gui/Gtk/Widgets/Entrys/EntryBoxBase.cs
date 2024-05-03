@@ -65,9 +65,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             //Parameters
             _sourceWindow = pSourceWindow;
             //Defaults
-            Color colorBaseDialogEntryBoxBackground = DataLayerFramework.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
-            string fontLabel = DataLayerFramework.Settings["fontEntryBoxLabel"];
-            string fontEntry = DataLayerFramework.Settings["fontEntryBoxValue"];
+            Color colorBaseDialogEntryBoxBackground = LogicPOS.Settings.GeneralSettings.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
+            string fontLabel = LogicPOS.Settings.GeneralSettings.Settings["fontEntryBoxLabel"];
+            string fontEntry = LogicPOS.Settings.GeneralSettings.Settings["fontEntryBoxValue"];
             int padding = 2;
             //This
             this.ModifyBg(StateType.Normal, colorBaseDialogEntryBoxBackground.ToGdkColor());
@@ -98,9 +98,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 //Parameters
                 _sourceWindow = pSourceWindow;
                 //Defaults
-                Color colorBaseDialogEntryBoxBackground = DataLayerFramework.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
-                string fontLabel = DataLayerFramework.Settings["fontEntryBoxLabel"];
-                string fontEntry = DataLayerFramework.Settings["fontEntryBoxValue"];
+                Color colorBaseDialogEntryBoxBackground = LogicPOS.Settings.GeneralSettings.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
+                string fontLabel = LogicPOS.Settings.GeneralSettings.Settings["fontEntryBoxLabel"];
+                string fontEntry = LogicPOS.Settings.GeneralSettings.Settings["fontEntryBoxValue"];
                 int padding = 2;
                 //This
                 this.ModifyBg(StateType.Normal, colorBaseDialogEntryBoxBackground.ToGdkColor());
@@ -129,16 +129,16 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 _sourceWindow = pSourceWindow;
                 //Defaults
                 Color colorBaseDialogEntryBoxBackground = "240, 240, 240".StringToColor();
-                Color validLabel = DataLayerFramework.Settings["colorEntryValidationValidFont"].StringToColor();
+                Color validLabel = LogicPOS.Settings.GeneralSettings.Settings["colorEntryValidationValidFont"].StringToColor();
 
                 string fontLabel = "10";
                 string fontEntry = "9";
                 int padding = 2;
                 if (pSourceWindow.GetType() == typeof(PosArticleStockDialog))
                 {
-                    colorBaseDialogEntryBoxBackground = DataLayerFramework.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
-                    fontLabel = DataLayerFramework.Settings["fontEntryBoxLabel"];
-                    fontEntry = DataLayerFramework.Settings["fontEntryBoxValue"];
+                    colorBaseDialogEntryBoxBackground = LogicPOS.Settings.GeneralSettings.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
+                    fontLabel = LogicPOS.Settings.GeneralSettings.Settings["fontEntryBoxLabel"];
+                    fontEntry = LogicPOS.Settings.GeneralSettings.Settings["fontEntryBoxValue"];
                 }
 
                 this.ModifyBg(StateType.Normal, colorBaseDialogEntryBoxBackground.ToGdkColor());
@@ -167,16 +167,16 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 _sourceWindow = pSourceWindow;
                 //Defaults
                 Color colorBaseDialogEntryBoxBackground = "240, 240, 240".StringToColor();
-                Color validLabel = DataLayerFramework.Settings["colorEntryValidationValidFont"].StringToColor();
+                Color validLabel = LogicPOS.Settings.GeneralSettings.Settings["colorEntryValidationValidFont"].StringToColor();
 
                 string fontLabel = "10";
                 string fontEntry = "9";
                 int padding = 2;
                 if (pSourceWindow.GetType() == typeof(PosArticleStockDialog))
                 {
-                    colorBaseDialogEntryBoxBackground = DataLayerFramework.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
-                    fontLabel = DataLayerFramework.Settings["fontEntryBoxLabel"];
-                    fontEntry = DataLayerFramework.Settings["fontEntryBoxValue"];
+                    colorBaseDialogEntryBoxBackground = LogicPOS.Settings.GeneralSettings.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
+                    fontLabel = LogicPOS.Settings.GeneralSettings.Settings["fontEntryBoxLabel"];
+                    fontEntry = LogicPOS.Settings.GeneralSettings.Settings["fontEntryBoxValue"];
                 }
 
 
@@ -190,11 +190,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 _label = new Label(pLabelText);
                 _label.ModifyFont(fontDescriptionLabel);
                 _label.SetAlignment(0, 2.5F);
-                _label2 = new Label(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_code") + "   ");
+                _label2 = new Label(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_article_code") + "   ");
                 _label2.ModifyFont(fontDescriptionLabel);
                 _label2.ModifyBg(StateType.Normal, validLabel.ToGdkColor());
                 _label2.SetAlignment(0, 0.5F);
-                _label3 = new Label("                                                         " + resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_ticketlist_label_quantity"));
+                _label3 = new Label("                                                         " + resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "pos_ticketlist_label_quantity"));
                 _label3.ModifyFont(fontDescriptionLabel);
                 _label3.ModifyBg(StateType.Normal, validLabel.ToGdkColor());
                 _label3.SetAlignment(0, 0.5F);

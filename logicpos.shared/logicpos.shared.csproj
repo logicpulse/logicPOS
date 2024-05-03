@@ -58,7 +58,6 @@
     <Compile Include="Classes\Orders\OrderMain.cs" />
     <Compile Include="Classes\Orders\OrderMainTable.cs" />
     <Compile Include="Classes\Orders\OrderTicket.cs" />
-    <Compile Include="Classes\Others\ValidateMaxLenghtMaxWordsResult.cs" />
     <Compile Include="Enums\CustomReportDisplayMode.cs" />
     <Compile Include="Enums\DocumentType.cs" />
     <Compile Include="Enums\PersistFinanceDocumentSourceMode.cs" />
@@ -80,6 +79,10 @@
     <ProjectReference Include="..\logicpos.datalayer\logicpos.datalayer.csproj">
       <Project>{42af3be2-44b4-477d-8e45-55c64992b805}</Project>
       <Name>logicpos.datalayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LogicPOS.DTOs\LogicPOS.DTOs.csproj">
+      <Project>{e23bdf58-f0a9-40ac-acce-57235fb7a7f1}</Project>
+      <Name>LogicPOS.DTOs</Name>
     </ProjectReference>
     <ProjectReference Include="..\logicpos.plugins\logicpos.plugin.contracts\logicpos.plugin.contracts.csproj">
       <Project>{43c879d1-31ae-424f-91d1-92cf286d5497}</Project>

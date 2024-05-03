@@ -196,7 +196,7 @@ namespace logicpos
                         DataLayerFramework.LoggedUser = (sys_userdetail)DataLayerUtils.GetXPGuidObject(typeof(sys_userdetail), dialogChangeUser.UserDetail.Oid);
                         SharedFramework.LoggedUserPermissions = SharedUtils.GetUserPermissions();
                         TicketList.UpdateTicketListButtons();
-                        SharedUtils.Audit("USER_CHANGE", string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_user_change"), DataLayerFramework.LoggedUser.Name));
+                        SharedUtils.Audit("USER_CHANGE", string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "audit_message_user_change"), DataLayerFramework.LoggedUser.Name));
                         terminalInfo = string.Format("{0} : {1}", DataLayerFramework.LoggedTerminal.Designation, DataLayerFramework.LoggedUser.Name);
                         if (LabelTerminalInfo.Text != terminalInfo) LabelTerminalInfo.Text = terminalInfo;
                     }
@@ -214,7 +214,7 @@ namespace logicpos
                                 DataLayerFramework.LoggedUser = (sys_userdetail)DataLayerUtils.GetXPGuidObject(typeof(sys_userdetail), dialogChangeUser.UserDetail.Oid);
                                 SharedFramework.LoggedUserPermissions = SharedUtils.GetUserPermissions();
                                 TicketList.UpdateTicketListButtons();
-                                SharedUtils.Audit("USER_loggerIN", string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_user_loggerin"), DataLayerFramework.LoggedUser.Name));
+                                SharedUtils.Audit("USER_loggerIN", string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "audit_message_user_loggerin"), DataLayerFramework.LoggedUser.Name));
                                 terminalInfo = string.Format("{0} : {1}", DataLayerFramework.LoggedTerminal.Designation, DataLayerFramework.LoggedUser.Name);
                                 if (LabelTerminalInfo.Text != terminalInfo) LabelTerminalInfo.Text = terminalInfo;
                                 //After First time Login ShowNotifications
@@ -345,13 +345,13 @@ namespace logicpos
                     var resultOpenDoor = PrintRouter.OpenDoor(DataLayerFramework.LoggedTerminal.Printer);
                     if (!resultOpenDoor)
                     {
-                        Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_information"), string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "open_cash_draw_permissions")));
+                        Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_information"), string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "open_cash_draw_permissions")));
                     }
                     else
                     {
                         //Audit
                         SharedUtils.Audit("CASHDRAWER_OUT", string.Format(
-                            resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_cashdrawer_out"),
+                            resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "audit_message_cashdrawer_out"),
                             DataLayerFramework.LoggedTerminal.Designation,
                             "Button Open Door"));
                     }
@@ -426,8 +426,8 @@ namespace logicpos
                 //With Valid WorkSessionPeriodDay
                 if (SharedFramework.WorkSessionPeriodDay.SessionStatus == WorkSessionPeriodStatus.Open)
                 {
-                    //if (_touchButtonPosToolbarCashDrawer.LabelText != resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_worksession_close_day)
-                    //  _touchButtonPosToolbarCashDrawer.LabelText = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_worksession_close_day;
+                    //if (_touchButtonPosToolbarCashDrawer.LabelText != resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_worksession_close_day)
+                    //  _touchButtonPosToolbarCashDrawer.LabelText = resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_worksession_close_day;
                     //if (!_touchButtonPosToolbarCashDrawer.Sensitive == true)
                     //  _touchButtonPosToolbarCashDrawer.Sensitive = true;
 
@@ -505,8 +505,8 @@ namespace logicpos
             //No WorkSessionPeriodDay
             else if (!SharedFramework.AppUseBackOfficeMode)
             {
-                //if (_touchButtonPosToolbarCashDrawer.LabelText != resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_worksession_open_day)
-                //  _touchButtonPosToolbarCashDrawer.LabelText = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_worksession_open_day;
+                //if (_touchButtonPosToolbarCashDrawer.LabelText != resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_worksession_open_day)
+                //  _touchButtonPosToolbarCashDrawer.LabelText = resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_worksession_open_day;
                 //if (!_touchButtonPosToolbarCashDrawer.Sensitive == false)
                 //  _touchButtonPosToolbarCashDrawer.Sensitive = false;
                 if (!_ticketPad.Sensitive == false)

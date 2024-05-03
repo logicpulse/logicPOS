@@ -289,8 +289,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     UpdateTouchButtonSplitPaymentLabels(item);
 
                     // Update Window Title
-                    //if (WindowTitle != null) WindowTitle = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_split_payment, numberOfSplits, SharedUtils.DecimalToStringCurrency(totalFinal));
-                    if (WindowTitle != null) WindowTitle = string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_split_payment"), numberOfSplits, SharedUtils.DecimalToStringCurrency(_totalPerSplit));
+                    //if (WindowTitle != null) WindowTitle = string.Format(resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_split_payment, numberOfSplits, SharedUtils.DecimalToStringCurrency(totalFinal));
+                    if (WindowTitle != null) WindowTitle = string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_split_payment"), numberOfSplits, SharedUtils.DecimalToStringCurrency(_totalPerSplit));
                 }
             }
             catch (Exception ex)

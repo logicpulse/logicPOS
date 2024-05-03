@@ -138,8 +138,8 @@ namespace logicpos.Classes.Logic.Hardware
             }
             catch (Exception ex)
             {
-                //Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(500, 340), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"),
-                //    string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_initializing_weighing_balance"), DataLayerFramework.LoggedTerminal.WeighingMachine.Designation, ex.Message)
+                //Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(500, 340), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error"),
+                //    string.Format(resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_error_initializing_weighing_balance"), DataLayerFramework.LoggedTerminal.WeighingMachine.Designation, ex.Message)
                 //    );
                 _logger.Error(ex.Message, ex);
                 return false;
@@ -580,7 +580,7 @@ namespace logicpos.Classes.Logic.Hardware
             string price = string.Format("{0}", SharedUtils.DecimalToString(pPrice));
             string line1 = TextJustified(article, price, Convert.ToInt16(_charactersPerLine));
             Write(RemoveAccents(line1), 1);
-            WriteJustified(RemoveAccents(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_pole_display_global_total")), SharedUtils.DecimalToString(pTotal), 2);
+            WriteJustified(RemoveAccents(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_pole_display_global_total")), SharedUtils.DecimalToString(pTotal), 2);
             EnableStandBy();
         }
 

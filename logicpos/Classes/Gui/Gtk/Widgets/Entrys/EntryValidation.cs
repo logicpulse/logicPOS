@@ -2,7 +2,7 @@
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.shared.App;
-using logicpos.shared.Classes.Others;
+using LogicPOS.DTOs.Common;
 using System;
 
 namespace logicpos

@@ -1,4 +1,5 @@
 ﻿using logicpos.financial.service.Objects.Modules.AT;
+using LogicPOS.DTOs.Common;
 using System;
 using System.Runtime.Serialization;
 using System.ServiceModel;

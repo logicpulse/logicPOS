@@ -15,7 +15,7 @@ namespace logicpos.datalayer.App
         public static AppOperationMode GetAppMode()
         {
             AppOperationMode result = AppOperationMode.Default;
-            string appOperationModeToken = DataLayerFramework.Settings["appOperationModeToken"];
+            string appOperationModeToken = LogicPOS.Settings.GeneralSettings.Settings["appOperationModeToken"];
 
             try
             {
@@ -44,7 +44,7 @@ namespace logicpos.datalayer.App
         /// <returns></returns>
         public static CustomAppOperationMode GetCustomAppOperationMode()
         {
-            return CustomAppOperationMode.GetAppOperationMode(DataLayerFramework.Settings["appOperationModeToken"]);
+            return CustomAppOperationMode.GetAppOperationMode(LogicPOS.Settings.GeneralSettings.Settings["appOperationModeToken"]);
         }
 
         /// <summary>

@@ -25,11 +25,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         //Settings: App
         /* IN008024 */
-        //private string _appOperationModeToken = DataLayerFramework.Settings["appOperationModeToken"];
+        //private string _appOperationModeToken = LogicPOS.Settings.GeneralSettings.Settings["appOperationModeToken"];
         //Settings: Colors
-        private readonly Color _colorPosTicketListModeTicketBackground = DataLayerFramework.Settings["colorPosTicketListModeTicketBackground"].StringToColor();
-        private readonly Color _colorPosTicketListModeOrderMainBackground = DataLayerFramework.Settings["colorPosTicketListModeOrderMainBackground"].StringToColor();
-        private readonly Color _colorPosTicketListModeEditBackground = DataLayerFramework.Settings["colorPosTicketListModeEditBackground"].StringToColor();
+        private readonly Color _colorPosTicketListModeTicketBackground = LogicPOS.Settings.GeneralSettings.Settings["colorPosTicketListModeTicketBackground"].StringToColor();
+        private readonly Color _colorPosTicketListModeOrderMainBackground = LogicPOS.Settings.GeneralSettings.Settings["colorPosTicketListModeOrderMainBackground"].StringToColor();
+        private readonly Color _colorPosTicketListModeEditBackground = LogicPOS.Settings.GeneralSettings.Settings["colorPosTicketListModeEditBackground"].StringToColor();
         //SessionApp
         private Guid _currentOrderMainOid;
         private int _currentTicketId;
@@ -257,7 +257,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 scrolledWindow.SetPolicy(PolicyType.Never, PolicyType.Always);
 
                 //Label LabelTotal
-                _labelLabelTotal = new Label(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_ticket"));
+                _labelLabelTotal = new Label(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_total_ticket"));
                 _labelLabelTotal.ModifyFont(labelLabelTotalFont);
                 _labelLabelTotal.ModifyFg(StateType.Normal, labelLabelTotalFontColor);
                 _labelLabelTotal.SetAlignment(labelLabelTotalAlignmentX, 0.0F);
@@ -317,18 +317,17 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             TreeViewColumn column;
             int sharedWidth = 65;
 
-            //int widthDesignation = (FrameworkUtils.OSVersion() != "unix") ? 106 : 116;
-            int widthDesignation = (SharedUtils.OSVersion() != "unix") ? pWidthDesignation - 10 : pWidthDesignation;
+            int widthDesignation = pWidthDesignation - 10;
 
             Pango.FontDescription fontDescTitle = pColumnTitleFontDesc;
             Pango.FontDescription fontDesc = pColumnDataFontDesc;
 
-            Label labelDesignation = new Label(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_ticketlist_label_designation")) { Visible = true };
-            Label labelPrice = new Label(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_ticketlist_label_price")) { Visible = true };
-            Label labelQuantity = new Label(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_ticketlist_label_quantity")) { Visible = true };
-            Label labelDiscount = new Label(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_ticketlist_label_discount")) { Visible = true };
-            Label labelVat = new Label(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_ticketlist_label_vat")) { Visible = true };
-            Label labelTotal = new Label(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_ticketlist_label_total")) { Visible = true };
+            Label labelDesignation = new Label(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "pos_ticketlist_label_designation")) { Visible = true };
+            Label labelPrice = new Label(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "pos_ticketlist_label_price")) { Visible = true };
+            Label labelQuantity = new Label(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "pos_ticketlist_label_quantity")) { Visible = true };
+            Label labelDiscount = new Label(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "pos_ticketlist_label_discount")) { Visible = true };
+            Label labelVat = new Label(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "pos_ticketlist_label_vat")) { Visible = true };
+            Label labelTotal = new Label(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "pos_ticketlist_label_total")) { Visible = true };
             labelDesignation.ModifyFont(fontDescTitle);
             labelPrice.ModifyFont(fontDescTitle);
             labelQuantity.ModifyFont(fontDescTitle);
@@ -624,7 +623,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 }
                 else
                 {
-                    string message = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_invalid_code");
+                    string message = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_invalid_code");
                     logicpos.Utils.ShowMessageTouch(SourceWindow, DialogFlags.DestroyWithParent, new Size(400, 300), MessageType.Error, ButtonsType.Ok, "Código Inválido", message);
                     return;
                 }
@@ -633,7 +632,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         public void ArticleNotFound()
         {
-            string message = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_invalid_code");
+            string message = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_invalid_code");
             logicpos.Utils.ShowMessageTouch(SourceWindow, DialogFlags.DestroyWithParent, new Size(400, 300), MessageType.Error, ButtonsType.Ok, "Código Inválido", message);
             return;
         }
@@ -658,7 +657,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             try
             {
                 // Override Default with Config Value
-                requireToChooseVatExemptionReason = Convert.ToBoolean(DataLayerFramework.Settings["requireToChooseVatExemptionReason"]);
+                requireToChooseVatExemptionReason = Convert.ToBoolean(LogicPOS.Settings.GeneralSettings.Settings["requireToChooseVatExemptionReason"]);
             }
             catch (Exception)
             {
@@ -736,22 +735,22 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 {
                     //TODO: Implement VatExemptionReason in TicketList (Both Modes) 
                     //Guid vatExemptionReasonGuid = GetVatExemptionReason();
-                    logicpos.Utils.ShowMessageTouch(SourceWindow, DialogFlags.DestroyWithParent, new Size(400, 300), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_vatrate_free_article_detected"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_article_without_vat_exception_reason_detected"));
+                    logicpos.Utils.ShowMessageTouch(SourceWindow, DialogFlags.DestroyWithParent, new Size(400, 300), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_vatrate_free_article_detected"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_article_without_vat_exception_reason_detected"));
                     return;
                 }
 
                 //Check if ticket is exited and show message
                 if (parkingTicketResult.AlreadyExit)
                 {
-                    string message = string.Format("Numero do ticket: {0}\n\n{1}\n\nData de Saida: {2}", parkingTicketResult.Ean, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_article_already_exited"), parkingTicketResult.DateExits);
-                    logicpos.Utils.ShowMessageTouch(SourceWindow, DialogFlags.DestroyWithParent, new Size(450, 350), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_already_exited"), message);
+                    string message = string.Format("Numero do ticket: {0}\n\n{1}\n\nData de Saida: {2}", parkingTicketResult.Ean, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_article_already_exited"), parkingTicketResult.DateExits);
+                    logicpos.Utils.ShowMessageTouch(SourceWindow, DialogFlags.DestroyWithParent, new Size(450, 350), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_already_exited"), message);
                     return;
                 }
                 //Check if ticket is already payed and show message
                 else if (parkingTicketResult.AlreadyPaid)
                 {
-                    string message = string.Format("Numero do ticket: {0}\n\n{1}\nData de pagamento: {2}\n\nPode sair até: {3} ", parkingTicketResult.Ean, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_article_already_paid"), parkingTicketResult.DatePaid, parkingTicketResult.DateTolerance);
-                    logicpos.Utils.ShowMessageTouch(SourceWindow, DialogFlags.DestroyWithParent, new Size(450, 350), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_already_paid"), message);
+                    string message = string.Format("Numero do ticket: {0}\n\n{1}\nData de pagamento: {2}\n\nPode sair até: {3} ", parkingTicketResult.Ean, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_article_already_paid"), parkingTicketResult.DatePaid, parkingTicketResult.DateTolerance);
+                    logicpos.Utils.ShowMessageTouch(SourceWindow, DialogFlags.DestroyWithParent, new Size(450, 350), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_already_paid"), message);
                     return;
                 }
 
@@ -827,7 +826,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     }
                     else if (price <= 0.0m || article.PVPVariable == true)
                     {
-                        MoneyPadResult result = PosMoneyPadDialog.RequestDecimalValue(SourceWindow, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_moneypad_product_price"), price);
+                        MoneyPadResult result = PosMoneyPadDialog.RequestDecimalValue(SourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_moneypad_product_price"), price);
                         if (result.Response == ResponseType.Cancel) return;
                         sourceMode = PricePropertiesSourceMode.FromTotalFinal;
                         price = result.Value;
@@ -1396,12 +1395,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
             if (ListMode == TicketListMode.Ticket)
             {
-                labelTotalFinal = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_ticket");
+                labelTotalFinal = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_total_ticket");
                 TotalFinal = CurrentOrderDetails.TotalFinal;
             }
             else
             {
-                labelTotalFinal = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_table_tickets");
+                labelTotalFinal = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_total_table_tickets");
                 //Toatal From ArticleBag and Not From OrderMain, This way we can check if ArticleBag is equal to OrderMain Totals, in Both Status Bars
                 TotalFinal = _articleBag.TotalFinal;
             }
@@ -1432,7 +1431,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     string labelTotalTableFormat = "{0} : #{1}";
                     string lastUserName = (orderMain != null && orderMain.GlobalLastUser != null) ? string.Format(": {0}", orderMain.GlobalLastUser.Name) : string.Empty;
                     /* IN008024 */
-                    string global_table = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], string.Format("global_table_appmode_{0}", DataLayerSettings.CustomAppOperationMode.AppOperationTheme).ToLower());
+                    string global_table = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], string.Format("global_table_appmode_{0}", DataLayerSettings.CustomAppOperationMode.AppOperationTheme).ToLower());
 
                     SourceWindow.LabelCurrentTable.Text =
                       string.Format(labelCurrentTableFormat
@@ -1456,13 +1455,13 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 else
                 {
                     /* IN008024 */
-                    SourceWindow.LabelCurrentTable.Text = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], string.Format("status_message_select_order_or_table_appmode_{0}", DataLayerSettings.CustomAppOperationMode.AppOperationTheme).ToLower());
+                    SourceWindow.LabelCurrentTable.Text = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], string.Format("status_message_select_order_or_table_appmode_{0}", DataLayerSettings.CustomAppOperationMode.AppOperationTheme).ToLower());
                 }
             }
             //If CashDrawer Close
             else
             {
-                SourceWindow.LabelCurrentTable.Text = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "status_message_open_cashdrawer");
+                SourceWindow.LabelCurrentTable.Text = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "status_message_open_cashdrawer");
             }
         }
 

@@ -6669,13 +6669,13 @@
       <Name>logicpos.financial.service</Name>
     </ProjectReference>
 	-->
+    <ProjectReference Include="..\LogicPOS.DTOs\LogicPOS.DTOs.csproj">
+      <Project>{e23bdf58-f0a9-40ac-acce-57235fb7a7f1}</Project>
+      <Name>LogicPOS.DTOs</Name>
+    </ProjectReference>
     <ProjectReference Include="..\logicpos.financial\logicpos.financial.library\logicpos.financial.library.csproj">
       <Project>{7f643f3c-0f7b-451a-aa16-a9a25a56ccf3}</Project>
       <Name>logicpos.financial.library</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\logicpos.financial\logicpos.financial.service\logicpos.financial.service.csproj">
-      <Project>{72F34ABB-D3CF-4430-85F0-FD5BD3EE3AA7}</Project>
-      <Name>logicpos.financial.service</Name>
     </ProjectReference>
     <ProjectReference Include="..\logicpos.datalayer\logicpos.datalayer.csproj">
       <Project>{42af3be2-44b4-477d-8e45-55c64992b805}</Project>
@@ -6688,6 +6688,10 @@
     <ProjectReference Include="..\logicpos.documentviewer\logicpos.documentviewer\logicpos.documentviewer.csproj">
       <Project>{e39a7986-4c2f-4ebe-a31b-59c766150eac}</Project>
       <Name>logicpos.documentviewer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\logicpos.financial\logicpos.financial.service\logicpos.financial.service.csproj">
+      <Project>{72f34abb-d3cf-4430-85f0-fd5bd3ee3aa7}</Project>
+      <Name>logicpos.financial.service</Name>
     </ProjectReference>
     <ProjectReference Include="..\logicpos.plugins\logicpos.plugin.contracts\logicpos.plugin.contracts.csproj">
       <Project>{43c879d1-31ae-424f-91d1-92cf286d5497}</Project>

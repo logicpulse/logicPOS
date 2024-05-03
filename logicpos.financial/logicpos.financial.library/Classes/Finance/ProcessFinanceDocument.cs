@@ -557,9 +557,9 @@ namespace logicpos.financial.library.Classes.Finance
                     documentFinanceMaster.ATCUD = "0"; //A preencher pelo WS da AT Julho 2021?
                     documentFinanceMaster.ATDocQRCode = GenDocumentQRCode(uowSession, documentFinanceType, documentFinanceSerie, documentFinanceMaster, true);
                     //CAE is Deprecated, this will prevent triggering Errors
-                    if (LogicPOS.Settings.AppSettings.PreferenceParameters.ContainsKey("COMPANY_CAE") && !string.IsNullOrEmpty(LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_CAE"].ToString()))
+                    if (LogicPOS.Settings.GeneralSettings.PreferenceParameters.ContainsKey("COMPANY_CAE") && !string.IsNullOrEmpty(LogicPOS.Settings.GeneralSettings.PreferenceParameters["COMPANY_CAE"].ToString()))
                     {
-                        documentFinanceMaster.EACCode = LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_CAE"];
+                        documentFinanceMaster.EACCode = LogicPOS.Settings.GeneralSettings.PreferenceParameters["COMPANY_CAE"];
                     }
 
                     //Currency Congo K
@@ -645,7 +645,7 @@ namespace logicpos.financial.library.Classes.Finance
                                 if (placeTable != null)
                                 {
                                     placeTable.TableStatus = TableStatus.Free;
-                                    SharedUtils.Audit("TABLE_OPEN", string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_table_open"), placeTable.Designation));
+                                    SharedUtils.Audit("TABLE_OPEN", string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "audit_message_table_open"), placeTable.Designation));
                                     placeTable.DateTableClosed = documentDateTime;
                                     placeTable.TotalOpen = 0;
                                     //Required to Reload Objects after has been changed in Another Session(uowSession)
@@ -705,7 +705,7 @@ namespace logicpos.financial.library.Classes.Finance
                             }
 
                         //Audit
-                        SharedUtils.Audit("FINANCE_DOCUMENT_CREATED", string.Format("{0} {1}: {2}", documentFinanceMaster.DocumentType.Designation, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_document_created"), documentFinanceMaster.DocumentNumber));
+                        SharedUtils.Audit("FINANCE_DOCUMENT_CREATED", string.Format("{0} {1}: {2}", documentFinanceMaster.DocumentType.Designation, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_document_created"), documentFinanceMaster.DocumentNumber));
 
                         //Process Stock
                         try
@@ -862,7 +862,7 @@ namespace logicpos.financial.library.Classes.Finance
             //R Nº do certificado Exemplo R:9999 +
             //S Outras informações Exemplo S: NU; 0.80 ++
 
-            string A = "A:" + LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_FISCALNUMBER"] + "*";
+            string A = "A:" + LogicPOS.Settings.GeneralSettings.PreferenceParameters["COMPANY_FISCALNUMBER"] + "*";
             string B = "B:" + LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Decrypt(doc.EntityFiscalNumber) + "*";
             string C = "C:" + doc.EntityCountry + "*";
             string D = "D:" + pDocType.Acronym + "*";
@@ -954,7 +954,7 @@ namespace logicpos.financial.library.Classes.Finance
             // Protection In case of bad hash, ex when we dont have SoftwareVendorPlugin Registered
             if (string.IsNullOrEmpty(pHash))
             {
-                throw new Exception(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document_bad_hash_detected"));
+                throw new Exception(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document_bad_hash_detected"));
             }
             else
             {
@@ -1267,7 +1267,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                                 documentMaster.PayedDate = currentDateTime;
 
                                 //On Full Invoice Payment Call ChangePayedInvoiceAndRelatedDocumentsStatus (Change status of Parent Document to F)
-                                string statusReason = string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documents_status_document_invoiced"), documentMaster.DocumentNumber);
+                                string statusReason = string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_documents_status_document_invoiced"), documentMaster.DocumentNumber);
                                 //Get Fresh Object in UOW
                                 fin_documentfinancemaster documentParent = null;
                                 //Send with UOW Objects
@@ -1297,18 +1297,18 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                             {
                                 if (!string.IsNullOrEmpty(documentFinancePayment.Notes))
                                 {
-                                    if (documentFinancePayment.Notes.Contains(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_column_related_doc")))
+                                    if (documentFinancePayment.Notes.Contains(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_column_related_doc")))
                                     {
                                         documentFinancePayment.Notes += "; [" + documentMaster.DocumentNumber + "] " + relatedDocuments;
                                     }
                                     else
                                     {
-                                        documentFinancePayment.Notes += Environment.NewLine + resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_column_related_doc") + ": [" + documentMaster.DocumentNumber + "] " + relatedDocuments;
+                                        documentFinancePayment.Notes += Environment.NewLine + resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_column_related_doc") + ": [" + documentMaster.DocumentNumber + "] " + relatedDocuments;
                                     }
                                 }
                                 else
                                 {
-                                    documentFinancePayment.Notes += resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_column_related_doc") + ": [" + documentMaster.DocumentNumber + "] " + relatedDocuments;
+                                    documentFinancePayment.Notes += resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_column_related_doc") + ": [" + documentMaster.DocumentNumber + "] " + relatedDocuments;
                                 }
                             }
                         }
@@ -1422,9 +1422,9 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                 {
                     documentDate = pDocumentFinanceMaster.Date;
                     movementAmount = pDocumentFinanceMaster.TotalFinal;
-                    movementDescriptionDocument = string.Format("{0} : {1}", pDocumentFinanceMaster.DocumentNumber, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_finance_document"));
-                    movementDescriptionTotalDelivery = string.Format("{0} : {1}", pDocumentFinanceMaster.DocumentNumber, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_deliver"));
-                    movementDescriptionTotalChange = string.Format("{0} : {1}", pDocumentFinanceMaster.DocumentNumber, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_change"));
+                    movementDescriptionDocument = string.Format("{0} : {1}", pDocumentFinanceMaster.DocumentNumber, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_finance_document"));
+                    movementDescriptionTotalDelivery = string.Format("{0} : {1}", pDocumentFinanceMaster.DocumentNumber, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_total_deliver"));
+                    movementDescriptionTotalChange = string.Format("{0} : {1}", pDocumentFinanceMaster.DocumentNumber, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_total_change"));
                     if (pParameters.TotalDelivery > 0) totalDelivery = pParameters.TotalDelivery;
                     if (pParameters.TotalChange > 0) totalChange = pParameters.TotalChange;
                 }
@@ -1432,9 +1432,9 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                 {
                     documentDate = pDocumentFinancePayment.CreatedAt;//.PaymentDate
                     movementAmount = pDocumentFinancePayment.PaymentAmount;
-                    movementDescriptionDocument = string.Format("{0} : {1}", pDocumentFinancePayment.PaymentRefNo, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_payment_document"));
-                    movementDescriptionTotalDelivery = string.Format("{0} : {1}", pDocumentFinancePayment.PaymentRefNo, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_deliver"));
-                    movementDescriptionTotalChange = string.Format("{0} : {1}", pDocumentFinancePayment.PaymentRefNo, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_change"));
+                    movementDescriptionDocument = string.Format("{0} : {1}", pDocumentFinancePayment.PaymentRefNo, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_payment_document"));
+                    movementDescriptionTotalDelivery = string.Format("{0} : {1}", pDocumentFinancePayment.PaymentRefNo, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_total_deliver"));
+                    movementDescriptionTotalChange = string.Format("{0} : {1}", pDocumentFinancePayment.PaymentRefNo, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_total_change"));
                     //TODO: Improve with Payment TotalChange Functionality
                     totalDelivery = movementAmount;
                 }
@@ -1600,12 +1600,12 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
             try
             {
                 //Generate Documents Filename
-                if (!string.IsNullOrEmpty(DataLayerFramework.Settings["generatePdfDocuments"]))
+                if (!string.IsNullOrEmpty(LogicPOS.Settings.GeneralSettings.Settings["generatePdfDocuments"]))
                 {
                     bool generatePdfDocuments = false;
                     try
                     {
-                        generatePdfDocuments = Convert.ToBoolean(DataLayerFramework.Settings["generatePdfDocuments"]);
+                        generatePdfDocuments = Convert.ToBoolean(LogicPOS.Settings.GeneralSettings.Settings["generatePdfDocuments"]);
                     }
                     catch (Exception ex)
                     {
@@ -1651,12 +1651,12 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
             try
             {
                 //Generate Documents Filename
-                if (!string.IsNullOrEmpty(DataLayerFramework.Settings["generatePdfDocuments"]))
+                if (!string.IsNullOrEmpty(LogicPOS.Settings.GeneralSettings.Settings["generatePdfDocuments"]))
                 {
                     bool generatePdfDocuments = false;
                     try
                     {
-                        generatePdfDocuments = Convert.ToBoolean(DataLayerFramework.Settings["generatePdfDocuments"]);
+                        generatePdfDocuments = Convert.ToBoolean(LogicPOS.Settings.GeneralSettings.Settings["generatePdfDocuments"]);
                     }
                     catch (Exception ex)
                     {

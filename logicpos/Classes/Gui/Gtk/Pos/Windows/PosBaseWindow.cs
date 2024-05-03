@@ -147,9 +147,9 @@ namespace logicpos
 
         private int GetMonitorNumber()
         {
-            return string.IsNullOrEmpty(datalayer.App.DataLayerFramework.Settings["appScreen"])
+            return string.IsNullOrEmpty(LogicPOS.Settings.GeneralSettings.Settings["appScreen"])
                     ? 0
-                    : Convert.ToInt32(datalayer.App.DataLayerFramework.Settings["appScreen"]);
+                    : Convert.ToInt32(LogicPOS.Settings.GeneralSettings.Settings["appScreen"]);
         }
 
         protected void CheckMonitorGeometry(int width, int height)
@@ -166,8 +166,8 @@ namespace logicpos
                         DialogFlags.Modal, 
                         MessageType.Error, 
                         ButtonsType.Ok, 
-                        resources.CustomResources.GetCustomResource(datalayer.App.DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), 
-                        string.Format(resources.CustomResources.GetCustomResource(datalayer.App.DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_low_resolution_detected"), 
+                        resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error"), 
+                        string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_low_resolution_detected"), 
                         width, 
                         height));
                     Environment.Exit(0);

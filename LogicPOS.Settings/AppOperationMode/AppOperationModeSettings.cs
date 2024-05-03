@@ -14,7 +14,7 @@ namespace LogicPOS.Settings
         public static AppOperationMode GetAppMode()
         {
             AppOperationMode mode = AppOperationMode.Default;
-            string appOperationModeToken = AppSettings.Settings["appOperationModeToken"];
+            string appOperationModeToken = GeneralSettings.Settings["appOperationModeToken"];
 
 
             if (!string.IsNullOrEmpty(appOperationModeToken))
@@ -28,7 +28,7 @@ namespace LogicPOS.Settings
 
         public static CustomAppOperationMode GetCustomAppOperationMode()
         {
-            return CustomAppOperationMode.GetAppOperationMode(AppSettings.Settings["appOperationModeToken"]);
+            return CustomAppOperationMode.GetAppOperationMode(GeneralSettings.Settings["appOperationModeToken"]);
         }
 
         public static bool IsDefaultAppOperationTheme()

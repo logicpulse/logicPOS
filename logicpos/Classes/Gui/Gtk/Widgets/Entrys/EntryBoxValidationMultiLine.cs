@@ -1,7 +1,7 @@
 ﻿using Gtk;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.shared.App;
-using logicpos.shared.Classes.Others;
+using LogicPOS.DTOs.Common;
 using System;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets.Entrys

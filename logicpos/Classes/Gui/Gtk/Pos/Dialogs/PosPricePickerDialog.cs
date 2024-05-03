@@ -34,7 +34,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             Article = pArticle;
 
             //Init Local Vars
-            string windowTitle = string.Format("{0}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_filepicker"));
+            string windowTitle = string.Format("{0}", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_filepicker"));
             _windowSize = new Size(300, 473);
             string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_select_record.png";
 
@@ -65,7 +65,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             try
             {
                 //Init Font Description
-                Pango.FontDescription fontDescription = Pango.FontDescription.FromString(DataLayerFramework.Settings["fontEntryBoxValue"]);
+                Pango.FontDescription fontDescription = Pango.FontDescription.FromString(LogicPOS.Settings.GeneralSettings.Settings["fontEntryBoxValue"]);
                 //Init Picker
                 VBox _vbox = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
 

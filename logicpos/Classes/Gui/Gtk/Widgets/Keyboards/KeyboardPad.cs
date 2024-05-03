@@ -24,7 +24,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         public EntryValidation TextEntry { get; set; }
 
         //Private Members
-        private readonly string _fontKeyboardPadTextEntry = DataLayerFramework.Settings["fontKeyboardPadTextEntry"];
+        private readonly string _fontKeyboardPadTextEntry = LogicPOS.Settings.GeneralSettings.Settings["fontKeyboardPadTextEntry"];
         private readonly VirtualKeyBoard _virtualKeyBoard;
         private readonly int _spacing = 10;
         private bool _isCapsEnabled = false;
@@ -136,7 +136,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 }
                 else
                 {
-                    logicpos.Utils.ShowMessageTouch(ParentDialog, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_field_validation_error_keyboardpad"));
+                    logicpos.Utils.ShowMessageTouch(ParentDialog, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_field_validation_error_keyboardpad"));
                 }
             }
         }
@@ -147,8 +147,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             List<VirtualKey> currentKeyboardRow;
             VirtualKey currentKey;
             char charKey;
-            Color _colorKeyboardPadKeyDefaultFont = DataLayerFramework.Settings["colorKeyboardPadKeyDefaultFont"].StringToColor();
-            Color _colorKeyboardPadKeySecondaryFont = DataLayerFramework.Settings["colorKeyboardPadKeySecondaryFont"].StringToColor();
+            Color _colorKeyboardPadKeyDefaultFont = LogicPOS.Settings.GeneralSettings.Settings["colorKeyboardPadKeyDefaultFont"].StringToColor();
+            Color _colorKeyboardPadKeySecondaryFont = LogicPOS.Settings.GeneralSettings.Settings["colorKeyboardPadKeySecondaryFont"].StringToColor();
 
             //loop rows
             for (int i = 0; i < _virtualKeyBoard.KeyBoard.Count; i++)
@@ -365,7 +365,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     }
                     else
                     {
-                        logicpos.Utils.ShowMessageTouch(ParentDialog, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_field_validation_error_keyboardpad"));
+                        logicpos.Utils.ShowMessageTouch(ParentDialog, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_field_validation_error_keyboardpad"));
                     };
                     break;
                 //Show/Hide Number Lock

@@ -9,28 +9,6 @@ namespace logicpos.financial.service.Objects.Service
 
         private readonly bool _debug = true;
 
-        public Service()
-        {
-            if (_debug) _logger.Debug("Service Construct");
-            ServiceName = Program.SERVICE_NAME;
-        }
-
-        public void Start(string[] args)
-        {
-            if (_debug) _logger.Debug("Service Start");
-            OnStart(args);
-        }
-
-        protected override void OnStart(string[] args)
-        {
-            if (_debug) _logger.Debug("Service OnStart");
-            Program.Start(args);
-        }
-
-        protected override void OnStop()
-        {
-            if (_debug) _logger.Debug("Service OnStop");
-            Program.Stop();
-        }
+       
     }
 }

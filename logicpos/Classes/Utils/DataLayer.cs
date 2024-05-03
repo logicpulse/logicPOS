@@ -54,17 +54,16 @@ namespace logicpos
                 string sqlDatabaseData = POSSettings.FileDatabaseData;
                 string sqlDatabaseDataDemo = POSSettings.FileDatabaseDataDemo;
                 string sqlDatabaseViews = POSSettings.FileDatabaseViews;
-                bool useDatabaseDataDemo = Convert.ToBoolean(DataLayerFramework.Settings["useDatabaseDataDemo"]);
+                bool useDatabaseDataDemo = Convert.ToBoolean(LogicPOS.Settings.GeneralSettings.Settings["useDatabaseDataDemo"]);
 
                 string version = SharedUtils.ProductVersion.Replace("v", "");
                 //string version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
-                string osVersion = SharedUtils.OSVersion();
                 switch (databaseType)
                 {
                     case DatabaseType.SQLite:
                     case DatabaseType.MonoLite:
-                        //connectionstring = string.Format(DataLayerFramework.Settings["xpoConnectionString"], databaseName);
+                        //connectionstring = string.Format(LogicPOS.Settings.GeneralSettings.Settings["xpoConnectionString"], databaseName);
                         commands.Add("check_version", string.Format(@"SELECT name FROM sqlite_master WHERE type='table' AND name='sys_databaseversion';"));
                         commands.Add("create_version", string.Format(@"CREATE TABLE [sys_databaseversion] ([Version] [varchar](20)); INSERT INTO sys_databaseversion (version) VALUES ('{0}');", version));
                         commands.Add("select_version", string.Format(@"SELECT version FROM sys_databaseversion;"));
@@ -310,7 +309,7 @@ namespace logicpos
                                 log.Error(ex.Message, ex);
                             }
 
-                            if (needToUpdate || osVersion == "unix")
+                            if (needToUpdate)
                             {      //update                           
 
                                 result = ProcessDump(xpoSession, sqlDatabaseUpdate, commandSeparator, replace);
@@ -405,7 +404,7 @@ namespace logicpos
                         break;
                     case DatabaseType.MonoLite:
                     case DatabaseType.SQLite:
-                        //connectionstring = string.Format(DataLayerFramework.Settings["xpoConnectionString"], databaseName);
+                        //connectionstring = string.Format(LogicPOS.Settings.GeneralSettings.Settings["xpoConnectionString"], databaseName);
                         //Replace content - Currently not used, Here only for Example
                         //result.Add("dm.Table", "dm.[Table]");
                         //result.Add("dt.Table", "dt.[Table]");
@@ -504,7 +503,7 @@ namespace logicpos
                     for (int i = 0; i < commands.Length - 1; i++)
                     {
                         //CarriageReturn \r\n = 
-                        executeCommand = string.Format("{0};", SharedUtils.RemoveCarriageReturnAndExtraWhiteSpaces(commands[i]));
+                        executeCommand = string.Format("{0};", LogicPOS.Utility.StringUtils.RemoveCarriageReturnAndExtraWhiteSpaces(commands[i]));
                         //Replace \n (Multiline Text like SEND_MAIL_FINANCE_DOCUMENTS_BODY)
                         executeCommand = executeCommand.Replace("\\n", Environment.NewLine);
 
@@ -558,7 +557,7 @@ namespace logicpos
 
                                 string errorMessage = string.Format("bool ProcessDump(Session pXpoSession, string pFilename, string pCommandSeparator, Dictionary<string, string> pReplaceables) :: Error executing Sql Command: [{0}]{1}Exception: [{2}]", executeCommand, Environment.NewLine, ex.Message);
                                 log.Error(string.Format("{0} : {1}", errorMessage, ex.Message), ex);
-                                //Utils.ShowMessageTouch(null, DialogFlags.Modal, new Size(800, 400), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), errorMessage);
+                                //Utils.ShowMessageTouch(null, DialogFlags.Modal, new Size(800, 400), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error"), errorMessage);
                                 /* IN009021 */
                                 //pXpoSession.RollbackTransaction();
                                 //return false;

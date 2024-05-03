@@ -3,8 +3,8 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Finance;
-using logicpos.financial.service.App;
 using logicpos.shared.App;
+using LogicPOS.DTOs.Common;
 using System;
 using System.Configuration;
 using System.IO;
@@ -76,16 +76,16 @@ namespace logicpos.financial.service.Objects.Modules.AT
         private static string GetServicesATFilePublicKey(bool pTestMode)
         {
             return (pTestMode)
-                ? string.Format(@"{0}{1}", DataLayerFramework.Path["certificates"], DataLayerFramework.Settings["servicesATTestModeFilePublicKey"])
-                : string.Format(@"{0}{1}", DataLayerFramework.Path["certificates"], DataLayerFramework.Settings["servicesATProdModeFilePublicKey"])
+                ? string.Format(@"{0}{1}", DataLayerFramework.Path["certificates"], LogicPOS.Settings.GeneralSettings.Settings["servicesATTestModeFilePublicKey"])
+                : string.Format(@"{0}{1}", DataLayerFramework.Path["certificates"], LogicPOS.Settings.GeneralSettings.Settings["servicesATProdModeFilePublicKey"])
             ;
         }
 
         private static string GetServicesATFileCertificate(bool pTestMode)
         {
             return (pTestMode)
-                ? string.Format(@"{0}{1}", DataLayerFramework.Path["certificates"], DataLayerFramework.Settings["servicesATTestModeFileCertificate"])
-                : string.Format(@"{0}{1}", DataLayerFramework.Path["certificates"], DataLayerFramework.Settings["servicesATProdModeFileCertificate"])
+                ? string.Format(@"{0}{1}", DataLayerFramework.Path["certificates"], LogicPOS.Settings.GeneralSettings.Settings["servicesATTestModeFileCertificate"])
+                : string.Format(@"{0}{1}", DataLayerFramework.Path["certificates"], LogicPOS.Settings.GeneralSettings.Settings["servicesATProdModeFileCertificate"])
             ;
         }
 
@@ -93,28 +93,28 @@ namespace logicpos.financial.service.Objects.Modules.AT
         {
             return (pTestMode)
                 ? "599999993"
-                :LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_FISCALNUMBER"];
+                :LogicPOS.Settings.GeneralSettings.PreferenceParameters["COMPANY_FISCALNUMBER"];
         }
 
         private static string GetServicesATAccountFiscalNumber(bool pTestMode)
         {
-            //DataLayerFramework.Settings["servicesATProdModeAccountFiscalNumber"];
+            //LogicPOS.Settings.GeneralSettings.Settings["servicesATProdModeAccountFiscalNumber"];
             return (pTestMode)
                 ? "599999993/0037"
-                :LogicPOS.Settings.AppSettings.PreferenceParameters["SERVICE_AT_PRODUCTION_ACCOUNT_FISCAL_NUMBER"];
+                :LogicPOS.Settings.GeneralSettings.PreferenceParameters["SERVICE_AT_PRODUCTION_ACCOUNT_FISCAL_NUMBER"];
         }
 
         private static string GetServicesATAccountPassword(bool pTestMode)
         {
-            //DataLayerFramework.Settings["servicesATProdModeAccountPassword"];
+            //LogicPOS.Settings.GeneralSettings.Settings["servicesATProdModeAccountPassword"];
             return (pTestMode)
                 ? "testes1234"
-                :LogicPOS.Settings.AppSettings.PreferenceParameters["SERVICE_AT_PRODUCTION_ACCOUNT_PASSWORD"];
+                :LogicPOS.Settings.GeneralSettings.PreferenceParameters["SERVICE_AT_PRODUCTION_ACCOUNT_PASSWORD"];
         }
 
         private static string GetServicesATCertificatePassword(bool pTestMode)
         {
-            //DataLayerFramework.Settings["servicesATProdModeCertificatePassword"];
+            //LogicPOS.Settings.GeneralSettings.Settings["servicesATProdModeCertificatePassword"];
             return (pTestMode)
                 ? "TESTEwebservice"
                 : LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.GetAppSoftwareATWSProdModeCertificatePassword();
@@ -164,7 +164,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
         public ServicesAT(fin_documentfinancemaster pFinanceMaster)
         {
             //Init Settings Main Config Settings
-            DataLayerFramework.Settings = ConfigurationManager.AppSettings;
+            LogicPOS.Settings.GeneralSettings.Settings = ConfigurationManager.AppSettings;
             
             //Parameters
             _documentMaster = pFinanceMaster;
@@ -193,14 +193,15 @@ namespace logicpos.financial.service.Objects.Modules.AT
             //Override Default Paths: If Works in Service mode need FullPath to Files, and a user running service, to bypass windows service user
             if (!Environment.UserInteractive)
             {
-                _pathPublicKey = string.Format(@"{0}\{1}", FinancialServiceSettings.AppPath, _pathPublicKey).Replace('/', '\\');
-                _pathCertificate = string.Format(@"{0}\{1}", FinancialServiceSettings.AppPath, _pathCertificate).Replace('/', '\\'); ;
+                var appPath = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+                _pathPublicKey = string.Format(@"{0}\{1}", appPath, _pathPublicKey).Replace('/', '\\');
+                _pathCertificate = string.Format(@"{0}\{1}", appPath, _pathCertificate).Replace('/', '\\'); ;
             }
             // Show Logs if in Console/Interactive Mode (Not in Service Mode)
             else
             {
                 // Log Paths
-                Utils.Log(string.Format("Using pathPublicKey: [{0}]", _pathPublicKey));
+                _logger.Debug(string.Format("Using pathPublicKey: [{0}]", _pathPublicKey));
                 Utils.Log(string.Format("Using pathCertificate: [{0}]", _pathCertificate));
                 // Log Parameters
                 Utils.Log(string.Format("TaxRegistrationNumber :[{0}], AccountFiscalNumber: [{1}], AccountPassword: [{2}]", _atTaxRegistrationNumber, _atAccountFiscalNumber, _atAccountPassword));
@@ -413,7 +414,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
             string customerTaxID = FiscalNumber.ExtractFiscalNumber(entityFiscalNumber);
 
             //Test mode, increase DocumentNumber only when Develop
-            if (_increaseDocumentNumber) Utils.IncreaseDocumentNumber(_documentMaster);
+            if (_increaseDocumentNumber) _documentMaster.IncreaseDocumentNumber();
 
             string sbContentCustomerTax;
             //Diferent sbContentCustomerTax if OutSide Portugal
@@ -508,7 +509,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
             _movementStartTime = DateTime.Now;
 
             //Test mode, increase DocumentNumber only when Develop
-            if (_increaseDocumentNumber) Utils.IncreaseDocumentNumber(_documentMaster);
+            if (_increaseDocumentNumber) _documentMaster.IncreaseDocumentNumber();
 
             //Get Lines Content
             string sbContentLines = Utils.GetDocumentWayBillContentLines(_documentMaster);

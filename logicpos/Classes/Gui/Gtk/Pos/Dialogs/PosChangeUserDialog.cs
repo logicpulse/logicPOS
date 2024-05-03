@@ -14,8 +14,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
     {
         //Settings
         //Sizes
-        private Size _sizePosSmallButtonScroller = logicpos.Utils.StringToSize(DataLayerFramework.Settings["sizePosSmallButtonScroller"]);
-        private Size _sizePosUserButton = logicpos.Utils.StringToSize(DataLayerFramework.Settings["sizePosUserButton"]);
+        private Size _sizePosSmallButtonScroller = logicpos.Utils.StringToSize(LogicPOS.Settings.GeneralSettings.Settings["sizePosSmallButtonScroller"]);
+        private Size _sizePosUserButton = logicpos.Utils.StringToSize(LogicPOS.Settings.GeneralSettings.Settings["sizePosUserButton"]);
         private Size _sizeIconScrollLeftRight = new Size(62, 31);
         //Files
         private readonly string _fileScrollLeftImage = DataLayerFramework.Path["images"] + @"Buttons\Pos\button_subfamily_article_scroll_left.png";
@@ -34,7 +34,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
-            string windowTitle = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_change_user");
+            string windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_change_user");
             Size windowSize = new Size(559, 562);
             string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_users.png";
 
@@ -61,7 +61,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private void InitTablePadUsers()
         {
             //Colors
-            //Color colorPosButtonArticleBackground = FrameworkUtils.StringToColor(DataLayerFramework.Settings["colorPosButtonArticleBackground"]);
+            //Color colorPosButtonArticleBackground = FrameworkUtils.StringToColor(LogicPOS.Settings.GeneralSettings.Settings["colorPosButtonArticleBackground"]);
 
             //Scrollers
             TouchButtonIcon buttonPosScrollersPlacePrev = new TouchButtonIcon("buttonPosScrollersTablePrev", Color.White, _fileScrollLeftImage, _sizeIconScrollLeftRight, _sizePosSmallButtonScroller.Width, _sizePosSmallButtonScroller.Height);
@@ -112,8 +112,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             if (UserDetail.PasswordReset)
             {
                 //_logger.Debug(string.Format("Name: [{0}], PasswordReset: [{1}]", _selectedUserDetail.Name, _selectedUserDetail.PasswordReset));
-                logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_information"),
-                    string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_user_request_change_password"), UserDetail.Name, DataLayerSettings.DefaultValueUserDetailAccessPin)
+                logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_information"),
+                    string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_user_request_change_password"), UserDetail.Name, DataLayerSettings.DefaultValueUserDetailAccessPin)
                 );
             }
 

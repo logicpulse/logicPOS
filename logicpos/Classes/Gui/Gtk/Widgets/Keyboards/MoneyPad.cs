@@ -15,16 +15,16 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Settings
-        private readonly decimal _decimalMoneyButtonL1Value = SharedUtils.StringToDecimal(DataLayerFramework.Settings["decimalMoneyButtonL1Value"]);
-        private readonly decimal _decimalMoneyButtonL2Value = SharedUtils.StringToDecimal(DataLayerFramework.Settings["decimalMoneyButtonL2Value"]);
-        private readonly decimal _decimalMoneyButtonL3Value = SharedUtils.StringToDecimal(DataLayerFramework.Settings["decimalMoneyButtonL3Value"]);
-        private readonly decimal _decimalMoneyButtonL4Value = SharedUtils.StringToDecimal(DataLayerFramework.Settings["decimalMoneyButtonL4Value"]);
-        private readonly decimal _decimalMoneyButtonL5Value = SharedUtils.StringToDecimal(DataLayerFramework.Settings["decimalMoneyButtonL5Value"]);
-        private readonly decimal _decimalMoneyButtonR1Value = SharedUtils.StringToDecimal(DataLayerFramework.Settings["decimalMoneyButtonR1Value"]);
-        private readonly decimal _decimalMoneyButtonR2Value = SharedUtils.StringToDecimal(DataLayerFramework.Settings["decimalMoneyButtonR2Value"]);
-        private readonly decimal _decimalMoneyButtonR3Value = SharedUtils.StringToDecimal(DataLayerFramework.Settings["decimalMoneyButtonR3Value"]);
-        private readonly decimal _decimalMoneyButtonR4Value = SharedUtils.StringToDecimal(DataLayerFramework.Settings["decimalMoneyButtonR4Value"]);
-        private readonly decimal _decimalMoneyButtonR5Value = SharedUtils.StringToDecimal(DataLayerFramework.Settings["decimalMoneyButtonR5Value"]);
+        private readonly decimal _decimalMoneyButtonL1Value = SharedUtils.StringToDecimal(LogicPOS.Settings.GeneralSettings.Settings["decimalMoneyButtonL1Value"]);
+        private readonly decimal _decimalMoneyButtonL2Value = SharedUtils.StringToDecimal(LogicPOS.Settings.GeneralSettings.Settings["decimalMoneyButtonL2Value"]);
+        private readonly decimal _decimalMoneyButtonL3Value = SharedUtils.StringToDecimal(LogicPOS.Settings.GeneralSettings.Settings["decimalMoneyButtonL3Value"]);
+        private readonly decimal _decimalMoneyButtonL4Value = SharedUtils.StringToDecimal(LogicPOS.Settings.GeneralSettings.Settings["decimalMoneyButtonL4Value"]);
+        private readonly decimal _decimalMoneyButtonL5Value = SharedUtils.StringToDecimal(LogicPOS.Settings.GeneralSettings.Settings["decimalMoneyButtonL5Value"]);
+        private readonly decimal _decimalMoneyButtonR1Value = SharedUtils.StringToDecimal(LogicPOS.Settings.GeneralSettings.Settings["decimalMoneyButtonR1Value"]);
+        private readonly decimal _decimalMoneyButtonR2Value = SharedUtils.StringToDecimal(LogicPOS.Settings.GeneralSettings.Settings["decimalMoneyButtonR2Value"]);
+        private readonly decimal _decimalMoneyButtonR3Value = SharedUtils.StringToDecimal(LogicPOS.Settings.GeneralSettings.Settings["decimalMoneyButtonR3Value"]);
+        private readonly decimal _decimalMoneyButtonR4Value = SharedUtils.StringToDecimal(LogicPOS.Settings.GeneralSettings.Settings["decimalMoneyButtonR4Value"]);
+        private readonly decimal _decimalMoneyButtonR5Value = SharedUtils.StringToDecimal(LogicPOS.Settings.GeneralSettings.Settings["decimalMoneyButtonR5Value"]);
         //UI
         private readonly NumberPad _numberPad;
         private readonly EntryValidation _entryDeliveryValue;
@@ -51,8 +51,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         public MoneyPad(Window pSourceWindow, decimal pInitialValue = 0.0m)
         {
             //Settings
-            string fontMoneyPadButtonKeys = DataLayerFramework.Settings["fontMoneyPadButtonKeys"];
-            string fontMoneyPadTextEntry = DataLayerFramework.Settings["fontMoneyPadTextEntry"];
+            string fontMoneyPadButtonKeys = LogicPOS.Settings.GeneralSettings.Settings["fontMoneyPadButtonKeys"];
+            string fontMoneyPadTextEntry = LogicPOS.Settings.GeneralSettings.Settings["fontMoneyPadTextEntry"];
             //ButtonLabels
             string moneyButtonL1Label = SharedUtils.DecimalToStringCurrency(_decimalMoneyButtonL1Value);
             string moneyButtonL2Label = SharedUtils.DecimalToStringCurrency(_decimalMoneyButtonL2Value);

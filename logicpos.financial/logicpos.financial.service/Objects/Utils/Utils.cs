@@ -4,6 +4,7 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.service.Objects.Modules.AT;
 using logicpos.shared.App;
+using LogicPOS.DTOs.Common;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -196,30 +197,6 @@ namespace logicpos.financial.service.Objects
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Invoices
 
-        /// <summary>
-        /// Increase DocumentNumber, used to Fake It, to always be valid
-        /// </summary>
-        /// <param name="DocumentNumber"></param>
-        /// <returns></returns>
-        public static string IncreaseDocumentNumber(fin_documentfinancemaster pDocumentMaster)
-        {
-            string result = string.Empty;
-
-            try
-            {
-                string documentNumber = pDocumentMaster.DocumentNumber;
-                string[] split = documentNumber.Split('/');
-                int number = Convert.ToInt16(split[1]) + 1;
-                pDocumentMaster.DocumentNumber = string.Format("{0}/{1}", split[0], number);
-                pDocumentMaster.Save();
-            }
-            catch (Exception ex)
-            {
-                throw (ex);
-            }
-
-            return result;
-        }
 
         /// <summary>
         /// Get Document <Line>s Splitted by Tax and <DocumentTotals> Content
@@ -327,25 +304,9 @@ namespace logicpos.financial.service.Objects
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //WayBill
 
-        /// <summary>
-        /// Get Document <Line>s
-        /// 	Linhas do Documento(Line)
-        /// </summary>
-        /// <param name="DocumentMaster"></param>
-        /// <returns></returns>
         public static string GetDocumentWayBillContentLines(fin_documentfinancemaster pDocumentMaster)
         {
-            /* IN007016 - escaping the following list of chars using "System.Security.SecurityElement.Escape()" method:
-             * 
-             *      "   &quot;
-             *      '   &apos;
-             *      <   &lt;
-             *      >   &gt;
-             *      &   &amp;
-             */
-            _logger.Debug($"string GetDocumentWayBillContentLines(fin_documentfinancemaster pDocumentMaster) :: {pDocumentMaster.DocumentNumber}");
-
-            //Init Locals Vars
+           
             string result;
             try
             {
@@ -402,35 +363,7 @@ namespace logicpos.financial.service.Objects
             return result;
         }
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-        //If can launch command, to register urlacl is because VS is not running in Admin Mode, launch ConsoleApplicationServer.exe with Admin to Register urlacl
-        //Required else error occurs when runnig without admin privileges ex inside VS or Running Console exe
-        //An unhandled exception of type 'System.ServiceModel.AddressAccessDeniedException' occurred in System.ServiceModel.dll
-        //Additional information: O HTTP não conseguiu registar o URL http://+:8733/hello/. O processo não tem direitos de acesso a este espaço de nomes (consulte http://go.microsoft.com/fwlink/?LinkId=70353 para obter detalhes).
-        public static void ModifyHttpSettings()
-        {
-            //The SID "S-1-1-0" is a wellknown SID and stands for the "Everyone" account. 
-            //The SID is the same for all localizations of windows. The method Translate of SecurityIdentifier class returns the localized name of the Everyone account.
-            string everyone = new System.Security.Principal.SecurityIdentifier(
-                "S-1-1-0").Translate(typeof(System.Security.Principal.NTAccount)).ToString();
-
-            string parameter = string.Format(@"http add urlacl url=http://+:{0}/ user=\{1}", Program.ServicePort, everyone);
-
-            _logger.Debug(string.Format("ModifyHttpSettings: 'netsh {0}'", parameter));
-            ProcessStartInfo psi = new ProcessStartInfo("netsh", parameter);
-
-            psi.Verb = "runas";
-            psi.RedirectStandardOutput = false;
-            psi.CreateNoWindow = true;
-            psi.WindowStyle = ProcessWindowStyle.Hidden;
-            psi.UseShellExecute = false;
-            Process.Start(psi);
-        }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Timer Service 
-
+    
         public static Dictionary<fin_documentfinancemaster, ServicesATSoapResult> ServiceSendPendentDocuments()
         {
             _logger.Debug("Dictionary<fin_documentfinancemaster, ServicesATSoapResult> Utils.ServiceSendPendentDocuments()");
@@ -444,7 +377,7 @@ namespace logicpos.financial.service.Objects
                 Guid key;
                 fin_documentfinancemaster documentMaster;
                 //Invoice Documents
-                if (Convert.ToBoolean(DataLayerFramework.Settings["ServiceATSendDocuments"]))
+                if (Convert.ToBoolean(LogicPOS.Settings.GeneralSettings.Settings["ServiceATSendDocuments"]))
                 {
                     string sqlDocuments = GetDocumentsQuery(false);
                     //_logger.Debug(String.Format("sqlDocuments: [{0}]", FrameworkUtils.RemoveCarriageReturnAndExtraWhiteSpaces(sqlDocuments)));
@@ -470,7 +403,7 @@ namespace logicpos.financial.service.Objects
                 }
 
                 //WayBill Documents
-                if (Convert.ToBoolean(DataLayerFramework.Settings["ServiceATSendDocumentsWayBill"]))
+                if (Convert.ToBoolean(LogicPOS.Settings.GeneralSettings.Settings["ServiceATSendDocumentsWayBill"]))
                 {
                     string sqlDocumentsWayBill = GetDocumentsQuery(true);
                     //_logger.Debug(String.Format("sqlDocumentsWayBill: [{0}]", FrameworkUtils.RemoveCarriageReturnAndExtraWhiteSpaces(sqlDocumentsWayBill)));
@@ -494,9 +427,6 @@ namespace logicpos.financial.service.Objects
 
             return result;
         }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Send Document : Used from Tests and From Timer Service
 
         public static ServicesATSoapResult SendDocument(fin_documentfinancemaster documentMaster)
         {

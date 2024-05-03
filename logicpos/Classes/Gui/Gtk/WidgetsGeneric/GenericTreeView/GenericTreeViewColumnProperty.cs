@@ -21,8 +21,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Settings
-        private readonly string _fontGenericTreeViewColumnTitle = DataLayerFramework.Settings["fontGenericTreeViewColumnTitle"];
-        private readonly string _fontGenericTreeViewColumn = DataLayerFramework.Settings["fontGenericTreeViewColumn"];
+        private readonly string _fontGenericTreeViewColumnTitle = LogicPOS.Settings.GeneralSettings.Settings["fontGenericTreeViewColumnTitle"];
+        private readonly string _fontGenericTreeViewColumn = LogicPOS.Settings.GeneralSettings.Settings["fontGenericTreeViewColumn"];
 
         //Aditional TreeView ColumnProperties
         public GenericTreeViewColumnPropertyType PropertyType { get; set; }

@@ -395,8 +395,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         //Use Custom Validate Function ex ValidateFiscalNumberFunc() in DialogCustomer
         public void ValidateField(Func<bool> pFunc)
         {
-            Color colorEntryValidationValidFont = DataLayerFramework.Settings["colorEntryValidationValidFont"].StringToColor();
-            Color colorEntryValidationInvalidFont = DataLayerFramework.Settings["colorEntryValidationInvalidFont"].StringToColor();
+            Color colorEntryValidationValidFont = LogicPOS.Settings.GeneralSettings.Settings["colorEntryValidationValidFont"].StringToColor();
+            Color colorEntryValidationInvalidFont = LogicPOS.Settings.GeneralSettings.Settings["colorEntryValidationInvalidFont"].StringToColor();
 
             //Always True, in case of null pFunc
             _validatedFunc = true;
@@ -563,10 +563,10 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         //Shared CODE for Change Widgets Colors 
         public void UpdateWidget(dynamic pCurrentWidget, bool pIsValid)
         {
-            Color colorEntryValidationValidFont = DataLayerFramework.Settings["colorEntryValidationValidFont"].StringToColor();
-            Color colorEntryValidationInvalidFont = DataLayerFramework.Settings["colorEntryValidationInvalidFont"].StringToColor();
-            Color colorEntryValidationValidBackground = DataLayerFramework.Settings["colorEntryValidationValidBackground"].StringToColor();
-            Color colorEntryValidationInvalidBackground = DataLayerFramework.Settings["colorEntryValidationInvalidBackground"].StringToColor();
+            Color colorEntryValidationValidFont = LogicPOS.Settings.GeneralSettings.Settings["colorEntryValidationValidFont"].StringToColor();
+            Color colorEntryValidationInvalidFont = LogicPOS.Settings.GeneralSettings.Settings["colorEntryValidationInvalidFont"].StringToColor();
+            Color colorEntryValidationValidBackground = LogicPOS.Settings.GeneralSettings.Settings["colorEntryValidationValidBackground"].StringToColor();
+            Color colorEntryValidationInvalidBackground = LogicPOS.Settings.GeneralSettings.Settings["colorEntryValidationInvalidBackground"].StringToColor();
 
             //Override currentWidget reference, to access inner TextView
             if (pCurrentWidget.GetType() == typeof(EntryMultiline))

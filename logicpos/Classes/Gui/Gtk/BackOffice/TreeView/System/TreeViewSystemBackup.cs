@@ -37,7 +37,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             {
                 new GenericTreeViewColumnProperty("Version")
                 {
-                    Title = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_version"),
+                    Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_version"),
                     MinWidth = 60,
                     CellRenderer = new CellRendererText()
                     {
@@ -45,9 +45,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         Xalign = 1.0F
                     }
                 },
-                new GenericTreeViewColumnProperty("CreatedAt") { Title = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date"), MinWidth = 180 },
-                new GenericTreeViewColumnProperty("FileNamePacked") { Title = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_file"), MinWidth = 240 },
-                new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
+                new GenericTreeViewColumnProperty("CreatedAt") { Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_date"), MinWidth = 180 },
+                new GenericTreeViewColumnProperty("FileNamePacked") { Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_file"), MinWidth = 240 },
+                new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
             };
 
             //Sort Order

@@ -92,7 +92,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             )
                         )
                         {
-                            logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_cant_create_cc_document_with_default_entity"));
+                            logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_cant_create_cc_document_with_default_entity"));
                             //Prevent Parent Dialog Payments from Close
                             this.Run();
                         }
@@ -177,7 +177,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 )
                             )
                             {
-                                logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_value_exceed_customer_card_credit"), SharedUtils.DecimalToStringCurrency(Customer.CardCredit), SharedUtils.DecimalToStringCurrency(processArticleBag.TotalFinal)));
+                                logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_value_exceed_customer_card_credit"), SharedUtils.DecimalToStringCurrency(Customer.CardCredit), SharedUtils.DecimalToStringCurrency(processArticleBag.TotalFinal)));
 
                                 //Prevent Parent Dialog Payments from Close
                                 this.Run();
@@ -186,7 +186,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             //Check if Article Bag Full|Partial has Recharge Article and Valid customer Card
                             else if (!FinancialLibraryUtils.IsCustomerCardValidForArticleBag(processArticleBag, Customer))
                             {
-                                logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_invalid_customer_card_detected"));
+                                logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_invalid_customer_card_detected"));
 
                                 //Prevent Parent Dialog Payments from Close
                                 this.Run();
@@ -241,7 +241,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     else if (resultObject.GetType() == typeof(ConstraintViolationException))
                     {
                         Exception ex = (Exception)resultObject;
-                        ResponseType response = logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Warning, ButtonsType.Close, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_exception_error"), ex.InnerException.Message);
+                        ResponseType response = logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Warning, ButtonsType.Close, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_exception_error"), ex.InnerException.Message);
                         //Prevent Parent Dialog Payments from Close
                         this.Run();
                     }
@@ -289,12 +289,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         )
                     )
                     {
-                        logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_cant_create_cc_document_with_default_entity"));
+                        logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_cant_create_cc_document_with_default_entity"));
                         //Prevent Parent Dialog Payments from Close
                         this.Run();
                     }else if (_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text == string.Empty || _entryBoxSelectCustomerName.EntryValidation.Text == string.Empty)
                     {
-                        logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_cant_create_cc_document_with_default_entity"));
+                        logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_cant_create_cc_document_with_default_entity"));
                         //Prevent Parent Dialog Payments from Close
                         this.Run();
                     }
@@ -321,10 +321,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 switch (ex.Message)
                 {
                     case "ERROR_MISSING_SERIE":
-                        errorMessage = string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document_missing_series"));
+                        errorMessage = string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document_missing_series"));
                         break;
                     default:
-                        errorMessage = string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document"), ex.Message);
+                        errorMessage = string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document"), ex.Message);
                         break;
                 }
                 logicpos.Utils.ShowMessageTouch(
@@ -333,7 +333,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     new Size(600, 400),
                     MessageType.Error,
                     ButtonsType.Close,
-                    resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"),
+                    resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error"),
                     errorMessage
                 );
 
@@ -436,7 +436,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
               dialog = new PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewConfigurationCountry>(
                 this.SourceWindow,
                 DialogFlags.DestroyWithParent,
-                resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_select_country"),
+                resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_select_country"),
                 //TODO:THEME
                 GlobalApp.MaxWindowSize,
                 defaultValue,
@@ -997,7 +997,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             TouchButtonIconWithText buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
             
             //Pagamentos parciais -Escolher valor a pagar por artigo[TK: 019295]
-            TouchButtonIconWithText touchButtonChangePrice = new TouchButtonIconWithText("touchButtonChangePrice", Color.Transparent, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_price"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, buttonIconChangePrice, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height);
+            TouchButtonIconWithText touchButtonChangePrice = new TouchButtonIconWithText("touchButtonChangePrice", Color.Transparent, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_price"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, buttonIconChangePrice, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height);
             buttonOk.Sensitive = false;
 
             //ActionArea Buttons
@@ -1024,7 +1024,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
               new PosSelectRecordDialog<DataTable, DataRow, TreeViewPartialPayment>(
                 this,
                 DialogFlags.DestroyWithParent,
-                resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_partial_payment"),
+                resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_partial_payment"),
                 //TODO:THEME
                 GlobalApp.MaxWindowSize,
                 //new Guid(), //use this to test pDefaultValue 
@@ -1062,7 +1062,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     bool itemChecked = (bool)_dialogPartialPayment.GenericTreeView.DataSourceRow.ItemArray[indexColumnCheckBox];
                     decimal currentRowPrice = (decimal)_dialogPartialPayment.GenericTreeView.DataSourceRow.ItemArray[indexColumnPriceFinal];
                     _totalPartialPaymentItems += (itemChecked) ? currentRowPrice : -currentRowPrice;
-                    _dialogPartialPayment.WindowTitle = (_totalPartialPaymentItems > 0) ? string.Format("{0} : {1}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_partial_payment"), SharedUtils.DecimalToStringCurrency(_totalPartialPaymentItems)) : resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_partial_payment");
+                    _dialogPartialPayment.WindowTitle = (_totalPartialPaymentItems > 0) ? string.Format("{0} : {1}", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_partial_payment"), SharedUtils.DecimalToStringCurrency(_totalPartialPaymentItems)) : resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_partial_payment");
                 }
             };
 
@@ -1200,7 +1200,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     decimal priceFinal = decimal.Round((decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("PriceFinal")], 2);
                     string priceFinalText = SharedUtils.DecimalToStringCurrency(priceFinal);
 
-                    string moneyPadTitle = string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_moneypad_product_price") + " :: " + (string)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Designation")] + " :: " +
+                    string moneyPadTitle = string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_moneypad_product_price") + " :: " + (string)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Designation")] + " :: " +
                         priceFinalText); 
 
 

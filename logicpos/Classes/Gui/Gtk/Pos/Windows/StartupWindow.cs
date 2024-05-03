@@ -147,7 +147,7 @@ namespace logicpos
                     Fixed fix = new Fixed();
 
                     //Place Minimize EventBox
-                    bool _showMinimize = (!string.IsNullOrEmpty(DataLayerFramework.Settings["appShowMinimize"])) && Convert.ToBoolean(DataLayerFramework.Settings["appShowMinimize"]);
+                    bool _showMinimize = (!string.IsNullOrEmpty(LogicPOS.Settings.GeneralSettings.Settings["appShowMinimize"])) && Convert.ToBoolean(LogicPOS.Settings.GeneralSettings.Settings["appShowMinimize"]);
                     if (_showMinimize)
                     {
                         EventBox eventBoxMinimize = Utils.GetMinimizeEventBox();
@@ -278,10 +278,10 @@ namespace logicpos
                     }
                     else
                     {
-                        Image imageLogo = new Image(Utils.GetThemeFileLocation(DataLayerFramework.Settings["fileImageBackOfficeLogo"]));
+                        Image imageLogo = new Image(Utils.GetThemeFileLocation(LogicPOS.Settings.GeneralSettings.Settings["fileImageBackOfficeLogo"]));
                         fix.Put(imageLogo, GlobalApp.ScreenSize.Width - 430, 80);
                     }
-                    //string fileImageBackOfficeLogo = Utils.GetThemeFileLocation(DataLayerFramework.Settings["fileImageBackOfficeLogo"]);
+                    //string fileImageBackOfficeLogo = Utils.GetThemeFileLocation(LogicPOS.Settings.GeneralSettings.Settings["fileImageBackOfficeLogo"]);
                     ScreenArea.Add(fix);
 
                     //Force EntryPin to be the Entry with Focus
@@ -667,7 +667,7 @@ namespace logicpos
             //Get BarCode Input
 
             //logicpos.Utils.ResponseText dialogResponse;
-            //dialogResponse = Utils.GetInputText(this, DialogFlags.Modal, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_barcode, string.Empty, SettingsApp.RegexInteger, true);
+            //dialogResponse = Utils.GetInputText(this, DialogFlags.Modal, resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_barcode, string.Empty, SettingsApp.RegexInteger, true);
             //if (dialogResponse.ResponseType == ResponseType.Ok)
             //{
             //    _logger.Debug(String.Format("BarCode: [{0}]", dialogResponse.Text));

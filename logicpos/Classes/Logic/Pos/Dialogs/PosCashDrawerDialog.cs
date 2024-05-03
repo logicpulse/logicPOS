@@ -48,8 +48,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         string totalAmountInCashDrawer = SharedUtils.DecimalToStringCurrency(TotalAmountInCashDrawer);
                         
                         logicpos.Utils.ShowMessageTouch(
-                            this, DialogFlags.Modal, new Size(500, 350), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"),
-                            string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_cashdrawer_money_out_error"), movementAmountMoney, totalAmountInCashDrawer)
+                            this, DialogFlags.Modal, new Size(500, 350), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error"),
+                            string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_cashdrawer_money_out_error"), movementAmountMoney, totalAmountInCashDrawer)
                         );
                         //Keep Running            
                         this.Run();

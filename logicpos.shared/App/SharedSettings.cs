@@ -227,40 +227,40 @@ namespace logicpos.shared.App
             bool debug = false;
 
             // Override SettingsApp with Defaults from SoftwareVendor Plugin
-            AppSoftwareName = SharedUtils.GetSoftwareVendorValueAsString(nameof(AppSoftwareName), debug);
-            AppCompanyName = SharedUtils.GetSoftwareVendorValueAsString(nameof(AppCompanyName), debug);
-            AppCompanyPhone = SharedUtils.GetSoftwareVendorValueAsString(nameof(AppCompanyPhone), debug);
-            AppCompanyEmail = SharedUtils.GetSoftwareVendorValueAsString(nameof(AppCompanyEmail), debug);
-            AppCompanyWeb = SharedUtils.GetSoftwareVendorValueAsString(nameof(AppCompanyWeb), debug);
-            AppSoftwareVersionFormat = SharedUtils.GetSoftwareVendorValueAsString(nameof(AppSoftwareVersionFormat), debug);
+            AppSoftwareName = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(AppSoftwareName));
+            AppCompanyName = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(AppCompanyName));
+            AppCompanyPhone = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(AppCompanyPhone));
+            AppCompanyEmail = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(AppCompanyEmail));
+            AppCompanyWeb = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(AppCompanyWeb));
+            AppSoftwareVersionFormat = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(AppSoftwareVersionFormat));
 
-            FileFormatDateTime = SharedUtils.GetSoftwareVendorValueAsString(nameof(FileFormatDateTime), debug);
-            FileFormatSaftPT = SharedUtils.GetSoftwareVendorValueAsString(nameof(FileFormatSaftPT), debug);
-            FileFormatSaftAO = SharedUtils.GetSoftwareVendorValueAsString(nameof(FileFormatSaftAO), debug);
+            FileFormatDateTime = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(FileFormatDateTime));
+            FileFormatSaftPT = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(FileFormatSaftPT));
+            FileFormatSaftAO = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(FileFormatSaftAO));
 
-            DocumentsPadLength = SharedUtils.GetSoftwareVendorValueAsInt(nameof(DocumentsPadLength), debug);
-            DateTimeFormatDocumentDate = SharedUtils.GetSoftwareVendorValueAsString(nameof(DateTimeFormatDocumentDate), debug);
-            DateTimeFormatCombinedDateTime = SharedUtils.GetSoftwareVendorValueAsString(nameof(DateTimeFormatCombinedDateTime), debug);
-            FinanceFinalConsumerFiscalNumber = SharedUtils.GetSoftwareVendorValueAsString(nameof(FinanceFinalConsumerFiscalNumber), debug);
-            FinanceFinalConsumerFiscalNumberDisplay = SharedUtils.GetSoftwareVendorValueAsString(nameof(FinanceFinalConsumerFiscalNumberDisplay), debug);
-            DecimalFormatSAFTPT = SharedUtils.GetSoftwareVendorValueAsString(nameof(DecimalFormatSAFTPT), debug);
-            DecimalFormatSAFTAO = SharedUtils.GetSoftwareVendorValueAsString(nameof(DecimalFormatSAFTAO), debug);
-            DecimalFormatGrossTotalSAFTPT = SharedUtils.GetSoftwareVendorValueAsString(nameof(DecimalFormatGrossTotalSAFTPT), debug);
-            DecimalRoundTo = SharedUtils.GetSoftwareVendorValueAsInt(nameof(DecimalRoundTo), debug);
-            SaftProductCompanyTaxID = SharedUtils.GetSoftwareVendorValueAsString(nameof(SaftProductCompanyTaxID), debug);
-            SaftSoftwareCertificateNumber = SharedUtils.GetSoftwareVendorValueAsString(nameof(SaftSoftwareCertificateNumber), debug);
-            SaftSoftwareCertificateNumberAO = SharedUtils.GetSoftwareVendorValueAsString(nameof(SaftSoftwareCertificateNumberAO), debug);
-            SaftVersionPrefix = SharedUtils.GetSoftwareVendorValueAsString(nameof(SaftVersionPrefix), debug);
-            SaftVersionPrefixAO = SharedUtils.GetSoftwareVendorValueAsString(nameof(SaftVersionPrefixAO), debug);
-            SaftVersion = SharedUtils.GetSoftwareVendorValueAsString(nameof(SaftVersion), debug);
-            SaftVersionAO = SharedUtils.GetSoftwareVendorValueAsString(nameof(SaftVersionAO), debug);
-            HashControl = SharedUtils.GetSoftwareVendorValueAsInt(nameof(HashControl), debug);
-            TaxAccountingBasis = SharedUtils.GetSoftwareVendorValueAsString(nameof(TaxAccountingBasis), debug);
-            SaftCurrencyCode = SharedUtils.GetSoftwareVendorValueAsString(nameof(SaftCurrencyCode), debug);
-            SaftCurrencyCodeAO = SharedUtils.GetSoftwareVendorValueAsString(nameof(SaftCurrencyCodeAO), debug);
+            DocumentsPadLength = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsInt(nameof(DocumentsPadLength));
+            DateTimeFormatDocumentDate = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(DateTimeFormatDocumentDate));
+            DateTimeFormatCombinedDateTime = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(DateTimeFormatCombinedDateTime));
+            FinanceFinalConsumerFiscalNumber = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(FinanceFinalConsumerFiscalNumber));
+            FinanceFinalConsumerFiscalNumberDisplay = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(FinanceFinalConsumerFiscalNumberDisplay));
+            DecimalFormatSAFTPT = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(DecimalFormatSAFTPT));
+            DecimalFormatSAFTAO = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(DecimalFormatSAFTAO));
+            DecimalFormatGrossTotalSAFTPT = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(DecimalFormatGrossTotalSAFTPT));
+            DecimalRoundTo = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsInt(nameof(DecimalRoundTo));
+            SaftProductCompanyTaxID = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(SaftProductCompanyTaxID));
+            SaftSoftwareCertificateNumber = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(SaftSoftwareCertificateNumber));
+            SaftSoftwareCertificateNumberAO = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(SaftSoftwareCertificateNumberAO));
+            SaftVersionPrefix = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(SaftVersionPrefix));
+            SaftVersionPrefixAO = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(SaftVersionPrefixAO));
+            SaftVersion = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(SaftVersion));
+            SaftVersionAO = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(SaftVersionAO));
+            HashControl = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsInt(nameof(HashControl));
+            TaxAccountingBasis = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(TaxAccountingBasis));
+            SaftCurrencyCode = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(SaftCurrencyCode));
+            SaftCurrencyCodeAO = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(SaftCurrencyCodeAO));
 
-            DocumentFinanceSeriesGenerationFactoryUseRandomAcronymPrefix = SharedUtils.GetSoftwareVendorValueAsBool(nameof(DocumentFinanceSeriesGenerationFactoryUseRandomAcronymPrefix), debug);
-            DocumentFinanceSeriesGenerationFactoryAcronymLastSerieFormat = SharedUtils.GetSoftwareVendorValueAsString(nameof(DocumentFinanceSeriesGenerationFactoryAcronymLastSerieFormat), debug);
+            DocumentFinanceSeriesGenerationFactoryUseRandomAcronymPrefix = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsBool(nameof(DocumentFinanceSeriesGenerationFactoryUseRandomAcronymPrefix));
+            DocumentFinanceSeriesGenerationFactoryAcronymLastSerieFormat = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(DocumentFinanceSeriesGenerationFactoryAcronymLastSerieFormat));
         }
 
         private static string GetSaftProductID()

@@ -32,7 +32,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public PosMessageDialog(Window pSourceWindow, DialogFlags pDialogFlags, System.Drawing.Size pSize, string pMessage, MessageType pMessageType, ResponseType pResponseType, string pButtonLabel, string pImageDialog = "", bool pCconfirmDialogOnEnter = true, bool pWindowTitleCloseButton = true)
             : base(pSourceWindow, pDialogFlags)
         {
-            string fileImageDialogBaseMessageTypeIcon = DataLayerFramework.Settings["fileImageDialogBaseMessageTypeIcon"];
+            string fileImageDialogBaseMessageTypeIcon = LogicPOS.Settings.GeneralSettings.Settings["fileImageDialogBaseMessageTypeIcon"];
             string fileImagePath = string.Format(fileImageDialogBaseMessageTypeIcon, Enum.GetName(typeof(MessageType), pMessageType).ToLower());
 
             TouchButtonIconWithText button = new TouchButtonIconWithText("touchButton_DialogActionArea", _colorBaseDialogActionAreaButtonBackground, pButtonLabel, _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, _fileActionOK, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height);
@@ -61,7 +61,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private void InitObject(Window pSourceWindow, DialogFlags pDialogFlags, System.Drawing.Size pSize, string pTitle, string pMessage, ActionAreaButtons pActionAreaButtons, string pImageWindowIcon, string pImageDialog = "")
         {
             //Init Local Vars
-            string windowTitle = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_message_dialog");
+            string windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_message_dialog");
             System.Drawing.Size windowSize = pSize;
             string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_default.png";
 

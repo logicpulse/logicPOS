@@ -90,7 +90,7 @@ namespace logicpos.shared
                 foreach (Guid item in SharedFramework.SessionApp.LoggedUsers.Keys)
                 {
                     sys_userdetail user = (sys_userdetail)datalayer.App.DataLayerUtils.GetXPGuidObject(typeof(sys_userdetail), item);
-                    SharedUtils.Audit("USER_loggerOUT", string.Format(resources.CustomResources.GetCustomResource(datalayer.App.DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_used_forced_loggerout"), user.Name));
+                    SharedUtils.Audit("USER_loggerOUT", string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "audit_message_used_forced_loggerout"), user.Name));
                 }
                 SharedFramework.SessionApp.LoggedUsers.Clear();
             }

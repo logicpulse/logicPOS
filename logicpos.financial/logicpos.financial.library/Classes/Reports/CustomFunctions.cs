@@ -130,9 +130,9 @@ namespace logicpos.financial.library.Classes.Reports
             //Session
             customVars.Add("SESSION_loggerGED_USER", string.Empty);//Not Yet Assigned (BootStrap), This is Assigned on Report Constructor
 
-            if (DataLayerFramework.Settings["POS_CURRENTTERMINAL"] != null)
+            if (LogicPOS.Settings.GeneralSettings.Settings["POS_CURRENTTERMINAL"] != null)
             {
-                customVars.Add("SESSION_loggerGED_TERMINAL", DataLayerFramework.Settings["POS_CURRENTTERMINAL"]);
+                customVars.Add("SESSION_loggerGED_TERMINAL", LogicPOS.Settings.GeneralSettings.Settings["POS_CURRENTTERMINAL"]);
             }
 
              SharedFramework.FastReportCustomVars = customVars;
@@ -183,7 +183,7 @@ namespace logicpos.financial.library.Classes.Reports
                   : string.Format("UNDEFINED [{0}]", resourceName);
                 if(resourceName == "global_documentfinance_type_title_fs")
                 {
-                    result = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type_title_fs");
+                    result = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_documentfinance_type_title_fs");
                 }
 
                 //_logger.Debug(string.Format("Message: [{0}]", resourceName));
@@ -219,8 +219,8 @@ namespace logicpos.financial.library.Classes.Reports
         {
             try
             {
-                string result = (LogicPOS.Settings.AppSettings.PreferenceParameters.ContainsKey(pToken.ToUpper()))
-                  ? LogicPOS.Settings.AppSettings.PreferenceParameters[pToken.ToUpper()]
+                string result = (LogicPOS.Settings.GeneralSettings.PreferenceParameters.ContainsKey(pToken.ToUpper()))
+                  ? LogicPOS.Settings.GeneralSettings.PreferenceParameters[pToken.ToUpper()]
                   : string.Format("UNDEFINED [{0}]", pToken);
 
                 return result;

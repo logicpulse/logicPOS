@@ -17,7 +17,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         public override TouchButtonBase InitializeButton()
         {
             //Settings
-            string fontTableDialogTableNumber = DataLayerFramework.Settings["fontTableDialogTableNumber"];
+            string fontTableDialogTableNumber = LogicPOS.Settings.GeneralSettings.Settings["fontTableDialogTableNumber"];
 
             TableStatus tableStatus = (_resultRow.Values[_fieldIndex["status"]] != null) ? (TableStatus)Convert.ToInt16(_resultRow.Values[_fieldIndex["status"]]) : TableStatus.Free;
             decimal total = (_resultRow.Values[_fieldIndex["total"]] != null) ? Convert.ToDecimal(_resultRow.Values[_fieldIndex["total"]]) : Convert.ToDecimal(0);

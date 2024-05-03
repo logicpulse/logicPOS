@@ -107,7 +107,7 @@ namespace logicpos.financial.library.Classes.Finance
                 }
 
                 //Audit
-                SharedUtils.Audit("EXPORT_SAF-T", string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_export_saft"), fileName, _documentDateStart.ToString(SharedSettings.DateFormat), _documentDateEnd.ToString(SharedSettings.DateFormat)));
+                SharedUtils.Audit("EXPORT_SAF-T", string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "audit_message_export_saft"), fileName, _documentDateStart.ToString(SharedSettings.DateFormat), _documentDateEnd.ToString(SharedSettings.DateFormat)));
 
                 return fileName;
             }
@@ -136,20 +136,20 @@ namespace logicpos.financial.library.Classes.Finance
                 //    ,LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_CIVIL_REGISTRATION"].Replace(' ', '_')
                 //    ,LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_CIVIL_REGISTRATION_ID"].Replace(' ', '_')
                 //);
-                string companyID = LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_FISCALNUMBER"];
+                string companyID = LogicPOS.Settings.GeneralSettings.PreferenceParameters["COMPANY_FISCALNUMBER"];
                 WriteElement("CompanyID", companyID);
-                WriteElement("TaxRegistrationNumber", LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_FISCALNUMBER"]);
+                WriteElement("TaxRegistrationNumber", LogicPOS.Settings.GeneralSettings.PreferenceParameters["COMPANY_FISCALNUMBER"]);
                 WriteElement("TaxAccountingBasis", SharedSettings.TaxAccountingBasis);
-                WriteElement("CompanyName", LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_NAME"]);
-                WriteElement("BusinessName", LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_BUSINESS_NAME"]);
+                WriteElement("CompanyName", LogicPOS.Settings.GeneralSettings.PreferenceParameters["COMPANY_NAME"]);
+                WriteElement("BusinessName", LogicPOS.Settings.GeneralSettings.PreferenceParameters["COMPANY_BUSINESS_NAME"]);
 
                 //<CompanyAddress>
                 _xmlWriter.WriteStartElement("CompanyAddress");
-                WriteElement("AddressDetail", LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_ADDRESS"]);
-                WriteElement("City", LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_CITY"]);
-                WriteElement("PostalCode", LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_POSTALCODE"]);
-                WriteElement("Region", LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_REGION"]);
-                WriteElement("Country", LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_COUNTRY_CODE2"]);
+                WriteElement("AddressDetail", LogicPOS.Settings.GeneralSettings.PreferenceParameters["COMPANY_ADDRESS"]);
+                WriteElement("City", LogicPOS.Settings.GeneralSettings.PreferenceParameters["COMPANY_CITY"]);
+                WriteElement("PostalCode", LogicPOS.Settings.GeneralSettings.PreferenceParameters["COMPANY_POSTALCODE"]);
+                WriteElement("Region", LogicPOS.Settings.GeneralSettings.PreferenceParameters["COMPANY_REGION"]);
+                WriteElement("Country", LogicPOS.Settings.GeneralSettings.PreferenceParameters["COMPANY_COUNTRY_CODE2"]);
                 _xmlWriter.WriteEndElement();
                 //</CompanyAddress>
 
@@ -158,16 +158,16 @@ namespace logicpos.financial.library.Classes.Finance
                 WriteElement("EndDate", _documentDateEnd.ToString(_dateTimeFormatDocumentDate));
                 WriteElement("CurrencyCode", SharedSettings.SaftCurrencyCode);
                 WriteElement("DateCreated", _currentDate.ToString(_dateTimeFormatDocumentDate));
-                WriteElement("TaxEntity", LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_TAX_ENTITY"]);
+                WriteElement("TaxEntity", LogicPOS.Settings.GeneralSettings.PreferenceParameters["COMPANY_TAX_ENTITY"]);
                 WriteElement("ProductCompanyTaxID", SharedSettings.SaftProductCompanyTaxID);
                 WriteElement("SoftwareCertificateNumber", SharedSettings.SaftSoftwareCertificateNumber);
                 WriteElement("ProductID", SharedSettings.SaftProductID);
                 WriteElement("ProductVersion", SharedUtils.ProductVersion);
                 //WriteElement("HeaderComment", "Comentários ao SAFT exportado");
-                WriteElement("Telephone", LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_TELEPHONE"]);
-                WriteElement("Fax", LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_FAX"]);
-                WriteElement("Email", LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_EMAIL"]);
-                WriteElement("Website", LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_WEBSITE"]);
+                WriteElement("Telephone", LogicPOS.Settings.GeneralSettings.PreferenceParameters["COMPANY_TELEPHONE"]);
+                WriteElement("Fax", LogicPOS.Settings.GeneralSettings.PreferenceParameters["COMPANY_FAX"]);
+                WriteElement("Email", LogicPOS.Settings.GeneralSettings.PreferenceParameters["COMPANY_EMAIL"]);
+                WriteElement("Website", LogicPOS.Settings.GeneralSettings.PreferenceParameters["COMPANY_WEBSITE"]);
 
                 //</Header>
                 _xmlWriter.WriteEndElement();
@@ -325,15 +325,15 @@ namespace logicpos.financial.library.Classes.Finance
                     {
                         WriteElement("CustomerID", _defaultCustomer.CodeInternal);
                     }
-                    WriteElement("AccountID", row.Values[xPSelectData.GetFieldIndex("AccountID")], resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
-                    WriteElement("CustomerTaxID", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("CustomerTaxID")]), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
-                    WriteElement("CompanyName", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("CompanyName")]), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
+                    WriteElement("AccountID", row.Values[xPSelectData.GetFieldIndex("AccountID")], resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
+                    WriteElement("CustomerTaxID", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("CustomerTaxID")]), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
+                    WriteElement("CompanyName", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("CompanyName")]), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
                     //<BillingAddress>
                     _xmlWriter.WriteStartElement("BillingAddress");
-                    WriteElement("AddressDetail", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("AddressDetail")]), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
-                    WriteElement("City", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("City")]), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
-                    WriteElement("PostalCode", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("PostalCode")]), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
-                    WriteElement("Country", row.Values[xPSelectData.GetFieldIndex("Country")], resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
+                    WriteElement("AddressDetail", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("AddressDetail")]), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
+                    WriteElement("City", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("City")]), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
+                    WriteElement("PostalCode", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("PostalCode")]), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
+                    WriteElement("Country", row.Values[xPSelectData.GetFieldIndex("Country")], resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
                     _xmlWriter.WriteEndElement();
                     //</BillingAddress>
                     WriteElement("Telephone", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("Telephone")]));
@@ -379,15 +379,15 @@ namespace logicpos.financial.library.Classes.Finance
             //<Customer>
             _xmlWriter.WriteStartElement("Customer");
             WriteElement("CustomerID", _defaultCustomer.CodeInternal);
-            WriteElement("AccountID", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
+            WriteElement("AccountID", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
             WriteElement("CustomerTaxID", _defaultCustomer.FiscalNumber);
-            WriteElement("CompanyName", _defaultCustomer.Name, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
+            WriteElement("CompanyName", _defaultCustomer.Name, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
             //<BillingAddress>
             _xmlWriter.WriteStartElement("BillingAddress");
-            WriteElement("AddressDetail", _defaultCustomer.Address, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
-            WriteElement("City", _defaultCustomer.City, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
-            WriteElement("PostalCode", _defaultCustomer.ZipCode, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
-            WriteElement("Country", _defaultCustomer.Country.Code2, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
+            WriteElement("AddressDetail", _defaultCustomer.Address, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
+            WriteElement("City", _defaultCustomer.City, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
+            WriteElement("PostalCode", _defaultCustomer.ZipCode, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
+            WriteElement("Country", _defaultCustomer.Country.Code2, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
             _xmlWriter.WriteEndElement();
             //</BillingAddress>
             WriteElement("SelfBillingIndicator", 0);

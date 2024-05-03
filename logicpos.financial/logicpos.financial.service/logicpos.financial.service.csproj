@@ -58,7 +58,6 @@
   <ItemGroup>
     <Compile Include="App\FinancialServiceSettings.cs" />
     <Compile Include="Objects\Modules\AT\ServicesAT.cs" />
-    <Compile Include="Objects\Modules\AT\ServicesATSoapResult.cs" />
     <Compile Include="Objects\Service\IService1.cs" />
     <Compile Include="Objects\Service\Service.cs">
       <SubType>Component</SubType>
@@ -69,7 +68,6 @@
     <Compile Include="Objects\Utils\Utils.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Test\Modules\AT\TestSendDocuments.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -100,6 +98,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\LogicPOS.DTOs\LogicPOS.DTOs.csproj">
+      <Project>{e23bdf58-f0a9-40ac-acce-57235fb7a7f1}</Project>
+      <Name>LogicPOS.DTOs</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\logicpos.plugins\logicpos.plugin.contracts\logicpos.plugin.contracts.csproj">
       <Project>{43c879d1-31ae-424f-91d1-92cf286d5497}</Project>
       <Name>logicpos.plugin.contracts</Name>
@@ -132,6 +134,9 @@
     <PackageReference Include="log4net">
       <Version>2.0.17</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Test\Modules\AT\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

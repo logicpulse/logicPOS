@@ -1,28 +1,23 @@
 ﻿using DevExpress.Data.Filtering;
 using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
-using DevExpress.Xpo.Metadata;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using logicpos.shared.Classes.Finance;
 using logicpos.shared.Classes.Orders;
-using logicpos.shared.Classes.Others;
 using logicpos.shared.Enums;
+using LogicPOS.DTOs.Common;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Security.Cryptography;
-using System.ServiceModel.Configuration;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -33,38 +28,10 @@ namespace logicpos.shared.App
         //Log4Net
         private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Strings
-
-        public static string RemoveCarriageReturn(string pInput)
-        {
-            return pInput.Replace("\r\n", string.Empty);
-        }
-
-        public static string RemoveExtraWhiteSpaces(string pInput)
-        {
-            return Regex.Replace(pInput, @"\s+", " ");
-        }
-
-        public static string RemoveCarriageReturnAndExtraWhiteSpaces(string pInput)
-        {
-            string result = RemoveCarriageReturn(RemoveExtraWhiteSpaces(pInput));
-
-            //Remove Initial Space if Exists
-            if (result.StartsWith(" "))
-            {
-                result = result.Substring(1, result.Length - 1);
-            }
-            return result;
-        }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //DateTime
 
         public static string CurrentDateTime(string pDateTimeFormat)
         {
             return DataLayerUtils.CurrentDateTimeAtomic().ToString(pDateTimeFormat, CultureInfo.GetCultureInfo(SharedFramework.CurrentCulture.Name));
-            //return CurrentDateTimeAtomic().ToString("F", System.Globalization.CultureInfo.GetCultureInfo(SharedFramework.CurrentCulture.Name));
         }
 
         public static DateTime CurrentDateTimeAtomicMidnight()
@@ -784,8 +751,8 @@ namespace logicpos.shared.App
                     //get AuditType Object
                     sys_systemaudittype xpoAuditType = (sys_systemaudittype)DataLayerUtils.GetXPGuidObject(typeof(sys_systemaudittype), guidAuditType);
                     string description = (pDescription != string.Empty) ? pDescription
-                      : (xpoAuditType.ResourceString != null && resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], xpoAuditType.ResourceString) != null)
-                      ? resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], xpoAuditType.ResourceString) : xpoAuditType.Designation;
+                      : (xpoAuditType.ResourceString != null && resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], xpoAuditType.ResourceString) != null)
+                      ? resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], xpoAuditType.ResourceString) : xpoAuditType.Designation;
 
                     sys_systemaudit systemAudit = new sys_systemaudit(pSession)
                     {
@@ -915,42 +882,13 @@ namespace logicpos.shared.App
             return Type.GetType("Mono.Runtime") != null;
         }
 
-        //Return os windows,unix,macosx
-        //http://docs.go-mono.com/index.aspx?link=T%3ASystem.PlatformID
-        public static string OSVersion()
-        {
-            OperatingSystem os = Environment.OSVersion;
-            PlatformID pid = os.Platform;
-
-            string result;
-            switch (pid)
-            {
-                case PlatformID.Win32NT:
-                case PlatformID.Win32S:
-                case PlatformID.Win32Windows:
-                case PlatformID.WinCE:
-                    result = "windows";
-                    break;
-                case PlatformID.Unix:
-                    result = "unix";
-                    break;
-                case PlatformID.MacOSX:
-                    result = "macosx";
-                    break;
-                default:
-                    result = string.Empty;
-                    break;
-            }
-            return result;
-        }
-
         public static bool UsePosPDFViewer()
         {
             bool result = false;
 
             try
             {
-                result = Convert.ToBoolean(LogicPOS.Settings.AppSettings.PreferenceParameters["USE_POS_PDF_VIEWER"]);
+                result = Convert.ToBoolean(LogicPOS.Settings.GeneralSettings.PreferenceParameters["USE_POS_PDF_VIEWER"]);
             }
             catch (Exception ex)
             {
@@ -1221,7 +1159,7 @@ namespace logicpos.shared.App
             try
             {
                 //Settings
-                string cultureFinancialRules = DataLayerFramework.Settings["cultureFinancialRules"];
+                string cultureFinancialRules = LogicPOS.Settings.GeneralSettings.Settings["cultureFinancialRules"];
 
                 //Local Vars
                 uint ord = 1;
@@ -1403,7 +1341,7 @@ namespace logicpos.shared.App
             int ignoreNotificationsAfterHaveBeenNotificatedNumberOfTimes = 0;
             try
             {
-                ignoreNotificationsAfterHaveBeenNotificatedNumberOfTimes = Convert.ToInt16(LogicPOS.Settings.AppSettings.PreferenceParameters["NOTIFICATION_DOCUMENTS_TO_INVOICE_IGNORE_AFTER_SHOW_NUMBER_OF_TIMES"]);
+                ignoreNotificationsAfterHaveBeenNotificatedNumberOfTimes = Convert.ToInt16(LogicPOS.Settings.GeneralSettings.PreferenceParameters["NOTIFICATION_DOCUMENTS_TO_INVOICE_IGNORE_AFTER_SHOW_NUMBER_OF_TIMES"]);
             }
             catch (Exception)
             {
@@ -1455,11 +1393,11 @@ namespace logicpos.shared.App
                             totalNotificatedDocuments++;
                             // Add To Message
                             documentsMessage += string.Format(
-                                "- {0} : {1} : {2} {3} : (#{4})", 
-                                item.DocumentNumber, item.Date, 
-                                documentBackUtilDays, 
-                                resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], 
-                                "global_day_days"), 
+                                "- {0} : {1} : {2} {3} : (#{4})",
+                                item.DocumentNumber, item.Date,
+                                documentBackUtilDays,
+                                resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"],
+                                "global_day_days"),
                                 item.Notifications.Count + 1);
 
                             //Add New Line if not Last Document
@@ -1587,19 +1525,22 @@ namespace logicpos.shared.App
                         //Cut Text
                         result.Text = pValue.Substring(0, pMaxLength);
                     }
-                    lengthLabelText = string.Format("{0}: {1}/{2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_characters"), result.Length, pMaxLength);
+                    lengthLabelText = string.Format("{0}: {1}/{2}", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_characters"), result.Length, pMaxLength);
                 }
+                var minWordLengthConsidered = Convert.ToInt16(LogicPOS.Settings.GeneralSettings.Settings["MinWordLengthConsidered"]);
 
-                result.Words = GetNumWords(result.Text);
+                result.Words = LogicPOS.Utility.StringUtils.GetNumWords(
+                    result.Text,
+                    minWordLengthConsidered);
 
                 if (pMaxWords > 0)
                 {
                     if (result.Words > pMaxWords)
                     {
                         result.Words = pMaxWords;
-                        result.Text = GetWords(result.Text, pMaxWords);
+                        result.Text = LogicPOS.Utility.StringUtils.GetWords(result.Text, pMaxWords);
                     }
-                    maxWordsLabelText = string.Format("{0}: {1}/{2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_words"), result.Words, pMaxWords);
+                    maxWordsLabelText = string.Format("{0}: {1}/{2}", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_words"), result.Words, pMaxWords);
                 }
 
                 if (result.Length > 0)
@@ -1708,127 +1649,6 @@ namespace logicpos.shared.App
             }
 
             return result;
-        }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        // SoftwareVendor
-
-        public static string GetSoftwareVendorValueAsString(string property, bool debug = false)
-        {
-            return Convert.ToString(GetPluginSoftwareVendorValue(property, debug));
-        }
-
-        public static int GetSoftwareVendorValueAsInt(string property, bool debug = false)
-        {
-            return Convert.ToInt16(GetPluginSoftwareVendorValue(property, debug));
-        }
-
-        public static bool GetSoftwareVendorValueAsBool(string property, bool debug = false)
-        {
-            return Convert.ToBoolean(GetPluginSoftwareVendorValue(property, debug));
-        }
-
-        public static object GetPluginSoftwareVendorValue(string property, bool debug = false)
-        {
-            object resultObject = null;
-
-            if (LogicPOS.Settings.PluginSettings.PluginSoftwareVendor != null)
-            {
-                Type thisType = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.GetType();
-                string methodName = string.Format("Get{0}", property);
-                MethodInfo methodInfo = thisType.GetMethod(methodName);
-                object[] methodParameters = null;
-                resultObject = methodInfo.Invoke(LogicPOS.Settings.PluginSettings.PluginSoftwareVendor, methodParameters);
-            }
-
-            if (debug) _logger.Debug(string.Format("SoftwareVendor {0} Value: [{1}]", property, resultObject));
-
-            if (resultObject != null)
-            {
-                return resultObject;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        // Words | Medianova
-
-        private static string PrepareCutWord(string pText)
-        {
-            //Init Local Vars
-            string tmpText = pText;
-
-            tmpText = tmpText.Replace('.', ' ');
-            tmpText = tmpText.Replace(',', ' ');
-            tmpText = tmpText.Replace(';', ' ');
-            tmpText = tmpText.Replace(':', ' ');
-            tmpText = tmpText.Replace('+', ' ');
-            tmpText = tmpText.Replace('/', ' ');
-            tmpText = tmpText.Replace('$', ' ');
-            tmpText = tmpText.Replace('=', ' ');
-            tmpText = tmpText.Replace('#', ' ');
-            tmpText = tmpText.Replace('"', ' ');
-            tmpText = tmpText.Replace('!', ' ');
-
-            return (tmpText);
-        }
-
-        //Refactored to be equal to JavaScript Function Names
-        //Mario changes from "private" to "public static" to access outside, ex from components
-        //public static int CountWords(string pText)
-        public static int GetNumWords(string pText)
-        {
-            int result = 0;
-            int minWordLengthConsidered = Convert.ToInt16(DataLayerFramework.Settings["MinWordLengthConsidered"]);
-
-            //Require to pass string to PreparedCutWord 
-            string text = PrepareCutWord(pText);
-
-            text = text.Replace("\n", " ");
-            string[] res = text.Split(' ');
-            for (int i = 0; i < res.Length; i++)
-            {
-                if (res[i] != "")
-                {
-                    if (res[i].Length >= minWordLengthConsidered)
-                    {
-                        result++;
-                    }
-                }
-            }
-
-            return (result);
-        }
-
-        public static string GetWords(string pText, int pNoWords)
-        {
-            string result = string.Empty;
-
-            int minWordLengthConsidered = Convert.ToInt16(DataLayerFramework.Settings["MinWordLengthConsidered"]);
-
-            pText = pText.Replace("\n", " ");
-            pText = pText.Replace(".", " ");
-            pText = pText.Replace(",", " ");
-            pText = pText.Replace(";", " ");
-            pText = pText.Replace(":", " ");
-            pText = pText.Replace("+", " ");
-            pText = pText.Replace("/", " ");
-            pText = pText.Replace("$", " ");
-            pText = pText.Replace("=", " ");
-            pText = pText.Replace("#", " ");
-            pText = pText.Replace("\\", " ");
-            pText = pText.Replace("!", " ");
-            string[] res = pText.Split(' ');
-            for (int i = 0; i < pNoWords; i++)
-            {
-                result += res[i];
-                if (i < pNoWords - 1) result += " ";
-            }
-
-            return (result);
         }
     }
 }

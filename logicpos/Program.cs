@@ -34,7 +34,7 @@ namespace logicpos
 
         public static void InitializeSettings()
         {
-            DataLayerFramework.Settings = ConfigurationManager.AppSettings;
+            LogicPOS.Settings.GeneralSettings.Settings = ConfigurationManager.AppSettings;
         }
 
         public static void InitializeGtk()
@@ -87,7 +87,7 @@ namespace logicpos
                     }
                     else
                     {
-                        Utils.ShowMessageNonTouch(null, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_pos_instance_already_running"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_information"));
+                        Utils.ShowMessageNonTouch(null, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_pos_instance_already_running"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_information"));
                         return;
                     }
                 }
@@ -205,11 +205,11 @@ namespace logicpos
                 if (Utils.OSHasCulture(cultureFromDb) == false)
                 {
                     SharedFramework.CurrentCulture = new CultureInfo("pt-PT");
-                    DataLayerFramework.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
+                    LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
                 }
                 else
                 {
-                    DataLayerFramework.Settings["customCultureResourceDefinition"] = cultureFromDb;
+                    LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"] = cultureFromDb;
                     SharedFramework.CurrentCulture = new System.Globalization.CultureInfo(cultureFromDb);
                 }
 
@@ -220,15 +220,15 @@ namespace logicpos
                 if (!Utils.OSHasCulture(ConfigurationManager.AppSettings["customCultureResourceDefinition"]))
                 {
                     SharedFramework.CurrentCulture = new CultureInfo("pt-PT");
-                    DataLayerFramework.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
+                    LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
                 }
                 else
                 {
-                    SharedFramework.CurrentCulture = new CultureInfo(DataLayerFramework.Settings["customCultureResourceDefinition"]);
-                    DataLayerFramework.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
+                    SharedFramework.CurrentCulture = new CultureInfo(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"]);
+                    LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
                 }
 
-                _logger.Error(string.Format("Missing Culture in DataBase or DB not created yet, using {0} from config.", DataLayerFramework.Settings["customCultureResourceDefinition"]));
+                _logger.Error(string.Format("Missing Culture in DataBase or DB not created yet, using {0} from config.", LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"]));
             }
         }
     }

@@ -149,11 +149,11 @@ namespace logicpos
             {
                 case ReplaceType.Config:
                     patternPrefix = "Cfg";
-                    if (pInput.Contains(string.Format("{0}[", patternPrefix))) funcGetValue = (x) => DataLayerFramework.Settings[x];
+                    if (pInput.Contains(string.Format("{0}[", patternPrefix))) funcGetValue = (x) => LogicPOS.Settings.GeneralSettings.Settings[x];
                     break;
                 case ReplaceType.Resource:
                     patternPrefix = "Resx";
-                    if (pInput.Contains(string.Format("{0}[", patternPrefix))) funcGetValue = (x) => resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], x);
+                    if (pInput.Contains(string.Format("{0}[", patternPrefix))) funcGetValue = (x) => resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], x);
                     break;
                 case ReplaceType.Evaluation:
                     patternPrefix = "Eval";

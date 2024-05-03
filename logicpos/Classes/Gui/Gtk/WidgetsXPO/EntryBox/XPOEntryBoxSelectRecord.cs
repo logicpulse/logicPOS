@@ -388,10 +388,10 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                 }
                 
 
-                pEntry.Text = (value != null) ? value.ToString() : resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
+                pEntry.Text = (value != null) ? value.ToString() : resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error");
 
-                pEntryCode.Text = (value != null) ? value.Code.ToString() : resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
-                pEntryQtd.Text = (value != null) ? value.DefaultQuantity.ToString() : resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
+                pEntryCode.Text = (value != null) ? value.Code.ToString() : resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error");
+                pEntryQtd.Text = (value != null) ? value.DefaultQuantity.ToString() : resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error");
                 
                 OnClosePopup();
             }
@@ -493,7 +493,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                 }
                 else
                 {
-                    pEntry.Text = (value != null) ? value.ToString() : resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
+                    pEntry.Text = (value != null) ? value.ToString() : resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error");
                 }           
                 OnClosePopup();
             }
@@ -525,7 +525,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                   dialog = new PosSelectRecordDialog<XPCollection, XPGuidObject, T2>(
                     _sourceWindow,
                     DialogFlags.DestroyWithParent,
-                    resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_select_record"),
+                    resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_select_record"),
                     _dialogSize,
                     _value,
                     CriteriaOperator,
@@ -608,7 +608,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                 {
                     pEntry.Text = (value != null) ? value.ToString() : "";
                 }
-                 //resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
+                 //resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error");
             }
             if (typeof(T2) == typeof(TreeViewArticleWarehouse))
             {
@@ -665,7 +665,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
 
                 List<string> result = new List<string>();
 				//Titulo nas janelas de filtro de relatório [IN:014328]
-                PosReportsQueryDialog dialogFilter = new PosReportsQueryDialog(dialog, DialogFlags.DestroyWithParent, ReportsQueryDialogMode.FILTER_DOCUMENTS_PAGINATION, "fin_documentfinancemaster", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_report_filter"));
+                PosReportsQueryDialog dialogFilter = new PosReportsQueryDialog(dialog, DialogFlags.DestroyWithParent, ReportsQueryDialogMode.FILTER_DOCUMENTS_PAGINATION, "fin_documentfinancemaster", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_report_filter"));
                 DialogResponseType responseFilter = (DialogResponseType)dialogFilter.Run();
 
                 //If button Clean Filter Clicked

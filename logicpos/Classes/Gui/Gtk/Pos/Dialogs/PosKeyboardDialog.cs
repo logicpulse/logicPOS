@@ -31,7 +31,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public PosKeyboardDialog(Window pSourceWindow, DialogFlags pDialogFlags, KeyboardMode pKeyboardMode, string pTextEntry, string pValidationRule) : base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
-            string windowTitle = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_virtual_keyboard");
+            string windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_virtual_keyboard");
             Size windowSize = new Size(916, 358);
             string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_keyboard.png";
             string fileKeyboardXML = DataLayerFramework.Path["keyboards"] + @"163.xml";
@@ -67,7 +67,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         //Override Responses - Required to Keep Keyboard in Memory
         protected override void OnResponse(ResponseType pResponse)
         {
-            bool useBaseDialogWindowMask = Convert.ToBoolean(DataLayerFramework.Settings["useBaseDialogWindowMask"]);
+            bool useBaseDialogWindowMask = Convert.ToBoolean(LogicPOS.Settings.GeneralSettings.Settings["useBaseDialogWindowMask"]);
 
             if (useBaseDialogWindowMask && this.WindowMaskBackground.Visible) this.WindowMaskBackground.Hide();
 

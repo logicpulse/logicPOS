@@ -69,8 +69,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                 if (ex.InnerException.HResult == -2146232060)
                 {
                     string data = getBetween(ex.InnerException.Message, "(", ")");
-                    string message = string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_duplicated_key"), data);
-                    logicpos.Utils.ShowMessageTouch(GlobalApp.BackOfficeMainWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_exception_error"), message);
+                    string message = string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_error_duplicated_key"), data);
+                    logicpos.Utils.ShowMessageTouch(GlobalApp.BackOfficeMainWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_exception_error"), message);
                 }
                 //END IN009220
                 else
@@ -80,7 +80,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         GlobalApp.BackOfficeMainWindow,
                         DialogFlags.DestroyWithParent | DialogFlags.Modal,
                         MessageType.Warning, ButtonsType.Close,
-                        resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_exception_error"),
+                        resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_exception_error"),
                         (ex.InnerException.Message != null) ? ex.InnerException.Message : ex.Message
                         );
                 }

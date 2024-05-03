@@ -1,13 +1,12 @@
-﻿using logicpos.plugin.contracts;
-using logicpos.shared.Classes.Utils;
-using acme.softwarevendor.plugin.App;
+﻿using acme.softwarevendor.plugin.App;
+using logicpos;
+using logicpos.datalayer.App;
+using logicpos.plugin.contracts;
+using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using logicpos;
 using System.Security.Cryptography.X509Certificates;
-using logicpos.shared.App;
-using logicpos.datalayer.App;
 
 namespace acme.softwarevendor.plugin
 {
@@ -210,7 +209,7 @@ namespace acme.softwarevendor.plugin
             {
                 try
                 {
-                    result = Utils.ZipPack(files, fileDestination, AcmeSettings.BackupPassword);
+                    result = LogicPOS.Utility.Compression.ZipPack(files, fileDestination, AcmeSettings.BackupPassword);
                 }
                 catch (Exception ex)
                 {
@@ -229,7 +228,7 @@ namespace acme.softwarevendor.plugin
             {
                 try
                 {
-                    result = Utils.ZipUnPack(fileName, destinationPath, AcmeSettings.BackupPassword, flattenFoldersOnExtract);
+                    result = LogicPOS.Utility.Compression.ZipUnPack(fileName, destinationPath, AcmeSettings.BackupPassword, flattenFoldersOnExtract);
                 }
                 catch (Exception ex)
                 {
@@ -262,11 +261,11 @@ namespace acme.softwarevendor.plugin
                 stream = GetType().Module.Assembly.GetManifestResourceStream(resourceReportLocation);
                 string reportContent = SharedUtils.StreamToString(stream);
 
-                string randomPrefix = Utils.GenerateRandomString(8);
+                string randomPrefix = LogicPOS.Utility.StringUtils.GenerateRandomString(8);
                 string targetTemplateFileName = $"{randomPrefix}.{templateBase}";
-                string targetTemplateFilePath = SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["temp"], targetTemplateFileName));
+                string targetTemplateFilePath = $"{DataLayerFramework.Path["temp"]}{targetTemplateFileName}";
                 string targetReportFileName = $"{randomPrefix}.{reportName}";
-                string targetReportFilePath = SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["temp"], targetReportFileName));
+                string targetReportFilePath = $"{DataLayerFramework.Path["temp"]}{targetReportFileName}";
 
                 // Replace templateBase (TemplateBase.frx) with targetTemplateFileName, WE MUST Change Template Name in Template Childs Sub Reports
                 if (reportContent.Contains(templateBase))
@@ -304,7 +303,7 @@ namespace acme.softwarevendor.plugin
 
         public void ValidateEmbeddedResources()
         {
-             bool debug = false;
+            bool debug = false;
             string resourcePathLocation = "Resources/Reports/UserReports/";
             string resourceBaseLocation = "acme.softwarevendor.plugin.Resources.Reports.UserReports.{0}";
             string[] files = Directory.GetFiles(resourcePathLocation, "*.frx");
@@ -381,12 +380,12 @@ namespace acme.softwarevendor.plugin
             //From user installed Certificates
             //cert.Import(_pathCertificate, _passwordCertificate, X509KeyStorageFlags.DefaultKeySet);
             //From FileSystem "Resources\Certificates"
-            string password = (testModeEnabled) 
+            string password = (testModeEnabled)
                 ? AcmeSettings.AppSoftwareATWSProdModeCertificatePassword
                 : AcmeSettings.AppSoftwareATWSTestModeCertificatePassword;
             //Import Certificate
             cert.Import(pathCertificate, password, X509KeyStorageFlags.Exportable);
-            
+
             return cert;
         }
 

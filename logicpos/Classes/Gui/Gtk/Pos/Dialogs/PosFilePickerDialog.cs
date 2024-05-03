@@ -38,7 +38,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _fileChooserAction = pFileChooserAction;
 
             //Init Local Vars
-            string windowTitle = string.Format("{0} {1}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_filepicker"), windowName);
+            string windowTitle = string.Format("{0} {1}", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_filepicker"), windowName);
             _windowSize = new Size(700, 473);
             string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_select_record.png";
 
@@ -66,7 +66,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private void InitUI()
         {
             //Init Font Description
-            Pango.FontDescription fontDescription = Pango.FontDescription.FromString(DataLayerFramework.Settings["fontEntryBoxValue"]);
+            Pango.FontDescription fontDescription = Pango.FontDescription.FromString(LogicPOS.Settings.GeneralSettings.Settings["fontEntryBoxValue"]);
             //Init FileChooserWidget
             FilePicker = new FileChooserWidget(_fileChooserAction, "none");
             if (_fileFilter != null) FilePicker.Filter = _fileFilter;

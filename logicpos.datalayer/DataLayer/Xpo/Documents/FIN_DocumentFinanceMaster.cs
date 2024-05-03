@@ -1,5 +1,7 @@
 ﻿using DevExpress.Xpo;
 using System;
+using System.Data;
+using System.Text;
 
 namespace logicpos.datalayer.DataLayer.Xpo
 {
@@ -695,28 +697,28 @@ namespace logicpos.datalayer.DataLayer.Xpo
             get { return GetCollection<sys_systemprint>("SystemPrint"); }
         }
 
-////SystemNotification One <> Many DocumentFinanceMaster
-//sys_systemnotification fNotification;
-//[Association(@"SystemNotificationReferencesDocumentFinanceMaster")]
-//public sys_systemnotification Notification
-//{
-//    get { return fNotification; }
-//    set { SetPropertyValue<sys_systemnotification>("Notification", ref fNotification, value); }
-//}
+        ////SystemNotification One <> Many DocumentFinanceMaster
+        //sys_systemnotification fNotification;
+        //[Association(@"SystemNotificationReferencesDocumentFinanceMaster")]
+        //public sys_systemnotification Notification
+        //{
+        //    get { return fNotification; }
+        //    set { SetPropertyValue<sys_systemnotification>("Notification", ref fNotification, value); }
+        //}
 
-////SystemNotification One <> Many DocumentFinanceMaster
-//[Association(@"SystemNotificationReferencesDocumentFinanceMaster", typeof(sys_systemnotification))]
-//public XPCollection<sys_systemnotification> Notification
-//{
-//    get { return GetCollection<sys_systemnotification>("Notification"); }
-//}
+        ////SystemNotification One <> Many DocumentFinanceMaster
+        //[Association(@"SystemNotificationReferencesDocumentFinanceMaster", typeof(sys_systemnotification))]
+        //public XPCollection<sys_systemnotification> Notification
+        //{
+        //    get { return GetCollection<sys_systemnotification>("Notification"); }
+        //}
 
-////DocumentFinanceMaster Many <> Many SystemNotification
-//[Association(@"DocumentFinanceMasterReferenceSystemNotification", typeof(sys_systemnotification))]
-//public XPCollection<sys_systemnotification> Notification
-//{
-//    get { return GetCollection<sys_systemnotification>("Notification"); }
-//}
+        ////DocumentFinanceMaster Many <> Many SystemNotification
+        //[Association(@"DocumentFinanceMasterReferenceSystemNotification", typeof(sys_systemnotification))]
+        //public XPCollection<sys_systemnotification> Notification
+        //{
+        //    get { return GetCollection<sys_systemnotification>("Notification"); }
+        //}
 
         //SystemNotification One <> Many DocumentFinanceMaster
         [Association(@"DocumentFinanceMasterReferenceSystemNotification", typeof(sys_systemnotificationdocumentmaster))]
@@ -724,5 +726,26 @@ namespace logicpos.datalayer.DataLayer.Xpo
         {
             get { return GetCollection<sys_systemnotificationdocumentmaster>("Notifications"); }
         }
+
+        public string IncreaseDocumentNumber()
+        {
+            string result = string.Empty;
+
+            try
+            {
+                string documentNumber = this.DocumentNumber;
+                string[] split = documentNumber.Split('/');
+                int number = Convert.ToInt16(split[1]) + 1;
+                this.DocumentNumber = string.Format("{0}/{1}", split[0], number);
+                this.Save();
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+            }
+
+            return result;
+        }
+
     }
 }

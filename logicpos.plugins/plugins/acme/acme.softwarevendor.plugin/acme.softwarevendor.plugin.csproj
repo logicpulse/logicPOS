@@ -59,9 +59,17 @@
       <Project>{42af3be2-44b4-477d-8e45-55c64992b805}</Project>
       <Name>logicpos.datalayer</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\..\LogicPOS.Settings\LogicPOS.Settings.csproj">
+      <Project>{a4e7f0ea-8360-41f2-a625-517f6e943a29}</Project>
+      <Name>LogicPOS.Settings</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\..\logicpos.shared\logicpos.shared.csproj">
       <Project>{fb74327c-1794-47ec-8f52-fd3f464f3258}</Project>
       <Name>logicpos.shared</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\LogicPOS.Utility\LogicPOS.Utility.csproj">
+      <Project>{18488ce5-c06f-40f5-9339-0467a47d7985}</Project>
+      <Name>LogicPOS.Utility</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\logicpos.plugin.contracts\logicpos.plugin.contracts.csproj">
       <Project>{43c879d1-31ae-424f-91d1-92cf286d5497}</Project>

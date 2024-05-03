@@ -56,9 +56,9 @@ namespace logicpos
             try
             {
                 // startupWindow.Objects.TablePadUser
-                Size startupWindowObjectsTablePadUserMarginLeftTopSize = Utils.StringToSize(DataLayerFramework.Settings["sizeStartupWindowObjectsTablePadUserMarginLeftTop"]);//new Size(120, 120);// Add to Config
-                Size startupWindowObjectsTablePadUserButtonSize = Utils.StringToSize(DataLayerFramework.Settings["sizeStartupWindowObjectsTablePadUserButton"]);//new Size(120, 102);// Add to Config
-                Size startupWindowObjectsTablePadUserTablePadUserButtonPrevSize = Utils.StringToSize(DataLayerFramework.Settings["sizeStartupWindowObjectsTablePadUserTablePadUserButtonPrev"]);//new Size(120, 60);// Add to Config
+                Size startupWindowObjectsTablePadUserMarginLeftTopSize = Utils.StringToSize(LogicPOS.Settings.GeneralSettings.Settings["sizeStartupWindowObjectsTablePadUserMarginLeftTop"]);//new Size(120, 120);// Add to Config
+                Size startupWindowObjectsTablePadUserButtonSize = Utils.StringToSize(LogicPOS.Settings.GeneralSettings.Settings["sizeStartupWindowObjectsTablePadUserButton"]);//new Size(120, 102);// Add to Config
+                Size startupWindowObjectsTablePadUserTablePadUserButtonPrevSize = Utils.StringToSize(LogicPOS.Settings.GeneralSettings.Settings["sizeStartupWindowObjectsTablePadUserTablePadUserButtonPrev"]);//new Size(120, 60);// Add to Config
 
                 int startupWindowObjectsTablePadUserTableConfigRows = Convert.ToInt16(
                     (
@@ -76,17 +76,17 @@ namespace logicpos
                 GlobalApp.ExpressionEvaluator.Variables.Add("startupWindowObjectsTablePadUserTableConfigRows", startupWindowObjectsTablePadUserTableConfigRows);
 
                 // startupWindow.Objects.NumberPadPin
-                int startupWindowObjectsNumberPadPinRight = Convert.ToInt16(DataLayerFramework.Settings["intStartupWindowObjectsNumberPadPinRight"]);//120;// Add to Config
-                Size startupWindowObjectsNumberPadPinSize = Utils.StringToSize(DataLayerFramework.Settings["sizeStartupWindowObjectsNumberPadPin"]);//new Size(315, 434);// Add to Config
-                Size startupWindowObjectsNumberPadPinButtonSize = Utils.StringToSize(DataLayerFramework.Settings["sizeStartupWindowObjectsNumberPadPinButton"]);//new Size(99, 59);// Add to Config
+                int startupWindowObjectsNumberPadPinRight = Convert.ToInt16(LogicPOS.Settings.GeneralSettings.Settings["intStartupWindowObjectsNumberPadPinRight"]);//120;// Add to Config
+                Size startupWindowObjectsNumberPadPinSize = Utils.StringToSize(LogicPOS.Settings.GeneralSettings.Settings["sizeStartupWindowObjectsNumberPadPin"]);//new Size(315, 434);// Add to Config
+                Size startupWindowObjectsNumberPadPinButtonSize = Utils.StringToSize(LogicPOS.Settings.GeneralSettings.Settings["sizeStartupWindowObjectsNumberPadPinButton"]);//new Size(99, 59);// Add to Config
 
                 GlobalApp.ExpressionEvaluator.Variables.Add("startupWindowObjectsNumberPadPinRight", startupWindowObjectsNumberPadPinRight);
                 GlobalApp.ExpressionEvaluator.Variables.Add("startupWindowObjectsNumberPadPinSize", startupWindowObjectsNumberPadPinSize);
                 GlobalApp.ExpressionEvaluator.Variables.Add("startupWindowObjectsNumberPadPinButtonSize", startupWindowObjectsNumberPadPinButtonSize);
 
                 // startupWindow.Objects.LabelVersion
-                Size startupWindowObjectsLabelVersionSize = Utils.StringToSize(DataLayerFramework.Settings["sizeStartupWindowObjectsLabelVersion"]);//new Size(307, 50);// Add to Config
-                Size startupWindowObjectsLabelVersionSizeMarginRightBottomSize = Utils.StringToSize(DataLayerFramework.Settings["sizeStartupWindowObjectsLabelVersionSizeMarginRightBottom"]);//new Size(124, 128);// Add to Config
+                Size startupWindowObjectsLabelVersionSize = Utils.StringToSize(LogicPOS.Settings.GeneralSettings.Settings["sizeStartupWindowObjectsLabelVersion"]);//new Size(307, 50);// Add to Config
+                Size startupWindowObjectsLabelVersionSizeMarginRightBottomSize = Utils.StringToSize(LogicPOS.Settings.GeneralSettings.Settings["sizeStartupWindowObjectsLabelVersionSizeMarginRightBottom"]);//new Size(124, 128);// Add to Config
 
                 GlobalApp.ExpressionEvaluator.Variables.Add("startupWindowObjectsLabelVersionSize", startupWindowObjectsLabelVersionSize);
                 GlobalApp.ExpressionEvaluator.Variables.Add("startupWindowObjectsLabelVersionSizeMarginRightBottomSize", startupWindowObjectsLabelVersionSizeMarginRightBottomSize);
@@ -127,14 +127,14 @@ namespace logicpos
                 }
 
                 // Detect Dynamic Size
-                bool appThemeCalcDynamicSize = Convert.ToBoolean(DataLayerFramework.Settings["appThemeCalcDynamicSize"]);
+                bool appThemeCalcDynamicSize = Convert.ToBoolean(LogicPOS.Settings.GeneralSettings.Settings["appThemeCalcDynamicSize"]);
                 Size sizePosBaseButtonSize = new Size(0, 0);
                 Size sizePosToolbarButtonSize = new Size(0, 0);
                 Size sizePosTicketPadButtonSize = new Size(0, 0);
                 Size sizePosTicketPadButtonDoubleWidth = new Size(0, 0);
                 Size sizePosToolbarButtonIconSize = new Size(0, 0);
                 Size sizePosTicketPadButtonIconSize = new Size(0, 0);
-                string sizePosBaseButtonString = DataLayerFramework.Settings["sizePosBaseButton"].Replace(" ", string.Empty);
+                string sizePosBaseButtonString = LogicPOS.Settings.GeneralSettings.Settings["sizePosBaseButton"].Replace(" ", string.Empty);
                 string fontTicketListColumnTitle = string.Empty;
                 string fontTicketListColumn = string.Empty;
 
@@ -226,12 +226,12 @@ namespace logicpos
                     else
                     {
                         // Use Defaults from Config
-                        sizePosBaseButtonSize = Utils.StringToSize(DataLayerFramework.Settings["sizePosBaseButton"]);
-                        sizePosToolbarButtonSize = Utils.StringToSize(DataLayerFramework.Settings["sizePosToolbarButton"]);
-                        sizePosTicketPadButtonSize = Utils.StringToSize(DataLayerFramework.Settings["sizePosTicketPadButton"]);
-                        sizePosTicketPadButtonDoubleWidth = Utils.StringToSize(DataLayerFramework.Settings["sizePosTicketPadButtonDoubleWidth"]);
-                        sizePosToolbarButtonIconSize = Utils.StringToSize(DataLayerFramework.Settings["sizePosToolbarButtonIcon"]);
-                        sizePosTicketPadButtonIconSize = Utils.StringToSize(DataLayerFramework.Settings["sizePosTicketPadButtonIcon"]);
+                        sizePosBaseButtonSize = Utils.StringToSize(LogicPOS.Settings.GeneralSettings.Settings["sizePosBaseButton"]);
+                        sizePosToolbarButtonSize = Utils.StringToSize(LogicPOS.Settings.GeneralSettings.Settings["sizePosToolbarButton"]);
+                        sizePosTicketPadButtonSize = Utils.StringToSize(LogicPOS.Settings.GeneralSettings.Settings["sizePosTicketPadButton"]);
+                        sizePosTicketPadButtonDoubleWidth = Utils.StringToSize(LogicPOS.Settings.GeneralSettings.Settings["sizePosTicketPadButtonDoubleWidth"]);
+                        sizePosToolbarButtonIconSize = Utils.StringToSize(LogicPOS.Settings.GeneralSettings.Settings["sizePosToolbarButtonIcon"]);
+                        sizePosTicketPadButtonIconSize = Utils.StringToSize(LogicPOS.Settings.GeneralSettings.Settings["sizePosTicketPadButtonIcon"]);
                     }
                 }
                 catch (Exception ex)
@@ -240,9 +240,9 @@ namespace logicpos
                     Utils.ShowMessageTouchUnsupportedResolutionDetectedAndExit(GlobalApp.StartupWindow, GlobalApp.ScreenSize.Width, GlobalApp.ScreenSize.Height);
                 }
 
-                int posMainWindowComponentsMargin = Convert.ToInt16(DataLayerFramework.Settings["intPosMainWindowComponentsMargin"]);
+                int posMainWindowComponentsMargin = Convert.ToInt16(LogicPOS.Settings.GeneralSettings.Settings["intPosMainWindowComponentsMargin"]);
                 int posMainWindowEventBoxPosTicketListColumnWidth = sizePosTicketPadButtonSize.Width * 4;
-                int posMainWindowEventBoxStatusBar1And2Height = Convert.ToInt16(DataLayerFramework.Settings["intPosMainWindowEventBoxStatusBar1And2Height"]);
+                int posMainWindowEventBoxStatusBar1And2Height = Convert.ToInt16(LogicPOS.Settings.GeneralSettings.Settings["intPosMainWindowEventBoxStatusBar1And2Height"]);
                 // Remove Margin, Column Price, Qnt, Total
                 int posMainWindowEventBoxPosTicketListColumnsDesignationWidth = posMainWindowEventBoxPosTicketListColumnWidth - 10 - 65 - 55 - 75;
 

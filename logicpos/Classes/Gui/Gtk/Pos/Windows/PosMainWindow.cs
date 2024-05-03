@@ -24,12 +24,12 @@ namespace logicpos
         private readonly string _fileBaseButtonOverlay = DataLayerFramework.Path["images"] + @"Buttons\Pos\button_overlay.png";
 
         /* IN006045 */
-        //private string _clockFormat = DataLayerFramework.Settings["dateTimeFormatStatusBar"];
-        private readonly string _clockFormat = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "frontoffice_datetime_format_status_bar");
+        //private string _clockFormat = LogicPOS.Settings.GeneralSettings.Settings["dateTimeFormatStatusBar"];
+        private readonly string _clockFormat = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "frontoffice_datetime_format_status_bar");
 
-        private readonly Color _colorPosNumberPadLeftButtonBackground = DataLayerFramework.Settings["colorPosNumberPadLeftButtonBackground"].StringToColor();
-        private readonly Color _colorPosNumberRightButtonBackground = DataLayerFramework.Settings["colorPosNumberRightButtonBackground"].StringToColor();
-        private readonly Color _colorPosHelperBoxsBackground = DataLayerFramework.Settings["colorPosHelperBoxsBackground"].StringToColor();
+        private readonly Color _colorPosNumberPadLeftButtonBackground = LogicPOS.Settings.GeneralSettings.Settings["colorPosNumberPadLeftButtonBackground"].StringToColor();
+        private readonly Color _colorPosNumberRightButtonBackground = LogicPOS.Settings.GeneralSettings.Settings["colorPosNumberRightButtonBackground"].StringToColor();
+        private readonly Color _colorPosHelperBoxsBackground = LogicPOS.Settings.GeneralSettings.Settings["colorPosHelperBoxsBackground"].StringToColor();
         //UI
         private readonly Fixed _fixedWindow;
         private Label _labelClock;
@@ -104,8 +104,8 @@ namespace logicpos
                 this.ScreenArea.Add(_fixedWindow);
 
                 //Place Minimize EventBox : After InitUI, to be placed Above all Other
-                bool _showMinimize = (!string.IsNullOrEmpty(DataLayerFramework.Settings["appShowMinimize"]))
-                    && Convert.ToBoolean(DataLayerFramework.Settings["appShowMinimize"]);
+                bool _showMinimize = (!string.IsNullOrEmpty(LogicPOS.Settings.GeneralSettings.Settings["appShowMinimize"]))
+                    && Convert.ToBoolean(LogicPOS.Settings.GeneralSettings.Settings["appShowMinimize"]);
                 if (_showMinimize)
                 {
                     EventBox eventBoxMinimize = Utils.GetMinimizeEventBox();
@@ -181,7 +181,7 @@ namespace logicpos
                         ICollection collectionDocumentFinanceSeries = XPOSettings.Session.GetObjects(XPOSettings.Session.GetClassInfo(typeof(fin_documentfinanceyearserieterminal)), criteria, sortCollection, int.MaxValue, false, true);
                         if (collectionDocumentFinanceSeries.Count == 0)
                         {
-                            Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warning"), resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warning_open_fiscal_year"));
+                            Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_warning"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_warning_open_fiscal_year"));
                         }
                     }
                     catch (Exception ex)
@@ -214,7 +214,7 @@ namespace logicpos
             Gdk.Color eventBoxImageLogoBackgroundColor = (themeWindow.Objects.EventBoxImageLogo.BackgroundColor as string).StringToGdkColor();
 
             //LOGO
-            Image imageLogo = new Image(Utils.GetThemeFileLocation(DataLayerFramework.Settings["fileImageBackOfficeLogo"]));
+            Image imageLogo = new Image(Utils.GetThemeFileLocation(LogicPOS.Settings.GeneralSettings.Settings["fileImageBackOfficeLogo"]));
             if (LogicPOS.Settings.PluginSettings.PluginLicenceManager != null)
             {
                 string fileImageBackOfficeLogo = string.Format(DataLayerFramework.Path["themes"] + @"Default\Images\logicPOS_loggericpulse_loggerin.png");
@@ -338,7 +338,7 @@ namespace logicpos
             eventBoxStatusBar2.ModifyBg(StateType.Normal, eventBoxStatusBar2BackgroundColor);
 
             //EventBoxStatusBar2:vboxCurrentTable:LabelCurrentTableLabel
-            string global_table = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], string.Format("global_table_appmode_{0}", DataLayerSettings.CustomAppOperationMode.AppOperationTheme).ToLower()); /* IN008024 */
+            string global_table = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], string.Format("global_table_appmode_{0}", DataLayerSettings.CustomAppOperationMode.AppOperationTheme).ToLower()); /* IN008024 */
             Label labelCurrentTableLabel = new Label(global_table);
             labelCurrentTableLabel.ModifyFont(labelCurrentTableLabelFont);
             labelCurrentTableLabel.ModifyFg(StateType.Normal, labelCurrentTableLabelFontColor);
@@ -356,7 +356,7 @@ namespace logicpos
             vboxCurrentTable.PackStart(LabelCurrentTable);
 
             //EventBoxStatusBar2:vboxTotalTable:LabelTotalTableLabel
-            Label labelTotalTableLabel = new Label(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_price_to_pay"));
+            Label labelTotalTableLabel = new Label(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_total_price_to_pay"));
             labelTotalTableLabel.ModifyFont(labelTotalTableLabelFont);
             labelTotalTableLabel.ModifyFg(StateType.Normal, labelTotalTableLabelFontColor);
             labelTotalTableLabel.SetAlignment(labelTotalTableLabelAlignmentX, 0.5F);

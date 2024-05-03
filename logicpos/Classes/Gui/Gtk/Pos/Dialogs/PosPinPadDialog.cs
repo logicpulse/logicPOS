@@ -27,10 +27,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Init Local Vars Parameters
             _selectedUserDetail = pUserDetail;
             //Init Local Vars
-            string windowTitle = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_request_user_pin");
+            string windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_request_user_pin");
             Size windowSize = new Size(332, DialogHeight);
             string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_users.png";
-            string fontNumberPadPinButtonKeysTextAndLabel = DataLayerFramework.Settings["fontNumberPadPinButtonKeysTextAndLabel"];
+            string fontNumberPadPinButtonKeysTextAndLabel = LogicPOS.Settings.GeneralSettings.Settings["fontNumberPadPinButtonKeysTextAndLabel"];
             ActionAreaButtons actionAreaButtons;
 
             //Init Content

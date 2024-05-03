@@ -402,7 +402,7 @@ namespace logicpos.shared.Classes.Finance
 
                 //Audit
                 SharedUtils.Audit("ORDER_ARTICLE_REMOVED", string.Format(
-                        resources.CustomResources.GetCustomResource(Settings["customCultureResourceDefinition"], "audit_message_order_article_removed"),
+                        resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "audit_message_order_article_removed"),
                         articleDesignation,
                         1,
                         resultRemainQuantity - 1,
@@ -443,7 +443,7 @@ namespace logicpos.shared.Classes.Finance
                             //Open Table
                             deleteOrderMain.PlaceTable.TableStatus = TableStatus.Free;
                             //Audit
-                            SharedUtils.Audit("TABLE_OPEN", string.Format(resources.CustomResources.GetCustomResource(Settings["customCultureResourceDefinition"], "audit_message_table_open"), deleteOrderMain.PlaceTable.Designation));
+                            SharedUtils.Audit("TABLE_OPEN", string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "audit_message_table_open"), deleteOrderMain.PlaceTable.Designation));
                             //Delete OrderMain
                             deleteOrderMain.Delete();
                         };

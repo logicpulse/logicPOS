@@ -36,7 +36,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pDialogFlags, true, false)
         {
             //Init Local Vars
-            string windowTitle = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_edit_configurationpreferenceparameter");
+            string windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_edit_configurationpreferenceparameter");
             Size windowSize = new Size(600, 600);
             string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_system.png";
 
@@ -44,7 +44,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _sourceWindow = pSourceWindow;
 
             //ActionArea Buttons
-            _buttonOk = new TouchButtonIconWithText("touchButtonOk_DialogActionArea", _colorBaseDialogActionAreaButtonBackground, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_ok"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, _fileActionOK, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Sensitive = false };
+            _buttonOk = new TouchButtonIconWithText("touchButtonOk_DialogActionArea", _colorBaseDialogActionAreaButtonBackground, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_button_label_ok"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, _fileActionOK, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Sensitive = false };
             _buttonDataDemo = new TouchButtonIconWithText("touchButtonDataDemo_DialogActionArea", _colorBaseDialogActionAreaButtonBackground, "Demo", _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, _fileDemoData, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Sensitive = true };
 
             //ActionArea
@@ -73,20 +73,20 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             Guid systemCountry;
             Guid systemCurrency;
             //bool debug = false;
-            bool useDatabaseDataDemo = Convert.ToBoolean(DataLayerFramework.Settings["useDatabaseDataDemo"]);
+            bool useDatabaseDataDemo = Convert.ToBoolean(LogicPOS.Settings.GeneralSettings.Settings["useDatabaseDataDemo"]);
 
-            if (DataLayerFramework.Settings["xpoOidConfigurationCountrySystemCountry"] != string.Empty)
+            if (LogicPOS.Settings.GeneralSettings.Settings["xpoOidConfigurationCountrySystemCountry"] != string.Empty)
             {
-                systemCountry = new Guid(DataLayerFramework.Settings["xpoOidConfigurationCountrySystemCountry"]);
+                systemCountry = new Guid(LogicPOS.Settings.GeneralSettings.Settings["xpoOidConfigurationCountrySystemCountry"]);
             }
             else
             {
                 systemCountry = SharedSettings.XpoOidConfigurationCountryPortugal;
             }
 
-            if (DataLayerFramework.Settings["xpoOidConfigurationCurrencySystemCurrency"] != string.Empty)
+            if (LogicPOS.Settings.GeneralSettings.Settings["xpoOidConfigurationCurrencySystemCurrency"] != string.Empty)
             {
-                systemCurrency = new Guid(DataLayerFramework.Settings["xpoOidConfigurationCurrencySystemCurrency"]);
+                systemCurrency = new Guid(LogicPOS.Settings.GeneralSettings.Settings["xpoOidConfigurationCurrencySystemCurrency"]);
             }
             else
             {
@@ -107,7 +107,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 //Country
                 CriteriaOperator criteriaOperatorSystemCountry = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1) AND (RegExFiscalNumber IS NOT NULL)");
-                _entryBoxSelectSystemCountry = new XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry>(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_country"), "Designation", "Oid", intialValueConfigurationCountry, criteriaOperatorSystemCountry, LogicPOS.Utility.RegexUtils.RegexGuid, true);
+                _entryBoxSelectSystemCountry = new XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry>(this, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_country"), "Designation", "Oid", intialValueConfigurationCountry, criteriaOperatorSystemCountry, LogicPOS.Utility.RegexUtils.RegexGuid, true);
                 _entryBoxSelectSystemCountry.EntryValidation.IsEditable = false;
                 _entryBoxSelectSystemCountry.EntryValidation.Validate(_entryBoxSelectSystemCountry.Value.Oid.ToString());
                 //Disabled, Now Country and Currency are disabled
@@ -132,7 +132,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 //Currency
                 CriteriaOperator criteriaOperatorSystemCurrency = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1)");
-                _entryBoxSelectSystemCurrency = new XPOEntryBoxSelectRecordValidation<cfg_configurationcurrency, TreeViewConfigurationCurrency>(this, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_currency"), "Designation", "Oid", intialValueConfigurationCurrency, criteriaOperatorSystemCurrency, LogicPOS.Utility.RegexUtils.RegexGuid, true);
+                _entryBoxSelectSystemCurrency = new XPOEntryBoxSelectRecordValidation<cfg_configurationcurrency, TreeViewConfigurationCurrency>(this, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_currency"), "Designation", "Oid", intialValueConfigurationCurrency, criteriaOperatorSystemCurrency, LogicPOS.Utility.RegexUtils.RegexGuid, true);
                 _entryBoxSelectSystemCurrency.EntryValidation.IsEditable = false;
                 _entryBoxSelectSystemCurrency.EntryValidation.Validate(_entryBoxSelectSystemCurrency.Value.Oid.ToString());
 
@@ -163,8 +163,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                     foreach (cfg_configurationpreferenceparameter item in xpCollection)
                     {
-                        label = (item.ResourceString != null && resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], item.ResourceString) != null)
-                            ? resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], item.ResourceString)
+                        label = (item.ResourceString != null && resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], item.ResourceString) != null)
+                            ? resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], item.ResourceString)
                             : string.Empty;
                         regExObj = SharedUtils.GetFieldValueFromType(typeof(POSSettings), item.RegEx);
                         regEx = (regExObj != null) ? regExObj.ToString() : string.Empty;

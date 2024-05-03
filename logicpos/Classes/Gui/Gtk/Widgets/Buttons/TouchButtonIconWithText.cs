@@ -57,8 +57,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
             }
             else
             {
-                string fontPosBackOfficeParent = DataLayerFramework.Settings["fontPosBackOfficeParent"];
-                string fontPosBackOfficeParentLowRes = DataLayerFramework.Settings["fontPosBackOfficeParentLowRes"];
+                string fontPosBackOfficeParent = LogicPOS.Settings.GeneralSettings.Settings["fontPosBackOfficeParent"];
+                string fontPosBackOfficeParentLowRes = LogicPOS.Settings.GeneralSettings.Settings["fontPosBackOfficeParentLowRes"];
                 Pango.FontDescription fontDescription = Pango.FontDescription.FromString(fontPosBackOfficeParent);
 
                 if (GlobalApp.ScreenSize.Height == 800)

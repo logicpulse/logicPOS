@@ -128,7 +128,7 @@ namespace logicpos.financial.library.Classes.Reports
             }
 
             //ReportInfo Author
-            //this.ReportInfo.Author = string.Format("{0} {1}", DataLayerFramework.Settings["appName"], FrameworkUtils.ProductVersion);
+            //this.ReportInfo.Author = string.Format("{0} {1}", LogicPOS.Settings.GeneralSettings.Settings["appName"], FrameworkUtils.ProductVersion);
 
             //PrintSettings CopyNames
             if (pCopyNames != null)
@@ -189,7 +189,7 @@ namespace logicpos.financial.library.Classes.Reports
                         }
                         if (textSecondPrint != null)
                         {
-                            textSecondPrint.Text = (_secondCopy && i < 1) ? resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_print_second_print") : string.Empty;
+                            textSecondPrint.Text = (_secondCopy && i < 1) ? resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_print_second_print") : string.Empty;
                         }
                         //Store PreparedFiles in Custom SystemVariable, Required to PageNo in Reports ex "[ToInt32([PreparedPages]) + [Page]]"
                         //Else Page start aways in 1, when we call prepare, and we cannot have a usefull Page Counter working with .Prepare
@@ -235,12 +235,11 @@ namespace logicpos.financial.library.Classes.Reports
                         string dateTime = DataLayerUtils.CurrentDateTimeAtomic().ToString(dateTimeFileFormat);
                         string reportName = (this.ReportInfo.Name != string.Empty) ? string.Format("_{0}", this.ReportInfo.Name) : string.Empty;
 
-                        if (pViewMode == CustomReportDisplayMode.ExportXls || SharedUtils.OSVersion() == "windows")
-                        {
-                            fileNameExport = string.Format("print_{0}{1}{2}", dateTime, reportName, ".xlsx");
-                            fileNameExport = fileNameExport.Replace('/', '-').Replace(' ', '_');
-                            fileNameExport = string.Format(@"{0}{1}", DataLayerFramework.Path["temp"], fileNameExport);
-                        }
+
+                        fileNameExport = string.Format("print_{0}{1}{2}", dateTime, reportName, ".xlsx");
+                        fileNameExport = fileNameExport.Replace('/', '-').Replace(' ', '_');
+                        fileNameExport = string.Format(@"{0}{1}", DataLayerFramework.Path["temp"], fileNameExport);
+
 
                         fileName = string.Format("print_{0}{1}{2}", dateTime, reportName, ".pdf");
                         fileName = fileName.Replace('/', '-').Replace(' ', '_');
@@ -248,23 +247,21 @@ namespace logicpos.financial.library.Classes.Reports
                         fileName = string.Format(@"{0}{1}", DataLayerFramework.Path["temp"], fileName);
 
                         //Mario
-                        //fileName = (DataLayerFramework.Settings["AppEnvironment"].ToUpper() == "web".ToUpper()) 
+                        //fileName = (LogicPOS.Settings.GeneralSettings.Settings["AppEnvironment"].ToUpper() == "web".ToUpper()) 
                         //    ? SharedUtils.OSSlash(string.Format(@"{0}{1}", DataLayerFramework.Path["temp"], fileName))
                         //    : SharedUtils.OSSlash(string.Format(@"{0}\{1}{2}", Environment.CurrentDirectory, DataLayerFramework.Path["temp"], fileName))
                         //;
                     }
 
                     //TK016206 Reports - Exportação para Xls/pdf
-                    //TK016249 - Impressoras - Diferenciação entre Tipos
-                    if ((pViewMode == CustomReportDisplayMode.ExportXls) || SharedUtils.OSVersion() == "windows" || !SharedFramework.UsingThermalPrinter)
-                    {
-                        var exportXlsx = new FastReport.Export.OoXML.Excel2007Export();
-                        //if (exportXlsx.ShowDialog())
-                        //{
-                        this.Export(exportXlsx, fileNameExport);
-                        //}
 
-                    }
+                    var exportXlsx = new FastReport.Export.OoXML.Excel2007Export();
+                    //if (exportXlsx.ShowDialog())
+                    //{
+                    this.Export(exportXlsx, fileNameExport);
+                    //}
+
+
 
                     //if (export.ShowDialog()) this.Export(export, fileName);
                     //TK016206 Reports - Exportação para Xls/pdf
@@ -433,13 +430,13 @@ namespace logicpos.financial.library.Classes.Reports
 
                     string fileName = "ReportDocumentFinancePayment_" + currentCulture + ".frx";
                     string prefix = (_reportFileName.EndsWith(fileName))
-                        ? resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_emitted")
-                        : resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_processed")
+                        ? resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_emitted")
+                        : resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_processed")
                     ;
                     if (currentCulture == "pt-AO")
                     {
                         textObjectOverlaySoftwareCertification.Text = string.Format(
-                        resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification"),
+                        resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification"),
                         prefix,
                         SharedSettings.SaftSoftwareCertificateNumber,
                         SharedSettings.SaftProductID,
@@ -449,7 +446,7 @@ namespace logicpos.financial.library.Classes.Reports
                     else
                     {
                         textObjectOverlaySoftwareCertification.Text = string.Format(
-                            resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification"),
+                            resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification"),
                             prefix,
                             SharedSettings.SaftSoftwareCertificateNumber,
                             SharedSettings.SaftProductID,
@@ -468,18 +465,18 @@ namespace logicpos.financial.library.Classes.Reports
                      * {Processado por computador} || Autorização da Autoridade Tributária: {DAFM1 - 0198 / 2018}
                      */
                     textObjectOverlaySoftwareCertification.Text = string.Format(
-                        resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification"),
-                        resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_processed"),
-                        resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_moz_tax_authority_cert_number")
+                        resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification"),
+                        resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_processed"),
+                        resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_moz_tax_authority_cert_number")
                     );
                 }
                 else if (SharedSettings.XpoOidConfigurationCountryAngola.Equals(DataLayerSettings.ConfigurationSystemCountry.Oid))
                 {
                     string fileName = "ReportDocumentFinancePayment_" + currentCulture + ".frx";
-                    string prefix = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_processed"); ;
+                    string prefix = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_processed"); ;
                     string localDate = DateTime.Now.Year.ToString();
                     textObjectOverlaySoftwareCertification.Text = string.Format(
-                        resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_ao"),
+                        resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_ao"),
                         prefix,
                         SharedSettings.SaftSoftwareCertificateNumberAO,
                         SharedSettings.SaftProductIDAO,
@@ -495,10 +492,10 @@ namespace logicpos.financial.library.Classes.Reports
                 if (SharedSettings.XpoOidConfigurationCountryAngola.Equals(DataLayerSettings.ConfigurationSystemCountry.Oid))
                 {
                     string fileName = "ReportDocumentFinancePayment_" + currentCulture + ".frx";
-                    string prefix = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_emitted"); ;
+                    string prefix = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_emitted"); ;
                     string localDate = DateTime.Now.Year.ToString();
                     textObjectOverlaySoftwareCertification.Text = string.Format(
-                        resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_ao"),
+                        resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_ao"),
                         prefix,
                         SharedSettings.SaftSoftwareCertificateNumberAO,
                         SharedSettings.SaftProductIDAO,
@@ -582,7 +579,7 @@ namespace logicpos.financial.library.Classes.Reports
                 //string currentCulture = SharedFramework.CurrentCulture.Name;
                 string fileName = (documentMaster.DocumentType.WayBill) ? "ReportDocumentFinanceWayBill_" + currentCulture + ".frx" : "ReportDocumentFinance_" + currentCulture + ".frx";
                 //ATCUD Documentos - Criação do QRCode e ATCUD IN016508
-                if (Convert.ToBoolean(LogicPOS.Settings.AppSettings.PreferenceParameters["PRINT_QRCODE"]) && DataLayerSettings.ConfigurationSystemCountry.Oid.Equals(SharedSettings.XpoOidConfigurationCountryPortugal) && !string.IsNullOrEmpty(documentMaster.ATDocQRCode))
+                if (Convert.ToBoolean(LogicPOS.Settings.GeneralSettings.PreferenceParameters["PRINT_QRCODE"]) && DataLayerSettings.ConfigurationSystemCountry.Oid.Equals(SharedSettings.XpoOidConfigurationCountryPortugal) && !string.IsNullOrEmpty(documentMaster.ATDocQRCode))
                 {
                     fileName = fileName.Replace(".frx", "_QRCode.frx");
                 }
@@ -591,10 +588,10 @@ namespace logicpos.financial.library.Classes.Reports
                 CustomReport customReport = new CustomReport(fileUserReportDocumentFinance, FILENAME_TEMPLATE_BASE, pCopyNames);
                 customReport.DoublePass = (documentMaster.DocumentDetail.Count > SharedSettings.CustomReportReportDocumentFinanceMaxDetail);
                 customReport.Hash4Chars = pHash4Chars;
-                customReport.SetParameterValue("Report_FileName_loggero", LogicPOS.Settings.AppSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
-                customReport.SetParameterValue("Report_FileName_loggero_Small", LogicPOS.Settings.AppSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
+                customReport.SetParameterValue("Report_FileName_loggero", LogicPOS.Settings.GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
+                customReport.SetParameterValue("Report_FileName_loggero_Small", LogicPOS.Settings.GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
                 //ATCUD Documentos - Criação do QRCode e ATCUD IN016508
-                customReport.SetParameterValue("ATDocQRCodeVisible", LogicPOS.Settings.AppSettings.PreferenceParameters["PRINT_QRCODE"].ToString());
+                customReport.SetParameterValue("ATDocQRCodeVisible", LogicPOS.Settings.GeneralSettings.PreferenceParameters["PRINT_QRCODE"].ToString());
                 customReport.SetParameterValue("ATDocQRCode", documentMaster.ATDocQRCode);
 
                 //Report Parameters
@@ -632,7 +629,7 @@ namespace logicpos.financial.library.Classes.Reports
                     if (documentMaster.DocumentParent != null && documentMaster.DocumentType.Oid.ToString() == SharedSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment.ToString())
                     {
                         documentMaster.Notes += string.Format(
-                            resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_source_document") + ": " + documentMaster.DocumentParent.DocumentNumber);
+                            resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_source_document") + ": " + documentMaster.DocumentParent.DocumentNumber);
                         customReport.SetParameterValue("DocumentFinanceMaster.Notes", documentMaster.Notes);
                     }
                 }
@@ -719,8 +716,8 @@ namespace logicpos.financial.library.Classes.Reports
                 customReport.RegisterData(gcDocumentFinancePayment, "DocumentFinancePayment");
                 if (customReport.GetDataSource("DocumentFinancePayment") != null) customReport.GetDataSource("DocumentFinancePayment").Enabled = true;
                 if (customReport.GetDataSource("DocumentFinancePayment.DocumentFinancePaymentDocument") != null) customReport.GetDataSource("DocumentFinancePayment.DocumentFinancePaymentDocument").Enabled = true;
-                customReport.SetParameterValue("Report_FileName_loggero", LogicPOS.Settings.AppSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
-                customReport.SetParameterValue("Report_FileName_loggero_Small", LogicPOS.Settings.AppSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
+                customReport.SetParameterValue("Report_FileName_loggero", LogicPOS.Settings.GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
+                customReport.SetParameterValue("Report_FileName_loggero_Small", LogicPOS.Settings.GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
                 //Add ReportInfo.Name, to be used for Ex in Pdf Filenames, OS etc
                 customReport.ReportInfo.Name = gcDocumentFinancePayment.List[0].PaymentRefNo;
                 string result = customReport.Process(pViewMode, pDestinationFileName);
@@ -748,9 +745,9 @@ namespace logicpos.financial.library.Classes.Reports
                 string reportFile = GetReportFilePath("ReportArticleList.frx");
                 CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
                 //Report Parameters
-                customReport.SetParameterValue("Report Title", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "report_list_family_subfamily_articles"));
-                customReport.SetParameterValue("Report_FileName_loggero", LogicPOS.Settings.AppSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
-                customReport.SetParameterValue("Report_FileName_loggero_Small", LogicPOS.Settings.AppSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
+                customReport.SetParameterValue("Report Title", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "report_list_family_subfamily_articles"));
+                customReport.SetParameterValue("Report_FileName_loggero", LogicPOS.Settings.GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
+                customReport.SetParameterValue("Report_FileName_loggero_Small", LogicPOS.Settings.GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
                 //customReport.SetParameterValue("Factura No", 280);
 
                 //Prepare and Declare FRBOGenericCollections
@@ -800,9 +797,9 @@ namespace logicpos.financial.library.Classes.Reports
                 string reportFile = GetReportFilePath("ReportCustomerList.frx");
                 CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
                 //Report Parameters
-                customReport.SetParameterValue("Report Title", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "report_list_customers"));
-                customReport.SetParameterValue("Report_FileName_loggero", LogicPOS.Settings.AppSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
-                customReport.SetParameterValue("Report_FileName_loggero_Small", LogicPOS.Settings.AppSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
+                customReport.SetParameterValue("Report Title", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "report_list_customers"));
+                customReport.SetParameterValue("Report_FileName_loggero", LogicPOS.Settings.GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
+                customReport.SetParameterValue("Report_FileName_loggero_Small", LogicPOS.Settings.GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
                 //customReport.SetParameterValue("Factura No", 280);
 
                 //Prepare and Declare FRBOGenericCollections
@@ -866,9 +863,9 @@ namespace logicpos.financial.library.Classes.Reports
                 string reportFile = GetReportFilePath("ReportArticleStockMovementList.frx");
                 CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
                 //Report Parameters
-                customReport.SetParameterValue("Report Title", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "report_list_stock_movements"));
-                customReport.SetParameterValue("Report_FileName_loggero", LogicPOS.Settings.AppSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
-                customReport.SetParameterValue("Report_FileName_loggero_Small", LogicPOS.Settings.AppSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
+                customReport.SetParameterValue("Report Title", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "report_list_stock_movements"));
+                customReport.SetParameterValue("Report_FileName_loggero", LogicPOS.Settings.GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
+                customReport.SetParameterValue("Report_FileName_loggero_Small", LogicPOS.Settings.GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
                 //customReport.SetParameterValue("Factura No", 280);
 
                 //Prepare and Declare FRBOGenericCollections
@@ -897,9 +894,9 @@ namespace logicpos.financial.library.Classes.Reports
                 string reportFile = GetReportFilePath("ReportArticleStockWarehouseList.frx");
                 CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
                 //Report Parameters
-                customReport.SetParameterValue("Report Title", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "report_list_stock_warehouse"));
-                customReport.SetParameterValue("Report_FileName_loggero", LogicPOS.Settings.AppSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
-                customReport.SetParameterValue("Report_FileName_loggero_Small", LogicPOS.Settings.AppSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
+                customReport.SetParameterValue("Report Title", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "report_list_stock_warehouse"));
+                customReport.SetParameterValue("Report_FileName_loggero", LogicPOS.Settings.GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
+                customReport.SetParameterValue("Report_FileName_loggero_Small", LogicPOS.Settings.GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
                 //customReport.SetParameterValue("Factura No", 280);
 
                 //Prepare and Declare FRBOGenericCollections 
@@ -928,9 +925,9 @@ namespace logicpos.financial.library.Classes.Reports
                 string reportFile = GetReportFilePath("ReportArticleStockList.frx");
                 CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
                 //Report Parameters
-                customReport.SetParameterValue("Report Title", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "report_list_stock_article"));
-                customReport.SetParameterValue("Report_FileName_loggero", LogicPOS.Settings.AppSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
-                customReport.SetParameterValue("Report_FileName_loggero_Small", LogicPOS.Settings.AppSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
+                customReport.SetParameterValue("Report Title", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "report_list_stock_article"));
+                customReport.SetParameterValue("Report_FileName_loggero", LogicPOS.Settings.GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
+                customReport.SetParameterValue("Report_FileName_loggero_Small", LogicPOS.Settings.GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
                 //customReport.SetParameterValue("Factura No", 280);
 
                 //Prepare and Declare FRBOGenericCollections 
@@ -978,9 +975,9 @@ namespace logicpos.financial.library.Classes.Reports
                 string reportFile = GetReportFilePath("ReportArticleStockSupplierList.frx");
                 CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
                 //Report Parameters
-                customReport.SetParameterValue("Report Title", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "report_list_stock_supplier"));
-                customReport.SetParameterValue("Report_FileName_loggero", LogicPOS.Settings.AppSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
-                customReport.SetParameterValue("Report_FileName_loggero_Small", LogicPOS.Settings.AppSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
+                customReport.SetParameterValue("Report Title", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "report_list_stock_supplier"));
+                customReport.SetParameterValue("Report_FileName_loggero", LogicPOS.Settings.GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
+                customReport.SetParameterValue("Report_FileName_loggero_Small", LogicPOS.Settings.GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
                 //customReport.SetParameterValue("Factura No", 280);
 
                 if (filter.Contains("stmOid"))
@@ -1033,9 +1030,9 @@ namespace logicpos.financial.library.Classes.Reports
                 string reportFile = GetReportFilePath("ReportDocumentFinanceVatSalesSummary.frx");
                 CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
                 //Report Parameters
-                customReport.SetParameterValue("Report Title", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "report_sales_per_vat"));
-                customReport.SetParameterValue("Report_FileName_loggero", LogicPOS.Settings.AppSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
-                customReport.SetParameterValue("Report_FileName_loggero_Small", LogicPOS.Settings.AppSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
+                customReport.SetParameterValue("Report Title", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "report_sales_per_vat"));
+                customReport.SetParameterValue("Report_FileName_loggero", LogicPOS.Settings.GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
+                customReport.SetParameterValue("Report_FileName_loggero_Small", LogicPOS.Settings.GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
                 customReport.SetParameterValue("Report Filter", filterHumanReadable);
 
 
@@ -1084,9 +1081,9 @@ namespace logicpos.financial.library.Classes.Reports
                 string reportFile = GetReportFilePath("ReportDocumentFinanceVatSalesByClassSummary.frx");
                 CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
                 //Report Parameters
-                customReport.SetParameterValue("Report Title", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "report_sales_per_vat_by_article_class"));
-                customReport.SetParameterValue("Report_FileName_loggero", LogicPOS.Settings.AppSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
-                customReport.SetParameterValue("Report_FileName_loggero_Small", LogicPOS.Settings.AppSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
+                customReport.SetParameterValue("Report Title", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "report_sales_per_vat_by_article_class"));
+                customReport.SetParameterValue("Report_FileName_loggero", LogicPOS.Settings.GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
+                customReport.SetParameterValue("Report_FileName_loggero_Small", LogicPOS.Settings.GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
                 customReport.SetParameterValue("Report Filter", filterHumanReadable);
 
 
@@ -1138,9 +1135,9 @@ namespace logicpos.financial.library.Classes.Reports
                 string reportFile = GetReportFilePath("ReportSystemAuditList.frx");
                 CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
                 //Report Parameters
-                customReport.SetParameterValue("Report Title", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "report_list_audit_table"));
-                customReport.SetParameterValue("Report_FileName_loggero", LogicPOS.Settings.AppSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
-                customReport.SetParameterValue("Report_FileName_loggero_Small", LogicPOS.Settings.AppSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
+                customReport.SetParameterValue("Report Title", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "report_list_audit_table"));
+                customReport.SetParameterValue("Report_FileName_loggero", LogicPOS.Settings.GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
+                customReport.SetParameterValue("Report_FileName_loggero_Small", LogicPOS.Settings.GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
                 //customReport.SetParameterValue("Factura No", 280);
 
                 //Prepare and Declare FRBOGenericCollections
@@ -1186,9 +1183,9 @@ namespace logicpos.financial.library.Classes.Reports
                 string reportFile = GetReportFilePath("ReportDocumentFinanceCurrentAccount.frx");
                 CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
                 //Report Parameters
-                customReport.SetParameterValue("Report Title", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "report_list_current_account"));
-                customReport.SetParameterValue("Report_FileName_loggero", LogicPOS.Settings.AppSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
-                customReport.SetParameterValue("Report_FileName_loggero_Small", LogicPOS.Settings.AppSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
+                customReport.SetParameterValue("Report Title", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "report_list_current_account"));
+                customReport.SetParameterValue("Report_FileName_loggero", LogicPOS.Settings.GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
+                customReport.SetParameterValue("Report_FileName_loggero_Small", LogicPOS.Settings.GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
                 /* IN006004 */
                 if (!string.IsNullOrEmpty(filterHumanReadable)) customReport.SetParameterValue("Report Filter", filterHumanReadable);
 
@@ -1235,9 +1232,9 @@ namespace logicpos.financial.library.Classes.Reports
                 string reportFile = GetReportFilePath("ReportDocumentFinanceCustomerBalanceDetails.frx");
                 CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
                 //Report Parameters
-                customReport.SetParameterValue("Report Title", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "report_customer_balance_details"));
-                customReport.SetParameterValue("Report_FileName_loggero", LogicPOS.Settings.AppSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
-                customReport.SetParameterValue("Report_FileName_loggero_Small", LogicPOS.Settings.AppSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
+                customReport.SetParameterValue("Report Title", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "report_customer_balance_details"));
+                customReport.SetParameterValue("Report_FileName_loggero", LogicPOS.Settings.GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
+                customReport.SetParameterValue("Report_FileName_loggero_Small", LogicPOS.Settings.GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
 
                 if (!string.IsNullOrEmpty(filterHumanReadable)) customReport.SetParameterValue("Report Filter", filterHumanReadable);
 
@@ -1306,9 +1303,9 @@ namespace logicpos.financial.library.Classes.Reports
                 string reportFile = GetReportFilePath("ReportDocumentFinanceCompanyBilling.frx");
                 CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
                 //Report Parameters
-                customReport.SetParameterValue("Report Title", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "report_company_billing"));
-                customReport.SetParameterValue("Report_FileName_loggero", LogicPOS.Settings.AppSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
-                customReport.SetParameterValue("Report_FileName_loggero_Small", LogicPOS.Settings.AppSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
+                customReport.SetParameterValue("Report Title", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "report_company_billing"));
+                customReport.SetParameterValue("Report_FileName_loggero", LogicPOS.Settings.GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
+                customReport.SetParameterValue("Report_FileName_loggero_Small", LogicPOS.Settings.GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
 
                 if (!string.IsNullOrEmpty(filterHumanReadable))
                 {
@@ -1358,9 +1355,9 @@ namespace logicpos.financial.library.Classes.Reports
                 string reportFile = GetReportFilePath("ReportDocumentFinanceCustomerBalanceSummary.frx");
                 CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
                 //Report Parameters
-                customReport.SetParameterValue("Report Title", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "report_customer_balance_summary"));
-                customReport.SetParameterValue("Report_FileName_loggero", LogicPOS.Settings.AppSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
-                customReport.SetParameterValue("Report_FileName_loggero_Small", LogicPOS.Settings.AppSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
+                customReport.SetParameterValue("Report Title", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "report_customer_balance_summary"));
+                customReport.SetParameterValue("Report_FileName_loggero", LogicPOS.Settings.GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
+                customReport.SetParameterValue("Report_FileName_loggero_Small", LogicPOS.Settings.GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
 
                 if (!string.IsNullOrEmpty(filterHumanReadable)) customReport.SetParameterValue("Report Filter", filterHumanReadable);
 
@@ -1422,9 +1419,9 @@ namespace logicpos.financial.library.Classes.Reports
                 string reportFile = GetReportFilePath("ReportUserCommission.frx");
                 CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
                 //Report Parameters
-                customReport.SetParameterValue("Report Title", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "report_list_user_commission"));
-                customReport.SetParameterValue("Report_FileName_loggero", LogicPOS.Settings.AppSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
-                customReport.SetParameterValue("Report_FileName_loggero_Small", LogicPOS.Settings.AppSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
+                customReport.SetParameterValue("Report Title", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "report_list_user_commission"));
+                customReport.SetParameterValue("Report_FileName_loggero", LogicPOS.Settings.GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
+                customReport.SetParameterValue("Report_FileName_loggero_Small", LogicPOS.Settings.GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
                 //customReport.SetParameterValue("Factura No", 280);
 
                 //Prepare and Declare FRBOGenericCollections
@@ -1471,8 +1468,8 @@ namespace logicpos.financial.library.Classes.Reports
                 CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
                 //Report Parameters
                 customReport.SetParameterValue("Report Title", reportTitle);
-                customReport.SetParameterValue("Report_FileName_loggero", LogicPOS.Settings.AppSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
-                customReport.SetParameterValue("Report_FileName_loggero_Small", LogicPOS.Settings.AppSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
+                customReport.SetParameterValue("Report_FileName_loggero", LogicPOS.Settings.GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
+                customReport.SetParameterValue("Report_FileName_loggero_Small", LogicPOS.Settings.GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
                 if (!string.IsNullOrEmpty(filterHumanReadable)) customReport.SetParameterValue("Report Filter", filterHumanReadable);
 
                 // Get Objects
@@ -1533,7 +1530,7 @@ namespace logicpos.financial.library.Classes.Reports
                             if (!item.Payed)
                             {
                                 item.PaymentMethod = new fin_configurationpaymentmethod();
-                                item.PaymentMethod.Designation = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "report_detailed_grouped_pending_payment");
+                                item.PaymentMethod.Designation = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "report_detailed_grouped_pending_payment");
 
                             }
                             else
@@ -1584,8 +1581,8 @@ namespace logicpos.financial.library.Classes.Reports
 
                 //Report Parameters
                 customReport.SetParameterValue("Report Title", string.Format("{0}{1}", reportTitleString, reportTitleStringPostfix));
-                customReport.SetParameterValue("Report_FileName_loggero", LogicPOS.Settings.AppSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
-                customReport.SetParameterValue("Report_FileName_loggero_Small", LogicPOS.Settings.AppSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
+                customReport.SetParameterValue("Report_FileName_loggero", LogicPOS.Settings.GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
+                customReport.SetParameterValue("Report_FileName_loggero_Small", LogicPOS.Settings.GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
                 if (!string.IsNullOrEmpty(filterHumanReadable)) customReport.SetParameterValue("Report Filter", filterHumanReadable);
 
                 // Get Objects
@@ -1598,7 +1595,7 @@ namespace logicpos.financial.library.Classes.Reports
                     if (groupTitle == "[DocumentFinanceDetail.ArticleVat]")
                     {
 
-                        groupHeaderBandText.Text = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_vat_rates") + ": " + groupTitle + "%";
+                        groupHeaderBandText.Text = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_vat_rates") + ": " + groupTitle + "%";
                         string documentNodeFilter = " AND (ftSaftDocumentType = 1 AND (fmDocumentStatusStatus = 'N' OR fmDocumentStatusStatus = 'F' OR fmDocumentStatusStatus = 'A'))";
                         filter += documentNodeFilter;
                     }
@@ -1666,7 +1663,7 @@ namespace logicpos.financial.library.Classes.Reports
                                 {
                                     if (!item.Payed)
                                     {
-                                        item.PaymentMethod = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "report_detailed_grouped_pending_payment");
+                                        item.PaymentMethod = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "report_detailed_grouped_pending_payment");
                                     }
                                     else
                                     {
@@ -1685,7 +1682,7 @@ namespace logicpos.financial.library.Classes.Reports
                             {
                                 item.PlaceOrd = 999;
                                 item.PlaceCode = 999;
-                                item.PlaceDesignation = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_others");
+                                item.PlaceDesignation = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_others");
                             }
 
                             /* IN009086 - when document has no order/table */
@@ -1694,7 +1691,7 @@ namespace logicpos.financial.library.Classes.Reports
                             {
                                 item.PlaceTableOrd = 999;
                                 item.PlaceTableCode = 999;
-                                item.PlaceTableDesignation = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_others");
+                                item.PlaceTableDesignation = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_others");
                             }
                         }
                     }
@@ -1833,7 +1830,7 @@ namespace logicpos.financial.library.Classes.Reports
                 reportFile = pListArticleSerialNumber[0].Article.TemplateBarCode.FileTemplate.ToString();
             }
             CustomReport customReport = new CustomReport(reportFile, "", 1);
-            if (string.IsNullOrEmpty(pFooter)) pFooter = LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_WEBSITE"];
+            if (string.IsNullOrEmpty(pFooter)) pFooter = LogicPOS.Settings.GeneralSettings.PreferenceParameters["COMPANY_WEBSITE"];
 
             //Report Parameters
             //customReport.SetParameterValue("SerialNumber", pArticleSerialNumber.SerialNumber);
@@ -1916,7 +1913,7 @@ namespace logicpos.financial.library.Classes.Reports
             string[] result = new string[pCopyNames.Count];
             for (int i = 0; i < pCopyNames.Count; i++)
             {
-                result[i] = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], string.Format("global_print_copy_title{0}", pCopyNames[i] + 1));
+                result[i] = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], string.Format("global_print_copy_title{0}", pCopyNames[i] + 1));
             }
             return result;
         }
@@ -1983,14 +1980,14 @@ namespace logicpos.financial.library.Classes.Reports
                 {//be first
                  // Remove extra chars from token to re use default resx
                     resourceString = reportResourceString.Replace("report_sales_detail_group_", "report_sales_");
-                    resourceStringPostfix = string.Format(" {0}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "report_sales_detail_group_postfix"));
+                    resourceStringPostfix = string.Format(" {0}", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "report_sales_detail_group_postfix"));
                 }
                 // Detail
                 else if (reportResourceString.StartsWith("report_sales_detail_"))
                 {
                     // Remove extra chars from token to re use default resx
                     resourceString = reportResourceString.Replace("report_sales_detail_", "report_sales_");
-                    resourceStringPostfix = string.Format(" {0}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "report_sales_detail_postfix"));
+                    resourceStringPostfix = string.Format(" {0}", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "report_sales_detail_postfix"));
                 }
                 // Default
                 else
@@ -2005,9 +2002,9 @@ namespace logicpos.financial.library.Classes.Reports
             }
 
             // Get Resource Content for all modes
-            if ((!string.IsNullOrEmpty(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], resourceString))))
+            if ((!string.IsNullOrEmpty(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], resourceString))))
             {
-                resourceString = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], resourceString);
+                resourceString = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], resourceString);
             }
             else
             {

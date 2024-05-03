@@ -1,6 +1,5 @@
-﻿namespace logicpos.shared.Classes.Others
+﻿namespace LogicPOS.DTOs.Common
 {
-    //Response Objects
     public class ValidateMaxLenghtMaxWordsResult
     {
         public int Length { get; set; } = 0;

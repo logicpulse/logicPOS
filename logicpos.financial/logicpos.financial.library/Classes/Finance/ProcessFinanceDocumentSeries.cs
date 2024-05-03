@@ -331,7 +331,7 @@ namespace logicpos.financial.library.Classes.Finance
                         {
                             //Audit FINANCE_SERIES_CREATED
                             acronymAudit = string.Format("{0}{1}{2}{3}", "xx", item.Key, 0.ToString("00"), pAcronym);
-                            SharedUtils.Audit("FINANCE_SERIES_CREATED", string.Format(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_finance_series_created"), acronymAudit, item.Value, DataLayerFramework.LoggedUser.Name));
+                            SharedUtils.Audit("FINANCE_SERIES_CREATED", string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "audit_message_finance_series_created"), acronymAudit, item.Value, DataLayerFramework.LoggedUser.Name));
                         }
                     }
                 }

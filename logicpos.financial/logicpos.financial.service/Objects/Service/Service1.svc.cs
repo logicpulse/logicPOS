@@ -3,6 +3,7 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.service.Objects;
 using logicpos.financial.service.Objects.Modules.AT;
+using LogicPOS.DTOs.Common;
 using System;
 
 namespace logicpos.financial.servicewcf

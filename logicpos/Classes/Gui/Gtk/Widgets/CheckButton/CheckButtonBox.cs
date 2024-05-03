@@ -27,8 +27,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         public CheckButtonBox(string pLabelText, bool pActive)
         {
             //Defaults
-            string fontEntry = DataLayerFramework.Settings["fontEntryBoxValue"];
-            Color colorBaseDialogEntryBoxBackground = DataLayerFramework.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
+            string fontEntry = LogicPOS.Settings.GeneralSettings.Settings["fontEntryBoxValue"];
+            Color colorBaseDialogEntryBoxBackground = LogicPOS.Settings.GeneralSettings.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
 
             int padding = 3;
             //This

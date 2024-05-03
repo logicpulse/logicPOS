@@ -81,7 +81,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                     {
                         fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)DataLayerUtils.GetXPGuidObject(uowSession, typeof(fin_documentfinancemaster), pDocumentFinanceMaster.Oid);
                         systemPrint.DocumentMaster = documentFinanceMaster;
-                        designation = string.Format("{0} {1} : {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_printed"), documentFinanceMaster.DocumentType.Designation, documentFinanceMaster.DocumentNumber);
+                        designation = string.Format("{0} {1} : {2}", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_printed"), documentFinanceMaster.DocumentType.Designation, documentFinanceMaster.DocumentNumber);
                         //Update DocumentFinanceMaster
                         if (!documentFinanceMaster.Printed) documentFinanceMaster.Printed = true;
                     }
@@ -90,7 +90,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                     {
                         fin_documentfinancepayment documentFinancePayment = (fin_documentfinancepayment)DataLayerUtils.GetXPGuidObject(uowSession, typeof(fin_documentfinancepayment), pDocumentFinancePayment.Oid);
                         systemPrint.DocumentPayment = documentFinancePayment;
-                        designation = string.Format("{0} {1} : {2}", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_printed"), documentFinancePayment.DocumentType.Designation, documentFinancePayment.PaymentRefNo);
+                        designation = string.Format("{0} {1} : {2}", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_printed"), documentFinancePayment.DocumentType.Designation, documentFinancePayment.PaymentRefNo);
                     }
                     systemPrint.Designation = designation;
 
@@ -284,7 +284,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                             thermalPrinterInternalDocumentWorkSession.Print();
                             //CurrentAcount
                             //Use Config to print this
-                            if(Convert.ToBoolean(LogicPOS.Settings.AppSettings.PreferenceParameters["USE_CC_DAILY_TICKET"]))
+                            if(Convert.ToBoolean(LogicPOS.Settings.GeneralSettings.PreferenceParameters["USE_CC_DAILY_TICKET"]))
                             {
                                 thermalPrinterInternalDocumentWorkSession = new ThermalPrinterInternalDocumentWorkSession(pPrinter, pWorkSessionPeriod, SplitCurrentAccountMode.CurrentAcount);
                                 thermalPrinterInternalDocumentWorkSession.Print();
@@ -405,14 +405,14 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                                 //Impressora SINOCAN em ambiente Linux
                                 case "THERMAL_PRINTER_SOCKET":
                                     // Deprecated
-                                    //int m = Convert.ToInt32(DataLayerFramework.Settings["DoorValueM"]);
-                                    //int t1 = Convert.ToInt32(DataLayerFramework.Settings["DoorValueT1"]);
-                                    //int t2 = Convert.ToInt32(DataLayerFramework.Settings["DoorValueT2"]);
+                                    //int m = Convert.ToInt32(LogicPOS.Settings.GeneralSettings.Settings["DoorValueM"]);
+                                    //int t1 = Convert.ToInt32(LogicPOS.Settings.GeneralSettings.Settings["DoorValueT1"]);
+                                    //int t2 = Convert.ToInt32(LogicPOS.Settings.GeneralSettings.Settings["DoorValueT2"]);
                                     // Open Drawer
                                     //TK016249 - Impressoras - Diferenciação entre Tipos
                                     printObjectSINOCAN.OpenDoor(DataLayerFramework.LoggedTerminal.ThermalPrinter.PrinterType.Token, DataLayerFramework.LoggedTerminal.ThermalPrinter.NetworkName, m, t1, t2);
                                     //Audit
-                                    SharedUtils.Audit("CASHDRAWER_OPEN", resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_cashdrawer_open"));
+                                    SharedUtils.Audit("CASHDRAWER_OPEN", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "audit_message_cashdrawer_open"));
 
                                     break;
                             }

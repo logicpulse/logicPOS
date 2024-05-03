@@ -147,6 +147,10 @@
       <Project>{e39a7986-4c2f-4ebe-a31b-59c766150eac}</Project>
       <Name>logicpos.documentviewer</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\LogicPOS.DTOs\LogicPOS.DTOs.csproj">
+      <Project>{e23bdf58-f0a9-40ac-acce-57235fb7a7f1}</Project>
+      <Name>LogicPOS.DTOs</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\logicpos.hardware\logicpos.printer.genericsocket\logicpos.printer.genericsocket.csproj">
       <Project>{7bc439de-3799-461a-8fc1-d7f1644667fb}</Project>
       <Name>logicpos.printer.genericsocket</Name>
@@ -204,6 +208,9 @@
     <PackageReference Include="SkiaSharp.QrCode">
       <Version>0.7.0</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

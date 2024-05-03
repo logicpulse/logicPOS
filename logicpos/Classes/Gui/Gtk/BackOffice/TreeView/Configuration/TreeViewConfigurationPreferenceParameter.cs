@@ -35,9 +35,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
             {
-                new GenericTreeViewColumnProperty("ResourceString") { Title = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true, ResourceString = true },
-                new GenericTreeViewColumnProperty("Value") { Title = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_value"), Expand = true },
-                new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
+                new GenericTreeViewColumnProperty("ResourceString") { Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true, ResourceString = true },
+                new GenericTreeViewColumnProperty("Value") { Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_value"), Expand = true },
+                new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
             };
 
             //Configure Criteria/XPCollection/Model : pXpoCriteria Parameter sent by BO
@@ -74,13 +74,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             try
             {
                 // We Must ModifyLogicPOS.Settings.AppSettings.PreferenceParameters after user Change Value, if Value is Changed, this will Update in MemoryLogicPOS.Settings.AppSettings.PreferenceParameters Dictionary
-                if (LogicPOS.Settings.AppSettings.PreferenceParameters[configurationPreferenceParameter.Token] == null ||
-                    !LogicPOS.Settings.AppSettings.PreferenceParameters[configurationPreferenceParameter.Token].Equals(configurationPreferenceParameter.Value)
+                if (LogicPOS.Settings.GeneralSettings.PreferenceParameters[configurationPreferenceParameter.Token] == null ||
+                    !LogicPOS.Settings.GeneralSettings.PreferenceParameters[configurationPreferenceParameter.Token].Equals(configurationPreferenceParameter.Value)
                     )
                 {
-                    if (_debug) _logger.Debug($"TreeViewConfigurationPreferenceParameter: Previous Value: [{LogicPOS.Settings.AppSettings.PreferenceParameters[configurationPreferenceParameter.Token]}]");
-                    LogicPOS.Settings.AppSettings.PreferenceParameters[configurationPreferenceParameter.Token] = configurationPreferenceParameter.Value;
-                    if (_debug) _logger.Debug($"TreeViewConfigurationPreferenceParameter: Current Value: [{LogicPOS.Settings.AppSettings.PreferenceParameters[configurationPreferenceParameter.Token]}]");
+                    if (_debug) _logger.Debug($"TreeViewConfigurationPreferenceParameter: Previous Value: [{LogicPOS.Settings.GeneralSettings.PreferenceParameters[configurationPreferenceParameter.Token]}]");
+                    LogicPOS.Settings.GeneralSettings.PreferenceParameters[configurationPreferenceParameter.Token] = configurationPreferenceParameter.Value;
+                    if (_debug) _logger.Debug($"TreeViewConfigurationPreferenceParameter: Current Value: [{LogicPOS.Settings.GeneralSettings.PreferenceParameters[configurationPreferenceParameter.Token]}]");
                 }
             }
             catch (Exception ex)

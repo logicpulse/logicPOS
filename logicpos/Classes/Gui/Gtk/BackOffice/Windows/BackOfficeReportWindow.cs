@@ -11,7 +11,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Info
             _logger.Debug("ReportsMainWindow(): Create object ReportsMainWindow");
 
-            Title = logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_reports"));
+            Title = logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_reports"));
             InitUI();
             ShowAll();
         }

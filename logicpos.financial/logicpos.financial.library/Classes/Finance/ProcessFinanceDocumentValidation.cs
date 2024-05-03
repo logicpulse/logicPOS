@@ -261,7 +261,7 @@ namespace logicpos.financial.library.Classes.Finance
             try
             {
                 // Override Default with Config Value
-                _requireToChooseVatExemptionReason = Convert.ToBoolean(DataLayerFramework.Settings["requireToChooseVatExemptionReason"]);
+                _requireToChooseVatExemptionReason = Convert.ToBoolean(LogicPOS.Settings.GeneralSettings.Settings["requireToChooseVatExemptionReason"]);
             }
             catch (Exception)
             {

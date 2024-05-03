@@ -20,7 +20,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         //Private Fields
         private HBox _navigator;
-        private readonly Color _colorPagePadHotButtonBackground = DataLayerFramework.Settings["colorPagePadHotButtonBackground"].StringToColor();
+        private readonly Color _colorPagePadHotButtonBackground = LogicPOS.Settings.GeneralSettings.Settings["colorPagePadHotButtonBackground"].StringToColor();
 
         public TouchButtonIconWithText ButtonPrev { get; private set; }
         public TouchButtonIconWithText ButtonNext { get; private set; }
@@ -43,9 +43,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         public void Init(List<PagePadPage> pPages)
         {
-            string fontPagePadNavigatorButton = DataLayerFramework.Settings["fontPagePadNavigatorButton"];
-            Size sizePagesPadNavigatorButton = logicpos.Utils.StringToSize(DataLayerFramework.Settings["sizePagesPadNavigatorButton"]);
-            Size sizePagesPadNavigatorButtonIcon = logicpos.Utils.StringToSize(DataLayerFramework.Settings["sizePagesPadNavigatorButtonIcon"]);
+            string fontPagePadNavigatorButton = LogicPOS.Settings.GeneralSettings.Settings["fontPagePadNavigatorButton"];
+            Size sizePagesPadNavigatorButton = logicpos.Utils.StringToSize(LogicPOS.Settings.GeneralSettings.Settings["sizePagesPadNavigatorButton"]);
+            Size sizePagesPadNavigatorButtonIcon = logicpos.Utils.StringToSize(LogicPOS.Settings.GeneralSettings.Settings["sizePagesPadNavigatorButtonIcon"]);
             string iconPrev = string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/icon_pos_pagepad_prev.png");
             string iconNext = string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/icon_pos_pagepad_next.png");
 
@@ -53,8 +53,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             Pages = pPages;
 
             HBox navigatorButtons = new HBox(true, 0);
-            ButtonPrev = new TouchButtonIconWithText("buttonPrev", _colorPagePadHotButtonBackground, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_button_label_prev_pages_toolbar"), fontPagePadNavigatorButton, Color.White, iconPrev, sizePagesPadNavigatorButtonIcon, sizePagesPadNavigatorButton.Width, sizePagesPadNavigatorButton.Height) { Sensitive = false };
-            ButtonNext = new TouchButtonIconWithText("buttonNext", _colorPagePadHotButtonBackground, resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_button_label_next_pages_toolbar"), fontPagePadNavigatorButton, Color.White, iconNext, sizePagesPadNavigatorButtonIcon, sizePagesPadNavigatorButton.Width, sizePagesPadNavigatorButton.Height);
+            ButtonPrev = new TouchButtonIconWithText("buttonPrev", _colorPagePadHotButtonBackground, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "pos_button_label_prev_pages_toolbar"), fontPagePadNavigatorButton, Color.White, iconPrev, sizePagesPadNavigatorButtonIcon, sizePagesPadNavigatorButton.Width, sizePagesPadNavigatorButton.Height) { Sensitive = false };
+            ButtonNext = new TouchButtonIconWithText("buttonNext", _colorPagePadHotButtonBackground, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "pos_button_label_next_pages_toolbar"), fontPagePadNavigatorButton, Color.White, iconNext, sizePagesPadNavigatorButtonIcon, sizePagesPadNavigatorButton.Width, sizePagesPadNavigatorButton.Height);
 
             //Events
             ButtonPrev.Clicked += buttonPrev_Clicked;

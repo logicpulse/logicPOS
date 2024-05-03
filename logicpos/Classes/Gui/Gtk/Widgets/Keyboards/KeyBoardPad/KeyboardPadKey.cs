@@ -12,10 +12,10 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //Private Members
         private readonly string _l1LabelText;
         private readonly string _l2LabelText;
-        private readonly Color _colorKeyboardPadKeyDefaultFont = DataLayerFramework.Settings["colorKeyboardPadKeyDefaultFont"].StringToColor();
-        private readonly Color _colorKeyboardPadKeySecondaryFont = DataLayerFramework.Settings["colorKeyboardPadKeySecondaryFont"].StringToColor();
-        private readonly Color _colorKeyboardPadKeyBackground = DataLayerFramework.Settings["colorKeyboardPadKeyBackground"].StringToColor();
-        private readonly Color _colorKeyboardPadKeyBackgroundActive = DataLayerFramework.Settings["colorKeyboardPadKeyBackgroundActive"].StringToColor();
+        private readonly Color _colorKeyboardPadKeyDefaultFont = LogicPOS.Settings.GeneralSettings.Settings["colorKeyboardPadKeyDefaultFont"].StringToColor();
+        private readonly Color _colorKeyboardPadKeySecondaryFont = LogicPOS.Settings.GeneralSettings.Settings["colorKeyboardPadKeySecondaryFont"].StringToColor();
+        private readonly Color _colorKeyboardPadKeyBackground = LogicPOS.Settings.GeneralSettings.Settings["colorKeyboardPadKeyBackground"].StringToColor();
+        private readonly Color _colorKeyboardPadKeyBackgroundActive = LogicPOS.Settings.GeneralSettings.Settings["colorKeyboardPadKeyBackgroundActive"].StringToColor();
 
         public Label LabelL1 { get; set; }
         public Label LabelL2 { get; set; }
@@ -52,9 +52,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             if (virtualKey.L2 != null) { _l2LabelText = virtualKey.L2.Glyph; } else { _l2LabelText = ""; };
 
             //Init Local Vars
-            Size sizeKeyboardPadDefaultKey = logicpos.Utils.StringToSize(DataLayerFramework.Settings["sizeKeyboardPadDefaultKey"]);
-            string fontKeyboardPadPrimaryKey = DataLayerFramework.Settings["fontKeyboardPadPrimaryKey"];
-            string fontKeyboardPadSecondaryKey = DataLayerFramework.Settings["fontKeyboardPadSecondaryKey"];
+            Size sizeKeyboardPadDefaultKey = logicpos.Utils.StringToSize(LogicPOS.Settings.GeneralSettings.Settings["sizeKeyboardPadDefaultKey"]);
+            string fontKeyboardPadPrimaryKey = LogicPOS.Settings.GeneralSettings.Settings["fontKeyboardPadPrimaryKey"];
+            string fontKeyboardPadSecondaryKey = LogicPOS.Settings.GeneralSettings.Settings["fontKeyboardPadSecondaryKey"];
 
             //ByPass Defaults
             if (virtualKey.L1.KeyWidth > 0)

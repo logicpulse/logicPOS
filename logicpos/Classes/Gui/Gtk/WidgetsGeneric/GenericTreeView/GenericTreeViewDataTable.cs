@@ -189,7 +189,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                     if (fieldValue.GetType() == typeof(bool))
                     {
                         bool boolValue = Convert.ToBoolean(fieldValue);
-                        fieldValue = (boolValue) ? resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_treeview_true") : resources.CustomResources.GetCustomResource(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_treeview_false");
+                        fieldValue = (boolValue) ? resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_treeview_true") : resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_treeview_false");
                     }
                     else
                     {
