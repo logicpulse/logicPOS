@@ -6787,5 +6787,8 @@
     <PackageReference Include="System.Data.SQLite.Core">
       <Version>1.0.118</Version>
     </PackageReference>
+    <PackageReference Include="System.IO.Ports">
+      <Version>8.0.0</Version>
+    </PackageReference>
   </ItemGroup>
 </Project>

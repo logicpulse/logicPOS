@@ -72,8 +72,6 @@
     <Compile Include="GlobalFrameworkSession.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Enums\TableFilterMode.cs" />
-    <Compile Include="ThirdPartyLibs\CommunicationManager.cs" />
-    <Compile Include="ThirdPartyLibs\ExpressionEvaluator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\logicpos.datalayer\logicpos.datalayer.csproj">

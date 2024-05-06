@@ -2,6 +2,7 @@
 using logicpos.Classes.Enums.App;
 using logicpos.Classes.Logic.Others;
 using logicpos.datalayer.App;
+using LogicPOS.Utility;
 using System;
 using System.Drawing;
 

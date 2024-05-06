@@ -2,14 +2,14 @@
 using logicpos.App;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
-using PCComm;
+using LogicPOS.Settings.Extensions;
+using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.IO.Ports;
 using System.Text;
-using LogicPOS.Settings.Extensions;
 
 namespace logicpos.Classes.Logic.Hardware
 {
@@ -69,7 +69,7 @@ namespace logicpos.Classes.Logic.Hardware
         /// Call weigh in the balance from OutSide, this Trigger the WeighingBalance to Calc the Weight and Total
         /// </summary>
         public void WeighArticle(decimal articlePricePerKg)
-        {     
+        {
             //_logger.Debug(string.Format("WeighArticle articlePricePerKg: [{0}]", articlePricePerKg));
             // Round Price to 0.00, to force ex 5,00, else we have 5 and it acts has 0,50
             string priceString = articlePricePerKg.ToString("0.00").ToString().Replace(",", string.Empty).Replace(".", string.Empty);

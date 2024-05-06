@@ -2,11 +2,11 @@
 using LibUsbDotNet.Main;
 using logicpos.datalayer.App;
 using logicpos.shared.Classes.Orders;
-using PCComm;
+using LogicPOS.Settings.Extensions;
+using LogicPOS.Utility;
 using System;
 using System.Globalization;
 using System.Text;
-using LogicPOS.Settings.Extensions;
 
 namespace logicpos.Classes.Logic.Hardware
 {

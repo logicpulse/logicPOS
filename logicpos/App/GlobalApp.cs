@@ -4,6 +4,7 @@ using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Logic.Hardware;
 using logicpos.Classes.Logic.Others;
 using logicpos.financial.library.Classes.Utils;
+using LogicPOS.Utility;
 using System.Collections.Generic;
 
 namespace logicpos.App
