@@ -2,9 +2,9 @@
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.datalayer.App;
-using logicpos.shared.App;
 using System;
 using System.Drawing;
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -31,7 +31,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public PosKeyboardDialog(Window pSourceWindow, DialogFlags pDialogFlags, KeyboardMode pKeyboardMode, string pTextEntry, string pValidationRule) : base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
-            string windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_virtual_keyboard");
+            string windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_virtual_keyboard");
             Size windowSize = new Size(916, 358);
             string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_keyboard.png";
             string fileKeyboardXML = DataLayerFramework.Path["keyboards"] + @"163.xml";
@@ -81,14 +81,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             decimal result;
             string regexDecimalGreaterThanZero = LogicPOS.Utility.RegexUtils.RegexDecimalGreaterThanZero;
-            string defaultValue = (pUseDefaultValue) ? SharedUtils.DecimalToString(pDefaultValue) : string.Empty;
+            string defaultValue = (pUseDefaultValue) ? LogicPOS.Utility.DataConversionUtils.DecimalToString(pDefaultValue) : string.Empty;
 
             PosKeyboardDialog dialog = new PosKeyboardDialog(pSourceWindow, DialogFlags.DestroyWithParent, KeyboardMode.Numeric, defaultValue, regexDecimalGreaterThanZero);
             int response = dialog.Run();
 
             if (response == (int)ResponseType.Ok)
             {
-                result = decimal.Parse(dialog.Text, SharedFramework.CurrentCultureNumberFormat);
+                result = decimal.Parse(dialog.Text, LogicPOS.Settings.CultureSettings.CurrentCultureNumberFormat);
             }
             else
             {

@@ -12,11 +12,13 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
 using logicpos.shared.App;
+using LogicPOS.Settings;
 using Medsphere.Widgets;
 using Pango;
 using System;
 using System.Collections;
 using System.Drawing;
+using LogicPOS.Settings.Extensions;
 using Alignment = Gtk.Alignment;
 using Color = System.Drawing.Color;
 
@@ -86,19 +88,19 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         protected Color _colorBaseDialogDefaultButtonFont = ("76, 72, 70").StringToColor();
         protected Color _colorBaseDialogDefaultButtonBackground = ("156, 191, 42").StringToColor();
         protected Color _colorBaseDialogActionAreaButtonFont = ("0, 0, 0").StringToColor();
-        protected Color _colorBaseDialogActionAreaButtonBackground = LogicPOS.Settings.GeneralSettings.Settings["colorBaseDialogActionAreaButtonBackground"].StringToColor();
+        protected Color _colorBaseDialogActionAreaButtonBackground = GeneralSettings.Settings["colorBaseDialogActionAreaButtonBackground"].StringToColor();
         //protected String _fontBaseDialogButton = SharedUtils.OSSlash(LogicPOS.Settings.GeneralSettings.Settings["fontBaseDialogButton"]);
-        protected string _fontBaseDialogActionAreaButton = LogicPOS.Settings.GeneralSettings.Settings["fontBaseDialogActionAreaButton"];
+        protected string _fontBaseDialogActionAreaButton = GeneralSettings.Settings["fontBaseDialogActionAreaButton"];
         protected string _fileActionDefault = DataLayerFramework.Path["images"] + @"Icons\icon_pos_default.png";
         protected string _fileActionOK = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
         protected string _fileActionCancel = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png";
 
         //Colors
-        private readonly Color colorBackOfficeContentBackground = LogicPOS.Settings.GeneralSettings.Settings["colorBackOfficeContentBackground"].StringToColor();
-        private readonly Color colorBackOfficeStatusBarBackground = LogicPOS.Settings.GeneralSettings.Settings["colorBackOfficeStatusBarBackground"].StringToColor();
-        private readonly Color colorBackOfficeAccordionFixBackground = LogicPOS.Settings.GeneralSettings.Settings["colorBackOfficeAccordionFixBackground"].StringToColor();
-        private readonly Color colorBackOfficeStatusBarFont = LogicPOS.Settings.GeneralSettings.Settings["colorBackOfficeStatusBarFont"].StringToColor();
-        private readonly Color colorBackOfficeStatusBarBottomBackground = LogicPOS.Settings.GeneralSettings.Settings["colorBackOfficeStatusBarBottomBackground"].StringToColor();
+        private readonly Color colorBackOfficeContentBackground = GeneralSettings.Settings["colorBackOfficeContentBackground"].StringToColor();
+        private readonly Color colorBackOfficeStatusBarBackground = GeneralSettings.Settings["colorBackOfficeStatusBarBackground"].StringToColor();
+        private readonly Color colorBackOfficeAccordionFixBackground = GeneralSettings.Settings["colorBackOfficeAccordionFixBackground"].StringToColor();
+        private readonly Color colorBackOfficeStatusBarFont = GeneralSettings.Settings["colorBackOfficeStatusBarFont"].StringToColor();
+        private readonly Color colorBackOfficeStatusBarBottomBackground = GeneralSettings.Settings["colorBackOfficeStatusBarBottomBackground"].StringToColor();
         public Color slateBlue = Color.FromName("White");
         //private Frame frame;
         private readonly Label label;
@@ -107,7 +109,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
 
             //Config
-            int fontGenericTreeViewColumn = Convert.ToInt16(LogicPOS.Settings.GeneralSettings.Settings["fontGenericTreeViewColumn"]);
+            int fontGenericTreeViewColumn = Convert.ToInt16(GeneralSettings.Settings["fontGenericTreeViewColumn"]);
             var predicate = (Predicate<dynamic>)((dynamic x) => x.ID == "PosBaseWindow");
             var themeWindow = GlobalApp.Theme.Theme.Frontoffice.Window.Find(predicate);
             _sourceWindow = pSourceWindow;
@@ -169,33 +171,33 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             try
             {
                 //Imagem carregada aqui para o dashboard
-                string fileImageBack = string.Format("{0}Default/Backgrounds/Windows/LogicPOS_WorkFlow_{1}.png", DataLayerFramework.Path["themes"], LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"]);
+                string fileImageBack = string.Format("{0}Default/Backgrounds/Windows/LogicPOS_WorkFlow_{1}.png", DataLayerFramework.Path["themes"], GeneralSettings.Settings.GetCultureName());
                 System.Drawing.Image pImage = System.Drawing.Image.FromFile(fileImageBack);
                 Gdk.Pixbuf pixbuf = logicpos.Utils.ImageToPixbuf(pImage);
                 _eventboxDashboard.Style = logicpos.Utils.GetImageBackgroundDashboard(pixbuf);
                 //Buttons Configuração
-                botao1 = new TouchButtonIconWithText("BACKOFFICE_MAN_CONFIGURATIONPLACETERMINAL_MENU", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_edit_ConfigurationPlaceTerminal_tab1_label"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileTerminalsIcon, sizeIcon, 105, 70);
-                botao2 = new TouchButtonIconWithText("BACKOFFICE_MAN_CONFIGURATIONPREFERENCEPARAMETER_VIEW", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_application_setup"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileFiscalYearIcon, sizeIcon, 105, 70);
-                botao3 = new TouchButtonIconWithText("BACKOFFICE_MAN_DOCUMENTFINANCEYEARS_CREATE", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_documentfinance_years_short"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileInsertFiscalYear, sizeIcon, 105, 70);
-                botao4 = new TouchButtonIconWithText("BACKOFFICE_MAN_CONFIGURATIONPRINTERS_VIEW", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_printers"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileInsertIcon, sizeIcon, 105, 70);
+                botao1 = new TouchButtonIconWithText("BACKOFFICE_MAN_CONFIGURATIONPLACETERMINAL_MENU", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(), "dialog_edit_ConfigurationPlaceTerminal_tab1_label"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileTerminalsIcon, sizeIcon, 105, 70);
+                botao2 = new TouchButtonIconWithText("BACKOFFICE_MAN_CONFIGURATIONPREFERENCEPARAMETER_VIEW", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(), "global_application_setup"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileFiscalYearIcon, sizeIcon, 105, 70);
+                botao3 = new TouchButtonIconWithText("BACKOFFICE_MAN_DOCUMENTFINANCEYEARS_CREATE", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(), "global_documentfinance_years_short"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileInsertFiscalYear, sizeIcon, 105, 70);
+                botao4 = new TouchButtonIconWithText("BACKOFFICE_MAN_CONFIGURATIONPRINTERS_VIEW", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(), "global_printers"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileInsertIcon, sizeIcon, 105, 70);
 
                 //Buttons Tabelas
-                botao5 = new TouchButtonIconWithText("BACKOFFICE_MAN_ARTICLE_VIEW", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_articles"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileArticlesIcon, sizeIcon, 105, 70);
-                botao6 = new TouchButtonIconWithText("BACKOFFICE_MAN_CUSTOMER_VIEW", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_customers"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileCostumersIcon, sizeIcon, 105, 70);
-                botao7 = new TouchButtonIconWithText("BACKOFFICE_MAN_USERDETAIL_VIEW", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_users"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileEmployeesIcon, sizeIcon, 105, 70);
-                botao8 = new TouchButtonIconWithText("BACKOFFICE_MAN_CONFIGURATIONPLACETABLE_VIEW", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_other_tables"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileOtherTablesIcon, sizeIcon, 105, 70);
+                botao5 = new TouchButtonIconWithText("BACKOFFICE_MAN_ARTICLE_VIEW", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(), "global_articles"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileArticlesIcon, sizeIcon, 105, 70);
+                botao6 = new TouchButtonIconWithText("BACKOFFICE_MAN_CUSTOMER_VIEW", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(), "global_customers"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileCostumersIcon, sizeIcon, 105, 70);
+                botao7 = new TouchButtonIconWithText("BACKOFFICE_MAN_USERDETAIL_VIEW", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(), "global_users"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileEmployeesIcon, sizeIcon, 105, 70);
+                botao8 = new TouchButtonIconWithText("BACKOFFICE_MAN_CONFIGURATIONPLACETABLE_VIEW", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(), "global_other_tables"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileOtherTablesIcon, sizeIcon, 105, 70);
 
                 //Buttons Documentos
-                botao9 = new TouchButtonIconWithText("BACKOFFICE_MAN_DOCUMENTSSHOW_MENU", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_worksession_resume_finance_documents"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileNewDocumentIcon, sizeIcon, 105, 70);
-                botao10 = new TouchButtonIconWithText("BACKOFFICE_MAN_DOCUMENTSNEW_MENU", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_new_document"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileDocumentsIcon, sizeIcon, 105, 70);
-                botao11 = new TouchButtonIconWithText("BACKOFFICE_MAN_DOCUMENTSPAYMENTS_MENU", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_button_label_select_payments"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _filePayedDocumentsIcon, sizeIcon, 105, 70);
-                botao12 = new TouchButtonIconWithText("STOCK_MERCHANDISE_ENTRY_ACCESS", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_documentticket_type_title_cs_short"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileInsertMerchIcon, sizeIcon, 105, 70);
+                botao9 = new TouchButtonIconWithText("BACKOFFICE_MAN_DOCUMENTSSHOW_MENU", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(), "global_worksession_resume_finance_documents"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileNewDocumentIcon, sizeIcon, 105, 70);
+                botao10 = new TouchButtonIconWithText("BACKOFFICE_MAN_DOCUMENTSNEW_MENU", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_new_document"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileDocumentsIcon, sizeIcon, 105, 70);
+                botao11 = new TouchButtonIconWithText("BACKOFFICE_MAN_DOCUMENTSPAYMENTS_MENU", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(), "dialog_button_label_select_payments"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _filePayedDocumentsIcon, sizeIcon, 105, 70);
+                botao12 = new TouchButtonIconWithText("STOCK_MERCHANDISE_ENTRY_ACCESS", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(), "global_documentticket_type_title_cs_short"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileInsertMerchIcon, sizeIcon, 105, 70);
 
                 //Buttons Relatórios
-                botao13 = new TouchButtonIconWithText("REPORT_ACCESS", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_reports"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileReportsMenuIcon, sizeIcon, 105, 70);
-                botao14 = new TouchButtonIconWithText("REPORT_COMPANY_BILLING", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "report_company_billing_short"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileReportsTotalIcon, sizeIcon, 105, 70);
-                botao15 = new TouchButtonIconWithText("REPORT_CUSTOMER_BALANCE_DETAILS", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "report_customer_balance_details_short"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileReportsClientsIcon, sizeIcon, 105, 70);
-                botao16 = new TouchButtonIconWithText("REPORT_SALES_DETAIL_PER_DATE", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "report_sales_per_date"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileReportsDayIcon, sizeIcon, 105, 70);
+                botao13 = new TouchButtonIconWithText("REPORT_ACCESS", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(), "global_reports"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileReportsMenuIcon, sizeIcon, 105, 70);
+                botao14 = new TouchButtonIconWithText("REPORT_COMPANY_BILLING", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(), "report_company_billing_short"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileReportsTotalIcon, sizeIcon, 105, 70);
+                botao15 = new TouchButtonIconWithText("REPORT_CUSTOMER_BALANCE_DETAILS", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(), "report_customer_balance_details_short"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileReportsClientsIcon, sizeIcon, 105, 70);
+                botao16 = new TouchButtonIconWithText("REPORT_SALES_DETAIL_PER_DATE", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(), "report_sales_per_date"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileReportsDayIcon, sizeIcon, 105, 70);
 
                 PosReportsDialog reportsClicked = new PosReportsDialog();
 
@@ -279,7 +281,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 }
                 catch
                 {
-                    currency = SharedSettings.SaftCurrencyCode;
+                    currency = CultureSettings.SaftCurrencyCode;
                 }
 
                 decimal dailyTotal = 0;

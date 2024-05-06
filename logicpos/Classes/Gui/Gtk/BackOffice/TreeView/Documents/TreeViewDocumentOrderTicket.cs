@@ -4,11 +4,11 @@ using DevExpress.Xpo.DB;
 using Gtk;
 using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
-using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using System;
 using System.Collections.Generic;
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -35,10 +35,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
             {
-                new GenericTreeViewColumnProperty("TicketId") { Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_ticket_number"), MinWidth = 50 },
-                new GenericTreeViewColumnProperty("DateStart") { Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_date"), MinWidth = 100 },
-                new GenericTreeViewColumnProperty("UpdatedBy") { Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_user_name"), ChildName = "Name", MinWidth = 100 },
-                new GenericTreeViewColumnProperty("UpdatedWhere") { Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_terminal_name"), ChildName = "Designation", MinWidth = 100 }
+                new GenericTreeViewColumnProperty("TicketId") { Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ticket_number"), MinWidth = 50 },
+                new GenericTreeViewColumnProperty("DateStart") { Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_date"), MinWidth = 100 },
+                new GenericTreeViewColumnProperty("UpdatedBy") { Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_user_name"), ChildName = "Name", MinWidth = 100 },
+                new GenericTreeViewColumnProperty("UpdatedWhere") { Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_terminal_name"), ChildName = "Designation", MinWidth = 100 }
             };
 
             //Sort Order

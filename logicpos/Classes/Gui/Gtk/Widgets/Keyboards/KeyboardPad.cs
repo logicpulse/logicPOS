@@ -2,11 +2,11 @@
 using logicpos.App;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
-using logicpos.datalayer.App;
 using logicpos.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -136,7 +136,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 }
                 else
                 {
-                    logicpos.Utils.ShowMessageTouch(ParentDialog, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_field_validation_error_keyboardpad"));
+                    logicpos.Utils.ShowMessageTouch(ParentDialog, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_field_validation_error_keyboardpad"));
                 }
             }
         }
@@ -365,7 +365,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     }
                     else
                     {
-                        logicpos.Utils.ShowMessageTouch(ParentDialog, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_field_validation_error_keyboardpad"));
+                        logicpos.Utils.ShowMessageTouch(ParentDialog, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_field_validation_error_keyboardpad"));
                     };
                     break;
                 //Show/Hide Number Lock
@@ -428,7 +428,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     //Get unicodeChar from UnicodeId after Caps
                     _unicodeChar = logicpos.Utils.UnicodeHexadecimalStringToChar(vKeyProperties.UnicodeId);
                     //Modifie _unicodeChar Keys ex Culture Decimal Separator . with , [3,15 = Key NumberPad .]
-                    //if (vKey.Properties.RowIndex == 3 && vKey.Properties.ColIndex == 15) _unicodeChar = (char) SharedFramework.CurrentCulture.NumberFormat.NumberDecimalSeparator[0];
+                    //if (vKey.Properties.RowIndex == 3 && vKey.Properties.ColIndex == 15) _unicodeChar = (char) LogicPOS.Settings.CultureSettings.CurrentCulture.NumberFormat.NumberDecimalSeparator[0];
                     //Always Disable Modifiers Keys After Use
                     if (_activeModifierKey != ModifierKeys.None)
                     {

@@ -2,6 +2,9 @@
 {
     public enum DocumentType
     {
-        None, Invoice, Payment, WayBill
+        None, 
+        Invoice, 
+        Payment, 
+        WayBill
     }
 }

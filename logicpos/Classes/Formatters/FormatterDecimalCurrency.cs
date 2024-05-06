@@ -14,7 +14,7 @@ namespace logicpos.Classes.Formatters
         private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         // always use dot separator for doubles
-        private readonly CultureInfo culture = SharedFramework.CurrentCulture;
+        private readonly CultureInfo culture = LogicPOS.Settings.CultureSettings.CurrentCulture;
 
         public string Format(string format, object arg, IFormatProvider formatProvider)
         {
@@ -23,7 +23,7 @@ namespace logicpos.Classes.Formatters
             try
             {
                 //Require to Convert Exponential from string to decimal currency
-                result = SharedUtils.DecimalToStringCurrency(Convert.ToDecimal(double.Parse(arg.ToString())));
+                result = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(Convert.ToDecimal(double.Parse(arg.ToString())), SharedSettings.ConfigurationSystemCurrency.Acronym);
             }
             catch (Exception ex)
             {

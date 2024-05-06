@@ -8,4 +8,8 @@
     <PackageReference Include="DotNetZip" Version="1.16.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\LogicPOS.Settings\LogicPOS.Settings.csproj" />
+  </ItemGroup>
+
 </Project>

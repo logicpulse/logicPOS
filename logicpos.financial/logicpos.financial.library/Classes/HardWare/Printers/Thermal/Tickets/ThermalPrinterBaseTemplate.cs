@@ -7,6 +7,7 @@ using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 {
@@ -196,7 +197,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 //Print Notes
                 if (pNotes != string.Empty)
                 {
-                    _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_notes"), WriteLineTextMode.Bold);
+                    _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_notes"), WriteLineTextMode.Bold);
                     _thermalPrinterGeneric.WriteLine(pNotes);
                     //Line Feed
                     _thermalPrinterGeneric.LineFeed();
@@ -226,7 +227,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 _thermalPrinterGeneric.WriteLine(string.Format("{1}: {2}{0}{3}: {4} {5}"
                     , Environment.NewLine
                     , CustomFunctions.Res("global_printed_on_date")
-                    , DataLayerUtils.CurrentDateTimeAtomic().ToString(SharedSettings.DateTimeFormat)
+                    , DataLayerUtils.CurrentDateTimeAtomic().ToString(LogicPOS.Settings.CultureSettings.DateTimeFormat)
                     , _customVars["APP_COMPANY"]
                     , _customVars["APP_NAME"]
                     , _customVars["APP_VERSION"]

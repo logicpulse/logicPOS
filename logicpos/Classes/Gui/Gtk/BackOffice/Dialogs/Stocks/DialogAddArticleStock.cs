@@ -23,6 +23,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -87,7 +88,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pTreeView, DialogFlags.Modal, pDialogMode, pXPGuidObject)
         {
             //Init Local Vars
-            string windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_article_stock");
+            string windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_article_stock");
 
             this.Title = windowTitle;
 
@@ -120,7 +121,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 ArticleCollection = new Dictionary<fin_article, Tuple<decimal, Dictionary<EntryValidation, List<fin_articleserialnumber>>, decimal, fin_warehouselocation>>();
                 //Supplier
                 CriteriaOperator criteriaOperatorSupplier = CriteriaOperator.Parse("(Supplier = 1)");
-                _entryBoxSelectSupplier = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(this, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_supplier"), "Name", "Oid", _initialSupplier, criteriaOperatorSupplier, LogicPOS.Utility.RegexUtils.RegexGuid, true, true);
+                _entryBoxSelectSupplier = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(this, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_supplier"), "Name", "Oid", _initialSupplier, criteriaOperatorSupplier, LogicPOS.Utility.RegexUtils.RegexGuid, true, true);
                 _entryBoxSelectSupplier.EntryValidation.IsEditable = true;
                 _entryBoxSelectSupplier.EntryValidation.Completion.PopupCompletion = true;
                 _entryBoxSelectSupplier.EntryValidation.Completion.InlineCompletion = false;
@@ -129,9 +130,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _entryBoxSelectSupplier.EntryValidation.Changed += delegate { ValidateDialog(); };
 
                 //DocumentDate
-                _entryBoxDocumentDate = new EntryBoxValidationDatePickerDialog(this, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_date"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_date"), _initialDocumentDate, LogicPOS.Utility.RegexUtils.RegexDate, true, SharedSettings.DateFormat, true);
+                _entryBoxDocumentDate = new EntryBoxValidationDatePickerDialog(this, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_date"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_date"), _initialDocumentDate, LogicPOS.Utility.RegexUtils.RegexDate, true, LogicPOS.Settings.CultureSettings.DateFormat, true);
                 //_entryBoxDocumentDate.EntryValidation.Sensitive = true;
-                _entryBoxDocumentDate.EntryValidation.Text = _initialDocumentDate.ToString(SharedSettings.DateFormat);
+                _entryBoxDocumentDate.EntryValidation.Text = _initialDocumentDate.ToString(LogicPOS.Settings.CultureSettings.DateFormat);
                 _entryBoxDocumentDate.EntryValidation.Validate();
                 _entryBoxDocumentDate.EntryValidation.Sensitive = true;
                 _entryBoxDocumentDate.ClosePopup += delegate { ValidateDialog(); };
@@ -140,7 +141,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 Color colorBaseDialogEntryBoxBackground = LogicPOS.Settings.GeneralSettings.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
                 string _fileIconListFinanceDocuments = DataLayerFramework.Path["images"] + @"Icons\icon_pos_toolbar_finance_document.png";
                 HBox hBoxDocument = new HBox(false, 0);
-                _entryBoxDocumentNumber = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_document_number"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false, true);
+                _entryBoxDocumentNumber = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_document_number"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false, true);
                 if (_initialDocumentNumber != string.Empty) _entryBoxDocumentNumber.EntryValidation.Text = _initialDocumentNumber;
                 _entryBoxDocumentNumber.EntryValidation.Changed += delegate { ValidateDialog(); };
                 TouchButtonIcon attachPDFButton = new TouchButtonIcon("attachPDFButton", colorBaseDialogEntryBoxBackground, _fileIconListFinanceDocuments, new Size(20, 20), 30, 30);
@@ -164,11 +165,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _viewport.ModifyBg(StateType.Normal, Color.White.ToGdkColor());
                 _totalCompositeEntrys++;
                 CriteriaOperator criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Class = '{0}')", DataLayerSettings.XpoOidArticleDefaultClass));
-                _entryBoxSelectArticle1 = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_article"), "Designation", "Oid", null, criteriaOperatorSelectArticle, KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true, true, LogicPOS.Utility.RegexUtils.RegexAlfaNumericArticleCode, LogicPOS.Utility.RegexUtils.RegexDecimalPositiveAndNegative, _totalCompositeEntrys);
+                _entryBoxSelectArticle1 = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_article"), "Designation", "Oid", null, criteriaOperatorSelectArticle, KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true, true, LogicPOS.Utility.RegexUtils.RegexAlfaNumericArticleCode, LogicPOS.Utility.RegexUtils.RegexDecimalPositiveAndNegative, _totalCompositeEntrys);
 
                 //SerialNumber
                 HBox hBoxSerialNumber = new HBox(false, 0);
-                _entryBoxSerialNumber1 = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_serial_number"), KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false, true);
+                _entryBoxSerialNumber1 = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_serial_number"), KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false, true);
                 _entryBoxSerialNumber1.EntryValidation.Changed += EntrySerialNumberValidation_Changed;
                 _entryBoxSerialNumber1.EntryValidation.FocusGrabbed += EntryValidation_FocusGrabbed;
                 _entryBoxSerialNumber1.Sensitive = true;
@@ -176,7 +177,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
 
                 //Price
-                _entryBoxPrice1 = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_price"), KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexDecimalGreaterEqualThanZeroFinancial, false, true);
+                _entryBoxPrice1 = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_price"), KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexDecimalGreaterEqualThanZeroFinancial, false, true);
                 _entryBoxPrice1.EntryValidation.TooltipText = "Ultimo preço inserido";
                 _entryBoxPrice1.WidthRequest = 40;
                 _entryBoxPrice1.Sensitive = true;
@@ -186,7 +187,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 CriteriaOperator defaultWarehouseCriteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND IsDefault == '1'"));
                 fin_warehouse defaultWareHouse = (fin_warehouse)XPOSettings.Session.FindObject(typeof(fin_warehouse), defaultWarehouseCriteria);
                 XPOComboBox xpoComboBoxWarehouse = new XPOComboBox(XPOSettings.Session, typeof(fin_warehouse), defaultWareHouse, "Designation", null);
-                BOWidgetBox boxWareHouse = new BOWidgetBox(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_warehouse"), xpoComboBoxWarehouse);
+                BOWidgetBox boxWareHouse = new BOWidgetBox(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_warehouse"), xpoComboBoxWarehouse);
                 xpoComboBoxWarehouse.Changed += XpoComboBoxWarehouse_Changed;
 
                 //Location
@@ -194,11 +195,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if (defaultWareHouse != null) criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND Warehouse == '{0}'", defaultWareHouse.Oid.ToString()));
                 fin_warehouselocation defaultLocation = (fin_warehouselocation)XPOSettings.Session.FindObject(typeof(fin_warehouselocation), criteria);
                 XPOComboBox xpoComboBoxWarehouseLocation = new XPOComboBox(XPOSettings.Session, typeof(fin_warehouselocation), defaultLocation, "Designation", criteria);
-                BOWidgetBox boxWareHouseLocation = new BOWidgetBox(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_ConfigurationDevice_PlaceTerminal"), xpoComboBoxWarehouseLocation);
+                BOWidgetBox boxWareHouseLocation = new BOWidgetBox(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ConfigurationDevice_PlaceTerminal"), xpoComboBoxWarehouseLocation);
                 xpoComboBoxWarehouseLocation.Changed += XpoComboBoxWarehouselocation_Changed;
 
                 //Unique Articles (Have multi S/N)
-                CheckButton _checkButtonUniqueArticles = new CheckButton(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_unique_articles"));
+                CheckButton _checkButtonUniqueArticles = new CheckButton(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_unique_articles"));
                 _checkButtonUniqueArticles.Sensitive = false;
                 _checkButtonUniqueArticles.Toggled += CheckButtonUniqueArticles_Toggled;
 
@@ -264,7 +265,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _articleEntryWidgetCollection.Add(_vboxArticles);
 
                 //Notes
-                _entryBoxNotes = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_notes"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false, true);
+                _entryBoxNotes = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_notes"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false, true);
                 _entryBoxNotes.EntryValidation.Changed += delegate { ValidateDialog(); };
 
                 //Final Pack
@@ -517,11 +518,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     {
                         pXPOEntry.EntryValidation.Changed -= delegate { pXPOEntry.EntryValidation.Validate(); };
 
-                        pXPOEntry.EntryValidation.Text = (newArticle != null) ? newArticle.Designation.ToString() : resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error");
+                        pXPOEntry.EntryValidation.Text = (newArticle != null) ? newArticle.Designation.ToString() : resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error");
 
                         pXPOEntry.EntryValidation.Changed += delegate { pXPOEntry.EntryValidation.Validate(); };
 
-                        pXPOEntry.EntryQtdValidation.Text = (newArticle != null) ? string.Format("{0:0.##}", newArticle.DefaultQuantity) : resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error");
+                        pXPOEntry.EntryQtdValidation.Text = (newArticle != null) ? string.Format("{0:0.##}", newArticle.DefaultQuantity) : resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error");
 
                         pXPOEntry.EntryCodeValidation.Validate();
 
@@ -546,20 +547,20 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             pPurchasePrice.EntryValidation.TooltipText = "Ultimo preço inserido";
                         }
 
-                        pPurchasePrice.EntryValidation.Text = (getLastPrice != null) ? SharedUtils.DecimalToString(Convert.ToDecimal(getLastPrice), SharedFramework.CurrentCultureNumberFormat, "0.00").Replace(".", ",") : SharedUtils.StringToDecimal("0,00").ToString();
+                        pPurchasePrice.EntryValidation.Text = (getLastPrice != null) ? LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(getLastPrice), "0.00").Replace(".", ",") : LogicPOS.Utility.DataConversionUtils.StringToDecimal("0,00").ToString();
 
                     
                         return;
                     }
                     pXPOEntry.EntryValidation.Changed -= delegate { pXPOEntry.EntryValidation.Validate(); };
 
-                    pXPOEntry.EntryValidation.Text = (newArticle != null) ? newArticle.Designation.ToString() : resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error");
+                    pXPOEntry.EntryValidation.Text = (newArticle != null) ? newArticle.Designation.ToString() : resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error");
 
                     pXPOEntry.EntryValidation.Changed += delegate { pXPOEntry.EntryValidation.Validate(); };
 
-                    pXPOEntry.EntryCodeValidation.Text = (newArticle != null) ? newArticle.Code.ToString() : resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error");
+                    pXPOEntry.EntryCodeValidation.Text = (newArticle != null) ? newArticle.Code.ToString() : resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error");
 
-                    pXPOEntry.EntryQtdValidation.Text = (newArticle != null) ? string.Format("{0:0.##}", newArticle.DefaultQuantity) : resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error");
+                    pXPOEntry.EntryQtdValidation.Text = (newArticle != null) ? string.Format("{0:0.##}", newArticle.DefaultQuantity) : resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error");
 
                     pXPOEntry.Value = newArticle;
 
@@ -592,7 +593,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     if (pXPOEntry.Value == _article)
                     {
                         pXPOEntry.Value = null;
-                        logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_composite_article_same"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_composite_article"));
+                        logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_composite_article_same"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_composite_article"));
                         pXPOEntry.EntryValidation.Text = "";
                         ValidateDialog();
                         return;
@@ -675,18 +676,18 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _totalCompositeEntrys++;
                 //var entrySelected = (XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>)sender;
                 CriteriaOperator criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1)"));
-                XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle> NewEntryBoxSelectArticle = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_article"), "Designation", "Oid", null, criteriaOperatorSelectArticle, KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true, true, LogicPOS.Utility.RegexUtils.RegexAlfaNumericArticleCode, LogicPOS.Utility.RegexUtils.RegexDecimalPositiveAndNegative, _totalCompositeEntrys);
+                XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle> NewEntryBoxSelectArticle = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_article"), "Designation", "Oid", null, criteriaOperatorSelectArticle, KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true, true, LogicPOS.Utility.RegexUtils.RegexAlfaNumericArticleCode, LogicPOS.Utility.RegexUtils.RegexDecimalPositiveAndNegative, _totalCompositeEntrys);
 
                 HBox hBoxArticles = new HBox(false, 0);
 
                 //SerialNumber
-                EntryBoxValidation NewEntryBoxSerialNumber = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_serial_number"), KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false, true);
+                EntryBoxValidation NewEntryBoxSerialNumber = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_serial_number"), KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false, true);
                 NewEntryBoxSerialNumber.EntryValidation.Changed += delegate { ValidateDialog(); };
                 NewEntryBoxSerialNumber.EntryValidation.Changed += EntrySerialNumberValidation_Changed;
                 NewEntryBoxSerialNumber.EntryValidation.FocusGrabbed += EntryValidation_FocusGrabbed;
 
                 //Price
-                EntryBoxValidation NewEntryBoxPrice = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_price"), KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexDecimalGreaterEqualThanZeroFinancial, false, true);
+                EntryBoxValidation NewEntryBoxPrice = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_price"), KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexDecimalGreaterEqualThanZeroFinancial, false, true);
                 NewEntryBoxPrice.EntryValidation.Changed += EntryPurchasedPriceValidation_Changed;
                 NewEntryBoxPrice.WidthRequest = 40;
 
@@ -694,7 +695,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 CriteriaOperator defaultWarehouseCriteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND IsDefault == '1'"));
                 fin_warehouse defaultWareHouse = (fin_warehouse)XPOSettings.Session.FindObject(typeof(fin_warehouse), defaultWarehouseCriteria);
                 XPOComboBox xpoComboBoxWarehouse = new XPOComboBox(XPOSettings.Session, typeof(fin_warehouse), defaultWareHouse, "Designation", null);
-                BOWidgetBox boxWareHouse = new BOWidgetBox(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_warehouse"), xpoComboBoxWarehouse);
+                BOWidgetBox boxWareHouse = new BOWidgetBox(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_warehouse"), xpoComboBoxWarehouse);
                 xpoComboBoxWarehouse.Changed += XpoComboBoxWarehouse_Changed;
 
                 //Location
@@ -702,7 +703,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if (defaultWareHouse != null) criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND Warehouse == '{0}'", defaultWareHouse.Oid.ToString()));
                 fin_warehouselocation defaultLocation = (fin_warehouselocation)XPOSettings.Session.FindObject(typeof(fin_warehouselocation), criteria);
                 XPOComboBox xpoComboBoxWarehouseLocation = new XPOComboBox(XPOSettings.Session, typeof(fin_warehouselocation), defaultLocation, "Designation", criteria);
-                BOWidgetBox boxWareHouseLocation = new BOWidgetBox(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_ConfigurationDevice_PlaceTerminal"), xpoComboBoxWarehouseLocation);
+                BOWidgetBox boxWareHouseLocation = new BOWidgetBox(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ConfigurationDevice_PlaceTerminal"), xpoComboBoxWarehouseLocation);
                 xpoComboBoxWarehouseLocation.Changed += XpoComboBoxWarehouselocation_Changed;
 
                 NewEntryBoxSelectArticle.EntryValidation.IsEditable = true;
@@ -888,7 +889,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if (entrySelected.Value == _article)
                 {
                     entrySelected.Value = null;
-                    logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_composite_article_same"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_composite_article"));
+                    logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_composite_article_same"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_composite_article"));
                     entrySelected.EntryValidation.Text = "";
                     return;
                 }
@@ -995,14 +996,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if((_collectionSavedArticleSerialNumber != null && _collectionSavedArticleSerialNumber.Count > 0) || (_serialNumbersInCache.ContainsValue(entrySerialNumber.Text)))
                 {
                     entrySerialNumber.Validated = false;
-                    entrySerialNumber.TooltipText = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_serial_number") + " já existe!";
+                    entrySerialNumber.TooltipText = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_serial_number") + " já existe!";
                     buttonOk.Sensitive = false;
                     return;
                 }
                 else
                 {
                     entrySerialNumber.Validated = true;
-                    entrySerialNumber.TooltipText = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_serial_number");
+                    entrySerialNumber.TooltipText = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_serial_number");
                 }
 
                 if (ArticleCollection.Count > 0 && entrySerialNumber.Validated)

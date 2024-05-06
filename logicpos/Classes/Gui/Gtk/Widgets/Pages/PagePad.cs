@@ -2,11 +2,11 @@
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.App;
 using logicpos.Extensions;
-using logicpos.shared.App;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -53,8 +53,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             Pages = pPages;
 
             HBox navigatorButtons = new HBox(true, 0);
-            ButtonPrev = new TouchButtonIconWithText("buttonPrev", _colorPagePadHotButtonBackground, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "pos_button_label_prev_pages_toolbar"), fontPagePadNavigatorButton, Color.White, iconPrev, sizePagesPadNavigatorButtonIcon, sizePagesPadNavigatorButton.Width, sizePagesPadNavigatorButton.Height) { Sensitive = false };
-            ButtonNext = new TouchButtonIconWithText("buttonNext", _colorPagePadHotButtonBackground, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "pos_button_label_next_pages_toolbar"), fontPagePadNavigatorButton, Color.White, iconNext, sizePagesPadNavigatorButtonIcon, sizePagesPadNavigatorButton.Width, sizePagesPadNavigatorButton.Height);
+            ButtonPrev = new TouchButtonIconWithText("buttonPrev", _colorPagePadHotButtonBackground, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "pos_button_label_prev_pages_toolbar"), fontPagePadNavigatorButton, Color.White, iconPrev, sizePagesPadNavigatorButtonIcon, sizePagesPadNavigatorButton.Width, sizePagesPadNavigatorButton.Height) { Sensitive = false };
+            ButtonNext = new TouchButtonIconWithText("buttonNext", _colorPagePadHotButtonBackground, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "pos_button_label_next_pages_toolbar"), fontPagePadNavigatorButton, Color.White, iconNext, sizePagesPadNavigatorButtonIcon, sizePagesPadNavigatorButton.Width, sizePagesPadNavigatorButton.Height);
 
             //Events
             ButtonPrev.Clicked += buttonPrev_Clicked;

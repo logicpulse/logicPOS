@@ -13,9 +13,8 @@ using logicpos.financial.library.Classes.Stocks;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
 using logicpos.financial.library.Classes.Reports;
-using logicpos.shared.App;
-using logicpos.datalayer.App;
 using logicpos.datalayer.Xpo;
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {
@@ -60,7 +59,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             {
                 if(pType == typeof(decimal) && pFieldName == "Price")
                 {
-                    result = !(Math.Round(Convert.ToDecimal(SharedUtils.StringToDecimal(Convert.ToString(pSource))),2).Equals(Math.Round(Convert.ToDecimal(SharedUtils.StringToDecimal(Convert.ToString(pTarget))),2)));
+                    result = !(Math.Round(Convert.ToDecimal(LogicPOS.Utility.DataConversionUtils.StringToDecimal(Convert.ToString(pSource))),2).Equals(Math.Round(Convert.ToDecimal(LogicPOS.Utility.DataConversionUtils.StringToDecimal(Convert.ToString(pTarget))),2)));
                 }
                 else
                 {
@@ -169,7 +168,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 
             if (!result)
             {
-                ResponseType response = logicpos.Utils.ShowMessageTouch(GlobalApp.BackOfficeMainWindow, DialogFlags.DestroyWithParent | DialogFlags.Modal, new Size(500, 500), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_validation_error"), string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_field_validation_error"), invalidFields));
+                ResponseType response = logicpos.Utils.ShowMessageTouch(GlobalApp.BackOfficeMainWindow, DialogFlags.DestroyWithParent | DialogFlags.Modal, new Size(500, 500), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_validation_error"), string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_field_validation_error"), invalidFields));
             };
 
             return result;
@@ -218,14 +217,14 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                             {
                                 if (!string.IsNullOrEmpty((item.Widget as Entry).Text))
                                 {
-                                    item.SetMemberValue(Convert.ChangeType((item.Widget as Entry).Text, item.FieldType, SharedFramework.CurrentCultureNumberFormat));
+                                    item.SetMemberValue(Convert.ChangeType((item.Widget as Entry).Text, item.FieldType, LogicPOS.Settings.CultureSettings.CurrentCultureNumberFormat));
                                 }
                                 else
                                 {
                                     item.SetMemberValue(null);
                                 };
                                 //With Reflection Property
-                                //item.Property.SetValue(item.Source, Convert.ChangeType((item.Widget as Entry).Text, item.FieldType, SharedFramework.CurrentCultureNumberFormat));
+                                //item.Property.SetValue(item.Source, Convert.ChangeType((item.Widget as Entry).Text, item.FieldType, LogicPOS.Settings.CultureSettings.CurrentCultureNumberFormat));
                             };
                         }
 
@@ -305,11 +304,11 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                             {
                                 if (!string.IsNullOrEmpty((item.Widget as EntryBoxValidation).EntryValidation.Text))
                                 {
-                                    //_logger.Debug(string.Format("Message1: [{0}/{1}/{2}/{3}]", item.FieldType, item.FieldName, (item.Widget as EntryBoxValidation).EntryValidation.Text, SharedFramework.CurrentCultureNumberFormat));
+                                    //_logger.Debug(string.Format("Message1: [{0}/{1}/{2}/{3}]", item.FieldType, item.FieldName, (item.Widget as EntryBoxValidation).EntryValidation.Text, LogicPOS.Settings.CultureSettings.CurrentCultureNumberFormat));
                                     //Extra protection to convert string to Decimal, else may occur errors when work with en-US
                                     if (item.FieldType == typeof(decimal))
                                     {
-                                        item.SetMemberValue(SharedUtils.StringToDecimal((item.Widget as EntryBoxValidation).EntryValidation.Text));
+                                        item.SetMemberValue(LogicPOS.Utility.DataConversionUtils.StringToDecimal((item.Widget as EntryBoxValidation).EntryValidation.Text));
                                     }
                                     else
                                     {
@@ -423,7 +422,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             catch (Exception ex)
             {
                 _logger.Error(ex.Message, ex);
-                logicpos.Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(600, 350), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error"), ex.Message);
+                logicpos.Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(600, 350), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"), ex.Message);
                 result = false;
             }
 

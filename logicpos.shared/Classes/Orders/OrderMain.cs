@@ -5,11 +5,12 @@ using logicpos.datalayer.Xpo;
 using logicpos.shared.App;
 using logicpos.shared.Classes.Finance;
 using logicpos.shared.Enums;
+using LogicPOS.Settings.Enums;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using static logicpos.datalayer.App.DataLayerFramework;
 using static logicpos.datalayer.App.DataLayerUtils;
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos.shared.Classes.Orders
 {
@@ -111,13 +112,13 @@ namespace logicpos.shared.Classes.Orders
             {
                 //Order #1 by default
                 //TicketPad - Modo Retalho - Mesa/ordem por defeito [IN:016529]
-                xTable = ((pos_configurationplacetable)SharedUtils.GetXPGuidObjectFromCriteria(typeof(pos_configurationplacetable), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Code = '{0}')", "10")) as pos_configurationplacetable);
+                xTable = ((pos_configurationplacetable)XPOHelper.GetXPGuidObjectFromCriteria(typeof(pos_configurationplacetable), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Code = '{0}')", "10")) as pos_configurationplacetable);
             }
             xTable.Reload();
             if (xTable.TableStatus != TableStatus.Open)
             {
                 xTable.TableStatus = TableStatus.Open;
-                SharedUtils.Audit("TABLE_OPEN", string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "audit_message_table_open"), xTable.Designation));
+                SharedUtils.Audit("TABLE_OPEN", string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_table_open"), xTable.Designation));
                 xTable.DateTableOpen = CurrentDateTimeAtomic();
                 if (!isInUOW) xTable.Save();
             }
@@ -163,7 +164,7 @@ namespace logicpos.shared.Classes.Orders
             //_logger.Debug(string.Format("sql: [{0}]", sql));
             string sql = string.Format(@"SELECT Oid FROM fin_documentorderticket WHERE OrderMain = '{0}' AND TicketId = '{1}';", currentOrderMain.PersistentOid, currentOrderMain.CurrentTicketId);
             //_logger.Debug(string.Format("sql: [{0}]", sql));
-            Guid orderTicketOid = SharedUtils.GetGuidFromQuery(sql);
+            Guid orderTicketOid = XPOHelper.GetGuidFromQuery(sql);
             //Result
             fin_documentorderticket xOrderTicket = (fin_documentorderticket)XPOSettings.Session.GetObjectByKey(typeof(fin_documentorderticket), orderTicketOid);
 
@@ -210,14 +211,14 @@ namespace logicpos.shared.Classes.Orders
                 //Edit/cancel orders lindote 10/07/2020
                 //Get order ticket Oid from DB
                 string sql3 = string.Format(@"SELECT Oid FROM fin_documentorderticket WHERE OrderMain = '{0}' AND TicketId = '{1}';", currentOrderMain.PersistentOid, currentOrderMain.CurrentTicketId);
-                orderTicketOid = SharedUtils.GetGuidFromQuery(sql3);
+                orderTicketOid = XPOHelper.GetGuidFromQuery(sql3);
 
                 //Get order detail Oid from DB
                 string sql4 = string.Format(@"SELECT Oid FROM fin_documentorderdetail WHERE OrderTicket = '{0}' AND Article = '{1}' AND Price = '{2}'  AND TotalDiscount = '{3}'  AND Vat = '{4}';",
                              orderTicketOid, line.ArticleOid, line.Properties.PriceNet.ToString().Replace(",", "."),
                                                               line.Properties.TotalDiscount.ToString().Replace(",", "."),
                                                               line.Properties.Vat.ToString().Replace(",", "."));
-                Guid orderDetailOid = SharedUtils.GetGuidFromQuery(sql4);
+                Guid orderDetailOid = XPOHelper.GetGuidFromQuery(sql4);
 
                 string pToken2 = "";
                 if (pTicketDrecrease)
@@ -474,8 +475,8 @@ namespace logicpos.shared.Classes.Orders
 
             try
             {
-              XPSelectData sdTotalViewOrders = SharedUtils.GetSelectedDataFromQuery(sqlTotalViewOrders);
-              XPSelectData sdTotalViewDocumentFinance = SharedUtils.GetSelectedDataFromQuery(sqlTotalViewDocumentFinance);
+              XPSelectData sdTotalViewOrders = XPOHelper.GetSelectedDataFromQuery(sqlTotalViewOrders);
+              XPSelectData sdTotalViewDocumentFinance = XPOHelper.GetSelectedDataFromQuery(sqlTotalViewDocumentFinance);
 
               if (sdTotalViewOrders.Data.Length > 0 && sdTotalViewDocumentFinance.Data.Length > 0)
               {

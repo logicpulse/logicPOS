@@ -8,6 +8,7 @@ using logicpos.Extensions;
 using logicpos.datalayer.App;
 using logicpos.shared.App;
 using logicpos.datalayer.Xpo;
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -17,7 +18,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             if (pResponse == ResponseType.Ok)
             {
-                MovementAmountMoney = SharedUtils.StringToDecimal(_entryBoxMovementAmountMoney.EntryValidation.Text);
+                MovementAmountMoney = LogicPOS.Utility.DataConversionUtils.StringToDecimal(_entryBoxMovementAmountMoney.EntryValidation.Text);
                 MovementDescription = _entryBoxMovementDescription.EntryValidation.Text;
 
                 decimal cashLastMovementTypeAmount;
@@ -44,12 +45,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     //Check if Value is Small than AmountInCashDrawer
                     if (MovementAmountMoney > TotalAmountInCashDrawer)
                     {
-                        string movementAmountMoney = SharedUtils.DecimalToStringCurrency(MovementAmountMoney);
-                        string totalAmountInCashDrawer = SharedUtils.DecimalToStringCurrency(TotalAmountInCashDrawer);
+                        string movementAmountMoney = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(MovementAmountMoney, SharedSettings.ConfigurationSystemCurrency.Acronym);
+                        string totalAmountInCashDrawer = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalAmountInCashDrawer, SharedSettings.ConfigurationSystemCurrency.Acronym);
                         
                         logicpos.Utils.ShowMessageTouch(
-                            this, DialogFlags.Modal, new Size(500, 350), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error"),
-                            string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_cashdrawer_money_out_error"), movementAmountMoney, totalAmountInCashDrawer)
+                            this, DialogFlags.Modal, new Size(500, 350), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"),
+                            string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_cashdrawer_money_out_error"), movementAmountMoney, totalAmountInCashDrawer)
                         );
                         //Keep Running            
                         this.Run();
@@ -140,7 +141,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Detect Cash open
             if (MovementType.Token == "CASHDRAWER_OPEN")
             {
-                _entryBoxMovementAmountMoney.EntryValidation.Text = SharedUtils.DecimalToString(TotalAmountInCashDrawer);
+                _entryBoxMovementAmountMoney.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.DecimalToString(TotalAmountInCashDrawer);
                 _entryBoxMovementAmountMoney.EntryValidation.Sensitive = true;
                 //Required to disable keyboard button
                 _entryBoxMovementAmountMoney.ButtonKeyBoard.Sensitive = true;
@@ -184,7 +185,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             decimal entryValidation;
             if (_entryBoxMovementAmountMoney.EntryValidation.Text != string.Empty)
-                entryValidation = SharedUtils.StringToDecimal(_entryBoxMovementAmountMoney.EntryValidation.Text);
+                entryValidation = LogicPOS.Utility.DataConversionUtils.StringToDecimal(_entryBoxMovementAmountMoney.EntryValidation.Text);
 
             //Validate Selected Entities and Change Value
             if (_buttonOk != null)

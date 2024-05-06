@@ -1,7 +1,6 @@
 ﻿using Gtk;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.App;
-using logicpos.shared.App;
 using System.IO;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets

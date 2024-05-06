@@ -1,11 +1,11 @@
 ﻿using Gtk;
 using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
-using logicpos.datalayer.App;
-using logicpos.shared.App;
+using logicpos.datalayer.Xpo;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -31,11 +31,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 /*00*/
                 new GenericTreeViewColumnProperty("Oid") { Type = typeof(Guid), Visible = false },
                 /*01*/
-                new GenericTreeViewColumnProperty("Code") { Type = typeof(uint), Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_record_code") },
+                new GenericTreeViewColumnProperty("Code") { Type = typeof(uint), Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_record_code") },
                 /*02*/
-                new GenericTreeViewColumnProperty("Designation") { Type = typeof(string), Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true },
+                new GenericTreeViewColumnProperty("Designation") { Type = typeof(string), Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_designation"), Expand = true },
                 /*03*/
-                new GenericTreeViewColumnProperty("HardwareId") { Type = typeof(string), Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_hardware_id"), MinWidth = 200 }
+                new GenericTreeViewColumnProperty("HardwareId") { Type = typeof(string), Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_hardware_id"), MinWidth = 200 }
             };
 
             //init DataTable
@@ -66,7 +66,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 ORDER BY 
                     Ord;
             ";
-            DataTable resultDataTable = SharedUtils.GetDataTableFromQuery(sql);
+            DataTable resultDataTable = XPOHelper.GetDataTableFromQuery(sql);
 
             return resultDataTable;
         }

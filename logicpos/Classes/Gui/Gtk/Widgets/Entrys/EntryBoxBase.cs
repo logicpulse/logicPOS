@@ -4,8 +4,8 @@ using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.App;
 using logicpos.Extensions;
-using logicpos.shared.App;
 using System.Drawing;
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -190,11 +190,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 _label = new Label(pLabelText);
                 _label.ModifyFont(fontDescriptionLabel);
                 _label.SetAlignment(0, 2.5F);
-                _label2 = new Label(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_article_code") + "   ");
+                _label2 = new Label(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_article_code") + "   ");
                 _label2.ModifyFont(fontDescriptionLabel);
                 _label2.ModifyBg(StateType.Normal, validLabel.ToGdkColor());
                 _label2.SetAlignment(0, 0.5F);
-                _label3 = new Label("                                                         " + resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "pos_ticketlist_label_quantity"));
+                _label3 = new Label("                                                         " + resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "pos_ticketlist_label_quantity"));
                 _label3.ModifyFont(fontDescriptionLabel);
                 _label3.ModifyBg(StateType.Normal, validLabel.ToGdkColor());
                 _label3.SetAlignment(0, 0.5F);
@@ -329,11 +329,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             }
             else if (keyboardMode == KeyboardMode.Money)
             {
-                PosMoneyPadDialog dialog = new PosMoneyPadDialog(_sourceWindow, DialogFlags.DestroyWithParent, SharedUtils.StringToDecimal(text));
+                PosMoneyPadDialog dialog = new PosMoneyPadDialog(_sourceWindow, DialogFlags.DestroyWithParent, LogicPOS.Utility.DataConversionUtils.StringToDecimal(text));
                 int response = dialog.Run();
                 if (response == (int)ResponseType.Ok)
                 {
-                    string input = SharedUtils.DecimalToString(dialog.Amount);
+                    string input = LogicPOS.Utility.DataConversionUtils.DecimalToString(dialog.Amount);
                     if (input != null)
                     {
                         if (pBoxObject.GetType() == typeof(EntryValidation))

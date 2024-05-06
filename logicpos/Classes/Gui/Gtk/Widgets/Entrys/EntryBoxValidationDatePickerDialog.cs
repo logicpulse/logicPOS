@@ -3,7 +3,7 @@ using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using System;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.datalayer.App;
-using logicpos.shared.App;
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -23,7 +23,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         public event EventHandler ClosePopup;
 
         public EntryBoxValidationDatePickerDialog(Window pSourceWindow, string pLabelText, string pRule, bool pRequired)
-            :this(pSourceWindow, pLabelText, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_date"), DataLayerUtils.CurrentDateTimeAtomic(), pRule, pRequired)
+            :this(pSourceWindow, pLabelText, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_date"), DataLayerUtils.CurrentDateTimeAtomic(), pRule, pRequired)
         {
         }
 
@@ -38,12 +38,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         }
 
         public EntryBoxValidationDatePickerDialog(Window pSourceWindow, string pLabelText, DateTime pDateTime, string pRule, bool pRequired)
-            :this(pSourceWindow, pLabelText, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_date"), pDateTime, pRule, pRequired)
+            :this(pSourceWindow, pLabelText, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_date"), pDateTime, pRule, pRequired)
         {
         }
 
         public EntryBoxValidationDatePickerDialog(Window pSourceWindow, string pLabelText, string pWindowTitle, DateTime pDateTime, string pRule, bool pRequired)
-            :this(pSourceWindow, pLabelText, string.Empty, pDateTime, pRule, pRequired, SharedSettings.DateFormat)
+            :this(pSourceWindow, pLabelText, string.Empty, pDateTime, pRule, pRequired, LogicPOS.Settings.CultureSettings.DateFormat)
         {
         }
         /* IN005974 -  KeyboardMode.AlfaNumeric makes date fields accept text */

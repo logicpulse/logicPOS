@@ -2,9 +2,9 @@
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.App;
-using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -46,7 +46,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         public EntryBoxValidationDatePickerMultiDates(Window pSourceWindow, string pLabelText, string pWindowTitle, List<DateTime> pInitialDatesList)
         {
-            string initialDate = DataLayerUtils.CurrentDateTimeAtomic().ToString(SharedSettings.DateFormat);
+            string initialDate = DataLayerUtils.CurrentDateTimeAtomic().ToString(LogicPOS.Settings.CultureSettings.DateFormat);
 
             //Parameters
             _sourceWindow = pSourceWindow;
@@ -77,7 +77,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 for (int i = 0; i < Value.Count; i++)
                 {
                     //Assign current fileName to _entryBoxAddFile, the last added is the Visible One
-                    EntryBoxAddDate.EntryValidation.Text = Value[i].ToString(SharedSettings.DateFormat);
+                    EntryBoxAddDate.EntryValidation.Text = Value[i].ToString(LogicPOS.Settings.CultureSettings.DateFormat);
                     AddDateTimeEntry(Value[i], false);
                 }
             }
@@ -91,7 +91,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             if (Value.Contains(EntryBoxAddDate.Value))
             {
-                logicpos.Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_datepicker_existing_date_error"));
+                logicpos.Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_datepicker_existing_date_error"));
             }
             else
             {
@@ -112,10 +112,10 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 //Failled: Invalid Date Range
                 else
                 {
-                    logicpos.Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error"),
-                        string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_datepicker_existing_date_error_outside_range"),
-                            AllowedPeriodBegin.ToString(SharedSettings.DateFormat),
-                            AllowedPeriodEnd.ToString(SharedSettings.DateFormat)
+                    logicpos.Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"),
+                        string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_datepicker_existing_date_error_outside_range"),
+                            AllowedPeriodBegin.ToString(LogicPOS.Settings.CultureSettings.DateFormat),
+                            AllowedPeriodEnd.ToString(LogicPOS.Settings.CultureSettings.DateFormat)
                         )
                     );
                 }
@@ -125,12 +125,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         private void AddDateTimeEntry(DateTime pDateTime, bool pAddDateTimeToList)
         {
             string iconFileName = string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/Windows/icon_window_delete_record.png");
-            EntryBoxValidationButton entryBoxValidation = new EntryBoxValidationButton(_sourceWindow, string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_date"), Value.Count + 1), KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexDate, true, iconFileName);
+            EntryBoxValidationButton entryBoxValidation = new EntryBoxValidationButton(_sourceWindow, string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_date"), Value.Count + 1), KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexDate, true, iconFileName);
             entryBoxValidation.EntryValidation.Validate();
             entryBoxValidation.EntryValidation.Sensitive = false;
             //Remove Event
             entryBoxValidation.Button.Clicked += Button_Clicked;
-            entryBoxValidation.EntryValidation.Text = pDateTime.ToString(SharedSettings.DateFormat);
+            entryBoxValidation.EntryValidation.Text = pDateTime.ToString(LogicPOS.Settings.CultureSettings.DateFormat);
             _vbox.PackStart(entryBoxValidation, false, false, 0);
             _vbox.ShowAll();
             if (pAddDateTimeToList) Value.Add(EntryBoxAddDate.Value);

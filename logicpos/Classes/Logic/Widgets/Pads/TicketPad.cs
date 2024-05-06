@@ -2,7 +2,6 @@
 using logicpos.App;
 using logicpos.Classes.Enums.TicketList;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
-using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
@@ -46,7 +45,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 			if(pTableOid == POSSettings.XpoOidConfigurationPlaceTableDefaultOpenTable){
             	var configurationPlace = (pos_configurationplace)XPOSettings.Session.GetObjectByKey(typeof(pos_configurationplace), POSSettings.XpoOidConfigurationPlaceTableDefaultOpenTable);
             	if (configurationPlace == null) { 
-                    pTableOid = ((pos_configurationplacetable)SharedUtils.GetXPGuidObjectFromCriteria(typeof(pos_configurationplacetable), string.Format("(Code = '{0}')", "10")) as pos_configurationplacetable).Oid; 
+                    pTableOid = ((pos_configurationplacetable)XPOHelper.GetXPGuidObjectFromCriteria(typeof(pos_configurationplacetable), string.Format("(Code = '{0}')", "10")) as pos_configurationplacetable).Oid; 
                 }
 			}
             //Try to Get OrderMain Object From TableId Parameter

@@ -2,7 +2,6 @@
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Enums.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.datalayer.App;
 using logicpos.shared.App;
 using System;
 using System.Drawing;
@@ -15,16 +14,16 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Settings
-        private readonly decimal _decimalMoneyButtonL1Value = SharedUtils.StringToDecimal(LogicPOS.Settings.GeneralSettings.Settings["decimalMoneyButtonL1Value"]);
-        private readonly decimal _decimalMoneyButtonL2Value = SharedUtils.StringToDecimal(LogicPOS.Settings.GeneralSettings.Settings["decimalMoneyButtonL2Value"]);
-        private readonly decimal _decimalMoneyButtonL3Value = SharedUtils.StringToDecimal(LogicPOS.Settings.GeneralSettings.Settings["decimalMoneyButtonL3Value"]);
-        private readonly decimal _decimalMoneyButtonL4Value = SharedUtils.StringToDecimal(LogicPOS.Settings.GeneralSettings.Settings["decimalMoneyButtonL4Value"]);
-        private readonly decimal _decimalMoneyButtonL5Value = SharedUtils.StringToDecimal(LogicPOS.Settings.GeneralSettings.Settings["decimalMoneyButtonL5Value"]);
-        private readonly decimal _decimalMoneyButtonR1Value = SharedUtils.StringToDecimal(LogicPOS.Settings.GeneralSettings.Settings["decimalMoneyButtonR1Value"]);
-        private readonly decimal _decimalMoneyButtonR2Value = SharedUtils.StringToDecimal(LogicPOS.Settings.GeneralSettings.Settings["decimalMoneyButtonR2Value"]);
-        private readonly decimal _decimalMoneyButtonR3Value = SharedUtils.StringToDecimal(LogicPOS.Settings.GeneralSettings.Settings["decimalMoneyButtonR3Value"]);
-        private readonly decimal _decimalMoneyButtonR4Value = SharedUtils.StringToDecimal(LogicPOS.Settings.GeneralSettings.Settings["decimalMoneyButtonR4Value"]);
-        private readonly decimal _decimalMoneyButtonR5Value = SharedUtils.StringToDecimal(LogicPOS.Settings.GeneralSettings.Settings["decimalMoneyButtonR5Value"]);
+        private readonly decimal _decimalMoneyButtonL1Value = LogicPOS.Utility.DataConversionUtils.StringToDecimal(LogicPOS.Settings.GeneralSettings.Settings["decimalMoneyButtonL1Value"]);
+        private readonly decimal _decimalMoneyButtonL2Value = LogicPOS.Utility.DataConversionUtils.StringToDecimal(LogicPOS.Settings.GeneralSettings.Settings["decimalMoneyButtonL2Value"]);
+        private readonly decimal _decimalMoneyButtonL3Value = LogicPOS.Utility.DataConversionUtils.StringToDecimal(LogicPOS.Settings.GeneralSettings.Settings["decimalMoneyButtonL3Value"]);
+        private readonly decimal _decimalMoneyButtonL4Value = LogicPOS.Utility.DataConversionUtils.StringToDecimal(LogicPOS.Settings.GeneralSettings.Settings["decimalMoneyButtonL4Value"]);
+        private readonly decimal _decimalMoneyButtonL5Value = LogicPOS.Utility.DataConversionUtils.StringToDecimal(LogicPOS.Settings.GeneralSettings.Settings["decimalMoneyButtonL5Value"]);
+        private readonly decimal _decimalMoneyButtonR1Value = LogicPOS.Utility.DataConversionUtils.StringToDecimal(LogicPOS.Settings.GeneralSettings.Settings["decimalMoneyButtonR1Value"]);
+        private readonly decimal _decimalMoneyButtonR2Value = LogicPOS.Utility.DataConversionUtils.StringToDecimal(LogicPOS.Settings.GeneralSettings.Settings["decimalMoneyButtonR2Value"]);
+        private readonly decimal _decimalMoneyButtonR3Value = LogicPOS.Utility.DataConversionUtils.StringToDecimal(LogicPOS.Settings.GeneralSettings.Settings["decimalMoneyButtonR3Value"]);
+        private readonly decimal _decimalMoneyButtonR4Value = LogicPOS.Utility.DataConversionUtils.StringToDecimal(LogicPOS.Settings.GeneralSettings.Settings["decimalMoneyButtonR4Value"]);
+        private readonly decimal _decimalMoneyButtonR5Value = LogicPOS.Utility.DataConversionUtils.StringToDecimal(LogicPOS.Settings.GeneralSettings.Settings["decimalMoneyButtonR5Value"]);
         //UI
         private readonly NumberPad _numberPad;
         private readonly EntryValidation _entryDeliveryValue;
@@ -54,16 +53,16 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             string fontMoneyPadButtonKeys = LogicPOS.Settings.GeneralSettings.Settings["fontMoneyPadButtonKeys"];
             string fontMoneyPadTextEntry = LogicPOS.Settings.GeneralSettings.Settings["fontMoneyPadTextEntry"];
             //ButtonLabels
-            string moneyButtonL1Label = SharedUtils.DecimalToStringCurrency(_decimalMoneyButtonL1Value);
-            string moneyButtonL2Label = SharedUtils.DecimalToStringCurrency(_decimalMoneyButtonL2Value);
-            string moneyButtonL3Label = SharedUtils.DecimalToStringCurrency(_decimalMoneyButtonL3Value);
-            string moneyButtonL4Label = SharedUtils.DecimalToStringCurrency(_decimalMoneyButtonL4Value);
-            string moneyButtonL5Label = SharedUtils.DecimalToStringCurrency(_decimalMoneyButtonL5Value);
-            string moneyButtonR1Label = SharedUtils.DecimalToStringCurrency(_decimalMoneyButtonR1Value);
-            string moneyButtonR2Label = SharedUtils.DecimalToStringCurrency(_decimalMoneyButtonR2Value);
-            string moneyButtonR3Label = SharedUtils.DecimalToStringCurrency(_decimalMoneyButtonR3Value);
-            string moneyButtonR4Label = SharedUtils.DecimalToStringCurrency(_decimalMoneyButtonR4Value);
-            string moneyButtonR5Label = SharedUtils.DecimalToStringCurrency(_decimalMoneyButtonR5Value);
+            string moneyButtonL1Label = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_decimalMoneyButtonL1Value, SharedSettings.ConfigurationSystemCurrency.Acronym);
+            string moneyButtonL2Label = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_decimalMoneyButtonL2Value, SharedSettings.ConfigurationSystemCurrency.Acronym);
+            string moneyButtonL3Label = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_decimalMoneyButtonL3Value, SharedSettings.ConfigurationSystemCurrency.Acronym);
+            string moneyButtonL4Label = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_decimalMoneyButtonL4Value, SharedSettings.ConfigurationSystemCurrency.Acronym);
+            string moneyButtonL5Label = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_decimalMoneyButtonL5Value, SharedSettings.ConfigurationSystemCurrency.Acronym);
+            string moneyButtonR1Label = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_decimalMoneyButtonR1Value, SharedSettings.ConfigurationSystemCurrency.Acronym);
+            string moneyButtonR2Label = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_decimalMoneyButtonR2Value, SharedSettings.ConfigurationSystemCurrency.Acronym);
+            string moneyButtonR3Label = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_decimalMoneyButtonR3Value, SharedSettings.ConfigurationSystemCurrency.Acronym);
+            string moneyButtonR4Label = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_decimalMoneyButtonR4Value, SharedSettings.ConfigurationSystemCurrency.Acronym);
+            string moneyButtonR5Label = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_decimalMoneyButtonR5Value, SharedSettings.ConfigurationSystemCurrency.Acronym);
 
             //Local Vars
             Color colorFont = Color.White;
@@ -71,7 +70,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             Size moneyButtonSize = new Size(100, 64);
 
             //Delivery Entry
-            string initialValue = (pInitialValue > 0) ? SharedUtils.DecimalToString(pInitialValue) : string.Empty;
+            string initialValue = (pInitialValue > 0) ? LogicPOS.Utility.DataConversionUtils.DecimalToString(pInitialValue) : string.Empty;
             _entryDeliveryValue = new EntryValidation(pSourceWindow, KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexDecimal, true) { Text = initialValue, Alignment = 0.5F };
             _entryDeliveryValue.ModifyFont(Pango.FontDescription.FromString(fontMoneyPadTextEntry));
             //Dialog Validated Equal to Entry, Its the Only Entry in Dialog
@@ -142,7 +141,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             EntryValidation entry = (EntryValidation)sender;
             Validated = entry.Validated;
-            DeliveryValue = SharedUtils.StringToDecimal(_entryDeliveryValue.Text);
+            DeliveryValue = LogicPOS.Utility.DataConversionUtils.StringToDecimal(_entryDeliveryValue.Text);
             EntryChanged?.Invoke(sender, e);
         }
 
@@ -224,7 +223,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             }
 
             DeliveryValue += pAmount;
-            _entryDeliveryValue.Text = SharedUtils.DecimalToString(DeliveryValue);
+            _entryDeliveryValue.Text = LogicPOS.Utility.DataConversionUtils.DecimalToString(DeliveryValue);
         }
     }
 }

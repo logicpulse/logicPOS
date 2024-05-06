@@ -1,6 +1,5 @@
 ﻿using Gtk;
 using logicpos.Classes.Enums.Dialogs;
-using logicpos.shared.App;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {

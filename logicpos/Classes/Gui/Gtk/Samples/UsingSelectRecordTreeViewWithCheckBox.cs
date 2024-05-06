@@ -5,9 +5,9 @@ using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.datalayer.App;
 using System;
 using System.Data;
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.Samples
 {
@@ -49,7 +49,7 @@ namespace logicpos.Classes.Gui.Gtk.Samples
               new PosSelectRecordDialog<DataTable, DataRow, TreeViewTerminalSeries>(
                 _sourceWindow,
                 DialogFlags.DestroyWithParent,
-                resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_select_record"),
+                resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_select_record"),
                 GlobalApp.MaxWindowSize,
                 null, //pDefaultValue : Require to Send a DataRow
                 GenericTreeViewMode.CheckBox,
@@ -78,8 +78,8 @@ namespace logicpos.Classes.Gui.Gtk.Samples
                     string designation = (string)_dialogSelectRecord.GenericTreeView.DataSourceRow.ItemArray[indexColumnDesignation];
                     _dialogSelectRecord.WindowTitle =
                         (_dialogSelectRecord.GenericTreeView.MarkedCheckBoxs > 0)
-                        ? string.Format("{0} : MarkedCheckBoxs:[{1}] : Last:[{2}]", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_select_record"), _dialogSelectRecord.GenericTreeView.MarkedCheckBoxs, designation)
-                        : resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_select_record")
+                        ? string.Format("{0} : MarkedCheckBoxs:[{1}] : Last:[{2}]", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_select_record"), _dialogSelectRecord.GenericTreeView.MarkedCheckBoxs, designation)
+                        : resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_select_record")
                     ;
                 }
             };

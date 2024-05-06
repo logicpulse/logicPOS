@@ -2,13 +2,13 @@
 using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
 using Gtk;
-using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
+using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Xpo;
 using System;
 using System.Collections.Generic;
-using logicpos.Classes.Enums.GenericTreeView;
-using logicpos.datalayer.App;
-using logicpos.datalayer.Xpo;
+using LogicPOS.Settings.Extensions;
 
 //Note
 //1) To disable navigator butons ex INS,DEL, use privileges
@@ -38,10 +38,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
             {
-                new GenericTreeViewColumnProperty("Code") { Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_record_code"), MinWidth = 100 },
-                new GenericTreeViewColumnProperty("Designation") { Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true }
+                new GenericTreeViewColumnProperty("Code") { Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_record_code"), MinWidth = 100 },
+                new GenericTreeViewColumnProperty("Designation") { Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_designation"), Expand = true }
             };
-            //columnProperties.Add(new GenericTreeViewColumnProperty("Disabled") { Title = resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_record_disabled });
+            //columnProperties.Add(new GenericTreeViewColumnProperty("Disabled") { Title = resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_record_disabled });
 
             //Configure Criteria/XPCollection/Model
             //CriteriaOperator.Parse("Code >= 100 and Code <= 9999");
@@ -76,7 +76,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Events Sample
             this.RecordBeforeDelete += TreeView_RecordBeforeDelete;
             this.RecordBeforeUpdate += TreeView_RecordBeforeUpdate;
-            */ 
+            */
         }
 
         /*
@@ -102,6 +102,6 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 Utils.ShowMessageTouchProtectedUpdateRecordMessage(_sourceWindow);
             }
         }
-        */ 
+        */
     }
 }

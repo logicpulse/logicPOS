@@ -17,6 +17,7 @@ using logicpos.datalayer.App;
 using logicpos.shared.App;
 using logicpos.datalayer.Xpo;
 using LogicPOS.DTOs.Common;
+using LogicPOS.Settings.Extensions;
 
 //Class to Link Project LogicPos to FrameWork API, used to Show Common Messages for LogicPos
 
@@ -134,8 +135,8 @@ namespace logicpos
                             DialogFlags.Modal,
                             MessageType.Question,
                             ButtonsType.YesNo,
-                            resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance"),
-                            resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_request_print_document_confirmation")
+                            resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_document_finance"),
+                            resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_request_print_document_confirmation")
                         );
 
                         if (responseType == ResponseType.No) printDocument = false;
@@ -153,17 +154,17 @@ namespace logicpos
                 switch (ex.Message)
                 {
                     case "ERROR_MISSING_SERIE":
-                        errorMessage = string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document_missing_series"));
+                        errorMessage = string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_error_creating_financial_document"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_error_creating_financial_document_missing_series"));
                         break;
                     case "ERROR_INVALID_DOCUMENT_NUMBER":
-                        errorMessage = string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document_invalid_documentnumber"));
+                        errorMessage = string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_error_creating_financial_document"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_error_creating_financial_document_invalid_documentnumber"));
                         break;
                     case "ERROR_COMMIT_FINANCE_DOCUMENT":
-                        errorMessage = string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document_commit_session"));
+                        errorMessage = string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_error_creating_financial_document"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_error_creating_financial_document_commit_session"));
                         break;
                     //TODO: NEW CLASS FinanceDocumentValidate : IMPLEMENT HERE THE RESULT EXCEPTION FOR VALIDATE_SIMPLIFIED_INVOICE
                     default:
-                        errorMessage = string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document"), ex.Message);
+                        errorMessage = string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_error_creating_financial_document"), ex.Message);
                         break;
                 }
                 Utils.ShowMessageTouch(
@@ -172,7 +173,7 @@ namespace logicpos
                   _sizeDefaultWindowSize,
                   MessageType.Error,
                   ButtonsType.Close,
-                  resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error"),
+                  resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"),
                   errorMessage
                 );
             }
@@ -223,8 +224,8 @@ namespace logicpos
 
                 if (sendDocumentResult == null || sendDocumentResult.ReturnCode != "0")
                 {
-                    dialogResponse = Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(700, 440), MessageType.Error, ButtonsType.YesNo, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error"),
-                        string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_error_in_at_webservice"), sendDocumentResult.ReturnCode, sendDocumentResult.ReturnMessage)
+                    dialogResponse = Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(700, 440), MessageType.Error, ButtonsType.YesNo, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"),
+                        string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_error_in_at_webservice"), sendDocumentResult.ReturnCode, sendDocumentResult.ReturnMessage)
                     );
                     /* IN009083 - returns true when WS call fails and user opts to do not retry */
                     if (ResponseType.No.Equals(dialogResponse))
@@ -324,11 +325,11 @@ namespace logicpos
                 switch (ex.Message)
                 {
                     case "ERROR_MISSING_SERIE":
-                        errorMessage = string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document_missing_series"));
+                        errorMessage = string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_error_creating_financial_document"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_error_creating_financial_document_missing_series"));
                         break;
                     case "ERROR_COMMIT_FINANCE_DOCUMENT_PAYMENT":
                     default:
-                        errorMessage = string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document"), ex.Exception.Message);
+                        errorMessage = string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_error_creating_financial_document"), ex.Exception.Message);
                         break;
                 }
                 Utils.ShowMessageTouch(
@@ -337,7 +338,7 @@ namespace logicpos
                   _sizeDefaultWindowSize,
                   MessageType.Error,
                   ButtonsType.Close,
-                  resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error"),
+                  resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"),
                   errorMessage
                 );
             }
@@ -421,8 +422,8 @@ namespace logicpos
                   _sizeDefaultWindowSize,
                   MessageType.Info,
                   ButtonsType.Close,
-                  resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_information"),
-                  string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_saftpt_exported_successfully"), result)
+                  resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_information"),
+                  string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_saftpt_exported_successfully"), result)
                 );
             }
             catch (Exception ex)
@@ -433,8 +434,8 @@ namespace logicpos
                   _sizeDefaultWindowSize,
                   MessageType.Error,
                   ButtonsType.Close,
-                  resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error"),
-                  resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_saftpt_exported_error")
+                  resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"),
+                  resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_saftpt_exported_error")
                 );
                 _logger.Error(ex.Message, ex);
             }
@@ -476,7 +477,7 @@ namespace logicpos
 
             if (!LicenceManagement.IsLicensed || !LicenceManagement.CanPrint)
             {
-                Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(pSourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_printing_function_disabled"));
+                Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(pSourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_printing_function_disabled"));
                 return false;
             }
 			//TK016249 - Impressoras - Diferenciação entre Tipos
@@ -506,7 +507,7 @@ namespace logicpos
                     //Notification : Show Message TouchTerminalWithoutAssociatedPrinter and Store user input, to Show Next Time(Yes) or Not (No)
                     if (printerDoc == null)
                     {
-                        Utils.ShowMessageTouchTerminalWithoutAssociatedPrinter(pSourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], pDocumentFinanceMaster.DocumentType.ResourceString));
+                        Utils.ShowMessageTouchTerminalWithoutAssociatedPrinter(pSourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), pDocumentFinanceMaster.DocumentType.ResourceString));
                     }
                     else
                     {
@@ -518,7 +519,7 @@ namespace logicpos
                 else
                 {
                     bool validFiles = true;
-                    string extraMessage = string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_error_protected_files_invalid_files_detected_print_document_ignored"), pDocumentFinanceMaster.DocumentNumber);
+                    string extraMessage = string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_error_protected_files_invalid_files_detected_print_document_ignored"), pDocumentFinanceMaster.DocumentNumber);
 
                     //Printer Drawer : Set openDrawer
                     switch (PrintRouter.GetPrinterToken(printer.PrinterType.Token))
@@ -572,12 +573,12 @@ namespace logicpos
                             var resultOpenDoor = PrintRouter.OpenDoor(DataLayerFramework.LoggedTerminal.Printer);
                             if (!resultOpenDoor)
                             {
-                                Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_information"), string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "open_cash_draw_permissions")));
+                                Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_information"), string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "open_cash_draw_permissions")));
                             }
                             else
                             {
                                 SharedUtils.Audit("CASHDRAWER_OUT", string.Format(
-                                resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "audit_message_cashdrawer_out"),
+                                resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_cashdrawer_out"),
                                 DataLayerFramework.LoggedTerminal.Designation,
                                 "Button Open Door"));
                             }
@@ -610,7 +611,7 @@ namespace logicpos
 
             if (!LicenceManagement.IsLicensed || !LicenceManagement.CanPrint)
             {
-                Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(pSourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_printing_function_disabled"));
+                Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(pSourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_printing_function_disabled"));
                 return false;
             }
 
@@ -623,13 +624,13 @@ namespace logicpos
                 //Notification : Show Message TouchTerminalWithoutAssociatedPrinter and Store user input, to Show Next Time(Yes) or Not (No)
                 if (printer == null)
                 {
-                    Utils.ShowMessageTouchTerminalWithoutAssociatedPrinter(pSourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_documentfinance_type_title_rc"));
+                    Utils.ShowMessageTouchTerminalWithoutAssociatedPrinter(pSourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_type_title_rc"));
                 }
                 else
                 {
                     //ProtectedFiles Protection
                     bool validFiles = true;
-                    string extraMessage = string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_error_protected_files_invalid_files_detected_print_document_ignored"), pDocumentFinancePayment.PaymentRefNo);
+                    string extraMessage = string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_error_protected_files_invalid_files_detected_print_document_ignored"), pDocumentFinancePayment.PaymentRefNo);
                     switch (PrintRouter.GetPrinterToken(printer.PrinterType.Token))
                     {
                         //ThermalPrinter : Ticket Files
@@ -649,7 +650,7 @@ namespace logicpos
                     //Recibos com impressão em impressora térmica
                     if (DataLayerFramework.LoggedTerminal.ThermalPrinter != null)
                     {
-                        ResponseType responseType = Utils.ShowMessageTouch(pSourceWindow, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_edit_DialogConfigurationPrintersType_tab1_label"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_printer_choose_printer")); 
+                        ResponseType responseType = Utils.ShowMessageTouch(pSourceWindow, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_edit_DialogConfigurationPrintersType_tab1_label"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_printer_choose_printer")); 
 
                         if (responseType == ResponseType.Yes)
                         {
@@ -685,7 +686,7 @@ namespace logicpos
 
             if (!LicenceManagement.IsLicensed || !LicenceManagement.CanPrint)
             {
-                Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(pSourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_printing_function_disabled"));
+                Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(pSourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_printing_function_disabled"));
             }
             else
             {
@@ -698,16 +699,16 @@ namespace logicpos
                         switch (pTicketType)
                         {
                             case TicketType.TableOrder:
-                                ticketTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_documentticket_type_title_tt");
+                                ticketTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentticket_type_title_tt");
                                 break;
                             case TicketType.ArticleOrder:
-                                ticketTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_documentticket_type_title_ar");
+                                ticketTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentticket_type_title_ar");
                                 break;
                             case TicketType.WorkSession:
-                                ticketTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_documentticket_type_title_ws");
+                                ticketTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentticket_type_title_ws");
                                 break;
                             case TicketType.CashDrawer:
-                                ticketTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_documentticket_type_title_cs");
+                                ticketTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentticket_type_title_cs");
                                 break;
                             default:
                                 break;
@@ -844,9 +845,9 @@ namespace logicpos
 
             if (!result)
             {
-                string message = string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_error_protected_files_invalid_files_detected"), pFilePath);
+                string message = string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_error_protected_files_invalid_files_detected"), pFilePath);
                 if (pExtraMessage != string.Empty) message = string.Format("{1}{0}{0}{2}", Environment.NewLine, message, pExtraMessage);
-                Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(800, 400), MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error"), message);
+                Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(800, 400), MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"), message);
             }
 
             return result;

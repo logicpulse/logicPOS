@@ -1,6 +1,5 @@
 ﻿using Gtk;
 using logicpos.App;
-using logicpos.datalayer.App;
 using logicpos.Extensions;
 using System;
 using System.IO;

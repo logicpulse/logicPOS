@@ -13,6 +13,7 @@ using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
+using LogicPOS.Settings.Extensions;
 
 [assembly: log4net.Config.XmlConfigurator(Watch = true)]
 
@@ -87,7 +88,7 @@ namespace logicpos
                     }
                     else
                     {
-                        Utils.ShowMessageNonTouch(null, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_pos_instance_already_running"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_information"));
+                        Utils.ShowMessageNonTouch(null, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_pos_instance_already_running"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_information"));
                         return;
                     }
                 }
@@ -204,13 +205,13 @@ namespace logicpos
 
                 if (Utils.OSHasCulture(cultureFromDb) == false)
                 {
-                    SharedFramework.CurrentCulture = new CultureInfo("pt-PT");
+                    LogicPOS.Settings.CultureSettings.CurrentCulture = new CultureInfo("pt-PT");
                     LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
                 }
                 else
                 {
                     LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"] = cultureFromDb;
-                    SharedFramework.CurrentCulture = new System.Globalization.CultureInfo(cultureFromDb);
+                    LogicPOS.Settings.CultureSettings.CurrentCulture = new System.Globalization.CultureInfo(cultureFromDb);
                 }
 
             }
@@ -219,16 +220,16 @@ namespace logicpos
 
                 if (!Utils.OSHasCulture(ConfigurationManager.AppSettings["customCultureResourceDefinition"]))
                 {
-                    SharedFramework.CurrentCulture = new CultureInfo("pt-PT");
+                    LogicPOS.Settings.CultureSettings.CurrentCulture = new CultureInfo("pt-PT");
                     LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
                 }
                 else
                 {
-                    SharedFramework.CurrentCulture = new CultureInfo(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"]);
+                    LogicPOS.Settings.CultureSettings.CurrentCulture = new CultureInfo(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName());
                     LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
                 }
 
-                _logger.Error(string.Format("Missing Culture in DataBase or DB not created yet, using {0} from config.", LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"]));
+                _logger.Error(string.Format("Missing Culture in DataBase or DB not created yet, using {0} from config.", LogicPOS.Settings.GeneralSettings.Settings.GetCultureName()));
             }
         }
     }

@@ -1,10 +1,10 @@
 using Gtk;
 using logicpos.App;
 using logicpos.Extensions;
-using logicpos.shared.App;
 using System;
 using System.Drawing;
 using System.IO;
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos
 {
@@ -166,8 +166,8 @@ namespace logicpos
                         DialogFlags.Modal, 
                         MessageType.Error, 
                         ButtonsType.Ok, 
-                        resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error"), 
-                        string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_low_resolution_detected"), 
+                        resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"), 
+                        string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_low_resolution_detected"), 
                         width, 
                         height));
                     Environment.Exit(0);

@@ -4,7 +4,6 @@ using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.App;
-using logicpos.shared.App;
 using System.Drawing;
 using System.IO;
 

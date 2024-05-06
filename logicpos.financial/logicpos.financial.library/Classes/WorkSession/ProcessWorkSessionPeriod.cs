@@ -32,7 +32,7 @@ namespace logicpos.financial.library.Classes.WorkSession
             }
 
             string sql = string.Format(@"SELECT Oid FROM pos_worksessionperiod WHERE {1}PeriodType = '{0}' AND SessionStatus = 0;", Convert.ToInt16(pWorkSessionPeriodType), whereTerminal);
-            Guid workSessionPeriodOid = SharedUtils.GetGuidFromQuery(sql);
+            Guid workSessionPeriodOid = XPOHelper.GetGuidFromQuery(sql);
             if (workSessionPeriodOid != Guid.Empty)
             {
                 pos_worksessionperiod resultWorkSessionPeriod = XPOSettings.Session.GetObjectByKey<pos_worksessionperiod>(workSessionPeriodOid);
@@ -64,7 +64,7 @@ namespace logicpos.financial.library.Classes.WorkSession
                 {
                     PeriodType = pWorkSessionPeriodType,
                     SessionStatus = WorkSessionPeriodStatus.Open,
-                    Designation = string.Format("{0} - {1}{2}", periodType, dateTime.ToString(SharedSettings.DateTimeFormat), description),
+                    Designation = string.Format("{0} - {1}{2}", periodType, dateTime.ToString(LogicPOS.Settings.CultureSettings.DateTimeFormat), description),
                     DateStart = dateTime,
                     Terminal = terminal
                 };
@@ -179,7 +179,7 @@ namespace logicpos.financial.library.Classes.WorkSession
                       , pWorkSessionPeriod.Oid
                     );
 
-                    XPSelectData xPSelectData = SharedUtils.GetSelectedDataFromQuery(uowSession, sql);
+                    XPSelectData xPSelectData = XPOHelper.GetSelectedDataFromQuery(uowSession, sql);
                     foreach (SelectStatementResultRow row in xPSelectData.Data)
                     {
                         paymentMethodOrd = Convert.ToUInt16(row.Values[xPSelectData.GetFieldIndex("Ord")]);
@@ -211,7 +211,7 @@ namespace logicpos.financial.library.Classes.WorkSession
                         {
                             //Get XPObjects
                             workSessionPeriod = uowSession.GetObjectByKey<pos_worksessionperiod>(pWorkSessionPeriod.Oid);
-                            configurationPaymentMethod = (fin_configurationpaymentmethod)SharedUtils.GetXPGuidObjectFromField(uowSession, typeof(fin_configurationpaymentmethod), "Token", paymentMethodToken);
+                            configurationPaymentMethod = (fin_configurationpaymentmethod)XPOHelper.GetXPGuidObjectFromField(uowSession, typeof(fin_configurationpaymentmethod), "Token", paymentMethodToken);
 
                             //Persist WorkSessionPeriodTotal
                             workSessionPeriodTotal = new pos_worksessionperiodtotal(uowSession)
@@ -255,7 +255,7 @@ namespace logicpos.financial.library.Classes.WorkSession
             {
                 //string sql = string.Format(@"SELECT Count(*) as Count FROM pos_worksessionperiod WHERE Parent = '{0}' AND SessionStatus = 0;", GlobalFramework.WorkSessionPeriodDay.Oid.ToString());
                 string sql = string.Format(@"SELECT Oid, Designation, DateStart, Terminal FROM pos_worksessionperiod WHERE PeriodType = 1 AND Parent = '{0}' AND SessionStatus = 0;", SharedFramework.WorkSessionPeriodDay.Oid.ToString());
-                XPSelectData xPSelectData = SharedUtils.GetSelectedDataFromQuery(sql);
+                XPSelectData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
                 return xPSelectData;
             }
             catch (Exception ex)
@@ -273,7 +273,7 @@ namespace logicpos.financial.library.Classes.WorkSession
             try
             {
                 string sql = string.Format(@"SELECT PlaceTable FROM fin_documentordermain WHERE OrderStatus = 1;");
-                XPSelectData xPSelectData = SharedUtils.GetSelectedDataFromQuery(sql);
+                XPSelectData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
                 return xPSelectData;
             }
             catch (Exception ex)

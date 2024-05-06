@@ -1,11 +1,11 @@
 ﻿using DevExpress.Xpo.DB;
 using Gtk;
 using logicpos.Classes.Gui.Gtk.Widgets;
-using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Xpo;
 using logicpos.resources.Resources.Localization;
-using logicpos.shared.App;
 using System.Collections.Generic;
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
 {
@@ -37,7 +37,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             }
 
             //Get XPSelectData for Parent and Child
-            XPSelectData xPSelectDataParent = SharedUtils.GetSelectedDataFromQuery(sqlTableParent);
+            XPSelectData xPSelectDataParent = XPOHelper.GetSelectedDataFromQuery(sqlTableParent);
             XPSelectData xPSelectDataChild;
             Dictionary<string, AccordionNode> _accordionChilds = new Dictionary<string, AccordionNode>();
 
@@ -53,11 +53,11 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                     //Bypass default db label with Resources Localization Label
                     if (Resx
                         .ResourceManager.GetString(parentResource) != null)
-                        parentLabel = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], parentResource);
+                        parentLabel = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), parentResource);
                 }
 
                 //Get Child Data
-                xPSelectDataChild = SharedUtils.GetSelectedDataFromQuery(string.Format(sqlTableChild, parentId));
+                xPSelectDataChild = XPOHelper.GetSelectedDataFromQuery(string.Format(sqlTableChild, parentId));
                 //Init Childs        
                 _accordionChilds = new Dictionary<string, AccordionNode>();
 
@@ -70,8 +70,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                     {
                         string childResource = childRow.Values[xPSelectDataChild.GetFieldIndex("resource")].ToString();
                         //Bypass default db label with Resources Localization Label
-                        if (resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], childResource) != null)
-                            childLabel = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], childResource);
+                        if (resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), childResource) != null)
+                            childLabel = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), childResource);
                     }
                     _accordionChilds.Add(string.Format("childId_{0}", childId), new AccordionNode(childLabel) { Content = new Button(childLabel) });
                 }

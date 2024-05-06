@@ -5,7 +5,6 @@ using System;
 using System.Drawing;
 using System.Reflection;
 using logicpos.Extensions;
-using logicpos.datalayer.App;
 using logicpos.shared.App;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
@@ -156,15 +155,15 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                     {
                         try
                         {
-                            (_widget as Entry).Text = (string)Convert.ChangeType(GetMemberValue(), typeof(string), SharedFramework.CurrentCultureNumberFormat);
+                            (_widget as Entry).Text = (string)Convert.ChangeType(GetMemberValue(), typeof(string), LogicPOS.Settings.CultureSettings.CurrentCultureNumberFormat);
                             //Decimal : Replace Visual Decimal Separator if is .
-                            if (_fieldType == typeof(decimal) && SharedFramework.CurrentCulture.NumberFormat.NumberDecimalSeparator == ",")
+                            if (_fieldType == typeof(decimal) && LogicPOS.Settings.CultureSettings.CurrentCulture.NumberFormat.NumberDecimalSeparator == ",")
                                 (_widget as Entry).Text = (_widget as Entry).Text.Replace('.', ',');
                             //DateTime
                             if (_fieldType == typeof(DateTime))
                             {
                                 //Cast _fieldValue to DateTime
-                                (_widget as Entry).Text = ((DateTime)_fieldValue).ToString(SharedSettings.DateTimeFormat);
+                                (_widget as Entry).Text = ((DateTime)_fieldValue).ToString(LogicPOS.Settings.CultureSettings.DateTimeFormat);
                                 //_logger.Debug(string.Format("{0}:{1}:{2}:{3}:{4}", _dataSourceRow, _fieldName, _fieldValue, _fieldProperty, _fieldType));
                             }
                         }
@@ -335,9 +334,9 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                             //Replace Visual Decimal Separator if is .
                             else
                             {
-                                (_widget as EntryBoxValidation).EntryValidation.Text = SharedUtils.DecimalToString(Convert.ToDecimal(GetMemberValue()));
+                                (_widget as EntryBoxValidation).EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(GetMemberValue()));
 
-                                if (SharedFramework.CurrentCulture.NumberFormat.NumberDecimalSeparator == ",")
+                                if (LogicPOS.Settings.CultureSettings.CurrentCulture.NumberFormat.NumberDecimalSeparator == ",")
                                 {
                                     (_widget as EntryBoxValidation).EntryValidation.Text = (_widget as EntryBoxValidation).EntryValidation.Text.Replace('.', ',');
                                 }

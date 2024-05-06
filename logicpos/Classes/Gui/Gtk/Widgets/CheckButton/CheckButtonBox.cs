@@ -1,5 +1,4 @@
 ﻿using Gtk;
-using logicpos.datalayer.App;
 using logicpos.Extensions;
 using System;
 using System.Drawing;

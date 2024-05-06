@@ -7,9 +7,11 @@ using logicpos.Classes.Enums;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.App;
+using LogicPOS.Settings;
+using LogicPOS.Settings.Enums;
+using LogicPOS.Settings.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -56,7 +58,7 @@ namespace logicpos
                 {
                     case ImportExportFileOpen.OpenExcelArticles:
 
-                        string windowName = (resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_articles"));
+                        string windowName = (resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_articles"));
                         FileFilter fileFilterBackups = Utils.GetFileFilterImportExport();
                         PosFilePickerDialog dialog = new PosFilePickerDialog(pSourceWindow, DialogFlags.DestroyWithParent, fileFilterBackups, FileChooserAction.Open, windowName);
                         ResponseType response = (ResponseType)dialog.Run();
@@ -89,7 +91,7 @@ namespace logicpos
 
                     case ImportExportFileOpen.OpenExcelCostumers:
 
-                        windowName = (resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_customer"));
+                        windowName = (resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_customer"));
                         fileFilterBackups = Utils.GetFileFilterImportExport();
                         dialog = new PosFilePickerDialog(pSourceWindow, DialogFlags.DestroyWithParent, fileFilterBackups, FileChooserAction.Open, windowName);
                         response = (ResponseType)dialog.Run();
@@ -122,7 +124,7 @@ namespace logicpos
 
                     case ImportExportFileOpen.ExportArticles:
 
-                        windowName = (resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_articles"));
+                        windowName = (resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_articles"));
                         fileFilterBackups = Utils.GetFileFilterImportExport();
                         dialog = new PosFilePickerDialog(pSourceWindow, DialogFlags.DestroyWithParent, fileFilterBackups, FileChooserAction.Save, windowName);
                         response = (ResponseType)dialog.Run();
@@ -156,7 +158,7 @@ namespace logicpos
 
                     case ImportExportFileOpen.ExportCustomers:
 
-                        windowName = (resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_customer"));
+                        windowName = (resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_customer"));
                         fileFilterBackups = Utils.GetFileFilterImportExport();
                         dialog = new PosFilePickerDialog(pSourceWindow, DialogFlags.DestroyWithParent, fileFilterBackups, FileChooserAction.Save, windowName);
                         response = (ResponseType)dialog.Run();
@@ -243,13 +245,13 @@ namespace logicpos
                     {
                         case ImportExportFileOpen.OpenExcelArticles:
                             _threadImport = new Thread(() => result = SaveArticles(dtResult, pSourceWindow));
-                            Utils.ThreadStart(pSourceWindow, _threadImport, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_import_articles"));
+                            Utils.ThreadStart(pSourceWindow, _threadImport, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_import_articles"));
                             _threadImport.Abort();
                             //SaveArticles(dtResult, pSourceWindow);
                             break;
                         case ImportExportFileOpen.OpenExcelCostumers:
                             _threadImport = new Thread(() => result = SaveCostumers(dtResult, pSourceWindow));
-                            Utils.ThreadStart(pSourceWindow, _threadImport, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_import_customers"));
+                            Utils.ThreadStart(pSourceWindow, _threadImport, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_import_customers"));
                             _threadImport.Abort();
                             //SaveCostumers(dtResult, pSourceWindow);
                             break;
@@ -259,22 +261,22 @@ namespace logicpos
                     }
                     if(result == 1)
                     {
-                        Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_operation_successfully"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_import_successfully"));
+                        Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_operation_successfully"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_import_successfully"));
                     }
                     else if(result == -1)
                     {
-                       Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Warning, ButtonsType.Close, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_warning"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_partial_import"));
+                       Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Warning, ButtonsType.Close, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_warning"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_partial_import"));
                     }
                     else
                     {
-                        Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_import_error"));
+                        Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_import_error"));
                     }
                 }
             }
             catch (Exception ex)
             {
                 _logger.Error("ReadExcel: Error proccess file " + ex.Message, ex);
-                Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_import_error")));
+                Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"), string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_import_error")));
             }
 
             return dtResult;
@@ -285,19 +287,19 @@ namespace logicpos
             string lastArticleCode = "0";
             try
             {
-                if (DataLayerFramework.DatabaseType.ToString() == "MSSqlServer")
+                if (DatabaseSettings.DatabaseType.IsSqlServer())
                 {
                     string lastArticleSql = string.Format("SELECT MAX(CAST(Code AS INT))FROM {0}", tableName);
                     lastArticleCode = XPOSettings.Session.ExecuteScalar(lastArticleSql).ToString();
                     return lastArticleCode;
                 }
-                else if (DataLayerFramework.DatabaseType.ToString() == "SQLite")
+                else if (DatabaseSettings.DatabaseType.IsSQLite())
                 {
                     string lastArticleSql = string.Format("SELECT MAX(CAST(Code AS INT))FROM {0}", tableName);
                     lastArticleCode = XPOSettings.Session.ExecuteScalar(lastArticleSql).ToString();
                     return lastArticleCode;
                 }
-                else if (DataLayerFramework.DatabaseType.ToString() == "MySql")
+                else if (DatabaseSettings.DatabaseType.IsMySql())
                 {
                     string lastArticleSql = string.Format("SELECT MAX(code) as max FROM {0}", tableName);
                     lastArticleCode = XPOSettings.Session.ExecuteScalar(lastArticleSql).ToString();
@@ -738,14 +740,14 @@ namespace logicpos
                         }
                         bool result = false;
                         _threadExport = new Thread(() => result = ExportExcel(importFromDBdataTable, path, true, pSourceWindow));
-                        Utils.ThreadStart(pSourceWindow, _threadExport, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_export_articles"));
+                        Utils.ThreadStart(pSourceWindow, _threadExport, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_export_articles"));
                         if (result)
                         {
-                            Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_operation_successfully"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_exported_successfully"));
+                            Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_operation_successfully"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_exported_successfully"));
                         }
                         else
                         {
-                            Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error"), "Empty Database");
+                            Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"), "Empty Database");
                         }
                         break;
 
@@ -822,15 +824,15 @@ namespace logicpos
                         }
                         result = false;
                         _threadExport = new Thread(() => result = ExportExcel(importFromDBdataTable, path, true, pSourceWindow));
-                        Utils.ThreadStart(pSourceWindow, _threadExport, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_export_customers"));
-                        Utils.ThreadStart(pSourceWindow, _threadExport, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_export_articles"));
+                        Utils.ThreadStart(pSourceWindow, _threadExport, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_export_customers"));
+                        Utils.ThreadStart(pSourceWindow, _threadExport, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_export_articles"));
                         if (result)
                         {
-                            Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_operation_successfully"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_exported_successfully"));
+                            Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_operation_successfully"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_exported_successfully"));
                         }
                         else
                         {
-                            Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error"), "Empty Database");
+                            Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"), "Empty Database");
                         }
                         break;
 
@@ -842,7 +844,7 @@ namespace logicpos
             catch (Exception ex)
             {
                 _logger.Error(ex.Message, ex);
-                Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_export_error"));
+                Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_export_error"));
             }
 
         }

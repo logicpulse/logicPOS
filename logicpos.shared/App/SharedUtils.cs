@@ -9,17 +9,17 @@ using logicpos.shared.Classes.Finance;
 using logicpos.shared.Classes.Orders;
 using logicpos.shared.Enums;
 using LogicPOS.DTOs.Common;
+using LogicPOS.Settings.Enums;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Security.Cryptography;
-using System.Text;
 using System.Text.RegularExpressions;
+using static logicpos.datalayer.Xpo.XPOHelper;
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos.shared.App
 {
@@ -31,7 +31,7 @@ namespace logicpos.shared.App
 
         public static string CurrentDateTime(string pDateTimeFormat)
         {
-            return DataLayerUtils.CurrentDateTimeAtomic().ToString(pDateTimeFormat, CultureInfo.GetCultureInfo(SharedFramework.CurrentCulture.Name));
+            return DataLayerUtils.CurrentDateTimeAtomic().ToString(pDateTimeFormat, CultureInfo.GetCultureInfo(LogicPOS.Settings.CultureSettings.CurrentCulture.Name));
         }
 
         public static DateTime CurrentDateTimeAtomicMidnight()
@@ -49,14 +49,14 @@ namespace logicpos.shared.App
         public static string DateTimeToCombinedDateTimeString(object pValue)
         {
             DateTime tmpData = Convert.ToDateTime(pValue);
-            string result = "" + tmpData.ToString("" + SharedSettings.DateTimeFormatCombinedDateTime);
+            string result = "" + tmpData.ToString("" + LogicPOS.Settings.CultureSettings.DateTimeFormatCombinedDateTime);
             return (result);
         }
 
         public static string DateToString(object pValue)
         {
             DateTime tmpData = Convert.ToDateTime(pValue);
-            string result = "" + tmpData.ToString("" + SharedSettings.DateTimeFormatDocumentDate);
+            string result = "" + tmpData.ToString("" + LogicPOS.Settings.CultureSettings.DateTimeFormatDocumentDate);
             return (result);
         }
 
@@ -66,7 +66,7 @@ namespace logicpos.shared.App
 
             try
             {
-                result = pValue.ToString(SharedSettings.DateTimeFormat);
+                result = pValue.ToString(LogicPOS.Settings.CultureSettings.DateTimeFormat);
             }
             catch (Exception ex)
             {
@@ -108,7 +108,7 @@ namespace logicpos.shared.App
                 {
                     currentDateTime = new DateTime(pYear, item.Month, item.Day);
                     result.Add(currentDateTime, item.Fixed);
-                    if (debug) _logger.Debug(string.Format("DayOfWeek: [{0}:{1}:{2}:{3}]", currentDateTime.ToString(SharedSettings.DateFormat), SharedFramework.CurrentCulture.DateTimeFormat.DayNames[(int)currentDateTime.DayOfWeek], item.Fixed, IsHoliday(currentDateTime)));
+                    if (debug) _logger.Debug(string.Format("DayOfWeek: [{0}:{1}:{2}:{3}]", currentDateTime.ToString(LogicPOS.Settings.CultureSettings.DateFormat), LogicPOS.Settings.CultureSettings.CurrentCulture.DateTimeFormat.DayNames[(int)currentDateTime.DayOfWeek], item.Fixed, IsHoliday(currentDateTime)));
                 }
             }
             return result;
@@ -157,7 +157,7 @@ namespace logicpos.shared.App
                 if (startDateTime.DayOfWeek != DayOfWeek.Saturday && startDateTime.DayOfWeek != DayOfWeek.Sunday)
                 {
                     string isHoliday = (IsHoliday(startDateTime)) ? "Holiday" : string.Empty;
-                    if (debug) _logger.Debug(string.Format("DayOfWeek: [{0}:{1}:{2}]", startDateTime.ToString(SharedSettings.DateFormat), SharedFramework.CurrentCulture.DateTimeFormat.DayNames[(int)startDateTime.DayOfWeek], isHoliday));
+                    if (debug) _logger.Debug(string.Format("DayOfWeek: [{0}:{1}:{2}]", startDateTime.ToString(LogicPOS.Settings.CultureSettings.DateFormat), LogicPOS.Settings.CultureSettings.CurrentCulture.DateTimeFormat.DayNames[(int)startDateTime.DayOfWeek], isHoliday));
 
                     if ((pWithHoydays && !IsHoliday(startDateTime)) || !pWithHoydays)
                     {
@@ -170,7 +170,6 @@ namespace logicpos.shared.App
             return result;
         }
 
-        //Returns DateTime Back x UtilDays (Returns the Date x util days back, without Holidays and WeekEnd Days)
         public static DateTime GetDateTimeBackUtilDays(DateTime pDateTime, int pDays, bool pWithHoydays)
         {
             bool debug = false;
@@ -198,56 +197,11 @@ namespace logicpos.shared.App
                 {
                     isWeekEnd = "<WeekEnd>";
                 }
-                if (debug) _logger.Debug(string.Format("DayOfWeek: [{0}:{1}:{2}{3}{4}]", i.ToString("000"), result.ToString(SharedSettings.DateFormat), SharedFramework.CurrentCulture.DateTimeFormat.DayNames[((int)result.DayOfWeek)], isWeekEnd, isHoliday));
+                if (debug) _logger.Debug(string.Format("DayOfWeek: [{0}:{1}:{2}{3}{4}]", i.ToString("000"), result.ToString(LogicPOS.Settings.CultureSettings.DateFormat), LogicPOS.Settings.CultureSettings.CurrentCulture.DateTimeFormat.DayNames[((int)result.DayOfWeek)], isWeekEnd, isHoliday));
             }
             return result;
         }
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        // Prices & Discounts
-
-        /* REMOVED Now use PriceProperties Helper Object
-
-        public static decimal CalcPrice(decimal pPrice, decimal pDiscount)
-        {
-          return CalcDiscount(pPrice, pDiscount);
-        }
-
-        public static decimal CalcPrice(decimal pPrice, decimal pDiscount, decimal pVat)
-        {
-          decimal result = CalcDiscount(pPrice, pDiscount);
-
-          result = result * ((pVat / 100) + 1);
-
-          return (result);
-        }
-
-        public static decimal CalcDiscount(decimal pPrice, decimal pDiscount)
-        {
-          return pPrice - ((pPrice * pDiscount) / 100);
-        }
-
-        public static decimal CalcPriceReverse(decimal pFinalPrice, decimal pDiscount, decimal pVat, bool pPriceWithVat)
-        {
-          decimal priceWithoutVat = pFinalPrice;
-
-          //if (pPriceWithVat)
-          //{
-          priceWithoutVat = priceWithoutVat / (pVat / 100 + 1);
-          //}
-
-          decimal discountHelper = 1 - (pDiscount / 100);
-          return priceWithoutVat / discountHelper;
-        }
-        */
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        // Prices & Discounts : Article
-
-        /// <summary>
-        /// Used to Get Global Discount
-        /// </summary>
-        /// <returns></returns>
         public static decimal GetDiscountGlobal()
         {
             decimal result = 0.0m;
@@ -384,339 +338,10 @@ namespace logicpos.shared.App
             return priceProperties;
         }
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //MD5 Hash File
-
-        public static string MD5HashFile(string file)
-        {
-            string result = string.Empty;
-
-            try
-            {
-                MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
-                FileStream stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read, 8192);
-                md5.ComputeHash(stream);
-                stream.Close();
-
-                byte[] hash = md5.Hash;
-                StringBuilder sb = new StringBuilder();
-
-                foreach (byte b in hash)
-                {
-                    sb.Append(string.Format("{0:X2}", b));
-                }
-                result = sb.ToString().ToLower();
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
-            return result;
-        }
-
-        public static string StreamToString(Stream stream)
-        {
-            // convert stream to string
-            StreamReader reader = new StreamReader(stream);
-            return reader.ReadToEnd();
-        }
-
-
-        public static XPGuidObject GetXPGuidObjectFromCriteria(Type pXPGuidObjectType, string pCriteriaFilter)
-        {
-            return GetXPGuidObjectFromCriteria(XPOSettings.Session, pXPGuidObjectType, pCriteriaFilter);
-        }
-
-        public static XPGuidObject GetXPGuidObjectFromCriteria(Session pSession, Type pXPGuidObjectType, string pCriteriaFilter)
-        {
-            CriteriaOperator criteria = CriteriaOperator.Parse(pCriteriaFilter);
-            XPGuidObject result = (XPOSettings.Session.FindObject(pXPGuidObjectType, criteria) as XPGuidObject);
-            return result;
-        }
-
-        public static XPCollection GetXPCollectionFromCriteria(Session pSession, Type pXPGuidObjectType, CriteriaOperator pCriteriaOperator, SortingCollection pSortingCollection)
-        {
-            XPCollection result = new XPCollection(pSession, pXPGuidObjectType, pCriteriaOperator);
-            if (pSortingCollection != null) result.Sorting = pSortingCollection;
-            return result;
-        }
-
-        public static XPSelectData GetSelectedDataFromQuery(string pSql)
-        {
-            return GetSelectedDataFromQuery(XPOSettings.Session, pSql);
-        }
-
-        public static XPSelectData GetSelectedDataFromQuery(Session pSession, string pSql)
-        {
-            SelectedData xpoSelectedData = pSession.ExecuteQueryWithMetadata(pSql);
-            XPSelectData xPSelectData = new XPSelectData(xpoSelectedData);
-            return xPSelectData;
-        }
-
-        public static DataTable GetDataTableFromQuery(string pSql)
-        {
-            return GetDataTableFromQuery(XPOSettings.Session, pSql);
-        }
-
-        public static DataTable GetDataTableFromQuery(Session pSession, string pSql)
-        {
-            //Get SelectedData
-            XPSelectData xPSelectData = GetSelectedDataFromQuery(pSession, pSql);
-            //Init DataTable
-            DataTable resultDataTable = new DataTable();
-
-            //Add Columns
-            string fieldName;
-            string fieldType;
-            string fieldValue;
-
-            foreach (SelectStatementResultRow row in xPSelectData.Meta)
-            {
-                fieldName = row.Values[0].ToString();
-                fieldType = row.Values[2].ToString();
-                resultDataTable.Columns.Add(fieldName, typeof(string));
-            }
-
-            //Add Rows
-            foreach (SelectStatementResultRow rowData in xPSelectData.Data)
-            {
-                //Init a new DataRow
-                string[] dataRow = new string[xPSelectData.Meta.Length];
-
-                foreach (SelectStatementResultRow rowMeta in xPSelectData.Meta)
-                {
-                    fieldName = rowMeta.Values[0].ToString();
-                    fieldType = rowMeta.Values[2].ToString();
-                    //Check if is Not Null
-                    if (rowData.Values[xPSelectData.GetFieldIndex(fieldName)] != null)
-                    {
-                        fieldValue = FormatDataTableFieldFromType(rowData.Values[xPSelectData.GetFieldIndex(fieldName)].ToString(), fieldType);
-                    }
-                    else
-                    {
-                        fieldValue = string.Empty;
-                    }
-                    dataRow[xPSelectData.GetFieldIndex(fieldName)] = fieldValue;
-                }
-                //resultDataTable.Rows.Add(rowData.Values[xPSelectData.GetFieldIndex(fieldName)].ToString());
-                resultDataTable.Rows.Add(dataRow);
-            }
-
-            return resultDataTable;
-        }
-
-        /// <summary>
-        /// Format Fields based on Type . ex Decimals, Doubles, Int64
-        /// </summary>
-        /// <param name="pFieldValue"></param>
-        /// <param name="pFieldType"></param>
-        /// <returns></returns>
-        public static string FormatDataTableFieldFromType(string pFieldValue, string pFieldType)
-        {
-            string resultFieldValue;
-            switch (pFieldType)
-            {
-                case "Decimal":
-                //Required for SQLite, it uses Int64 has Decimal?
-                case "Int64":
-                    decimal valueDecimal;
-                    decimal.TryParse(pFieldValue, out valueDecimal);
-                    resultFieldValue = DecimalToString(valueDecimal);
-                    break;
-                case "Double":
-                    double valueDouble;
-                    double.TryParse(pFieldValue, out valueDouble);
-                    resultFieldValue = DoubleToString(valueDouble);
-                    break;
-                default:
-                    resultFieldValue = pFieldValue;
-                    break;
-            }
-            return resultFieldValue;
-        }
-
-        public static SortingCollection GetXPCollectionDefaultSortingCollection()
-        {
-            SortingCollection sortingCollection = new SortingCollection
-            {
-                new SortProperty("Ord", SortingDirection.Ascending)
-            };
-            //sortingCollection.Add(new SortProperty("Designation", DevExpress.Xpo.DB.SortingDirection.Ascending));
-            return sortingCollection;
-        }
-
-        public static int GetNextTableFieldInt(string pTable, string pField, string pFilter)
-        {
-            int result = -1;
-            string filter = (pFilter != string.Empty) ? string.Format(" WHERE {0}", pFilter) : string.Empty;
-            try
-            {
-                string sql = string.Format("SELECT MAX({0}) FROM {1}{2};", pField, pTable, filter);
-                var resultInt = XPOSettings.Session.ExecuteScalar(sql);
-                if (resultInt != null)
-                {
-                    _logger.Debug(string.Format("GetNextTableFieldInt(): resultInt.GetType(): [{0}]", resultInt.GetType()));
-
-                    if (resultInt.GetType() == typeof(short))
-                    {
-                        result = (short)((short)resultInt + 1);
-                    }
-                    else if (resultInt.GetType() == typeof(int))
-                    {
-                        result = (int)((int)resultInt + 1);
-                    }
-                    return result;
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-                return result;
-            }
-
-            if (result == -1) result = 1;
-            return result;
-        }
-
-        /// <summary>
-        /// Used to get Guids from Queries. Essencial because MSSqlServer (Returns Guid) and Other Dbs like Mysql (Returns String)
-        /// </summary>
-        /// <param name="Object"></param>
-        /// <returns></returns>
-        public static Guid GetGuidFromQuery(string pSql)
-        {
-            return GetGuidFromQuery(XPOSettings.Session, pSql);
-        }
-
-        public static Guid GetGuidFromQuery(Session pSession, string pSql)
-        {
-            try
-            {
-                var resultField = pSession.ExecuteScalar(pSql);
-
-                if (resultField != null)
-                {
-                    if (resultField.GetType() == typeof(string))
-                    {
-                        return new Guid((string)resultField);
-                    }
-                    else if (resultField.GetType() == typeof(Guid))
-                    {
-                        return (Guid)resultField;
-                    }
-                }
-
-                return Guid.Empty;
-            }
-            catch
-            {
-                return Guid.Empty;
-            }
-        }
-
-        public static XPGuidObject GetXPGuidObjectFromField(Type pType, string pSearchField, string pSearchValue)
-        {
-            return GetXPGuidObjectFromField(XPOSettings.Session, pType, pSearchField, pSearchValue);
-        }
-
-        public static XPGuidObject GetXPGuidObjectFromField(Session pSession, Type pType, string pSearchField, string pSearchValue)
-        {
-            string executeSql = string.Format(@"SELECT Oid FROM {0} WHERE (Disabled IS NULL OR Disabled  <> 1) AND {1} = '{2}';", pType.Name, pSearchField, pSearchValue);
-            Guid guid = GetGuidFromQuery(pSession, executeSql);
-            if (guid != Guid.Empty)
-            {
-                return (XPGuidObject)DataLayerUtils.GetXPGuidObject(pSession, pType, guid);
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Type Helpers
-
         public static bool IsNullable(Type pType)
         {
             return (pType.IsGenericType && pType.GetGenericTypeDefinition() == typeof(Nullable<>));
         }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Localization
-
-        //public static decimal InvariantCultureStringToDecimal(string pInput)
-        //{
-        //  //Always replace 
-        //  pInput = pInput.Replace(',', '.');
-        //  //always expect dot character to delimit your decimal digits regardless of what is set in current thread's culture
-        //  return decimal.Parse(pInput, CultureInfo.InvariantCulture);
-        //}
-
-        public static decimal StringToDecimal(string pInput)
-        {
-            decimal result;
-
-            NumberStyles numberStyle = NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent;
-
-            if (!decimal.TryParse(pInput, numberStyle, SharedFramework.CurrentCulture.NumberFormat, out result))
-            {
-                decimal.TryParse(pInput, numberStyle, CultureInfo.InvariantCulture.NumberFormat, out result);
-            }
-
-            return result;
-        }
-
-        public static string DecimalToString(decimal pInput)
-        {
-            return DecimalToString(pInput, SharedFramework.CurrentCulture);
-        }
-
-        public static string DecimalToString(decimal pInput, CultureInfo pCulture)
-        {
-            return DecimalToString(pInput, pCulture, SharedSettings.DecimalFormat);
-        }
-
-        public static string DecimalToString(decimal pInput, string pDecimalFormat)
-        {
-            return DecimalToString(pInput, SharedFramework.CurrentCulture, pDecimalFormat);
-        }
-
-        public static string DecimalToString(decimal pInput, CultureInfo pCulture, string pDecimalFormat)
-        {
-            return pInput.ToString(pDecimalFormat, pCulture.NumberFormat);
-        }
-
-        public static string DecimalToStringCurrency(decimal pInput)
-        {
-            return DecimalToStringCurrency(pInput, SharedSettings.ConfigurationSystemCurrency.Acronym);
-        }
-
-        public static string DecimalToStringCurrency(decimal pInput, string pCurrencyAcronym)
-        {
-            return string.Format("{0}{1}", DecimalToString(pInput), pCurrencyAcronym);
-        }
-
-        public static string DoubleToString(double pInput)
-        {
-            return pInput.ToString(SharedSettings.DecimalFormat, SharedFramework.CurrentCulture.NumberFormat);
-        }
-
-        //Used to Format a String into a Decimal Format String ex (string) 1 converted to (string) 1.00
-        public static string StringToDecimalAndToStringAgain(string pInput)
-        {
-            string result = DecimalToString(StringToDecimal(pInput));
-
-            //Linux Protection Crash, if value is ,00 its Crash, add 0 to prevent it, ex 0,00
-            if (result[0] == Convert.ToChar(SharedFramework.CurrentCulture.NumberFormat.NumberDecimalSeparator))
-            {
-                result = string.Format("{0}{1}", 0, result);
-            }
-            return result;
-        }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Audit - Currently Working in Progress
 
         public static bool Audit(string pAuditTypeToken, string pDescription = "")
         {
@@ -751,8 +376,8 @@ namespace logicpos.shared.App
                     //get AuditType Object
                     sys_systemaudittype xpoAuditType = (sys_systemaudittype)DataLayerUtils.GetXPGuidObject(typeof(sys_systemaudittype), guidAuditType);
                     string description = (pDescription != string.Empty) ? pDescription
-                      : (xpoAuditType.ResourceString != null && resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], xpoAuditType.ResourceString) != null)
-                      ? resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], xpoAuditType.ResourceString) : xpoAuditType.Designation;
+                      : (xpoAuditType.ResourceString != null && resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), xpoAuditType.ResourceString) != null)
+                      ? resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), xpoAuditType.ResourceString) : xpoAuditType.Designation;
 
                     sys_systemaudit systemAudit = new sys_systemaudit(pSession)
                     {
@@ -784,9 +409,6 @@ namespace logicpos.shared.App
             return result;
         }
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //System
-
         public static bool CreateDirectory(string pPath)
         {
             bool result = false;
@@ -810,31 +432,6 @@ namespace logicpos.shared.App
             return result;
         }
 
-        /* ERR201810#15 - Database backup issues */
-        //public static String RelativePath(string pFileOrPath)
-        //{
-        //    string result = pFileOrPath;
-        //    try
-        //    {
-        //        if (pFileOrPath.StartsWith(@"\\"))
-        //        {
-        //        }
-        //        else
-        //        {
-        //            Uri uri1 = new Uri(pFileOrPath);
-        //            Uri uri2 = new Uri(Environment.CurrentDirectory + "/");
-        //            result = uri2.MakeRelativeUri(uri1).ToString();
-        //            //Require to Unescape string escaped by MakeRelativeUri, ex %20 etc, to prevent error when user uses a filename with space(%20) for ex, and other escaped characters
-        //            result = Uri.UnescapeDataString(result);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.Error(ex.Message, ex);
-        //    }
-        //    return (result);
-        //}
-
         public static string ProductVersion
         {
             get
@@ -853,7 +450,6 @@ namespace logicpos.shared.App
             }
         }
 
-        //TODO: Changed to ExecuteExternalProcess by Mario, to be Generic, Was ShowPOS_Composer
         public static void ExecuteExternalProcess(string pExe)
         {
             ExecuteExternalProcess(pExe, string.Empty);
@@ -898,9 +494,6 @@ namespace logicpos.shared.App
             return (result);
         }
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //PartialPayments
-
         public static decimal GetPartialPaymentPayedItems(Session pSession, Guid pDocumentOrderMain, Guid pArticle)
         {
             decimal result = 0.0m;
@@ -924,9 +517,6 @@ namespace logicpos.shared.App
               ? Convert.ToDecimal(partialPayedItems)
               : result;
         }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Preference Parameters
 
         public static Dictionary<string, string> GetPreferencesParameters()
         {
@@ -1011,7 +601,6 @@ namespace logicpos.shared.App
             return CSVFileToDictionary(pFilePath, ',');
         }
 
-        //Convert a CSV File to Dictionary of Strings
         public static Dictionary<string, string> CSVFileToDictionary(string pFilePath, char pSplitter)
         {
             bool debug = false;
@@ -1055,17 +644,6 @@ namespace logicpos.shared.App
             return result;
         }
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Lists
-
-        //Merge List<List<T>> with LINQ Concat and ToList, return a Distinct List of <T>
-        //Test With
-        //List<string> list1 = new List<string>(); list1.Add("def"); list1.Add("abc"); list1.Add("ghi");
-        //List<string> list2 = new List<string>(); list2.Add("jkl"); list2.Add("abc"); list2.Add("mno");
-        //List<string> list3 = new List<string>(); list3.Add("pqr"); list3.Add("stu"); list3.Add("jkl");
-        //List<List<string>> list4 = new List<List<string>>(); list4.Add(list1); list4.Add(list2); list4.Add(list3);
-        //List<string> list5 = MergeGenericLists(list4);
-        //list5.Sort();
         public static List<T> MergeGenericLists<T>(List<List<T>> pLists)
         {
             List<T> result = new List<T>();
@@ -1077,9 +655,6 @@ namespace logicpos.shared.App
 
             return result.Distinct().ToList();
         }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        // Permissions
 
         public static Dictionary<string, bool> GetUserPermissions()
         {
@@ -1137,10 +712,6 @@ namespace logicpos.shared.App
             return result;
         }
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Notifications
-
-        //Create SystemNotification
         public static void SystemNotification()
         {
             SystemNotification(XPOSettings.Session);
@@ -1254,7 +825,7 @@ namespace logicpos.shared.App
                 */
 
                 //Financial Culture Notifications
-                //switch (SharedFramework.CurrentCulture.ToString())
+                //switch (LogicPOS.Settings.CultureSettings.CurrentCulture.ToString())
                 switch (cultureFinancialRules)
                 {
                     case "pt-PT":
@@ -1301,14 +872,12 @@ namespace logicpos.shared.App
             }
         }
 
-        //Overload From DocumentType Guid
         public static sys_systemnotification ProcessFinanceDocumentToInvoice(Session pSession, Guid pSystemNotificationTypeGuid, Guid pDocumentType, string pExtraFilter, int pDaysBack)
         {
             string filter = string.Format("(DocumentType = '{0}' AND DocumentStatusStatus = 'N')", pDocumentType.ToString());
             return ProcessFinanceDocumentToInvoice(pSession, pSystemNotificationTypeGuid, filter, pExtraFilter, pDaysBack);
         }
 
-        //Overload From SaftDocumentType Enum
         public static sys_systemnotification ProcessFinanceDocumentToInvoice(Session pSession, Guid pSystemNotificationTypeGuid, SaftDocumentType pSaftDocumentType, string pExtraFilter, int pDaysBack)
         {
             string filter = string.Empty;
@@ -1329,7 +898,6 @@ namespace logicpos.shared.App
             return ProcessFinanceDocumentToInvoice(pSession, pSystemNotificationTypeGuid, filter, pExtraFilter, pDaysBack);
         }
 
-        //Base Method
         public static sys_systemnotification ProcessFinanceDocumentToInvoice(Session pSession, Guid pSystemNotificationTypeGuid, string pFilter, string pExtraFilter, int pDaysBackToFilter)
         {
             //Init Local Vars
@@ -1358,7 +926,7 @@ namespace logicpos.shared.App
                 //Extra Filter 
                 string filter = pFilter;
                 if (pExtraFilter != string.Empty) filter = string.Format("{0} AND {1}", filter, pExtraFilter);
-                filter = string.Format("{0} AND (Date <= '{1} 23:59:59')", filter, dateFilterFrom.ToString(SharedSettings.DateFormat));
+                filter = string.Format("{0} AND (Date <= '{1} 23:59:59')", filter, dateFilterFrom.ToString(LogicPOS.Settings.CultureSettings.DateFormat));
 
                 CriteriaOperator criteriaOperator = CriteriaOperator.Parse(filter);
                 SortProperty sortProperty = new SortProperty("CreatedAt", SortingDirection.Ascending);
@@ -1396,7 +964,7 @@ namespace logicpos.shared.App
                                 "- {0} : {1} : {2} {3} : (#{4})",
                                 item.DocumentNumber, item.Date,
                                 documentBackUtilDays,
-                                resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"],
+                                resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(),
                                 "global_day_days"),
                                 item.Notifications.Count + 1);
 
@@ -1435,9 +1003,6 @@ namespace logicpos.shared.App
 
             return result;
         }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Validation
 
         public static bool Validate(string pValidateValue, string pRule, bool pRequired)
         {
@@ -1525,7 +1090,7 @@ namespace logicpos.shared.App
                         //Cut Text
                         result.Text = pValue.Substring(0, pMaxLength);
                     }
-                    lengthLabelText = string.Format("{0}: {1}/{2}", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_characters"), result.Length, pMaxLength);
+                    lengthLabelText = string.Format("{0}: {1}/{2}", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_characters"), result.Length, pMaxLength);
                 }
                 var minWordLengthConsidered = Convert.ToInt16(LogicPOS.Settings.GeneralSettings.Settings["MinWordLengthConsidered"]);
 
@@ -1540,7 +1105,7 @@ namespace logicpos.shared.App
                         result.Words = pMaxWords;
                         result.Text = LogicPOS.Utility.StringUtils.GetWords(result.Text, pMaxWords);
                     }
-                    maxWordsLabelText = string.Format("{0}: {1}/{2}", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_words"), result.Words, pMaxWords);
+                    maxWordsLabelText = string.Format("{0}: {1}/{2}", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_words"), result.Words, pMaxWords);
                 }
 
                 if (result.Length > 0)
@@ -1567,9 +1132,6 @@ namespace logicpos.shared.App
 
             return result;
         }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //RegEx Validation : ex mail @"\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*"
 
         public static bool ValidateString(string pValidate, string pRegExRule, Type pType = null)
         {
@@ -1615,7 +1177,7 @@ namespace logicpos.shared.App
                 try
                 {
                     //typeConverter.ConvertFrom(pValue);
-                    typeConverter.ConvertFrom(null, SharedFramework.CurrentCultureNumberFormat, pValue);
+                    typeConverter.ConvertFrom(null, LogicPOS.Settings.CultureSettings.CurrentCultureNumberFormat, pValue);
                     return true;
                 }
                 catch (Exception)

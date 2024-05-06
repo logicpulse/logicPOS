@@ -6,6 +6,7 @@ using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using logicpos.shared.App;
 using System;
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos.financial.library.Classes.Stocks
 {
@@ -88,10 +89,10 @@ namespace logicpos.financial.library.Classes.Stocks
                 switch (pMode)
                 {
                     case ProcessArticleStockMode.Out:
-                        SharedUtils.Audit("STOCK_MOVEMENT_OUT", string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "audit_message_stock_movement_out"), article.Designation, SharedUtils.DecimalToString(quantity, SharedSettings.DecimalFormatStockQuantity)));
+                        SharedUtils.Audit("STOCK_MOVEMENT_OUT", string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_stock_movement_out"), article.Designation, LogicPOS.Utility.DataConversionUtils.DecimalToString(quantity, LogicPOS.Settings.CultureSettings.DecimalFormatStockQuantity)));
                         break;
                     case ProcessArticleStockMode.In:
-                        SharedUtils.Audit("STOCK_MOVEMENT_IN", string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "audit_message_stock_movement_in"), article.Designation, SharedUtils.DecimalToString(quantity, SharedSettings.DecimalFormatStockQuantity)));
+                        SharedUtils.Audit("STOCK_MOVEMENT_IN", string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_stock_movement_in"), article.Designation, LogicPOS.Utility.DataConversionUtils.DecimalToString(quantity, LogicPOS.Settings.CultureSettings.DecimalFormatStockQuantity)));
                         break;
                 }
 

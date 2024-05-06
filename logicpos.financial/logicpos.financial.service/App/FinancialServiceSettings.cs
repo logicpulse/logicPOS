@@ -1,7 +1,5 @@
 ﻿using logicpos.datalayer.App;
-using logicpos.shared.App;
 using System;
-using System.IO;
 
 namespace logicpos.financial.service.App
 {

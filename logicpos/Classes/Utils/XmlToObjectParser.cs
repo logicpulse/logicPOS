@@ -1,6 +1,5 @@
 ﻿using logicpos.App;
 using logicpos.Classes.Enums.Xml;
-using logicpos.datalayer.App;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
@@ -8,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
+using LogicPOS.Settings.Extensions;
 
 //ThirdParty Lib - Adapted to LogicPos
 //Class Based on Third Party XmlToObjectParser
@@ -38,7 +38,7 @@ namespace logicpos
         public static dynamic ParseFromXml(string xml)
         {
             IDictionary<string, object> parsedObject = new ExpandoObject();
-            
+
             // ExpressionEvaluator, add reference to dynamic Object
             _expressionEvaluatorReference = parsedObject;
             GlobalApp.ExpressionEvaluator.Variables.Add("themeRoot", (_expressionEvaluatorReference as dynamic));
@@ -50,7 +50,7 @@ namespace logicpos
             parsedObject.Add(rootElement.Name.LocalName, root);
 
             //GlobalApp.ExpressionEvaluator.Variables["themeRoot"] =  _expressionEvaluatorReference;
-            
+
             //_logger.Debug(string.Format("Message: [{0}]", _expressionEvaluatorReference.Theme.Frontoffice.Window[0].Globals.Name));
             //(GlobalApp.ExpressionEvaluator.Variables["themeRoot"] as dynamic).Theme.Frontoffice.Window[0].Globals.Name
 
@@ -153,7 +153,7 @@ namespace logicpos
                     break;
                 case ReplaceType.Resource:
                     patternPrefix = "Resx";
-                    if (pInput.Contains(string.Format("{0}[", patternPrefix))) funcGetValue = (x) => resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], x);
+                    if (pInput.Contains(string.Format("{0}[", patternPrefix))) funcGetValue = (x) => resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), x);
                     break;
                 case ReplaceType.Evaluation:
                     patternPrefix = "Eval";
@@ -202,7 +202,7 @@ namespace logicpos
             try
             {
                 result = GlobalApp.ExpressionEvaluator.Evaluate(expression).ToString();
-                
+
                 // Trigger Debugger with a BreakPoint, this is usefull to Eval Expressions
                 if (debug)
                 {

@@ -12,6 +12,7 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.shared.App;
 using System;
 using System.Drawing;
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -53,7 +54,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _noOfInvoices = pNoOfInvoices;
 
             //Init Local Vars
-            string windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_pay_invoices");
+            string windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_pay_invoices");
             _windowSize = new Size(480, 444);
             string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_pay_invoice.png";
 
@@ -84,7 +85,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Initial Values
             fin_configurationpaymentmethod initialValueConfigurationPaymentMethod = (fin_configurationpaymentmethod)DataLayerUtils.GetXPGuidObject(typeof(fin_configurationpaymentmethod), POSSettings.XpoOidConfigurationPaymentMethodDefaultInvoicePaymentMethod);
             cfg_configurationcurrency intialValueConfigurationCurrency = SharedSettings.ConfigurationSystemCurrency;
-            string initialPaymentDate = DataLayerUtils.CurrentDateTimeAtomic().ToString(SharedSettings.DateTimeFormat);
+            string initialPaymentDate = DataLayerUtils.CurrentDateTimeAtomic().ToString(LogicPOS.Settings.CultureSettings.DateTimeFormat);
 
             /* IN009142
             * 
@@ -107,20 +108,20 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
     Token = 'BANK_TRANSFER'
 )";
             CriteriaOperator criteriaOperatorConfigurationPaymentMethod = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1)  AND Oid <> '{0}' AND {1}", SharedSettings.XpoOidConfigurationPaymentMethodCurrentAccount.ToString(), filterValidPaymentMethod));
-            EntryBoxSelectConfigurationPaymentMethod = new XPOEntryBoxSelectRecordValidation<fin_configurationpaymentmethod, TreeViewConfigurationPaymentMethod>(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_payment_method"), "Designation", "Oid", initialValueConfigurationPaymentMethod, criteriaOperatorConfigurationPaymentMethod, LogicPOS.Utility.RegexUtils.RegexGuid, true);
+            EntryBoxSelectConfigurationPaymentMethod = new XPOEntryBoxSelectRecordValidation<fin_configurationpaymentmethod, TreeViewConfigurationPaymentMethod>(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_payment_method"), "Designation", "Oid", initialValueConfigurationPaymentMethod, criteriaOperatorConfigurationPaymentMethod, LogicPOS.Utility.RegexUtils.RegexGuid, true);
             EntryBoxSelectConfigurationPaymentMethod.EntryValidation.Changed += delegate { Validate(); };
             EntryBoxSelectConfigurationPaymentMethod.EntryValidation.IsEditable = false;
 
             //ConfigurationCurrency
             CriteriaOperator criteriaOperatorConfigurationCurrency = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (ExchangeRate IS NOT NULL OR Oid = '{0}')", SharedSettings.ConfigurationSystemCurrency.Oid.ToString()));
-            EntryBoxSelectConfigurationCurrency = new XPOEntryBoxSelectRecordValidation<cfg_configurationcurrency, TreeViewConfigurationCurrency>(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_currency"), "Designation", "Oid", intialValueConfigurationCurrency, criteriaOperatorConfigurationCurrency, LogicPOS.Utility.RegexUtils.RegexGuid, false);
+            EntryBoxSelectConfigurationCurrency = new XPOEntryBoxSelectRecordValidation<cfg_configurationcurrency, TreeViewConfigurationCurrency>(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_currency"), "Designation", "Oid", intialValueConfigurationCurrency, criteriaOperatorConfigurationCurrency, LogicPOS.Utility.RegexUtils.RegexGuid, false);
             EntryBoxSelectConfigurationCurrency.EntryValidation.Changed += _entryBoxSelectConfigurationCurrency_Changed;
             EntryBoxSelectConfigurationCurrency.EntryValidation.IsEditable = false;
 
             //PaymentAmount
             /* IN009183 */
-            EntryPaymentAmount = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_total_deliver"), KeyboardMode.Numeric, LogicPOS.Utility.RegexUtils.RegexDecimalGreaterEqualThanZeroFinancial, true);
-            EntryPaymentAmount.EntryValidation.Text = SharedUtils.DecimalToString(_paymentAmountTotal);
+            EntryPaymentAmount = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_total_deliver"), KeyboardMode.Numeric, LogicPOS.Utility.RegexUtils.RegexDecimalGreaterEqualThanZeroFinancial, true);
+            EntryPaymentAmount.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.DecimalToString(_paymentAmountTotal);
             EntryPaymentAmount.EntryValidation.Validate();
             EntryPaymentAmount.EntryValidation.Changed += delegate
             {
@@ -129,13 +130,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             };
 
             //PaymentDate
-            EntryBoxPaymentDate = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_date"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexDateTime, true);
+            EntryBoxPaymentDate = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_date"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexDateTime, true);
             EntryBoxPaymentDate.EntryValidation.Text = initialPaymentDate;
             EntryBoxPaymentDate.EntryValidation.Validate();
             EntryBoxPaymentDate.EntryValidation.Changed += delegate { Validate(); };
 
             //PaymentNotes
-            EntryBoxDocumentPaymentNotes = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_notes"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false);
+            EntryBoxDocumentPaymentNotes = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_notes"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false);
             EntryBoxDocumentPaymentNotes.EntryValidation.Changed += delegate { Validate(); };
 
             //Pack VBOX
@@ -156,10 +157,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public void Validate()
         {
             //Settings
-            int decimalRoundTo = SharedSettings.DecimalRoundTo;
+            int decimalRoundTo = LogicPOS.Settings.CultureSettings.DecimalRoundTo;
 
             //Check if Has More than one Invoice and the Input is The Full Payment
-            _paymentAmountEntry = SharedUtils.StringToDecimal(EntryPaymentAmount.EntryValidation.Text);
+            _paymentAmountEntry = LogicPOS.Utility.DataConversionUtils.StringToDecimal(EntryPaymentAmount.EntryValidation.Text);
 
             //Calc Diference in selected Currency
             _diference = Math.Round((_paymentAmountTotal * _exchangeRate) - _paymentAmountEntry, decimalRoundTo);
@@ -175,7 +176,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             //Update Payed amount in default currency, must divided by ExchangeRate, inputs are always in selected Currency 
             PayedAmount = _paymentAmountEntry / _exchangeRate;
-            if (_debug) _logger.Debug(string.Format("_payedAmount/_paymentAmountTotal: [{0}/{1}]", SharedUtils.DecimalToStringCurrency(PayedAmount), SharedUtils.DecimalToStringCurrency(_paymentAmountTotal)));
+            if (_debug) _logger.Debug(string.Format("_payedAmount/_paymentAmountTotal: [{0}/{1}]", LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(PayedAmount, SharedSettings.ConfigurationSystemCurrency.Acronym), LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_paymentAmountTotal, SharedSettings.ConfigurationSystemCurrency.Acronym)));
 
             //Block Change of Currency to prevent conversion problems
             EntryBoxSelectConfigurationCurrency.EntryValidation.Sensitive = EntryPaymentAmount.EntryValidation.Validated;
@@ -183,7 +184,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             /* IN009183 */
             logicpos.Utils.ValidateUpdateColors(EntryPaymentAmount.EntryValidation, EntryPaymentAmount.Label, (_validated && _diference >= 0));
-            //_entryPaymentAmount.EntryValidation.Text = SharedUtils.DecimalToString(_paymentAmountEntry, SharedFramework.CurrentCulture, SettingsApp.DecimalFormat); //SharedUtils.DecimalToString(_paymentAmountEntry);
+            //_entryPaymentAmount.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.DecimalToString(_paymentAmountEntry, LogicPOS.Settings.CultureSettings.CurrentCulture, SettingsApp.DecimalFormat); //LogicPOS.Utility.DataConversionUtils.DecimalToString(_paymentAmountEntry);
             // _paymentAmountEntry = Math.Round(_paymentAmountEntry, decimalRoundTo);
 
             _buttonOk.Sensitive = _validated;
@@ -205,16 +206,16 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                     WindowTitle = string.Format(
                         "{0}: {1} / {2}{3}",
-                        resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_pay_invoices"),
-                        SharedUtils.DecimalToStringCurrency(_diference, EntryBoxSelectConfigurationCurrency.Value.Acronym),
-                        SharedUtils.DecimalToStringCurrency(_paymentAmountTotal * _exchangeRate, EntryBoxSelectConfigurationCurrency.Value.Acronym),
+                        resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_pay_invoices"),
+                        LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_diference, EntryBoxSelectConfigurationCurrency.Value.Acronym),
+                        LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_paymentAmountTotal * _exchangeRate, EntryBoxSelectConfigurationCurrency.Value.Acronym),
                         //Show only if above 100%
-                        (paymentPercentage < 100) ? string.Format(" / {0}%", SharedUtils.DecimalToString(paymentPercentage)) : string.Empty
+                        (paymentPercentage < 100) ? string.Format(" / {0}%", LogicPOS.Utility.DataConversionUtils.DecimalToString(paymentPercentage)) : string.Empty
                      );
                 }
                 else
                 {
-                    WindowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_pay_invoices");
+                    WindowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_pay_invoices");
                 }
             }
             catch (Exception ex)
@@ -228,7 +229,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Update ExchangeRate Reference
             _exchangeRate = EntryBoxSelectConfigurationCurrency.Value.ExchangeRate;
             //Always Update Entry Value too paymentAmountTotal to prevent round values, this way when we change currency, we always assign to default paymentAmountTotal value 
-            EntryPaymentAmount.EntryValidation.Text = SharedUtils.DecimalToString(_paymentAmountTotal * _exchangeRate);
+            EntryPaymentAmount.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.DecimalToString(_paymentAmountTotal * _exchangeRate);
             //Call Validate
             Validate();
             //Call Update Title Bar

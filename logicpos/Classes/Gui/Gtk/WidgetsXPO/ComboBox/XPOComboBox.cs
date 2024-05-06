@@ -1,11 +1,12 @@
 ﻿using DevExpress.Data.Filtering;
 using DevExpress.Xpo;
 using Gtk;
-using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Xpo;
 using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
+using LogicPOS.Settings.Extensions;
 
 //TODO : Implement Required Outside CrudWidgetList :  Add Required and Use SettingsApp.RegexGuid to Validate
 
@@ -52,7 +53,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
         {
             //Required to Force Combo to be same Height has Entrys
             HeightRequest = 23;
-          
+
             //Parameters
             _xpoSession = pXpoSession;
             _xpoObjectType = pXPGuidObjectType;
@@ -113,7 +114,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             if (pSortProperty != null) _XpCollection.Sorting.Add(pSortProperty);
 
             //Add Default Sorting Order, if Not Assigned by Parameter
-            if (_XpCollection.Sorting.Count == 0) _XpCollection.Sorting = SharedUtils.GetXPCollectionDefaultSortingCollection();
+            if (_XpCollection.Sorting.Count == 0) _XpCollection.Sorting = XPOHelper.GetXPCollectionDefaultSortingCollection();
 
             //Store TreeIters in Dictionary
             _treeInterDictionary = new Dictionary<Guid, TreeIter>();
@@ -122,7 +123,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             _comboBoxListStore = new ListStore(typeof(string), typeof(XPGuidObject));
 
             //Aways Default to Null Value - Undefined, even if Collection is Empty
-            tempItemIter = _comboBoxListStore.AppendValues(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "widget_combobox_undefined"), null);
+            tempItemIter = _comboBoxListStore.AppendValues(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "widget_combobox_undefined"), null);
             _treeInterDictionary.Add(new Guid(), tempItemIter);
             //Default Selected
             currentItemIter = tempItemIter;

@@ -1,5 +1,5 @@
-﻿using logicpos.datalayer.App;
-using System;
+﻿using System;
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos.Classes.Formatters
 {
@@ -17,7 +17,7 @@ namespace logicpos.Classes.Formatters
             try
             {
                 decimal quantity = Convert.ToDecimal(arg);
-                result = (quantity > 0) ? resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_stock_movement_in") : resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_stock_movement_out");
+                result = (quantity > 0) ? resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_stock_movement_in") : resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_stock_movement_out");
             }
             catch (Exception ex)
             {

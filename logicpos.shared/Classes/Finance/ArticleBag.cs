@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using static logicpos.datalayer.App.DataLayerUtils;
 using static logicpos.datalayer.App.DataLayerFramework;
 using logicpos.datalayer.Xpo;
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos.shared.Classes.Finance
 {
@@ -182,7 +183,7 @@ namespace logicpos.shared.Classes.Finance
             {
                 //Get Designation from Key
                 //Get VatRate formated for filter, in sql server gives error without this it filters 23,0000 and not 23.0000 resulting in null vatRate
-                string sql = string.Format("SELECT Designation FROM fin_configurationvatrate WHERE VALUE = '{0}'", SharedUtils.DecimalToString(key.Vat, SharedFramework.CurrentCultureNumberFormat));
+                string sql = $"SELECT Designation FROM fin_configurationvatrate WHERE VALUE = '{LogicPOS.Utility.DataConversionUtils.DecimalToString(key.Vat)}'";
                 string designation = XPOSettings.Session.ExecuteScalar(sql).ToString();
                 //Now Add New Key with Designation
                 TaxBag.Add(key.Vat, new TaxBagProperties(designation, addPriceProperties.TotalTax, addPriceProperties.TotalNet));
@@ -223,7 +224,7 @@ namespace logicpos.shared.Classes.Finance
 
             // SplitPayment : Sometimes we get 0.000000000000001, that makes key dont be removed because its not < 0
             // To prevent this we must round value before compare using DecimalFormatStockQuantity
-            string roundedFormat = $"{{0:{SharedSettings.DecimalFormatStockQuantity}}}";//{0:0.00000000}
+            string roundedFormat = $"{{0:{LogicPOS.Settings.CultureSettings.DecimalFormatStockQuantity}}}";//{0:0.00000000}
             decimal roundedQuantity = Convert.ToDecimal(string.Format(roundedFormat, this[pKey].Quantity));
 
             //if (this[pKey].Quantity <= 0)
@@ -402,7 +403,7 @@ namespace logicpos.shared.Classes.Finance
 
                 //Audit
                 SharedUtils.Audit("ORDER_ARTICLE_REMOVED", string.Format(
-                        resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "audit_message_order_article_removed"),
+                        resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_order_article_removed"),
                         articleDesignation,
                         1,
                         resultRemainQuantity - 1,
@@ -443,7 +444,7 @@ namespace logicpos.shared.Classes.Finance
                             //Open Table
                             deleteOrderMain.PlaceTable.TableStatus = TableStatus.Free;
                             //Audit
-                            SharedUtils.Audit("TABLE_OPEN", string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "audit_message_table_open"), deleteOrderMain.PlaceTable.Designation));
+                            SharedUtils.Audit("TABLE_OPEN", string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_table_open"), deleteOrderMain.PlaceTable.Designation));
                             //Delete OrderMain
                             deleteOrderMain.Delete();
                         };
@@ -549,7 +550,7 @@ namespace logicpos.shared.Classes.Finance
                         ;"
                         , orderMain.PersistentOid
                     );
-                    XPSelectData selectedDataOrders = SharedUtils.GetSelectedDataFromQuery(sqlOrders);
+                    XPSelectData selectedDataOrders = XPOHelper.GetSelectedDataFromQuery(sqlOrders);
 
                     //Process Tickets and Add to ArticleBag
                     if (selectedDataOrders.Data.Length > 0)
@@ -619,7 +620,7 @@ namespace logicpos.shared.Classes.Finance
                         , orderMain.PersistentOid
                     );
 
-                    XPSelectData selectedDataDocuments = SharedUtils.GetSelectedDataFromQuery(sqlDocuments);
+                    XPSelectData selectedDataDocuments = XPOHelper.GetSelectedDataFromQuery(sqlDocuments);
                     if (selectedDataDocuments.Data.Length > 0)
                     {
                         foreach (SelectStatementResultRow row in selectedDataDocuments.Data)

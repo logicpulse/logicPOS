@@ -577,7 +577,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
             sb.Append("       </AddressFrom>");
             //Dont Sent MovementEndTime, not required
             //sb.Append("       <MovementEndTime>" + _documentMaster.MovementEndTime.ToString(SettingsApp.DateTimeFormatCombinedDateTime) + "</MovementEndTime>");
-            sb.Append("       <MovementStartTime>" + _movementStartTime.ToString(SharedSettings.DateTimeFormatCombinedDateTime) + "</MovementStartTime>");
+            sb.Append("       <MovementStartTime>" + _movementStartTime.ToString(LogicPOS.Settings.CultureSettings.DateTimeFormatCombinedDateTime) + "</MovementStartTime>");
             //VehicleID
             if (!string.IsNullOrEmpty(_documentMaster.ShipFromDeliveryID)) sb.Append("       <VehicleID>" + _documentMaster.ShipFromDeliveryID + "</VehicleID>");
             //Line

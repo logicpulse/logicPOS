@@ -13,8 +13,10 @@ using logicpos.shared.App;
 using logicpos.shared.Classes.Finance;
 using logicpos.shared.Classes.Orders;
 using logicpos.shared.Enums;
+using LogicPOS.Settings.Enums;
 using System;
 using System.Drawing;
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -257,7 +259,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 scrolledWindow.SetPolicy(PolicyType.Never, PolicyType.Always);
 
                 //Label LabelTotal
-                _labelLabelTotal = new Label(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_total_ticket"));
+                _labelLabelTotal = new Label(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_total_ticket"));
                 _labelLabelTotal.ModifyFont(labelLabelTotalFont);
                 _labelLabelTotal.ModifyFg(StateType.Normal, labelLabelTotalFontColor);
                 _labelLabelTotal.SetAlignment(labelLabelTotalAlignmentX, 0.0F);
@@ -268,7 +270,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 _labelTotal.ModifyFont(labelTotalFont);
                 _labelTotal.ModifyFg(StateType.Normal, labelTotalFontColor);
                 _labelTotal.SetAlignment(labelTotalAlignmentX, 0.0F);
-                _labelTotal.Text = SharedUtils.DecimalToStringCurrency(0);
+                _labelTotal.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(0, SharedSettings.ConfigurationSystemCurrency.Acronym);
 
                 HBox hboxTotal = new HBox(false, 4);
                 hboxTotal.PackStart(_labelLabelTotal, true, true, 5);
@@ -322,12 +324,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             Pango.FontDescription fontDescTitle = pColumnTitleFontDesc;
             Pango.FontDescription fontDesc = pColumnDataFontDesc;
 
-            Label labelDesignation = new Label(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "pos_ticketlist_label_designation")) { Visible = true };
-            Label labelPrice = new Label(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "pos_ticketlist_label_price")) { Visible = true };
-            Label labelQuantity = new Label(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "pos_ticketlist_label_quantity")) { Visible = true };
-            Label labelDiscount = new Label(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "pos_ticketlist_label_discount")) { Visible = true };
-            Label labelVat = new Label(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "pos_ticketlist_label_vat")) { Visible = true };
-            Label labelTotal = new Label(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "pos_ticketlist_label_total")) { Visible = true };
+            Label labelDesignation = new Label(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "pos_ticketlist_label_designation")) { Visible = true };
+            Label labelPrice = new Label(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "pos_ticketlist_label_price")) { Visible = true };
+            Label labelQuantity = new Label(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "pos_ticketlist_label_quantity")) { Visible = true };
+            Label labelDiscount = new Label(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "pos_ticketlist_label_discount")) { Visible = true };
+            Label labelVat = new Label(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "pos_ticketlist_label_vat")) { Visible = true };
+            Label labelTotal = new Label(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "pos_ticketlist_label_total")) { Visible = true };
             labelDesignation.ModifyFont(fontDescTitle);
             labelPrice.ModifyFont(fontDescTitle);
             labelQuantity.ModifyFont(fontDescTitle);
@@ -443,11 +445,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                             ListStoreModel.AppendValues(
                               line.ArticleOid,
                               line.Designation,
-                              SharedUtils.DecimalToString(line.Properties.PriceFinal),
-                              SharedUtils.DecimalToString(line.Properties.Quantity),
+                              LogicPOS.Utility.DataConversionUtils.DecimalToString(line.Properties.PriceFinal),
+                              LogicPOS.Utility.DataConversionUtils.DecimalToString(line.Properties.Quantity),
                               line.Properties.DiscountArticle.ToString(),
                               line.Properties.Vat.ToString(),
-                              SharedUtils.DecimalToString(line.Properties.TotalFinal)
+                              LogicPOS.Utility.DataConversionUtils.DecimalToString(line.Properties.TotalFinal)
                             );
                             //Store Current TreeIter in Session (Non Public)
                             line.TreeIter = _treeIter;
@@ -479,11 +481,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                             ListStoreModel.AppendValues(
                             item.Key.ArticleOid,
                             item.Key.Designation,
-                            SharedUtils.DecimalToString(item.Value.PriceFinal),
-                            SharedUtils.DecimalToString(item.Value.Quantity),
+                            LogicPOS.Utility.DataConversionUtils.DecimalToString(item.Value.PriceFinal),
+                            LogicPOS.Utility.DataConversionUtils.DecimalToString(item.Value.Quantity),
                             item.Key.Discount.ToString(),
                             item.Key.Vat.ToString(),
-                            SharedUtils.DecimalToString(item.Value.TotalFinal),
+                            LogicPOS.Utility.DataConversionUtils.DecimalToString(item.Value.TotalFinal),
                             //Add ArticleBag Key to Model
                             articleBagKey
                             );
@@ -607,7 +609,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             //public static XPGuidObject GetXPGuidObjectFromCriteria(Session pSession, Type pXPGuidObjectType, string pCriteriaFilter)
             string sql = string.Format("SELECT Oid FROM fin_article WHERE BarCode = '{0}';", pArticleEAN);
-            Guid articleGuid = SharedUtils.GetGuidFromQuery(sql);
+            Guid articleGuid = XPOHelper.GetGuidFromQuery(sql);
 
             if (articleGuid != Guid.Empty)
             {
@@ -616,14 +618,14 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             else
             {
                 sql = string.Format("SELECT Oid FROM fin_article WHERE Code = '{0}';", pArticleEAN);
-                articleGuid = SharedUtils.GetGuidFromQuery(sql);
+                articleGuid = XPOHelper.GetGuidFromQuery(sql);
                 if (articleGuid != Guid.Empty)
                 {
                     InsertOrUpdate(articleGuid);
                 }
                 else
                 {
-                    string message = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_invalid_code");
+                    string message = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_invalid_code");
                     logicpos.Utils.ShowMessageTouch(SourceWindow, DialogFlags.DestroyWithParent, new Size(400, 300), MessageType.Error, ButtonsType.Ok, "Código Inválido", message);
                     return;
                 }
@@ -632,7 +634,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         public void ArticleNotFound()
         {
-            string message = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_invalid_code");
+            string message = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_invalid_code");
             logicpos.Utils.ShowMessageTouch(SourceWindow, DialogFlags.DestroyWithParent, new Size(400, 300), MessageType.Error, ButtonsType.Ok, "Código Inválido", message);
             return;
         }
@@ -735,22 +737,22 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 {
                     //TODO: Implement VatExemptionReason in TicketList (Both Modes) 
                     //Guid vatExemptionReasonGuid = GetVatExemptionReason();
-                    logicpos.Utils.ShowMessageTouch(SourceWindow, DialogFlags.DestroyWithParent, new Size(400, 300), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_vatrate_free_article_detected"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_article_without_vat_exception_reason_detected"));
+                    logicpos.Utils.ShowMessageTouch(SourceWindow, DialogFlags.DestroyWithParent, new Size(400, 300), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_vatrate_free_article_detected"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_article_without_vat_exception_reason_detected"));
                     return;
                 }
 
                 //Check if ticket is exited and show message
                 if (parkingTicketResult.AlreadyExit)
                 {
-                    string message = string.Format("Numero do ticket: {0}\n\n{1}\n\nData de Saida: {2}", parkingTicketResult.Ean, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_article_already_exited"), parkingTicketResult.DateExits);
-                    logicpos.Utils.ShowMessageTouch(SourceWindow, DialogFlags.DestroyWithParent, new Size(450, 350), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_already_exited"), message);
+                    string message = string.Format("Numero do ticket: {0}\n\n{1}\n\nData de Saida: {2}", parkingTicketResult.Ean, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_article_already_exited"), parkingTicketResult.DateExits);
+                    logicpos.Utils.ShowMessageTouch(SourceWindow, DialogFlags.DestroyWithParent, new Size(450, 350), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_already_exited"), message);
                     return;
                 }
                 //Check if ticket is already payed and show message
                 else if (parkingTicketResult.AlreadyPaid)
                 {
-                    string message = string.Format("Numero do ticket: {0}\n\n{1}\nData de pagamento: {2}\n\nPode sair até: {3} ", parkingTicketResult.Ean, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_article_already_paid"), parkingTicketResult.DatePaid, parkingTicketResult.DateTolerance);
-                    logicpos.Utils.ShowMessageTouch(SourceWindow, DialogFlags.DestroyWithParent, new Size(450, 350), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_already_paid"), message);
+                    string message = string.Format("Numero do ticket: {0}\n\n{1}\nData de pagamento: {2}\n\nPode sair até: {3} ", parkingTicketResult.Ean, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_article_already_paid"), parkingTicketResult.DatePaid, parkingTicketResult.DateTolerance);
+                    logicpos.Utils.ShowMessageTouch(SourceWindow, DialogFlags.DestroyWithParent, new Size(450, 350), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_already_paid"), message);
                     return;
                 }
 
@@ -765,9 +767,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     //Update TreeView Model
                     _treeIter = (TreeIter)CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].TreeIter;
                     //Update Quantity
-                    ListStoreModel.SetValue(_treeIter, (int)TicketListColumns.Quantity, SharedUtils.DecimalToString(CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity));
+                    ListStoreModel.SetValue(_treeIter, (int)TicketListColumns.Quantity, LogicPOS.Utility.DataConversionUtils.DecimalToString(CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity));
                     //Update Total
-                    ListStoreModel.SetValue(_treeIter, (int)TicketListColumns.Total, SharedUtils.DecimalToString(CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.TotalFinal));
+                    ListStoreModel.SetValue(_treeIter, (int)TicketListColumns.Total, LogicPOS.Utility.DataConversionUtils.DecimalToString(CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.TotalFinal));
                 }
                 //Insert
                 else
@@ -826,7 +828,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     }
                     else if (price <= 0.0m || article.PVPVariable == true)
                     {
-                        MoneyPadResult result = PosMoneyPadDialog.RequestDecimalValue(SourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_moneypad_product_price"), price);
+                        MoneyPadResult result = PosMoneyPadDialog.RequestDecimalValue(SourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_moneypad_product_price"), price);
                         if (result.Response == ResponseType.Cancel) return;
                         sourceMode = PricePropertiesSourceMode.FromTotalFinal;
                         price = result.Value;
@@ -882,7 +884,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     for (int itemPosition = 0; itemPosition < ListStoreModel.IterNChildren(); itemPosition++)
                     {
                         if ((Guid)(ListStoreModel.GetValue(_treeIter, (int)TicketListColumns.ArticleId)) == pArticleOid &&
-                                Convert.ToDecimal(ListStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price)) == Math.Round(priceProperties.PriceFinal, SharedSettings.DecimalRoundTo))
+                                Convert.ToDecimal(ListStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price)) == Math.Round(priceProperties.PriceFinal, LogicPOS.Settings.CultureSettings.DecimalRoundTo))
                         {
 
                             _listStoreModelSelectedIndex = itemPosition;
@@ -895,11 +897,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                             CurrentOrderDetails.Update(_listStoreModelSelectedIndex, newQuantity, Convert.ToDecimal(CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.PriceUser));
 
 
-                            //_listStoreModel.SetValue(_treeIter, (int)TicketListColumns.Price, SharedUtils.DecimalToString(newPrice));
-                            ListStoreModel.SetValue(_treeIter, (int)TicketListColumns.Quantity, SharedUtils.DecimalToString(newQuantity));
+                            //_listStoreModel.SetValue(_treeIter, (int)TicketListColumns.Price, LogicPOS.Utility.DataConversionUtils.DecimalToString(newPrice));
+                            ListStoreModel.SetValue(_treeIter, (int)TicketListColumns.Quantity, LogicPOS.Utility.DataConversionUtils.DecimalToString(newQuantity));
 
                             //Update Total
-                            ListStoreModel.SetValue(_treeIter, (int)TicketListColumns.Total, SharedUtils.DecimalToString(newTotalPrice));
+                            ListStoreModel.SetValue(_treeIter, (int)TicketListColumns.Total, LogicPOS.Utility.DataConversionUtils.DecimalToString(newTotalPrice));
 
                             CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].TreeIter = _treeIter;
 
@@ -921,11 +923,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         object[] columnValues = new object[Enum.GetNames(typeof(TicketListColumns)).Length];
                         columnValues[0] = article.Oid;
                         columnValues[1] = article.Designation;
-                        columnValues[2] = SharedUtils.DecimalToString(CurrentOrderDetails.Lines[CurrentOrderDetails.Lines.Count - 1].Properties.PriceFinal);
-                        columnValues[3] = SharedUtils.DecimalToString(defaultQuantity);
+                        columnValues[2] = LogicPOS.Utility.DataConversionUtils.DecimalToString(CurrentOrderDetails.Lines[CurrentOrderDetails.Lines.Count - 1].Properties.PriceFinal);
+                        columnValues[3] = LogicPOS.Utility.DataConversionUtils.DecimalToString(defaultQuantity);
                         columnValues[4] = CurrentOrderDetails.Lines[CurrentOrderDetails.Lines.Count - 1].Properties.DiscountArticle.ToString();
                         columnValues[5] = CurrentOrderDetails.Lines[CurrentOrderDetails.Lines.Count - 1].Properties.Vat.ToString();
-                        columnValues[6] = SharedUtils.DecimalToString(CurrentOrderDetails.Lines[CurrentOrderDetails.Lines.Count - 1].Properties.TotalFinal);
+                        columnValues[6] = LogicPOS.Utility.DataConversionUtils.DecimalToString(CurrentOrderDetails.Lines[CurrentOrderDetails.Lines.Count - 1].Properties.TotalFinal);
 
                         //Assign Global TreeIter
                         _treeIter = ListStoreModel.AppendValues(columnValues);
@@ -953,7 +955,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         public void ChangeQuantity(decimal pQuantity)
         {
             _listStoreModelSelectedIndex = CurrentOrderDetails.Lines.FindIndex(item => item.ArticleOid == (Guid)ListStoreModel.GetValue(_treeIter,
-                    (int)TicketListColumns.ArticleId) && Math.Round(Convert.ToDecimal(item.Properties.PriceFinal), SharedSettings.DecimalRoundTo) == Convert.ToDecimal(ListStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price)));
+                    (int)TicketListColumns.ArticleId) && Math.Round(Convert.ToDecimal(item.Properties.PriceFinal), LogicPOS.Settings.CultureSettings.DecimalRoundTo) == Convert.ToDecimal(ListStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price)));
 
             decimal oldValueQnt = CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity;
 
@@ -963,10 +965,10 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 //Update orderDetails SessionApp
                 CurrentOrderDetails.Update(_listStoreModelSelectedIndex, pQuantity);
                 //Update TreeView Model: Quantity
-                ListStoreModel.SetValue(_treeIter, (int)TicketListColumns.Quantity, SharedUtils.DecimalToString(pQuantity));
+                ListStoreModel.SetValue(_treeIter, (int)TicketListColumns.Quantity, LogicPOS.Utility.DataConversionUtils.DecimalToString(pQuantity));
                 CurrentOrderDetails.Lines[CurrentOrderDetails.Lines.Count - 1].Properties.Quantity = pQuantity;
                 //Update TreeView Model: Total
-                ListStoreModel.SetValue(_treeIter, (int)TicketListColumns.Total, SharedUtils.DecimalToString(CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.TotalFinal));
+                ListStoreModel.SetValue(_treeIter, (int)TicketListColumns.Total, LogicPOS.Utility.DataConversionUtils.DecimalToString(CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.TotalFinal));
                 //Update Total
                 UpdateTicketListTotal();
                 if (SharedFramework.AppUseParkingTicketModule) CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity = pQuantity; ;
@@ -1094,9 +1096,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             else
             {
                 //Update Quantity
-                ListStoreModel.SetValue(_treeIter, (int)TicketListColumns.Quantity, SharedUtils.DecimalToString(CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity));
+                ListStoreModel.SetValue(_treeIter, (int)TicketListColumns.Quantity, LogicPOS.Utility.DataConversionUtils.DecimalToString(CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity));
                 //Update Total
-                ListStoreModel.SetValue(_treeIter, (int)TicketListColumns.Total, SharedUtils.DecimalToString(CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.TotalFinal));
+                ListStoreModel.SetValue(_treeIter, (int)TicketListColumns.Total, LogicPOS.Utility.DataConversionUtils.DecimalToString(CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.TotalFinal));
             }
 
             //Update Total
@@ -1147,9 +1149,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 else
                 {
                     //Update Quantity
-                    ListStoreModel.SetValue(_treeIter, (int)TicketListColumns.Quantity, SharedUtils.DecimalToString(currentTotalQuantity));
+                    ListStoreModel.SetValue(_treeIter, (int)TicketListColumns.Quantity, LogicPOS.Utility.DataConversionUtils.DecimalToString(currentTotalQuantity));
                     //Update Total
-                    ListStoreModel.SetValue(_treeIter, (int)TicketListColumns.Total, SharedUtils.DecimalToString(currentTotalFinal));
+                    ListStoreModel.SetValue(_treeIter, (int)TicketListColumns.Total, LogicPOS.Utility.DataConversionUtils.DecimalToString(currentTotalFinal));
                 }
 
                 UpdateOrderStatusBar();
@@ -1395,17 +1397,17 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
             if (ListMode == TicketListMode.Ticket)
             {
-                labelTotalFinal = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_total_ticket");
+                labelTotalFinal = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_total_ticket");
                 TotalFinal = CurrentOrderDetails.TotalFinal;
             }
             else
             {
-                labelTotalFinal = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_total_table_tickets");
+                labelTotalFinal = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_total_table_tickets");
                 //Toatal From ArticleBag and Not From OrderMain, This way we can check if ArticleBag is equal to OrderMain Totals, in Both Status Bars
                 TotalFinal = _articleBag.TotalFinal;
             }
             _labelLabelTotal.Text = labelTotalFinal;
-            _labelTotal.Text = SharedUtils.DecimalToStringCurrency(TotalFinal);
+            _labelTotal.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalFinal, SharedSettings.ConfigurationSystemCurrency.Acronym);
 
             //Update Display
             if (GlobalApp.UsbDisplay != null) GlobalApp.UsbDisplay.ShowOrder(CurrentOrderDetails, _listStoreModelSelectedIndex);
@@ -1431,7 +1433,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     string labelTotalTableFormat = "{0} : #{1}";
                     string lastUserName = (orderMain != null && orderMain.GlobalLastUser != null) ? string.Format(": {0}", orderMain.GlobalLastUser.Name) : string.Empty;
                     /* IN008024 */
-                    string global_table = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], string.Format("global_table_appmode_{0}", DataLayerSettings.CustomAppOperationMode.AppOperationTheme).ToLower());
+                    string global_table = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), string.Format("global_table_appmode_{0}", DataLayerSettings.CustomAppOperationMode.AppOperationTheme).ToLower());
 
                     SourceWindow.LabelCurrentTable.Text =
                       string.Format(labelCurrentTableFormat
@@ -1444,24 +1446,24 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     SourceWindow.LabelTotalTable.Text =
                       string.Format(labelTotalTableFormat,
                         //Totals From OrderMain and Not From ArticleBag
-                        SharedUtils.DecimalToStringCurrency(orderMain.GlobalTotalFinal),
+                        LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(orderMain.GlobalTotalFinal, SharedSettings.ConfigurationSystemCurrency.Acronym),
                         orderMain.GlobalTotalTickets
                       );
 
                     //If in OrderMain Mode Update Total
                     if (ListMode == TicketListMode.OrderMain)
-                        _labelTotal.Text = SharedUtils.DecimalToStringCurrency(orderMain.GlobalTotalFinal);
+                        _labelTotal.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(orderMain.GlobalTotalFinal, SharedSettings.ConfigurationSystemCurrency.Acronym);
                 }
                 else
                 {
                     /* IN008024 */
-                    SourceWindow.LabelCurrentTable.Text = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], string.Format("status_message_select_order_or_table_appmode_{0}", DataLayerSettings.CustomAppOperationMode.AppOperationTheme).ToLower());
+                    SourceWindow.LabelCurrentTable.Text = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), string.Format("status_message_select_order_or_table_appmode_{0}", DataLayerSettings.CustomAppOperationMode.AppOperationTheme).ToLower());
                 }
             }
             //If CashDrawer Close
             else
             {
-                SourceWindow.LabelCurrentTable.Text = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "status_message_open_cashdrawer");
+                SourceWindow.LabelCurrentTable.Text = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "status_message_open_cashdrawer");
             }
         }
 

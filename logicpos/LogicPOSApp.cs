@@ -9,7 +9,6 @@ using logicpos.Classes.Logic.Hardware;
 using logicpos.Classes.Logic.Others;
 using logicpos.Classes.Utils;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.App;
 using logicpos.financial.library.Classes.Reports;
@@ -18,6 +17,8 @@ using logicpos.financial.library.Classes.WorkSession;
 using logicpos.plugin.contracts;
 using logicpos.shared;
 using logicpos.shared.App;
+using LogicPOS.Settings;
+using LogicPOS.Settings.Enums;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -25,6 +26,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using static logicpos.datalayer.App.DataLayerUtils;
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos
 {
@@ -58,14 +60,14 @@ namespace logicpos
             {
                 _logger.Error(ex.Message, ex);
                 Utils.ShowMessageTouch(
-                    GlobalApp.StartupWindow, 
-                    DialogFlags.Modal, 
-                    new Size(500, 240), 
-                    MessageType.Error, 
-                    ButtonsType.Ok, 
-                    resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], 
-                    "global_error"), 
-                    resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], 
+                    GlobalApp.StartupWindow,
+                    DialogFlags.Modal,
+                    new Size(500, 240),
+                    MessageType.Error,
+                    ButtonsType.Ok,
+                    resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(),
+                    "global_error"),
+                    resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(),
                     "app_error_contact_support"));
             }
             finally
@@ -85,7 +87,7 @@ namespace logicpos
             }
         }
 
-      
+
         private void Init()
         {
             try
@@ -107,8 +109,8 @@ namespace logicpos
                 }
 
                 //Other Global App Settings
-                GlobalApp.MultiUserEnvironment = Convert.ToBoolean(LogicPOS.Settings.GeneralSettings.Settings["appMultiUserEnvironment"]);
-                GlobalApp.UseVirtualKeyBoard = Convert.ToBoolean(LogicPOS.Settings.GeneralSettings.Settings["useVirtualKeyBoard"]);
+                GlobalApp.MultiUserEnvironment = Convert.ToBoolean(GeneralSettings.Settings["appMultiUserEnvironment"]);
+                GlobalApp.UseVirtualKeyBoard = Convert.ToBoolean(GeneralSettings.Settings["useVirtualKeyBoard"]);
 
                 //Init App Notifications
                 GlobalApp.Notifications = new System.Collections.Generic.Dictionary<string, bool>
@@ -120,12 +122,12 @@ namespace logicpos
                 GlobalApp.FilePickerStartPath = Directory.GetCurrentDirectory();
 
                 //Get DataBase Details
-                datalayer.App.DataLayerFramework.DatabaseType = (DatabaseType)Enum.Parse(typeof(DatabaseType),LogicPOS.Settings.GeneralSettings.Settings["databaseType"]);
+                DatabaseSettings.DatabaseType = (DatabaseType)Enum.Parse(typeof(DatabaseType), GeneralSettings.Settings["databaseType"]);
                 //Override default Database name with parameter from config
-                string configDatabaseName = LogicPOS.Settings.GeneralSettings.Settings["databaseName"];
-                SharedFramework.DatabaseName = (string.IsNullOrEmpty(configDatabaseName)) ? POSSettings.DatabaseName : configDatabaseName;
+                string configDatabaseName = GeneralSettings.Settings["databaseName"];
+                DatabaseSettings.DatabaseName = (string.IsNullOrEmpty(configDatabaseName)) ? POSSettings.DatabaseName : configDatabaseName;
                 //Xpo Connection String
-                string xpoConnectionString = string.Format(LogicPOS.Settings.GeneralSettings.Settings["xpoConnectionString"], SharedFramework.DatabaseName.ToLower());
+                string xpoConnectionString = string.Format(GeneralSettings.Settings["xpoConnectionString"], DatabaseSettings.DatabaseName.ToLower());
                 Utils.AssignConnectionStringToSettings(xpoConnectionString);
 
                 //Removed Protected Files
@@ -143,9 +145,9 @@ namespace logicpos
                         // Launch Scripts
                         POSSettings.firstBoot = true;
                         databaseCreated = DataLayer.CreateDatabaseSchema(
-                            xpoConnectionString, 
-                            datalayer.App.DataLayerFramework.DatabaseType, 
-                            SharedFramework.DatabaseName, 
+                            xpoConnectionString,
+                            DatabaseSettings.DatabaseType,
+                            DatabaseSettings.DatabaseName,
                             out needToUpdate);
                     }
                     catch (Exception ex)
@@ -156,7 +158,7 @@ namespace logicpos
                         /* IN009034 */
                         GlobalApp.DialogThreadNotify.WakeupMain();
 
-                        Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(900, 700), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error"), ex.Message);
+                        Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(900, 700), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(), "global_error"), ex.Message);
                         Environment.Exit(0);
                     }
                 }
@@ -180,7 +182,7 @@ namespace logicpos
                     /* IN009034 */
                     GlobalApp.DialogThreadNotify.WakeupMain();
 
-                    Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(900, 700), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error"), ex.Message);
+                    Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(900, 700), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(), "global_error"), ex.Message);
                     throw; // TO DO
                 }
 
@@ -195,7 +197,7 @@ namespace logicpos
                         GlobalApp.DialogThreadNotify.WakeupMain();
 
                         string endMessage = "Invalid database Schema! Fix database Schema and Try Again!";
-                        Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(500, 300), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error"), string.Format(endMessage, Environment.NewLine));
+                        Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(500, 300), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(), "global_error"), string.Format(endMessage, Environment.NewLine));
                         Environment.Exit(0);
                     }
                 }
@@ -219,10 +221,10 @@ namespace logicpos
                         if (tmpDatabaseVersionNumber > tmpSoftwareVersionNumber)
                         {
                             GlobalApp.DialogThreadNotify.WakeupMain();
-                            //throw new InvalidOperationException(string.Format(resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_warning_message_database_version")) + " : " + GlobalFramework.DatabaseVersion);
+                            //throw new InvalidOperationException(string.Format(resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_warning_message_database_version")) + " : " + GlobalFramework.DatabaseVersion);
                             string fileName = "\\LPUpdater\\LPUpdater.exe";
                             string lPathToUpdater = string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileName);
-                            Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(500, 300), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_warning_message_database_version")) + " : " + GlobalFramework.DatabaseVersion);
+                            Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(500, 300), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"), string.Format(resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_warning_message_database_version")) + " : " + GlobalFramework.DatabaseVersion);
                             System.Diagnostics.Process.Start(lPathToUpdater);
                             Environment.Exit(0);
                         }
@@ -230,14 +232,14 @@ namespace logicpos
                     catch(Exception Ex)
                     {
                         GlobalApp.DialogThreadNotify.Close();
-                        Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(500, 300), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error"),  Ex.Message);
+                        Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(500, 300), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"),  Ex.Message);
                         Environment.Exit(0);
                     }
                 }
 #endif
                 // Assign PluginSoftwareVendor Reference to DataLayer SettingsApp to use In Date Protection, we Required to assign it Statically to Prevent Circular References
                 // Required to be here, before it is used in above lines, ex Utils.GetTerminal()
-                if (LogicPOS.Settings.PluginSettings.PluginSoftwareVendor != null) PluginContractsSettings.PluginSoftwareVendor = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor;
+                if (PluginSettings.PluginSoftwareVendor != null) PluginContractsSettings.PluginSoftwareVendor = PluginSettings.PluginSoftwareVendor;
 
                 //If not in Xpo create database Scheme Mode, Get Terminal from Db
                 if (!xpoCreateDatabaseAndSchema)
@@ -263,22 +265,22 @@ namespace logicpos
                     string endMessage = "Xpo Create Schema and Fixtures Done!{0}Please assign false to 'xpoCreateDatabaseAndSchema' and 'xpoCreateDatabaseObjectsWithFixtures' and run App again";
                     _logger.Debug(string.Format("void Init() :: xpoCreateDatabaseAndSchema: {0}", endMessage));
 
-                    Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(500, 300), MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_information"), string.Format(endMessage, Environment.NewLine));
+                    Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(500, 300), MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(), "global_information"), string.Format(endMessage, Environment.NewLine));
                     Environment.Exit(0);
                 }
 
                 //Init PreferenceParameters
-                LogicPOS.Settings.GeneralSettings.PreferenceParameters = SharedUtils.GetPreferencesParameters();
+                GeneralSettings.PreferenceParameters = SharedUtils.GetPreferencesParameters();
                 //Init Preferences Path
                 Paths.InitializePathsPrefs();
 
                 //CultureInfo/Localization
-                string culture = LogicPOS.Settings.GeneralSettings.PreferenceParameters["CULTURE"];
+                string culture = GeneralSettings.PreferenceParameters["CULTURE"];
 
                 /* IN008013 */
                 if (string.IsNullOrEmpty(culture))
                 {
-                    culture = LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"];
+                    culture = GeneralSettings.Settings.GetCultureName();
                 }
 
 
@@ -293,13 +295,13 @@ namespace logicpos
                 //{
                 //    Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(culture);
                 //}                
-                SharedFramework.CurrentCulture = SharedFramework.CurrentCulture = new System.Globalization.CultureInfo(ConfigurationManager.AppSettings["customCultureResourceDefinition"]);
+                CultureSettings.CurrentCulture = CultureSettings.CurrentCulture = new System.Globalization.CultureInfo(ConfigurationManager.AppSettings["customCultureResourceDefinition"]);
 
                 /* IN006018 and IN007009 */
                 _logger.Debug(string.Format("CUSTOM CULTURE :: CurrentUICulture '{0}' in use.", CultureInfo.CurrentUICulture));
 
                 //Always use en-US NumberFormat because of mySql Requirements
-                SharedFramework.CurrentCultureNumberFormat = CultureInfo.GetCultureInfo(POSSettings.CultureNumberFormat);
+                CultureSettings.CurrentCultureNumberFormat = CultureInfo.GetCultureInfo(POSSettings.CultureNumberFormat);
 
                 //Init AppSession
                 string appSessionFile = Utils.GetSessionFileName();
@@ -311,9 +313,9 @@ namespace logicpos
                 SharedFramework.WorkSessionPeriodTerminal = ProcessWorkSessionPeriod.GetSessionPeriod(WorkSessionPeriodType.Terminal);
 
                 //Use Detected ScreenSize
-                string appScreenSize = string.IsNullOrEmpty(LogicPOS.Settings.GeneralSettings.Settings["appScreenSize"])
-                    ? LogicPOS.Settings.GeneralSettings.PreferenceParameters["APP_SCREEN_SIZE"]
-                    : LogicPOS.Settings.GeneralSettings.Settings["appScreenSize"];
+                string appScreenSize = string.IsNullOrEmpty(GeneralSettings.Settings["appScreenSize"])
+                    ? GeneralSettings.PreferenceParameters["APP_SCREEN_SIZE"]
+                    : GeneralSettings.Settings["appScreenSize"];
                 if (appScreenSize.Replace(" ", string.Empty).Equals("0,0") || string.IsNullOrEmpty(appScreenSize))
                 {
                     // Force Unknown Screen Size
@@ -407,21 +409,21 @@ namespace logicpos
                 if (databaseCreated) SharedUtils.Audit("DATABASE_CREATE");
 
                 // Plugin Errors Messages
-                if (LogicPOS.Settings.PluginSettings.PluginSoftwareVendor == null || !LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.IsValidSecretKey(FinancialLibrarySettings.SecretKey))
+                if (PluginSettings.PluginSoftwareVendor == null || !PluginSettings.PluginSoftwareVendor.IsValidSecretKey(FinancialLibrarySettings.SecretKey))
                 {
                     /* IN009034 */
                     GlobalApp.DialogThreadNotify.WakeupMain();
 
                     _logger.Debug(string.Format("void Init() :: Wrong key detected [{0}]. Use a valid LogicposFinantialLibrary with same key as SoftwareVendorPlugin", FinancialLibrarySettings.SecretKey));
                     Utils.ShowMessageTouch(
-                        GlobalApp.StartupWindow, 
-                        DialogFlags.Modal, 
-                        new Size(650, 380), 
-                        MessageType.Error, 
-                        ButtonsType.Ok, 
-                        resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], 
-                        "global_error"), 
-                        resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], 
+                        GlobalApp.StartupWindow,
+                        DialogFlags.Modal,
+                        new Size(650, 380),
+                        MessageType.Error,
+                        ButtonsType.Ok,
+                        resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(),
+                        "global_error"),
+                        resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(),
                         "dialog_message_error_plugin_softwarevendor_not_registered"));
                 }
 
@@ -454,8 +456,8 @@ namespace logicpos
 
                 //Activate stock module for debug
 #if DEBUG 
-                LogicPOS.Settings.LicenseSettings.LicenseModuleStocks = true;
-                SharedSettings.AppCompanyName = LogicPOS.Settings.LicenseSettings.LicenseCompany = LogicPOS.Settings.LicenseSettings.LicenseReseller = "Logicpulse";
+                LicenseSettings.LicenseModuleStocks = true;
+                PluginSettings.AppCompanyName = LicenseSettings.LicenseCompany = LicenseSettings.LicenseReseller = "Logicpulse";
 #endif
 
                 //Clean Documents Folder on New Database, else we have Document files that dont correspond to Database
@@ -500,24 +502,24 @@ namespace logicpos
             //Show Dialog if Cant Create Backups Directory (Extra Protection for Shared Network Folders)
             if (!validDirectoryBackup)
             {
-                ResponseType response = Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_error_create_directory_backups"), Convert.ToString(datalayer.App.DataLayerFramework.Path["backups"])));
+                ResponseType response = Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(), "global_error"), string.Format(resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(), "dialog_message_error_create_directory_backups"), Convert.ToString(datalayer.App.DataLayerFramework.Path["backups"])));
                 //Enable Quit After BootStrap, Preventing Application.Run()
                 if (response == ResponseType.No) _quitAfterBootStrap = true;
             }
 
             //Start Database Backup Timer if not create XPO Schema and SoftwareVendor is Active
-            if (LogicPOS.Settings.PluginSettings.PluginSoftwareVendor != null && validDirectoryBackup && !xpoCreateDatabaseAndSchema)
+            if (PluginSettings.PluginSoftwareVendor != null && validDirectoryBackup && !xpoCreateDatabaseAndSchema)
             {
                 /* IN009163 and IN009164 - Opt to auto-backup flow */
-                _autoBackupFlowIsEnabled = bool.Parse(LogicPOS.Settings.GeneralSettings.PreferenceParameters["DATABASE_BACKUP_AUTOMATIC_ENABLED"]);
+                _autoBackupFlowIsEnabled = bool.Parse(GeneralSettings.PreferenceParameters["DATABASE_BACKUP_AUTOMATIC_ENABLED"]);
 
                 /* IN009164 */
                 if (_autoBackupFlowIsEnabled)
                 {
                     /* IN009164 - considering these variables are only used for automatic backup purposes, will be settled only when Auto-Backup Flow is enabled */
-                    _backupDatabaseTimeSpan = TimeSpan.Parse(LogicPOS.Settings.GeneralSettings.PreferenceParameters["DATABASE_BACKUP_TIMESPAN"]);
-                    _databaseBackupTimeSpanRangeStart = TimeSpan.Parse(LogicPOS.Settings.GeneralSettings.PreferenceParameters["DATABASE_BACKUP_TIME_SPAN_RANGE_START"]);
-                    _databaseBackupTimeSpanRangeEnd = TimeSpan.Parse(LogicPOS.Settings.GeneralSettings.PreferenceParameters["DATABASE_BACKUP_TIME_SPAN_RANGE_END"]);
+                    _backupDatabaseTimeSpan = TimeSpan.Parse(GeneralSettings.PreferenceParameters["DATABASE_BACKUP_TIMESPAN"]);
+                    _databaseBackupTimeSpanRangeStart = TimeSpan.Parse(GeneralSettings.PreferenceParameters["DATABASE_BACKUP_TIME_SPAN_RANGE_START"]);
+                    _databaseBackupTimeSpanRangeEnd = TimeSpan.Parse(GeneralSettings.PreferenceParameters["DATABASE_BACKUP_TIME_SPAN_RANGE_END"]);
                     /* IN009164 - TimeoutHandler() for UpdateBackupTimer() will not be created if Auto-Backup Flow is enabled */
                     StartBackupTimer();
                 }
@@ -537,7 +539,7 @@ namespace logicpos
             if (POSSettings.ProtectedFilesRecreateCSV)
             {
                 protectedFiles = new ProtectedFiles(fileList, filePath);
-                string md5FromFile = SharedUtils.MD5HashFile(filePath);
+                string md5FromFile = LogicPOS.Utility.StringUtils.MD5HashFile(filePath);
                 //End Xpo Create Scheme and Fixtures, Terminate App and Request assign False to Developer Vars
                 //string message = string.Format(@"ProtectedFiles '{1}' re-created with {2} files found!
                 //    {0}- Assign false to 'SettingsApp.ProtectedFilesRecreateCsv'.
@@ -548,7 +550,7 @@ namespace logicpos
                 string message = string.Format(@"ProtectedFiles '{1}' re-created with {2} files found!{0}{0}Assign false to 'SettingsApp.ProtectedFilesRecreateCsv' and run app again.", Environment.NewLine, filePath, fileList.Count);
 
                 ExportProtectedFiles(fileList);
-                Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new System.Drawing.Size(600, 350), MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_information"), message);
+                Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new System.Drawing.Size(600, 350), MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(), "global_information"), message);
                 Environment.Exit(0);
             }
             //Dont check changed files if Developer, Uncomment to Enable
@@ -580,14 +582,14 @@ namespace logicpos
                     if (!POSSettings.ProtectedFilesIgnoreProtection)
                     {
                         Utils.ShowMessageTouch(
-                            GlobalApp.StartupWindow, 
-                            DialogFlags.Modal, 
-                            new Size(800, 400), 
-                            MessageType.Error, 
-                            ButtonsType.Close, 
-                            resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], 
-                            "global_error"), string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], 
-                            "dialog_message_error_protected_files_invalid_files_detected"), 
+                            GlobalApp.StartupWindow,
+                            DialogFlags.Modal,
+                            new Size(800, 400),
+                            MessageType.Error,
+                            ButtonsType.Close,
+                            resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(),
+                            "global_error"), string.Format(resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(),
+                            "dialog_message_error_protected_files_invalid_files_detected"),
                             filesMessage));
 
                         Environment.Exit(0);
@@ -689,14 +691,14 @@ namespace logicpos
         public static void Quit(Window pSourceWindow)
         {
             ResponseType responseType = Utils.ShowMessageTouch(
-                pSourceWindow, 
-                DialogFlags.Modal, 
-                new Size(400, 300), 
-                MessageType.Question, 
-                ButtonsType.YesNo, 
-                resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], 
-                "global_quit_title"), 
-                resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], 
+                pSourceWindow,
+                DialogFlags.Modal,
+                new Size(400, 300),
+                MessageType.Question,
+                ButtonsType.YesNo,
+                resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(),
+                "global_quit_title"),
+                resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(),
                 "global_quit_message"));
 
             if (responseType == ResponseType.Yes)

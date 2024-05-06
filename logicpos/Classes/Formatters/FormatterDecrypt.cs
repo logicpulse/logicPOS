@@ -1,5 +1,4 @@
-﻿using logicpos.shared.App;
-using System;
+﻿using System;
 
 namespace logicpos.Classes.Formatters
 {

@@ -1,5 +1,4 @@
 ﻿using Gtk;
-using logicpos.datalayer.App;
 using System.Collections.Generic;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets

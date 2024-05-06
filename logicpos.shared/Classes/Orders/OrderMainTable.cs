@@ -1,6 +1,6 @@
 ﻿using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
-using logicpos.shared.App;
+using logicpos.datalayer.Xpo;
 using System;
 using static logicpos.datalayer.App.DataLayerUtils;
 
@@ -50,7 +50,7 @@ namespace logicpos.shared.Classes.Orders
                 //If table is null, select Table with code 10
                 if (table == null)
                 {
-                    table = (pos_configurationplacetable)SharedUtils.GetXPGuidObjectFromCriteria(typeof(pos_configurationplacetable), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Code = '{0}')", "10")) as pos_configurationplacetable;
+                    table = (pos_configurationplacetable)XPOHelper.GetXPGuidObjectFromCriteria(typeof(pos_configurationplacetable), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Code = '{0}')", "10")) as pos_configurationplacetable;
                 }
                 Name = table.Designation;
                 //Enum is not Zero Indexed

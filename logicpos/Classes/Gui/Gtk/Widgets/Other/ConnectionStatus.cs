@@ -1,6 +1,5 @@
 ﻿using Gtk;
 using logicpos.datalayer.App;
-using logicpos.shared.App;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {

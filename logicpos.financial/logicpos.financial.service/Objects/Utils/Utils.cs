@@ -1,5 +1,4 @@
 ﻿using DevExpress.Xpo.DB;
-using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.service.Objects.Modules.AT;
@@ -8,7 +7,6 @@ using LogicPOS.DTOs.Common;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics;
 using System.Security;
 using System.Text;
 using System.Xml.Linq;
@@ -244,7 +242,7 @@ namespace logicpos.financial.service.Objects
                     , pDocumentMaster.Oid
                 );
 
-                DataTable dtResult = SharedUtils.GetDataTableFromQuery(sql);
+                DataTable dtResult = XPOHelper.GetDataTableFromQuery(sql);
 
                 //Init StringBuilder
                 StringBuilder sb = new StringBuilder();
@@ -266,10 +264,10 @@ namespace logicpos.financial.service.Objects
     </Line>
 "
                         , nodeName
-                        , SharedUtils.DecimalToString(Convert.ToDecimal(item["TotalNet"]), SharedFramework.CurrentCultureNumberFormat)
+                        , LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(item["TotalNet"]))
                         , item["TaxType"]
                         , item["TaxCountryRegion"]
-                        , SharedUtils.DecimalToString(Convert.ToDecimal(item["Vat"]), SharedFramework.CurrentCultureNumberFormat)
+                        , LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(item["Vat"]))
                         , taxExemptionReason
                     ));
 
@@ -286,9 +284,9 @@ namespace logicpos.financial.service.Objects
       <ns2:NetTotal>{1}</ns2:NetTotal>
       <ns2:GrossTotal>{2}</ns2:GrossTotal>
     </DocumentTotals>"
-                    , SharedUtils.DecimalToString(taxPayable, SharedFramework.CurrentCultureNumberFormat)
-                    , SharedUtils.DecimalToString(netTotal, SharedFramework.CurrentCultureNumberFormat)
-                    , SharedUtils.DecimalToString(grossTotal, SharedFramework.CurrentCultureNumberFormat)
+                    , LogicPOS.Utility.DataConversionUtils.DecimalToString(taxPayable)
+                    , LogicPOS.Utility.DataConversionUtils.DecimalToString(netTotal)
+                    , LogicPOS.Utility.DataConversionUtils.DecimalToString(grossTotal)
                 ));
 
                 result = sb.ToString();
@@ -324,7 +322,7 @@ namespace logicpos.financial.service.Objects
                     , pDocumentMaster.Oid
                 );
 
-                DataTable dtResult = SharedUtils.GetDataTableFromQuery(sql);
+                DataTable dtResult = XPOHelper.GetDataTableFromQuery(sql);
 
                 //Init StringBuilder
                 StringBuilder sb = new StringBuilder();
@@ -347,9 +345,9 @@ namespace logicpos.financial.service.Objects
 "
                         , orderReferences
                         , SecurityElement.Escape(item["ProductDescription"].ToString())
-                        , SharedUtils.DecimalToString(Convert.ToDecimal(item["Quantity"]), SharedFramework.CurrentCultureNumberFormat)
+                        , LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(item["Quantity"]))
                         , item["UnitOfMeasure"]
-                        , SharedUtils.DecimalToString(Convert.ToDecimal(item["UnitPrice"]), SharedFramework.CurrentCultureNumberFormat)
+                        , LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(item["UnitPrice"]))
                     ));
                 }
 
@@ -382,7 +380,7 @@ namespace logicpos.financial.service.Objects
                     string sqlDocuments = GetDocumentsQuery(false);
                     //_logger.Debug(String.Format("sqlDocuments: [{0}]", FrameworkUtils.RemoveCarriageReturnAndExtraWhiteSpaces(sqlDocuments)));
 
-                    XPSelectData xPSelectData = SharedUtils.GetSelectedDataFromQuery(sqlDocuments);
+                    XPSelectData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sqlDocuments);
                     foreach (SelectStatementResultRow row in xPSelectData.Data)
                     {
                         key = new Guid(row.Values[xPSelectData.GetFieldIndex("Oid")].ToString());
@@ -408,7 +406,7 @@ namespace logicpos.financial.service.Objects
                     string sqlDocumentsWayBill = GetDocumentsQuery(true);
                     //_logger.Debug(String.Format("sqlDocumentsWayBill: [{0}]", FrameworkUtils.RemoveCarriageReturnAndExtraWhiteSpaces(sqlDocumentsWayBill)));
 
-                    XPSelectData xPSelectData = SharedUtils.GetSelectedDataFromQuery(sqlDocumentsWayBill);
+                    XPSelectData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sqlDocumentsWayBill);
                     foreach (SelectStatementResultRow row in xPSelectData.Data)
                     {
                         key = new Guid(row.Values[xPSelectData.GetFieldIndex("Oid")].ToString());

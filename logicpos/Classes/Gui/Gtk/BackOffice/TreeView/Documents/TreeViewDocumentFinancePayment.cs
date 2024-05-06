@@ -6,11 +6,11 @@ using logicpos.App;
 using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Formatters;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
-using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using System;
 using System.Collections.Generic;
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -40,35 +40,37 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
             {
-                new GenericTreeViewColumnProperty("CreatedAt") { Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_document_date"), MinWidth = 140 }, /* IN009067 */
-                new GenericTreeViewColumnProperty("PaymentRefNo") { Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_document_number"), MinWidth = 120 }, /* IN009067 */
-                new GenericTreeViewColumnProperty("PaymentStatus") { Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_document_status"), MinWidth = 50, MaxWidth = 50 }
+                new GenericTreeViewColumnProperty("CreatedAt") { Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_document_date"), MinWidth = 140 }, /* IN009067 */
+                new GenericTreeViewColumnProperty("PaymentRefNo") { Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_document_number"), MinWidth = 120 }, /* IN009067 */
+                new GenericTreeViewColumnProperty("PaymentStatus") { Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_document_status"), MinWidth = 50, MaxWidth = 50 }
             };
             //Shared Query
             /* IN009075 - removing call to view */
-			// string query = "SELECT {0} as Result FROM view_documentfinancepayment WHERE fpaOid = '{1}' GROUP BY fpaOid,{0};";
+            // string query = "SELECT {0} as Result FROM view_documentfinancepayment WHERE fpaOid = '{1}' GROUP BY fpaOid,{0};";
             string queryForCustomerDetails = "SELECT {0} FROM erp_customer AS Customer LEFT JOIN fin_documentfinancepayment AS Payment ON (Payment.EntityOid = Customer.Oid) WHERE Payment.Oid = '{1}';";
-            columnProperties.Add(new GenericTreeViewColumnProperty("EntityName") { 
-                Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_entity"),
+            columnProperties.Add(new GenericTreeViewColumnProperty("EntityName")
+            {
+                Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_entity"),
                 MinWidth = 260,
                 MaxWidth = 260,
                 Query = string.Format(queryForCustomerDetails, "Name", "{0}"), /* IN009075 */
                 DecryptValue = true
             });
-			/* IN009067 */
-            columnProperties.Add(new GenericTreeViewColumnProperty("EntityFiscalNumber") { 
-                Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_fiscal_number"),
+            /* IN009067 */
+            columnProperties.Add(new GenericTreeViewColumnProperty("EntityFiscalNumber")
+            {
+                Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_fiscal_number"),
                 MinWidth = 100,
                 Query = string.Format(queryForCustomerDetails, "FiscalNumber", "{0}"), /* IN009075 */
                 DecryptValue = true
             });
             columnProperties.Add(new GenericTreeViewColumnProperty("PaymentAmount")
             {
-                Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_total"),
+                Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_total"),
                 MinWidth = 100,
                 //Alignment = 1.0F,
                 FormatProvider = new FormatterDecimalCurrency(),
-				/* IN009067 */
+                /* IN009067 */
                 CellRenderer = new CellRendererText()
                 {
                     FontDesc = new Pango.FontDescription() { Size = fontGenericTreeViewColumn },
@@ -82,7 +84,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             columnProperties.Add(new GenericTreeViewColumnProperty("RelatedDocuments")
             {
                 Query = relatedDocumentsQuery,
-                Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_column_related_doc"),
+                Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_document_finance_column_related_doc"),
                 MinWidth = 100
             });
 
@@ -99,10 +101,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             SortProperty[] sortProperty = new SortProperty[1];
             /* IN009067 - setting up descending sort */
-            sortProperty[0] = new SortProperty("CreatedAt", SortingDirection.Descending);            
+            sortProperty[0] = new SortProperty("CreatedAt", SortingDirection.Descending);
             //Configure Criteria/XPCollection/Model              
             //New IN009223 IN009227         
-             XPCollection xpoCollection = new XPCollection(XPOSettings.Session, xpoGuidObjectType, criteria, sortProperty) { TopReturnedObjects = POSSettings.PaginationRowsPerPage };
+            XPCollection xpoCollection = new XPCollection(XPOSettings.Session, xpoGuidObjectType, criteria, sortProperty) { TopReturnedObjects = POSSettings.PaginationRowsPerPage };
 
             //Call Base Initializer
             base.InitObject(

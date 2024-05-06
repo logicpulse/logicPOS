@@ -6,6 +6,7 @@ using logicpos.Extensions;
 using logicpos.shared.App;
 using System;
 using System.Drawing;
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
 {
@@ -76,12 +77,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
                     SetBackgroundColor(_buttonColor, _eventBoxTotalOrStatus);
                     break;
                 case TableStatus.Open:
-                    _labelTotalOrStatus.Text = SharedUtils.DecimalToStringCurrency(pTotal);
-                    if (pDateOpen != null) labelDateTableOpenOrClosed.Text = string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "pos_button_label_table_open_at"), pDateOpen.ToString(SharedSettings.DateTimeFormatHour));
+                    _labelTotalOrStatus.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(pTotal, SharedSettings.ConfigurationSystemCurrency.Acronym);
+                    if (pDateOpen != null) labelDateTableOpenOrClosed.Text = string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "pos_button_label_table_open_at"), pDateOpen.ToString(LogicPOS.Settings.CultureSettings.DateTimeFormatHour));
                     SetBackgroundColor(_colorPosTablePadTableTableStatusOpenButtonBackground, _eventBoxTotalOrStatus);
                     break;
                 case TableStatus.Reserved:
-                    _labelTotalOrStatus.Text = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_reserved_table");
+                    _labelTotalOrStatus.Text = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_reserved_table");
                     SetBackgroundColor(_colorPosTablePadTableTableStatusReservedButtonBackground, _eventBoxTotalOrStatus);
                     break;
                 default:
@@ -98,11 +99,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
 
             if (pTableStatus == TableStatus.Reserved)
             {
-                _labelTotalOrStatus.Text = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_reserved_table");
+                _labelTotalOrStatus.Text = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_reserved_table");
                 _eventBoxTotalOrStatus.VisibleWindow = true;
                 SetBackgroundColor(_colorPosTablePadTableTableStatusReservedButtonBackground, _eventBoxTotalOrStatus);
                 xTable.TableStatus = TableStatus.Reserved;
-                SharedUtils.Audit("TABLE_RESERVED", string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "audit_message_table_reserved"), xTable.Designation));
+                SharedUtils.Audit("TABLE_RESERVED", string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_table_reserved"), xTable.Designation));
             }
             else
             {
@@ -110,7 +111,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
                 _eventBoxTotalOrStatus.VisibleWindow = false;
                 SetBackgroundColor(_buttonColor, _eventBoxTotalOrStatus);
                 xTable.TableStatus = TableStatus.Free;
-                SharedUtils.Audit("TABLE_UNRESERVED", string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "audit_message_table_unreserved"), xTable.Designation));
+                SharedUtils.Audit("TABLE_UNRESERVED", string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_table_unreserved"), xTable.Designation));
             }
             //_logger.Debug(string.Format("1 pTableStatus: [{0}] [{1}]", xTable.Designation, pTableStatus));
             //Update Status State  

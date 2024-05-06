@@ -13,9 +13,11 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Finance;
 using logicpos.shared.App;
+using LogicPOS.Settings;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -36,7 +38,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pDialogFlags, true, false)
         {
             //Init Local Vars
-            string windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_edit_configurationpreferenceparameter");
+            string windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_edit_configurationpreferenceparameter");
             Size windowSize = new Size(600, 600);
             string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_system.png";
 
@@ -44,7 +46,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _sourceWindow = pSourceWindow;
 
             //ActionArea Buttons
-            _buttonOk = new TouchButtonIconWithText("touchButtonOk_DialogActionArea", _colorBaseDialogActionAreaButtonBackground, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_button_label_ok"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, _fileActionOK, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Sensitive = false };
+            _buttonOk = new TouchButtonIconWithText("touchButtonOk_DialogActionArea", _colorBaseDialogActionAreaButtonBackground, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_button_label_ok"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, _fileActionOK, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Sensitive = false };
             _buttonDataDemo = new TouchButtonIconWithText("touchButtonDataDemo_DialogActionArea", _colorBaseDialogActionAreaButtonBackground, "Demo", _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, _fileDemoData, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Sensitive = true };
 
             //ActionArea
@@ -107,7 +109,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 //Country
                 CriteriaOperator criteriaOperatorSystemCountry = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1) AND (RegExFiscalNumber IS NOT NULL)");
-                _entryBoxSelectSystemCountry = new XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry>(this, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_country"), "Designation", "Oid", intialValueConfigurationCountry, criteriaOperatorSystemCountry, LogicPOS.Utility.RegexUtils.RegexGuid, true);
+                _entryBoxSelectSystemCountry = new XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry>(this, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_country"), "Designation", "Oid", intialValueConfigurationCountry, criteriaOperatorSystemCountry, LogicPOS.Utility.RegexUtils.RegexGuid, true);
                 _entryBoxSelectSystemCountry.EntryValidation.IsEditable = false;
                 _entryBoxSelectSystemCountry.EntryValidation.Validate(_entryBoxSelectSystemCountry.Value.Oid.ToString());
                 //Disabled, Now Country and Currency are disabled
@@ -132,7 +134,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 //Currency
                 CriteriaOperator criteriaOperatorSystemCurrency = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1)");
-                _entryBoxSelectSystemCurrency = new XPOEntryBoxSelectRecordValidation<cfg_configurationcurrency, TreeViewConfigurationCurrency>(this, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_currency"), "Designation", "Oid", intialValueConfigurationCurrency, criteriaOperatorSystemCurrency, LogicPOS.Utility.RegexUtils.RegexGuid, true);
+                _entryBoxSelectSystemCurrency = new XPOEntryBoxSelectRecordValidation<cfg_configurationcurrency, TreeViewConfigurationCurrency>(this, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_currency"), "Designation", "Oid", intialValueConfigurationCurrency, criteriaOperatorSystemCurrency, LogicPOS.Utility.RegexUtils.RegexGuid, true);
                 _entryBoxSelectSystemCurrency.EntryValidation.IsEditable = false;
                 _entryBoxSelectSystemCurrency.EntryValidation.Validate(_entryBoxSelectSystemCurrency.Value.Oid.ToString());
 
@@ -163,8 +165,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                     foreach (cfg_configurationpreferenceparameter item in xpCollection)
                     {
-                        label = (item.ResourceString != null && resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], item.ResourceString) != null)
-                            ? resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], item.ResourceString)
+                        label = (item.ResourceString != null && resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), item.ResourceString) != null)
+                            ? resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), item.ResourceString)
                             : string.Empty;
                         regExObj = SharedUtils.GetFieldValueFromType(typeof(POSSettings), item.RegEx);
                         regEx = (regExObj != null) ? regExObj.ToString() : string.Empty;
@@ -311,29 +313,29 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                     //entryBoxSelect: COMPANY_COUNTRY
                     //Assign and Save Country and Country Code 2 From entryBoxSelectCustomerCountry
-                    cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCountry = (SharedUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY")) as cfg_configurationpreferenceparameter);
+                    cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCountry = (XPOHelper.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY")) as cfg_configurationpreferenceparameter);
                     configurationPreferenceParameterCompanyCountry.Value = _entryBoxSelectSystemCountry.Value.Designation;
                     configurationPreferenceParameterCompanyCountry.Save();
                     //entryBoxSelect: COMPANY_COUNTRY_CODE2
-                    cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCountryCode2 = (SharedUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY_CODE2")) as cfg_configurationpreferenceparameter);
+                    cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCountryCode2 = (XPOHelper.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY_CODE2")) as cfg_configurationpreferenceparameter);
                     configurationPreferenceParameterCompanyCountryCode2.Value = _entryBoxSelectSystemCountry.Value.Code2;
                     configurationPreferenceParameterCompanyCountryCode2.Save();
                     //entryBoxSelect: SYSTEM_CURRENCY
-                    cfg_configurationpreferenceparameter configurationPreferenceParameterSystemCurrency = (SharedUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "SYSTEM_CURRENCY")) as cfg_configurationpreferenceparameter);
+                    cfg_configurationpreferenceparameter configurationPreferenceParameterSystemCurrency = (XPOHelper.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "SYSTEM_CURRENCY")) as cfg_configurationpreferenceparameter);
                     configurationPreferenceParameterSystemCurrency.Value = _entryBoxSelectSystemCurrency.Value.Acronym;
                     configurationPreferenceParameterSystemCurrency.Save();
                     //entryBoxSelect: COMPANY_COUNTRY_OID
-                    cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCountryOid = (SharedUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY_OID")) as cfg_configurationpreferenceparameter);
+                    cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCountryOid = (XPOHelper.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY_OID")) as cfg_configurationpreferenceparameter);
                     configurationPreferenceParameterCompanyCountryOid.Value = _entryBoxSelectSystemCountry.Value.Oid.ToString();
                     configurationPreferenceParameterCompanyCountryOid.Save();
                     //entryBoxSelect: SYSTEM_CURRENCY_OID
-                    cfg_configurationpreferenceparameter configurationPreferenceParameterSystemCurrencyOid = (SharedUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "SYSTEM_CURRENCY_OID")) as cfg_configurationpreferenceparameter);
+                    cfg_configurationpreferenceparameter configurationPreferenceParameterSystemCurrencyOid = (XPOHelper.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "SYSTEM_CURRENCY_OID")) as cfg_configurationpreferenceparameter);
                     configurationPreferenceParameterSystemCurrencyOid.Value = _entryBoxSelectSystemCurrency.Value.Oid.ToString();
                     configurationPreferenceParameterSystemCurrencyOid.Save();
 
                     //Proccess Country Scripts
                     string commandSeparator = ";";
-                    Dictionary<string, string> replaceables = logicpos.DataLayer.GetReplaceables(DataLayerFramework.DatabaseType);
+                    Dictionary<string, string> replaceables = logicpos.DataLayer.GetReplaceables(DatabaseSettings.DatabaseType);
                     string directoryCountry = string.Format(@"{0}/{1}", POSSettings.FileDatabaseOtherCommonCountry, _entryBoxSelectSystemCountry.Value.Code2);
                     logicpos.DataLayer.ProcessDumpDirectory(XPOSettings.Session, directoryCountry, commandSeparator, replaceables);
                     //Proccess Country Plugin Scripts

@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using logicpos.shared.App;
 using logicpos.datalayer.App;
 using logicpos.datalayer.Xpo;
-
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos.financial.library.Classes.Hardware.Printers
 {
@@ -81,7 +81,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                     {
                         fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)DataLayerUtils.GetXPGuidObject(uowSession, typeof(fin_documentfinancemaster), pDocumentFinanceMaster.Oid);
                         systemPrint.DocumentMaster = documentFinanceMaster;
-                        designation = string.Format("{0} {1} : {2}", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_printed"), documentFinanceMaster.DocumentType.Designation, documentFinanceMaster.DocumentNumber);
+                        designation = string.Format("{0} {1} : {2}", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_printed"), documentFinanceMaster.DocumentType.Designation, documentFinanceMaster.DocumentNumber);
                         //Update DocumentFinanceMaster
                         if (!documentFinanceMaster.Printed) documentFinanceMaster.Printed = true;
                     }
@@ -90,7 +90,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                     {
                         fin_documentfinancepayment documentFinancePayment = (fin_documentfinancepayment)DataLayerUtils.GetXPGuidObject(uowSession, typeof(fin_documentfinancepayment), pDocumentFinancePayment.Oid);
                         systemPrint.DocumentPayment = documentFinancePayment;
-                        designation = string.Format("{0} {1} : {2}", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_printed"), documentFinancePayment.DocumentType.Designation, documentFinancePayment.PaymentRefNo);
+                        designation = string.Format("{0} {1} : {2}", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_printed"), documentFinancePayment.DocumentType.Designation, documentFinancePayment.PaymentRefNo);
                     }
                     systemPrint.Designation = designation;
 
@@ -412,7 +412,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                                     //TK016249 - Impressoras - Diferenciação entre Tipos
                                     printObjectSINOCAN.OpenDoor(DataLayerFramework.LoggedTerminal.ThermalPrinter.PrinterType.Token, DataLayerFramework.LoggedTerminal.ThermalPrinter.NetworkName, m, t1, t2);
                                     //Audit
-                                    SharedUtils.Audit("CASHDRAWER_OPEN", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "audit_message_cashdrawer_open"));
+                                    SharedUtils.Audit("CASHDRAWER_OPEN", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_cashdrawer_open"));
 
                                     break;
                             }

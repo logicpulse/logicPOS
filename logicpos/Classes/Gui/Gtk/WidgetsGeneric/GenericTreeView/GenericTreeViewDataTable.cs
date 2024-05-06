@@ -1,12 +1,12 @@
 ﻿using Gtk;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.GenericTreeView;
-using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.shared.App;
+using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {
@@ -139,7 +139,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                     //Else All others Fields assign Value from dataRow
                     else
                     {
-                        columnValues[i] = SharedUtils.FormatDataTableFieldFromType(dataRow.ItemArray[i].ToString(), dataRow.ItemArray[i].GetType().Name);
+                        columnValues[i] = DataConversionUtils.FormatDataTableFieldFromType(dataRow.ItemArray[i].ToString(), dataRow.ItemArray[i].GetType().Name);
                         //Format String using Column FormatProvider              
                         if (_columnProperties[i].FormatProvider != null)
                         {
@@ -189,11 +189,11 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                     if (fieldValue.GetType() == typeof(bool))
                     {
                         bool boolValue = Convert.ToBoolean(fieldValue);
-                        fieldValue = (boolValue) ? resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_treeview_true") : resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_treeview_false");
+                        fieldValue = (boolValue) ? resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_treeview_true") : resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_treeview_false");
                     }
                     else
                     {
-                        fieldValue = SharedUtils.FormatDataTableFieldFromType(fieldValue.ToString(), fieldValue.GetType().Name);
+                        fieldValue = DataConversionUtils.FormatDataTableFieldFromType(fieldValue.ToString(), fieldValue.GetType().Name);
                     }
             }
             //_logger.Debug(string.Format("GetDataRowColumnValue: fieldName:[{0}], fieldValue:[{1}], fieldType:[{2}]", fieldName, fieldValue, fieldValue.GetType()));

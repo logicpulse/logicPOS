@@ -10,6 +10,7 @@ using logicpos.datalayer.Xpo;
 using logicpos.shared.App;
 using System;
 using System.Drawing;
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -34,7 +35,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             Article = pArticle;
 
             //Init Local Vars
-            string windowTitle = string.Format("{0}", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_filepicker"));
+            string windowTitle = string.Format("{0}", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_filepicker"));
             _windowSize = new Size(300, 473);
             string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_select_record.png";
 
@@ -73,7 +74,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) OR (Oid <> '{0}')", SharedSettings.XpoOidUndefinedRecord));
                 XPCollection xpcConfigurationPriceType = new XPCollection(XPOSettings.Session, typeof(fin_configurationpricetype), criteriaOperator);
 
-                xpcConfigurationPriceType.Sorting = SharedUtils.GetXPCollectionDefaultSortingCollection();
+                xpcConfigurationPriceType.Sorting = XPOHelper.GetXPCollectionDefaultSortingCollection();
                 //Define Max 5 Rows : 5 Prices
                 int priceTypeCount = (xpcConfigurationPriceType.Count > 5) ? 5 : xpcConfigurationPriceType.Count;
 

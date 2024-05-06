@@ -1,5 +1,6 @@
 ﻿using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Enums;
+using LogicPOS.Settings;
+using LogicPOS.Settings.Enums;
 using System;
 
 namespace logicpos.datalayer.App

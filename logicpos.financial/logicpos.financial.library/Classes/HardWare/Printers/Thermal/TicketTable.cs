@@ -1,10 +1,9 @@
 ﻿using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
-using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Enums;
-using logicpos.shared.App;
+using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -74,7 +73,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
         private void Load(string pSql)
         {
             //Get SelectedData
-            XPSelectData xPSelectData = SharedUtils.GetSelectedDataFromQuery(_session, pSql);
+            XPSelectData xPSelectData = XPOHelper.GetSelectedDataFromQuery(_session, pSql);
             //Add Columns
             string fieldName;
             string fieldType;
@@ -100,7 +99,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
                     //Check if is Not Null
                     if (rowData.Values[xPSelectData.GetFieldIndex(fieldName)] != null)
                     {
-                        fieldValue = SharedUtils.FormatDataTableFieldFromType(rowData.Values[xPSelectData.GetFieldIndex(fieldName)].ToString(), fieldType);
+                        fieldValue = DataConversionUtils.FormatDataTableFieldFromType(rowData.Values[xPSelectData.GetFieldIndex(fieldName)].ToString(), fieldType);
                     }
                     else
                     {
@@ -143,7 +142,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
                     //Check if is Not Null
                     if (rowData[fieldName] != null)
                     {
-                        fieldValue = SharedUtils.FormatDataTableFieldFromType(rowData[fieldName].ToString(), fieldType);
+                        fieldValue = DataConversionUtils.FormatDataTableFieldFromType(rowData[fieldName].ToString(), fieldType);
                     }
                     else
                     {

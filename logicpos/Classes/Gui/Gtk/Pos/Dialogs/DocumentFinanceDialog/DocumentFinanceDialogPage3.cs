@@ -173,7 +173,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 {
                     fin_article article;
                     //Get Discount from Select Customer
-                    decimal discountGlobal = SharedUtils.StringToDecimal(_pagePad2.EntryBoxCustomerDiscount.EntryValidation.Text);
+                    decimal discountGlobal = LogicPOS.Utility.DataConversionUtils.StringToDecimal(_pagePad2.EntryBoxCustomerDiscount.EntryValidation.Text);
                     decimal exchangeRate = _pagePad1.EntryBoxSelectConfigurationCurrency.Value.ExchangeRate;
 
                     //Update DataTable Rows
@@ -193,13 +193,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                         );
 
                         //Finnally Update DataSourceRow Value with calculated PriceProperties
-                        if (debug) _logger.Debug(string.Format("#1:TotalFinal DataSourceRow: [{0}], discountGlobal: [{1}]", SharedUtils.DecimalToString(Convert.ToDecimal(TreeViewArticles.DataSourceRow["TotalFinal"])), SharedUtils.DecimalToString(discountGlobal)));
+                        if (debug) _logger.Debug(string.Format("#1:TotalFinal DataSourceRow: [{0}], discountGlobal: [{1}]", LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(TreeViewArticles.DataSourceRow["TotalFinal"])), LogicPOS.Utility.DataConversionUtils.DecimalToString(discountGlobal)));
                         //Update Display Values with ExchangeRate Multiplier
                         item["PriceDisplay"] = priceProperties.PriceNet * exchangeRate;
                         item["TotalNet"] = (priceProperties.TotalNet * exchangeRate);
                         item["TotalFinal"] = priceProperties.TotalFinal * exchangeRate;
                         item["PriceFinal"] = priceProperties.PriceFinal * exchangeRate;
-                        if (debug) _logger.Debug(string.Format("#2:TotalFinal DataSourceRow: [{0}], discountGlobal: [{1}]", SharedUtils.DecimalToString(Convert.ToDecimal(TreeViewArticles.DataSourceRow["TotalFinal"])), SharedUtils.DecimalToString(discountGlobal)));
+                        if (debug) _logger.Debug(string.Format("#2:TotalFinal DataSourceRow: [{0}], discountGlobal: [{1}]", LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(TreeViewArticles.DataSourceRow["TotalFinal"])), LogicPOS.Utility.DataConversionUtils.DecimalToString(discountGlobal)));
                     }
                     //Call Refresh, Recreate TreeView from Model
                     TreeViewArticles.Refresh();

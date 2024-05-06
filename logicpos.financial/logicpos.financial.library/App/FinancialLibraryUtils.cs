@@ -66,7 +66,7 @@ namespace logicpos.financial.library.App
             {
                 new SortProperty("Ord", SortingDirection.Ascending)
             };
-            XPCollection xpcDocumentFinanceType = SharedUtils.GetXPCollectionFromCriteria(XPOSettings.Session, typeof(fin_documentfinancetype), criteriaOperator, sortingCollection);
+            XPCollection xpcDocumentFinanceType = XPOHelper.GetXPCollectionFromCriteria(XPOSettings.Session, typeof(fin_documentfinancetype), criteriaOperator, sortingCollection);
 
             try
             {
@@ -662,7 +662,7 @@ namespace logicpos.financial.library.App
             try
             {
                 string filterCriteria = string.Format("Oid = '{0}'", SharedSettings.FinalConsumerId.ToString());
-                result = (SharedUtils.GetXPGuidObjectFromCriteria(typeof(erp_customer), filterCriteria) as erp_customer);
+                result = (XPOHelper.GetXPGuidObjectFromCriteria(typeof(erp_customer), filterCriteria) as erp_customer);
             }
             catch (Exception ex)
             {

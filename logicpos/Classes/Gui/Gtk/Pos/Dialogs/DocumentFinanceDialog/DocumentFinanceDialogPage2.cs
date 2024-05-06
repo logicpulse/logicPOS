@@ -15,6 +15,7 @@ using logicpos.shared.App;
 using logicpos.datalayer.App;
 using logicpos.financial.library.App;
 using logicpos.datalayer.Xpo;
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 {
@@ -131,7 +132,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             customer.FiscalNumber = "";
             EntryBoxSelectCustomerName = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(
                 _sourceWindow, 
-                resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_customer"), 
+                resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_customer"), 
                 "Name", 
                 "Name", 
                 customer, 
@@ -158,24 +159,24 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             EntryBoxSelectCustomerName.EntryValidation.IsEditable = true;
 
             //Customer Address
-            EntryBoxCustomerAddress = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_address"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, false);/* IN009253 */
+            EntryBoxCustomerAddress = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_address"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, false);/* IN009253 */
             EntryBoxCustomerAddress.EntryValidation.Changed += delegate { Validate(); };
 
             //Customer Locality
-            EntryBoxCustomerLocality = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_locality"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, false);/* IN009253 */
+            EntryBoxCustomerLocality = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_locality"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, false);/* IN009253 */
             EntryBoxCustomerLocality.EntryValidation.Changed += delegate { Validate(); };
 
             //Customer ZipCode
-            EntryBoxCustomerZipCode = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_zipcode"), KeyboardMode.Alfa, DataLayerSettings.ConfigurationSystemCountry.RegExZipCode, false);
+            EntryBoxCustomerZipCode = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_zipcode"), KeyboardMode.Alfa, DataLayerSettings.ConfigurationSystemCountry.RegExZipCode, false);
             EntryBoxCustomerZipCode.EntryValidation.Changed += delegate { Validate(); };
 
             //Customer City
-            EntryBoxCustomerCity = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_city"), KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, false);/* IN009253 */
+            EntryBoxCustomerCity = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_city"), KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, false);/* IN009253 */
             EntryBoxCustomerCity.EntryValidation.Changed += delegate { Validate(); };
 
             //Customer Country
             CriteriaOperator criteriaOperatorCustomerCountry = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1) AND (RegExFiscalNumber IS NOT NULL AND RegExZipCode IS NOT NULL)");
-            EntryBoxSelectCustomerCountry = new XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry>(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_country"), "Designation", "Oid", _intialValueConfigurationCountry, criteriaOperatorCustomerCountry, LogicPOS.Utility.RegexUtils.RegexGuid, true);
+            EntryBoxSelectCustomerCountry = new XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry>(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_country"), "Designation", "Oid", _intialValueConfigurationCountry, criteriaOperatorCustomerCountry, LogicPOS.Utility.RegexUtils.RegexGuid, true);
             EntryBoxSelectCustomerCountry.EntryValidation.IsEditable = true;
             EntryBoxSelectCustomerCountry.EntryValidation.Validate(EntryBoxSelectCustomerCountry.Value.Oid.ToString());
             EntryBoxSelectCustomerCountry.ClosePopup += delegate
@@ -193,7 +194,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
             //Customer FiscalNumber
             CriteriaOperator criteriaOperatorCustomerFiscalNumber = null;
-            EntryBoxSelectCustomerFiscalNumber = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_fiscal_number"), "FiscalNumber", "FiscalNumber", null, criteriaOperatorCustomerFiscalNumber, KeyboardMode.AlfaNumeric, EntryBoxSelectCustomerCountry.Value.RegExFiscalNumber, true);
+            EntryBoxSelectCustomerFiscalNumber = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_fiscal_number"), "FiscalNumber", "FiscalNumber", null, criteriaOperatorCustomerFiscalNumber, KeyboardMode.AlfaNumeric, EntryBoxSelectCustomerCountry.Value.RegExFiscalNumber, true);
             EntryBoxSelectCustomerFiscalNumber.ClosePopup += delegate
             {
                 if (EntryBoxSelectCustomerFiscalNumber.EntryValidation.Validated) GetCustomerDetails("FiscalNumber", EntryBoxSelectCustomerFiscalNumber.EntryValidation.Text);
@@ -205,7 +206,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             CriteriaOperator criteriaOperatorCustomerCardNumber = null;
             EntryBoxSelectCustomerCardNumber = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(
                 _sourceWindow, 
-                resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_card_number"), 
+                resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_card_number"), 
                 "CardNumber", 
                 "CardNumber", 
                 null, 
@@ -223,28 +224,28 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //Customer Discount
             EntryBoxCustomerDiscount = new EntryBoxValidation(
                 _sourceWindow, 
-                resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_discount"),
+                resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_discount"),
                 KeyboardMode.Alfa, 
                 LogicPOS.Utility.RegexUtils.RegexPercentage, 
                 true);
 
-            EntryBoxCustomerDiscount.EntryValidation.Text = SharedUtils.DecimalToString(0.0m);
+            EntryBoxCustomerDiscount.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.DecimalToString(0.0m);
             EntryBoxCustomerDiscount.EntryValidation.Changed += _entryBoxCustomerDiscount_Changed;
             EntryBoxCustomerDiscount.EntryValidation.FocusOutEvent += delegate
             {
-                EntryBoxCustomerDiscount.EntryValidation.Text = SharedUtils.StringToDecimalAndToStringAgain(EntryBoxCustomerDiscount.EntryValidation.Text);
+                EntryBoxCustomerDiscount.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.StringToDecimalAndToStringAgain(EntryBoxCustomerDiscount.EntryValidation.Text);
             };
 
             //Customer Phone
-            EntryBoxCustomerPhone = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_phone"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false);
+            EntryBoxCustomerPhone = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_phone"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false);
             EntryBoxCustomerPhone.EntryValidation.Changed += delegate { Validate(); };
 
             //Customer Email
-            EntryBoxCustomerEmail = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_email"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexEmail, false);
+            EntryBoxCustomerEmail = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_email"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexEmail, false);
             EntryBoxCustomerEmail.EntryValidation.Changed += delegate { Validate(); };
 
             //Customer Notes
-            EntryBoxCustomerNotes = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_notes"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false);
+            EntryBoxCustomerNotes = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_notes"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false);
             EntryBoxCustomerNotes.EntryValidation.Changed += delegate { Validate(); };
 
             //HBox ZipCode+City+Country
@@ -410,7 +411,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
                 if (pFieldValue != string.Empty)
                 {
-                    customerGuid = SharedUtils.GetGuidFromQuery(sql);
+                    customerGuid = XPOHelper.GetGuidFromQuery(sql);
                 }
 
                 //Assign pagePad.Customer Reference
@@ -448,7 +449,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                     EntryBoxSelectCustomerCountry.Value = _pagePad.Customer.Country;
                     EntryBoxSelectCustomerCountry.EntryValidation.Text = (_pagePad.Customer.Country == null) ? string.Empty : _pagePad.Customer.Country.Designation;
                     EntryBoxSelectCustomerCountry.EntryValidation.Validate(EntryBoxSelectCustomerCountry.Value.Oid.ToString());
-                    EntryBoxCustomerDiscount.EntryValidation.Text = (_pagePad.Customer.Discount <= 0.0m) ? SharedUtils.DecimalToString(0.0m) : SharedUtils.DecimalToString(_pagePad.Customer.Discount);
+                    EntryBoxCustomerDiscount.EntryValidation.Text = (_pagePad.Customer.Discount <= 0.0m) ? LogicPOS.Utility.DataConversionUtils.DecimalToString(0.0m) : LogicPOS.Utility.DataConversionUtils.DecimalToString(_pagePad.Customer.Discount);
                     //Require to Update RegEx
                     EntryBoxSelectCustomerFiscalNumber.EntryValidation.Rule = _pagePad.Customer.Country.RegExFiscalNumber;
 
@@ -526,7 +527,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                     //_entryBoxSelectCustomerCountry.Value = _intialValueConfigurationCountry;
                     //_entryBoxSelectCustomerCountry.EntryValidation.Text = _intialValueConfigurationCountry.Designation;
                     EntryBoxSelectCustomerCountry.EntryValidation.Validate(EntryBoxSelectCustomerCountry.Value.Oid.ToString());
-                    EntryBoxCustomerDiscount.EntryValidation.Text = SharedUtils.DecimalToString(0.0m);
+                    EntryBoxCustomerDiscount.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.DecimalToString(0.0m);
 
                     switch (pFieldName)
                     {
@@ -607,7 +608,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                     EntryBoxSelectCustomerCountry.Value = _intialValueConfigurationCountry;
                     EntryBoxSelectCustomerCountry.EntryValidation.Text = _intialValueConfigurationCountry.Designation;
                 }
-                EntryBoxCustomerDiscount.EntryValidation.Text = SharedUtils.DecimalToString(0.0m);
+                EntryBoxCustomerDiscount.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.DecimalToString(0.0m);
                 EntryBoxSelectCustomerFiscalNumber.Value = null;
                 EntryBoxSelectCustomerFiscalNumber.EntryValidation.Text = string.Empty;
                 EntryBoxSelectCustomerCardNumber.Value = null;
@@ -664,7 +665,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                     fiscalNumberFilterValue = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Encrypt(EntryBoxSelectCustomerFiscalNumber.EntryValidation.Text);
                 }
                 string sql = string.Format("SELECT Oid FROM erp_customer WHERE FiscalNumber = '{0}' AND (Hidden IS NULL OR Hidden = 0);", fiscalNumberFilterValue);
-                Guid customerGuid = SharedUtils.GetGuidFromQuery(sql);
+                Guid customerGuid = XPOHelper.GetGuidFromQuery(sql);
                 erp_customer customer = (customerGuid != Guid.Empty) ? (erp_customer)DataLayerUtils.GetXPGuidObject(typeof(erp_customer), customerGuid) : null;
 
                 if (_pagePad1.EntryBoxSelectDocumentFinanceType.Value != null)

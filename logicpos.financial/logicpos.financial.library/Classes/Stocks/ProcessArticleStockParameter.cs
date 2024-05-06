@@ -59,7 +59,7 @@ namespace logicpos.financial.library.Classes.Stocks
         public ProcessArticleStockParameter()  { }
         public ProcessArticleStockParameter(erp_customer pCustomer, DateTime pDocumentDate, string pDocumentNumber, Dictionary<fin_article, Tuple<decimal, Dictionary<string, List<fin_articleserialnumber>>, decimal,fin_warehouselocation>> pArticleCollection, decimal pQuantity, string pNotes, byte[] pAttachedFile)
         {
-            //if (pCustomer.Oid == Guid.Parse("00000000-0000-0000-0000-000000000002") && string.IsNullOrEmpty(_documentNumber)) pDocumentNumber = resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_internal_document_footer1");
+            //if (pCustomer.Oid == Guid.Parse("00000000-0000-0000-0000-000000000002") && string.IsNullOrEmpty(_documentNumber)) pDocumentNumber = resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_internal_document_footer1");
             Customer = pCustomer;
             _documentDate = pDocumentDate;
             DocumentNumber = pDocumentNumber;

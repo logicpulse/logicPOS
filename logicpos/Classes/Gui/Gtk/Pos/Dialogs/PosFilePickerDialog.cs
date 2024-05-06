@@ -3,9 +3,9 @@ using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.App;
-using logicpos.shared.App;
 using System.Drawing;
 using System.IO;
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -38,7 +38,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _fileChooserAction = pFileChooserAction;
 
             //Init Local Vars
-            string windowTitle = string.Format("{0} {1}", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_filepicker"), windowName);
+            string windowTitle = string.Format("{0} {1}", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_filepicker"), windowName);
             _windowSize = new Size(700, 473);
             string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_select_record.png";
 

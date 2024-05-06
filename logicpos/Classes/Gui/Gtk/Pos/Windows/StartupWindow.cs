@@ -53,10 +53,10 @@ namespace logicpos
             try
             {
                 //Get ConfigurationPreferenceParameter Values to Check if Plataform is Inited
-                cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCountryOid = (SharedUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY_OID")) as cfg_configurationpreferenceparameter);
-                cfg_configurationpreferenceparameter configurationPreferenceParameterSystemCurrencyOid = (SharedUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "SYSTEM_CURRENCY_OID")) as cfg_configurationpreferenceparameter);
-                cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCountryCode2 = (SharedUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY_CODE2")) as cfg_configurationpreferenceparameter);
-                cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyFiscalNumber = (SharedUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_FISCALNUMBER")) as cfg_configurationpreferenceparameter);
+                cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCountryOid = (XPOHelper.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY_OID")) as cfg_configurationpreferenceparameter);
+                cfg_configurationpreferenceparameter configurationPreferenceParameterSystemCurrencyOid = (XPOHelper.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "SYSTEM_CURRENCY_OID")) as cfg_configurationpreferenceparameter);
+                cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCountryCode2 = (XPOHelper.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY_CODE2")) as cfg_configurationpreferenceparameter);
+                cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyFiscalNumber = (XPOHelper.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_FISCALNUMBER")) as cfg_configurationpreferenceparameter);
 
                 if (
                     string.IsNullOrEmpty(configurationPreferenceParameterCompanyCountryOid.Value) ||
@@ -71,8 +71,8 @@ namespace logicpos
                 }
 
                 //Always Get Objects from Prefs to Singleton : with and without PosEditCompanyDetails
-                configurationPreferenceParameterCompanyCountryOid = (SharedUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY_OID")) as cfg_configurationpreferenceparameter);
-                configurationPreferenceParameterSystemCurrencyOid = (SharedUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "SYSTEM_CURRENCY_OID")) as cfg_configurationpreferenceparameter);
+                configurationPreferenceParameterCompanyCountryOid = (XPOHelper.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY_OID")) as cfg_configurationpreferenceparameter);
+                configurationPreferenceParameterSystemCurrencyOid = (XPOHelper.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "SYSTEM_CURRENCY_OID")) as cfg_configurationpreferenceparameter);
                 DataLayerSettings.ConfigurationSystemCountry = (cfg_configurationcountry)XPOSettings.Session.GetObjectByKey(typeof(cfg_configurationcountry), new Guid(configurationPreferenceParameterCompanyCountryOid.Value));
                 SharedSettings.ConfigurationSystemCurrency = (cfg_configurationcurrency)XPOSettings.Session.GetObjectByKey(typeof(cfg_configurationcurrency), new Guid(configurationPreferenceParameterSystemCurrencyOid.Value));
 
@@ -233,7 +233,7 @@ namespace logicpos
                     }
                     else
                     {
-                        appVersion = string.Format(SharedSettings.AppSoftwareVersionFormat, SharedUtils.ProductVersion);
+                        appVersion = string.Format(LogicPOS.Settings.PluginSettings.AppSoftwareVersionFormat, SharedUtils.ProductVersion);
                     }
                     Label labelVersion = new Label(appVersion);
                     Pango.FontDescription fontDescLabelVersion = Pango.FontDescription.FromString(labelVersionFont);
@@ -667,7 +667,7 @@ namespace logicpos
             //Get BarCode Input
 
             //logicpos.Utils.ResponseText dialogResponse;
-            //dialogResponse = Utils.GetInputText(this, DialogFlags.Modal, resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_barcode, string.Empty, SettingsApp.RegexInteger, true);
+            //dialogResponse = Utils.GetInputText(this, DialogFlags.Modal, resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_barcode, string.Empty, SettingsApp.RegexInteger, true);
             //if (dialogResponse.ResponseType == ResponseType.Ok)
             //{
             //    _logger.Debug(String.Format("BarCode: [{0}]", dialogResponse.Text));

@@ -10,6 +10,7 @@ using logicpos.shared.App;
 using logicpos.shared.Classes.Finance;
 using logicpos.shared.Classes.Orders;
 using System;
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -106,9 +107,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     fin_configurationpaymentmethod paymentMethod = (fin_configurationpaymentmethod)DataLayerUtils.GetXPGuidObject(typeof(fin_configurationpaymentmethod), processFinanceDocumentParameter.PaymentMethod);
                     cfg_configurationcurrency currency = (cfg_configurationcurrency)DataLayerUtils.GetXPGuidObject(typeof(cfg_configurationcurrency), processFinanceDocumentParameter.Currency);
                     // Compose labelPaymentDetails
-                    string totalFinal = SharedUtils.DecimalToStringCurrency(processFinanceDocumentParameter.ArticleBag.TotalFinal, currency.Acronym);
-                    string totalDelivery = SharedUtils.DecimalToStringCurrency(processFinanceDocumentParameter.TotalDelivery, currency.Acronym);
-                    string totalChange = SharedUtils.DecimalToStringCurrency(processFinanceDocumentParameter.TotalChange, currency.Acronym);
+                    string totalFinal = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(processFinanceDocumentParameter.ArticleBag.TotalFinal, currency.Acronym);
+                    string totalDelivery = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(processFinanceDocumentParameter.TotalDelivery, currency.Acronym);
+                    string totalChange = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(processFinanceDocumentParameter.TotalChange, currency.Acronym);
                     string moneyExtra = (paymentMethod.Token.Equals("MONEY")) ? $" : ({totalDelivery}/{totalChange})" : string.Empty;
                     // Override default labelPaymentDetails
                     labelPaymentDetails = $"{customer.Name} : {paymentMethod.Designation} : {totalFinal}{moneyExtra}";
@@ -289,8 +290,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     UpdateTouchButtonSplitPaymentLabels(item);
 
                     // Update Window Title
-                    //if (WindowTitle != null) WindowTitle = string.Format(resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_split_payment, numberOfSplits, SharedUtils.DecimalToStringCurrency(totalFinal));
-                    if (WindowTitle != null) WindowTitle = string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_split_payment"), numberOfSplits, SharedUtils.DecimalToStringCurrency(_totalPerSplit));
+                    //if (WindowTitle != null) WindowTitle = string.Format(resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_split_payment, numberOfSplits, LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(totalFinal));
+                    if (WindowTitle != null) WindowTitle = string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_split_payment"), numberOfSplits, LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_totalPerSplit, SharedSettings.ConfigurationSystemCurrency.Acronym));
                 }
             }
             catch (Exception ex)
@@ -314,7 +315,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     if (item.ProcessFinanceDocumentParameter != null)
                     {
                         if (debug) _logger.Debug(string.Format("TotalFinal: [#{0}]:[{1}]", i,
-                            SharedUtils.DecimalToStringCurrency(item.ProcessFinanceDocumentParameter.ArticleBag.TotalFinal).PadLeft(padLeftChars, ' ')
+                            LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(item.ProcessFinanceDocumentParameter.ArticleBag.TotalFinal, SharedSettings.ConfigurationSystemCurrency.Acronym).PadLeft(padLeftChars, ' ')
                         ));
 
                         // PersistFinanceDocument
@@ -375,9 +376,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //Arredondamento de valores na divisão de contas gera perdas no valor e quantidade [IN:005944]
                 //if (_articleBag.TotalFinal < checkTotal * _splitPaymentButtons.Count && touchButtonSplitPayment == _splitPaymentButtons[_splitPaymentButtons.Count - 1])
                 //{
-                //    var totalPSplit = Convert.ToDecimal(SharedUtils.DecimalToString(checkTotal));
-                //    var totalPTotal = Convert.ToDecimal(SharedUtils.DecimalToString(_articleBag.TotalFinal));
-                //    var missingRoundPayment = Convert.ToDecimal(SharedUtils.DecimalToString(totalPTotal - (totalPSplit * _splitPaymentButtons.Count)));
+                //    var totalPSplit = Convert.ToDecimal(LogicPOS.Utility.DataConversionUtils.DecimalToString(checkTotal));
+                //    var totalPTotal = Convert.ToDecimal(LogicPOS.Utility.DataConversionUtils.DecimalToString(_articleBag.TotalFinal));
+                //    var missingRoundPayment = Convert.ToDecimal(LogicPOS.Utility.DataConversionUtils.DecimalToString(totalPTotal - (totalPSplit * _splitPaymentButtons.Count)));
 
                 //    touchButtonSplitPayment.ArticleBag.TotalFinal += missingRoundPayment;
                 //    //if(missingRoundPayment > 0)

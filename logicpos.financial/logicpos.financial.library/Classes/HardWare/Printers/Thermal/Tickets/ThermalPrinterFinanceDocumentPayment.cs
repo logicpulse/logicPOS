@@ -1,5 +1,4 @@
-﻿using logicpos.datalayer.App;
-using logicpos.datalayer.DataLayer.Xpo;
+﻿using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.financial.library.Classes.Finance;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Enums;
 using logicpos.financial.library.Classes.Reports.BOs;
@@ -8,6 +7,7 @@ using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 {
@@ -85,10 +85,10 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             {
                 List<TicketColumn> columns = new List<TicketColumn>
                 {
-                    new TicketColumn("DocumentDate", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_date"), 11, TicketColumnsAlign.Left),
-                    new TicketColumn("DocumentNumber", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_document_number_acronym"), 0, TicketColumnsAlign.Left),
-                    new TicketColumn("DocumentTotal", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_document_total"), 10, TicketColumnsAlign.Right, typeof(decimal), "{0:00.00}"),
-                    new TicketColumn("TotalPayed", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_total_payed_acronym"), 10, TicketColumnsAlign.Right, typeof(decimal), "{0:00.00}"),
+                    new TicketColumn("DocumentDate", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_date"), 11, TicketColumnsAlign.Left),
+                    new TicketColumn("DocumentNumber", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_document_number_acronym"), 0, TicketColumnsAlign.Left),
+                    new TicketColumn("DocumentTotal", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_document_total"), 10, TicketColumnsAlign.Right, typeof(decimal), "{0:00.00}"),
+                    new TicketColumn("TotalPayed", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_total_payed_acronym"), 10, TicketColumnsAlign.Right, typeof(decimal), "{0:00.00}"),
                     new TicketColumn("Payed", "L", 1, TicketColumnsAlign.Right, typeof(bool))
                 };
                 //Prepare Table with Padding
@@ -133,7 +133,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 dataRow[0] = pFinancePaymentDocument.DocumentDate;
                 dataRow[1] = pFinancePaymentDocument.DocumentNumber;
                 //dataRow[2] = (item.CreditAmount > 0 && item.DocumentTotal > item.CreditAmount) 
-                //    ? SharedUtils.DecimalToString((item.DocumentTotal - item.CreditAmount) * _documentFinancePayment.ExchangeRate)
+                //    ? LogicPOS.Utility.DataConversionUtils.DecimalToString((item.DocumentTotal - item.CreditAmount) * _documentFinancePayment.ExchangeRate)
                 //    : string.Empty;
                 dataRow[2] = pFinancePaymentDocument.DocumentTotal * _documentFinancePayment.ExchangeRate;
                 dataRow[3] = pFinancePaymentDocument.CreditAmount * _documentFinancePayment.ExchangeRate;
@@ -163,8 +163,8 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 
                 //Add Row : TotalFinal
                 dataRow = dataTable.NewRow();
-                dataRow[0] = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_total");
-                dataRow[1] = SharedUtils.DecimalToString(_documentFinancePaymentList[0].PaymentAmount * _documentFinancePaymentList[0].ExchangeRate);
+                dataRow[0] = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_total");
+                dataRow[1] = LogicPOS.Utility.DataConversionUtils.DecimalToString(_documentFinancePaymentList[0].PaymentAmount * _documentFinancePaymentList[0].ExchangeRate);
                 dataTable.Rows.Add(dataRow);
 
                 //Configure Ticket Column Properties
@@ -202,7 +202,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 }
 
                 //ExtendedValue
-                _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_total_extended_label"), WriteLineTextMode.Bold);
+                _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_total_extended_label"), WriteLineTextMode.Bold);
                 _thermalPrinterGeneric.WriteLine(extended);
 
                 //Line Feed

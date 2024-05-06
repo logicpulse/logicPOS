@@ -5,9 +5,9 @@ using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.App;
 using logicpos.Extensions;
-using logicpos.shared.App;
 using System;
 using System.Drawing;
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {
@@ -99,14 +99,14 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             //}
 
             //Initialize Buttons     
-            ButtonPrevRecord = GetNewButton("touchButtonPrev_DialogActionArea", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_record_prev"), @"Icons/icon_pos_nav_prev.png");
-            ButtonNextRecord = GetNewButton("touchButtonNext_DialogActionArea", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_record_next"), @"Icons/icon_pos_nav_next.png");
-            ButtonInsert = GetNewButton("touchButtonInsert_DialogActionArea", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_insert"), @"Icons/icon_pos_nav_new.png");
-            ButtonView = GetNewButton("touchButtonView_DialogActionArea", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_view"), @"Icons/icon_pos_nav_view.png");
-            ButtonUpdate = GetNewButton("touchButtonUpdate_DialogActionArea", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_update"), @"Icons/icon_pos_nav_update.png");
-            ButtonDelete = GetNewButton("touchButtonDelete_DialogActionArea", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_delete"), @"Icons/icon_pos_nav_delete.png");
-            ButtonRefresh = GetNewButton("touchButtonRefresh_DialogActionArea", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_refresh"), @"Icons/icon_pos_nav_refresh.png");
-            //_buttonClose = GetNewButton("touchButtonPosToolbarApplicationClose_Red", resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_pos, @"Icons/icon_pos_toolbar_application_close.png");
+            ButtonPrevRecord = GetNewButton("touchButtonPrev_DialogActionArea", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "widget_generictreeviewnavigator_record_prev"), @"Icons/icon_pos_nav_prev.png");
+            ButtonNextRecord = GetNewButton("touchButtonNext_DialogActionArea", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "widget_generictreeviewnavigator_record_next"), @"Icons/icon_pos_nav_next.png");
+            ButtonInsert = GetNewButton("touchButtonInsert_DialogActionArea", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "widget_generictreeviewnavigator_insert"), @"Icons/icon_pos_nav_new.png");
+            ButtonView = GetNewButton("touchButtonView_DialogActionArea", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "widget_generictreeviewnavigator_view"), @"Icons/icon_pos_nav_view.png");
+            ButtonUpdate = GetNewButton("touchButtonUpdate_DialogActionArea", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "widget_generictreeviewnavigator_update"), @"Icons/icon_pos_nav_update.png");
+            ButtonDelete = GetNewButton("touchButtonDelete_DialogActionArea", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "widget_generictreeviewnavigator_delete"), @"Icons/icon_pos_nav_delete.png");
+            ButtonRefresh = GetNewButton("touchButtonRefresh_DialogActionArea", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "widget_generictreeviewnavigator_refresh"), @"Icons/icon_pos_nav_refresh.png");
+            //_buttonClose = GetNewButton("touchButtonPosToolbarApplicationClose_Red", resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_pos, @"Icons/icon_pos_toolbar_application_close.png");
 
             //Events
             //GenericTreeView : Shared

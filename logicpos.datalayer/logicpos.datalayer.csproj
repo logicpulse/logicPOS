@@ -58,8 +58,6 @@
     <Compile Include="DataLayer\Xpo\Documents\VIEW_ViewDocumentFinancePaymentTotals.cs" />
     <Compile Include="DataLayer\Xpo\System\SYS_SystemNotificationDocumentMaster.cs" />
     <Compile Include="DataLayer\Xpo\XPGuidObjectAttribute.cs" />
-    <Compile Include="Enums\AppOperationMode.cs" />
-    <Compile Include="Enums\DatabaseType.cs" />
     <Compile Include="Enums\OrderStatus.cs" />
     <Compile Include="Enums\PreferenceParameterInputType.cs" />
     <Compile Include="Enums\PriceType.cs" />
@@ -156,6 +154,10 @@
     <ProjectReference Include="..\LogicPOS.Settings\LogicPOS.Settings.csproj">
       <Project>{a4e7f0ea-8360-41f2-a625-517f6e943a29}</Project>
       <Name>LogicPOS.Settings</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LogicPOS.Utility\LogicPOS.Utility.csproj">
+      <Project>{18488ce5-c06f-40f5-9339-0467a47d7985}</Project>
+      <Name>LogicPOS.Utility</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

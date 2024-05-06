@@ -1,23 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos.shared.App
 {
-    /// <summary>
-    /// Enum for DocumentTypes and their details:
-    /// TRANSPORT_DOCUMENT
-    /// CREDIT_SLIP       
-    /// DELIVERY_NOTE     
-    /// </summary>
     public class DocumentType
     {
         //Log4Net
         private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static readonly DocumentType TRANSPORT_DOCUMENT = new DocumentType(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_documentfinance_type_title_gt"), SharedSettings.XpoOidDocumentFinanceTypeTransportationGuide, Enums.DocumentType.WayBill, "GT", false, true, 0, true, true, true, 2, false);
-        public static readonly DocumentType CREDIT_SLIP = new DocumentType(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_documentfinance_type_title_nc"), SharedSettings.XpoOidDocumentFinanceTypeCreditNote, Enums.DocumentType.Invoice, "NC", false, false, 1, false, true, true, 1, false);
-        public static readonly DocumentType DELIVERY_NOTE = new DocumentType(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_documentfinance_type_title_gr"), SharedSettings.XpoOidDocumentFinanceTypeDeliveryNote, Enums.DocumentType.WayBill, "GR", false, true, 0, true, true, true, 2, false);
+        public static readonly DocumentType TRANSPORT_DOCUMENT = new DocumentType(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_type_title_gt"), SharedSettings.XpoOidDocumentFinanceTypeTransportationGuide, Enums.DocumentType.WayBill, "GT", false, true, 0, true, true, true, 2, false);
+        public static readonly DocumentType CREDIT_SLIP = new DocumentType(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_type_title_nc"), SharedSettings.XpoOidDocumentFinanceTypeCreditNote, Enums.DocumentType.Invoice, "NC", false, false, 1, false, true, true, 1, false);
+        public static readonly DocumentType DELIVERY_NOTE = new DocumentType(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_type_title_gr"), SharedSettings.XpoOidDocumentFinanceTypeDeliveryNote, Enums.DocumentType.WayBill, "GR", false, true, 0, true, true, true, 2, false);
 
         public static IEnumerable<DocumentType> Values
         {
@@ -31,7 +26,7 @@ namespace logicpos.shared.App
 
         public string Designation { get; private set; }
         public Guid Oid { get; private set; }
-        public logicpos.shared.Enums.DocumentType DocumentTypeGlobal { get; private set; }
+        public Enums.DocumentType DocumentTypeGlobal { get; private set; }
         public string Acronym { get; private set; }
         public bool Payed { get; private set; }
         public bool Credit { get; private set; }
@@ -42,13 +37,20 @@ namespace logicpos.shared.App
         public int SaftDocumentType { get; private set; }
         public bool StockMode { get; private set; }
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="designation"></param>
-        /// <param name="oid"></param>
-        /// <param name="documentTypeGlobal"></param>
-        private DocumentType(string designation, Guid oid, logicpos.shared.Enums.DocumentType documentTypeGlobal, string acronym, bool payed, bool credit, int creditDebit, bool wayBill, bool wsAtDocument, bool saftAuditFile, int saftDocumentType, bool stockMode)
+
+        private DocumentType(
+            string designation,
+            Guid oid,
+            Enums.DocumentType documentTypeGlobal, 
+            string acronym, 
+            bool payed, 
+            bool credit, 
+            int creditDebit, 
+            bool wayBill, 
+            bool wsAtDocument, 
+            bool saftAuditFile, 
+            int saftDocumentType, 
+            bool stockMode)
         {
             Designation = designation;
             Oid = oid;
@@ -64,11 +66,6 @@ namespace logicpos.shared.App
             StockMode = stockMode;
         }
 
-        /// <summary>
-        /// Returns the DocumentType based on oid passed as parameter.
-        /// </summary>
-        /// <param name="oid"></param>
-        /// <returns></returns>
         public static DocumentType GetDocumentTypeByOid(Guid oid)
         {
             var documentType = Values.FirstOrDefault(documentT => documentT.Oid.Equals(oid));

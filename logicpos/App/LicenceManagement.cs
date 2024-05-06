@@ -1,6 +1,4 @@
-﻿using logicpos.shared.App;
-
-namespace logicpos.App
+﻿namespace logicpos.App
 {
     internal class LicenceManagement
     {

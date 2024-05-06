@@ -428,7 +428,7 @@ namespace logicpos.financial.library.Classes.Finance
                         new ProcessFinanceDocumentValidationField("ShipTo.Country", (pParameters.ShipTo != null) ? pParameters.ShipTo.CountryGuid : Guid.Empty, LogicPOS.Utility.RegexUtils.RegexGuid, requiredWayBillModeFields)
                     );
                     _fields.Add(FinanceValidationError.ERROR_FIELD_SHIPTO_DELIVERYDATE_INVALID,
-                        new ProcessFinanceDocumentValidationField("ShipTo.DeliveryDate", (pParameters.ShipTo != null && pParameters.ShipTo.DeliveryDate != DateTime.MinValue) ? pParameters.ShipTo.DeliveryDate.ToString(SharedSettings.DateTimeFormat) : string.Empty, LogicPOS.Utility.RegexUtils.RegexDateTime, requiredWayBillModeFields)
+                        new ProcessFinanceDocumentValidationField("ShipTo.DeliveryDate", (pParameters.ShipTo != null && pParameters.ShipTo.DeliveryDate != DateTime.MinValue) ? pParameters.ShipTo.DeliveryDate.ToString(LogicPOS.Settings.CultureSettings.DateTimeFormat) : string.Empty, LogicPOS.Utility.RegexUtils.RegexDateTime, requiredWayBillModeFields)
                     );
                     _fields.Add(FinanceValidationError.ERROR_FIELD_SHIPTO_DELIVERYID_INVALID,
                         new ProcessFinanceDocumentValidationField("ShipTo.DeliveryID", (pParameters.ShipTo != null) ? pParameters.ShipTo.DeliveryID : string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false)
@@ -459,7 +459,7 @@ namespace logicpos.financial.library.Classes.Finance
                         new ProcessFinanceDocumentValidationField("ShipFrom.Country", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.CountryGuid : Guid.Empty, LogicPOS.Utility.RegexUtils.RegexGuid, requiredWayBillModeFields)
                     );
                     _fields.Add(FinanceValidationError.ERROR_FIELD_SHIPFROM_DELIVERYDATE_INVALID,
-                        new ProcessFinanceDocumentValidationField("ShipFrom.DeliveryDate", (pParameters.ShipFrom != null && pParameters.ShipFrom.DeliveryDate != DateTime.MinValue) ? pParameters.ShipFrom.DeliveryDate.ToString(SharedSettings.DateTimeFormat) : string.Empty, LogicPOS.Utility.RegexUtils.RegexDateTime, requiredWayBillModeFields)
+                        new ProcessFinanceDocumentValidationField("ShipFrom.DeliveryDate", (pParameters.ShipFrom != null && pParameters.ShipFrom.DeliveryDate != DateTime.MinValue) ? pParameters.ShipFrom.DeliveryDate.ToString(LogicPOS.Settings.CultureSettings.DateTimeFormat) : string.Empty, LogicPOS.Utility.RegexUtils.RegexDateTime, requiredWayBillModeFields)
                     );
                     _fields.Add(FinanceValidationError.ERROR_FIELD_SHIPFROM_DELIVERYID_INVALID,
                         new ProcessFinanceDocumentValidationField("ShipFrom.DeliveryID", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.DeliveryID : string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false)
@@ -952,7 +952,7 @@ namespace logicpos.financial.library.Classes.Finance
 
                 //Calc Diferences
                 totalDocumentsDiference = (totalInvoicesDebit - totalCreditNotes);
-                totalPaymentDiference = Math.Round(totalDocumentsDiference - paymentAmount, SharedSettings.DecimalRoundTo);
+                totalPaymentDiference = Math.Round(totalDocumentsDiference - paymentAmount, LogicPOS.Settings.CultureSettings.DecimalRoundTo);
 
                 if (_debug) _logger.Debug(string.Format(
                     "PaymentAmount: [{0}], InvoicesDebit: [{1}], CreditNotes: [{2}], DocumentsDiference: [{3}], PaymentDiference:[{4}]",

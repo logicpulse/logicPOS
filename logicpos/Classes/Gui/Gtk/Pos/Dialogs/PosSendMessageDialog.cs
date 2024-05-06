@@ -2,9 +2,8 @@
 using Gtk;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
-using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.shared.App;
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -20,20 +19,20 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         public PosSendMessageDialog(Window pSourceWindow, DialogFlags pDialogFlags, string pWindowIcon)
         //public PosInputTextDialog(Window pSourceWindow, DialogFlags pDialogFlags, string pWindowTitle, string pEntryLabel, string pDefaultValue, string pRule, bool pRequired)            
-            : base(pSourceWindow, pDialogFlags, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_send_message"), pWindowIcon, "Label", "Default", LogicPOS.Utility.RegexUtils.RegexAlfaNumericEmail, true)
+            : base(pSourceWindow, pDialogFlags, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_send_message"), pWindowIcon, "Label", "Default", LogicPOS.Utility.RegexUtils.RegexAlfaNumericEmail, true)
         {
             this.HeightRequest = 320;
 
             //UserDetail
             CriteriaOperator criteriaOperatorUser = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1)");
-            _entryBoxSelectUser = new XPOEntryBoxSelectRecordValidation<sys_userdetail, TreeViewUser>(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_user"), "Designation", "Oid", ValueUser, criteriaOperatorUser, LogicPOS.Utility.RegexUtils.RegexGuid, false);
+            _entryBoxSelectUser = new XPOEntryBoxSelectRecordValidation<sys_userdetail, TreeViewUser>(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_user"), "Designation", "Oid", ValueUser, criteriaOperatorUser, LogicPOS.Utility.RegexUtils.RegexGuid, false);
             _entryBoxSelectUser.EntryValidation.IsEditable = false;
             //Public Reference
             ValueUser = _entryBoxSelectUser.Value;
 
             //Terminal
             CriteriaOperator criteriaOperatorTerminal = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1)");
-            _entryBoxSelectTerminal = new XPOEntryBoxSelectRecordValidation<pos_configurationplaceterminal, TreeViewConfigurationPlaceTerminal>(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_user"), "Designation", "Oid", ValueTerminal, criteriaOperatorTerminal, LogicPOS.Utility.RegexUtils.RegexGuid, false);
+            _entryBoxSelectTerminal = new XPOEntryBoxSelectRecordValidation<pos_configurationplaceterminal, TreeViewConfigurationPlaceTerminal>(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_user"), "Designation", "Oid", ValueTerminal, criteriaOperatorTerminal, LogicPOS.Utility.RegexUtils.RegexGuid, false);
             _entryBoxSelectTerminal.EntryValidation.IsEditable = false;
             //Public Reference
             ValueTerminal = _entryBoxSelectTerminal.Value;
@@ -47,7 +46,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             /*
             //Init Local Vars
-            String windowTitle = resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_send_message;
+            String windowTitle = resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_send_message;
             Size windowSize = new Size(600, 500);
             String fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_send_message.png");
 

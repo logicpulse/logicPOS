@@ -35,10 +35,10 @@ namespace LogicPOS.Settings
         {
             bool isDefaultAppOperationTheme = false;
 
-            if (AppOperationModeSettings.CustomAppOperationMode != null)
+            if (CustomAppOperationMode != null)
             {
                 isDefaultAppOperationTheme = CustomAppOperationMode.DEFAULT.AppOperationTheme.Equals(
-                    AppOperationModeSettings.CustomAppOperationMode.AppOperationTheme);
+                    CustomAppOperationMode.AppOperationTheme);
             }
 
             return isDefaultAppOperationTheme;

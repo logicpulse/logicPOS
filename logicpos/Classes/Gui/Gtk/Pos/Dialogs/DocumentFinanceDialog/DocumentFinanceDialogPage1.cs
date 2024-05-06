@@ -14,6 +14,7 @@ using logicpos.shared.App;
 using logicpos.shared.Classes.Finance;
 using System;
 using System.Data;
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 {
@@ -98,7 +99,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //DocumentFinanceType
             string documentFinanceTypeExtraCriteria = GetDocumentFinanceTypeExtraCriteria();
             CriteriaOperator criteriaOperatorDocumentFinanceType = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND ({0})", documentFinanceTypeExtraCriteria));
-            EntryBoxSelectDocumentFinanceType = new XPOEntryBoxSelectRecordValidation<fin_documentfinancetype, TreeViewDocumentFinanceType>(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_documentfinanceseries_documenttype"), "Designation", "Oid", _defaultValueDocumentFinanceType, criteriaOperatorDocumentFinanceType, LogicPOS.Utility.RegexUtils.RegexGuid, true);
+            EntryBoxSelectDocumentFinanceType = new XPOEntryBoxSelectRecordValidation<fin_documentfinancetype, TreeViewDocumentFinanceType>(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinanceseries_documenttype"), "Designation", "Oid", _defaultValueDocumentFinanceType, criteriaOperatorDocumentFinanceType, LogicPOS.Utility.RegexUtils.RegexGuid, true);
             //_entryBoxSelectDocumentFinanceType.EntryValidation.Changed += DocumentFinanceType_EntryValidation_Changed;//+= delegate { Validate(); };
             EntryBoxSelectDocumentFinanceType.EntryValidation.IsEditable = false;
             //Capture ClosePopup
@@ -106,7 +107,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
             //ConfigurationPaymentCondition
             CriteriaOperator criteriaOperatorConfigurationPaymentCondition = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1)");
-            EntryBoxSelectConfigurationPaymentCondition = new XPOEntryBoxSelectRecordValidation<fin_configurationpaymentcondition, TreeViewConfigurationPaymentCondition>(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_payment_condition"), "Designation", "Oid", _defaultValueConfigurationPaymentCondition, criteriaOperatorConfigurationPaymentCondition, LogicPOS.Utility.RegexUtils.RegexGuid, true);
+            EntryBoxSelectConfigurationPaymentCondition = new XPOEntryBoxSelectRecordValidation<fin_configurationpaymentcondition, TreeViewConfigurationPaymentCondition>(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_payment_condition"), "Designation", "Oid", _defaultValueConfigurationPaymentCondition, criteriaOperatorConfigurationPaymentCondition, LogicPOS.Utility.RegexUtils.RegexGuid, true);
             EntryBoxSelectConfigurationPaymentCondition.EntryValidation.Changed += delegate { Validate(); };
             EntryBoxSelectConfigurationPaymentCondition.EntryValidation.IsEditable = false;
 
@@ -154,7 +155,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 SharedSettings.XpoOidConfigurationPaymentMethodCurrentAccount.ToString(),
                 filterValidPaymentMethod));
             /* IN009142 - End */
-            EntryBoxSelectConfigurationPaymentMethod = new XPOEntryBoxSelectRecordValidation<fin_configurationpaymentmethod, TreeViewConfigurationPaymentMethod>(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_payment_method"), "Designation", "Oid", null, criteriaOperatorConfigurationPaymentMethod, LogicPOS.Utility.RegexUtils.RegexGuid, false);
+            EntryBoxSelectConfigurationPaymentMethod = new XPOEntryBoxSelectRecordValidation<fin_configurationpaymentmethod, TreeViewConfigurationPaymentMethod>(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_payment_method"), "Designation", "Oid", null, criteriaOperatorConfigurationPaymentMethod, LogicPOS.Utility.RegexUtils.RegexGuid, false);
             EntryBoxSelectConfigurationPaymentMethod.EntryValidation.Changed += delegate { Validate(); };
             EntryBoxSelectConfigurationPaymentMethod.EntryValidation.IsEditable = false;
             //Start Disabled and Validated
@@ -163,7 +164,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
             //ConfigurationCurrency
             CriteriaOperator criteriaOperatorConfigurationCurrency = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (ExchangeRate IS NOT NULL OR Oid = '{0}')", SharedSettings.ConfigurationSystemCurrency.Oid.ToString()));
-            EntryBoxSelectConfigurationCurrency = new XPOEntryBoxSelectRecordValidation<cfg_configurationcurrency, TreeViewConfigurationCurrency>(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_currency"), "Designation", "Oid", _defaultValueConfigurationCurrency, criteriaOperatorConfigurationCurrency, LogicPOS.Utility.RegexUtils.RegexGuid, false);
+            EntryBoxSelectConfigurationCurrency = new XPOEntryBoxSelectRecordValidation<cfg_configurationcurrency, TreeViewConfigurationCurrency>(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_currency"), "Designation", "Oid", _defaultValueConfigurationCurrency, criteriaOperatorConfigurationCurrency, LogicPOS.Utility.RegexUtils.RegexGuid, false);
             EntryBoxSelectConfigurationCurrency.EntryValidation.IsEditable = false;
             EntryBoxSelectConfigurationCurrency.EntryValidation.Changed += delegate
             {
@@ -182,7 +183,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
             //DocumentFinanceSource
             CriteriaOperator criteriaOperatorSourceDocumentFinance = GetDocumentFinanceTypeSourceDocumentCriteria();
-            EntryBoxSelectSourceDocumentFinance = new XPOEntryBoxSelectRecordValidation<fin_documentfinancemaster, TreeViewDocumentFinanceMaster>(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_source_finance_document"), "DocumentNumber", "Oid", null, criteriaOperatorSourceDocumentFinance, LogicPOS.Utility.RegexUtils.RegexGuid, false);
+            EntryBoxSelectSourceDocumentFinance = new XPOEntryBoxSelectRecordValidation<fin_documentfinancemaster, TreeViewDocumentFinanceMaster>(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_source_finance_document"), "DocumentNumber", "Oid", null, criteriaOperatorSourceDocumentFinance, LogicPOS.Utility.RegexUtils.RegexGuid, false);
             EntryBoxSelectSourceDocumentFinance.Name = "SourceDocument";
             EntryBoxSelectSourceDocumentFinance.EntryValidation.IsEditable = false;
             //Capture ClosePopup
@@ -190,17 +191,17 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
             //DocumentFinanceCopy
             CriteriaOperator criteriaOperatorCopyDocumentFinance = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1)");
-            EntryBoxSelectCopyDocumentFinance = new XPOEntryBoxSelectRecordValidation<fin_documentfinancemaster, TreeViewDocumentFinanceMaster>(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_copy_finance_document"), "DocumentNumber", "Oid", null, criteriaOperatorCopyDocumentFinance, LogicPOS.Utility.RegexUtils.RegexGuid, false);
+            EntryBoxSelectCopyDocumentFinance = new XPOEntryBoxSelectRecordValidation<fin_documentfinancemaster, TreeViewDocumentFinanceMaster>(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_copy_finance_document"), "DocumentNumber", "Oid", null, criteriaOperatorCopyDocumentFinance, LogicPOS.Utility.RegexUtils.RegexGuid, false);
             EntryBoxSelectCopyDocumentFinance.Name = "CopyDocument";
             EntryBoxSelectCopyDocumentFinance.EntryValidation.IsEditable = false;
             //Capture ClosePopup
             EntryBoxSelectCopyDocumentFinance.ClosePopup += _entryBoxSelectSourceDocumentFinance_ClosePopup;
 
             //Customer Notes
-            EntryBoxDocumentMasterNotes = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_notes"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false);
+            EntryBoxDocumentMasterNotes = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_notes"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false);
 
             //Reason
-            EntryBoxReason = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_reason"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtendedForMotive, false);
+            EntryBoxReason = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_reason"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtendedForMotive, false);
             EntryBoxReason.EntryValidation.Changed += delegate { Validate(); };
 
             // Fill Default Notes From DocumentFinanceType, usefull for IBANS and Other Custom/Generic Notes : After all Components ex entryBoxReason, else we trigger a NPE
@@ -633,9 +634,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                         //Show Message and Return
 						/* IN009241 */
                         string message = string.Format(
-                            resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_info_all_lines_from_this_document_was_already_credited"),
+                            resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_info_all_lines_from_this_document_was_already_credited"),
                             DocumentType.GetDocumentTypeByOid(oid).Designation, 
-                            resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_source_finance_document"), 
+                            resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_source_finance_document"), 
                             creditedDocuments);
 
                         logicpos.Utils.ShowMessageTouch(
@@ -643,7 +644,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                             new System.Drawing.Size(550, 450),
                             MessageType.Info,
                             ButtonsType.Close,
-                            resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_information"),
+                            resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_information"),
                             message);
 
                         return;
@@ -715,7 +716,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 _pagePad2.EntryBoxSelectCustomerCardNumber.EntryValidation.Text = (customer != null && customer.CardNumber != null && customer.CardNumber != string.Empty) ? customer.CardNumber : string.Empty;
                 _pagePad2.EntryBoxSelectCustomerCardNumber.EntryValidation.Validate();
                 //Page2:Discount - Remove from here, moved to bottom after construct ArticleBag to work with TotalDiscount
-                _pagePad2.EntryBoxCustomerDiscount.EntryValidation.Text = SharedUtils.DecimalToString(sourceDocument.Discount);
+                _pagePad2.EntryBoxCustomerDiscount.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.DecimalToString(sourceDocument.Discount);
 
                 /* IN009182 - adding missed customer details to NC */
                 _pagePad2.EntryBoxCustomerPhone.EntryValidation.Text = (customer.Phone != null) ? customer.Phone : string.Empty;

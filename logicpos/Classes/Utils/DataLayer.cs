@@ -1,9 +1,9 @@
 ﻿using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
 using logicpos.App;
-using logicpos.datalayer.App;
-using logicpos.datalayer.Enums;
 using logicpos.shared.App;
+using LogicPOS.Settings;
+using LogicPOS.Settings.Enums;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -32,7 +32,7 @@ namespace logicpos
                 bool result = false;
                 string xpoConnectionString = pXpoConnectionString;
                 DatabaseType databaseType = pDatabaseType;
-                string databaseTypeString = Enum.GetName(typeof(DatabaseType), DataLayerFramework.DatabaseType);
+                string databaseTypeString = Enum.GetName(typeof(DatabaseType), DatabaseSettings.DatabaseType);
                 string databaseName = pDatabaseName;
                 IDataLayer xpoDataLayer = null;
                 string sql = string.Empty;
@@ -54,7 +54,7 @@ namespace logicpos
                 string sqlDatabaseData = POSSettings.FileDatabaseData;
                 string sqlDatabaseDataDemo = POSSettings.FileDatabaseDataDemo;
                 string sqlDatabaseViews = POSSettings.FileDatabaseViews;
-                bool useDatabaseDataDemo = Convert.ToBoolean(LogicPOS.Settings.GeneralSettings.Settings["useDatabaseDataDemo"]);
+                bool useDatabaseDataDemo = Convert.ToBoolean(GeneralSettings.Settings["useDatabaseDataDemo"]);
 
                 string version = SharedUtils.ProductVersion.Replace("v", "");
                 //string version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
@@ -557,7 +557,7 @@ namespace logicpos
 
                                 string errorMessage = string.Format("bool ProcessDump(Session pXpoSession, string pFilename, string pCommandSeparator, Dictionary<string, string> pReplaceables) :: Error executing Sql Command: [{0}]{1}Exception: [{2}]", executeCommand, Environment.NewLine, ex.Message);
                                 log.Error(string.Format("{0} : {1}", errorMessage, ex.Message), ex);
-                                //Utils.ShowMessageTouch(null, DialogFlags.Modal, new Size(800, 400), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error"), errorMessage);
+                                //Utils.ShowMessageTouch(null, DialogFlags.Modal, new Size(800, 400), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"), errorMessage);
                                 /* IN009021 */
                                 //pXpoSession.RollbackTransaction();
                                 //return false;
@@ -670,7 +670,7 @@ namespace logicpos
         {
             string relatedDocumentsQuery = string.Empty;
 
-            switch (DataLayerFramework.DatabaseType)
+            switch (DatabaseSettings.DatabaseType)
             {
                 case DatabaseType.MySql:
                 case DatabaseType.SQLite:

@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace LogicPOS.Utility
@@ -100,9 +103,7 @@ namespace LogicPOS.Utility
             return (tmpText);
         }
 
-        public static string GetWords(
-            string text, 
-            int numWords)
+        public static string GetWords(string text, int numWords)
         {
             string result = string.Empty;
 
@@ -128,10 +129,7 @@ namespace LogicPOS.Utility
             return (result);
         }
 
-        public static int GetNumWords(
-            string text,
-            int minWordLengthConsidered
-            )
+        public static int GetNumWords(string text,int minWordLengthConsidered)
         {
             int result = 0;
             
@@ -151,6 +149,31 @@ namespace LogicPOS.Utility
             }
 
             return (result);
+        }
+
+        public static string StreamToString(Stream stream)
+        {
+            StreamReader reader = new StreamReader(stream);
+            return reader.ReadToEnd();
+        }
+
+        public static string MD5HashFile(string file)
+        {
+            MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
+            FileStream stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read, 8192);
+            md5.ComputeHash(stream);
+            stream.Close();
+
+            byte[] hash = md5.Hash;
+            StringBuilder sb = new StringBuilder();
+
+            foreach (byte b in hash)
+            {
+                sb.Append(string.Format("{0:X2}", b));
+            }
+            string result = sb.ToString().ToLower();
+
+            return result;
         }
     }
 }

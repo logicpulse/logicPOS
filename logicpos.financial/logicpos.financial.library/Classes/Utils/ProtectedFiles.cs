@@ -114,7 +114,7 @@ namespace logicpos.financial.library.Classes.Utils
                 string md5Encryptd = this[pKey].Md5Encrypted;
                 string md5FromMem = this[pKey].Md5;
                 //get Fresh Hash
-                string md5FromFile = SharedUtils.MD5HashFile(pKey);
+                string md5FromFile = LogicPOS.Utility.StringUtils.MD5HashFile(pKey);
                 //Check if created are equal to encrypted in memory, if false user change file after BootStrap
                 bool valid = SaltedString.ValidateSaltedString(md5Encryptd, md5FromFile);
                 //Update Protected File

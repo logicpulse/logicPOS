@@ -9,10 +9,10 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using logicpos.Classes.Enums.Dialogs;
-using logicpos.datalayer.App;
 using logicpos.shared.App;
 using logicpos.financial.library.App;
 using logicpos.datalayer.Xpo;
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -66,7 +66,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 if (_pagePad3.ArticleBag != null && _pagePad3.ArticleBag.Count > 0)
                 {
-                    ResponseType response = logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_message_dialog"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_finance_dialog_confirm_cancel"));
+                    ResponseType response = logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_message_dialog"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_finance_dialog_confirm_cancel"));
                     if (response == ResponseType.No)
                     {
                         //Keep Running
@@ -94,7 +94,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         public ArticleBag GetArticleBag()
         {
-            decimal customerDiscount = SharedUtils.StringToDecimal(_pagePad2.EntryBoxCustomerDiscount.EntryValidation.Text);
+            decimal customerDiscount = LogicPOS.Utility.DataConversionUtils.StringToDecimal(_pagePad2.EntryBoxCustomerDiscount.EntryValidation.Text);
             ArticleBag articleBag = new ArticleBag(customerDiscount);
             ArticleBagKey articleBagKey;
             ArticleBagProperties articleBagProps;
@@ -172,10 +172,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 PricePropertiesSourceMode.FromPriceUser,
                 false, //PriceWithVat : Always use PricesWithoutVat in Invoices
                 Convert.ToDecimal(item["PriceFinal"]),
-                SharedUtils.StringToDecimal(item["Quantity"].ToString()),
-                SharedUtils.StringToDecimal(item["Discount"].ToString()),
-                SharedUtils.StringToDecimal(customerDiscount.ToString()),
-                SharedUtils.StringToDecimal(configurationVatRate.Value.ToString())
+                LogicPOS.Utility.DataConversionUtils.StringToDecimal(item["Quantity"].ToString()),
+                LogicPOS.Utility.DataConversionUtils.StringToDecimal(item["Discount"].ToString()),
+                LogicPOS.Utility.DataConversionUtils.StringToDecimal(customerDiscount.ToString()),
+                LogicPOS.Utility.DataConversionUtils.StringToDecimal(configurationVatRate.Value.ToString())
             );
 
                 //Documentos - Arredondamentos de preço [IN:016536]
@@ -194,7 +194,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                   new Guid(item["Oid"].ToString()),
                   article.Designation,
                   Convert.ToDecimal(item["Price"]),     //Always use Price in DefaultCurrency
-                  SharedUtils.StringToDecimal(item["Discount"].ToString()),
+                  LogicPOS.Utility.DataConversionUtils.StringToDecimal(item["Discount"].ToString()),
                   configurationVatRate.Value,
                     //If has a Valid ConfigurationVatExemptionReason use it Else send New Guid
                   (configurationVatExemptionReason != null) ? configurationVatExemptionReason.Oid : new Guid()
@@ -212,7 +212,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if (!string.IsNullOrEmpty(item["SerialNumber"].ToString()))
                 {
                     articleBagProps.SerialNumber = item["SerialNumber"].ToString();
-                    articleBagProps.Notes += resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_serial_number") + ": " + item["SerialNumber"].ToString();
+                    articleBagProps.Notes += resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_serial_number") + ": " + item["SerialNumber"].ToString();
                 }
 
                 // Notes
@@ -261,7 +261,7 @@ _pagePad2.EntryBoxCustomerEmail.EntryValidation.Text,
                 _pagePad2.EntryBoxSelectCustomerCountry.Value,
                 _pagePad2.EntryBoxSelectCustomerFiscalNumber.EntryValidation.Text,
                 _pagePad2.EntryBoxSelectCustomerCardNumber.EntryValidation.Text,
-                SharedUtils.StringToDecimal(_pagePad2.EntryBoxCustomerDiscount.EntryValidation.Text),
+                LogicPOS.Utility.DataConversionUtils.StringToDecimal(_pagePad2.EntryBoxCustomerDiscount.EntryValidation.Text),
                 _pagePad2.EntryBoxCustomerNotes.EntryValidation.Text
             );
 
@@ -277,7 +277,7 @@ _pagePad2.EntryBoxCustomerEmail.EntryValidation.Text,
                 if (resultObject.GetType() == typeof(ConstraintViolationException))
                 {
                     Exception ex = (Exception)resultObject;
-                    ResponseType response = logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Warning, ButtonsType.Close, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_exception_error"), ex.InnerException.Message);
+                    ResponseType response = logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Warning, ButtonsType.Close, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_exception_error"), ex.InnerException.Message);
                 }
                 customer = null;
             }
@@ -421,11 +421,11 @@ _pagePad2.EntryBoxCustomerEmail.EntryValidation.Text,
                 )
                 {
                     logicpos.Utils.ShowMessageTouch(
-                        this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error"), 
+                        this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"), 
                         string.Format(
-                            resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_value_exceed_customer_card_credit"), 
-                            SharedUtils.DecimalToStringCurrency(_pagePad2.EntryBoxSelectCustomerName.Value.CardCredit), 
-                            SharedUtils.DecimalToStringCurrency(articleBag.TotalFinal)
+                            resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_value_exceed_customer_card_credit"), 
+                            LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_pagePad2.EntryBoxSelectCustomerName.Value.CardCredit, SharedSettings.ConfigurationSystemCurrency.Acronym), 
+                            LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(articleBag.TotalFinal, SharedSettings.ConfigurationSystemCurrency.Acronym)
                         )
                     );
                     result = false;
@@ -434,7 +434,7 @@ _pagePad2.EntryBoxCustomerEmail.EntryValidation.Text,
                 //Protection to Prevent Recharge Customer Card with Invalid User (User without Card or FinalConsumer...)
                 if (result && ! FinancialLibraryUtils.IsCustomerCardValidForArticleBag(articleBag, _pagePad2.EntryBoxSelectCustomerName.Value))
                 {
-                    logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_invalid_customer_card_detected"));
+                    logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_invalid_customer_card_detected"));
                     result = false;
                 }
             }

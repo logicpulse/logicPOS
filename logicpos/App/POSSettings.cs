@@ -1,8 +1,9 @@
 ﻿using logicpos.datalayer.App;
-using logicpos.shared.App;
+using LogicPOS.Settings;
 using System;
 using System.Collections.Generic;
 using static logicpos.datalayer.App.DataLayerFramework;
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos.App
 {
@@ -263,7 +264,7 @@ namespace logicpos.App
             {
                 /* IN008024 */
                 //logicpos.datalayer.Enums.CustomAppOperationMode customAppOperationMode = logicpos.datalayer.Enums.CustomAppOperationMode.GetAppOperationMode(LogicPOS.Settings.GeneralSettings.Settings["appOperationModeToken"]);
-                logicpos.datalayer.Enums.CustomAppOperationMode customAppOperationMode = DataLayerSettings.CustomAppOperationMode;
+                CustomAppOperationMode customAppOperationMode = DataLayerSettings.CustomAppOperationMode;
 
                 /* 
                  * Possible themes:
@@ -295,7 +296,7 @@ namespace logicpos.App
 
         private static bool GetServiceATSendDocumentsWayBill()
         {
-            return Convert.ToBoolean(LogicPOS.Settings.GeneralSettings.PreferenceParameters["SERVICE_AT_SEND_DOCUMENTS_WAYBILL"]);
+            return Convert.ToBoolean(GeneralSettings.PreferenceParameters["SERVICE_AT_SEND_DOCUMENTS_WAYBILL"]);
         }
 
         /// <summary>
@@ -312,10 +313,10 @@ namespace logicpos.App
             /* Custom scripts */
             try
             {
-                logicpos.datalayer.Enums.CustomAppOperationMode customAppOperationMode = datalayer.Enums.CustomAppOperationMode.GetAppOperationMode(LogicPOS.Settings.GeneralSettings.Settings["appOperationModeToken"]);
+                CustomAppOperationMode customAppOperationMode = CustomAppOperationMode.GetAppOperationMode(GeneralSettings.Settings["appOperationModeToken"]);
                         
-                string customCultureResourceDefinition = LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"];
-                string customCultureCountryPrefix = customCultureResourceDefinition.Substring(0, customCultureResourceDefinition.IndexOf('-'));         
+                string cultureName = GeneralSettings.Settings.GetCultureName();
+                string cultureCountryPrefix = cultureName.Substring(0, cultureName.IndexOf('-'));         
 
                 if (demo)
                 {                    
@@ -327,16 +328,16 @@ namespace logicpos.App
                     //"Resources\Database\Demos\{0}\{1}\{2}
                     result = string.Format(basePath,
                         appOperationModeToken,
-                        customCultureCountryPrefix,
+                        cultureCountryPrefix,
                         fileName
                     );
                 }
                 else
                 {
 					//Angola - Certificação [TK:016268]
-                    if (customCultureResourceDefinition == "pt-AO" && basePath == "Resources\\Database\\Data\\{0}\\{1}\\databasedata.sql")
+                    if (cultureName == "pt-AO" && basePath == "Resources\\Database\\Data\\{0}\\{1}\\databasedata.sql")
                     {
-                        customCultureCountryPrefix = "ao";
+                        cultureCountryPrefix = "ao";
                     }
                     /* Default or Retail */
                     string appOperationTheme = customAppOperationMode.AppOperationTheme;
@@ -349,7 +350,7 @@ namespace logicpos.App
                     // "..\Resources\Database\Other\Plugins\SoftwareVendor\Data\{0}\{1}"
                     result = string.Format(basePath,
                         appOperationTheme,
-                        customCultureCountryPrefix
+                        cultureCountryPrefix
                     );
                 }
             }

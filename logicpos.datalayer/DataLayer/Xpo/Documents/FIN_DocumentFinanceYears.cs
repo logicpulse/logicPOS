@@ -1,6 +1,8 @@
 ﻿using DevExpress.Xpo;
 using logicpos.datalayer.App;
+using LogicPOS.Settings;
 using System;
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos.datalayer.DataLayer.Xpo
 {
@@ -17,7 +19,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             int currentYear = DataLayerUtils.CurrentDateTimeAtomic().Year;
             FiscalYear = currentYear;
             Acronym = string.Format("{0}{1}{2}", FiscalYear, "A", Code/10);
-            Designation = string.Format("{0} {1} {2}{3}", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_fiscal_year"), FiscalYear, "A", Code/10);
+            Designation = string.Format("{0} {1} {2}{3}", resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(), "global_fiscal_year"), FiscalYear, "A", Code/10);
         }
 
         private uint fOrd;

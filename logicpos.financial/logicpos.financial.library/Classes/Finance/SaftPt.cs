@@ -5,9 +5,11 @@ using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.App;
 using logicpos.shared.App;
+using LogicPOS.Settings;
 using System;
 using System.Text;
 using System.Xml;
+using LogicPOS.Settings.Extensions;
 
 //Notes Tests in DocumentFinanceDialogPage7
 
@@ -30,11 +32,11 @@ namespace logicpos.financial.library.Classes.Finance
         private static DateTime _documentDateEnd;
 
         //Settings
-        private static readonly string _dateTimeFormatDocumentDate = SharedSettings.DateTimeFormatDocumentDate;
+        private static readonly string _dateTimeFormatDocumentDate = CultureSettings.DateTimeFormatDocumentDate;
         //Custom Number Format
-        private static readonly string _decimalTaxFormat = SharedSettings.DecimalFormatGrossTotalSAFTPT;
-        private static readonly string _decimalFormat = SharedSettings.DecimalFormatSAFTPT;
-        private static readonly string _decimalFormatTotals = SharedSettings.DecimalFormatGrossTotalSAFTPT;
+        private static readonly string _decimalTaxFormat = CultureSettings.DecimalFormatGrossTotalSAFTPT;
+        private static readonly string _decimalFormat = CultureSettings.DecimalFormatSAFTPT;
+        private static readonly string _decimalFormatTotals = CultureSettings.DecimalFormatGrossTotalSAFTPT;
         //Default Customer
         private static readonly erp_customer _defaultCustomer = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), SharedSettings.FinalConsumerId);
         //Default Currency
@@ -64,8 +66,8 @@ namespace logicpos.financial.library.Classes.Finance
             _currentDate = DataLayerUtils.CurrentDateTimeAtomic();
 
             //Settings
-            string fileSaftPT = SharedSettings.FileFormatSaftPT;
-            string dateTimeFileFormat = SharedSettings.FileFormatDateTime;
+            string fileSaftPT = CultureSettings.FileFormatSaftPT;
+            string dateTimeFileFormat = CultureSettings.FileFormatDateTime;
             string dateTime = DataLayerUtils.CurrentDateTimeAtomic().ToString(dateTimeFileFormat);
             string fileName = DataLayerFramework.Path["saftpt"] + string.Format(fileSaftPT, SharedSettings.SaftVersionPrefix, SharedSettings.SaftVersion, dateTime).ToLower();
             if (!FinancialLibraryUtils.HasWritePermissionOnDir(DataLayerFramework.Path["saftpt"].ToString()))
@@ -107,7 +109,7 @@ namespace logicpos.financial.library.Classes.Finance
                 }
 
                 //Audit
-                SharedUtils.Audit("EXPORT_SAF-T", string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "audit_message_export_saft"), fileName, _documentDateStart.ToString(SharedSettings.DateFormat), _documentDateEnd.ToString(SharedSettings.DateFormat)));
+                SharedUtils.Audit("EXPORT_SAF-T", string.Format(resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(), "audit_message_export_saft"), fileName, _documentDateStart.ToString(CultureSettings.DateFormat), _documentDateEnd.ToString(CultureSettings.DateFormat)));
 
                 return fileName;
             }
@@ -136,38 +138,38 @@ namespace logicpos.financial.library.Classes.Finance
                 //    ,LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_CIVIL_REGISTRATION"].Replace(' ', '_')
                 //    ,LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_CIVIL_REGISTRATION_ID"].Replace(' ', '_')
                 //);
-                string companyID = LogicPOS.Settings.GeneralSettings.PreferenceParameters["COMPANY_FISCALNUMBER"];
+                string companyID = GeneralSettings.PreferenceParameters["COMPANY_FISCALNUMBER"];
                 WriteElement("CompanyID", companyID);
-                WriteElement("TaxRegistrationNumber", LogicPOS.Settings.GeneralSettings.PreferenceParameters["COMPANY_FISCALNUMBER"]);
+                WriteElement("TaxRegistrationNumber", GeneralSettings.PreferenceParameters["COMPANY_FISCALNUMBER"]);
                 WriteElement("TaxAccountingBasis", SharedSettings.TaxAccountingBasis);
-                WriteElement("CompanyName", LogicPOS.Settings.GeneralSettings.PreferenceParameters["COMPANY_NAME"]);
-                WriteElement("BusinessName", LogicPOS.Settings.GeneralSettings.PreferenceParameters["COMPANY_BUSINESS_NAME"]);
+                WriteElement("CompanyName", GeneralSettings.PreferenceParameters["COMPANY_NAME"]);
+                WriteElement("BusinessName", GeneralSettings.PreferenceParameters["COMPANY_BUSINESS_NAME"]);
 
                 //<CompanyAddress>
                 _xmlWriter.WriteStartElement("CompanyAddress");
-                WriteElement("AddressDetail", LogicPOS.Settings.GeneralSettings.PreferenceParameters["COMPANY_ADDRESS"]);
-                WriteElement("City", LogicPOS.Settings.GeneralSettings.PreferenceParameters["COMPANY_CITY"]);
-                WriteElement("PostalCode", LogicPOS.Settings.GeneralSettings.PreferenceParameters["COMPANY_POSTALCODE"]);
-                WriteElement("Region", LogicPOS.Settings.GeneralSettings.PreferenceParameters["COMPANY_REGION"]);
-                WriteElement("Country", LogicPOS.Settings.GeneralSettings.PreferenceParameters["COMPANY_COUNTRY_CODE2"]);
+                WriteElement("AddressDetail", GeneralSettings.PreferenceParameters["COMPANY_ADDRESS"]);
+                WriteElement("City", GeneralSettings.PreferenceParameters["COMPANY_CITY"]);
+                WriteElement("PostalCode", GeneralSettings.PreferenceParameters["COMPANY_POSTALCODE"]);
+                WriteElement("Region", GeneralSettings.PreferenceParameters["COMPANY_REGION"]);
+                WriteElement("Country", GeneralSettings.PreferenceParameters["COMPANY_COUNTRY_CODE2"]);
                 _xmlWriter.WriteEndElement();
                 //</CompanyAddress>
 
                 WriteElement("FiscalYear", _currentDate.Year);
                 WriteElement("StartDate", _documentDateStart.ToString(_dateTimeFormatDocumentDate));
                 WriteElement("EndDate", _documentDateEnd.ToString(_dateTimeFormatDocumentDate));
-                WriteElement("CurrencyCode", SharedSettings.SaftCurrencyCode);
+                WriteElement("CurrencyCode", CultureSettings.SaftCurrencyCode);
                 WriteElement("DateCreated", _currentDate.ToString(_dateTimeFormatDocumentDate));
-                WriteElement("TaxEntity", LogicPOS.Settings.GeneralSettings.PreferenceParameters["COMPANY_TAX_ENTITY"]);
+                WriteElement("TaxEntity", GeneralSettings.PreferenceParameters["COMPANY_TAX_ENTITY"]);
                 WriteElement("ProductCompanyTaxID", SharedSettings.SaftProductCompanyTaxID);
                 WriteElement("SoftwareCertificateNumber", SharedSettings.SaftSoftwareCertificateNumber);
                 WriteElement("ProductID", SharedSettings.SaftProductID);
                 WriteElement("ProductVersion", SharedUtils.ProductVersion);
                 //WriteElement("HeaderComment", "Comentários ao SAFT exportado");
-                WriteElement("Telephone", LogicPOS.Settings.GeneralSettings.PreferenceParameters["COMPANY_TELEPHONE"]);
-                WriteElement("Fax", LogicPOS.Settings.GeneralSettings.PreferenceParameters["COMPANY_FAX"]);
-                WriteElement("Email", LogicPOS.Settings.GeneralSettings.PreferenceParameters["COMPANY_EMAIL"]);
-                WriteElement("Website", LogicPOS.Settings.GeneralSettings.PreferenceParameters["COMPANY_WEBSITE"]);
+                WriteElement("Telephone", GeneralSettings.PreferenceParameters["COMPANY_TELEPHONE"]);
+                WriteElement("Fax", GeneralSettings.PreferenceParameters["COMPANY_FAX"]);
+                WriteElement("Email", GeneralSettings.PreferenceParameters["COMPANY_EMAIL"]);
+                WriteElement("Website", GeneralSettings.PreferenceParameters["COMPANY_WEBSITE"]);
 
                 //</Header>
                 _xmlWriter.WriteEndElement();
@@ -304,15 +306,15 @@ namespace logicpos.financial.library.Classes.Finance
 	                    cu.CodeInternal, cu.FiscalNumber, cu.Name, cu.Address, cu.City, cu.ZipCode, cc.Code2, cu.Phone, cu.Fax, cu.Email, cu.Website
    
                     ;"
-                    , _documentDateStart.ToString(SharedSettings.DateTimeFormat)
-                    , _documentDateEnd.ToString(SharedSettings.DateTimeFormat)
+                    , _documentDateStart.ToString(CultureSettings.DateTimeFormat)
+                    , _documentDateEnd.ToString(CultureSettings.DateTimeFormat)
                 );
                 //_logger.Debug(string.Format("sql: [{0}]", sql));
 
                 //Used to Add Default Customer if not in Query, Required to Always have a Default Customer for ex to Documents that Donta Have a Customer (NULL), like Conference Documents, etc
                 MasterFiles_Customer_DefaultCustomer();
 
-                XPSelectData xPSelectData = SharedUtils.GetSelectedDataFromQuery(sql);
+                XPSelectData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
                 foreach (SelectStatementResultRow row in xPSelectData.Data)
                 {
                     //<Customer>
@@ -325,15 +327,15 @@ namespace logicpos.financial.library.Classes.Finance
                     {
                         WriteElement("CustomerID", _defaultCustomer.CodeInternal);
                     }
-                    WriteElement("AccountID", row.Values[xPSelectData.GetFieldIndex("AccountID")], resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
-                    WriteElement("CustomerTaxID", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("CustomerTaxID")]), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
-                    WriteElement("CompanyName", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("CompanyName")]), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
+                    WriteElement("AccountID", row.Values[xPSelectData.GetFieldIndex("AccountID")], resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(), "saft_value_unknown"));
+                    WriteElement("CustomerTaxID", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("CustomerTaxID")]), resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(), "saft_value_unknown"));
+                    WriteElement("CompanyName", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("CompanyName")]), resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(), "saft_value_unknown"));
                     //<BillingAddress>
                     _xmlWriter.WriteStartElement("BillingAddress");
-                    WriteElement("AddressDetail", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("AddressDetail")]), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
-                    WriteElement("City", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("City")]), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
-                    WriteElement("PostalCode", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("PostalCode")]), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
-                    WriteElement("Country", row.Values[xPSelectData.GetFieldIndex("Country")], resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
+                    WriteElement("AddressDetail", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("AddressDetail")]), resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(), "saft_value_unknown"));
+                    WriteElement("City", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("City")]), resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(), "saft_value_unknown"));
+                    WriteElement("PostalCode", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("PostalCode")]), resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(), "saft_value_unknown"));
+                    WriteElement("Country", row.Values[xPSelectData.GetFieldIndex("Country")], resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(), "saft_value_unknown"));
                     _xmlWriter.WriteEndElement();
                     //</BillingAddress>
                     WriteElement("Telephone", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("Telephone")]));
@@ -363,8 +365,8 @@ namespace logicpos.financial.library.Classes.Finance
                     EntityOid = '{2}' 
                     AND (Date >= '{0}' AND Date <= '{1}')
                 ;"
-                , _documentDateStart.ToString(SharedSettings.DateTimeFormat)
-                , _documentDateEnd.ToString(SharedSettings.DateTimeFormat)
+                , _documentDateStart.ToString(CultureSettings.DateTimeFormat)
+                , _documentDateEnd.ToString(CultureSettings.DateTimeFormat)
                 , SharedSettings.FinalConsumerId
             );
             //_logger.Debug(string.Format("sqlCheckDefaultCustomer: [{0}]", sqlCheckDefaultCustomer));
@@ -379,15 +381,15 @@ namespace logicpos.financial.library.Classes.Finance
             //<Customer>
             _xmlWriter.WriteStartElement("Customer");
             WriteElement("CustomerID", _defaultCustomer.CodeInternal);
-            WriteElement("AccountID", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
+            WriteElement("AccountID", resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(), "saft_value_unknown"));
             WriteElement("CustomerTaxID", _defaultCustomer.FiscalNumber);
-            WriteElement("CompanyName", _defaultCustomer.Name, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
+            WriteElement("CompanyName", _defaultCustomer.Name, resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(), "saft_value_unknown"));
             //<BillingAddress>
             _xmlWriter.WriteStartElement("BillingAddress");
-            WriteElement("AddressDetail", _defaultCustomer.Address, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
-            WriteElement("City", _defaultCustomer.City, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
-            WriteElement("PostalCode", _defaultCustomer.ZipCode, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
-            WriteElement("Country", _defaultCustomer.Country.Code2, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
+            WriteElement("AddressDetail", _defaultCustomer.Address, resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(), "saft_value_unknown"));
+            WriteElement("City", _defaultCustomer.City, resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(), "saft_value_unknown"));
+            WriteElement("PostalCode", _defaultCustomer.ZipCode, resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(), "saft_value_unknown"));
+            WriteElement("Country", _defaultCustomer.Country.Code2, resources.CustomResources.GetCustomResource(GeneralSettings.Settings.GetCultureName(), "saft_value_unknown"));
             _xmlWriter.WriteEndElement();
             //</BillingAddress>
             WriteElement("SelfBillingIndicator", 0);
@@ -430,12 +432,12 @@ namespace logicpos.financial.library.Classes.Finance
                     ORDER BY
 	                    af.Designation, ar.Designation
                     ;"
-                    , _documentDateStart.ToString(SharedSettings.DateTimeFormat)
-                    , _documentDateEnd.ToString(SharedSettings.DateTimeFormat)
+                    , _documentDateStart.ToString(CultureSettings.DateTimeFormat)
+                    , _documentDateEnd.ToString(CultureSettings.DateTimeFormat)
                 );
                 //_logger.Debug(string.Format("sql: [{0}]", sql));
 
-                XPSelectData xPSelectData = SharedUtils.GetSelectedDataFromQuery(sql);
+                XPSelectData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
                 foreach (SelectStatementResultRow row in xPSelectData.Data)
                 {
                     if (row.Values[1] != null)
@@ -499,7 +501,7 @@ namespace logicpos.financial.library.Classes.Finance
                 );
                 //_logger.Debug(string.Format("sql: [{0}]", sql));
 
-                XPSelectData xPSelectData = SharedUtils.GetSelectedDataFromQuery(sql);
+                XPSelectData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
                 foreach (SelectStatementResultRow row in xPSelectData.Data)
                 {
                     //<TaxTableEntry>
@@ -508,7 +510,7 @@ namespace logicpos.financial.library.Classes.Finance
                     WriteElement("TaxCountryRegion", row.Values[xPSelectData.GetFieldIndex("TaxCountryRegion")]);
                     WriteElement("TaxCode", row.Values[xPSelectData.GetFieldIndex("TaxCode")]);
                     WriteElement("Description", row.Values[xPSelectData.GetFieldIndex("Description")]);
-                    WriteElement("TaxPercentage", SharedUtils.DecimalToString(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("TaxPercentage")]), SharedFramework.CurrentCultureNumberFormat, _decimalFormat));
+                    WriteElement("TaxPercentage", LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("TaxPercentage")]), _decimalFormat));
                     _xmlWriter.WriteEndElement();
                     //</TaxTableEntry>
                 }
@@ -634,8 +636,8 @@ namespace logicpos.financial.library.Classes.Finance
                         AND (fm.Date >= '{0}' AND fm.Date <= '{1}')
                         AND {2}
                     ;"
-                    , _documentDateStart.ToString(SharedSettings.DateTimeFormat)
-                    , _documentDateEnd.ToString(SharedSettings.DateTimeFormat)
+                    , _documentDateStart.ToString(CultureSettings.DateTimeFormat)
+                    , _documentDateEnd.ToString(CultureSettings.DateTimeFormat)
                     , documentNodeFilter
                 );
                 //_logger.Debug(string.Format("SaftDocumentType:[{0}]: sqlNumberOfEntries: [{1}]", pSaftDocumentType, sqlNumberOfEntries));
@@ -667,8 +669,8 @@ namespace logicpos.financial.library.Classes.Finance
                                 AND (fmDate >= '{0}' AND fmDate <= '{1}')
                                 AND {2} 
                             "
-                            , _documentDateStart.ToString(SharedSettings.DateTimeFormat)
-                            , _documentDateEnd.ToString(SharedSettings.DateTimeFormat)
+                            , _documentDateStart.ToString(CultureSettings.DateTimeFormat)
+                            , _documentDateEnd.ToString(CultureSettings.DateTimeFormat)
                             //, documentNodeFilter.Replace("ft.", "ft").Replace("fm.", "fm")
                             , documentNodeFilterTotalControl.Replace("ft.", "ft").Replace("fm.", "fm")
                             , "{0}"
@@ -680,14 +682,14 @@ namespace logicpos.financial.library.Classes.Finance
 
                         object totalDebit = XPOSettings.Session.ExecuteScalar(sqlTotalDebit);
                         if (totalDebit == null) totalDebit = 0;
-                        WriteElement("TotalDebit", SharedUtils.DecimalToString(Convert.ToDecimal(totalDebit), SharedFramework.CurrentCultureNumberFormat, _decimalFormat));
+                        WriteElement("TotalDebit", LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(totalDebit), _decimalFormat));
 
                         //<TotalCredit>
                         string sqlTotalCredit = string.Format(sqlTotalDebitTotalCredit, 1);
                         //_logger.Debug(string.Format("SaftDocumentType:[{0}]: sqlTotalCredit: [{1}]", pSaftDocumentType, sqlTotalCredit));
                         object totalCredit = XPOSettings.Session.ExecuteScalar(sqlTotalCredit);
                         if (totalCredit == null) totalCredit = 0;
-                        WriteElement("TotalCredit", SharedUtils.DecimalToString(Convert.ToDecimal(totalCredit), SharedFramework.CurrentCultureNumberFormat, _decimalFormat));
+                        WriteElement("TotalCredit", LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(totalCredit), _decimalFormat));
 
                         //<Invoice|StockMovement|WorkDocument>
                         SourceDocuments_DocumentType_Childs(pSaftDocumentType, documentNodeKeyWord, documentNodeNameChild, documentNodeNameChildNo, documentNodeFilter);
@@ -708,8 +710,8 @@ namespace logicpos.financial.library.Classes.Finance
                                 AND (fmDate >= '{0}' AND fmDate <= '{1}')
                                 AND {2} 
                             "
-                            , _documentDateStart.ToString(SharedSettings.DateTimeFormat)
-                            , _documentDateEnd.ToString(SharedSettings.DateTimeFormat)
+                            , _documentDateStart.ToString(CultureSettings.DateTimeFormat)
+                            , _documentDateEnd.ToString(CultureSettings.DateTimeFormat)
                             , documentNodeFilterTotalControl.Replace("ft.", "ft").Replace("fm.", "fm")
                             , "{0}"
                          );
@@ -876,8 +878,8 @@ namespace logicpos.financial.library.Classes.Finance
                         Date
                     ;
                     "
-                    , _documentDateStart.ToString(SharedSettings.DateTimeFormat)
-                    , _documentDateEnd.ToString(SharedSettings.DateTimeFormat)
+                    , _documentDateStart.ToString(CultureSettings.DateTimeFormat)
+                    , _documentDateEnd.ToString(CultureSettings.DateTimeFormat)
                     , pdocumentNodeFilter
                 );
                 //_logger.Debug(string.Format("SaftDocumentType:[{0}] sql: [{1}]", pSaftDocumentType, sql));
@@ -891,7 +893,7 @@ namespace logicpos.financial.library.Classes.Finance
                 string documentType = string.Empty;
                 bool wayBill = false;
 
-                XPSelectData xPSelectData = SharedUtils.GetSelectedDataFromQuery(sql);
+                XPSelectData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
                 foreach (SelectStatementResultRow row in xPSelectData.Data)
                 {
                     //Protected Documents with total amount and discount zero 
@@ -1022,9 +1024,9 @@ namespace logicpos.financial.library.Classes.Finance
 
                     //<DocumentTotals>
                     _xmlWriter.WriteStartElement("DocumentTotals");
-                    WriteElement("TaxPayable", SharedUtils.DecimalToString(totalLineResult.TaxPayable, SharedFramework.CurrentCultureNumberFormat, _decimalFormatTotals));
-                    WriteElement("NetTotal", SharedUtils.DecimalToString(totalLineResult.NetTotal, SharedFramework.CurrentCultureNumberFormat, _decimalFormatTotals));
-                    WriteElement("GrossTotal", SharedUtils.DecimalToString(totalLineResult.GrossTotal, SharedFramework.CurrentCultureNumberFormat, _decimalFormatTotals));
+                    WriteElement("TaxPayable", LogicPOS.Utility.DataConversionUtils.DecimalToString(totalLineResult.TaxPayable,  _decimalFormatTotals));
+                    WriteElement("NetTotal", LogicPOS.Utility.DataConversionUtils.DecimalToString(totalLineResult.NetTotal,  _decimalFormatTotals));
+                    WriteElement("GrossTotal", LogicPOS.Utility.DataConversionUtils.DecimalToString(totalLineResult.GrossTotal, _decimalFormatTotals));
 
                     //Currency
                     if (_defaultCurrency.Acronym != row.Values[xPSelectData.GetFieldIndex("CurrencyCode")].ToString())
@@ -1036,9 +1038,9 @@ namespace logicpos.financial.library.Classes.Finance
                         //<Currency>
                         _xmlWriter.WriteStartElement("Currency");
                         WriteElement("CurrencyCode", row.Values[xPSelectData.GetFieldIndex("CurrencyCode")].ToString());
-                        WriteElement("CurrencyAmount", SharedUtils.DecimalToString(currencyCurrencyAmount, SharedFramework.CurrentCultureNumberFormat, _decimalFormat));
+                        WriteElement("CurrencyAmount", LogicPOS.Utility.DataConversionUtils.DecimalToString(currencyCurrencyAmount, _decimalFormat));
                         //In SAT-F Example we have 2 examples one with decimals 0.00 and other with 0.00000000000 opted to use divide value without conversion
-                        WriteElement("ExchangeRate", SharedUtils.DecimalToString(currencyExchangeRate, SharedFramework.CurrentCultureNumberFormat, _decimalFormat));
+                        WriteElement("ExchangeRate", LogicPOS.Utility.DataConversionUtils.DecimalToString(currencyExchangeRate, _decimalFormat));
                         //WriteElement("ExchangeRate", currencyExchangeRate);
                         _xmlWriter.WriteEndElement();
                         //</Currency>
@@ -1057,7 +1059,7 @@ namespace logicpos.financial.library.Classes.Finance
                                 _xmlWriter.WriteStartElement("Payment");
                                 //Default : OU : OtherPayments /Outros Pagamentos
                                 WriteElement("PaymentMechanism", row.Values[xPSelectData.GetFieldIndex("PaymentMechanism")], "OU");
-                                WriteElement("PaymentAmount", SharedUtils.DecimalToString(paymentAmount, SharedFramework.CurrentCultureNumberFormat, _decimalFormat));
+                                WriteElement("PaymentAmount", LogicPOS.Utility.DataConversionUtils.DecimalToString(paymentAmount, _decimalFormat));
                                 WriteElement("PaymentDate", row.Values[xPSelectData.GetFieldIndex("DocumentDate")]);
                                 _xmlWriter.WriteEndElement();
                                 //</Payment>
@@ -1223,7 +1225,7 @@ namespace logicpos.financial.library.Classes.Finance
                 decimal lineGrossTotal = 0.0m;
 
                 Guid guidDocumentDetail = new Guid();
-                XPSelectData xPSelectData = SharedUtils.GetSelectedDataFromQuery(sql);
+                XPSelectData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
                 if (xPSelectData.Data.Length > 0)
                     foreach (SelectStatementResultRow row in xPSelectData.Data)
                     {
@@ -1236,9 +1238,9 @@ namespace logicpos.financial.library.Classes.Finance
                         lineQuantity = Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("Quantity")]);
                         lineCreditOrDebit = lineUnitPrice * lineQuantity;
 
-                        lineTaxPayable = Math.Round(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("TaxPayable")]), SharedSettings.DecimalRoundTo);
-                        lineNetTotal = Math.Round(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("NetTotal")]), SharedSettings.DecimalRoundTo);
-                        lineGrossTotal = Math.Round(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("GrossTotal")]), SharedSettings.DecimalRoundTo);
+                        lineTaxPayable = Math.Round(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("TaxPayable")]), CultureSettings.DecimalRoundTo);
+                        lineNetTotal = Math.Round(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("NetTotal")]), CultureSettings.DecimalRoundTo);
+                        lineGrossTotal = Math.Round(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("GrossTotal")]), CultureSettings.DecimalRoundTo);
                         totalLineResult.TaxPayable += lineTaxPayable;
                         totalLineResult.NetTotal += lineNetTotal;
                         totalLineResult.GrossTotal += lineGrossTotal;
@@ -1263,9 +1265,9 @@ namespace logicpos.financial.library.Classes.Finance
 
                             WriteElement("ProductCode", row.Values[xPSelectData.GetFieldIndex("ProductCode")].ToString());
                             WriteElement("ProductDescription", row.Values[xPSelectData.GetFieldIndex("ProductDescription")]);
-                            WriteElement("Quantity", SharedUtils.DecimalToString(lineQuantity, SharedFramework.CurrentCultureNumberFormat, _decimalFormat));
+                            WriteElement("Quantity", LogicPOS.Utility.DataConversionUtils.DecimalToString(lineQuantity, _decimalFormat));
                             WriteElement("UnitOfMeasure", row.Values[xPSelectData.GetFieldIndex("UnitOfMeasure")]);
-                            WriteElement("UnitPrice", SharedUtils.DecimalToString(lineUnitPrice, SharedFramework.CurrentCultureNumberFormat, _decimalFormat));
+                            WriteElement("UnitPrice", LogicPOS.Utility.DataConversionUtils.DecimalToString(lineUnitPrice, _decimalFormat));
 
                             switch (pSaftDocumentType)
                             {
@@ -1288,14 +1290,14 @@ namespace logicpos.financial.library.Classes.Finance
 
                             WriteElement("Description", row.Values[xPSelectData.GetFieldIndex("ProductDescription")]);
                             //CreditAmount|DebitAmount
-                            WriteElement(nodeNameCreditOrDebitAmount, SharedUtils.DecimalToString(lineCreditOrDebit, SharedFramework.CurrentCultureNumberFormat, _decimalFormat));
+                            WriteElement(nodeNameCreditOrDebitAmount, LogicPOS.Utility.DataConversionUtils.DecimalToString(lineCreditOrDebit, _decimalFormat));
 
                             //<Tax>
                             _xmlWriter.WriteStartElement("Tax");
                             WriteElement("TaxType", row.Values[xPSelectData.GetFieldIndex("TaxType")]);
                             WriteElement("TaxCountryRegion", row.Values[xPSelectData.GetFieldIndex("TaxCountryRegion")]);
                             WriteElement("TaxCode", row.Values[xPSelectData.GetFieldIndex("TaxCode")]);
-                            WriteElement("TaxPercentage", SharedUtils.DecimalToString(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("TaxPercentage")]), SharedFramework.CurrentCultureNumberFormat, _decimalFormat));
+                            WriteElement("TaxPercentage", LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("TaxPercentage")]), _decimalFormat));
                             _xmlWriter.WriteEndElement();
                             Console.WriteLine(row.Values[xPSelectData.GetFieldIndex("TaxExemptionReason")]);
                             Console.WriteLine(row.Values[xPSelectData.GetFieldIndex("TaxPercentage")]);
@@ -1320,7 +1322,7 @@ namespace logicpos.financial.library.Classes.Finance
                                 WriteElement("TaxExemptionReason", row.Values[xPSelectData.GetFieldIndex("TaxExemptionReason")]);
                                 WriteElement("TaxExemptionCode", row.Values[xPSelectData.GetFieldIndex("TaxExemptionCode")]);
                                 if (Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("SettlementAmount")]) > 0.0m)
-                                    WriteElement("SettlementAmount", SharedUtils.DecimalToString(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("SettlementAmount")]), SharedFramework.CurrentCultureNumberFormat, _decimalFormat));
+                                    WriteElement("SettlementAmount", LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("SettlementAmount")]), _decimalFormat));
                             }
 
 
@@ -1371,7 +1373,7 @@ namespace logicpos.financial.library.Classes.Finance
                     );
                     //_logger.Debug(string.Format("sql: [{0}]", sql));
 
-                    XPSelectData xPSelectData = SharedUtils.GetSelectedDataFromQuery(sql);
+                    XPSelectData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
                     foreach (SelectStatementResultRow row in xPSelectData.Data)
                     {
                         //<OrderReferences>
@@ -1426,7 +1428,7 @@ namespace logicpos.financial.library.Classes.Finance
                     );
                     //_logger.Debug(string.Format("sql: [{0}]", sql));
 
-                    XPSelectData xPSelectData = SharedUtils.GetSelectedDataFromQuery(sql);
+                    XPSelectData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
                     foreach (SelectStatementResultRow row in xPSelectData.Data)
                     {
                         //<References>
@@ -1468,8 +1470,8 @@ namespace logicpos.financial.library.Classes.Finance
                         (PaymentDate >= '{0}' AND PaymentDate <= '{1}')
                         AND (PaymentStatus = 'N' OR PaymentStatus = 'A')
                     ;"
-                    , _documentDateStart.ToString(SharedSettings.DateTimeFormat)
-                    , _documentDateEnd.ToString(SharedSettings.DateTimeFormat)
+                    , _documentDateStart.ToString(CultureSettings.DateTimeFormat)
+                    , _documentDateEnd.ToString(CultureSettings.DateTimeFormat)
                 );
                 //_logger.Debug(string.Format("SaftDocumentType:[{0}]: sqlNumberOfEntries: [{1}]", SaftDocumentType.Payments, sqlNumberOfEntries));
 
@@ -1493,8 +1495,8 @@ namespace logicpos.financial.library.Classes.Finance
 	                    (fpaPaymentDate >= '{0}' AND fpaPaymentDate <= '{1}')
 	                    AND (fpaPaymentStatus = 'N' AND fpaPaymentStatus <> 'A')
                     "
-                    , _documentDateStart.ToString(SharedSettings.DateTimeFormat)
-                    , _documentDateEnd.ToString(SharedSettings.DateTimeFormat)
+                    , _documentDateStart.ToString(CultureSettings.DateTimeFormat)
+                    , _documentDateEnd.ToString(CultureSettings.DateTimeFormat)
                     , "{0}"
                     );
 
@@ -1504,14 +1506,14 @@ namespace logicpos.financial.library.Classes.Finance
 
                 object totalDebit = XPOSettings.Session.ExecuteScalar(sqlTotalDebit);
                 if (totalDebit == null) totalDebit = 0;
-                WriteElement("TotalDebit", SharedUtils.DecimalToString(Convert.ToDecimal(totalDebit), SharedFramework.CurrentCultureNumberFormat, _decimalFormat));
+                WriteElement("TotalDebit", LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(totalDebit), _decimalFormat));
 
                 //<TotalCredit>
                 string sqlTotalCredit = string.Format(sqlTotalDebitTotalCredit, "Credit");
                 //_logger.Debug(string.Format("SaftDocumentType:[{0}]: sqlTotalCredit: [{1}]", SaftDocumentType.Payments, sqlTotalCredit));
                 object totalCredit = XPOSettings.Session.ExecuteScalar(sqlTotalCredit);
                 if (totalCredit == null) totalCredit = 0;
-                WriteElement("TotalCredit", SharedUtils.DecimalToString(Convert.ToDecimal(totalCredit), SharedFramework.CurrentCultureNumberFormat, _decimalFormat));
+                WriteElement("TotalCredit", LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(totalCredit), _decimalFormat));
 
                 //<Payment>
                 SourceDocuments_Payments_Childs();
@@ -1618,8 +1620,8 @@ namespace logicpos.financial.library.Classes.Finance
 	                    SystemEntryDate
                     ;
                     "
-                    , _documentDateStart.ToString(SharedSettings.DateTimeFormat)
-                    , _documentDateEnd.ToString(SharedSettings.DateTimeFormat)
+                    , _documentDateStart.ToString(CultureSettings.DateTimeFormat)
+                    , _documentDateEnd.ToString(CultureSettings.DateTimeFormat)
                 );
                 //_logger.Debug(string.Format("SaftDocumentType:[{0}] sql: [{1}]", SaftDocumentType.Payments, sql));
 
@@ -1627,7 +1629,7 @@ namespace logicpos.financial.library.Classes.Finance
                 decimal currencyAmount;
                 decimal exchangeRate;
 
-                XPSelectData xPSelectData = SharedUtils.GetSelectedDataFromQuery(sql);
+                XPSelectData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
                 foreach (SelectStatementResultRow row in xPSelectData.Data)
                 {
                     //<Payment>
@@ -1651,7 +1653,7 @@ namespace logicpos.financial.library.Classes.Finance
                     //<PaymentMethod>
                     _xmlWriter.WriteStartElement("PaymentMethod");
                     WriteElement("PaymentMechanism", row.Values[xPSelectData.GetFieldIndex("PaymentMechanism")]);
-                    WriteElement("PaymentAmount", SharedUtils.DecimalToString(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("PaymentAmount")]), SharedFramework.CurrentCultureNumberFormat, _decimalFormat));
+                    WriteElement("PaymentAmount", LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("PaymentAmount")]), _decimalFormat));
                     WriteElement("PaymentDate", row.Values[xPSelectData.GetFieldIndex("PaymentDate")]);
                     _xmlWriter.WriteEndElement();
                     //</PaymentMethod>
@@ -1666,9 +1668,9 @@ namespace logicpos.financial.library.Classes.Finance
 
                     //<DocumentTotals>
                     _xmlWriter.WriteStartElement("DocumentTotals");
-                    WriteElement("TaxPayable", SharedUtils.DecimalToString(totalLineResult.TaxPayable, SharedFramework.CurrentCultureNumberFormat, _decimalFormatTotals));
-                    WriteElement("NetTotal", SharedUtils.DecimalToString(totalLineResult.NetTotal, SharedFramework.CurrentCultureNumberFormat, _decimalFormatTotals));
-                    WriteElement("GrossTotal", SharedUtils.DecimalToString(totalLineResult.GrossTotal, SharedFramework.CurrentCultureNumberFormat, _decimalFormatTotals));
+                    WriteElement("TaxPayable", LogicPOS.Utility.DataConversionUtils.DecimalToString(totalLineResult.TaxPayable, _decimalFormatTotals));
+                    WriteElement("NetTotal", LogicPOS.Utility.DataConversionUtils.DecimalToString(totalLineResult.NetTotal,  _decimalFormatTotals));
+                    WriteElement("GrossTotal", LogicPOS.Utility.DataConversionUtils.DecimalToString(totalLineResult.GrossTotal, _decimalFormatTotals));
 
                     //Note: 4.4.4.17 in 130823_Portaria_no_274_2013.pdf is Outside DocumentTotals, but gives error on validation, moved 4.4.4.17 to DocumentTotals to be valid in validation, may be a error in 130823_Portaria_no_274_2013.pdf
 
@@ -1680,9 +1682,9 @@ namespace logicpos.financial.library.Classes.Finance
                         //<Currency>
                         _xmlWriter.WriteStartElement("Currency");
                         WriteElement("CurrencyCode", row.Values[xPSelectData.GetFieldIndex("CurrencyCode")].ToString());
-                        WriteElement("CurrencyAmount", SharedUtils.DecimalToString(currencyAmount, SharedFramework.CurrentCultureNumberFormat, _decimalFormat));
+                        WriteElement("CurrencyAmount", LogicPOS.Utility.DataConversionUtils.DecimalToString(currencyAmount, _decimalFormat));
                         //In SAT-F Example we have 2 examples one with decimals 0.00 and other with 0.00000000000 opted to use divide value without conversion
-                        WriteElement("ExchangeRate", SharedUtils.DecimalToString(exchangeRate, SharedFramework.CurrentCultureNumberFormat, _decimalFormat));
+                        WriteElement("ExchangeRate", LogicPOS.Utility.DataConversionUtils.DecimalToString(exchangeRate, _decimalFormat));
                         //WriteElement("ExchangeRate", exchangeRate);
                         _xmlWriter.WriteEndElement();
                         //</Currency>
@@ -1759,16 +1761,16 @@ namespace logicpos.financial.library.Classes.Finance
                 decimal percentage = 0.0m;
                 decimal lineCreditAmount = 0.0m;
 
-                XPSelectData xPSelectData = SharedUtils.GetSelectedDataFromQuery(sql);
+                XPSelectData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
                 if (xPSelectData.Data.Length > 0)
                     foreach (SelectStatementResultRow row in xPSelectData.Data)
                     {
                         isCredit = (Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("CreditAmount")]) > 0);
                         nodeNameCreditOrDebitAmount = (isCredit) ? "CreditAmount" : "DebitAmount";
 
-                        lineTaxPayable = Math.Round(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("TaxPayable")]), SharedSettings.DecimalRoundTo);
-                        lineNetTotal = Math.Round(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("NetTotal")]), SharedSettings.DecimalRoundTo);
-                        lineGrossTotal = Math.Round(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("GrossTotal")]), SharedSettings.DecimalRoundTo);
+                        lineTaxPayable = Math.Round(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("TaxPayable")]), CultureSettings.DecimalRoundTo);
+                        lineNetTotal = Math.Round(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("NetTotal")]), CultureSettings.DecimalRoundTo);
+                        lineGrossTotal = Math.Round(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("GrossTotal")]), CultureSettings.DecimalRoundTo);
 
                         //Only add to Total if is Credit
                         if (isCredit)
@@ -1793,7 +1795,7 @@ namespace logicpos.financial.library.Classes.Finance
                         _xmlWriter.WriteEndElement();
                         //</Line>
                         //CreditAmount|DebitAmount
-                        WriteElement(nodeNameCreditOrDebitAmount, SharedUtils.DecimalToString(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex(nodeNameCreditOrDebitAmount)]), SharedFramework.CurrentCultureNumberFormat, _decimalFormat));
+                        WriteElement(nodeNameCreditOrDebitAmount, LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex(nodeNameCreditOrDebitAmount)]), _decimalFormat));
 
                         //TODO : Nos recibos do sistema de IVA de Caixa, deve ser indicada uma linha por cada taxa de IVA diferente, que conste da fatura respetiva.
                         //<Tax>

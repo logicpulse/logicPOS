@@ -1,8 +1,9 @@
 ﻿using DevExpress.Xpo;
 using DevExpress.Xpo.Metadata;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
+using LogicPOS.Settings;
+using LogicPOS.Settings.Enums;
 using System;
 
 namespace logicpos.datalayer.App
@@ -133,7 +134,7 @@ namespace logicpos.datalayer.App
             string sql = string.Empty;
             var result = new DateTime();
 
-            switch (DataLayerFramework.DatabaseType)
+            switch (DatabaseSettings.DatabaseType)
             {
                 case DatabaseType.SQLite:
                 case DatabaseType.MonoLite:

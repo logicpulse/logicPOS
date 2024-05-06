@@ -2,6 +2,8 @@
 using logicpos.datalayer.DataLayer.Xpo;
 using System;
 using System.Diagnostics;
+using static LogicPOS.Settings.PluginSettings;
+using static LogicPOS.Settings.CultureSettings;
 
 namespace logicpos.shared.App
 {
@@ -17,12 +19,6 @@ namespace logicpos.shared.App
         public static bool PrintPDFEnabled {get;set} = false;
 #endif
 
-        public static string AppSoftwareName { get; set; }
-        public static string AppCompanyName { get; set; }
-        public static string AppCompanyPhone { get; set; }
-        public static string AppCompanyEmail { get; set; }
-        public static string AppCompanyWeb { get; set; }
-        public static string AppSoftwareVersionFormat { get; set; }
         public static string AppSessionFile { get; set; } = "appsession_{0}.json";
         public static bool AppSessionFileJsonIndented { get; set; } = true;
 
@@ -35,26 +31,11 @@ namespace logicpos.shared.App
 
         public static Guid XpoOidConfigurationCountryAngola { get; set; } = new Guid("9655510a-ff58-461e-9719-c037058f10ed");
 
-        public static string DateFormat { get; set; } = "yyyy-MM-dd";
-        public static string DateTimeFormat { get; set; } = "yyyy-MM-dd HH:mm:ss";
-        public static string DateTimeFormatHour { get; set; } = "HH:mm:ss";
-
-        public static string DecimalFormat { get; set; } = "0.00";
-        public static string DecimalFormatStockQuantity { get; set; } = "0.00000000";
-
-        public static string FileFormatDateTime { get; set; }
-        public static string FileFormatSaftPT { get; set; }
-        public static string FileFormatSaftAO { get; set; }
+       
 
         public static int DocumentsPadLength { get; set; }
-        public static string DateTimeFormatDocumentDate { get; set; } = "yyyy-MM-dd";
-        public static string DateTimeFormatCombinedDateTime { get; set; } = "yyyy-MM-ddTHH:mm:ss";
         public static string FinanceFinalConsumerFiscalNumber { get; set; }
         public static string FinanceFinalConsumerFiscalNumberDisplay { get; set; }
-        public static string DecimalFormatSAFTPT { get; set; }
-        public static string DecimalFormatSAFTAO { get; private set; }
-        public static string DecimalFormatGrossTotalSAFTPT { get; set; }
-        public static int DecimalRoundTo { get; set; }
         public static string SaftProductID { get { return GetSaftProductID(); } }
         public static string SaftProductCompanyTaxID { get; set; }
         public static string SaftSoftwareCertificateNumber { get; set; }
@@ -62,9 +43,6 @@ namespace logicpos.shared.App
         public static string SaftVersion { get; set; }
         public static int HashControl { get; set; }
         public static string TaxAccountingBasis { get; set; }
-
-        public static string SaftCurrencyCode { get; set; }
-        public static string SaftCurrencyCodeAO { get; private set; }
 
         public static int FinanceRuleSimplifiedInvoiceMaxTotal { get { return GetFinanceRuleSimplifiedInvoiceMaxTotal(); } }
         //Services
@@ -224,43 +202,40 @@ namespace logicpos.shared.App
         /// </summary>
         public static void InitSoftwareVendorPluginSettings()
         {
-            bool debug = false;
+            AppSoftwareName = GetSoftwareVendorValueAsString(nameof(AppSoftwareName));
+            AppCompanyName = GetSoftwareVendorValueAsString(nameof(AppCompanyName));
+            AppCompanyPhone = GetSoftwareVendorValueAsString(nameof(AppCompanyPhone));
+            AppCompanyEmail = GetSoftwareVendorValueAsString(nameof(AppCompanyEmail));
+            AppCompanyWeb = GetSoftwareVendorValueAsString(nameof(AppCompanyWeb));
+            AppSoftwareVersionFormat = GetSoftwareVendorValueAsString(nameof(AppSoftwareVersionFormat));
 
-            // Override SettingsApp with Defaults from SoftwareVendor Plugin
-            AppSoftwareName = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(AppSoftwareName));
-            AppCompanyName = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(AppCompanyName));
-            AppCompanyPhone = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(AppCompanyPhone));
-            AppCompanyEmail = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(AppCompanyEmail));
-            AppCompanyWeb = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(AppCompanyWeb));
-            AppSoftwareVersionFormat = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(AppSoftwareVersionFormat));
+            FileFormatDateTime = GetSoftwareVendorValueAsString(nameof(FileFormatDateTime));
+            FileFormatSaftPT = GetSoftwareVendorValueAsString(nameof(FileFormatSaftPT));
+            FileFormatSaftAO = GetSoftwareVendorValueAsString(nameof(FileFormatSaftAO));
 
-            FileFormatDateTime = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(FileFormatDateTime));
-            FileFormatSaftPT = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(FileFormatSaftPT));
-            FileFormatSaftAO = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(FileFormatSaftAO));
+            DocumentsPadLength = GetSoftwareVendorValueAsInt(nameof(DocumentsPadLength));
+            DateTimeFormatDocumentDate = GetSoftwareVendorValueAsString(nameof(DateTimeFormatDocumentDate));
+            DateTimeFormatCombinedDateTime = GetSoftwareVendorValueAsString(nameof(DateTimeFormatCombinedDateTime));
+            FinanceFinalConsumerFiscalNumber = GetSoftwareVendorValueAsString(nameof(FinanceFinalConsumerFiscalNumber));
+            FinanceFinalConsumerFiscalNumberDisplay = GetSoftwareVendorValueAsString(nameof(FinanceFinalConsumerFiscalNumberDisplay));
+            DecimalFormatSAFTPT = GetSoftwareVendorValueAsString(nameof(DecimalFormatSAFTPT));
+            DecimalFormatSAFTAO = GetSoftwareVendorValueAsString(nameof(DecimalFormatSAFTAO));
+            DecimalFormatGrossTotalSAFTPT = GetSoftwareVendorValueAsString(nameof(DecimalFormatGrossTotalSAFTPT));
+            DecimalRoundTo = GetSoftwareVendorValueAsInt(nameof(DecimalRoundTo));
+            SaftProductCompanyTaxID = GetSoftwareVendorValueAsString(nameof(SaftProductCompanyTaxID));
+            SaftSoftwareCertificateNumber = GetSoftwareVendorValueAsString(nameof(SaftSoftwareCertificateNumber));
+            SaftSoftwareCertificateNumberAO = GetSoftwareVendorValueAsString(nameof(SaftSoftwareCertificateNumberAO));
+            SaftVersionPrefix = GetSoftwareVendorValueAsString(nameof(SaftVersionPrefix));
+            SaftVersionPrefixAO = GetSoftwareVendorValueAsString(nameof(SaftVersionPrefixAO));
+            SaftVersion = GetSoftwareVendorValueAsString(nameof(SaftVersion));
+            SaftVersionAO = GetSoftwareVendorValueAsString(nameof(SaftVersionAO));
+            HashControl = GetSoftwareVendorValueAsInt(nameof(HashControl));
+            TaxAccountingBasis = GetSoftwareVendorValueAsString(nameof(TaxAccountingBasis));
+            SaftCurrencyCode = GetSoftwareVendorValueAsString(nameof(SaftCurrencyCode));
+            SaftCurrencyCodeAO = GetSoftwareVendorValueAsString(nameof(SaftCurrencyCodeAO));
 
-            DocumentsPadLength = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsInt(nameof(DocumentsPadLength));
-            DateTimeFormatDocumentDate = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(DateTimeFormatDocumentDate));
-            DateTimeFormatCombinedDateTime = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(DateTimeFormatCombinedDateTime));
-            FinanceFinalConsumerFiscalNumber = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(FinanceFinalConsumerFiscalNumber));
-            FinanceFinalConsumerFiscalNumberDisplay = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(FinanceFinalConsumerFiscalNumberDisplay));
-            DecimalFormatSAFTPT = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(DecimalFormatSAFTPT));
-            DecimalFormatSAFTAO = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(DecimalFormatSAFTAO));
-            DecimalFormatGrossTotalSAFTPT = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(DecimalFormatGrossTotalSAFTPT));
-            DecimalRoundTo = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsInt(nameof(DecimalRoundTo));
-            SaftProductCompanyTaxID = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(SaftProductCompanyTaxID));
-            SaftSoftwareCertificateNumber = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(SaftSoftwareCertificateNumber));
-            SaftSoftwareCertificateNumberAO = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(SaftSoftwareCertificateNumberAO));
-            SaftVersionPrefix = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(SaftVersionPrefix));
-            SaftVersionPrefixAO = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(SaftVersionPrefixAO));
-            SaftVersion = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(SaftVersion));
-            SaftVersionAO = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(SaftVersionAO));
-            HashControl = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsInt(nameof(HashControl));
-            TaxAccountingBasis = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(TaxAccountingBasis));
-            SaftCurrencyCode = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(SaftCurrencyCode));
-            SaftCurrencyCodeAO = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(SaftCurrencyCodeAO));
-
-            DocumentFinanceSeriesGenerationFactoryUseRandomAcronymPrefix = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsBool(nameof(DocumentFinanceSeriesGenerationFactoryUseRandomAcronymPrefix));
-            DocumentFinanceSeriesGenerationFactoryAcronymLastSerieFormat = LogicPOS.Settings.PluginSettings.GetSoftwareVendorValueAsString(nameof(DocumentFinanceSeriesGenerationFactoryAcronymLastSerieFormat));
+            DocumentFinanceSeriesGenerationFactoryUseRandomAcronymPrefix = GetSoftwareVendorValueAsBool(nameof(DocumentFinanceSeriesGenerationFactoryUseRandomAcronymPrefix));
+            DocumentFinanceSeriesGenerationFactoryAcronymLastSerieFormat = GetSoftwareVendorValueAsString(nameof(DocumentFinanceSeriesGenerationFactoryAcronymLastSerieFormat));
         }
 
         private static string GetSaftProductID()
@@ -289,9 +264,9 @@ namespace logicpos.shared.App
                 }
                 else
                 {
-                    result = (LogicPOS.Settings.PluginSettings.PluginSoftwareVendor != null)
+                    result = (PluginSoftwareVendor != null)
                         // From Vendor Plugin
-                        ? LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.GetFinanceRuleSimplifiedInvoiceMaxTotal()
+                        ? PluginSoftwareVendor.GetFinanceRuleSimplifiedInvoiceMaxTotal()
                         // Default
                         : 1000;
                 }
@@ -320,9 +295,9 @@ namespace logicpos.shared.App
                 }
                 else
                 {
-                    result = (LogicPOS.Settings.PluginSettings.PluginSoftwareVendor != null)
+                    result = (PluginSoftwareVendor != null)
                         // From Vendor Plugin
-                        ? LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.GetFinanceRuleSimplifiedInvoiceMaxTotalServices()
+                        ? PluginSoftwareVendor.GetFinanceRuleSimplifiedInvoiceMaxTotalServices()
                         // Default
                         : 100;
                     ;
@@ -344,9 +319,9 @@ namespace logicpos.shared.App
             //PT : Override Defaults
             if (DataLayerSettings.ConfigurationSystemCountry.Oid == XpoOidConfigurationCountryPortugal)
             {
-                result = (LogicPOS.Settings.PluginSettings.PluginSoftwareVendor != null)
+                result = (PluginSoftwareVendor != null)
                     // From Vendor Plugin
-                    ? LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.GetFinanceRuleRequiredCustomerDetailsAboveValue()
+                    ? PluginSoftwareVendor.GetFinanceRuleRequiredCustomerDetailsAboveValue()
                     // Default
                     : 1000;
                 ;

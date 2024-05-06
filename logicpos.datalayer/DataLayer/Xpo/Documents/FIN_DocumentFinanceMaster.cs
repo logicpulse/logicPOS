@@ -1,7 +1,5 @@
 ﻿using DevExpress.Xpo;
 using System;
-using System.Data;
-using System.Text;
 
 namespace logicpos.datalayer.DataLayer.Xpo
 {

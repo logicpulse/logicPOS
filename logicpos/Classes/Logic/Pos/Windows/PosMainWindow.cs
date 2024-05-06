@@ -14,6 +14,8 @@ using logicpos.financial.library.Classes.Hardware.Printers;
 using logicpos.financial.library.Classes.WorkSession;
 using logicpos.shared.App;
 using logicpos.shared.Classes.Orders;
+using LogicPOS.Settings;
+using LogicPOS.Settings.Extensions;
 using System;
 
 namespace logicpos
@@ -196,7 +198,7 @@ namespace logicpos
                         DataLayerFramework.LoggedUser = (sys_userdetail)DataLayerUtils.GetXPGuidObject(typeof(sys_userdetail), dialogChangeUser.UserDetail.Oid);
                         SharedFramework.LoggedUserPermissions = SharedUtils.GetUserPermissions();
                         TicketList.UpdateTicketListButtons();
-                        SharedUtils.Audit("USER_CHANGE", string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "audit_message_user_change"), DataLayerFramework.LoggedUser.Name));
+                        SharedUtils.Audit("USER_CHANGE", string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_user_change"), DataLayerFramework.LoggedUser.Name));
                         terminalInfo = string.Format("{0} : {1}", DataLayerFramework.LoggedTerminal.Designation, DataLayerFramework.LoggedUser.Name);
                         if (LabelTerminalInfo.Text != terminalInfo) LabelTerminalInfo.Text = terminalInfo;
                     }
@@ -214,7 +216,7 @@ namespace logicpos
                                 DataLayerFramework.LoggedUser = (sys_userdetail)DataLayerUtils.GetXPGuidObject(typeof(sys_userdetail), dialogChangeUser.UserDetail.Oid);
                                 SharedFramework.LoggedUserPermissions = SharedUtils.GetUserPermissions();
                                 TicketList.UpdateTicketListButtons();
-                                SharedUtils.Audit("USER_loggerIN", string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "audit_message_user_loggerin"), DataLayerFramework.LoggedUser.Name));
+                                SharedUtils.Audit("USER_loggerIN", string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_user_loggerin"), DataLayerFramework.LoggedUser.Name));
                                 terminalInfo = string.Format("{0} : {1}", DataLayerFramework.LoggedTerminal.Designation, DataLayerFramework.LoggedUser.Name);
                                 if (LabelTerminalInfo.Text != terminalInfo) LabelTerminalInfo.Text = terminalInfo;
                                 //After First time Login ShowNotifications
@@ -262,12 +264,12 @@ namespace logicpos
 
             //IN009277
             string getFirstSubFamily = "0";
-            if (DataLayerFramework.DatabaseType.ToString() == "MySql" || DataLayerFramework.DatabaseType.ToString() == "SQLite")
+            if (DatabaseSettings.DatabaseType.IsMySql() || DatabaseSettings.DatabaseType.IsSQLite())
             {
                 string mysql = string.Format("SELECT Oid FROM fin_articlesubfamily WHERE Family = '{0}' Order by CODE Asc LIMIT 1", TablePadFamily.SelectedButtonOid);
                 getFirstSubFamily = XPOSettings.Session.ExecuteScalar(mysql).ToString();
             }
-            else if (DataLayerFramework.DatabaseType.ToString() == "MSSqlServer")
+            else if (DatabaseSettings.DatabaseType.ToString() == "MSSqlServer")
             {
                 string mssqlServer = string.Format("SELECT TOP 1 Oid FROM fin_articlesubfamily WHERE Family = '{0}' Order by CODE Asc", TablePadFamily.SelectedButtonOid);
                 getFirstSubFamily = XPOSettings.Session.ExecuteScalar(mssqlServer).ToString();
@@ -345,13 +347,13 @@ namespace logicpos
                     var resultOpenDoor = PrintRouter.OpenDoor(DataLayerFramework.LoggedTerminal.Printer);
                     if (!resultOpenDoor)
                     {
-                        Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_information"), string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "open_cash_draw_permissions")));
+                        Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_information"), string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "open_cash_draw_permissions")));
                     }
                     else
                     {
                         //Audit
                         SharedUtils.Audit("CASHDRAWER_OUT", string.Format(
-                            resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "audit_message_cashdrawer_out"),
+                            resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_cashdrawer_out"),
                             DataLayerFramework.LoggedTerminal.Designation,
                             "Button Open Door"));
                     }
@@ -426,8 +428,8 @@ namespace logicpos
                 //With Valid WorkSessionPeriodDay
                 if (SharedFramework.WorkSessionPeriodDay.SessionStatus == WorkSessionPeriodStatus.Open)
                 {
-                    //if (_touchButtonPosToolbarCashDrawer.LabelText != resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_worksession_close_day)
-                    //  _touchButtonPosToolbarCashDrawer.LabelText = resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_worksession_close_day;
+                    //if (_touchButtonPosToolbarCashDrawer.LabelText != resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_worksession_close_day)
+                    //  _touchButtonPosToolbarCashDrawer.LabelText = resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_worksession_close_day;
                     //if (!_touchButtonPosToolbarCashDrawer.Sensitive == true)
                     //  _touchButtonPosToolbarCashDrawer.Sensitive = true;
 
@@ -439,13 +441,13 @@ namespace logicpos
                         //IN009231
                         //Abrir ordem na abertura
                         SelectedData xpoSelectedData = null;
-                        if (DataLayerFramework.DatabaseType.ToString() == "MySql" || DataLayerFramework.DatabaseType.ToString() == "SQLite")
+                        if (DatabaseSettings.DatabaseType.ToString() == "MySql" || DatabaseSettings.DatabaseType.ToString() == "SQLite")
                         {
                             string sqlQuery = @"SELECT Oid FROM pos_configurationplacetable WHERE (Disabled IS NULL or Disabled  <> 1) ORDER BY Code asc LIMIT 1";
 
                             xpoSelectedData = XPOSettings.Session.ExecuteQueryWithMetadata(sqlQuery);
                         }
-                        else if (DataLayerFramework.DatabaseType.ToString() == "MSSqlServer")
+                        else if (DatabaseSettings.DatabaseType.ToString() == "MSSqlServer")
                         {
                             string sqlQuery = @"SELECT TOP 1 Oid FROM pos_configurationplacetable WHERE (Disabled IS NULL or Disabled  <> 1) ORDER BY Code asc";
                             xpoSelectedData = XPOSettings.Session.ExecuteQueryWithMetadata(sqlQuery);
@@ -505,8 +507,8 @@ namespace logicpos
             //No WorkSessionPeriodDay
             else if (!SharedFramework.AppUseBackOfficeMode)
             {
-                //if (_touchButtonPosToolbarCashDrawer.LabelText != resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_worksession_open_day)
-                //  _touchButtonPosToolbarCashDrawer.LabelText = resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_worksession_open_day;
+                //if (_touchButtonPosToolbarCashDrawer.LabelText != resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_worksession_open_day)
+                //  _touchButtonPosToolbarCashDrawer.LabelText = resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_worksession_open_day;
                 //if (!_touchButtonPosToolbarCashDrawer.Sensitive == false)
                 //  _touchButtonPosToolbarCashDrawer.Sensitive = false;
                 if (!_ticketPad.Sensitive == false)

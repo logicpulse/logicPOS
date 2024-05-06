@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Resources;
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos.financial.library.Classes.Reports
 {
@@ -79,10 +80,10 @@ namespace logicpos.financial.library.Classes.Reports
             Dictionary<string, string> customVars = new Dictionary<string, string>
             {
                 //App
-                { "APP_COMPANY", SharedSettings.AppCompanyName },
+                { "APP_COMPANY", LogicPOS.Settings.PluginSettings.AppCompanyName },
                 { "APP_NAME", pAppName },
                 { "APP_VERSION", SharedUtils.ProductVersion },
-                { "DATE", DataLayerUtils.CurrentDateTimeAtomic().ToString(SharedSettings.DateFormat) }
+                { "DATE", DataLayerUtils.CurrentDateTimeAtomic().ToString(LogicPOS.Settings.CultureSettings.DateFormat) }
             };
             if (SharedSettings.ConfigurationSystemCurrency != null)
             {
@@ -183,7 +184,7 @@ namespace logicpos.financial.library.Classes.Reports
                   : string.Format("UNDEFINED [{0}]", resourceName);
                 if(resourceName == "global_documentfinance_type_title_fs")
                 {
-                    result = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_documentfinance_type_title_fs");
+                    result = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_type_title_fs");
                 }
 
                 //_logger.Debug(string.Format("Message: [{0}]", resourceName));
@@ -193,9 +194,9 @@ namespace logicpos.financial.library.Classes.Reports
                 /*if (!SettingsApp.ConfigurationSystemCountry.Equals(SettingsApp.XpoOidConfigurationCountryPortugal))
                     if (resourceName.Equals("global_documentfinance_type_report_invoice_footer_at"))
                     {
-                        if (SharedFramework.CurrentCulture.Name.Equals("pt-PT"))
+                        if (LogicPOS.Settings.CultureSettings.CurrentCulture.Name.Equals("pt-PT"))
                             result = result.Replace(" - Alinea f) do n.5 do art. 36 do CIVA", string.Empty);
-                        else if (SharedFramework.CurrentCulture.Name.Equals("fr-FR"))
+                        else if (LogicPOS.Settings.CultureSettings.CurrentCulture.Name.Equals("fr-FR"))
                             result = result.Replace(" - Alinea f) n.5 de l´art. 36 du Code de la IVA", string.Empty);
                         else 
                             result = result.Replace(" - paragraph f) n.5 of art. 36 of the Vat Code", string.Empty);

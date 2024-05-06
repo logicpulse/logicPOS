@@ -11,10 +11,13 @@ using logicpos.shared.App;
 using logicpos.shared.Classes.Finance;
 using logicpos.shared.Classes.Orders;
 using logicpos.shared.Enums;
+using LogicPOS.Settings;
+using LogicPOS.Settings.Enums;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos.financial.library.Classes.Finance
 {
@@ -161,7 +164,7 @@ namespace logicpos.financial.library.Classes.Finance
                             if (documentFinanceType.Oid != SharedSettings.XpoOidDocumentFinanceTypeCreditNote)
                             {
                                 //Assign Date and User for all Other
-                                documentFinanceMasterParentDocument.DocumentStatusDate = documentDateTime.ToString(SharedSettings.DateTimeFormatCombinedDateTime);
+                                documentFinanceMasterParentDocument.DocumentStatusDate = documentDateTime.ToString(LogicPOS.Settings.CultureSettings.DateTimeFormatCombinedDateTime);
                                 documentFinanceMasterParentDocument.DocumentStatusUser = userDetail.CodeInternal;
                             }
                             //_logger.Debug(String.Format("DocumentNumber: [{0}], DocumentStatusStatus: [{1}], DocumentStatusDate: [{2}], DocumentStatusUser: [{3}]", pParameters.OrderReferences[0].DocumentNumber, pParameters.OrderReferences[0].DocumentStatusStatus, pParameters.OrderReferences[0].DocumentStatusDate, pParameters.OrderReferences[0].DocumentStatusUser));
@@ -289,7 +292,7 @@ namespace logicpos.financial.library.Classes.Finance
                         documentFinanceMaster.DocumentStatusStatus = "N";
                     }
                     //Always assign DocumentStatusDate
-                    documentFinanceMaster.DocumentStatusDate = documentDateTime.ToString(SharedSettings.DateTimeFormatCombinedDateTime);
+                    documentFinanceMaster.DocumentStatusDate = documentDateTime.ToString(LogicPOS.Settings.CultureSettings.DateTimeFormatCombinedDateTime);
 
                     //Notes
                     if (pParameters.Notes != string.Empty)
@@ -357,9 +360,9 @@ namespace logicpos.financial.library.Classes.Finance
                             //Get Article
                             article = (fin_article)uowSession.GetObjectByKey(typeof(fin_article), item.Key.ArticleOid);
                             //Get VatRate formated for filter, in sql server gives error without this it filters 23,0000 and not 23.0000 resulting in null vatRate
-                            string filterVat = SharedUtils.DecimalToString(item.Key.Vat, SharedFramework.CurrentCultureNumberFormat);
+                            string filterVat = LogicPOS.Utility.DataConversionUtils.DecimalToString(item.Key.Vat);
                             string executeSql = string.Format(@"SELECT Oid FROM fin_configurationvatrate WHERE Value = '{0}';", filterVat);
-                            vatRateOid = SharedUtils.GetGuidFromQuery(executeSql);
+                            vatRateOid = XPOHelper.GetGuidFromQuery(executeSql);
                             vatRate = (fin_configurationvatrate)uowSession.GetObjectByKey(typeof(fin_configurationvatrate), vatRateOid);
 
                             //If Type dont Have Price it Creates an Empty Details document, always use HavePrice, Only Type : Informative Created by Muga dont use HavePrice
@@ -532,8 +535,8 @@ namespace logicpos.financial.library.Classes.Finance
                     //Global Document Date
                     documentFinanceMaster.Date = documentDateTime;
                     //SAF-T(PT)
-                    documentFinanceMaster.DocumentDate = documentDateTime.ToString(SharedSettings.DateTimeFormatDocumentDate);
-                    documentFinanceMaster.SystemEntryDate = documentDateTime.ToString(SharedSettings.DateTimeFormatCombinedDateTime);
+                    documentFinanceMaster.DocumentDate = documentDateTime.ToString(LogicPOS.Settings.CultureSettings.DateTimeFormatDocumentDate);
+                    documentFinanceMaster.SystemEntryDate = documentDateTime.ToString(LogicPOS.Settings.CultureSettings.DateTimeFormatCombinedDateTime);
                     documentFinanceMaster.DocumentNumber = documentNumber;
                     documentFinanceMaster.TotalNet = pParameters.ArticleBag.TotalNet;
                     documentFinanceMaster.TotalGross = pParameters.ArticleBag.TotalGross;
@@ -645,7 +648,7 @@ namespace logicpos.financial.library.Classes.Finance
                                 if (placeTable != null)
                                 {
                                     placeTable.TableStatus = TableStatus.Free;
-                                    SharedUtils.Audit("TABLE_OPEN", string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "audit_message_table_open"), placeTable.Designation));
+                                    SharedUtils.Audit("TABLE_OPEN", string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_table_open"), placeTable.Designation));
                                     placeTable.DateTableClosed = documentDateTime;
                                     placeTable.TotalOpen = 0;
                                     //Required to Reload Objects after has been changed in Another Session(uowSession)
@@ -705,7 +708,7 @@ namespace logicpos.financial.library.Classes.Finance
                             }
 
                         //Audit
-                        SharedUtils.Audit("FINANCE_DOCUMENT_CREATED", string.Format("{0} {1}: {2}", documentFinanceMaster.DocumentType.Designation, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_document_created"), documentFinanceMaster.DocumentNumber));
+                        SharedUtils.Audit("FINANCE_DOCUMENT_CREATED", string.Format("{0} {1}: {2}", documentFinanceMaster.DocumentType.Designation, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_document_created"), documentFinanceMaster.DocumentNumber));
 
                         //Process Stock
                         try
@@ -770,8 +773,8 @@ namespace logicpos.financial.library.Classes.Finance
             bool debug = false;
             fin_documentfinancemaster doc = pDocumentFinanceMaster;
             //Required to ALways use "." and not Culture Decimal separator, ex ","
-            //string TotalFinalRound = SharedUtils.DecimalToString(doc.TotalFinalRound).Replace(',', '.');
-            string TotalFinalRound = SharedUtils.DecimalToString(Convert.ToDecimal(doc.TotalFinalRound), SharedFramework.CurrentCultureNumberFormat);
+            //string TotalFinalRound = LogicPOS.Utility.DataConversionUtils.DecimalToString(doc.TotalFinalRound).Replace(',', '.');
+            string TotalFinalRound = LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(doc.TotalFinalRound));
             //Hash must be the first, to use first field has value for ExecuteScalar
             string sql = string.Format(@"SELECT Hash, HashControl, Date AS InvoiceDate, SystemEntryDate, DocumentNumber AS InvoiceNo, TotalFinalRound FROM fin_documentfinancemaster WHERE DocumentType = '{0}' and  DocumentSerie = '{1}' ORDER BY Date DESC;", pDocType.Oid, pDocSerie.Oid);
             var olastDocumentHash = pSession.ExecuteScalar(sql);
@@ -873,8 +876,8 @@ namespace logicpos.financial.library.Classes.Finance
             string I1 = "I1:PT*";
             string I7 = "";
             string I8 = "";
-            string N = "N:" + SharedUtils.DecimalToString(doc.TotalTax).Replace(",", ".") + "*";
-            string O = "O:" + SharedUtils.DecimalToString(doc.TotalFinal).Replace(",", ".") + "*";
+            string N = "N:" + LogicPOS.Utility.DataConversionUtils.DecimalToString(doc.TotalTax).Replace(",", ".") + "*";
+            string O = "O:" + LogicPOS.Utility.DataConversionUtils.DecimalToString(doc.TotalFinal).Replace(",", ".") + "*";
             string Q = "Q:" + GenDocumentHash4Chars(doc.Hash) + "*";
             string R = "R:" + SharedSettings.SaftSoftwareCertificateNumber + "*";
             string S = "";
@@ -954,7 +957,7 @@ namespace logicpos.financial.library.Classes.Finance
             // Protection In case of bad hash, ex when we dont have SoftwareVendorPlugin Registered
             if (string.IsNullOrEmpty(pHash))
             {
-                throw new Exception(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document_bad_hash_detected"));
+                throw new Exception(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_error_creating_financial_document_bad_hash_detected"));
             }
             else
             {
@@ -992,9 +995,9 @@ namespace logicpos.financial.library.Classes.Finance
             }
 
             //Settings
-            string dateTimeFormatDocumentDate = SharedSettings.DateTimeFormatDocumentDate;
-            string dateTimeFormatCombinedDateTime = SharedSettings.DateTimeFormatCombinedDateTime;
-            int decimalRoundTo = SharedSettings.DecimalRoundTo;
+            string dateTimeFormatDocumentDate = LogicPOS.Settings.CultureSettings.DateTimeFormatDocumentDate;
+            string dateTimeFormatCombinedDateTime = LogicPOS.Settings.CultureSettings.DateTimeFormatCombinedDateTime;
+            int decimalRoundTo = LogicPOS.Settings.CultureSettings.DecimalRoundTo;
 
             //Init Local Vars  
             bool debug = false;
@@ -1267,7 +1270,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                                 documentMaster.PayedDate = currentDateTime;
 
                                 //On Full Invoice Payment Call ChangePayedInvoiceAndRelatedDocumentsStatus (Change status of Parent Document to F)
-                                string statusReason = string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_documents_status_document_invoiced"), documentMaster.DocumentNumber);
+                                string statusReason = string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documents_status_document_invoiced"), documentMaster.DocumentNumber);
                                 //Get Fresh Object in UOW
                                 fin_documentfinancemaster documentParent = null;
                                 //Send with UOW Objects
@@ -1297,18 +1300,18 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                             {
                                 if (!string.IsNullOrEmpty(documentFinancePayment.Notes))
                                 {
-                                    if (documentFinancePayment.Notes.Contains(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_column_related_doc")))
+                                    if (documentFinancePayment.Notes.Contains(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_document_finance_column_related_doc")))
                                     {
                                         documentFinancePayment.Notes += "; [" + documentMaster.DocumentNumber + "] " + relatedDocuments;
                                     }
                                     else
                                     {
-                                        documentFinancePayment.Notes += Environment.NewLine + resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_column_related_doc") + ": [" + documentMaster.DocumentNumber + "] " + relatedDocuments;
+                                        documentFinancePayment.Notes += Environment.NewLine + resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_document_finance_column_related_doc") + ": [" + documentMaster.DocumentNumber + "] " + relatedDocuments;
                                     }
                                 }
                                 else
                                 {
-                                    documentFinancePayment.Notes += resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_column_related_doc") + ": [" + documentMaster.DocumentNumber + "] " + relatedDocuments;
+                                    documentFinancePayment.Notes += resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_document_finance_column_related_doc") + ": [" + documentMaster.DocumentNumber + "] " + relatedDocuments;
                                 }
                             }
                         }
@@ -1422,9 +1425,9 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                 {
                     documentDate = pDocumentFinanceMaster.Date;
                     movementAmount = pDocumentFinanceMaster.TotalFinal;
-                    movementDescriptionDocument = string.Format("{0} : {1}", pDocumentFinanceMaster.DocumentNumber, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_finance_document"));
-                    movementDescriptionTotalDelivery = string.Format("{0} : {1}", pDocumentFinanceMaster.DocumentNumber, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_total_deliver"));
-                    movementDescriptionTotalChange = string.Format("{0} : {1}", pDocumentFinanceMaster.DocumentNumber, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_total_change"));
+                    movementDescriptionDocument = string.Format("{0} : {1}", pDocumentFinanceMaster.DocumentNumber, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_finance_document"));
+                    movementDescriptionTotalDelivery = string.Format("{0} : {1}", pDocumentFinanceMaster.DocumentNumber, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_total_deliver"));
+                    movementDescriptionTotalChange = string.Format("{0} : {1}", pDocumentFinanceMaster.DocumentNumber, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_total_change"));
                     if (pParameters.TotalDelivery > 0) totalDelivery = pParameters.TotalDelivery;
                     if (pParameters.TotalChange > 0) totalChange = pParameters.TotalChange;
                 }
@@ -1432,9 +1435,9 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                 {
                     documentDate = pDocumentFinancePayment.CreatedAt;//.PaymentDate
                     movementAmount = pDocumentFinancePayment.PaymentAmount;
-                    movementDescriptionDocument = string.Format("{0} : {1}", pDocumentFinancePayment.PaymentRefNo, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_payment_document"));
-                    movementDescriptionTotalDelivery = string.Format("{0} : {1}", pDocumentFinancePayment.PaymentRefNo, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_total_deliver"));
-                    movementDescriptionTotalChange = string.Format("{0} : {1}", pDocumentFinancePayment.PaymentRefNo, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"], "global_total_change"));
+                    movementDescriptionDocument = string.Format("{0} : {1}", pDocumentFinancePayment.PaymentRefNo, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_payment_document"));
+                    movementDescriptionTotalDelivery = string.Format("{0} : {1}", pDocumentFinancePayment.PaymentRefNo, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_total_deliver"));
+                    movementDescriptionTotalChange = string.Format("{0} : {1}", pDocumentFinancePayment.PaymentRefNo, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_total_change"));
                     //TODO: Improve with Payment TotalChange Functionality
                     totalDelivery = movementAmount;
                 }
@@ -1447,7 +1450,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                 ProcessWorkSessionMovement.PersistWorkSessionMovement(
                     pSession,
                     workSessionPeriod,
-                    (pos_worksessionmovementtype)SharedUtils.GetXPGuidObjectFromField(pSession, typeof(pos_worksessionmovementtype), "Token", "FINANCE_DOCUMENT"),
+                    (pos_worksessionmovementtype)XPOHelper.GetXPGuidObjectFromField(pSession, typeof(pos_worksessionmovementtype), "Token", "FINANCE_DOCUMENT"),
                     pDocumentFinanceMaster,
                     pDocumentFinancePayment,
                     userDetail,
@@ -1465,7 +1468,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                     ProcessWorkSessionMovement.PersistWorkSessionMovement(
                         pSession,
                         workSessionPeriod,
-                        (pos_worksessionmovementtype)SharedUtils.GetXPGuidObjectFromField(pSession, typeof(pos_worksessionmovementtype), "Token", "CASHDRAWER_IN"),
+                        (pos_worksessionmovementtype)XPOHelper.GetXPGuidObjectFromField(pSession, typeof(pos_worksessionmovementtype), "Token", "CASHDRAWER_IN"),
                         pDocumentFinanceMaster,
                         pDocumentFinancePayment,
                         userDetail,
@@ -1481,7 +1484,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                         if (pParameters.TotalChange > 0) ProcessWorkSessionMovement.PersistWorkSessionMovement(
                             pSession,
                             workSessionPeriod,
-                            (pos_worksessionmovementtype)SharedUtils.GetXPGuidObjectFromField(pSession, typeof(pos_worksessionmovementtype), "Token", "CASHDRAWER_OUT"),
+                            (pos_worksessionmovementtype)XPOHelper.GetXPGuidObjectFromField(pSession, typeof(pos_worksessionmovementtype), "Token", "CASHDRAWER_OUT"),
                             pDocumentFinanceMaster,
                             pDocumentFinancePayment,
                             userDetail,
@@ -1710,7 +1713,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                 andDocumentType = $" AND DocFinMaster.DocumentType = '{documentType}'";
             }
 
-            switch (DataLayerFramework.DatabaseType)
+            switch (DatabaseSettings.DatabaseType)
             {
                 case DatabaseType.MySql:
                 case DatabaseType.SQLite:
