@@ -14,6 +14,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
 using LogicPOS.Settings.Extensions;
+using LogicPOS.Globalization;
 
 [assembly: log4net.Config.XmlConfigurator(Watch = true)]
 
@@ -88,7 +89,7 @@ namespace logicpos
                     }
                     else
                     {
-                        Utils.ShowMessageNonTouch(null, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_pos_instance_already_running"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_information"));
+                        Utils.ShowMessageNonTouch(null, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_pos_instance_already_running"), CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_information"));
                         return;
                     }
                 }

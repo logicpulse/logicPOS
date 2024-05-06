@@ -1,4 +1,5 @@
 ﻿using System;
+using LogicPOS.Globalization;
 using LogicPOS.Settings.Extensions;
 
 namespace logicpos.Classes.Formatters
@@ -17,7 +18,7 @@ namespace logicpos.Classes.Formatters
             try
             {
                 decimal quantity = Convert.ToDecimal(arg);
-                result = (quantity > 0) ? resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_stock_movement_in") : resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_stock_movement_out");
+                result = (quantity > 0) ? CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_stock_movement_in") : CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_stock_movement_out");
             }
             catch (Exception ex)
             {

@@ -18,6 +18,7 @@ using System;
 using System.Data;
 using System.Drawing;
 using LogicPOS.Settings.Extensions;
+using LogicPOS.Globalization;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -107,7 +108,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 //Init Local Vars
                 _sourceWindow = pSourceWindow;
-                string windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_payments");
+                string windowTitle = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_payments");
                 //TODO:THEME
                 Size windowSize = new Size(633, 620);
                 string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_payments.png";
@@ -152,15 +153,15 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 fin_configurationpaymentmethod xpoCustomerCard = (fin_configurationpaymentmethod)xPSelectData.GetXPGuidObjectFromField(typeof(fin_configurationpaymentmethod), "Token", "CUSTOMER_CARD");
 
                 //Instantiate Buttons  //IN009257 Redimensionar botões para a resolução 1024 x 768. Alterei variável de tamanho de icons. era a mesma que documentos
-                TouchButtonIconWithText buttonMoney = new TouchButtonIconWithText("touchButtonMoney_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), xpoMoney.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, $"{DataLayerFramework.Path["images"]}{xpoMoney.ButtonIcon}", _sizeBasePaymentButtonIcon, _sizeBasePaymentButton.Width, _sizeBasePaymentButton.Height) { CurrentButtonOid = xpoMoney.Oid, Sensitive = !xpoMoney.Disabled };
-                TouchButtonIconWithText buttonCheck = new TouchButtonIconWithText("touchButtonCheck_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), xpoCheck.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, $"{DataLayerFramework.Path["images"]}{xpoCheck.ButtonIcon}", _sizeBasePaymentButtonIcon, _sizeBasePaymentButton.Width, _sizeBasePaymentButton.Height) { CurrentButtonOid = xpoCheck.Oid, Sensitive = !xpoCheck.Disabled };
-                TouchButtonIconWithText buttonMB = new TouchButtonIconWithText("touchButtonMB_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), xpoMB.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, $"{DataLayerFramework.Path["images"]}{xpoMB.ButtonIcon}", _sizeBasePaymentButtonIcon, _sizeBasePaymentButton.Width, _sizeBasePaymentButton.Height) { CurrentButtonOid = xpoMB.Oid, Sensitive = !xpoMB.Disabled };
-                TouchButtonIconWithText buttonCreditCard = new TouchButtonIconWithText("touchButtonCreditCard_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), xpoCreditCard.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, $"{DataLayerFramework.Path["images"]}{xpoCreditCard.ButtonIcon}", _sizeBasePaymentButtonIcon, _sizeBasePaymentButton.Width, _sizeBasePaymentButton.Height) { CurrentButtonOid = xpoCreditCard.Oid, Sensitive = !xpoCreditCard.Disabled };
+                TouchButtonIconWithText buttonMoney = new TouchButtonIconWithText("touchButtonMoney_Green", _colorBaseDialogDefaultButtonBackground, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), xpoMoney.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, $"{DataLayerFramework.Path["images"]}{xpoMoney.ButtonIcon}", _sizeBasePaymentButtonIcon, _sizeBasePaymentButton.Width, _sizeBasePaymentButton.Height) { CurrentButtonOid = xpoMoney.Oid, Sensitive = !xpoMoney.Disabled };
+                TouchButtonIconWithText buttonCheck = new TouchButtonIconWithText("touchButtonCheck_Green", _colorBaseDialogDefaultButtonBackground, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), xpoCheck.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, $"{DataLayerFramework.Path["images"]}{xpoCheck.ButtonIcon}", _sizeBasePaymentButtonIcon, _sizeBasePaymentButton.Width, _sizeBasePaymentButton.Height) { CurrentButtonOid = xpoCheck.Oid, Sensitive = !xpoCheck.Disabled };
+                TouchButtonIconWithText buttonMB = new TouchButtonIconWithText("touchButtonMB_Green", _colorBaseDialogDefaultButtonBackground, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), xpoMB.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, $"{DataLayerFramework.Path["images"]}{xpoMB.ButtonIcon}", _sizeBasePaymentButtonIcon, _sizeBasePaymentButton.Width, _sizeBasePaymentButton.Height) { CurrentButtonOid = xpoMB.Oid, Sensitive = !xpoMB.Disabled };
+                TouchButtonIconWithText buttonCreditCard = new TouchButtonIconWithText("touchButtonCreditCard_Green", _colorBaseDialogDefaultButtonBackground, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), xpoCreditCard.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, $"{DataLayerFramework.Path["images"]}{xpoCreditCard.ButtonIcon}", _sizeBasePaymentButtonIcon, _sizeBasePaymentButton.Width, _sizeBasePaymentButton.Height) { CurrentButtonOid = xpoCreditCard.Oid, Sensitive = !xpoCreditCard.Disabled };
                 /* IN009142 */
-                TouchButtonIconWithText buttonDebitCard = new TouchButtonIconWithText("touchButtonDebitCard_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), xpoDebitCard.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, $"{DataLayerFramework.Path["images"]}{xpoDebitCard.ButtonIcon}", _sizeBasePaymentButtonIcon, _sizeBasePaymentButton.Width, _sizeBasePaymentButton.Height) { CurrentButtonOid = xpoDebitCard.Oid, Sensitive = !xpoDebitCard.Disabled };
-                TouchButtonIconWithText buttonVisa = new TouchButtonIconWithText("touchButtonVisa_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), xpoVisa.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, $"{DataLayerFramework.Path["images"]}{xpoVisa.ButtonIcon}", _sizeBasePaymentButtonIcon, _sizeBasePaymentButton.Width, _sizeBasePaymentButton.Height) { CurrentButtonOid = xpoVisa.Oid, Sensitive = !xpoVisa.Disabled };
-                TouchButtonIconWithText buttonCurrentAccount = new TouchButtonIconWithText("touchButtonCurrentAccount_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), xpoCurrentAccount.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, $"{DataLayerFramework.Path["images"]}{xpoCurrentAccount.ButtonIcon}", _sizeBasePaymentButtonIcon, _sizeBaseDialogDefaultButton.Width, _sizeBaseDialogDefaultButton.Height) { CurrentButtonOid = xpoCurrentAccount.Oid, Sensitive = !xpoCurrentAccount.Disabled };
-                TouchButtonIconWithText buttonCustomerCard = new TouchButtonIconWithText("touchButtonCustomerCard_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), xpoCustomerCard.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, $"{DataLayerFramework.Path["images"]}{xpoCustomerCard.ButtonIcon}", _sizeBasePaymentButtonIcon, _sizeBaseDialogDefaultButton.Width, _sizeBaseDialogDefaultButton.Height) { CurrentButtonOid = xpoCustomerCard.Oid, Sensitive = !xpoCustomerCard.Disabled };
+                TouchButtonIconWithText buttonDebitCard = new TouchButtonIconWithText("touchButtonDebitCard_Green", _colorBaseDialogDefaultButtonBackground, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), xpoDebitCard.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, $"{DataLayerFramework.Path["images"]}{xpoDebitCard.ButtonIcon}", _sizeBasePaymentButtonIcon, _sizeBasePaymentButton.Width, _sizeBasePaymentButton.Height) { CurrentButtonOid = xpoDebitCard.Oid, Sensitive = !xpoDebitCard.Disabled };
+                TouchButtonIconWithText buttonVisa = new TouchButtonIconWithText("touchButtonVisa_Green", _colorBaseDialogDefaultButtonBackground, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), xpoVisa.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, $"{DataLayerFramework.Path["images"]}{xpoVisa.ButtonIcon}", _sizeBasePaymentButtonIcon, _sizeBasePaymentButton.Width, _sizeBasePaymentButton.Height) { CurrentButtonOid = xpoVisa.Oid, Sensitive = !xpoVisa.Disabled };
+                TouchButtonIconWithText buttonCurrentAccount = new TouchButtonIconWithText("touchButtonCurrentAccount_Green", _colorBaseDialogDefaultButtonBackground, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), xpoCurrentAccount.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, $"{DataLayerFramework.Path["images"]}{xpoCurrentAccount.ButtonIcon}", _sizeBasePaymentButtonIcon, _sizeBaseDialogDefaultButton.Width, _sizeBaseDialogDefaultButton.Height) { CurrentButtonOid = xpoCurrentAccount.Oid, Sensitive = !xpoCurrentAccount.Disabled };
+                TouchButtonIconWithText buttonCustomerCard = new TouchButtonIconWithText("touchButtonCustomerCard_Green", _colorBaseDialogDefaultButtonBackground, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), xpoCustomerCard.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, $"{DataLayerFramework.Path["images"]}{xpoCustomerCard.ButtonIcon}", _sizeBasePaymentButtonIcon, _sizeBaseDialogDefaultButton.Width, _sizeBaseDialogDefaultButton.Height) { CurrentButtonOid = xpoCustomerCard.Oid, Sensitive = !xpoCustomerCard.Disabled };
                 //Secondary Buttons
                 //Events
                 buttonMoney.Clicked += buttonMoney_Clicked;
@@ -196,9 +197,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
                 //Labels
-                Label labelTotal = new Label(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_total_price_to_pay") + ":");
-                Label labelDelivery = new Label(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_total_deliver") + ":");
-                Label labelChange = new Label(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_total_change") + ":");
+                Label labelTotal = new Label(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_total_price_to_pay") + ":");
+                Label labelDelivery = new Label(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_total_deliver") + ":");
+                Label labelChange = new Label(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_total_change") + ":");
                 _labelTotalValue = new Label(LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(ArticleBagFullPayment.TotalFinal, SharedSettings.ConfigurationSystemCurrency.Acronym))
                 {
                     //Total Width
@@ -258,7 +259,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //Customer Name
                 CriteriaOperator criteriaOperatorCustomerName = null;
 				/* IN009202 */
-                _entryBoxSelectCustomerName = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_customer"), "Name", "Name", null, criteriaOperatorCustomerName, KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, false);
+                _entryBoxSelectCustomerName = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(_sourceWindow, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_customer"), "Name", "Name", null, criteriaOperatorCustomerName, KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, false);
                 _entryBoxSelectCustomerName.ClosePopup += delegate
                 {
                     //IN009284 POS - Pagamento conta-corrente - Cliente por defeito 
@@ -277,7 +278,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _entryBoxSelectCustomerName.EntryValidation.Changed += _entryBoxSelectCustomerName_Changed;
 
                 //Customer Discount
-                _entryBoxCustomerDiscount = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_discount"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexPercentage, true);
+                _entryBoxCustomerDiscount = new EntryBoxValidation(_sourceWindow, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_discount"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexPercentage, true);
                 _entryBoxCustomerDiscount.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.DecimalToString(0.0m);
                 _entryBoxCustomerDiscount.EntryValidation.Sensitive = false;
                 _entryBoxCustomerDiscount.EntryValidation.Changed += _entryBoxCustomerDiscount_Changed;
@@ -287,26 +288,26 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 };
 
                 //Address
-                _entryBoxCustomerAddress = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_address"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, false);/* IN009253 */
+                _entryBoxCustomerAddress = new EntryBoxValidation(this, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_address"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, false);/* IN009253 */
                 _entryBoxCustomerAddress.EntryValidation.Changed += delegate { Validate(); };
 
                 //Locality
-                _entryBoxCustomerLocality = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_locality"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, false);/* IN009253 */
+                _entryBoxCustomerLocality = new EntryBoxValidation(this, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_locality"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, false);/* IN009253 */
                 _entryBoxCustomerLocality.EntryValidation.Changed += delegate { Validate(); };
 
                 //ZipCode
-                _entryBoxCustomerZipCode = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_zipcode"), KeyboardMode.Alfa, DataLayerSettings.ConfigurationSystemCountry.RegExZipCode, false);
+                _entryBoxCustomerZipCode = new EntryBoxValidation(this, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_zipcode"), KeyboardMode.Alfa, DataLayerSettings.ConfigurationSystemCountry.RegExZipCode, false);
                 _entryBoxCustomerZipCode.WidthRequest = 150;
                 _entryBoxCustomerZipCode.EntryValidation.Changed += delegate { Validate(); };
                 
                 //City
-                _entryBoxCustomerCity = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_city"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, false);/* IN009253 */
+                _entryBoxCustomerCity = new EntryBoxValidation(this, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_city"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, false);/* IN009253 */
                 _entryBoxCustomerCity.WidthRequest = 200;
                 _entryBoxCustomerCity.EntryValidation.Changed += delegate { Validate(); };
 
                 //Country
                 CriteriaOperator criteriaOperatorCustomerCountry = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1) AND (RegExFiscalNumber IS NOT NULL AND RegExZipCode IS NOT NULL)");
-                _entryBoxSelectCustomerCountry = new XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry>(pSourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_country"), "Designation", "Oid", _intialValueConfigurationCountry, criteriaOperatorCustomerCountry, LogicPOS.Utility.RegexUtils.RegexGuid, true);
+                _entryBoxSelectCustomerCountry = new XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry>(pSourceWindow, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_country"), "Designation", "Oid", _intialValueConfigurationCountry, criteriaOperatorCustomerCountry, LogicPOS.Utility.RegexUtils.RegexGuid, true);
                 _entryBoxSelectCustomerCountry.WidthRequest = 235;
                 //Extra Protection to prevent Customer without Country
                 if (_entryBoxSelectCustomerCountry.Value != null) _entryBoxSelectCustomerCountry.EntryValidation.Validate(_entryBoxSelectCustomerCountry.Value.Oid.ToString());
@@ -328,12 +329,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 //FiscalNumber
                 CriteriaOperator criteriaOperatorFiscalNumber = null;
-                _entryBoxSelectCustomerFiscalNumber = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_fiscal_number"), "FiscalNumber", "FiscalNumber", null, criteriaOperatorFiscalNumber, KeyboardMode.AlfaNumeric, _intialValueConfigurationCountry.RegExFiscalNumber, false);
+                _entryBoxSelectCustomerFiscalNumber = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(_sourceWindow, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_fiscal_number"), "FiscalNumber", "FiscalNumber", null, criteriaOperatorFiscalNumber, KeyboardMode.AlfaNumeric, _intialValueConfigurationCountry.RegExFiscalNumber, false);
                 _entryBoxSelectCustomerFiscalNumber.EntryValidation.Changed += _entryBoxSelectCustomerFiscalNumber_Changed;
 
                 //CardNumber
                 CriteriaOperator criteriaOperatorCardNumber = null;//Now Criteria is assigned in ApplyCriteriaToCustomerInputs();
-                _entryBoxSelectCustomerCardNumber = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_card_number"), "CardNumber", "CardNumber", null, criteriaOperatorCardNumber, KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false);
+                _entryBoxSelectCustomerCardNumber = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(_sourceWindow, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_card_number"), "CardNumber", "CardNumber", null, criteriaOperatorCardNumber, KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false);
                 _entryBoxSelectCustomerCardNumber.ClosePopup += delegate
                 {
                     if (_entryBoxSelectCustomerCardNumber.EntryValidation.Validated) GetCustomerDetails("CardNumber", _entryBoxSelectCustomerCardNumber.EntryValidation.Text);
@@ -341,7 +342,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 };
 
                 //Notes
-                _entryBoxCustomerNotes = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_notes"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false);
+                _entryBoxCustomerNotes = new EntryBoxValidation(this, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_notes"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false);
                 _entryBoxCustomerNotes.EntryValidation.Changed += delegate { Validate(); };
 
                 //Fill Dialog Inputs with Defaults FinalConsumerEntity Values
@@ -442,11 +443,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //ActionArea Buttons
                 _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);
                 _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
-                _buttonClearCustomer = ActionAreaButton.FactoryGetDialogButtonType("touchButtonClearCustomer_DialogActionArea", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_button_label_payment_dialog_clear_client"), fileIconClearCustomer);
-                _buttonNewCustomer = ActionAreaButton.FactoryGetDialogButtonType("touchButtonClearCustomer_DialogActionArea", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_button_label_new_client"), fileIconNewCustomer);
-                _buttonFullPayment = ActionAreaButton.FactoryGetDialogButtonType("touchButtonFullPayment_DialogActionArea", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_button_label_payment_dialog_full_payment"), fileIconFullPayment);
-                _buttonPartialPayment = ActionAreaButton.FactoryGetDialogButtonType("touchButtonPartialPayment_DialogActionArea", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_button_label_payment_dialog_partial_payment"), fileIconPartialPayment);
-                _buttonCurrentAccount = ActionAreaButton.FactoryGetDialogButtonType("touchButtonPartialPayment_DialogActionArea", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_type_title_ft"), fileIconCurrentAccount);
+                _buttonClearCustomer = ActionAreaButton.FactoryGetDialogButtonType("touchButtonClearCustomer_DialogActionArea", CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_button_label_payment_dialog_clear_client"), fileIconClearCustomer);
+                _buttonNewCustomer = ActionAreaButton.FactoryGetDialogButtonType("touchButtonClearCustomer_DialogActionArea", CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_button_label_new_client"), fileIconNewCustomer);
+                _buttonFullPayment = ActionAreaButton.FactoryGetDialogButtonType("touchButtonFullPayment_DialogActionArea", CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_button_label_payment_dialog_full_payment"), fileIconFullPayment);
+                _buttonPartialPayment = ActionAreaButton.FactoryGetDialogButtonType("touchButtonPartialPayment_DialogActionArea", CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_button_label_payment_dialog_partial_payment"), fileIconPartialPayment);
+                _buttonCurrentAccount = ActionAreaButton.FactoryGetDialogButtonType("touchButtonPartialPayment_DialogActionArea", CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_type_title_ft"), fileIconCurrentAccount);
                 // Enable if has selectedPaymentMethod defined, ex when working with SplitPayments
                 _buttonOk.Sensitive = (PaymentMethod != null);
                 _buttonFullPayment.Sensitive = false;

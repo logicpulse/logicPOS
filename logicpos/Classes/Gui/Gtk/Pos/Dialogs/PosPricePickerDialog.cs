@@ -11,6 +11,7 @@ using logicpos.shared.App;
 using System;
 using System.Drawing;
 using LogicPOS.Settings.Extensions;
+using LogicPOS.Globalization;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -35,7 +36,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             Article = pArticle;
 
             //Init Local Vars
-            string windowTitle = string.Format("{0}", resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_filepicker"));
+            string windowTitle = $"{CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_filepicker")}";
             _windowSize = new Size(300, 473);
             string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_select_record.png";
 

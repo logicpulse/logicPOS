@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "logicpos", "logicpos\logicp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "logicpos.financial", "logicpos.financial", "{3BEC1553-10A8-4ED7-9ED9-347A0D6C671F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "logicpos.resources", "logicpos.resources\logicpos.resources.csproj", "{B9E8D813-D694-4A7F-955E-CCC4B10F3774}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogicPOS.Globalization", "LogicPOS.Globalization\LogicPOS.Globalization.csproj", "{B9E8D813-D694-4A7F-955E-CCC4B10F3774}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "logicpos.plugins", "logicpos.plugins", "{00C58E14-B034-47C0-BF8C-BA4CF66F8859}"
 EndProject

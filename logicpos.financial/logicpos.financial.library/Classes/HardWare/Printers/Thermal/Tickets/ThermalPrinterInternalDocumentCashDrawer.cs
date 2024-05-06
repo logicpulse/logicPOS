@@ -2,6 +2,7 @@
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Enums;
 using System;
 using LogicPOS.Settings.Extensions;
+using LogicPOS.Globalization;
 
 namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 {
@@ -53,18 +54,18 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 
         private void PrintDocumentDetails()
         {
-            _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_total_cashdrawer"));
+            _thermalPrinterGeneric.WriteLine(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_total_cashdrawer"));
             _thermalPrinterGeneric.WriteLine(LogicPOS.Utility.DataConversionUtils.DecimalToString(_totalAmountInCashDrawer), WriteLineTextMode.Big);
             _thermalPrinterGeneric.LineFeed();
 
             if (_movementAmount < 0.0m || _movementAmount > 0.0m)  {
-                _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_movement_amount"));
+                _thermalPrinterGeneric.WriteLine(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_movement_amount"));
                 _thermalPrinterGeneric.WriteLine(LogicPOS.Utility.DataConversionUtils.DecimalToString(_movementAmount), WriteLineTextMode.Big);
                 _thermalPrinterGeneric.LineFeed();
             }
 
             string description = (_movementDescription != string.Empty) ? _movementDescription : "________________________________";
-            _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_description"));
+            _thermalPrinterGeneric.WriteLine(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_description"));
             _thermalPrinterGeneric.WriteLine(description);
         }
     }

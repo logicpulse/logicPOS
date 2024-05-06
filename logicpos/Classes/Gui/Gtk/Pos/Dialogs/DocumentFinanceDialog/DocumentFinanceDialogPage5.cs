@@ -11,6 +11,7 @@ using logicpos.financial.library.App;
 using logicpos.shared.App;
 using System;
 using LogicPOS.Settings.Extensions;
+using LogicPOS.Globalization;
 
 //THIS CLASS is ALMOST EQUAL to DocumentFinanceDialogPage4, but with Search Replace 
 //"ShipTo" to "ShipFrom" and "_ship_to_" to ""_ship_from_""
@@ -55,26 +56,26 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             _intialValueConfigurationCountry = DataLayerSettings.ConfigurationSystemCountry;
 
             //ShipFrom Address
-            EntryBoxShipFromAddressDetail = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_address"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, true);/* IN009253 */
+            EntryBoxShipFromAddressDetail = new EntryBoxValidation(_sourceWindow, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_address"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, true);/* IN009253 */
             EntryBoxShipFromAddressDetail.EntryValidation.Changed += delegate { Validate(); };
 
             //ShipFrom Region
-            EntryBoxShipFromRegion = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_region"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, false);/* IN009253 */
+            EntryBoxShipFromRegion = new EntryBoxValidation(_sourceWindow, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_region"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, false);/* IN009253 */
             EntryBoxShipFromRegion.EntryValidation.Changed += delegate { Validate(); };
 
             //ShipFrom PostalCode
-            EntryBoxShipFromPostalCode = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_zipcode"), KeyboardMode.Alfa, DataLayerSettings.ConfigurationSystemCountry.RegExZipCode, true);
+            EntryBoxShipFromPostalCode = new EntryBoxValidation(_sourceWindow, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_zipcode"), KeyboardMode.Alfa, DataLayerSettings.ConfigurationSystemCountry.RegExZipCode, true);
             EntryBoxShipFromPostalCode.EntryValidation.Changed += delegate { Validate(); };
 
             //ShipFrom City
-            EntryBoxShipFromCity = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_city"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, true);/* IN009253 */
+            EntryBoxShipFromCity = new EntryBoxValidation(_sourceWindow, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_city"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, true);/* IN009253 */
             EntryBoxShipFromCity.EntryValidation.Changed += delegate { Validate(); };
 
             //ShipFrom Country
             CriteriaOperator criteriaOperatorCustomerCountry = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1)");
             EntryBoxSelectShipFromCountry = new XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry>(
                 _sourceWindow, 
-                resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_country"), 
+                CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_country"), 
                 "Designation", 
                 "Oid", 
                 _intialValueConfigurationCountry, 
@@ -92,7 +93,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             };
 
             //ShipFromDeliveryDate
-            EntryBoxShipFromDeliveryDate = new EntryBoxValidationDatePickerDialog(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ship_from_delivery_date"), _pagePad.DateTimeFormat, _pagePad.InitalDateTime, KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexDateTime, true, _pagePad.DateTimeFormat);
+            EntryBoxShipFromDeliveryDate = new EntryBoxValidationDatePickerDialog(_sourceWindow, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ship_from_delivery_date"), _pagePad.DateTimeFormat, _pagePad.InitalDateTime, KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexDateTime, true, _pagePad.DateTimeFormat);
             EntryBoxShipFromDeliveryDate.EntryValidation.Sensitive = true;
             EntryBoxShipFromDeliveryDate.EntryValidation.Text = SharedUtils.DateTimeToString(DataLayerUtils.CurrentDateTimeAtomic()).ToString();
             EntryBoxShipFromDeliveryDate.EntryValidation.Validate();
@@ -102,16 +103,16 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             EntryBoxShipFromDeliveryDate.ClosePopup += _entryBoxShipFromDeliveryDate_ClosePopup;
 
             //ShipFromDeliveryID
-            EntryBoxShipFromDeliveryID = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ship_from_delivery_id"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false);
+            EntryBoxShipFromDeliveryID = new EntryBoxValidation(_sourceWindow, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ship_from_delivery_id"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false);
             EntryBoxShipFromDeliveryID.EntryValidation.Changed += delegate { Validate(); };
 
             //ShipFromWarehouseID
-            EntryBoxShipFromWarehouseID = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ship_from_warehouse_id"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false);
+            EntryBoxShipFromWarehouseID = new EntryBoxValidation(_sourceWindow, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ship_from_warehouse_id"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false);
             EntryBoxShipFromWarehouseID.EntryValidation.MaxLength = 50;
             EntryBoxShipFromWarehouseID.EntryValidation.Changed += delegate { Validate(); };
 
             //ShipFromLocationID
-            EntryBoxShipFromLocationID = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ship_from_location_id"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false);
+            EntryBoxShipFromLocationID = new EntryBoxValidation(_sourceWindow, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ship_from_location_id"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false);
             EntryBoxShipFromLocationID.EntryValidation.MaxLength = 30;
             EntryBoxShipFromLocationID.EntryValidation.Changed += delegate { Validate(); };
 
@@ -144,7 +145,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         //Override Base Validate
         public override void Validate()
         {
-            _validated = (
+            _validated = 
               EntryBoxShipFromAddressDetail.EntryValidation.Validated &&
               EntryBoxShipFromRegion.EntryValidation.Validated &&
               EntryBoxShipFromPostalCode.EntryValidation.Validated &&
@@ -154,7 +155,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
               EntryBoxShipFromDeliveryID.EntryValidation.Validated &&
               EntryBoxShipFromWarehouseID.EntryValidation.Validated &&
               EntryBoxShipFromLocationID.EntryValidation.Validated
-            );
+            ;
 
             //Enable Next Button, If not In Last Page
             if (_pagePad.CurrentPageIndex < _pagePad.Pages.Count - 1 && _pagePad.CurrentPageIndex == 4)

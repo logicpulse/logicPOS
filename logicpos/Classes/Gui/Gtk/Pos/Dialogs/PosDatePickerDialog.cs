@@ -5,6 +5,7 @@ using logicpos.datalayer.App;
 using System;
 using System.Drawing;
 using LogicPOS.Settings.Extensions;
+using LogicPOS.Globalization;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -18,7 +19,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public Calendar Calendar { get; set; }
 
         public PosDatePickerDialog(Window pSourceWindow, DialogFlags pDialogFlags)
-            : this(pSourceWindow, pDialogFlags, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_datepicker"), DataLayerUtils.CurrentDateTimeAtomic())
+            : this(pSourceWindow, pDialogFlags, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_datepicker"), DataLayerUtils.CurrentDateTimeAtomic())
         {
         }
 
@@ -28,7 +29,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         }
 
         public PosDatePickerDialog(Window pSourceWindow, DialogFlags pDialogFlags, DateTime pDateTime)
-            : this(pSourceWindow, pDialogFlags, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_datepicker"), pDateTime)
+            : this(pSourceWindow, pDialogFlags, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_datepicker"), pDateTime)
         {
         }
 

@@ -13,6 +13,7 @@ using logicpos.shared.Enums;
 using System;
 using System.Collections.Generic;
 using LogicPOS.Settings.Extensions;
+using LogicPOS.Globalization;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -145,54 +146,54 @@ OR
             {
                 if (token.ToString() == "REPORT_SALES_DETAIL_PER_FINANCE_DOCUMENT")
                 {
-                    this._windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_per_finance_document") + resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_detail_postfix");
+                    this._windowTitle = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_per_finance_document") + CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_detail_postfix");
                 }
                 else if (token.ToString() == "REPORT_SALES_DETAIL_PER_DATE")
                 {
-                    this._windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_per_date") + resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_detail_postfix");
+                    this._windowTitle = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_per_date") + CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_detail_postfix");
                 }
                 else if (token.ToString() == "REPORT_SALES_DETAIL_PER_USER")
                 {
-                    this._windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_per_user") + resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_detail_postfix");
+                    this._windowTitle = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_per_user") + CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_detail_postfix");
                 }
                 else if (token.ToString() == "REPORT_SALES_DETAIL_PER_TERMINAL")
                 {
-                    this._windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_per_terminal") + resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_detail_postfix");
+                    this._windowTitle = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_per_terminal") + CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_detail_postfix");
                 }
                 else if (token.ToString() == "REPORT_SALES_DETAIL_PER_CUSTOMER")
                 {
-                    this._windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_per_customer") + resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_detail_postfix");
+                    this._windowTitle = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_per_customer") + CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_detail_postfix");
                 }
                 else if (token.ToString() == "REPORT_SALES_DETAIL_PER_PAYMENT_METHOD")
                 {
-                    this._windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_per_payment_method") + resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_detail_postfix");
+                    this._windowTitle = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_per_payment_method") + CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_detail_postfix");
                 }
                 else if (token.ToString() == "REPORT_SALES_DETAIL_PER_PAYMENT_CONDITION")
                 {
-                    this._windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_per_payment_condition") + resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_detail_postfix");
+                    this._windowTitle = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_per_payment_condition") + CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_detail_postfix");
                 }
                 else if (token.ToString() == "REPORT_SALES_DETAIL_PER_CURRENCY")
                 {
-                    this._windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_per_currency") + resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_detail_postfix");
+                    this._windowTitle = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_per_currency") + CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_detail_postfix");
                 }
                 else if (token.ToString() == "REPORT_SALES_DETAIL_PER_COUNTRY")
                 {
-                    this._windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_per_country") + resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_detail_postfix");
+                    this._windowTitle = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_per_country") + CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_detail_postfix");
                 }
                 else if (token.ToString() == "REPORT_SALES_DETAIL_GROUP_PER_VAT" || token.ToString() == "REPORT_SALES_PER_VAT")
                 {
-                    this._windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_per_vat");
+                    this._windowTitle = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_per_vat");
                     reportsQueryDialogMode = ReportsQueryDialogMode.FINANCIAL_DETAIL_VAT;
                 }
                 else
-                    this._windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_report_filter") + resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_detail_postfix");
+                    this._windowTitle = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_report_filter") + CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_detail_postfix");
 
                 if (reportsQueryDialogMode == ReportsQueryDialogMode.UNDEFINED) reportsQueryDialogMode = ReportsQueryDialogMode.FINANCIAL_DETAIL;
                 databaseSourceObject = "view_documentfinance";
             }
             else if (token.ToString() == "REPORT_SALES_PER_VAT" || token.ToString() == "REPORT_SALES_PER_VAT_BY_ARTICLE_CLASS")
             {
-                this._windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_per_vat");
+                this._windowTitle = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_per_vat");
                 reportsQueryDialogMode = ReportsQueryDialogMode.FINANCIAL_DETAIL_VAT;
                 databaseSourceObject = "view_documentfinance";
             }
@@ -201,107 +202,107 @@ OR
             {
                 if (token.ToString() == "REPORT_SALES_PER_FINANCE_DOCUMENT")
                 {
-                    this._windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_per_finance_document");
+                    this._windowTitle = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_per_finance_document");
                 }
                 else if (token.ToString() == "REPORT_SALES_PER_DATE")
                 {
-                    this._windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_per_date");
+                    this._windowTitle = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_per_date");
                 }
 
                 else if (token.ToString() == "REPORT_SALES_PER_USER")
                 {
-                    this._windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_per_user");
+                    this._windowTitle = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_per_user");
                 }
                 else if (token.ToString() == "REPORT_SALES_PER_TERMINAL")
                 {
-                    this._windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_per_terminal");
+                    this._windowTitle = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_per_terminal");
                 }
                 else if (token.ToString() == "REPORT_SALES_PER_CUSTOMER")
                 {
-                    this._windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_per_customer");
+                    this._windowTitle = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_per_customer");
                 }
                 else if (token.ToString() == "REPORT_SALES_PER_PAYMENT_METHOD")
                 {
-                    this._windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_per_payment_method");
+                    this._windowTitle = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_per_payment_method");
                 }
                 else if (token.ToString() == "REPORT_SALES_PER_PAYMENT_CONDITION")
                 {
-                    this._windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_per_payment_condition");
+                    this._windowTitle = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_per_payment_condition");
                 }
                 else if (token.ToString() == "REPORT_SALES_PER_CURRENCY")
                 {
-                    this._windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_per_currency");
+                    this._windowTitle = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_per_currency");
                 }
                 else if (token.ToString() == "REPORT_SALES_PER_COUNTRY")
                 {
-                    this._windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_per_country");
+                    this._windowTitle = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_per_country");
                 }
-                else { this._windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_report_filter"); }
+                else { this._windowTitle = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_report_filter"); }
 
                 reportsQueryDialogMode = ReportsQueryDialogMode.FINANCIAL;
                 databaseSourceObject = "fin_documentfinancemaster";
             }
             else if (token.ToString().Equals("REPORT_LIST_AUDIT_TABLE"))
             {
-                this._windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_list_audit_table");
+                this._windowTitle = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_list_audit_table");
                 reportsQueryDialogMode = ReportsQueryDialogMode.SYSTEM_AUDIT;
                 databaseSourceObject = "view_systemaudit";
             }
             else if (token.ToString().Equals("REPORT_LIST_CURRENT_ACCOUNT"))
             {
-                this._windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_customer_balance_details");
+                this._windowTitle = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_customer_balance_details");
                 reportsQueryDialogMode = ReportsQueryDialogMode.CURRENT_ACCOUNT;
                 databaseSourceObject = "view_documentfinancecurrentaccount";
             }
             /* IN008018 */
             else if (token.ToString().Equals("REPORT_CUSTOMER_BALANCE_DETAILS"))
             {
-                this._windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_customer_balance_summary");
+                this._windowTitle = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_customer_balance_summary");
                 reportsQueryDialogMode = ReportsQueryDialogMode.CUSTOMER_BALANCE_DETAILS;
                 databaseSourceObject = "view_documentfinancecustomerbalancedetails";
             }
             /* IN009010 */
             else if (token.ToString().Equals("REPORT_CUSTOMER_BALANCE_SUMMARY"))
             {
-                this._windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_customer_balance_details");
+                this._windowTitle = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_customer_balance_details");
                 reportsQueryDialogMode = ReportsQueryDialogMode.CUSTOMER_BALANCE_SUMMARY;
                 databaseSourceObject = "view_documentfinancecustomerbalancesummary";
             }
             /* IN009204 - based on CUSTOMER_BALANCE_DETAILS report */
             else if (token.ToString().Equals("REPORT_COMPANY_BILLING"))
             {
-                this._windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_company_billing");
+                this._windowTitle = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_company_billing");
                 reportsQueryDialogMode = ReportsQueryDialogMode.COMPANY_BILLING;
                 databaseSourceObject = "view_documentfinancecustomerbalancedetails";
             }
             else if (token.ToString().Equals("REPORT_LIST_USER_COMMISSION"))
             {
-                this._windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_list_user_commission");
+                this._windowTitle = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_list_user_commission");
                 reportsQueryDialogMode = ReportsQueryDialogMode.USER_COMMISSION;
                 databaseSourceObject = "view_usercommission";
             }
             //Stock Reports
             else if (token.ToString().Equals("REPORT_LIST_STOCK_MOVEMENTS"))
             {
-                this._windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_list_stock_movements");
+                this._windowTitle = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_list_stock_movements");
                 reportsQueryDialogMode = ReportsQueryDialogMode.ARTICLE_STOCK_MOVEMENTS;
                 databaseSourceObject = "view_articlestockmovement";
             }
             else if (token.ToString().Equals("REPORT_LIST_STOCK_WAREHOUSE"))
             {
-                this._windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_list_stock_warehouse");
+                this._windowTitle = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_list_stock_warehouse");
                 reportsQueryDialogMode = ReportsQueryDialogMode.FILTER_ARTICLE_WAREHOUSE;
                 databaseSourceObject = "view_articlestockwarehouse";
             }
             else if (token.ToString().Equals("REPORT_LIST_STOCK_ARTICLE"))
             {
-                this._windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_list_stock_article");
+                this._windowTitle = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_list_stock_article");
                 reportsQueryDialogMode = ReportsQueryDialogMode.FILTER_ARTICLE_STOCK;
                 databaseSourceObject = "view_articlestock";
             }
             else if (token.ToString().Equals("REPORT_LIST_STOCK_SUPPLIER"))
             {
-                this._windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_list_stock_supplier");
+                this._windowTitle = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_list_stock_supplier");
                 reportsQueryDialogMode = ReportsQueryDialogMode.FILTER_ARTICLE_STOCK_SUPPLIER;
                 databaseSourceObject = "view_articlestocksupplier";
             }
@@ -337,7 +338,7 @@ OR
                 {
                     case ReportsTypeToken.REPORT_SALES_PER_FINANCE_DOCUMENT:
                         CustomReport.ProcessReportDocumentMasterList(displayMode
-                            , resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), token.ToString().ToLower())
+                            , CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), token.ToString().ToLower())
                             , "[DocumentFinanceMaster.DocumentType.Ord]"
                             , "([DocumentFinanceMaster.DocumentType.Code]) [DocumentFinanceMaster.DocumentType.Designation]",/* IN009066 */
                             reportFilter,
@@ -346,17 +347,17 @@ OR
                         break;
                     case ReportsTypeToken.REPORT_SALES_PER_DATE:
                         CustomReport.ProcessReportDocumentMasterList(displayMode
-                            , resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), token.ToString().ToLower())
+                            , CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), token.ToString().ToLower())
                             , "[DocumentFinanceMaster.DocumentDate]"
                             , "[DocumentFinanceMaster.DocumentDate]",
                             reportFilter,
                             reportFilterHumanReadable
                             );
-                        this._windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_per_date");
+                        this._windowTitle = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "report_sales_per_date");
                         break;
                     case ReportsTypeToken.REPORT_SALES_PER_USER:
                         CustomReport.ProcessReportDocumentMasterList(displayMode
-                            , resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), token.ToString().ToLower())
+                            , CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), token.ToString().ToLower())
                             , "[DocumentFinanceMaster.CreatedBy.Ord]"
                             , "([DocumentFinanceMaster.CreatedBy.Code]) [DocumentFinanceMaster.CreatedBy.Name]",/* IN009066 */
                             reportFilter,
@@ -365,7 +366,7 @@ OR
                         break;
                     case ReportsTypeToken.REPORT_SALES_PER_TERMINAL:
                         CustomReport.ProcessReportDocumentMasterList(displayMode
-                            , resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), token.ToString().ToLower())
+                            , CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), token.ToString().ToLower())
                             , "[DocumentFinanceMaster.CreatedWhere.Ord]"
                             , "([DocumentFinanceMaster.CreatedWhere.Code]) [DocumentFinanceMaster.CreatedWhere.Designation]",/* IN009066 */
                             reportFilter,
@@ -374,7 +375,7 @@ OR
                         break;
                     case ReportsTypeToken.REPORT_SALES_PER_CUSTOMER:
                         CustomReport.ProcessReportDocumentMasterList(displayMode
-                            , resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), token.ToString().ToLower())
+                            , CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), token.ToString().ToLower())
                             , "[DocumentFinanceMaster.EntityFiscalNumber]"
                             , "[DocumentFinanceMaster.EntityFiscalNumber] / [DocumentFinanceMaster.EntityName]",/* IN009066 */
                             reportFilter,
@@ -383,7 +384,7 @@ OR
                         break;
                     case ReportsTypeToken.REPORT_SALES_PER_PAYMENT_METHOD:
                         CustomReport.ProcessReportDocumentMasterList(displayMode
-                            , resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), token.ToString().ToLower())
+                            , CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), token.ToString().ToLower())
                             , "[DocumentFinanceMaster.PaymentMethod.Ord]"
                             , "([DocumentFinanceMaster.PaymentMethod.Code]) [DocumentFinanceMaster.PaymentMethod.Designation]",/* IN009066 - Duplicate of REPORT_SALES_PER_PAYMENT_CONDITION */
                             /* IN009066 - Faturas and Notas de Crédito were not in this report, because they have no Payment Method. Now the issue is fixed */
@@ -396,7 +397,7 @@ OR
                         break;
                     case ReportsTypeToken.REPORT_SALES_PER_PAYMENT_CONDITION:
                         CustomReport.ProcessReportDocumentMasterList(displayMode
-                            , resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), token.ToString().ToLower())
+                            , CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), token.ToString().ToLower())
                             , "[DocumentFinanceMaster.PaymentCondition.Ord]"
                             , "([DocumentFinanceMaster.PaymentCondition.Code]) [DocumentFinanceMaster.PaymentCondition.Designation]",/* IN009066 */
                             /* IN009066 - Faturas Simplificadas and Notas de Crédito were not in this report, because they have no Payment Condition. Now the issue is fixed */
@@ -409,7 +410,7 @@ OR
                         break;
                     case ReportsTypeToken.REPORT_SALES_PER_CURRENCY:
                         CustomReport.ProcessReportDocumentMasterList(displayMode
-                            , resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), token.ToString().ToLower())
+                            , CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), token.ToString().ToLower())
                             , "[DocumentFinanceMaster.Currency.Ord]"
                             , "([DocumentFinanceMaster.Currency.Code]) [DocumentFinanceMaster.Currency.Designation]",/* IN009066 */
                             /* IN009066 - Faturas Simplificadas and Notas de Crédito were not in this report, because they have no Payment Condition. Now the issue is fixed */
@@ -422,7 +423,7 @@ OR
                         break;
                     case ReportsTypeToken.REPORT_SALES_PER_COUNTRY:
                         CustomReport.ProcessReportDocumentMasterList(displayMode
-                            , resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), token.ToString().ToLower())
+                            , CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), token.ToString().ToLower())
                             , "[DocumentFinanceMaster.EntityCountry]"
                             , "[DocumentFinanceMaster.EntityCountry]",
                             reportFilter,
@@ -749,7 +750,7 @@ OR
                     /*
                     case ReportsTypeToken.REPORT_SALES_PER_FAMILY_AND_SUBFAMILY:
                         CustomReport.ProcessReportDocumentDetail(displayMode
-                            , resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), token.ToString().ToLower())
+                            , CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), token.ToString().ToLower())
                             , "[DocumentFinanceDetail.ArticleFamilyCode]"
                             , "[DocumentFinanceDetail.ArticleFamilyDesignation] ([DocumentFinanceDetail.ArticleFamilyCode])"
                             , false
@@ -758,7 +759,7 @@ OR
                     // Where it is Called?
                     case ReportsTypeToken.REPORT_SALES_PER_ZONE_TABLE:
                         CustomReport.ProcessReportDocumentDetail(displayMode
-                            , resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), token.ToString().ToLower())
+                            , CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), token.ToString().ToLower())
                             , "[DocumentFinanceDetail.ArticleFamilyCode]"
                             , "[DocumentFinanceDetail.ArticleFamilyDesignation] ([DocumentFinanceDetail.ArticleFamilyCode])"
                             , true

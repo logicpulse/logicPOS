@@ -1,5 +1,6 @@
 ﻿using logicpos.App;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
+using LogicPOS.Globalization;
 using LogicPOS.Settings.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
@@ -11,7 +12,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Info
             _logger.Debug("ReportsMainWindow(): Create object ReportsMainWindow");
 
-            Title = logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_reports"));
+            Title = logicpos.Utils.GetWindowTitle(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_reports"));
             InitUI();
             ShowAll();
         }

@@ -3,9 +3,10 @@ using Gtk;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
-using logicpos.resources.Resources.Localization;
+using LogicPOS.Globalization.Resources.Localization;
 using System.Collections.Generic;
 using LogicPOS.Settings.Extensions;
+using LogicPOS.Globalization;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
 {
@@ -53,7 +54,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                     //Bypass default db label with Resources Localization Label
                     if (Resx
                         .ResourceManager.GetString(parentResource) != null)
-                        parentLabel = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), parentResource);
+                        parentLabel = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), parentResource);
                 }
 
                 //Get Child Data
@@ -70,8 +71,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                     {
                         string childResource = childRow.Values[xPSelectDataChild.GetFieldIndex("resource")].ToString();
                         //Bypass default db label with Resources Localization Label
-                        if (resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), childResource) != null)
-                            childLabel = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), childResource);
+                        if (CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), childResource) != null)
+                            childLabel = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), childResource);
                     }
                     _accordionChilds.Add(string.Format("childId_{0}", childId), new AccordionNode(childLabel) { Content = new Button(childLabel) });
                 }

@@ -11,6 +11,7 @@ using logicpos.financial.library.Classes.Reports;
 using System;
 using System.Collections.Generic;
 using LogicPOS.Settings.Extensions;
+using LogicPOS.Globalization;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -28,7 +29,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
-            string windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_reports");
+            string windowTitle = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_reports");
             System.Drawing.Size windowSize = new System.Drawing.Size(500, 509);//454
             string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_reports.png";
 
@@ -106,7 +107,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     // Init AccordionChild
                     Dictionary<string, AccordionNode> accordionChilds = new Dictionary<string, AccordionNode>();
 
-                    buttonLabelReportTypeString = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), reportType.ResourceString);
+                    buttonLabelReportTypeString = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), reportType.ResourceString);
                     // Try to get Resource
                     if (string.IsNullOrEmpty(buttonLabelReportTypeString))
                     {

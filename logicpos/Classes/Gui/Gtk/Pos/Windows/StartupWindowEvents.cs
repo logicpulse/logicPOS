@@ -7,6 +7,7 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.shared.App;
 using System;
 using LogicPOS.Settings.Extensions;
+using LogicPOS.Globalization;
 
 namespace logicpos
 {
@@ -77,8 +78,8 @@ namespace logicpos
                         if (_selectedUserDetail.PasswordReset)
                         {
                             //_logger.Debug(string.Format("Name: [{0}], PasswordReset: [{1}]", _selectedUserDetail.Name, _selectedUserDetail.PasswordReset));
-                            Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_information"),
-                                string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_user_request_change_password"), _selectedUserDetail.Name, DataLayerSettings.DefaultValueUserDetailAccessPin)
+                            Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_information"),
+                                string.Format(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_user_request_change_password"), _selectedUserDetail.Name, DataLayerSettings.DefaultValueUserDetailAccessPin)
                             );
                         }
                     }
@@ -106,7 +107,7 @@ namespace logicpos
             {
                 SharedFramework.SessionApp.LoggedUsers.Remove(pUserDetail.Oid);
                 SharedFramework.SessionApp.Write();
-                SharedUtils.Audit("USER_loggerOUT", string.Format(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_user_loggerout"), pUserDetail.Name));
+                SharedUtils.Audit("USER_loggerOUT", string.Format(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_user_loggerout"), pUserDetail.Name));
                 //Only Reset LoggedUser if equal to pUser
                 if (DataLayerFramework.LoggedUser.Equals(pUserDetail))
                 {

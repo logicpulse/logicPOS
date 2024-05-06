@@ -7,6 +7,7 @@ using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.datalayer.App;
 using LogicPOS.Settings.Extensions;
+using LogicPOS.Globalization;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -25,12 +26,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             string regexAlfaNumericExtended = LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended;
 
             //Init Local Vars
-            string windowTitle = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_readcard");
+            string windowTitle = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_readcard");
             Size windowSize = new Size(462, 320);//400 With Other Payments
             string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_read_card.png";
 
             //EntryDescription
-            _entryBoxMovementDescription = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_read_card"), KeyboardMode.AlfaNumeric, regexAlfaNumericExtended, false);
+            _entryBoxMovementDescription = new EntryBoxValidation(this, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_read_card"), KeyboardMode.AlfaNumeric, regexAlfaNumericExtended, false);
             //_entryBoxMovementDescription.EntryValidation.Changed += delegate { ValidateDialog(); };
             //VBox
             VBox vbox = new VBox(true, 0);

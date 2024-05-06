@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LogicPOS.Globalization;
+using System;
 using System.Collections;
 using System.Configuration;
 using System.Text.RegularExpressions;
@@ -35,12 +36,12 @@ namespace logicpos.financial.library.Classes.Finance
 
             /* IN009018 */
    
-            string moedaDecimalSingular = resources.CustomResources.GetCustomResource("", "numbers_to_words_cent");//Centavo
-            string moedaDecimalPlural = resources.CustomResources.GetCustomResource("", "numbers_to_words_cents");//Centavos
+            string moedaDecimalSingular = CultureResources.GetLanguageResource("", "numbers_to_words_cent");//Centavo
+            string moedaDecimalPlural = CultureResources.GetLanguageResource("", "numbers_to_words_cents");//Centavos
             if (ConfigurationManager.AppSettings["cultureFinancialRules"] == "pt-MZ" || ConfigurationManager.AppSettings["cultureFinancialRules"] == "pt-AO")
             {
-                moedaDecimalSingular = resources.CustomResources.GetCustomResource(ConfigurationManager.AppSettings["cultureFinancialRules"], "numbers_to_words_cent");//Centavo
-                moedaDecimalPlural = resources.CustomResources.GetCustomResource(ConfigurationManager.AppSettings["cultureFinancialRules"], "numbers_to_words_cents");//Centavos
+                moedaDecimalSingular = CultureResources.GetLanguageResource(ConfigurationManager.AppSettings["cultureFinancialRules"], "numbers_to_words_cent");//Centavo
+                moedaDecimalPlural = CultureResources.GetLanguageResource(ConfigurationManager.AppSettings["cultureFinancialRules"], "numbers_to_words_cents");//Centavos
             }
 
             string strValorExtenso = ""; //Variável que irá armazenar o valor por extenso do número informado

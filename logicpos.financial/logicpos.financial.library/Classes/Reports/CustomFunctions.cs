@@ -1,13 +1,14 @@
 ﻿using FastReport.Utils;
 using logicpos.datalayer.App;
 using logicpos.financial.library.Classes.Finance;
-using logicpos.resources.Resources.Localization;
+using LogicPOS.Globalization.Resources.Localization;
 using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Resources;
 using LogicPOS.Settings.Extensions;
+using LogicPOS.Globalization;
 
 namespace logicpos.financial.library.Classes.Reports
 {
@@ -184,7 +185,7 @@ namespace logicpos.financial.library.Classes.Reports
                   : string.Format("UNDEFINED [{0}]", resourceName);
                 if(resourceName == "global_documentfinance_type_title_fs")
                 {
-                    result = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_type_title_fs");
+                    result = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_type_title_fs");
                 }
 
                 //_logger.Debug(string.Format("Message: [{0}]", resourceName));

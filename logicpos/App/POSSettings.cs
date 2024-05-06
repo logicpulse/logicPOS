@@ -131,11 +131,11 @@ namespace logicpos.App
         //Database Oids/Guids
 
         //Payment Defaults
-        public static Guid XpoOidConfigurationPaymentConditionDefaultInvoicePaymentCondition = new Guid(LogicPOS.Settings.GeneralSettings.Settings["xpoOidConfigurationPaymentConditionDefaultInvoicePaymentCondition"]);
-        public static Guid XpoOidConfigurationPaymentMethodDefaultInvoicePaymentMethod = new Guid(LogicPOS.Settings.GeneralSettings.Settings["xpoOidConfigurationPaymentMethodDefaultInvoicePaymentMethod"]);
+        public static Guid XpoOidConfigurationPaymentConditionDefaultInvoicePaymentCondition = new Guid(GeneralSettings.Settings["xpoOidConfigurationPaymentConditionDefaultInvoicePaymentCondition"]);
+        public static Guid XpoOidConfigurationPaymentMethodDefaultInvoicePaymentMethod = new Guid(GeneralSettings.Settings["xpoOidConfigurationPaymentMethodDefaultInvoicePaymentMethod"]);
 
         //ConfigurationPlaceTable
-        public static Guid XpoOidConfigurationPlaceTableDefaultOpenTable = new Guid(LogicPOS.Settings.GeneralSettings.Settings["xpoOidConfigurationPlaceTableDefaultOpenTable"]);
+        public static Guid XpoOidConfigurationPlaceTableDefaultOpenTable = new Guid(GeneralSettings.Settings["xpoOidConfigurationPlaceTableDefaultOpenTable"]);
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         // Other
@@ -161,7 +161,7 @@ namespace logicpos.App
         //Payments Window
 
         //Use CurrentAccount or CustomerCard in PaymentsDialog
-        public static bool PosPaymentsDialogUseCurrentAccount = Convert.ToBoolean(LogicPOS.Settings.GeneralSettings.Settings["posPaymentsDialogUseCurrentAccount"]);
+        public static bool PosPaymentsDialogUseCurrentAccount = Convert.ToBoolean(GeneralSettings.Settings["posPaymentsDialogUseCurrentAccount"]);
 
         //First time boot POS flag
         public static bool firstBoot;
@@ -276,7 +276,7 @@ namespace logicpos.App
                     Path["themes"],
                     string.Format(
                         FileFormatThemeFile
-                        , LogicPOS.Settings.GeneralSettings.AppTheme.ToLower() /* IN008024: Before, from Database :LogicPOS.Settings.AppSettings.PreferenceParameters["APP_THEME"].ToLower() */
+                        , GeneralSettings.AppTheme.ToLower() /* IN008024: Before, from Database :LogicPOS.Settings.AppSettings.PreferenceParameters["APP_THEME"].ToLower() */
                         , customAppOperationMode.AppOperationTheme.ToLower()/*  From App.Config: Default|Coffee|Bakery|Fish|Butchery|Shoe|Clothing|Hardware */
                     )
                 );
@@ -291,7 +291,7 @@ namespace logicpos.App
 
         private static bool GetServiceATSendDocuments()
         {
-            return Convert.ToBoolean(LogicPOS.Settings.GeneralSettings.PreferenceParameters["SERVICE_AT_SEND_DOCUMENTS"]);
+            return Convert.ToBoolean(GeneralSettings.PreferenceParameters["SERVICE_AT_SEND_DOCUMENTS"]);
         }
 
         private static bool GetServiceATSendDocumentsWayBill()

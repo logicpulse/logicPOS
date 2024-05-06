@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Net.Mail;
 using LogicPOS.Settings.Extensions;
+using LogicPOS.Globalization;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -42,23 +43,23 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             AttachmentFileNames = attachmentFileNames;
 
             // EntryBoxValidationSubject
-            _entryBoxValidationSubject = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_email_subject"), KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexAlfaNumericEmail, false);
+            _entryBoxValidationSubject = new EntryBoxValidation(this, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_email_subject"), KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexAlfaNumericEmail, false);
             if (!string.IsNullOrEmpty(pSubject))
             {
                 _entryBoxValidationSubject.EntryValidation.Text = pSubject;
             }
             // EntryBoxValidationTo
-            _entryBoxValidationTo = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_email_to"), KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexEmail, false);
+            _entryBoxValidationTo = new EntryBoxValidation(this, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_email_to"), KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexEmail, false);
             if (!string.IsNullOrEmpty(pTo))
             {
                 _entryBoxValidationTo.EntryValidation.Text = pTo;
             }
             // EntryBoxValidationCc
-            _entryBoxValidationCc = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_email_cc"), KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexEmail, false);
+            _entryBoxValidationCc = new EntryBoxValidation(this, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_email_cc"), KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexEmail, false);
             // EntryBoxValidationBcc
-            _entryBoxValidationBcc = new EntryBoxValidation(this, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_email_bcc"), KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexEmail, false);
+            _entryBoxValidationBcc = new EntryBoxValidation(this, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_email_bcc"), KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexEmail, false);
 
-            _entryBoxValidationMultiLine = new EntryBoxValidationMultiLine(this, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_email_body"), KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexAlfaNumericEmail, true) { HeightRequest = 280 };
+            _entryBoxValidationMultiLine = new EntryBoxValidationMultiLine(this, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_email_body"), KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexAlfaNumericEmail, true) { HeightRequest = 280 };
             if (!string.IsNullOrEmpty(pBody))
             {
                 _entryBoxValidationMultiLine.EntryMultiline.Value.Text = pBody;
@@ -133,12 +134,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         Body,
                         AttachmentFileNames
                         );
-                    logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new Size(650, 380), MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_information"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_mail_sent_successfully"));
+                    logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new Size(650, 380), MessageType.Info, ButtonsType.Ok, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_information"), CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_mail_sent_successfully"));
                 }
                 catch (Exception ex)
                 {
                     _logger.Error(ex.Message, ex);
-                    logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new Size(650, 380), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"), ex.Message);
+                    logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new Size(650, 380), MessageType.Error, ButtonsType.Ok, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"), ex.Message);
                     // Keep Running
                     this.Run();
                 }

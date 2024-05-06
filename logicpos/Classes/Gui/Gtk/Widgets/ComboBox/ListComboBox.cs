@@ -1,4 +1,5 @@
 ﻿using Gtk;
+using LogicPOS.Globalization;
 using System.Collections.Generic;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
@@ -53,9 +54,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             //Aways Default to UNDEFINED Value - even if Collection is Empty, and if Used
             if (pAddUndefinedValue)
             {
-                tempItemIter = _comboBoxListStore.AppendValues(0, resources.CustomResources.GetCustomResource("", "widget_combobox_undefined"));
+                tempItemIter = _comboBoxListStore.AppendValues(0, CultureResources.GetLanguageResource("", "widget_combobox_undefined"));
                 _treeInterDictionary.Add(0, tempItemIter);
-                initialValueDefault = resources.CustomResources.GetCustomResource("", "widget_combobox_undefined");
+                initialValueDefault = CultureResources.GetLanguageResource("", "widget_combobox_undefined");
                 positionOffset = 1;
             }
             else

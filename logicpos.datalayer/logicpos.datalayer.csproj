@@ -142,13 +142,13 @@
     <Compile Include="XPO\XPOSettings.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\LogicPOS.Globalization\LogicPOS.Globalization.csproj">
+      <Project>{b9e8d813-d694-4a7f-955e-ccc4b10f3774}</Project>
+      <Name>LogicPOS.Globalization</Name>
+    </ProjectReference>
     <ProjectReference Include="..\logicpos.plugins\logicpos.plugin.contracts\logicpos.plugin.contracts.csproj">
       <Project>{43c879d1-31ae-424f-91d1-92cf286d5497}</Project>
       <Name>logicpos.plugin.contracts</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\logicpos.resources\logicpos.resources.csproj">
-      <Project>{b9e8d813-d694-4a7f-955e-ccc4b10f3774}</Project>
-      <Name>logicpos.resources</Name>
     </ProjectReference>
     <ProjectReference Include="..\LogicPOS.Settings\LogicPOS.Settings.csproj">
       <Project>{a4e7f0ea-8360-41f2-a625-517f6e943a29}</Project>

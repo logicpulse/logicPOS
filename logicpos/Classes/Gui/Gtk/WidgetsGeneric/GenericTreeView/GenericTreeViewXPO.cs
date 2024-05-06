@@ -11,6 +11,7 @@ using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
 using LogicPOS.Settings.Extensions;
+using LogicPOS.Globalization;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {
@@ -294,7 +295,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                                 if (GetXPGuidObjectChildValue(dataRow.GetMemberValue(_columnProperties[i].Name), fieldName, _columnProperties[i].ChildName).Equals("False") || GetXPGuidObjectChildValue(dataRow.GetMemberValue(_columnProperties[i].Name), fieldName, _columnProperties[i].ChildName).Equals("True"))
                                 {
                                     bool booleanValue = Convert.ToBoolean(GetXPGuidObjectChildValue(dataRow.GetMemberValue(_columnProperties[i].Name), fieldName, _columnProperties[i].ChildName));
-                                    columnValues[i] = (booleanValue) ? resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_treeview_true") : resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_treeview_false");
+                                    columnValues[i] = (booleanValue) ? CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_treeview_true") : CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_treeview_false");
                                 }
                                 else
                                 {
@@ -323,12 +324,12 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                                 else if (dataRow.GetMemberValue(_columnProperties[i].Name).GetType().Name.Equals("Boolean"))
                                 {
                                     bool booleanValue = Convert.ToBoolean(dataRow.GetMemberValue(_columnProperties[i].Name));
-                                    columnValues[i] = (booleanValue) ? resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_treeview_true") : resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_treeview_false");
+                                    columnValues[i] = (booleanValue) ? CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_treeview_true") : CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_treeview_false");
                                 }
                                 else if (dataRow.GetMemberValue(_columnProperties[i].Name).Equals("False") || dataRow.GetMemberValue(_columnProperties[i].Name).Equals("True"))
                                 {
                                     bool booleanValue = Convert.ToBoolean(dataRow.GetMemberValue(_columnProperties[i].Name));
-                                    columnValues[i] = (booleanValue) ? resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_treeview_true") : resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_treeview_false");
+                                    columnValues[i] = (booleanValue) ? CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_treeview_true") : CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_treeview_false");
                                 }
                                 //Enum
                                 else if (dataRow.GetType() == typeof(fin_articleserialnumber) && _columnProperties[i].Name == "Status")
@@ -364,12 +365,12 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                             // Try to get ResourceString Value, this is required to replace value, but only if it a valid resourceString (not replaced yet after update)
                             // After an Update and Refresh it turns into a string(non resource token), this protection prevents the replace double with a null resourceString, 
                             // leaving tree cell value with an empty value
-                            bool checkIfResourceStringExist = (resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), columnValues[i].ToString()) != null);
+                            bool checkIfResourceStringExist = (CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), columnValues[i].ToString()) != null);
                             // Only Replace resourceString if value is resourceString is not Yet been replaced, ex after an update
                             //_logger.Debug(string.Format("columnValues[i]#1: [{0}]", columnValues[i]));
                             if (checkIfResourceStringExist)
                             {
-                                columnValues[i] = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), columnValues[i].ToString());
+                                columnValues[i] = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), columnValues[i].ToString());
                             }
                             //_logger.Debug(string.Format("columnValues[i]#2: [{0}]", columnValues[i]));
                         }
@@ -426,7 +427,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                       pDataSourceRow.GetMemberValue(_columnProperties[pColumnIndex].Name).GetType().Name.Equals("Boolean"))
                     {
                         bool boolValue = Convert.ToBoolean(pDataSourceRow.GetMemberValue(_columnProperties[pColumnIndex].Name));
-                        fieldValue = (boolValue) ? resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_treeview_true") : resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_treeview_false");
+                        fieldValue = (boolValue) ? CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_treeview_true") : CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_treeview_false");
                     }
                     //All Other Fields
                     else

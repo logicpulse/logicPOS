@@ -7,8 +7,8 @@
     <ProjectGuid>{B9E8D813-D694-4A7F-955E-CCC4B10F3774}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>logicpos.resources</RootNamespace>
-    <AssemblyName>LogicposResources</AssemblyName>
+    <RootNamespace>LogicPOS.Globalization</RootNamespace>
+    <AssemblyName>LogicPOS.Globalization</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -45,7 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CustomResources.cs" />
+    <Compile Include="CultureResources.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\Localization\Resx.Designer.cs">
       <AutoGen>True</AutoGen>

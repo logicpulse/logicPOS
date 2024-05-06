@@ -9,6 +9,7 @@ using logicpos.datalayer.Xpo;
 using System;
 using System.Collections.Generic;
 using LogicPOS.Settings.Extensions;
+using LogicPOS.Globalization;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -35,10 +36,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
             {
-                new GenericTreeViewColumnProperty("TicketId") { Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ticket_number"), MinWidth = 50 },
-                new GenericTreeViewColumnProperty("DateStart") { Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_date"), MinWidth = 100 },
-                new GenericTreeViewColumnProperty("UpdatedBy") { Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_user_name"), ChildName = "Name", MinWidth = 100 },
-                new GenericTreeViewColumnProperty("UpdatedWhere") { Title = resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_terminal_name"), ChildName = "Designation", MinWidth = 100 }
+                new GenericTreeViewColumnProperty("TicketId") { Title = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ticket_number"), MinWidth = 50 },
+                new GenericTreeViewColumnProperty("DateStart") { Title = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_date"), MinWidth = 100 },
+                new GenericTreeViewColumnProperty("UpdatedBy") { Title = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_user_name"), ChildName = "Name", MinWidth = 100 },
+                new GenericTreeViewColumnProperty("UpdatedWhere") { Title = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_terminal_name"), ChildName = "Designation", MinWidth = 100 }
             };
 
             //Sort Order

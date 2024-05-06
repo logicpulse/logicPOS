@@ -1,17 +1,17 @@
 ﻿using System.Resources;
 
-namespace logicpos.resources
+namespace LogicPOS.Globalization
 {
-    public static class CustomResources
+    public static class CultureResources
     {
         public static ResXResourceSet ResourceSet { get; set; }
 
         private static string GetResourcesFileByName(string resourceName)
         {
-            return $"Resources\\Localization{resourceName}";
+            return $"Resources\\Localization\\{resourceName}";
         }
 
-        public static string GetCustomResource(string language, string value)
+        public static string GetLanguageResource(string language, string resourceName)
         {
             if (ResourceSet == null)
             {
@@ -53,7 +53,7 @@ namespace logicpos.resources
             }
 
             string result;
-            return (result = ResourceSet.GetString(value)) != null ? result : value;
+            return (result = ResourceSet.GetString(resourceName)) != null ? result : resourceName;
         }
 
         public static void UpdateLanguage(string language)

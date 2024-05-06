@@ -7,6 +7,7 @@ using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
 using LogicPOS.Settings.Extensions;
+using LogicPOS.Globalization;
 
 //TODO : Implement Required Outside CrudWidgetList :  Add Required and Use SettingsApp.RegexGuid to Validate
 
@@ -123,7 +124,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             _comboBoxListStore = new ListStore(typeof(string), typeof(XPGuidObject));
 
             //Aways Default to Null Value - Undefined, even if Collection is Empty
-            tempItemIter = _comboBoxListStore.AppendValues(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "widget_combobox_undefined"), null);
+            tempItemIter = _comboBoxListStore.AppendValues(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "widget_combobox_undefined"), null);
             _treeInterDictionary.Add(new Guid(), tempItemIter);
             //Default Selected
             currentItemIter = tempItemIter;

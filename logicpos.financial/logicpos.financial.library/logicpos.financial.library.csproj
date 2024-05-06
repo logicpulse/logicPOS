@@ -151,6 +151,10 @@
       <Project>{e23bdf58-f0a9-40ac-acce-57235fb7a7f1}</Project>
       <Name>LogicPOS.DTOs</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\LogicPOS.Globalization\LogicPOS.Globalization.csproj">
+      <Project>{b9e8d813-d694-4a7f-955e-ccc4b10f3774}</Project>
+      <Name>LogicPOS.Globalization</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\logicpos.hardware\logicpos.printer.genericsocket\logicpos.printer.genericsocket.csproj">
       <Project>{7bc439de-3799-461a-8fc1-d7f1644667fb}</Project>
       <Name>logicpos.printer.genericsocket</Name>
@@ -174,10 +178,6 @@
     <ProjectReference Include="..\..\logicpos.plugins\logicpos.plugin.library\logicpos.plugin.library.csproj">
       <Project>{5601EF61-D598-4D93-83AD-7A55BF627708}</Project>
       <Name>logicpos.plugin.library</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\logicpos.resources\logicpos.resources.csproj">
-      <Project>{b9e8d813-d694-4a7f-955e-ccc4b10f3774}</Project>
-      <Name>logicpos.resources</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\LogicPOS.Settings\LogicPOS.Settings.csproj">
       <Project>{a4e7f0ea-8360-41f2-a625-517f6e943a29}</Project>

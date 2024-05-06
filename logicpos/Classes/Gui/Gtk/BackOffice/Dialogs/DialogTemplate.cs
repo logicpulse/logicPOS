@@ -4,6 +4,7 @@ using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.datalayer.DataLayer.Xpo;
+using LogicPOS.Globalization;
 using LogicPOS.Settings.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
@@ -13,7 +14,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public DialogTemplate(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
-            this.Title = logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_edit_template"));
+            this.Title = logicpos.Utils.GetWindowTitle(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_edit_template"));
             SetSizeRequest(400, 600);
 
             InitUI();
@@ -40,30 +41,30 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //Ord
                 Entry entryOrd = new Entry();
-                BOWidgetBox boxLabel = new BOWidgetBox(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_record_order"), entryOrd);
+                BOWidgetBox boxLabel = new BOWidgetBox(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_record_order"), entryOrd);
                 vboxTab1.PackStart(boxLabel, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxLabel, _dataSourceRow, "Ord", LogicPOS.Utility.RegexUtils.RegexIntegerGreaterThanZero, true));
 
                 //Code
                 Entry entryCode = new Entry();
-                BOWidgetBox boxCode = new BOWidgetBox(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_record_code"), entryCode);
+                BOWidgetBox boxCode = new BOWidgetBox(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_record_code"), entryCode);
                 vboxTab1.PackStart(boxCode, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCode, _dataSourceRow, "Code", LogicPOS.Utility.RegexUtils.RegexIntegerGreaterThanZero, true));
 
                 //Designation
                 Entry entryDesignation = new Entry();
-                BOWidgetBox boxDesignation = new BOWidgetBox(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_designation"), entryDesignation);
+                BOWidgetBox boxDesignation = new BOWidgetBox(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_designation"), entryDesignation);
                 vboxTab1.PackStart(boxDesignation, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true));
 
                 //Disabled
-                CheckButton checkButtonDisabled = new CheckButton(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_record_disabled"));
+                CheckButton checkButtonDisabled = new CheckButton(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_record_disabled"));
                 if (_dialogMode == DialogMode.Insert) checkButtonDisabled.Active = POSSettings.BOXPOObjectsStartDisabled;
                 vboxTab1.PackStart(checkButtonDisabled, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(checkButtonDisabled, _dataSourceRow, "Disabled"));
 
                 //Append Tab
-                _notebook.AppendPage(vboxTab1, new Label(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_record_main_detail")));
+                _notebook.AppendPage(vboxTab1, new Label(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_record_main_detail")));
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -74,18 +75,18 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //Notes
                 Entry entryNotes = new Entry();
-                BOWidgetBox boxNotes = new BOWidgetBox(resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_notes"), entryNotes);
+                BOWidgetBox boxNotes = new BOWidgetBox(CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_notes"), entryNotes);
                 vboxTab2.PackStart(boxNotes, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxNotes, _dataSourceRow, "Notes", SettingsApp.RegexAlfa, false));
 
                 //CreatedAt
                 Entry entryCreatedAt = new Entry() { WidthRequest = 250 };
-                BOWidgetBox boxCreatedAt = new BOWidgetBox(resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_date"), entryCreatedAt);
+                BOWidgetBox boxCreatedAt = new BOWidgetBox(CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_date"), entryCreatedAt);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCreatedAt, _dataSourceRow, "CreatedAt", SettingsApp.RegexDateTime, false));
 
                 //UpdatedAt
                 Entry entryUpdatedAt = new Entry();
-                BOWidgetBox boxUpdatedAt = new BOWidgetBox(resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_date"), entryUpdatedAt);
+                BOWidgetBox boxUpdatedAt = new BOWidgetBox(CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_date"), entryUpdatedAt);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxUpdatedAt, _dataSourceRow, "UpdatedAt", SettingsApp.RegexDateTime, false));
 
                 //Hbox CreatedAt and UpdatedAt
@@ -96,12 +97,12 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //CreatedBy
                 XPOComboBox xpoComboBoxCreatedBy = new XPOComboBox(DataSourceRow.Session, typeof(sys_userdetail), (DataSourceRow as fin_articleclass).CreatedBy, "Name") { WidthRequest = 250 };
-                BOWidgetBox boxCreatedBy = new BOWidgetBox(resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_user, xpoComboBoxCreatedBy);
+                BOWidgetBox boxCreatedBy = new BOWidgetBox(CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_user, xpoComboBoxCreatedBy);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCreatedBy, DataSourceRow, "CreatedBy", SettingsApp.RegexGuid, true));
 
                 //CreatedWhere
                 XPOComboBox xpoComboBoxCreatedWhere = new XPOComboBox(DataSourceRow.Session, typeof(pos_configurationplaceterminal), (DataSourceRow as fin_articleclass).CreatedWhere, "Designation");
-                BOWidgetBox boxCreatedWhere = new BOWidgetBox(resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_terminal, xpoComboBoxCreatedWhere);
+                BOWidgetBox boxCreatedWhere = new BOWidgetBox(CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_terminal, xpoComboBoxCreatedWhere);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCreatedWhere, DataSourceRow, "CreatedWhere", SettingsApp.RegexGuid, true));
                 
                 //Hbox CreatedBy and CreatedWhere
@@ -119,7 +120,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 fileChooserButtonImage.SetFilename(((fin_articlefamily)DataSourceRow).ButtonImage);
                 fileChooserButtonImage.Filter = Utils.GetFileFilterImages();
                 fileChooserButtonImage.SelectionChanged += (sender, eventArgs) => fileChooserImagePreviewButtonImage.Pixbuf = Utils.ResizeAndCropFileToPixBuf((sender as FileChooserButton).Filename, new System.Drawing.Size(fileChooserImagePreviewButtonImage.WidthRequest, fileChooserImagePreviewButtonImage.HeightRequest));
-                BOWidgetBox boxfileChooserButtonImage = new BOWidgetBox(resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_button_image, fileChooserButtonImage);
+                BOWidgetBox boxfileChooserButtonImage = new BOWidgetBox(CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_button_image, fileChooserButtonImage);
                 HBox hboxfileChooserAndimagePreviewButtonImage = new HBox(false, _boxSpacing);
                 hboxfileChooserAndimagePreviewButtonImage.PackStart(boxfileChooserButtonImage, true, true, 0);
                 hboxfileChooserAndimagePreviewButtonImage.PackStart(fileChooserFrameImagePreviewButtonImage, false, false, 0);
@@ -129,12 +130,12 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 //Notes
                 EntryMultiline entryMultilineNotes = new EntryMultiline();
                 entryMultilineNotes.Value.Text = (DataSourceRow as fin_article).Notes;
-                Label labelMultilineNotes = new Label(resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_notes);
+                Label labelMultilineNotes = new Label(CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_notes);
                 vboxTab4.PackStart(entryMultilineNotes, true, true, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(entryMultilineNotes, labelMultilineNotes, DataSourceRow, "Notes", SettingsApp.RegexAlfaNumericExtended, false));
                  
                 //Append Tab
-                _notebook.AppendPage(vboxTab2, new Label(resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_notes));
+                _notebook.AppendPage(vboxTab2, new Label(CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_notes));
                 */
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
