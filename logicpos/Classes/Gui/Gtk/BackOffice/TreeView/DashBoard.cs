@@ -237,13 +237,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 botao8.Clicked += delegate { botao8.Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlaceTable>(pSourceWindow); GlobalApp.BackOfficeMainWindow._dashboardButton_Clicked(botao8, null); };
 
                 //Actions Documents
-                botao9.Clicked += delegate { logicpos.Utils.startDocumentsMenuFromBackOffice(pSourceWindow, 0); };
-                botao10.Clicked += delegate { logicpos.Utils.startNewDocumentFromBackOffice(pSourceWindow); };
-                botao11.Clicked += delegate { logicpos.Utils.startDocumentsMenuFromBackOffice(pSourceWindow, 3); };
+                botao9.Clicked += delegate { logicpos.Utils.StartDocumentsMenuFromBackOffice(pSourceWindow, 0); };
+                botao10.Clicked += delegate { logicpos.Utils.StartNewDocumentFromBackOffice(pSourceWindow); };
+                botao11.Clicked += delegate { logicpos.Utils.StartDocumentsMenuFromBackOffice(pSourceWindow, 3); };
                 botao12.Clicked += delegate { logicpos.Utils.OpenArticleStockDialog(_sourceWindow); };
 
                 //Actions Reports
-                botao13.Clicked += delegate { logicpos.Utils.startReportsMenuFromBackOffice(pSourceWindow); };
+                botao13.Clicked += delegate { logicpos.Utils.StartReportsMenuFromBackOffice(pSourceWindow); };
                 botao14.Clicked += delegate
                 {
                     reportsClicked.PrintReportRouter

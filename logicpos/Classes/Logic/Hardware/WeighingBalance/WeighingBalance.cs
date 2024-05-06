@@ -18,7 +18,7 @@ namespace logicpos.Classes.Logic.Hardware
         //Log4Net
         private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        private readonly CommunicationManager _communicationManager;
+        private readonly SerialPortService _communicationManager;
 
         public WeighingBalance(sys_configurationweighingmachine weighingMachine)
             : this(weighingMachine.BaudRate.ToString(), weighingMachine.Parity, weighingMachine.StopBits, weighingMachine.DataBits.ToString(), weighingMachine.PortName)
@@ -28,8 +28,8 @@ namespace logicpos.Classes.Logic.Hardware
         public WeighingBalance(string baudRate, string parity, string stopBits, string dataBits, string portName)
         {
             //string baud, string par, string sBits, string dBits, string name
-            _communicationManager = new CommunicationManager(baudRate, parity, stopBits, dataBits, portName);
-            _communicationManager.CurrentTransmissionType = CommunicationManager.TransmissionType.Hex;
+            _communicationManager = new SerialPortService(baudRate, parity, stopBits, dataBits, portName);
+            _communicationManager.CurrentTransmissionType = SerialPortService.TransmissionType.Hex;
             // Start With OpenPort
             OpenPort();
         }

@@ -1,5 +1,5 @@
-﻿using CryptographyUtils;
-using logicpos.shared.App;
+﻿using logicpos.shared.App;
+using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,7 +10,7 @@ namespace logicpos.financial.library.Classes.Utils
     {
         //Log4Net
         private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        
+
         //Private Members
         private readonly bool _debug = false;
         private readonly char _splitter = ',';
@@ -92,7 +92,7 @@ namespace logicpos.financial.library.Classes.Utils
                     this.Add(fileName, protectedFile);
                     if (_debug) _logger.Debug(string.Format("fileName: [{0}], Md5: [{1}], Md5Encrypted: [{2}], Valid: [{3}]", fileName, protectedFile.Md5, protectedFile.Md5Encrypted, protectedFile.Valid));
                 }
-                
+
                 result = true;
             }
             catch (Exception ex)
@@ -109,14 +109,15 @@ namespace logicpos.financial.library.Classes.Utils
 
             //if (SettingsApp.DeveloperMode) return true;
 
-            if (File.Exists(pKey)) {
+            if (File.Exists(pKey))
+            {
                 //Get In Memory values
                 string md5Encryptd = this[pKey].Md5Encrypted;
                 string md5FromMem = this[pKey].Md5;
                 //get Fresh Hash
-                string md5FromFile = LogicPOS.Utility.StringUtils.MD5HashFile(pKey);
+                string md5FromFile = StringUtils.MD5HashFile(pKey);
                 //Check if created are equal to encrypted in memory, if false user change file after BootStrap
-                bool valid = SaltedString.ValidateSaltedString(md5Encryptd, md5FromFile);
+                bool valid = CryptographyUtils.ValidateSaltedString(md5Encryptd, md5FromFile);
                 //Update Protected File
                 this[pKey].Md5 = md5FromFile;
                 this[pKey].Valid = valid;
@@ -125,7 +126,7 @@ namespace logicpos.financial.library.Classes.Utils
                 //Assign to final Result
                 result = valid;
             }
-            
+
             return result;
         }
 
@@ -151,7 +152,7 @@ namespace logicpos.financial.library.Classes.Utils
             foreach (var item in pFileList)
             {
                 string fileName = item;
-                if (! this.ContainsKey(fileName))
+                if (!this.ContainsKey(fileName))
                 {
                     if (_debug) _logger.Debug(string.Format("Miss filename : [{0}]", fileName));
                     result.Add(fileName);

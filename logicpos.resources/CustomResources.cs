@@ -1,5 +1,4 @@
-﻿using System.IO;
-using System.Resources;
+﻿using System.Resources;
 
 namespace logicpos.resources
 {
@@ -9,8 +8,7 @@ namespace logicpos.resources
 
         private static string GetResourcesFileByName(string resourceName)
         {
-            var directorySeparatorChar = Path.DirectorySeparatorChar;
-            return "Resources" + directorySeparatorChar + "Localization" + directorySeparatorChar + resourceName;
+            return $"Resources\\Localization{resourceName}";
         }
 
         public static string GetCustomResource(string language, string value)

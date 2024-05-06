@@ -226,18 +226,18 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 ////TK016235 BackOffice - Mode - Finance Documents for backoffice mode
                 Dictionary<string, AccordionNode> _accordionChildDocuments = new Dictionary<string, AccordionNode>
                 {
-                    { "DocumentsNew", new AccordionNode(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_button_label_new_finance_documents")) { Clicked = delegate { logicpos.Utils.startNewDocumentFromBackOffice(this); } } },
-                    { "DocumentsShow", new AccordionNode(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_button_label_select_record_finance_documents")) { Clicked = delegate { logicpos.Utils.startDocumentsMenuFromBackOffice(this, 1); } } },
-                    { "DocumentsPay", new AccordionNode(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_button_label_select_finance_documents_ft_unpaid")) { Clicked = delegate { logicpos.Utils.startDocumentsMenuFromBackOffice(this, 2); } } },
-                    { "DocumentsPayments", new AccordionNode(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_button_label_select_payments")) { Clicked = delegate { logicpos.Utils.startDocumentsMenuFromBackOffice(this, 3); } } },
-                    { "DocumentsCurrentAccount", new AccordionNode(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_button_label_select_finance_documents_cc")) { Clicked = delegate { logicpos.Utils.startDocumentsMenuFromBackOffice(this, 4); } } }
+                    { "DocumentsNew", new AccordionNode(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_button_label_new_finance_documents")) { Clicked = delegate { logicpos.Utils.StartNewDocumentFromBackOffice(this); } } },
+                    { "DocumentsShow", new AccordionNode(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_button_label_select_record_finance_documents")) { Clicked = delegate { logicpos.Utils.StartDocumentsMenuFromBackOffice(this, 1); } } },
+                    { "DocumentsPay", new AccordionNode(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_button_label_select_finance_documents_ft_unpaid")) { Clicked = delegate { logicpos.Utils.StartDocumentsMenuFromBackOffice(this, 2); } } },
+                    { "DocumentsPayments", new AccordionNode(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_button_label_select_payments")) { Clicked = delegate { logicpos.Utils.StartDocumentsMenuFromBackOffice(this, 3); } } },
+                    { "DocumentsCurrentAccount", new AccordionNode(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_button_label_select_finance_documents_cc")) { Clicked = delegate { logicpos.Utils.StartDocumentsMenuFromBackOffice(this, 4); } } }
                 };
                 //_accordionChildDocuments.Add("DocumentsListall", new AccordionNode(resources.CustomResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_worksession_resume_finance_documents")) {  Content = Utils.GetGenericTreeViewXPO<DashBoard>(this) }); ;
                 logicpos.Utils util = new logicpos.Utils();
                 util._accordionChildDocumentsTemp = _accordionChildDocuments;
                 Dictionary<string, AccordionNode> _accordionChildReports = new Dictionary<string, AccordionNode>
                 {
-                    { "DocumentsReports", new AccordionNode(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_reports")) { Clicked = delegate { logicpos.Utils.startReportsMenuFromBackOffice(this); } } }
+                    { "DocumentsReports", new AccordionNode(resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_reports")) { Clicked = delegate { logicpos.Utils.StartReportsMenuFromBackOffice(this); } } }
                 };
 
                 //Articles

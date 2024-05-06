@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 
 namespace LogicPOS.Utility
 {
-    public class ExpressionEvaluator
+    public class ExpressionEvaluationService
     {
         private static readonly Regex varOrFunctionRegEx = new Regex(@"^(?<inObject>(?<nullConditional>[?])?\.)?(?<name>[a-zA-Z_][a-zA-Z0-9_]*)\s*(?<isfunction>[(])?", RegexOptions.IgnoreCase);
         private static readonly Regex numberRegex = new Regex(@"^(?<sign>[+-])?\d+(?<hasdecimal>\.?\d+(e[+-]?\d+)?)?(?<type>ul|[fdulm])?", RegexOptions.IgnoreCase);
@@ -251,7 +251,7 @@ namespace LogicPOS.Utility
         { "pow", Math.Pow },
     };
 
-        private static readonly Dictionary<string, Func<ExpressionEvaluator, List<string>, object>> complexStandardFuncsDictionary = new Dictionary<string, Func<ExpressionEvaluator, List<string>, object>>()
+        private static readonly Dictionary<string, Func<ExpressionEvaluationService, List<string>, object>> complexStandardFuncsDictionary = new Dictionary<string, Func<ExpressionEvaluationService, List<string>, object>>()
     {
         { "array", (self, args) => args.ConvertAll(arg => self.Evaluate(arg)).ToArray() },
         { "avg", (self, args) => args.ConvertAll(arg => Convert.ToDouble(self.Evaluate(arg))).Sum() / args.Count },
@@ -271,7 +271,7 @@ namespace LogicPOS.Utility
         /// <summary>
         /// All assemblies needed to resolves Types
         /// </summary>
-        public List<AssemblyName> ReferencedAssemblies { get; set; } = typeof(ExpressionEvaluator).Assembly.GetReferencedAssemblies().ToList();
+        public List<AssemblyName> ReferencedAssemblies { get; set; } = typeof(ExpressionEvaluationService).Assembly.GetReferencedAssemblies().ToList();
 
         /// <summary>
         /// All Namespaces Where to find types
@@ -312,14 +312,14 @@ namespace LogicPOS.Utility
         /// <summary>
         /// Default Constructor
         /// </summary>
-        public ExpressionEvaluator()
+        public ExpressionEvaluationService()
         { }
 
         /// <summary>
         /// Constructor with variable initialize
         /// </summary>
         /// <param name="variables">The Values of the variable use in the expressions</param>
-        public ExpressionEvaluator(Dictionary<string, object> variables)
+        public ExpressionEvaluationService(Dictionary<string, object> variables)
         {
             this.Variables = variables;
         }
@@ -912,7 +912,7 @@ namespace LogicPOS.Utility
                         vars[argsNames[a]] = args[a];
                     }
 
-                    ExpressionEvaluator expressionEvaluator = new ExpressionEvaluator(vars);
+                    ExpressionEvaluationService expressionEvaluator = new ExpressionEvaluationService(vars);
 
                     return expressionEvaluator.Evaluate(lambdaExpressionMatch.Groups["expression"].Value);
                 }));
@@ -1126,7 +1126,7 @@ namespace LogicPOS.Utility
             {
                 result = func2(Convert.ToDouble(Evaluate(args[0])), Convert.ToDouble(Evaluate(args[1])));
             }
-            else if (complexStandardFuncsDictionary.TryGetValue(name, out Func<ExpressionEvaluator, List<string>, object> complexFunc))
+            else if (complexStandardFuncsDictionary.TryGetValue(name, out Func<ExpressionEvaluationService, List<string>, object> complexFunc))
             {
                 result = complexFunc(this, args);
             }

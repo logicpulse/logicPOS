@@ -5,7 +5,7 @@ using System.Text;
 
 namespace LogicPOS.Utility
 {
-    public class CommunicationManager
+    public class SerialPortService
     {
         public enum TransmissionType { Text, Hex }
 
@@ -20,7 +20,7 @@ namespace LogicPOS.Utility
         public string PortName { get; set; } = string.Empty;
         public TransmissionType CurrentTransmissionType { get; set; }
 
-        public CommunicationManager(
+        public SerialPortService(
             string baudRate, 
             string parity, 
             string stopBits, 
@@ -34,7 +34,7 @@ namespace LogicPOS.Utility
             PortName = portName;
         }
 
-        public CommunicationManager()
+        public SerialPortService()
         {
             BaudRate = string.Empty;
             Parity = string.Empty;

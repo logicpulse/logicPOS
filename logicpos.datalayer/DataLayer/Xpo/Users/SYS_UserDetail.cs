@@ -1,5 +1,6 @@
 using DevExpress.Xpo;
 using logicpos.datalayer.App;
+using LogicPOS.Utility;
 using System;
 
 namespace logicpos.datalayer.DataLayer.Xpo
@@ -22,7 +23,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             Ord = DataLayerUtils.GetNextTableFieldID(nameof(sys_userdetail), "Ord");
             Code = DataLayerUtils.GetNextTableFieldID(nameof(sys_userdetail), "Code");
             //Required for New Users
-            AccessPin = CryptographyUtils.SaltedString.GenerateSaltedString(DataLayerSettings.DefaultValueUserDetailAccessPin);
+            AccessPin = CryptographyUtils.GenerateSaltedString(DataLayerSettings.DefaultValueUserDetailAccessPin);
             PasswordReset = true;
             ButtonImage = string.Format("{0}{1}", DataLayerFramework.Path["assets"], DataLayerSettings.DefaultValueUserDetailButtonImage);
         }

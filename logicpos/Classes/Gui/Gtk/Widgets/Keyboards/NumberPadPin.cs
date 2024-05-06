@@ -10,6 +10,7 @@ using logicpos.shared.App;
 using System;
 using System.Drawing;
 using LogicPOS.Settings.Extensions;
+using LogicPOS.Utility;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -258,7 +259,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         break;
                     case NumberPadPinMode.PasswordNew:
                         //Check If New Password is Equal to Old Password using ValidatePassword
-                        if (CryptographyUtils.SaltedString.ValidateSaltedString(pUserDetail.AccessPin, EntryPin.Text))
+                        if (CryptographyUtils.ValidateSaltedString(pUserDetail.AccessPin, EntryPin.Text))
                         {
                             //Show Error Message
                             ResponseType responseType = logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_change_password"), resources.CustomResources.GetCustomResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "pos_pinpad_message_password_equal_error"));
@@ -275,7 +276,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         if (_passwordNew == EntryPin.Text)
                         {
                             //Commit Changes
-                            pUserDetail.AccessPin =  CryptographyUtils.SaltedString.GenerateSaltedString(_passwordNew);
+                            pUserDetail.AccessPin =  CryptographyUtils.GenerateSaltedString(_passwordNew);
                             pUserDetail.PasswordReset = false;
                             pUserDetail.PasswordResetDate = DataLayerUtils.CurrentDateTimeAtomic();
                             pUserDetail.Save();
@@ -345,7 +346,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             {
                 var resultObject = XPOSettings.Session.ExecuteScalar(sql);
 
-                if (resultObject != null && resultObject.GetType() == typeof(string) && CryptographyUtils.SaltedString.ValidateSaltedString(resultObject.ToString(), password))
+                if (resultObject != null && resultObject.GetType() == typeof(string) && CryptographyUtils.ValidateSaltedString(resultObject.ToString(), password))
                 {
                     EntryPin.ModifyText(StateType.Normal, Color.Black.ToGdkColor());
                     EntryPin.Visibility = false;

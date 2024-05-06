@@ -18,7 +18,7 @@ namespace logicpos.Classes.Logic.Hardware
         private const bool _debug = false;
         private UsbDevice _usbDevice;
         private readonly UsbEndpointWriter _usbWriter;
-        private readonly CommunicationManager _communicationManager;
+        private readonly SerialPortService _communicationManager;
         private ErrorCode _usbErrorCode = ErrorCode.None;
         private int _charactersPerLine = 20;
         private uint _standByInSeconds;
@@ -63,8 +63,8 @@ namespace logicpos.Classes.Logic.Hardware
                 {
 
                     //string baud, string par, string sBits, string dBits, string name
-                    _communicationManager = new CommunicationManager();
-                    _communicationManager.CurrentTransmissionType = CommunicationManager.TransmissionType.Hex;
+                    _communicationManager = new SerialPortService();
+                    _communicationManager.CurrentTransmissionType = SerialPortService.TransmissionType.Hex;
                     _communicationManager.PortName = COM;
                     // Start With OpenPort
                     //Protecções de integridade das BD's e funcionamento da aplicação [IN:013327]

@@ -1,5 +1,4 @@
-﻿using CryptographyUtils;
-using DevExpress.Data.Filtering;
+﻿using DevExpress.Data.Filtering;
 using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
 using Gtk;
@@ -25,6 +24,8 @@ using logicpos.financial.library.Classes.Finance;
 using logicpos.shared.App;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
+using LogicPOS.Settings.Extensions;
+using LogicPOS.Utility;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -42,7 +43,6 @@ using System.Net;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
-using LogicPOS.Settings.Extensions;
 
 namespace logicpos
 {
@@ -57,8 +57,6 @@ namespace logicpos
         public Dictionary<string, AccordionNode> _accordionChildCostumersTemp = new Dictionary<string, AccordionNode>();
         public Dictionary<string, AccordionNode> _accordionChildUsersTemp = new Dictionary<string, AccordionNode>();
         public Dictionary<string, AccordionNode> _accordionChildOtherTablesTemp = new Dictionary<string, AccordionNode>();
-
-
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //DataBase
@@ -2761,7 +2759,7 @@ namespace logicpos
                     configurationPreferenceParameterCompanyCivilRegistrationID.Value
                 );
 
-                string systemProtectedSalted = SaltedString.GenerateSaltedString(systemProtected);
+                string systemProtectedSalted = CryptographyUtils.GenerateSaltedString(systemProtected);
                 _logger.Debug(string.Format("systemProtected: [{0}]", systemProtected));
                 _logger.Debug(string.Format("systemProtectedSalted: [{0}]", systemProtectedSalted));
 
@@ -2786,7 +2784,7 @@ namespace logicpos
         }
 
         //TK016235 BackOffice - Mode
-        public static void startReportsMenuFromBackOffice(Window pSourceWindow)
+        public static void StartReportsMenuFromBackOffice(Window pSourceWindow)
         {
             try
             {
@@ -2801,7 +2799,7 @@ namespace logicpos
         }
 
         //TK016235 BackOffice - Mode
-        public static void startNewDocumentFromBackOffice(Window pSourceWindow)
+        public static void StartNewDocumentFromBackOffice(Window pSourceWindow)
         {
             try
             {
@@ -2820,7 +2818,7 @@ namespace logicpos
         }
 
         //TK016235 BackOffice - Mode
-        public static void startDocumentsMenuFromBackOffice(Window pSourceWindow, int docChoice)
+        public static void StartDocumentsMenuFromBackOffice(Window pSourceWindow, int docChoice)
         {
             try
             {
@@ -2861,11 +2859,11 @@ namespace logicpos
                     XPOSettings.Session.ExecuteScalar(query);
                     query = string.Format("UPDATE cfg_configurationpreferenceparameter SET Disabled = '1' WHERE Token = 'CHECK_STOCKS_MESSAGE';");
                     XPOSettings.Session.ExecuteScalar(query);
-                    startDocumentsMenuFromBackOffice(pSourceWindow, 6);
+                    StartDocumentsMenuFromBackOffice(pSourceWindow, 6);
                 }
                 else
                 {
-                    startDocumentsMenuFromBackOffice(pSourceWindow, 6);
+                    StartDocumentsMenuFromBackOffice(pSourceWindow, 6);
                 }
             }
             catch (Exception ex)

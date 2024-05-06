@@ -22,7 +22,7 @@ namespace logicpos.App
         public static bool MultiUserEnvironment { get; set; }
         public static bool UseVirtualKeyBoard { get; set; }
         public static dynamic Theme { get; set; }
-        public static ExpressionEvaluator ExpressionEvaluator { get; set; } = new ExpressionEvaluator();
+        public static ExpressionEvaluationService ExpressionEvaluator { get; set; } = new ExpressionEvaluationService();
         public static System.Drawing.Size ScreenSize { get; set; }
         public static System.Drawing.Size MaxWindowSize { get; set; }
         public static System.Drawing.Size BoScreenSize { get; set; }

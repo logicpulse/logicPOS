@@ -8,6 +8,7 @@ using System;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.datalayer.App;
 using LogicPOS.Settings.Extensions;
+using LogicPOS.Utility;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -259,7 +260,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             try
             {
                 //UserDetail userDetail = (this._crudWidgetList.GetFieldWidget("PasswordReset").DataSourceRow as UserDetail);
-                _userDetail.AccessPin = CryptographyUtils.SaltedString.GenerateSaltedString(DataLayerSettings.DefaultValueUserDetailAccessPin);
+                _userDetail.AccessPin = CryptographyUtils.GenerateSaltedString(DataLayerSettings.DefaultValueUserDetailAccessPin);
                 _userDetail.PasswordReset = false;
                 _userDetail.PasswordResetDate = DataLayerUtils.CurrentDateTimeAtomic();
                 //Force LogOut User
