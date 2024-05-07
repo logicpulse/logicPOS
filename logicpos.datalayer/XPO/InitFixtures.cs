@@ -5,14 +5,10 @@ using logicpos.datalayer.Xpo;
 
 namespace logicpos.datalayer.DataLayer.Xpo
 {
-    public class InitFixtures
+    public static class InitFixtures
     {
         private static Session _session;
 
-        /// <summary>
-        /// Initialize Database Fixtures
-        /// </summary>
-        /// <param name="pSession"></param>
         public static void InitUserAndTerminal(Session pSession)
         {
             _session = pSession;
