@@ -28,7 +28,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Init Local Vars Parameters
             _selectedUserDetail = pUserDetail;
             //Init Local Vars
-            string windowTitle = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_request_user_pin");
+            string windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_request_user_pin");
             Size windowSize = new Size(332, DialogHeight);
             string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_users.png";
             string fontNumberPadPinButtonKeysTextAndLabel = LogicPOS.Settings.GeneralSettings.Settings["fontNumberPadPinButtonKeysTextAndLabel"];

@@ -390,10 +390,10 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                 }
                 
 
-                pEntry.Text = (value != null) ? value.ToString() : CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error");
+                pEntry.Text = (value != null) ? value.ToString() : CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error");
 
-                pEntryCode.Text = (value != null) ? value.Code.ToString() : CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error");
-                pEntryQtd.Text = (value != null) ? value.DefaultQuantity.ToString() : CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error");
+                pEntryCode.Text = (value != null) ? value.Code.ToString() : CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error");
+                pEntryQtd.Text = (value != null) ? value.DefaultQuantity.ToString() : CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error");
                 
                 OnClosePopup();
             }
@@ -495,7 +495,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                 }
                 else
                 {
-                    pEntry.Text = (value != null) ? value.ToString() : CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error");
+                    pEntry.Text = (value != null) ? value.ToString() : CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error");
                 }           
                 OnClosePopup();
             }
@@ -527,7 +527,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                   dialog = new PosSelectRecordDialog<XPCollection, XPGuidObject, T2>(
                     _sourceWindow,
                     DialogFlags.DestroyWithParent,
-                    CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_select_record"),
+                    CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_select_record"),
                     _dialogSize,
                     _value,
                     CriteriaOperator,
@@ -667,7 +667,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
 
                 List<string> result = new List<string>();
 				//Titulo nas janelas de filtro de relatório [IN:014328]
-                PosReportsQueryDialog dialogFilter = new PosReportsQueryDialog(dialog, DialogFlags.DestroyWithParent, ReportsQueryDialogMode.FILTER_DOCUMENTS_PAGINATION, "fin_documentfinancemaster", CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_report_filter"));
+                PosReportsQueryDialog dialogFilter = new PosReportsQueryDialog(dialog, DialogFlags.DestroyWithParent, ReportsQueryDialogMode.FILTER_DOCUMENTS_PAGINATION, "fin_documentfinancemaster", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_report_filter"));
                 DialogResponseType responseFilter = (DialogResponseType)dialogFilter.Run();
 
                 //If button Clean Filter Clicked

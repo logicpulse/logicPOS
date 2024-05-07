@@ -54,9 +54,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             //Aways Default to UNDEFINED Value - even if Collection is Empty, and if Used
             if (pAddUndefinedValue)
             {
-                tempItemIter = _comboBoxListStore.AppendValues(0, CultureResources.GetLanguageResource("", "widget_combobox_undefined"));
+                tempItemIter = _comboBoxListStore.AppendValues(0, CultureResources.GetResourceByLanguage("", "widget_combobox_undefined"));
                 _treeInterDictionary.Add(0, tempItemIter);
-                initialValueDefault = CultureResources.GetLanguageResource("", "widget_combobox_undefined");
+                initialValueDefault = CultureResources.GetResourceByLanguage("", "widget_combobox_undefined");
                 positionOffset = 1;
             }
             else

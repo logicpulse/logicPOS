@@ -36,9 +36,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
             {
-                new GenericTreeViewColumnProperty("Designation") { Title = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_designation") },
-                new GenericTreeViewColumnProperty("DateStart") { Type = typeof(DateTime), Title = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_date_start") },
-                new GenericTreeViewColumnProperty("DateEnd") { Type = typeof(DateTime), Title = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_date_end") }
+                new GenericTreeViewColumnProperty("Designation") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_designation") },
+                new GenericTreeViewColumnProperty("DateStart") { Type = typeof(DateTime), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_date_start") },
+                new GenericTreeViewColumnProperty("DateEnd") { Type = typeof(DateTime), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_date_end") }
             };
 
             //Configure Criteria/XPCollection/Model

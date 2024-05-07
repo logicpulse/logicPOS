@@ -377,8 +377,8 @@ namespace logicpos.shared.App
                     //get AuditType Object
                     sys_systemaudittype xpoAuditType = (sys_systemaudittype)DataLayerUtils.GetXPGuidObject(typeof(sys_systemaudittype), guidAuditType);
                     string description = (pDescription != string.Empty) ? pDescription
-                      : (xpoAuditType.ResourceString != null && CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), xpoAuditType.ResourceString) != null)
-                      ? CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), xpoAuditType.ResourceString) : xpoAuditType.Designation;
+                      : (xpoAuditType.ResourceString != null && CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), xpoAuditType.ResourceString) != null)
+                      ? CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), xpoAuditType.ResourceString) : xpoAuditType.Designation;
 
                     sys_systemaudit systemAudit = new sys_systemaudit(pSession)
                     {
@@ -965,7 +965,7 @@ namespace logicpos.shared.App
                                 "- {0} : {1} : {2} {3} : (#{4})",
                                 item.DocumentNumber, item.Date,
                                 documentBackUtilDays,
-                                CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(),
+                                CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(),
                                 "global_day_days"),
                                 item.Notifications.Count + 1);
 
@@ -1091,7 +1091,7 @@ namespace logicpos.shared.App
                         //Cut Text
                         result.Text = pValue.Substring(0, pMaxLength);
                     }
-                    lengthLabelText = string.Format("{0}: {1}/{2}", CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_characters"), result.Length, pMaxLength);
+                    lengthLabelText = string.Format("{0}: {1}/{2}", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_characters"), result.Length, pMaxLength);
                 }
                 var minWordLengthConsidered = Convert.ToInt16(LogicPOS.Settings.GeneralSettings.Settings["MinWordLengthConsidered"]);
 
@@ -1106,7 +1106,7 @@ namespace logicpos.shared.App
                         result.Words = pMaxWords;
                         result.Text = LogicPOS.Utility.StringUtils.GetWords(result.Text, pMaxWords);
                     }
-                    maxWordsLabelText = string.Format("{0}: {1}/{2}", CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_words"), result.Words, pMaxWords);
+                    maxWordsLabelText = string.Format("{0}: {1}/{2}", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_words"), result.Words, pMaxWords);
                 }
 
                 if (result.Length > 0)

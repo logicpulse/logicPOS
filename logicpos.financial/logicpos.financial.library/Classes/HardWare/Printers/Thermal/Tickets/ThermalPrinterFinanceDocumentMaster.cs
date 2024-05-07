@@ -139,7 +139,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             {
                 //Table|Order #2|Name/Zone
                 string tableZone = string.Format("{0} : #{1}/{2}"
-                    , CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), string.Format("global_table_appmode_{0}", DataLayerSettings.CustomAppOperationMode.AppOperationTheme.ToLower())) /* IN008024 */
+                    , CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), string.Format("global_table_appmode_{0}", DataLayerSettings.CustomAppOperationMode.AppOperationTheme.ToLower())) /* IN008024 */
                     , _documentMaster.SourceOrderMain.PlaceTable.Designation
                     , _documentMaster.SourceOrderMain.PlaceTable.Place.Designation
                 );
@@ -165,26 +165,26 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                  */
                 //Colum
                 if (DataLayerSettings.ConfigurationSystemCountry.Oid == SharedSettings.XpoOidConfigurationCountryPortugal){
-                    columns.Add(new TicketColumn("VatRate", CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "IVA") + "%", 6, TicketColumnsAlign.Right, typeof(decimal), "{0:00.00}"));
+                    columns.Add(new TicketColumn("VatRate", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "IVA") + "%", 6, TicketColumnsAlign.Right, typeof(decimal), "{0:00.00}"));
                 }
                 else
                 {
-                    columns.Add(new TicketColumn("VatRate", CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_vat_rate") + "%", 6, TicketColumnsAlign.Right, typeof(decimal), "{0:00.00}"));
+                    columns.Add(new TicketColumn("VatRate", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_vat_rate") + "%", 6, TicketColumnsAlign.Right, typeof(decimal), "{0:00.00}"));
                 }                
-                columns.Add(new TicketColumn("Quantity", CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_quantity_acronym"), 8, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));
-                columns.Add(new TicketColumn("UnitMeasure", CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_unit_measure_acronym"), 3, TicketColumnsAlign.Right));
+                columns.Add(new TicketColumn("Quantity", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_quantity_acronym"), 8, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));
+                columns.Add(new TicketColumn("UnitMeasure", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_unit_measure_acronym"), 3, TicketColumnsAlign.Right));
                 if (DataLayerSettings.ConfigurationSystemCountry.Oid == SharedSettings.XpoOidConfigurationCountryPortugal)
                 {
-                    columns.Add(new TicketColumn("UnitPrice", CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_short_price"), 11, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));
+                    columns.Add(new TicketColumn("UnitPrice", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_short_price"), 11, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));
                 }
                 else
                 {
-                    columns.Add(new TicketColumn("Price", CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_price"), 11, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));
+                    columns.Add(new TicketColumn("Price", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_price"), 11, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));
                 }
 
-                columns.Add(new TicketColumn("Discount", CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_discount_acronym") + "%", 6, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));
+                columns.Add(new TicketColumn("Discount", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_discount_acronym") + "%", 6, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));
                 //columns.Add(new TicketColumn("TotalNet", CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_totalnet_acronym, 9, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));
-                columns.Add(new TicketColumn("TotalFinal", CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_total_per_item"), 0, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));//Dynamic
+                columns.Add(new TicketColumn("TotalFinal", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_total_per_item"), 0, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));//Dynamic
                 /* IN009211 - end */
 
                 //Prepare Table with Padding
@@ -290,7 +290,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 if (_documentFinanceMasterList[0].Discount > 0.0m)
                 {
                     dataRow = dataTable.NewRow();
-                    dataRow[0] = string.Format("{0} (%)", CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_discount_customer")); /* IN009211 */
+                    dataRow[0] = string.Format("{0} (%)", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_discount_customer")); /* IN009211 */
                     dataRow[1] = LogicPOS.Utility.DataConversionUtils.DecimalToString(_documentFinanceMasterList[0].Discount);
                     dataTable.Rows.Add(dataRow);
                 }
@@ -298,7 +298,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 if (_documentFinanceMasterList[0].TotalDiscount > 0.0m)
                 {
                     dataRow = dataTable.NewRow();
-                    dataRow[0] = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_total_discount"); /* IN009211 */
+                    dataRow[0] = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_total_discount"); /* IN009211 */
                     dataRow[1] = LogicPOS.Utility.DataConversionUtils.DecimalToString(_documentFinanceMasterList[0].TotalDiscount * _documentFinanceMasterList[0].ExchangeRate);
                     dataTable.Rows.Add(dataRow);
                 }
@@ -309,18 +309,18 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 
                 //Add Row : TotalNet
                 dataRow = dataTable.NewRow();
-                dataRow[0] = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_totalnet"); /* IN009211 */
+                dataRow[0] = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_totalnet"); /* IN009211 */
                 //dataRow[1] = LogicPOS.Utility.DataConversionUtils.DecimalToString(_documentFinanceMasterList[0].TotalGross * _documentFinanceMasterList[0].ExchangeRate);
                 dataRow[1] = LogicPOS.Utility.DataConversionUtils.DecimalToString(_documentFinanceMasterList[0].TotalNet * _documentFinanceMasterList[0].ExchangeRate);
                 dataTable.Rows.Add(dataRow);
                 //Add Row : TotalTax
                 dataRow = dataTable.NewRow();
-                dataRow[0] = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_totaltax"); /* IN009211 */
+                dataRow[0] = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_totaltax"); /* IN009211 */
                 dataRow[1] = LogicPOS.Utility.DataConversionUtils.DecimalToString(_documentFinanceMasterList[0].TotalTax * _documentFinanceMasterList[0].ExchangeRate);
                 dataTable.Rows.Add(dataRow);
                 //Add Row : TotalFinal
                 dataRow = dataTable.NewRow();
-                dataRow[0] = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_totalfinal");
+                dataRow[0] = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_totalfinal");
                 dataRow[1] = LogicPOS.Utility.DataConversionUtils.DecimalToString(_documentFinanceMasterList[0].TotalFinal * _documentFinanceMasterList[0].ExchangeRate);
                 dataTable.Rows.Add(dataRow);
 
@@ -337,12 +337,12 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                     dataTable.Rows.Add(dataRow);
                     //TotalDelivery
                     dataRow = dataTable.NewRow();
-                    dataRow[0] = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_total_deliver");
+                    dataRow[0] = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_total_deliver");
                     dataRow[1] = LogicPOS.Utility.DataConversionUtils.DecimalToString(_documentFinanceMasterList[0].TotalDelivery * _documentFinanceMasterList[0].ExchangeRate);
                     dataTable.Rows.Add(dataRow);
                     //TotalChange
                     dataRow = dataTable.NewRow();
-                    dataRow[0] = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_total_change");
+                    dataRow[0] = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_total_change");
                     dataRow[1] = LogicPOS.Utility.DataConversionUtils.DecimalToString(_documentFinanceMasterList[0].TotalChange * _documentFinanceMasterList[0].ExchangeRate);
                     dataTable.Rows.Add(dataRow);
                 }
@@ -357,7 +357,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                             SharedSettings.XpoOidConfigurationCurrencyUSDollar);
 
                     dataRow = dataTable.NewRow();
-                    dataRow[0] = string.Format(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_printer_thermal_total_default_currency"), defaultCurrencyForExchangeRate.Acronym);
+                    dataRow[0] = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_printer_thermal_total_default_currency"), defaultCurrencyForExchangeRate.Acronym);
                     dataRow[1] = LogicPOS.Utility.DataConversionUtils.DecimalToString(_documentFinanceMasterList[0].TotalFinal * defaultCurrencyForExchangeRate.ExchangeRate);/* TO DO : IN009055 - this causes total equals 0,00 when low product price */
                     dataTable.Rows.Add(dataRow);
                 }
@@ -423,10 +423,10 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 //Configure Ticket Column Properties
                 List<TicketColumn> columns = new List<TicketColumn>
                 {
-                    new TicketColumn("Designation", CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_designation"), 0, TicketColumnsAlign.Left),
-                    new TicketColumn("Tax", CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_tax"), 8, TicketColumnsAlign.Right),
-                    new TicketColumn("TotalBase", CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_total_tax_base"), 12, TicketColumnsAlign.Right),
-                    new TicketColumn("Total", CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_totaltax_acronym"), 10, TicketColumnsAlign.Right)
+                    new TicketColumn("Designation", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_designation"), 0, TicketColumnsAlign.Left),
+                    new TicketColumn("Tax", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_tax"), 8, TicketColumnsAlign.Right),
+                    new TicketColumn("TotalBase", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_total_tax_base"), 12, TicketColumnsAlign.Right),
+                    new TicketColumn("Total", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_totaltax_acronym"), 10, TicketColumnsAlign.Right)
                 };
 
                 //TicketTable(DataTable pDataTable, List<TicketColumn> pColumnsProperties, int pTableWidth)
@@ -452,25 +452,25 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 if (_documentFinanceMasterList[0].DocumentTypeWayBill)
                 {
                     //WayBill Local Load
-                    _thermalPrinterGeneric.WriteLine(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_waybill_local_load"), WriteLineTextMode.Bold);
+                    _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_waybill_local_load"), WriteLineTextMode.Bold);
                     _thermalPrinterGeneric.WriteLine(string.Format("{0} {1}", _documentFinanceMasterList[0].ShipFromAddressDetail, _documentFinanceMasterList[0].ShipFromCity));
                     _thermalPrinterGeneric.WriteLine(string.Format("{0} {1} [{2}]", _documentFinanceMasterList[0].ShipFromPostalCode, _documentFinanceMasterList[0].ShipFromRegion, _documentFinanceMasterList[0].ShipFromCountry));
-                    _thermalPrinterGeneric.WriteLine(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ship_from_delivery_date_report"), SharedUtils.DateTimeToString(_documentFinanceMasterList[0].ShipFromDeliveryDate));
-                    _thermalPrinterGeneric.WriteLine(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ship_from_delivery_id_report"), _documentFinanceMasterList[0].ShipFromDeliveryID);
-                    _thermalPrinterGeneric.WriteLine(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ship_from_warehouse_id_report"), _documentFinanceMasterList[0].ShipFromWarehouseID);
-                    _thermalPrinterGeneric.WriteLine(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ship_from_location_id_report"), _documentFinanceMasterList[0].ShipFromLocationID);
+                    _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ship_from_delivery_date_report"), SharedUtils.DateTimeToString(_documentFinanceMasterList[0].ShipFromDeliveryDate));
+                    _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ship_from_delivery_id_report"), _documentFinanceMasterList[0].ShipFromDeliveryID);
+                    _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ship_from_warehouse_id_report"), _documentFinanceMasterList[0].ShipFromWarehouseID);
+                    _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ship_from_location_id_report"), _documentFinanceMasterList[0].ShipFromLocationID);
 
                     //Separate with Blank Line
                     _thermalPrinterGeneric.LineFeed();
 
                     //WayBill Local Download
-                    _thermalPrinterGeneric.WriteLine(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_waybill_local_download"), WriteLineTextMode.Bold);
+                    _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_waybill_local_download"), WriteLineTextMode.Bold);
                     _thermalPrinterGeneric.WriteLine(string.Format("{0} {1}", _documentFinanceMasterList[0].ShipToAddressDetail, _documentFinanceMasterList[0].ShipToCity));
                     _thermalPrinterGeneric.WriteLine(string.Format("{0} {1} [{2}]", _documentFinanceMasterList[0].ShipToPostalCode, _documentFinanceMasterList[0].ShipToRegion, _documentFinanceMasterList[0].ShipToCountry));
-                    _thermalPrinterGeneric.WriteLine(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ship_to_delivery_date_report"), SharedUtils.DateTimeToString(_documentFinanceMasterList[0].ShipToDeliveryDate));
-                    _thermalPrinterGeneric.WriteLine(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ship_to_delivery_id_report"), _documentFinanceMasterList[0].ShipToDeliveryID);
-                    _thermalPrinterGeneric.WriteLine(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ship_to_warehouse_id_report"), _documentFinanceMasterList[0].ShipToWarehouseID);
-                    _thermalPrinterGeneric.WriteLine(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ship_to_location_id_report"), _documentFinanceMasterList[0].ShipToLocationID);
+                    _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ship_to_delivery_date_report"), SharedUtils.DateTimeToString(_documentFinanceMasterList[0].ShipToDeliveryDate));
+                    _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ship_to_delivery_id_report"), _documentFinanceMasterList[0].ShipToDeliveryID);
+                    _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ship_to_warehouse_id_report"), _documentFinanceMasterList[0].ShipToWarehouseID);
+                    _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ship_to_location_id_report"), _documentFinanceMasterList[0].ShipToLocationID);
 
                     //Line Feed
                     _thermalPrinterGeneric.LineFeed();
@@ -482,7 +482,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                         _thermalPrinterGeneric.SetAlignCenter();
 
                         //WayBill Local Load
-                        _thermalPrinterGeneric.WriteLine(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_at_atdoccodeid"), WriteLineTextMode.Bold);
+                        _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_at_atdoccodeid"), WriteLineTextMode.Bold);
                         _thermalPrinterGeneric.WriteLine(_documentFinanceMasterList[0].ATDocCodeID, WriteLineTextMode.DoubleHeight);
 
                         //Reset Align 

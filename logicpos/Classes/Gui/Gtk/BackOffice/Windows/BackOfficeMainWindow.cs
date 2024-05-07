@@ -114,7 +114,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 if (File.Exists(lPathToUpdater))
                 {
-                    ResponseType responseType = logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new System.Drawing.Size(600, 400), MessageType.Question, ButtonsType.YesNo, string.Format(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_update_POS"), SharedFramework.ServerVersion), CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_pos_update"));
+                    ResponseType responseType = logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new System.Drawing.Size(600, 400), MessageType.Question, ButtonsType.YesNo, string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_update_POS"), SharedFramework.ServerVersion), CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_pos_update"));
 
                     if (responseType == ResponseType.Yes)
                     {
@@ -227,52 +227,52 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 ////TK016235 BackOffice - Mode - Finance Documents for backoffice mode
                 Dictionary<string, AccordionNode> _accordionChildDocuments = new Dictionary<string, AccordionNode>
                 {
-                    { "DocumentsNew", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_button_label_new_finance_documents")) { Clicked = delegate { logicpos.Utils.StartNewDocumentFromBackOffice(this); } } },
-                    { "DocumentsShow", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_button_label_select_record_finance_documents")) { Clicked = delegate { logicpos.Utils.StartDocumentsMenuFromBackOffice(this, 1); } } },
-                    { "DocumentsPay", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_button_label_select_finance_documents_ft_unpaid")) { Clicked = delegate { logicpos.Utils.StartDocumentsMenuFromBackOffice(this, 2); } } },
-                    { "DocumentsPayments", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_button_label_select_payments")) { Clicked = delegate { logicpos.Utils.StartDocumentsMenuFromBackOffice(this, 3); } } },
-                    { "DocumentsCurrentAccount", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_button_label_select_finance_documents_cc")) { Clicked = delegate { logicpos.Utils.StartDocumentsMenuFromBackOffice(this, 4); } } }
+                    { "DocumentsNew", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_button_label_new_finance_documents")) { Clicked = delegate { logicpos.Utils.StartNewDocumentFromBackOffice(this); } } },
+                    { "DocumentsShow", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_button_label_select_record_finance_documents")) { Clicked = delegate { logicpos.Utils.StartDocumentsMenuFromBackOffice(this, 1); } } },
+                    { "DocumentsPay", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_button_label_select_finance_documents_ft_unpaid")) { Clicked = delegate { logicpos.Utils.StartDocumentsMenuFromBackOffice(this, 2); } } },
+                    { "DocumentsPayments", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_button_label_select_payments")) { Clicked = delegate { logicpos.Utils.StartDocumentsMenuFromBackOffice(this, 3); } } },
+                    { "DocumentsCurrentAccount", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_button_label_select_finance_documents_cc")) { Clicked = delegate { logicpos.Utils.StartDocumentsMenuFromBackOffice(this, 4); } } }
                 };
                 //_accordionChildDocuments.Add("DocumentsListall", new AccordionNode(CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_worksession_resume_finance_documents")) {  Content = Utils.GetGenericTreeViewXPO<DashBoard>(this) }); ;
                 logicpos.Utils util = new logicpos.Utils();
                 util._accordionChildDocumentsTemp = _accordionChildDocuments;
                 Dictionary<string, AccordionNode> _accordionChildReports = new Dictionary<string, AccordionNode>
                 {
-                    { "DocumentsReports", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_reports")) { Clicked = delegate { logicpos.Utils.StartReportsMenuFromBackOffice(this); } } }
+                    { "DocumentsReports", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_reports")) { Clicked = delegate { logicpos.Utils.StartReportsMenuFromBackOffice(this); } } }
                 };
 
                 //Articles
                 Dictionary<string, AccordionNode> _accordionChildArticles = new Dictionary<string, AccordionNode>
                 {
                     //, Clicked = testClickedEventHandlerFromOutside }
-                    { "ArticleFamily", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_families")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewArticleFamily>(this) } }
+                    { "ArticleFamily", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_families")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewArticleFamily>(this) } }
                 };
 ;
-                _accordionChildArticles.Add("ArticleSubFamily", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_subfamilies")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewArticleSubFamily>(this) });
-                _accordionChildArticles.Add("Article", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_articles")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewArticle>(this) });
-                _accordionChildArticles.Add("ArticleType", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_article_types")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewArticleType>(this) });
-                _accordionChildArticles.Add("ArticleClass", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_article_class")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewArticleClass>(this) });
-                _accordionChildArticles.Add("ConfigurationPriceType", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_price_type")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPriceType>(this) });
+                _accordionChildArticles.Add("ArticleSubFamily", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_subfamilies")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewArticleSubFamily>(this) });
+                _accordionChildArticles.Add("Article", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_articles")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewArticle>(this) });
+                _accordionChildArticles.Add("ArticleType", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_article_types")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewArticleType>(this) });
+                _accordionChildArticles.Add("ArticleClass", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_article_class")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewArticleClass>(this) });
+                _accordionChildArticles.Add("ConfigurationPriceType", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_price_type")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPriceType>(this) });
                 // Disable to Speed uo Opening BO, noew we have Stock Reports
-                _accordionChildArticles.Add("ArticleStock", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_stock_movements")) { /*Content = Utils.GetGenericTreeViewXPO<TreeViewArticleStock>(this),*/ Clicked = delegate { logicpos.Utils.OpenArticleStockDialog(this); } });
+                _accordionChildArticles.Add("ArticleStock", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_stock_movements")) { /*Content = Utils.GetGenericTreeViewXPO<TreeViewArticleStock>(this),*/ Clicked = delegate { logicpos.Utils.OpenArticleStockDialog(this); } });
 
                 //Customers
                 Dictionary<string, AccordionNode> _accordionChildCustomers = new Dictionary<string, AccordionNode>
                 {
-                    { "Customer", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_customers")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewCustomer>(this, criteriaOperatorCustomer) } },
-                    { "CustomerType", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_customer_types")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewCustomerType>(this) } },
-                    { "CustomerDiscountGroup", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_customer_discount_groups")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewCustomerDiscountGroup>(this) } }
+                    { "Customer", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_customers")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewCustomer>(this, criteriaOperatorCustomer) } },
+                    { "CustomerType", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_customer_types")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewCustomerType>(this) } },
+                    { "CustomerDiscountGroup", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_customer_discount_groups")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewCustomerDiscountGroup>(this) } }
                 };
 
                 //Users
                 Dictionary<string, AccordionNode> _accordionChildUsers = new Dictionary<string, AccordionNode>
                 {
-                    { "UserDetail", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_users")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewUser>(this) } },
+                    { "UserDetail", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_users")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewUser>(this) } },
                     //Commented by Mario: Not Usefull, UserPermissionProfile has same funtionality
                     //_accordionChildUsers.Add("UserProfile", new AccordionNode(CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_profile) { Content = Utils.GetGenericTreeViewXPO<TreeViewUserProfile>(this) });
                     //WARNING: Works with diferent constructs, its still need to be improved : new TreeViewUserProfilePermissions(this)
-                    { "UserPermissionProfile", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_user_permissions")) { Content = new TreeViewUserProfilePermissions(this) } },
-                    { "UserCommissionGroup", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_user_commission_groups")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewUserCommissionGroup>(this) } }
+                    { "UserPermissionProfile", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_user_permissions")) { Content = new TreeViewUserProfilePermissions(this) } },
+                    { "UserCommissionGroup", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_user_commission_groups")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewUserCommissionGroup>(this) } }
                 };
                 //Moved to Custom Toolbar
                 //_accordionChildUsers.Add("System_ApplyPrivileges", new AccordionNode(CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_user_apply_privileges) { Clicked = delegate { Accordion.UpdateMenuPrivileges(); } });
@@ -280,45 +280,45 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 //Documents
                 Dictionary<string, AccordionNode> _accordionDocuments = new Dictionary<string, AccordionNode>
                 {
-                    { "DocumentFinanceYears", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_years")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewDocumentFinanceYears>(this) } },
-                    { "DocumentFinanceSeries", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_series")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewDocumentFinanceSeries>(this) } },
-                    { "DocumentFinanceType", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_type")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewDocumentFinanceType>(this) } },
+                    { "DocumentFinanceYears", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_years")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewDocumentFinanceYears>(this) } },
+                    { "DocumentFinanceSeries", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_series")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewDocumentFinanceSeries>(this) } },
+                    { "DocumentFinanceType", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_type")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewDocumentFinanceType>(this) } },
                     //_accordionDocuments.Add("DocumentFinanceYearSerieTerminal", new AccordionNode(CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_yearsseriesterminal) { Content = Utils.GetGenericTreeViewXPO<TreeViewDocumentFinanceYearSerieTerminal>(this) });
-                    { "ConfigurationVatRate", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_vat_rates")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationVatRate>(this) } },
-                    { "ConfigurationVatExemptionReason", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_vat_exemption_reason")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationVatExceptionReason>(this) } },
-                    { "ConfigurationPaymentCondition", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_payment_conditions")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPaymentCondition>(this) } },
-                    { "ConfigurationPaymentMethod", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_payment_methods")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPaymentMethod>(this) } }
+                    { "ConfigurationVatRate", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_vat_rates")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationVatRate>(this) } },
+                    { "ConfigurationVatExemptionReason", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_vat_exemption_reason")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationVatExceptionReason>(this) } },
+                    { "ConfigurationPaymentCondition", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_payment_conditions")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPaymentCondition>(this) } },
+                    { "ConfigurationPaymentMethod", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_payment_methods")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPaymentMethod>(this) } }
                 };
 
                 //AuxiliarTables
                 Dictionary<string, AccordionNode> _accordionChildAuxiliarTables = new Dictionary<string, AccordionNode>
                 {
                     //_accordionChildAuxiliarTables.Add("ConfigurationCashRegister", new AccordionNode(CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_cash_registers) { Content = Utils.GetGenericTreeView<TreeViewConfigurationCashRegister>(this) });
-                    { "ConfigurationCountry", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_country")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationCountry>(this) } },
-                    { "ConfigurationCurrency", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ConfigurationCurrency")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationCurrency>(this) } },
+                    { "ConfigurationCountry", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_country")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationCountry>(this) } },
+                    { "ConfigurationCurrency", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ConfigurationCurrency")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationCurrency>(this) } },
                     //_accordionChildAuxiliarTables.Add("ConfigurationDevice", new AccordionNode(CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_devices) { Content = Utils.GetGenericTreeView<TreeViewConfigurationDevice>(this) });
                     //_accordionChildAuxiliarTables.Add("ConfigurationKeyboard", new AccordionNode(CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_keyboards) { Content = Utils.GetGenericTreeView<TreeViewConfigurationKeyboard>(this) });
                     //_accordionChildAuxiliarTables.Add("ConfigurationMaintenance", new AccordionNode(CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_maintenance) { Content = Utils.GetGenericTreeView<TreeViewConfigurationMaintenance>(this) });
-                    { "ConfigurationPlace", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_places")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlace>(this) } }
+                    { "ConfigurationPlace", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_places")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlace>(this) } }
                 };
                 /* IN009035 */
-                string configurationPlaceTableLabel = DataLayerSettings.IsDefaultTheme ? CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_place_tables") : CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_orders");
+                string configurationPlaceTableLabel = DataLayerSettings.IsDefaultTheme ? CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_place_tables") : CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_orders");
                 _accordionChildAuxiliarTables.Add("ConfigurationPlaceTable", new AccordionNode(configurationPlaceTableLabel) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlaceTable>(this) });
-                _accordionChildAuxiliarTables.Add("ConfigurationPlaceMovementType", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_places_movement_type")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlaceMovementType>(this) });
-                _accordionChildAuxiliarTables.Add("ConfigurationUnitMeasure", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_units_measure")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationUnitMeasure>(this) });
-                _accordionChildAuxiliarTables.Add("ConfigurationUnitSize", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_units_size")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationUnitSize>(this) });
-                _accordionChildAuxiliarTables.Add("ConfigurationHolidays", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_holidays")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationHolidays>(this) });
-                _accordionChildAuxiliarTables.Add("Warehouse", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_warehouse")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewWarehouse>(this) });
+                _accordionChildAuxiliarTables.Add("ConfigurationPlaceMovementType", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_places_movement_type")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlaceMovementType>(this) });
+                _accordionChildAuxiliarTables.Add("ConfigurationUnitMeasure", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_units_measure")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationUnitMeasure>(this) });
+                _accordionChildAuxiliarTables.Add("ConfigurationUnitSize", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_units_size")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationUnitSize>(this) });
+                _accordionChildAuxiliarTables.Add("ConfigurationHolidays", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_holidays")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationHolidays>(this) });
+                _accordionChildAuxiliarTables.Add("Warehouse", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_warehouse")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewWarehouse>(this) });
 
 
                 //Devices
                 Dictionary<string, AccordionNode> _accordionDevices = new Dictionary<string, AccordionNode>
                 {
-                    { "ConfigurationPrintersType", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ConfigurationPrintersType")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPrintersType>(this) } },
-                    { "ConfigurationPrinters", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ConfigurationPrinters")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPrinters>(this) } },
-                    { "ConfigurationInputReader", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ConfigurationInputReader")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationInputReader>(this) } },
-                    { "ConfigurationPoleDisplay", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ConfigurationPoleDisplay")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPoleDisplay>(this) } },
-                    { "ConfigurationWeighingMachine", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ConfigurationWeighingMachine")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationWeighingMachine>(this) } }
+                    { "ConfigurationPrintersType", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ConfigurationPrintersType")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPrintersType>(this) } },
+                    { "ConfigurationPrinters", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ConfigurationPrinters")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPrinters>(this) } },
+                    { "ConfigurationInputReader", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ConfigurationInputReader")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationInputReader>(this) } },
+                    { "ConfigurationPoleDisplay", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ConfigurationPoleDisplay")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPoleDisplay>(this) } },
+                    { "ConfigurationWeighingMachine", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ConfigurationWeighingMachine")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationWeighingMachine>(this) } }
                 };
                 // Deprecated
                 //_accordionPrinters.Add("ConfigurationPrintersTemplates", new AccordionNode(CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ConfigurationPrintersTemplates) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPrintersTemplates>(this) });
@@ -327,17 +327,17 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 //Configuration
                 Dictionary<string, AccordionNode> _accordionChildConfiguration = new Dictionary<string, AccordionNode>
                 {
-                    { "ConfigurationPreferenceParameterCompany", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_preferenceparameter_company")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPreferenceParameter>(this, criteriaConfigurationPreferenceParameterCompany) } },
-                    { "ConfigurationPreferenceParameterSystem", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_preferenceparameter_system")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPreferenceParameter>(this, criteriaConfigurationPreferenceParameterSystem) } },
-                    { "ConfigurationPlaceTerminal", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_places_terminals")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlaceTerminal>(this) } }
+                    { "ConfigurationPreferenceParameterCompany", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_preferenceparameter_company")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPreferenceParameter>(this, criteriaConfigurationPreferenceParameterCompany) } },
+                    { "ConfigurationPreferenceParameterSystem", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_preferenceparameter_system")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPreferenceParameter>(this, criteriaConfigurationPreferenceParameterSystem) } },
+                    { "ConfigurationPlaceTerminal", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_places_terminals")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlaceTerminal>(this) } }
                 };
 
 
                 //import                
                 Dictionary<string, AccordionNode> _accordionChildImport = new Dictionary<string, AccordionNode>
                 {
-                    { "System_Import_Articles", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_import_articles")) { Clicked = delegate { ExcelProcessing.OpenFilePicker(this, ImportExportFileOpen.OpenExcelArticles); } } },
-                    { "System_Import_Costumers", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_import_costumers")) { Clicked = delegate { ExcelProcessing.OpenFilePicker(this, ImportExportFileOpen.OpenExcelCostumers); } } }
+                    { "System_Import_Articles", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_import_articles")) { Clicked = delegate { ExcelProcessing.OpenFilePicker(this, ImportExportFileOpen.OpenExcelArticles); } } },
+                    { "System_Import_Costumers", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_import_costumers")) { Clicked = delegate { ExcelProcessing.OpenFilePicker(this, ImportExportFileOpen.OpenExcelCostumers); } } }
                 };
 
 
@@ -348,28 +348,28 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 {
                     if ((System.Configuration.ConfigurationManager.AppSettings["cultureFinancialRules"] == "pt-AO") || (System.Configuration.ConfigurationManager.AppSettings["cultureFinancialRules"] == "pt-PT"))
                     {
-                        _accordionChildExport.Add("System_ExportSaftPT_SaftPt", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_export_saftpt_whole_year")) { Clicked = delegate { FrameworkCalls.ExportSaft(this, ExportSaftPtMode.WholeYear); } });
-                        _accordionChildExport.Add("System_ExportSaftPT_E-Fatura", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_export_saftpt_last_month")) { Clicked = delegate { FrameworkCalls.ExportSaft(this, ExportSaftPtMode.LastMonth); } });
-                        _accordionChildExport.Add("System_ExportSaftPT_Custom", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_export_saftpt_custom")) { Clicked = delegate { FrameworkCalls.ExportSaft(this, ExportSaftPtMode.Custom); } });
+                        _accordionChildExport.Add("System_ExportSaftPT_SaftPt", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_export_saftpt_whole_year")) { Clicked = delegate { FrameworkCalls.ExportSaft(this, ExportSaftPtMode.WholeYear); } });
+                        _accordionChildExport.Add("System_ExportSaftPT_E-Fatura", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_export_saftpt_last_month")) { Clicked = delegate { FrameworkCalls.ExportSaft(this, ExportSaftPtMode.LastMonth); } });
+                        _accordionChildExport.Add("System_ExportSaftPT_Custom", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_export_saftpt_custom")) { Clicked = delegate { FrameworkCalls.ExportSaft(this, ExportSaftPtMode.Custom); } });
                     }
                 }
-                _accordionChildExport.Add("System_Export_Articles", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_export_articles")) { Clicked = delegate { ExcelProcessing.OpenFilePicker(this, ImportExportFileOpen.ExportArticles); } });
-                _accordionChildExport.Add("System_Export_Costumers", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_export_costumers")) { Clicked = delegate { ExcelProcessing.OpenFilePicker(this, ImportExportFileOpen.ExportCustomers); } });
+                _accordionChildExport.Add("System_Export_Articles", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_export_articles")) { Clicked = delegate { ExcelProcessing.OpenFilePicker(this, ImportExportFileOpen.ExportArticles); } });
+                _accordionChildExport.Add("System_Export_Costumers", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_export_costumers")) { Clicked = delegate { ExcelProcessing.OpenFilePicker(this, ImportExportFileOpen.ExportCustomers); } });
                 //System
                 Dictionary<string, AccordionNode> _accordionChildSystem = new Dictionary<string, AccordionNode>
                 {
                     /* IN006001 - "System" > "Notification" menu option */
-                    { "System_Notification", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_notification")) { Clicked = delegate { logicpos.Utils.ShowNotifications(this, true); } } },
-                    { "System_ChangeLog", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "change_logger")) { Clicked = delegate { logicpos.Utils.ShowChangeLog(this); } } }
+                    { "System_Notification", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_notification")) { Clicked = delegate { logicpos.Utils.ShowNotifications(this, true); } } },
+                    { "System_ChangeLog", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "change_logger")) { Clicked = delegate { logicpos.Utils.ShowChangeLog(this); } } }
                 };
                 // Add Menu Items Based On Plugins PluginSoftwareVendor
                 if (LogicPOS.Settings.PluginSettings.PluginSoftwareVendor != null)
                 {
-                    _accordionChildSystem.Add("System_DataBaseBackup", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_database_backup")) { Clicked = delegate { DataBaseBackup.Backup(this); } });
-                    _accordionChildSystem.Add("System_DataBaseRestore_FromSystem", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_database_restore")) { Clicked = delegate { DataBaseBackup.Restore(this, DataBaseRestoreFrom.SystemBackup); } });
-                    _accordionChildSystem.Add("System_DataBaseRestore_FromFile", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_database_restore_from_file")) { Clicked = delegate { DataBaseBackup.Restore(this, DataBaseRestoreFrom.ChooseFromFilePickerDialog); } });
+                    _accordionChildSystem.Add("System_DataBaseBackup", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_database_backup")) { Clicked = delegate { DataBaseBackup.Backup(this); } });
+                    _accordionChildSystem.Add("System_DataBaseRestore_FromSystem", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_database_restore")) { Clicked = delegate { DataBaseBackup.Restore(this, DataBaseRestoreFrom.SystemBackup); } });
+                    _accordionChildSystem.Add("System_DataBaseRestore_FromFile", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_database_restore_from_file")) { Clicked = delegate { DataBaseBackup.Restore(this, DataBaseRestoreFrom.ChooseFromFilePickerDialog); } });
                 }
-                _accordionChildSystem.Add("System_Menu", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_application_loggerout_user")) { Clicked = ClickedSystemLogout });
+                _accordionChildSystem.Add("System_Menu", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_application_loggerout_user")) { Clicked = ClickedSystemLogout });
                 //                _accordionChildSystem.Add("System_Pos", new AccordionNode(CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_pos) { Clicked = ClickedSystemPos });
                 //_accordionChildSystem.Add("System_Quit", new AccordionNode(CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_quit")) { Clicked = delegate { LogicPos.Quit(this); } });
 
@@ -377,28 +377,28 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 //TK016235 BackOffice - Mode
                 if (SharedFramework.AppUseBackOfficeMode)
                 {
-                    accordionDefinition.Add("TopMenuFinanceDocuments", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_button_label_select_record_finance_documents")) { Childs = _accordionChildDocuments, GroupIcon = new Image("Assets/Images/Icons/Accordion/pos_backoffice_documentos.png") });
+                    accordionDefinition.Add("TopMenuFinanceDocuments", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_button_label_select_record_finance_documents")) { Childs = _accordionChildDocuments, GroupIcon = new Image("Assets/Images/Icons/Accordion/pos_backoffice_documentos.png") });
                 }
-                accordionDefinition.Add("TopMenuArticles", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_articles")) { Childs = _accordionChildArticles, GroupIcon = new Image("Assets/Images/Icons/Accordion/pos_backoffice_artigos.png") });
-                accordionDefinition.Add("TopMenuDocuments", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documents")) { Childs = _accordionDocuments, GroupIcon = new Image("Assets/Images/Icons/Accordion/pos_backoffice_informacao_fiscal.png") });
-                accordionDefinition.Add("TopMenuCustomers", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_customers")) { Childs = _accordionChildCustomers, GroupIcon = new Image("Assets/Images/Icons/Accordion/pos_backoffice_clientes.png") });
-                accordionDefinition.Add("TopMenuUsers", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_users")) { Childs = _accordionChildUsers, GroupIcon = new Image("Assets/Images/Icons/Accordion/pos_backoffice_utilizadores.png") });
-                accordionDefinition.Add("TopMenuDevices", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_devices")) { Childs = _accordionDevices, GroupIcon = new Image("Assets/Images/Icons/Accordion/pos_backoffice_impressoras.png") });
-                accordionDefinition.Add("TopMenuOtherTables", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_other_tables")) { Childs = _accordionChildAuxiliarTables, GroupIcon = new Image("Assets/Images/Icons/Accordion/pos_backoffice_outras_tabelas.png") });
-                accordionDefinition.Add("TopMenuConfiguration", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_configuration")) { Childs = _accordionChildConfiguration, GroupIcon = new Image("Assets/Images/Icons/Accordion/pos_backoffice_configuracao.png") });
+                accordionDefinition.Add("TopMenuArticles", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_articles")) { Childs = _accordionChildArticles, GroupIcon = new Image("Assets/Images/Icons/Accordion/pos_backoffice_artigos.png") });
+                accordionDefinition.Add("TopMenuDocuments", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documents")) { Childs = _accordionDocuments, GroupIcon = new Image("Assets/Images/Icons/Accordion/pos_backoffice_informacao_fiscal.png") });
+                accordionDefinition.Add("TopMenuCustomers", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_customers")) { Childs = _accordionChildCustomers, GroupIcon = new Image("Assets/Images/Icons/Accordion/pos_backoffice_clientes.png") });
+                accordionDefinition.Add("TopMenuUsers", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_users")) { Childs = _accordionChildUsers, GroupIcon = new Image("Assets/Images/Icons/Accordion/pos_backoffice_utilizadores.png") });
+                accordionDefinition.Add("TopMenuDevices", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_devices")) { Childs = _accordionDevices, GroupIcon = new Image("Assets/Images/Icons/Accordion/pos_backoffice_impressoras.png") });
+                accordionDefinition.Add("TopMenuOtherTables", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_other_tables")) { Childs = _accordionChildAuxiliarTables, GroupIcon = new Image("Assets/Images/Icons/Accordion/pos_backoffice_outras_tabelas.png") });
+                accordionDefinition.Add("TopMenuConfiguration", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_configuration")) { Childs = _accordionChildConfiguration, GroupIcon = new Image("Assets/Images/Icons/Accordion/pos_backoffice_configuracao.png") });
                 //TK016235 BackOffice - Mode
                 if (SharedFramework.AppUseBackOfficeMode)
                 {
-                    accordionDefinition.Add("TopMenuReports", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_reports")) { Childs = _accordionChildReports, GroupIcon = new Image("Assets/Images/Icons/Accordion/pos_backoffice_relatorios.png") });
+                    accordionDefinition.Add("TopMenuReports", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_reports")) { Childs = _accordionChildReports, GroupIcon = new Image("Assets/Images/Icons/Accordion/pos_backoffice_relatorios.png") });
                 }
 
-                accordionDefinition.Add("TopMenuImport", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_import")) { Childs = _accordionChildImport, GroupIcon = new Image("Assets/Images/Icons/Accordion/pos_backoffice_import.png") });
+                accordionDefinition.Add("TopMenuImport", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_import")) { Childs = _accordionChildImport, GroupIcon = new Image("Assets/Images/Icons/Accordion/pos_backoffice_import.png") });
 
                 if (_accordionChildExport.Count > 0)
                 {
-                    accordionDefinition.Add("TopMenuExport", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_export")) { Childs = _accordionChildExport, GroupIcon = new Image("Assets/Images/Icons/Accordion/pos_backoffice_export.png") });
+                    accordionDefinition.Add("TopMenuExport", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_export")) { Childs = _accordionChildExport, GroupIcon = new Image("Assets/Images/Icons/Accordion/pos_backoffice_export.png") });
                 }
-                accordionDefinition.Add("TopMenuSystem", new AccordionNode(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_system")) { Childs = _accordionChildSystem, GroupIcon = new Image("Assets/Images/Icons/Accordion/pos_backoffice_sistema.png") });
+                accordionDefinition.Add("TopMenuSystem", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_system")) { Childs = _accordionChildSystem, GroupIcon = new Image("Assets/Images/Icons/Accordion/pos_backoffice_sistema.png") });
 
 
 

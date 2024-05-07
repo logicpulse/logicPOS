@@ -105,7 +105,7 @@ namespace logicpos.financial.library.Classes.Finance
                 }
 
                 //Audit
-                SharedUtils.Audit("EXPORT_SAF-T", string.Format(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "audit_message_export_saft"), fileName, _documentDateStart.ToString(CultureSettings.DateFormat), _documentDateEnd.ToString(CultureSettings.DateFormat)));
+                SharedUtils.Audit("EXPORT_SAF-T", string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "audit_message_export_saft"), fileName, _documentDateStart.ToString(CultureSettings.DateFormat), _documentDateEnd.ToString(CultureSettings.DateFormat)));
 
                 return fileName;
             }
@@ -305,15 +305,15 @@ namespace logicpos.financial.library.Classes.Finance
                     {
                         WriteElement("CustomerID", _defaultCustomer.CodeInternal);
                     }
-                    WriteElement("AccountID", row.Values[xPSelectData.GetFieldIndex("AccountID")], CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "saft_value_unknown"));
-                    WriteElement("CustomerTaxID", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("CustomerTaxID")]), CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "saft_value_unknown"));
-                    WriteElement("CompanyName", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("CompanyName")]), CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "saft_value_unknown"));
+                    WriteElement("AccountID", row.Values[xPSelectData.GetFieldIndex("AccountID")], CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "saft_value_unknown"));
+                    WriteElement("CustomerTaxID", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("CustomerTaxID")]), CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "saft_value_unknown"));
+                    WriteElement("CompanyName", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("CompanyName")]), CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "saft_value_unknown"));
                     //<BillingAddress>
                     _xmlWriter.WriteStartElement("BillingAddress");
-                    WriteElement("AddressDetail", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("AddressDetail")]), CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "saft_value_unknown"));
-                    WriteElement("City", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("City")]), CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "saft_value_unknown"));
-                    WriteElement("PostalCode", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("PostalCode")]), CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "saft_value_unknown"));
-                    WriteElement("Country", row.Values[xPSelectData.GetFieldIndex("Country")], CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "saft_value_unknown"));
+                    WriteElement("AddressDetail", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("AddressDetail")]), CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "saft_value_unknown"));
+                    WriteElement("City", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("City")]), CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "saft_value_unknown"));
+                    WriteElement("PostalCode", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("PostalCode")]), CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "saft_value_unknown"));
+                    WriteElement("Country", row.Values[xPSelectData.GetFieldIndex("Country")], CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "saft_value_unknown"));
                     _xmlWriter.WriteEndElement();
                     //</BillingAddress>
                     WriteElement("Telephone", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("Telephone")]));
@@ -359,15 +359,15 @@ namespace logicpos.financial.library.Classes.Finance
             //<Customer>
             _xmlWriter.WriteStartElement("Customer");
             WriteElement("CustomerID", _defaultCustomer.CodeInternal);
-            WriteElement("AccountID", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "saft_value_unknown"));
+            WriteElement("AccountID", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "saft_value_unknown"));
             WriteElement("CustomerTaxID", _defaultCustomer.FiscalNumber);
-            WriteElement("CompanyName", _defaultCustomer.Name, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "saft_value_unknown"));
+            WriteElement("CompanyName", _defaultCustomer.Name, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "saft_value_unknown"));
             //<BillingAddress>
             _xmlWriter.WriteStartElement("BillingAddress");
-            WriteElement("AddressDetail", _defaultCustomer.Address, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "saft_value_unknown"));
-            WriteElement("City", _defaultCustomer.City, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "saft_value_unknown"));
-            WriteElement("PostalCode", _defaultCustomer.ZipCode, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "saft_value_unknown"));
-            WriteElement("Country", _defaultCustomer.Country.Code2, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "saft_value_unknown"));
+            WriteElement("AddressDetail", _defaultCustomer.Address, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "saft_value_unknown"));
+            WriteElement("City", _defaultCustomer.City, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "saft_value_unknown"));
+            WriteElement("PostalCode", _defaultCustomer.ZipCode, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "saft_value_unknown"));
+            WriteElement("Country", _defaultCustomer.Country.Code2, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "saft_value_unknown"));
             _xmlWriter.WriteEndElement();
             //</BillingAddress>
             WriteElement("SelfBillingIndicator", 0);

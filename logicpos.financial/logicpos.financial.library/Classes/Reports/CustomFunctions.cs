@@ -185,7 +185,7 @@ namespace logicpos.financial.library.Classes.Reports
                   : string.Format("UNDEFINED [{0}]", resourceName);
                 if(resourceName == "global_documentfinance_type_title_fs")
                 {
-                    result = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_type_title_fs");
+                    result = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_type_title_fs");
                 }
 
                 //_logger.Debug(string.Format("Message: [{0}]", resourceName));

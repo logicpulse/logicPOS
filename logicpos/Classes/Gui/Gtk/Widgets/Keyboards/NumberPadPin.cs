@@ -81,7 +81,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             EntryPin.KeyReleaseEvent += _entryPin_KeyReleaseEvent;
 
             //Label Status
-            _labelStatus = new Label(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "pos_pinpad_message_type_password"));
+            _labelStatus = new Label(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "pos_pinpad_message_type_password"));
             _labelStatus.ModifyFont(Pango.FontDescription.FromString(pFontLabelStatus));
             _labelStatus.ModifyFg(StateType.Normal, pFontColorLabelStatus.ToGdkColor());
             _labelStatus.SetAlignment(0.5F, 0.5f);
@@ -103,13 +103,13 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             TouchButtonText _buttonQuitOrOk;
 
             //Outside Reference Buttons (Public)
-            ButtonKeyOK = new TouchButtonText("touchButtonKeyOK_Green", pButtonColor, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "widget_pospinpad_ok"), pFont, pFontColor, pButtonWidth, pButtonHeight) { Sensitive = false };
+            ButtonKeyOK = new TouchButtonText("touchButtonKeyOK_Green", pButtonColor, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "widget_pospinpad_ok"), pFont, pFontColor, pButtonWidth, pButtonHeight) { Sensitive = false };
             //_buttonKeyResetPassword = new TouchButtonText("touchButtonKeyReset_Red", pButtonColor, CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "widget_pospinpad_change_password, pFont, pFontColor, pButtonWidth, pButtonHeight) { Sensitive = false };
 
             if (pShowSystemButtons)
             {
                 ButtonKeyFrontOffice = new TouchButtonText("touchButtonKeyFrontOffice_DarkGrey", pButtonColor, "FO", pFont, pFontColor, pButtonWidth, pButtonHeight) { Sensitive = false, Visible = false };
-                ButtonKeyQuit = new TouchButtonText("touchButtonKeyQuit_DarkGrey", pButtonColor, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_quit_title"), pFont, pFontColor, pButtonWidth, pButtonHeight);
+                ButtonKeyQuit = new TouchButtonText("touchButtonKeyQuit_DarkGrey", pButtonColor, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_quit_title"), pFont, pFontColor, pButtonWidth, pButtonHeight);
                 ButtonKeyBackOffice = new TouchButtonText("touchButtonKeyBackOffice_DarkGrey", pButtonColor, "BO", pFont, pFontColor, pButtonWidth, pButtonHeight) { Sensitive = false, Visible = false };
                 _buttonQuitOrOk = ButtonKeyQuit;
             }
@@ -263,7 +263,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         if (CryptographyUtils.ValidateSaltedString(pUserDetail.AccessPin, EntryPin.Text))
                         {
                             //Show Error Message
-                            ResponseType responseType = logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_change_password"), CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "pos_pinpad_message_password_equal_error"));
+                            ResponseType responseType = logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_change_password"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "pos_pinpad_message_password_equal_error"));
                             ClearEntryPinStatusMessage(true);
                         }
                         else
@@ -281,8 +281,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                             pUserDetail.PasswordReset = false;
                             pUserDetail.PasswordResetDate = DataLayerUtils.CurrentDateTimeAtomic();
                             pUserDetail.Save();
-                            SharedUtils.Audit("USER_CHANGE_PASSWORD", string.Format(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_user_change_password"), pUserDetail.Name));
-                            ResponseType responseType = logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_change_password"), CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "pos_pinpad_message_password_changed"));
+                            SharedUtils.Audit("USER_CHANGE_PASSWORD", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_user_change_password"), pUserDetail.Name));
+                            ResponseType responseType = logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_change_password"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "pos_pinpad_message_password_changed"));
                             //Start Application
                             ProcessLogin(pUserDetail);
                             //Finish Job usefull to PosPinDialog send Respond(ResponseType.Ok) when Done
@@ -290,7 +290,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         }
                         else { 
                             //Show Error Message
-                            ResponseType responseType = logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_change_password"), CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "pos_pinpad_message_password_confirmation_error"));
+                            ResponseType responseType = logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_change_password"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "pos_pinpad_message_password_confirmation_error"));
                             ClearEntryPinStatusMessage(true);
                             //Return to 
                             _mode = NumberPadPinMode.PasswordNew;
@@ -356,9 +356,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 }
                 else
                 {
-                    SharedUtils.Audit("USER_loggerIN_ERROR", string.Format(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_user_loggerin_error"), pUserDetail.Name));                    
+                    SharedUtils.Audit("USER_loggerIN_ERROR", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_user_loggerin_error"), pUserDetail.Name));                    
                     EntryPin.ModifyText(StateType.Normal, Color.Red.ToGdkColor());
-                    EntryPin.Text = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "status_message_pin_error");
+                    EntryPin.Text = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "status_message_pin_error");
                     EntryPin.Visibility = true;
                     _entryPinShowStatus = true;
                     result = false;
@@ -390,23 +390,23 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             switch (_mode)
             {
                 case NumberPadPinMode.Password:
-                    _labelStatus.Text = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "pos_pinpad_message_type_password");
+                    _labelStatus.Text = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "pos_pinpad_message_type_password");
                     //_buttonKeyOK.LabelText = CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "widget_pospinpad_loggerin;
-                    ButtonKeyOK.LabelText = (!_notLoginAuth) ? CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "widget_pospinpad_loggerin") : CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "widget_pospinpad_ok");
+                    ButtonKeyOK.LabelText = (!_notLoginAuth) ? CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "widget_pospinpad_loggerin") : CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "widget_pospinpad_ok");
                     break;
                 case NumberPadPinMode.PasswordOld:
                     //Show message to user, to change old password
                     //ResponseType responseType = Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_change_password, CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "pos_pinpad_message_password_request_change_password);
-                    _labelStatus.Text = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "pos_pinpad_message_type_old_password");
-                    ButtonKeyOK.LabelText = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "widget_pospinpad_ok");
+                    _labelStatus.Text = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "pos_pinpad_message_type_old_password");
+                    ButtonKeyOK.LabelText = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "widget_pospinpad_ok");
                     break;
                 case NumberPadPinMode.PasswordNew:
-                    _labelStatus.Text = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "pos_pinpad_message_type_new_password");
-                    ButtonKeyOK.LabelText = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "widget_pospinpad_ok");
+                    _labelStatus.Text = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "pos_pinpad_message_type_new_password");
+                    ButtonKeyOK.LabelText = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "widget_pospinpad_ok");
                     break;
                 case NumberPadPinMode.PasswordNewConfirm:
-                    _labelStatus.Text = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "pos_pinpad_message_type_new_password_confirm");
-                    ButtonKeyOK.LabelText = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "widget_pospinpad_ok");
+                    _labelStatus.Text = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "pos_pinpad_message_type_new_password_confirm");
+                    ButtonKeyOK.LabelText = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "widget_pospinpad_ok");
                     break;
                 default:
                     break;
@@ -420,7 +420,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             DataLayerFramework.LoggedUser = pUserDetail;
             SharedFramework.LoggedUserPermissions = SharedUtils.GetUserPermissions();
-            SharedUtils.Audit("USER_loggerIN", string.Format(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_user_loggerin"), pUserDetail.Name));
+            SharedUtils.Audit("USER_loggerIN", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_user_loggerin"), pUserDetail.Name));
 
             //SessionApp Add LoggedUser
             if (!SharedFramework.SessionApp.LoggedUsers.ContainsKey(DataLayerFramework.LoggedUser.Oid))

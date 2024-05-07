@@ -40,8 +40,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
             {
-                new GenericTreeViewColumnProperty("Article") { ChildName = "Designation", Title = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_designation"), Expand = true, MinWidth = 200 },
-                new GenericTreeViewColumnProperty("SerialNumber") { Title = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_serial_number"), Expand = true, MinWidth = 200 },
+                new GenericTreeViewColumnProperty("Article") { ChildName = "Designation", Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_designation"), Expand = true, MinWidth = 200 },
+                new GenericTreeViewColumnProperty("SerialNumber") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_serial_number"), Expand = true, MinWidth = 200 },
                 new GenericTreeViewColumnProperty("IsSold") { Title = "Vendido", Expand = false },
                 new GenericTreeViewColumnProperty("Status") { Title = "Estado", Expand = true, MinWidth = 150 },
                 new GenericTreeViewColumnProperty("Article") { ChildName = "IsComposed", Title = "Artigo Composto", Expand = false },
@@ -53,7 +53,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     DecryptValue = true,
                     MinWidth = 100
                 },
-                new GenericTreeViewColumnProperty("StockMovimentIn") { ChildName = "PurchasePrice", Title = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_purchase_price"), Expand = false },
+                new GenericTreeViewColumnProperty("StockMovimentIn") { ChildName = "PurchasePrice", Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_purchase_price"), Expand = false },
                 new GenericTreeViewColumnProperty("StockMovimentIn") { ChildName = "DocumentNumber", Title = "Documento Origem", Expand = true },
                 new GenericTreeViewColumnProperty("StockMovimentOut")
                 {
@@ -64,7 +64,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 },
                 new GenericTreeViewColumnProperty("ArticleWarehouse") { Query = "SELECT Designation as Result FROM fin_warehouse WHERE Oid = (SELECT Warehouse FROM fin_warehouselocation WHERE Oid = '{0}');", ChildName = "Warehouse", Title = "Armazem", Expand = true },
                 new GenericTreeViewColumnProperty("ArticleWarehouse") { Query = "SELECT Designation as Result FROM fin_warehouselocation WHERE Oid = '{0}';", ChildName = "Location", Title = "Localização", Expand = true },
-                new GenericTreeViewColumnProperty("UpdatedAt") { Title = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
+                new GenericTreeViewColumnProperty("UpdatedAt") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
             };
 
             //Configure Criteria/XPCollection/Model
@@ -90,7 +90,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             };
 
             int TopReturnedObj = 50;
-            if (pSourceWindow.Title != logicpos.Utils.GetWindowTitle(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_document_finance_page3") + " - " + CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_stock_movements")))
+            if (pSourceWindow.Title != logicpos.Utils.GetWindowTitle(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_document_finance_page3") + " - " + CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_stock_movements")))
             {
                 TopReturnedObj = 100000000;
             }

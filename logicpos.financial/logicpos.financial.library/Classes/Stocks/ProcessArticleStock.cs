@@ -90,10 +90,10 @@ namespace logicpos.financial.library.Classes.Stocks
                 switch (pMode)
                 {
                     case ProcessArticleStockMode.Out:
-                        SharedUtils.Audit("STOCK_MOVEMENT_OUT", string.Format(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_stock_movement_out"), article.Designation, LogicPOS.Utility.DataConversionUtils.DecimalToString(quantity, LogicPOS.Settings.CultureSettings.DecimalFormatStockQuantity)));
+                        SharedUtils.Audit("STOCK_MOVEMENT_OUT", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_stock_movement_out"), article.Designation, LogicPOS.Utility.DataConversionUtils.DecimalToString(quantity, LogicPOS.Settings.CultureSettings.DecimalFormatStockQuantity)));
                         break;
                     case ProcessArticleStockMode.In:
-                        SharedUtils.Audit("STOCK_MOVEMENT_IN", string.Format(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_stock_movement_in"), article.Designation, LogicPOS.Utility.DataConversionUtils.DecimalToString(quantity, LogicPOS.Settings.CultureSettings.DecimalFormatStockQuantity)));
+                        SharedUtils.Audit("STOCK_MOVEMENT_IN", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_stock_movement_in"), article.Designation, LogicPOS.Utility.DataConversionUtils.DecimalToString(quantity, LogicPOS.Settings.CultureSettings.DecimalFormatStockQuantity)));
                         break;
                 }
 

@@ -74,7 +74,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public DialogArticle(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pDialogFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pDialogFlags, pDialogMode, pXPGuidObject)
         {
-            this.Title = logicpos.Utils.GetWindowTitle(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "window_title_edit_article"));
+            this.Title = logicpos.Utils.GetWindowTitle(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_edit_article"));
 
             _entryCompositeLinesCollection = new List<XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>>();
             _articlecompositions = new List<fin_articlecomposition>();
@@ -153,32 +153,32 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //Ord
                 Entry entryOrd = new Entry();
-                BOWidgetBox boxLabel = new BOWidgetBox(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_record_order"), entryOrd);
+                BOWidgetBox boxLabel = new BOWidgetBox(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_record_order"), entryOrd);
                 vboxTab1.PackStart(boxLabel, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxLabel, _dataSourceRow, "Ord", LogicPOS.Utility.RegexUtils.RegexIntegerGreaterThanZero, true));
 
                 //Code
                 Entry entryCode = new Entry();
-                BOWidgetBox boxCode = new BOWidgetBox(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_record_code"), entryCode);
+                BOWidgetBox boxCode = new BOWidgetBox(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_record_code"), entryCode);
                 vboxTab1.PackStart(boxCode, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCode, _dataSourceRow, "Code", LogicPOS.Utility.RegexUtils.RegexAlfaNumericArticleCode, true));
 
                 //CodeDealer
                 Entry entryCodeDealer = new Entry();
-                BOWidgetBox boxCodeDealer = new BOWidgetBox(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_record_code_dealer"), entryCodeDealer);
+                BOWidgetBox boxCodeDealer = new BOWidgetBox(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_record_code_dealer"), entryCodeDealer);
                 vboxTab1.PackStart(boxCodeDealer, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCodeDealer, _dataSourceRow, "CodeDealer", LogicPOS.Utility.RegexUtils.RegexAlfaNumeric, false));
 
                 //Designation
                 Entry entryDesignation = new Entry();
-                BOWidgetBox boxDesignation = new BOWidgetBox(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_designation"), entryDesignation);
+                BOWidgetBox boxDesignation = new BOWidgetBox(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_designation"), entryDesignation);
                 vboxTab1.PackStart(boxDesignation, false, false, 0);
                 // Changed from RegexAlfaNumeric to  RegexAlfaNumericExtended 2017-1011
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true));
 
                 //ButtonLabel
                 Entry entryButtonLabel = new Entry();
-                BOWidgetBox boxButtonLabel = new BOWidgetBox(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_button_name"), entryButtonLabel);
+                BOWidgetBox boxButtonLabel = new BOWidgetBox(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_button_name"), entryButtonLabel);
                 vboxTab1.PackStart(boxButtonLabel, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxButtonLabel, _dataSourceRow, "ButtonLabel", LogicPOS.Utility.RegexUtils.RegexAlfaNumericArticleButtonLabel, false));
 
@@ -190,19 +190,19 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //Family
                 _xpoComboBoxFamily = new XPOComboBox(DataSourceRow.Session, typeof(fin_articlefamily), (DataSourceRow as fin_article).Family, "Designation", null);
-                BOWidgetBox boxFamily = new BOWidgetBox(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_article_family"), _xpoComboBoxFamily);
+                BOWidgetBox boxFamily = new BOWidgetBox(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_article_family"), _xpoComboBoxFamily);
                 vboxTab1.PackStart(boxFamily, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxFamily, DataSourceRow, "Family", LogicPOS.Utility.RegexUtils.RegexGuid, true));
 
                 //SubFamily
                 _xpoComboBoxSubFamily = new XPOComboBox(DataSourceRow.Session, typeof(fin_articlesubfamily), (DataSourceRow as fin_article).SubFamily, "Designation", null);
-                BOWidgetBox boxSubFamily = new BOWidgetBox(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_article_subfamily"), _xpoComboBoxSubFamily);
+                BOWidgetBox boxSubFamily = new BOWidgetBox(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_article_subfamily"), _xpoComboBoxSubFamily);
                 vboxTab1.PackStart(boxSubFamily, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxSubFamily, DataSourceRow, "SubFamily", LogicPOS.Utility.RegexUtils.RegexGuid, true));
 
                 //Type
                 XPOComboBox xpoComboBoxType = new XPOComboBox(DataSourceRow.Session, typeof(fin_articletype), (DataSourceRow as fin_article).Type, "Designation", null);
-                BOWidgetBox boxType = new BOWidgetBox(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_article_type"), xpoComboBoxType);
+                BOWidgetBox boxType = new BOWidgetBox(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_article_type"), xpoComboBoxType);
                 vboxTab1.PackStart(boxType, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxType, DataSourceRow, "Type", LogicPOS.Utility.RegexUtils.RegexGuid, true));
 
@@ -215,7 +215,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 fileChooserButtonImage.SetFilename(((fin_article)DataSourceRow).ButtonImage);
                 fileChooserButtonImage.Filter = logicpos.Utils.GetFileFilterImages();
                 fileChooserButtonImage.SelectionChanged += (sender, eventArgs) => fileChooserImagePreviewButtonImage.Pixbuf = logicpos.Utils.ResizeAndCropFileToPixBuf((sender as FileChooserButton).Filename, new System.Drawing.Size(fileChooserImagePreviewButtonImage.WidthRequest, fileChooserImagePreviewButtonImage.HeightRequest));
-                BOWidgetBox boxfileChooserButtonImage = new BOWidgetBox(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_button_image"), fileChooserButtonImage);
+                BOWidgetBox boxfileChooserButtonImage = new BOWidgetBox(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_button_image"), fileChooserButtonImage);
                 HBox hboxfileChooserAndimagePreviewButtonImage = new HBox(false, _boxSpacing);
                 hboxfileChooserAndimagePreviewButtonImage.PackStart(boxfileChooserButtonImage, true, true, 0);
                 hboxfileChooserAndimagePreviewButtonImage.PackStart(fileChooserFrameImagePreviewButtonImage, false, false, 0);
@@ -224,13 +224,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //Artigos Compostos [IN:016522]
                 //Composite
-                _checkButtonComposite = new CheckButton(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"));
+                _checkButtonComposite = new CheckButton(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"));
                 vboxTab1.PackStart(_checkButtonComposite, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(_checkButtonComposite, _dataSourceRow, "IsComposed"));
                 if (_article.ArticleComposition.Count > 0) { _checkButtonComposite.Active = true; }
 
                 //Unique Articles (Have multi S/N)
-                _checkButtonUniqueArticles = new CheckButton(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_unique_articles"));
+                _checkButtonUniqueArticles = new CheckButton(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_unique_articles"));
                 vboxTab1.PackStart(_checkButtonUniqueArticles, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(_checkButtonUniqueArticles, _dataSourceRow, "UniqueArticles"));
                 _dataSourceRow.Reload();
@@ -238,23 +238,23 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _checkButtonUniqueArticles.Sensitive = false;
 
                 //Favorite
-                CheckButton checkButtonFavorite = new CheckButton(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_favorite"));
+                CheckButton checkButtonFavorite = new CheckButton(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_favorite"));
                 vboxTab1.PackStart(checkButtonFavorite, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(checkButtonFavorite, _dataSourceRow, "Favorite"));
 
                 //UseWeighingBalance
-                CheckButton checkButtonUseWeighingBalance = new CheckButton(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_use_weighing_balance"));
+                CheckButton checkButtonUseWeighingBalance = new CheckButton(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_use_weighing_balance"));
                 vboxTab1.PackStart(checkButtonUseWeighingBalance, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(checkButtonUseWeighingBalance, _dataSourceRow, "UseWeighingBalance"));
 
                 //Disabled
-                CheckButton checkButtonDisabled = new CheckButton(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_record_disabled"));
+                CheckButton checkButtonDisabled = new CheckButton(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_record_disabled"));
                 if (_dialogMode == DialogMode.Insert) checkButtonDisabled.Active = POSSettings.BOXPOObjectsStartDisabled;
                 vboxTab1.PackStart(checkButtonDisabled, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(checkButtonDisabled, _dataSourceRow, "Disabled"));
 
                 //Append Tab
-                _notebook.AppendPage(vboxTab1, new Label(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_record_main_detail")));
+                _notebook.AppendPage(vboxTab1, new Label(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_record_main_detail")));
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -265,9 +265,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //hboxPrices
                 Label labelPriceEmpty = new Label(string.Empty) { WidthRequest = col1width };
-                Label labelPriceNormal = new Label(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "article_normal_price")) { WidthRequest = col2width };
-                Label labelPricePromotion = new Label(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "article_promotion_price")) { WidthRequest = col3width };
-                Label labelPriceUsePromotionPrice = new Label(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "article_use_promotion_price")) { WidthRequest = col4width };
+                Label labelPriceNormal = new Label(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "article_normal_price")) { WidthRequest = col2width };
+                Label labelPricePromotion = new Label(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "article_promotion_price")) { WidthRequest = col3width };
+                Label labelPriceUsePromotionPrice = new Label(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "article_use_promotion_price")) { WidthRequest = col4width };
                 labelPriceNormal.SetAlignment(0.0F, 0.5F);
                 labelPricePromotion.SetAlignment(0.0F, 0.5F);
                 labelPriceUsePromotionPrice.SetAlignment(0.0F, 0.5F);
@@ -322,24 +322,24 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _vboxTab2.PackStart(vboxPrices, false, false, 0);
 
                 //PVPVariable
-                CheckButton checkButtonPVPVariable = new CheckButton(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_variable_price"));
+                CheckButton checkButtonPVPVariable = new CheckButton(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_variable_price"));
                 _vboxTab2.PackStart(checkButtonPVPVariable, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(checkButtonPVPVariable, _dataSourceRow, "PVPVariable"));
 
                 //PriceWithVat
-                CheckButton checkButtonPriceWithVat = new CheckButton(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_price_with_vat"));
+                CheckButton checkButtonPriceWithVat = new CheckButton(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_price_with_vat"));
                 _vboxTab2.PackStart(checkButtonPriceWithVat, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(checkButtonPriceWithVat, _dataSourceRow, "PriceWithVat"));
 
                 //Discount
                 Entry entryDiscount = new Entry();
-                BOWidgetBox boxDiscount = new BOWidgetBox(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_discount"), entryDiscount);
+                BOWidgetBox boxDiscount = new BOWidgetBox(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_discount"), entryDiscount);
                 _vboxTab2.PackStart(boxDiscount, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDiscount, _dataSourceRow, "Discount", LogicPOS.Utility.RegexUtils.RegexPercentage, false));
 
                 //Class
                 XPOComboBox xpoComboBoxClass = new XPOComboBox(DataSourceRow.Session, typeof(fin_articleclass), (DataSourceRow as fin_article).Class, "Designation", null);
-                BOWidgetBox boxClass = new BOWidgetBox(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_article_class"), xpoComboBoxClass);
+                BOWidgetBox boxClass = new BOWidgetBox(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_article_class"), xpoComboBoxClass);
                 _vboxTab2.PackStart(boxClass, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxClass, DataSourceRow, "Class", LogicPOS.Utility.RegexUtils.RegexGuid, true));
 
@@ -348,25 +348,25 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 {
                     //VatOnTable
                     _xpoComboBoxVatOnTable = new XPOComboBox(DataSourceRow.Session, typeof(fin_configurationvatrate), (DataSourceRow as fin_article).VatOnTable, "Designation", null);
-                    BOWidgetBox boxVatOnTable = new BOWidgetBox(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_vat_on_table"), _xpoComboBoxVatOnTable);
+                    BOWidgetBox boxVatOnTable = new BOWidgetBox(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_vat_on_table"), _xpoComboBoxVatOnTable);
                     _vboxTab2.PackStart(boxVatOnTable, false, false, 0);
                     _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxVatOnTable, DataSourceRow, "VatOnTable", LogicPOS.Utility.RegexUtils.RegexGuid, true));
                 }
 
                 //VatDirectSelling
                 _xpoComboBoxVatDirectSelling = new XPOComboBox(DataSourceRow.Session, typeof(fin_configurationvatrate), (DataSourceRow as fin_article).VatDirectSelling, "Designation", null);
-                BOWidgetBox boxVatDirectSelling = new BOWidgetBox(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_vat_direct_selling"), _xpoComboBoxVatDirectSelling);
+                BOWidgetBox boxVatDirectSelling = new BOWidgetBox(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_vat_direct_selling"), _xpoComboBoxVatDirectSelling);
                 _vboxTab2.PackStart(boxVatDirectSelling, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxVatDirectSelling, DataSourceRow, "VatDirectSelling", LogicPOS.Utility.RegexUtils.RegexGuid, true));
 
                 //VatExemptionReason
                 _xpoComboBoxVatExemptionReason = new XPOComboBox(DataSourceRow.Session, typeof(fin_configurationvatexemptionreason), (DataSourceRow as fin_article).VatExemptionReason, "Designation", null);
-                BOWidgetBox boxVatExemptionReason = new BOWidgetBox(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_vat_exemption_reason"), _xpoComboBoxVatExemptionReason);
+                BOWidgetBox boxVatExemptionReason = new BOWidgetBox(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_vat_exemption_reason"), _xpoComboBoxVatExemptionReason);
                 _vboxTab2.PackStart(boxVatExemptionReason, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxVatExemptionReason, DataSourceRow, "VatExemptionReason", LogicPOS.Utility.RegexUtils.RegexGuid, true));
 
                 //Append Tab
-                _notebook.AppendPage(_vboxTab2, new Label(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "dialog_edit_article_tab2_label")));
+                _notebook.AppendPage(_vboxTab2, new Label(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_edit_article_tab2_label")));
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -375,13 +375,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //BarCode
                 Entry entryBarCode = new Entry();
-                BOWidgetBox boxBarCode = new BOWidgetBox(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_barcode"), entryBarCode);
+                BOWidgetBox boxBarCode = new BOWidgetBox(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_barcode"), entryBarCode);
                 vboxTab3.PackStart(boxBarCode, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxBarCode, _dataSourceRow, "BarCode", LogicPOS.Utility.RegexUtils.RegexEan12andEan4, false));
 
                 //Accounting
                 Entry entryAccounting = new Entry();
-                BOWidgetBox boxAccounting = new BOWidgetBox(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_total_stock"), entryAccounting);
+                BOWidgetBox boxAccounting = new BOWidgetBox(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_total_stock"), entryAccounting);
                 vboxTab3.PackStart(boxAccounting, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxAccounting, _dataSourceRow, "Accounting", LogicPOS.Utility.RegexUtils.RegexDecimal, false));
                 //entryAccounting.Editable = false;
@@ -396,57 +396,57 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 }
                 //MinimumStock
                 Entry entryMinimumStock = new Entry();
-                BOWidgetBox boxMinimumStock = new BOWidgetBox(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_minimum_stock"), entryMinimumStock);
+                BOWidgetBox boxMinimumStock = new BOWidgetBox(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_minimum_stock"), entryMinimumStock);
                 vboxTab3.PackStart(boxMinimumStock, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxMinimumStock, _dataSourceRow, "MinimumStock", LogicPOS.Utility.RegexUtils.RegexDecimal, false));
 
                 //Tare
                 Entry entryTare = new Entry();
-                BOWidgetBox boxTare = new BOWidgetBox(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_tare"), entryTare);
+                BOWidgetBox boxTare = new BOWidgetBox(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_tare"), entryTare);
                 vboxTab3.PackStart(boxTare, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxTare, _dataSourceRow, "Tare", LogicPOS.Utility.RegexUtils.RegexDecimal, false));
 
                 //Weight
                 Entry entryWeight = new Entry();
-                BOWidgetBox boxWeight = new BOWidgetBox(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_weight"), entryWeight);
+                BOWidgetBox boxWeight = new BOWidgetBox(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_weight"), entryWeight);
                 vboxTab3.PackStart(boxWeight, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxWeight, _dataSourceRow, "Weight", LogicPOS.Utility.RegexUtils.RegexDecimal, false));
 
                 //DefaultQuantity
                 Entry entryDefaultQuantity = new Entry();
-                BOWidgetBox boxDefaultQuantity = new BOWidgetBox(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_article_default_quantity"), entryDefaultQuantity);
+                BOWidgetBox boxDefaultQuantity = new BOWidgetBox(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_article_default_quantity"), entryDefaultQuantity);
                 vboxTab3.PackStart(boxDefaultQuantity, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDefaultQuantity, _dataSourceRow, "DefaultQuantity", LogicPOS.Utility.RegexUtils.RegexDecimal, false));
 
                 //UnitMeasure
                 XPOComboBox xpoComboBoxUnitMeasure = new XPOComboBox(DataSourceRow.Session, typeof(cfg_configurationunitmeasure), (DataSourceRow as fin_article).UnitMeasure, "Designation", null);
-                BOWidgetBox boxUnitMeasure = new BOWidgetBox(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_unit_measure"), xpoComboBoxUnitMeasure);
+                BOWidgetBox boxUnitMeasure = new BOWidgetBox(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_unit_measure"), xpoComboBoxUnitMeasure);
                 vboxTab3.PackStart(boxUnitMeasure, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxUnitMeasure, DataSourceRow, "UnitMeasure", LogicPOS.Utility.RegexUtils.RegexGuid, true));
 
                 //UnitSize
                 XPOComboBox xpoComboBoxUnitSize = new XPOComboBox(DataSourceRow.Session, typeof(cfg_configurationunitsize), (DataSourceRow as fin_article).UnitSize, "Designation", null);
-                BOWidgetBox boxUnitSize = new BOWidgetBox(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_unit_size"), xpoComboBoxUnitSize);
+                BOWidgetBox boxUnitSize = new BOWidgetBox(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_unit_size"), xpoComboBoxUnitSize);
                 vboxTab3.PackStart(boxUnitSize, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxUnitSize, DataSourceRow, "UnitSize", LogicPOS.Utility.RegexUtils.RegexGuid, true));
 
                 //Printer
                 XPOComboBox xpoComboBoxPrinter = new XPOComboBox(DataSourceRow.Session, typeof(sys_configurationprinters), (DataSourceRow as fin_article).Printer, "Designation", null);
-                BOWidgetBox boxPrinter = new BOWidgetBox(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_device_printer"), xpoComboBoxPrinter);
+                BOWidgetBox boxPrinter = new BOWidgetBox(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_device_printer"), xpoComboBoxPrinter);
                 vboxTab3.PackStart(boxPrinter, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxPrinter, DataSourceRow, "Printer", LogicPOS.Utility.RegexUtils.RegexGuid, false));
 
                 //Template
                 CriteriaOperator criteriaOperatorSelectTemplate = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (IsBarCode IS NULL OR IsBarCode = 0)"));
                 XPOComboBox xpoComboBoxTemplate = new XPOComboBox(DataSourceRow.Session, typeof(sys_configurationprinterstemplates), (DataSourceRow as fin_article).Template, "Designation", criteriaOperatorSelectTemplate);
-                BOWidgetBox boxTemplate = new BOWidgetBox(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_ConfigurationPrintersTemplates"), xpoComboBoxTemplate);
+                BOWidgetBox boxTemplate = new BOWidgetBox(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_ConfigurationPrintersTemplates"), xpoComboBoxTemplate);
                 vboxTab3.PackStart(boxTemplate, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxTemplate, DataSourceRow, "Template", LogicPOS.Utility.RegexUtils.RegexGuid, false));
 
                 //TemplateBarCode
                 CriteriaOperator criteriaOperatorSelectTemplateBarCode = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND IsBarCode = 1"));
                 XPOComboBox xpoComboBoxTemplateBarCode = new XPOComboBox(DataSourceRow.Session, typeof(sys_configurationprinterstemplates), (DataSourceRow as fin_article).TemplateBarCode, "Designation", criteriaOperatorSelectTemplateBarCode);
-                BOWidgetBox boxTemplateBarCode = new BOWidgetBox(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_ConfigurationPrintersBarCodeTemplates"), xpoComboBoxTemplateBarCode);
+                BOWidgetBox boxTemplateBarCode = new BOWidgetBox(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_ConfigurationPrintersBarCodeTemplates"), xpoComboBoxTemplateBarCode);
                 vboxTab3.PackStart(boxTemplateBarCode, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxTemplateBarCode, DataSourceRow, "TemplateBarCode", LogicPOS.Utility.RegexUtils.RegexGuid, false));
 
@@ -454,19 +454,19 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 {
                     //CommissionGroup
                     XPOComboBox xpoComboBoxCommissionGroup = new XPOComboBox(DataSourceRow.Session, typeof(pos_usercommissiongroup), (DataSourceRow as fin_article).CommissionGroup, "Designation", null);
-                    BOWidgetBox boxCommissionGroup = new BOWidgetBox(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_commission_group"), xpoComboBoxCommissionGroup);
+                    BOWidgetBox boxCommissionGroup = new BOWidgetBox(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_commission_group"), xpoComboBoxCommissionGroup);
                     vboxTab3.PackStart(boxCommissionGroup, false, false, 0);
                     _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCommissionGroup, DataSourceRow, "CommissionGroup", LogicPOS.Utility.RegexUtils.RegexGuid, false));
 
                     //DiscountGroup
                     XPOComboBox xpoComboBoxDiscountGroup = new XPOComboBox(DataSourceRow.Session, typeof(erp_customerdiscountgroup), (DataSourceRow as fin_article).DiscountGroup, "Designation", null);
-                    BOWidgetBox boxDiscountGroup = new BOWidgetBox(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_discount_group"), xpoComboBoxDiscountGroup);
+                    BOWidgetBox boxDiscountGroup = new BOWidgetBox(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_discount_group"), xpoComboBoxDiscountGroup);
                     vboxTab3.PackStart(boxDiscountGroup, false, false, 0);
                     _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDiscountGroup, DataSourceRow, "DiscountGroup", LogicPOS.Utility.RegexUtils.RegexGuid, false));
                 }
 
                 //Append Tab
-                _notebook.AppendPage(vboxTab3, new Label(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "dialog_edit_article_tab3_label")));
+                _notebook.AppendPage(vboxTab3, new Label(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_edit_article_tab3_label")));
 
                 //Artigos Compostos [IN:016522]
                 //Tab4 Composite article
@@ -478,14 +478,14 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _scrolledWindowCompositionView.ShadowType = ShadowType.None;
                 _CompositionView = new Viewport();
 
-                _notebook.AppendPage(_scrolledWindowCompositionView, new Label(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "dialog_edit_article_tab4_label1")));
+                _notebook.AppendPage(_scrolledWindowCompositionView, new Label(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_edit_article_tab4_label1")));
 
                 //vboxTab4.PackStart(_buttonInsert, false, false, 0);
                 //Add composite article #1
                 _totalCompositeEntrys++;
                 CriteriaOperator criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1)"));
                 if (_article != null) { criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Oid != '{0}')", _article.Oid.ToString())); }
-                _entryBoxSelectArticle1 = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_article"), "Designation", "Oid", _article, criteriaOperatorSelectArticle, Enums.Keyboard.KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true, true, "", LogicPOS.Utility.RegexUtils.RegexDecimalGreaterThanZero, _totalCompositeEntrys);
+                _entryBoxSelectArticle1 = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_article"), "Designation", "Oid", _article, criteriaOperatorSelectArticle, Enums.Keyboard.KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true, true, "", LogicPOS.Utility.RegexUtils.RegexDecimalGreaterThanZero, _totalCompositeEntrys);
                 _entryBoxSelectArticle1.EntryValidation.IsEditable = true;
                 _entryBoxSelectArticle1.EntryQtdValidation.IsEditable = true;
                 _entryBoxSelectArticle1.Value = null;
@@ -495,17 +495,17 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _entryBoxSelectArticle1.EntryCodeValidation.Validate();
                 _entryBoxSelectArticle1.EntryQtdValidation.Validate();
 
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryCodeValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), _totalCompositeEntrys, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_article_code")), LogicPOS.Utility.RegexUtils.RegexAlfaNumericArticleCode, true));
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), _totalCompositeEntrys, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_designation")), LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true));
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryQtdValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), _totalCompositeEntrys, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_quantity")), LogicPOS.Utility.RegexUtils.RegexDecimalGreaterThanZero, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryCodeValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), _totalCompositeEntrys, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_article_code")), LogicPOS.Utility.RegexUtils.RegexAlfaNumericArticleCode, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), _totalCompositeEntrys, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_designation")), LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryQtdValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), _totalCompositeEntrys, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_quantity")), LogicPOS.Utility.RegexUtils.RegexDecimalGreaterThanZero, true));
 
-                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), _totalCompositeEntrys, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_article_code"))) as GenericCRUDWidgetXPO);
+                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), _totalCompositeEntrys, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_article_code"))) as GenericCRUDWidgetXPO);
                 if (_genericCRUDWidgetXPO != null) _genericCRUDWidgetXPO.Validated = true;
 
-                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), _totalCompositeEntrys, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_designation"))) as GenericCRUDWidgetXPO);
+                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), _totalCompositeEntrys, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_designation"))) as GenericCRUDWidgetXPO);
                 if (_genericCRUDWidgetXPO != null) _genericCRUDWidgetXPO.Validated = true;
 
-                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), _totalCompositeEntrys, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_quantity"))) as GenericCRUDWidgetXPO);
+                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), _totalCompositeEntrys, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_quantity"))) as GenericCRUDWidgetXPO);
                 if (_genericCRUDWidgetXPO != null) _genericCRUDWidgetXPO.Validated = true;
 
                 vboxTab4.PackStart(_entryBoxSelectArticle1, false, false, 0);
@@ -529,7 +529,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _scrolledWindowSerialNumbersView.ModifyBg(StateType.Normal, Color.White.ToGdkColor());
                 _scrolledWindowSerialNumbersView.ShadowType = ShadowType.None;
 
-                _notebook.AppendPage(_scrolledWindowSerialNumbersView, new Label(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_serial_number")));
+                _notebook.AppendPage(_scrolledWindowSerialNumbersView, new Label(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_serial_number")));
 
                 //SerialNumber
                 _serialNumberCollection = new List<Tuple<fin_articleserialnumber, Entry, GenericCRUDWidgetXPO, GenericCRUDWidgetXPO, GenericCRUDWidgetXPO, HBox>>();
@@ -781,13 +781,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         _entryBoxSelectArticle1.EntryQtdValidation.Text = string.Format("{0:0.##}", articleLine.Quantity);
                         _entryBoxSelectArticle1.CodeEntry.Text = articleChild.Code;
 
-                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), 1, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_article_code"))) as GenericCRUDWidgetXPO);
+                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), 1, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_article_code"))) as GenericCRUDWidgetXPO);
                         _genericCRUDWidgetXPO.Validated = true;
 
-                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), 1, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_designation"))) as GenericCRUDWidgetXPO);
+                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), 1, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_designation"))) as GenericCRUDWidgetXPO);
                         _genericCRUDWidgetXPO.Validated = true;
 
-                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), 1, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_quantity"))) as GenericCRUDWidgetXPO);
+                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), 1, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_quantity"))) as GenericCRUDWidgetXPO);
                         if (_entryBoxSelectArticle1.EntryQtdValidation.Validated) _genericCRUDWidgetXPO.Validated = true;
                     }
                     else
@@ -836,11 +836,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                     if (isArticleCode)
                     {
-                        pXPOEntry.EntryValidation.Text = (newArticle != null) ? newArticle.Designation.ToString() : CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_error");
+                        pXPOEntry.EntryValidation.Text = (newArticle != null) ? newArticle.Designation.ToString() : CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_error");
 
                         var childQuantity = (pXPOEntry.Value.DefaultQuantity > 0) ? pXPOEntry.Value.DefaultQuantity : 1;
 
-                        pXPOEntry.EntryQtdValidation.Text = (newArticle != null) ? string.Format("{0:0.##}", childQuantity) : CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_error");
+                        pXPOEntry.EntryQtdValidation.Text = (newArticle != null) ? string.Format("{0:0.##}", childQuantity) : CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_error");
 
                         pXPOEntry.EntryCodeValidation.Validate();
 
@@ -848,26 +848,26 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                         pXPOEntry.EntryQtdValidation.Validate();
 
-                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), pXPOEntry.EntryNumber, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_article_code"))) as GenericCRUDWidgetXPO);
+                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), pXPOEntry.EntryNumber, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_article_code"))) as GenericCRUDWidgetXPO);
                         _genericCRUDWidgetXPO.Validated = true;
 
-                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), pXPOEntry.EntryNumber, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_designation"))) as GenericCRUDWidgetXPO);
+                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), pXPOEntry.EntryNumber, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_designation"))) as GenericCRUDWidgetXPO);
                         _genericCRUDWidgetXPO.Validated = true;
 
-                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), pXPOEntry.EntryNumber, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_quantity"))) as GenericCRUDWidgetXPO);
+                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), pXPOEntry.EntryNumber, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_quantity"))) as GenericCRUDWidgetXPO);
                         if (pXPOEntry.EntryQtdValidation.Validated) _genericCRUDWidgetXPO.Validated = true;
 
 
                         return;
                     }
 
-                    pXPOEntry.EntryValidation.Text = (newArticle != null) ? newArticle.Designation.ToString() : CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_error");
+                    pXPOEntry.EntryValidation.Text = (newArticle != null) ? newArticle.Designation.ToString() : CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_error");
 
-                    pXPOEntry.EntryCodeValidation.Text = (newArticle != null) ? newArticle.Code.ToString() : CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_error");
+                    pXPOEntry.EntryCodeValidation.Text = (newArticle != null) ? newArticle.Code.ToString() : CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_error");
 
                     decimal quantity = (pXPOEntry.Value.DefaultQuantity > 0) ? pXPOEntry.Value.DefaultQuantity : 1;
 
-                    pXPOEntry.EntryQtdValidation.Text = (newArticle != null) ? string.Format("{0:0.##}", quantity) : CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_error");
+                    pXPOEntry.EntryQtdValidation.Text = (newArticle != null) ? string.Format("{0:0.##}", quantity) : CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_error");
 
                     pXPOEntry.Value = newArticle;
 
@@ -877,13 +877,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                     pXPOEntry.EntryQtdValidation.Validate();
 
-                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), pXPOEntry.EntryNumber, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_article_code"))) as GenericCRUDWidgetXPO);
+                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), pXPOEntry.EntryNumber, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_article_code"))) as GenericCRUDWidgetXPO);
                     _genericCRUDWidgetXPO.Validated = true;
 
-                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), pXPOEntry.EntryNumber, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_designation"))) as GenericCRUDWidgetXPO);
+                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), pXPOEntry.EntryNumber, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_designation"))) as GenericCRUDWidgetXPO);
                     _genericCRUDWidgetXPO.Validated = true;
 
-                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), pXPOEntry.EntryNumber, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_quantity"))) as GenericCRUDWidgetXPO);
+                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), pXPOEntry.EntryNumber, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_quantity"))) as GenericCRUDWidgetXPO);
                     if (pXPOEntry.EntryQtdValidation.Validated) _genericCRUDWidgetXPO.Validated = true;
 
 
@@ -904,7 +904,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     if (pXPOEntry.Value == _article)
                     {
                         pXPOEntry.Value = null;
-                        logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "dialog_message_composite_article_same"), CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"));
+                        logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_composite_article_same"), CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"));
                         pXPOEntry.EntryValidation.Text = "";
                         return;
                     }
@@ -924,16 +924,16 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                                 pXPOEntry.EntryCodeValidation.Validate();
                                 pXPOEntry.EntryValidation.Validate();
                                 pXPOEntry.EntryQtdValidation.Validate();
-                                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), pXPOEntry.EntryNumber, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_article_code"))) as GenericCRUDWidgetXPO);
+                                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), pXPOEntry.EntryNumber, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_article_code"))) as GenericCRUDWidgetXPO);
                                 _genericCRUDWidgetXPO.Validated = false;
 
-                                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), pXPOEntry.EntryNumber, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_designation"))) as GenericCRUDWidgetXPO);
+                                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), pXPOEntry.EntryNumber, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_designation"))) as GenericCRUDWidgetXPO);
                                 _genericCRUDWidgetXPO.Validated = false;
 
-                                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), pXPOEntry.EntryNumber, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_quantity"))) as GenericCRUDWidgetXPO);
+                                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), pXPOEntry.EntryNumber, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_quantity"))) as GenericCRUDWidgetXPO);
                                 if (pXPOEntry.EntryQtdValidation.Validated) _genericCRUDWidgetXPO.Validated = false;
 
-                                logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "dialog_message_composite_article_already"), CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"));
+                                logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_composite_article_already"), CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"));
                                 return;
                             }
                         }
@@ -1003,11 +1003,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             {
                 CriteriaOperator criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1)"));
                 if (_article != null) { criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1 AND Oid != '{0}')", _article.Oid)); }
-                XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle> NewEntryBoxSelectArticle = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_article"), "Designation", "Oid", _article, criteriaOperatorSelectArticle, Enums.Keyboard.KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true, true, "", LogicPOS.Utility.RegexUtils.RegexDecimalGreaterThanZero, _totalCompositeEntrys);
+                XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle> NewEntryBoxSelectArticle = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_article"), "Designation", "Oid", _article, criteriaOperatorSelectArticle, Enums.Keyboard.KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true, true, "", LogicPOS.Utility.RegexUtils.RegexDecimalGreaterThanZero, _totalCompositeEntrys);
 
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryCodeValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), NewEntryBoxSelectArticle.EntryNumber, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_article_code")), "", true));
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), NewEntryBoxSelectArticle.EntryNumber, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_designation")), LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true));
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryQtdValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), NewEntryBoxSelectArticle.EntryNumber, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_quantity")), LogicPOS.Utility.RegexUtils.RegexDecimalGreaterThanZero, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryCodeValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), NewEntryBoxSelectArticle.EntryNumber, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_article_code")), "", true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), NewEntryBoxSelectArticle.EntryNumber, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_designation")), LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryQtdValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), NewEntryBoxSelectArticle.EntryNumber, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_quantity")), LogicPOS.Utility.RegexUtils.RegexDecimalGreaterThanZero, true));
 
                 NewEntryBoxSelectArticle.EntryValidation.IsEditable = true;
                 fin_article articleChild = pArticleComposition.ArticleChild;
@@ -1052,13 +1052,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     SelectRecordDropDownArticle(true, NewEntryBoxSelectArticle);
                 };
 
-                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), _totalCompositeEntrys, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_article_code"))) as GenericCRUDWidgetXPO);
+                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), _totalCompositeEntrys, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_article_code"))) as GenericCRUDWidgetXPO);
                 _genericCRUDWidgetXPO.Validated = true;
 
-                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), _totalCompositeEntrys, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_designation"))) as GenericCRUDWidgetXPO);
+                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), _totalCompositeEntrys, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_designation"))) as GenericCRUDWidgetXPO);
                 _genericCRUDWidgetXPO.Validated = true;
 
-                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), _totalCompositeEntrys, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_quantity"))) as GenericCRUDWidgetXPO);
+                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), _totalCompositeEntrys, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_quantity"))) as GenericCRUDWidgetXPO);
                 if (_entryBoxSelectArticle1.EntryQtdValidation.Validated) _genericCRUDWidgetXPO.Validated = true;
 
                 _entryCompositeLinesCollection.Add(NewEntryBoxSelectArticle);
@@ -1085,13 +1085,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 //var entrySelected = (XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>)sender;
                 CriteriaOperator criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1)"));
                 if (_article != null) { criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND Oid != '{0}'", _article.Oid.ToString())); }
-                XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle> NewEntryBoxSelectArticle = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_article"), "Designation", "Oid", _article, criteriaOperatorSelectArticle, Enums.Keyboard.KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true, true, LogicPOS.Utility.RegexUtils.RegexAlfaNumericArticleCode, LogicPOS.Utility.RegexUtils.RegexDecimalGreaterThanZero, _totalCompositeEntrys);
+                XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle> NewEntryBoxSelectArticle = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_article"), "Designation", "Oid", _article, criteriaOperatorSelectArticle, Enums.Keyboard.KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true, true, LogicPOS.Utility.RegexUtils.RegexAlfaNumericArticleCode, LogicPOS.Utility.RegexUtils.RegexDecimalGreaterThanZero, _totalCompositeEntrys);
 
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryCodeValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), _totalCompositeEntrys, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_article_code")), LogicPOS.Utility.RegexUtils.RegexAlfaNumericArticleCode, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryCodeValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), _totalCompositeEntrys, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_article_code")), LogicPOS.Utility.RegexUtils.RegexAlfaNumericArticleCode, true));
 
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), _totalCompositeEntrys, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_designation")), LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), _totalCompositeEntrys, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_designation")), LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true));
 
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryQtdValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), _totalCompositeEntrys, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_quantity")), LogicPOS.Utility.RegexUtils.RegexDecimalGreaterThanZero, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryQtdValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), _totalCompositeEntrys, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_quantity")), LogicPOS.Utility.RegexUtils.RegexDecimalGreaterThanZero, true));
 
                 NewEntryBoxSelectArticle.EntryValidation.IsEditable = true;
                 NewEntryBoxSelectArticle.Value = null;
@@ -1179,13 +1179,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                                     _entryBoxSelectArticle1.EntryCodeValidation.Validate();
                                     _entryBoxSelectArticle1.EntryQtdValidation.Validate();
 
-                                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), 1, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_article_code"))) as GenericCRUDWidgetXPO);
+                                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), 1, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_article_code"))) as GenericCRUDWidgetXPO);
                                     if (_genericCRUDWidgetXPO != null && _entryBoxSelectArticle1.EntryCodeValidation.Validated) _genericCRUDWidgetXPO.Validated = true; else { _genericCRUDWidgetXPO.Validated = false; }
 
-                                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), 1, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_designation"))) as GenericCRUDWidgetXPO);
+                                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), 1, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_designation"))) as GenericCRUDWidgetXPO);
                                     if (_genericCRUDWidgetXPO != null && _entryBoxSelectArticle1.EntryValidation.Validated) _genericCRUDWidgetXPO.Validated = true; else { _genericCRUDWidgetXPO.Validated = false; }
 
-                                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), 1, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_quantity"))) as GenericCRUDWidgetXPO);
+                                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), 1, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_quantity"))) as GenericCRUDWidgetXPO);
                                     if (_genericCRUDWidgetXPO != null && _entryBoxSelectArticle1.EntryQtdValidation.Validated) _genericCRUDWidgetXPO.Validated = true; else { _genericCRUDWidgetXPO.Validated = false; }
 
                                     line.Hide();
@@ -1206,13 +1206,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                             _entryBoxSelectArticle1.EntryCodeValidation.Validate();
                             _entryBoxSelectArticle1.EntryQtdValidation.Validate();
 
-                            _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), 1, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_article_code"))) as GenericCRUDWidgetXPO);
+                            _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), 1, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_article_code"))) as GenericCRUDWidgetXPO);
                             if (_genericCRUDWidgetXPO != null && _entryBoxSelectArticle1.EntryCodeValidation.Validated) _genericCRUDWidgetXPO.Validated = true; else { _genericCRUDWidgetXPO.Validated = false; }
 
-                            _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), 1, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_designation"))) as GenericCRUDWidgetXPO);
+                            _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), 1, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_designation"))) as GenericCRUDWidgetXPO);
                             if (_genericCRUDWidgetXPO != null && _entryBoxSelectArticle1.EntryValidation.Validated) _genericCRUDWidgetXPO.Validated = true; else { _genericCRUDWidgetXPO.Validated = false; }
 
-                            _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), 1, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_quantity"))) as GenericCRUDWidgetXPO);
+                            _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), 1, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_quantity"))) as GenericCRUDWidgetXPO);
                             if (_genericCRUDWidgetXPO != null && _entryBoxSelectArticle1.EntryQtdValidation.Validated) _genericCRUDWidgetXPO.Validated = true; else { _genericCRUDWidgetXPO.Validated = false; }
                         }
                     }
@@ -1220,13 +1220,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     {
                         entrySelected.Hide();
 
-                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), entrySelected.EntryNumber, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_article_code"))) as GenericCRUDWidgetXPO);
+                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), entrySelected.EntryNumber, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_article_code"))) as GenericCRUDWidgetXPO);
                         _crudWidgetList.Remove(_genericCRUDWidgetXPO);
 
-                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), entrySelected.EntryNumber, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_designation"))) as GenericCRUDWidgetXPO);
+                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), entrySelected.EntryNumber, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_designation"))) as GenericCRUDWidgetXPO);
                         _crudWidgetList.Remove(_genericCRUDWidgetXPO);
 
-                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), entrySelected.EntryNumber, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_quantity"))) as GenericCRUDWidgetXPO);
+                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), entrySelected.EntryNumber, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_quantity"))) as GenericCRUDWidgetXPO);
                         _crudWidgetList.Remove(_genericCRUDWidgetXPO);
 
                         _totalCompositeEntrys--;
@@ -1281,7 +1281,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 if (entrySelected.Value == _article)
                 {
                     entrySelected.Value = null;
-                    logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "dialog_message_composite_article_same"), CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"));
+                    logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_composite_article_same"), CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"));
                     entrySelected.EntryValidation.Text = "";
                     return;
                 }
@@ -1301,7 +1301,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             {
                 var entryQtdSelect = (Entry)o;
                 var entrySelected = (XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>)entryQtdSelect.Parent.Parent.Parent;
-                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), entrySelected.EntryNumber, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_quantity"))) as GenericCRUDWidgetXPO);
+                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), entrySelected.EntryNumber, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_quantity"))) as GenericCRUDWidgetXPO);
                 entrySelected.EntryQtdValidation.Validate();
                 if (entrySelected.EntryQtdValidation.Validated) _genericCRUDWidgetXPO.Validated = true;
 
@@ -1345,13 +1345,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _entryBoxSelectArticle1.EntryValidation.Validate();
                 _entryBoxSelectArticle1.EntryQtdValidation.Validate();
 
-                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), 1, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_article_code"))) as GenericCRUDWidgetXPO);
+                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), 1, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_article_code"))) as GenericCRUDWidgetXPO);
                 if (_genericCRUDWidgetXPO != null && _entryBoxSelectArticle1.EntryCodeValidation.Validated) _genericCRUDWidgetXPO.Validated = true; else { _genericCRUDWidgetXPO.Validated = false; }
 
-                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), 1, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_designation"))) as GenericCRUDWidgetXPO);
+                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), 1, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_designation"))) as GenericCRUDWidgetXPO);
                 if (_genericCRUDWidgetXPO != null && _entryBoxSelectArticle1.EntryValidation.Validated) _genericCRUDWidgetXPO.Validated = true; else { _genericCRUDWidgetXPO.Validated = false; }
 
-                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), 1, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_quantity"))) as GenericCRUDWidgetXPO);
+                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), 1, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_quantity"))) as GenericCRUDWidgetXPO);
                 if (_genericCRUDWidgetXPO != null && _entryBoxSelectArticle1.EntryQtdValidation.Validated) _genericCRUDWidgetXPO.Validated = true; else { _genericCRUDWidgetXPO.Validated = false; }
 
             }
@@ -1362,13 +1362,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 for (int i = 1; i <= _totalCompositeEntrys; i++)
                 {
-                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), i, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_article_code"))) as GenericCRUDWidgetXPO);
+                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), i, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_article_code"))) as GenericCRUDWidgetXPO);
                     if (_genericCRUDWidgetXPO != null) _genericCRUDWidgetXPO.Validated = true;
 
-                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), i, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_designation"))) as GenericCRUDWidgetXPO);
+                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), i, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_designation"))) as GenericCRUDWidgetXPO);
                     if (_genericCRUDWidgetXPO != null) _genericCRUDWidgetXPO.Validated = true;
 
-                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), i, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_quantity"))) as GenericCRUDWidgetXPO);
+                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_composite_article"), i, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_quantity"))) as GenericCRUDWidgetXPO);
                     if (_genericCRUDWidgetXPO != null) _genericCRUDWidgetXPO.Validated = true;
                 }
             }
@@ -1451,7 +1451,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     (pDataSourceRow as fin_articleserialnumber).StockMovimentIn.Article = _article;
                     (pDataSourceRow as fin_articleserialnumber).StockMovimentIn.ArticleSerialNumber = (pDataSourceRow as fin_articleserialnumber);
                     (pDataSourceRow as fin_articleserialnumber).StockMovimentIn.Customer = (erp_customer)_dataSourceRow.Session.GetObjectByKey(typeof(erp_customer), SharedSettings.XpoOidUserRecord);
-                    (pDataSourceRow as fin_articleserialnumber).StockMovimentIn.DocumentNumber = CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_internal_moviment");
+                    (pDataSourceRow as fin_articleserialnumber).StockMovimentIn.DocumentNumber = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_internal_moviment");
                     (pDataSourceRow as fin_articleserialnumber).StockMovimentIn.Quantity = 1;
                     (pDataSourceRow as fin_articleserialnumber).StockMovimentIn.Date = DateTime.Now;
                 }
@@ -1460,7 +1460,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 (pDataSourceRow as fin_articleserialnumber).Article = _article;
                 HBox hboxSerialNumber = new HBox(false, _boxSpacing);
                 Entry entrySerialNumber = new Entry();
-                BOWidgetBox boxSerialNumber = new BOWidgetBox(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_serial_number"), entrySerialNumber);
+                BOWidgetBox boxSerialNumber = new BOWidgetBox(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_serial_number"), entrySerialNumber);
                 GenericCRUDWidgetXPO serialnumberCRUDWidgetXPO = new GenericCRUDWidgetXPO(boxSerialNumber, pDataSourceRow, "SerialNumber", LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true);
                 _crudWidgetList.Add(serialnumberCRUDWidgetXPO);
                 hboxSerialNumber.PackStart(boxSerialNumber);
@@ -1469,7 +1469,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 CriteriaOperator defaultWarehouseCriteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND IsDefault == '1'"));
                 fin_warehouse defaultWareHouse = ((pDataSourceRow as fin_articleserialnumber).ArticleWarehouse.Warehouse != null && (pDataSourceRow as fin_articleserialnumber).ArticleWarehouse.Warehouse.Oid != Guid.Empty) ? (pDataSourceRow as fin_articleserialnumber).ArticleWarehouse.Warehouse : (fin_warehouse)pDataSourceRow.Session.FindObject(typeof(fin_warehouse), defaultWarehouseCriteria);
                 XPOComboBox xpoComboBoxWarehouse = new XPOComboBox(DataSourceRow.Session, typeof(fin_warehouse), defaultWareHouse, "Designation", null);
-                BOWidgetBox boxWareHouse = new BOWidgetBox(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_warehouse"), xpoComboBoxWarehouse);
+                BOWidgetBox boxWareHouse = new BOWidgetBox(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_warehouse"), xpoComboBoxWarehouse);
                 GenericCRUDWidgetXPO warehouseCRUDWidgetXPO = new GenericCRUDWidgetXPO(boxWareHouse, (pDataSourceRow as fin_articleserialnumber).ArticleWarehouse, "Warehouse", LogicPOS.Utility.RegexUtils.RegexAlfaNumeric, false);
                 _crudWidgetList.Add(warehouseCRUDWidgetXPO);
                 hboxSerialNumber.PackStart(boxWareHouse);
@@ -1479,7 +1479,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 if (defaultWareHouse != null) criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND Warehouse == '{0}'", defaultWareHouse.Oid.ToString()));
                 fin_warehouselocation defaultLocation = ((pDataSourceRow as fin_articleserialnumber).ArticleWarehouse.Location != null) ? (pDataSourceRow as fin_articleserialnumber).ArticleWarehouse.Location : (fin_warehouselocation)pDataSourceRow.Session.FindObject(typeof(fin_warehouselocation), criteria);
                 XPOComboBox xpoComboBoxWarehouseLocation = new XPOComboBox(DataSourceRow.Session, typeof(fin_warehouselocation), defaultLocation, "Designation", criteria);
-                BOWidgetBox boxWareHouseLocation = new BOWidgetBox(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_ConfigurationDevice_PlaceTerminal"), xpoComboBoxWarehouseLocation);
+                BOWidgetBox boxWareHouseLocation = new BOWidgetBox(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_ConfigurationDevice_PlaceTerminal"), xpoComboBoxWarehouseLocation);
                 GenericCRUDWidgetXPO warehouseLocationCRUDWidgetXPO = new GenericCRUDWidgetXPO(boxWareHouseLocation, (pDataSourceRow as fin_articleserialnumber).ArticleWarehouse, "Location", LogicPOS.Utility.RegexUtils.RegexAlfaNumeric, false);
                 _crudWidgetList.Add(warehouseLocationCRUDWidgetXPO);
                 hboxSerialNumber.PackStart(boxWareHouseLocation);
@@ -1570,7 +1570,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         {
             try
             {
-                ResponseType responseType = logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.YesNo, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "dialog_message_delete_record"), string.Format(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_warning"), SharedFramework.ServerVersion));
+                ResponseType responseType = logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.YesNo, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_delete_record"), string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_warning"), SharedFramework.ServerVersion));
 
                 if (responseType == ResponseType.Yes)
                 {

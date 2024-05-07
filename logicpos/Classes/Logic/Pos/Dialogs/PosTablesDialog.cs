@@ -165,7 +165,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 case TableViewMode.Orders:
                     /* IN008024 */
-                    _labelWindowTitle.Text = CultureResources.GetLanguageResource("", string.Format("window_title_dialog_tables_appmode_{0}", DataLayerSettings.CustomAppOperationMode.AppOperationTheme).ToLower());
+                    _labelWindowTitle.Text = CultureResources.GetResourceByLanguage("", string.Format("window_title_dialog_tables_appmode_{0}", DataLayerSettings.CustomAppOperationMode.AppOperationTheme).ToLower());
                     //Tables
                     _currentViewMode = TableViewMode.Tables;
                     _buttonTableViewOrders.Visible = true;
@@ -185,7 +185,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     _tablePadPlace.Sql = _sqlPlaceBaseTable;
                     break;
                 case TableViewMode.Tables:
-                    _labelWindowTitle.Text = CultureResources.GetLanguageResource("", "window_title_dialog_orders");
+                    _labelWindowTitle.Text = CultureResources.GetResourceByLanguage("", "window_title_dialog_orders");
                     //Orders
                     _currentViewMode = TableViewMode.Orders;
                     _buttonTableViewOrders.Visible = false;

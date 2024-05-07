@@ -70,8 +70,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                 if (ex.InnerException.HResult == -2146232060)
                 {
                     string data = getBetween(ex.InnerException.Message, "(", ")");
-                    string message = string.Format(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_error_duplicated_key"), data);
-                    logicpos.Utils.ShowMessageTouch(GlobalApp.BackOfficeMainWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_exception_error"), message);
+                    string message = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_error_duplicated_key"), data);
+                    logicpos.Utils.ShowMessageTouch(GlobalApp.BackOfficeMainWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_exception_error"), message);
                 }
                 //END IN009220
                 else
@@ -81,7 +81,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         GlobalApp.BackOfficeMainWindow,
                         DialogFlags.DestroyWithParent | DialogFlags.Modal,
                         MessageType.Warning, ButtonsType.Close,
-                        CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_exception_error"),
+                        CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_exception_error"),
                         (ex.InnerException.Message != null) ? ex.InnerException.Message : ex.Message
                         );
                 }

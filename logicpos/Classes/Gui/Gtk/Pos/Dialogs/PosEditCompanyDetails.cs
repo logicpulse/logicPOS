@@ -39,7 +39,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pDialogFlags, true, false)
         {
             //Init Local Vars
-            string windowTitle = CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "window_title_edit_configurationpreferenceparameter");
+            string windowTitle = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_edit_configurationpreferenceparameter");
             Size windowSize = new Size(600, 600);
             string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_system.png";
 
@@ -47,7 +47,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _sourceWindow = pSourceWindow;
 
             //ActionArea Buttons
-            _buttonOk = new TouchButtonIconWithText("touchButtonOk_DialogActionArea", _colorBaseDialogActionAreaButtonBackground, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_button_label_ok"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, _fileActionOK, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Sensitive = false };
+            _buttonOk = new TouchButtonIconWithText("touchButtonOk_DialogActionArea", _colorBaseDialogActionAreaButtonBackground, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_button_label_ok"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, _fileActionOK, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Sensitive = false };
             _buttonDataDemo = new TouchButtonIconWithText("touchButtonDataDemo_DialogActionArea", _colorBaseDialogActionAreaButtonBackground, "Demo", _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, _fileDemoData, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Sensitive = true };
 
             //ActionArea
@@ -110,7 +110,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 //Country
                 CriteriaOperator criteriaOperatorSystemCountry = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1) AND (RegExFiscalNumber IS NOT NULL)");
-                _entryBoxSelectSystemCountry = new XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry>(this, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_country"), "Designation", "Oid", intialValueConfigurationCountry, criteriaOperatorSystemCountry, LogicPOS.Utility.RegexUtils.RegexGuid, true);
+                _entryBoxSelectSystemCountry = new XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry>(this, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_country"), "Designation", "Oid", intialValueConfigurationCountry, criteriaOperatorSystemCountry, LogicPOS.Utility.RegexUtils.RegexGuid, true);
                 _entryBoxSelectSystemCountry.EntryValidation.IsEditable = false;
                 _entryBoxSelectSystemCountry.EntryValidation.Validate(_entryBoxSelectSystemCountry.Value.Oid.ToString());
                 //Disabled, Now Country and Currency are disabled
@@ -135,7 +135,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 //Currency
                 CriteriaOperator criteriaOperatorSystemCurrency = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1)");
-                _entryBoxSelectSystemCurrency = new XPOEntryBoxSelectRecordValidation<cfg_configurationcurrency, TreeViewConfigurationCurrency>(this, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_currency"), "Designation", "Oid", intialValueConfigurationCurrency, criteriaOperatorSystemCurrency, LogicPOS.Utility.RegexUtils.RegexGuid, true);
+                _entryBoxSelectSystemCurrency = new XPOEntryBoxSelectRecordValidation<cfg_configurationcurrency, TreeViewConfigurationCurrency>(this, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_currency"), "Designation", "Oid", intialValueConfigurationCurrency, criteriaOperatorSystemCurrency, LogicPOS.Utility.RegexUtils.RegexGuid, true);
                 _entryBoxSelectSystemCurrency.EntryValidation.IsEditable = false;
                 _entryBoxSelectSystemCurrency.EntryValidation.Validate(_entryBoxSelectSystemCurrency.Value.Oid.ToString());
 
@@ -166,8 +166,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                     foreach (cfg_configurationpreferenceparameter item in xpCollection)
                     {
-                        label = (item.ResourceString != null && CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), item.ResourceString) != null)
-                            ? CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), item.ResourceString)
+                        label = (item.ResourceString != null && CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), item.ResourceString) != null)
+                            ? CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), item.ResourceString)
                             : string.Empty;
                         regExObj = SharedUtils.GetFieldValueFromType(typeof(POSSettings), item.RegEx);
                         regEx = (regExObj != null) ? regExObj.ToString() : string.Empty;

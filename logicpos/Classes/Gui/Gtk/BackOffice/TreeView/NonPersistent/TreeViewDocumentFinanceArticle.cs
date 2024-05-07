@@ -48,7 +48,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 new GenericTreeViewColumnProperty("Article.Code")
                 {
                     Type = typeof(fin_article),
-                    Title = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_record_code"),
+                    Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_record_code"),
                     ChildName = "Code",
                     MinWidth = 60,
                     MaxWidth = 150,
@@ -56,12 +56,12 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     CellRenderer = new CellRendererText() { Alignment = Pango.Alignment.Right, Xalign = 1.0F, ForegroundGdk = new Gdk.Color(255, 0, 0) }
                 },
                 /*02*/
-                new GenericTreeViewColumnProperty("Article.Designation") { Type = typeof(fin_article), Title = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_designation"), ChildName = "Designation", MinWidth = 170, MaxWidth = 170 },
+                new GenericTreeViewColumnProperty("Article.Designation") { Type = typeof(fin_article), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_designation"), ChildName = "Designation", MinWidth = 170, MaxWidth = 170 },
                 /*03*/
                 new GenericTreeViewColumnProperty("Quantity")
                 {
                     Type = typeof(decimal),
-                    Title = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_quantity_acronym"),
+                    Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_quantity_acronym"),
                     MinWidth = 70,
                     MaxWidth = 100,
                     Alignment = 1.0F,
@@ -69,19 +69,19 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     CellRenderer = new CellRendererText() { Alignment = Pango.Alignment.Right, Xalign = 1.0F, }
                 },
                 /*04: Used to store DefaultCurrency price, Set visible = true to show it, Default is Hidden */
-                new GenericTreeViewColumnProperty("Price") { Type = typeof(decimal), Title = string.Format("{0}{1}", CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_price"), "*"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency, Visible = false },
+                new GenericTreeViewColumnProperty("Price") { Type = typeof(decimal), Title = string.Format("{0}{1}", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_price"), "*"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency, Visible = false },
                 /*05: Visible Display Value, In Current Selected Currency*/
-                new GenericTreeViewColumnProperty("PriceDisplay") { Type = typeof(decimal), Title = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_price"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
+                new GenericTreeViewColumnProperty("PriceDisplay") { Type = typeof(decimal), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_price"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
                 /*06 IN009206*/
-                new GenericTreeViewColumnProperty("Discount") { Type = typeof(decimal), Title = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_discount"), MinWidth = 60, MaxWidth = 60, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
+                new GenericTreeViewColumnProperty("Discount") { Type = typeof(decimal), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_discount"), MinWidth = 60, MaxWidth = 60, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
                 /*07 IN009206*/
-                new GenericTreeViewColumnProperty("VatExemptionReason.Acronym") { Type = typeof(fin_configurationvatexemptionreason), Title = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_vat_exemption_reason_acronym"), ChildName = "Acronym", MinWidth = 60, MaxWidth = 60, Visible = false },
+                new GenericTreeViewColumnProperty("VatExemptionReason.Acronym") { Type = typeof(fin_configurationvatexemptionreason), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_vat_exemption_reason_acronym"), ChildName = "Acronym", MinWidth = 60, MaxWidth = 60, Visible = false },
                 /*08*/
                 new GenericTreeViewColumnProperty("ConfigurationVatRate.Value")
                 {
                     Type = typeof(fin_configurationvatrate),
                     ChildName = "Value",
-                    Title = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_vat_rate"),
+                    Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_vat_rate"),
                     MinWidth = 60,
                     MaxWidth = 60,
                     Alignment = 1.0F,
@@ -90,9 +90,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     CellRenderer = new CellRendererText() { Alignment = Pango.Alignment.Right, Xalign = 1.0F, }
                 },
                 /*09*/
-                new GenericTreeViewColumnProperty("TotalNet") { Type = typeof(decimal), Title = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_total_article_tab"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
+                new GenericTreeViewColumnProperty("TotalNet") { Type = typeof(decimal), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_total_article_tab"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
                 /*10*/ /* IN009206 */
-                new GenericTreeViewColumnProperty("TotalFinal") { Type = typeof(decimal), Title = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_total_per_item_vat"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
+                new GenericTreeViewColumnProperty("TotalFinal") { Type = typeof(decimal), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_total_per_item_vat"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
                 //Other Invisible Fields
                 /*11*/
                 new GenericTreeViewColumnProperty("PriceFinal") { Type = typeof(decimal), Visible = false },
@@ -105,11 +105,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 /*15*/
                 new GenericTreeViewColumnProperty("Notes") { Type = typeof(string), Visible = false },
                 /*16*/
-                new GenericTreeViewColumnProperty("Article.Family") { Type = typeof(fin_articlefamily), Title = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_family"), ChildName = "Designation", MinWidth = 60, MaxWidth = 60, Visible = false },
+                new GenericTreeViewColumnProperty("Article.Family") { Type = typeof(fin_articlefamily), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_family"), ChildName = "Designation", MinWidth = 60, MaxWidth = 60, Visible = false },
                 /*17*/
-                new GenericTreeViewColumnProperty("Article.Subfamily") { Type = typeof(fin_articlesubfamily), Title = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_subfamily"), ChildName = "Designation", MinWidth = 60, MaxWidth = 60, Visible = false },
+                new GenericTreeViewColumnProperty("Article.Subfamily") { Type = typeof(fin_articlesubfamily), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_subfamily"), ChildName = "Designation", MinWidth = 60, MaxWidth = 60, Visible = false },
                 /*18*/
-                new GenericTreeViewColumnProperty("SerialNumber") { Title = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_serialnumber"), Type = typeof(string), Visible = true },
+                new GenericTreeViewColumnProperty("SerialNumber") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_serialnumber"), Type = typeof(string), Visible = true },
                 /*19*/
                 new GenericTreeViewColumnProperty("Warehouse") { Type = typeof(string), Visible = false }
             };

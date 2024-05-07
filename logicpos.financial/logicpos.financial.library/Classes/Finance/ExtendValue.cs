@@ -36,12 +36,12 @@ namespace logicpos.financial.library.Classes.Finance
 
             /* IN009018 */
    
-            string moedaDecimalSingular = CultureResources.GetLanguageResource("", "numbers_to_words_cent");//Centavo
-            string moedaDecimalPlural = CultureResources.GetLanguageResource("", "numbers_to_words_cents");//Centavos
+            string moedaDecimalSingular = CultureResources.GetResourceByLanguage("", "numbers_to_words_cent");//Centavo
+            string moedaDecimalPlural = CultureResources.GetResourceByLanguage("", "numbers_to_words_cents");//Centavos
             if (ConfigurationManager.AppSettings["cultureFinancialRules"] == "pt-MZ" || ConfigurationManager.AppSettings["cultureFinancialRules"] == "pt-AO")
             {
-                moedaDecimalSingular = CultureResources.GetLanguageResource(ConfigurationManager.AppSettings["cultureFinancialRules"], "numbers_to_words_cent");//Centavo
-                moedaDecimalPlural = CultureResources.GetLanguageResource(ConfigurationManager.AppSettings["cultureFinancialRules"], "numbers_to_words_cents");//Centavos
+                moedaDecimalSingular = CultureResources.GetResourceByLanguage(ConfigurationManager.AppSettings["cultureFinancialRules"], "numbers_to_words_cent");//Centavo
+                moedaDecimalPlural = CultureResources.GetResourceByLanguage(ConfigurationManager.AppSettings["cultureFinancialRules"], "numbers_to_words_cents");//Centavos
             }
 
             string strValorExtenso = ""; //Variável que irá armazenar o valor por extenso do número informado

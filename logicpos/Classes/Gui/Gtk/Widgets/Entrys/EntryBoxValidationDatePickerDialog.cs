@@ -24,7 +24,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         public event EventHandler ClosePopup;
 
         public EntryBoxValidationDatePickerDialog(Window pSourceWindow, string pLabelText, string pRule, bool pRequired)
-            :this(pSourceWindow, pLabelText, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_date"), DataLayerUtils.CurrentDateTimeAtomic(), pRule, pRequired)
+            :this(pSourceWindow, pLabelText, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_date"), DataLayerUtils.CurrentDateTimeAtomic(), pRule, pRequired)
         {
         }
 
@@ -39,7 +39,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         }
 
         public EntryBoxValidationDatePickerDialog(Window pSourceWindow, string pLabelText, DateTime pDateTime, string pRule, bool pRequired)
-            :this(pSourceWindow, pLabelText, CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_date"), pDateTime, pRule, pRequired)
+            :this(pSourceWindow, pLabelText, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_date"), pDateTime, pRule, pRequired)
         {
         }
 

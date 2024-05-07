@@ -119,7 +119,7 @@ namespace logicpos.shared.Classes.Orders
             if (xTable.TableStatus != TableStatus.Open)
             {
                 xTable.TableStatus = TableStatus.Open;
-                SharedUtils.Audit("TABLE_OPEN", string.Format(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_table_open"), xTable.Designation));
+                SharedUtils.Audit("TABLE_OPEN", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_table_open"), xTable.Designation));
                 xTable.DateTableOpen = CurrentDateTimeAtomic();
                 if (!isInUOW) xTable.Save();
             }

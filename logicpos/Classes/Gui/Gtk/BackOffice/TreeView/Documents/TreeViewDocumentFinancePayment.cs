@@ -41,9 +41,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
             {
-                new GenericTreeViewColumnProperty("CreatedAt") { Title = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_document_date"), MinWidth = 140 }, /* IN009067 */
-                new GenericTreeViewColumnProperty("PaymentRefNo") { Title = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_document_number"), MinWidth = 120 }, /* IN009067 */
-                new GenericTreeViewColumnProperty("PaymentStatus") { Title = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_document_status"), MinWidth = 50, MaxWidth = 50 }
+                new GenericTreeViewColumnProperty("CreatedAt") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_document_date"), MinWidth = 140 }, /* IN009067 */
+                new GenericTreeViewColumnProperty("PaymentRefNo") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_document_number"), MinWidth = 120 }, /* IN009067 */
+                new GenericTreeViewColumnProperty("PaymentStatus") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_document_status"), MinWidth = 50, MaxWidth = 50 }
             };
             //Shared Query
             /* IN009075 - removing call to view */
@@ -51,7 +51,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             string queryForCustomerDetails = "SELECT {0} FROM erp_customer AS Customer LEFT JOIN fin_documentfinancepayment AS Payment ON (Payment.EntityOid = Customer.Oid) WHERE Payment.Oid = '{1}';";
             columnProperties.Add(new GenericTreeViewColumnProperty("EntityName")
             {
-                Title = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_entity"),
+                Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_entity"),
                 MinWidth = 260,
                 MaxWidth = 260,
                 Query = string.Format(queryForCustomerDetails, "Name", "{0}"), /* IN009075 */
@@ -60,14 +60,14 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             /* IN009067 */
             columnProperties.Add(new GenericTreeViewColumnProperty("EntityFiscalNumber")
             {
-                Title = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_fiscal_number"),
+                Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_fiscal_number"),
                 MinWidth = 100,
                 Query = string.Format(queryForCustomerDetails, "FiscalNumber", "{0}"), /* IN009075 */
                 DecryptValue = true
             });
             columnProperties.Add(new GenericTreeViewColumnProperty("PaymentAmount")
             {
-                Title = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_total"),
+                Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_total"),
                 MinWidth = 100,
                 //Alignment = 1.0F,
                 FormatProvider = new FormatterDecimalCurrency(),
@@ -85,7 +85,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             columnProperties.Add(new GenericTreeViewColumnProperty("RelatedDocuments")
             {
                 Query = relatedDocumentsQuery,
-                Title = CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_document_finance_column_related_doc"),
+                Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_document_finance_column_related_doc"),
                 MinWidth = 100
             });
 

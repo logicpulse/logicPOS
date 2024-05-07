@@ -109,7 +109,7 @@ namespace logicpos.Classes.DataLayer
                     Terminal = (pos_configurationplaceterminal)SessionXpoForBackupPurposes.GetObjectByKey(typeof(pos_configurationplaceterminal), DataLayerFramework.LoggedTerminal.Oid)
                 };
                 systemBackup.Save();
-                string backupProcess = CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_database_backup");
+                string backupProcess = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_database_backup");
 
                 switch (DatabaseSettings.DatabaseType)
                 {
@@ -187,12 +187,12 @@ namespace logicpos.Classes.DataLayer
                         //catch (Exception ex) { _logger.Error(ex.Message, ex); }
 
                         //Post Backup
-                        SharedUtils.Audit("DATABASE_BACKUP", string.Format(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "audit_message_database_backup"),
+                        SharedUtils.Audit("DATABASE_BACKUP", string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "audit_message_database_backup"),
                             (fullFileNamePacked != string.Empty) ? fullFileNamePacked : systemBackup.FileNamePacked
                         ));
 
                         //Moved to Thread Outside > Only Show if not in Silence Mode
-                        if (pSourceWindow != null) logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, _sizeDialog, MessageType.Info, ButtonsType.Close, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_information"), string.Format(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "dialog_message_database_backup_successfully"), systemBackup.FileNamePacked));
+                        if (pSourceWindow != null) logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, _sizeDialog, MessageType.Info, ButtonsType.Close, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_information"), string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_database_backup_successfully"), systemBackup.FileNamePacked));
                     }
                     else
                     {
@@ -209,16 +209,16 @@ namespace logicpos.Classes.DataLayer
                         // Show only when "Silent Mode" is on
                         if (pSourceWindow != null)
                         {
-                            logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, _sizeDialog, MessageType.Warning, ButtonsType.Close, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_information"), string.Format(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "dialog_message_database_backup_error_when_secure_compacting"), systemBackup.FileNamePacked));
+                            logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, _sizeDialog, MessageType.Warning, ButtonsType.Close, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_information"), string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_database_backup_error_when_secure_compacting"), systemBackup.FileNamePacked));
                         }
 
-                        _logger.Debug($"DataBaseBackup.Backup(Window pSourceWindow): {string.Format(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "dialog_message_database_backup_error_when_secure_compacting"), systemBackup.FileNamePacked)}");
+                        _logger.Debug($"DataBaseBackup.Backup(Window pSourceWindow): {string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_database_backup_error_when_secure_compacting"), systemBackup.FileNamePacked)}");
                     }
                 }
                 else
                 {
                     //Moved to Thread Outside > Only Show if not in Silence Mode
-                    if (pSourceWindow != null) logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, _sizeDialog, MessageType.Error, ButtonsType.Close, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_error"), string.Format(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "dialog_message_database_backup_error"), Path.GetFileName(fileName)));
+                    if (pSourceWindow != null) logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, _sizeDialog, MessageType.Error, ButtonsType.Close, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_error"), string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_database_backup_error"), Path.GetFileName(fileName)));
                 }
                 /* IN009164 */
                 SessionXpoForBackupPurposes.Disconnect();
@@ -264,8 +264,8 @@ namespace logicpos.Classes.DataLayer
                         if (fileInfo.Response != ResponseType.Cancel && !fileInfo.FileHashValid)
                         {
                             //#EQUAL#1
-                            string message = string.Format(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "dialog_message_database_restore_error_invalid_backup_file"), fileNamePacked);
-                            logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Ok, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_error"), message);
+                            string message = string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_database_restore_error_invalid_backup_file"), fileNamePacked);
+                            logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_error"), message);
                             return false;
                         }
                         break;
@@ -332,7 +332,7 @@ namespace logicpos.Classes.DataLayer
                         if (Restore(pSourceWindow, fileName, fileNamePacked, systemBackup))
                         {
                             //Audit DATABASE_RESTORE
-                            SharedUtils.Audit("DATABASE_RESTORE", string.Format(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "audit_message_database_restore"), fileNamePacked));
+                            SharedUtils.Audit("DATABASE_RESTORE", string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "audit_message_database_restore"), fileNamePacked));
                             //Required to DropIdentity before get currentDocumentFinanceYear Object, else it exists in old non restored Session
                             XPOSettings.Session.DropIdentityMap();
                             //Get Current Active FinanceYear
@@ -377,8 +377,8 @@ namespace logicpos.Classes.DataLayer
                     else
                     {
                         //#EQUAL#1
-                        string message = string.Format(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "dialog_message_database_restore_error_invalid_backup_file"), fileNamePacked);
-                        logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Ok, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_error"), message);
+                        string message = string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_database_restore_error_invalid_backup_file"), fileNamePacked);
+                        logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_error"), message);
                         return false;
                     }
                 }
@@ -402,7 +402,7 @@ namespace logicpos.Classes.DataLayer
         {
             Thread thread;
             bool resultRestore = false;
-            string backupProcess = CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_database_restore");
+            string backupProcess = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_database_restore");
 
             switch (DatabaseSettings.DatabaseType)
             {
@@ -436,11 +436,11 @@ namespace logicpos.Classes.DataLayer
 
             if (resultRestore)
             {
-                logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, _sizeDialog, MessageType.Info, ButtonsType.Close, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_information"), string.Format(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "dialog_message_database_restore_successfully"), pFileNamePacked));
+                logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, _sizeDialog, MessageType.Info, ButtonsType.Close, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_information"), string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_database_restore_successfully"), pFileNamePacked));
             }
             else
             {
-                logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, _sizeDialog, MessageType.Error, ButtonsType.Close, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_error"), string.Format(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "dialog_message_database_restore_error"), pFileNamePacked));
+                logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, _sizeDialog, MessageType.Error, ButtonsType.Close, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_error"), string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_database_restore_error"), pFileNamePacked));
             }
 
             return resultRestore;
@@ -530,7 +530,7 @@ namespace logicpos.Classes.DataLayer
                   dialogSystemBackup = new PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewSystemBackup>(
                     pSourceWindow,
                     DialogFlags.DestroyWithParent,
-                    CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "window_title_select_backup_filename"),
+                    CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_select_backup_filename"),
                     new Size(780, 580),
                     null, //XpoDefaultValue
                     criteriaOperator,
@@ -578,8 +578,8 @@ namespace logicpos.Classes.DataLayer
               DialogFlags.Modal,
               MessageType.Question,
               ButtonsType.YesNo,
-              CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_information"),
-              CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "dialog_message_request_backup")
+              CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_information"),
+              CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_request_backup")
             );
 
             if (responseType == ResponseType.Yes)

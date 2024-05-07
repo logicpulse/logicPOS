@@ -118,8 +118,8 @@ namespace logicpos
 
         public static void ShowMessageUnderConstruction()
         {
-            _logger.Warn(string.Format("ShowMessageUnderConstruction(): {0} {1} ", MessageType.Error, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "dialog_message_under_construction_function")));
-            ShowMessageNonTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "dialog_message_under_construction_function"), "Error");
+            _logger.Warn(string.Format("ShowMessageUnderConstruction(): {0} {1} ", MessageType.Error, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_under_construction_function")));
+            ShowMessageNonTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_under_construction_function"), "Error");
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -157,11 +157,11 @@ namespace logicpos
             //Prepara ActionArea and Buttons
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
             //Init Buttons
-            TouchButtonIconWithText buttonOk = new TouchButtonIconWithText("touchButtonOk_DialogActionArea", colorBaseDialogActionAreaButtonBackground, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_button_label_ok"), fontBaseDialogActionAreaButton, colorBaseDialogActionAreaButtonFont, fileActionOK, sizeBaseDialogActionAreaButtonIcon, sizeBaseDialogActionAreaButton.Width, sizeBaseDialogActionAreaButton.Height);
-            TouchButtonIconWithText buttonCancel = new TouchButtonIconWithText("touchButtonCancel_DialogActionArea", colorBaseDialogActionAreaButtonBackground, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_button_label_cancel"), fontBaseDialogActionAreaButton, colorBaseDialogActionAreaButtonFont, fileActionCancel, sizeBaseDialogActionAreaButtonIcon, sizeBaseDialogActionAreaButton.Width, sizeBaseDialogActionAreaButton.Height);
-            TouchButtonIconWithText buttonYes = new TouchButtonIconWithText("touchButtonYes_DialogActionArea", colorBaseDialogActionAreaButtonBackground, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_button_label_yes"), fontBaseDialogActionAreaButton, colorBaseDialogActionAreaButtonFont, fileActionYes, sizeBaseDialogActionAreaButtonIcon, sizeBaseDialogActionAreaButton.Width, sizeBaseDialogActionAreaButton.Height);
-            TouchButtonIconWithText buttonNo = new TouchButtonIconWithText("touchButtonNo_DialogActionArea", colorBaseDialogActionAreaButtonBackground, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_button_label_no"), fontBaseDialogActionAreaButton, colorBaseDialogActionAreaButtonFont, fileActionNo, sizeBaseDialogActionAreaButtonIcon, sizeBaseDialogActionAreaButton.Width, sizeBaseDialogActionAreaButton.Height);
-            TouchButtonIconWithText buttonClose = new TouchButtonIconWithText("touchButtonClose_DialogActionArea", colorBaseDialogActionAreaButtonBackground, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_button_label_close"), fontBaseDialogActionAreaButton, colorBaseDialogActionAreaButtonFont, fileActionClose, sizeBaseDialogActionAreaButtonIcon, sizeBaseDialogActionAreaButton.Width, sizeBaseDialogActionAreaButton.Height);
+            TouchButtonIconWithText buttonOk = new TouchButtonIconWithText("touchButtonOk_DialogActionArea", colorBaseDialogActionAreaButtonBackground, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_button_label_ok"), fontBaseDialogActionAreaButton, colorBaseDialogActionAreaButtonFont, fileActionOK, sizeBaseDialogActionAreaButtonIcon, sizeBaseDialogActionAreaButton.Width, sizeBaseDialogActionAreaButton.Height);
+            TouchButtonIconWithText buttonCancel = new TouchButtonIconWithText("touchButtonCancel_DialogActionArea", colorBaseDialogActionAreaButtonBackground, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_button_label_cancel"), fontBaseDialogActionAreaButton, colorBaseDialogActionAreaButtonFont, fileActionCancel, sizeBaseDialogActionAreaButtonIcon, sizeBaseDialogActionAreaButton.Width, sizeBaseDialogActionAreaButton.Height);
+            TouchButtonIconWithText buttonYes = new TouchButtonIconWithText("touchButtonYes_DialogActionArea", colorBaseDialogActionAreaButtonBackground, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_button_label_yes"), fontBaseDialogActionAreaButton, colorBaseDialogActionAreaButtonFont, fileActionYes, sizeBaseDialogActionAreaButtonIcon, sizeBaseDialogActionAreaButton.Width, sizeBaseDialogActionAreaButton.Height);
+            TouchButtonIconWithText buttonNo = new TouchButtonIconWithText("touchButtonNo_DialogActionArea", colorBaseDialogActionAreaButtonBackground, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_button_label_no"), fontBaseDialogActionAreaButton, colorBaseDialogActionAreaButtonFont, fileActionNo, sizeBaseDialogActionAreaButtonIcon, sizeBaseDialogActionAreaButton.Width, sizeBaseDialogActionAreaButton.Height);
+            TouchButtonIconWithText buttonClose = new TouchButtonIconWithText("touchButtonClose_DialogActionArea", colorBaseDialogActionAreaButtonBackground, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_button_label_close"), fontBaseDialogActionAreaButton, colorBaseDialogActionAreaButtonFont, fileActionClose, sizeBaseDialogActionAreaButtonIcon, sizeBaseDialogActionAreaButton.Width, sizeBaseDialogActionAreaButton.Height);
 
             //Perpare ActionAreaButtons
             switch (pButtonsType)
@@ -227,8 +227,8 @@ namespace logicpos
 
         public static ResponseType ShowMessageTouchUnderConstruction(Window pSourceWindow)
         {
-            ResponseType responseType = ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_information"), CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "dialog_message_under_construction_function"));
-            _logger.Debug(string.Format("ShowMessageUnderConstruction(): {0} {1} ", MessageType.Error, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "dialog_message_under_construction_function")));
+            ResponseType responseType = ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_information"), CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_under_construction_function"));
+            _logger.Debug(string.Format("ShowMessageUnderConstruction(): {0} {1} ", MessageType.Error, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_under_construction_function")));
             _logger.Debug(string.Format("responseType: [{0}]", responseType));
             return responseType;
         }
@@ -238,7 +238,7 @@ namespace logicpos
             //Protection when Printer is Null, ex printing Ticket Articles (Printer is Assign in Article)
             string printerDesignation = (pPrinter != null) ? pPrinter.Designation : "NULL";
             string printerNetworkName = (pPrinter != null) ? pPrinter.NetworkName : "NULL";
-            return ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(800, 400), MessageType.Error, ButtonsType.Ok, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_error"), string.Format(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "dialog_message_error_printing_ticket"), printerDesignation, printerNetworkName, pEx.Message));
+            return ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(800, 400), MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_error"), string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_error_printing_ticket"), printerDesignation, printerNetworkName, pEx.Message));
         }
 
         public static bool ShowMessageTouchRequiredValidPrinter(Window pSourceWindow, sys_configurationprinters pPrinter)
@@ -247,7 +247,7 @@ namespace logicpos
 
             if (result)
             {
-                ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_information"), CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "dialog_message_required_valid_printer"));
+                ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_information"), CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_required_valid_printer"));
             }
 
             return result;
@@ -262,8 +262,8 @@ namespace logicpos
                 && GlobalApp.Notifications["SHOW_PRINTER_UNDEFINED"] == true
             )
             {
-                ResponseType responseType = ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(550, 400), MessageType.Question, ButtonsType.YesNo, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_information")
-                    , string.Format(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "dialog_message_show_printer_undefined_on_print"), pDocumentType)
+                ResponseType responseType = ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(550, 400), MessageType.Question, ButtonsType.YesNo, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_information")
+                    , string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_show_printer_undefined_on_print"), pDocumentType)
                 );
                 if (responseType == ResponseType.No) GlobalApp.Notifications["SHOW_PRINTER_UNDEFINED"] = false;
             }
@@ -271,15 +271,15 @@ namespace logicpos
 
         public static void ShowMessageTouchErrorRenderTheme(Window pSourceWindow, string pErrorMessage)
         {
-            string errorMessage = string.Format(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "app_error_rendering_theme"), POSSettings.FileTheme, pErrorMessage);
-            ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(600, 500), MessageType.Error, ButtonsType.Ok, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_error"), errorMessage);
+            string errorMessage = string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "app_error_rendering_theme"), POSSettings.FileTheme, pErrorMessage);
+            ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(600, 500), MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_error"), errorMessage);
             Environment.Exit(0);
         }
 
         public static void ShowMessageTouchErrorUnlicencedFunctionDisabled(Window pSourceWindow, string pErrorMessage)
         {
-            string errorMessage = string.Format(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "app_error_application_unlicenced_function_disabled"), pErrorMessage);
-            ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Ok, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_error"), errorMessage);
+            string errorMessage = string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "app_error_application_unlicenced_function_disabled"), pErrorMessage);
+            ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_error"), errorMessage);
         }
 
         public static ResponseType ShowMessageTouchCheckIfFinanceDocumentHasValidDocumentDate(Window pSourceWindow, ProcessFinanceDocumentParameter pParameters)
@@ -318,7 +318,7 @@ namespace logicpos
                 //Check if DocumentDate is greater than dateLastDocumentFromSerie (If Defined) else if is First Document in Series Skip
                 if (pParameters.DocumentDateTime < dateLastDocumentFromSerie && dateLastDocumentFromSerie != DateTime.MinValue)
                 {
-                    result = ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Question, ButtonsType.Close, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_warning"), CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "dialog_message_systementry_is_less_than_last_finance_document_series"));
+                    result = ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Question, ButtonsType.Close, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_warning"), CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_systementry_is_less_than_last_finance_document_series"));
                 }
                 else
                 {
@@ -327,7 +327,7 @@ namespace logicpos
                     //Check if DocumentDate is greater than dateLastDocument (If Defined) else if is First Document in Series Skip
                     if (pParameters.DocumentDateTime < dateTimeLastDocument && dateTimeLastDocument != DateTime.MinValue)
                     {
-                        result = ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Question, ButtonsType.Close, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_warning"), CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "dialog_message_systementry_is_less_than_last_finance_document_series"));
+                        result = ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Question, ButtonsType.Close, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_warning"), CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_systementry_is_less_than_last_finance_document_series"));
                     }
                 }
             }
@@ -342,11 +342,11 @@ namespace logicpos
         public static void ShowMessageTouchSimplifiedInvoiceMaxValueExceedForFinalConsumer(Window pSourceWindow, decimal pCurrentTotal, decimal pMaxTotal)
         {
             ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(550, 480), MessageType.Info, ButtonsType.Close,
-                CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_warning"),
+                CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_warning"),
                 string.Format(
-                    CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "dialog_message_value_exceed_simplified_invoice_for_final_or_annonymous_consumer")
-                    , string.Format("{0}: {1}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_total"), DataConversionUtils.DecimalToStringCurrency(pCurrentTotal, SharedSettings.ConfigurationSystemCurrency.Acronym))
-                    , string.Format("{0}: {1}", CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_maximum"), DataConversionUtils.DecimalToStringCurrency(pMaxTotal, SharedSettings.ConfigurationSystemCurrency.Acronym))
+                    CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_value_exceed_simplified_invoice_for_final_or_annonymous_consumer")
+                    , string.Format("{0}: {1}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_total"), DataConversionUtils.DecimalToStringCurrency(pCurrentTotal, SharedSettings.ConfigurationSystemCurrency.Acronym))
+                    , string.Format("{0}: {1}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_maximum"), DataConversionUtils.DecimalToStringCurrency(pMaxTotal, SharedSettings.ConfigurationSystemCurrency.Acronym))
                 )
             );
         }
@@ -365,12 +365,12 @@ namespace logicpos
             switch (pMode)
             {
                 case ShowMessageTouchSimplifiedInvoiceMaxValueExceedMode.PaymentsDialog:
-                    messageMode = CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "dialog_message_value_exceed_simplified_invoice_max_value_mode_paymentdialog");
+                    messageMode = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_value_exceed_simplified_invoice_max_value_mode_paymentdialog");
                     messageType = MessageType.Question;
                     buttonsType = ButtonsType.YesNo;
                     break;
                 case ShowMessageTouchSimplifiedInvoiceMaxValueExceedMode.DocumentFinanceDialog:
-                    messageMode = CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "dialog_message_value_exceed_simplified_invoice_max_value_mode_paymentdialog_documentfinancedialog");
+                    messageMode = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_value_exceed_simplified_invoice_max_value_mode_paymentdialog_documentfinancedialog");
                     messageType = MessageType.Info;
                     buttonsType = ButtonsType.Close;
                     break;
@@ -383,9 +383,9 @@ namespace logicpos
                     messageMaxExceed = string.Format(
                         "{1}: {2}{0}{3}: {4}"
                         , Environment.NewLine
-                        , CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_total")
+                        , CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_total")
                         , DataConversionUtils.DecimalToStringCurrency(pCurrentTotal, SharedSettings.ConfigurationSystemCurrency.Acronym)
-                        , CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_maximum")
+                        , CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_maximum")
                         , DataConversionUtils.DecimalToStringCurrency(pMaxTotal, SharedSettings.ConfigurationSystemCurrency.Acronym)
                     );
                 }
@@ -395,9 +395,9 @@ namespace logicpos
                     messageMaxExceedServices = string.Format(
                         "{1}: {2}{0}{3}: {4}"
                         , Environment.NewLine
-                        , CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_services")
+                        , CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_services")
                         , DataConversionUtils.DecimalToStringCurrency(pCurrentTotalServices, SharedSettings.ConfigurationSystemCurrency.Acronym)
-                        , CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_maximum")
+                        , CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_maximum")
                         , DataConversionUtils.DecimalToStringCurrency(pMaxTotalServices, SharedSettings.ConfigurationSystemCurrency.Acronym)
                     );
                 }
@@ -413,8 +413,8 @@ namespace logicpos
                     }
 
                     result = ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(550, 440), messageType, buttonsType,
-                        CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_warning"),
-                        string.Format(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "dialog_message_value_exceed_simplified_invoice_max_value"), message, messageMode
+                        CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_warning"),
+                        string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_value_exceed_simplified_invoice_max_value"), message, messageMode
                         )
                     );
                 }
@@ -471,7 +471,7 @@ namespace logicpos
                     var childStockAfterChanged = childStock - (pNewQuantity * item.Quantity);
                     if (childStockAfterChanged <= child.MinimumStock)
                     {
-                        childStockMessage += Environment.NewLine + CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_article") + ": " + child.Designation + Environment.NewLine + CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_total_stock") + ": " + DataConversionUtils.DecimalToString(Convert.ToDecimal(childStock), "0.00") + Environment.NewLine + CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_minimum_stock") + ": " + DataConversionUtils.DecimalToString(Convert.ToDecimal(child.MinimumStock), "0.00") + Environment.NewLine;
+                        childStockMessage += Environment.NewLine + CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_article") + ": " + child.Designation + Environment.NewLine + CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_total_stock") + ": " + DataConversionUtils.DecimalToString(Convert.ToDecimal(childStock), "0.00") + Environment.NewLine + CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_minimum_stock") + ": " + DataConversionUtils.DecimalToString(Convert.ToDecimal(child.MinimumStock), "0.00") + Environment.NewLine;
                         childStockAlertCount++;
                     }
                 }
@@ -483,7 +483,7 @@ namespace logicpos
                 if (article.IsComposed)
                 {
                     size = new Size(650, 480);
-                    var response = ShowMessageTouch(pSourceWindow, DialogFlags.DestroyWithParent, size, MessageType.Question, ButtonsType.YesNo, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_stock_movements"), CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "window_check_stock_question") + Environment.NewLine + Environment.NewLine + CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_article") + ": " + article.Designation + Environment.NewLine + CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_total_stock") + ": " + DataConversionUtils.DecimalToString(Convert.ToDecimal(articleStock), "0.00") + Environment.NewLine + CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_minimum_stock") + ": " + DataConversionUtils.DecimalToString(Convert.ToDecimal(article.MinimumStock), "0.00") + childStockMessage);
+                    var response = ShowMessageTouch(pSourceWindow, DialogFlags.DestroyWithParent, size, MessageType.Question, ButtonsType.YesNo, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_stock_movements"), CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_check_stock_question") + Environment.NewLine + Environment.NewLine + CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_article") + ": " + article.Designation + Environment.NewLine + CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_total_stock") + ": " + DataConversionUtils.DecimalToString(Convert.ToDecimal(articleStock), "0.00") + Environment.NewLine + CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_minimum_stock") + ": " + DataConversionUtils.DecimalToString(Convert.ToDecimal(article.MinimumStock), "0.00") + childStockMessage);
                     if (response == ResponseType.Yes)
                     {
                         showMessage = true;
@@ -497,7 +497,7 @@ namespace logicpos
                 }
                 else
                 {
-                    var response = ShowMessageTouch(pSourceWindow, DialogFlags.DestroyWithParent, size, MessageType.Question, ButtonsType.YesNo, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_stock_movements"), CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "window_check_stock_question") + Environment.NewLine + Environment.NewLine + CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_article") + ": " + article.Designation + Environment.NewLine + CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_total_stock") + ": " + DataConversionUtils.DecimalToString(Convert.ToDecimal(articleStock), "0.00") + Environment.NewLine + CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_minimum_stock") + ": " + DataConversionUtils.DecimalToString(Convert.ToDecimal(article.MinimumStock), "0.00"));
+                    var response = ShowMessageTouch(pSourceWindow, DialogFlags.DestroyWithParent, size, MessageType.Question, ButtonsType.YesNo, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_stock_movements"), CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_check_stock_question") + Environment.NewLine + Environment.NewLine + CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_article") + ": " + article.Designation + Environment.NewLine + CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_total_stock") + ": " + DataConversionUtils.DecimalToString(Convert.ToDecimal(articleStock), "0.00") + Environment.NewLine + CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_minimum_stock") + ": " + DataConversionUtils.DecimalToString(Convert.ToDecimal(article.MinimumStock), "0.00"));
                     if (response == ResponseType.Yes)
                     {
                         showMessage = true;
@@ -522,8 +522,8 @@ namespace logicpos
                 DialogFlags.DestroyWithParent | DialogFlags.Modal,
                 MessageType.Error,
                 ButtonsType.Ok,
-                CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_delete_record"),
-                CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "dialog_message_delete_record_show_protected_record"))
+                CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_delete_record"),
+                CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_delete_record_show_protected_record"))
             ;
         }
 
@@ -534,15 +534,15 @@ namespace logicpos
                 DialogFlags.DestroyWithParent | DialogFlags.Modal,
                 MessageType.Error,
                 ButtonsType.Ok,
-                CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_update_record"),
-                CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "dialog_message_update_record_show_protected_record"))
+                CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_update_record"),
+                CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_update_record_show_protected_record"))
             ;
         }
 
         public static void ShowMessageTouchUnsupportedResolutionDetectedAndExit(Window pSourceWindow, int width, int height)
         {
-            string message = string.Format(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "app_error_unsupported_resolution_detected"), width, height);
-            ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Ok, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_error"), message);
+            string message = string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "app_error_unsupported_resolution_detected"), width, height);
+            ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_error"), message);
             Environment.Exit(Environment.ExitCode);
         }
 
@@ -556,8 +556,8 @@ namespace logicpos
         /// <param name="height"></param>
         public static void ShowMessageTouchUnsupportedResolutionDetectedDialogbox(Window pSourceWindow, int width, int height)
         {
-            string message = string.Format(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "app_error_unsupported_resolution_detected"), width, height, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_treeview_true"));
-            ResponseType dialogResponse = ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(600, 300), MessageType.Question, ButtonsType.YesNo, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_information"), message);
+            string message = string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "app_error_unsupported_resolution_detected"), width, height, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_treeview_true"));
+            ResponseType dialogResponse = ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(600, 300), MessageType.Question, ButtonsType.YesNo, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_information"), message);
             if (dialogResponse == ResponseType.No)
             {
                 Environment.Exit(Environment.ExitCode);
@@ -566,8 +566,8 @@ namespace logicpos
 
         public static void ShowMessageTouchErrorTryToIssueACreditNoteExceedingSourceDocumentArticleQuantities(Window pSourceWindow, decimal currentQuantity, decimal maxPossibleQuantity)
         {
-            string message = string.Format(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "dialog_message_error_try_to_issue_a_credit_note_exceeding_source_document_article_quantities"), currentQuantity, maxPossibleQuantity);
-            ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(700, 400), MessageType.Info, ButtonsType.Ok, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_information"), message);
+            string message = string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_error_try_to_issue_a_credit_note_exceeding_source_document_article_quantities"), currentQuantity, maxPossibleQuantity);
+            ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(700, 400), MessageType.Info, ButtonsType.Ok, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_information"), message);
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -589,7 +589,7 @@ namespace logicpos
 
         public static ResponseText GetInputText(Window pSourceWindow, DialogFlags pDialogFlags, string pWindowIcon, string pEntryLabel, string pDefaultValue, string pRule, bool pRequired)
         {
-            return GetInputText(pSourceWindow, pDialogFlags, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "window_title_default_input_text_dialog"), pWindowIcon, pEntryLabel, pDefaultValue, pRule, pRequired);
+            return GetInputText(pSourceWindow, pDialogFlags, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_default_input_text_dialog"), pWindowIcon, pEntryLabel, pDefaultValue, pRule, pRequired);
         }
 
         public static ResponseText GetInputText(Window pSourceWindow, DialogFlags pDialogFlags, string pWindowTitle, string pWindowIcon, string pEntryLabel, string pDefaultValue, string pRule, bool pRequired)
@@ -1254,13 +1254,13 @@ namespace logicpos
             switch (dialogMode)
             {
                 case Classes.Enums.Dialogs.DialogMode.Insert:
-                    action = CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "widget_generictreeviewnavigator_insert");
+                    action = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "widget_generictreeviewnavigator_insert");
                     break;
                 case Classes.Enums.Dialogs.DialogMode.Update:
-                    action = CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "widget_generictreeviewnavigator_update");
+                    action = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "widget_generictreeviewnavigator_update");
                     break;
                 case Classes.Enums.Dialogs.DialogMode.View:
-                    action = CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "widget_generictreeviewnavigator_view");
+                    action = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "widget_generictreeviewnavigator_view");
                     break;
                 default:
                     break;
@@ -1415,7 +1415,7 @@ namespace logicpos
                 /* IN009034 */
                 GlobalApp.DialogThreadNotify.WakeupMain();
 
-                string message = string.Format(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "app_error_unsupported_resolution_detected"), screenSize.Width, screenSize.Height, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_treeview_true"));
+                string message = string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "app_error_unsupported_resolution_detected"), screenSize.Width, screenSize.Height, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_treeview_true"));
                 ShowMessageTouchUnsupportedResolutionDetectedDialogbox(GlobalApp.StartupWindow, screenSize.Width, screenSize.Height);
 
                 supportedScreenSizeEnum = ScreenSize.resDefault;
@@ -1481,8 +1481,8 @@ namespace logicpos
             //dialog.Display = 0;
             //Mensagem alternativa para primeira instalação e versao com DB criada
             Label labelBoot;
-            if (dbExists) labelBoot = new Label(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_load"));
-            else labelBoot = new Label(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_load_first_time"));
+            if (dbExists) labelBoot = new Label(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_load"));
+            else labelBoot = new Label(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_load_first_time"));
             if (backupProcess != string.Empty) labelBoot = new Label(backupProcess);
 
             labelBoot.ModifyFont(Pango.FontDescription.FromString("Trebuchet MS 10 Bold"));
@@ -1821,7 +1821,7 @@ namespace logicpos
                         GlobalApp.DialogThreadNotify.WakeupMain();
 
                         _logger.Error(string.Format("pos_configurationplaceterminal GetTerminal() :: Error! Can't Register a new TerminalId [{0}] with HardwareId: [{1}], Error: [2]", configurationPlaceTerminal.Oid, configurationPlaceTerminal.HardwareId, ex.Message), ex);
-                        ShowMessageTouch(null, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Close, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_error"), string.Format(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "dialog_message_error_register_new_terminal"), configurationPlaceTerminal.HardwareId));
+                        ShowMessageTouch(null, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Close, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_error"), string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_error_register_new_terminal"), configurationPlaceTerminal.HardwareId));
                         Environment.Exit(0);
                     }
                 }
@@ -2118,7 +2118,7 @@ namespace logicpos
                           new Size(700, 480),
                           MessageType.Info,
                           ButtonsType.Ok,
-                          CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_notification"),
+                          CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_notification"),
                           message
                         );
 
@@ -2138,14 +2138,14 @@ namespace logicpos
                 }
                 else if (showNotificationOnDemand)
                 {/* IN006001 - when "on demand" request returns no results */
-                    message = string.Format(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "dialog_message_no_notification"), SharedSettings.XpoOidSystemNotificationDaysBackWhenFiltering);
+                    message = string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_no_notification"), SharedSettings.XpoOidSystemNotificationDaysBackWhenFiltering);
                     ResponseType response = ShowMessageTouch(
                       pSourceWindow,
                       DialogFlags.DestroyWithParent | DialogFlags.Modal,
                       new Size(700, 480),
                       MessageType.Info,
                       ButtonsType.Ok,
-                      CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_notification"),
+                      CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_notification"),
                       message
                     );
                 }
@@ -2153,7 +2153,7 @@ namespace logicpos
             catch (Exception ex)
             {
                 _logger.Error("void Utils.ShowNotifications(Window pSourceWindow, Session pSession, Guid pLoggedUser) :: " + ex.Message, ex);
-                ShowMessageTouch(null, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Close, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_error"), "There is an error when checking for notifications. Please contact the helpdesk");
+                ShowMessageTouch(null, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Close, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_error"), "There is an error when checking for notifications. Please contact the helpdesk");
             }
         }
 
@@ -2198,14 +2198,14 @@ namespace logicpos
                          new Size(700, 480),
                          MessageType.Info,
                          ButtonsType.Ok,
-                         CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "change_logger"),
+                         CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "change_logger"),
                          message
                        );
             }
             catch (Exception ex)
             {
                 _logger.Error("void Utils.ShowNotifications(Window pSourceWindow, Session pSession, Guid pLoggedUser) :: " + ex.Message, ex);
-                ShowMessageTouch(null, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Close, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_error"), "There is an error when checking for changelog. Please contact the helpdesk");
+                ShowMessageTouch(null, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Close, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_error"), "There is an error when checking for changelog. Please contact the helpdesk");
             }
         }
 
@@ -2564,7 +2564,7 @@ namespace logicpos
             {
                 changed = true;
                 //Front-end - Gravação de múltiplos clientes sem nome definido [IN:014367]
-                if (string.IsNullOrEmpty(pName)) pName = CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "saft_value_unknown");
+                if (string.IsNullOrEmpty(pName)) pName = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "saft_value_unknown");
                 result = new erp_customer(XPOSettings.Session)
                 {
                     Ord = (pFiscalNumber != string.Empty) ? DataLayerUtils.GetNextTableFieldID("erp_customer", "Ord") : 0,
@@ -2617,7 +2617,7 @@ namespace logicpos
                     //If final Consumer not save
                     if (changed && result.Oid != finalConsumerEntity.Oid)
                     {
-                        ResponseType responseType = ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Question, ButtonsType.YesNo, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_record_modified"), CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "dialog_message_customer_updated_save_changes"));
+                        ResponseType responseType = ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Question, ButtonsType.YesNo, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_record_modified"), CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_customer_updated_save_changes"));
                         if (responseType == ResponseType.No)
                         {
                             changed = false;
@@ -2850,7 +2850,7 @@ namespace logicpos
                 }
                 else if (CheckStockMessage() && !LicenseSettings.LicenseModuleStocks)
                 {
-                    var messageDialog = ShowMessageTouch(pSourceWindow, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.OkCancel, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_warning"), CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_warning_acquire_module_stocks"));
+                    var messageDialog = ShowMessageTouch(pSourceWindow, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.OkCancel, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_warning"), CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_warning_acquire_module_stocks"));
                     if (messageDialog == ResponseType.Ok)
                     {
                         Process.Start("https://logic-pos.com/");

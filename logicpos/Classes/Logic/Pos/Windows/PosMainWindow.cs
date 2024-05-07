@@ -199,7 +199,7 @@ namespace logicpos
                         DataLayerFramework.LoggedUser = (sys_userdetail)DataLayerUtils.GetXPGuidObject(typeof(sys_userdetail), dialogChangeUser.UserDetail.Oid);
                         SharedFramework.LoggedUserPermissions = SharedUtils.GetUserPermissions();
                         TicketList.UpdateTicketListButtons();
-                        SharedUtils.Audit("USER_CHANGE", string.Format(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "audit_message_user_change"), DataLayerFramework.LoggedUser.Name));
+                        SharedUtils.Audit("USER_CHANGE", string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "audit_message_user_change"), DataLayerFramework.LoggedUser.Name));
                         terminalInfo = string.Format("{0} : {1}", DataLayerFramework.LoggedTerminal.Designation, DataLayerFramework.LoggedUser.Name);
                         if (LabelTerminalInfo.Text != terminalInfo) LabelTerminalInfo.Text = terminalInfo;
                     }
@@ -217,7 +217,7 @@ namespace logicpos
                                 DataLayerFramework.LoggedUser = (sys_userdetail)DataLayerUtils.GetXPGuidObject(typeof(sys_userdetail), dialogChangeUser.UserDetail.Oid);
                                 SharedFramework.LoggedUserPermissions = SharedUtils.GetUserPermissions();
                                 TicketList.UpdateTicketListButtons();
-                                SharedUtils.Audit("USER_loggerIN", string.Format(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "audit_message_user_loggerin"), DataLayerFramework.LoggedUser.Name));
+                                SharedUtils.Audit("USER_loggerIN", string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "audit_message_user_loggerin"), DataLayerFramework.LoggedUser.Name));
                                 terminalInfo = string.Format("{0} : {1}", DataLayerFramework.LoggedTerminal.Designation, DataLayerFramework.LoggedUser.Name);
                                 if (LabelTerminalInfo.Text != terminalInfo) LabelTerminalInfo.Text = terminalInfo;
                                 //After First time Login ShowNotifications
@@ -348,13 +348,13 @@ namespace logicpos
                     var resultOpenDoor = PrintRouter.OpenDoor(DataLayerFramework.LoggedTerminal.Printer);
                     if (!resultOpenDoor)
                     {
-                        Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "global_information"), string.Format(CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "open_cash_draw_permissions")));
+                        Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_information"), string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "open_cash_draw_permissions")));
                     }
                     else
                     {
                         //Audit
                         SharedUtils.Audit("CASHDRAWER_OUT", string.Format(
-                            CultureResources.GetLanguageResource(GeneralSettings.Settings.GetCultureName(), "audit_message_cashdrawer_out"),
+                            CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "audit_message_cashdrawer_out"),
                             DataLayerFramework.LoggedTerminal.Designation,
                             "Button Open Door"));
                     }

@@ -59,11 +59,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         switch (ex.Message)
                         {
                             case "ERROR_MISSING_SERIE":
-                                errorMessage = string.Format(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_error_creating_financial_document"), CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_error_creating_financial_document_missing_series"));
+                                errorMessage = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_error_creating_financial_document"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_error_creating_financial_document_missing_series"));
                                 break;
                             case "ERROR_COMMIT_FINANCE_DOCUMENT_PAYMENT":
                             default:
-                                errorMessage = string.Format(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_error_creating_financial_document"), ex.Message);
+                                errorMessage = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_error_creating_financial_document"), ex.Message);
                                 break;
                         }
                         logicpos.Utils.ShowMessageTouch(
@@ -72,7 +72,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                           new Size(600, 400),
                           MessageType.Error,
                           ButtonsType.Close,
-                          CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"),
+                          CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"),
                           errorMessage
                         );
 
@@ -107,7 +107,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                   dialog = new PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewDocumentOrderTicket>(
                     this.SourceWindow,
                     DialogFlags.DestroyWithParent,
-                    CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_select_ticket"),
+                    CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_select_ticket"),
                     //TODO:THEME
                     GlobalApp.MaxWindowSize,
                     null, //XpoDefaultValue

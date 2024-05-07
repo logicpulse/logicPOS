@@ -12,7 +12,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Info
             _logger.Debug("ReportsMainWindow(): Create object ReportsMainWindow");
 
-            Title = logicpos.Utils.GetWindowTitle(CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_reports"));
+            Title = logicpos.Utils.GetWindowTitle(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_reports"));
             InitUI();
             ShowAll();
         }

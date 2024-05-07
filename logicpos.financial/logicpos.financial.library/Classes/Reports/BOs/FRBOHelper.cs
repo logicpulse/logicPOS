@@ -132,7 +132,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                 /* IN009173 - add Parent document number to Notes field */
                 if (isTransportDocument && documentFinanceMaster.DocumentParent != null)
                 {
-                    string notes = string.Format("{0}: {1}", CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_source_document"), documentFinanceMaster.DocumentParent.DocumentNumber);
+                    string notes = string.Format("{0}: {1}", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_source_document"), documentFinanceMaster.DocumentParent.DocumentNumber);
                     if (!string.IsNullOrEmpty(documentFinanceMasterView.Notes)) notes += " | ";
                     notes += documentFinanceMasterView.Notes;
                     documentFinanceMasterView.Notes = notes;
@@ -142,7 +142,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                 /* Add ATDocCodeID to Notes field */
                 if (!string.IsNullOrEmpty(documentFinanceMasterView.ATDocCodeID))
                 {
-                    string notes = string.Format("{0}: {1}", CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_at_atdoccodeid"), documentFinanceMasterView.ATDocCodeID);
+                    string notes = string.Format("{0}: {1}", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_at_atdoccodeid"), documentFinanceMasterView.ATDocCodeID);
                     if (! string.IsNullOrEmpty(documentFinanceMasterView.Notes)) notes += " | "/*Environment.NewLine*/;
                     notes += documentFinanceMasterView.Notes;
                     documentFinanceMasterView.Notes = notes;
@@ -153,14 +153,14 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                 {
                     //TK016319 - Certificação Angola - Alterações para teste da AGT
 					//Notas de Credito
-                    string notes = string.Format("{0}: {1}", CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_source_document"), documentFinanceMaster.DocumentParent.DocumentNumber);
+                    string notes = string.Format("{0}: {1}", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_source_document"), documentFinanceMaster.DocumentParent.DocumentNumber);
                     if (SharedSettings.XpoOidConfigurationCountryAngola.Equals(DataLayerSettings.ConfigurationSystemCountry.Oid))
                     {
-                        notes = string.Format("{0}: {1}", CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_source_document_NC_ND"), documentFinanceMaster.DocumentParent.DocumentNumber);
+                        notes = string.Format("{0}: {1}", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_source_document_NC_ND"), documentFinanceMaster.DocumentParent.DocumentNumber);
                     }                        
                     /* IN009252 - "Reason" added to "fin_documentfinancemaster.Notes" */
                     if (! string.IsNullOrEmpty(documentFinanceMasterView.Notes)) notes += Environment.NewLine; /* " | " */
-                    notes += string.Format("{0}: {1}", CultureResources.GetLanguageResource(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_reason"), documentFinanceMasterView.Notes);
+                    notes += string.Format("{0}: {1}", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_reason"), documentFinanceMasterView.Notes);
                     documentFinanceMasterView.Notes = notes;
                 }
 
