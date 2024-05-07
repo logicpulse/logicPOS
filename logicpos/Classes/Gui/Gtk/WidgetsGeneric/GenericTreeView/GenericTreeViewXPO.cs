@@ -393,7 +393,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         /// <returns></returns>
         public override void GetDataRow()
         {
-            _dataSourceRow = DataLayerUtils.GetXPGuidObject(
+            _dataSourceRow = XPOHelper.GetXPGuidObject(
               XPOSettings.Session,
               _dataSource.ObjectType,
               new Guid(Convert.ToString(_treeView.Model.GetValue(_treeIter, _modelFirstCustomFieldIndex)))
@@ -459,7 +459,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                     if (column.InitialValue.GetType().BaseType == typeof(XPGuidObject))
                     {
                         //Get Fresh Object else "object belongs to a different session"
-                        var xInitialValue = DataLayerUtils.GetXPGuidObject(newXPGuidObject.Session, column.InitialValue.GetType(), (column.InitialValue as XPGuidObject).Oid);
+                        var xInitialValue = XPOHelper.GetXPGuidObject(newXPGuidObject.Session, column.InitialValue.GetType(), (column.InitialValue as XPGuidObject).Oid);
                         newXPGuidObject.SetMemberValue(column.Name, xInitialValue);
                     }
                     //Default Values

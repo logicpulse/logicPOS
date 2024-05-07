@@ -4,6 +4,7 @@ using LogicPOS.Settings;
 using System;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using logicpos.datalayer.Xpo;
 
 namespace logicpos.datalayer.DataLayer.Xpo
 {
@@ -15,9 +16,9 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         protected override void OnAfterConstruction()
         {
-            Ord = DataLayerUtils.GetNextTableFieldID(nameof(fin_documentfinanceyears), "Ord");
-            Code = DataLayerUtils.GetNextTableFieldID(nameof(fin_documentfinanceyears), "Code");
-            int currentYear = DataLayerUtils.CurrentDateTimeAtomic().Year;
+            Ord = XPOHelper.GetNextTableFieldID(nameof(fin_documentfinanceyears), "Ord");
+            Code = XPOHelper.GetNextTableFieldID(nameof(fin_documentfinanceyears), "Code");
+            int currentYear = XPOHelper.CurrentDateTimeAtomic().Year;
             FiscalYear = currentYear;
             Acronym = string.Format("{0}{1}{2}", FiscalYear, "A", Code/10);
             Designation = string.Format("{0} {1} {2}{3}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_fiscal_year"), FiscalYear, "A", Code/10);

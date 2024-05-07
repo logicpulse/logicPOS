@@ -124,7 +124,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 
             if (pPrinter != null)
             {
-                sys_configurationprinterstemplates template = (sys_configurationprinterstemplates)DataLayerUtils.GetXPGuidObject(typeof(sys_configurationprinterstemplates), SharedSettings.XpoOidConfigurationPrintersTemplateWorkSessionMovement);
+                sys_configurationprinterstemplates template = (sys_configurationprinterstemplates)XPOHelper.GetXPGuidObject(typeof(sys_configurationprinterstemplates), SharedSettings.XpoOidConfigurationPrintersTemplateWorkSessionMovement);
                 string splitCurrentAccountFilter = string.Empty;
                 string fileTicket = template.FileTemplate;
 

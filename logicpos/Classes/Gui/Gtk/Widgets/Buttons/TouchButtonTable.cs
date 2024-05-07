@@ -95,7 +95,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
         public void ChangeTableStatus(Guid pTableOid, TableStatus pTableStatus)
         {
             //Get Target Table
-            pos_configurationplacetable xTable = (pos_configurationplacetable)DataLayerUtils.GetXPGuidObject(typeof(pos_configurationplacetable), pTableOid);
+            pos_configurationplacetable xTable = (pos_configurationplacetable)XPOHelper.GetXPGuidObject(typeof(pos_configurationplacetable), pTableOid);
             //_logger.Debug(string.Format("1 pTableStatus: [{0}] [{1}]", xTable.Designation, pTableStatus));
 
             if (pTableStatus == TableStatus.Reserved)

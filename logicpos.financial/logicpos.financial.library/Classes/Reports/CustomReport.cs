@@ -234,7 +234,7 @@ namespace logicpos.financial.library.Classes.Reports
                     else
                     {
                         string dateTimeFileFormat = LogicPOS.Settings.CultureSettings.FileFormatDateTime;
-                        string dateTime = DataLayerUtils.CurrentDateTimeAtomic().ToString(dateTimeFileFormat);
+                        string dateTime = XPOHelper.CurrentDateTimeAtomic().ToString(dateTimeFileFormat);
                         string reportName = (this.ReportInfo.Name != string.Empty) ? string.Format("_{0}", this.ReportInfo.Name) : string.Empty;
 
 
@@ -611,7 +611,7 @@ namespace logicpos.financial.library.Classes.Reports
                 {
                     //if (LogicPOS.Settings.CultureSettings.CurrentCulture.Name.Equals("pt-MZ")){
                     cfg_configurationcurrency defaultCurrencyForExchangeRate =
-                        (cfg_configurationcurrency)DataLayerUtils.GetXPGuidObject(
+                        (cfg_configurationcurrency)XPOHelper.GetXPGuidObject(
                             XPOSettings.Session,
                             typeof(cfg_configurationcurrency),
                             SharedSettings.XpoOidConfigurationCurrencyUSDollar);
@@ -1381,7 +1381,7 @@ namespace logicpos.financial.library.Classes.Reports
                             {
                                 if (!string.IsNullOrEmpty(customerBalance.EntityOid))
                                 {
-                                    customer = (erp_customer)DataLayerUtils.GetXPGuidObject(typeof(erp_customer), new Guid(customerBalance.EntityOid));
+                                    customer = (erp_customer)XPOHelper.GetXPGuidObject(typeof(erp_customer), new Guid(customerBalance.EntityOid));
                                     summary.EntityName = customer.Name;
                                     summary.EntityFiscalNumber = customer.FiscalNumber;
                                 }

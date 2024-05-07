@@ -1,5 +1,6 @@
 using DevExpress.Xpo;
 using logicpos.datalayer.App;
+using logicpos.datalayer.Xpo;
 using System;
 
 namespace logicpos.datalayer.DataLayer.Xpo
@@ -12,8 +13,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         protected override void OnAfterConstruction()
         {
-            Ord = DataLayerUtils.GetNextTableFieldID(nameof(pos_configurationplaceterminal), "Ord");
-            Code = DataLayerUtils.GetNextTableFieldID(nameof(pos_configurationplaceterminal), "Code");
+            Ord = XPOHelper.GetNextTableFieldID(nameof(pos_configurationplaceterminal), "Ord");
+            Code = XPOHelper.GetNextTableFieldID(nameof(pos_configurationplaceterminal), "Code");
             TemplateTicket = this.Session.GetObjectByKey<sys_configurationprinterstemplates>(DataLayerSettings.XpoOidConfigurationPrintersTemplateTicket);
             TemplateTablesConsult = this.Session.GetObjectByKey<sys_configurationprinterstemplates>(DataLayerSettings.XpoOidConfigurationPrintersTemplateTableConsult);
             InputReaderTimerInterval = 200;

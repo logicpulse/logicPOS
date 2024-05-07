@@ -39,7 +39,7 @@ namespace logicpos.shared.Classes.Orders
 
         public void Insert(Guid pArticleId, decimal pQuantity, TaxSellType pTaxSellType)
         {
-            fin_article article = (fin_article) datalayer.App.DataLayerUtils.GetXPGuidObject(typeof(fin_article), pArticleId);
+            fin_article article = (fin_article) datalayer.App.XPOHelper.GetXPGuidObject(typeof(fin_article), pArticleId);
             PriceProperties priceProperties = SharedUtils.GetArticlePrice(article, pTaxSellType);
             priceProperties.Quantity = pQuantity;
             Insert(article.Oid, article.Designation, priceProperties);

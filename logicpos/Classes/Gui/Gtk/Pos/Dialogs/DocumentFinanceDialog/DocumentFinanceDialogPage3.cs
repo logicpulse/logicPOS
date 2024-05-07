@@ -179,7 +179,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                     //Update DataTable Rows
                     foreach (DataRow item in TreeViewArticles.DataSource.Rows)
                     {
-                        article = (fin_article)DataLayerUtils.GetXPGuidObject(typeof(fin_article), new Guid(item.ItemArray[item.Table.Columns["Oid"].Ordinal].ToString()));
+                        article = (fin_article)XPOHelper.GetXPGuidObject(typeof(fin_article), new Guid(item.ItemArray[item.Table.Columns["Oid"].Ordinal].ToString()));
 
                         //Calc PriceProperties
                         PriceProperties priceProperties = PriceProperties.GetPriceProperties(

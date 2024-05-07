@@ -1,5 +1,6 @@
 using DevExpress.Xpo;
 using logicpos.datalayer.App;
+using logicpos.datalayer.Xpo;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
 using System;
@@ -14,8 +15,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         protected override void OnAfterConstruction()
         {
-            Ord = DataLayerUtils.GetNextTableFieldID(nameof(pos_configurationplacemovementtype), "Ord");
-            Code = DataLayerUtils.GetNextTableFieldID(nameof(pos_configurationplacemovementtype), "Code");
+            Ord = XPOHelper.GetNextTableFieldID(nameof(pos_configurationplacemovementtype), "Ord");
+            Code = XPOHelper.GetNextTableFieldID(nameof(pos_configurationplacemovementtype), "Code");
     
             if (AppOperationModeSettings.AppMode == AppOperationMode.Retail)
             {

@@ -365,10 +365,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     _labelDeliveryValue.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalDelivery, SharedSettings.ConfigurationSystemCurrency.Acronym);
                     _labelChangeValue.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalChange, SharedSettings.ConfigurationSystemCurrency.Acronym);
                     // Selects
-                    Customer = (erp_customer)DataLayerUtils.GetXPGuidObject(typeof(erp_customer), ProcessFinanceDocumentParameter.Customer);
+                    Customer = (erp_customer)XPOHelper.GetXPGuidObject(typeof(erp_customer), ProcessFinanceDocumentParameter.Customer);
                     Country = Customer.Country;
                     // PaymentMethod
-                    PaymentMethod = (fin_configurationpaymentmethod)DataLayerUtils.GetXPGuidObject(typeof(fin_configurationpaymentmethod), ProcessFinanceDocumentParameter.PaymentMethod);
+                    PaymentMethod = (fin_configurationpaymentmethod)XPOHelper.GetXPGuidObject(typeof(fin_configurationpaymentmethod), ProcessFinanceDocumentParameter.PaymentMethod);
                     // Restore Selected Payment Method, require to associate button reference to selectedPaymentMethodButton
                     if (!string.IsNullOrEmpty(pSelectedPaymentMethodButtonName)) {
                         switch (pSelectedPaymentMethodButtonName)

@@ -1,5 +1,5 @@
 using DevExpress.Xpo;
-using logicpos.datalayer.App;
+using logicpos.datalayer.Xpo;
 using System;
 
 namespace logicpos.datalayer.DataLayer.Xpo
@@ -12,8 +12,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         protected override void OnAfterConstruction()
         {
-            Ord = DataLayerUtils.GetNextTableFieldID(nameof(cfg_configurationcurrency), "Ord");
-            Code = DataLayerUtils.GetNextTableFieldID(nameof(cfg_configurationcurrency), "Code");
+            Ord = XPOHelper.GetNextTableFieldID(nameof(cfg_configurationcurrency), "Ord");
+            Code = XPOHelper.GetNextTableFieldID(nameof(cfg_configurationcurrency), "Code");
         }
 
         private uint fOrd;

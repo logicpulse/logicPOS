@@ -352,7 +352,7 @@ namespace logicpos
         public static string ExportSaft(Window pSourceWindow, ExportSaftPtMode pExportSaftPtMode)
         {
             string result = string.Empty;
-            DateTime dateCurrent = DataLayerUtils.CurrentDateTimeAtomic();
+            DateTime dateCurrent = XPOHelper.CurrentDateTimeAtomic();
             DateTime dateStart, dateEnd;
 
             switch (pExportSaftPtMode)
@@ -781,7 +781,7 @@ namespace logicpos
         public static bool PrintWorkSessionMovement(Window pSourceWindow, sys_configurationprinters pPrinter, pos_worksessionperiod pWorkSessionPeriod)
         {
             bool result = false;
-            sys_configurationprinterstemplates template = (sys_configurationprinterstemplates)DataLayerUtils.GetXPGuidObject(typeof(sys_configurationprinterstemplates), SharedSettings.XpoOidConfigurationPrintersTemplateWorkSessionMovement);
+            sys_configurationprinterstemplates template = (sys_configurationprinterstemplates)XPOHelper.GetXPGuidObject(typeof(sys_configurationprinterstemplates), SharedSettings.XpoOidConfigurationPrintersTemplateWorkSessionMovement);
 
             try
             {
@@ -805,7 +805,7 @@ namespace logicpos
         public static bool PrintCashDrawerOpenAndMoneyInOut(Window pSourceWindow, sys_configurationprinters pPrinter, string pTicketTitle, decimal pMovementAmount, decimal pTotalAmountInCashDrawer, string pMovementDescription)
         {
             bool result = false;
-            sys_configurationprinterstemplates template = (sys_configurationprinterstemplates)DataLayerUtils.GetXPGuidObject(typeof(sys_configurationprinterstemplates), SharedSettings.XpoOidConfigurationPrintersTemplateCashDrawerOpenAndMoneyInOut);
+            sys_configurationprinterstemplates template = (sys_configurationprinterstemplates)XPOHelper.GetXPGuidObject(typeof(sys_configurationprinterstemplates), SharedSettings.XpoOidConfigurationPrintersTemplateCashDrawerOpenAndMoneyInOut);
 
             try
             {

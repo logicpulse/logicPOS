@@ -352,7 +352,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 if (SharedSettings.XpoOidConfigurationCountryMozambique.Equals(DataLayerSettings.ConfigurationSystemCountry.Oid))
                 {
                     cfg_configurationcurrency defaultCurrencyForExchangeRate =
-                        (cfg_configurationcurrency)DataLayerUtils.GetXPGuidObject(
+                        (cfg_configurationcurrency)XPOHelper.GetXPGuidObject(
                             XPOSettings.Session,
                             typeof(cfg_configurationcurrency),
                             SharedSettings.XpoOidConfigurationCurrencyUSDollar);

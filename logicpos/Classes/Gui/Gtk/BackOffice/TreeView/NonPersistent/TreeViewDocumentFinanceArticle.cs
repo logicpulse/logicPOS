@@ -153,11 +153,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     foreach (var item in articleBag)
                     {
                         //Get XPGuidObjects to Assign to Columns
-                        article = (fin_article)DataLayerUtils.GetXPGuidObject(typeof(fin_article), item.Key.ArticleOid);
-                        configurationVatRate = (fin_configurationvatrate)DataLayerUtils.GetXPGuidObject(typeof(fin_configurationvatrate),
+                        article = (fin_article)XPOHelper.GetXPGuidObject(typeof(fin_article), item.Key.ArticleOid);
+                        configurationVatRate = (fin_configurationvatrate)XPOHelper.GetXPGuidObject(typeof(fin_configurationvatrate),
                           XPOHelper.GetGuidFromQuery(string.Format(@"SELECT Oid FROM fin_configurationvatrate WHERE (Disabled IS NULL OR Disabled  <> 1) AND Value = '{0}';", item.Key.Vat))
                         );
-                        //WIP: configurationUnitMeasure = (ConfigurationUnitMeasure)DataLayerUtils.GetXPGuidObjectFromSession(typeof(ConfigurationUnitMeasure), 
+                        //WIP: configurationUnitMeasure = (ConfigurationUnitMeasure)XPOHelper.GetXPGuidObjectFromSession(typeof(ConfigurationUnitMeasure), 
                         //  FrameworkUtils.GetGuidFromQuery(string.Format(@"SELECT Oid FROM cfg_configurationunitmeasure WHERE (Disabled IS NULL OR Disabled  <> 1) AND Acronym = '{0}';", item.Value.UnitMeasure))
                         //);
 

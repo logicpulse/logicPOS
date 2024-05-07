@@ -1,6 +1,7 @@
 using DevExpress.Xpo;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
+using logicpos.datalayer.Xpo;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
 using System;
@@ -14,7 +15,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         protected override void OnAfterConstruction()
         {
-            Ord = DataLayerUtils.GetNextTableFieldID(nameof(fin_article), "Ord");
+            Ord = XPOHelper.GetNextTableFieldID(nameof(fin_article), "Ord");
             Type = this.Session.GetObjectByKey<fin_articletype>(DataLayerSettings.XpoOidArticleDefaultType);
             Class = this.Session.GetObjectByKey<fin_articleclass>(DataLayerSettings.XpoOidArticleDefaultClass);
 

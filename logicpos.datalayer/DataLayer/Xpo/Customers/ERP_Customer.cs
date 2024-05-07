@@ -1,5 +1,6 @@
 using DevExpress.Xpo;
 using logicpos.datalayer.App;
+using logicpos.datalayer.Xpo;
 using System;
 
 namespace logicpos.datalayer.DataLayer.Xpo
@@ -22,15 +23,15 @@ namespace logicpos.datalayer.DataLayer.Xpo
             // Init EncryptedAttributes - Load Encrypted Attributes Fields if Exist - Required for New Records to have InitEncryptedAttributes else it Triggers Exception on Save
             InitEncryptedAttributes<erp_customer>();
 
-            Ord = DataLayerUtils.GetNextTableFieldID(nameof(erp_customer), "Ord");
-            Code = DataLayerUtils.GetNextTableFieldID(nameof(erp_customer), "Code");
+            Ord = XPOHelper.GetNextTableFieldID(nameof(erp_customer), "Ord");
+            Code = XPOHelper.GetNextTableFieldID(nameof(erp_customer), "Code");
             Country = this.Session.GetObjectByKey<cfg_configurationcountry>(DataLayerSettings.ConfigurationSystemCountry.Oid);
         }
 
         protected override void OnNewRecordSaving()
         {
             //Required for SAF-T
-            CodeInternal = DataLayerUtils.GuidToStringId(Oid.ToString());
+            CodeInternal = XPOHelper.GuidToStringId(Oid.ToString());
         }
 
         private uint fOrd;

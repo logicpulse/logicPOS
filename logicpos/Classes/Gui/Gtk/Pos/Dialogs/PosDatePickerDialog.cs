@@ -19,12 +19,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public Calendar Calendar { get; set; }
 
         public PosDatePickerDialog(Window pSourceWindow, DialogFlags pDialogFlags)
-            : this(pSourceWindow, pDialogFlags, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_datepicker"), DataLayerUtils.CurrentDateTimeAtomic())
+            : this(pSourceWindow, pDialogFlags, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_datepicker"), XPOHelper.CurrentDateTimeAtomic())
         {
         }
 
         public PosDatePickerDialog(Window pSourceWindow, DialogFlags pDialogFlags, string pDialogTitle)
-            : this(pSourceWindow, pDialogFlags, pDialogTitle, DataLayerUtils.CurrentDateTimeAtomic())
+            : this(pSourceWindow, pDialogFlags, pDialogTitle, XPOHelper.CurrentDateTimeAtomic())
         {
         }
 

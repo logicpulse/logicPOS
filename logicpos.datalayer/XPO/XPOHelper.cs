@@ -1,8 +1,10 @@
 ﻿using DevExpress.Data.Filtering;
 using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
-using logicpos.datalayer.App;
+using DevExpress.Xpo.Metadata;
 using logicpos.datalayer.DataLayer.Xpo;
+using LogicPOS.Settings;
+using LogicPOS.Settings.Enums;
 using System;
 using System.Data;
 using static LogicPOS.Utility.DataConversionUtils;
@@ -11,11 +13,11 @@ namespace logicpos.datalayer.Xpo
 {
     public static class XPOHelper
     {
-        public static uint GetNextTableFieldID(string table, string field)
+        public static uint GetNextTableFieldID(string pTable, string pField, bool pEndsWithZero = true)
         {
             uint result = 0;
 
-            string sql = string.Format("SELECT MAX({0}) FROM {1};", field, table);
+            string sql = string.Format("SELECT MAX({0}) FROM {1};", pField, pTable);
 
             var resultInt = XPOSettings.Session.ExecuteScalar(sql);
             if (resultInt != null)
@@ -32,7 +34,6 @@ namespace logicpos.datalayer.Xpo
             {
                 result = 10;
             }
-
             return result;
         }
 
@@ -104,8 +105,8 @@ namespace logicpos.datalayer.Xpo
                     //Check if is Not Null
                     if (rowData.Values[xPSelectData.GetFieldIndex(fieldName)] != null)
                     {
-                        fieldValue =  FormatDataTableFieldFromType(
-                            rowData.Values[xPSelectData.GetFieldIndex(fieldName)].ToString(), 
+                        fieldValue = FormatDataTableFieldFromType(
+                            rowData.Values[xPSelectData.GetFieldIndex(fieldName)].ToString(),
                             fieldType);
                     }
                     else
@@ -198,12 +199,59 @@ namespace logicpos.datalayer.Xpo
             Guid guid = GetGuidFromQuery(pSession, executeSql);
             if (guid != Guid.Empty)
             {
-                return (XPGuidObject)DataLayerUtils.GetXPGuidObject(pSession, pType, guid);
+                return (XPGuidObject)XPOHelper.GetXPGuidObject(pSession, pType, guid);
             }
             else
             {
                 return null;
             }
+        }
+
+        public static XPGuidObject GetXPGuidObject(Type pXPGuidObjectType, Guid pOid)
+        {
+            return GetXPGuidObject(XPOSettings.Session, pXPGuidObjectType, pOid);
+        }
+
+        public static XPGuidObject GetXPGuidObject(Session pSession, Type pXPGuidObjectType, Guid pOid)
+        {
+            XPClassInfo classInfo = pSession.GetClassInfo(pXPGuidObjectType);
+            dynamic resultObject = pSession.GetObjectByKey(classInfo, pOid);
+            XPGuidObject result = (XPGuidObject)resultObject;
+            return result;
+        }
+
+        public static DateTime CurrentDateTimeAtomic()
+        {
+            string sql = string.Empty;
+            var result = new DateTime();
+
+            switch (DatabaseSettings.DatabaseType)
+            {
+                case DatabaseType.SQLite:
+                case DatabaseType.MonoLite:
+                    result = DateTime.Now;
+                    break;
+                case DatabaseType.MSSqlServer:
+                    sql = "SELECT getdate() AS Now;";
+                    break;
+                case DatabaseType.MySql:
+                    sql = "SELECT now() AS Now;";
+                    break;
+                default:
+                    break;
+            }
+
+            if (sql != string.Empty)
+            {
+                result = (DateTime)XPOSettings.Session.ExecuteScalar(sql);
+            }
+
+            return result;
+        }
+
+        public static string GuidToStringId(string pGuidString)
+        {
+            return pGuidString.Substring(0, 30);
         }
     }
 }

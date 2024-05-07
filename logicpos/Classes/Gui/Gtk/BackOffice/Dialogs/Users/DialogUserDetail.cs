@@ -263,7 +263,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 //UserDetail userDetail = (this._crudWidgetList.GetFieldWidget("PasswordReset").DataSourceRow as UserDetail);
                 _userDetail.AccessPin = CryptographyUtils.GenerateSaltedString(DataLayerSettings.DefaultValueUserDetailAccessPin);
                 _userDetail.PasswordReset = false;
-                _userDetail.PasswordResetDate = DataLayerUtils.CurrentDateTimeAtomic();
+                _userDetail.PasswordResetDate = XPOHelper.CurrentDateTimeAtomic();
                 //Force LogOut User
                 GlobalApp.StartupWindow.LogOutUser(false, _userDetail);
             }

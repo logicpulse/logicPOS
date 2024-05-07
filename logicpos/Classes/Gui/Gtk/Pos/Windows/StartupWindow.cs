@@ -389,7 +389,7 @@ namespace logicpos
             //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
             //Test PosDocumentFinancePrintDialog : Used to test StandAlone Dialog
             //Guid guidDocument = new Guid("7d08282c-d705-4f01-9047-36d6d65c15d7");
-            //DocumentFinanceMaster documentFinanceMaster = (DocumentFinanceMaster)DataLayerUtils.GetXPGuidObjectFromSession(XPOSettings.Session, typeof(DocumentFinanceMaster), guidDocument);
+            //DocumentFinanceMaster documentFinanceMaster = (DocumentFinanceMaster)XPOHelper.GetXPGuidObjectFromSession(XPOSettings.Session, typeof(DocumentFinanceMaster), guidDocument);
             //if (documentFinanceMaster != null)
             //{
             //    documentFinanceMaster.DocumentType.PrintRequestMotive = true;
@@ -676,8 +676,8 @@ namespace logicpos
             //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
             //Test Country Code2
 
-            //cfg_configurationcountry countryPT = (cfg_configurationcountry)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(cfg_configurationcountry), new Guid("e7e8c325-a0d4-4908-b148-508ed750676a"));
-            //cfg_configurationcountry countryAO = (cfg_configurationcountry)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(cfg_configurationcountry), new Guid("9655510a-ff58-461e-9719-c037058f10ed"));
+            //cfg_configurationcountry countryPT = (cfg_configurationcountry)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(cfg_configurationcountry), new Guid("e7e8c325-a0d4-4908-b148-508ed750676a"));
+            //cfg_configurationcountry countryAO = (cfg_configurationcountry)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(cfg_configurationcountry), new Guid("9655510a-ff58-461e-9719-c037058f10ed"));
             //_logger.Debug(String.Format("countryPT: [{0}], [{1}]", countryPT.Designation, countryPT.Code2));
             //_logger.Debug(String.Format("countryAO: [{0}], [{1}]", countryAO.Designation, countryAO.Code2));
 

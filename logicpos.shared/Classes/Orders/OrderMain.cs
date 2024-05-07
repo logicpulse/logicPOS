@@ -170,7 +170,7 @@ namespace logicpos.shared.Classes.Orders
             //Result
             fin_documentorderticket xOrderTicket = (fin_documentorderticket)XPOSettings.Session.GetObjectByKey(typeof(fin_documentorderticket), orderTicketOid);
 
-            //xOrderTicket = (fin_documentorderticket)DataLayerUtils.GetXPGuidObject(_sessionXpo, typeof(fin_documentorderticket), currentOrderMain._persistentOid);
+            //xOrderTicket = (fin_documentorderticket)XPOHelper.GetXPGuidObject(_sessionXpo, typeof(fin_documentorderticket), currentOrderMain._persistentOid);
             if (xOrderTicket != null)
             {
                 xOrderTicket.TicketId = currentOrderMain.CurrentTicketId;
@@ -509,7 +509,7 @@ namespace logicpos.shared.Classes.Orders
               _globalTotalTickets = (totalTickets != null) ? Convert.ToInt32(totalTickets) : 0;
 
               //Persist Final TotalOpen 
-              ConfigurationPlaceTable currentTable = (ConfigurationPlaceTable)DataLayerUtils.GetXPGuidObjectFromSession(typeof(ConfigurationPlaceTable), _table.Oid);
+              ConfigurationPlaceTable currentTable = (ConfigurationPlaceTable)XPOHelper.GetXPGuidObjectFromSession(typeof(ConfigurationPlaceTable), _table.Oid);
               currentTable.TotalOpen = _globalTotalFinal;
               currentTable.Save();
             }
@@ -590,7 +590,7 @@ namespace logicpos.shared.Classes.Orders
               }
 
               //Persist Final TotalOpen 
-              ConfigurationPlaceTable currentTable = (ConfigurationPlaceTable)DataLayerUtils.GetXPGuidObjectFromSession(typeof(ConfigurationPlaceTable), _table.Oid);
+              ConfigurationPlaceTable currentTable = (ConfigurationPlaceTable)XPOHelper.GetXPGuidObjectFromSession(typeof(ConfigurationPlaceTable), _table.Oid);
               currentTable.TotalOpen = _globalTotalFinal;
               currentTable.Save();
 

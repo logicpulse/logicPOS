@@ -84,7 +84,7 @@ namespace logicpos.financial.library.Classes.Reports
                 { "APP_COMPANY", LogicPOS.Settings.PluginSettings.AppCompanyName },
                 { "APP_NAME", pAppName },
                 { "APP_VERSION", SharedUtils.ProductVersion },
-                { "DATE", DataLayerUtils.CurrentDateTimeAtomic().ToString(LogicPOS.Settings.CultureSettings.DateFormat) }
+                { "DATE", XPOHelper.CurrentDateTimeAtomic().ToString(LogicPOS.Settings.CultureSettings.DateFormat) }
             };
             if (SharedSettings.ConfigurationSystemCurrency != null)
             {

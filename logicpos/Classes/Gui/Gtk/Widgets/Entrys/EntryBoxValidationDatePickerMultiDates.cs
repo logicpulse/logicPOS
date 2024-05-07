@@ -47,7 +47,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         public EntryBoxValidationDatePickerMultiDates(Window pSourceWindow, string pLabelText, string pWindowTitle, List<DateTime> pInitialDatesList)
         {
-            string initialDate = DataLayerUtils.CurrentDateTimeAtomic().ToString(LogicPOS.Settings.CultureSettings.DateFormat);
+            string initialDate = XPOHelper.CurrentDateTimeAtomic().ToString(LogicPOS.Settings.CultureSettings.DateFormat);
 
             //Parameters
             _sourceWindow = pSourceWindow;

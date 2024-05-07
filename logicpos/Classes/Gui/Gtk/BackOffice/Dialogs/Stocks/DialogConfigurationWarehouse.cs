@@ -117,7 +117,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
                 {
                     foreach (var location in _Warehouse.WarehouseLocation)
                     {
-                        XPGuidObject getLocationFromWarehouse = DataLayerUtils.GetXPGuidObject(typeof(fin_warehouselocation), location.Oid);
+                        XPGuidObject getLocationFromWarehouse = XPOHelper.GetXPGuidObject(typeof(fin_warehouselocation), location.Oid);
                         PopulateWarehouseLocationEntrys(getLocationFromWarehouse);
                     }
                 }

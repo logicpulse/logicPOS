@@ -1026,7 +1026,7 @@ WHERE
 
                 if (itemChecked)
                 {
-                    fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)DataLayerUtils.GetXPGuidObject(typeof(fin_documentfinancemaster), itemGuid);
+                    fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)XPOHelper.GetXPGuidObject(typeof(fin_documentfinancemaster), itemGuid);
                     //Required to use _dialogFinanceDocumentsResponse to Fix TransientFor, ALT+TAB
                     FrameworkCalls.PrintFinanceDocument(_dialogFinanceDocumentsResponse, _printerChoosed, documentFinanceMaster);
                 }
@@ -1297,7 +1297,7 @@ WHERE
             Dictionary<fin_documentfinancemaster, string> documents = new Dictionary<fin_documentfinancemaster, string>();
             List<string> attachmentFileNames = new List<string>();
             // Get Customer from first Document
-            erp_customer customer = (erp_customer)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(erp_customer), pDocuments[0].EntityOid);
+            erp_customer customer = (erp_customer)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(erp_customer), pDocuments[0].EntityOid);
             string customerEmail = (customer.Email != null) ? customer.Email : string.Empty;
             string documentList = string.Empty;
 
@@ -1378,7 +1378,7 @@ WHERE
             Dictionary<fin_documentfinancepayment, string> documents = new Dictionary<fin_documentfinancepayment, string>();
             List<string> attachmentFileNames = new List<string>();
             // Get Customer from first Document
-            erp_customer customer = (erp_customer)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(erp_customer), pDocuments[0].EntityOid);
+            erp_customer customer = (erp_customer)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(erp_customer), pDocuments[0].EntityOid);
             string customerEmail = (customer.Email != null) ? customer.Email : string.Empty;
             string mailBody = string.Empty;
 
@@ -1564,7 +1564,7 @@ WHERE
                         if (dialogResponse.ResponseType == ResponseType.Ok)
                         {
                             //_logger.Debug(string.Format("DocumentNumber:[{0}], DocumentStatusStatus:[{1}], reason:[{2}]", document.DocumentNumber, document.DocumentStatusStatus, dialogResponse.InputText));
-                            currentDateTime = DataLayerUtils.CurrentDateTimeAtomic();
+                            currentDateTime = XPOHelper.CurrentDateTimeAtomic();
                             documentMaster.DocumentStatusStatus = "A";
                             documentMaster.DocumentStatusDate = currentDateTime.ToString(CultureSettings.DateTimeFormatCombinedDateTime);
                             documentMaster.DocumentStatusReason = dialogResponse.Text;
@@ -1817,7 +1817,7 @@ WHERE
                 if (itemChecked)
                 {
                     //Add to FinanceMasterDocuments
-                    _listSelectFinanceMasterDocuments.Add((fin_documentfinancemaster)DataLayerUtils.GetXPGuidObject(typeof(fin_documentfinancemaster), itemGuid));
+                    _listSelectFinanceMasterDocuments.Add((fin_documentfinancemaster)XPOHelper.GetXPGuidObject(typeof(fin_documentfinancemaster), itemGuid));
                 }
             }
             catch (Exception ex)
@@ -1925,7 +1925,7 @@ WHERE
 
                 if (itemChecked)
                 {
-                    pos_worksessionperiod workSessionPeriodParent = (pos_worksessionperiod)DataLayerUtils.GetXPGuidObject(typeof(pos_worksessionperiod), itemGuid);
+                    pos_worksessionperiod workSessionPeriodParent = (pos_worksessionperiod)XPOHelper.GetXPGuidObject(typeof(pos_worksessionperiod), itemGuid);
                     pos_worksessionperiod workSessionPeriodChild;
                     //Print Parent Session : PrintWorkSessionMovement
                     FrameworkCalls.PrintWorkSessionMovement(this, DataLayerFramework.LoggedTerminal.ThermalPrinter, workSessionPeriodParent);
@@ -1936,7 +1936,7 @@ WHERE
                     foreach (DevExpress.Xpo.DB.SelectStatementResultRow row in xPSelectData.Data)
                     {
                         //Print Child Sessions
-                        workSessionPeriodChild = (pos_worksessionperiod)DataLayerUtils.GetXPGuidObject(typeof(pos_worksessionperiod), new Guid(row.Values[xPSelectData.GetFieldIndex("Oid")].ToString()));
+                        workSessionPeriodChild = (pos_worksessionperiod)XPOHelper.GetXPGuidObject(typeof(pos_worksessionperiod), new Guid(row.Values[xPSelectData.GetFieldIndex("Oid")].ToString()));
                         //PrintWorkSessionMovement
                         FrameworkCalls.PrintWorkSessionMovement(this, DataLayerFramework.LoggedTerminal.ThermalPrinter, workSessionPeriodChild);
                     }
@@ -2353,7 +2353,7 @@ WHERE
                 if (itemChecked)
                 {
                     //Add to FinancePaymentDocuments
-                    _listSelectFinancePaymentDocuments.Add((fin_documentfinancepayment)DataLayerUtils.GetXPGuidObject(typeof(fin_documentfinancepayment), itemGuid));
+                    _listSelectFinancePaymentDocuments.Add((fin_documentfinancepayment)XPOHelper.GetXPGuidObject(typeof(fin_documentfinancepayment), itemGuid));
                 }
             }
             catch (Exception ex)
@@ -2395,7 +2395,7 @@ WHERE
 
                 if (itemChecked)
                 {
-                    fin_documentfinancepayment documentFinancePayment = (fin_documentfinancepayment)DataLayerUtils.GetXPGuidObject(typeof(fin_documentfinancepayment), itemGuid);
+                    fin_documentfinancepayment documentFinancePayment = (fin_documentfinancepayment)XPOHelper.GetXPGuidObject(typeof(fin_documentfinancepayment), itemGuid);
 
                     FrameworkCalls.PrintFinanceDocumentPayment(this, _printerChoosed, documentFinancePayment);
                 }
@@ -2432,7 +2432,7 @@ WHERE
                         if (dialogResponse.ResponseType == ResponseType.Ok)
                         {
                             //_logger.Debug(string.Format("PaymentRefNo:[{0}], DocumentStatusStatus:[{1}], reason:[{2}]", document.PaymentRefNo, document.PaymentStatus, dialogResponse.InputText));
-                            currentDateTime = DataLayerUtils.CurrentDateTimeAtomic();
+                            currentDateTime = XPOHelper.CurrentDateTimeAtomic();
                             document.PaymentStatus = "A";
                             document.PaymentStatusDate = currentDateTime.ToString(CultureSettings.DateTimeFormatCombinedDateTime);
                             document.Reason = dialogResponse.Text;

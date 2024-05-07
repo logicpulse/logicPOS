@@ -1739,7 +1739,7 @@ namespace logicpos
         //    try
         //    {
         //      //Get TerminalID from Database
-        //      terminalXpo = (ConfigurationPlaceTerminal)DataLayerUtils.GetXPGuidObjectFromSession(typeof(ConfigurationPlaceTerminal), terminalIdGuid);
+        //      terminalXpo = (ConfigurationPlaceTerminal)XPOHelper.GetXPGuidObjectFromSession(typeof(ConfigurationPlaceTerminal), terminalIdGuid);
         //    }
         //    catch (Exception ex)
         //    {
@@ -1753,9 +1753,9 @@ namespace logicpos
         //    //Persist Terminal in DB
         //    terminalXpo = new ConfigurationPlaceTerminal(XPOSettings.Session)
         //    {
-        //      Ord = DataLayerUtils.GetNextTableFieldID("pos_configurationplaceterminal", "Ord"),
-        //      Code = DataLayerUtils.GetNextTableFieldID("pos_configurationplaceterminal", "Code"),
-        //      Designation = "Terminal #" + DataLayerUtils.GetNextTableFieldID("pos_configurationplaceterminal", "Code")
+        //      Ord = XPOHelper.GetNextTableFieldID("pos_configurationplaceterminal", "Ord"),
+        //      Code = XPOHelper.GetNextTableFieldID("pos_configurationplaceterminal", "Code"),
+        //      Designation = "Terminal #" + XPOHelper.GetNextTableFieldID("pos_configurationplaceterminal", "Code")
         //      //Fqdn = GetFQDN()
         //    };
         //    terminalXpo.Save();
@@ -1806,9 +1806,9 @@ namespace logicpos
                         //Persist Terminal in DB
                         configurationPlaceTerminal = new pos_configurationplaceterminal(XPOSettings.Session)
                         {
-                            Ord = DataLayerUtils.GetNextTableFieldID("pos_configurationplaceterminal", "Ord"),
-                            Code = DataLayerUtils.GetNextTableFieldID("pos_configurationplaceterminal", "Code"),
-                            Designation = "Terminal #" + DataLayerUtils.GetNextTableFieldID("pos_configurationplaceterminal", "Code"),
+                            Ord = XPOHelper.GetNextTableFieldID("pos_configurationplaceterminal", "Ord"),
+                            Code = XPOHelper.GetNextTableFieldID("pos_configurationplaceterminal", "Code"),
+                            Designation = "Terminal #" + XPOHelper.GetNextTableFieldID("pos_configurationplaceterminal", "Code"),
                             HardwareId = LicenseSettings.LicenseHardwareId
                             //Fqdn = GetFQDN()
                         };
@@ -1845,7 +1845,7 @@ namespace logicpos
                 SortProperty[] sortProperty = new SortProperty[2];
                 sortProperty[0] = new SortProperty("CreatedAt", SortingDirection.Ascending);
                 XPCollection xpcWorkingSessionPeriod = new XPCollection(pSession, typeof(pos_worksessionperiod), criteriaOperator, sortProperty);
-                DateTime dateTime = DataLayerUtils.CurrentDateTimeAtomic();
+                DateTime dateTime = XPOHelper.CurrentDateTimeAtomic();
                 if (xpcWorkingSessionPeriod.Count > 0)
                 {
                     foreach (pos_worksessionperiod item in xpcWorkingSessionPeriod)
@@ -2125,7 +2125,7 @@ namespace logicpos
                         //Always OK
                         if (response == ResponseType.Ok)
                         {
-                            item.DateRead = DataLayerUtils.CurrentDateTimeAtomic();
+                            item.DateRead = XPOHelper.CurrentDateTimeAtomic();
                             item.Readed = true;
                             item.UserLastRead = DataLayerFramework.LoggedUser;
                             item.TerminalLastRead = DataLayerFramework.LoggedTerminal;
@@ -2540,8 +2540,8 @@ namespace logicpos
         {
             bool customerExists = false;
             erp_customer result;
-            erp_customer finalConsumerEntity = (erp_customer)DataLayerUtils.GetXPGuidObject(typeof(erp_customer), SharedSettings.FinalConsumerId);
-            fin_configurationpricetype configurationPriceType = (fin_configurationpricetype)DataLayerUtils.GetXPGuidObject(typeof(fin_configurationpricetype), SharedSettings.XpoOidConfigurationPriceTypeDefault);
+            erp_customer finalConsumerEntity = (erp_customer)XPOHelper.GetXPGuidObject(typeof(erp_customer), SharedSettings.FinalConsumerId);
+            fin_configurationpricetype configurationPriceType = (fin_configurationpricetype)XPOHelper.GetXPGuidObject(typeof(fin_configurationpricetype), SharedSettings.XpoOidConfigurationPriceTypeDefault);
 
             SortingCollection sortCollection = new SortingCollection
             {
@@ -2567,8 +2567,8 @@ namespace logicpos
                 if (string.IsNullOrEmpty(pName)) pName = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "saft_value_unknown");
                 result = new erp_customer(XPOSettings.Session)
                 {
-                    Ord = (pFiscalNumber != string.Empty) ? DataLayerUtils.GetNextTableFieldID("erp_customer", "Ord") : 0,
-                    Code = (pFiscalNumber != string.Empty) ? DataLayerUtils.GetNextTableFieldID("erp_customer", "Code") : 0,
+                    Ord = (pFiscalNumber != string.Empty) ? XPOHelper.GetNextTableFieldID("erp_customer", "Ord") : 0,
+                    Code = (pFiscalNumber != string.Empty) ? XPOHelper.GetNextTableFieldID("erp_customer", "Code") : 0,
                     Name = pName,
                     Address = pAddress,
                     Locality = pLocality,
@@ -2596,7 +2596,7 @@ namespace logicpos
             {
                 changed = false;
                 //Require to get a Fresh Object
-                result = (erp_customer)DataLayerUtils.GetXPGuidObject(typeof(erp_customer), pCustomer.Oid);
+                result = (erp_customer)XPOHelper.GetXPGuidObject(typeof(erp_customer), pCustomer.Oid);
 
                 if (result != finalConsumerEntity)
                 {

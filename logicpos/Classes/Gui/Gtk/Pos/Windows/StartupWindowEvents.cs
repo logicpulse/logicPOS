@@ -69,7 +69,7 @@ namespace logicpos
             {
                 if (TablePadUser.SelectedButtonOid != null)
                 {
-                    _selectedUserDetail = (DataLayerUtils.GetXPGuidObject(typeof(sys_userdetail), TablePadUser.SelectedButtonOid) as sys_userdetail);
+                    _selectedUserDetail = (XPOHelper.GetXPGuidObject(typeof(sys_userdetail), TablePadUser.SelectedButtonOid) as sys_userdetail);
                     if (_selectedUserDetail != null)
                     {
                         //Change NumberPadPinMode Mode

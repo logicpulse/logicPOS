@@ -37,9 +37,9 @@ namespace logicpos.financial.library.Classes.Finance
         //Get DocumentFinanceYearSerieTerminal for Terminal
         public static fin_documentfinanceyearserieterminal GetDocumentFinanceYearSerieTerminal(Session pSession, Guid pDocumentType, Guid pLoggedTerminal)
         {
-            DateTime currentDateTime = DataLayerUtils.CurrentDateTimeAtomic();
+            DateTime currentDateTime = XPOHelper.CurrentDateTimeAtomic();
             fin_documentfinanceyearserieterminal documentFinanceYearSerieTerminal = null;
-            fin_documentfinancetype documentFinanceType = (fin_documentfinancetype)DataLayerUtils.GetXPGuidObject(pSession, typeof(fin_documentfinancetype), pDocumentType);
+            fin_documentfinancetype documentFinanceType = (fin_documentfinancetype)XPOHelper.GetXPGuidObject(pSession, typeof(fin_documentfinancetype), pDocumentType);
 
             //If DocumentTypeInvoiceWayBill Replace/Override Helper Document Type InvoiceWayBill with InvoiceWay to get Invoice Serie, 
             //this way we have Invoice Serie but DocumentMaster keeps DocumentFinanceType has DocumentFinanceTypeInvoiceWayBill
@@ -125,7 +125,7 @@ namespace logicpos.financial.library.Classes.Finance
                 try
                 {
                     //Get Object in UOW Session
-                    fin_documentfinanceyears documentFinanceYears = (fin_documentfinanceyears)DataLayerUtils.GetXPGuidObject(uowSession, typeof(fin_documentfinanceyears), pDocumentFinanceYears.Oid);
+                    fin_documentfinanceyears documentFinanceYears = (fin_documentfinanceyears)XPOHelper.GetXPGuidObject(uowSession, typeof(fin_documentfinanceyears), pDocumentFinanceYears.Oid);
 
                     //Protection, used when user Restore DB without DocumentFinanceYears Created
                     if (documentFinanceYears != null)
@@ -193,7 +193,7 @@ namespace logicpos.financial.library.Classes.Finance
                 try
                 {
                     //Get Object in UOW Session
-                    fin_documentfinanceyears documentFinanceYears = (fin_documentfinanceyears)DataLayerUtils.GetXPGuidObject(uowSession, typeof(fin_documentfinanceyears), pDocumentFinanceYears.Oid);
+                    fin_documentfinanceyears documentFinanceYears = (fin_documentfinanceyears)XPOHelper.GetXPGuidObject(uowSession, typeof(fin_documentfinanceyears), pDocumentFinanceYears.Oid);
 
                     //Initialize DocumentFinanceType Collection : Criteria/XPCollection/Model : Use Default Filter
                     CriteriaOperator criteria = CriteriaOperator.Parse("(Disabled = 0 OR Disabled IS NULL)");
@@ -238,7 +238,7 @@ namespace logicpos.financial.library.Classes.Finance
                         pos_configurationplaceterminal configurationPlaceTerminal = (pos_configurationplaceterminal)uowSession.GetObjectByKey(typeof(pos_configurationplaceterminal), new Guid(terminal["Oid"].ToString()));
 
                         //Create DocumentFinanceSeries Acronym From Date
-                        DateTime now = DataLayerUtils.CurrentDateTimeAtomic();
+                        DateTime now = XPOHelper.CurrentDateTimeAtomic();
                         string acronymPrefix;
                         //AcronymPrefix ex FT[QN3T1U401]2016S001, works with Random and AcronymLastSerie modes
                         if (SharedSettings.DocumentFinanceSeriesGenerationFactoryUseRandomAcronymPrefix)

@@ -279,7 +279,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                             //Commit Changes
                             pUserDetail.AccessPin =  CryptographyUtils.GenerateSaltedString(_passwordNew);
                             pUserDetail.PasswordReset = false;
-                            pUserDetail.PasswordResetDate = DataLayerUtils.CurrentDateTimeAtomic();
+                            pUserDetail.PasswordResetDate = XPOHelper.CurrentDateTimeAtomic();
                             pUserDetail.Save();
                             SharedUtils.Audit("USER_CHANGE_PASSWORD", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_user_change_password"), pUserDetail.Name));
                             ResponseType responseType = logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_change_password"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "pos_pinpad_message_password_changed"));
@@ -425,11 +425,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             //SessionApp Add LoggedUser
             if (!SharedFramework.SessionApp.LoggedUsers.ContainsKey(DataLayerFramework.LoggedUser.Oid))
             {
-                SharedFramework.SessionApp.LoggedUsers.Add(pUserDetail.Oid, DataLayerUtils.CurrentDateTimeAtomic());
+                SharedFramework.SessionApp.LoggedUsers.Add(pUserDetail.Oid, XPOHelper.CurrentDateTimeAtomic());
             }
             else
             {
-                SharedFramework.SessionApp.LoggedUsers[DataLayerFramework.LoggedUser.Oid] = DataLayerUtils.CurrentDateTimeAtomic();
+                SharedFramework.SessionApp.LoggedUsers[DataLayerFramework.LoggedUser.Oid] = XPOHelper.CurrentDateTimeAtomic();
             }
             SharedFramework.SessionApp.Write();
 

@@ -418,7 +418,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 //Assign pagePad.Customer Reference
                 if (customerGuid != Guid.Empty)
                 {
-                    _pagePad.Customer = (erp_customer)DataLayerUtils.GetXPGuidObject(typeof(erp_customer), customerGuid);
+                    _pagePad.Customer = (erp_customer)XPOHelper.GetXPGuidObject(typeof(erp_customer), customerGuid);
                 }
                 else
                 {
@@ -667,7 +667,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 }
                 string sql = string.Format("SELECT Oid FROM erp_customer WHERE FiscalNumber = '{0}' AND (Hidden IS NULL OR Hidden = 0);", fiscalNumberFilterValue);
                 Guid customerGuid = XPOHelper.GetGuidFromQuery(sql);
-                erp_customer customer = (customerGuid != Guid.Empty) ? (erp_customer)DataLayerUtils.GetXPGuidObject(typeof(erp_customer), customerGuid) : null;
+                erp_customer customer = (customerGuid != Guid.Empty) ? (erp_customer)XPOHelper.GetXPGuidObject(typeof(erp_customer), customerGuid) : null;
 
                 if (_pagePad1.EntryBoxSelectDocumentFinanceType.Value != null)
                 {

@@ -96,7 +96,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //_entryBoxShipToDeliveryDate.EntryValidation.Text = _pagePad.InitalDateTime.ToString(_pagePad.DateTimeFormat);
             EntryBoxShipToDeliveryDate.EntryValidation.Validate();
             //Assign Min Date to Validation
-            EntryBoxShipToDeliveryDate.DateTimeMin = DataLayerUtils.CurrentDateTimeAtomic();
+            EntryBoxShipToDeliveryDate.DateTimeMin = XPOHelper.CurrentDateTimeAtomic();
             EntryBoxShipToDeliveryDate.EntryValidation.Changed += _entryBoxShipToDeliveryDate_Changed;
             EntryBoxShipToDeliveryDate.ClosePopup += _entryBoxShipToDeliveryDate_Changed;
 

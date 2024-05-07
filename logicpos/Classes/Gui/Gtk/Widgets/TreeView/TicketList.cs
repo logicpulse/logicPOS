@@ -543,7 +543,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         if (_currentDetailArticle != null)
                         {
                             newLine = new OrderDetailLine(_currentDetailArticle.Oid, _currentDetailArticle.Designation,
-                                SharedUtils.GetArticlePrice((fin_article)DataLayerUtils.GetXPGuidObject(typeof(fin_article), _currentDetailArticle.Oid),
+                                SharedUtils.GetArticlePrice((fin_article)XPOHelper.GetXPGuidObject(typeof(fin_article), _currentDetailArticle.Oid),
                                 (AppOperationModeSettings.AppMode == AppOperationMode.Retail) ? TaxSellType.TakeAway : TaxSellType.Normal));
 
                             newLine.Properties.PriceNet = Convert.ToDecimal((string)ListStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price));
@@ -579,7 +579,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                                 {
 
                                     newLine = new OrderDetailLine(_currentDetailArticle.Oid, _currentDetailArticle.Designation,
-                                        SharedUtils.GetArticlePrice((fin_article)DataLayerUtils.GetXPGuidObject(typeof(fin_article), _currentDetailArticle.Oid),
+                                        SharedUtils.GetArticlePrice((fin_article)XPOHelper.GetXPGuidObject(typeof(fin_article), _currentDetailArticle.Oid),
                                         (AppOperationModeSettings.AppMode == AppOperationMode.Retail) ? TaxSellType.TakeAway : TaxSellType.Normal));
 
                                     newLine.Properties.PriceNet = Convert.ToDecimal((string)ListStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price));
@@ -671,7 +671,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             try
             {
                 //Get Article
-                fin_article article = (fin_article)DataLayerUtils.GetXPGuidObject(typeof(fin_article), pArticleOid);
+                fin_article article = (fin_article)XPOHelper.GetXPGuidObject(typeof(fin_article), pArticleOid);
 
                 //Force Refresh Cache 
                 article.Reload();
@@ -1472,7 +1472,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         private decimal GetArticleDefaultQuantity(Guid pArticleOid)
         {
             //Get Article
-            fin_article article = (fin_article)DataLayerUtils.GetXPGuidObject(typeof(fin_article), pArticleOid);
+            fin_article article = (fin_article)XPOHelper.GetXPGuidObject(typeof(fin_article), pArticleOid);
             //Get Default Article Quantity
             decimal defaultQuantity;
             if (article.DefaultQuantity > 0) { defaultQuantity = article.DefaultQuantity; } else { defaultQuantity = 1.00m; };

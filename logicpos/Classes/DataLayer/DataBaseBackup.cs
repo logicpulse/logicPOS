@@ -105,7 +105,7 @@ namespace logicpos.Classes.DataLayer
                     FileName = Path.GetRandomFileName(),
                     FileNamePacked = Path.GetRandomFileName(),
                     DataBaseType = DatabaseSettings.DatabaseType,
-                    Version = DataLayerUtils.GetNextTableFieldID("sys_systembackup", "Version", false),
+                    Version = XPOHelper.GetNextTableFieldID("sys_systembackup", "Version", false),
                     Terminal = (pos_configurationplaceterminal)SessionXpoForBackupPurposes.GetObjectByKey(typeof(pos_configurationplaceterminal), DataLayerFramework.LoggedTerminal.Oid)
                 };
                 systemBackup.Save();
@@ -320,7 +320,7 @@ namespace logicpos.Classes.DataLayer
                         systemBackupGuid = XPOHelper.GetGuidFromQuery(sql);
                         if (systemBackupGuid != Guid.Empty)
                         {
-                            systemBackup = (sys_systembackup)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(sys_systembackup), systemBackupGuid);
+                            systemBackup = (sys_systembackup)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(sys_systembackup), systemBackupGuid);
                             currentFileName = systemBackup.FileName;
                             currentFileNamePacked = systemBackup.FileNamePacked;
                             currentFilePath = systemBackup.FilePath;
@@ -345,9 +345,9 @@ namespace logicpos.Classes.DataLayer
                             if (systemBackupGuid != Guid.Empty)
                             {
                                 //ReFresh UserDetail from Repository
-                                currentUserDetail = (currentUserDetail != null) ? (sys_userdetail)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(sys_userdetail), currentUserDetail.Oid) : null;
+                                currentUserDetail = (currentUserDetail != null) ? (sys_userdetail)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(sys_userdetail), currentUserDetail.Oid) : null;
                                 //Get Current Restored systemBackup Object
-                                systemBackup = (sys_systembackup)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(sys_systembackup), systemBackupGuid);
+                                systemBackup = (sys_systembackup)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(sys_systembackup), systemBackupGuid);
                                 systemBackup.FileName = currentFileName;
                                 systemBackup.FileNamePacked = currentFileNamePacked;
                                 systemBackup.FilePath = currentFilePath;
@@ -453,7 +453,7 @@ namespace logicpos.Classes.DataLayer
             string fileDataBaseBackup = POSSettings.FileFormatDataBaseBackup;
             string dateTimeFileFormat = CultureSettings.FileFormatDateTime;
             //Local Vars
-            string dateTime = DataLayerUtils.CurrentDateTimeAtomic().ToString(dateTimeFileFormat);
+            string dateTime = XPOHelper.CurrentDateTimeAtomic().ToString(dateTimeFileFormat);
 
             //Override Default pathBackups
             /* ERR201810#15 - Database backup issues */

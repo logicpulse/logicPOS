@@ -73,7 +73,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
                                 //Change Table Status to Free
                                 pos_configurationplacetable placeTable;
-                                placeTable = (pos_configurationplacetable)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(pos_configurationplacetable), orderMain.Table.Oid);
+                                placeTable = (pos_configurationplacetable)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(pos_configurationplacetable), orderMain.Table.Oid);
                                 documentOrderMain = (fin_documentordermain)uowSession.GetObjectByKey(typeof(fin_documentordermain), orderMain.PersistentOid);
 
                                 placeTable.TableStatus = TableStatus.Free;
@@ -84,13 +84,13 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                                 //Required to Reload Objects after has been changed in Another Session(uowSession)
                                 if (documentOrderMain != null)
                                 {
-                                    documentOrderMain = (fin_documentordermain)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(fin_documentordermain), orderMain.PersistentOid);
+                                    documentOrderMain = (fin_documentordermain)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(fin_documentordermain), orderMain.PersistentOid);
                                     documentOrderMain.OrderStatus = OrderStatus.Close;
                                     documentOrderMain.Save();
                                 }
 
                                 if (documentOrderMain != null) documentOrderMain.Reload();
-                                //aceTable = (pos_configurationplacetable)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(pos_configurationplacetable), orderMain.Table.Oid);
+                                //aceTable = (pos_configurationplacetable)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(pos_configurationplacetable), orderMain.Table.Oid);
                                 //placeTable.Reload();
                                 ArticleBag.TicketOrderToArticleBag(orderMain).Clear();
                                 //Clean Session if Commited without problems
@@ -521,8 +521,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 if (response == ResponseType.Ok)
                 {
                     OrderMain currentOrderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];
-                    pos_configurationplacetable xOldTable = (pos_configurationplacetable)DataLayerUtils.GetXPGuidObject(typeof(pos_configurationplacetable), currentOrderMain.Table.Oid);
-                    pos_configurationplacetable xNewTable = (pos_configurationplacetable)DataLayerUtils.GetXPGuidObject(typeof(pos_configurationplacetable), dialog.CurrentTableOid);
+                    pos_configurationplacetable xOldTable = (pos_configurationplacetable)XPOHelper.GetXPGuidObject(typeof(pos_configurationplacetable), currentOrderMain.Table.Oid);
+                    pos_configurationplacetable xNewTable = (pos_configurationplacetable)XPOHelper.GetXPGuidObject(typeof(pos_configurationplacetable), dialog.CurrentTableOid);
                     //Require to Prevent A first chance exception of type 'DevExpress.Xpo.DB.Exceptions.LockingException' occurred in DevExpress.Xpo.v13.2.dll when it is Changed in Diferent Session ex UnitOfWork
                     //TODO: Confirm working with Reload Commented
                     //xOldTable.Reload();
@@ -549,11 +549,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
                         //Change DocumentOrderMain table, If OpenOrder Exists in That table
                         Guid documentOrderMainOid = currentOrderMain.GetOpenTableFieldValueGuid(xOldTable.Oid, "Oid");
-                        fin_documentordermain xDocumentOrderMain = (fin_documentordermain)DataLayerUtils.GetXPGuidObject(typeof(fin_documentordermain), documentOrderMainOid);
+                        fin_documentordermain xDocumentOrderMain = (fin_documentordermain)XPOHelper.GetXPGuidObject(typeof(fin_documentordermain), documentOrderMainOid);
                         if (xDocumentOrderMain != null)
                         {
                             xDocumentOrderMain.PlaceTable = xNewTable;
-                            xDocumentOrderMain.UpdatedAt = DataLayerUtils.CurrentDateTimeAtomic();
+                            xDocumentOrderMain.UpdatedAt = XPOHelper.CurrentDateTimeAtomic();
                             xDocumentOrderMain.Save();
                         }
                         //Assign Session Data

@@ -540,7 +540,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     {
                         if (serialNumber.Oid != Guid.Empty && !serialNumber.Disabled)
                         {
-                            XPGuidObject dataSourceRowSerialNumber = DataLayerUtils.GetXPGuidObject(typeof(fin_articleserialnumber), serialNumber.Oid);
+                            XPGuidObject dataSourceRowSerialNumber = XPOHelper.GetXPGuidObject(typeof(fin_articleserialnumber), serialNumber.Oid);
                             if (dataSourceRowSerialNumber != null)
                             {
                                 PopulateSerialNumberArticleEntrys(dataSourceRowSerialNumber);
@@ -628,9 +628,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 //if (_xpoComboBoxVatDirectSelling.Value == null)
                 //{
                 //    CriteriaOperator criteria = CriteriaOperator.Parse("");
-                //    _xpoComboBoxVatOnTable.UpdateModel(criteria, DataLayerUtils.GetXPGuidObject(typeof(fin_configurationvatrate), NormalVat));
+                //    _xpoComboBoxVatOnTable.UpdateModel(criteria, XPOHelper.GetXPGuidObject(typeof(fin_configurationvatrate), NormalVat));
                 //}
-                //if (_xpoComboBoxVatOnTable.Value == null) _xpoComboBoxVatOnTable.Value = DataLayerUtils.GetXPGuidObject(typeof(fin_configurationvatrate), NormalVat);
+                //if (_xpoComboBoxVatOnTable.Value == null) _xpoComboBoxVatOnTable.Value = XPOHelper.GetXPGuidObject(typeof(fin_configurationvatrate), NormalVat);
 
 
                 //Taxas de Iva por defeito na inserção de novos artigos
@@ -832,7 +832,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 if (!articleOid.Equals(Guid.Empty))
                 {
                     //Get Object from dialog else Mixing Sessions, Both belong to diferente Sessions
-                    fin_article newArticle = (fin_article)DataLayerUtils.GetXPGuidObject(typeof(fin_article), articleOid);
+                    fin_article newArticle = (fin_article)XPOHelper.GetXPGuidObject(typeof(fin_article), articleOid);
 
                     if (isArticleCode)
                     {

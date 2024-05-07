@@ -146,7 +146,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
             //Cancel Document
             documentFinanceMaster.DocumentStatusStatus = "A";
-            documentFinanceMaster.DocumentStatusDate = DataLayerUtils.CurrentDateTimeAtomic().ToString(dateTimeFormatCombinedDateTime);
+            documentFinanceMaster.DocumentStatusDate = XPOHelper.CurrentDateTimeAtomic().ToString(dateTimeFormatCombinedDateTime);
             documentFinanceMaster.DocumentStatusReason = "Erro ao Inserir Artigos";
             documentFinanceMaster.Save();
         }

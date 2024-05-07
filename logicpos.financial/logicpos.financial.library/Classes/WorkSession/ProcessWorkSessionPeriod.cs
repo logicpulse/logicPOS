@@ -58,7 +58,7 @@ namespace logicpos.financial.library.Classes.WorkSession
                 string periodType = (pWorkSessionPeriodType == WorkSessionPeriodType.Day) ? "Day" : "Terminal";
                 string description = (pDescription != string.Empty) ? string.Format(" - {0}", pDescription) : string.Empty;
                 pos_configurationplaceterminal terminal = XPOSettings.Session.GetObjectByKey<pos_configurationplaceterminal>(DataLayerFramework.LoggedTerminal.Oid);
-                DateTime dateTime = DataLayerUtils.CurrentDateTimeAtomic();
+                DateTime dateTime = XPOHelper.CurrentDateTimeAtomic();
 
                 pos_worksessionperiod workSessionPeriod = new pos_worksessionperiod(XPOSettings.Session)
                 {
@@ -109,7 +109,7 @@ namespace logicpos.financial.library.Classes.WorkSession
                 try
                 {
                     pos_worksessionperiod workSessionPeriod = XPOSettings.Session.GetObjectByKey<pos_worksessionperiod>(pWorkSessionPeriod.Oid);
-                    DateTime dateTime = DataLayerUtils.CurrentDateTimeAtomic();
+                    DateTime dateTime = XPOHelper.CurrentDateTimeAtomic();
                     workSessionPeriod.DateEnd = dateTime;
                     workSessionPeriod.SessionStatus = WorkSessionPeriodStatus.Close;
                     workSessionPeriod.Save();

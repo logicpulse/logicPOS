@@ -1,6 +1,7 @@
 using System;
 using DevExpress.Xpo;
 using logicpos.datalayer.App;
+using logicpos.datalayer.Xpo;
 
 namespace logicpos.datalayer.DataLayer.Xpo
 {
@@ -12,8 +13,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         protected override void OnAfterConstruction()
         {
-            Ord = DataLayerUtils.GetNextTableFieldID(nameof(fin_configurationvatrate), "Ord");
-            Code = DataLayerUtils.GetNextTableFieldID(nameof(fin_configurationvatrate), "Code");
+            Ord = XPOHelper.GetNextTableFieldID(nameof(fin_configurationvatrate), "Ord");
+            Code = XPOHelper.GetNextTableFieldID(nameof(fin_configurationvatrate), "Code");
         }
 
         private uint fOrd;

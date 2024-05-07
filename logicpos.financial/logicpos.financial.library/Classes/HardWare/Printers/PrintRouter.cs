@@ -58,8 +58,8 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                 {
                     string designation = string.Empty;
                     //Get Objects into Current UOW Session
-                    sys_userdetail userDetail = (sys_userdetail)DataLayerUtils.GetXPGuidObject(uowSession, typeof(sys_userdetail), pUserDetail.Oid);
-                    pos_configurationplaceterminal configurationPlaceTerminal = (pos_configurationplaceterminal)DataLayerUtils.GetXPGuidObject(uowSession, typeof(pos_configurationplaceterminal), pConfigurationPlaceTerminal.Oid);
+                    sys_userdetail userDetail = (sys_userdetail)XPOHelper.GetXPGuidObject(uowSession, typeof(sys_userdetail), pUserDetail.Oid);
+                    pos_configurationplaceterminal configurationPlaceTerminal = (pos_configurationplaceterminal)XPOHelper.GetXPGuidObject(uowSession, typeof(pos_configurationplaceterminal), pConfigurationPlaceTerminal.Oid);
 
                     //Convert CopyNames List to Comma Delimited String
                     string copyNamesCommaDelimited = CustomReport.CopyNamesCommaDelimited(pCopyNames);
@@ -67,7 +67,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                     //SystemPrint
                     sys_systemprint systemPrint = new sys_systemprint(uowSession)
                     {
-                        Date = DataLayerUtils.CurrentDateTimeAtomic(),
+                        Date = XPOHelper.CurrentDateTimeAtomic(),
                         Designation = designation,
                         PrintCopies = pPrintCopies,
                         CopyNames = copyNamesCommaDelimited,
@@ -80,7 +80,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                     //Mode: DocumentFinanceMaster
                     if (pDocumentFinanceMaster != null)
                     {
-                        fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)DataLayerUtils.GetXPGuidObject(uowSession, typeof(fin_documentfinancemaster), pDocumentFinanceMaster.Oid);
+                        fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)XPOHelper.GetXPGuidObject(uowSession, typeof(fin_documentfinancemaster), pDocumentFinanceMaster.Oid);
                         systemPrint.DocumentMaster = documentFinanceMaster;
                         designation = string.Format("{0} {1} : {2}", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_printed"), documentFinanceMaster.DocumentType.Designation, documentFinanceMaster.DocumentNumber);
                         //Update DocumentFinanceMaster
@@ -89,7 +89,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                     //Mode: DocumentFinancePayment
                     if (pDocumentFinancePayment != null)
                     {
-                        fin_documentfinancepayment documentFinancePayment = (fin_documentfinancepayment)DataLayerUtils.GetXPGuidObject(uowSession, typeof(fin_documentfinancepayment), pDocumentFinancePayment.Oid);
+                        fin_documentfinancepayment documentFinancePayment = (fin_documentfinancepayment)XPOHelper.GetXPGuidObject(uowSession, typeof(fin_documentfinancepayment), pDocumentFinancePayment.Oid);
                         systemPrint.DocumentPayment = documentFinancePayment;
                         designation = string.Format("{0} {1} : {2}", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_printed"), documentFinancePayment.DocumentType.Designation, documentFinancePayment.PaymentRefNo);
                     }

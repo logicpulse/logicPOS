@@ -6,6 +6,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
 using logicpos.plugin.contracts;
+using logicpos.datalayer.Xpo;
 
 namespace logicpos.datalayer.DataLayer.Xpo
 {
@@ -124,7 +125,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             }
 
             //Global Updates
-            UpdatedAt = DataLayerUtils.CurrentDateTimeAtomic();
+            UpdatedAt = XPOHelper.CurrentDateTimeAtomic();
             if (DataLayerFramework.LoggedUser != null)
             {
                 UpdatedBy = this.Session.GetObjectByKey<sys_userdetail>(DataLayerFramework.LoggedUser.Oid);
@@ -137,7 +138,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             if (_isNewRecord)
             {
                 //Global Updates
-                CreatedAt = DataLayerUtils.CurrentDateTimeAtomic();
+                CreatedAt = XPOHelper.CurrentDateTimeAtomic();
                 if (DataLayerFramework.LoggedUser != null)
                 {
                     CreatedBy = this.Session.GetObjectByKey<sys_userdetail>(DataLayerFramework.LoggedUser.Oid);
@@ -163,7 +164,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             base.AfterConstruction();
 
             Disabled = false;
-            DateTime dateTime = DataLayerUtils.CurrentDateTimeAtomic();
+            DateTime dateTime = XPOHelper.CurrentDateTimeAtomic();
             CreatedAt = dateTime;
             UpdatedAt = dateTime;
 

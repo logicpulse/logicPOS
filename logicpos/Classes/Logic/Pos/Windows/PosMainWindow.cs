@@ -111,8 +111,8 @@ namespace logicpos
             //CustomReport.ProcessReportFinanceDocumentPayment(CustomReportDisplayMode.Design, 4, documentFinancePaymentOid);
 
             //Test Printer
-            //ConfigurationPrintersTemplates configurationPrintersTemplates = (ConfigurationPrintersTemplates)DataLayerUtils.GetXPGuidObjectFromSession(typeof(ConfigurationPrintersTemplates), new Guid("5409255A-3741-411C-B05B-056CBD470226"));
-            //DocumentFinancePayment documentFinancePayment = (DocumentFinancePayment)DataLayerUtils.GetXPGuidObjectFromSession(typeof(DocumentFinancePayment), new Guid("88F082CE-DA52-48B5-A31D-32BFA87F119D"));
+            //ConfigurationPrintersTemplates configurationPrintersTemplates = (ConfigurationPrintersTemplates)XPOHelper.GetXPGuidObjectFromSession(typeof(ConfigurationPrintersTemplates), new Guid("5409255A-3741-411C-B05B-056CBD470226"));
+            //DocumentFinancePayment documentFinancePayment = (DocumentFinancePayment)XPOHelper.GetXPGuidObjectFromSession(typeof(DocumentFinancePayment), new Guid("88F082CE-DA52-48B5-A31D-32BFA87F119D"));
             //FrameworkCalls.PrintFinanceDocumentPayment(this, DataLayerFramework.LoggedTerminal.Printer, configurationPrintersTemplates, documentFinancePayment);
 
             //Test WorkSession
@@ -196,7 +196,7 @@ namespace logicpos
                     //Already logged
                     if (SharedFramework.SessionApp.LoggedUsers.ContainsKey(dialogChangeUser.UserDetail.Oid))
                     {
-                        DataLayerFramework.LoggedUser = (sys_userdetail)DataLayerUtils.GetXPGuidObject(typeof(sys_userdetail), dialogChangeUser.UserDetail.Oid);
+                        DataLayerFramework.LoggedUser = (sys_userdetail)XPOHelper.GetXPGuidObject(typeof(sys_userdetail), dialogChangeUser.UserDetail.Oid);
                         SharedFramework.LoggedUserPermissions = SharedUtils.GetUserPermissions();
                         TicketList.UpdateTicketListButtons();
                         SharedUtils.Audit("USER_CHANGE", string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "audit_message_user_change"), DataLayerFramework.LoggedUser.Name));
@@ -212,9 +212,9 @@ namespace logicpos
                         {
                             if (!SharedFramework.SessionApp.LoggedUsers.ContainsKey(dialogChangeUser.UserDetail.Oid))
                             {
-                                SharedFramework.SessionApp.LoggedUsers.Add(dialogChangeUser.UserDetail.Oid, DataLayerUtils.CurrentDateTimeAtomic());
+                                SharedFramework.SessionApp.LoggedUsers.Add(dialogChangeUser.UserDetail.Oid, XPOHelper.CurrentDateTimeAtomic());
                                 SharedFramework.SessionApp.Write();
-                                DataLayerFramework.LoggedUser = (sys_userdetail)DataLayerUtils.GetXPGuidObject(typeof(sys_userdetail), dialogChangeUser.UserDetail.Oid);
+                                DataLayerFramework.LoggedUser = (sys_userdetail)XPOHelper.GetXPGuidObject(typeof(sys_userdetail), dialogChangeUser.UserDetail.Oid);
                                 SharedFramework.LoggedUserPermissions = SharedUtils.GetUserPermissions();
                                 TicketList.UpdateTicketListButtons();
                                 SharedUtils.Audit("USER_loggerIN", string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "audit_message_user_loggerin"), DataLayerFramework.LoggedUser.Name));

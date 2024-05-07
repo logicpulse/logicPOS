@@ -22,7 +22,7 @@ namespace logicpos.shared.Classes.Orders
             //Reference to Parent OrderMain
             OrderMain = pOrderMain;
             PriceType = pPriceType;
-            DateStart = datalayer.App.DataLayerUtils.CurrentDateTimeAtomic();
+            DateStart = datalayer.App.XPOHelper.CurrentDateTimeAtomic();
             OrderDetails = new OrderDetail(this);
         }
     }

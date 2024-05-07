@@ -1,5 +1,4 @@
 ﻿using DevExpress.Xpo;
-using logicpos.datalayer.App;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using System;
@@ -14,8 +13,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         protected override void OnAfterConstruction()
         {
-            Ord = DataLayerUtils.GetNextTableFieldID(nameof(cfg_configurationpreferenceparameter), "Ord");
-            Code = DataLayerUtils.GetNextTableFieldID(nameof(cfg_configurationpreferenceparameter), "Code");
+            Ord = XPOHelper.GetNextTableFieldID(nameof(cfg_configurationpreferenceparameter), "Ord");
+            Code = XPOHelper.GetNextTableFieldID(nameof(cfg_configurationpreferenceparameter), "Code");
         }
 
         private uint fOrd;

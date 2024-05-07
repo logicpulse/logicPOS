@@ -28,7 +28,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             //pastMonths=0 to Work in Curent Month Range, pastMonths=1 Works in Past Month, pastMonths=2 Two months Ago etc
             int pastMonths = 1;
-            DateTime workingDate = DataLayerUtils.CurrentDateTimeAtomic().AddMonths(-pastMonths);
+            DateTime workingDate = XPOHelper.CurrentDateTimeAtomic().AddMonths(-pastMonths);
             DateTime firstDayOfMonth = new DateTime(workingDate.Year, workingDate.Month, 1);
             DateTime lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
             DateTime dateTimeStart = firstDayOfMonth;

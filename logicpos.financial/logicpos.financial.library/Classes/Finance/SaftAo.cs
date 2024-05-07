@@ -48,7 +48,7 @@ namespace logicpos.financial.library.Classes.Finance
             int pastMonths = 0;
 
             //TODO: Move to Filter Date Dialog
-            DateTime workingDate = DataLayerUtils.CurrentDateTimeAtomic().AddMonths(-pastMonths);
+            DateTime workingDate = XPOHelper.CurrentDateTimeAtomic().AddMonths(-pastMonths);
             DateTime firstDayOfMonth = new DateTime(workingDate.Year, workingDate.Month, 1);
             DateTime lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
             DateTime dateTimeStart = firstDayOfMonth;
@@ -63,12 +63,12 @@ namespace logicpos.financial.library.Classes.Finance
             _documentDateStart = pDateTimeStart;
             _documentDateEnd = pDateTimeEnd;
 
-            _currentDate = DataLayerUtils.CurrentDateTimeAtomic();
+            _currentDate = XPOHelper.CurrentDateTimeAtomic();
 
             //Settings
             string fileSaftAO = CultureSettings.FileFormatSaftAO;
             string dateTimeFileFormat = CultureSettings.FileFormatDateTime;
-            string dateTime = DataLayerUtils.CurrentDateTimeAtomic().ToString(dateTimeFileFormat);
+            string dateTime = XPOHelper.CurrentDateTimeAtomic().ToString(dateTimeFileFormat);
             string fileName = DataLayerFramework.Path["saftAO"] + string.Format(fileSaftAO, SharedSettings.SaftVersionPrefixAO, SharedSettings.SaftVersionAO, dateTime).ToLower();
 
             //XmlWriterSettings

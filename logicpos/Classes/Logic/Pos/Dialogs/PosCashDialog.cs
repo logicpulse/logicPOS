@@ -188,7 +188,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                              originalMovType,
                              DataLayerFramework.LoggedUser,
                              DataLayerFramework.LoggedTerminal,
-                             DataLayerUtils.CurrentDateTimeAtomic(),
+                             XPOHelper.CurrentDateTimeAtomic(),
                              dialogCashDrawer.TotalAmountInCashDrawer,
                              dialogCashDrawer.MovementDescription
                            );
@@ -236,7 +236,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 moneyInOutLabel = "ticket_title_worksession_money_out";
                                 moneyInOutLabelAudit = "audit_message_cashdrawer_out";
                                 audit = "CASHDRAWER_OUT";
-                                dialogCashDrawer.MovementType = (pos_worksessionmovementtype)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(pos_worksessionmovementtype), Guid.Parse("069564cb-074a-4c91-931e-554454b1ab7e"));
+                                dialogCashDrawer.MovementType = (pos_worksessionmovementtype)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(pos_worksessionmovementtype), Guid.Parse("069564cb-074a-4c91-931e-554454b1ab7e"));
                             }
                             else
                             {
@@ -245,7 +245,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 moneyInOutLabel = "ticket_title_worksession_money_in";
                                 moneyInOutLabelAudit = "audit_message_cashdrawer_in";
                                 audit = "CASHDRAWER_IN";
-                                dialogCashDrawer.MovementType = (pos_worksessionmovementtype)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(pos_worksessionmovementtype), Guid.Parse("2ef29ce6-314c-4f40-897f-e31802dbeef3"));
+                                dialogCashDrawer.MovementType = (pos_worksessionmovementtype)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(pos_worksessionmovementtype), Guid.Parse("2ef29ce6-314c-4f40-897f-e31802dbeef3"));
                             }
                             //Total = IN
                             dialogCashDrawer.TotalAmountInCashDrawer = dialogCashDrawer.MovementAmountMoney;
@@ -259,7 +259,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                               dialogCashDrawer.MovementType,
                               DataLayerFramework.LoggedUser,
                               DataLayerFramework.LoggedTerminal,
-                              DataLayerUtils.CurrentDateTimeAtomic(),
+                              XPOHelper.CurrentDateTimeAtomic(),
                               (addRemoveMoney * addedMoney),
                               dialogCashDrawer.MovementDescription
                             );
@@ -312,7 +312,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 moneyInOutLabel = "ticket_title_worksession_money_out";
                                 moneyInOutLabelAudit = "audit_message_cashdrawer_out";
                                 audit = "CASHDRAWER_OUT";
-                                dialogCashDrawer.MovementType = (pos_worksessionmovementtype)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(pos_worksessionmovementtype), Guid.Parse("069564cb-074a-4c91-931e-554454b1ab7e"));
+                                dialogCashDrawer.MovementType = (pos_worksessionmovementtype)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(pos_worksessionmovementtype), Guid.Parse("069564cb-074a-4c91-931e-554454b1ab7e"));
                             }
                             else
                             {
@@ -321,7 +321,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 moneyInOutLabel = "ticket_title_worksession_money_in";
                                 moneyInOutLabelAudit = "audit_message_cashdrawer_in";
                                 audit = "CASHDRAWER_IN";
-                                dialogCashDrawer.MovementType = (pos_worksessionmovementtype)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(pos_worksessionmovementtype), Guid.Parse("2ef29ce6-314c-4f40-897f-e31802dbeef3"));
+                                dialogCashDrawer.MovementType = (pos_worksessionmovementtype)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(pos_worksessionmovementtype), Guid.Parse("2ef29ce6-314c-4f40-897f-e31802dbeef3"));
 
                             }
 
@@ -337,7 +337,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                               dialogCashDrawer.MovementType,
                               DataLayerFramework.LoggedUser,
                               DataLayerFramework.LoggedTerminal,
-                              DataLayerUtils.CurrentDateTimeAtomic(),
+                              XPOHelper.CurrentDateTimeAtomic(),
                               (addRemoveMoney * addedMoney),
                               dialogCashDrawer.MovementDescription
                             );
@@ -388,7 +388,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                               originalMovType,
                               DataLayerFramework.LoggedUser,
                               DataLayerFramework.LoggedTerminal,
-                              DataLayerUtils.CurrentDateTimeAtomic(),
+                              XPOHelper.CurrentDateTimeAtomic(),
                               dialogCashDrawer.MovementAmountMoney,
                               dialogCashDrawer.MovementDescription
                             );
@@ -423,7 +423,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                           dialogCashDrawer.MovementType,
                           DataLayerFramework.LoggedUser,
                           DataLayerFramework.LoggedTerminal,
-                          DataLayerUtils.CurrentDateTimeAtomic(),
+                          XPOHelper.CurrentDateTimeAtomic(),
                           dialogCashDrawer.MovementAmountMoney,
                           dialogCashDrawer.MovementDescription
                         );
@@ -470,7 +470,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                           dialogCashDrawer.MovementType,
                           DataLayerFramework.LoggedUser,
                           DataLayerFramework.LoggedTerminal,
-                          DataLayerUtils.CurrentDateTimeAtomic(),
+                          XPOHelper.CurrentDateTimeAtomic(),
                           -dialogCashDrawer.MovementAmountMoney,
                           dialogCashDrawer.MovementDescription
                         );

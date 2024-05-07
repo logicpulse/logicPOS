@@ -93,10 +93,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             Guid initialConfigurationPaymentConditionGuid = POSSettings.XpoOidConfigurationPaymentConditionDefaultInvoicePaymentCondition;
             Guid initialConfigurationPaymentMethodGuid = POSSettings.XpoOidConfigurationPaymentMethodDefaultInvoicePaymentMethod;
             Guid initialConfigurationCurrencyGuid = SharedSettings.ConfigurationSystemCurrency.Oid;
-            _defaultValueDocumentFinanceType = (fin_documentfinancetype)DataLayerUtils.GetXPGuidObject(_session, typeof(fin_documentfinancetype), initialDocumentFinanceTypeGuid);
-            _defaultValueConfigurationPaymentCondition = (fin_configurationpaymentcondition)DataLayerUtils.GetXPGuidObject(_session, typeof(fin_configurationpaymentcondition), initialConfigurationPaymentConditionGuid);
-            _defaultValueConfigurationPaymentMethod = (fin_configurationpaymentmethod)DataLayerUtils.GetXPGuidObject(_session, typeof(fin_configurationpaymentmethod), initialConfigurationPaymentMethodGuid);
-            _defaultValueConfigurationCurrency = (cfg_configurationcurrency)DataLayerUtils.GetXPGuidObject(_session, typeof(cfg_configurationcurrency), initialConfigurationCurrencyGuid);
+            _defaultValueDocumentFinanceType = (fin_documentfinancetype)XPOHelper.GetXPGuidObject(_session, typeof(fin_documentfinancetype), initialDocumentFinanceTypeGuid);
+            _defaultValueConfigurationPaymentCondition = (fin_configurationpaymentcondition)XPOHelper.GetXPGuidObject(_session, typeof(fin_configurationpaymentcondition), initialConfigurationPaymentConditionGuid);
+            _defaultValueConfigurationPaymentMethod = (fin_configurationpaymentmethod)XPOHelper.GetXPGuidObject(_session, typeof(fin_configurationpaymentmethod), initialConfigurationPaymentMethodGuid);
+            _defaultValueConfigurationCurrency = (cfg_configurationcurrency)XPOHelper.GetXPGuidObject(_session, typeof(cfg_configurationcurrency), initialConfigurationCurrencyGuid);
 
             //DocumentFinanceType
             string documentFinanceTypeExtraCriteria = GetDocumentFinanceTypeExtraCriteria();

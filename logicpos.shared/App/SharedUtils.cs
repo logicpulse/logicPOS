@@ -33,12 +33,12 @@ namespace logicpos.shared.App
 
         public static string CurrentDateTime(string pDateTimeFormat)
         {
-            return DataLayerUtils.CurrentDateTimeAtomic().ToString(pDateTimeFormat, CultureInfo.GetCultureInfo(LogicPOS.Settings.CultureSettings.CurrentCulture.Name));
+            return XPOHelper.CurrentDateTimeAtomic().ToString(pDateTimeFormat, CultureInfo.GetCultureInfo(LogicPOS.Settings.CultureSettings.CurrentCulture.Name));
         }
 
         public static DateTime CurrentDateTimeAtomicMidnight()
         {
-            return DateTimeToMidnightDate(DataLayerUtils.CurrentDateTimeAtomic());
+            return DateTimeToMidnightDate(XPOHelper.CurrentDateTimeAtomic());
         }
 
         public static DateTime DateTimeToMidnightDate(DateTime pDateTime)
@@ -216,7 +216,7 @@ namespace logicpos.shared.App
                     //get CurrentOrderMain
                     OrderMain orderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];
                     //Get Table to Get Discount
-                    pos_configurationplacetable xConfigurationPlaceTable = (pos_configurationplacetable)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(pos_configurationplacetable), orderMain.Table.Oid);
+                    pos_configurationplacetable xConfigurationPlaceTable = (pos_configurationplacetable)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(pos_configurationplacetable), orderMain.Table.Oid);
                     //Get Fresh Discount From Table/Future 
                     if (xConfigurationPlaceTable != null)
                     {
@@ -359,7 +359,7 @@ namespace logicpos.shared.App
         public static bool Audit(Session pSession, sys_userdetail pLoggedUser, pos_configurationplaceterminal pLoggedTerminal, string pAuditTypeToken, string pDescription = "")
         {
             bool result = false;
-            DateTime dateTime = DataLayerUtils.CurrentDateTimeAtomic();
+            DateTime dateTime = XPOHelper.CurrentDateTimeAtomic();
             string executeSql = string.Format(@"SELECT Oid FROM sys_systemaudittype WHERE (Disabled IS NULL or Disabled  <> 1) AND Token = '{0}';", pAuditTypeToken);
 
             //Check if has a Valid LoggedUser else Assign NULL to INSERT, usefull to log stuff when User is not Yet Logged
@@ -373,10 +373,10 @@ namespace logicpos.shared.App
                 if (!guidAuditType.Equals(Guid.Empty))
                 {
                     //Fresh User and Terminal, to prevent Object Delection Problem
-                    sys_userdetail xpoUserDetail = (pLoggedUser != null) ? (sys_userdetail)DataLayerUtils.GetXPGuidObject(typeof(sys_userdetail), pLoggedUser.Oid) : null;
-                    pos_configurationplaceterminal xpoTerminal = (pos_configurationplaceterminal)DataLayerUtils.GetXPGuidObject(typeof(pos_configurationplaceterminal), pLoggedTerminal.Oid);
+                    sys_userdetail xpoUserDetail = (pLoggedUser != null) ? (sys_userdetail)XPOHelper.GetXPGuidObject(typeof(sys_userdetail), pLoggedUser.Oid) : null;
+                    pos_configurationplaceterminal xpoTerminal = (pos_configurationplaceterminal)XPOHelper.GetXPGuidObject(typeof(pos_configurationplaceterminal), pLoggedTerminal.Oid);
                     //get AuditType Object
-                    sys_systemaudittype xpoAuditType = (sys_systemaudittype)DataLayerUtils.GetXPGuidObject(typeof(sys_systemaudittype), guidAuditType);
+                    sys_systemaudittype xpoAuditType = (sys_systemaudittype)XPOHelper.GetXPGuidObject(typeof(sys_systemaudittype), guidAuditType);
                     string description = (pDescription != string.Empty) ? pDescription
                       : (xpoAuditType.ResourceString != null && CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), xpoAuditType.ResourceString) != null)
                       ? CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), xpoAuditType.ResourceString) : xpoAuditType.Designation;

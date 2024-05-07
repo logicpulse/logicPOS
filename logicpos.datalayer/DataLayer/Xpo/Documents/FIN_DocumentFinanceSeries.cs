@@ -1,5 +1,5 @@
 ﻿using DevExpress.Xpo;
-using logicpos.datalayer.App;
+using logicpos.datalayer.Xpo;
 using System;
 
 namespace logicpos.datalayer.DataLayer.Xpo
@@ -12,8 +12,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         protected override void OnAfterConstruction()
         {
-            Ord = DataLayerUtils.GetNextTableFieldID("fin_documentfinanceseries", "Ord");
-            Code = DataLayerUtils.GetNextTableFieldID("fin_documentfinanceseries", "Code");
+            Ord = XPOHelper.GetNextTableFieldID("fin_documentfinanceseries", "Ord");
+            Code = XPOHelper.GetNextTableFieldID("fin_documentfinanceseries", "Code");
         }
 
         private uint fOrd;

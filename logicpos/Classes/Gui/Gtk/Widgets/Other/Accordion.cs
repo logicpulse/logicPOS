@@ -284,7 +284,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             string currentNodePrivilegesToken;
 
             //Required to Reload Object before Get New Permissions
-            DataLayerFramework.LoggedUser = (sys_userdetail)DataLayerUtils.GetXPGuidObject(XPOSettings.Session, typeof(sys_userdetail), DataLayerFramework.LoggedUser.Oid);
+            DataLayerFramework.LoggedUser = (sys_userdetail)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(sys_userdetail), DataLayerFramework.LoggedUser.Oid);
             //Update Session Privileges
             SharedFramework.LoggedUserPermissions = SharedUtils.GetUserPermissions(DataLayerFramework.LoggedUser);
 

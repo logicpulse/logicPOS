@@ -49,7 +49,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //Guid customerGuid = new Guid("0cf40622-578b-417d-b50f-e945fefb5d68");//Consumidor Final|0.0
             Guid customerGuid = new Guid("765859cc-29c2-4925-be89-0486d03684f2");//Carlos Fernandes|5.0
             //Guid customerGuid = new Guid("78c08879-6d08-4146-9cc9-914f427926c6");//Cristina Janeiro|12.5
-            ValueCustomer = (erp_customer)DataLayerUtils.GetXPGuidObject(_session, typeof(erp_customer), customerGuid);
+            ValueCustomer = (erp_customer)XPOHelper.GetXPGuidObject(_session, typeof(erp_customer), customerGuid);
 
             //Client (Used in _crudWidgetList)
             _entryBoxClient = new EntryBoxValidation(_sourceWindow, string.Format("{0}/WL", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_customer")), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true);

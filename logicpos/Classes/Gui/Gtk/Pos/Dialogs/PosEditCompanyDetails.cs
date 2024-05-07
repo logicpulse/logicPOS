@@ -97,8 +97,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
 
             //Init Inital Values
-            cfg_configurationcountry intialValueConfigurationCountry = (cfg_configurationcountry)DataLayerUtils.GetXPGuidObject(typeof(cfg_configurationcountry), systemCountry);
-            cfg_configurationcurrency intialValueConfigurationCurrency = (cfg_configurationcurrency)DataLayerUtils.GetXPGuidObject(typeof(cfg_configurationcurrency), systemCurrency);
+            cfg_configurationcountry intialValueConfigurationCountry = (cfg_configurationcountry)XPOHelper.GetXPGuidObject(typeof(cfg_configurationcountry), systemCountry);
+            cfg_configurationcurrency intialValueConfigurationCurrency = (cfg_configurationcurrency)XPOHelper.GetXPGuidObject(typeof(cfg_configurationcurrency), systemCurrency);
 
             try
             {
