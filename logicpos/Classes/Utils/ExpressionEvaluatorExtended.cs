@@ -2,6 +2,7 @@
 using logicpos.Classes.Enums.App;
 using logicpos.Classes.Logic.Others;
 using logicpos.datalayer.App;
+using LogicPOS.Settings;
 using LogicPOS.Utility;
 using System;
 using System.Drawing;
@@ -121,7 +122,7 @@ namespace logicpos
                 int intEventBoxPosTicketPadColumns = 4;
                 int intEventBoxPosTicketPadRows = 4;
 
-                if (DataLayerSettings.IsDefaultTheme)
+                if (AppOperationModeSettings.IsDefaultTheme)
                 {
                     //intEventBoxPosTicketPadColumns = 4;
                     intEventBoxPosTicketPadRows = 5;

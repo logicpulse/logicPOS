@@ -662,7 +662,7 @@ namespace logicpos
                                         FROM fin_article t1 , fin_articlefamily t2 , fin_articlesubfamily t3,  fin_configurationvatrate t4
                                         WHERE t1.Family = t2.Oid AND t1.SubFamily = t3.Oid AND t1.VatOnTable = t4.Oid";
 
-            if (DataLayerSettings.AppMode == AppOperationMode.Retail)
+            if (AppOperationModeSettings.AppMode == AppOperationMode.Retail)
             {
                 queryOrderedString = @"SELECT t1.Code, t1.Designation, t2.Designation As Family, t3.Designation As SubFamily, t1.Price1, t4.Value AS VAT
                                         FROM fin_article t1 , fin_articlefamily t2 , fin_articlesubfamily t3,  fin_configurationvatrate t4

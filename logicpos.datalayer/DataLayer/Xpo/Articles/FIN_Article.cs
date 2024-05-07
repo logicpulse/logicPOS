@@ -1,6 +1,7 @@
 using DevExpress.Xpo;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
+using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
 using System;
 namespace logicpos.datalayer.DataLayer.Xpo
@@ -17,7 +18,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             Type = this.Session.GetObjectByKey<fin_articletype>(DataLayerSettings.XpoOidArticleDefaultType);
             Class = this.Session.GetObjectByKey<fin_articleclass>(DataLayerSettings.XpoOidArticleDefaultClass);
 
-            if (DataLayerSettings.AppMode == AppOperationMode.Default)
+            if (AppOperationModeSettings.AppMode == AppOperationMode.Default)
             {
                 //Force users to choose Tax for both modes Normal and TakeAway
                 VatOnTable = null;

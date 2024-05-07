@@ -11,6 +11,7 @@ using System;
 using System.Drawing;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -76,7 +77,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             /* IN009035 */
             string fileActionViewOrders = string.Empty;
             /* IN008024 */
-            if (!DataLayerSettings.IsDefaultTheme)
+            if (!AppOperationModeSettings.IsDefaultTheme)
             {
                 fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_tables_retail.png";
                 fileActionViewOrders = DataLayerFramework.Path["images"] + @"Icons\icon_pos_retail_view_order.png";
@@ -145,7 +146,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Orders
             //actionAreaButtons.Add(new ActionAreaButton(_buttonOrderChangeTable, _responseTypeOrderChangeTable));
             //Tables
-            if (DataLayerSettings.IsDefaultTheme)/* IN008024 */
+            if (AppOperationModeSettings.IsDefaultTheme)/* IN008024 */
             {
                 actionAreaButtons.Add(new ActionAreaButton(_buttonTableFilterAll, (ResponseType)_tablesStatusShowAllIndex));
                 actionAreaButtons.Add(new ActionAreaButton(_buttonTableFilterFree, (ResponseType)TableStatus.Free));

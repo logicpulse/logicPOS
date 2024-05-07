@@ -8,9 +8,7 @@ namespace LogicPOS.Settings
     {
         public static string AppTheme = "Default";
         public static Hashtable Path { get; set; }
-        public static NameValueCollection Settings { 
-            get; 
-            set; }
+        public static NameValueCollection Settings { get; set; }
 
         public static Dictionary<string, string> PreferenceParameters { get; set; }
     

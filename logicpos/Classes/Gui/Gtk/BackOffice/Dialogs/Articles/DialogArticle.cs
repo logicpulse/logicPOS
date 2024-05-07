@@ -344,7 +344,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxClass, DataSourceRow, "Class", LogicPOS.Utility.RegexUtils.RegexGuid, true));
 
                 //Normal App Mode
-                if (DataLayerSettings.IsDefaultTheme)/* IN008024 */
+                if (AppOperationModeSettings.IsDefaultTheme)/* IN008024 */
                 {
                     //VatOnTable
                     _xpoComboBoxVatOnTable = new XPOComboBox(DataSourceRow.Session, typeof(fin_configurationvatrate), (DataSourceRow as fin_article).VatOnTable, "Designation", null);

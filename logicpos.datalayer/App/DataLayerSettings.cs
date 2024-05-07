@@ -1,23 +1,11 @@
 ﻿using logicpos.datalayer.DataLayer.Xpo;
-using LogicPOS.Settings;
-using LogicPOS.Settings.Enums;
 using System;
 
 namespace logicpos.datalayer.App
 {
     public static class DataLayerSettings
     {
-        // Application Mode
-        public static AppOperationMode AppMode { get; set; } = DataLayerUtils.GetAppMode();
-        /* IN008024 */
-        public static CustomAppOperationMode CustomAppOperationMode = DataLayerUtils.GetCustomAppOperationMode();
-        public static bool IsDefaultTheme = DataLayerUtils.IsDefaultAppOperationTheme();
-        /* IN008024: It has been opted to remove old themes (based on database properties "cfg_configurationpreferenceparameter.APP_THEME") implementation 
-         * LogicPOS.Settings.AppSettings.PreferenceParameters["APP_THEME"] >>> The only option here was "Default" because we don't had other themes available.
-         */
-
-        //Used in Application : Assigned on InitPlataformParameters()
-        public static cfg_configurationcountry ConfigurationSystemCountry = null;
+        public static cfg_configurationcountry ConfigurationSystemCountry { get; set; } = null;
 
         //Default Xpo Values
 

@@ -1883,7 +1883,7 @@ namespace logicpos
                     try
                     {
                         /* IN008024 */
-                        CustomAppOperationMode customAppOperationMode = DataLayerSettings.CustomAppOperationMode;
+                        CustomAppOperationMode customAppOperationMode = AppOperationModeSettings.CustomAppOperationMode;
                         //_logger.Debug(string.Format("fileImageBackgroundWindowPos: [{0}]", LogicPOS.Settings.GeneralSettings.Settings["fileImageBackgroundWindowPos"]));
                         string windowImageFileName = string.Format(themeWindow.Globals.ImageFileName, customAppOperationMode.AppOperationTheme, GlobalApp.ScreenSize.Width, GlobalApp.ScreenSize.Height);
                         GlobalApp.PosMainWindow = new PosMainWindow(windowImageFileName);

@@ -2,9 +2,9 @@
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.Enums;
 using logicpos.shared.Enums;
-using System;
-using logicpos.datalayer.App;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
+using System;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -165,7 +165,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 case TableViewMode.Orders:
                     /* IN008024 */
-                    _labelWindowTitle.Text = CultureResources.GetResourceByLanguage("", string.Format("window_title_dialog_tables_appmode_{0}", DataLayerSettings.CustomAppOperationMode.AppOperationTheme).ToLower());
+                    _labelWindowTitle.Text = CultureResources.GetResourceByLanguage("", string.Format("window_title_dialog_tables_appmode_{0}", AppOperationModeSettings.CustomAppOperationMode.AppOperationTheme).ToLower());
                     //Tables
                     _currentViewMode = TableViewMode.Tables;
                     _buttonTableViewOrders.Visible = true;

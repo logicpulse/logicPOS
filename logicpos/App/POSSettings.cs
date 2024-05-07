@@ -264,7 +264,7 @@ namespace logicpos.App
             {
                 /* IN008024 */
                 //logicpos.datalayer.Enums.CustomAppOperationMode customAppOperationMode = logicpos.datalayer.Enums.CustomAppOperationMode.GetAppOperationMode(LogicPOS.Settings.GeneralSettings.Settings["appOperationModeToken"]);
-                CustomAppOperationMode customAppOperationMode = DataLayerSettings.CustomAppOperationMode;
+                CustomAppOperationMode customAppOperationMode = AppOperationModeSettings.CustomAppOperationMode;
 
                 /* 
                  * Possible themes:
@@ -342,7 +342,7 @@ namespace logicpos.App
                     /* Default or Retail */
                     string appOperationTheme = customAppOperationMode.AppOperationTheme;
 					//Utiliza SQL para BackOfficeMode
-                    if(DataLayerSettings.CustomAppOperationMode.AppOperationModeToken == "BackOfficeMode")
+                    if(AppOperationModeSettings.CustomAppOperationMode.AppOperationModeToken == "BackOfficeMode")
                     {
                         appOperationTheme = "BackOfficeMode";
                     }

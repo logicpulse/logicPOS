@@ -1,5 +1,6 @@
 using DevExpress.Xpo;
 using logicpos.datalayer.App;
+using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
 using System;
 
@@ -15,8 +16,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
         {
             Ord = DataLayerUtils.GetNextTableFieldID(nameof(pos_configurationplacemovementtype), "Ord");
             Code = DataLayerUtils.GetNextTableFieldID(nameof(pos_configurationplacemovementtype), "Code");
-            //In Retail Mode VatDirectSelling is always true;
-            if (DataLayerSettings.AppMode == AppOperationMode.Retail)
+    
+            if (AppOperationModeSettings.AppMode == AppOperationMode.Retail)
             {
                 VatDirectSelling = true;
             }

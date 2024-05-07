@@ -14,6 +14,7 @@ using logicpos.shared.App;
 using logicpos.datalayer.Xpo;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 
 namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 {
@@ -135,11 +136,11 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             //string appOperationModeToken = LogicPOS.Settings.GeneralSettings.Settings["appOperationModeToken"].ToLower();
 
             //ConferenceDocument : Show Table if in ConferenceDocument and in default AppMode
-            if (_documentType.Oid == SharedSettings.XpoOidDocumentFinanceTypeConferenceDocument && DataLayerSettings.IsDefaultTheme)
+            if (_documentType.Oid == SharedSettings.XpoOidDocumentFinanceTypeConferenceDocument && AppOperationModeSettings.IsDefaultTheme)
             {
                 //Table|Order #2|Name/Zone
                 string tableZone = string.Format("{0} : #{1}/{2}"
-                    , CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), string.Format("global_table_appmode_{0}", DataLayerSettings.CustomAppOperationMode.AppOperationTheme.ToLower())) /* IN008024 */
+                    , CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), string.Format("global_table_appmode_{0}", AppOperationModeSettings.CustomAppOperationMode.AppOperationTheme.ToLower())) /* IN008024 */
                     , _documentMaster.SourceOrderMain.PlaceTable.Designation
                     , _documentMaster.SourceOrderMain.PlaceTable.Place.Designation
                 );

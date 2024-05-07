@@ -18,6 +18,7 @@ using System;
 using System.Drawing;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -543,7 +544,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         {
                             newLine = new OrderDetailLine(_currentDetailArticle.Oid, _currentDetailArticle.Designation,
                                 SharedUtils.GetArticlePrice((fin_article)DataLayerUtils.GetXPGuidObject(typeof(fin_article), _currentDetailArticle.Oid),
-                                (DataLayerSettings.AppMode == AppOperationMode.Retail) ? TaxSellType.TakeAway : TaxSellType.Normal));
+                                (AppOperationModeSettings.AppMode == AppOperationMode.Retail) ? TaxSellType.TakeAway : TaxSellType.Normal));
 
                             newLine.Properties.PriceNet = Convert.ToDecimal((string)ListStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price));
                             newLine.Properties.TotalFinal = Convert.ToDecimal((string)ListStoreModel.GetValue(_treeIter, (int)TicketListColumns.Total)) - Convert.ToDecimal((string)ListStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price));
@@ -579,7 +580,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
                                     newLine = new OrderDetailLine(_currentDetailArticle.Oid, _currentDetailArticle.Designation,
                                         SharedUtils.GetArticlePrice((fin_article)DataLayerUtils.GetXPGuidObject(typeof(fin_article), _currentDetailArticle.Oid),
-                                        (DataLayerSettings.AppMode == AppOperationMode.Retail) ? TaxSellType.TakeAway : TaxSellType.Normal));
+                                        (AppOperationModeSettings.AppMode == AppOperationMode.Retail) ? TaxSellType.TakeAway : TaxSellType.Normal));
 
                                     newLine.Properties.PriceNet = Convert.ToDecimal((string)ListStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price));
                                     newLine.Properties.TotalFinal = Convert.ToDecimal((string)ListStoreModel.GetValue(_treeIter, (int)TicketListColumns.Total)) - Convert.ToDecimal((string)ListStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price));
@@ -790,7 +791,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
                     if (configurationPlace == null) { configurationPlace = (pos_configurationplace)XPOSettings.Session.GetObjectByKey(typeof(pos_configurationplace), POSSettings.XpoOidConfigurationPlaceTableDefaultOpenTable); }
                     //Use VatDirectSelling if in Retail or in TakeWay mode
-                    TaxSellType taxSellType = (DataLayerSettings.AppMode == AppOperationMode.Retail || configurationPlace.MovementType.VatDirectSelling) ? TaxSellType.TakeAway : TaxSellType.Normal;
+                    TaxSellType taxSellType = (AppOperationModeSettings.AppMode == AppOperationMode.Retail || configurationPlace.MovementType.VatDirectSelling) ? TaxSellType.TakeAway : TaxSellType.Normal;
                     decimal priceTax = (taxSellType == TaxSellType.Normal) ? article.VatOnTable.Value : article.VatDirectSelling.Value;
 
                     //Get PriceFinal to Request Price Dialog
@@ -1434,7 +1435,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     string labelTotalTableFormat = "{0} : #{1}";
                     string lastUserName = (orderMain != null && orderMain.GlobalLastUser != null) ? string.Format(": {0}", orderMain.GlobalLastUser.Name) : string.Empty;
                     /* IN008024 */
-                    string global_table = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), string.Format("global_table_appmode_{0}", DataLayerSettings.CustomAppOperationMode.AppOperationTheme).ToLower());
+                    string global_table = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), string.Format("global_table_appmode_{0}", AppOperationModeSettings.CustomAppOperationMode.AppOperationTheme).ToLower());
 
                     SourceWindow.LabelCurrentTable.Text =
                       string.Format(labelCurrentTableFormat
@@ -1458,7 +1459,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 else
                 {
                     /* IN008024 */
-                    SourceWindow.LabelCurrentTable.Text = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), string.Format("status_message_select_order_or_table_appmode_{0}", DataLayerSettings.CustomAppOperationMode.AppOperationTheme).ToLower());
+                    SourceWindow.LabelCurrentTable.Text = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), string.Format("status_message_select_order_or_table_appmode_{0}", AppOperationModeSettings.CustomAppOperationMode.AppOperationTheme).ToLower());
                 }
             }
             //If CashDrawer Close

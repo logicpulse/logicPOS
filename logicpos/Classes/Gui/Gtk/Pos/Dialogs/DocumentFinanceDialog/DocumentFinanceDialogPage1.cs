@@ -16,6 +16,7 @@ using System;
 using System.Data;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 {
@@ -144,7 +145,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 )";
 
             string additionalFilter = string.Empty;
-            if (DataLayerUtils.IsDefaultAppOperationTheme())
+            if (AppOperationModeSettings.IsDefaultAppOperationTheme())
             {
                 additionalFilter = "OR Token = 'TICKET_RESTAURANT' ";
             }

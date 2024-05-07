@@ -13,63 +13,6 @@ namespace logicpos.datalayer.App
         //Log4Net
         private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static AppOperationMode GetAppMode()
-        {
-            AppOperationMode result = AppOperationMode.Default;
-            string appOperationModeToken = LogicPOS.Settings.GeneralSettings.Settings["appOperationModeToken"];
-
-            try
-            {
-                if (!string.IsNullOrEmpty(appOperationModeToken))
-                {
-                    /* IN008024 */
-                    CustomAppOperationMode customAppOperationMode = CustomAppOperationMode.GetAppOperationMode(appOperationModeToken);
-                    result = (AppOperationMode)Enum.Parse(typeof(AppOperationMode), customAppOperationMode.AppOperationTheme); //TO DO
-                    //result = (AppOperationMode)Enum.Parse(typeof(AppOperationMode), appOperationModeToken);
-                    _logger.Debug("AppOperationMode GetAppMode() :: '" + appOperationModeToken + "' with '" + result + "' AppOperationMode");
-                }
-            }
-            catch (Exception ex)
-            {
-                /* IN009036 */
-                _logger.Error(string.Format("AppOperationMode GetAppMode() :: [{0}]: {1}", appOperationModeToken, ex.Message));
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Based on "appOperationModeToken" key it returns the proper CustomAppOperationMode for app operation mode.
-        /// Please see #IN008024# for further details.
-        /// </summary>
-        /// <returns></returns>
-        public static CustomAppOperationMode GetCustomAppOperationMode()
-        {
-            return CustomAppOperationMode.GetAppOperationMode(LogicPOS.Settings.GeneralSettings.Settings["appOperationModeToken"]);
-        }
-
-        /// <summary>
-        /// Checks for default theme. This is used for POS components to be created accordingly.
-        /// </summary>
-        /// <returns></returns>
-        public static bool IsDefaultAppOperationTheme()
-        {
-            bool isDefaultAppOperationTheme = false;
-
-            if (DataLayerSettings.CustomAppOperationMode != null)
-            {
-                isDefaultAppOperationTheme = CustomAppOperationMode.DEFAULT.AppOperationTheme.Equals(DataLayerSettings.CustomAppOperationMode.AppOperationTheme);
-            }
-
-            return isDefaultAppOperationTheme;
-        }
-
-        /// <summary>
-        /// Used to get the next Integer from a Table Field, used to get Next Ord, Code or other Int next Value
-        /// </summary>
-        /// <param name="Table"></param>
-        /// <param name="Field"></param>
-        /// <returns></returns>
         public static uint GetNextTableFieldID(string pTable, string pField, bool pEndsWithZero = true)
         {
             uint result = 0;

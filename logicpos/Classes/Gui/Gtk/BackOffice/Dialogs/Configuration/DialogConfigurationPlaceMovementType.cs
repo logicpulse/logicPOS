@@ -6,6 +6,7 @@ using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 using LogicPOS.Settings.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
@@ -51,7 +52,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //VatDirectSelling
                 //In POS Mode add VatDirectSelling
-                if (DataLayerSettings.IsDefaultTheme) /* IN008024 */
+                if (AppOperationModeSettings.IsDefaultTheme) /* IN008024 */
                 {
                     CheckButton checkButtonVatDirectSelling = new CheckButton(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_vat_direct_selling"));
                     vboxTab1.PackStart(checkButtonVatDirectSelling, false, false, 0);

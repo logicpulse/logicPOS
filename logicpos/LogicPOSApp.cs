@@ -434,7 +434,7 @@ namespace logicpos
                     // Override default AppUseParkingTicketModule
                     /* IN009239 */
                     //GlobalFramework.AppUseParkingTicketModule = Convert.ToBoolean(LogicPOS.Settings.GeneralSettings.Settings["appMultiUserEnvironment"]);
-                    CustomAppOperationMode customAppOperationMode = GetCustomAppOperationMode();
+                    CustomAppOperationMode customAppOperationMode = AppOperationModeSettings.GetCustomAppOperationMode();
                     SharedFramework.AppUseParkingTicketModule = CustomAppOperationMode.PARKING.Equals(customAppOperationMode);
 
                     //TK016235 BackOffice - Mode

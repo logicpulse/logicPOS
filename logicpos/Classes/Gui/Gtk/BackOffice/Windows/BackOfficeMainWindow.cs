@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.IO;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 
 //Notes
 
@@ -302,7 +303,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     { "ConfigurationPlace", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_places")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlace>(this) } }
                 };
                 /* IN009035 */
-                string configurationPlaceTableLabel = DataLayerSettings.IsDefaultTheme ? CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_place_tables") : CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_orders");
+                string configurationPlaceTableLabel = AppOperationModeSettings.IsDefaultTheme ? CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_place_tables") : CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_orders");
                 _accordionChildAuxiliarTables.Add("ConfigurationPlaceTable", new AccordionNode(configurationPlaceTableLabel) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlaceTable>(this) });
                 _accordionChildAuxiliarTables.Add("ConfigurationPlaceMovementType", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_places_movement_type")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlaceMovementType>(this) });
                 _accordionChildAuxiliarTables.Add("ConfigurationUnitMeasure", new AccordionNode(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_units_measure")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationUnitMeasure>(this) });

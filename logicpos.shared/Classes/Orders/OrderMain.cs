@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using static logicpos.datalayer.App.DataLayerUtils;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 
 namespace logicpos.shared.Classes.Orders
 {
@@ -104,7 +105,7 @@ namespace logicpos.shared.Classes.Orders
             //Get Place Object to extract TaxSellType Normal|TakeWay
             pos_configurationplace configurationPlace = (pos_configurationplace)XPOSettings.Session.GetObjectByKey(typeof(pos_configurationplace), currentOrderMain.Table.PlaceId);
             //Use VatDirectSelling if in Retail or in TakeWay mode
-            TaxSellType taxSellType = (datalayer.App.DataLayerSettings.AppMode == AppOperationMode.Retail || configurationPlace.MovementType.VatDirectSelling) ? TaxSellType.TakeAway : TaxSellType.Normal;
+            TaxSellType taxSellType = (AppOperationModeSettings.AppMode == AppOperationMode.Retail || configurationPlace.MovementType.VatDirectSelling) ? TaxSellType.TakeAway : TaxSellType.Normal;
 
             //Open Table on First Finish OrderTicket
             pos_configurationplacetable xTable = (pos_configurationplacetable)GetXPGuidObject(_sessionXpo, typeof(pos_configurationplacetable), Table.Oid);

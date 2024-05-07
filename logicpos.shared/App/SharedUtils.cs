@@ -21,6 +21,7 @@ using System.Text.RegularExpressions;
 using static logicpos.datalayer.Xpo.XPOHelper;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 
 namespace logicpos.shared.App
 {
@@ -244,14 +245,14 @@ namespace logicpos.shared.App
             decimal priceTax = 0.0m;
 
             // Get priceTax Based on AppOperationMode : in retail mode VatOnTable is always null
-            if (DataLayerSettings.AppMode == AppOperationMode.Default)
+            if (AppOperationModeSettings.AppMode == AppOperationMode.Default)
             {
                 //Protecções de integridade das BD's e funcionamento da aplicação [IN:013327]
                 // Default : Restaurants with dual Tax ex Normal, TakeAway
                 if (pTaxSellType == TaxSellType.Normal && pArticle.VatOnTable != null) priceTax = pArticle.VatOnTable.Value;
                 else if (pArticle.VatDirectSelling != null) priceTax = pArticle.VatDirectSelling.Value;
             }
-            else if (DataLayerSettings.AppMode == AppOperationMode.Retail)
+            else if (AppOperationModeSettings.AppMode == AppOperationMode.Retail)
             {
                 // Mono priceTax 
                 if (pArticle.VatDirectSelling != null)
