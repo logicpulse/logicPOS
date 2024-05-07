@@ -105,7 +105,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             _posDocumentFinanceDialog = (_sourceWindow as PosDocumentFinanceDialog);
 
             //Initials Values
-            _intialValueConfigurationCountry = DataLayerSettings.ConfigurationSystemCountry;            
+            _intialValueConfigurationCountry = XPOSettings.ConfigurationSystemCountry;            
             //Customer Name
             CriteriaOperator criteriaOperatorCustomerName = null;
 			//TK016251 - FrontOffice - Criar novo documento com auto-complete para artigos e clientes 
@@ -168,7 +168,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             EntryBoxCustomerLocality.EntryValidation.Changed += delegate { Validate(); };
 
             //Customer ZipCode
-            EntryBoxCustomerZipCode = new EntryBoxValidation(_sourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_zipcode"), KeyboardMode.Alfa, DataLayerSettings.ConfigurationSystemCountry.RegExZipCode, false);
+            EntryBoxCustomerZipCode = new EntryBoxValidation(_sourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_zipcode"), KeyboardMode.Alfa, XPOSettings.ConfigurationSystemCountry.RegExZipCode, false);
             EntryBoxCustomerZipCode.EntryValidation.Changed += delegate { Validate(); };
 
             //Customer City
@@ -680,7 +680,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 //Disable/Enable ButtonClearCustomer based on SourceDocument, if has SourceDocument Disable ClearButton
                 _posDocumentFinanceDialog.ButtonClearCustomer.Sensitive = (_pagePad1.EntryBoxSelectSourceDocumentFinance.Value == null);
 
-                if(_pagePad1.EntryBoxSelectSourceDocumentFinance.Value != null && SharedSettings.XpoOidConfigurationCountryMozambique.Equals(DataLayerSettings.ConfigurationSystemCountry.Oid) 
+                if(_pagePad1.EntryBoxSelectSourceDocumentFinance.Value != null && SharedSettings.XpoOidConfigurationCountryMozambique.Equals(XPOSettings.ConfigurationSystemCountry.Oid) 
                     && _pagePad1.EntryBoxSelectSourceDocumentFinance.Value != null 
                     && (_pagePad1.EntryBoxSelectSourceDocumentFinance.Value.DocumentType.Oid == SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice || _pagePad1.EntryBoxSelectSourceDocumentFinance.Value.DocumentType.Oid == SharedSettings.XpoOidDocumentFinanceTypeInvoice))
                 {

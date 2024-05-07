@@ -165,7 +165,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 _viewport.ModifyBg(StateType.Normal, Color.White.ToGdkColor());
                 _totalCompositeEntrys++;
-                CriteriaOperator criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Class = '{0}')", DataLayerSettings.XpoOidArticleDefaultClass));
+                CriteriaOperator criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Class = '{0}')", XPOSettings.XpoOidArticleDefaultClass));
                 _entryBoxSelectArticle1 = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_article"), "Designation", "Oid", null, criteriaOperatorSelectArticle, KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true, true, LogicPOS.Utility.RegexUtils.RegexAlfaNumericArticleCode, LogicPOS.Utility.RegexUtils.RegexDecimalPositiveAndNegative, _totalCompositeEntrys);
 
                 //SerialNumber

@@ -10,6 +10,7 @@ using System.Data;
 using System.Text;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using logicpos.datalayer.Xpo;
 
 namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 {
@@ -360,7 +361,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             string certificationText;
 
             //Write Certification,CopyRight and License Text 
-            if (SharedSettings.XpoOidConfigurationCountryPortugal.Equals(DataLayerSettings.ConfigurationSystemCountry.Oid))
+            if (SharedSettings.XpoOidConfigurationCountryPortugal.Equals(XPOSettings.ConfigurationSystemCountry.Oid))
             {
                 //All Finance Documents use Processed, else Payments that use Emmited 
                 string prefix = (_documentType.SaftDocumentType == SaftDocumentType.Payments)
@@ -381,7 +382,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 }
             }
             /* IN005975 and IN005979 for Mozambique deployment */
-            else if (SharedSettings.XpoOidConfigurationCountryMozambique.Equals(DataLayerSettings.ConfigurationSystemCountry.Oid))
+            else if (SharedSettings.XpoOidConfigurationCountryMozambique.Equals(XPOSettings.ConfigurationSystemCountry.Oid))
             {/* IN009055 - related to IN006047 */
 				/* {Processado por computador} || Autorização da Autoridade Tributária: {DAFM1 - 0198 / 2018} */
                 certificationText = string.Format(
@@ -391,7 +392,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                  );
             }
 			//TK016268 Angola - Certificação 
-            else if (SharedSettings.XpoOidConfigurationCountryAngola.Equals(DataLayerSettings.ConfigurationSystemCountry.Oid))
+            else if (SharedSettings.XpoOidConfigurationCountryAngola.Equals(XPOSettings.ConfigurationSystemCountry.Oid))
             {
                 //All Finance Documents use Processed, else Payments that use Emmited 
                 string prefix = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_report_overlay_software_certification_processed"); ;

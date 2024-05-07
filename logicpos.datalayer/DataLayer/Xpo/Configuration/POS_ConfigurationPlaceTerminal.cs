@@ -15,8 +15,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
         {
             Ord = XPOHelper.GetNextTableFieldID(nameof(pos_configurationplaceterminal), "Ord");
             Code = XPOHelper.GetNextTableFieldID(nameof(pos_configurationplaceterminal), "Code");
-            TemplateTicket = this.Session.GetObjectByKey<sys_configurationprinterstemplates>(DataLayerSettings.XpoOidConfigurationPrintersTemplateTicket);
-            TemplateTablesConsult = this.Session.GetObjectByKey<sys_configurationprinterstemplates>(DataLayerSettings.XpoOidConfigurationPrintersTemplateTableConsult);
+            TemplateTicket = this.Session.GetObjectByKey<sys_configurationprinterstemplates>(XPOSettings.XpoOidConfigurationPrintersTemplateTicket);
+            TemplateTablesConsult = this.Session.GetObjectByKey<sys_configurationprinterstemplates>(XPOSettings.XpoOidConfigurationPrintersTemplateTableConsult);
             InputReaderTimerInterval = 200;
         }
 

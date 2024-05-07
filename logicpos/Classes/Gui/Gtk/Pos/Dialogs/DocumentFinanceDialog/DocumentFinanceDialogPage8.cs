@@ -12,6 +12,7 @@ using logicpos.datalayer.DataLayer.Xpo;
 using System;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using logicpos.datalayer.Xpo;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 {

@@ -6,6 +6,7 @@ using System;
 using System.Drawing;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using logicpos.datalayer.Xpo;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {

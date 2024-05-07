@@ -189,7 +189,7 @@ namespace logicpos
             bool result = false;
 
             //Check if SystemCountry is Portugal and is a valid WsAtDocument
-            if (DataLayerSettings.ConfigurationSystemCountry.Oid == SharedSettings.XpoOidConfigurationCountryPortugal && documentFinanceMaster.DocumentType.WsAtDocument)
+            if (XPOSettings.ConfigurationSystemCountry.Oid == SharedSettings.XpoOidConfigurationCountryPortugal && documentFinanceMaster.DocumentType.WsAtDocument)
             {
                 //Documents
                 if (!documentFinanceMaster.DocumentType.WayBill || documentFinanceMaster.DocumentType.Oid == SharedSettings.XpoOidDocumentFinanceTypeInvoiceWayBill)

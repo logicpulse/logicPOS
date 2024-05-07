@@ -86,7 +86,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             _posDocumentFinanceDialog = (_sourceWindow as PosDocumentFinanceDialog);
 
             //Initial Values
-            _intialValueConfigurationCountry = DataLayerSettings.ConfigurationSystemCountry;
+            _intialValueConfigurationCountry = XPOSettings.ConfigurationSystemCountry;
 
             //Defaults
             Guid initialDocumentFinanceTypeGuid = SharedSettings.XpoOidDocumentFinanceTypeInvoice;

@@ -2,16 +2,15 @@
 using DevExpress.Xpo.DB;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
+using logicpos.datalayer.Xpo;
 using logicpos.shared.App;
 using logicpos.shared.Classes.Orders;
 using logicpos.shared.Enums;
+using LogicPOS.Globalization;
+using LogicPOS.Settings.Extensions;
 using System;
 using System.Collections.Generic;
-using static logicpos.datalayer.App.DataLayerUtils;
 using static logicpos.datalayer.App.DataLayerFramework;
-using logicpos.datalayer.Xpo;
-using LogicPOS.Settings.Extensions;
-using LogicPOS.Globalization;
 
 namespace logicpos.shared.Classes.Finance
 {
@@ -362,7 +361,7 @@ namespace logicpos.shared.Classes.Finance
             using (UnitOfWork uowSession = new UnitOfWork())
             {
                 OrderMain orderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];
-                fin_documentordermain xDocumentOrderMain = (fin_documentordermain)GetXPGuidObject(uowSession, typeof(fin_documentordermain), orderMain.PersistentOid);
+                fin_documentordermain xDocumentOrderMain = (fin_documentordermain)XPOHelper.GetXPGuidObject(uowSession, typeof(fin_documentordermain), orderMain.PersistentOid);
 
                 if (xDocumentOrderMain != null && xDocumentOrderMain.OrderTicket != null)
                 {
@@ -415,7 +414,7 @@ namespace logicpos.shared.Classes.Finance
                 if (isDone)
                 {
                     //Update xDocumentOrderMain UpdatedAt, Required for RealTime Update
-                    xDocumentOrderMain.UpdatedAt = CurrentDateTimeAtomic();
+                    xDocumentOrderMain.UpdatedAt = XPOHelper.CurrentDateTimeAtomic();
 
                     //Remove Quantity
                     resultRemainQuantity -= pRemoveQuantity;
@@ -457,7 +456,7 @@ namespace logicpos.shared.Classes.Finance
                     //Commit UOW Changes
                     uowSession.CommitChanges();
                     //Update OrderMain UpdatedAt, Required to Sync Terminals
-                    orderMain.UpdatedAt = CurrentDateTimeAtomic();
+                    orderMain.UpdatedAt = XPOHelper.CurrentDateTimeAtomic();
 
                     //Update ArticleBag Price Properties
                     this[pKey].Quantity = resultRemainQuantity;

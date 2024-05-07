@@ -391,7 +391,7 @@ namespace logicpos.financial.library.Classes.Finance
                 );
                 //If customer undefined Defaults to SettingsApp.ConfigurationSystemCountry.RegExZipCode
                 _fields.Add(FinanceValidationError.ERROR_FIELD_CUSTOMER_ZIPCODE_INVALID,
-                new ProcessFinanceDocumentValidationField("Customer.ZipCode", (customer != null && customer.ZipCode != null) ? customer.ZipCode : string.Empty, (customer != null && customer.Country != null) ? customer.Country.RegExZipCode : DataLayerSettings.ConfigurationSystemCountry.RegExZipCode, requireAllCustomerFields)
+                new ProcessFinanceDocumentValidationField("Customer.ZipCode", (customer != null && customer.ZipCode != null) ? customer.ZipCode : string.Empty, (customer != null && customer.Country != null) ? customer.Country.RegExZipCode : XPOSettings.ConfigurationSystemCountry.RegExZipCode, requireAllCustomerFields)
                 );
                 _fields.Add(FinanceValidationError.ERROR_FIELD_CUSTOMER_CITY_INVALID,
                     new ProcessFinanceDocumentValidationField("Customer.City", (customer != null && customer.City != null) ? customer.City : string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfa, requireAllCustomerFields)
@@ -401,7 +401,7 @@ namespace logicpos.financial.library.Classes.Finance
                 );
                 //If customer undefined Defaults to SettingsApp.ConfigurationSystemCountry.RegExFiscalNumber
                 _fields.Add(FinanceValidationError.ERROR_FIELD_CUSTOMER_FISCAL_NUMBER_INVALID,
-                    new ProcessFinanceDocumentValidationField("Customer.FiscalNumber", (customer != null && customer.FiscalNumber != null) ? customer.FiscalNumber : string.Empty, (customer != null && customer.Country != null) ? customer.Country.RegExFiscalNumber : DataLayerSettings.ConfigurationSystemCountry.RegExFiscalNumber, requireFiscalNumber)
+                    new ProcessFinanceDocumentValidationField("Customer.FiscalNumber", (customer != null && customer.FiscalNumber != null) ? customer.FiscalNumber : string.Empty, (customer != null && customer.Country != null) ? customer.Country.RegExFiscalNumber : XPOSettings.ConfigurationSystemCountry.RegExFiscalNumber, requireFiscalNumber)
                 );
                 _fields.Add(FinanceValidationError.ERROR_FIELD_CUSTOMER_CARDNUMBER_INVALID,
                     new ProcessFinanceDocumentValidationField("Customer.CardNumber", (customer != null && customer.CardNumber != null) ? customer.CardNumber : string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false)
@@ -585,7 +585,7 @@ namespace logicpos.financial.library.Classes.Finance
 				// Moçambique - Pedidos da reunião 13/10/2020 + Faturas no Front-Office [IN:014327]
                 if (customer != null && customerParentDocument != null && customer != customerParentDocument && documentParent.DocumentType.Oid != SharedSettings.XpoOidDocumentFinanceTypeConferenceDocument)
                 {
-                    if (!SharedSettings.XpoOidConfigurationCountryMozambique.Equals(DataLayerSettings.ConfigurationSystemCountry.Oid) && (documentParent.DocumentType.Oid != SharedSettings.XpoOidDocumentFinanceTypeInvoice || documentParent.DocumentType.Oid != SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice))
+                    if (!SharedSettings.XpoOidConfigurationCountryMozambique.Equals(XPOSettings.ConfigurationSystemCountry.Oid) && (documentParent.DocumentType.Oid != SharedSettings.XpoOidDocumentFinanceTypeInvoice || documentParent.DocumentType.Oid != SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice))
                     {
                         ResultAdd(FinanceValidationError.ERROR_RULE_PARENT_DOCUMENT_CUSTOMER_AND_CURRENT_DOCUMENT_CUSTOMER_INVALID);
                     }                       
@@ -689,7 +689,7 @@ namespace logicpos.financial.library.Classes.Finance
                 if (documentParent != null && !validParentDocuments.Contains<Guid>(documentParent.DocumentType.Oid))
                 {
                     //If Moçambique Ignore - Moçambique - Pedidos da reunião 13/10/2020 [IN:014327]
-                    if (SharedSettings.XpoOidConfigurationCountryMozambique.Equals(DataLayerSettings.ConfigurationSystemCountry.Oid))
+                    if (SharedSettings.XpoOidConfigurationCountryMozambique.Equals(XPOSettings.ConfigurationSystemCountry.Oid))
                     {
                         ResultAdd(FinanceValidationError.ERROR_RULE_DOCUMENT_FINANCE_TYPE_PARENT_DOCUMENT_INVALID);
                     }

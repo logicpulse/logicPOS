@@ -8,6 +8,7 @@ using logicpos.shared.App;
 using System;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using logicpos.datalayer.Xpo;
 
 namespace logicpos
 {
@@ -79,7 +80,7 @@ namespace logicpos
                         {
                             //_logger.Debug(string.Format("Name: [{0}], PasswordReset: [{1}]", _selectedUserDetail.Name, _selectedUserDetail.PasswordReset));
                             Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_information"),
-                                string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_user_request_change_password"), _selectedUserDetail.Name, DataLayerSettings.DefaultValueUserDetailAccessPin)
+                                string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_user_request_change_password"), _selectedUserDetail.Name, XPOSettings.DefaultValueUserDetailAccessPin)
                             );
                         }
                     }

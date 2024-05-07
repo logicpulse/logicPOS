@@ -81,8 +81,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 && dataSourceRow.Required;
 
                 //Override Db Regex with ConfigurationSystemCountry RegExZipCode and RegExFiscalNumber
-                if (dataSourceRow.Token == "COMPANY_POSTALCODE") valueRegEx = DataLayerSettings.ConfigurationSystemCountry.RegExZipCode;
-                if (dataSourceRow.Token == "COMPANY_FISCALNUMBER") valueRegEx = DataLayerSettings.ConfigurationSystemCountry.RegExFiscalNumber;
+                if (dataSourceRow.Token == "COMPANY_POSTALCODE") valueRegEx = XPOSettings.ConfigurationSystemCountry.RegExZipCode;
+                if (dataSourceRow.Token == "COMPANY_FISCALNUMBER") valueRegEx = XPOSettings.ConfigurationSystemCountry.RegExFiscalNumber;
 
                 //Tab1
                 VBox vboxTab1 = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };

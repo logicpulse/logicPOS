@@ -8,6 +8,7 @@ using logicpos.Classes.Enums.Dialogs;
 using logicpos.datalayer.App;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using logicpos.datalayer.Xpo;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -114,7 +115,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 //_logger.Debug(string.Format("Name: [{0}], PasswordReset: [{1}]", _selectedUserDetail.Name, _selectedUserDetail.PasswordReset));
                 logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_information"),
-                    string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_user_request_change_password"), UserDetail.Name, DataLayerSettings.DefaultValueUserDetailAccessPin)
+                    string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_user_request_change_password"), UserDetail.Name, XPOSettings.DefaultValueUserDetailAccessPin)
                 );
             }
 

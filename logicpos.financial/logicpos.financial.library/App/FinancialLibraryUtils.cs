@@ -109,7 +109,7 @@ namespace logicpos.financial.library.App
                 {
                     //Moçambique - Pedidos da reunião 13/10/2020 [IN:014327]
                     //- Fatura simplificada em documentos de origem, para inserir nº contribuinte após emissão de fatura
-                    if (SharedSettings.XpoOidConfigurationCountryMozambique.Equals(DataLayerSettings.ConfigurationSystemCountry.Oid))
+                    if (SharedSettings.XpoOidConfigurationCountryMozambique.Equals(XPOSettings.ConfigurationSystemCountry.Oid))
                     {      
                         result = new Guid[] {
                         //SaftDocumentType = 2

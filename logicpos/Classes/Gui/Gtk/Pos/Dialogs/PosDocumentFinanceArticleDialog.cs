@@ -174,7 +174,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             string initialValueTotalNet = LogicPOS.Utility.DataConversionUtils.DecimalToString(0);
             string initialValueTotalFinal = LogicPOS.Utility.DataConversionUtils.DecimalToString(0);
             string initialValueNotes = string.Empty;
-            fin_configurationvatrate initialValueSelectConfigurationVatRate = (fin_configurationvatrate)XPOSettings.Session.GetObjectByKey(typeof(fin_configurationvatrate), DataLayerSettings.XpoOidArticleDefaultVatDirectSelling);
+            fin_configurationvatrate initialValueSelectConfigurationVatRate = (fin_configurationvatrate)XPOSettings.Session.GetObjectByKey(typeof(fin_configurationvatrate), XPOSettings.XpoOidArticleDefaultVatDirectSelling);
             fin_configurationvatexemptionreason initialValueSelectConfigurationVatExemptionReason = null;
 
             //Update Record : Override Default Values
@@ -605,7 +605,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             _article.Notes = _entryBoxValidationNotes.EntryValidation.Text;
                             _article.Family = (fin_articlefamily)XPOSettings.Session.GetObjectByKey(typeof(fin_articlefamily), _entryBoxSelectArticleFamily.Value.Oid);
                             _article.SubFamily = (fin_articlesubfamily)XPOSettings.Session.GetObjectByKey(typeof(fin_articlesubfamily), _entryBoxSelectArticleSubFamily.Value.Oid);
-                            _article.Type = (fin_articletype)XPOSettings.Session.GetObjectByKey(typeof(fin_articletype), DataLayerSettings.XpoOidArticleDefaultType);
+                            _article.Type = (fin_articletype)XPOSettings.Session.GetObjectByKey(typeof(fin_articletype), XPOSettings.XpoOidArticleDefaultType);
 
                             _article.Save();
 
@@ -955,7 +955,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         private void CleanArticleFields(bool cleanCodeAndDesignation)
         {
-            fin_configurationvatrate initialValueSelectConfigurationVatRate = (fin_configurationvatrate)XPOSettings.Session.GetObjectByKey(typeof(fin_configurationvatrate), DataLayerSettings.XpoOidArticleDefaultVatDirectSelling);
+            fin_configurationvatrate initialValueSelectConfigurationVatRate = (fin_configurationvatrate)XPOSettings.Session.GetObjectByKey(typeof(fin_configurationvatrate), XPOSettings.XpoOidArticleDefaultVatDirectSelling);
             fin_configurationvatexemptionreason initialValueSelectConfigurationVatExemptionReason = null;
             CriteriaOperator criteriaOperatorSelectVatRate = CriteriaOperator.Parse("(Disabled = 0 OR Disabled IS NULL)");
 

@@ -17,6 +17,7 @@ using System.IO;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using logicpos.datalayer.Xpo;
 
 //Notes
 
@@ -345,7 +346,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 // Add Menu Items Based On Plugins PluginSoftwareVendor
                 Dictionary<string, AccordionNode> _accordionChildExport = new Dictionary<string, AccordionNode>();
                 //Export
-                if (LogicPOS.Settings.PluginSettings.PluginSoftwareVendor != null && (DataLayerSettings.ConfigurationSystemCountry.Oid == SharedSettings.XpoOidConfigurationCountryPortugal || DataLayerSettings.ConfigurationSystemCountry.Oid == SharedSettings.XpoOidConfigurationCountryAngola))
+                if (PluginSettings.PluginSoftwareVendor != null && (XPOSettings.ConfigurationSystemCountry.Oid == SharedSettings.XpoOidConfigurationCountryPortugal || XPOSettings.ConfigurationSystemCountry.Oid == SharedSettings.XpoOidConfigurationCountryAngola))
                 {
                     if ((System.Configuration.ConfigurationManager.AppSettings["cultureFinancialRules"] == "pt-AO") || (System.Configuration.ConfigurationManager.AppSettings["cultureFinancialRules"] == "pt-PT"))
                     {

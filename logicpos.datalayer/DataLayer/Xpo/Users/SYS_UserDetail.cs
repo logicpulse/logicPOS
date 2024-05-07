@@ -24,9 +24,9 @@ namespace logicpos.datalayer.DataLayer.Xpo
             Ord = XPOHelper.GetNextTableFieldID(nameof(sys_userdetail), "Ord");
             Code = XPOHelper.GetNextTableFieldID(nameof(sys_userdetail), "Code");
             //Required for New Users
-            AccessPin = CryptographyUtils.GenerateSaltedString(DataLayerSettings.DefaultValueUserDetailAccessPin);
+            AccessPin = CryptographyUtils.GenerateSaltedString(XPOSettings.DefaultValueUserDetailAccessPin);
             PasswordReset = true;
-            ButtonImage = string.Format("{0}{1}", DataLayerFramework.Path["assets"], DataLayerSettings.DefaultValueUserDetailButtonImage);
+            ButtonImage = string.Format("{0}{1}", DataLayerFramework.Path["assets"], XPOSettings.DefaultValueUserDetailButtonImage);
         }
 
         protected override void OnNewRecordSaving()

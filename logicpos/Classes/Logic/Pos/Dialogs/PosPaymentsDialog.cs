@@ -431,7 +431,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Initialize Country DeafultValue
             cfg_configurationcountry defaultValue = (Customer.Country != null)
               ? Customer.Country
-              : DataLayerSettings.ConfigurationSystemCountry
+              : XPOSettings.ConfigurationSystemCountry
             ;
 
             //CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("OrderMain = '{0}'", currentOrderMain.PersistentOid));

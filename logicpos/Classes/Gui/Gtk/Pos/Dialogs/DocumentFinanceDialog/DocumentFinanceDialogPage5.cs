@@ -12,6 +12,7 @@ using logicpos.shared.App;
 using System;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using logicpos.datalayer.Xpo;
 
 //THIS CLASS is ALMOST EQUAL to DocumentFinanceDialogPage4, but with Search Replace 
 //"ShipTo" to "ShipFrom" and "_ship_to_" to ""_ship_from_""
@@ -53,7 +54,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             _session = (_pagePad as DocumentFinanceDialogPagePad).Session;
 
             //Initials Values
-            _intialValueConfigurationCountry = DataLayerSettings.ConfigurationSystemCountry;
+            _intialValueConfigurationCountry = XPOSettings.ConfigurationSystemCountry;
 
             //ShipFrom Address
             EntryBoxShipFromAddressDetail = new EntryBoxValidation(_sourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_address"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, true);/* IN009253 */
@@ -64,7 +65,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             EntryBoxShipFromRegion.EntryValidation.Changed += delegate { Validate(); };
 
             //ShipFrom PostalCode
-            EntryBoxShipFromPostalCode = new EntryBoxValidation(_sourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_zipcode"), KeyboardMode.Alfa, DataLayerSettings.ConfigurationSystemCountry.RegExZipCode, true);
+            EntryBoxShipFromPostalCode = new EntryBoxValidation(_sourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_zipcode"), KeyboardMode.Alfa, XPOSettings.ConfigurationSystemCountry.RegExZipCode, true);
             EntryBoxShipFromPostalCode.EntryValidation.Changed += delegate { Validate(); };
 
             //ShipFrom City
@@ -196,7 +197,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             string initialShipFromPostalCode = FinancialLibraryUtils.GetPreferenceParameter("COMPANY_POSTALCODE");
             string initialShipFromCity = FinancialLibraryUtils.GetPreferenceParameter("COMPANY_CITY");
 
-            cfg_configurationcountry intialValueConfigurationCountry = DataLayerSettings.ConfigurationSystemCountry;
+            cfg_configurationcountry intialValueConfigurationCountry = XPOSettings.ConfigurationSystemCountry;
             /* IN007018 
              * There is no checking for installed country x company country, therefore, when registering company it is allowed to register the company for a different country than the deployed one.
              * So, we are seeing address from a country but validation rules from another one.

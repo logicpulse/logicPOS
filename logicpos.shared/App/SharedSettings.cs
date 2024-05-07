@@ -4,6 +4,7 @@ using System;
 using System.Diagnostics;
 using static LogicPOS.Settings.PluginSettings;
 using static LogicPOS.Settings.CultureSettings;
+using logicpos.datalayer.Xpo;
 
 namespace logicpos.shared.App
 {
@@ -256,7 +257,7 @@ namespace logicpos.shared.App
 
             int result;
             //PT : Override Defaults
-            if (DataLayerSettings.ConfigurationSystemCountry.Oid == XpoOidConfigurationCountryPortugal)
+            if (XPOSettings.ConfigurationSystemCountry.Oid == XpoOidConfigurationCountryPortugal)
             {
                 if (Debugger.IsAttached && byPassValue)
                 {
@@ -287,7 +288,7 @@ namespace logicpos.shared.App
 
             int result;
             //PT : Override Defaults
-            if (DataLayerSettings.ConfigurationSystemCountry.Oid == XpoOidConfigurationCountryPortugal)
+            if (XPOSettings.ConfigurationSystemCountry.Oid == XpoOidConfigurationCountryPortugal)
             {
                 if (Debugger.IsAttached && byPassValue)
                 {
@@ -317,7 +318,7 @@ namespace logicpos.shared.App
             int result;
 
             //PT : Override Defaults
-            if (DataLayerSettings.ConfigurationSystemCountry.Oid == XpoOidConfigurationCountryPortugal)
+            if (XPOSettings.ConfigurationSystemCountry.Oid == XpoOidConfigurationCountryPortugal)
             {
                 result = (PluginSoftwareVendor != null)
                     // From Vendor Plugin

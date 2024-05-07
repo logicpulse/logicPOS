@@ -45,7 +45,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App\DataLayerSettings.cs" />
     <Compile Include="DataLayer\Xpo\Articles\FIN_ArticleCompositionSerialnumber.cs" />
     <Compile Include="DataLayer\Xpo\Articles\FIN_ArticleSerialNumber.cs" />
     <Compile Include="DataLayer\Xpo\Articles\FIN_ArticleComposition.cs" />

@@ -25,7 +25,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
             Ord = XPOHelper.GetNextTableFieldID(nameof(erp_customer), "Ord");
             Code = XPOHelper.GetNextTableFieldID(nameof(erp_customer), "Code");
-            Country = this.Session.GetObjectByKey<cfg_configurationcountry>(DataLayerSettings.ConfigurationSystemCountry.Oid);
+            Country = this.Session.GetObjectByKey<cfg_configurationcountry>(XPOSettings.ConfigurationSystemCountry.Oid);
         }
 
         protected override void OnNewRecordSaving()

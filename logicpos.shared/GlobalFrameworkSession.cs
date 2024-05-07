@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using logicpos.datalayer.Xpo;
 
 namespace logicpos.shared
 {
@@ -37,7 +38,7 @@ namespace logicpos.shared
             _jsonFile = pFile;
             //Default
             CurrentOrderMainOid = Guid.Empty;
-            SessionStartDate = datalayer.App.XPOHelper.CurrentDateTimeAtomic();
+            SessionStartDate = XPOHelper.CurrentDateTimeAtomic();
             LoggedUsers = new Dictionary<Guid, DateTime>();
             OrdersMain = new Dictionary<Guid, OrderMain>();
         }
@@ -63,7 +64,7 @@ namespace logicpos.shared
                 //Write Session
                 try
                 {
-                    SessionUpdatedAt = datalayer.App.XPOHelper.CurrentDateTimeAtomic();
+                    SessionUpdatedAt = XPOHelper.CurrentDateTimeAtomic();
                     var jsonSerializer = new JsonSerializer();
                     var contentsToWriteToFile = JsonConvert.SerializeObject(this, _jsonFormatting);
                     var writer = new StreamWriter(_jsonFile,false);
@@ -91,7 +92,7 @@ namespace logicpos.shared
             {
                 foreach (Guid item in SharedFramework.SessionApp.LoggedUsers.Keys)
                 {
-                    sys_userdetail user = (sys_userdetail)datalayer.App.XPOHelper.GetXPGuidObject(typeof(sys_userdetail), item);
+                    sys_userdetail user = (sys_userdetail)XPOHelper.GetXPGuidObject(typeof(sys_userdetail), item);
                     SharedUtils.Audit("USER_loggerOUT", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_used_forced_loggerout"), user.Name));
                 }
                 SharedFramework.SessionApp.LoggedUsers.Clear();

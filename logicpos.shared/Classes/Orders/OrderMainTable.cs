@@ -2,7 +2,6 @@
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using System;
-using static logicpos.datalayer.App.DataLayerUtils;
 
 namespace logicpos.shared.Classes.Orders
 {
@@ -45,7 +44,7 @@ namespace logicpos.shared.Classes.Orders
             _oid = pTableOid;
             try
             {
-                pos_configurationplacetable table = (pos_configurationplacetable)GetXPGuidObject(typeof(pos_configurationplacetable), pTableOid);
+                pos_configurationplacetable table = (pos_configurationplacetable)XPOHelper.GetXPGuidObject(typeof(pos_configurationplacetable), pTableOid);
 
                 //If table is null, select Table with code 10
                 if (table == null)

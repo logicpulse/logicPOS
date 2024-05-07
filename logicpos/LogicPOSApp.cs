@@ -17,17 +17,16 @@ using logicpos.financial.library.Classes.WorkSession;
 using logicpos.plugin.contracts;
 using logicpos.shared;
 using logicpos.shared.App;
+using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
+using LogicPOS.Settings.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
-using static logicpos.datalayer.App.DataLayerUtils;
-using LogicPOS.Settings.Extensions;
-using LogicPOS.Globalization;
 
 namespace logicpos
 {
@@ -729,7 +728,7 @@ namespace logicpos
             _logger.Debug("bool UpdateBackupTimer()");
             bool debug = false;
 
-            DateTime currentDateTime = CurrentDateTimeAtomic();
+            DateTime currentDateTime = XPOHelper.CurrentDateTimeAtomic();
             DateTime currentDateTimeLastBackup = DataBaseBackup.GetLastBackupDate();
             TimeSpan timeSpanDiference = currentDateTime - currentDateTimeLastBackup;
 

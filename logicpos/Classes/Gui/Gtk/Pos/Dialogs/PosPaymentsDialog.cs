@@ -134,7 +134,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //Colors
                 Color colorPosPaymentsDialogTotalPannelBackground = LogicPOS.Settings.GeneralSettings.Settings["colorPosPaymentsDialogTotalPannelBackground"].StringToColor();
                 //Objects
-                _intialValueConfigurationCountry = DataLayerSettings.ConfigurationSystemCountry;
+                _intialValueConfigurationCountry = XPOSettings.ConfigurationSystemCountry;
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
                 //Payment Buttons
@@ -296,7 +296,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _entryBoxCustomerLocality.EntryValidation.Changed += delegate { Validate(); };
 
                 //ZipCode
-                _entryBoxCustomerZipCode = new EntryBoxValidation(this, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_zipcode"), KeyboardMode.Alfa, DataLayerSettings.ConfigurationSystemCountry.RegExZipCode, false);
+                _entryBoxCustomerZipCode = new EntryBoxValidation(this, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_zipcode"), KeyboardMode.Alfa, XPOSettings.ConfigurationSystemCountry.RegExZipCode, false);
                 _entryBoxCustomerZipCode.WidthRequest = 150;
                 _entryBoxCustomerZipCode.EntryValidation.Changed += delegate { Validate(); };
                 

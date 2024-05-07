@@ -10,6 +10,7 @@ using logicpos.datalayer.App;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Utility;
 using LogicPOS.Globalization;
+using logicpos.datalayer.Xpo;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -136,7 +137,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 Entry entryZipCode = new Entry();
                 BOWidgetBox boxZipCode = new BOWidgetBox(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_postal_code"), entryZipCode);
                 vboxTab2.PackStart(boxZipCode, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxZipCode, _dataSourceRow, "ZipCode", DataLayerSettings.ConfigurationSystemCountry.RegExZipCode, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxZipCode, _dataSourceRow, "ZipCode", XPOSettings.ConfigurationSystemCountry.RegExZipCode, false));
 
                 //Phone
                 Entry entryPhone = new Entry();
@@ -168,7 +169,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 Entry entryFiscalNumber = new Entry();
                 BOWidgetBox boxFiscalNumber = new BOWidgetBox(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_fiscal_number"), entryFiscalNumber);
                 vboxTab3.PackStart(boxFiscalNumber, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxFiscalNumber, _dataSourceRow, "FiscalNumber", DataLayerSettings.ConfigurationSystemCountry.RegExFiscalNumber, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxFiscalNumber, _dataSourceRow, "FiscalNumber", XPOSettings.ConfigurationSystemCountry.RegExFiscalNumber, false));
 
                 //Language
                 Entry entryLanguage = new Entry();
@@ -261,7 +262,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             try
             {
                 //UserDetail userDetail = (this._crudWidgetList.GetFieldWidget("PasswordReset").DataSourceRow as UserDetail);
-                _userDetail.AccessPin = CryptographyUtils.GenerateSaltedString(DataLayerSettings.DefaultValueUserDetailAccessPin);
+                _userDetail.AccessPin = CryptographyUtils.GenerateSaltedString(XPOSettings.DefaultValueUserDetailAccessPin);
                 _userDetail.PasswordReset = false;
                 _userDetail.PasswordResetDate = XPOHelper.CurrentDateTimeAtomic();
                 //Force LogOut User

@@ -10,6 +10,7 @@ using logicpos.datalayer.DataLayer.Xpo;
 using System;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using logicpos.datalayer.Xpo;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 {
@@ -50,7 +51,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             _session = (_pagePad as DocumentFinanceDialogPagePad).Session;
 
             //Initial Values
-            _intialValueConfigurationCountry = DataLayerSettings.ConfigurationSystemCountry;
+            _intialValueConfigurationCountry = XPOSettings.ConfigurationSystemCountry;
 
             //ShipTo Address
             EntryBoxShipToAddressDetail = new EntryBoxValidation(_sourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_address"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, true);/* IN009253 */
@@ -61,7 +62,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             EntryBoxShipToRegion.EntryValidation.Changed += delegate { Validate(); };
 
             //ShipTo PostalCode
-            EntryBoxShipToPostalCode = new EntryBoxValidation(_sourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_zipcode"), KeyboardMode.Alfa, DataLayerSettings.ConfigurationSystemCountry.RegExZipCode, true);
+            EntryBoxShipToPostalCode = new EntryBoxValidation(_sourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_zipcode"), KeyboardMode.Alfa, XPOSettings.ConfigurationSystemCountry.RegExZipCode, true);
             EntryBoxShipToPostalCode.EntryValidation.Changed += delegate { Validate(); };
 
             //ShipTo City

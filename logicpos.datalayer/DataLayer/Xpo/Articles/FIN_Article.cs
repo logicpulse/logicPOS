@@ -16,8 +16,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
         protected override void OnAfterConstruction()
         {
             Ord = XPOHelper.GetNextTableFieldID(nameof(fin_article), "Ord");
-            Type = this.Session.GetObjectByKey<fin_articletype>(DataLayerSettings.XpoOidArticleDefaultType);
-            Class = this.Session.GetObjectByKey<fin_articleclass>(DataLayerSettings.XpoOidArticleDefaultClass);
+            Type = this.Session.GetObjectByKey<fin_articletype>(XPOSettings.XpoOidArticleDefaultType);
+            Class = this.Session.GetObjectByKey<fin_articleclass>(XPOSettings.XpoOidArticleDefaultClass);
 
             if (AppOperationModeSettings.AppMode == AppOperationMode.Default)
             {
@@ -28,12 +28,12 @@ namespace logicpos.datalayer.DataLayer.Xpo
             else
             {
                 VatOnTable = null;
-                VatDirectSelling = this.Session.GetObjectByKey<fin_configurationvatrate>(DataLayerSettings.XpoOidArticleDefaultVatDirectSelling);
+                VatDirectSelling = this.Session.GetObjectByKey<fin_configurationvatrate>(XPOSettings.XpoOidArticleDefaultVatDirectSelling);
             }
 
-            UnitMeasure = this.Session.GetObjectByKey<cfg_configurationunitmeasure>(DataLayerSettings.XpoOidArticleDefaultUnitMeasure);
-            UnitSize = this.Session.GetObjectByKey<cfg_configurationunitsize>(DataLayerSettings.XpoOidArticleDefaultUnitSize);
-            Template = this.Session.GetObjectByKey<sys_configurationprinterstemplates>(DataLayerSettings.XpoOidArticleDefaultTemplate);
+            UnitMeasure = this.Session.GetObjectByKey<cfg_configurationunitmeasure>(XPOSettings.XpoOidArticleDefaultUnitMeasure);
+            UnitSize = this.Session.GetObjectByKey<cfg_configurationunitsize>(XPOSettings.XpoOidArticleDefaultUnitSize);
+            Template = this.Session.GetObjectByKey<sys_configurationprinterstemplates>(XPOSettings.XpoOidArticleDefaultTemplate);
         }
 
         private uint fOrd;

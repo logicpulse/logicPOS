@@ -5,14 +5,13 @@ using logicpos.datalayer.Xpo;
 using logicpos.shared.App;
 using logicpos.shared.Classes.Finance;
 using logicpos.shared.Enums;
+using LogicPOS.Globalization;
+using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
+using LogicPOS.Settings.Extensions;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using static logicpos.datalayer.App.DataLayerUtils;
-using LogicPOS.Settings.Extensions;
-using LogicPOS.Globalization;
-using LogicPOS.Settings;
 
 namespace logicpos.shared.Classes.Orders
 {
@@ -72,7 +71,7 @@ namespace logicpos.shared.Classes.Orders
             _persistentOid = new Guid();
             OrderStatus = OrderStatus.Null;
             Table = new OrderMainTable(pOrderMainOid, pTableOid);
-            DateStart = CurrentDateTimeAtomic();
+            DateStart = XPOHelper.CurrentDateTimeAtomic();
             OrderTickets = new Dictionary<int, OrderTicket>();
         }
 
@@ -108,7 +107,7 @@ namespace logicpos.shared.Classes.Orders
             TaxSellType taxSellType = (AppOperationModeSettings.AppMode == AppOperationMode.Retail || configurationPlace.MovementType.VatDirectSelling) ? TaxSellType.TakeAway : TaxSellType.Normal;
 
             //Open Table on First Finish OrderTicket
-            pos_configurationplacetable xTable = (pos_configurationplacetable)GetXPGuidObject(_sessionXpo, typeof(pos_configurationplacetable), Table.Oid);
+            pos_configurationplacetable xTable = (pos_configurationplacetable)XPOHelper.GetXPGuidObject(_sessionXpo, typeof(pos_configurationplacetable), Table.Oid);
             //Proteção para mesas vazias, escolhe a primeira
             if (xTable == null)
             {
@@ -121,14 +120,14 @@ namespace logicpos.shared.Classes.Orders
             {
                 xTable.TableStatus = TableStatus.Open;
                 SharedUtils.Audit("TABLE_OPEN", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_table_open"), xTable.Designation));
-                xTable.DateTableOpen = CurrentDateTimeAtomic();
+                xTable.DateTableOpen = XPOHelper.CurrentDateTimeAtomic();
                 if (!isInUOW) xTable.Save();
             }
 
             //Get Current _persistentOid and _from Database
             _persistentOid = GetOpenTableFieldValueGuid(Table.Oid, "Oid");
             OrderStatus = (OrderStatus)GetOpenTableFieldValue(Table.Oid, "OrderStatus");
-            UpdatedAt = CurrentDateTimeAtomic();
+            UpdatedAt = XPOHelper.CurrentDateTimeAtomic();
             //Insert
             if (_persistentOid == Guid.Empty)
             {
@@ -139,7 +138,7 @@ namespace logicpos.shared.Classes.Orders
                     DateStart = currentDateTime,//currentOrderMain.DateStart,
                     OrderStatus = OrderStatus.Open,
                     PlaceTable = xTable,
-                    UpdatedAt = CurrentDateTimeAtomic()
+                    UpdatedAt = XPOHelper.CurrentDateTimeAtomic()
                 };
                 if (!isInUOW) xOrderMain.Save();
                 //After Save, Get Oid
@@ -150,10 +149,10 @@ namespace logicpos.shared.Classes.Orders
             //Update
             else
             {
-                xOrderMain = (fin_documentordermain)GetXPGuidObject(_sessionXpo, typeof(fin_documentordermain), _persistentOid);
+                xOrderMain = (fin_documentordermain)XPOHelper.GetXPGuidObject(_sessionXpo, typeof(fin_documentordermain), _persistentOid);
                 if (xOrderMain.PlaceTable != xTable) xOrderMain.PlaceTable = xTable;
                 //Force Changes in Record, else UpdatedAt dont Update
-                xOrderMain.UpdatedAt = CurrentDateTimeAtomic();
+                xOrderMain.UpdatedAt = XPOHelper.CurrentDateTimeAtomic();
                 //TODO: Check if User was Automatically Updated
                 //if (xOrderMain.UpdatedBy != DataLayerFramework.LoggedUser) xOrderMain.UpdatedBy = DataLayerFramework.LoggedUser;
                 if (!isInUOW) xOrderMain.Save();
@@ -179,7 +178,7 @@ namespace logicpos.shared.Classes.Orders
                 xOrderTicket.Discount = xTable.Discount;
                 xOrderTicket.OrderMain = xOrderMain;
                 xOrderTicket.PlaceTable = xTable;
-                xOrderTicket.UpdatedAt = CurrentDateTimeAtomic();
+                xOrderTicket.UpdatedAt = XPOHelper.CurrentDateTimeAtomic();
                 if (!isInUOW) xOrderTicket.Save();
             }
 
@@ -207,7 +206,7 @@ namespace logicpos.shared.Classes.Orders
             {
                 //Use Order in print tickets etc
                 itemOrd++;
-                xArticle = (fin_article)GetXPGuidObject(_sessionXpo, typeof(fin_article), line.ArticleOid);
+                xArticle = (fin_article)XPOHelper.GetXPGuidObject(_sessionXpo, typeof(fin_article), line.ArticleOid);
                 //Get PriceTax from TaxSellType
                 decimal priceTax = (taxSellType == TaxSellType.Normal) ? xArticle.VatOnTable.Value : xArticle.VatDirectSelling.Value;
                 //Edit/cancel orders lindote 10/07/2020
@@ -264,7 +263,7 @@ namespace logicpos.shared.Classes.Orders
                 }
                 else
                 {
-                    xOrderDetailLine = (fin_documentorderdetail)GetXPGuidObject(_sessionXpo, typeof(fin_documentorderdetail), orderDetailOid);
+                    xOrderDetailLine = (fin_documentorderdetail)XPOHelper.GetXPGuidObject(_sessionXpo, typeof(fin_documentorderdetail), orderDetailOid);
 
                     if (xOrderDetailLine.Token2 != "decreased" && !pTicketDrecrease)
                     {
@@ -414,7 +413,7 @@ namespace logicpos.shared.Classes.Orders
                 GlobalTotalFinal = articleBag.TotalFinal;
                 GlobalTotalQuantity = articleBag.TotalQuantity;
                 //Persist Final TotalOpen
-                pos_configurationplacetable currentTable = (pos_configurationplacetable)GetXPGuidObject(typeof(pos_configurationplacetable), Table.Oid);
+                pos_configurationplacetable currentTable = (pos_configurationplacetable)XPOHelper.GetXPGuidObject(typeof(pos_configurationplacetable), Table.Oid);
 
                 if (currentTable != null)
                 {
@@ -686,7 +685,7 @@ namespace logicpos.shared.Classes.Orders
             _logger.Debug("OrderMain.CheckForDuplicatedArticleInArticleBag(Session session)");
 
             Session _sessionXpo = session;
-            fin_documentordermain xOrderMain = (fin_documentordermain)GetXPGuidObject(_sessionXpo, typeof(fin_documentordermain), _persistentOid);
+            fin_documentordermain xOrderMain = (fin_documentordermain)XPOHelper.GetXPGuidObject(_sessionXpo, typeof(fin_documentordermain), _persistentOid);
 
             //Get current Working Order from SessionApp
             OrderMain currentOrderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];

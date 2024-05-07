@@ -1,4 +1,5 @@
 ﻿using logicpos.datalayer.Enums;
+using logicpos.datalayer.Xpo;
 using Newtonsoft.Json;
 using System;
 
@@ -22,7 +23,7 @@ namespace logicpos.shared.Classes.Orders
             //Reference to Parent OrderMain
             OrderMain = pOrderMain;
             PriceType = pPriceType;
-            DateStart = datalayer.App.XPOHelper.CurrentDateTimeAtomic();
+            DateStart = XPOHelper.CurrentDateTimeAtomic();
             OrderDetails = new OrderDetail(this);
         }
     }

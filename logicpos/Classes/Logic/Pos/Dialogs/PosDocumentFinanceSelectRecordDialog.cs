@@ -1573,7 +1573,7 @@ WHERE
                             //ATWS: Check if Sent Resend Document to AT WebServices                                                 //WIP: CancellWayBills : 
                             bool sendDocumentToAT = false;                                                                          //WIP: CancellWayBills : 
                             //Financial.service - Correções no envio de documentos AT [IN:014494]
-							if ( DataLayerSettings.ConfigurationSystemCountry.Oid == SharedSettings.XpoOidConfigurationCountryPortugal     //WIP: CancellWayBills : 
+							if ( XPOSettings.ConfigurationSystemCountry.Oid == SharedSettings.XpoOidConfigurationCountryPortugal     //WIP: CancellWayBills : 
                                 && documentMaster.DocumentType.WsAtDocument                                                         //WIP: CancellWayBills : 
                                 && documentMaster.DocumentType.WayBill                                                              //WIP: CancellWayBills : 
                                 && documentMaster.DocumentType.Oid != SharedSettings.XpoOidDocumentFinanceTypeInvoiceWayBill && documentMaster.ShipToCountry != null && documentMaster.ShipToCountry == "PT"       //Envio de Documentos transporte AT (Estrangeiro) [IN:016502]               //WIP: CancellWayBills : 
@@ -1708,7 +1708,7 @@ WHERE
 
             //Moçambique - Pedidos da reunião 13/10/2020 [IN:014327]
             //Pode cancelar documentos de origem do tipo fatura ou fatura simplificada
-            if ((SharedSettings.XpoOidConfigurationCountryMozambique.Equals(DataLayerSettings.ConfigurationSystemCountry.Oid) && pDocumentFinanceMaster.DocumentStatusStatus != "A" && currentDateDay == documentDateDay)){
+            if ((SharedSettings.XpoOidConfigurationCountryMozambique.Equals(XPOSettings.ConfigurationSystemCountry.Oid) && pDocumentFinanceMaster.DocumentStatusStatus != "A" && currentDateDay == documentDateDay)){
 
                 isCancellable = true;
                 if ((pDocumentFinanceMaster.DocumentType.Oid != SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice && pDocumentFinanceMaster.DocumentType.Oid != SharedSettings.XpoOidDocumentFinanceTypeInvoice))

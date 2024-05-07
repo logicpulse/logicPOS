@@ -427,7 +427,7 @@ namespace logicpos.financial.library.Classes.Reports
             if (isFinanceDocument)
             {
                 //Processed|Emitted with certified Software Nº {0}/AT - Copyright {1} - Licenced to a {2} - Used only if System Country is Portugal
-                if (DataLayerSettings.ConfigurationSystemCountry.Oid == SharedSettings.XpoOidConfigurationCountryPortugal)
+                if (XPOSettings.ConfigurationSystemCountry.Oid == SharedSettings.XpoOidConfigurationCountryPortugal)
                 {
 
                     string fileName = "ReportDocumentFinancePayment_" + currentCulture + ".frx";
@@ -460,7 +460,7 @@ namespace logicpos.financial.library.Classes.Reports
                     if (Hash4Chars != string.Empty) textObjectOverlaySoftwareCertification.Text = string.Format("{0} - {1}", Hash4Chars, textObjectOverlaySoftwareCertification.Text);
 
                 } /* IN005975 and IN005979 for Mozambique deployment */
-                else if (DataLayerSettings.ConfigurationSystemCountry.Oid == SharedSettings.XpoOidConfigurationCountryMozambique)
+                else if (XPOSettings.ConfigurationSystemCountry.Oid == SharedSettings.XpoOidConfigurationCountryMozambique)
                 {
                     /* 
                      * IN006047
@@ -472,7 +472,7 @@ namespace logicpos.financial.library.Classes.Reports
                         CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_report_overlay_software_certification_moz_tax_authority_cert_number")
                     );
                 }
-                else if (SharedSettings.XpoOidConfigurationCountryAngola.Equals(DataLayerSettings.ConfigurationSystemCountry.Oid))
+                else if (SharedSettings.XpoOidConfigurationCountryAngola.Equals(XPOSettings.ConfigurationSystemCountry.Oid))
                 {
                     string fileName = "ReportDocumentFinancePayment_" + currentCulture + ".frx";
                     string prefix = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_report_overlay_software_certification_processed"); ;
@@ -491,7 +491,7 @@ namespace logicpos.financial.library.Classes.Reports
             }
             else
             {
-                if (SharedSettings.XpoOidConfigurationCountryAngola.Equals(DataLayerSettings.ConfigurationSystemCountry.Oid))
+                if (SharedSettings.XpoOidConfigurationCountryAngola.Equals(XPOSettings.ConfigurationSystemCountry.Oid))
                 {
                     string fileName = "ReportDocumentFinancePayment_" + currentCulture + ".frx";
                     string prefix = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_report_overlay_software_certification_emitted"); ;
@@ -581,7 +581,7 @@ namespace logicpos.financial.library.Classes.Reports
                 //string currentCulture = LogicPOS.Settings.CultureSettings.CurrentCulture.Name;
                 string fileName = (documentMaster.DocumentType.WayBill) ? "ReportDocumentFinanceWayBill_" + currentCulture + ".frx" : "ReportDocumentFinance_" + currentCulture + ".frx";
                 //ATCUD Documentos - Criação do QRCode e ATCUD IN016508
-                if (Convert.ToBoolean(LogicPOS.Settings.GeneralSettings.PreferenceParameters["PRINT_QRCODE"]) && DataLayerSettings.ConfigurationSystemCountry.Oid.Equals(SharedSettings.XpoOidConfigurationCountryPortugal) && !string.IsNullOrEmpty(documentMaster.ATDocQRCode))
+                if (Convert.ToBoolean(LogicPOS.Settings.GeneralSettings.PreferenceParameters["PRINT_QRCODE"]) && XPOSettings.ConfigurationSystemCountry.Oid.Equals(SharedSettings.XpoOidConfigurationCountryPortugal) && !string.IsNullOrEmpty(documentMaster.ATDocQRCode))
                 {
                     fileName = fileName.Replace(".frx", "_QRCode.frx");
                 }
@@ -607,7 +607,7 @@ namespace logicpos.financial.library.Classes.Reports
                 customReport.RegisterData(gcDocumentFinanceMaster, "DocumentFinanceMaster");
 
                 /* IN005976 for Mozambique deployment */
-                if (DataLayerSettings.ConfigurationSystemCountry.Oid.Equals(SharedSettings.XpoOidConfigurationCountryMozambique) || ConfigurationManager.AppSettings["cultureFinancialRules"] == "fr-CF")
+                if (XPOSettings.ConfigurationSystemCountry.Oid.Equals(SharedSettings.XpoOidConfigurationCountryMozambique) || ConfigurationManager.AppSettings["cultureFinancialRules"] == "fr-CF")
                 {
                     //if (LogicPOS.Settings.CultureSettings.CurrentCulture.Name.Equals("pt-MZ")){
                     cfg_configurationcurrency defaultCurrencyForExchangeRate =
@@ -626,7 +626,7 @@ namespace logicpos.financial.library.Classes.Reports
                 if (customReport.GetDataSource("DocumentFinanceMaster.DocumentFinanceMasterTotal") != null) customReport.GetDataSource("DocumentFinanceMaster.DocumentFinanceMasterTotal").Enabled = true;
 
 
-                if (DataLayerSettings.ConfigurationSystemCountry.Oid.Equals(SharedSettings.XpoOidConfigurationCountryAngola))
+                if (XPOSettings.ConfigurationSystemCountry.Oid.Equals(SharedSettings.XpoOidConfigurationCountryAngola))
                 {
                     if (documentMaster.DocumentParent != null && documentMaster.DocumentType.Oid.ToString() == SharedSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment.ToString())
                     {
