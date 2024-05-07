@@ -1,5 +1,4 @@
-﻿using logicpos.datalayer.App;
-using logicpos.datalayer.DataLayer.Xpo;
+﻿using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Enums;
 using logicpos.financial.library.Classes.Reports;
@@ -9,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 
 namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 {
@@ -109,7 +109,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 
                 string logo = string.Format(
                     @"{0}{1}",
-                    DataLayerFramework.Path["assets"],
+                    GeneralSettings.Path["assets"],
                     _companyLogo
                 );
 
@@ -122,7 +122,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 string companyBusinessName = _customVars["COMPANY_BUSINESS_NAME"];
                 if (string.IsNullOrEmpty(companyBusinessName)) companyBusinessName = "";
 
-                if (File.Exists(logo) && DataLayerFramework.LoggedTerminal.ThermalPrinter.ThermalPrintLogo)
+                if (File.Exists(logo) && XPOSettings.LoggedTerminal.ThermalPrinter.ThermalPrintLogo)
                 {
                     if (!string.IsNullOrEmpty(result))
                     {
@@ -198,7 +198,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 //Print Notes
                 if (pNotes != string.Empty)
                 {
-                    _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_notes"), WriteLineTextMode.Bold);
+                    _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_notes"), WriteLineTextMode.Bold);
                     _thermalPrinterGeneric.WriteLine(pNotes);
                     //Line Feed
                     _thermalPrinterGeneric.LineFeed();
@@ -221,14 +221,14 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 _thermalPrinterGeneric.SetFont(1);
 
                 //User : Terminal
-                _thermalPrinterGeneric.WriteLine(string.Format("{0} - {1}", DataLayerFramework.LoggedUser.Name, DataLayerFramework.LoggedTerminal.Designation));
+                _thermalPrinterGeneric.WriteLine(string.Format("{0} - {1}", XPOSettings.LoggedUser.Name, XPOSettings.LoggedTerminal.Designation));
                 _thermalPrinterGeneric.LineFeed();
 
                 //Printed On | Company|App|Version
                 _thermalPrinterGeneric.WriteLine(string.Format("{1}: {2}{0}{3}: {4} {5}"
                     , Environment.NewLine
                     , CustomFunctions.Res("global_printed_on_date")
-                    , XPOHelper.CurrentDateTimeAtomic().ToString(LogicPOS.Settings.CultureSettings.DateTimeFormat)
+                    , XPOHelper.CurrentDateTimeAtomic().ToString(CultureSettings.DateTimeFormat)
                     , _customVars["APP_COMPANY"]
                     , _customVars["APP_NAME"]
                     , _customVars["APP_VERSION"]
@@ -246,7 +246,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 
                 //Finish With Cut and Print Buffer
                 //TK016249 - Impressoras - Diferenciação entre Tipos
-                _thermalPrinterGeneric.Cut(true, DataLayerFramework.LoggedTerminal.ThermalPrinter.ThermalCutCommand);
+                _thermalPrinterGeneric.Cut(true, XPOSettings.LoggedTerminal.ThermalPrinter.ThermalCutCommand);
             }
             catch (Exception ex)
             {

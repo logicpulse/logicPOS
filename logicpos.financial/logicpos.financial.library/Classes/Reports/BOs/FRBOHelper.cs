@@ -1,5 +1,4 @@
-﻿using logicpos.datalayer.App;
-using logicpos.datalayer.DataLayer.Xpo;
+﻿using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.App;
 using logicpos.financial.library.Classes.Reports.BOs.Documents;

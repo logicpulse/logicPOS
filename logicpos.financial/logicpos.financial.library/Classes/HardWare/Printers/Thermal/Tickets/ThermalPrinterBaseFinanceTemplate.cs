@@ -1,5 +1,4 @@
-﻿using logicpos.datalayer.App;
-using logicpos.datalayer.DataLayer.Xpo;
+﻿using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Enums;
 using logicpos.financial.library.Classes.Reports;

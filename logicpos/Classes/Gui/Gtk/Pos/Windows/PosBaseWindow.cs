@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 
 namespace logicpos
 {
@@ -40,7 +41,7 @@ namespace logicpos
 
         private string GetAppIconFileLocation()
         {
-            return string.Format("{0}{1}", datalayer.App.DataLayerFramework.Path["images"], @"Icos\application.ico");
+            return string.Format("{0}{1}", GeneralSettings.Path["images"], @"Icos\application.ico");
         }
 
         private void SetAppIcon()
@@ -148,9 +149,9 @@ namespace logicpos
 
         private int GetMonitorNumber()
         {
-            return string.IsNullOrEmpty(LogicPOS.Settings.GeneralSettings.Settings["appScreen"])
+            return string.IsNullOrEmpty(GeneralSettings.Settings["appScreen"])
                     ? 0
-                    : Convert.ToInt32(LogicPOS.Settings.GeneralSettings.Settings["appScreen"]);
+                    : Convert.ToInt32(GeneralSettings.Settings["appScreen"]);
         }
 
         protected void CheckMonitorGeometry(int width, int height)
@@ -167,8 +168,8 @@ namespace logicpos
                         DialogFlags.Modal, 
                         MessageType.Error, 
                         ButtonsType.Ok, 
-                        CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"), 
-                        string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_low_resolution_detected"), 
+                        CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_error"), 
+                        string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_low_resolution_detected"), 
                         width, 
                         height));
                     Environment.Exit(0);

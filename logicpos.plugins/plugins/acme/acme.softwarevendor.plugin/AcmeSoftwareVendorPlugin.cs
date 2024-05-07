@@ -1,6 +1,5 @@
 ﻿using acme.softwarevendor.plugin.App;
 using logicpos;
-using logicpos.datalayer.App;
 using logicpos.plugin.contracts;
 using logicpos.shared.App;
 using System;
@@ -263,9 +262,9 @@ namespace acme.softwarevendor.plugin
 
                 string randomPrefix = LogicPOS.Utility.StringUtils.GenerateRandomString(8);
                 string targetTemplateFileName = $"{randomPrefix}.{templateBase}";
-                string targetTemplateFilePath = $"{DataLayerFramework.Path["temp"]}{targetTemplateFileName}";
+                string targetTemplateFilePath = $"{GeneralSettings.Path["temp"]}{targetTemplateFileName}";
                 string targetReportFileName = $"{randomPrefix}.{reportName}";
-                string targetReportFilePath = $"{DataLayerFramework.Path["temp"]}{targetReportFileName}";
+                string targetReportFilePath = $"{GeneralSettings.Path["temp"]}{targetReportFileName}";
 
                 // Replace templateBase (TemplateBase.frx) with targetTemplateFileName, WE MUST Change Template Name in Template Childs Sub Reports
                 if (reportContent.Contains(templateBase))

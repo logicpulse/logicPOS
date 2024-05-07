@@ -1,6 +1,5 @@
 ﻿using Gtk;
 using logicpos.Classes.Gui.Gtk.Widgets;
-using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;

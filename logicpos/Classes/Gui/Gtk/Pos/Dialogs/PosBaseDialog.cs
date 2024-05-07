@@ -1,13 +1,13 @@
 ﻿using Gtk;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.datalayer.App;
 using logicpos.Extensions;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -33,37 +33,37 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private readonly uint _borderWidth = 5;
         //private Gtk.Style _styleBackground;
         //Assets
-        protected string _fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_default.png";
-        private readonly string _fileDefaultWindowIconClose = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_window_close.png";
-        private readonly string _fileDefaultWindowIconMinimize = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_window_minimize.png";
+        protected string _fileDefaultWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_default.png";
+        private readonly string _fileDefaultWindowIconClose = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_window_close.png";
+        private readonly string _fileDefaultWindowIconMinimize = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_window_minimize.png";
         //Colors
-        private readonly System.Drawing.Color _colorBaseDialogTitleBackground = LogicPOS.Settings.GeneralSettings.Settings["colorBaseDialogTitleBackground"].StringToColor();
-        private readonly System.Drawing.Color _colorBaseDialogWindowBackground = LogicPOS.Settings.GeneralSettings.Settings["colorBaseDialogWindowBackground"].StringToColor();
-        private readonly System.Drawing.Color _colorBaseDialogWindowBackgroundBorder = LogicPOS.Settings.GeneralSettings.Settings["colorBaseDialogWindowBackgroundBorder"].StringToColor();
-        private readonly bool _useBaseDialogWindowMask = Convert.ToBoolean(LogicPOS.Settings.GeneralSettings.Settings["useBaseDialogWindowMask"]);
+        private readonly System.Drawing.Color _colorBaseDialogTitleBackground = GeneralSettings.Settings["colorBaseDialogTitleBackground"].StringToColor();
+        private readonly System.Drawing.Color _colorBaseDialogWindowBackground = GeneralSettings.Settings["colorBaseDialogWindowBackground"].StringToColor();
+        private readonly System.Drawing.Color _colorBaseDialogWindowBackgroundBorder = GeneralSettings.Settings["colorBaseDialogWindowBackgroundBorder"].StringToColor();
+        private readonly bool _useBaseDialogWindowMask = Convert.ToBoolean(GeneralSettings.Settings["useBaseDialogWindowMask"]);
         //Protected Members (Shared for Child Dialogs)
         protected int _dragOffsetX, _dragOffsetY;
         protected Label _labelWindowTitle;
-        public System.Drawing.Size _sizeBasePaymentButton = logicpos.Utils.StringToSize(LogicPOS.Settings.GeneralSettings.Settings["sizeBaseDialogDefaultButton"]);
-        public System.Drawing.Size _sizeBasePaymentButtonIcon = logicpos.Utils.StringToSize(LogicPOS.Settings.GeneralSettings.Settings["sizeBaseDialogDefaultButtonIcon"]);
-        public System.Drawing.Size _sizeBaseDialogDefaultButton = logicpos.Utils.StringToSize(LogicPOS.Settings.GeneralSettings.Settings["sizeBaseDialogDefaultButton"]);
-        public System.Drawing.Size _sizeBaseDialogDefaultButtonIcon = logicpos.Utils.StringToSize(LogicPOS.Settings.GeneralSettings.Settings["sizeBaseDialogDefaultButtonIcon"]);
+        public System.Drawing.Size _sizeBasePaymentButton = logicpos.Utils.StringToSize(GeneralSettings.Settings["sizeBaseDialogDefaultButton"]);
+        public System.Drawing.Size _sizeBasePaymentButtonIcon = logicpos.Utils.StringToSize(GeneralSettings.Settings["sizeBaseDialogDefaultButtonIcon"]);
+        public System.Drawing.Size _sizeBaseDialogDefaultButton = logicpos.Utils.StringToSize(GeneralSettings.Settings["sizeBaseDialogDefaultButton"]);
+        public System.Drawing.Size _sizeBaseDialogDefaultButtonIcon = logicpos.Utils.StringToSize(GeneralSettings.Settings["sizeBaseDialogDefaultButtonIcon"]);
 
-        public System.Drawing.Size _sizeBaseDialogActionAreaButton = logicpos.Utils.StringToSize(LogicPOS.Settings.GeneralSettings.Settings["sizeBaseDialogActionAreaButton"]);
-        public System.Drawing.Size _sizeBaseDialogActionAreaButtonIcon = logicpos.Utils.StringToSize(LogicPOS.Settings.GeneralSettings.Settings["sizeBaseDialogActionAreaButtonIcon"]);
+        public System.Drawing.Size _sizeBaseDialogActionAreaButton = logicpos.Utils.StringToSize(GeneralSettings.Settings["sizeBaseDialogActionAreaButton"]);
+        public System.Drawing.Size _sizeBaseDialogActionAreaButtonIcon = logicpos.Utils.StringToSize(GeneralSettings.Settings["sizeBaseDialogActionAreaButtonIcon"]);
         //IN009257 Ends
-        protected System.Drawing.Color _colorBaseDialogDefaultButtonFont = LogicPOS.Settings.GeneralSettings.Settings["colorBaseDialogDefaultButtonFont"].StringToColor();
-        protected System.Drawing.Color _colorBaseDialogDefaultButtonBackground = LogicPOS.Settings.GeneralSettings.Settings["colorBaseDialogDefaultButtonBackground"].StringToColor();
-        protected System.Drawing.Color _colorBaseDialogActionAreaButtonFont = LogicPOS.Settings.GeneralSettings.Settings["colorBaseDialogActionAreaButtonFont"].StringToColor();
-        protected System.Drawing.Color _colorBaseDialogActionAreaButtonBackground = LogicPOS.Settings.GeneralSettings.Settings["colorBaseDialogActionAreaButtonBackground"].StringToColor();
-        protected string _fontBaseDialogButton = LogicPOS.Settings.GeneralSettings.Settings["fontBaseDialogButton"];
-        protected string _fontBaseDialogActionAreaButton = LogicPOS.Settings.GeneralSettings.Settings["fontBaseDialogActionAreaButton"];
-        protected string _fileActionDefault = DataLayerFramework.Path["images"] + @"Icons\icon_pos_default.png";
-        protected string _fileActionOK = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
-        protected string _fileActionCancel = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png";
-        protected string _fileDemoData = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_demo.png";
+        protected System.Drawing.Color _colorBaseDialogDefaultButtonFont = GeneralSettings.Settings["colorBaseDialogDefaultButtonFont"].StringToColor();
+        protected System.Drawing.Color _colorBaseDialogDefaultButtonBackground = GeneralSettings.Settings["colorBaseDialogDefaultButtonBackground"].StringToColor();
+        protected System.Drawing.Color _colorBaseDialogActionAreaButtonFont = GeneralSettings.Settings["colorBaseDialogActionAreaButtonFont"].StringToColor();
+        protected System.Drawing.Color _colorBaseDialogActionAreaButtonBackground = GeneralSettings.Settings["colorBaseDialogActionAreaButtonBackground"].StringToColor();
+        protected string _fontBaseDialogButton = GeneralSettings.Settings["fontBaseDialogButton"];
+        protected string _fontBaseDialogActionAreaButton = GeneralSettings.Settings["fontBaseDialogActionAreaButton"];
+        protected string _fileActionDefault = GeneralSettings.Path["images"] + @"Icons\icon_pos_default.png";
+        protected string _fileActionOK = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
+        protected string _fileActionCancel = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png";
+        protected string _fileDemoData = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_demo.png";
         //IN009223 IN009227
-        protected string _fileActionMore = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_nav_new.png";
+        protected string _fileActionMore = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_nav_new.png";
 
         //Public Properties
         protected Window _sourceWindow;
@@ -464,27 +464,27 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         public static TouchButtonIconWithText FactoryGetDialogButtonType(PosBaseDialogButtonType pButtonType, string pButtonName, string pButtonLabel, string pButtonImage)
         {
-            System.Drawing.Size sizeBaseDialogDefaultButton = logicpos.Utils.StringToSize(LogicPOS.Settings.GeneralSettings.Settings["sizeBaseDialogDefaultButton"]);
-            System.Drawing.Size sizeBaseDialogDefaultButtonIcon = logicpos.Utils.StringToSize(LogicPOS.Settings.GeneralSettings.Settings["sizeBaseDialogDefaultButtonIcon"]);
-            System.Drawing.Size sizeBaseDialogActionAreaButton = logicpos.Utils.StringToSize(LogicPOS.Settings.GeneralSettings.Settings["sizeBaseDialogActionAreaButton"]);
-            System.Drawing.Size sizeBaseDialogActionAreaButtonIcon = logicpos.Utils.StringToSize(LogicPOS.Settings.GeneralSettings.Settings["sizeBaseDialogActionAreaButtonIcon"]);
-            System.Drawing.Color colorBaseDialogActionAreaButtonFont = LogicPOS.Settings.GeneralSettings.Settings["colorBaseDialogActionAreaButtonFont"].StringToColor();
+            System.Drawing.Size sizeBaseDialogDefaultButton = logicpos.Utils.StringToSize(GeneralSettings.Settings["sizeBaseDialogDefaultButton"]);
+            System.Drawing.Size sizeBaseDialogDefaultButtonIcon = logicpos.Utils.StringToSize(GeneralSettings.Settings["sizeBaseDialogDefaultButtonIcon"]);
+            System.Drawing.Size sizeBaseDialogActionAreaButton = logicpos.Utils.StringToSize(GeneralSettings.Settings["sizeBaseDialogActionAreaButton"]);
+            System.Drawing.Size sizeBaseDialogActionAreaButtonIcon = logicpos.Utils.StringToSize(GeneralSettings.Settings["sizeBaseDialogActionAreaButtonIcon"]);
+            System.Drawing.Color colorBaseDialogActionAreaButtonFont = GeneralSettings.Settings["colorBaseDialogActionAreaButtonFont"].StringToColor();
             //System.Drawing.Color colorBaseDialogActionAreaButtonBackground = FrameworkUtils.StringToColor(LogicPOS.Settings.GeneralSettings.Settings["colorBaseDialogActionAreaButtonBackground"]);
-            string fontBaseDialogActionAreaButton = LogicPOS.Settings.GeneralSettings.Settings["fontBaseDialogActionAreaButton"];
+            string fontBaseDialogActionAreaButton = GeneralSettings.Settings["fontBaseDialogActionAreaButton"];
             //Icons
-            string fileActionDefault = DataLayerFramework.Path["images"] + @"Icons\icon_pos_default.png";
-            string fileActionOK = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
-            string fileActionCancel = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png";
-            string fileActionYes = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_yes.png";
-            string fileActionNo = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_no.png";
-            string fileActionClose = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_close.png"  ;
-            string fileActionPrint = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_print.png";
-            string fileActionPrintAs = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_print_as.png";
-            string fileActionHelp = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_help.png";
-            string fileActionCloneDocument = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_clone_document.png ";
-            string fileActionOpenDocument = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_open_document.png";
-            string fileActionSendEmailDocument = DataLayerFramework.Path["images"] + @"Icons\icon_pos_dialog_send_email.png";
-            string fileActionCleanFilter = DataLayerFramework.Path["images"] + @"Icons\icon_pos_clean_filter.png";
+            string fileActionDefault = GeneralSettings.Path["images"] + @"Icons\icon_pos_default.png";
+            string fileActionOK = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
+            string fileActionCancel = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png";
+            string fileActionYes = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_yes.png";
+            string fileActionNo = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_no.png";
+            string fileActionClose = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_close.png"  ;
+            string fileActionPrint = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_print.png";
+            string fileActionPrintAs = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_print_as.png";
+            string fileActionHelp = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_help.png";
+            string fileActionCloneDocument = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_clone_document.png ";
+            string fileActionOpenDocument = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_open_document.png";
+            string fileActionSendEmailDocument = GeneralSettings.Path["images"] + @"Icons\icon_pos_dialog_send_email.png";
+            string fileActionCleanFilter = GeneralSettings.Path["images"] + @"Icons\icon_pos_clean_filter.png";
 
             //Assign ButtonType to Name, Override After Switch
             string buttonName = (pButtonName != string.Empty) ? pButtonName : string.Format("touchButton{0}_DialogActionArea", pButtonType.ToString());
@@ -499,51 +499,51 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     buttonImage = fileActionDefault;
                     break;
                 case PosBaseDialogButtonType.Ok:
-                    buttonLabel = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_button_label_ok");
+                    buttonLabel = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_button_label_ok");
                     buttonImage = fileActionOK;
                     break;
                 case PosBaseDialogButtonType.Cancel:
-                    buttonLabel = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_button_label_cancel");
+                    buttonLabel = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_button_label_cancel");
                     buttonImage = fileActionCancel;
                     break;
                 case PosBaseDialogButtonType.Yes:
-                    buttonLabel = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_button_label_yes");
+                    buttonLabel = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_button_label_yes");
                     buttonImage = fileActionYes;
                     break;
                 case PosBaseDialogButtonType.No:
-                    buttonLabel = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_button_label_no");
+                    buttonLabel = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_button_label_no");
                     buttonImage = fileActionNo;
                     break;
                 case PosBaseDialogButtonType.Close:
-                    buttonLabel = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_button_label_close");
+                    buttonLabel = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_button_label_close");
                     buttonImage = fileActionClose;
                     break;
                 case PosBaseDialogButtonType.Print:
-                    buttonLabel = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_button_label_print");
+                    buttonLabel = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_button_label_print");
                     buttonImage = fileActionPrint;
                     break;
                 case PosBaseDialogButtonType.PrintAs:
-                    buttonLabel = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_button_label_print_as");
+                    buttonLabel = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_button_label_print_as");
                     buttonImage = fileActionPrintAs;
                     break;
                 case PosBaseDialogButtonType.Help:
-                    buttonLabel = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_button_label_help");
+                    buttonLabel = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_button_label_help");
                     buttonImage = fileActionHelp;
                     break;
                 case PosBaseDialogButtonType.CloneDocument:
-                    buttonLabel = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_button_label_clone_document");
+                    buttonLabel = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_button_label_clone_document");
                     buttonImage = fileActionCloneDocument;
                     break;
                 case PosBaseDialogButtonType.OpenDocument:
-                    buttonLabel = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_button_label_open_document");
+                    buttonLabel = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_button_label_open_document");
                     buttonImage = fileActionOpenDocument;
                     break;
                 case PosBaseDialogButtonType.SendEmailDocument:
-                    buttonLabel = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_button_label_send_email_document");
+                    buttonLabel = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_button_label_send_email_document");
                     buttonImage = fileActionSendEmailDocument;
                     break;
                 case PosBaseDialogButtonType.CleanFilter:
-                    buttonLabel = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_button_label_filter_clear");
+                    buttonLabel = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_button_label_filter_clear");
                     buttonImage = fileActionCleanFilter;
                     break;
                 default:
@@ -575,21 +575,21 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         public static TouchButtonIconWithText FactoryGetDialogButtonTypeDocuments(PosBaseDialogButtonType pButtonType, string pButtonName, string pButtonLabel, string pButtonImage)
         {
-            System.Drawing.Color colorBaseDialogActionAreaButtonFont = LogicPOS.Settings.GeneralSettings.Settings["colorBaseDialogActionAreaButtonFont"].StringToColor();
+            System.Drawing.Color colorBaseDialogActionAreaButtonFont = GeneralSettings.Settings["colorBaseDialogActionAreaButtonFont"].StringToColor();
             //Icons
-            string fileActionDefault = DataLayerFramework.Path["images"] + @"Icons\icon_pos_default.png";
-            string fileActionOK = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
-            string fileActionCancel = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png";
-            string fileActionYes = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_yes.png";
-            string fileActionNo = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_no.png";
-            string fileActionClose = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_close.png";
-            string fileActionPrint = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_print.png";
-            string fileActionPrintAs = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_print_as.png";
-            string fileActionHelp = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_help.png";
-            string fileActionCloneDocument = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_clone_document.png ";
-            string fileActionOpenDocument = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_open_document.png";
-            string fileActionSendEmailDocument = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_send_email.png";
-            string fileActionCleanFilter = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_clean_filter.png";
+            string fileActionDefault = GeneralSettings.Path["images"] + @"Icons\icon_pos_default.png";
+            string fileActionOK = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
+            string fileActionCancel = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png";
+            string fileActionYes = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_yes.png";
+            string fileActionNo = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_no.png";
+            string fileActionClose = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_close.png";
+            string fileActionPrint = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_print.png";
+            string fileActionPrintAs = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_print_as.png";
+            string fileActionHelp = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_help.png";
+            string fileActionCloneDocument = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_clone_document.png ";
+            string fileActionOpenDocument = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_open_document.png";
+            string fileActionSendEmailDocument = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_send_email.png";
+            string fileActionCleanFilter = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_clean_filter.png";
 
             //Assign ButtonType to Name, Override After Switch
             string buttonName = (pButtonName != string.Empty) ? pButtonName : string.Format("touchButton{0}_DialogActionArea", pButtonType.ToString());
@@ -604,51 +604,51 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     buttonImage = fileActionDefault;
                     break;
                 case PosBaseDialogButtonType.Ok:
-                    buttonLabel = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_button_label_ok");
+                    buttonLabel = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_button_label_ok");
                     buttonImage = fileActionOK;
                     break;
                 case PosBaseDialogButtonType.Cancel:
-                    buttonLabel = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_button_label_cancel");
+                    buttonLabel = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_button_label_cancel");
                     buttonImage = fileActionCancel;
                     break;
                 case PosBaseDialogButtonType.Yes:
-                    buttonLabel = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_button_label_yes");
+                    buttonLabel = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_button_label_yes");
                     buttonImage = fileActionYes;
                     break;
                 case PosBaseDialogButtonType.No:
-                    buttonLabel = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_button_label_no");
+                    buttonLabel = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_button_label_no");
                     buttonImage = fileActionNo;
                     break;
                 case PosBaseDialogButtonType.Close:
-                    buttonLabel = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_button_label_close");
+                    buttonLabel = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_button_label_close");
                     buttonImage = fileActionClose;
                     break;
                 case PosBaseDialogButtonType.Print:
-                    buttonLabel = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_button_label_print");
+                    buttonLabel = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_button_label_print");
                     buttonImage = fileActionPrint;
                     break;
                 case PosBaseDialogButtonType.PrintAs:
-                    buttonLabel = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_button_label_print_as");
+                    buttonLabel = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_button_label_print_as");
                     buttonImage = fileActionPrintAs;
                     break;
                 case PosBaseDialogButtonType.Help:
-                    buttonLabel = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_button_label_help");
+                    buttonLabel = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_button_label_help");
                     buttonImage = fileActionHelp;
                     break;
                 case PosBaseDialogButtonType.CloneDocument:
-                    buttonLabel = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_button_label_clone_document");
+                    buttonLabel = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_button_label_clone_document");
                     buttonImage = fileActionCloneDocument;
                     break;
                 case PosBaseDialogButtonType.OpenDocument:
-                    buttonLabel = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_button_label_open_document");
+                    buttonLabel = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_button_label_open_document");
                     buttonImage = fileActionOpenDocument;
                     break;
                 case PosBaseDialogButtonType.SendEmailDocument:
-                    buttonLabel = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_button_label_send_email_document");
+                    buttonLabel = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_button_label_send_email_document");
                     buttonImage = fileActionSendEmailDocument;
                     break;
                 case PosBaseDialogButtonType.CleanFilter:
-                    buttonLabel = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_button_label_filter_clear");
+                    buttonLabel = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_button_label_filter_clear");
                     buttonImage = fileActionCleanFilter;
                     break;
                 default:

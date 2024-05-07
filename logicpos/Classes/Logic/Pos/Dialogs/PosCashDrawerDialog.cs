@@ -5,7 +5,6 @@ using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using System;
 using System.Drawing;
 using logicpos.Extensions;
-using logicpos.datalayer.App;
 using logicpos.shared.App;
 using logicpos.datalayer.Xpo;
 using LogicPOS.Settings.Extensions;
@@ -61,14 +60,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             else if (pResponse == _responseTypePrint)
             {
                 //Uncomment to Pront Session Day
-                //PrintTicket.PrintWorkSessionMovementInit(DataLayerFramework.LoggedTerminal.Printer, GlobalFramework.WorkSessionPeriodDay);
+                //PrintTicket.PrintWorkSessionMovementInit(XPOSettings.LoggedTerminal.Printer, GlobalFramework.WorkSessionPeriodDay);
 
                 //PrintWorkSessionMovement
-                //PrintRouter.PrintWorkSessionMovement(DataLayerFramework.LoggedTerminal.Printer, GlobalFramework.WorkSessionPeriodTerminal);
-                FrameworkCalls.PrintWorkSessionMovement(this, DataLayerFramework.LoggedTerminal.ThermalPrinter, SharedFramework.WorkSessionPeriodTerminal);
+                //PrintRouter.PrintWorkSessionMovement(XPOSettings.LoggedTerminal.Printer, GlobalFramework.WorkSessionPeriodTerminal);
+                FrameworkCalls.PrintWorkSessionMovement(this, XPOSettings.LoggedTerminal.ThermalPrinter, SharedFramework.WorkSessionPeriodTerminal);
 
-                //PrintTicket.PrintWorkSessionMovement(DataLayerFramework.LoggedTerminal.Printer, GlobalFramework.WorkSessionPeriodDay);
-                //PrintTicket.PrintWorkSessionMovement(DataLayerFramework.LoggedTerminal.Printer, GlobalFramework.WorkSessionPeriodTerminal);
+                //PrintTicket.PrintWorkSessionMovement(XPOSettings.LoggedTerminal.Printer, GlobalFramework.WorkSessionPeriodDay);
+                //PrintTicket.PrintWorkSessionMovement(XPOSettings.LoggedTerminal.Printer, GlobalFramework.WorkSessionPeriodTerminal);
                 //(_sourceWindow as PosCashDialog).ShowClosePeriodMessage(GlobalFramework.WorkSessionPeriodDay);
                 //(_sourceWindow as PosCashDialog).ShowClosePeriodMessage(GlobalFramework.WorkSessionPeriodTerminal);
 
@@ -78,41 +77,41 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 //#0 - Day 1
                 //workSessionPeriodDay = (WorkSessionPeriod)XPOHelper.GetXPGuidObjectFromSession(typeof(WorkSessionPeriod), new Guid("90a187b3-c91b-4c5b-907a-d54a6ee1dcb6"));
-                //PrintTicket.PrintWorkSessionMovement(DataLayerFramework.LoggedTerminal.Printer, workSessionPeriodDay);
+                //PrintTicket.PrintWorkSessionMovement(XPOSettings.LoggedTerminal.Printer, workSessionPeriodDay);
                 //#8 - Day 2
                 //workSessionPeriodDay = (WorkSessionPeriod)XPOHelper.GetXPGuidObjectFromSession(typeof(WorkSessionPeriod), new Guid("5ce65097-55a2-4a6c-9406-aabe9f3f0124"));
-                //PrintTicket.PrintWorkSessionMovement(DataLayerFramework.LoggedTerminal.Printer, workSessionPeriodDay);
+                //PrintTicket.PrintWorkSessionMovement(XPOSettings.LoggedTerminal.Printer, workSessionPeriodDay);
 
                 //#1 - Day1
                 //workSessionPeriodTerminal = (WorkSessionPeriod)XPOHelper.GetXPGuidObjectFromSession(typeof(WorkSessionPeriod), new Guid("12d74d99-9734-4adb-b322-82f337e24d3e"));
-                //PrintTicket.PrintWorkSessionMovement(DataLayerFramework.LoggedTerminal.Printer, workSessionPeriodTerminal);
+                //PrintTicket.PrintWorkSessionMovement(XPOSettings.LoggedTerminal.Printer, workSessionPeriodTerminal);
                 //#2 - Day1
                 //workSessionPeriodTerminal = (WorkSessionPeriod)XPOHelper.GetXPGuidObjectFromSession(typeof(WorkSessionPeriod), new Guid("67758bb2-c52a-4c05-8e10-37f63f729ce4"));
-                //PrintTicket.PrintWorkSessionMovement(DataLayerFramework.LoggedTerminal.Printer, workSessionPeriodTerminal);
+                //PrintTicket.PrintWorkSessionMovement(XPOSettings.LoggedTerminal.Printer, workSessionPeriodTerminal);
                 //#3 - Day1
                 //workSessionPeriodTerminal = (WorkSessionPeriod)XPOHelper.GetXPGuidObjectFromSession(typeof(WorkSessionPeriod), new Guid("f43ae288-3615-44c0-b876-4fcac01efd1e"));
-                //PrintTicket.PrintWorkSessionMovement(DataLayerFramework.LoggedTerminal.Printer, workSessionPeriodTerminal);
+                //PrintTicket.PrintWorkSessionMovement(XPOSettings.LoggedTerminal.Printer, workSessionPeriodTerminal);
                 //#4 - Day1
                 //workSessionPeriodTerminal = (WorkSessionPeriod)XPOHelper.GetXPGuidObjectFromSession(typeof(WorkSessionPeriod), new Guid("8b261a90-c15d-4e54-a013-c85467338224"));
-                //PrintTicket.PrintWorkSessionMovement(DataLayerFramework.LoggedTerminal.Printer, workSessionPeriodTerminal);
+                //PrintTicket.PrintWorkSessionMovement(XPOSettings.LoggedTerminal.Printer, workSessionPeriodTerminal);
                 //#5 - Day1
                 //workSessionPeriodTerminal = (WorkSessionPeriod)XPOHelper.GetXPGuidObjectFromSession(typeof(WorkSessionPeriod), new Guid("13816f1f-4dd5-4351-afe4-c492f61cacb1"));
-                //PrintTicket.PrintWorkSessionMovement(DataLayerFramework.LoggedTerminal.Printer, workSessionPeriodTerminal);
+                //PrintTicket.PrintWorkSessionMovement(XPOSettings.LoggedTerminal.Printer, workSessionPeriodTerminal);
                 //#6 - Day1
                 //workSessionPeriodTerminal = (WorkSessionPeriod)XPOHelper.GetXPGuidObjectFromSession(typeof(WorkSessionPeriod), new Guid("e5698d06-5740-4317-b7c7-d3eb92063b37"));
-                //PrintTicket.PrintWorkSessionMovement(DataLayerFramework.LoggedTerminal.Printer, workSessionPeriodTerminal);
+                //PrintTicket.PrintWorkSessionMovement(XPOSettings.LoggedTerminal.Printer, workSessionPeriodTerminal);
                 //#7 - Day1
                 //workSessionPeriodTerminal = (WorkSessionPeriod)XPOHelper.GetXPGuidObjectFromSession(typeof(WorkSessionPeriod), new Guid("734c8ed3-34f9-4096-8c20-de9110a24817"));
-                //PrintTicket.PrintWorkSessionMovement(DataLayerFramework.LoggedTerminal.Printer, workSessionPeriodTerminal);     
+                //PrintTicket.PrintWorkSessionMovement(XPOSettings.LoggedTerminal.Printer, workSessionPeriodTerminal);     
                 //#9 - Day2 - Terminal #10
                 //workSessionPeriodTerminal = (WorkSessionPeriod)XPOHelper.GetXPGuidObjectFromSession(typeof(WorkSessionPeriod), new Guid("f445c36c-3ebd-46f1-bcbd-d158e497eda9"));
-                //PrintTicket.PrintWorkSessionMovement(DataLayerFramework.LoggedTerminal.Printer, workSessionPeriodTerminal);     
+                //PrintTicket.PrintWorkSessionMovement(XPOSettings.LoggedTerminal.Printer, workSessionPeriodTerminal);     
                 //#10 - Day2 - Terminal #20
                 //workSessionPeriodTerminal = (WorkSessionPeriod)XPOHelper.GetXPGuidObjectFromSession(typeof(WorkSessionPeriod), new Guid("74fd498a-c1a7-46e6-a117-14eea795e93d"));
-                //PrintTicket.PrintWorkSessionMovement(DataLayerFramework.LoggedTerminal.Printer, workSessionPeriodTerminal);     
+                //PrintTicket.PrintWorkSessionMovement(XPOSettings.LoggedTerminal.Printer, workSessionPeriodTerminal);     
                 //#11 - Day2 - Terminal #30
                 //workSessionPeriodTerminal = (WorkSessionPeriod)XPOHelper.GetXPGuidObjectFromSession(typeof(WorkSessionPeriod), new Guid("14631cda-f31a-4e7a-8a75-a3ba2955ccf8"));
-                //PrintTicket.PrintWorkSessionMovement(DataLayerFramework.LoggedTerminal.Printer, workSessionPeriodTerminal);     
+                //PrintTicket.PrintWorkSessionMovement(XPOSettings.LoggedTerminal.Printer, workSessionPeriodTerminal);     
 
                 this.Run();
             }

@@ -1,6 +1,6 @@
 ﻿using Gtk;
 using logicpos.Classes.Enums.Hardware;
-using logicpos.datalayer.App;
+using logicpos.datalayer.Xpo;
 using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
@@ -30,7 +30,7 @@ namespace logicpos.Classes.Logic.Hardware
         public InputReader()
         {
             //Init Time Interval
-            _timerInterval = DataLayerFramework.LoggedTerminal.InputReaderTimerInterval;
+            _timerInterval = XPOSettings.LoggedTerminal.InputReaderTimerInterval;
             //Init Readers
             _readers = InitReaders();
         }
@@ -41,9 +41,9 @@ namespace logicpos.Classes.Logic.Hardware
 
             try
             {
-                if (DataLayerFramework.LoggedTerminal.BarcodeReader != null)
+                if (XPOSettings.LoggedTerminal.BarcodeReader != null)
                 {
-                    _barCodeReaderList = SharedUtils.CommaDelimitedStringToIntList(DataLayerFramework.LoggedTerminal.BarcodeReader.ReaderSizes);
+                    _barCodeReaderList = SharedUtils.CommaDelimitedStringToIntList(XPOSettings.LoggedTerminal.BarcodeReader.ReaderSizes);
                     
                     for (int i = 0; i < _barCodeReaderList.Count; i++)
                     {
@@ -51,9 +51,9 @@ namespace logicpos.Classes.Logic.Hardware
                     }
                 }
 
-                if (DataLayerFramework.LoggedTerminal.CardReader != null)
+                if (XPOSettings.LoggedTerminal.CardReader != null)
                 {
-                    _cardReaderList = SharedUtils.CommaDelimitedStringToIntList(DataLayerFramework.LoggedTerminal.CardReader.ReaderSizes);
+                    _cardReaderList = SharedUtils.CommaDelimitedStringToIntList(XPOSettings.LoggedTerminal.CardReader.ReaderSizes);
                     
                     for (int i = 0; i < _cardReaderList.Count; i++)
                     {

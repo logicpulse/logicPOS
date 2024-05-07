@@ -3,12 +3,12 @@ using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.datalayer.App;
 using logicpos.Extensions;
 using System;
 using System.Drawing;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {
@@ -100,13 +100,13 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             //}
 
             //Initialize Buttons     
-            ButtonPrevRecord = GetNewButton("touchButtonPrev_DialogActionArea", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "widget_generictreeviewnavigator_record_prev"), @"Icons/icon_pos_nav_prev.png");
-            ButtonNextRecord = GetNewButton("touchButtonNext_DialogActionArea", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "widget_generictreeviewnavigator_record_next"), @"Icons/icon_pos_nav_next.png");
-            ButtonInsert = GetNewButton("touchButtonInsert_DialogActionArea", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "widget_generictreeviewnavigator_insert"), @"Icons/icon_pos_nav_new.png");
-            ButtonView = GetNewButton("touchButtonView_DialogActionArea", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "widget_generictreeviewnavigator_view"), @"Icons/icon_pos_nav_view.png");
-            ButtonUpdate = GetNewButton("touchButtonUpdate_DialogActionArea", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "widget_generictreeviewnavigator_update"), @"Icons/icon_pos_nav_update.png");
-            ButtonDelete = GetNewButton("touchButtonDelete_DialogActionArea", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "widget_generictreeviewnavigator_delete"), @"Icons/icon_pos_nav_delete.png");
-            ButtonRefresh = GetNewButton("touchButtonRefresh_DialogActionArea", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "widget_generictreeviewnavigator_refresh"), @"Icons/icon_pos_nav_refresh.png");
+            ButtonPrevRecord = GetNewButton("touchButtonPrev_DialogActionArea", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "widget_generictreeviewnavigator_record_prev"), @"Icons/icon_pos_nav_prev.png");
+            ButtonNextRecord = GetNewButton("touchButtonNext_DialogActionArea", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "widget_generictreeviewnavigator_record_next"), @"Icons/icon_pos_nav_next.png");
+            ButtonInsert = GetNewButton("touchButtonInsert_DialogActionArea", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "widget_generictreeviewnavigator_insert"), @"Icons/icon_pos_nav_new.png");
+            ButtonView = GetNewButton("touchButtonView_DialogActionArea", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "widget_generictreeviewnavigator_view"), @"Icons/icon_pos_nav_view.png");
+            ButtonUpdate = GetNewButton("touchButtonUpdate_DialogActionArea", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "widget_generictreeviewnavigator_update"), @"Icons/icon_pos_nav_update.png");
+            ButtonDelete = GetNewButton("touchButtonDelete_DialogActionArea", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "widget_generictreeviewnavigator_delete"), @"Icons/icon_pos_nav_delete.png");
+            ButtonRefresh = GetNewButton("touchButtonRefresh_DialogActionArea", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "widget_generictreeviewnavigator_refresh"), @"Icons/icon_pos_nav_refresh.png");
             //_buttonClose = GetNewButton("touchButtonPosToolbarApplicationClose_Red", CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_pos, @"Icons/icon_pos_toolbar_application_close.png");
 
             //Events
@@ -153,12 +153,12 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             TouchButtonIconWithText result = null;
             try
             {
-                string fileIcon = DataLayerFramework.Path["images"] + pIcon;
-                string fontBaseDialogActionAreaButton = LogicPOS.Settings.GeneralSettings.Settings["fontBaseDialogActionAreaButton"];
+                string fileIcon = GeneralSettings.Path["images"] + pIcon;
+                string fontBaseDialogActionAreaButton = GeneralSettings.Settings["fontBaseDialogActionAreaButton"];
                 Color colorBaseDialogActionAreaButtonBackground = Color.Transparent;
-                Color colorBaseDialogActionAreaButtonFont = LogicPOS.Settings.GeneralSettings.Settings["colorBaseDialogActionAreaButtonFont"].StringToColor();
-                Size sizeBaseDialogActionAreaBackOfficeNavigatorButton = logicpos.Utils.StringToSize(LogicPOS.Settings.GeneralSettings.Settings["sizeBaseDialogActionAreaBackOfficeNavigatorButton"]);
-                Size sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon = logicpos.Utils.StringToSize(LogicPOS.Settings.GeneralSettings.Settings["sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon"]);
+                Color colorBaseDialogActionAreaButtonFont = GeneralSettings.Settings["colorBaseDialogActionAreaButtonFont"].StringToColor();
+                Size sizeBaseDialogActionAreaBackOfficeNavigatorButton = logicpos.Utils.StringToSize(GeneralSettings.Settings["sizeBaseDialogActionAreaBackOfficeNavigatorButton"]);
+                Size sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon = logicpos.Utils.StringToSize(GeneralSettings.Settings["sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon"]);
 
                 result = new TouchButtonIconWithText(pId, colorBaseDialogActionAreaButtonBackground, pLabel, fontBaseDialogActionAreaButton, colorBaseDialogActionAreaButtonFont, fileIcon, sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon, sizeBaseDialogActionAreaBackOfficeNavigatorButton.Width, sizeBaseDialogActionAreaBackOfficeNavigatorButton.Height);
             }

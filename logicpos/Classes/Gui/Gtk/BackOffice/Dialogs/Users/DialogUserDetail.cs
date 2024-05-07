@@ -6,7 +6,6 @@ using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using System;
 using logicpos.Classes.Enums.Dialogs;
-using logicpos.datalayer.App;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Utility;
 using LogicPOS.Globalization;
@@ -34,7 +33,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             //Store References
             _userDetail = (DataSourceRow as sys_userdetail);
-            _isLoggedUser = (_userDetail == DataLayerFramework.LoggedUser);
+            _isLoggedUser = (_userDetail == XPOSettings.LoggedUser);
             
             //Store Current User Unchanged Profile
             _currentUserPermissionProfileGuid = (_userDetail.Profile != null && _dialogMode == DialogMode.Update)

@@ -1,5 +1,5 @@
-﻿using logicpos.datalayer.App;
-using logicpos.shared.Enums;
+﻿using logicpos.shared.Enums;
+using LogicPOS.Settings;
 using System;
 using System.IO;
 using System.Reflection;
@@ -216,7 +216,7 @@ namespace logicpos.shared.Classes.Finance
         {
             PropertyInfo[] pis = this.GetType().GetProperties(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public);
 
-            StreamWriter sw = new StreamWriter(string.Format("{0}output.txt", DataLayerFramework.Path["temp"]), true);
+            StreamWriter sw = new StreamWriter(string.Format("{0}output.txt", GeneralSettings.Path["temp"]), true);
             sw.WriteLine(pLabel);
 
             foreach (PropertyInfo p in pis)

@@ -1,5 +1,4 @@
-﻿using logicpos.datalayer.App;
-using logicpos.datalayer.DataLayer.Xpo;
+﻿using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Enums;
 using System;
 using System.Collections.Generic;
@@ -32,13 +31,13 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 
                 //Order Request #1/3
                 _ticketTitle = string.Format("{0}: #{1}"
-                    , CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_order_request")
+                    , CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_order_request")
                     , _orderTicket.TicketId
                 );
 
                 //Table|Order #2|Name/Zone
                 _ticketSubTitle = string.Format("{0}: #{1}/{2}"
-                    , CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), string.Format("global_table_appmode_{0}", AppOperationModeSettings.CustomAppOperationMode.AppOperationTheme).ToLower()) /* IN008024 */
+                    , CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), string.Format("global_table_appmode_{0}", AppOperationModeSettings.CustomAppOperationMode.AppOperationTheme).ToLower()) /* IN008024 */
                     , _orderTicket.OrderMain.PlaceTable.Designation
                     , _orderTicket.OrderMain.PlaceTable.Place.Designation
                 );
@@ -78,9 +77,9 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
         {
             List<TicketColumn> columns = new List<TicketColumn>
             {
-                new TicketColumn("Designation", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_designation"), 0, TicketColumnsAlign.Left),
-                new TicketColumn("Quantity", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_quantity_acronym"), 8, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"),
-                new TicketColumn("UnitMeasure", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_unit_measure_acronym"), 3, TicketColumnsAlign.Right)
+                new TicketColumn("Designation", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_designation"), 0, TicketColumnsAlign.Left),
+                new TicketColumn("Quantity", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_quantity_acronym"), 8, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"),
+                new TicketColumn("UnitMeasure", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_unit_measure_acronym"), 3, TicketColumnsAlign.Right)
             };
 
             //Prepare Table with Padding

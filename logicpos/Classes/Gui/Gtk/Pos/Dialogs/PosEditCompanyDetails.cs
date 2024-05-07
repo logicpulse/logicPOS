@@ -8,7 +8,6 @@ using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
-using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Finance;
@@ -41,7 +40,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Init Local Vars
             string windowTitle = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_edit_configurationpreferenceparameter");
             Size windowSize = new Size(600, 600);
-            string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_system.png";
+            string fileDefaultWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_system.png";
 
             //References
             _sourceWindow = pSourceWindow;

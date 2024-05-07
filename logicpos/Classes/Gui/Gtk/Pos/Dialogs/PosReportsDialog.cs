@@ -4,7 +4,6 @@ using DevExpress.Xpo.DB;
 using Gtk;
 using logicpos.App;
 using logicpos.Classes.Gui.Gtk.Widgets;
-using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Reports;
@@ -12,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -29,14 +29,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
-            string windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_reports");
+            string windowTitle = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_reports");
             System.Drawing.Size windowSize = new System.Drawing.Size(500, 509);//454
-            string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_reports.png";
+            string fileDefaultWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_reports.png";
 
             System.Drawing.Size sizeIcon = new System.Drawing.Size(50, 50);
 
             //Icons
-            string fileIconDefault = DataLayerFramework.Path["images"] + @"Icons\icon_pos_default.png";
+            string fileIconDefault = GeneralSettings.Path["images"] + @"Icons\icon_pos_default.png";
 
             // InitUI
             InitUI();
@@ -107,7 +107,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     // Init AccordionChild
                     Dictionary<string, AccordionNode> accordionChilds = new Dictionary<string, AccordionNode>();
 
-                    buttonLabelReportTypeString = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), reportType.ResourceString);
+                    buttonLabelReportTypeString = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), reportType.ResourceString);
                     // Try to get Resource
                     if (string.IsNullOrEmpty(buttonLabelReportTypeString))
                     {
@@ -127,7 +127,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             bool reportSensitive = true;
                             userpermissionitemToken = report.Token;
                             //Prevent Reports to non-licenced Module stocks
-                            if (report.ReportType.Oid == Guid.Parse("751c9e56-26bb-4fc8-8110-6c1e3b7c84e6") && report.Token != "REPORT_LIST_STOCK_MOVEMENTS" && !LogicPOS.Settings.LicenseSettings.LicenseModuleStocks)
+                            if (report.ReportType.Oid == Guid.Parse("751c9e56-26bb-4fc8-8110-6c1e3b7c84e6") && report.Token != "REPORT_LIST_STOCK_MOVEMENTS" && !LicenseSettings.LicenseModuleStocks)
                             {
                                 reportSensitive = false;
                             }

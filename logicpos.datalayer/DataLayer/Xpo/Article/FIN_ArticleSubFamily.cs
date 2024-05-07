@@ -1,20 +1,19 @@
 using DevExpress.Xpo;
-using logicpos.datalayer.App;
 using logicpos.datalayer.Xpo;
 using System;
 
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class fin_articlefamily : XPGuidObject
+    public class fin_articlesubfamily : XPGuidObject
     {
-        public fin_articlefamily() : base() { }
-        public fin_articlefamily(Session session) : base(session) { }
+        public fin_articlesubfamily() : base() { }
+        public fin_articlesubfamily(Session session) : base(session) { }
 
         protected override void OnAfterConstruction()
         {
-            Ord = XPOHelper.GetNextTableFieldID(nameof(fin_articlefamily), "Ord");
-            Code = XPOHelper.GetNextTableFieldID(nameof(fin_articlefamily), "Code");
+            Ord = XPOHelper.GetNextTableFieldID(nameof(fin_articlesubfamily), "Ord");
+            Code = XPOHelper.GetNextTableFieldID(nameof(fin_articlesubfamily), "Code");
         }
 
         private uint fOrd;
@@ -33,7 +32,6 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         private string fDesignation;
-        [Indexed(Unique = true)]
         public string Designation
         {
             get { return fDesignation; }
@@ -71,9 +69,25 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("ButtonIcon", ref fButtonIcon, value); }
         }
 
-        //UserCommissionGroup One <> Many Family
+        //SubFamily One <> Many Article
+        [Association(@"SubFamilyReferencesArticle", typeof(fin_article))]
+        public XPCollection<fin_article> Article
+        {
+            get { return GetCollection<fin_article>("Article"); }
+        }
+
+        //Family One <> Many SubFamily
+        private fin_articlefamily fFamily;
+        [Association(@"FamilyReferencesSubFamily")]
+        public fin_articlefamily Family
+        {
+            get { return fFamily; }
+            set { SetPropertyValue<fin_articlefamily>("Family", ref fFamily, value); }
+        }
+
+        //UserCommissionGroup One <> Many SubFamily
         private pos_usercommissiongroup fCommissionGroup;
-        [Association(@"UserCommissionGroupReferencesFamily")]
+        [Association(@"UserCommissionGroupReferencesSubFamily")]
         public pos_usercommissiongroup CommissionGroup
         {
             get { return fCommissionGroup; }
@@ -82,43 +96,47 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         //CustomerDiscountGroup One <> Many SubFamily
         private erp_customerdiscountgroup fDiscountGroup;
-        [Association(@"CustomerDiscountGroupReferencesFamily")]
+        [Association(@"CustomerDiscountGroupReferencesSubFamily")]
         public erp_customerdiscountgroup DiscountGroup
         {
             get { return fDiscountGroup; }
             set { SetPropertyValue<erp_customerdiscountgroup>("DiscountGroup", ref fDiscountGroup, value); }
         }
 
-        //ConfigurationPrinters One <> Many ArticleFamily
+        //ConfigurationVatRate One <> Many SubFamily
+        private fin_configurationvatrate fVatOnTable;
+        [Association(@"ConfigurationVatRateReferencesSubFamily_ForVatOnTable")]
+        public fin_configurationvatrate VatOnTable
+        {
+            get { return fVatOnTable; }
+            set { SetPropertyValue<fin_configurationvatrate>("VatOnTable", ref fVatOnTable, value); }
+        }
+
+        //ConfigurationVatRate One <> Many SubFamily
+        private fin_configurationvatrate fVatDirectSelling;
+        [Association(@"ConfigurationVatRateReferencesSubFamily_ForVatDirectSelling")]
+        public fin_configurationvatrate VatDirectSelling
+        {
+            get { return fVatDirectSelling; }
+            set { SetPropertyValue<fin_configurationvatrate>("VatDirectSelling", ref fVatDirectSelling, value); }
+        }
+
+        //ConfigurationPrinters One <> Many SubFamily
         private sys_configurationprinters fPrinter;
-        [Association(@"ConfigurationPrintersReferencesArticleFamily")]
+        [Association(@"ConfigurationPrintersReferencesArticleSubFamily")]
         public sys_configurationprinters Printer
         {
             get { return fPrinter; }
             set { SetPropertyValue<sys_configurationprinters>("Printer", ref fPrinter, value); }
         }
 
-        //ArticleFamily One <> Many ConfigurationPrintersTemplates
+        //One ConfigurationPrintersTemplates <> Many SubFamily
         private sys_configurationprinterstemplates fTemplate;
-        [Association(@"ConfigurationPrintersTemplatesReferencesArticleFamily")]
+        [Association(@"ConfigurationPrintersTemplatesReferencesArticleSubFamily")]
         public sys_configurationprinterstemplates Template
         {
             get { return fTemplate; }
             set { SetPropertyValue<sys_configurationprinterstemplates>("Template", ref fTemplate, value); }
-        }
-
-        //Family One <> Many Article
-        [Association(@"FamilyReferencesArticle", typeof(fin_article))]
-        public XPCollection<fin_article> Article
-        {
-            get { return GetCollection<fin_article>("Article"); }
-        }
-
-        //Family One <> Many SubFamily
-        [Association(@"FamilyReferencesSubFamily", typeof(fin_articlesubfamily))]
-        public XPCollection<fin_articlesubfamily> SubFamily
-        {
-            get { return GetCollection<fin_articlesubfamily>("SubFamily"); }
         }
     }
 }

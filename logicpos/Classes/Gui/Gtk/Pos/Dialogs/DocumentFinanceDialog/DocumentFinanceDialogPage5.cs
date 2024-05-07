@@ -5,7 +5,6 @@ using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
-using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.financial.library.App;
 using logicpos.shared.App;

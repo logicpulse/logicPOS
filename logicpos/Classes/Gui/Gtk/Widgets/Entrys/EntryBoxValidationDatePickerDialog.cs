@@ -2,7 +2,6 @@
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using System;
 using logicpos.Classes.Enums.Keyboard;
-using logicpos.datalayer.App;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using logicpos.datalayer.Xpo;

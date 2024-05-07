@@ -1,12 +1,12 @@
 ﻿using Gtk;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.datalayer.App;
 using logicpos.Extensions;
 using System;
 using System.IO;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -64,7 +64,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Init Local Vars
             string windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_message_dialog");
             System.Drawing.Size windowSize = pSize;
-            string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_default.png";
+            string fileDefaultWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_default.png";
 
             if (!pTitle.Equals(string.Empty))
             {
@@ -73,7 +73,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             if (!pImageWindowIcon.Equals(string.Empty))
             {
-                fileDefaultWindowIcon = DataLayerFramework.Path["images"] + pImageWindowIcon;
+                fileDefaultWindowIcon = GeneralSettings.Path["images"] + pImageWindowIcon;
             }
 
             //Text View
@@ -107,7 +107,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             Fixed fixedContent = new Fixed();
 
             //Add content, with or without ImageDialog
-            string fileImageDialog = DataLayerFramework.Path["images"] + pImageDialog;
+            string fileImageDialog = GeneralSettings.Path["images"] + pImageDialog;
             if (pImageDialog != string.Empty && File.Exists(fileImageDialog))
             {
                 Gdk.Pixbuf pixBuf = logicpos.Utils.FileToPixBuf(fileImageDialog);

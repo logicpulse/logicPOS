@@ -3,7 +3,7 @@ using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.datalayer.App;
+using LogicPOS.Settings;
 using System.Drawing;
 using System.IO;
 
@@ -54,7 +54,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             if (!File.Exists(pWindowIcon))
             {
-                pWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_system.png";
+                pWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_system.png";
             }
 
             //Always assign  pInitialValue to Dialog.Value

@@ -78,11 +78,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 ConfigurationPlaceTerminal configurationPlaceTerminal = ((_dialog as DialogConfigurationPlaceTerminal).DataSourceRow as ConfigurationPlaceTerminal);
 
                 //If change Active Terminal, Changed Logged Printer
-                if (configurationPlaceTerminal == DataLayerFramework.LoggedTerminal)
+                if (configurationPlaceTerminal == XPOSettings.LoggedTerminal)
                 {
-                    if (DataLayerFramework.LoggedTerminal.Printer != configurationPlaceTerminal.Printer)
+                    if (XPOSettings.LoggedTerminal.Printer != configurationPlaceTerminal.Printer)
                     {
-                        DataLayerFramework.LoggedTerminal.Printer = configurationPlaceTerminal.Printer;
+                        XPOSettings.LoggedTerminal.Printer = configurationPlaceTerminal.Printer;
                     }
                 }
             }

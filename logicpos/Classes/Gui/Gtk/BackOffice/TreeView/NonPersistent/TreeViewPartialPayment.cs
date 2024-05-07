@@ -1,7 +1,6 @@
 ﻿using Gtk;
 using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
-using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.shared.App;

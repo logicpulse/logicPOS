@@ -2,11 +2,11 @@
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.datalayer.App;
 using logicpos.Extensions;
 using System.Drawing;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -66,9 +66,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             //Parameters
             _sourceWindow = pSourceWindow;
             //Defaults
-            Color colorBaseDialogEntryBoxBackground = LogicPOS.Settings.GeneralSettings.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
-            string fontLabel = LogicPOS.Settings.GeneralSettings.Settings["fontEntryBoxLabel"];
-            string fontEntry = LogicPOS.Settings.GeneralSettings.Settings["fontEntryBoxValue"];
+            Color colorBaseDialogEntryBoxBackground = GeneralSettings.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
+            string fontLabel = GeneralSettings.Settings["fontEntryBoxLabel"];
+            string fontEntry = GeneralSettings.Settings["fontEntryBoxValue"];
             int padding = 2;
             //This
             this.ModifyBg(StateType.Normal, colorBaseDialogEntryBoxBackground.ToGdkColor());
@@ -99,9 +99,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 //Parameters
                 _sourceWindow = pSourceWindow;
                 //Defaults
-                Color colorBaseDialogEntryBoxBackground = LogicPOS.Settings.GeneralSettings.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
-                string fontLabel = LogicPOS.Settings.GeneralSettings.Settings["fontEntryBoxLabel"];
-                string fontEntry = LogicPOS.Settings.GeneralSettings.Settings["fontEntryBoxValue"];
+                Color colorBaseDialogEntryBoxBackground = GeneralSettings.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
+                string fontLabel = GeneralSettings.Settings["fontEntryBoxLabel"];
+                string fontEntry = GeneralSettings.Settings["fontEntryBoxValue"];
                 int padding = 2;
                 //This
                 this.ModifyBg(StateType.Normal, colorBaseDialogEntryBoxBackground.ToGdkColor());
@@ -130,16 +130,16 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 _sourceWindow = pSourceWindow;
                 //Defaults
                 Color colorBaseDialogEntryBoxBackground = "240, 240, 240".StringToColor();
-                Color validLabel = LogicPOS.Settings.GeneralSettings.Settings["colorEntryValidationValidFont"].StringToColor();
+                Color validLabel = GeneralSettings.Settings["colorEntryValidationValidFont"].StringToColor();
 
                 string fontLabel = "10";
                 string fontEntry = "9";
                 int padding = 2;
                 if (pSourceWindow.GetType() == typeof(PosArticleStockDialog))
                 {
-                    colorBaseDialogEntryBoxBackground = LogicPOS.Settings.GeneralSettings.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
-                    fontLabel = LogicPOS.Settings.GeneralSettings.Settings["fontEntryBoxLabel"];
-                    fontEntry = LogicPOS.Settings.GeneralSettings.Settings["fontEntryBoxValue"];
+                    colorBaseDialogEntryBoxBackground = GeneralSettings.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
+                    fontLabel = GeneralSettings.Settings["fontEntryBoxLabel"];
+                    fontEntry = GeneralSettings.Settings["fontEntryBoxValue"];
                 }
 
                 this.ModifyBg(StateType.Normal, colorBaseDialogEntryBoxBackground.ToGdkColor());
@@ -168,16 +168,16 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 _sourceWindow = pSourceWindow;
                 //Defaults
                 Color colorBaseDialogEntryBoxBackground = "240, 240, 240".StringToColor();
-                Color validLabel = LogicPOS.Settings.GeneralSettings.Settings["colorEntryValidationValidFont"].StringToColor();
+                Color validLabel = GeneralSettings.Settings["colorEntryValidationValidFont"].StringToColor();
 
                 string fontLabel = "10";
                 string fontEntry = "9";
                 int padding = 2;
                 if (pSourceWindow.GetType() == typeof(PosArticleStockDialog))
                 {
-                    colorBaseDialogEntryBoxBackground = LogicPOS.Settings.GeneralSettings.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
-                    fontLabel = LogicPOS.Settings.GeneralSettings.Settings["fontEntryBoxLabel"];
-                    fontEntry = LogicPOS.Settings.GeneralSettings.Settings["fontEntryBoxValue"];
+                    colorBaseDialogEntryBoxBackground = GeneralSettings.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
+                    fontLabel = GeneralSettings.Settings["fontEntryBoxLabel"];
+                    fontEntry = GeneralSettings.Settings["fontEntryBoxValue"];
                 }
 
 
@@ -191,11 +191,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 _label = new Label(pLabelText);
                 _label.ModifyFont(fontDescriptionLabel);
                 _label.SetAlignment(0, 2.5F);
-                _label2 = new Label(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_article_code") + "   ");
+                _label2 = new Label(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_article_code") + "   ");
                 _label2.ModifyFont(fontDescriptionLabel);
                 _label2.ModifyBg(StateType.Normal, validLabel.ToGdkColor());
                 _label2.SetAlignment(0, 0.5F);
-                _label3 = new Label("                                                         " + CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "pos_ticketlist_label_quantity"));
+                _label3 = new Label("                                                         " + CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "pos_ticketlist_label_quantity"));
                 _label3.ModifyFont(fontDescriptionLabel);
                 _label3.ModifyBg(StateType.Normal, validLabel.ToGdkColor());
                 _label3.SetAlignment(0, 0.5F);
@@ -231,7 +231,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         public TouchButtonIcon AddButton(string pObjectName, string pFileNameIcon)
         {
-            string icon = string.Format("{0}{1}", DataLayerFramework.Path["images"], pFileNameIcon);
+            string icon = string.Format("{0}{1}", GeneralSettings.Path["images"], pFileNameIcon);
             TouchButtonIcon result = GetButton(pObjectName, icon);
             _hbox.PackStart(result, false, false, 0);
             return result;
@@ -256,7 +256,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             //Prepare KeyBoard
             if (keyboardMode != KeyboardMode.None)
             {
-                string iconKeyboard = string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/Windows/icon_window_keyboard.png");
+                string iconKeyboard = string.Format("{0}{1}", GeneralSettings.Path["images"], @"Icons/Windows/icon_window_keyboard.png");
                 _buttonKeyBoard = GetButton(iconKeyboard);
                 _hbox.PackStart(_buttonKeyBoard, false, false, 0);
                 _buttonKeyBoard.Clicked += delegate

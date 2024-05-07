@@ -1,5 +1,4 @@
 ﻿using Gtk;
-using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.Extensions;

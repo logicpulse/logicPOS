@@ -1,5 +1,4 @@
 ﻿using DevExpress.Xpo.DB;
-using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
@@ -70,8 +69,8 @@ namespace logicpos.financial.library.Classes.Finance
             string fileSaftPT = CultureSettings.FileFormatSaftPT;
             string dateTimeFileFormat = CultureSettings.FileFormatDateTime;
             string dateTime = XPOHelper.CurrentDateTimeAtomic().ToString(dateTimeFileFormat);
-            string fileName = DataLayerFramework.Path["saftpt"] + string.Format(fileSaftPT, SharedSettings.SaftVersionPrefix, SharedSettings.SaftVersion, dateTime).ToLower();
-            if (!FinancialLibraryUtils.HasWritePermissionOnDir(DataLayerFramework.Path["saftpt"].ToString()))
+            string fileName = GeneralSettings.Path["saftpt"] + string.Format(fileSaftPT, SharedSettings.SaftVersionPrefix, SharedSettings.SaftVersion, dateTime).ToLower();
+            if (!FinancialLibraryUtils.HasWritePermissionOnDir(GeneralSettings.Path["saftpt"].ToString()))
             {
                 fileName = string.Format("\\temp\\" + fileSaftPT, SharedSettings.SaftVersionPrefix, SharedSettings.SaftVersion, dateTime).ToLower();
             }

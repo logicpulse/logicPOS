@@ -2,12 +2,12 @@
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.datalayer.App;
 using logicpos.shared.App;
 using System;
 using System.Drawing;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -42,11 +42,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             string windowTitle;
             if (pTotalOrder > 0)
             {
-                windowTitle = string.Format("{0} - {1} : {2}", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_moneypad"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_total_table_tickets"), LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(pTotalOrder, SharedSettings.ConfigurationSystemCurrency.Acronym));
+                windowTitle = string.Format("{0} - {1} : {2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_moneypad"), CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_total_table_tickets"), LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(pTotalOrder, SharedSettings.ConfigurationSystemCurrency.Acronym));
             }
             else
             {
-                windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_moneypad");
+                windowTitle = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_moneypad");
             }
 
             this.InitObject(pSourceWindow, pDialogFlags, windowTitle, pInitialValue, pTotalOrder);
@@ -62,7 +62,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public void InitObject(Window pSourceWindow, DialogFlags pDialogFlags, string pWindowTitle, decimal pInitialValue = 0.0m, decimal pTotalOrder = 0.0m)
         {
             Size windowSize = new Size(524, 497);
-            string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_payments.png";
+            string fileDefaultWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_payments.png";
 
             //Init MoneyPad
             _moneyPad = new MoneyPad(pSourceWindow, pInitialValue);

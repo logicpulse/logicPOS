@@ -1,7 +1,6 @@
 ﻿using DevExpress.Xpo;
 using Gtk;
 using logicpos.Classes.Gui.Gtk.Widgets;
-using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using System;

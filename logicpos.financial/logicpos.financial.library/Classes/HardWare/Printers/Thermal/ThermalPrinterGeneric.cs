@@ -1,5 +1,5 @@
-﻿using logicpos.datalayer.App;
-using logicpos.datalayer.DataLayer.Xpo;
+﻿using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Enums;
 using logicpos.printer.generic;
 using logicpos.shared.App;
@@ -39,9 +39,9 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
             //TK016249 - Impressoras - Diferenciação entre Tipos
             //: this(pPrinter, pEncoding, SettingsApp.PrinterThermalMaxCharsPerLineNormal, SettingsApp.PrinterThermalMaxCharsPerLineNormalBold, SettingsApp.PrinterThermalMaxCharsPerLineSmall)
             : this(pPrinter, pEncoding,
-                  (DataLayerFramework.LoggedTerminal.ThermalPrinter != null && DataLayerFramework.LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineNormal > 0) ? DataLayerFramework.LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineNormal : SharedSettings.PrinterThermalMaxCharsPerLineNormal,
-                  (DataLayerFramework.LoggedTerminal.ThermalPrinter != null && DataLayerFramework.LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineNormalBold > 0) ? DataLayerFramework.LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineNormalBold : SharedSettings.PrinterThermalMaxCharsPerLineNormalBold,
-                  (DataLayerFramework.LoggedTerminal.ThermalPrinter != null && DataLayerFramework.LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineSmall > 0) ? DataLayerFramework.LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineSmall : SharedSettings.PrinterThermalMaxCharsPerLineSmall
+                  (XPOSettings.LoggedTerminal.ThermalPrinter != null && XPOSettings.LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineNormal > 0) ? XPOSettings.LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineNormal : SharedSettings.PrinterThermalMaxCharsPerLineNormal,
+                  (XPOSettings.LoggedTerminal.ThermalPrinter != null && XPOSettings.LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineNormalBold > 0) ? XPOSettings.LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineNormalBold : SharedSettings.PrinterThermalMaxCharsPerLineNormalBold,
+                  (XPOSettings.LoggedTerminal.ThermalPrinter != null && XPOSettings.LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineSmall > 0) ? XPOSettings.LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineSmall : SharedSettings.PrinterThermalMaxCharsPerLineSmall
                   )
         {
         }

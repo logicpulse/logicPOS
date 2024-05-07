@@ -244,7 +244,7 @@ namespace logicpos
                 //If not in Xpo create database Scheme Mode, Get Terminal from Db
                 if (!xpoCreateDatabaseAndSchema)
                 {
-                    datalayer.App.DataLayerFramework.LoggedTerminal = Utils.GetTerminal();
+                    XPOSettings.LoggedTerminal = Utils.GetTerminal();
                 }
 
                 //After Assigned LoggedUser
@@ -366,7 +366,7 @@ namespace logicpos
                 CustomFunctions.Register(POSSettings.AppName);
 
                 //Hardware : Init Display
-                if (datalayer.App.DataLayerFramework.LoggedTerminal.PoleDisplay != null)
+                if (XPOSettings.LoggedTerminal.PoleDisplay != null)
                 {
                     GlobalApp.UsbDisplay = (UsbDisplayDevice)UsbDisplayDevice.InitDisplay();
                     GlobalApp.UsbDisplay.WriteCentered(string.Format("{0} {1}", POSSettings.AppName, SharedUtils.ProductVersion), 1);
@@ -375,25 +375,25 @@ namespace logicpos
                 }
 
                 //Hardware : Init BarCodeReader 
-                if (datalayer.App.DataLayerFramework.LoggedTerminal.BarcodeReader != null)
+                if (XPOSettings.LoggedTerminal.BarcodeReader != null)
                 {
                     GlobalApp.BarCodeReader = new InputReader();
                 }
 
                 //Hardware : Init WeighingBalance
-                if (datalayer.App.DataLayerFramework.LoggedTerminal.WeighingMachine != null)
+                if (XPOSettings.LoggedTerminal.WeighingMachine != null)
                 {
                     //Protecções de integridade das BD's [IN:013327]
                     //Check if port is used by pole display
-                    if (datalayer.App.DataLayerFramework.LoggedTerminal.WeighingMachine.PortName == datalayer.App.DataLayerFramework.LoggedTerminal.PoleDisplay.COM)
+                    if (XPOSettings.LoggedTerminal.WeighingMachine.PortName == XPOSettings.LoggedTerminal.PoleDisplay.COM)
                     {
-                        _logger.Debug(string.Format("Port " + datalayer.App.DataLayerFramework.LoggedTerminal.WeighingMachine.PortName + "Already taken by pole display"));
+                        _logger.Debug(string.Format("Port " + XPOSettings.LoggedTerminal.WeighingMachine.PortName + "Already taken by pole display"));
                     }
                     else
                     {
-                        if (Utils.IsPortOpen(datalayer.App.DataLayerFramework.LoggedTerminal.WeighingMachine.PortName))
+                        if (Utils.IsPortOpen(XPOSettings.LoggedTerminal.WeighingMachine.PortName))
                         {
-                            GlobalApp.WeighingBalance = new WeighingBalance(datalayer.App.DataLayerFramework.LoggedTerminal.WeighingMachine);
+                            GlobalApp.WeighingBalance = new WeighingBalance(XPOSettings.LoggedTerminal.WeighingMachine);
                             //_logger.Debug(string.Format("IsPortOpen: [{0}]", GlobalApp.WeighingBalance.IsPortOpen())); }
                         }
 
@@ -461,9 +461,9 @@ namespace logicpos
 #endif
 
                 //Clean Documents Folder on New Database, else we have Document files that dont correspond to Database
-                if (databaseCreated && Directory.Exists(datalayer.App.DataLayerFramework.Path["documents"].ToString()))
+                if (databaseCreated && Directory.Exists(GeneralSettings.Path["documents"].ToString()))
                 {
-                    string documentsFolder = datalayer.App.DataLayerFramework.Path["documents"].ToString();
+                    string documentsFolder = GeneralSettings.Path["documents"].ToString();
                     System.IO.DirectoryInfo di = new DirectoryInfo(documentsFolder);
                     if (di.GetFiles().Length > 0)
                     {
@@ -496,13 +496,13 @@ namespace logicpos
         private void InitBackupTimerProcess()
         {
             bool xpoCreateDatabaseAndSchema = POSSettings.XPOCreateDatabaseAndSchema;
-            bool validDirectoryBackup = SharedUtils.CreateDirectory(Convert.ToString(datalayer.App.DataLayerFramework.Path["backups"]));
+            bool validDirectoryBackup = SharedUtils.CreateDirectory(Convert.ToString(GeneralSettings.Path["backups"]));
             _logger.Debug("void InitBackupTimerProcess() :: xpoCreateDatabaseAndSchema [ " + xpoCreateDatabaseAndSchema + " ] :: validDirectoryBackup [ " + validDirectoryBackup + " ]");
 
             //Show Dialog if Cant Create Backups Directory (Extra Protection for Shared Network Folders)
             if (!validDirectoryBackup)
             {
-                ResponseType response = Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, MessageType.Question, ButtonsType.YesNo, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_error"), string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_error_create_directory_backups"), Convert.ToString(datalayer.App.DataLayerFramework.Path["backups"])));
+                ResponseType response = Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, MessageType.Question, ButtonsType.YesNo, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_error"), string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_error_create_directory_backups"), Convert.ToString(GeneralSettings.Path["backups"])));
                 //Enable Quit After BootStrap, Preventing Application.Run()
                 if (response == ResponseType.No) _quitAfterBootStrap = true;
             }
@@ -605,7 +605,7 @@ namespace logicpos
         {
             bool result = false;
             string[] files = new string[pFileList.Count + 1];
-            string filename = string.Format("{0}{1}", datalayer.App.DataLayerFramework.Path["temp"], "protected.zip");
+            string filename = string.Format("{0}{1}", GeneralSettings.Path["temp"], "protected.zip");
 
             try
             {

@@ -15,7 +15,6 @@ using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.Widgets.Entrys;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Logic.Others;
-using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
 using logicpos.datalayer.Xpo;
@@ -145,11 +144,11 @@ namespace logicpos
             string fileImageDialogBaseMessageTypeImage = GeneralSettings.Settings["fileImageDialogBaseMessageTypeImage"];
             string fileImageDialogBaseMessageTypeIcon = GeneralSettings.Settings["fileImageDialogBaseMessageTypeIcon"];
             //Files
-            string fileActionOK = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
-            string fileActionCancel = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png";
-            string fileActionYes = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_yes.png";
-            string fileActionNo = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_no.png";
-            string fileActionClose = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_close.png";
+            string fileActionOK = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
+            string fileActionCancel = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png";
+            string fileActionYes = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_yes.png";
+            string fileActionNo = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_no.png";
+            string fileActionClose = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_close.png";
             //Init Local Vars
             string fileImageDialog, fileImageWindowIcon;
             ResponseType resultResponse = ResponseType.None;
@@ -243,7 +242,7 @@ namespace logicpos
 
         public static bool ShowMessageTouchRequiredValidPrinter(Window pSourceWindow, sys_configurationprinters pPrinter)
         {
-            bool result = pPrinter == null && DataLayerFramework.LoggedTerminal.ThermalPrinter == null;
+            bool result = pPrinter == null && XPOSettings.LoggedTerminal.ThermalPrinter == null;
 
             if (result)
             {
@@ -291,7 +290,7 @@ namespace logicpos
             {
                 fin_documentfinanceyearserieterminal documentFinanceYearSerieTerminal = null;
                 fin_documentfinanceseries documentFinanceSerie = null;
-                if (DataLayerFramework.LoggedTerminal != null)
+                if (XPOSettings.LoggedTerminal != null)
                 {
                     documentFinanceYearSerieTerminal = ProcessFinanceDocumentSeries.GetDocumentFinanceYearSerieTerminal(pParameters.DocumentType);
                     if (documentFinanceYearSerieTerminal != null) documentFinanceSerie = documentFinanceYearSerieTerminal.Serie;
@@ -889,7 +888,7 @@ namespace logicpos
             proc.EnableRaisingEvents = false;
             proc.StartInfo.FileName = "aplay";
             //TODO: Put Sound in config
-            proc.StartInfo.Arguments = "-t wav " + DataLayerFramework.Path["sounds"] + @"Clicks\button2.wav";
+            proc.StartInfo.Arguments = "-t wav " + GeneralSettings.Path["sounds"] + @"Clicks\button2.wav";
             proc.Start();
         }
 
@@ -986,7 +985,7 @@ namespace logicpos
 
         public static Gdk.Pixbuf ScreenCapture()
         {
-            string tempPath = Convert.ToString(DataLayerFramework.Path["temp"]);
+            string tempPath = Convert.ToString(GeneralSettings.Path["temp"]);
 
             Gdk.Window window = Gdk.Global.DefaultRootWindow;
             if (window != null)
@@ -1426,7 +1425,7 @@ namespace logicpos
         public static EventBox GetMinimizeEventBox()
         {
 
-            string _fileDefaultWindowIconMinimize = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_window_minimize.png";
+            string _fileDefaultWindowIconMinimize = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_window_minimize.png";
             EventBox result = null;
 
             try
@@ -1474,7 +1473,7 @@ namespace logicpos
 
         public static Dialog GetThreadDialog(Window pSourceWindow, bool dbExists, string backupProcess)
         {
-            string fileWorking = DataLayerFramework.Path["images"] + @"Other\working.gif";
+            string fileWorking = GeneralSettings.Path["images"] + @"Other\working.gif";
 
             Dialog dialog = new Dialog("Working", pSourceWindow, DialogFlags.Modal | DialogFlags.DestroyWithParent);
             dialog.WindowPosition = WindowPosition.Center;
@@ -1964,7 +1963,7 @@ namespace logicpos
 
         public static string GetThemeFileLocation(string pFile)
         {
-            string pathThemes = DataLayerFramework.Path["themes"].ToString();
+            string pathThemes = GeneralSettings.Path["themes"].ToString();
             /* IN008024 */
             return string.Format(@"{0}{1}\{2}", pathThemes, GeneralSettings.AppTheme, pFile);
         }
@@ -2063,7 +2062,7 @@ namespace logicpos
             /* IN006001 */
             try
             {
-                CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("(TerminalTarget = '{0}' OR TerminalTarget IS NULL){1}", DataLayerFramework.LoggedTerminal.Oid, extraFilter));
+                CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("(TerminalTarget = '{0}' OR TerminalTarget IS NULL){1}", XPOSettings.LoggedTerminal.Oid, extraFilter));
 
                 /* IN006001 - for "on demand" notification flow */
                 if (showNotificationOnDemand)
@@ -2127,8 +2126,8 @@ namespace logicpos
                         {
                             item.DateRead = XPOHelper.CurrentDateTimeAtomic();
                             item.Readed = true;
-                            item.UserLastRead = DataLayerFramework.LoggedUser;
-                            item.TerminalLastRead = DataLayerFramework.LoggedTerminal;
+                            item.UserLastRead = XPOSettings.LoggedUser;
+                            item.TerminalLastRead = XPOSettings.LoggedTerminal;
                             item.Save();
 
                             //Call ProcessNotificationsActions
@@ -2668,7 +2667,7 @@ namespace logicpos
 
         public static string GetSessionFileName()
         {
-            string result = Path.Combine(DataLayerFramework.Path["temp"].ToString(), string.Format(SharedSettings.AppSessionFile, LicenseSettings.LicenseHardwareId));
+            string result = Path.Combine(GeneralSettings.Path["temp"].ToString(), string.Format(SharedSettings.AppSessionFile, LicenseSettings.LicenseHardwareId));
             return result;
         }
 

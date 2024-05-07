@@ -1,11 +1,11 @@
 ﻿using Gtk;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets;
-using logicpos.datalayer.App;
 using System;
 using System.Drawing;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -32,10 +32,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public PosKeyboardDialog(Window pSourceWindow, DialogFlags pDialogFlags, KeyboardMode pKeyboardMode, string pTextEntry, string pValidationRule) : base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
-            string windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_virtual_keyboard");
+            string windowTitle = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_virtual_keyboard");
             Size windowSize = new Size(916, 358);
-            string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_keyboard.png";
-            string fileKeyboardXML = DataLayerFramework.Path["keyboards"] + @"163.xml";
+            string fileDefaultWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_keyboard.png";
+            string fileKeyboardXML = GeneralSettings.Path["keyboards"] + @"163.xml";
 
             //Init Content
             Fixed fixedContent = new Fixed();
@@ -68,7 +68,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         //Override Responses - Required to Keep Keyboard in Memory
         protected override void OnResponse(ResponseType pResponse)
         {
-            bool useBaseDialogWindowMask = Convert.ToBoolean(LogicPOS.Settings.GeneralSettings.Settings["useBaseDialogWindowMask"]);
+            bool useBaseDialogWindowMask = Convert.ToBoolean(GeneralSettings.Settings["useBaseDialogWindowMask"]);
 
             if (useBaseDialogWindowMask && this.WindowMaskBackground.Visible) this.WindowMaskBackground.Hide();
 
@@ -89,7 +89,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             if (response == (int)ResponseType.Ok)
             {
-                result = decimal.Parse(dialog.Text, LogicPOS.Settings.CultureSettings.CurrentCultureNumberFormat);
+                result = decimal.Parse(dialog.Text, CultureSettings.CurrentCultureNumberFormat);
             }
             else
             {

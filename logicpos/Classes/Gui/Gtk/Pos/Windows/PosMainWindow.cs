@@ -5,7 +5,6 @@ using logicpos.App;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Logic.Others;
-using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
@@ -24,15 +23,15 @@ namespace logicpos
     {
 
         //Files
-        private readonly string _fileBaseButtonOverlay = DataLayerFramework.Path["images"] + @"Buttons\Pos\button_overlay.png";
+        private readonly string _fileBaseButtonOverlay = GeneralSettings.Path["images"] + @"Buttons\Pos\button_overlay.png";
 
         /* IN006045 */
         //private string _clockFormat = LogicPOS.Settings.GeneralSettings.Settings["dateTimeFormatStatusBar"];
-        private readonly string _clockFormat = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "frontoffice_datetime_format_status_bar");
+        private readonly string _clockFormat = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "frontoffice_datetime_format_status_bar");
 
-        private readonly Color _colorPosNumberPadLeftButtonBackground = LogicPOS.Settings.GeneralSettings.Settings["colorPosNumberPadLeftButtonBackground"].StringToColor();
-        private readonly Color _colorPosNumberRightButtonBackground = LogicPOS.Settings.GeneralSettings.Settings["colorPosNumberRightButtonBackground"].StringToColor();
-        private readonly Color _colorPosHelperBoxsBackground = LogicPOS.Settings.GeneralSettings.Settings["colorPosHelperBoxsBackground"].StringToColor();
+        private readonly Color _colorPosNumberPadLeftButtonBackground = GeneralSettings.Settings["colorPosNumberPadLeftButtonBackground"].StringToColor();
+        private readonly Color _colorPosNumberRightButtonBackground = GeneralSettings.Settings["colorPosNumberRightButtonBackground"].StringToColor();
+        private readonly Color _colorPosHelperBoxsBackground = GeneralSettings.Settings["colorPosHelperBoxsBackground"].StringToColor();
         //UI
         private readonly Fixed _fixedWindow;
         private Label _labelClock;
@@ -107,8 +106,8 @@ namespace logicpos
                 this.ScreenArea.Add(_fixedWindow);
 
                 //Place Minimize EventBox : After InitUI, to be placed Above all Other
-                bool _showMinimize = (!string.IsNullOrEmpty(LogicPOS.Settings.GeneralSettings.Settings["appShowMinimize"]))
-                    && Convert.ToBoolean(LogicPOS.Settings.GeneralSettings.Settings["appShowMinimize"]);
+                bool _showMinimize = (!string.IsNullOrEmpty(GeneralSettings.Settings["appShowMinimize"]))
+                    && Convert.ToBoolean(GeneralSettings.Settings["appShowMinimize"]);
                 if (_showMinimize)
                 {
                     EventBox eventBoxMinimize = Utils.GetMinimizeEventBox();
@@ -125,7 +124,7 @@ namespace logicpos
                 this.KeyReleaseEvent += PosMainWindow_KeyReleaseEvent;
 
                 //Hardware Events
-                if (DataLayerFramework.LoggedTerminal.BarcodeReader != null || DataLayerFramework.LoggedTerminal.CardReader != null)
+                if (XPOSettings.LoggedTerminal.BarcodeReader != null || XPOSettings.LoggedTerminal.CardReader != null)
                 {
                     GlobalApp.BarCodeReader.Captured += HWBarCodeReader_Captured;
                 }
@@ -184,7 +183,7 @@ namespace logicpos
                         ICollection collectionDocumentFinanceSeries = XPOSettings.Session.GetObjects(XPOSettings.Session.GetClassInfo(typeof(fin_documentfinanceyearserieterminal)), criteria, sortCollection, int.MaxValue, false, true);
                         if (collectionDocumentFinanceSeries.Count == 0)
                         {
-                            Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Warning, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_warning"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_warning_open_fiscal_year"));
+                            Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Warning, ButtonsType.Ok, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_warning"), CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_warning_open_fiscal_year"));
                         }
                     }
                     catch (Exception ex)
@@ -217,14 +216,14 @@ namespace logicpos
             Gdk.Color eventBoxImageLogoBackgroundColor = (themeWindow.Objects.EventBoxImageLogo.BackgroundColor as string).StringToGdkColor();
 
             //LOGO
-            Image imageLogo = new Image(Utils.GetThemeFileLocation(LogicPOS.Settings.GeneralSettings.Settings["fileImageBackOfficeLogo"]));
-            if (LogicPOS.Settings.PluginSettings.PluginLicenceManager != null)
+            Image imageLogo = new Image(Utils.GetThemeFileLocation(GeneralSettings.Settings["fileImageBackOfficeLogo"]));
+            if (PluginSettings.PluginLicenceManager != null)
             {
-                string fileImageBackOfficeLogo = string.Format(DataLayerFramework.Path["themes"] + @"Default\Images\logicPOS_loggericpulse_loggerin.png");
+                string fileImageBackOfficeLogo = string.Format(GeneralSettings.Path["themes"] + @"Default\Images\logicPOS_loggericpulse_loggerin.png");
 
-                if (!string.IsNullOrEmpty(LogicPOS.Settings.LicenseSettings.LicenseReseller) && LogicPOS.Settings.LicenseSettings.LicenseReseller == "NewTech")
+                if (!string.IsNullOrEmpty(LicenseSettings.LicenseReseller) && LicenseSettings.LicenseReseller == "NewTech")
                 {
-                    fileImageBackOfficeLogo = string.Format(DataLayerFramework.Path["themes"] + @"Default\Images\Branding\{0}\logicPOS_loggericpulse_loggerin.png", "NT");
+                    fileImageBackOfficeLogo = string.Format(GeneralSettings.Path["themes"] + @"Default\Images\Branding\{0}\logicPOS_loggericpulse_loggerin.png", "NT");
                 }
 
                 //var bitmapImage = GlobalFramework.PluginLicenceManager.DecodeImage(fileImageBackOfficeLogo, eventBoxImageLogoSize.Width, eventBoxImageLogoSize.Height);
@@ -278,7 +277,7 @@ namespace logicpos
             eventBoxStatusBar1.ModifyBg(StateType.Normal, eventBoxStatusBar1BackgroundColor);
 
             //EventBoxStatusBar1:LabelTerminalInfo
-            LabelTerminalInfo = new Label(string.Format("{0} : {1}", DataLayerFramework.LoggedTerminal.Designation, DataLayerFramework.LoggedUser.Name));
+            LabelTerminalInfo = new Label(string.Format("{0} : {1}", XPOSettings.LoggedTerminal.Designation, XPOSettings.LoggedUser.Name));
             LabelTerminalInfo.ModifyFont(labelTerminalInfoFont);
             LabelTerminalInfo.ModifyFg(StateType.Normal, labelTerminalInfoFontColor);
             LabelTerminalInfo.SetAlignment(labelTerminalInfoAlignmentX, 0.5F);
@@ -359,7 +358,7 @@ namespace logicpos
             vboxCurrentTable.PackStart(LabelCurrentTable);
 
             //EventBoxStatusBar2:vboxTotalTable:LabelTotalTableLabel
-            Label labelTotalTableLabel = new Label(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_total_price_to_pay"));
+            Label labelTotalTableLabel = new Label(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_total_price_to_pay"));
             labelTotalTableLabel.ModifyFont(labelTotalTableLabelFont);
             labelTotalTableLabel.ModifyFg(StateType.Normal, labelTotalTableLabelFontColor);
             labelTotalTableLabel.SetAlignment(labelTotalTableLabelAlignmentX, 0.5F);

@@ -1,7 +1,6 @@
 ﻿using DevExpress.Data.Filtering;
 using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
-using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
@@ -33,12 +32,12 @@ namespace logicpos.shared.App
 
         public static string CurrentDateTime(string pDateTimeFormat)
         {
-            return XPOHelper.CurrentDateTimeAtomic().ToString(pDateTimeFormat, CultureInfo.GetCultureInfo(LogicPOS.Settings.CultureSettings.CurrentCulture.Name));
+            return CurrentDateTimeAtomic().ToString(pDateTimeFormat, CultureInfo.GetCultureInfo(CultureSettings.CurrentCulture.Name));
         }
 
         public static DateTime CurrentDateTimeAtomicMidnight()
         {
-            return DateTimeToMidnightDate(XPOHelper.CurrentDateTimeAtomic());
+            return DateTimeToMidnightDate(CurrentDateTimeAtomic());
         }
 
         public static DateTime DateTimeToMidnightDate(DateTime pDateTime)
@@ -51,14 +50,14 @@ namespace logicpos.shared.App
         public static string DateTimeToCombinedDateTimeString(object pValue)
         {
             DateTime tmpData = Convert.ToDateTime(pValue);
-            string result = "" + tmpData.ToString("" + LogicPOS.Settings.CultureSettings.DateTimeFormatCombinedDateTime);
+            string result = "" + tmpData.ToString("" + CultureSettings.DateTimeFormatCombinedDateTime);
             return (result);
         }
 
         public static string DateToString(object pValue)
         {
             DateTime tmpData = Convert.ToDateTime(pValue);
-            string result = "" + tmpData.ToString("" + LogicPOS.Settings.CultureSettings.DateTimeFormatDocumentDate);
+            string result = "" + tmpData.ToString("" + CultureSettings.DateTimeFormatDocumentDate);
             return (result);
         }
 
@@ -68,7 +67,7 @@ namespace logicpos.shared.App
 
             try
             {
-                result = pValue.ToString(LogicPOS.Settings.CultureSettings.DateTimeFormat);
+                result = pValue.ToString(CultureSettings.DateTimeFormat);
             }
             catch (Exception ex)
             {
@@ -110,7 +109,7 @@ namespace logicpos.shared.App
                 {
                     currentDateTime = new DateTime(pYear, item.Month, item.Day);
                     result.Add(currentDateTime, item.Fixed);
-                    if (debug) _logger.Debug(string.Format("DayOfWeek: [{0}:{1}:{2}:{3}]", currentDateTime.ToString(LogicPOS.Settings.CultureSettings.DateFormat), LogicPOS.Settings.CultureSettings.CurrentCulture.DateTimeFormat.DayNames[(int)currentDateTime.DayOfWeek], item.Fixed, IsHoliday(currentDateTime)));
+                    if (debug) _logger.Debug(string.Format("DayOfWeek: [{0}:{1}:{2}:{3}]", currentDateTime.ToString(CultureSettings.DateFormat), CultureSettings.CurrentCulture.DateTimeFormat.DayNames[(int)currentDateTime.DayOfWeek], item.Fixed, IsHoliday(currentDateTime)));
                 }
             }
             return result;
@@ -159,7 +158,7 @@ namespace logicpos.shared.App
                 if (startDateTime.DayOfWeek != DayOfWeek.Saturday && startDateTime.DayOfWeek != DayOfWeek.Sunday)
                 {
                     string isHoliday = (IsHoliday(startDateTime)) ? "Holiday" : string.Empty;
-                    if (debug) _logger.Debug(string.Format("DayOfWeek: [{0}:{1}:{2}]", startDateTime.ToString(LogicPOS.Settings.CultureSettings.DateFormat), LogicPOS.Settings.CultureSettings.CurrentCulture.DateTimeFormat.DayNames[(int)startDateTime.DayOfWeek], isHoliday));
+                    if (debug) _logger.Debug(string.Format("DayOfWeek: [{0}:{1}:{2}]", startDateTime.ToString(CultureSettings.DateFormat), CultureSettings.CurrentCulture.DateTimeFormat.DayNames[(int)startDateTime.DayOfWeek], isHoliday));
 
                     if ((pWithHoydays && !IsHoliday(startDateTime)) || !pWithHoydays)
                     {
@@ -199,7 +198,7 @@ namespace logicpos.shared.App
                 {
                     isWeekEnd = "<WeekEnd>";
                 }
-                if (debug) _logger.Debug(string.Format("DayOfWeek: [{0}:{1}:{2}{3}{4}]", i.ToString("000"), result.ToString(LogicPOS.Settings.CultureSettings.DateFormat), LogicPOS.Settings.CultureSettings.CurrentCulture.DateTimeFormat.DayNames[((int)result.DayOfWeek)], isWeekEnd, isHoliday));
+                if (debug) _logger.Debug(string.Format("DayOfWeek: [{0}:{1}:{2}{3}{4}]", i.ToString("000"), result.ToString(CultureSettings.DateFormat), CultureSettings.CurrentCulture.DateTimeFormat.DayNames[((int)result.DayOfWeek)], isWeekEnd, isHoliday));
             }
             return result;
         }
@@ -216,7 +215,7 @@ namespace logicpos.shared.App
                     //get CurrentOrderMain
                     OrderMain orderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];
                     //Get Table to Get Discount
-                    pos_configurationplacetable xConfigurationPlaceTable = (pos_configurationplacetable)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(pos_configurationplacetable), orderMain.Table.Oid);
+                    pos_configurationplacetable xConfigurationPlaceTable = (pos_configurationplacetable)GetXPGuidObject(XPOSettings.Session, typeof(pos_configurationplacetable), orderMain.Table.Oid);
                     //Get Fresh Discount From Table/Future 
                     if (xConfigurationPlaceTable != null)
                     {
@@ -349,8 +348,8 @@ namespace logicpos.shared.App
         {
             return Audit(
                 XPOSettings.Session,
-                DataLayerFramework.LoggedUser ?? null,
-                DataLayerFramework.LoggedTerminal ?? null,
+                XPOSettings.LoggedUser ?? null,
+                XPOSettings.LoggedTerminal ?? null,
                 pAuditTypeToken,
                 pDescription
             );
@@ -359,7 +358,7 @@ namespace logicpos.shared.App
         public static bool Audit(Session pSession, sys_userdetail pLoggedUser, pos_configurationplaceterminal pLoggedTerminal, string pAuditTypeToken, string pDescription = "")
         {
             bool result = false;
-            DateTime dateTime = XPOHelper.CurrentDateTimeAtomic();
+            DateTime dateTime = CurrentDateTimeAtomic();
             string executeSql = string.Format(@"SELECT Oid FROM sys_systemaudittype WHERE (Disabled IS NULL or Disabled  <> 1) AND Token = '{0}';", pAuditTypeToken);
 
             //Check if has a Valid LoggedUser else Assign NULL to INSERT, usefull to log stuff when User is not Yet Logged
@@ -373,13 +372,13 @@ namespace logicpos.shared.App
                 if (!guidAuditType.Equals(Guid.Empty))
                 {
                     //Fresh User and Terminal, to prevent Object Delection Problem
-                    sys_userdetail xpoUserDetail = (pLoggedUser != null) ? (sys_userdetail)XPOHelper.GetXPGuidObject(typeof(sys_userdetail), pLoggedUser.Oid) : null;
-                    pos_configurationplaceterminal xpoTerminal = (pos_configurationplaceterminal)XPOHelper.GetXPGuidObject(typeof(pos_configurationplaceterminal), pLoggedTerminal.Oid);
+                    sys_userdetail xpoUserDetail = (pLoggedUser != null) ? (sys_userdetail)GetXPGuidObject(typeof(sys_userdetail), pLoggedUser.Oid) : null;
+                    pos_configurationplaceterminal xpoTerminal = (pos_configurationplaceterminal)GetXPGuidObject(typeof(pos_configurationplaceterminal), pLoggedTerminal.Oid);
                     //get AuditType Object
-                    sys_systemaudittype xpoAuditType = (sys_systemaudittype)XPOHelper.GetXPGuidObject(typeof(sys_systemaudittype), guidAuditType);
+                    sys_systemaudittype xpoAuditType = (sys_systemaudittype)GetXPGuidObject(typeof(sys_systemaudittype), guidAuditType);
                     string description = (pDescription != string.Empty) ? pDescription
-                      : (xpoAuditType.ResourceString != null && CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), xpoAuditType.ResourceString) != null)
-                      ? CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), xpoAuditType.ResourceString) : xpoAuditType.Designation;
+                      : (xpoAuditType.ResourceString != null && CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), xpoAuditType.ResourceString) != null)
+                      ? CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), xpoAuditType.ResourceString) : xpoAuditType.Designation;
 
                     sys_systemaudit systemAudit = new sys_systemaudit(pSession)
                     {
@@ -486,7 +485,7 @@ namespace logicpos.shared.App
 
             try
             {
-                result = Convert.ToBoolean(LogicPOS.Settings.GeneralSettings.PreferenceParameters["USE_POS_PDF_VIEWER"]);
+                result = Convert.ToBoolean(GeneralSettings.PreferenceParameters["USE_POS_PDF_VIEWER"]);
             }
             catch (Exception ex)
             {
@@ -660,7 +659,7 @@ namespace logicpos.shared.App
 
         public static Dictionary<string, bool> GetUserPermissions()
         {
-            return GetUserPermissions(DataLayerFramework.LoggedUser);
+            return GetUserPermissions(XPOSettings.LoggedUser);
         }
 
         public static Dictionary<string, bool> GetUserPermissions(sys_userdetail pUser)
@@ -732,7 +731,7 @@ namespace logicpos.shared.App
             try
             {
                 //Settings
-                string cultureFinancialRules = LogicPOS.Settings.GeneralSettings.Settings["cultureFinancialRules"];
+                string cultureFinancialRules = GeneralSettings.Settings["cultureFinancialRules"];
 
                 //Local Vars
                 uint ord = 1;
@@ -766,7 +765,7 @@ namespace logicpos.shared.App
                 systemNotificationType = (sys_systemnotificationtype)pSession.GetObjectByKey(typeof(sys_systemnotificationtype), SharedSettings.XpoOidSystemNotificationTypeNewTerminalRegistered);
                 if (systemNotificationType != null)
                 {
-                    criteriaOperator = CriteriaOperator.Parse(string.Format("NotificationType = '{0}' AND TerminalLastRead = '{1}'", SharedSettings.XpoOidSystemNotificationTypeNewTerminalRegistered, DataLayerFramework.LoggedTerminal.Oid));
+                    criteriaOperator = CriteriaOperator.Parse(string.Format("NotificationType = '{0}' AND TerminalLastRead = '{1}'", SharedSettings.XpoOidSystemNotificationTypeNewTerminalRegistered, XPOSettings.LoggedTerminal.Oid));
                     xpcSystemNotification = new XPCollection(pSession, typeof(sys_systemnotification), criteriaOperator);
                     //Create Notification
                     if (xpcSystemNotification.Count == 0)
@@ -774,7 +773,7 @@ namespace logicpos.shared.App
                         systemNotification = new sys_systemnotification(pSession);
                         systemNotification.Ord = ord;
                         systemNotification.NotificationType = systemNotificationType;
-                        systemNotification.Message = string.Format(systemNotificationType.Message, DataLayerFramework.LoggedTerminal.Designation);
+                        systemNotification.Message = string.Format(systemNotificationType.Message, XPOSettings.LoggedTerminal.Designation);
                         systemNotification.Save();
                         ord++;
                         if (debug) _logger.Debug(string.Format("Notification created: [{0}]", systemNotificationType.Designation));
@@ -787,7 +786,7 @@ namespace logicpos.shared.App
                 systemNotificationType = (SystemNotificationType)pSession.GetObjectByKey(typeof(SystemNotificationType), SettingsApp.XpoOidSystemNotificationTypeFirstLoginRequestPasswordChange);
                 if (systemNotificationType != null)
                 {
-                    criteriaOperator = CriteriaOperator.Parse(string.Format("NotificationType = '{0}' AND UserLastRead = '{1}'", SettingsApp.XpoOidSystemNotificationTypeFirstLoginRequestPasswordChange, DataLayerFramework.LoggedUser));
+                    criteriaOperator = CriteriaOperator.Parse(string.Format("NotificationType = '{0}' AND UserLastRead = '{1}'", SettingsApp.XpoOidSystemNotificationTypeFirstLoginRequestPasswordChange, XPOSettings.LoggedUser));
                     xpcSystemNotification = new XPCollection(pSession, typeof(SystemNotification), criteriaOperator);
                     //Create Notification
                     if (xpcSystemNotification.Count == 0)
@@ -795,7 +794,7 @@ namespace logicpos.shared.App
                         systemNotification = new SystemNotification(pSession);
                         systemNotification.Ord = ord;
                         systemNotification.NotificationType = systemNotificationType;
-                        systemNotification.Message = string.Format(systemNotificationType.Message, DataLayerFramework.LoggedUser.Login, DataLayerFramework.LoggedUser.Name);
+                        systemNotification.Message = string.Format(systemNotificationType.Message, XPOSettings.LoggedUser.Login, XPOSettings.LoggedUser.Name);
                         systemNotification.Save();
                         ord++;
                         if (debug) _logger.Debug(string.Format("Notification created: [{0}]", systemNotificationType.Designation));
@@ -911,7 +910,7 @@ namespace logicpos.shared.App
             int ignoreNotificationsAfterHaveBeenNotificatedNumberOfTimes = 0;
             try
             {
-                ignoreNotificationsAfterHaveBeenNotificatedNumberOfTimes = Convert.ToInt16(LogicPOS.Settings.GeneralSettings.PreferenceParameters["NOTIFICATION_DOCUMENTS_TO_INVOICE_IGNORE_AFTER_SHOW_NUMBER_OF_TIMES"]);
+                ignoreNotificationsAfterHaveBeenNotificatedNumberOfTimes = Convert.ToInt16(GeneralSettings.PreferenceParameters["NOTIFICATION_DOCUMENTS_TO_INVOICE_IGNORE_AFTER_SHOW_NUMBER_OF_TIMES"]);
             }
             catch (Exception)
             {
@@ -928,7 +927,7 @@ namespace logicpos.shared.App
                 //Extra Filter 
                 string filter = pFilter;
                 if (pExtraFilter != string.Empty) filter = string.Format("{0} AND {1}", filter, pExtraFilter);
-                filter = string.Format("{0} AND (Date <= '{1} 23:59:59')", filter, dateFilterFrom.ToString(LogicPOS.Settings.CultureSettings.DateFormat));
+                filter = string.Format("{0} AND (Date <= '{1} 23:59:59')", filter, dateFilterFrom.ToString(CultureSettings.DateFormat));
 
                 CriteriaOperator criteriaOperator = CriteriaOperator.Parse(filter);
                 SortProperty sortProperty = new SortProperty("CreatedAt", SortingDirection.Ascending);
@@ -966,7 +965,7 @@ namespace logicpos.shared.App
                                 "- {0} : {1} : {2} {3} : (#{4})",
                                 item.DocumentNumber, item.Date,
                                 documentBackUtilDays,
-                                CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(),
+                                CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(),
                                 "global_day_days"),
                                 item.Notifications.Count + 1);
 
@@ -1092,9 +1091,9 @@ namespace logicpos.shared.App
                         //Cut Text
                         result.Text = pValue.Substring(0, pMaxLength);
                     }
-                    lengthLabelText = string.Format("{0}: {1}/{2}", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_characters"), result.Length, pMaxLength);
+                    lengthLabelText = string.Format("{0}: {1}/{2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_characters"), result.Length, pMaxLength);
                 }
-                var minWordLengthConsidered = Convert.ToInt16(LogicPOS.Settings.GeneralSettings.Settings["MinWordLengthConsidered"]);
+                var minWordLengthConsidered = Convert.ToInt16(GeneralSettings.Settings["MinWordLengthConsidered"]);
 
                 result.Words = LogicPOS.Utility.StringUtils.GetNumWords(
                     result.Text,
@@ -1107,7 +1106,7 @@ namespace logicpos.shared.App
                         result.Words = pMaxWords;
                         result.Text = LogicPOS.Utility.StringUtils.GetWords(result.Text, pMaxWords);
                     }
-                    maxWordsLabelText = string.Format("{0}: {1}/{2}", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_words"), result.Words, pMaxWords);
+                    maxWordsLabelText = string.Format("{0}: {1}/{2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_words"), result.Words, pMaxWords);
                 }
 
                 if (result.Length > 0)
@@ -1179,7 +1178,7 @@ namespace logicpos.shared.App
                 try
                 {
                     //typeConverter.ConvertFrom(pValue);
-                    typeConverter.ConvertFrom(null, LogicPOS.Settings.CultureSettings.CurrentCultureNumberFormat, pValue);
+                    typeConverter.ConvertFrom(null, CultureSettings.CurrentCultureNumberFormat, pValue);
                     return true;
                 }
                 catch (Exception)

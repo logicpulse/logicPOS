@@ -1,5 +1,4 @@
 ﻿using DevExpress.Xpo;
-using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using System;
@@ -31,8 +30,8 @@ namespace logicpos.financial.library.Classes.WorkSession
         public static bool PersistWorkSessionMovement(Session pSession, pos_worksessionperiod pWorkSessionPeriod, pos_worksessionmovementtype pWorkSessionMovementType, fin_documentfinancemaster pDocumentFinanceMaster, fin_documentfinancepayment pDocumentFinancePayment, sys_userdetail pUserDetail, pos_configurationplaceterminal pTerminal, DateTime pDate, decimal pMovementAmount, string pDescription, uint pOrd = 1)
         {
             //Prevent Deleted Objects, Get Fresh Objects
-            sys_userdetail userDetail = pSession.GetObjectByKey<sys_userdetail>(DataLayerFramework.LoggedUser.Oid);
-            pos_configurationplaceterminal terminal = pSession.GetObjectByKey<pos_configurationplaceterminal>(DataLayerFramework.LoggedTerminal.Oid);
+            sys_userdetail userDetail = pSession.GetObjectByKey<sys_userdetail>(XPOSettings.LoggedUser.Oid);
+            pos_configurationplaceterminal terminal = pSession.GetObjectByKey<pos_configurationplaceterminal>(XPOSettings.LoggedTerminal.Oid);
             pos_worksessionmovementtype workSessionMovementType = pSession.GetObjectByKey<pos_worksessionmovementtype>(pWorkSessionMovementType.Oid);
 
             try

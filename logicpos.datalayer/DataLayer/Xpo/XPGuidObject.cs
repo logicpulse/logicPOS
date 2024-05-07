@@ -1,6 +1,5 @@
 ﻿using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
-using logicpos.datalayer.App;
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -126,26 +125,26 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
             //Global Updates
             UpdatedAt = XPOHelper.CurrentDateTimeAtomic();
-            if (DataLayerFramework.LoggedUser != null)
+            if (XPOSettings.LoggedUser != null)
             {
-                UpdatedBy = this.Session.GetObjectByKey<sys_userdetail>(DataLayerFramework.LoggedUser.Oid);
+                UpdatedBy = this.Session.GetObjectByKey<sys_userdetail>(XPOSettings.LoggedUser.Oid);
             }
-            if (DataLayerFramework.LoggedTerminal != null)
+            if (XPOSettings.LoggedTerminal != null)
             {
-                UpdatedWhere = this.Session.GetObjectByKey<pos_configurationplaceterminal>(DataLayerFramework.LoggedTerminal.Oid);
+                UpdatedWhere = this.Session.GetObjectByKey<pos_configurationplaceterminal>(XPOSettings.LoggedTerminal.Oid);
             }
 
             if (_isNewRecord)
             {
                 //Global Updates
                 CreatedAt = XPOHelper.CurrentDateTimeAtomic();
-                if (DataLayerFramework.LoggedUser != null)
+                if (XPOSettings.LoggedUser != null)
                 {
-                    CreatedBy = this.Session.GetObjectByKey<sys_userdetail>(DataLayerFramework.LoggedUser.Oid);
+                    CreatedBy = this.Session.GetObjectByKey<sys_userdetail>(XPOSettings.LoggedUser.Oid);
                 }
-                if (DataLayerFramework.LoggedTerminal != null)
+                if (XPOSettings.LoggedTerminal != null)
                 {
-                    CreatedWhere = this.Session.GetObjectByKey<pos_configurationplaceterminal>(DataLayerFramework.LoggedTerminal.Oid);
+                    CreatedWhere = this.Session.GetObjectByKey<pos_configurationplaceterminal>(XPOSettings.LoggedTerminal.Oid);
                 }
                 // Call EncryptProperties to be used when we create Objects outside BO, 
                 // this will trigger Encrypted Automatically
@@ -168,17 +167,17 @@ namespace logicpos.datalayer.DataLayer.Xpo
             CreatedAt = dateTime;
             UpdatedAt = dateTime;
 
-            if (DataLayerFramework.LoggedUser != null)
+            if (XPOSettings.LoggedUser != null)
             {
-                UpdatedBy = this.Session.GetObjectByKey<sys_userdetail>(DataLayerFramework.LoggedUser.Oid);
+                UpdatedBy = this.Session.GetObjectByKey<sys_userdetail>(XPOSettings.LoggedUser.Oid);
                 // This Prevent : DevExpress.Xpo.DB.Exceptions.LockingException: Cannot persist the object. It was modified or deleted (purged) by another application.
                 // Created to prevent Creating Year Series problems
                 UpdatedBy.Reload();
             }
 
-            if (DataLayerFramework.LoggedTerminal != null)
+            if (XPOSettings.LoggedTerminal != null)
             {
-                UpdatedWhere = this.Session.GetObjectByKey<pos_configurationplaceterminal>(DataLayerFramework.LoggedTerminal.Oid);
+                UpdatedWhere = this.Session.GetObjectByKey<pos_configurationplaceterminal>(XPOSettings.LoggedTerminal.Oid);
                 // This Prevent : DevExpress.Xpo.DB.Exceptions.LockingException: Cannot persist the object. It was modified or deleted (purged) by another application.
                 // Created to prevent Creating Year Series problems
                 UpdatedWhere.Reload();

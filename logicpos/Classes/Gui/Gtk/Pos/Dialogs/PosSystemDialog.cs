@@ -1,9 +1,9 @@
 ﻿using Gtk;
 using System.Drawing;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.datalayer.App;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -13,9 +13,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
-            string windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_system");
+            string windowTitle = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_system");
             Size windowSize = new Size(620, 205/*321 2 rows*/);
-            string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_system.png";
+            string fileDefaultWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_system.png";
 
             Size sizeIcon = new Size(50, 50);
             int buttonWidth = 162;
@@ -23,14 +23,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             uint tablePadding = 15;
 
             //Icons
-            string fileIconConfiguration = DataLayerFramework.Path["images"] + @"Icons\icon_pos_configuration.png";
-            string fileIconCashRegister = DataLayerFramework.Path["images"] + @"Icons\icon_pos_ticketpad_cashregister.png";
-            string fileIconReports = DataLayerFramework.Path["images"] + @"Icons\icon_pos_reports.png";
+            string fileIconConfiguration = GeneralSettings.Path["images"] + @"Icons\icon_pos_configuration.png";
+            string fileIconCashRegister = GeneralSettings.Path["images"] + @"Icons\icon_pos_ticketpad_cashregister.png";
+            string fileIconReports = GeneralSettings.Path["images"] + @"Icons\icon_pos_reports.png";
 
             //Buttons
-            TouchButtonIconWithText buttonSetup = new TouchButtonIconWithText("touchButtonSetup_Green", _colorBaseDialogDefaultButtonBackground, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_application_setup"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, fileIconConfiguration, sizeIcon, buttonWidth, buttonHeight);
-            TouchButtonIconWithText buttonCash = new TouchButtonIconWithText("touchButtonCash_Green", _colorBaseDialogDefaultButtonBackground, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "pos_button_label_cashdrawer"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, fileIconCashRegister, sizeIcon, buttonWidth, buttonHeight);
-            TouchButtonIconWithText buttonReports = new TouchButtonIconWithText("touchButtonReports_Green", _colorBaseDialogDefaultButtonBackground, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_reports"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, fileIconReports, sizeIcon, buttonWidth, buttonHeight);
+            TouchButtonIconWithText buttonSetup = new TouchButtonIconWithText("touchButtonSetup_Green", _colorBaseDialogDefaultButtonBackground, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_application_setup"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, fileIconConfiguration, sizeIcon, buttonWidth, buttonHeight);
+            TouchButtonIconWithText buttonCash = new TouchButtonIconWithText("touchButtonCash_Green", _colorBaseDialogDefaultButtonBackground, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "pos_button_label_cashdrawer"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, fileIconCashRegister, sizeIcon, buttonWidth, buttonHeight);
+            TouchButtonIconWithText buttonReports = new TouchButtonIconWithText("touchButtonReports_Green", _colorBaseDialogDefaultButtonBackground, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_reports"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, fileIconReports, sizeIcon, buttonWidth, buttonHeight);
             //buttonDisable1.Sensitive = false;
 
             //Table

@@ -14,7 +14,6 @@ using System.Configuration;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.financial.library.Classes.Stocks;
 using logicpos.datalayer.Enums;
-using logicpos.datalayer.App;
 using logicpos.datalayer.Xpo;
 using LogicPOS.Settings.Extensions;
 
@@ -975,7 +974,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         oid = terminal.Oid;
                         code = terminal.Code.ToString();
                         /* If logged terminal is the same, cannot delete */
-                        if (DataLayerFramework.LoggedTerminal.Oid == oid)
+                        if (XPOSettings.LoggedTerminal.Oid == oid)
                         {
                             countResult = 1;
                             code = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_delete_record_show_protected_record")); ;

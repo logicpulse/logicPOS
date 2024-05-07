@@ -157,6 +157,7 @@ namespace logicpos.datalayer.Xpo
             if (result == -1) result = 1;
             return result;
         }
+
         public static Guid GetGuidFromQuery(string pSql)
         {
             return GetGuidFromQuery(XPOSettings.Session, pSql);
@@ -199,7 +200,7 @@ namespace logicpos.datalayer.Xpo
             Guid guid = GetGuidFromQuery(pSession, executeSql);
             if (guid != Guid.Empty)
             {
-                return (XPGuidObject)XPOHelper.GetXPGuidObject(pSession, pType, guid);
+                return (XPGuidObject)GetXPGuidObject(pSession, pType, guid);
             }
             else
             {

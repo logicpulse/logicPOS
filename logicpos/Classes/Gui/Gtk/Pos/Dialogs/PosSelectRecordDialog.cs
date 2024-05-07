@@ -5,13 +5,13 @@ using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
-using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using System;
 using System.Data;
 using System.Drawing;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -130,7 +130,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //_actionAreaButtons = pActionAreaButtons;
 
             //Init Local Vars
-            string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_select_record.png";
+            string fileDefaultWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_select_record.png";
             Size usefullAreaSize = new Size(windowSize.Width - 14, windowSize.Height - 124);
 
             //Modify default genericTreeView properties
@@ -157,8 +157,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         public ActionAreaButtons GetDefaultActionAreaButtons()
         {
-            //string fileActionMore = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_more.png");
-            //string fileActionFilter = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_filter.png");
+            //string fileActionMore = SharedUtils.OSSlash(GeneralSettings.Path["images"] + @"Icons\icon_pos_more.png");
+            //string fileActionFilter = SharedUtils.OSSlash(GeneralSettings.Path["images"] + @"Icons\icon_pos_filter.png");
             //TouchButtonIconWithText _buttonMore = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.More, "touchButtonMore_Grey", string.Format(CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_button_label_more, SettingsApp.PaginationRowsPerPage), fileActionMore);
             //TouchButtonIconWithText _buttonFilter = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Filter, "touchButtonMore_Green", string.Format(CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_button_label_filter, SettingsApp.PaginationRowsPerPage), fileActionFilter);
             //_buttonMore.Clicked += _genericTreeView_ButtonMoreClicked;
@@ -258,7 +258,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
               new PosSelectRecordDialog<T1, T2, T3>(
                 pSourceWindow,
                 DialogFlags.DestroyWithParent,
-                CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_select_record"),
+                CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_select_record"),
                 GlobalApp.MaxWindowSize,
                 null, //pDefaultValue : Require to Send a DataRow
                 GenericTreeViewMode.CheckBox,

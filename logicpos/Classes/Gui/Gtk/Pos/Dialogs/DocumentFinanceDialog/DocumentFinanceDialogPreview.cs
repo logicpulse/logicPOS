@@ -8,9 +8,9 @@ using System.Drawing;
 using System.Linq;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Extensions;
-using logicpos.datalayer.App;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -25,7 +25,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pDialogFlags)
         {
             Size windowSize = new Size(700, 360);
-            string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_preview.png";
+            string fileDefaultWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_preview.png";
             
             //Parameters
             _articleBag = pArticleBag;

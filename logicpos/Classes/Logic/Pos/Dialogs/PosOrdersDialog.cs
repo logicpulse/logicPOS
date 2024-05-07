@@ -4,7 +4,6 @@ using Gtk;
 using logicpos.App;
 using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.BackOffice;
-using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.App;
@@ -92,7 +91,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         private void buttonPrintOrder_Clicked(object sender, EventArgs e)
         {
-            if (logicpos.Utils.ShowMessageTouchRequiredValidPrinter(this, DataLayerFramework.LoggedTerminal.ThermalPrinter)) return;
+            if (logicpos.Utils.ShowMessageTouchRequiredValidPrinter(this, XPOSettings.LoggedTerminal.ThermalPrinter)) return;
             OrderMain currentOrderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];
             Guid orderTicketOid = new Guid();
 
@@ -135,7 +134,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 fin_documentorderticket orderTicket = (fin_documentorderticket)XPOSettings.Session.GetObjectByKey(typeof(fin_documentorderticket), orderTicketOid);
                 //POS front-end - Consulta Mesa + Impressão Ticket's + Gerar PDF em modo Thermal Printer [IN009344]
-                ThermalPrinterInternalDocumentOrderRequest thermalPrinterInternalDocumentOrderRequest = new ThermalPrinterInternalDocumentOrderRequest(DataLayerFramework.LoggedTerminal.ThermalPrinter, orderTicket);
+                ThermalPrinterInternalDocumentOrderRequest thermalPrinterInternalDocumentOrderRequest = new ThermalPrinterInternalDocumentOrderRequest(XPOSettings.LoggedTerminal.ThermalPrinter, orderTicket);
                 thermalPrinterInternalDocumentOrderRequest.Print();
             }
         }

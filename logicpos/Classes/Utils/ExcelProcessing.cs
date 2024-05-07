@@ -5,7 +5,6 @@ using logicpos.App;
 using logicpos.Classes.DataLayer;
 using logicpos.Classes.Enums;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
-using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.App;
@@ -367,7 +366,7 @@ namespace logicpos
                         article.Disabled = false;
                         article.Notes = null;
                         string articleCreatedAt = dateTime;
-                        string articleCreatedBy = DataLayerFramework.LoggedUser.Oid.ToString().Replace("logicpos.datalayer.DataLayer.Xpo.sys_userdetail", "");
+                        string articleCreatedBy = XPOSettings.LoggedUser.Oid.ToString().Replace("logicpos.datalayer.DataLayer.Xpo.sys_userdetail", "");
                         article.CreatedWhere = null;
                         string articleUpdatedAt = dateTime;
                         string articleUpdatedBy = articleCreatedBy;
@@ -475,7 +474,7 @@ namespace logicpos
 
                                 if (!articlesInDbCollection.ContainsKey(row.ItemArray.GetValue(1).ToString()))
                                 {
-                                    string user = DataLayerFramework.LoggedUser.ToString();
+                                    string user = XPOSettings.LoggedUser.ToString();
                                     sql = string.Format(@"insert into fin_article (Oid, Notes, CreatedAt, CreatedBy, CreatedWhere, UpdatedAt, 
                                                 UpdatedBy, UpdatedWhere, ButtonImage, Price1, Price1Promotion, Price2, Price2Promotion,
                                                 Price3, Price3Promotion, Price4, Price4Promotion, Price5, Price5Promotion, Discount, DefaultQuantity, 
@@ -584,7 +583,7 @@ namespace logicpos
                     costumer.Disabled = false;
                     costumer.Notes = null;
                     string costumerCreatedAt = dateTime;
-                    string costumerCreatedBy = DataLayerFramework.LoggedUser.Oid.ToString().Replace("logicpos.datalayer.DataLayer.Xpo.sys_userdetail", "");
+                    string costumerCreatedBy = XPOSettings.LoggedUser.Oid.ToString().Replace("logicpos.datalayer.DataLayer.Xpo.sys_userdetail", "");
                     costumer.CreatedWhere = null;
                     string costumerUpdatedAt = dateTime;
                     string costumerUpdatedBy = costumerCreatedBy;
@@ -610,7 +609,7 @@ namespace logicpos
 
                         if (!costumersInDbCollection.ContainsKey(row.ItemArray.GetValue(1).ToString()) && costumer.FiscalNumber != "")
                         {
-                            string user = DataLayerFramework.LoggedUser.ToString();
+                            string user = XPOSettings.LoggedUser.ToString();
                             string sql = string.Format(@"insert into erp_customer (Oid, CreatedAt, CreatedBy, CreatedWhere, UpdatedAt, 
                                                 UpdatedBy, UpdatedWhere, code, ord, Name, Address, locality, ZipCode, City, Phone, MobilePhone, Email,
                                                 CustomerType, PriceType, Country, FiscalNumber, CodeInternal) 

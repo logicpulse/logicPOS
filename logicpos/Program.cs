@@ -3,7 +3,6 @@ using logicpos.App;
 using logicpos.Classes.Enums.App;
 using logicpos.Classes.Logic.License;
 using logicpos.Classes.Utils;
-using logicpos.datalayer.App;
 using logicpos.datalayer.Xpo;
 using logicpos.plugin.contracts;
 using logicpos.plugin.library;
@@ -15,6 +14,7 @@ using System.Globalization;
 using System.Threading;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 
 [assembly: log4net.Config.XmlConfigurator(Watch = true)]
 
@@ -36,7 +36,7 @@ namespace logicpos
 
         public static void InitializeSettings()
         {
-            LogicPOS.Settings.GeneralSettings.Settings = ConfigurationManager.AppSettings;
+            GeneralSettings.Settings = ConfigurationManager.AppSettings;
         }
 
         public static void InitializeGtk()
@@ -89,7 +89,7 @@ namespace logicpos
                     }
                     else
                     {
-                        Utils.ShowMessageNonTouch(null, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_pos_instance_already_running"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_information"));
+                        Utils.ShowMessageNonTouch(null, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_pos_instance_already_running"), CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_information"));
                         return;
                     }
                 }
@@ -108,18 +108,18 @@ namespace logicpos
                 SetCulture();
 
                 // Init PluginContainer
-                LogicPOS.Settings.PluginSettings.PluginContainer = new PluginContainer(DataLayerFramework.Path["plugins"].ToString());
+                PluginSettings.PluginContainer = new PluginContainer(GeneralSettings.Path["plugins"].ToString());
 
                 // PluginSoftwareVendor
-                LogicPOS.Settings.PluginSettings.PluginSoftwareVendor = LogicPOS.Settings.PluginSettings.PluginContainer.GetFirstPluginOfType<ISoftwareVendor>();
-                if (LogicPOS.Settings.PluginSettings.PluginSoftwareVendor != null)
+                PluginSettings.PluginSoftwareVendor = PluginSettings.PluginContainer.GetFirstPluginOfType<ISoftwareVendor>();
+                if (PluginSettings.PluginSoftwareVendor != null)
                 {
                     // Show Loaded Plugin
-                    _logger.Debug(string.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ISoftwareVendor), LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Name));
+                    _logger.Debug(string.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ISoftwareVendor), PluginSettings.PluginSoftwareVendor.Name));
                     // Init Plugin
                     SharedSettings.InitSoftwareVendorPluginSettings();
                     // Check if all Resources are Embedded
-                    LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.ValidateEmbeddedResources();
+                    PluginSettings.PluginSoftwareVendor.ValidateEmbeddedResources();
                 }
                 else
                 {
@@ -128,16 +128,16 @@ namespace logicpos
                 }
 
                 // Init Stock Module
-                POSFramework.StockManagementModule = (LogicPOS.Settings.PluginSettings.PluginContainer.GetFirstPluginOfType<IStockManagementModule>());
+                POSFramework.StockManagementModule = (PluginSettings.PluginContainer.GetFirstPluginOfType<IStockManagementModule>());
 
                 // Try to Get LicenceManager IntellilockPlugin if in Release 
                 if (!Debugger.IsAttached || _forceShowPluginLicenceWithDebugger)
                 {
-                    LogicPOS.Settings.PluginSettings.PluginLicenceManager = (LogicPOS.Settings.PluginSettings.PluginContainer.GetFirstPluginOfType<ILicenceManager>());
+                    PluginSettings.PluginLicenceManager = (PluginSettings.PluginContainer.GetFirstPluginOfType<ILicenceManager>());
                     // Show Loaded Plugin
-                    if (LogicPOS.Settings.PluginSettings.PluginLicenceManager != null)
+                    if (PluginSettings.PluginLicenceManager != null)
                     {
-                        _logger.Debug(string.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ILicenceManager), LogicPOS.Settings.PluginSettings.PluginLicenceManager.Name));
+                        _logger.Debug(string.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ILicenceManager), PluginSettings.PluginLicenceManager.Name));
                     }
                 }
 
@@ -156,7 +156,7 @@ namespace logicpos
 
         private static void StartApp()
         {
-            if (LogicPOS.Settings.PluginSettings.PluginLicenceManager != null && (!Debugger.IsAttached || _forceShowPluginLicenceWithDebugger))
+            if (PluginSettings.PluginLicenceManager != null && (!Debugger.IsAttached || _forceShowPluginLicenceWithDebugger))
             {
                 _logger.Debug("void StartApp() :: Boot LogicPos after LicenceManager.IntellilockPlugin");
                 // Boot LogicPos after LicenceManager.IntellilockPlugin
@@ -206,13 +206,13 @@ namespace logicpos
 
                 if (Utils.OSHasCulture(cultureFromDb) == false)
                 {
-                    LogicPOS.Settings.CultureSettings.CurrentCulture = new CultureInfo("pt-PT");
-                    LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
+                    CultureSettings.CurrentCulture = new CultureInfo("pt-PT");
+                    GeneralSettings.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
                 }
                 else
                 {
-                    LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"] = cultureFromDb;
-                    LogicPOS.Settings.CultureSettings.CurrentCulture = new System.Globalization.CultureInfo(cultureFromDb);
+                    GeneralSettings.Settings["customCultureResourceDefinition"] = cultureFromDb;
+                    CultureSettings.CurrentCulture = new System.Globalization.CultureInfo(cultureFromDb);
                 }
 
             }
@@ -221,16 +221,16 @@ namespace logicpos
 
                 if (!Utils.OSHasCulture(ConfigurationManager.AppSettings["customCultureResourceDefinition"]))
                 {
-                    LogicPOS.Settings.CultureSettings.CurrentCulture = new CultureInfo("pt-PT");
-                    LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
+                    CultureSettings.CurrentCulture = new CultureInfo("pt-PT");
+                    GeneralSettings.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
                 }
                 else
                 {
-                    LogicPOS.Settings.CultureSettings.CurrentCulture = new CultureInfo(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName());
-                    LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
+                    CultureSettings.CurrentCulture = new CultureInfo(GeneralSettings.Settings.GetCultureName());
+                    GeneralSettings.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
                 }
 
-                _logger.Error(string.Format("Missing Culture in DataBase or DB not created yet, using {0} from config.", LogicPOS.Settings.GeneralSettings.Settings.GetCultureName()));
+                _logger.Error(string.Format("Missing Culture in DataBase or DB not created yet, using {0} from config.", GeneralSettings.Settings.GetCultureName()));
             }
         }
     }

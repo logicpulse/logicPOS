@@ -7,7 +7,6 @@ using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
-using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
@@ -92,9 +91,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         protected Color _colorBaseDialogActionAreaButtonBackground = GeneralSettings.Settings["colorBaseDialogActionAreaButtonBackground"].StringToColor();
         //protected String _fontBaseDialogButton = SharedUtils.OSSlash(LogicPOS.Settings.GeneralSettings.Settings["fontBaseDialogButton"]);
         protected string _fontBaseDialogActionAreaButton = GeneralSettings.Settings["fontBaseDialogActionAreaButton"];
-        protected string _fileActionDefault = DataLayerFramework.Path["images"] + @"Icons\icon_pos_default.png";
-        protected string _fileActionOK = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
-        protected string _fileActionCancel = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png";
+        protected string _fileActionDefault = GeneralSettings.Path["images"] + @"Icons\icon_pos_default.png";
+        protected string _fileActionOK = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
+        protected string _fileActionCancel = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png";
 
         //Colors
         private readonly Color colorBackOfficeContentBackground = GeneralSettings.Settings["colorBackOfficeContentBackground"].StringToColor();
@@ -135,25 +134,25 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             DateTime datenow = new DateTime();
 
             //Icons dos botões do dashboard
-            string _fileFiscalYearIcon = DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_configurations.png";
-            string _fileInsertFiscalYear = DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_fiscal_year.png";
-            string _fileInsertIcon = DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_printer.png";
-            string _fileTerminalsIcon = DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_terminals.png";
+            string _fileFiscalYearIcon = GeneralSettings.Path["images"] + @"Icons\BackOffice\icon_configurations.png";
+            string _fileInsertFiscalYear = GeneralSettings.Path["images"] + @"Icons\BackOffice\icon_fiscal_year.png";
+            string _fileInsertIcon = GeneralSettings.Path["images"] + @"Icons\BackOffice\icon_printer.png";
+            string _fileTerminalsIcon = GeneralSettings.Path["images"] + @"Icons\BackOffice\icon_terminals.png";
 
-            string _fileArticlesIcon = DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_articles.png";
-            string _fileCostumersIcon = DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_costumers.png";
-            string _fileEmployeesIcon = DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_employees.png";
-            string _fileOtherTablesIcon = DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_other_tables.png";
+            string _fileArticlesIcon = GeneralSettings.Path["images"] + @"Icons\BackOffice\icon_articles.png";
+            string _fileCostumersIcon = GeneralSettings.Path["images"] + @"Icons\BackOffice\icon_costumers.png";
+            string _fileEmployeesIcon = GeneralSettings.Path["images"] + @"Icons\BackOffice\icon_employees.png";
+            string _fileOtherTablesIcon = GeneralSettings.Path["images"] + @"Icons\BackOffice\icon_other_tables.png";
 
-            string _fileDocumentsIcon = DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_documents.png";
-            string _fileNewDocumentIcon = DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_documents_new.png";
-            string _filePayedDocumentsIcon = DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_documents_new.png";
-            string _fileInsertMerchIcon = DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_documents_merch.png";
+            string _fileDocumentsIcon = GeneralSettings.Path["images"] + @"Icons\BackOffice\icon_documents.png";
+            string _fileNewDocumentIcon = GeneralSettings.Path["images"] + @"Icons\BackOffice\icon_documents_new.png";
+            string _filePayedDocumentsIcon = GeneralSettings.Path["images"] + @"Icons\BackOffice\icon_documents_new.png";
+            string _fileInsertMerchIcon = GeneralSettings.Path["images"] + @"Icons\BackOffice\icon_documents_merch.png";
 
-            string _fileReportsMenuIcon = DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_reports.png";
-            string _fileReportsTotalIcon = DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_reports_sales_report.png";
-            string _fileReportsClientsIcon = DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_reports_sales_client.png";
-            string _fileReportsDayIcon = DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_reports_sales_day.png";
+            string _fileReportsMenuIcon = GeneralSettings.Path["images"] + @"Icons\BackOffice\icon_reports.png";
+            string _fileReportsTotalIcon = GeneralSettings.Path["images"] + @"Icons\BackOffice\icon_reports_sales_report.png";
+            string _fileReportsClientsIcon = GeneralSettings.Path["images"] + @"Icons\BackOffice\icon_reports_sales_client.png";
+            string _fileReportsDayIcon = GeneralSettings.Path["images"] + @"Icons\BackOffice\icon_reports_sales_day.png";
 
             //Tamanho dos Icons e da Font do Texto dos botões
             Size sizeIcon = new Size(35, 35);
@@ -172,7 +171,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             try
             {
                 //Imagem carregada aqui para o dashboard
-                string fileImageBack = string.Format("{0}Default/Backgrounds/Windows/LogicPOS_WorkFlow_{1}.png", DataLayerFramework.Path["themes"], GeneralSettings.Settings.GetCultureName());
+                string fileImageBack = string.Format("{0}Default/Backgrounds/Windows/LogicPOS_WorkFlow_{1}.png", GeneralSettings.Path["themes"], GeneralSettings.Settings.GetCultureName());
                 System.Drawing.Image pImage = System.Drawing.Image.FromFile(fileImageBack);
                 Gdk.Pixbuf pixbuf = logicpos.Utils.ImageToPixbuf(pImage);
                 _eventboxDashboard.Style = logicpos.Utils.GetImageBackgroundDashboard(pixbuf);

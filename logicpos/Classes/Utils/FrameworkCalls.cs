@@ -13,7 +13,6 @@ using logicpos.Classes.Enums.Finance;
 using logicpos.Classes.Enums.Tickets;
 using logicpos.datalayer.Enums;
 using logicpos.financial.service.Objects.Modules.AT;
-using logicpos.datalayer.App;
 using logicpos.shared.App;
 using logicpos.datalayer.Xpo;
 using LogicPOS.DTOs.Common;
@@ -489,14 +488,14 @@ namespace logicpos
             {
                 //Both printer can be the same, if not Defined in DocumentType
                 //Printer for Drawer and Document, if not defined in DocumentType
-                printer = (pPrinter != null) ? pPrinter : DataLayerFramework.LoggedTerminal.ThermalPrinter;
+                printer = (pPrinter != null) ? pPrinter : XPOSettings.LoggedTerminal.ThermalPrinter;
                 printerDoc = (pDocumentFinanceMaster.DocumentType.Printer != null) ? pDocumentFinanceMaster.DocumentType.Printer : printer;
             }
             else
             {
                 //Both printer can be the same, if not Defined in DocumentType
                 //Printer for Drawer and Document, if not defined in DocumentType
-                printer = (pPrinter != null) ? pPrinter : DataLayerFramework.LoggedTerminal.Printer;
+                printer = (pPrinter != null) ? pPrinter : XPOSettings.LoggedTerminal.Printer;
                 printerDoc = (pDocumentFinanceMaster.DocumentType.Printer != null) ? pDocumentFinanceMaster.DocumentType.Printer : printer;
             }
 
@@ -571,7 +570,7 @@ namespace logicpos
                         //OpenDoor use Printer Drawer
                         if (openDrawer && pDocumentFinanceMaster.DocumentType.PrintOpenDrawer && !response.SecondCopy) 
                         {
-                            var resultOpenDoor = PrintRouter.OpenDoor(DataLayerFramework.LoggedTerminal.Printer);
+                            var resultOpenDoor = PrintRouter.OpenDoor(XPOSettings.LoggedTerminal.Printer);
                             if (!resultOpenDoor)
                             {
                                 Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_information"), string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "open_cash_draw_permissions")));
@@ -580,7 +579,7 @@ namespace logicpos
                             {
                                 SharedUtils.Audit("CASHDRAWER_OUT", string.Format(
                                 CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_cashdrawer_out"),
-                                DataLayerFramework.LoggedTerminal.Designation,
+                                XPOSettings.LoggedTerminal.Designation,
                                 "Button Open Door"));
                             }
                           
@@ -618,7 +617,7 @@ namespace logicpos
 
             sys_configurationprinters printer = (pPrinter != null)
               ? pPrinter :
-              DataLayerFramework.LoggedTerminal.Printer;
+              XPOSettings.LoggedTerminal.Printer;
 
             try
             {
@@ -649,14 +648,14 @@ namespace logicpos
                     //ProtectedFiles Protection
                     if (!validFiles) return false;
                     //Recibos com impressão em impressora térmica
-                    if (DataLayerFramework.LoggedTerminal.ThermalPrinter != null)
+                    if (XPOSettings.LoggedTerminal.ThermalPrinter != null)
                     {
                         ResponseType responseType = Utils.ShowMessageTouch(pSourceWindow, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.YesNo, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_edit_DialogConfigurationPrintersType_tab1_label"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_printer_choose_printer")); 
 
                         if (responseType == ResponseType.Yes)
                         {
                             //Call Print Document thermal
-                            result = PrintRouter.PrintFinanceDocumentPayment(DataLayerFramework.LoggedTerminal.ThermalPrinter, pDocumentFinancePayment);
+                            result = PrintRouter.PrintFinanceDocumentPayment(XPOSettings.LoggedTerminal.ThermalPrinter, pDocumentFinancePayment);
                         }
                         else
                         {

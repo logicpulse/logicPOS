@@ -12,7 +12,6 @@ using System;
 using logicpos.Classes.Enums.Keyboard;
 using System.Collections;
 using logicpos.shared.App;
-using logicpos.datalayer.App;
 using logicpos.financial.library.App;
 using logicpos.datalayer.Xpo;
 using LogicPOS.Settings.Extensions;

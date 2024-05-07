@@ -1,5 +1,4 @@
 ﻿using DevExpress.Xpo;
-using logicpos.datalayer.App;
 using LogicPOS.Settings;
 using System;
 using LogicPOS.Settings.Extensions;

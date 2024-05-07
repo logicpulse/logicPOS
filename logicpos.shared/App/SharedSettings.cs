@@ -1,5 +1,4 @@
-﻿using logicpos.datalayer.App;
-using logicpos.datalayer.DataLayer.Xpo;
+﻿using logicpos.datalayer.DataLayer.Xpo;
 using System;
 using System.Diagnostics;
 using static LogicPOS.Settings.PluginSettings;

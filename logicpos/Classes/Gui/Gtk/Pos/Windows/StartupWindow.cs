@@ -5,11 +5,11 @@ using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Logic.Others;
-using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
 using logicpos.shared.App;
+using LogicPOS.Settings;
 using System;
 using Image = Gtk.Image;
 
@@ -147,7 +147,7 @@ namespace logicpos
                     Fixed fix = new Fixed();
 
                     //Place Minimize EventBox
-                    bool _showMinimize = (!string.IsNullOrEmpty(LogicPOS.Settings.GeneralSettings.Settings["appShowMinimize"])) && Convert.ToBoolean(LogicPOS.Settings.GeneralSettings.Settings["appShowMinimize"]);
+                    bool _showMinimize = (!string.IsNullOrEmpty(GeneralSettings.Settings["appShowMinimize"])) && Convert.ToBoolean(GeneralSettings.Settings["appShowMinimize"]);
                     if (_showMinimize)
                     {
                         EventBox eventBoxMinimize = Utils.GetMinimizeEventBox();
@@ -226,14 +226,14 @@ namespace logicpos
 
                     //Label Version
                     string appVersion = "";
-                    if (LogicPOS.Settings.LicenseSettings.LicenseReseller != null && LogicPOS.Settings.LicenseSettings.LicenseReseller.ToString().ToLower() != "Logicpulse" && LogicPOS.Settings.LicenseSettings.LicenseReseller.ToString().ToLower() != "")
+                    if (LicenseSettings.LicenseReseller != null && LicenseSettings.LicenseReseller.ToString().ToLower() != "Logicpulse" && LicenseSettings.LicenseReseller.ToString().ToLower() != "")
                     {
                         //appVersion = string.Format("Brough by {1}\n{0}",appVersion, GlobalFramework.LicenceReseller);
-                        appVersion = string.Format("Powered by {0}© Vers. {1}", LogicPOS.Settings.LicenseSettings.LicenseReseller, SharedUtils.ProductVersion);
+                        appVersion = string.Format("Powered by {0}© Vers. {1}", LicenseSettings.LicenseReseller, SharedUtils.ProductVersion);
                     }
                     else
                     {
-                        appVersion = string.Format(LogicPOS.Settings.PluginSettings.AppSoftwareVersionFormat, SharedUtils.ProductVersion);
+                        appVersion = string.Format(PluginSettings.AppSoftwareVersionFormat, SharedUtils.ProductVersion);
                     }
                     Label labelVersion = new Label(appVersion);
                     Pango.FontDescription fontDescLabelVersion = Pango.FontDescription.FromString(labelVersionFont);
@@ -261,13 +261,13 @@ namespace logicpos
                         buttonDeveloper.Clicked += buttonDeveloper_Clicked;
                     }
                     //LOGO
-                    if (LogicPOS.Settings.PluginSettings.PluginLicenceManager != null)
+                    if (PluginSettings.PluginLicenceManager != null)
                     {
-                        string fileImageBackOfficeLogo = string.Format(DataLayerFramework.Path["themes"] + @"Default\Images\logicPOS_loggericpulse_loggerin.png");
+                        string fileImageBackOfficeLogo = string.Format(GeneralSettings.Path["themes"] + @"Default\Images\logicPOS_loggericpulse_loggerin.png");
 
-                        if (!string.IsNullOrEmpty(LogicPOS.Settings.LicenseSettings.LicenseReseller) && LogicPOS.Settings.LicenseSettings.LicenseReseller == "NewTech")
+                        if (!string.IsNullOrEmpty(LicenseSettings.LicenseReseller) && LicenseSettings.LicenseReseller == "NewTech")
                         {
-                            fileImageBackOfficeLogo = string.Format(DataLayerFramework.Path["themes"] + @"Default\Images\Branding\{0}\logicPOS_loggericpulse_loggerin.png", "NT");
+                            fileImageBackOfficeLogo = string.Format(GeneralSettings.Path["themes"] + @"Default\Images\Branding\{0}\logicPOS_loggericpulse_loggerin.png", "NT");
                         }
 
                         // var bitmapImage = GlobalFramework.PluginLicenceManager.DecodeImage(fileImageBackOfficeLogo, (GlobalApp.ScreenSize.Width - 550), (GlobalApp.ScreenSize.Height - 550));
@@ -278,7 +278,7 @@ namespace logicpos
                     }
                     else
                     {
-                        Image imageLogo = new Image(Utils.GetThemeFileLocation(LogicPOS.Settings.GeneralSettings.Settings["fileImageBackOfficeLogo"]));
+                        Image imageLogo = new Image(Utils.GetThemeFileLocation(GeneralSettings.Settings["fileImageBackOfficeLogo"]));
                         fix.Put(imageLogo, GlobalApp.ScreenSize.Width - 430, 80);
                     }
                     //string fileImageBackOfficeLogo = Utils.GetThemeFileLocation(LogicPOS.Settings.GeneralSettings.Settings["fileImageBackOfficeLogo"]);
@@ -532,7 +532,7 @@ namespace logicpos
             //Required a Valid LoggedUser
 
             /*
-            DataLayerFramework.LoggedUser = (UserDetail)XPOSettings.Session.GetObjectByKey(typeof(UserDetail), new Guid("090c5684-52ba-4d7a-8bc3-a00320ef503d"));
+            XPOSettings.LoggedUser = (UserDetail)XPOSettings.Session.GetObjectByKey(typeof(UserDetail), new Guid("090c5684-52ba-4d7a-8bc3-a00320ef503d"));
             //Get DocumentMaster Oid
             //SELECT DocumentMaster,COUNT(*) AS Count FROM fin_documentfinancedetail GROUP BY DocumentMaster ORDER BY COUNT(*) DESC;
             DocumentFinanceMaster documentFinanceMaster = (DocumentFinanceMaster)XPOSettings.Session.GetObjectByKey(typeof(DocumentFinanceMaster), new Guid("814e8065-bcc1-49f2-86c0-bdbaeaf40e41"));

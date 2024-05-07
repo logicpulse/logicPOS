@@ -1,20 +1,20 @@
-﻿using DevExpress.Xpo;
-using logicpos.datalayer.App;
+using DevExpress.Xpo;
 using logicpos.datalayer.Xpo;
 using System;
 
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class fin_articleclass : XPGuidObject
+    public class fin_articletype : XPGuidObject
     {
-        public fin_articleclass() : base() { }
-        public fin_articleclass(Session session) : base(session) { }
+        public fin_articletype() : base() { }
+        public fin_articletype(Session session) : base(session) { }
 
         protected override void OnAfterConstruction()
         {
-            Ord = XPOHelper.GetNextTableFieldID(nameof(fin_articleclass), "Ord");
-            Code = XPOHelper.GetNextTableFieldID(nameof(fin_articleclass), "Code");
+            Ord = XPOHelper.GetNextTableFieldID(nameof(fin_articletype), "Ord");
+            Code = XPOHelper.GetNextTableFieldID(nameof(fin_articletype), "Code");
+            HavePrice = true;
         }
 
         private uint fOrd;
@@ -40,24 +40,15 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Designation", ref fDesignation, value); }
         }
 
-        private string fAcronym;
-        [Indexed(Unique = true)]
-        [Size(1)]
-        public string Acronym
+        private bool fHavePrice;
+        public bool HavePrice
         {
-            get { return fAcronym; }
-            set { SetPropertyValue<string>("Acronym", ref fAcronym, value); }
-        }
-
-        private bool fWorkInStock;
-        public bool WorkInStock
-        {
-            get { return fWorkInStock; }
-            set { SetPropertyValue<bool>("WorkInStock", ref fWorkInStock, value); }
+            get { return fHavePrice; }
+            set { SetPropertyValue<bool>("HavePrice", ref fHavePrice, value); }
         }
 
         //ArticleType One <> Many Article
-        [Association(@"ArticleClassReferencesArticle", typeof(fin_article))]
+        [Association(@"ArticleTypeReferencesArticle", typeof(fin_article))]
         public XPCollection<fin_article> Article
         {
             get { return GetCollection<fin_article>("Article"); }

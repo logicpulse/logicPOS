@@ -1,5 +1,4 @@
 ﻿using DevExpress.Xpo;
-using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
 using logicpos.datalayer.Enums;
@@ -56,8 +55,8 @@ namespace logicpos.financial.library.Classes.Stocks
                     customer = (erp_customer)pSession.GetObjectByKey(typeof(erp_customer), pCustomer.Oid);
                 }
                 fin_article article = (fin_article)pSession.GetObjectByKey(typeof(fin_article), pArticle.Oid);
-                pos_configurationplaceterminal terminal = (pos_configurationplaceterminal)pSession.GetObjectByKey(typeof(pos_configurationplaceterminal), DataLayerFramework.LoggedTerminal.Oid);
-                sys_userdetail userDetail = (sys_userdetail)pSession.GetObjectByKey(typeof(sys_userdetail), DataLayerFramework.LoggedUser.Oid);
+                pos_configurationplaceterminal terminal = (pos_configurationplaceterminal)pSession.GetObjectByKey(typeof(pos_configurationplaceterminal), XPOSettings.LoggedTerminal.Oid);
+                sys_userdetail userDetail = (sys_userdetail)pSession.GetObjectByKey(typeof(sys_userdetail), XPOSettings.LoggedUser.Oid);
 
                 fin_articlestock articleStock = new fin_articlestock(pSession)
                 {

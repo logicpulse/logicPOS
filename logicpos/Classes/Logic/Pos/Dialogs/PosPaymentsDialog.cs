@@ -8,7 +8,6 @@ using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
@@ -23,6 +22,7 @@ using System.Data;
 using System.Drawing;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -993,7 +993,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private void PartialPayment()
         {
             //Button icon source path
-            string buttonIconChangePrice = DataLayerFramework.Path["images"] + @"Icons\icon_pos_cashdrawer_out.png";
+            string buttonIconChangePrice = GeneralSettings.Path["images"] + @"Icons\icon_pos_cashdrawer_out.png";
 
             //Default ActionArea Buttons
             TouchButtonIconWithText buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);

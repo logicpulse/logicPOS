@@ -1,6 +1,5 @@
 ﻿using Gtk;
 using logicpos.App;
-using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
@@ -284,9 +283,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             string currentNodePrivilegesToken;
 
             //Required to Reload Object before Get New Permissions
-            DataLayerFramework.LoggedUser = (sys_userdetail)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(sys_userdetail), DataLayerFramework.LoggedUser.Oid);
+            XPOSettings.LoggedUser = (sys_userdetail)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(sys_userdetail), XPOSettings.LoggedUser.Oid);
             //Update Session Privileges
-            SharedFramework.LoggedUserPermissions = SharedUtils.GetUserPermissions(DataLayerFramework.LoggedUser);
+            SharedFramework.LoggedUserPermissions = SharedUtils.GetUserPermissions(XPOSettings.LoggedUser);
 
             //Update Backoffice Menu
             if (_accordionDefinition != null && _accordionDefinition.Count > 0)

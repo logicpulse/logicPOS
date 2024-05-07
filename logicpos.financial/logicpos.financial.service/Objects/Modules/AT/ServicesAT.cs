@@ -1,10 +1,10 @@
-﻿using logicpos.datalayer.App;
-using logicpos.datalayer.DataLayer.Xpo;
+﻿using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Finance;
 using logicpos.shared.App;
 using LogicPOS.DTOs.Common;
+using LogicPOS.Settings;
 using System;
 using System.Configuration;
 using System.IO;
@@ -76,16 +76,16 @@ namespace logicpos.financial.service.Objects.Modules.AT
         private static string GetServicesATFilePublicKey(bool pTestMode)
         {
             return (pTestMode)
-                ? string.Format(@"{0}{1}", DataLayerFramework.Path["certificates"], LogicPOS.Settings.GeneralSettings.Settings["servicesATTestModeFilePublicKey"])
-                : string.Format(@"{0}{1}", DataLayerFramework.Path["certificates"], LogicPOS.Settings.GeneralSettings.Settings["servicesATProdModeFilePublicKey"])
+                ? string.Format(@"{0}{1}", GeneralSettings.Path["certificates"], GeneralSettings.Settings["servicesATTestModeFilePublicKey"])
+                : string.Format(@"{0}{1}", GeneralSettings.Path["certificates"], GeneralSettings.Settings["servicesATProdModeFilePublicKey"])
             ;
         }
 
         private static string GetServicesATFileCertificate(bool pTestMode)
         {
             return (pTestMode)
-                ? string.Format(@"{0}{1}", DataLayerFramework.Path["certificates"], LogicPOS.Settings.GeneralSettings.Settings["servicesATTestModeFileCertificate"])
-                : string.Format(@"{0}{1}", DataLayerFramework.Path["certificates"], LogicPOS.Settings.GeneralSettings.Settings["servicesATProdModeFileCertificate"])
+                ? string.Format(@"{0}{1}", GeneralSettings.Path["certificates"], GeneralSettings.Settings["servicesATTestModeFileCertificate"])
+                : string.Format(@"{0}{1}", GeneralSettings.Path["certificates"], GeneralSettings.Settings["servicesATProdModeFileCertificate"])
             ;
         }
 
@@ -93,7 +93,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
         {
             return (pTestMode)
                 ? "599999993"
-                :LogicPOS.Settings.GeneralSettings.PreferenceParameters["COMPANY_FISCALNUMBER"];
+                : GeneralSettings.PreferenceParameters["COMPANY_FISCALNUMBER"];
         }
 
         private static string GetServicesATAccountFiscalNumber(bool pTestMode)
@@ -101,7 +101,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
             //LogicPOS.Settings.GeneralSettings.Settings["servicesATProdModeAccountFiscalNumber"];
             return (pTestMode)
                 ? "599999993/0037"
-                :LogicPOS.Settings.GeneralSettings.PreferenceParameters["SERVICE_AT_PRODUCTION_ACCOUNT_FISCAL_NUMBER"];
+                : GeneralSettings.PreferenceParameters["SERVICE_AT_PRODUCTION_ACCOUNT_FISCAL_NUMBER"];
         }
 
         private static string GetServicesATAccountPassword(bool pTestMode)
@@ -109,7 +109,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
             //LogicPOS.Settings.GeneralSettings.Settings["servicesATProdModeAccountPassword"];
             return (pTestMode)
                 ? "testes1234"
-                :LogicPOS.Settings.GeneralSettings.PreferenceParameters["SERVICE_AT_PRODUCTION_ACCOUNT_PASSWORD"];
+                : GeneralSettings.PreferenceParameters["SERVICE_AT_PRODUCTION_ACCOUNT_PASSWORD"];
         }
 
         private static string GetServicesATCertificatePassword(bool pTestMode)
@@ -117,7 +117,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
             //LogicPOS.Settings.GeneralSettings.Settings["servicesATProdModeCertificatePassword"];
             return (pTestMode)
                 ? "TESTEwebservice"
-                : LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.GetAppSoftwareATWSProdModeCertificatePassword();
+                : PluginSettings.PluginSoftwareVendor.GetAppSoftwareATWSProdModeCertificatePassword();
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -164,7 +164,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
         public ServicesAT(fin_documentfinancemaster pFinanceMaster)
         {
             //Init Settings Main Config Settings
-            LogicPOS.Settings.GeneralSettings.Settings = ConfigurationManager.AppSettings;
+            GeneralSettings.Settings = ConfigurationManager.AppSettings;
             
             //Parameters
             _documentMaster = pFinanceMaster;
@@ -176,9 +176,9 @@ namespace logicpos.financial.service.Objects.Modules.AT
             _wayBillMode = (_documentMaster.DocumentType.WayBill);
 
             //Init WebService parameters and Files
-            _pathSaveSoap = string.Format(@"{0}{1}", DataLayerFramework.Path["temp"], "soapsend.xml");
-            _pathSaveSoapResult = string.Format(@"{0}{1}", DataLayerFramework.Path["temp"], "soapresult.xml");
-            _pathSaveSoapResultError = string.Format(@"{0}{1}", DataLayerFramework.Path["temp"], "soapresult_error.xml");
+            _pathSaveSoap = string.Format(@"{0}{1}", GeneralSettings.Path["temp"], "soapsend.xml");
+            _pathSaveSoapResult = string.Format(@"{0}{1}", GeneralSettings.Path["temp"], "soapresult.xml");
+            _pathSaveSoapResultError = string.Format(@"{0}{1}", GeneralSettings.Path["temp"], "soapresult_error.xml");
             _urlWebService = (!_wayBillMode) ? GetServicesATDCUri(false) : GetServicesATWBUri(testMode, false);
             _urlSoapAction = (!_wayBillMode) ? ServicesATUriDocumentsSOAPAction : ServicesATUriDocumentsWayBillSOAPAction;
             _pathPublicKey = GetServicesATFilePublicKey(testMode);
@@ -407,7 +407,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
 
             /* IN009150 (IN009075) */
             string entityFiscalNumber = "";
-            if (!string.IsNullOrEmpty(_documentMaster.EntityFiscalNumber)) { entityFiscalNumber = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Decrypt(_documentMaster.EntityFiscalNumber); }
+            if (!string.IsNullOrEmpty(_documentMaster.EntityFiscalNumber)) { entityFiscalNumber = PluginSettings.PluginSoftwareVendor.Decrypt(_documentMaster.EntityFiscalNumber); }
             /* IN009150 - end */
 
             //Init Local Vars
@@ -494,13 +494,13 @@ namespace logicpos.financial.service.Objects.Modules.AT
             // string entityCountry        = "";
             string entityFiscalNumber   = "";
 
-            if (!string.IsNullOrEmpty(_documentMaster.EntityName))          { entityName = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Decrypt(_documentMaster.EntityName); }
-            if (!string.IsNullOrEmpty(_documentMaster.EntityAddress))       { entityAddress = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Decrypt(_documentMaster.EntityAddress); }
-            if (!string.IsNullOrEmpty(_documentMaster.EntityZipCode))       { entityZipCode = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Decrypt(_documentMaster.EntityZipCode); }
-            if (!string.IsNullOrEmpty(_documentMaster.EntityCity))          { entityCity = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Decrypt(_documentMaster.EntityCity); }
-            if (!string.IsNullOrEmpty(_documentMaster.EntityLocality))      { entityCity = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Decrypt(_documentMaster.EntityLocality); }
+            if (!string.IsNullOrEmpty(_documentMaster.EntityName))          { entityName = PluginSettings.PluginSoftwareVendor.Decrypt(_documentMaster.EntityName); }
+            if (!string.IsNullOrEmpty(_documentMaster.EntityAddress))       { entityAddress = PluginSettings.PluginSoftwareVendor.Decrypt(_documentMaster.EntityAddress); }
+            if (!string.IsNullOrEmpty(_documentMaster.EntityZipCode))       { entityZipCode = PluginSettings.PluginSoftwareVendor.Decrypt(_documentMaster.EntityZipCode); }
+            if (!string.IsNullOrEmpty(_documentMaster.EntityCity))          { entityCity = PluginSettings.PluginSoftwareVendor.Decrypt(_documentMaster.EntityCity); }
+            if (!string.IsNullOrEmpty(_documentMaster.EntityLocality))      { entityCity = PluginSettings.PluginSoftwareVendor.Decrypt(_documentMaster.EntityLocality); }
             // if (!string.IsNullOrEmpty(_documentMaster.EntityCountry))       { entityCountry = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Decrypt(_documentMaster.EntityCountry); }
-            if (!string.IsNullOrEmpty(_documentMaster.EntityFiscalNumber))  { entityFiscalNumber = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Decrypt(_documentMaster.EntityFiscalNumber); }
+            if (!string.IsNullOrEmpty(_documentMaster.EntityFiscalNumber))  { entityFiscalNumber = PluginSettings.PluginSoftwareVendor.Decrypt(_documentMaster.EntityFiscalNumber); }
             /* IN009150 - end */
 
             //Init Local Vars
@@ -577,7 +577,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
             sb.Append("       </AddressFrom>");
             //Dont Sent MovementEndTime, not required
             //sb.Append("       <MovementEndTime>" + _documentMaster.MovementEndTime.ToString(SettingsApp.DateTimeFormatCombinedDateTime) + "</MovementEndTime>");
-            sb.Append("       <MovementStartTime>" + _movementStartTime.ToString(LogicPOS.Settings.CultureSettings.DateTimeFormatCombinedDateTime) + "</MovementStartTime>");
+            sb.Append("       <MovementStartTime>" + _movementStartTime.ToString(CultureSettings.DateTimeFormatCombinedDateTime) + "</MovementStartTime>");
             //VehicleID
             if (!string.IsNullOrEmpty(_documentMaster.ShipFromDeliveryID)) sb.Append("       <VehicleID>" + _documentMaster.ShipFromDeliveryID + "</VehicleID>");
             //Line
@@ -673,7 +673,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
                 //cert.Import(_pathCertificate, _atPasswordCertificate, X509KeyStorageFlags.Exportable);
 
                 // New Method : Import Certificate From VendorPlugin
-                X509Certificate2 cert = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.ImportCertificate(testMode, _pathCertificate);
+                X509Certificate2 cert = PluginSettings.PluginSoftwareVendor.ImportCertificate(testMode, _pathCertificate);
 
                 // Output Certificate 
                 Utils.Log(string.Format("Cert Subject: [{0}], NotBefore: [{1}], NotAfter: [{2}]", cert.Subject, cert.NotBefore, cert.NotAfter));

@@ -1,5 +1,4 @@
 using DevExpress.Xpo;
-using logicpos.datalayer.App;
 using logicpos.datalayer.Xpo;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;

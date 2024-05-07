@@ -4,7 +4,6 @@ using Gtk;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
-using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using logicpos.shared.App;
@@ -12,6 +11,7 @@ using System;
 using System.Drawing;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -36,9 +36,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             Article = pArticle;
 
             //Init Local Vars
-            string windowTitle = $"{CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_filepicker")}";
+            string windowTitle = $"{CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_filepicker")}";
             _windowSize = new Size(300, 473);
-            string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_select_record.png";
+            string fileDefaultWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_select_record.png";
 
             //Init Content
             _fixedContent = new Fixed();
@@ -67,7 +67,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             try
             {
                 //Init Font Description
-                Pango.FontDescription fontDescription = Pango.FontDescription.FromString(LogicPOS.Settings.GeneralSettings.Settings["fontEntryBoxValue"]);
+                Pango.FontDescription fontDescription = Pango.FontDescription.FromString(GeneralSettings.Settings["fontEntryBoxValue"]);
                 //Init Picker
                 VBox _vbox = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
 

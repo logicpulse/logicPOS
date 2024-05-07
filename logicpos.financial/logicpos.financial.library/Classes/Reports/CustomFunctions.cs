@@ -1,5 +1,4 @@
 ﻿using FastReport.Utils;
-using logicpos.datalayer.App;
 using logicpos.financial.library.Classes.Finance;
 using LogicPOS.Globalization.Resources.Localization;
 using logicpos.shared.App;

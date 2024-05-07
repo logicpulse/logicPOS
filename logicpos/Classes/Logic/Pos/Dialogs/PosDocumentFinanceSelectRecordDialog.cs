@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using logicpos.documentviewer;
-using logicpos.datalayer.App;
 using logicpos.shared.App;
 using logicpos.datalayer.Xpo;
 using LogicPOS.Settings;
@@ -115,14 +114,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Settings
 
 			// IN009223 IN009227
-            string fileActionMore = DataLayerFramework.Path["images"] + @"Icons\icon_pos_more.png";
-            string fileActionFilter = DataLayerFramework.Path["images"] + @"Icons\icon_pos_filter.png";
+            string fileActionMore = GeneralSettings.Path["images"] + @"Icons\icon_pos_more.png";
+            string fileActionFilter = GeneralSettings.Path["images"] + @"Icons\icon_pos_filter.png";
             
-			string fileActionClose = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_close.png";
-            string fileActionPrint = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_print.png";
-            string fileActionNewDocument = DataLayerFramework.Path["images"] + @"Icons\icon_pos_toolbar_finance_new_document.png";
-            string fileActionPayInvoice = DataLayerFramework.Path["images"] + @"Icons\icon_pos_payment_full.png";
-            string fileActionCancel = DataLayerFramework.Path["images"] + @"Icons\icon_pos_cancel_document.png";
+			string fileActionClose = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_close.png";
+            string fileActionPrint = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_print.png";
+            string fileActionNewDocument = GeneralSettings.Path["images"] + @"Icons\icon_pos_toolbar_finance_new_document.png";
+            string fileActionPayInvoice = GeneralSettings.Path["images"] + @"Icons\icon_pos_payment_full.png";
+            string fileActionCancel = GeneralSettings.Path["images"] + @"Icons\icon_pos_cancel_document.png";
             bool generatePdfDocuments = Convert.ToBoolean(GeneralSettings.Settings["generatePdfDocuments"]);
 
             //Default/Shared ActionArea Buttons
@@ -681,11 +680,11 @@ WHERE
                 //Assign Choosed Printer based on user ResponseType
                 if (documentFinanceMaster.SourceOrderMain != null)
                 {
-                    _printerChoosed = (args.ResponseId == _responseTypePrint) ? DataLayerFramework.LoggedTerminal.ThermalPrinter : _printerGeneric;
+                    _printerChoosed = (args.ResponseId == _responseTypePrint) ? XPOSettings.LoggedTerminal.ThermalPrinter : _printerGeneric;
                 }
                 else
                 {
-                    _printerChoosed = (args.ResponseId == _responseTypePrint) ? DataLayerFramework.LoggedTerminal.Printer : _printerGeneric;
+                    _printerChoosed = (args.ResponseId == _responseTypePrint) ? XPOSettings.LoggedTerminal.Printer : _printerGeneric;
                 }
 
                 if (
@@ -695,8 +694,8 @@ WHERE
                 {
                     //Assign Choosed Printer based on user ResponseType
                     //TK016249 - Impressoras - Diferenciação entre Tipos (helio)
-                    if (documentFinanceMaster.SourceOrderMain == null) { _printerChoosed = (args.ResponseId == _responseTypePrint) ? DataLayerFramework.LoggedTerminal.Printer : _printerGeneric; }
-                    else { _printerChoosed = (args.ResponseId == _responseTypePrint) ? DataLayerFramework.LoggedTerminal.ThermalPrinter : _printerGeneric; }
+                    if (documentFinanceMaster.SourceOrderMain == null) { _printerChoosed = (args.ResponseId == _responseTypePrint) ? XPOSettings.LoggedTerminal.Printer : _printerGeneric; }
+                    else { _printerChoosed = (args.ResponseId == _responseTypePrint) ? XPOSettings.LoggedTerminal.ThermalPrinter : _printerGeneric; }
 
 
                     //Single Record Mode - Default - USED HERE ONLY TO TEST Both Dialogs Modes (Default and CheckBox)
@@ -1556,7 +1555,7 @@ WHERE
                     //Check if Can Cancell Document
                     if (CanCancelFinanceMasterDocument(documentMaster))
                     {
-                        string fileWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_input_text_default.png";
+                        string fileWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_input_text_default.png";
 
                         //Call Request Motive Dialog
                         dialogResponse = logicpos.Utils.GetInputText(pDialog, DialogFlags.Modal, fileWindowIcon, string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_cancel_document_input_text_label"), documentMaster.DocumentNumber), string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtendedForMotive, true);
@@ -1568,7 +1567,7 @@ WHERE
                             documentMaster.DocumentStatusStatus = "A";
                             documentMaster.DocumentStatusDate = currentDateTime.ToString(CultureSettings.DateTimeFormatCombinedDateTime);
                             documentMaster.DocumentStatusReason = dialogResponse.Text;
-                            documentMaster.DocumentStatusUser = DataLayerFramework.LoggedUser.CodeInternal;
+                            documentMaster.DocumentStatusUser = XPOSettings.LoggedUser.CodeInternal;
                             /* IN009083 - uncommented */
                             //ATWS: Check if Sent Resend Document to AT WebServices                                                 //WIP: CancellWayBills : 
                             bool sendDocumentToAT = false;                                                                          //WIP: CancellWayBills : 
@@ -1928,7 +1927,7 @@ WHERE
                     pos_worksessionperiod workSessionPeriodParent = (pos_worksessionperiod)XPOHelper.GetXPGuidObject(typeof(pos_worksessionperiod), itemGuid);
                     pos_worksessionperiod workSessionPeriodChild;
                     //Print Parent Session : PrintWorkSessionMovement
-                    FrameworkCalls.PrintWorkSessionMovement(this, DataLayerFramework.LoggedTerminal.ThermalPrinter, workSessionPeriodParent);
+                    FrameworkCalls.PrintWorkSessionMovement(this, XPOSettings.LoggedTerminal.ThermalPrinter, workSessionPeriodParent);
 
                     //Get Child Sessions
                     string sql = string.Format(@"SELECT Oid FROM pos_worksessionperiod WHERE Parent = '{0}' ORDER BY DateStart;", workSessionPeriodParent.Oid);
@@ -1938,7 +1937,7 @@ WHERE
                         //Print Child Sessions
                         workSessionPeriodChild = (pos_worksessionperiod)XPOHelper.GetXPGuidObject(typeof(pos_worksessionperiod), new Guid(row.Values[xPSelectData.GetFieldIndex("Oid")].ToString()));
                         //PrintWorkSessionMovement
-                        FrameworkCalls.PrintWorkSessionMovement(this, DataLayerFramework.LoggedTerminal.ThermalPrinter, workSessionPeriodChild);
+                        FrameworkCalls.PrintWorkSessionMovement(this, XPOSettings.LoggedTerminal.ThermalPrinter, workSessionPeriodChild);
                     }
                 }
             }
@@ -1980,8 +1979,8 @@ WHERE
             bool itemChecked = false;
             fin_documentfinancepayment documentFinancePayment;
             // IN009223 IN009227
-            //string fileActionMore = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_more.png");
-            //string fileActionFilter = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_filter.png");
+            //string fileActionMore = SharedUtils.OSSlash(GeneralSettings.Path["images"] + @"Icons\icon_pos_more.png");
+            //string fileActionFilter = SharedUtils.OSSlash(GeneralSettings.Path["images"] + @"Icons\icon_pos_filter.png");
 
             //Default ActionArea Buttons
             // IN009223 IN009227
@@ -2142,7 +2141,7 @@ WHERE
                     )
                 {
                     //Assign Choosed Printer based on user ResponseType
-                    _printerChoosed = (args.ResponseId == _responseTypePrint && DataLayerFramework.LoggedTerminal.Printer != null) ? DataLayerFramework.LoggedTerminal.Printer : DataLayerFramework.LoggedTerminal.ThermalPrinter;
+                    _printerChoosed = (args.ResponseId == _responseTypePrint && XPOSettings.LoggedTerminal.Printer != null) ? XPOSettings.LoggedTerminal.Printer : XPOSettings.LoggedTerminal.ThermalPrinter;
 
                     //Single Record Mode - Default - USED HERE ONLY TO TEST Both Dialogs Modes (Default and CheckBox)
                     if (dialog.GenericTreeViewMode == GenericTreeViewMode.Default)
@@ -2426,7 +2425,7 @@ WHERE
                 {
                     if (CanCancelFinancePaymentDocument(document))
                     {
-                        string fileWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_input_text_default.png";
+                        string fileWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_input_text_default.png";
 
                         dialogResponse =  logicpos.Utils.GetInputText(pDialog, DialogFlags.Modal, fileWindowIcon, string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_cancel_document_input_text_label"), document.PaymentRefNo), string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtendedForMotive, true);
                         if (dialogResponse.ResponseType == ResponseType.Ok)
@@ -2436,7 +2435,7 @@ WHERE
                             document.PaymentStatus = "A";
                             document.PaymentStatusDate = currentDateTime.ToString(CultureSettings.DateTimeFormatCombinedDateTime);
                             document.Reason = dialogResponse.Text;
-                            document.SourceID = DataLayerFramework.LoggedUser.CodeInternal;
+                            document.SourceID = XPOSettings.LoggedUser.CodeInternal;
                             document.Save();
 
                             //Audit

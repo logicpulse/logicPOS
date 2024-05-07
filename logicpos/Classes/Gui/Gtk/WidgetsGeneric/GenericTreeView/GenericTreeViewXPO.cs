@@ -3,7 +3,6 @@ using Gtk;
 using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.GenericTreeView;
-using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
 using logicpos.datalayer.Xpo;
@@ -481,7 +480,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             if ((pDataSourceRow as XPGuidObject) != null)
             {
                 (pDataSourceRow as XPGuidObject).DeletedAt = DateTime.Now;
-                (pDataSourceRow as XPGuidObject).DeletedBy = DataLayerFramework.LoggedUser;
+                (pDataSourceRow as XPGuidObject).DeletedBy = XPOSettings.LoggedUser;
                 (pDataSourceRow as XPGuidObject).Disabled = true;
                 (pDataSourceRow as XPGuidObject).Save();
             }

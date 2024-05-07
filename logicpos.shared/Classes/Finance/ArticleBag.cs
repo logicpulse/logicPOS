@@ -10,7 +10,6 @@ using LogicPOS.Globalization;
 using LogicPOS.Settings.Extensions;
 using System;
 using System.Collections.Generic;
-using static logicpos.datalayer.App.DataLayerFramework;
 
 namespace logicpos.shared.Classes.Finance
 {
@@ -407,7 +406,7 @@ namespace logicpos.shared.Classes.Finance
                         articleDesignation,
                         1,
                         resultRemainQuantity - 1,
-                        LoggedUser.Name
+                        XPOSettings.LoggedUser.Name
                     )
                 );
 

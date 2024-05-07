@@ -2,7 +2,6 @@
 using Gtk;
 using logicpos.App;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using System;
@@ -11,6 +10,7 @@ using System.Drawing;
 using System.Reflection;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -20,11 +20,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         protected log4net.ILog _logger = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         //Settings
-        private readonly int _posBaseButtonScrollerHeight = Convert.ToInt32(LogicPOS.Settings.GeneralSettings.Settings["posBaseButtonScrollerHeight"]);
-        private readonly int _posBaseButtonMaxCharsPerLabel = Convert.ToInt16(LogicPOS.Settings.GeneralSettings.Settings["posBaseButtonMaxCharsPerLabel"]);
-        protected int _fontPosBaseButtonSize = Convert.ToInt16(LogicPOS.Settings.GeneralSettings.Settings["fontPosBaseButtonSize"]);
+        private readonly int _posBaseButtonScrollerHeight = Convert.ToInt32(GeneralSettings.Settings["posBaseButtonScrollerHeight"]);
+        private readonly int _posBaseButtonMaxCharsPerLabel = Convert.ToInt16(GeneralSettings.Settings["posBaseButtonMaxCharsPerLabel"]);
+        protected int _fontPosBaseButtonSize = Convert.ToInt16(GeneralSettings.Settings["fontPosBaseButtonSize"]);
         //Paths/Files
-        protected string _fileBaseButtonOverlay = DataLayerFramework.Path["images"] + @"Buttons\Pos\button_overlay.png";
+        protected string _fileBaseButtonOverlay = GeneralSettings.Path["images"] + @"Buttons\Pos\button_overlay.png";
         //TouchButton List        
         private List<TouchButtonBase> _listButtons;
         //TouchButton Properties
@@ -131,7 +131,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             try
             {
-                bool useImageOverlay = Convert.ToBoolean(LogicPOS.Settings.GeneralSettings.Settings["useImageOverlay"]);
+                bool useImageOverlay = Convert.ToBoolean(GeneralSettings.Settings["useImageOverlay"]);
                 if (!useImageOverlay) _fileBaseButtonOverlay = null;
 
                 //When update always set page 1, start page
@@ -166,7 +166,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 //    }
 
                 // Detect Encrypted Model
-                if (LogicPOS.Settings.PluginSettings.PluginSoftwareVendor != null && executeSql.ToLower().Contains(nameof(sys_userdetail).ToLower()))
+                if (PluginSettings.PluginSoftwareVendor != null && executeSql.ToLower().Contains(nameof(sys_userdetail).ToLower()))
                 {
                     // Inject nonPropertyFields that are outside of attributes Scope and are required to exists to be decrypted
                     string[] nonPropertyFields = { "label" };
@@ -264,7 +264,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     }
                     else
                     {
-                        logicpos.Utils.ShowMessageTouch(GlobalApp.PosMainWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"), "TablePad: Cant create TablePad, invalid query! You must supply mandatory fields name in Sql (id, name, label and image)!");
+                        logicpos.Utils.ShowMessageTouch(GlobalApp.PosMainWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_error"), "TablePad: Cant create TablePad, invalid query! You must supply mandatory fields name in Sql (id, name, label and image)!");
                     };
                 }
                 else

@@ -1,8 +1,6 @@
-﻿using logicpos.datalayer.App;
-using LogicPOS.Settings;
+﻿using LogicPOS.Settings;
 using System;
 using System.Collections.Generic;
-using static logicpos.datalayer.App.DataLayerFramework;
 using LogicPOS.Settings.Extensions;
 
 namespace logicpos.App
@@ -273,7 +271,7 @@ namespace logicpos.App
                  */
                 result = string.Format(
                     "{0}{1}",
-                    Path["themes"],
+                    GeneralSettings.Path["themes"],
                     string.Format(
                         FileFormatThemeFile
                         , GeneralSettings.AppTheme.ToLower() /* IN008024: Before, from Database :LogicPOS.Settings.AppSettings.PreferenceParameters["APP_THEME"].ToLower() */

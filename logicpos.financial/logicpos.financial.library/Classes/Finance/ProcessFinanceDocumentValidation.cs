@@ -1,5 +1,4 @@
-﻿using logicpos.datalayer.App;
-using logicpos.datalayer.DataLayer.Xpo;
+﻿using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.App;
@@ -245,7 +244,7 @@ namespace logicpos.financial.library.Classes.Finance
         //Constructors
         public static SortedDictionary<FinanceValidationError, object> ValidatePersistFinanceDocument(ProcessFinanceDocumentParameter pParameters, bool pIgnoreWarning = false)
         {
-            Guid userDetailGuid = (DataLayerFramework.LoggedUser != null) ? DataLayerFramework.LoggedUser.Oid : Guid.Empty;
+            Guid userDetailGuid = (XPOSettings.LoggedUser != null) ? XPOSettings.LoggedUser.Oid : Guid.Empty;
             return ValidatePersistFinanceDocument(pParameters, userDetailGuid, pIgnoreWarning);
         }
 
@@ -531,7 +530,7 @@ namespace logicpos.financial.library.Classes.Finance
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-                if (DataLayerFramework.LoggedTerminal == null)
+                if (XPOSettings.LoggedTerminal == null)
                 {
                     ResultAdd(FinanceValidationError.ERROR_RULE_loggerGED_TERMINAL_INVALID);
                 }
@@ -540,7 +539,7 @@ namespace logicpos.financial.library.Classes.Finance
                 //Required a Valid LoggedTerminal
 
                 fin_documentfinanceseries documentFinanceSerie = null;
-                if (DataLayerFramework.LoggedTerminal != null)
+                if (XPOSettings.LoggedTerminal != null)
                 {
                     documentFinanceSerie = ProcessFinanceDocumentSeries.GetDocumentFinanceYearSerieTerminal(pParameters.DocumentType).Serie;
                 }

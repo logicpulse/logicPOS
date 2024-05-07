@@ -5,10 +5,10 @@ using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Enums.Dialogs;
-using logicpos.datalayer.App;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using logicpos.datalayer.Xpo;
+using LogicPOS.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -16,12 +16,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
     {
         //Settings
         //Sizes
-        private Size _sizePosSmallButtonScroller = logicpos.Utils.StringToSize(LogicPOS.Settings.GeneralSettings.Settings["sizePosSmallButtonScroller"]);
-        private Size _sizePosUserButton = logicpos.Utils.StringToSize(LogicPOS.Settings.GeneralSettings.Settings["sizePosUserButton"]);
+        private Size _sizePosSmallButtonScroller = logicpos.Utils.StringToSize(GeneralSettings.Settings["sizePosSmallButtonScroller"]);
+        private Size _sizePosUserButton = logicpos.Utils.StringToSize(GeneralSettings.Settings["sizePosUserButton"]);
         private Size _sizeIconScrollLeftRight = new Size(62, 31);
         //Files
-        private readonly string _fileScrollLeftImage = DataLayerFramework.Path["images"] + @"Buttons\Pos\button_subfamily_article_scroll_left.png";
-        private readonly string _fileScrollRightImage = DataLayerFramework.Path["images"] + @"Buttons\Pos\button_subfamily_article_scroll_right.png";
+        private readonly string _fileScrollLeftImage = GeneralSettings.Path["images"] + @"Buttons\Pos\button_subfamily_article_scroll_left.png";
+        private readonly string _fileScrollRightImage = GeneralSettings.Path["images"] + @"Buttons\Pos\button_subfamily_article_scroll_right.png";
 
         //Private Gui Members
         private readonly Fixed _fixedContent;
@@ -36,9 +36,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
-            string windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_change_user");
+            string windowTitle = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_change_user");
             Size windowSize = new Size(559, 562);
-            string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_users.png";
+            string fileDefaultWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_users.png";
 
             //Init Content
             _fixedContent = new Fixed();
@@ -84,7 +84,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 sqlUsers, 
                 "ORDER BY Ord", 
                 "", 
-                DataLayerFramework.LoggedUser.Oid, 
+                XPOSettings.LoggedUser.Oid, 
                 true,
                 5, 
                 4, 
@@ -114,8 +114,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             if (UserDetail.PasswordReset)
             {
                 //_logger.Debug(string.Format("Name: [{0}], PasswordReset: [{1}]", _selectedUserDetail.Name, _selectedUserDetail.PasswordReset));
-                logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_information"),
-                    string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_user_request_change_password"), UserDetail.Name, XPOSettings.DefaultValueUserDetailAccessPin)
+                logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_information"),
+                    string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_user_request_change_password"), UserDetail.Name, XPOSettings.DefaultValueUserDetailAccessPin)
                 );
             }
 

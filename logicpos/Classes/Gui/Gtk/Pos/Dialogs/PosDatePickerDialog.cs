@@ -1,12 +1,12 @@
 ﻿using Gtk;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.datalayer.App;
 using System;
 using System.Drawing;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using logicpos.datalayer.Xpo;
+using LogicPOS.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -42,7 +42,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             //Init Local Vars
             string windowTitle = pDialogTitle;
-            string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_date_picker.png";
+            string fileDefaultWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_date_picker.png";
             _windowSize = new Size(600, 373);
 
             //Init Content

@@ -1,9 +1,10 @@
 ﻿using Gtk;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.datalayer.App;
-using System.Drawing;
-using LogicPOS.Settings.Extensions;
+using logicpos.datalayer.Xpo;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
+using LogicPOS.Settings.Extensions;
+using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -13,9 +14,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
-            string windowTitle = string.Format("{0} : {1} #{2}", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_orders"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_place_table"), pTable);
+            string windowTitle = string.Format("{0} : {1} #{2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_orders"), CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_place_table"), pTable);
             Size windowSize = new Size(429, 205);//618 (3buts)
-            string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_orders.png";
+            string fileDefaultWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_orders.png";
 
             Size sizeIcon = new Size(50, 50);
             int buttonWidth = 162;
@@ -23,13 +24,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             uint tablePadding = 15;
 
             //Icons
-            string fileIconListOrders = DataLayerFramework.Path["images"] + @"Icons\icon_pos_ticketpad_orderlist.png";
-            string fileIconPrintOrder = DataLayerFramework.Path["images"] + @"Icons\icon_pos_print.png";
-            //String fileIconListFinanceDocuments = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_default.png");
+            string fileIconListOrders = GeneralSettings.Path["images"] + @"Icons\icon_pos_ticketpad_orderlist.png";
+            string fileIconPrintOrder = GeneralSettings.Path["images"] + @"Icons\icon_pos_print.png";
+            //String fileIconListFinanceDocuments = SharedUtils.OSSlash(GeneralSettings.Path["images"] + @"Icons\icon_pos_default.png");
 
             //Buttons
-            TouchButtonIconWithText buttonPrintOrder = new TouchButtonIconWithText("touchButtonPrintOrder_Green", _colorBaseDialogDefaultButtonBackground, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_orders_button_label_print_order"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, fileIconPrintOrder, sizeIcon, buttonWidth, buttonHeight);
-            TouchButtonIconWithText buttonTableConsult = new TouchButtonIconWithText("touchButtonListOrders_Green", _colorBaseDialogDefaultButtonBackground, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_orders_button_label_table_consult"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, fileIconListOrders, sizeIcon, buttonWidth, buttonHeight);
+            TouchButtonIconWithText buttonPrintOrder = new TouchButtonIconWithText("touchButtonPrintOrder_Green", _colorBaseDialogDefaultButtonBackground, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_orders_button_label_print_order"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, fileIconPrintOrder, sizeIcon, buttonWidth, buttonHeight);
+            TouchButtonIconWithText buttonTableConsult = new TouchButtonIconWithText("touchButtonListOrders_Green", _colorBaseDialogDefaultButtonBackground, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_orders_button_label_table_consult"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, fileIconListOrders, sizeIcon, buttonWidth, buttonHeight);
             //TouchButtonIconWithText buttonListFinanceDocuments = new TouchButtonIconWithText("touchButtonListFinanceDocuments_Green", _colorBaseDialogDefaultButtonBackground, CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_button_label_select_record_finance_documents, _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, fileIconPrintOrder, sizeIcon, buttonWidth, buttonHeight);
 
             //Table
@@ -50,7 +51,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             // Enable/Disable PrintTicket based on Printer Type, Currently PrintTicket is only Implemented in Thermal Printers
             //TK016249 - Impressoras - Diferenciação entre Tipos
-            bool printerMissing = (DataLayerFramework.LoggedTerminal.ThermalPrinter != null && DataLayerFramework.LoggedTerminal.ThermalPrinter.PrinterType.Token.StartsWith("THERMAL_PRINTER_"));
+            bool printerMissing = (XPOSettings.LoggedTerminal.ThermalPrinter != null && XPOSettings.LoggedTerminal.ThermalPrinter.PrinterType.Token.StartsWith("THERMAL_PRINTER_"));
             buttonPrintOrder.Sensitive = printerMissing;
             buttonTableConsult.Sensitive = printerMissing;
         }

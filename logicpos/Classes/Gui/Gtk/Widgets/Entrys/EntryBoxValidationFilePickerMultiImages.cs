@@ -2,12 +2,12 @@
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.datalayer.App;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -82,7 +82,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             if (Value.Contains(EntryBoxAddFile.Value))
             {
-                logicpos.Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_filepicker_existing_file_error"));
+                logicpos.Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_error"), CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_filepicker_existing_file_error"));
             }
             else
             {
@@ -98,12 +98,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //if AddFileNameToList true, add the File to the list, else skip add, usefull when we Initialize List from Constructor pInitialFileList
         private void AddFileEntry(string pFileName, bool pAddFileNameToList)
         {
-            EntryBoxValidationButton entryBoxValidationButton = new EntryBoxValidationButton(_sourceWindow, string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_file_image"), Value.Count + 1), KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexAlfaNumericFilePath, true);
+            EntryBoxValidationButton entryBoxValidationButton = new EntryBoxValidationButton(_sourceWindow, string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_file_image"), Value.Count + 1), KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexAlfaNumericFilePath, true);
             entryBoxValidationButton.EntryValidation.Validate();
             entryBoxValidationButton.EntryValidation.Sensitive = false;
 
             //Add Aditional Button to EntryBoxValidationFilePickerDialog
-            string iconFileNameDelete = string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/Windows/icon_window_delete_record.png");
+            string iconFileNameDelete = string.Format("{0}{1}", GeneralSettings.Path["images"], @"Icons/Windows/icon_window_delete_record.png");
             TouchButtonIcon buttonDelete = new TouchButtonIcon("touchButtonIcon_Delete", Color.Transparent, iconFileNameDelete, new Size(20, 20), 30, 30);
             entryBoxValidationButton.Hbox.PackStart(buttonDelete, false, false, 0);
 
@@ -151,7 +151,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     }
                     else if (Value.Contains(dialog.FilePicker.Filename))
                     {
-                        logicpos.Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_filepicker_existing_file_error"));
+                        logicpos.Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_error"), CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_filepicker_existing_file_error"));
                     }
                     else
                     {

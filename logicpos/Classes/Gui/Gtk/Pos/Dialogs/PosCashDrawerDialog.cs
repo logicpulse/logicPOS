@@ -10,18 +10,18 @@ using System.Drawing;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Extensions;
-using logicpos.datalayer.App;
 using logicpos.shared.App;
 using logicpos.datalayer.Xpo;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
     internal partial class PosCashDrawerDialog : PosBaseDialog
     {
         //Settings
-        private readonly int _decimalRoundTo = LogicPOS.Settings.CultureSettings.DecimalRoundTo;
+        private readonly int _decimalRoundTo = CultureSettings.DecimalRoundTo;
         //Private Properties
         //ResponseType (Above 10)
         private readonly ResponseType _responseTypePrint = (ResponseType)11;
@@ -68,10 +68,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 }
 
                 //Init Local Vars
-                string windowTitle = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_cashdrawer"), LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalAmountInCashDrawer, SharedSettings.ConfigurationSystemCurrency.Acronym));
+                string windowTitle = string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_cashdrawer"), LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalAmountInCashDrawer, SharedSettings.ConfigurationSystemCurrency.Acronym));
                 Size windowSize = new Size(462, 310);//400 With Other Payments
-                string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_cash_drawer.png";
-                string fileActionPrint = DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_print.png";
+                string fileDefaultWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_cash_drawer.png";
+                string fileActionPrint = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_print.png";
 
                 //Get SeletedData from WorkSessionMovementType Buttons
                 string executeSql = @"SELECT Oid, Token, ResourceString, ButtonIcon, Disabled FROM pos_worksessionmovementtype WHERE (Token LIKE 'CASHDRAWER_%') AND (Disabled IS NULL or Disabled  <> 1) ORDER BY Ord;";
@@ -93,10 +93,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     touchButtonIconWithText = new TouchButtonIconWithText(
                       string.Format("touchButton{0}_Green", buttonBagKey),
                       Color.Transparent/*_colorBaseDialogDefaultButtonBackground*/,
-                      CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), row.Values[xPSelectData.GetFieldIndex("ResourceString")].ToString()),
+                      CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), row.Values[xPSelectData.GetFieldIndex("ResourceString")].ToString()),
                       _fontBaseDialogButton,
                       _colorBaseDialogDefaultButtonFont,
-                     string.Format("{0}{1}", DataLayerFramework.Path["images"], row.Values[xPSelectData.GetFieldIndex("ButtonIcon")].ToString()),
+                     string.Format("{0}{1}", GeneralSettings.Path["images"], row.Values[xPSelectData.GetFieldIndex("ButtonIcon")].ToString()),
                       _sizeBaseDialogDefaultButtonIcon,
                       _sizeBaseDialogDefaultButton.Width,
                       _sizeBaseDialogDefaultButton.Height
@@ -140,7 +140,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 MovementType.Token = initialButtonToken;
 
                 //EntryAmountMoney
-                _entryBoxMovementAmountMoney = new EntryBoxValidation(this, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_money"), KeyboardMode.Money, LogicPOS.Utility.RegexUtils.RegexDecimalGreaterEqualThanZero, true);
+                _entryBoxMovementAmountMoney = new EntryBoxValidation(this, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_money"), KeyboardMode.Money, LogicPOS.Utility.RegexUtils.RegexDecimalGreaterEqualThanZero, true);
                 _entryBoxMovementAmountMoney.EntryValidation.Changed += delegate { ValidateDialog(); };
 				//Alteração no funcionamento do Inicio/fecho Sessão [IN:014330]
                 _entryBoxMovementAmountMoney.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.DecimalToString(TotalAmountInCashDrawer);
@@ -151,7 +151,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //_entryBoxMovementAmountOtherPayments.EntryValidation.Changed += delegate { ValidateDialog(); };
 
                 //EntryDescription
-                _entryBoxMovementDescription = new EntryBoxValidation(this, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_description"), KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false);
+                _entryBoxMovementDescription = new EntryBoxValidation(this, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_description"), KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false);
                 _entryBoxMovementDescription.EntryValidation.Changed += delegate { ValidateDialog(); };
 
                 //VBox

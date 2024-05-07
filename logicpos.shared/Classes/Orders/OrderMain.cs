@@ -119,7 +119,7 @@ namespace logicpos.shared.Classes.Orders
             if (xTable.TableStatus != TableStatus.Open)
             {
                 xTable.TableStatus = TableStatus.Open;
-                SharedUtils.Audit("TABLE_OPEN", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_table_open"), xTable.Designation));
+                SharedUtils.Audit("TABLE_OPEN", string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "audit_message_table_open"), xTable.Designation));
                 xTable.DateTableOpen = XPOHelper.CurrentDateTimeAtomic();
                 if (!isInUOW) xTable.Save();
             }
@@ -154,7 +154,7 @@ namespace logicpos.shared.Classes.Orders
                 //Force Changes in Record, else UpdatedAt dont Update
                 xOrderMain.UpdatedAt = XPOHelper.CurrentDateTimeAtomic();
                 //TODO: Check if User was Automatically Updated
-                //if (xOrderMain.UpdatedBy != DataLayerFramework.LoggedUser) xOrderMain.UpdatedBy = DataLayerFramework.LoggedUser;
+                //if (xOrderMain.UpdatedBy != XPOSettings.LoggedUser) xOrderMain.UpdatedBy = XPOSettings.LoggedUser;
                 if (!isInUOW) xOrderMain.Save();
             }
 

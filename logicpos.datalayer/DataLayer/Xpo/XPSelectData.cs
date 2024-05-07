@@ -1,6 +1,5 @@
 ﻿using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
-using logicpos.datalayer.App;
 using logicpos.datalayer.Xpo;
 using System;
 using System.Collections.Generic;

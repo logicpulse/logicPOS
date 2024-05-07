@@ -49,7 +49,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Init Local Vars
             String windowTitle = CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_send_message;
             Size windowSize = new Size(600, 500);
-            String fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_send_message.png");
+            String fileDefaultWindowIcon = SharedUtils.OSSlash(GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_send_message.png");
 
             //Init Content
             Fixed fixedContent = new Fixed();

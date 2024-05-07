@@ -3,12 +3,12 @@ using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using System;
 using System.Drawing;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -28,10 +28,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Init Local Vars Parameters
             _selectedUserDetail = pUserDetail;
             //Init Local Vars
-            string windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_request_user_pin");
+            string windowTitle = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_request_user_pin");
             Size windowSize = new Size(332, DialogHeight);
-            string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_users.png";
-            string fontNumberPadPinButtonKeysTextAndLabel = LogicPOS.Settings.GeneralSettings.Settings["fontNumberPadPinButtonKeysTextAndLabel"];
+            string fileDefaultWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_users.png";
+            string fontNumberPadPinButtonKeysTextAndLabel = GeneralSettings.Settings["fontNumberPadPinButtonKeysTextAndLabel"];
             ActionAreaButtons actionAreaButtons;
 
             //Init Content

@@ -3,7 +3,6 @@ using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Reports;
@@ -12,6 +11,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -36,9 +36,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
-            string windowTitle = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_document_finance_print"), pDocumentFinanceMaster.DocumentNumber);
+            string windowTitle = string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_document_finance_print"), pDocumentFinanceMaster.DocumentNumber);
             Size windowSize = new Size(400, 259);
-            string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_document_new.png";
+            string fileDefaultWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_document_new.png";
             //Parameters
             _documentFinanceMaster = pDocumentFinanceMaster;
             //Vars
@@ -71,17 +71,17 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             Dictionary<string, bool> buttonGroup = new Dictionary<string, bool>
             {
-                { CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_print_copy_title1"), (_printCopies >= 1) },
-                { CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_print_copy_title2"), (_printCopies >= 2) },
-                { CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_print_copy_title3"), (_printCopies >= 3) },
-                { CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_print_copy_title4"), (_printCopies >= 4) }
+                { CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_print_copy_title1"), (_printCopies >= 1) },
+                { CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_print_copy_title2"), (_printCopies >= 2) },
+                { CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_print_copy_title3"), (_printCopies >= 3) },
+                { CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_print_copy_title4"), (_printCopies >= 4) }
             };
             //Not Used Anymore
             //buttonGroup.Add(CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_print_copy_title5, (_printCopies >= 5));
             //buttonGroup.Add(CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_print_copy_title6, (_printCopies >= 6));
 
             //Construct,Pack and Event
-            _checkButtonCopyNamesBoxGroup = new CheckButtonBoxGroup(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_print_copies"), buttonGroup);
+            _checkButtonCopyNamesBoxGroup = new CheckButtonBoxGroup(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_print_copies"), buttonGroup);
             _vboxContent.PackStart(_checkButtonCopyNamesBoxGroup);
             _checkButtonCopyNamesBoxGroup.Clicked += checkButtonCopyNamesBoxGroup_Clicked;
 
@@ -89,13 +89,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             if (_requestMotive)
             {
                 //CheckButtonBoxSecondCopy
-                _checkButtonBoxSecondCopy = new CheckButtonBox(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_second_copy"), true);
+                _checkButtonBoxSecondCopy = new CheckButtonBox(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_second_copy"), true);
                 _checkButtonBoxSecondCopy.Clicked += checkButtonBoxSecondCopy_Clicked;
                 _checkButtonBoxSecondCopy.StateChanged += checkButtonBoxSecondCopy_Clicked;
                 //Pack EntryBox with CheckBox into Dialog
                 _vboxContent.PackStart(_checkButtonBoxSecondCopy);
 
-                _entryBoxValidationBoxMotive = new EntryBoxValidation(this, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_reprint_original_motive"), KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexAlfaNumeric, false);
+                _entryBoxValidationBoxMotive = new EntryBoxValidation(this, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_reprint_original_motive"), KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexAlfaNumeric, false);
                 //Start Disabled
                 _entryBoxValidationBoxMotive.EntryValidation.Label.Sensitive = false;
                 _entryBoxValidationBoxMotive.EntryValidation.Sensitive = false;

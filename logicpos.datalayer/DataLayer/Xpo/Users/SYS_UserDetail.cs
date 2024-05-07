@@ -1,6 +1,6 @@
 using DevExpress.Xpo;
-using logicpos.datalayer.App;
 using logicpos.datalayer.Xpo;
+using LogicPOS.Settings;
 using LogicPOS.Utility;
 using System;
 
@@ -26,7 +26,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             //Required for New Users
             AccessPin = CryptographyUtils.GenerateSaltedString(XPOSettings.DefaultValueUserDetailAccessPin);
             PasswordReset = true;
-            ButtonImage = string.Format("{0}{1}", DataLayerFramework.Path["assets"], XPOSettings.DefaultValueUserDetailButtonImage);
+            ButtonImage = string.Format("{0}{1}", GeneralSettings.Path["assets"], XPOSettings.DefaultValueUserDetailButtonImage);
         }
 
         protected override void OnNewRecordSaving()

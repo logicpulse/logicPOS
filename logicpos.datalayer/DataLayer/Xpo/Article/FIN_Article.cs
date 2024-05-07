@@ -1,5 +1,4 @@
 using DevExpress.Xpo;
-using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
 using logicpos.datalayer.Xpo;
 using LogicPOS.Settings;
@@ -314,13 +313,13 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Token2", ref fToken2, value); }
         }
 
-//string fToken3;
-//[Size(255)]
-//public string Token3
-//{
-//    get { return fToken3; }
-//    set { SetPropertyValue<string>("Token3", ref fToken3, value); }
-//}
+        //string fToken3;
+        //[Size(255)]
+        //public string Token3
+        //{
+        //    get { return fToken3; }
+        //    set { SetPropertyValue<string>("Token3", ref fToken3, value); }
+        //}
 
         //Article One <> Many DocumentOrderDetail
         [Association(@"ArticleReferencesDocumentOrderDetail", typeof(fin_documentorderdetail))]
@@ -336,7 +335,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             get { return GetCollection<fin_documentfinancedetail>("DocumentFinanceDetail"); }
         }
 
-		//Artigos Compostos [IN:016522]
+        //Artigos Compostos [IN:016522]
         //Article One <> Many ArticlesComposition
         [Association(@"ArticleReferencesArticleComposition", typeof(fin_articlecomposition))]
         public XPCollection<fin_articlecomposition> ArticleComposition

@@ -7,7 +7,6 @@ using logicpos.Classes.Enums;
 using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
-using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.App;
@@ -35,7 +34,7 @@ namespace logicpos.Classes.DataLayer
         //Settings
         private static string _backupConnectionString;
         private static string _fileExtension;
-        private static readonly string _pathBackups = DataLayerFramework.Path["backups"].ToString();
+        private static readonly string _pathBackups = GeneralSettings.Path["backups"].ToString();
         //Private Vars
         private static readonly Size _sizeDialog = new Size(800, 300);
 
@@ -106,7 +105,7 @@ namespace logicpos.Classes.DataLayer
                     FileNamePacked = Path.GetRandomFileName(),
                     DataBaseType = DatabaseSettings.DatabaseType,
                     Version = XPOHelper.GetNextTableFieldID("sys_systembackup", "Version", false),
-                    Terminal = (pos_configurationplaceterminal)SessionXpoForBackupPurposes.GetObjectByKey(typeof(pos_configurationplaceterminal), DataLayerFramework.LoggedTerminal.Oid)
+                    Terminal = (pos_configurationplaceterminal)SessionXpoForBackupPurposes.GetObjectByKey(typeof(pos_configurationplaceterminal), XPOSettings.LoggedTerminal.Oid)
                 };
                 systemBackup.Save();
                 string backupProcess = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_database_backup");
@@ -153,7 +152,7 @@ namespace logicpos.Classes.DataLayer
                     systemBackup.FilePath = Path.GetDirectoryName(fileName);
 
                     //Extra Protection for System Automatic Backups, with unlogged users
-                    sys_userdetail userDetail = (DataLayerFramework.LoggedUser != null) ? (sys_userdetail)SessionXpoForBackupPurposes.GetObjectByKey(typeof(sys_userdetail), DataLayerFramework.LoggedUser.Oid) : null;
+                    sys_userdetail userDetail = (XPOSettings.LoggedUser != null) ? (sys_userdetail)SessionXpoForBackupPurposes.GetObjectByKey(typeof(sys_userdetail), XPOSettings.LoggedUser.Oid) : null;
                     if (userDetail != null) systemBackup.User = userDetail;
 
                     //Non MSSqlServer Work: Cant Get Remote File Sizes, Hash etc from LPDev Backups
@@ -449,7 +448,7 @@ namespace logicpos.Classes.DataLayer
         private static string GetBackupFileName(string pFileExtension, uint pFileVersion, string pFilename)
         {
             //Settings
-            string pathBackups = DataLayerFramework.Path["backups"].ToString();
+            string pathBackups = GeneralSettings.Path["backups"].ToString();
             string fileDataBaseBackup = POSSettings.FileFormatDataBaseBackup;
             string dateTimeFileFormat = CultureSettings.FileFormatDateTime;
             //Local Vars

@@ -4,13 +4,13 @@ using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.datalayer.App;
 using logicpos.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {
@@ -87,17 +87,17 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         private void InitUI(bool showFilterAndMoreButtons)
         {
             //Settings
-            string fontBaseDialogActionAreaButton = LogicPOS.Settings.GeneralSettings.Settings["fontBaseDialogActionAreaButton"];
+            string fontBaseDialogActionAreaButton = GeneralSettings.Settings["fontBaseDialogActionAreaButton"];
             Color colorBaseDialogActionAreaButtonBackground = Color.Transparent;
-            Color colorBaseDialogActionAreaButtonFont = LogicPOS.Settings.GeneralSettings.Settings["colorBaseDialogActionAreaButtonFont"].StringToColor();
+            Color colorBaseDialogActionAreaButtonFont = GeneralSettings.Settings["colorBaseDialogActionAreaButtonFont"].StringToColor();
             Size sizeBaseDialogActionAreaBackOfficeNavigatorButton = ExpressionEvaluatorExtended.sizePosToolbarButtonSizeDefault;
             Size sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon = ExpressionEvaluatorExtended.sizePosToolbarButtonIconSizeDefault;
-            //WIP: String fileIconSearchAdvanced = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_search_advanced.png");
+            //WIP: String fileIconSearchAdvanced = SharedUtils.OSSlash(GeneralSettings.Path["images"] + @"Icons\icon_pos_search_advanced.png");
 
             string regexAlfaNumericExtended = LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended;
 
             //SearchCriteria
-            _entryBoxSearchCriteria = new EntryBoxValidation(_sourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "widget_generictreeviewsearch_search_label"), KeyboardMode.AlfaNumeric, regexAlfaNumericExtended, false);
+            _entryBoxSearchCriteria = new EntryBoxValidation(_sourceWindow, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "widget_generictreeviewsearch_search_label"), KeyboardMode.AlfaNumeric, regexAlfaNumericExtended, false);
             //TODO:THEME
             _entryBoxSearchCriteria.WidthRequest = (GlobalApp.ScreenSize.Width == 800 && GlobalApp.ScreenSize.Height == 600) ? 150 : 250;
 
@@ -136,10 +136,10 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                 TouchButtonIconWithText buttonMore;
                 TouchButtonIconWithText buttonFilter;
 
-                string fileActionMore = DataLayerFramework.Path["images"] + @"Icons\icon_pos_more.png";
-                string fileActionFilter = DataLayerFramework.Path["images"] + @"Icons\icon_pos_filter.png";
-                buttonMore = new TouchButtonIconWithText("touchButtonSearchAdvanced_DialogActionArea", colorBaseDialogActionAreaButtonBackground, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_button_label_more"), ExpressionEvaluatorExtended.fontDocumentsSizeDefault, colorBaseDialogActionAreaButtonFont, fileActionMore, sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon, sizeBaseDialogActionAreaBackOfficeNavigatorButton.Width, sizeBaseDialogActionAreaBackOfficeNavigatorButton.Height) { Sensitive = true };
-                buttonFilter = new TouchButtonIconWithText("touchButtonSearchAdvanced_DialogActionArea", colorBaseDialogActionAreaButtonBackground, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_button_label_filter"), ExpressionEvaluatorExtended.fontDocumentsSizeDefault, colorBaseDialogActionAreaButtonFont, fileActionFilter, sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon, sizeBaseDialogActionAreaBackOfficeNavigatorButton.Width, sizeBaseDialogActionAreaBackOfficeNavigatorButton.Height) { Sensitive = true };
+                string fileActionMore = GeneralSettings.Path["images"] + @"Icons\icon_pos_more.png";
+                string fileActionFilter = GeneralSettings.Path["images"] + @"Icons\icon_pos_filter.png";
+                buttonMore = new TouchButtonIconWithText("touchButtonSearchAdvanced_DialogActionArea", colorBaseDialogActionAreaButtonBackground, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_button_label_more"), ExpressionEvaluatorExtended.fontDocumentsSizeDefault, colorBaseDialogActionAreaButtonFont, fileActionMore, sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon, sizeBaseDialogActionAreaBackOfficeNavigatorButton.Width, sizeBaseDialogActionAreaBackOfficeNavigatorButton.Height) { Sensitive = true };
+                buttonFilter = new TouchButtonIconWithText("touchButtonSearchAdvanced_DialogActionArea", colorBaseDialogActionAreaButtonBackground, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_button_label_filter"), ExpressionEvaluatorExtended.fontDocumentsSizeDefault, colorBaseDialogActionAreaButtonFont, fileActionFilter, sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon, sizeBaseDialogActionAreaBackOfficeNavigatorButton.Width, sizeBaseDialogActionAreaBackOfficeNavigatorButton.Height) { Sensitive = true };
 
                 hbox.PackStart(buttonMore, false, false, 0);
                 hbox.PackStart(buttonFilter, false, false, 0);

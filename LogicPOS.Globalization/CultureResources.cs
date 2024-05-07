@@ -4,7 +4,7 @@ namespace LogicPOS.Globalization
 {
     public static class CultureResources
     {
-        public static ResXResourceSet ResourceSet { get; set; }
+        private static ResXResourceSet ResourceSet { get; set; }
 
         private static string GetResourcesFileByName(string resourceName)
         {

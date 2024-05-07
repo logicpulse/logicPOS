@@ -13,10 +13,10 @@ using System.Drawing;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.shared.App;
-using logicpos.datalayer.App;
 using logicpos.datalayer.Xpo;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -33,8 +33,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
-            string windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_template");
-            string fileDefaultWindowIcon = DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_default.png";
+            string windowTitle = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_template");
+            string fileDefaultWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_default.png";
             _windowSize = new Size(595, 740);
 
             //Init VBox
@@ -102,7 +102,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Test XPOEntryBoxSelectRecordValidation without KeyBoard Input
             fin_documentfinancetype defaultValueDocumentFinanceType = (fin_documentfinancetype)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(fin_documentfinancetype), SharedSettings.XpoOidDocumentFinanceTypeInvoice);
             CriteriaOperator criteriaOperatorDocumentFinanceType = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1)");
-            XPOEntryBoxSelectRecordValidation<fin_documentfinancetype, TreeViewDocumentFinanceType> entryBoxSelectDocumentFinanceType = new XPOEntryBoxSelectRecordValidation<fin_documentfinancetype, TreeViewDocumentFinanceType>(this, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinanceseries_documenttype"), "Designation", "Oid", defaultValueDocumentFinanceType, criteriaOperatorDocumentFinanceType, LogicPOS.Utility.RegexUtils.RegexGuid, true);
+            XPOEntryBoxSelectRecordValidation<fin_documentfinancetype, TreeViewDocumentFinanceType> entryBoxSelectDocumentFinanceType = new XPOEntryBoxSelectRecordValidation<fin_documentfinancetype, TreeViewDocumentFinanceType>(this, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_documentfinanceseries_documenttype"), "Designation", "Oid", defaultValueDocumentFinanceType, criteriaOperatorDocumentFinanceType, LogicPOS.Utility.RegexUtils.RegexGuid, true);
             //entryBoxSelectDocumentFinanceType.EntryValidation.IsEditable = false;
             entryBoxSelectDocumentFinanceType.ClosePopup += delegate { };
             _vbox.PackStart(entryBoxSelectDocumentFinanceType, true, true, _padding);
@@ -124,20 +124,20 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             
             //Test DateTime Picker
             DateTime initalDateTime = DateTime.Now;
-            EntryBoxValidationDatePickerDialog entryBoxShipToDeliveryDate = new EntryBoxValidationDatePickerDialog(this, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ship_to_delivery_date"), "dateFormat", DateTime.Now, LogicPOS.Utility.RegexUtils.RegexDate, true, LogicPOS.Settings.CultureSettings.DateFormat);
+            EntryBoxValidationDatePickerDialog entryBoxShipToDeliveryDate = new EntryBoxValidationDatePickerDialog(this, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_ship_to_delivery_date"), "dateFormat", DateTime.Now, LogicPOS.Utility.RegexUtils.RegexDate, true, CultureSettings.DateFormat);
             //entryBoxShipToDeliveryDate.EntryValidation.Sensitive = true;
-            entryBoxShipToDeliveryDate.EntryValidation.Text = initalDateTime.ToString(LogicPOS.Settings.CultureSettings.DateFormat);
+            entryBoxShipToDeliveryDate.EntryValidation.Text = initalDateTime.ToString(CultureSettings.DateFormat);
 
             //entryBoxShipToDeliveryDate.EntryValidation.Validate();
             //entryBoxShipToDeliveryDate.ClosePopup += delegate { };
             _vbox.PackStart(entryBoxShipToDeliveryDate, true, true, _padding);
 
             //Test DateTime Picker with KeyBoard
-            EntryBoxValidationDatePickerDialog entryBoxShipToDeliveryDateKeyboard = new EntryBoxValidationDatePickerDialog(this, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ship_to_delivery_date"), LogicPOS.Settings.CultureSettings.DateTimeFormat, DateTime.Now, KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexDateTime, true, LogicPOS.Settings.CultureSettings.DateTimeFormat);
+            EntryBoxValidationDatePickerDialog entryBoxShipToDeliveryDateKeyboard = new EntryBoxValidationDatePickerDialog(this, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_ship_to_delivery_date"), CultureSettings.DateTimeFormat, DateTime.Now, KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexDateTime, true, CultureSettings.DateTimeFormat);
             entryBoxShipToDeliveryDateKeyboard.EntryValidation.Sensitive = false;
             entryBoxShipToDeliveryDateKeyboard.ButtonKeyBoard.Sensitive = false;
             //entryBoxShipToDeliveryDate.EntryValidation.Sensitive = true;
-            entryBoxShipToDeliveryDateKeyboard.EntryValidation.Text = initalDateTime.ToString(LogicPOS.Settings.CultureSettings.DateTimeFormat);
+            entryBoxShipToDeliveryDateKeyboard.EntryValidation.Text = initalDateTime.ToString(CultureSettings.DateTimeFormat);
             _vbox.PackStart(entryBoxShipToDeliveryDateKeyboard, true, true, _padding);
 
             //Simple ListView

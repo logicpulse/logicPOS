@@ -7,7 +7,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
-using logicpos.datalayer.App;
 using logicpos.shared.App;
 using logicpos.datalayer.Xpo;
 using LogicPOS.Settings;

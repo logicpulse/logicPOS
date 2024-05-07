@@ -2,7 +2,6 @@
 using logicpos.App;
 using logicpos.Classes.Enums.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.shared.App;
 using System;
@@ -98,7 +97,7 @@ namespace logicpos
         //Main Logout User Method, Shared for FrontOffice and BackOffice
         public void LogOutUser(bool pShowStartup)
         {
-            LogOutUser(pShowStartup, DataLayerFramework.LoggedUser);
+            LogOutUser(pShowStartup, XPOSettings.LoggedUser);
         }
 
         public void LogOutUser(bool pGotoStartupWindow, sys_userdetail pUserDetail)
@@ -110,9 +109,9 @@ namespace logicpos
                 SharedFramework.SessionApp.Write();
                 SharedUtils.Audit("USER_loggerOUT", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_user_loggerout"), pUserDetail.Name));
                 //Only Reset LoggedUser if equal to pUser
-                if (DataLayerFramework.LoggedUser.Equals(pUserDetail))
+                if (XPOSettings.LoggedUser.Equals(pUserDetail))
                 {
-                    DataLayerFramework.LoggedUser = null;
+                    XPOSettings.LoggedUser = null;
                     SharedFramework.LoggedUserPermissions = null;
                 }
             }

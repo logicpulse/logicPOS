@@ -6,6 +6,8 @@ namespace logicpos.datalayer.Xpo
 {
     public static class XPOSettings
     {
+        public static sys_userdetail LoggedUser { get; set; }
+        public static pos_configurationplaceterminal LoggedTerminal { get; set; }
         public static Session Session { get; set; }
         public static cfg_configurationcountry ConfigurationSystemCountry { get; set; } = null;
         public static Guid XpoOidArticleDefaultType { get; set; } = new Guid("edf4841e-e451-4c7b-9bd0-ee02860ba937");

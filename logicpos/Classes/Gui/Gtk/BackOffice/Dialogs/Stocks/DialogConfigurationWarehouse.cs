@@ -4,7 +4,6 @@ using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
-using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Documents;
 using logicpos.datalayer.Xpo;
@@ -25,8 +24,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
         private fin_warehouse _Warehouse;
         private ScrolledWindow _scrolledWindow;
         private VBox vboxTab2;
-        private readonly string iconAddRecord = string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/icon_pos_nav_new.png");
-        private readonly string iconClearRecord = string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/Windows/icon_window_delete_record.png");
+        private readonly string iconAddRecord = string.Format("{0}{1}", GeneralSettings.Path["images"], @"Icons/icon_pos_nav_new.png");
+        private readonly string iconClearRecord = string.Format("{0}{1}", GeneralSettings.Path["images"], @"Icons/Windows/icon_window_delete_record.png");
 
         public DialogConfigurationWarehouse(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
