@@ -12,6 +12,9 @@ using logicpos.financial.library.Classes.Reports.BOs.System;
 using logicpos.financial.library.Classes.Reports.BOs.Users;
 using logicpos.shared.App;
 using logicpos.shared.Enums;
+using LogicPOS.Globalization;
+using LogicPOS.Settings;
+using LogicPOS.Settings.Extensions;
 using Patagames.Pdf.Net;
 using Patagames.Pdf.Net.Controls.WinForms;
 using System;
@@ -23,9 +26,6 @@ using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
-using LogicPOS.Settings.Extensions;
-using LogicPOS.Globalization;
-using LogicPOS.Settings;
 
 namespace logicpos.financial.library.Classes.Reports
 {
@@ -150,7 +150,7 @@ namespace logicpos.financial.library.Classes.Reports
             object[] systemVariables = this.Dictionary.SystemVariables.ToArray();
             //Add SystemVars
             FastReport.Data.SystemVariable systemVariable;
-            foreach (var item in SharedFramework.FastReportSystemVars)
+            foreach (var item in PrintingSettings.FastReportSystemVars)
             {
                 systemVariable = new FastReport.Data.SystemVariable();
                 systemVariable.Name = item.Key;
@@ -161,7 +161,7 @@ namespace logicpos.financial.library.Classes.Reports
             //Custom Vars that was not Assigned on Startup
             if (XPOSettings.LoggedUser != null)
             {
-                SharedFramework.FastReportCustomVars["Session_loggerged_User"] = XPOSettings.LoggedUser.Name;
+                PrintingSettings.FastReportCustomVars["Session_loggerged_User"] = XPOSettings.LoggedUser.Name;
             }
         }
 
@@ -268,7 +268,7 @@ namespace logicpos.financial.library.Classes.Reports
                     //if (export.ShowDialog()) this.Export(export, fileName);
                     //TK016206 Reports - Exportação para Xls/pdf
                     //TK016249 - Impressoras - Diferenciação entre Tipos
-                    if ((pViewMode == CustomReportDisplayMode.ExportPDFSilent) || (pViewMode == CustomReportDisplayMode.ExportPDF) || !SharedFramework.UsingThermalPrinter)
+                    if ((pViewMode == CustomReportDisplayMode.ExportPDFSilent) || (pViewMode == CustomReportDisplayMode.ExportPDF) || !PrintingSettings.UsingThermalPrinter)
                     {
                         FastReport.Export.Pdf.PDFExport export = new FastReport.Export.Pdf.PDFExport();
                         try
@@ -325,29 +325,21 @@ namespace logicpos.financial.library.Classes.Reports
                     //Show Pdf 
                     if ((pViewMode == CustomReportDisplayMode.ExportPDF) && File.Exists(fileName))
                     {
-                        if (SharedFramework.CanOpenFiles)
+                        if (SharedUtils.UsePosPDFViewer() == true)
                         {
-                            //IN009240 Usar o PDF Viewer do POS                                                      
+                            string docPath = string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileName);
+                            var ScreenSizePDF = SharedFramework.ScreenSize;
+                            int widthPDF = ScreenSizePDF.Width;
+                            int heightPDF = ScreenSizePDF.Height;
+                            bool exportXls = true;
 
+                            if (!PrintingSettings.UsingThermalPrinter) exportXls = false;
 
-                            if (SharedUtils.UsePosPDFViewer() == true)
-                            {
-                                string docPath = string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileName);
-                                var ScreenSizePDF = SharedFramework.ScreenSize;
-                                int widthPDF = ScreenSizePDF.Width;
-                                int heightPDF = ScreenSizePDF.Height;
-                                bool exportXls = true;
-
-                                if (!SharedFramework.UsingThermalPrinter) exportXls = false;
-
-                                Application.Run(new logicpos.documentviewer.startDocumentViewer(docPath, widthPDF - 50, heightPDF - 20, exportXls));
-                            }
-                            else
-                            {
-                                System.Diagnostics.Process.Start(string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileName));
-                            }
-                            //Use full Path, keep untoutched fileName for result
-                            //System.Diagnostics.Process.Start(SharedUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileName)));
+                            Application.Run(new logicpos.documentviewer.startDocumentViewer(docPath, widthPDF - 50, heightPDF - 20, exportXls));
+                        }
+                        else
+                        {
+                            System.Diagnostics.Process.Start(string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileName));
                         }
                     }
                     result = fileName;

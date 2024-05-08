@@ -64,13 +64,13 @@ namespace logicpos.financial.library.Classes.Reports
 
         private static void RegisterSystemVars(string pAppName)
         {
-            if (SharedFramework.FastReportSystemVars == null)
+            if (PrintingSettings.FastReportSystemVars == null)
             {
                 Dictionary<string, string> systemVars = new Dictionary<string, string>
                 {
                     { "PreparedPages", "0" }
                 };
-                SharedFramework.FastReportSystemVars = systemVars;
+                PrintingSettings.FastReportSystemVars = systemVars;
             }
         }
 
@@ -138,7 +138,7 @@ namespace logicpos.financial.library.Classes.Reports
                 customVars.Add("SESSION_loggerGED_TERMINAL", GeneralSettings.Settings["POS_CURRENTTERMINAL"]);
             }
 
-             SharedFramework.FastReportCustomVars = customVars;
+             PrintingSettings.FastReportCustomVars = customVars;
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -154,9 +154,9 @@ namespace logicpos.financial.library.Classes.Reports
             try
             {
                 string result = string.Format("UNDEFINED [{0}]", pKey);
-                if ( SharedFramework.FastReportCustomVars.ContainsKey(pKey.ToUpper()))
+                if ( PrintingSettings.FastReportCustomVars.ContainsKey(pKey.ToUpper()))
                 {
-                    result =  SharedFramework.FastReportCustomVars[pKey.ToUpper()];
+                    result =  PrintingSettings.FastReportCustomVars[pKey.ToUpper()];
                 }
                 return result;
             }
@@ -244,8 +244,8 @@ namespace logicpos.financial.library.Classes.Reports
         {
             try
             {
-                string result = ( SharedFramework.FastReportCustomVars.ContainsKey(pToken.ToUpper()))
-                  ?  SharedFramework.FastReportCustomVars[pToken.ToUpper()]
+                string result = ( PrintingSettings.FastReportCustomVars.ContainsKey(pToken.ToUpper()))
+                  ?  PrintingSettings.FastReportCustomVars[pToken.ToUpper()]
                   : string.Format("UNDEFINED [{0}]", pToken);
                 return result;
             }

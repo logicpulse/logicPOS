@@ -18,6 +18,7 @@ using logicpos.datalayer.Xpo;
 using LogicPOS.DTOs.Common;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 
 //Class to Link Project LogicPos to FrameWork API, used to Show Common Messages for LogicPos
 
@@ -484,7 +485,7 @@ namespace logicpos
             //Deteta janela de origem de forma a escolher qual impressora usar - TicketList -> ThermalPrinter | PosDocumentFinanceDialog -> Printer
             sys_configurationprinters printer;
             sys_configurationprinters printerDoc;            
-            if (SharedFramework.UsingThermalPrinter)
+            if (PrintingSettings.UsingThermalPrinter)
             {
                 //Both printer can be the same, if not Defined in DocumentType
                 //Printer for Drawer and Document, if not defined in DocumentType

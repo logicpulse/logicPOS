@@ -56,7 +56,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 _companyLogo = pCompanyLogo;
 
                 //Init Custom Vars From FastReport
-                _customVars =  SharedFramework.FastReportCustomVars;
+                _customVars =  PrintingSettings.FastReportCustomVars;
                 //_systemVars = GlobalFramework.FastReportSystemVars;
                 //Test FastReport Helpers with
                 //_customVars["COMPANY_NAME"])) | _systemVars["APP_NAME"])) | CustomFunctions.Res("global_printed_on_date")

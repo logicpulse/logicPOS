@@ -2352,13 +2352,13 @@ namespace logicpos
             {
                 string query = string.Format("SELECT Value FROM cfg_configurationpreferenceparameter WHERE Token = 'PRINT_QRCODE' AND (Disabled = 0 OR Disabled is NULL);");
                 result = Convert.ToBoolean(XPOSettings.Session.ExecuteScalar(query));
-                SharedFramework.PrintQRCode = result;
+                PrintingSettings.PrintQRCode = result;
             }
             catch (Exception ex)
             {
                 _logger.Error(ex.Message, ex);
                 result = Convert.ToBoolean(GeneralSettings.PreferenceParameters["PRINT_QRCODE"]);
-                SharedFramework.PrintQRCode = result;
+                PrintingSettings.PrintQRCode = result;
                 return true;
             }
 

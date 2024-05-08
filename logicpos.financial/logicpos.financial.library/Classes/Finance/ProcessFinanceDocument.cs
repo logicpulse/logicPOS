@@ -735,7 +735,7 @@ namespace logicpos.financial.library.Classes.Finance
                         // Call Generate GenerateDocument
                         //POS front-end - Consulta Mesa + Impressão Ticket's + Gerar PDF em modo Thermal Printer [IN009344]
                         // If is Thermal Print doc don't create PDF + Lindote(06/02/2020)
-                        if (!SharedFramework.UsingThermalPrinter)
+                        if (!PrintingSettings.UsingThermalPrinter)
                         {
                             GenerateDocumentFinanceMasterPDFIfNotExists(documentFinanceMaster);
                         }

@@ -14,6 +14,7 @@ using logicpos.financial.library.App;
 using logicpos.datalayer.Xpo;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -38,7 +39,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     {
                         //Get Parameters
 						//TK016249 - Impressoras - Diferenciação entre Tipos
-                        SharedFramework.UsingThermalPrinter = false;
+                        PrintingSettings.UsingThermalPrinter = false;
                         ProcessFinanceDocumentParameter processFinanceDocumentParameter = GetFinanceDocumentParameter();
 
                         //If error in Save or Update Customer

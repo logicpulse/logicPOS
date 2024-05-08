@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -137,7 +138,7 @@ OR
             ReportsTypeToken token = (ReportsTypeToken)Enum.Parse(typeof(ReportsTypeToken), button.Name, true);
             _logger.Debug("void PrintReportRouter(object sender, EventArgs e) :: ReportsTypeToken: " + token.ToString());
             //TK016249 - Impressoras - Diferenciação entre Tipos
-            SharedFramework.UsingThermalPrinter = true;
+            PrintingSettings.UsingThermalPrinter = true;
             // Prepare ReportsQueryDialogMode
             //Titulo nas janelas de filtro de relatório [IN:014328]
             ReportsQueryDialogMode reportsQueryDialogMode = ReportsQueryDialogMode.UNDEFINED;

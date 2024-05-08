@@ -62,7 +62,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 else if (pResponse == ResponseType.Ok)
                 {
 					//TK016249 - Impressoras - Diferenciação entre Tipos
-                    SharedFramework.UsingThermalPrinter = true;
+                    PrintingSettings.UsingThermalPrinter = true;
                     //SaveOrUpdateCustomer Before use _selectedCustomer (Can be null)
                     resultObject = logicpos.Utils.SaveOrUpdateCustomer(
                         this,

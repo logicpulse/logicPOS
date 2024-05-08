@@ -340,7 +340,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
                 // If OrderTicket and has a ThermalPrinter connected
                 // Impressoras - Diferenciação entre Tipos [TK:016249]
-                SharedFramework.UsingThermalPrinter = true;
+                PrintingSettings.UsingThermalPrinter = true;
                 if (XPOSettings.LoggedTerminal.ThermalPrinter != null &&
                     XPOSettings.LoggedTerminal.ThermalPrinter.PrinterType.ThermalPrinter &&
                     orderTicket.OrderDetail.Count != 0)
