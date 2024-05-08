@@ -47,7 +47,7 @@
   <ItemGroup>
     <Compile Include="CultureResources.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Constants.cs" />
+    <Compile Include="ResourceNames.cs" />
     <Compile Include="Resources\Localization\Resx.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
