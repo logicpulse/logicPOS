@@ -270,14 +270,14 @@ namespace logicpos
 
         public static void ShowMessageTouchErrorRenderTheme(Window pSourceWindow, string pErrorMessage)
         {
-            string errorMessage = string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "app_error_rendering_theme"), POSSettings.FileTheme, pErrorMessage);
+            string errorMessage = string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), ResourceNames.APP_ERROR_RENDERING_THEME), POSSettings.FileTheme, pErrorMessage);
             ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(600, 500), MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_error"), errorMessage);
             Environment.Exit(0);
         }
 
         public static void ShowMessageTouchErrorUnlicencedFunctionDisabled(Window pSourceWindow, string pErrorMessage)
         {
-            string errorMessage = string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "app_error_application_unlicenced_function_disabled"), pErrorMessage);
+            string errorMessage = string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), ResourceNames.APP_ERROR_APPLICATION_UNLICENCED_FUNCTION_DISABLED), pErrorMessage);
             ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_error"), errorMessage);
         }
 
@@ -2069,8 +2069,8 @@ namespace logicpos
                 {
                     /* IN006001 - get date for filtering notifications that were created 'n' days before Today */
                     //Get Date Back DaysBackToFilter (Without WeekEnds and Holidays)
-                    DateTime dateFilter = SharedUtils.GetDateTimeBackUtilDays(
-                        SharedUtils.CurrentDateTimeAtomicMidnight(),
+                    DateTime dateFilter = XPOHelper.GetDateTimeBackUtilDays(
+                        XPOHelper.CurrentDateTimeAtomicMidnight(),
                         SharedSettings.XpoOidSystemNotificationDaysBackWhenFiltering,
                         true);
                     criteriaOperator = CriteriaOperator.And(criteriaOperator, CriteriaOperator.Parse(string.Format("[CreatedAt] > '{0} 23:59:59'", dateFilter.ToString(CultureSettings.DateFormat))));

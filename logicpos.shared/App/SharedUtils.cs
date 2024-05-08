@@ -8,19 +8,18 @@ using logicpos.shared.Classes.Finance;
 using logicpos.shared.Classes.Orders;
 using logicpos.shared.Enums;
 using LogicPOS.DTOs.Common;
+using LogicPOS.Globalization;
+using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
+using LogicPOS.Settings.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using static logicpos.datalayer.Xpo.XPOHelper;
-using LogicPOS.Settings.Extensions;
-using LogicPOS.Globalization;
-using LogicPOS.Settings;
 
 namespace logicpos.shared.App
 {
@@ -29,179 +28,6 @@ namespace logicpos.shared.App
         //Log4Net
         private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-
-        public static string CurrentDateTime(string pDateTimeFormat)
-        {
-            return CurrentDateTimeAtomic().ToString(pDateTimeFormat, CultureInfo.GetCultureInfo(CultureSettings.CurrentCulture.Name));
-        }
-
-        public static DateTime CurrentDateTimeAtomicMidnight()
-        {
-            return DateTimeToMidnightDate(CurrentDateTimeAtomic());
-        }
-
-        public static DateTime DateTimeToMidnightDate(DateTime pDateTime)
-        {
-            DateTime result = new DateTime(pDateTime.Year, pDateTime.Month, pDateTime.Day);
-
-            return result;
-        }
-
-        public static string DateTimeToCombinedDateTimeString(object pValue)
-        {
-            DateTime tmpData = Convert.ToDateTime(pValue);
-            string result = "" + tmpData.ToString("" + CultureSettings.DateTimeFormatCombinedDateTime);
-            return (result);
-        }
-
-        public static string DateToString(object pValue)
-        {
-            DateTime tmpData = Convert.ToDateTime(pValue);
-            string result = "" + tmpData.ToString("" + CultureSettings.DateTimeFormatDocumentDate);
-            return (result);
-        }
-
-        public static string DateTimeToString(DateTime pValue)
-        {
-            string result = string.Empty;
-
-            try
-            {
-                result = pValue.ToString(CultureSettings.DateTimeFormat);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
-
-            return result;
-        }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //DateTime - Utils Days and Holidays
-
-        //Get Holidays DateTime List From  ConfigurationHolidays Collection
-        public static Dictionary<DateTime, bool> GetHolidays()
-        {
-            if (holidaysDic == null)
-                holidaysDic = GetHolidays(DateTime.Now.Year);
-
-            return holidaysDic;
-        }
-
-        private static Dictionary<DateTime, bool> holidaysDic;
-
-        public static Dictionary<DateTime, bool> GetHolidays(int pYear)
-        {
-            bool debug = false;
-            DateTime currentDateTime;
-            Dictionary<DateTime, bool> result = new Dictionary<DateTime, bool>();
-            CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled is NULL) AND (Year = 0 OR Year = {0})", pYear));
-            SortingCollection sortingCollection = new SortingCollection
-            {
-                new SortProperty("Ord", SortingDirection.Ascending)
-            };
-            XPCollection xpcConfigurationHolidays = GetXPCollectionFromCriteria(XPOSettings.Session, typeof(cfg_configurationholidays), criteriaOperator, sortingCollection);
-
-            if (xpcConfigurationHolidays.Count > 0)
-            {
-                foreach (cfg_configurationholidays item in xpcConfigurationHolidays)
-                {
-                    currentDateTime = new DateTime(pYear, item.Month, item.Day);
-                    result.Add(currentDateTime, item.Fixed);
-                    if (debug) _logger.Debug(string.Format("DayOfWeek: [{0}:{1}:{2}:{3}]", currentDateTime.ToString(CultureSettings.DateFormat), CultureSettings.CurrentCulture.DateTimeFormat.DayNames[(int)currentDateTime.DayOfWeek], item.Fixed, IsHoliday(currentDateTime)));
-                }
-            }
-            return result;
-        }
-
-        public static bool IsHoliday(DateTime pDateTime)
-        {
-            return IsHoliday(GetHolidays(), DateTimeToMidnightDate(pDateTime));
-        }
-
-        public static bool IsHoliday(Dictionary<DateTime, bool> pHolidays, DateTime pDateTime)
-        {
-            bool result = false;
-
-            foreach (var item in pHolidays)
-            {
-                //Fixed
-                if (item.Value)
-                {
-                    if (item.Key.Month == pDateTime.Month && item.Key.Day == pDateTime.Day)
-                        result = true;
-                }
-                else
-                {
-                    if (item.Key.Year == pDateTime.Year && item.Key.Month == pDateTime.Month && item.Key.Day == pDateTime.Day)
-                        result = true;
-                }
-            }
-            return result;
-        }
-
-        public static List<DateTime> GetUtilDays(DateTime pDateStart, bool pWithHoydays)
-        {
-            return GetUtilDays(DateTimeToMidnightDate(pDateStart), CurrentDateTimeAtomicMidnight(), pWithHoydays);
-        }
-
-        public static List<DateTime> GetUtilDays(DateTime pDateStart, DateTime pDateEnd, bool pWithHoydays)
-        {
-            bool debug = false;
-            List<DateTime> result = new List<DateTime>();
-            //Range Interval
-            DateTime startDateTime = pDateStart.Date.AddDays(1);
-
-            while (startDateTime < pDateEnd.Date)
-            {
-                if (startDateTime.DayOfWeek != DayOfWeek.Saturday && startDateTime.DayOfWeek != DayOfWeek.Sunday)
-                {
-                    string isHoliday = (IsHoliday(startDateTime)) ? "Holiday" : string.Empty;
-                    if (debug) _logger.Debug(string.Format("DayOfWeek: [{0}:{1}:{2}]", startDateTime.ToString(CultureSettings.DateFormat), CultureSettings.CurrentCulture.DateTimeFormat.DayNames[(int)startDateTime.DayOfWeek], isHoliday));
-
-                    if ((pWithHoydays && !IsHoliday(startDateTime)) || !pWithHoydays)
-                    {
-                        result.Add(startDateTime);
-                    }
-                }
-                //Advance onde Day
-                startDateTime = startDateTime.AddDays(1);
-            }
-            return result;
-        }
-
-        public static DateTime GetDateTimeBackUtilDays(DateTime pDateTime, int pDays, bool pWithHoydays)
-        {
-            bool debug = false;
-            //Remove CurrentDay
-            DateTime result = DateTimeToMidnightDate(pDateTime);
-            string isHoliday = string.Empty;
-            int i = 0;
-            while (i < pDays)
-            {
-                //Start Back one Day
-                result = result.AddDays(-1);
-
-                string isWeekEnd;
-                if (result.DayOfWeek != DayOfWeek.Saturday && result.DayOfWeek != DayOfWeek.Sunday)
-                {
-                    isWeekEnd = string.Empty;
-                    isHoliday = (IsHoliday(result)) ? "<Holiday>" : string.Empty;
-
-                    if ((pWithHoydays && !IsHoliday(result)) || !pWithHoydays)
-                    {
-                        i++;
-                    }
-                }
-                else
-                {
-                    isWeekEnd = "<WeekEnd>";
-                }
-                if (debug) _logger.Debug(string.Format("DayOfWeek: [{0}:{1}:{2}{3}{4}]", i.ToString("000"), result.ToString(CultureSettings.DateFormat), CultureSettings.CurrentCulture.DateTimeFormat.DayNames[((int)result.DayOfWeek)], isWeekEnd, isHoliday));
-            }
-            return result;
-        }
 
         public static decimal GetDiscountGlobal()
         {
@@ -339,11 +165,6 @@ namespace logicpos.shared.App
             return priceProperties;
         }
 
-        public static bool IsNullable(Type pType)
-        {
-            return (pType.IsGenericType && pType.GetGenericTypeDefinition() == typeof(Nullable<>));
-        }
-
         public static bool Audit(string pAuditTypeToken, string pDescription = "")
         {
             return Audit(
@@ -408,47 +229,6 @@ namespace logicpos.shared.App
             }
 
             return result;
-        }
-
-        public static bool CreateDirectory(string pPath)
-        {
-            bool result = false;
-
-            try
-            {
-                if (Directory.Exists(pPath))
-                {
-                    result = true;
-                }
-                else if (!Directory.Exists(pPath))
-                {
-                    DirectoryInfo di = Directory.CreateDirectory(pPath);
-                    result = true;
-                }
-            }
-            catch (IOException ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
-            return result;
-        }
-
-        public static string ProductVersion
-        {
-            get
-            {
-                Assembly assembly = Assembly.GetExecutingAssembly();
-                FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
-                return string.Format("v{0}", fileVersionInfo.ProductVersion);
-            }
-        }
-
-        public static Assembly ProductAssembly
-        {
-            get
-            {
-                return Assembly.GetExecutingAssembly();
-            }
         }
 
         public static void ExecuteExternalProcess(string pExe)

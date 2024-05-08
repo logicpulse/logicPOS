@@ -56,7 +56,7 @@ namespace logicpos
                 string sqlDatabaseViews = POSSettings.FileDatabaseViews;
                 bool useDatabaseDataDemo = Convert.ToBoolean(GeneralSettings.Settings["useDatabaseDataDemo"]);
 
-                string version = SharedUtils.ProductVersion.Replace("v", "");
+                string version = GeneralSettings.ProductVersion.Replace("v", "");
                 //string version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
                 switch (databaseType)

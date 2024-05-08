@@ -531,7 +531,7 @@ namespace logicpos
         {
             if (GlobalApp.PosMainWindow.Visible)
             {
-                _labelClock.Text = SharedUtils.CurrentDateTime(_clockFormat);
+                _labelClock.Text = XPOHelper.CurrentDateTime(_clockFormat);
 
                 //Call Current OrderMain Update Status
                 if (SharedFramework.SessionApp.CurrentOrderMainOid != Guid.Empty && SharedFramework.SessionApp.OrdersMain.ContainsKey(SharedFramework.SessionApp.CurrentOrderMainOid))

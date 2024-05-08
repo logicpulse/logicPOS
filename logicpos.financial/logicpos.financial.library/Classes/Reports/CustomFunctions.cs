@@ -9,6 +9,7 @@ using System.Resources;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using logicpos.datalayer.Xpo;
+using LogicPOS.Settings;
 
 namespace logicpos.financial.library.Classes.Reports
 {
@@ -81,10 +82,10 @@ namespace logicpos.financial.library.Classes.Reports
             Dictionary<string, string> customVars = new Dictionary<string, string>
             {
                 //App
-                { "APP_COMPANY", LogicPOS.Settings.PluginSettings.AppCompanyName },
+                { "APP_COMPANY", PluginSettings.AppCompanyName },
                 { "APP_NAME", pAppName },
-                { "APP_VERSION", SharedUtils.ProductVersion },
-                { "DATE", XPOHelper.CurrentDateTimeAtomic().ToString(LogicPOS.Settings.CultureSettings.DateFormat) }
+                { "APP_VERSION", GeneralSettings.ProductVersion },
+                { "DATE", XPOHelper.CurrentDateTimeAtomic().ToString(CultureSettings.DateFormat) }
             };
             if (SharedSettings.ConfigurationSystemCurrency != null)
             {
@@ -93,13 +94,13 @@ namespace logicpos.financial.library.Classes.Reports
                 customVars.Add("SYSTEM_CURRENCY_SYMBOL", SharedSettings.ConfigurationSystemCurrency.Symbol);
             }
             //Licence
-            customVars.Add("LICENCE_NAME", LogicPOS.Settings.LicenseSettings.LicenseName);
-            customVars.Add("LICENCE_COMPANY", LogicPOS.Settings.LicenseSettings.LicenseCompany);
-            customVars.Add("LICENCE_NIF", LogicPOS.Settings.LicenseSettings.LicenseNif);
-            customVars.Add("LICENCE_ADDRESS", LogicPOS.Settings.LicenseSettings.LicenseAddress);
-            customVars.Add("LICENCE_EMAIL", LogicPOS.Settings.LicenseSettings.LicenseEmail);
-            customVars.Add("LICENCE_TELEPHONE", LogicPOS.Settings.LicenseSettings.LicenseTelephone);
-            customVars.Add("LICENCE_RESELLER", LogicPOS.Settings.LicenseSettings.LicenseReseller);
+            customVars.Add("LICENCE_NAME", LicenseSettings.LicenseName);
+            customVars.Add("LICENCE_COMPANY", LicenseSettings.LicenseCompany);
+            customVars.Add("LICENCE_NIF", LicenseSettings.LicenseNif);
+            customVars.Add("LICENCE_ADDRESS", LicenseSettings.LicenseAddress);
+            customVars.Add("LICENCE_EMAIL", LicenseSettings.LicenseEmail);
+            customVars.Add("LICENCE_TELEPHONE", LicenseSettings.LicenseTelephone);
+            customVars.Add("LICENCE_RESELLER", LicenseSettings.LicenseReseller);
             //PreferencesParameters
             customVars.Add("COMPANY_NAME", Pref("COMPANY_NAME"));
             customVars.Add("COMPANY_BUSINESS_NAME", Pref("COMPANY_BUSINESS_NAME"));
@@ -132,9 +133,9 @@ namespace logicpos.financial.library.Classes.Reports
             //Session
             customVars.Add("SESSION_loggerGED_USER", string.Empty);//Not Yet Assigned (BootStrap), This is Assigned on Report Constructor
 
-            if (LogicPOS.Settings.GeneralSettings.Settings["POS_CURRENTTERMINAL"] != null)
+            if (GeneralSettings.Settings["POS_CURRENTTERMINAL"] != null)
             {
-                customVars.Add("SESSION_loggerGED_TERMINAL", LogicPOS.Settings.GeneralSettings.Settings["POS_CURRENTTERMINAL"]);
+                customVars.Add("SESSION_loggerGED_TERMINAL", GeneralSettings.Settings["POS_CURRENTTERMINAL"]);
             }
 
              SharedFramework.FastReportCustomVars = customVars;
@@ -185,7 +186,7 @@ namespace logicpos.financial.library.Classes.Reports
                   : string.Format("UNDEFINED [{0}]", resourceName);
                 if(resourceName == "global_documentfinance_type_title_fs")
                 {
-                    result = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_type_title_fs");
+                    result = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_documentfinance_type_title_fs");
                 }
 
                 //_logger.Debug(string.Format("Message: [{0}]", resourceName));
@@ -221,8 +222,8 @@ namespace logicpos.financial.library.Classes.Reports
         {
             try
             {
-                string result = (LogicPOS.Settings.GeneralSettings.PreferenceParameters.ContainsKey(pToken.ToUpper()))
-                  ? LogicPOS.Settings.GeneralSettings.PreferenceParameters[pToken.ToUpper()]
+                string result = (GeneralSettings.PreferenceParameters.ContainsKey(pToken.ToUpper()))
+                  ? GeneralSettings.PreferenceParameters[pToken.ToUpper()]
                   : string.Format("UNDEFINED [{0}]", pToken);
 
                 return result;

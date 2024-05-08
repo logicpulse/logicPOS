@@ -1,5 +1,5 @@
-﻿using logicpos.shared.App;
-using LogicPOS.Settings;
+﻿using LogicPOS.Settings;
+using LogicPOS.Utility;
 using System;
 using System.Collections;
 
@@ -24,14 +24,14 @@ namespace logicpos.Classes.Utils
                 { "documents", GeneralSettings.Settings["pathDocuments"] },
                 { "certificates", GeneralSettings.Settings["pathCertificates"] }
             };
-   
-            SharedUtils.CreateDirectory(Convert.ToString(GeneralSettings.Path["temp"]));
-            SharedUtils.CreateDirectory(Convert.ToString(GeneralSettings.Path["cache"]));
-            SharedUtils.CreateDirectory(Convert.ToString(GeneralSettings.Path["documents"]));
-            SharedUtils.CreateDirectory(string.Format(@"{0}Database\Other", Convert.ToString(GeneralSettings.Path["resources"])));
-            SharedUtils.CreateDirectory(string.Format(@"{0}Database\{1}\Other", Convert.ToString(GeneralSettings.Path["resources"]), GeneralSettings.Settings["databaseType"], @"Database\MSSqlServer"));
-            SharedUtils.CreateDirectory(string.Format(@"{0}Database\{1}\Other", Convert.ToString(GeneralSettings.Path["resources"]), GeneralSettings.Settings["databaseType"], @"Database\SQLite"));
-            SharedUtils.CreateDirectory(string.Format(@"{0}Database\{1}\Other", Convert.ToString(GeneralSettings.Path["resources"]), GeneralSettings.Settings["databaseType"], @"Database\MySql"));
+
+            GeneralUtils.CreateDirectory(Convert.ToString(GeneralSettings.Path["temp"]));
+            GeneralUtils.CreateDirectory(Convert.ToString(GeneralSettings.Path["cache"]));
+            GeneralUtils.CreateDirectory(Convert.ToString(GeneralSettings.Path["documents"]));
+            GeneralUtils.CreateDirectory(string.Format(@"{0}Database\Other", Convert.ToString(GeneralSettings.Path["resources"])));
+            GeneralUtils.CreateDirectory(string.Format(@"{0}Database\{1}\Other", Convert.ToString(GeneralSettings.Path["resources"]), GeneralSettings.Settings["databaseType"], @"Database\MSSqlServer"));
+            GeneralUtils.CreateDirectory(string.Format(@"{0}Database\{1}\Other", Convert.ToString(GeneralSettings.Path["resources"]), GeneralSettings.Settings["databaseType"], @"Database\SQLite"));
+            GeneralUtils.CreateDirectory(string.Format(@"{0}Database\{1}\Other", Convert.ToString(GeneralSettings.Path["resources"]), GeneralSettings.Settings["databaseType"], @"Database\MySql"));
         }
 
         public static void InitializePathsPrefs()
@@ -41,8 +41,8 @@ namespace logicpos.Classes.Utils
             GeneralSettings.Path.Add("backups", GeneralSettings.PreferenceParameters["PATH_BACKUPS"] + '/');
             GeneralSettings.Path.Add("saftpt", GeneralSettings.PreferenceParameters["PATH_SAFTPT"] + '/');
             //Create Directories
-            SharedUtils.CreateDirectory(Convert.ToString(GeneralSettings.Path["backups"]));
-            SharedUtils.CreateDirectory(Convert.ToString(GeneralSettings.Path["saftpt"]));
+            GeneralUtils.CreateDirectory(Convert.ToString(GeneralSettings.Path["backups"]));
+            GeneralUtils.CreateDirectory(Convert.ToString(GeneralSettings.Path["saftpt"]));
         }
 
     }

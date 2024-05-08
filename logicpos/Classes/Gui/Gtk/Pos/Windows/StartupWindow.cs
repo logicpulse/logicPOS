@@ -229,11 +229,11 @@ namespace logicpos
                     if (LicenseSettings.LicenseReseller != null && LicenseSettings.LicenseReseller.ToString().ToLower() != "Logicpulse" && LicenseSettings.LicenseReseller.ToString().ToLower() != "")
                     {
                         //appVersion = string.Format("Brough by {1}\n{0}",appVersion, GlobalFramework.LicenceReseller);
-                        appVersion = string.Format("Powered by {0}© Vers. {1}", LicenseSettings.LicenseReseller, SharedUtils.ProductVersion);
+                        appVersion = string.Format("Powered by {0}© Vers. {1}", LicenseSettings.LicenseReseller, GeneralSettings.ProductVersion);
                     }
                     else
                     {
-                        appVersion = string.Format(PluginSettings.AppSoftwareVersionFormat, SharedUtils.ProductVersion);
+                        appVersion = string.Format(PluginSettings.AppSoftwareVersionFormat, GeneralSettings.ProductVersion);
                     }
                     Label labelVersion = new Label(appVersion);
                     Pango.FontDescription fontDescLabelVersion = Pango.FontDescription.FromString(labelVersionFont);

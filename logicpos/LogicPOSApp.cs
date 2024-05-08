@@ -21,6 +21,7 @@ using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
 using LogicPOS.Settings.Extensions;
+using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -369,7 +370,7 @@ namespace logicpos
                 if (XPOSettings.LoggedTerminal.PoleDisplay != null)
                 {
                     GlobalApp.UsbDisplay = (UsbDisplayDevice)UsbDisplayDevice.InitDisplay();
-                    GlobalApp.UsbDisplay.WriteCentered(string.Format("{0} {1}", POSSettings.AppName, SharedUtils.ProductVersion), 1);
+                    GlobalApp.UsbDisplay.WriteCentered(string.Format("{0} {1}", POSSettings.AppName, GeneralSettings.ProductVersion), 1);
                     GlobalApp.UsbDisplay.WriteCentered(POSSettings.AppUrl, 2);
                     GlobalApp.UsbDisplay.EnableStandBy();
                 }
@@ -402,10 +403,10 @@ namespace logicpos
                 }
 
                 //Send To Log
-                _logger.Debug(string.Format("void Init() :: ProductVersion: [{0}], ImageRuntimeVersion: [{1}], IsLicensed: [{2}]", SharedUtils.ProductVersion, SharedUtils.ProductAssembly.ImageRuntimeVersion, LicenceManagement.IsLicensed));
+                _logger.Debug(string.Format("void Init() :: ProductVersion: [{0}], ImageRuntimeVersion: [{1}], IsLicensed: [{2}]", GeneralSettings.ProductVersion, GeneralSettings.ProductAssembly.ImageRuntimeVersion, LicenceManagement.IsLicensed));
 
                 //Audit
-                SharedUtils.Audit("APP_START", string.Format("{0} {1} clr {2}", POSSettings.AppName, SharedUtils.ProductVersion, SharedUtils.ProductAssembly.ImageRuntimeVersion));
+                SharedUtils.Audit("APP_START", string.Format("{0} {1} clr {2}", POSSettings.AppName, GeneralSettings.ProductVersion, GeneralSettings.ProductAssembly.ImageRuntimeVersion));
                 if (databaseCreated) SharedUtils.Audit("DATABASE_CREATE");
 
                 // Plugin Errors Messages
@@ -496,7 +497,7 @@ namespace logicpos
         private void InitBackupTimerProcess()
         {
             bool xpoCreateDatabaseAndSchema = POSSettings.XPOCreateDatabaseAndSchema;
-            bool validDirectoryBackup = SharedUtils.CreateDirectory(Convert.ToString(GeneralSettings.Path["backups"]));
+            bool validDirectoryBackup = GeneralUtils.CreateDirectory(Convert.ToString(GeneralSettings.Path["backups"]));
             _logger.Debug("void InitBackupTimerProcess() :: xpoCreateDatabaseAndSchema [ " + xpoCreateDatabaseAndSchema + " ] :: validDirectoryBackup [ " + validDirectoryBackup + " ]");
 
             //Show Dialog if Cant Create Backups Directory (Extra Protection for Shared Network Folders)

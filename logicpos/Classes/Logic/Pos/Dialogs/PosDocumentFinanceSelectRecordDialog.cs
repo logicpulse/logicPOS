@@ -1702,8 +1702,8 @@ WHERE
             _logger.Debug("bool PosDocumentFinanceSelectRecordDialog.CanCancelFinanceMasterDocument(fin_documentfinancemaster pDocumentFinanceMaster)");
 
             bool isCancellable = false;
-            DateTime currentDateDay = SharedUtils.CurrentDateTimeAtomicMidnight();
-            DateTime documentDateDay = SharedUtils.DateTimeToMidnightDate(pDocumentFinanceMaster.Date);
+            DateTime currentDateDay = XPOHelper.CurrentDateTimeAtomicMidnight();
+            DateTime documentDateDay = XPOHelper.DateTimeToMidnightDate(pDocumentFinanceMaster.Date);
 
             //Moçambique - Pedidos da reunião 13/10/2020 [IN:014327]
             //Pode cancelar documentos de origem do tipo fatura ou fatura simplificada

@@ -6,7 +6,9 @@ using logicpos.datalayer.DataLayer.Xpo;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
 using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using static LogicPOS.Utility.DataConversionUtils;
 
 namespace logicpos.datalayer.Xpo
@@ -247,6 +249,150 @@ namespace logicpos.datalayer.Xpo
                 result = (DateTime)XPOSettings.Session.ExecuteScalar(sql);
             }
 
+            return result;
+        }
+        public static string CurrentDateTime(string pDateTimeFormat)
+        {
+            return CurrentDateTimeAtomic().ToString(pDateTimeFormat, CultureInfo.GetCultureInfo(CultureSettings.CurrentCulture.Name));
+        }
+
+        public static DateTime CurrentDateTimeAtomicMidnight()
+        {
+            return DateTimeToMidnightDate(CurrentDateTimeAtomic());
+        }
+
+        public static DateTime DateTimeToMidnightDate(DateTime pDateTime)
+        {
+            DateTime result = new DateTime(pDateTime.Year, pDateTime.Month, pDateTime.Day);
+
+            return result;
+        }
+
+        public static string DateTimeToCombinedDateTimeString(object pValue)
+        {
+            DateTime tmpData = Convert.ToDateTime(pValue);
+            string result = "" + tmpData.ToString("" + CultureSettings.DateTimeFormatCombinedDateTime);
+            return (result);
+        }
+
+        public static string DateToString(object pValue)
+        {
+            DateTime tmpData = Convert.ToDateTime(pValue);
+            string result = "" + tmpData.ToString("" + CultureSettings.DateTimeFormatDocumentDate);
+            return (result);
+        }
+
+        public static string DateTimeToString(DateTime pValue)
+        {
+            return pValue.ToString(CultureSettings.DateTimeFormat);
+        }
+
+        public static Dictionary<DateTime, bool> GetHolidays()
+        {
+            if (_holidays == null)
+                _holidays = GetHolidays(DateTime.Now.Year);
+
+            return _holidays;
+        }
+
+        private static Dictionary<DateTime, bool> _holidays;
+
+        public static Dictionary<DateTime, bool> GetHolidays(int pYear)
+        {
+            DateTime currentDateTime;
+            Dictionary<DateTime, bool> result = new Dictionary<DateTime, bool>();
+            CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled is NULL) AND (Year = 0 OR Year = {0})", pYear));
+            SortingCollection sortingCollection = new SortingCollection
+            {
+                new SortProperty("Ord", SortingDirection.Ascending)
+            };
+            XPCollection xpcConfigurationHolidays = GetXPCollectionFromCriteria(XPOSettings.Session, typeof(cfg_configurationholidays), criteriaOperator, sortingCollection);
+
+            if (xpcConfigurationHolidays.Count > 0)
+            {
+                foreach (cfg_configurationholidays item in xpcConfigurationHolidays)
+                {
+                    currentDateTime = new DateTime(pYear, item.Month, item.Day);
+                    result.Add(currentDateTime, item.Fixed);
+                }
+            }
+            return result;
+        }
+
+        public static bool IsHoliday(DateTime pDateTime)
+        {
+            return IsHoliday(GetHolidays(), DateTimeToMidnightDate(pDateTime));
+        }
+
+        public static bool IsHoliday(Dictionary<DateTime, bool> pHolidays, DateTime pDateTime)
+        {
+            bool result = false;
+
+            foreach (var item in pHolidays)
+            {
+                //Fixed
+                if (item.Value)
+                {
+                    if (item.Key.Month == pDateTime.Month && item.Key.Day == pDateTime.Day)
+                        result = true;
+                }
+                else
+                {
+                    if (item.Key.Year == pDateTime.Year && item.Key.Month == pDateTime.Month && item.Key.Day == pDateTime.Day)
+                        result = true;
+                }
+            }
+            return result;
+        }
+
+        public static List<DateTime> GetUtilDays(DateTime pDateStart, bool pWithHoydays)
+        {
+            return GetUtilDays(DateTimeToMidnightDate(pDateStart), CurrentDateTimeAtomicMidnight(), pWithHoydays);
+        }
+
+        public static List<DateTime> GetUtilDays(DateTime pDateStart, DateTime pDateEnd, bool pWithHoydays)
+        {
+            List<DateTime> result = new List<DateTime>();
+            //Range Interval
+            DateTime startDateTime = pDateStart.Date.AddDays(1);
+
+            while (startDateTime < pDateEnd.Date)
+            {
+                if (startDateTime.DayOfWeek != DayOfWeek.Saturday && startDateTime.DayOfWeek != DayOfWeek.Sunday)
+                {
+                    string isHoliday = (IsHoliday(startDateTime)) ? "Holiday" : string.Empty;
+
+                    if ((pWithHoydays && !IsHoliday(startDateTime)) || !pWithHoydays)
+                    {
+                        result.Add(startDateTime);
+                    }
+                }
+                //Advance onde Day
+                startDateTime = startDateTime.AddDays(1);
+            }
+            return result;
+        }
+
+        public static DateTime GetDateTimeBackUtilDays(DateTime pDateTime, int pDays, bool pWithHoydays)
+        {
+            DateTime result = DateTimeToMidnightDate(pDateTime);
+            string isHoliday = string.Empty;
+            int i = 0;
+            while (i < pDays)
+            {
+                //Start Back one Day
+                result = result.AddDays(-1);
+
+                if (result.DayOfWeek != DayOfWeek.Saturday && result.DayOfWeek != DayOfWeek.Sunday)
+                {
+                    isHoliday = (IsHoliday(result)) ? "<Holiday>" : string.Empty;
+
+                    if ((pWithHoydays && !IsHoliday(result)) || !pWithHoydays)
+                    {
+                        i++;
+                    }
+                }
+            }
             return result;
         }
 

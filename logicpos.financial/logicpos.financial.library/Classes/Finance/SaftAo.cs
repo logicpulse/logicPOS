@@ -161,7 +161,7 @@ namespace logicpos.financial.library.Classes.Finance
                 //WriteElement("SoftwareCertificateNumber", SettingsApp.SaftSoftwareCertificateNumber);
                 WriteElement("SoftwareValidationNumber", "221/AGT/2019");
                 WriteElement("ProductID", "LogicPOS/LOGICPULSE ANGOLA");
-                WriteElement("ProductVersion", SharedUtils.ProductVersion);
+                WriteElement("ProductVersion", GeneralSettings.ProductVersion);
 
                 //WriteElement("HeaderComment", "Comentários ao SAFT exportado");
                 //Max Lenght 20 cut
@@ -1048,7 +1048,7 @@ namespace logicpos.financial.library.Classes.Finance
             //<ShipTo>
             _xmlWriter.WriteStartElement("ShipTo");
             WriteElement("DeliveryID", pRow.Values[pXPSelectData.GetFieldIndex("ShipToDeliveryID")]);
-            WriteElement("DeliveryDate", SharedUtils.DateToString(pRow.Values[pXPSelectData.GetFieldIndex("ShipToDeliveryDate")]));
+            WriteElement("DeliveryDate", XPOHelper.DateToString(pRow.Values[pXPSelectData.GetFieldIndex("ShipToDeliveryDate")]));
             WriteElement("WarehouseID", pRow.Values[pXPSelectData.GetFieldIndex("ShipToWarehouseID")]);
             WriteElement("LocationID", pRow.Values[pXPSelectData.GetFieldIndex("ShipToLocationID")]);
             //<Address>
@@ -1067,7 +1067,7 @@ namespace logicpos.financial.library.Classes.Finance
             //<ShipFrom>
             _xmlWriter.WriteStartElement("ShipFrom");
             WriteElement("DeliveryID", pRow.Values[pXPSelectData.GetFieldIndex("ShipFromDeliveryID")]);
-            WriteElement("DeliveryDate", SharedUtils.DateToString(pRow.Values[pXPSelectData.GetFieldIndex("ShipFromDeliveryDate")]));
+            WriteElement("DeliveryDate", XPOHelper.DateToString(pRow.Values[pXPSelectData.GetFieldIndex("ShipFromDeliveryDate")]));
             WriteElement("WarehouseID", pRow.Values[pXPSelectData.GetFieldIndex("ShipFromWarehouseID")]);
             WriteElement("LocationID", pRow.Values[pXPSelectData.GetFieldIndex("ShipFromLocationID")]);
             //<Address>
@@ -1086,9 +1086,9 @@ namespace logicpos.financial.library.Classes.Finance
             //Export if not Null else gives wrong values ex "0001-01-01T00:00:00" | Always Null, Its not persisted yet, but has stub code here to work when its not null
             if (pRow.Values[pXPSelectData.GetFieldIndex("MovementEndTime")] != null)
             {
-                WriteElement("MovementEndTime", SharedUtils.DateTimeToCombinedDateTimeString(pRow.Values[pXPSelectData.GetFieldIndex("MovementEndTime")]));
+                WriteElement("MovementEndTime", XPOHelper.DateTimeToCombinedDateTimeString(pRow.Values[pXPSelectData.GetFieldIndex("MovementEndTime")]));
             }
-            WriteElement("MovementStartTime", SharedUtils.DateTimeToCombinedDateTimeString(pRow.Values[pXPSelectData.GetFieldIndex("MovementStartTime")]));
+            WriteElement("MovementStartTime", XPOHelper.DateTimeToCombinedDateTimeString(pRow.Values[pXPSelectData.GetFieldIndex("MovementStartTime")]));
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

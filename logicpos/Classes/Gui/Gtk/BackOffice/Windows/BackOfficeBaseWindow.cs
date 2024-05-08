@@ -173,7 +173,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             _labelTerminalInfo.SetAlignment(0.5F, 0.5F);
 
             //Clock
-            _labelClock = new Label(SharedUtils.CurrentDateTime(_clockFormat));
+            _labelClock = new Label(XPOHelper.CurrentDateTime(_clockFormat));
             _labelClock.ModifyFont(fontDescriptionStatusBar);
             _labelClock.ModifyFg(StateType.Normal, colorBackOfficeStatusBarFont.ToGdkColor());
             _labelClock.SetAlignment(1.0F, 0.5F);
@@ -258,7 +258,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
 			
 			//TK016248 - BackOffice - Check New Version 
-            string appVersion = SharedUtils.ProductVersion.Replace("v", ""); 
+            string appVersion = GeneralSettings.ProductVersion.Replace("v", ""); 
 
             bool needToUpdate = false;
             //GlobalFramework.ServerVersion = "1.3.0000";
@@ -425,7 +425,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
         private bool UpdateClock()
         {
-            _labelClock.Text = SharedUtils.CurrentDateTime(_clockFormat);
+            _labelClock.Text = XPOHelper.CurrentDateTime(_clockFormat);
             // returning true means that the timeout routine should be invoked
             // again after the timeout period expires. Returning false would
             // terminate the timeout.

@@ -4,12 +4,12 @@ using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.App;
 using logicpos.shared.App;
+using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using LogicPOS.Settings.Extensions;
 using System;
 using System.Text;
 using System.Xml;
-using LogicPOS.Settings.Extensions;
-using LogicPOS.Globalization;
 
 //Notes Tests in DocumentFinanceDialogPage7
 
@@ -164,7 +164,7 @@ namespace logicpos.financial.library.Classes.Finance
                 WriteElement("ProductCompanyTaxID", SharedSettings.SaftProductCompanyTaxID);
                 WriteElement("SoftwareCertificateNumber", SharedSettings.SaftSoftwareCertificateNumber);
                 WriteElement("ProductID", SharedSettings.SaftProductID);
-                WriteElement("ProductVersion", SharedUtils.ProductVersion);
+                WriteElement("ProductVersion", GeneralSettings.ProductVersion);
                 //WriteElement("HeaderComment", "Comentários ao SAFT exportado");
                 WriteElement("Telephone", GeneralSettings.PreferenceParameters["COMPANY_TELEPHONE"]);
                 WriteElement("Fax", GeneralSettings.PreferenceParameters["COMPANY_FAX"]);
@@ -1024,8 +1024,8 @@ namespace logicpos.financial.library.Classes.Finance
 
                     //<DocumentTotals>
                     _xmlWriter.WriteStartElement("DocumentTotals");
-                    WriteElement("TaxPayable", LogicPOS.Utility.DataConversionUtils.DecimalToString(totalLineResult.TaxPayable,  _decimalFormatTotals));
-                    WriteElement("NetTotal", LogicPOS.Utility.DataConversionUtils.DecimalToString(totalLineResult.NetTotal,  _decimalFormatTotals));
+                    WriteElement("TaxPayable", LogicPOS.Utility.DataConversionUtils.DecimalToString(totalLineResult.TaxPayable, _decimalFormatTotals));
+                    WriteElement("NetTotal", LogicPOS.Utility.DataConversionUtils.DecimalToString(totalLineResult.NetTotal, _decimalFormatTotals));
                     WriteElement("GrossTotal", LogicPOS.Utility.DataConversionUtils.DecimalToString(totalLineResult.GrossTotal, _decimalFormatTotals));
 
                     //Currency
@@ -1087,7 +1087,7 @@ namespace logicpos.financial.library.Classes.Finance
             //<ShipTo>
             _xmlWriter.WriteStartElement("ShipTo");
             WriteElement("DeliveryID", pRow.Values[pXPSelectData.GetFieldIndex("ShipToDeliveryID")]);
-            WriteElement("DeliveryDate", SharedUtils.DateToString(pRow.Values[pXPSelectData.GetFieldIndex("ShipToDeliveryDate")]));
+            WriteElement("DeliveryDate", XPOHelper.DateToString(pRow.Values[pXPSelectData.GetFieldIndex("ShipToDeliveryDate")]));
             WriteElement("WarehouseID", pRow.Values[pXPSelectData.GetFieldIndex("ShipToWarehouseID")]);
             WriteElement("LocationID", pRow.Values[pXPSelectData.GetFieldIndex("ShipToLocationID")]);
             //<Address>
@@ -1107,7 +1107,7 @@ namespace logicpos.financial.library.Classes.Finance
             //<ShipFrom>
             _xmlWriter.WriteStartElement("ShipFrom");
             WriteElement("DeliveryID", pRow.Values[pXPSelectData.GetFieldIndex("ShipFromDeliveryID")]);
-            WriteElement("DeliveryDate", SharedUtils.DateToString(pRow.Values[pXPSelectData.GetFieldIndex("ShipFromDeliveryDate")]));
+            WriteElement("DeliveryDate", XPOHelper.DateToString(pRow.Values[pXPSelectData.GetFieldIndex("ShipFromDeliveryDate")]));
             WriteElement("WarehouseID", pRow.Values[pXPSelectData.GetFieldIndex("ShipFromWarehouseID")]);
             WriteElement("LocationID", pRow.Values[pXPSelectData.GetFieldIndex("ShipFromLocationID")]);
             //<Address>
@@ -1127,9 +1127,9 @@ namespace logicpos.financial.library.Classes.Finance
             //Export if not Null else gives wrong values ex "0001-01-01T00:00:00" | Always Null, Its not persisted yet, but has stub code here to work when its not null
             if (pRow.Values[pXPSelectData.GetFieldIndex("MovementEndTime")] != null)
             {
-                WriteElement("MovementEndTime", SharedUtils.DateTimeToCombinedDateTimeString(pRow.Values[pXPSelectData.GetFieldIndex("MovementEndTime")]));
+                WriteElement("MovementEndTime", XPOHelper.DateTimeToCombinedDateTimeString(pRow.Values[pXPSelectData.GetFieldIndex("MovementEndTime")]));
             }
-            WriteElement("MovementStartTime", SharedUtils.DateTimeToCombinedDateTimeString(pRow.Values[pXPSelectData.GetFieldIndex("MovementStartTime")]));
+            WriteElement("MovementStartTime", XPOHelper.DateTimeToCombinedDateTimeString(pRow.Values[pXPSelectData.GetFieldIndex("MovementStartTime")]));
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -1150,32 +1150,6 @@ namespace logicpos.financial.library.Classes.Finance
 
         private static TotalLinesResult SourceDocuments_Lines(SaftDocumentType pSaftDocumentType, Guid pDocumentMaster)
         {
-            //<Line>
-            //  <LineNumber>1</LineNumber>
-            //  <OrderReferences>
-            //    <OriginatingON>GR 1/2</OriginatingON>
-            //    <OrderDate>2008-09-15</OrderDate>
-            //  </OrderReferences>
-            //  <ProductCode>FAT03</ProductCode>
-            //  <ProductDescription>Fato de algodão (Produção própria)</ProductDescription>
-            //  <Quantity>1</Quantity>
-            //  <UnitOfMeasure>UN</UnitOfMeasure>
-            //  <UnitPrice>5000</UnitPrice>
-            //  <TaxPointDate>2008-10-21</TaxPointDate>
-            //  <References>
-            //    <Reference>1T 1/6</Reference>
-            //    <Reason>Não havia sido liquidado o valor da mão-de-obra</Reason>
-            //  </References>
-            //  <Description>Fato de algodão (Produção própria)</Description>
-            //  <CreditAmount>5000</CreditAmount>
-            //  <Tax>
-            //    <TaxType>IVA</TaxType>
-            //    <TaxCountryRegion>PT</TaxCountryRegion>
-            //    <TaxCode>NOR</TaxCode>
-            //    <TaxPercentage>20</TaxPercentage>
-            //  </Tax>
-            //</Line>
-
             try
             {
                 TotalLinesResult totalLineResult = new TotalLinesResult();
@@ -1669,7 +1643,7 @@ namespace logicpos.financial.library.Classes.Finance
                     //<DocumentTotals>
                     _xmlWriter.WriteStartElement("DocumentTotals");
                     WriteElement("TaxPayable", LogicPOS.Utility.DataConversionUtils.DecimalToString(totalLineResult.TaxPayable, _decimalFormatTotals));
-                    WriteElement("NetTotal", LogicPOS.Utility.DataConversionUtils.DecimalToString(totalLineResult.NetTotal,  _decimalFormatTotals));
+                    WriteElement("NetTotal", LogicPOS.Utility.DataConversionUtils.DecimalToString(totalLineResult.NetTotal, _decimalFormatTotals));
                     WriteElement("GrossTotal", LogicPOS.Utility.DataConversionUtils.DecimalToString(totalLineResult.GrossTotal, _decimalFormatTotals));
 
                     //Note: 4.4.4.17 in 130823_Portaria_no_274_2013.pdf is Outside DocumentTotals, but gives error on validation, moved 4.4.4.17 to DocumentTotals to be valid in validation, may be a error in 130823_Portaria_no_274_2013.pdf

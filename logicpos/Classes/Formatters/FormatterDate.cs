@@ -1,4 +1,5 @@
-﻿using logicpos.shared.App;
+﻿using logicpos.datalayer.Xpo;
+using logicpos.shared.App;
 using System;
 
 namespace logicpos.Classes.Formatters
@@ -16,7 +17,7 @@ namespace logicpos.Classes.Formatters
 
             try
             {
-                result = SharedUtils.DateToString(arg).ToString();
+                result = XPOHelper.DateToString(arg).ToString();
             }
             catch (Exception ex)
             {

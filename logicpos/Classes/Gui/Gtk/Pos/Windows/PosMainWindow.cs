@@ -283,7 +283,7 @@ namespace logicpos
             LabelTerminalInfo.SetAlignment(labelTerminalInfoAlignmentX, 0.5F);
 
             //EventBoxStatusBar1:LabelClock
-            _labelClock = new Label(SharedUtils.CurrentDateTime(_clockFormat));
+            _labelClock = new Label(XPOHelper.CurrentDateTime(_clockFormat));
             _labelClock.ModifyFont(labelClockFont);
             _labelClock.ModifyFg(StateType.Normal, labelClockFontColor);
             _labelClock.SetAlignment(labelClockAlignmentX, 0.5F);
