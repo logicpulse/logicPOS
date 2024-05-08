@@ -1,5 +1,6 @@
 ﻿using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
+using LogicPOS.Settings;
 using System;
 using System.Diagnostics;
 using static LogicPOS.Settings.CultureSettings;
@@ -17,40 +18,21 @@ namespace logicpos.shared.App
 #else
         public static bool DeveloperMode {get;set;} = false;
         public static bool PrintPDFEnabled {get;set} = false;
-#endif
+#endif                                                                                                                                                                                  
 
         public static string AppSessionFile { get; set; } = "appsession_{0}.json";
         public static bool AppSessionFileJsonIndented { get; set; } = true;
 
         public static cfg_configurationcurrency ConfigurationSystemCurrency { get; set; } = null;
 
-
-        public static int DocumentsPadLength { get; set; }
-        public static string FinanceFinalConsumerFiscalNumber { get; set; }
-        public static string FinanceFinalConsumerFiscalNumberDisplay { get; set; }
-        public static string SaftProductID { get { return GetSaftProductID(); } }
-        public static string SaftProductCompanyTaxID { get; set; }
-        public static string SaftSoftwareCertificateNumber { get; set; }
-        public static string SaftVersionPrefix { get; set; }
-        public static string SaftVersion { get; set; }
         public static int HashControl { get; set; }
-        public static string TaxAccountingBasis { get; set; }
+       
 
         public static int FinanceRuleSimplifiedInvoiceMaxTotal { get { return GetFinanceRuleSimplifiedInvoiceMaxTotal(); } }
         //Services
         public static int FinanceRuleSimplifiedInvoiceMaxTotalServices { get { return GetFinanceRuleSimplifiedInvoiceMaxTotalServices(); } }
         //This rule is to force fill Customer details if total document value is Greater or Equal to
         public static int FinanceRuleRequiredCustomerDetailsAboveValue { get { return GetFinanceRuleRequiredCustomerDetailsAboveValue(); } }
-
-        //SAFT-T XML Export Header
-        public static string SaftProductIDAO { get { return GetSaftProductID_AO(); } }
-
-        //Overrided by SoftwareVendor Plugin - ex: "0000" : Your Company CertificateNumber;
-        public static string SaftSoftwareCertificateNumberAO { get; set; }
-        //Overrided by SoftwareVendor Plugin - ex: "PT"
-        public static string SaftVersionPrefixAO { get; set; }
-        //Overrided by SoftwareVendor Plugin - ex: "1.04_01"
-        public static string SaftVersionAO { get; set; }
 
         public static bool DocumentFinanceSeriesGenerationFactoryUseRandomAcronymPrefix { get; set; }
 
@@ -102,15 +84,6 @@ namespace logicpos.shared.App
         public static Guid XpoOidDocumentFinanceTypeInvoiceWayBill { get; set; } = new Guid("f8878cf5-0f88-4270-8a55-1fc2488d81a2");
         public static Guid XpoOidDocumentFinanceTypeCurrentAccountInput { get; set; } = new Guid("235f06f3-5ec3-4e13-977b-325614b07e35");
 
-        //Printers
-        //Generic Printer, used in NewDocuments, to choose printer Target
-        public static Guid XpoOidConfigurationPrinterGeneric { get; set; } = new Guid("b0c917c7-2ea1-4e08-afa5-4744c19e1c5c");
-        //Thermal Printer : Used in ThermalPrinterGeneric Class (Enum)
-        public static Guid XpoOidConfigurationPrinterThermalWindows { get; set; } = new Guid("e7143ea5-391b-46ef-a28d-4843fd7e21ac");
-        public static Guid XpoOidConfigurationPrinterThermalSocket { get; set; } = new Guid("faeb45cd-2989-4e92-9907-3038444e4849");
-        public static Guid XpoOidConfigurationPrinterThermalUsb { get; set; } = new Guid("39b58a4e-b860-49c1-81a5-8bb5f7186940");
-
-        
 
         //Tax/VatRate
         public static Guid XpoOidConfigurationVatRateDutyFree { get; set; } = new Guid("e74faad7-f5c9-4206-a662-f95820014195");//0
@@ -151,21 +124,6 @@ namespace logicpos.shared.App
         public static Guid XpoOidArticleParkingSubfamily { get; set; } = new Guid("d0c8169b-a5bc-46cb-b8ff-186b0ba39929");
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Thermal Printer Ticket
-
-        // Defaults for New PrinterThermal Dialog
-        public static string PrinterThermalEncoding { get; set; } = "PC860";
-        public static bool PrinterThermalPrintLogo { get; set; } = false;
-        public static string PrinterThermalImageCompanyLogo { get; set; } = "Images/Tickets/company_loggero_thermal.bmp";
-        public static int PrinterThermalMaxCharsPerLineNormal { get; set; } = 48;
-        public static int PrinterThermalMaxCharsPerLineNormalBold { get; set; } = 44;
-        public static int PrinterThermalMaxCharsPerLineSmall { get; set; } = 64;
-        public static string PrinterThermalCutCommand { get; set; } = "0x42,0x00";
-        public static int PrinterThermalOpenDrawerValueM { get; set; } = 0;
-        public static int PrinterThermalOpenDrawerValueT1 { get; set; } = 3;
-        public static int PrinterThermalOpenDrawerValueT2 { get; set; } = 49;
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Reports
 
         //Used to Enable/Disable DoublePass, else Blank Page when DoublePass Enabled with One Page
@@ -192,24 +150,24 @@ namespace logicpos.shared.App
             FileFormatSaftPT = GetSoftwareVendorValueAsString(nameof(FileFormatSaftPT));
             FileFormatSaftAO = GetSoftwareVendorValueAsString(nameof(FileFormatSaftAO));
 
-            DocumentsPadLength = GetSoftwareVendorValueAsInt(nameof(DocumentsPadLength));
+            SaftSettings.DocumentsPadLength = GetSoftwareVendorValueAsInt(nameof(SaftSettings.DocumentsPadLength));
             DateTimeFormatDocumentDate = GetSoftwareVendorValueAsString(nameof(DateTimeFormatDocumentDate));
             DateTimeFormatCombinedDateTime = GetSoftwareVendorValueAsString(nameof(DateTimeFormatCombinedDateTime));
-            FinanceFinalConsumerFiscalNumber = GetSoftwareVendorValueAsString(nameof(FinanceFinalConsumerFiscalNumber));
-            FinanceFinalConsumerFiscalNumberDisplay = GetSoftwareVendorValueAsString(nameof(FinanceFinalConsumerFiscalNumberDisplay));
+            SaftSettings.FinanceFinalConsumerFiscalNumber = GetSoftwareVendorValueAsString(nameof(SaftSettings.FinanceFinalConsumerFiscalNumber));
+            SaftSettings.FinanceFinalConsumerFiscalNumberDisplay = GetSoftwareVendorValueAsString(nameof(SaftSettings.FinanceFinalConsumerFiscalNumberDisplay));
             DecimalFormatSAFTPT = GetSoftwareVendorValueAsString(nameof(DecimalFormatSAFTPT));
             DecimalFormatSAFTAO = GetSoftwareVendorValueAsString(nameof(DecimalFormatSAFTAO));
             DecimalFormatGrossTotalSAFTPT = GetSoftwareVendorValueAsString(nameof(DecimalFormatGrossTotalSAFTPT));
             DecimalRoundTo = GetSoftwareVendorValueAsInt(nameof(DecimalRoundTo));
-            SaftProductCompanyTaxID = GetSoftwareVendorValueAsString(nameof(SaftProductCompanyTaxID));
-            SaftSoftwareCertificateNumber = GetSoftwareVendorValueAsString(nameof(SaftSoftwareCertificateNumber));
-            SaftSoftwareCertificateNumberAO = GetSoftwareVendorValueAsString(nameof(SaftSoftwareCertificateNumberAO));
-            SaftVersionPrefix = GetSoftwareVendorValueAsString(nameof(SaftVersionPrefix));
-            SaftVersionPrefixAO = GetSoftwareVendorValueAsString(nameof(SaftVersionPrefixAO));
-            SaftVersion = GetSoftwareVendorValueAsString(nameof(SaftVersion));
-            SaftVersionAO = GetSoftwareVendorValueAsString(nameof(SaftVersionAO));
+            SaftSettings.SaftProductCompanyTaxID = GetSoftwareVendorValueAsString(nameof(SaftSettings.SaftProductCompanyTaxID));
+            SaftSettings.SaftSoftwareCertificateNumber = GetSoftwareVendorValueAsString(nameof(SaftSettings.SaftSoftwareCertificateNumber));
+            SaftSettings.SaftSoftwareCertificateNumberAO = GetSoftwareVendorValueAsString(nameof(SaftSettings.SaftSoftwareCertificateNumberAO));
+            SaftSettings.SaftVersionPrefix = GetSoftwareVendorValueAsString(nameof(SaftSettings.SaftVersionPrefix));
+            SaftSettings.SaftVersionPrefixAO = GetSoftwareVendorValueAsString(nameof(SaftSettings.SaftVersionPrefixAO));
+            SaftSettings.SaftVersion = GetSoftwareVendorValueAsString(nameof(SaftSettings.SaftVersion));
+            SaftSettings.SaftVersionAO = GetSoftwareVendorValueAsString(nameof(SaftSettings.SaftVersionAO));
             HashControl = GetSoftwareVendorValueAsInt(nameof(HashControl));
-            TaxAccountingBasis = GetSoftwareVendorValueAsString(nameof(TaxAccountingBasis));
+            SaftSettings.TaxAccountingBasis = GetSoftwareVendorValueAsString(nameof(SaftSettings.TaxAccountingBasis));
             SaftCurrencyCode = GetSoftwareVendorValueAsString(nameof(SaftCurrencyCode));
             SaftCurrencyCodeAO = GetSoftwareVendorValueAsString(nameof(SaftCurrencyCodeAO));
 
@@ -217,16 +175,7 @@ namespace logicpos.shared.App
             DocumentFinanceSeriesGenerationFactoryAcronymLastSerieFormat = GetSoftwareVendorValueAsString(nameof(DocumentFinanceSeriesGenerationFactoryAcronymLastSerieFormat));
         }
 
-        private static string GetSaftProductID()
-        {
-            return string.Format("{0}/{1}", AppSoftwareName, AppCompanyName);
-        }
-
-        private static string GetSaftProductID_AO()
-        {
-            return string.Format("{0}", AppSoftwareName);
-        }
-
+      
 
         //Use to limit Simplified Invoices to have a total limit of 1000 (Articles Products + Services)
         private static int GetFinanceRuleSimplifiedInvoiceMaxTotal()

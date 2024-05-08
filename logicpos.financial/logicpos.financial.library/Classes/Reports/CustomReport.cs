@@ -432,8 +432,8 @@ namespace logicpos.financial.library.Classes.Reports
                         textObjectOverlaySoftwareCertification.Text = string.Format(
                         CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_report_overlay_software_certification"),
                         prefix,
-                        SharedSettings.SaftSoftwareCertificateNumber,
-                        SharedSettings.SaftProductID,
+                        SaftSettings.SaftSoftwareCertificateNumber,
+                        SaftSettings.SaftProductID,
                         LicenseSettings.LicenseCompany,
                         "LOGICPULSE ANGOLA");
                     }
@@ -442,8 +442,8 @@ namespace logicpos.financial.library.Classes.Reports
                         textObjectOverlaySoftwareCertification.Text = string.Format(
                             CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_report_overlay_software_certification"),
                             prefix,
-                            SharedSettings.SaftSoftwareCertificateNumber,
-                            SharedSettings.SaftProductID,
+                            SaftSettings.SaftSoftwareCertificateNumber,
+                            SaftSettings.SaftProductID,
                             LicenseSettings.LicenseCompany);
                     }
 
@@ -472,8 +472,8 @@ namespace logicpos.financial.library.Classes.Reports
                     textObjectOverlaySoftwareCertification.Text = string.Format(
                         CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_report_overlay_software_certification_ao"),
                         prefix,
-                        SharedSettings.SaftSoftwareCertificateNumberAO,
-                        SharedSettings.SaftProductIDAO,
+                        SaftSettings.SaftSoftwareCertificateNumberAO,
+                        SaftSettings.SaftProductIDAO,
                         localDate);
 
                     //Add Hash Validation if Defined (In DocumentFinance Only)
@@ -491,8 +491,8 @@ namespace logicpos.financial.library.Classes.Reports
                     textObjectOverlaySoftwareCertification.Text = string.Format(
                         CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_report_overlay_software_certification_ao"),
                         prefix,
-                        SharedSettings.SaftSoftwareCertificateNumberAO,
-                        SharedSettings.SaftProductIDAO,
+                        SaftSettings.SaftSoftwareCertificateNumberAO,
+                        SaftSettings.SaftProductIDAO,
                         localDate);
                 }
             }

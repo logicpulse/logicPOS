@@ -106,7 +106,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     _touchButtonPosToolbarMerchandiseEntry.Clicked += _touchButtonPosToolbarMerchandiseEntry_Clicked;
 
                     //Reference Objects
-                    _printerGeneric = (sys_configurationprinters)XPOSettings.Session.GetObjectByKey(typeof(sys_configurationprinters), SharedSettings.XpoOidConfigurationPrinterGeneric);
+                    _printerGeneric = (sys_configurationprinters)XPOSettings.Session.GetObjectByKey(typeof(sys_configurationprinters), PrintingSettings.XpoOidConfigurationPrinterGeneric);
                     break;
             }
         }

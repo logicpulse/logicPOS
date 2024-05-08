@@ -69,10 +69,10 @@ namespace logicpos.financial.library.Classes.Finance
             string fileSaftPT = CultureSettings.FileFormatSaftPT;
             string dateTimeFileFormat = CultureSettings.FileFormatDateTime;
             string dateTime = XPOHelper.CurrentDateTimeAtomic().ToString(dateTimeFileFormat);
-            string fileName = GeneralSettings.Path["saftpt"] + string.Format(fileSaftPT, SharedSettings.SaftVersionPrefix, SharedSettings.SaftVersion, dateTime).ToLower();
+            string fileName = GeneralSettings.Path["saftpt"] + string.Format(fileSaftPT, SaftSettings.SaftVersionPrefix, SaftSettings.SaftVersion, dateTime).ToLower();
             if (!FinancialLibraryUtils.HasWritePermissionOnDir(GeneralSettings.Path["saftpt"].ToString()))
             {
-                fileName = string.Format("\\temp\\" + fileSaftPT, SharedSettings.SaftVersionPrefix, SharedSettings.SaftVersion, dateTime).ToLower();
+                fileName = string.Format("\\temp\\" + fileSaftPT, SaftSettings.SaftVersionPrefix, SaftSettings.SaftVersion, dateTime).ToLower();
             }
 
             //XmlWriterSettings
@@ -91,7 +91,7 @@ namespace logicpos.financial.library.Classes.Finance
                     _xmlWriter.WriteStartDocument();
 
                     //<AuditFile>
-                    string standardAuditFileTax = string.Format("{0}_{1}", SharedSettings.SaftVersionPrefix, SharedSettings.SaftVersion);
+                    string standardAuditFileTax = string.Format("{0}_{1}", SaftSettings.SaftVersionPrefix, SaftSettings.SaftVersion);
                     _xmlWriter.WriteStartElement("AuditFile", string.Format("urn:OECD:StandardAuditFile-Tax:{0}", standardAuditFileTax));
                     _xmlWriter.WriteAttributeString("xmlns", "xsi", null, "http://www.w3.org/2001/XMLSchema-instance");
                     _xmlWriter.WriteAttributeString("xmlns", "xsd", null, "http://www.w3.org/2001/XMLSchema");
@@ -132,7 +132,7 @@ namespace logicpos.financial.library.Classes.Finance
 
                 //<Header>
                 _xmlWriter.WriteStartElement("Header");
-                WriteElement("AuditFileVersion", SharedSettings.SaftVersion);
+                WriteElement("AuditFileVersion", SaftSettings.SaftVersion);
                 //Deprecated now We use NIF
                 //string companyID = string.Format("{0} {1}"
                 //    ,LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_CIVIL_REGISTRATION"].Replace(' ', '_')
@@ -141,7 +141,7 @@ namespace logicpos.financial.library.Classes.Finance
                 string companyID = GeneralSettings.PreferenceParameters["COMPANY_FISCALNUMBER"];
                 WriteElement("CompanyID", companyID);
                 WriteElement("TaxRegistrationNumber", GeneralSettings.PreferenceParameters["COMPANY_FISCALNUMBER"]);
-                WriteElement("TaxAccountingBasis", SharedSettings.TaxAccountingBasis);
+                WriteElement("TaxAccountingBasis", SaftSettings.TaxAccountingBasis);
                 WriteElement("CompanyName", GeneralSettings.PreferenceParameters["COMPANY_NAME"]);
                 WriteElement("BusinessName", GeneralSettings.PreferenceParameters["COMPANY_BUSINESS_NAME"]);
 
@@ -161,11 +161,10 @@ namespace logicpos.financial.library.Classes.Finance
                 WriteElement("CurrencyCode", CultureSettings.SaftCurrencyCode);
                 WriteElement("DateCreated", _currentDate.ToString(_dateTimeFormatDocumentDate));
                 WriteElement("TaxEntity", GeneralSettings.PreferenceParameters["COMPANY_TAX_ENTITY"]);
-                WriteElement("ProductCompanyTaxID", SharedSettings.SaftProductCompanyTaxID);
-                WriteElement("SoftwareCertificateNumber", SharedSettings.SaftSoftwareCertificateNumber);
-                WriteElement("ProductID", SharedSettings.SaftProductID);
+                WriteElement("ProductCompanyTaxID", SaftSettings.SaftProductCompanyTaxID);
+                WriteElement("SoftwareCertificateNumber", SaftSettings.SaftSoftwareCertificateNumber);
+                WriteElement("ProductID", SaftSettings.SaftProductID);
                 WriteElement("ProductVersion", GeneralSettings.ProductVersion);
-                //WriteElement("HeaderComment", "Comentários ao SAFT exportado");
                 WriteElement("Telephone", GeneralSettings.PreferenceParameters["COMPANY_TELEPHONE"]);
                 WriteElement("Fax", GeneralSettings.PreferenceParameters["COMPANY_FAX"]);
                 WriteElement("Email", GeneralSettings.PreferenceParameters["COMPANY_EMAIL"]);

@@ -102,7 +102,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                         documentFinanceMasterView.EntityCountry = string.Empty;
                         documentFinanceMasterView.EntityLocality = string.Empty;
                         /* IN009230 */
-                        documentFinanceMasterView.EntityFiscalNumber = SharedSettings.FinanceFinalConsumerFiscalNumberDisplay;
+                        documentFinanceMasterView.EntityFiscalNumber = SaftSettings.FinanceFinalConsumerFiscalNumberDisplay;
 
                         customerDataHasBeenCleaned = true;
                     }
@@ -220,14 +220,14 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                     gcDocumentFinancePayment.List[0].EntityFiscalNumber = XPGuidObject.DecryptIfNeeded(gcDocumentFinancePayment.List[0].EntityFiscalNumber).ToString();
 
                 //If FinalConsumer - Clean Output Data
-                if (gcDocumentFinancePayment.List[0].EntityFiscalNumber == SharedSettings.FinanceFinalConsumerFiscalNumber)
+                if (gcDocumentFinancePayment.List[0].EntityFiscalNumber == SaftSettings.FinanceFinalConsumerFiscalNumber)
                 {
                     gcDocumentFinancePayment.List[0].EntityName = string.Empty;
                     gcDocumentFinancePayment.List[0].EntityAddress = string.Empty;
                     gcDocumentFinancePayment.List[0].EntityZipCode = string.Empty;
                     gcDocumentFinancePayment.List[0].EntityCity = string.Empty;
                     gcDocumentFinancePayment.List[0].EntityLocality = string.Empty;
-                    gcDocumentFinancePayment.List[0].EntityFiscalNumber = SharedSettings.FinanceFinalConsumerFiscalNumberDisplay;
+                    gcDocumentFinancePayment.List[0].EntityFiscalNumber = SaftSettings.FinanceFinalConsumerFiscalNumberDisplay;
                 }
 
                 //Render Child Bussiness Objects

@@ -3,13 +3,14 @@ using logicpos.shared.App;
 using System;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 
 namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 {
     public abstract class ThermalPrinterBaseInternalTemplate : ThermalPrinterBaseTemplate
     {
         public ThermalPrinterBaseInternalTemplate(sys_configurationprinters pPrinter)
-            : base(pPrinter, SharedSettings.PrinterThermalImageCompanyLogo)
+            : base(pPrinter, PrintingSettings.PrinterThermalImageCompanyLogo)
         {
         }
 

@@ -879,7 +879,7 @@ namespace logicpos.financial.library.Classes.Finance
             string N = "N:" + LogicPOS.Utility.DataConversionUtils.DecimalToString(doc.TotalTax).Replace(",", ".") + "*";
             string O = "O:" + LogicPOS.Utility.DataConversionUtils.DecimalToString(doc.TotalFinal).Replace(",", ".") + "*";
             string Q = "Q:" + GenDocumentHash4Chars(doc.Hash) + "*";
-            string R = "R:" + SharedSettings.SaftSoftwareCertificateNumber + "*";
+            string R = "R:" + SaftSettings.SaftSoftwareCertificateNumber + "*";
             string S = "";
             //Debug
             if (debug) _logger.Debug(string.Format("GenDocumentQRCode(): " + A + B + C + D + E + F + G + H + I1 + I7 + I8 + N + O + Q + R + S));
@@ -926,7 +926,7 @@ namespace logicpos.financial.library.Classes.Finance
 
             try
             {
-                string formatNumber = new string('0', SharedSettings.DocumentsPadLength);
+                string formatNumber = new string('0', SaftSettings.DocumentsPadLength);
                 string publicDocID = pDocType.DocumentType.Acronym; ;
                 string serieID = pDocType.Acronym; ;
                 string seqNumber = "" + pDocType.NextDocumentNumber;

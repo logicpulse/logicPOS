@@ -40,7 +40,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
         }
 
         public ThermalPrinterBaseTemplate(sys_configurationprinters pPrinter)
-            : this(pPrinter, SharedSettings.PrinterThermalImageCompanyLogo)
+            : this(pPrinter, PrintingSettings.PrinterThermalImageCompanyLogo)
         {
         }
 

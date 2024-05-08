@@ -68,7 +68,7 @@ namespace logicpos.financial.library.Classes.Finance
             string fileSaftAO = CultureSettings.FileFormatSaftAO;
             string dateTimeFileFormat = CultureSettings.FileFormatDateTime;
             string dateTime = XPOHelper.CurrentDateTimeAtomic().ToString(dateTimeFileFormat);
-            string fileName = GeneralSettings.Path["saftAO"] + string.Format(fileSaftAO, SharedSettings.SaftVersionPrefixAO, SharedSettings.SaftVersionAO, dateTime).ToLower();
+            string fileName = GeneralSettings.Path["saftAO"] + string.Format(fileSaftAO, SaftSettings.SaftVersionPrefixAO, SaftSettings.SaftVersionAO, dateTime).ToLower();
 
             //XmlWriterSettings
             XmlWriterSettings xmlWriterSettings = new XmlWriterSettings();
@@ -86,7 +86,7 @@ namespace logicpos.financial.library.Classes.Finance
                     _xmlWriter.WriteStartDocument();
 
                     //<AuditFile>
-                    string standardAuditFileTax = string.Format("{0}_{1}", SharedSettings.SaftVersionPrefixAO, SharedSettings.SaftVersionAO);
+                    string standardAuditFileTax = string.Format("{0}_{1}", SaftSettings.SaftVersionPrefixAO, SaftSettings.SaftVersionAO);
                     _xmlWriter.WriteStartElement("AuditFile", string.Format("urn:OECD:StandardAuditFile-Tax:{0}", standardAuditFileTax));
                     _xmlWriter.WriteAttributeString("xmlns", "xsi", null, "http://www.w3.org/2001/XMLSchema-instance");
                     _xmlWriter.WriteAttributeString("xmlns", "xsd", null, "http://www.w3.org/2001/XMLSchema");
@@ -128,7 +128,7 @@ namespace logicpos.financial.library.Classes.Finance
                 //<Header>
                 _xmlWriter.WriteStartElement("Header");
                 //WriteElement("SoftwareValidationNumber", "221/AGT/2020");
-                WriteElement("AuditFileVersion", SharedSettings.SaftVersionAO);
+                WriteElement("AuditFileVersion", SaftSettings.SaftVersionAO);
                 //Deprecated now We use NIF
                 //string companyID = string.Format("{0} {1}"
                 //    ,LogicPOS.Settings.AppSettings.PreferenceParameters["COMPANY_CIVIL_REGISTRATION"].Replace(' ', '_')
@@ -137,7 +137,7 @@ namespace logicpos.financial.library.Classes.Finance
                 string companyID = GeneralSettings.PreferenceParameters["COMPANY_FISCALNUMBER"];
                 WriteElement("CompanyID", companyID);
                 WriteElement("TaxRegistrationNumber", GeneralSettings.PreferenceParameters["COMPANY_FISCALNUMBER"]);
-                WriteElement("TaxAccountingBasis", SharedSettings.TaxAccountingBasis);
+                WriteElement("TaxAccountingBasis", SaftSettings.TaxAccountingBasis);
                 WriteElement("CompanyName", GeneralSettings.PreferenceParameters["COMPANY_NAME"]);
                 WriteElement("BusinessName", GeneralSettings.PreferenceParameters["COMPANY_BUSINESS_NAME"]);
 
@@ -157,7 +157,7 @@ namespace logicpos.financial.library.Classes.Finance
                 WriteElement("CurrencyCode", CultureSettings.SaftCurrencyCodeAO);
                 WriteElement("DateCreated", _currentDate.ToString(_dateTimeFormatDocumentDate));
                 WriteElement("TaxEntity", GeneralSettings.PreferenceParameters["COMPANY_TAX_ENTITY"]);
-                WriteElement("ProductCompanyTaxID", SharedSettings.SaftProductCompanyTaxID);
+                WriteElement("ProductCompanyTaxID", SaftSettings.SaftProductCompanyTaxID);
                 //WriteElement("SoftwareCertificateNumber", SettingsApp.SaftSoftwareCertificateNumber);
                 WriteElement("SoftwareValidationNumber", "221/AGT/2019");
                 WriteElement("ProductID", "LogicPOS/LOGICPULSE ANGOLA");

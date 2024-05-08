@@ -652,7 +652,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 //Init Variables
                 decimal totalDocument = (_pagePad3.ArticleBag != null && _pagePad3.ArticleBag.TotalFinal > 0) ? _pagePad3.ArticleBag.TotalFinal : 0.0m;
                 bool isFinalConsumerEntity = (_pagePad.Customer != null && _pagePad.Customer.Oid == SharedSettings.FinalConsumerId);
-                bool isHiddenConsumerEntity = (_pagePad.Customer != null && _pagePad.Customer.FiscalNumber == SharedSettings.FinanceFinalConsumerFiscalNumber);
+                bool isHiddenConsumerEntity = (_pagePad.Customer != null && _pagePad.Customer.FiscalNumber == SaftSettings.FinanceFinalConsumerFiscalNumber);
                 bool isSingularEntity = (isFinalConsumerEntity || FiscalNumber.IsSingularEntity(EntryBoxSelectCustomerFiscalNumber.EntryValidation.Text, EntryBoxSelectCustomerCountry.Value.Code2));
                 bool isInvoice = false;
                 bool isSimplifiedInvoice = false;

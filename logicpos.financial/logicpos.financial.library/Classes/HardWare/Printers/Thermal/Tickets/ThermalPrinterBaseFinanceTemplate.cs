@@ -30,7 +30,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
         }
 
         public ThermalPrinterBaseFinanceTemplate(sys_configurationprinters pPrinter, fin_documentfinancetype pDocumentType, List<int> pCopyNames, bool pSecondCopy)
-            : base(pPrinter, SharedSettings.PrinterThermalImageCompanyLogo)
+            : base(pPrinter, PrintingSettings.PrinterThermalImageCompanyLogo)
         {
             //Assign Parameter Properties
             _documentType = pDocumentType;
@@ -136,7 +136,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             string name = pName;
 
             /* IN009055: pFiscalNumber real value is overwritten by GetFRBOFinancePayment(Guid pDocumentFinancePaymentOid) method */
-            if (SharedSettings.FinanceFinalConsumerFiscalNumberDisplay.Equals(pFiscalNumber) || SharedSettings.FinanceFinalConsumerFiscalNumber.Equals(pFiscalNumber))
+            if (SaftSettings.FinanceFinalConsumerFiscalNumberDisplay.Equals(pFiscalNumber) || SaftSettings.FinanceFinalConsumerFiscalNumber.Equals(pFiscalNumber))
             {
                 //fiscalNumber = SettingsApp.FinanceFinalConsumerFiscalNumberDisplay;
                 fiscalNumber = string.Empty; /* show the Fical Number display value is not necessary */
@@ -355,7 +355,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             /* IN009211 */
             string copyRightText = string.Format(
                 CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_copyright") + " {0}",
-                SharedSettings.SaftProductID
+                SaftSettings.SaftProductID
             );
 
             string certificationText;
@@ -372,7 +372,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 certificationText = string.Format(
                     CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_report_overlay_software_certification"),
                     prefix,
-                    SharedSettings.SaftSoftwareCertificateNumber
+                    SaftSettings.SaftSoftwareCertificateNumber
                 );
 
                 //Add Hash Validation if Defined (In DocumentFinance Only)
@@ -402,8 +402,8 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 certificationText = string.Format(
                     CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_report_overlay_software_certification_ao"),
                     prefix,
-                    SharedSettings.SaftSoftwareCertificateNumberAO,
-                    SharedSettings.SaftProductIDAO,
+                    SaftSettings.SaftSoftwareCertificateNumberAO,
+                    SaftSettings.SaftProductIDAO,
                     localDate);  
             }
 
