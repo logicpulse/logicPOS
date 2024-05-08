@@ -22,15 +22,7 @@ namespace logicpos.shared.App
         public static string AppSessionFile { get; set; } = "appsession_{0}.json";
         public static bool AppSessionFileJsonIndented { get; set; } = true;
 
-        public static Guid XpoOidConfigurationCountryPortugal { get; set; } = new Guid("e7e8c325-a0d4-4908-b148-508ed750676a");
-        public static Guid XpoOidConfigurationCurrencyEuro { get; set; } = new Guid("28dd2a3a-0083-11e4-96ce-00ff2353398c");
         public static cfg_configurationcurrency ConfigurationSystemCurrency { get; set; } = null;
-
-        public static Guid XpoOidConfigurationCountryMozambique { get; set; } = new Guid("16fcd7f2-e885-48d8-9f8e-9d224cc36f32");
-        public static Guid XpoOidConfigurationCurrencyUSDollar { get; set; } = new Guid("28d692ad-0083-11e4-96ce-00ff2353398c");
-
-        public static Guid XpoOidConfigurationCountryAngola { get; set; } = new Guid("9655510a-ff58-461e-9719-c037058f10ed");
-
 
 
         public static int DocumentsPadLength { get; set; }
@@ -68,21 +60,21 @@ namespace logicpos.shared.App
         //Developer Config
 
         // Undefined Record
-        public static Guid XpoOidUndefinedRecord = new Guid("00000000-0000-0000-0000-000000000001");
-        public static Guid XpoOidUserRecord = new Guid("00000000-0000-0000-0000-000000000002");
-        public static string XpoOidHiddenRecordsFilter = "00000000-0000-0000-0000-000000000%";
+        public static Guid XpoOidUndefinedRecord { get; set; } = new Guid("00000000-0000-0000-0000-000000000001");
+        public static Guid XpoOidUserRecord { get; set; } = new Guid("00000000-0000-0000-0000-000000000002");
+        public static string XpoOidHiddenRecordsFilter { get; set; } = "00000000-0000-0000-0000-000000000%";
 
         //ArticleClass
-        public static Guid XpoOidArticleClassCustomerCard = new Guid("49ea35ba-35f3-440f-946e-ab32578ed741");
+        public static Guid XpoOidArticleClassCustomerCard { get; set; } = new Guid("49ea35ba-35f3-440f-946e-ab32578ed741");
 
         //Customer | Final Consumer | 999999990
         public static Guid FinalConsumerId { get; set; } = new Guid("0cf40622-578b-417d-b50f-e945fefb5d68");
 
         //ConfigurationPaymentMethod
-        public static Guid XpoOidConfigurationPaymentMethodCurrentAccount = new Guid("6db009fd-6729-4353-a4d0-d599c4c19297");
+        public static Guid XpoOidConfigurationPaymentMethodCurrentAccount { get; set; } = new Guid("6db009fd-6729-4353-a4d0-d599c4c19297");
 
         //ConfigurationPaymentCondition
-        public static Guid XpoOidConfigurationPaymentMethodInstantPayment = new Guid("4261daa6-c0bd-4ac9-949a-cae0be2dd472");//Pronto Pagamento
+        public static Guid XpoOidConfigurationPaymentMethodInstantPayment { get; set; } = new Guid("4261daa6-c0bd-4ac9-949a-cae0be2dd472");//Pronto Pagamento
 
         //DocumentFinanceType
 
@@ -94,98 +86,84 @@ namespace logicpos.shared.App
         public static Guid XpoOidDocumentFinanceTypeCreditNote { get; set; } = new Guid("fa924162-beed-4f2f-938d-919deafb7d47");
 
         //SaftDocumentType 2
-        public static Guid XpoOidDocumentFinanceTypeDeliveryNote = new Guid("95f6a472-1b12-43aa-a215-a4b406b18924");
-        public static Guid XpoOidDocumentFinanceTypeTransportationGuide = new Guid("96bcf534-0dab-48bb-a69e-166e81ae6f7b");
-        public static Guid XpoOidDocumentFinanceTypeOwnAssetsDriveGuide = new Guid("f8e96786-fed8-4143-be9e-b03c3a984a2c");
-        public static Guid XpoOidDocumentFinanceTypeConsignmentGuide = new Guid("63d8eb04-983c-4524-96de-979a240b362c");
-        public static Guid XpoOidDocumentFinanceTypeReturnGuide = new Guid("f03d2788-bed6-41ab-8d44-100039103e83");
+        public static Guid XpoOidDocumentFinanceTypeDeliveryNote { get; set; } = new Guid("95f6a472-1b12-43aa-a215-a4b406b18924");
+        public static Guid XpoOidDocumentFinanceTypeTransportationGuide { get; set; } = new Guid("96bcf534-0dab-48bb-a69e-166e81ae6f7b");
+        public static Guid XpoOidDocumentFinanceTypeOwnAssetsDriveGuide { get; set; } = new Guid("f8e96786-fed8-4143-be9e-b03c3a984a2c");
+        public static Guid XpoOidDocumentFinanceTypeConsignmentGuide { get; set; } = new Guid("63d8eb04-983c-4524-96de-979a240b362c");
+        public static Guid XpoOidDocumentFinanceTypeReturnGuide { get; set; } = new Guid("f03d2788-bed6-41ab-8d44-100039103e83");
         //SaftDocumentType 3
-        public static Guid XpoOidDocumentFinanceTypeConferenceDocument = new Guid("afed98d3-eae7-43a7-a7be-515753594c8f");
-        public static Guid XpoOidDocumentFinanceTypeConsignationInvoice = new Guid("b8554d36-642a-4083-b608-8f1da35f0fec");
-        public static Guid XpoOidDocumentFinanceTypeBudget = new Guid("005ac531-31a1-44bb-9346-058f9c9ad01a");
-        public static Guid XpoOidDocumentFinanceTypeProformaInvoice = new Guid("6f4249d0-4aaf-4711-814f-7f9533a1ef7f");
+        public static Guid XpoOidDocumentFinanceTypeConferenceDocument { get; set; } = new Guid("afed98d3-eae7-43a7-a7be-515753594c8f");
+        public static Guid XpoOidDocumentFinanceTypeConsignationInvoice { get; set; } = new Guid("b8554d36-642a-4083-b608-8f1da35f0fec");
+        public static Guid XpoOidDocumentFinanceTypeBudget { get; set; } = new Guid("005ac531-31a1-44bb-9346-058f9c9ad01a");
+        public static Guid XpoOidDocumentFinanceTypeProformaInvoice { get; set; } = new Guid("6f4249d0-4aaf-4711-814f-7f9533a1ef7f");
         //SaftDocumentType 4
-        public static Guid XpoOidDocumentFinanceTypePayment = new Guid("a009168d-fed1-4f52-b9e3-77e280b18ff5");
+        public static Guid XpoOidDocumentFinanceTypePayment { get; set; } = new Guid("a009168d-fed1-4f52-b9e3-77e280b18ff5");
         //SaftDocumentType 0 : INTERNAL, not used in SAF-T PT
-        public static Guid XpoOidDocumentFinanceTypeInvoiceWayBill = new Guid("f8878cf5-0f88-4270-8a55-1fc2488d81a2");
-        public static Guid XpoOidDocumentFinanceTypeCurrentAccountInput = new Guid("235f06f3-5ec3-4e13-977b-325614b07e35");
+        public static Guid XpoOidDocumentFinanceTypeInvoiceWayBill { get; set; } = new Guid("f8878cf5-0f88-4270-8a55-1fc2488d81a2");
+        public static Guid XpoOidDocumentFinanceTypeCurrentAccountInput { get; set; } = new Guid("235f06f3-5ec3-4e13-977b-325614b07e35");
 
         //Printers
         //Generic Printer, used in NewDocuments, to choose printer Target
-        public static Guid XpoOidConfigurationPrinterGeneric = new Guid("b0c917c7-2ea1-4e08-afa5-4744c19e1c5c");
+        public static Guid XpoOidConfigurationPrinterGeneric { get; set; } = new Guid("b0c917c7-2ea1-4e08-afa5-4744c19e1c5c");
         //Thermal Printer : Used in ThermalPrinterGeneric Class (Enum)
-        public static Guid XpoOidConfigurationPrinterThermalWindows = new Guid("e7143ea5-391b-46ef-a28d-4843fd7e21ac");
-        public static Guid XpoOidConfigurationPrinterThermalSocket = new Guid("faeb45cd-2989-4e92-9907-3038444e4849");
-        public static Guid XpoOidConfigurationPrinterThermalUsb = new Guid("39b58a4e-b860-49c1-81a5-8bb5f7186940");
+        public static Guid XpoOidConfigurationPrinterThermalWindows { get; set; } = new Guid("e7143ea5-391b-46ef-a28d-4843fd7e21ac");
+        public static Guid XpoOidConfigurationPrinterThermalSocket { get; set; } = new Guid("faeb45cd-2989-4e92-9907-3038444e4849");
+        public static Guid XpoOidConfigurationPrinterThermalUsb { get; set; } = new Guid("39b58a4e-b860-49c1-81a5-8bb5f7186940");
 
-        //PrintersType
-        //THERMAL_PRINTER_WINDOWS
-        public static Guid XpoOidConfigurationPrinterTypeThermalPrinterWindows = new Guid("e7143ea5-391b-46ef-a28d-4843fd7e21ac");
-        //THERMAL_PRINTER_SOCKET
-        public static Guid XpoOidConfigurationPrinterTypeThermalPrinterSocket = new Guid("faeb45cd-2989-4e92-9907-3038444e4849");
-        //GENERIC_PRINTER_WINDOWS
-        public static Guid XpoOidConfigurationPrinterTypeGenericWindows = new Guid("4be662e6-67c9-4063-bd6c-574ae4df7f3f");
-        //REPORT_EXPORT_PDF
-        public static Guid XpoOidConfigurationPrinterTypeExportPdf = new Guid("e5e20cd0-d9d2-443d-9d3f-3478949db30f");
-        //THERMAL _PRINTER_USB
-        public static Guid XpoOidConfigurationPrinterTypeThermalPrinterUsb = new Guid("39b58a4e-b860-49c1-81a5-8bb5f7186940");
-        //Modelo para impressão de Fecho de Dia/Caixa
-        public static Guid XpoOidConfigurationPrintersTemplateWorkSessionMovement = new Guid("f6a25476-40b0-4287-9284-d5db3280d7f1");
-        //Modelo para impressão de Entradas/Saidas de Numerário
-        public static Guid XpoOidConfigurationPrintersTemplateCashDrawerOpenAndMoneyInOut = new Guid("f6565476-28b0-4287-9284-d5db3280d421");
+        
 
         //Tax/VatRate
-        public static Guid XpoOidConfigurationVatRateDutyFree = new Guid("e74faad7-f5c9-4206-a662-f95820014195");//0
+        public static Guid XpoOidConfigurationVatRateDutyFree { get; set; } = new Guid("e74faad7-f5c9-4206-a662-f95820014195");//0
         //(Continente)
-        public static Guid XpoOidConfigurationVatRateNormalPT = new Guid("cee00590-7317-41b8-af46-66560401096b");//23
-        public static Guid XpoOidConfigurationVatRateIntermediatePT = new Guid("f73e3b41-4967-48c6-9f9a-260abf2146e1");//13
-        public static Guid XpoOidConfigurationVatRateReducedPT = new Guid("7e89eaed-ce56-4565-8eec-98f2e8d004a5");//6
+        public static Guid XpoOidConfigurationVatRateNormalPT { get; set; } = new Guid("cee00590-7317-41b8-af46-66560401096b");//23
+        public static Guid XpoOidConfigurationVatRateIntermediatePT { get; set; } = new Guid("f73e3b41-4967-48c6-9f9a-260abf2146e1");//13
+        public static Guid XpoOidConfigurationVatRateReducedPT { get; set; } = new Guid("7e89eaed-ce56-4565-8eec-98f2e8d004a5");//6
         //(R.A.Madeira)
-        public static Guid XpoOidConfigurationVatRateNormalPTMA = new Guid("ecd64d02-5249-4303-a35c-c662ffba4844");//22
-        public static Guid XpoOidConfigurationVatRateIntermediatePTMA = new Guid("f0281b91-83d7-482f-bfd8-e52461983136");//12
-        public static Guid XpoOidConfigurationVatRateReducedPTMA = new Guid("b57d85a5-843e-4b84-9660-9124006b9b05");//5
+        public static Guid XpoOidConfigurationVatRateNormalPTMA { get; set; } = new Guid("ecd64d02-5249-4303-a35c-c662ffba4844");//22
+        public static Guid XpoOidConfigurationVatRateIntermediatePTMA { get; set; } = new Guid("f0281b91-83d7-482f-bfd8-e52461983136");//12
+        public static Guid XpoOidConfigurationVatRateReducedPTMA { get; set; } = new Guid("b57d85a5-843e-4b84-9660-9124006b9b05");//5
         //(R.A.Açores)
-        public static Guid XpoOidConfigurationVatRateNormalPTAC = new Guid("389661c1-05f6-4830-bc06-176e2fdb3dc2");//18
-        public static Guid XpoOidConfigurationVatRateIntermediatePTAC = new Guid("52c6ce3c-9246-4b8b-a143-b84733a074d4");//9
-        public static Guid XpoOidConfigurationVatRateReducedPTAC = new Guid("e4478dea-9272-4090-a71a-df775b96c4b3");//4
+        public static Guid XpoOidConfigurationVatRateNormalPTAC { get; set; } = new Guid("389661c1-05f6-4830-bc06-176e2fdb3dc2");//18
+        public static Guid XpoOidConfigurationVatRateIntermediatePTAC { get; set; } = new Guid("52c6ce3c-9246-4b8b-a143-b84733a074d4");//9
+        public static Guid XpoOidConfigurationVatRateReducedPTAC { get; set; } = new Guid("e4478dea-9272-4090-a71a-df775b96c4b3");//4
 
         //VatExemptionReason
-        public static Guid XpoOidConfigurationVatExemptionReasonM99 = new Guid("f60f97c0-390e-4d76-90d7-204b6ea57949");
+        public static Guid XpoOidConfigurationVatExemptionReasonM99 { get; set; } = new Guid("f60f97c0-390e-4d76-90d7-204b6ea57949");
 
         //Notifications
         /// <summary>
         /// Default value for when filtering documents to be presented in Notification window
         /// </summary>
-        public static int XpoOidSystemNotificationDaysBackWhenFiltering = 5;
+        public static int XpoOidSystemNotificationDaysBackWhenFiltering { get; set; } = 5;
         //Notification Types
-        public static Guid XpoOidSystemNotificationTypeNewTerminalRegistered = new Guid("bc1f6a82-fa8e-49c8-981c-46ff21aef8b4");
-        public static Guid XpoOidSystemNotificationTypeCurrentAccountDocumentsToInvoice = new Guid("06319d46-e7b5-4cca-8257-55eff4cfe0fa");
-        public static Guid XpoOidSystemNotificationTypeConsignationInvoiceDocumentsToInvoice = new Guid("a567578b-53e9-4b5c-848f-183c65194971");
-        public static Guid XpoOidSystemNotificationTypeSaftDocumentTypeMovementOfGoods = new Guid("80a03838-0937-4ae3-921f-75a1e358f7bf");
+        public static Guid XpoOidSystemNotificationTypeNewTerminalRegistered { get; set; } = new Guid("bc1f6a82-fa8e-49c8-981c-46ff21aef8b4");
+        public static Guid XpoOidSystemNotificationTypeCurrentAccountDocumentsToInvoice { get; set; } = new Guid("06319d46-e7b5-4cca-8257-55eff4cfe0fa");
+        public static Guid XpoOidSystemNotificationTypeConsignationInvoiceDocumentsToInvoice { get; set; } = new Guid("a567578b-53e9-4b5c-848f-183c65194971");
+        public static Guid XpoOidSystemNotificationTypeSaftDocumentTypeMovementOfGoods { get; set; } = new Guid("80a03838-0937-4ae3-921f-75a1e358f7bf");
 
         //ConfigurationPriceType
         //Retail Mode|New Document to get PriceType when customer is not Defined
-        public static Guid XpoOidConfigurationPriceTypeDefault = new Guid("cf17a218-b687-4b82-a8f4-0905594ac1f5");
+        public static Guid XpoOidConfigurationPriceTypeDefault { get; set; } = new Guid("cf17a218-b687-4b82-a8f4-0905594ac1f5");
 
         /* TK013134 - Parking Ticket */
-        public static Guid XpoOidArticleParkingTicket = new Guid("f4c6294d-0a57-4f36-951d-87ab2e076ef1");
-        public static Guid XpoOidArticleParkingCard = new Guid("32829702-33fa-48d5-917c-4c1db8720777");
-        public static Guid XpoOidArticleParkingSubfamily = new Guid("d0c8169b-a5bc-46cb-b8ff-186b0ba39929");
+        public static Guid XpoOidArticleParkingTicket { get; set; } = new Guid("f4c6294d-0a57-4f36-951d-87ab2e076ef1");
+        public static Guid XpoOidArticleParkingCard { get; set; } = new Guid("32829702-33fa-48d5-917c-4c1db8720777");
+        public static Guid XpoOidArticleParkingSubfamily { get; set; } = new Guid("d0c8169b-a5bc-46cb-b8ff-186b0ba39929");
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Thermal Printer Ticket
 
         // Defaults for New PrinterThermal Dialog
-        public static string PrinterThermalEncoding = "PC860";
-        public static bool PrinterThermalPrintLogo = false;
-        public static string PrinterThermalImageCompanyLogo = "Images/Tickets/company_loggero_thermal.bmp";
-        public static int PrinterThermalMaxCharsPerLineNormal = 48;
-        public static int PrinterThermalMaxCharsPerLineNormalBold = 44;
-        public static int PrinterThermalMaxCharsPerLineSmall = 64;
-        public static string PrinterThermalCutCommand = "0x42,0x00";
-        public static int PrinterThermalOpenDrawerValueM = 0;
-        public static int PrinterThermalOpenDrawerValueT1 = 3;
-        public static int PrinterThermalOpenDrawerValueT2 = 49;
+        public static string PrinterThermalEncoding { get; set; } = "PC860";
+        public static bool PrinterThermalPrintLogo { get; set; } = false;
+        public static string PrinterThermalImageCompanyLogo { get; set; } = "Images/Tickets/company_loggero_thermal.bmp";
+        public static int PrinterThermalMaxCharsPerLineNormal { get; set; } = 48;
+        public static int PrinterThermalMaxCharsPerLineNormalBold { get; set; } = 44;
+        public static int PrinterThermalMaxCharsPerLineSmall { get; set; } = 64;
+        public static string PrinterThermalCutCommand { get; set; } = "0x42,0x00";
+        public static int PrinterThermalOpenDrawerValueM { get; set; } = 0;
+        public static int PrinterThermalOpenDrawerValueT1 { get; set; } = 3;
+        public static int PrinterThermalOpenDrawerValueT2 { get; set; } = 49;
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Reports
@@ -193,7 +171,7 @@ namespace logicpos.shared.App
         //Used to Enable/Disable DoublePass, else Blank Page when DoublePass Enabled with One Page
         //used in ProcessReportFinanceDocument.customReport.DoublePass
         //When change value here, change script block in .frx too (_dataBandMaxRecs = 15;)
-        public static uint CustomReportReportDocumentFinanceMaxDetail = 15;
+        public static uint CustomReportReportDocumentFinanceMaxDetail { get; set; } = 15;
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Helper Methods

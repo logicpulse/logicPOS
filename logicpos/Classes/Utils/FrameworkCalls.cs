@@ -189,7 +189,7 @@ namespace logicpos
             bool result = false;
 
             //Check if SystemCountry is Portugal and is a valid WsAtDocument
-            if (XPOSettings.ConfigurationSystemCountry.Oid == SharedSettings.XpoOidConfigurationCountryPortugal && documentFinanceMaster.DocumentType.WsAtDocument)
+            if (XPOSettings.ConfigurationSystemCountry.Oid == CultureSettings.XpoOidConfigurationCountryPortugal && documentFinanceMaster.DocumentType.WsAtDocument)
             {
                 //Documents
                 if (!documentFinanceMaster.DocumentType.WayBill || documentFinanceMaster.DocumentType.Oid == SharedSettings.XpoOidDocumentFinanceTypeInvoiceWayBill)
@@ -781,7 +781,7 @@ namespace logicpos
         public static bool PrintWorkSessionMovement(Window pSourceWindow, sys_configurationprinters pPrinter, pos_worksessionperiod pWorkSessionPeriod)
         {
             bool result = false;
-            sys_configurationprinterstemplates template = (sys_configurationprinterstemplates)XPOHelper.GetXPGuidObject(typeof(sys_configurationprinterstemplates), SharedSettings.XpoOidConfigurationPrintersTemplateWorkSessionMovement);
+            sys_configurationprinterstemplates template = (sys_configurationprinterstemplates)XPOHelper.GetXPGuidObject(typeof(sys_configurationprinterstemplates), PrintingSettings.XpoOidConfigurationPrintersTemplateWorkSessionMovement);
 
             try
             {
@@ -805,7 +805,7 @@ namespace logicpos
         public static bool PrintCashDrawerOpenAndMoneyInOut(Window pSourceWindow, sys_configurationprinters pPrinter, string pTicketTitle, decimal pMovementAmount, decimal pTotalAmountInCashDrawer, string pMovementDescription)
         {
             bool result = false;
-            sys_configurationprinterstemplates template = (sys_configurationprinterstemplates)XPOHelper.GetXPGuidObject(typeof(sys_configurationprinterstemplates), SharedSettings.XpoOidConfigurationPrintersTemplateCashDrawerOpenAndMoneyInOut);
+            sys_configurationprinterstemplates template = (sys_configurationprinterstemplates)XPOHelper.GetXPGuidObject(typeof(sys_configurationprinterstemplates), PrintingSettings.XpoOidConfigurationPrintersTemplateCashDrawerOpenAndMoneyInOut);
 
             try
             {
@@ -853,98 +853,5 @@ namespace logicpos
 
             return result;
         }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //WIP: PrintTableTicket
-
-        //public static bool PrintTableTicket(Window pSourceWindow, ConfigurationPrinters pPrinter, ConfigurationPrintersTemplates pTemplate, OrderMain documentOrderMain, Guid pTicketOid = new Guid())
-        //{
-        //  bool result = false;
-        //  try
-        //  {
-        //    result = true;
-        //  }
-        //  catch (Exception ex)
-        //  {
-        //  }
-        //  return result;
-        //}
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //WIP: PrintArticleRequest
-
-        //public static bool PrintArticleRequest(Window pSourceWindow, DocumentOrderDetail xOrderDetailLine, Article pArticle)
-        //{
-        //  bool result = false;
-        //  try
-        //  {
-        //    result = true;
-        //  }
-        //  catch (Exception ex)
-        //  {
-        //  }
-        //  return result;
-        //}
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //WIP: PrintCashDrawerOpenAndMoneyInOut
-
-        //public static bool PrintWorkSessionMovement(Window pSourceWindow, ConfigurationPrinters pPrinter, WorkSessionPeriod pWorkSessionPeriod)
-        //{
-        //  bool result = false;
-        //  try
-        //  {
-        //    result = true;
-        //  }
-        //  catch (Exception ex)
-        //  {
-        //  }
-        //  return result;
-        //}
-
-        //public static bool PrintWorkSessionMovement(Window pSourceWindow, ConfigurationPrinters pPrinter, WorkSessionPeriod pWorkSessionPeriod, logicpos.financial.library.Classes.Hardware.Printer.PrintTicket.SplitCurrentAccountMode pSplitCurrentAccountMode)
-        //{
-        //  bool result = false;
-        //  try
-        //  {
-        //    result = true;
-        //  }
-        //  catch (Exception ex)
-        //  {
-        //  }
-        //  return result;
-        //}
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //WIP: PrintCashDrawerOpenAndMoneyInOut
-
-        //public static bool PrintCashDrawerOpenAndMoneyInOut(Window pSourceWindow, ConfigurationPrinters pPrinter, String pTicketTitle, decimal pMovementAmount, decimal pTotalAmountInCashDrawer, string pMovementDescription)
-        //{
-        //  bool result = false;
-        //  try
-        //  {
-        //    result = true;
-        //  }
-        //  catch (Exception ex)
-        //  {
-        //  }
-        //  return result;
-        //}
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //WIP: OpenDoor
-
-        //public static bool OpenDoor(Window pSourceWindow, ConfigurationPrinters pPrinter)
-        //{
-        //  bool result = false;
-        //  try
-        //  {
-        //    result = true;
-        //  }
-        //  catch (Exception ex)
-        //  {
-        //  }
-        //  return result;
-        //}
     }
 }

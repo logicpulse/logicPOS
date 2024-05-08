@@ -85,7 +85,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 //Call base PrintDocumentTypeFooterString();
                 try
                 {
-                    if (XPOSettings.ConfigurationSystemCountry.Oid == SharedSettings.XpoOidConfigurationCountryPortugal || XPOSettings.ConfigurationSystemCountry.Oid == SharedSettings.XpoOidConfigurationCountryAngola)
+                    if (XPOSettings.ConfigurationSystemCountry.Oid == CultureSettings.XpoOidConfigurationCountryPortugal || XPOSettings.ConfigurationSystemCountry.Oid == CultureSettings.XpoOidConfigurationCountryAngola)
                     {
                         PrintDocumentTypeFooterString(_documentFinanceMasterList[0].DocumentTypeResourceStringReport);
                         //ATCUD Documentos - Criação do QRCode e ATCUD IN016508
@@ -164,7 +164,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                  * The conversion will be done when printing the DataRow for VatRate and Discount fields (LogicPOS.Utility.DataConversionUtils.DecimalToString(pFinanceDetail.Vat)).
                  */
                 //Colum
-                if (XPOSettings.ConfigurationSystemCountry.Oid == SharedSettings.XpoOidConfigurationCountryPortugal){
+                if (XPOSettings.ConfigurationSystemCountry.Oid == CultureSettings.XpoOidConfigurationCountryPortugal){
                     columns.Add(new TicketColumn("VatRate", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "IVA") + "%", 6, TicketColumnsAlign.Right, typeof(decimal), "{0:00.00}"));
                 }
                 else
@@ -173,7 +173,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 }                
                 columns.Add(new TicketColumn("Quantity", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_quantity_acronym"), 8, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));
                 columns.Add(new TicketColumn("UnitMeasure", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_unit_measure_acronym"), 3, TicketColumnsAlign.Right));
-                if (XPOSettings.ConfigurationSystemCountry.Oid == SharedSettings.XpoOidConfigurationCountryPortugal)
+                if (XPOSettings.ConfigurationSystemCountry.Oid == CultureSettings.XpoOidConfigurationCountryPortugal)
                 {
                     columns.Add(new TicketColumn("UnitPrice", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_short_price"), 11, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));
                 }
@@ -348,13 +348,13 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 }
 
                 /* IN009055 - related to IN005976 for Mozambique deployment */
-                if (SharedSettings.XpoOidConfigurationCountryMozambique.Equals(XPOSettings.ConfigurationSystemCountry.Oid))
+                if (CultureSettings.XpoOidConfigurationCountryMozambique.Equals(XPOSettings.ConfigurationSystemCountry.Oid))
                 {
                     cfg_configurationcurrency defaultCurrencyForExchangeRate =
                         (cfg_configurationcurrency)XPOHelper.GetXPGuidObject(
                             XPOSettings.Session,
                             typeof(cfg_configurationcurrency),
-                            SharedSettings.XpoOidConfigurationCurrencyUSDollar);
+                            CultureSettings.XpoOidConfigurationCurrencyUSDollar);
 
                     dataRow = dataTable.NewRow();
                     dataRow[0] = string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_printer_thermal_total_default_currency"), defaultCurrencyForExchangeRate.Acronym);

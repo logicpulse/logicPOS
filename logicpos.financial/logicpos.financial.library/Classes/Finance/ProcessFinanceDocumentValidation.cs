@@ -5,6 +5,7 @@ using logicpos.financial.library.App;
 using logicpos.shared.App;
 using logicpos.shared.Classes.Finance;
 using logicpos.shared.Enums;
+using LogicPOS.Settings;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -584,7 +585,7 @@ namespace logicpos.financial.library.Classes.Finance
 				// Moçambique - Pedidos da reunião 13/10/2020 + Faturas no Front-Office [IN:014327]
                 if (customer != null && customerParentDocument != null && customer != customerParentDocument && documentParent.DocumentType.Oid != SharedSettings.XpoOidDocumentFinanceTypeConferenceDocument)
                 {
-                    if (!SharedSettings.XpoOidConfigurationCountryMozambique.Equals(XPOSettings.ConfigurationSystemCountry.Oid) && (documentParent.DocumentType.Oid != SharedSettings.XpoOidDocumentFinanceTypeInvoice || documentParent.DocumentType.Oid != SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice))
+                    if (!CultureSettings.XpoOidConfigurationCountryMozambique.Equals(XPOSettings.ConfigurationSystemCountry.Oid) && (documentParent.DocumentType.Oid != SharedSettings.XpoOidDocumentFinanceTypeInvoice || documentParent.DocumentType.Oid != SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice))
                     {
                         ResultAdd(FinanceValidationError.ERROR_RULE_PARENT_DOCUMENT_CUSTOMER_AND_CURRENT_DOCUMENT_CUSTOMER_INVALID);
                     }                       
@@ -688,7 +689,7 @@ namespace logicpos.financial.library.Classes.Finance
                 if (documentParent != null && !validParentDocuments.Contains<Guid>(documentParent.DocumentType.Oid))
                 {
                     //If Moçambique Ignore - Moçambique - Pedidos da reunião 13/10/2020 [IN:014327]
-                    if (SharedSettings.XpoOidConfigurationCountryMozambique.Equals(XPOSettings.ConfigurationSystemCountry.Oid))
+                    if (CultureSettings.XpoOidConfigurationCountryMozambique.Equals(XPOSettings.ConfigurationSystemCountry.Oid))
                     {
                         ResultAdd(FinanceValidationError.ERROR_RULE_DOCUMENT_FINANCE_TYPE_PARENT_DOCUMENT_INVALID);
                     }

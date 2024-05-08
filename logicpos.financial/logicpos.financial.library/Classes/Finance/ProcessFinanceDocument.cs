@@ -195,7 +195,7 @@ namespace logicpos.financial.library.Classes.Finance
                             ||
                             //Or If not in Portugal AND (! FinalConsumer (in Invoices for ex))
                             (
-                                SharedSettings.XpoOidConfigurationCountryPortugal != XPOSettings.ConfigurationSystemCountry.Oid &&
+                                CultureSettings.XpoOidConfigurationCountryPortugal != XPOSettings.ConfigurationSystemCountry.Oid &&
                                 customer.Oid != FinancialLibraryUtils.GetFinalConsumerEntity().Oid
                             )
                             //Required Oids for Equallity Check

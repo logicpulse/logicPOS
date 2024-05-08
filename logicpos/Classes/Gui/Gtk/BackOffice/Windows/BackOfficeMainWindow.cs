@@ -345,7 +345,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 // Add Menu Items Based On Plugins PluginSoftwareVendor
                 Dictionary<string, AccordionNode> _accordionChildExport = new Dictionary<string, AccordionNode>();
                 //Export
-                if (PluginSettings.PluginSoftwareVendor != null && (XPOSettings.ConfigurationSystemCountry.Oid == SharedSettings.XpoOidConfigurationCountryPortugal || XPOSettings.ConfigurationSystemCountry.Oid == SharedSettings.XpoOidConfigurationCountryAngola))
+                if (PluginSettings.PluginSoftwareVendor != null && (XPOSettings.ConfigurationSystemCountry.Oid == CultureSettings.XpoOidConfigurationCountryPortugal || XPOSettings.ConfigurationSystemCountry.Oid == CultureSettings.XpoOidConfigurationCountryAngola))
                 {
                     if ((System.Configuration.ConfigurationManager.AppSettings["cultureFinancialRules"] == "pt-AO") || (System.Configuration.ConfigurationManager.AppSettings["cultureFinancialRules"] == "pt-PT"))
                     {

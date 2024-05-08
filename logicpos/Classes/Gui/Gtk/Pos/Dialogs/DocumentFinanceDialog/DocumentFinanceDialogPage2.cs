@@ -16,6 +16,7 @@ using logicpos.financial.library.App;
 using logicpos.datalayer.Xpo;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 {
@@ -679,7 +680,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 //Disable/Enable ButtonClearCustomer based on SourceDocument, if has SourceDocument Disable ClearButton
                 _posDocumentFinanceDialog.ButtonClearCustomer.Sensitive = (_pagePad1.EntryBoxSelectSourceDocumentFinance.Value == null);
 
-                if(_pagePad1.EntryBoxSelectSourceDocumentFinance.Value != null && SharedSettings.XpoOidConfigurationCountryMozambique.Equals(XPOSettings.ConfigurationSystemCountry.Oid) 
+                if(_pagePad1.EntryBoxSelectSourceDocumentFinance.Value != null && CultureSettings.XpoOidConfigurationCountryMozambique.Equals(XPOSettings.ConfigurationSystemCountry.Oid) 
                     && _pagePad1.EntryBoxSelectSourceDocumentFinance.Value != null 
                     && (_pagePad1.EntryBoxSelectSourceDocumentFinance.Value.DocumentType.Oid == SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice || _pagePad1.EntryBoxSelectSourceDocumentFinance.Value.DocumentType.Oid == SharedSettings.XpoOidDocumentFinanceTypeInvoice))
                 {
