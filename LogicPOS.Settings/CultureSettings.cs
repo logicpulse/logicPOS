@@ -25,10 +25,25 @@ namespace LogicPOS.Settings
         public static string SaftCurrencyCode { get; set; }
         public static string SaftCurrencyCodeAO { get; set; }
 
-        public static Guid XpoOidConfigurationCountryPortugal { get; set; } = new Guid("e7e8c325-a0d4-4908-b148-508ed750676a");
-        public static Guid XpoOidConfigurationCurrencyEuro { get; set; } = new Guid("28dd2a3a-0083-11e4-96ce-00ff2353398c");
-        public static Guid XpoOidConfigurationCountryMozambique { get; set; } = new Guid("16fcd7f2-e885-48d8-9f8e-9d224cc36f32");
-        public static Guid XpoOidConfigurationCurrencyUSDollar { get; set; } = new Guid("28d692ad-0083-11e4-96ce-00ff2353398c");
-        public static Guid XpoOidConfigurationCountryAngola { get; set; } = new Guid("9655510a-ff58-461e-9719-c037058f10ed");
+        public static Guid PortugalCountryId { get; set; } = new Guid("e7e8c325-a0d4-4908-b148-508ed750676a");
+        public static Guid EuroCurrencyId { get; set; } = new Guid("28dd2a3a-0083-11e4-96ce-00ff2353398c");
+        public static Guid MozambiqueCountryId { get; set; } = new Guid("16fcd7f2-e885-48d8-9f8e-9d224cc36f32");
+        public static Guid USDCurrencyId { get; set; } = new Guid("28d692ad-0083-11e4-96ce-00ff2353398c");
+        public static Guid AngolaCountryId { get; set; } = new Guid("9655510a-ff58-461e-9719-c037058f10ed");
+
+        public static bool CountryIdIsPortugal(Guid countryId)
+        {
+            return countryId == PortugalCountryId;
+        }
+
+        public static bool CountryIdIsMozambique(Guid countryId)
+        {
+            return countryId == MozambiqueCountryId;
+        }
+
+        public static bool CountryIdIsAngola(Guid countryId)
+        {
+            return countryId == AngolaCountryId;
+        }
     }
 }

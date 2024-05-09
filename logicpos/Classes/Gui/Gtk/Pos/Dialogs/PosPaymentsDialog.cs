@@ -200,13 +200,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 Label labelTotal = new Label(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_total_price_to_pay") + ":");
                 Label labelDelivery = new Label(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_total_deliver") + ":");
                 Label labelChange = new Label(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_total_change") + ":");
-                _labelTotalValue = new Label(LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(ArticleBagFullPayment.TotalFinal, SharedSettings.ConfigurationSystemCurrency.Acronym))
+                _labelTotalValue = new Label(LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(ArticleBagFullPayment.TotalFinal, XPOSettings.ConfigurationSystemCurrency.Acronym))
                 {
                     //Total Width
                     WidthRequest = 135
                 };
-                _labelDeliveryValue = new Label(LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(0, SharedSettings.ConfigurationSystemCurrency.Acronym));
-                _labelChangeValue = new Label(LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(0, SharedSettings.ConfigurationSystemCurrency.Acronym));
+                _labelDeliveryValue = new Label(LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(0, XPOSettings.ConfigurationSystemCurrency.Acronym));
+                _labelChangeValue = new Label(LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(0, XPOSettings.ConfigurationSystemCurrency.Acronym));
 
                 //Colors
                 labelTotal.ModifyFg(StateType.Normal, Color.FromArgb(101, 137, 171).ToGdkColor());
@@ -362,8 +362,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     TotalChange = ProcessFinanceDocumentParameter.TotalChange;
                     DiscountGlobal = ProcessFinanceDocumentParameter.ArticleBag.DiscountGlobal;
                     // Update Visual Components
-                    _labelDeliveryValue.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalDelivery, SharedSettings.ConfigurationSystemCurrency.Acronym);
-                    _labelChangeValue.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalChange, SharedSettings.ConfigurationSystemCurrency.Acronym);
+                    _labelDeliveryValue.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalDelivery, XPOSettings.ConfigurationSystemCurrency.Acronym);
+                    _labelChangeValue.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalChange, XPOSettings.ConfigurationSystemCurrency.Acronym);
                     // Selects
                     Customer = (erp_customer)XPOHelper.GetXPGuidObject(typeof(erp_customer), ProcessFinanceDocumentParameter.Customer);
                     Country = Customer.Country;

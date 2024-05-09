@@ -602,7 +602,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             }
             else
             {
-                if(_value != null && _value.Oid == SharedSettings.XpoOidUserRecord)
+                if(_value != null && _value.Oid == XPOSettings.XpoOidUserRecord)
                 {
                     pEntry.Text = (value != null) ? CryptorEngine.Decrypt(value.ToString(), true, FinancialLibrarySettings.SecretKey) : "";
                 }

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
@@ -27,6 +28,20 @@ namespace LogicPOS.Settings
             {
                 return Assembly.GetExecutingAssembly();
             }
+        }
+        public static string AppSessionFile { get; set; } = "appsession_{0}.json";
+
+        public static int GetRequiredCustomerDetailsAboveValue(Guid countryId)
+        {
+            if (CultureSettings.CountryIdIsPortugal(countryId))
+            {
+                return PluginSettings.HasPlugin
+                    ? PluginSettings.PluginSoftwareVendor.GetRequiredCustomerDetailsAboveValue()
+                    : 1000;
+
+            }
+
+            return 999999999;
         }
 
     }

@@ -154,17 +154,17 @@ namespace acme.softwarevendor.plugin
             return AcmeSettings.SaftCurrencyCode;
         }
 
-        public int GetFinanceRuleSimplifiedInvoiceMaxTotal()
+        public int GetSimplifiedInvoiceMaxItems()
         {
             return AcmeSettings.FinanceRuleSimplifiedInvoiceMaxTotal;
         }
 
-        public int GetFinanceRuleSimplifiedInvoiceMaxTotalServices()
+        public int GetSimplifiedInvoiceMaxServices()
         {
             return AcmeSettings.FinanceRuleSimplifiedInvoiceMaxTotalServices;
         }
 
-        public int GetFinanceRuleRequiredCustomerDetailsAboveValue()
+        public int GetRequiredCustomerDetailsAboveValue()
         {
             return AcmeSettings.FinanceRuleRequiredCustomerDetailsAboveValue;
         }

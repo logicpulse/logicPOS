@@ -2,6 +2,7 @@
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Enums.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
+using logicpos.datalayer.Xpo;
 using logicpos.shared.App;
 using System;
 using System.Drawing;
@@ -53,16 +54,16 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             string fontMoneyPadButtonKeys = LogicPOS.Settings.GeneralSettings.Settings["fontMoneyPadButtonKeys"];
             string fontMoneyPadTextEntry = LogicPOS.Settings.GeneralSettings.Settings["fontMoneyPadTextEntry"];
             //ButtonLabels
-            string moneyButtonL1Label = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_decimalMoneyButtonL1Value, SharedSettings.ConfigurationSystemCurrency.Acronym);
-            string moneyButtonL2Label = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_decimalMoneyButtonL2Value, SharedSettings.ConfigurationSystemCurrency.Acronym);
-            string moneyButtonL3Label = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_decimalMoneyButtonL3Value, SharedSettings.ConfigurationSystemCurrency.Acronym);
-            string moneyButtonL4Label = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_decimalMoneyButtonL4Value, SharedSettings.ConfigurationSystemCurrency.Acronym);
-            string moneyButtonL5Label = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_decimalMoneyButtonL5Value, SharedSettings.ConfigurationSystemCurrency.Acronym);
-            string moneyButtonR1Label = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_decimalMoneyButtonR1Value, SharedSettings.ConfigurationSystemCurrency.Acronym);
-            string moneyButtonR2Label = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_decimalMoneyButtonR2Value, SharedSettings.ConfigurationSystemCurrency.Acronym);
-            string moneyButtonR3Label = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_decimalMoneyButtonR3Value, SharedSettings.ConfigurationSystemCurrency.Acronym);
-            string moneyButtonR4Label = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_decimalMoneyButtonR4Value, SharedSettings.ConfigurationSystemCurrency.Acronym);
-            string moneyButtonR5Label = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_decimalMoneyButtonR5Value, SharedSettings.ConfigurationSystemCurrency.Acronym);
+            string moneyButtonL1Label = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_decimalMoneyButtonL1Value, XPOSettings.ConfigurationSystemCurrency.Acronym);
+            string moneyButtonL2Label = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_decimalMoneyButtonL2Value, XPOSettings.ConfigurationSystemCurrency.Acronym);
+            string moneyButtonL3Label = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_decimalMoneyButtonL3Value, XPOSettings.ConfigurationSystemCurrency.Acronym);
+            string moneyButtonL4Label = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_decimalMoneyButtonL4Value, XPOSettings.ConfigurationSystemCurrency.Acronym);
+            string moneyButtonL5Label = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_decimalMoneyButtonL5Value, XPOSettings.ConfigurationSystemCurrency.Acronym);
+            string moneyButtonR1Label = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_decimalMoneyButtonR1Value, XPOSettings.ConfigurationSystemCurrency.Acronym);
+            string moneyButtonR2Label = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_decimalMoneyButtonR2Value, XPOSettings.ConfigurationSystemCurrency.Acronym);
+            string moneyButtonR3Label = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_decimalMoneyButtonR3Value, XPOSettings.ConfigurationSystemCurrency.Acronym);
+            string moneyButtonR4Label = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_decimalMoneyButtonR4Value, XPOSettings.ConfigurationSystemCurrency.Acronym);
+            string moneyButtonR5Label = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_decimalMoneyButtonR5Value, XPOSettings.ConfigurationSystemCurrency.Acronym);
 
             //Local Vars
             Color colorFont = Color.White;

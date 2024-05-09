@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Data;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using logicpos.datalayer.Xpo;
 
 namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 {
@@ -195,7 +196,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 string extended = _documentFinancePayment.ExtendedValue;
 
                 //Require to generated/override default Exchanged with document ExchangeRate Extended Value (Foreign Curency)
-                if (_documentFinancePaymentList[0].CurrencyAcronym != SharedSettings.ConfigurationSystemCurrency.Acronym)
+                if (_documentFinancePaymentList[0].CurrencyAcronym != XPOSettings.ConfigurationSystemCurrency.Acronym)
                 {
                     //Get ExtendedValue
                     ExtendValue extendValue = new ExtendValue();

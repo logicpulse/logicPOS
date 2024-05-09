@@ -64,11 +64,11 @@ namespace logicpos.plugin.contracts
         //SAFT(PT) : Country Rules
         //Retalhistas e vendedores ambulantes é permitida a emissão de faturas simplificadas a não sujeitos passivos, 
         //Até limite de 1000,00€ e a todas as outras atividades é apenas permitida a emissão de faturas até aos 100,00€
-        int GetFinanceRuleSimplifiedInvoiceMaxTotal();
+        int GetSimplifiedInvoiceMaxItems();
         //Services
-        int GetFinanceRuleSimplifiedInvoiceMaxTotalServices();
+        int GetSimplifiedInvoiceMaxServices();
         //This rule is to force fill Customer details if total document value is Greater or Equal to
-        int GetFinanceRuleRequiredCustomerDetailsAboveValue();
+        int GetRequiredCustomerDetailsAboveValue();
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //SAF-T AO

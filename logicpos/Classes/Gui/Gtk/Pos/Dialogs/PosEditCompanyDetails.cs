@@ -83,7 +83,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             else
             {
-                systemCountry = CultureSettings.XpoOidConfigurationCountryPortugal;
+                systemCountry = CultureSettings.PortugalCountryId;
             }
 
             if (GeneralSettings.Settings["xpoOidConfigurationCurrencySystemCurrency"] != string.Empty)
@@ -92,7 +92,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             else
             {
-                systemCurrency = CultureSettings.XpoOidConfigurationCurrencyEuro;
+                systemCurrency = CultureSettings.EuroCurrencyId;
             }
 
             //Init Inital Values

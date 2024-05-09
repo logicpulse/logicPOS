@@ -542,10 +542,10 @@ namespace logicpos.shared.App
 
                 //:::: Notification : WelcomeMessage ::::
                 //Check existing Notification before Create
-                systemNotificationType = (sys_systemnotificationtype)pSession.GetObjectByKey(typeof(sys_systemnotificationtype), SharedSettings.XpoOidSystemNotificationTypeNewTerminalRegistered);
+                systemNotificationType = (sys_systemnotificationtype)pSession.GetObjectByKey(typeof(sys_systemnotificationtype), NotificationSettings.XpoOidSystemNotificationTypeNewTerminalRegistered);
                 if (systemNotificationType != null)
                 {
-                    criteriaOperator = CriteriaOperator.Parse(string.Format("NotificationType = '{0}' AND TerminalLastRead = '{1}'", SharedSettings.XpoOidSystemNotificationTypeNewTerminalRegistered, XPOSettings.LoggedTerminal.Oid));
+                    criteriaOperator = CriteriaOperator.Parse(string.Format("NotificationType = '{0}' AND TerminalLastRead = '{1}'", NotificationSettings.XpoOidSystemNotificationTypeNewTerminalRegistered, XPOSettings.LoggedTerminal.Oid));
                     xpcSystemNotification = new XPCollection(pSession, typeof(sys_systemnotification), criteriaOperator);
                     //Create Notification
                     if (xpcSystemNotification.Count == 0)
@@ -610,12 +610,12 @@ namespace logicpos.shared.App
                 switch (cultureFinancialRules)
                 {
                     case "pt-PT":
-                        int defaultBackDaysForInvoice = SharedSettings.XpoOidSystemNotificationDaysBackWhenFiltering;
+                        int defaultBackDaysForInvoice = NotificationSettings.XpoOidSystemNotificationDaysBackWhenFiltering;
 
                         //:::: Notification : CurrentAccountDocumentsToInvoice ::::
                         //ProcessFinanceDocumentToInvoice to Create Notification in Spool for CurrentAccount Documents
                         //systemNotificationType = (SystemNotificationType)pSession.GetObjectByKey(typeof(SystemNotificationType), SettingsApp.XpoOidSystemNotificationTypeCurrentAccountDocumentsToInvoice);
-                        systemNotification = ProcessFinanceDocumentToInvoice(pSession, SharedSettings.XpoOidSystemNotificationTypeCurrentAccountDocumentsToInvoice, DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput, "(Payed = 0 OR Payed IS NULL)", defaultBackDaysForInvoice);
+                        systemNotification = ProcessFinanceDocumentToInvoice(pSession, NotificationSettings.XpoOidSystemNotificationTypeCurrentAccountDocumentsToInvoice, DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput, "(Payed = 0 OR Payed IS NULL)", defaultBackDaysForInvoice);
                         if (systemNotification != null)
                         {
                             systemNotification.Ord = ord; systemNotification.Save(); ord++;
@@ -625,7 +625,7 @@ namespace logicpos.shared.App
                         //:::: Notification : ConsignationInvoiceDocumentsToInvoice ::::
                         //ProcessFinanceDocumentToInvoice to Create Notification in Spool for CurrentAccount Documents
                         //systemNotificationType = (SystemNotificationType)pSession.GetObjectByKey(typeof(SystemNotificationType), SettingsApp.XpoOidSystemNotificationTypeConsignationInvoiceDocumentsToInvoice);
-                        systemNotification = ProcessFinanceDocumentToInvoice(pSession, SharedSettings.XpoOidSystemNotificationTypeConsignationInvoiceDocumentsToInvoice, DocumentSettings.XpoOidDocumentFinanceTypeConsignationInvoice, "(DocumentChild IS NULL)", defaultBackDaysForInvoice);
+                        systemNotification = ProcessFinanceDocumentToInvoice(pSession, NotificationSettings.XpoOidSystemNotificationTypeConsignationInvoiceDocumentsToInvoice, DocumentSettings.XpoOidDocumentFinanceTypeConsignationInvoice, "(DocumentChild IS NULL)", defaultBackDaysForInvoice);
                         if (systemNotification != null)
                         {
                             systemNotification.Ord = ord; systemNotification.Save(); ord++;
@@ -634,7 +634,7 @@ namespace logicpos.shared.App
 
                         //:::: Notification : SaftDocumentType.MovementOfGoodsToInvoice ::::
                         //ProcessFinanceDocumentToInvoice to Create Notification in Spool for CurrentAccount Documents
-                        systemNotification = ProcessFinanceDocumentToInvoice(pSession, SharedSettings.XpoOidSystemNotificationTypeSaftDocumentTypeMovementOfGoods, SaftDocumentType.MovementOfGoods, "(DocumentChild IS NULL AND DocumentStatusStatus = 'N')", defaultBackDaysForInvoice);
+                        systemNotification = ProcessFinanceDocumentToInvoice(pSession, NotificationSettings.XpoOidSystemNotificationTypeSaftDocumentTypeMovementOfGoods, SaftDocumentType.MovementOfGoods, "(DocumentChild IS NULL AND DocumentStatusStatus = 'N')", defaultBackDaysForInvoice);
                         if (systemNotification != null)
                         {
                             systemNotification.Ord = ord; systemNotification.Save(); ord++;

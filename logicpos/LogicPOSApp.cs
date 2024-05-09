@@ -240,7 +240,7 @@ namespace logicpos
 #endif
                 // Assign PluginSoftwareVendor Reference to DataLayer SettingsApp to use In Date Protection, we Required to assign it Statically to Prevent Circular References
                 // Required to be here, before it is used in above lines, ex Utils.GetTerminal()
-                if (PluginSettings.PluginSoftwareVendor != null) PluginContractsSettings.PluginSoftwareVendor = PluginSettings.PluginSoftwareVendor;
+                if (PluginSettings.HasPlugin) PluginContractsSettings.PluginSoftwareVendor = PluginSettings.PluginSoftwareVendor;
 
                 //If not in Xpo create database Scheme Mode, Get Terminal from Db
                 if (!xpoCreateDatabaseAndSchema)
@@ -509,7 +509,7 @@ namespace logicpos
             }
 
             //Start Database Backup Timer if not create XPO Schema and SoftwareVendor is Active
-            if (PluginSettings.PluginSoftwareVendor != null && validDirectoryBackup && !xpoCreateDatabaseAndSchema)
+            if (PluginSettings.HasPlugin && validDirectoryBackup && !xpoCreateDatabaseAndSchema)
             {
                 /* IN009163 and IN009164 - Opt to auto-backup flow */
                 _autoBackupFlowIsEnabled = bool.Parse(GeneralSettings.PreferenceParameters["DATABASE_BACKUP_AUTOMATIC_ENABLED"]);

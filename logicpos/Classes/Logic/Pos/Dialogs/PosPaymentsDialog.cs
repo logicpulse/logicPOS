@@ -123,11 +123,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             //Get response for user confirmation to emmit Invoice-Payment before Extra Protections, we must have user respose before enter in "Extra Protections" above
                             if (
                                     _processDocumentType != InvoiceSettings.XpoOidDocumentFinanceTypeInvoice &&
-                                    (processArticleBag.TotalFinal > SharedSettings.FinanceRuleSimplifiedInvoiceMaxTotal ||
-                                    processArticleBag.GetClassTotals("S") > SharedSettings.FinanceRuleSimplifiedInvoiceMaxTotalServices)
+                                    (processArticleBag.TotalFinal > InvoiceSettings.GetSimplifiedInvoiceMaxItems(XPOSettings.ConfigurationSystemCountry.Oid) ||
+                                    processArticleBag.GetClassTotals("S") > InvoiceSettings.GetSimplifiedInvoiceMaxItems(XPOSettings.ConfigurationSystemCountry.Oid))
                                 )
                             {
-                                responseTypeOverrideDefaultDocumentTypeSimplifiedInvoice = logicpos.Utils.ShowMessageTouchSimplifiedInvoiceMaxValueExceed(_sourceWindow, ShowMessageTouchSimplifiedInvoiceMaxValueExceedMode.PaymentsDialog, processArticleBag.TotalFinal, SharedSettings.FinanceRuleSimplifiedInvoiceMaxTotal, processArticleBag.GetClassTotals("S"), SharedSettings.FinanceRuleSimplifiedInvoiceMaxTotalServices);
+                                responseTypeOverrideDefaultDocumentTypeSimplifiedInvoice = logicpos.Utils.ShowMessageTouchSimplifiedInvoiceMaxValueExceed(_sourceWindow, ShowMessageTouchSimplifiedInvoiceMaxValueExceedMode.PaymentsDialog, processArticleBag.TotalFinal, InvoiceSettings.GetSimplifiedInvoiceMaxItems(XPOSettings.ConfigurationSystemCountry.Oid), processArticleBag.GetClassTotals("S"), InvoiceSettings.GetSimplifiedInvoiceMaxServices(XPOSettings.ConfigurationSystemCountry.Oid));
                                 //Override Back processDocumentType if Exceed FS Max Total
                                 if (responseTypeOverrideDefaultDocumentTypeSimplifiedInvoice == ResponseType.Yes)
                                 {
@@ -140,8 +140,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             //Protection to prevent Exceed FinanceRuleSimplifiedInvoiceMaxValue
                             if (
                                     (
-                                        processArticleBag.TotalFinal > SharedSettings.FinanceRuleSimplifiedInvoiceMaxTotal ||
-                                        processArticleBag.GetClassTotals("S") > SharedSettings.FinanceRuleSimplifiedInvoiceMaxTotalServices
+                                        processArticleBag.TotalFinal > InvoiceSettings.GetSimplifiedInvoiceMaxItems(XPOSettings.ConfigurationSystemCountry.Oid) ||
+                                        processArticleBag.GetClassTotals("S") > InvoiceSettings.GetSimplifiedInvoiceMaxServices(XPOSettings.ConfigurationSystemCountry.Oid)
                                     ) &&
                                     responseTypeOverrideDefaultDocumentTypeSimplifiedInvoice == ResponseType.No
                                 )
@@ -167,7 +167,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 )
                             )
                             {
-                                logicpos.Utils.ShowMessageTouchSimplifiedInvoiceMaxValueExceedForFinalConsumer(this, processArticleBag.TotalFinal, SharedSettings.FinanceRuleRequiredCustomerDetailsAboveValue);
+                                logicpos.Utils.ShowMessageTouchSimplifiedInvoiceMaxValueExceedForFinalConsumer(this, processArticleBag.TotalFinal, GeneralSettings.GetRequiredCustomerDetailsAboveValue(XPOSettings.ConfigurationSystemCountry.Oid));
 
                                 //Prevent Parent Dialog Payments from Close
                                 this.Run();
@@ -180,7 +180,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 )
                             )
                             {
-                                logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"), string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_value_exceed_customer_card_credit"), LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(Customer.CardCredit, SharedSettings.ConfigurationSystemCurrency.Acronym), LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(processArticleBag.TotalFinal, SharedSettings.ConfigurationSystemCurrency.Acronym)));
+                                logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"), string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_value_exceed_customer_card_credit"), LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(Customer.CardCredit, XPOSettings.ConfigurationSystemCurrency.Acronym), LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(processArticleBag.TotalFinal, XPOSettings.ConfigurationSystemCurrency.Acronym)));
 
                                 //Prevent Parent Dialog Payments from Close
                                 this.Run();
@@ -391,7 +391,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if (PaymentMethod != null && PaymentMethod.Token != "MONEY")
                 {
                     TotalDelivery = (ArticleBagPartialPayment == null) ? ArticleBagFullPayment.TotalFinal : ArticleBagPartialPayment.TotalFinal;
-                    if (_labelDeliveryValue.Text != LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalDelivery, SharedSettings.ConfigurationSystemCurrency.Acronym)) _labelDeliveryValue.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalDelivery, SharedSettings.ConfigurationSystemCurrency.Acronym);
+                    if (_labelDeliveryValue.Text != LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalDelivery, XPOSettings.ConfigurationSystemCurrency.Acronym)) _labelDeliveryValue.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalDelivery, XPOSettings.ConfigurationSystemCurrency.Acronym);
                 }
                 //Update Change Value
                 UpdateChangeValue();
@@ -474,15 +474,15 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             if (PaymentMethod.Token == "MONEY")
             {
-                if (_labelDeliveryValue.Text != LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalDelivery, SharedSettings.ConfigurationSystemCurrency.Acronym)) _labelDeliveryValue.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalDelivery, SharedSettings.ConfigurationSystemCurrency.Acronym);
-                if (_labelChangeValue.Text != LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalChange, SharedSettings.ConfigurationSystemCurrency.Acronym)) _labelChangeValue.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalChange, SharedSettings.ConfigurationSystemCurrency.Acronym);
+                if (_labelDeliveryValue.Text != LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalDelivery, XPOSettings.ConfigurationSystemCurrency.Acronym)) _labelDeliveryValue.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalDelivery, XPOSettings.ConfigurationSystemCurrency.Acronym);
+                if (_labelChangeValue.Text != LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalChange, XPOSettings.ConfigurationSystemCurrency.Acronym)) _labelChangeValue.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalChange, XPOSettings.ConfigurationSystemCurrency.Acronym);
                 //Only Disable Money Button if Delivery is Greater than Total
                 if (TotalDelivery >= ((ArticleBagPartialPayment == null) ? ArticleBagFullPayment.TotalFinal : ArticleBagPartialPayment.TotalFinal)) SelectedPaymentMethodButton.Sensitive = false;
             }
             else
             {
                 if (_labelDeliveryValue.Text != _labelTotalValue.Text) _labelDeliveryValue.Text = _labelTotalValue.Text;
-                if (_labelChangeValue.Text != LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(0, SharedSettings.ConfigurationSystemCurrency.Acronym)) _labelChangeValue.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(0, SharedSettings.ConfigurationSystemCurrency.Acronym);
+                if (_labelChangeValue.Text != LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(0, XPOSettings.ConfigurationSystemCurrency.Acronym)) _labelChangeValue.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(0, XPOSettings.ConfigurationSystemCurrency.Acronym);
 
                 //If Has a _articleBagPartialPayment Defined use its Total else use _articleBagFullPayment TotalFinal
                 TotalDelivery = (ArticleBagPartialPayment == null) ? ArticleBagFullPayment.TotalFinal : ArticleBagPartialPayment.TotalFinal;
@@ -570,7 +570,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 Guid customerGuid = new Guid();
 
                 // Encrypt pFieldValue to use in Sql Filter
-                if (LogicPOS.Settings.PluginSettings.PluginSoftwareVendor != null)
+                if (LogicPOS.Settings.PluginSettings.HasPlugin)
                 {
                     // Only Encrypt Encrypted Fields
                     if (pFieldName == nameof(erp_customer.FiscalNumber) || pFieldName == nameof(erp_customer.CardNumber))
@@ -769,7 +769,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 bool isSingularEntity = (isFinalConsumerEntity || FiscalNumber.IsSingularEntity(_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text, _entryBoxSelectCustomerCountry.Value.Code2));
                 // Encrypt pFieldValue to use in Sql Filter
                 string fiscalNumberFilterValue = string.Empty;
-                if (LogicPOS.Settings.PluginSettings.PluginSoftwareVendor != null)
+                if (LogicPOS.Settings.PluginSettings.HasPlugin)
                 {
                     fiscalNumberFilterValue = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Encrypt(_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text);
                 }
@@ -805,7 +805,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     //EntryBox
                     _entryBoxSelectCustomerFiscalNumber.EntryValidation.Required = true;
                 }
-                else if (totalDocument < SharedSettings.FinanceRuleRequiredCustomerDetailsAboveValue && isSingularEntity)
+                else if (totalDocument < GeneralSettings.GetRequiredCustomerDetailsAboveValue(XPOSettings.ConfigurationSystemCountry.Oid) && isSingularEntity)
                 {
                     //Enable edit User details, usefull to edit Name, Address etc
                     bool enableEditCustomerDetails = !isFinalConsumerEntity;
@@ -983,7 +983,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //If Has a _articleBagPartialPayment Defined use its Total else use _articleBagFullPayment TotalFinal
                 decimal _totalOrder = (ArticleBagPartialPayment == null) ? ArticleBagFullPayment.TotalFinal : ArticleBagPartialPayment.TotalFinal;
                 TotalChange = Math.Round(TotalDelivery, decimalRoundTo) - Math.Round(_totalOrder, decimalRoundTo);
-                if (_labelChangeValue.Text != LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalChange, SharedSettings.ConfigurationSystemCurrency.Acronym)) _labelChangeValue.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalChange,SharedSettings.ConfigurationSystemCurrency.Acronym);
+                if (_labelChangeValue.Text != LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalChange, XPOSettings.ConfigurationSystemCurrency.Acronym)) _labelChangeValue.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalChange,XPOSettings.ConfigurationSystemCurrency.Acronym);
             }
         }
 
@@ -1065,7 +1065,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     bool itemChecked = (bool)_dialogPartialPayment.GenericTreeView.DataSourceRow.ItemArray[indexColumnCheckBox];
                     decimal currentRowPrice = (decimal)_dialogPartialPayment.GenericTreeView.DataSourceRow.ItemArray[indexColumnPriceFinal];
                     _totalPartialPaymentItems += (itemChecked) ? currentRowPrice : -currentRowPrice;
-                    _dialogPartialPayment.WindowTitle = (_totalPartialPaymentItems > 0) ? string.Format("{0} : {1}", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_partial_payment"), LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_totalPartialPaymentItems, SharedSettings.ConfigurationSystemCurrency.Acronym)) : CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_partial_payment");
+                    _dialogPartialPayment.WindowTitle = (_totalPartialPaymentItems > 0) ? string.Format("{0} : {1}", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_partial_payment"), LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_totalPartialPaymentItems, XPOSettings.ConfigurationSystemCurrency.Acronym)) : CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_partial_payment");
                 }
             };
 
@@ -1201,7 +1201,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 {
                     //Get Money pad title based on line selected (Desigantion & Price)
                     decimal priceFinal = decimal.Round((decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("PriceFinal")], 2);
-                    string priceFinalText = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(priceFinal, SharedSettings.ConfigurationSystemCurrency.Acronym);
+                    string priceFinalText = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(priceFinal, XPOSettings.ConfigurationSystemCurrency.Acronym);
 
                     string moneyPadTitle = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_moneypad_product_price") + " :: " + (string)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Designation")] + " :: " +
                         priceFinalText); 
@@ -1311,9 +1311,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //Update Totals after Change Discount
                 ArticleBagPartialPayment.UpdateTotals();
                 //Update UI
-                _labelTotalValue.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(ArticleBagPartialPayment.TotalFinal, SharedSettings.ConfigurationSystemCurrency.Acronym);
-                _labelDeliveryValue.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalDelivery, SharedSettings.ConfigurationSystemCurrency.Acronym);
-                _labelChangeValue.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalChange, SharedSettings.ConfigurationSystemCurrency.Acronym);
+                _labelTotalValue.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(ArticleBagPartialPayment.TotalFinal, XPOSettings.ConfigurationSystemCurrency.Acronym);
+                _labelDeliveryValue.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalDelivery, XPOSettings.ConfigurationSystemCurrency.Acronym);
+                _labelChangeValue.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalChange, XPOSettings.ConfigurationSystemCurrency.Acronym);
                 //Update UI Buttons
                 _buttonFullPayment.Sensitive = true;
                 _buttonPartialPayment.Sensitive = false;
@@ -1326,9 +1326,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //Update Totals after Change Discount
                 ArticleBagFullPayment.UpdateTotals();
                 //Update UI to Default From OrderMain
-                _labelTotalValue.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(ArticleBagFullPayment.TotalFinal, SharedSettings.ConfigurationSystemCurrency.Acronym);
-                _labelDeliveryValue.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalDelivery, SharedSettings.ConfigurationSystemCurrency.Acronym);
-                _labelChangeValue.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalChange, SharedSettings.ConfigurationSystemCurrency.Acronym);
+                _labelTotalValue.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(ArticleBagFullPayment.TotalFinal, XPOSettings.ConfigurationSystemCurrency.Acronym);
+                _labelDeliveryValue.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalDelivery, XPOSettings.ConfigurationSystemCurrency.Acronym);
+                _labelChangeValue.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalChange, XPOSettings.ConfigurationSystemCurrency.Acronym);
                 //Update UI Buttons
                 if (_buttonFullPayment != null) _buttonFullPayment.Sensitive = false;
                 if (_buttonPartialPayment != null) _buttonPartialPayment.Sensitive = true;

@@ -28,7 +28,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if (resultCanClose == false) return;
 
                 // ShowRequestBackupDialog and Backup only if PluginSoftwareVendor is Active
-                if (LogicPOS.Settings.PluginSettings.PluginSoftwareVendor != null)
+                if (LogicPOS.Settings.PluginSettings.HasPlugin)
                 {
                     //Request User to do a DatabaseBackup, After Check Can Close
                     DataBaseBackup.ShowRequestBackupDialog(this);
@@ -280,7 +280,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                     //Audit
                                     SharedUtils.Audit(audit, string.Format(
                                         CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), moneyInOutLabelAudit),
-                                        LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(addedMoney, SharedSettings.ConfigurationSystemCurrency.Acronym),
+                                        LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(addedMoney, XPOSettings.ConfigurationSystemCurrency.Acronym),
                                         dialogCashDrawer.MovementDescription)
                                     );
                                 }
@@ -358,7 +358,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                     //Audit
                                     SharedUtils.Audit(audit, string.Format(
                                         CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), moneyInOutLabelAudit),
-                                        LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(addedMoney, SharedSettings.ConfigurationSystemCurrency.Acronym),
+                                        LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(addedMoney, XPOSettings.ConfigurationSystemCurrency.Acronym),
                                         dialogCashDrawer.MovementDescription)
                                     );
                                 }
@@ -442,7 +442,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 //Audit
                                 SharedUtils.Audit("CASHDRAWER_IN", string.Format(
                                     CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_cashdrawer_in"),
-                                    LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(dialogCashDrawer.MovementAmountMoney, SharedSettings.ConfigurationSystemCurrency.Acronym),
+                                    LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(dialogCashDrawer.MovementAmountMoney, XPOSettings.ConfigurationSystemCurrency.Acronym),
                                     dialogCashDrawer.MovementDescription)
                                 );
                             }
@@ -489,7 +489,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 //Audit
                                 SharedUtils.Audit("CASHDRAWER_OUT", string.Format(
                                     CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_cashdrawer_out"),
-                                    LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(dialogCashDrawer.MovementAmountMoney, SharedSettings.ConfigurationSystemCurrency.Acronym),
+                                    LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(dialogCashDrawer.MovementAmountMoney, XPOSettings.ConfigurationSystemCurrency.Acronym),
                                     dialogCashDrawer.MovementDescription)
                                 );
                             }
@@ -574,11 +574,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Get Session Period Details
             Hashtable resultHashTable = ProcessWorkSessionPeriod.GetSessionPeriodSummaryDetails(pWorkSessionPeriod);
             //Get Total Money in CashDrawer On Open/Close
-            string totalMoneyInCashDrawerOnOpen = string.Format("{0}: {1}", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_total_cashdrawer_on_open"), LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency((decimal)resultHashTable["totalMoneyInCashDrawerOnOpen"], SharedSettings.ConfigurationSystemCurrency.Acronym));
-            string totalMoneyInCashDrawer = string.Format("{0}: {1}", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_total_cashdrawer"), LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency((decimal)resultHashTable["totalMoneyInCashDrawer"], SharedSettings.ConfigurationSystemCurrency.Acronym));
+            string totalMoneyInCashDrawerOnOpen = string.Format("{0}: {1}", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_total_cashdrawer_on_open"), LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency((decimal)resultHashTable["totalMoneyInCashDrawerOnOpen"], XPOSettings.ConfigurationSystemCurrency.Acronym));
+            string totalMoneyInCashDrawer = string.Format("{0}: {1}", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_total_cashdrawer"), LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency((decimal)resultHashTable["totalMoneyInCashDrawer"], XPOSettings.ConfigurationSystemCurrency.Acronym));
             //Get Total Money and TotalMoney Out (NonPayments)
-            string totalMoneyIn = string.Format("{0}: {1}", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_cashdrawer_money_in"), LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency((decimal)resultHashTable["totalMoneyIn"], SharedSettings.ConfigurationSystemCurrency.Acronym));
-            string totalMoneyOut = string.Format("{0}: {1}", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_cashdrawer_money_out"), LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency((decimal)resultHashTable["totalMoneyOut"], SharedSettings.ConfigurationSystemCurrency.Acronym));
+            string totalMoneyIn = string.Format("{0}: {1}", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_cashdrawer_money_in"), LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency((decimal)resultHashTable["totalMoneyIn"], XPOSettings.ConfigurationSystemCurrency.Acronym));
+            string totalMoneyOut = string.Format("{0}: {1}", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_cashdrawer_money_out"), LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency((decimal)resultHashTable["totalMoneyOut"], XPOSettings.ConfigurationSystemCurrency.Acronym));
             //Init Message
             string messageTotalSummary = string.Format("{1}{0}{2}{0}{3}{0}{4}{0}", Environment.NewLine, totalMoneyInCashDrawerOnOpen, totalMoneyInCashDrawer, totalMoneyIn, totalMoneyOut);
 
@@ -591,7 +591,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     messageTotalSummary += string.Format("{0}{1}{0}", Environment.NewLine, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_total_by_type_of_payment"));
                     foreach (pos_worksessionperiodtotal item in workSessionPeriodTotal)
                     {
-                        messageTotalSummary += string.Format("{1}-{2}: {3}{0}", Environment.NewLine, item.PaymentMethod.Acronym, item.PaymentMethod.Designation, LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(item.Total, SharedSettings.ConfigurationSystemCurrency.Acronym));
+                        messageTotalSummary += string.Format("{1}-{2}: {3}{0}", Environment.NewLine, item.PaymentMethod.Acronym, item.PaymentMethod.Designation, LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(item.Total, XPOSettings.ConfigurationSystemCurrency.Acronym));
                     }
                     workSessionPeriodTotalCount = workSessionPeriodTotal.Count;
                 }

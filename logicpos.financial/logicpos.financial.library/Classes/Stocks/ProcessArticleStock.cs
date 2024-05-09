@@ -49,7 +49,7 @@ namespace logicpos.financial.library.Classes.Stocks
 
                 //Get Objects in same Session
                 //Gestão de Stocks - Ajuste de Stock diretamente no Artigo (BackOffice) [IN:016530]
-                erp_customer customer = (erp_customer)pSession.GetObjectByKey(typeof(erp_customer), SharedSettings.XpoOidUserRecord);
+                erp_customer customer = (erp_customer)pSession.GetObjectByKey(typeof(erp_customer), XPOSettings.XpoOidUserRecord);
                 if (pCustomer != null)
                 {
                     customer = (erp_customer)pSession.GetObjectByKey(typeof(erp_customer), pCustomer.Oid);

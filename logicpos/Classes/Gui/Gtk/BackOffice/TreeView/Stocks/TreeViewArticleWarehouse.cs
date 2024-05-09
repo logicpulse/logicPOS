@@ -48,7 +48,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Configure Criteria/XPCollection/Model
             //Default Criteria with XpoOidUndefinedRecord
             // Override Criteria adding XpoOidHiddenRecordsFilter
-            CriteriaOperator criteria = CriteriaOperator.Parse($"({pXpoCriteria}) AND (Disabled = 0 OR Disabled IS NULL) AND (Quantity <> 0) AND (Oid NOT LIKE '{shared.App.SharedSettings.XpoOidHiddenRecordsFilter}')");
+            CriteriaOperator criteria = CriteriaOperator.Parse($"({pXpoCriteria}) AND (Disabled = 0 OR Disabled IS NULL) AND (Quantity <> 0) AND (Oid NOT LIKE '{XPOSettings.XpoOidHiddenRecordsFilter}')");
             //Custom Criteria hidding all Hidden Oids
             //CriteriaOperator criteria = CriteriaOperator.Parse($"(Oid = '{SettingsApp.XpoOidUndefinedRecord}' OR Oid NOT LIKE '{SettingsApp.XpoOidHiddenRecordsFilter}')");
 

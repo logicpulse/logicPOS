@@ -184,28 +184,28 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                     dataRow[0] = string.Format("{0}:", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_worksession_open_total_cashdrawer"));
                     dataRow[1] = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(
                         (decimal)resultHashTable["totalMoneyInCashDrawerOnOpen"],
-                        SharedSettings.ConfigurationSystemCurrency.Acronym);
+                        XPOSettings.ConfigurationSystemCurrency.Acronym);
                     dataTable.Rows.Add(dataRow);
                     //Close Total CashDrawer
                     dataRow = dataTable.NewRow();
                     dataRow[0] = string.Format("{0}:", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_worksession_close_total_cashdrawer"));
                     dataRow[1] = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(
                         (decimal)resultHashTable["totalMoneyInCashDrawer"],
-                        SharedSettings.ConfigurationSystemCurrency.Acronym);
+                        XPOSettings.ConfigurationSystemCurrency.Acronym);
                     dataTable.Rows.Add(dataRow);
                     //Total Money In
                     dataRow = dataTable.NewRow();
                     dataRow[0] = string.Format("{0}:", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_worksession_total_money_in"));
                     dataRow[1] = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(
                         (decimal)resultHashTable["totalMoneyIn"],
-                        SharedSettings.ConfigurationSystemCurrency.Acronym);
+                        XPOSettings.ConfigurationSystemCurrency.Acronym);
                     dataTable.Rows.Add(dataRow);
                     //Total Money Out
                     dataRow = dataTable.NewRow();
                     dataRow[0] = string.Format("{0}:", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_worksession_total_money_out"));
                     dataRow[1] = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(
                         (decimal)resultHashTable["totalMoneyOut"],
-                        SharedSettings.ConfigurationSystemCurrency.Acronym);
+                        XPOSettings.ConfigurationSystemCurrency.Acronym);
                     dataTable.Rows.Add(dataRow);
                     //Configure Ticket Column Properties
                     List<TicketColumn> columns = new List<TicketColumn>
@@ -299,7 +299,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                                     unitMeasure = Convert.ToString(row.Values[xPSelectData.GetFieldIndex("UnitMeasure")]);
                                     total = Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("Total")]);
                                     // Override Encrypted values
-                                    if (PluginSettings.PluginSoftwareVendor != null && item.Key.Equals(DataTableGroupPropertiesType.DocumentsUser) || item.Key.Equals(DataTableGroupPropertiesType.PaymentsUser))
+                                    if (PluginSettings.HasPlugin && item.Key.Equals(DataTableGroupPropertiesType.DocumentsUser) || item.Key.Equals(DataTableGroupPropertiesType.PaymentsUser))
                                     {
                                         designation = PluginSettings.PluginSoftwareVendor.Decrypt(designation);
                                     }

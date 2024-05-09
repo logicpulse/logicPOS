@@ -344,8 +344,8 @@ namespace logicpos
                 CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_warning"),
                 string.Format(
                     CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_value_exceed_simplified_invoice_for_final_or_annonymous_consumer")
-                    , string.Format("{0}: {1}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_total"), DataConversionUtils.DecimalToStringCurrency(pCurrentTotal, SharedSettings.ConfigurationSystemCurrency.Acronym))
-                    , string.Format("{0}: {1}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_maximum"), DataConversionUtils.DecimalToStringCurrency(pMaxTotal, SharedSettings.ConfigurationSystemCurrency.Acronym))
+                    , string.Format("{0}: {1}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_total"), DataConversionUtils.DecimalToStringCurrency(pCurrentTotal, XPOSettings.ConfigurationSystemCurrency.Acronym))
+                    , string.Format("{0}: {1}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_maximum"), DataConversionUtils.DecimalToStringCurrency(pMaxTotal, XPOSettings.ConfigurationSystemCurrency.Acronym))
                 )
             );
         }
@@ -383,9 +383,9 @@ namespace logicpos
                         "{1}: {2}{0}{3}: {4}"
                         , Environment.NewLine
                         , CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_total")
-                        , DataConversionUtils.DecimalToStringCurrency(pCurrentTotal, SharedSettings.ConfigurationSystemCurrency.Acronym)
+                        , DataConversionUtils.DecimalToStringCurrency(pCurrentTotal, XPOSettings.ConfigurationSystemCurrency.Acronym)
                         , CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_maximum")
-                        , DataConversionUtils.DecimalToStringCurrency(pMaxTotal, SharedSettings.ConfigurationSystemCurrency.Acronym)
+                        , DataConversionUtils.DecimalToStringCurrency(pMaxTotal, XPOSettings.ConfigurationSystemCurrency.Acronym)
                     );
                 }
 
@@ -395,9 +395,9 @@ namespace logicpos
                         "{1}: {2}{0}{3}: {4}"
                         , Environment.NewLine
                         , CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_services")
-                        , DataConversionUtils.DecimalToStringCurrency(pCurrentTotalServices, SharedSettings.ConfigurationSystemCurrency.Acronym)
+                        , DataConversionUtils.DecimalToStringCurrency(pCurrentTotalServices, XPOSettings.ConfigurationSystemCurrency.Acronym)
                         , CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_maximum")
-                        , DataConversionUtils.DecimalToStringCurrency(pMaxTotalServices, SharedSettings.ConfigurationSystemCurrency.Acronym)
+                        , DataConversionUtils.DecimalToStringCurrency(pMaxTotalServices, XPOSettings.ConfigurationSystemCurrency.Acronym)
                     );
                 }
 
@@ -2071,7 +2071,7 @@ namespace logicpos
                     //Get Date Back DaysBackToFilter (Without WeekEnds and Holidays)
                     DateTime dateFilter = XPOHelper.GetDateTimeBackUtilDays(
                         XPOHelper.CurrentDateTimeAtomicMidnight(),
-                        SharedSettings.XpoOidSystemNotificationDaysBackWhenFiltering,
+                        NotificationSettings.XpoOidSystemNotificationDaysBackWhenFiltering,
                         true);
                     criteriaOperator = CriteriaOperator.And(criteriaOperator, CriteriaOperator.Parse(string.Format("[CreatedAt] > '{0} 23:59:59'", dateFilter.ToString(CultureSettings.DateFormat))));
 
@@ -2086,9 +2086,9 @@ namespace logicpos
                      * 
                      */
                     criteriaJoin = CriteriaOperator.And(criteriaJoin, new InOperator("Oid", new Guid[]{
-                            SharedSettings.XpoOidSystemNotificationTypeCurrentAccountDocumentsToInvoice,
-                            SharedSettings.XpoOidSystemNotificationTypeConsignationInvoiceDocumentsToInvoice,
-                            SharedSettings.XpoOidSystemNotificationTypeSaftDocumentTypeMovementOfGoods
+                            NotificationSettings.XpoOidSystemNotificationTypeCurrentAccountDocumentsToInvoice,
+                            NotificationSettings.XpoOidSystemNotificationTypeConsignationInvoiceDocumentsToInvoice,
+                            NotificationSettings.XpoOidSystemNotificationTypeSaftDocumentTypeMovementOfGoods
                         }));
                     joinOperand.Condition = criteriaJoin;
 
@@ -2129,15 +2129,12 @@ namespace logicpos
                             item.UserLastRead = XPOSettings.LoggedUser;
                             item.TerminalLastRead = XPOSettings.LoggedTerminal;
                             item.Save();
-
-                            //Call ProcessNotificationsActions
-                            ProcessNotificationsActions(pSourceWindow, item);
                         }
                     }
                 }
                 else if (showNotificationOnDemand)
                 {/* IN006001 - when "on demand" request returns no results */
-                    message = string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_no_notification"), SharedSettings.XpoOidSystemNotificationDaysBackWhenFiltering);
+                    message = string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_no_notification"), NotificationSettings.XpoOidSystemNotificationDaysBackWhenFiltering);
                     ResponseType response = ShowMessageTouch(
                       pSourceWindow,
                       DialogFlags.DestroyWithParent | DialogFlags.Modal,
@@ -2154,24 +2151,6 @@ namespace logicpos
                 _logger.Error("void Utils.ShowNotifications(Window pSourceWindow, Session pSession, Guid pLoggedUser) :: " + ex.Message, ex);
                 ShowMessageTouch(null, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Close, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_error"), "There is an error when checking for notifications. Please contact the helpdesk");
             }
-        }
-
-        private static void ProcessNotificationsActions(Window pSourceWindow, sys_systemnotification pSystemNotification)
-        {
-            //NotificationTypeEditConfigurationParameters
-            //if (pSystemNotification.NotificationType.Oid == SettingsApp.XpoOidSystemNotificationTypeEditConfigurationParameters)
-            //{
-            //    PosEditCompanyDetails dialog = new PosEditCompanyDetails(pSourceWindow, DialogFlags.DestroyWithParent | DialogFlags.Modal);
-            //    ResponseType response = (ResponseType)dialog.Run();
-            //    //if (response == ResponseType.Ok)
-            //    //{
-            //    dialog.Destroy();
-            //    //}
-            //    //else
-            //    //{
-            //    //    dialog.Run();
-            //    //}
-            //}
         }
 
         public static void ShowChangeLog(Window pSourceWindow)
@@ -2445,7 +2424,7 @@ namespace logicpos
             try
             {
                 // Add default Criteria to Hide Undefined Records
-                string undefinedFilter = string.Format("Oid <> '{0}'", SharedSettings.XpoOidUndefinedRecord);
+                string undefinedFilter = string.Format("Oid <> '{0}'", XPOSettings.XpoOidUndefinedRecord);
 
                 if (pCriteria == null)
                 {
@@ -2540,7 +2519,7 @@ namespace logicpos
             bool customerExists = false;
             erp_customer result;
             erp_customer finalConsumerEntity = (erp_customer)XPOHelper.GetXPGuidObject(typeof(erp_customer), InvoiceSettings.FinalConsumerId);
-            fin_configurationpricetype configurationPriceType = (fin_configurationpricetype)XPOHelper.GetXPGuidObject(typeof(fin_configurationpricetype), SharedSettings.XpoOidConfigurationPriceTypeDefault);
+            fin_configurationpricetype configurationPriceType = (fin_configurationpricetype)XPOHelper.GetXPGuidObject(typeof(fin_configurationpricetype), XPOSettings.XpoOidConfigurationPriceTypeDefault);
 
             SortingCollection sortCollection = new SortingCollection
             {
@@ -2667,7 +2646,7 @@ namespace logicpos
 
         public static string GetSessionFileName()
         {
-            string result = Path.Combine(GeneralSettings.Path["temp"].ToString(), string.Format(SharedSettings.AppSessionFile, LicenseSettings.LicenseHardwareId));
+            string result = Path.Combine(GeneralSettings.Path["temp"].ToString(), string.Format(GeneralSettings.AppSessionFile, LicenseSettings.LicenseHardwareId));
             return result;
         }
 

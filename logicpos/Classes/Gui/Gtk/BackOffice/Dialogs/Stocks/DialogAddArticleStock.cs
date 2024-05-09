@@ -432,7 +432,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             try
             {
                //if (supplier != null) //_initialSupplier = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), new Guid(supplier.ToString()));
-                var own_customer = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), SharedSettings.XpoOidUserRecord);
+                var own_customer = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), XPOSettings.XpoOidUserRecord);
                 if (own_customer != null && string.IsNullOrEmpty(own_customer.Name))
                 {
                     //update owner customer for internal stock moviments                        

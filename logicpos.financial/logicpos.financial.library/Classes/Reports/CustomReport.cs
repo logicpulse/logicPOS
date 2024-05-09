@@ -419,7 +419,7 @@ namespace logicpos.financial.library.Classes.Reports
             if (isFinanceDocument)
             {
                 //Processed|Emitted with certified Software Nº {0}/AT - Copyright {1} - Licenced to a {2} - Used only if System Country is Portugal
-                if (XPOSettings.ConfigurationSystemCountry.Oid == CultureSettings.XpoOidConfigurationCountryPortugal)
+                if (CultureSettings.CountryIdIsPortugal(XPOSettings.ConfigurationSystemCountry.Oid))
                 {
 
                     string fileName = "ReportDocumentFinancePayment_" + currentCulture + ".frx";
@@ -452,7 +452,7 @@ namespace logicpos.financial.library.Classes.Reports
                     if (Hash4Chars != string.Empty) textObjectOverlaySoftwareCertification.Text = string.Format("{0} - {1}", Hash4Chars, textObjectOverlaySoftwareCertification.Text);
 
                 } /* IN005975 and IN005979 for Mozambique deployment */
-                else if (XPOSettings.ConfigurationSystemCountry.Oid == CultureSettings.XpoOidConfigurationCountryMozambique)
+                else if (CultureSettings.CountryIdIsMozambique(XPOSettings.ConfigurationSystemCountry.Oid))
                 {
                     /* 
                      * IN006047
@@ -464,7 +464,7 @@ namespace logicpos.financial.library.Classes.Reports
                         CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_report_overlay_software_certification_moz_tax_authority_cert_number")
                     );
                 }
-                else if (CultureSettings.XpoOidConfigurationCountryAngola.Equals(XPOSettings.ConfigurationSystemCountry.Oid))
+                else if (CultureSettings.AngolaCountryId.Equals(XPOSettings.ConfigurationSystemCountry.Oid))
                 {
                     string fileName = "ReportDocumentFinancePayment_" + currentCulture + ".frx";
                     string prefix = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_report_overlay_software_certification_processed"); ;
@@ -483,7 +483,7 @@ namespace logicpos.financial.library.Classes.Reports
             }
             else
             {
-                if (CultureSettings.XpoOidConfigurationCountryAngola.Equals(XPOSettings.ConfigurationSystemCountry.Oid))
+                if (CultureSettings.AngolaCountryId.Equals(XPOSettings.ConfigurationSystemCountry.Oid))
                 {
                     string fileName = "ReportDocumentFinancePayment_" + currentCulture + ".frx";
                     string prefix = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_report_overlay_software_certification_emitted"); ;
@@ -573,14 +573,14 @@ namespace logicpos.financial.library.Classes.Reports
                 //string currentCulture = LogicPOS.Settings.CultureSettings.CurrentCulture.Name;
                 string fileName = (documentMaster.DocumentType.WayBill) ? "ReportDocumentFinanceWayBill_" + currentCulture + ".frx" : "ReportDocumentFinance_" + currentCulture + ".frx";
                 //ATCUD Documentos - Criação do QRCode e ATCUD IN016508
-                if (Convert.ToBoolean(GeneralSettings.PreferenceParameters["PRINT_QRCODE"]) && XPOSettings.ConfigurationSystemCountry.Oid.Equals(CultureSettings.XpoOidConfigurationCountryPortugal) && !string.IsNullOrEmpty(documentMaster.ATDocQRCode))
+                if (Convert.ToBoolean(GeneralSettings.PreferenceParameters["PRINT_QRCODE"]) && XPOSettings.ConfigurationSystemCountry.Oid.Equals(CultureSettings.PortugalCountryId) && !string.IsNullOrEmpty(documentMaster.ATDocQRCode))
                 {
                     fileName = fileName.Replace(".frx", "_QRCode.frx");
                 }
                 string fileUserReportDocumentFinance = string.Format("{0}{1}\\{2}", GeneralSettings.Path["reports"], "UserReports", fileName);
 
                 CustomReport customReport = new CustomReport(fileUserReportDocumentFinance, FILENAME_TEMPLATE_BASE, pCopyNames);
-                customReport.DoublePass = (documentMaster.DocumentDetail.Count > SharedSettings.CustomReportReportDocumentFinanceMaxDetail);
+                customReport.DoublePass = (documentMaster.DocumentDetail.Count > 15);
                 customReport.Hash4Chars = pHash4Chars;
                 customReport.SetParameterValue("Report_FileName_loggero", GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
                 customReport.SetParameterValue("Report_FileName_loggero_Small", GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
@@ -599,14 +599,14 @@ namespace logicpos.financial.library.Classes.Reports
                 customReport.RegisterData(gcDocumentFinanceMaster, "DocumentFinanceMaster");
 
                 /* IN005976 for Mozambique deployment */
-                if (XPOSettings.ConfigurationSystemCountry.Oid.Equals(CultureSettings.XpoOidConfigurationCountryMozambique) || ConfigurationManager.AppSettings["cultureFinancialRules"] == "fr-CF")
+                if (XPOSettings.ConfigurationSystemCountry.Oid.Equals(CultureSettings.MozambiqueCountryId) || ConfigurationManager.AppSettings["cultureFinancialRules"] == "fr-CF")
                 {
                     //if (LogicPOS.Settings.CultureSettings.CurrentCulture.Name.Equals("pt-MZ")){
                     cfg_configurationcurrency defaultCurrencyForExchangeRate =
                         (cfg_configurationcurrency)XPOHelper.GetXPGuidObject(
                             XPOSettings.Session,
                             typeof(cfg_configurationcurrency),
-                            CultureSettings.XpoOidConfigurationCurrencyUSDollar);
+                            CultureSettings.USDCurrencyId);
 
                     customReport.SetParameterValue("DefaultCurrencyForExchangeRateAcronym", defaultCurrencyForExchangeRate.Acronym);
                     customReport.SetParameterValue("DefaultCurrencyForExchangeRateTotal", defaultCurrencyForExchangeRate.ExchangeRate);
@@ -618,7 +618,7 @@ namespace logicpos.financial.library.Classes.Reports
                 if (customReport.GetDataSource("DocumentFinanceMaster.DocumentFinanceMasterTotal") != null) customReport.GetDataSource("DocumentFinanceMaster.DocumentFinanceMasterTotal").Enabled = true;
 
 
-                if (XPOSettings.ConfigurationSystemCountry.Oid.Equals(CultureSettings.XpoOidConfigurationCountryAngola))
+                if (XPOSettings.ConfigurationSystemCountry.Oid.Equals(CultureSettings.AngolaCountryId))
                 {
                     if (documentMaster.DocumentParent != null && documentMaster.DocumentType.Oid.ToString() == DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment.ToString())
                     {
@@ -811,7 +811,7 @@ namespace logicpos.financial.library.Classes.Reports
                     if (gcCustomers != null && gcCustomers.List.Count > 0)
                     {
                         // Decrypt Phase
-                        if (PluginSettings.PluginSoftwareVendor != null)
+                        if (PluginSettings.HasPlugin)
                         {
                             foreach (var item in gcCustomers.List)
                             {
@@ -989,7 +989,7 @@ namespace logicpos.financial.library.Classes.Reports
                 FRBOGenericCollection<FRBOArticleStockSupplierView> gcArticleStockSupplier = new FRBOGenericCollection<FRBOArticleStockSupplierView>(filter);
 
                 //Get Default defaultCurrency
-                cfg_configurationcurrency defaultCurrency = SharedSettings.ConfigurationSystemCurrency;
+                cfg_configurationcurrency defaultCurrency = XPOSettings.ConfigurationSystemCurrency;
                 //Currency - If Diferent from Default System Currency, get Currency Object from Parameter
                 cfg_configurationcurrency configurationCurrency;
                 configurationCurrency = (cfg_configurationcurrency)XPOSettings.Session.GetObjectByKey(typeof(cfg_configurationcurrency), defaultCurrency.Oid);
@@ -1047,7 +1047,7 @@ namespace logicpos.financial.library.Classes.Reports
                 }
 
                 //Get Default defaultCurrency
-                cfg_configurationcurrency defaultCurrency = SharedSettings.ConfigurationSystemCurrency;
+                cfg_configurationcurrency defaultCurrency = XPOSettings.ConfigurationSystemCurrency;
                 //Currency - If Diferent from Default System Currency, get Currency Object from Parameter
                 cfg_configurationcurrency configurationCurrency;
                 configurationCurrency = (cfg_configurationcurrency)XPOSettings.Session.GetObjectByKey(typeof(cfg_configurationcurrency), defaultCurrency.Oid);
@@ -1100,7 +1100,7 @@ namespace logicpos.financial.library.Classes.Reports
                 }
 
                 //Get Default defaultCurrency
-                cfg_configurationcurrency defaultCurrency = SharedSettings.ConfigurationSystemCurrency;
+                cfg_configurationcurrency defaultCurrency = XPOSettings.ConfigurationSystemCurrency;
                 //Currency - If Diferent from Default System Currency, get Currency Object from Parameter
                 cfg_configurationcurrency configurationCurrency;
                 configurationCurrency = (cfg_configurationcurrency)XPOSettings.Session.GetObjectByKey(typeof(cfg_configurationcurrency), defaultCurrency.Oid);
@@ -1138,7 +1138,7 @@ namespace logicpos.financial.library.Classes.Reports
                 FRBOGenericCollection<FRBOSystemAuditView> gcSystemAudit = new FRBOGenericCollection<FRBOSystemAuditView>(filter, string.Empty, "SauDate");
 
                 // Decrypt Phase
-                if (PluginSettings.PluginSoftwareVendor != null)
+                if (PluginSettings.HasPlugin)
                 {
                     foreach (var item in gcSystemAudit)
                     {
@@ -1187,7 +1187,7 @@ namespace logicpos.financial.library.Classes.Reports
                 FRBOGenericCollection<FRBODocumentFinanceCurrentAccount> gcCurrentAccount = new FRBOGenericCollection<FRBODocumentFinanceCurrentAccount>(filter);
 
                 // Decrypt Phase
-                if (PluginSettings.PluginSoftwareVendor != null)
+                if (PluginSettings.HasPlugin)
                 {
                     foreach (var item in gcCurrentAccount)
                     {
@@ -1239,7 +1239,7 @@ namespace logicpos.financial.library.Classes.Reports
                 List<erp_customer> customersList = new List<erp_customer>();
                 bool printTotalBalance = true;
                 // Decrypt Phase
-                if (PluginSettings.PluginSoftwareVendor != null)
+                if (PluginSettings.HasPlugin)
                 {
                     foreach (var item in gcCustomerBalanceDetails)
                     {
@@ -1310,7 +1310,7 @@ namespace logicpos.financial.library.Classes.Reports
                 FRBOGenericCollection<FRBODocumentFinanceCustomerBalanceDetails> gcCustomerBalanceDetails = new FRBOGenericCollection<FRBODocumentFinanceCustomerBalanceDetails>(filter);
 
                 /* Decrypt phase */
-                if (PluginSettings.PluginSoftwareVendor != null)
+                if (PluginSettings.HasPlugin)
                 {
                     foreach (var item in gcCustomerBalanceDetails)
                     {
@@ -1359,7 +1359,7 @@ namespace logicpos.financial.library.Classes.Reports
                 FRBOGenericCollection<FRBODocumentFinanceCustomerBalanceDetails> gcCustomerBalanceDetails = new FRBOGenericCollection<FRBODocumentFinanceCustomerBalanceDetails>(filter.Replace("CustomerSinceDate", "Date"));
 
                 // Decrypt Phase
-                if (PluginSettings.PluginSoftwareVendor != null)
+                if (PluginSettings.HasPlugin)
                 {
                     foreach (var customerBalance in gcCustomerBalanceDetails)
                     {
@@ -1422,7 +1422,7 @@ namespace logicpos.financial.library.Classes.Reports
                 FRBOGenericCollection<FRBOUserCommission> gcUserCommission = new FRBOGenericCollection<FRBOUserCommission>(filter);
 
                 // Decrypt Phase
-                if (PluginSettings.PluginSoftwareVendor != null && gcUserCommission != null)
+                if (PluginSettings.HasPlugin && gcUserCommission != null)
                 {
                     foreach (var item in gcUserCommission)
                     {
@@ -1487,7 +1487,7 @@ namespace logicpos.financial.library.Classes.Reports
                 foreach (var item in gcDocumentFinanceMaster)
                 {
                     /* Decrypt phase - see IN009078, IN009079 and IN009080 */
-                    if (PluginSettings.PluginSoftwareVendor != null)
+                    if (PluginSettings.HasPlugin)
                     {
                         /* IN009076 */
                         item.EntityName = PluginSettings.PluginSoftwareVendor.Decrypt(item.EntityName);
@@ -1610,7 +1610,7 @@ namespace logicpos.financial.library.Classes.Reports
                         gcDocumentFinanceMasterDetail = new FRBOGenericCollection<FRBODocumentFinanceMasterDetailView>();
                     }
                     // Decrypt Phase
-                    if (PluginSettings.PluginSoftwareVendor != null)
+                    if (PluginSettings.HasPlugin)
                     {
                         /* IN009077 - # TO DO (IN009078, IN009079, IN009080) */
                         DevExpress.Xpo.UnitOfWork uowSession = new DevExpress.Xpo.UnitOfWork();
@@ -1703,7 +1703,7 @@ namespace logicpos.financial.library.Classes.Reports
                     FRBOGenericCollection<FRBODocumentFinanceMasterDetailGroupView> gcDocumentFinanceMasterDetail = new FRBOGenericCollection<FRBODocumentFinanceMasterDetailGroupView>(filter, queryGroupFields, string.Empty, queryFields);
 
                     // Decrypt Phase
-                    if (PluginSettings.PluginSoftwareVendor != null) /* IN009072 */
+                    if (PluginSettings.HasPlugin) /* IN009072 */
                     {
                         //gcDocumentFinanceMasterDetail.Get(0).GroupDesignation                    
                         foreach (var item in gcDocumentFinanceMasterDetail)
@@ -1834,7 +1834,7 @@ namespace logicpos.financial.library.Classes.Reports
 
             List<FRBOArticleSerialNumber> fRBOArticleSerialNumbers = new List<FRBOArticleSerialNumber>();
 
-            if (PluginSettings.PluginSoftwareVendor != null)
+            if (PluginSettings.HasPlugin)
             {
                 if (pListArticleSerialNumber != null)
                 {

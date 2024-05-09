@@ -91,7 +91,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             Guid initialDocumentFinanceTypeGuid = InvoiceSettings.XpoOidDocumentFinanceTypeInvoice;
             Guid initialConfigurationPaymentConditionGuid = POSSettings.XpoOidConfigurationPaymentConditionDefaultInvoicePaymentCondition;
             Guid initialConfigurationPaymentMethodGuid = POSSettings.XpoOidConfigurationPaymentMethodDefaultInvoicePaymentMethod;
-            Guid initialConfigurationCurrencyGuid = SharedSettings.ConfigurationSystemCurrency.Oid;
+            Guid initialConfigurationCurrencyGuid = XPOSettings.ConfigurationSystemCurrency.Oid;
             _defaultValueDocumentFinanceType = (fin_documentfinancetype)XPOHelper.GetXPGuidObject(_session, typeof(fin_documentfinancetype), initialDocumentFinanceTypeGuid);
             _defaultValueConfigurationPaymentCondition = (fin_configurationpaymentcondition)XPOHelper.GetXPGuidObject(_session, typeof(fin_configurationpaymentcondition), initialConfigurationPaymentConditionGuid);
             _defaultValueConfigurationPaymentMethod = (fin_configurationpaymentmethod)XPOHelper.GetXPGuidObject(_session, typeof(fin_configurationpaymentmethod), initialConfigurationPaymentMethodGuid);
@@ -164,7 +164,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             EntryBoxSelectConfigurationPaymentMethod.ButtonSelectValue.Sensitive = false;
 
             //ConfigurationCurrency
-            CriteriaOperator criteriaOperatorConfigurationCurrency = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (ExchangeRate IS NOT NULL OR Oid = '{0}')", SharedSettings.ConfigurationSystemCurrency.Oid.ToString()));
+            CriteriaOperator criteriaOperatorConfigurationCurrency = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (ExchangeRate IS NOT NULL OR Oid = '{0}')", XPOSettings.ConfigurationSystemCurrency.Oid.ToString()));
             EntryBoxSelectConfigurationCurrency = new XPOEntryBoxSelectRecordValidation<cfg_configurationcurrency, TreeViewConfigurationCurrency>(_sourceWindow, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_currency"), "Designation", "Oid", _defaultValueConfigurationCurrency, criteriaOperatorConfigurationCurrency, LogicPOS.Utility.RegexUtils.RegexGuid, false);
             EntryBoxSelectConfigurationCurrency.EntryValidation.IsEditable = false;
             EntryBoxSelectConfigurationCurrency.EntryValidation.Changed += delegate

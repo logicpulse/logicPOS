@@ -1,4 +1,5 @@
-﻿using logicpos.shared.App;
+﻿using logicpos.datalayer.Xpo;
+using logicpos.shared.App;
 using System;
 using System.Globalization;
 
@@ -23,7 +24,7 @@ namespace logicpos.Classes.Formatters
             try
             {
                 //Require to Convert Exponential from string to decimal currency
-                result = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(Convert.ToDecimal(double.Parse(arg.ToString())), SharedSettings.ConfigurationSystemCurrency.Acronym);
+                result = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(Convert.ToDecimal(double.Parse(arg.ToString())), XPOSettings.ConfigurationSystemCurrency.Acronym);
             }
             catch (Exception ex)
             {

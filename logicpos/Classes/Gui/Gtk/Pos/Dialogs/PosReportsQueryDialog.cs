@@ -359,7 +359,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     if (_reportsQueryDialogMode == ReportsQueryDialogMode.FILTER_DOCUMENTS_UNPAYED)
                     {
                         string extraFilter = $@" AND (
-Oid = '{SharedSettings.XpoOidUndefinedRecord}' OR 
+Oid = '{XPOSettings.XpoOidUndefinedRecord}' OR 
 Oid = '{InvoiceSettings.XpoOidDocumentFinanceTypeInvoice}' OR 
 Oid = '{DocumentSettings.XpoOidDocumentFinanceTypeCreditNote}'
 )".Replace(Environment.NewLine, string.Empty);
@@ -370,7 +370,7 @@ Oid = '{DocumentSettings.XpoOidDocumentFinanceTypeCreditNote}'
                     else if (_reportsQueryDialogMode == ReportsQueryDialogMode.FILTER_DOCUMENTS_PAGINATION)
                     {
                         string extraFilter = $@" AND (
-Oid = '{SharedSettings.XpoOidUndefinedRecord}' OR 
+Oid = '{XPOSettings.XpoOidUndefinedRecord}' OR 
 Oid = '{InvoiceSettings.XpoOidDocumentFinanceTypeInvoice}' OR 
 Oid = '{DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice}' OR 
 Oid = '{DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment}' OR 
@@ -392,7 +392,7 @@ Oid = '{DocumentSettings.XpoOidDocumentFinanceTypeConsignationInvoice}'
                     {
                         // Leave Indentation, this will be converted to inline
                         string extraFilter = $@" AND (
-Oid = '{SharedSettings.XpoOidUndefinedRecord}' OR 
+Oid = '{XPOSettings.XpoOidUndefinedRecord}' OR 
 Oid = '{InvoiceSettings.XpoOidDocumentFinanceTypeInvoice}' OR 
 Oid = '{DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice}' OR 
 Oid = '{DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment}' OR 

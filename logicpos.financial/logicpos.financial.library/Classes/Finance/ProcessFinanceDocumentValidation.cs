@@ -312,9 +312,10 @@ namespace logicpos.financial.library.Classes.Finance
                 //If not Saft Document Type 2, required greater than zero in Price, else we can have zero or greater from Document Type 2 (ex Transportation Guide)
                 string regExArticlePrice = (documentType != null && documentType.SaftDocumentType != SaftDocumentType.MovementOfGoods) ? LogicPOS.Utility.RegexUtils.RegexDecimalGreaterThanZero : LogicPOS.Utility.RegexUtils.RegexDecimalGreaterEqualThanZero;
                 //Never Override SettingsApp.FinanceRuleSimplifiedInvoiceMaxValue|FinanceRuleRequiredCustomerDetailsAboveValue values to be Sync with LogicPos UI
-                int financeRuleSimplifiedInvoiceMaxTotal = SharedSettings.FinanceRuleSimplifiedInvoiceMaxTotal;
-                int financeRuleSimplifiedInvoiceMaxTotalServices = SharedSettings.FinanceRuleSimplifiedInvoiceMaxTotalServices;
-                int financeRuleRequiredCustomerDetailsAboveValue = SharedSettings.FinanceRuleRequiredCustomerDetailsAboveValue;
+                int financeRuleSimplifiedInvoiceMaxTotal = InvoiceSettings.GetSimplifiedInvoiceMaxItems(XPOSettings.ConfigurationSystemCountry.Oid);
+                int financeRuleSimplifiedInvoiceMaxTotalServices = InvoiceSettings.GetSimplifiedInvoiceMaxServices(XPOSettings.ConfigurationSystemCountry.Oid);
+                int financeRuleRequiredCustomerDetailsAboveValue = GeneralSettings.GetRequiredCustomerDetailsAboveValue(XPOSettings.ConfigurationSystemCountry.Oid);
+                    
 
                 //Required Fields
 
@@ -585,7 +586,7 @@ namespace logicpos.financial.library.Classes.Finance
 				// Moçambique - Pedidos da reunião 13/10/2020 + Faturas no Front-Office [IN:014327]
                 if (customer != null && customerParentDocument != null && customer != customerParentDocument && documentParent.DocumentType.Oid != DocumentSettings.XpoOidDocumentFinanceTypeConferenceDocument)
                 {
-                    if (!CultureSettings.XpoOidConfigurationCountryMozambique.Equals(XPOSettings.ConfigurationSystemCountry.Oid) && (documentParent.DocumentType.Oid != InvoiceSettings.XpoOidDocumentFinanceTypeInvoice || documentParent.DocumentType.Oid != DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice))
+                    if (!CultureSettings.MozambiqueCountryId.Equals(XPOSettings.ConfigurationSystemCountry.Oid) && (documentParent.DocumentType.Oid != InvoiceSettings.XpoOidDocumentFinanceTypeInvoice || documentParent.DocumentType.Oid != DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice))
                     {
                         ResultAdd(FinanceValidationError.ERROR_RULE_PARENT_DOCUMENT_CUSTOMER_AND_CURRENT_DOCUMENT_CUSTOMER_INVALID);
                     }                       
@@ -689,7 +690,7 @@ namespace logicpos.financial.library.Classes.Finance
                 if (documentParent != null && !validParentDocuments.Contains<Guid>(documentParent.DocumentType.Oid))
                 {
                     //If Moçambique Ignore - Moçambique - Pedidos da reunião 13/10/2020 [IN:014327]
-                    if (CultureSettings.XpoOidConfigurationCountryMozambique.Equals(XPOSettings.ConfigurationSystemCountry.Oid))
+                    if (CultureSettings.MozambiqueCountryId.Equals(XPOSettings.ConfigurationSystemCountry.Oid))
                     {
                         ResultAdd(FinanceValidationError.ERROR_RULE_DOCUMENT_FINANCE_TYPE_PARENT_DOCUMENT_INVALID);
                     }

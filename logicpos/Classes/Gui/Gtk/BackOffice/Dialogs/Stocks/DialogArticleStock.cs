@@ -22,6 +22,7 @@ using System.IO;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using logicpos.datalayer.Xpo;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -606,7 +607,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     var articleStock = new fin_articlestock(selectedRow.Session);
                     articleStock.Date = DateTime.Now;
                     articleStock.Article = selectedRow.Article;
-                    articleStock.Customer = (erp_customer)selectedRow.Session.GetObjectByKey(typeof(erp_customer), SharedSettings.XpoOidUserRecord);
+                    articleStock.Customer = (erp_customer)selectedRow.Session.GetObjectByKey(typeof(erp_customer), XPOSettings.XpoOidUserRecord);
                     articleStock.DocumentNumber = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_internal_moviment");
                     articleStock.Quantity = -1;
                     articleStock.Save();

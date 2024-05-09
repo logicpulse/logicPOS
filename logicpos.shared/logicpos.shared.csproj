@@ -47,7 +47,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App\DocumentType.cs" />
-    <Compile Include="App\SharedSettings.cs" />
     <Compile Include="Classes\Finance\ArticleBag.cs" />
     <Compile Include="Classes\Finance\ArticleBagKey.cs" />
     <Compile Include="Classes\Finance\ArticleBagProperties.cs" />

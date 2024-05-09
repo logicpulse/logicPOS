@@ -109,7 +109,7 @@ namespace logicpos.financial.library.App
                 {
                     //Moçambique - Pedidos da reunião 13/10/2020 [IN:014327]
                     //- Fatura simplificada em documentos de origem, para inserir nº contribuinte após emissão de fatura
-                    if (CultureSettings.XpoOidConfigurationCountryMozambique.Equals(XPOSettings.ConfigurationSystemCountry.Oid))
+                    if (CultureSettings.MozambiqueCountryId.Equals(XPOSettings.ConfigurationSystemCountry.Oid))
                     {      
                         result = new Guid[] {
                         //SaftDocumentType = 2
@@ -476,7 +476,7 @@ namespace logicpos.financial.library.App
                     //Get Article
                     article = (fin_article)XPOSettings.Session.GetObjectByKey(typeof(fin_article), item.Key.ArticleOid);
                     //Assign Required if ArticleClassCustomerCard Detected
-                    if (article.Type.Oid == SharedSettings.XpoOidArticleClassCustomerCard
+                    if (article.Type.Oid == XPOSettings.XpoOidArticleClassCustomerCard
                         && (
                             pCustomer.Oid == InvoiceSettings.FinalConsumerId
                             || string.IsNullOrEmpty(pCustomer.CardNumber)
@@ -697,7 +697,7 @@ namespace logicpos.financial.library.App
             try
             {
                 if (
-                    pTotalFinal > SharedSettings.FinanceRuleRequiredCustomerDetailsAboveValue &&
+                    pTotalFinal > GeneralSettings.GetRequiredCustomerDetailsAboveValue(XPOSettings.ConfigurationSystemCountry.Oid) &&
                     (
                         IsFinalConsumerEntity(pFiscalNumber) ||
                         (

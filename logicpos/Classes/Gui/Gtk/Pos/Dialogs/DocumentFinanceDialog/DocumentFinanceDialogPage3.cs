@@ -124,7 +124,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 )
             )
             {
-                logicpos.Utils.ShowMessageTouchSimplifiedInvoiceMaxValueExceedForFinalConsumer(_posDocumentFinanceDialog, ArticleBag.TotalFinal, SharedSettings.FinanceRuleRequiredCustomerDetailsAboveValue);
+                logicpos.Utils.ShowMessageTouchSimplifiedInvoiceMaxValueExceedForFinalConsumer(_posDocumentFinanceDialog, ArticleBag.TotalFinal, GeneralSettings.GetRequiredCustomerDetailsAboveValue(XPOSettings.ConfigurationSystemCountry.Oid));
                 _validated = false;
             }
             //If Simplified Invoice, Check if Total Document and Total Services is Not Greater than Max Value
@@ -134,14 +134,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                     _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice 
                     && (
                         //Check Total Final and Total Services
-                        ArticleBag.TotalFinal > SharedSettings.FinanceRuleSimplifiedInvoiceMaxTotal ||
-                        ArticleBag.GetClassTotals("S") > SharedSettings.FinanceRuleSimplifiedInvoiceMaxTotalServices
+                        ArticleBag.TotalFinal > InvoiceSettings.GetSimplifiedInvoiceMaxItems(XPOSettings.ConfigurationSystemCountry.Oid) ||
+                        ArticleBag.GetClassTotals("S") > InvoiceSettings.GetSimplifiedInvoiceMaxItems(XPOSettings.ConfigurationSystemCountry.Oid)
                     )
                 )
             )
             {
                 //In New Finance Dialog Mode we cant change to Invoice-Payment
-                logicpos.Utils.ShowMessageTouchSimplifiedInvoiceMaxValueExceed(_posDocumentFinanceDialog, ShowMessageTouchSimplifiedInvoiceMaxValueExceedMode.DocumentFinanceDialog, ArticleBag.TotalFinal, SharedSettings.FinanceRuleSimplifiedInvoiceMaxTotal, ArticleBag.GetClassTotals("S"), SharedSettings.FinanceRuleSimplifiedInvoiceMaxTotalServices);
+                logicpos.Utils.ShowMessageTouchSimplifiedInvoiceMaxValueExceed(_posDocumentFinanceDialog, ShowMessageTouchSimplifiedInvoiceMaxValueExceedMode.DocumentFinanceDialog, ArticleBag.TotalFinal, InvoiceSettings.GetSimplifiedInvoiceMaxItems(XPOSettings.ConfigurationSystemCountry.Oid), ArticleBag.GetClassTotals("S"), InvoiceSettings.GetSimplifiedInvoiceMaxServices(XPOSettings.ConfigurationSystemCountry.Oid));
                 _validated = false;
             }
             else

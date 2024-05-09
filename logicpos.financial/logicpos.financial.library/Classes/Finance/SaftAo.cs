@@ -39,7 +39,7 @@ namespace logicpos.financial.library.Classes.Finance
         //Default Customer
         private static readonly erp_customer _defaultCustomer = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), InvoiceSettings.FinalConsumerId);
         //Default Currency
-        private static readonly cfg_configurationcurrency _defaultCurrency = SharedSettings.ConfigurationSystemCurrency;
+        private static readonly cfg_configurationcurrency _defaultCurrency = XPOSettings.ConfigurationSystemCurrency;
 
         public static string ExportSaftAO()
         {
@@ -471,7 +471,7 @@ namespace logicpos.financial.library.Classes.Finance
                     ORDER BY 
                         Ord
                 ;"
-                , SharedSettings.XpoOidUndefinedRecord
+                , XPOSettings.XpoOidUndefinedRecord
                 );
                 //_logger.Debug(string.Format("sql: [{0}]", sql));
 

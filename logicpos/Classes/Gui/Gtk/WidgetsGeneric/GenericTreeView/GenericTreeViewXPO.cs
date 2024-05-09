@@ -308,7 +308,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                             // Check/Detect if is a undefinedRecord
                             if (fieldName == "Oid")
                             {
-                                undefinedRecord = ((new Guid(dataRow.GetMemberValue(_columnProperties[i].Name).ToString())).Equals(SharedSettings.XpoOidUndefinedRecord));
+                                undefinedRecord = ((new Guid(dataRow.GetMemberValue(_columnProperties[i].Name).ToString())).Equals(XPOSettings.XpoOidUndefinedRecord));
                             }
 
                             //TODO (Muga): melhorar isto para ser generico e contemplar os outros campos

@@ -173,7 +173,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     decimal getArticleStock = Convert.ToDecimal(_dataSourceRow.Session.ExecuteScalar(stockQuery).ToString());
                     if (getArticleStock != (_dataSourceRow as fin_article).Accounting)
                     {
-                        var own_customer = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), SharedSettings.XpoOidUserRecord);
+                        var own_customer = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), XPOSettings.XpoOidUserRecord);
                         if (own_customer != null)
                         {
                             if (string.IsNullOrEmpty(own_customer.Name))

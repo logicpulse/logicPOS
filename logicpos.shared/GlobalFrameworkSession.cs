@@ -1,14 +1,14 @@
 ﻿using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
+using logicpos.datalayer.Xpo;
 using logicpos.shared.App;
 using logicpos.shared.Classes.Orders;
+using LogicPOS.Globalization;
+using LogicPOS.Settings.Extensions;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using LogicPOS.Settings.Extensions;
-using LogicPOS.Globalization;
-using logicpos.datalayer.Xpo;
 
 namespace logicpos.shared
 {
@@ -27,7 +27,7 @@ namespace logicpos.shared
         public Dictionary<Guid, DateTime> LoggedUsers { get; set; }
 
         public Guid CurrentOrderMainOid { get; set; }
-       
+
         public Dictionary<Guid, OrderMain> OrdersMain { get; set; }
 
         public Dictionary<string, object> Tokens { get; set; }
@@ -67,7 +67,7 @@ namespace logicpos.shared
                     SessionUpdatedAt = XPOHelper.CurrentDateTimeAtomic();
                     var jsonSerializer = new JsonSerializer();
                     var contentsToWriteToFile = JsonConvert.SerializeObject(this, _jsonFormatting);
-                    var writer = new StreamWriter(_jsonFile,false);
+                    var writer = new StreamWriter(_jsonFile, false);
                     writer.Write(contentsToWriteToFile);
                     writer.Close();
                     return true;
@@ -184,9 +184,6 @@ namespace logicpos.shared
             log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
             GlobalFrameworkSession appSession;
-            Formatting jsonIndented;
-            bool _appSessionFileJsonIndented = Convert.ToBoolean(SharedSettings.AppSessionFileJsonIndented);
-            if (_appSessionFileJsonIndented) { jsonIndented = Formatting.Indented; } else { jsonIndented = Formatting.None; };
 
             if (File.Exists(jsonFile))
             {
@@ -194,21 +191,21 @@ namespace logicpos.shared
                 {
                     string jsonfileContents = File.ReadAllText(jsonFile);
                     appSession = JsonConvert.DeserializeObject<GlobalFrameworkSession>(jsonFile);
-                    appSession._jsonFormatting = jsonIndented;
+                    appSession._jsonFormatting = Formatting.Indented;
                     appSession._jsonFile = jsonFile;
                 }
                 catch (Exception ex)
                 {
                     log.Error(string.Format("InitSession(): {0}", ex.Message), ex);
                     appSession = new GlobalFrameworkSession(jsonFile);
-                    appSession._jsonFormatting = jsonIndented;
+                    appSession._jsonFormatting = Formatting.Indented;
                     appSession.Write();
                 };
             }
             else
             {
                 appSession = new GlobalFrameworkSession(jsonFile);
-                appSession._jsonFormatting = jsonIndented;
+                appSession._jsonFormatting = Formatting.Indented;
                 appSession.Write();
             };
 

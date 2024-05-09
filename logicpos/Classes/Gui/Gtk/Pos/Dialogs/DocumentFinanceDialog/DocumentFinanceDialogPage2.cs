@@ -398,7 +398,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 EnableGetCustomerDetails = false;
 
                 // Encrypt pFieldValue to use in Sql Filter
-                if (LogicPOS.Settings.PluginSettings.PluginSoftwareVendor != null)
+                if (LogicPOS.Settings.PluginSettings.HasPlugin)
                 {
                     // Only Encrypt Encrypted Fields
                     if (pFieldName == nameof(Erp_customer.FiscalNumber) || pFieldName == nameof(Erp_customer.CardNumber))
@@ -661,7 +661,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 //Used To Disable FiscalNumber Edits
                 // Encrypt pFieldValue to use in Sql Filter
                 string fiscalNumberFilterValue = string.Empty;
-                if (LogicPOS.Settings.PluginSettings.PluginSoftwareVendor != null)
+                if (LogicPOS.Settings.PluginSettings.HasPlugin)
                 {
                     fiscalNumberFilterValue = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Encrypt(EntryBoxSelectCustomerFiscalNumber.EntryValidation.Text);
                 }
@@ -680,7 +680,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 //Disable/Enable ButtonClearCustomer based on SourceDocument, if has SourceDocument Disable ClearButton
                 _posDocumentFinanceDialog.ButtonClearCustomer.Sensitive = (_pagePad1.EntryBoxSelectSourceDocumentFinance.Value == null);
 
-                if(_pagePad1.EntryBoxSelectSourceDocumentFinance.Value != null && CultureSettings.XpoOidConfigurationCountryMozambique.Equals(XPOSettings.ConfigurationSystemCountry.Oid) 
+                if(_pagePad1.EntryBoxSelectSourceDocumentFinance.Value != null && CultureSettings.MozambiqueCountryId.Equals(XPOSettings.ConfigurationSystemCountry.Oid) 
                     && _pagePad1.EntryBoxSelectSourceDocumentFinance.Value != null 
                     && (_pagePad1.EntryBoxSelectSourceDocumentFinance.Value.DocumentType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice || _pagePad1.EntryBoxSelectSourceDocumentFinance.Value.DocumentType.Oid == InvoiceSettings.XpoOidDocumentFinanceTypeInvoice))
                 {
@@ -772,7 +772,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 }
                 else if (
                     //Required Minimal Fields Edit
-                    (totalDocument < SharedSettings.FinanceRuleRequiredCustomerDetailsAboveValue && (isInvoice || isSimplifiedInvoice) && isSingularEntity)
+                    (totalDocument < GeneralSettings.GetRequiredCustomerDetailsAboveValue(XPOSettings.ConfigurationSystemCountry.Oid) && (isInvoice || isSimplifiedInvoice) && isSingularEntity)
                 )
                 {
                     //Enable edit User details, usefull to edit Name, Address etc
@@ -832,7 +832,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 {
                     //Enable edit User details, usefull to edit Name, Address etc
                     bool enableEditCustomerDetails = !isFinalConsumerEntity;
-                    bool requiredCustomerDetails = (totalDocument >= SharedSettings.FinanceRuleRequiredCustomerDetailsAboveValue || isWayBill);
+                    bool requiredCustomerDetails = (totalDocument >= GeneralSettings.GetRequiredCustomerDetailsAboveValue(XPOSettings.ConfigurationSystemCountry.Oid) || isWayBill);
 
                     //EntryBox
                     EntryBoxCustomerAddress.EntryValidation.Sensitive = enableEditCustomerDetails;
@@ -920,7 +920,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         {
             try
             {
-                bool isRequiredAllCustomerDetails = (_pagePad3.ArticleBag != null && _pagePad3.ArticleBag.TotalFinal > SharedSettings.FinanceRuleRequiredCustomerDetailsAboveValue);
+                bool isRequiredAllCustomerDetails = (_pagePad3.ArticleBag != null && _pagePad3.ArticleBag.TotalFinal > GeneralSettings.GetRequiredCustomerDetailsAboveValue(XPOSettings.ConfigurationSystemCountry.Oid));
                 bool isFinalConsumerEntity = (EntryBoxSelectCustomerName.Value != null && EntryBoxSelectCustomerName.Value.Oid == InvoiceSettings.FinalConsumerId);
                 bool isSingularEntity = (
                     isFinalConsumerEntity ||
@@ -970,7 +970,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                         )
                         ||
                         (
-                            _pagePad3.ArticleBag != null && _pagePad3.ArticleBag.TotalFinal > SharedSettings.FinanceRuleRequiredCustomerDetailsAboveValue
+                            _pagePad3.ArticleBag != null && _pagePad3.ArticleBag.TotalFinal > GeneralSettings.GetRequiredCustomerDetailsAboveValue(XPOSettings.ConfigurationSystemCountry.Oid)
                         )
                     )
                 {

@@ -58,8 +58,8 @@ namespace logicpos.financial.library.Classes.Finance
                 }
 
                 //Settings
-                //string dateTimeFormatDocumentDate = (LogicPOS.Settings.PluginSettings.PluginSoftwareVendor != null) ? LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.GetDateTimeFormatDocumentDate() : null;//SettingsApp.DateTimeFormatDocumentDate;
-                //string dateTimeFormatCombinedDateTime = (LogicPOS.Settings.PluginSettings.PluginSoftwareVendor != null) ? LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.GetDateTimeFormatCombinedDateTime() : null;//SettingsApp.DateTimeFormatCombinedDateTime;
+                //string dateTimeFormatDocumentDate = (LogicPOS.Settings.PluginSettings.HasPlugin) ? LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.GetDateTimeFormatDocumentDate() : null;//SettingsApp.DateTimeFormatDocumentDate;
+                //string dateTimeFormatCombinedDateTime = (LogicPOS.Settings.PluginSettings.HasPlugin) ? LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.GetDateTimeFormatCombinedDateTime() : null;//SettingsApp.DateTimeFormatCombinedDateTime;
 
                 //If has DocumentDateTime from Parameters use it, else use Current Atomic DateTime : This is Optional, Now DocumentDateTime is assigned on Parameter Constructor
                 DateTime documentDateTime = (pParameters.DocumentDateTime != DateTime.MinValue) ? pParameters.DocumentDateTime : XPOHelper.CurrentDateTimeAtomic();
@@ -195,7 +195,7 @@ namespace logicpos.financial.library.Classes.Finance
                             ||
                             //Or If not in Portugal AND (! FinalConsumer (in Invoices for ex))
                             (
-                                CultureSettings.XpoOidConfigurationCountryPortugal != XPOSettings.ConfigurationSystemCountry.Oid &&
+                                CultureSettings.PortugalCountryId != XPOSettings.ConfigurationSystemCountry.Oid &&
                                 customer.Oid != FinancialLibraryUtils.GetFinalConsumerEntity().Oid
                             )
                             //Required Oids for Equallity Check
@@ -548,7 +548,7 @@ namespace logicpos.financial.library.Classes.Finance
                     if (pParameters.ArticleBag.DiscountGlobal > 0) documentFinanceMaster.Discount = pParameters.ArticleBag.DiscountGlobal;
                     //HASH
                     documentFinanceMaster.Hash = GenDocumentHash(uowSession, documentFinanceType, documentFinanceSerie, documentFinanceMaster);
-                    documentFinanceMaster.HashControl = SharedSettings.HashControl.ToString();
+                    documentFinanceMaster.HashControl = DocumentSettings.HashControl.ToString();
                     documentFinanceMaster.SourceBilling = "P";
                     documentFinanceMaster.SelfBillingIndicator = 0;
                     documentFinanceMaster.CashVatSchemeIndicator = 0;
@@ -589,7 +589,7 @@ namespace logicpos.financial.library.Classes.Finance
                     {
                         //Get Article
                         article = (fin_article)uowSession.GetObjectByKey(typeof(fin_article), item.Key.ArticleOid);
-                        if (article.Type.Oid == SharedSettings.XpoOidArticleClassCustomerCard)
+                        if (article.Type.Oid == XPOSettings.XpoOidArticleClassCustomerCard)
                         {
                             customer.CardCredit = customer.CardCredit + item.Value.TotalFinal;
                         }
@@ -785,7 +785,7 @@ namespace logicpos.financial.library.Classes.Finance
             // Old Method without Plugin
             //resultSignedHash = FrameworkUtils.SignDataToSHA1Base64(signTargetString, debug);
             // Sign Document if has a valid PluginSoftwareVendor 
-            if (PluginSettings.PluginSoftwareVendor != null)
+            if (PluginSettings.HasPlugin)
             {
                 resultSignedHash = PluginSettings.PluginSoftwareVendor.SignDataToSHA1Base64(FinancialLibrarySettings.SecretKey, signTargetString, debug);
             }
@@ -886,7 +886,7 @@ namespace logicpos.financial.library.Classes.Finance
 
             //byte[] resultQRCode = new byte[64]; 
             string resultQRCode;
-            if (PluginSettings.PluginSoftwareVendor != null && (pDocType.SaftDocumentType == SaftDocumentType.SalesInvoices || pDocType.SaftDocumentType == SaftDocumentType.Payments))
+            if (PluginSettings.HasPlugin && (pDocType.SaftDocumentType == SaftDocumentType.SalesInvoices || pDocType.SaftDocumentType == SaftDocumentType.Payments))
             {
                 //resultSignedHash = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.SignDataToSHA1Base64(SettingsApp.SecretKey, signTargetString, debug);
 
@@ -1103,10 +1103,10 @@ namespace logicpos.financial.library.Classes.Finance
                     }
 
                     //Get Default defaultCurrency
-                    cfg_configurationcurrency defaultCurrency = SharedSettings.ConfigurationSystemCurrency;
+                    cfg_configurationcurrency defaultCurrency = XPOSettings.ConfigurationSystemCurrency;
                     //Currency - If Diferent from Default System Currency, get Currency Object from Parameter
                     cfg_configurationcurrency configurationCurrency;
-                    if (SharedSettings.ConfigurationSystemCurrency.Oid != pConfigurationCurrency)
+                    if (XPOSettings.ConfigurationSystemCurrency.Oid != pConfigurationCurrency)
                     {
                         configurationCurrency = (cfg_configurationcurrency)uowSession.GetObjectByKey(typeof(cfg_configurationcurrency), pConfigurationCurrency);
                     }

@@ -87,11 +87,11 @@ namespace logicpos.financial.library.Classes.Reports
                 { "APP_VERSION", GeneralSettings.ProductVersion },
                 { "DATE", XPOHelper.CurrentDateTimeAtomic().ToString(CultureSettings.DateFormat) }
             };
-            if (SharedSettings.ConfigurationSystemCurrency != null)
+            if (XPOSettings.ConfigurationSystemCurrency != null)
             {
-                customVars.Add("SYSTEM_CURRENCY_LABEL", SharedSettings.ConfigurationSystemCurrency.Designation);
-                customVars.Add("SYSTEM_CURRENCY_ACRONYM", SharedSettings.ConfigurationSystemCurrency.Acronym);
-                customVars.Add("SYSTEM_CURRENCY_SYMBOL", SharedSettings.ConfigurationSystemCurrency.Symbol);
+                customVars.Add("SYSTEM_CURRENCY_LABEL", XPOSettings.ConfigurationSystemCurrency.Designation);
+                customVars.Add("SYSTEM_CURRENCY_ACRONYM", XPOSettings.ConfigurationSystemCurrency.Acronym);
+                customVars.Add("SYSTEM_CURRENCY_SYMBOL", XPOSettings.ConfigurationSystemCurrency.Symbol);
             }
             //Licence
             customVars.Add("LICENCE_NAME", LicenseSettings.LicenseName);

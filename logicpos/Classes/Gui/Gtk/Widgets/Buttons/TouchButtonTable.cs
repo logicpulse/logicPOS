@@ -78,7 +78,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
                     SetBackgroundColor(_buttonColor, _eventBoxTotalOrStatus);
                     break;
                 case TableStatus.Open:
-                    _labelTotalOrStatus.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(pTotal, SharedSettings.ConfigurationSystemCurrency.Acronym);
+                    _labelTotalOrStatus.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(pTotal, XPOSettings.ConfigurationSystemCurrency.Acronym);
                     if (pDateOpen != null) labelDateTableOpenOrClosed.Text = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "pos_button_label_table_open_at"), pDateOpen.ToString(LogicPOS.Settings.CultureSettings.DateTimeFormatHour));
                     SetBackgroundColor(_colorPosTablePadTableTableStatusOpenButtonBackground, _eventBoxTotalOrStatus);
                     break;

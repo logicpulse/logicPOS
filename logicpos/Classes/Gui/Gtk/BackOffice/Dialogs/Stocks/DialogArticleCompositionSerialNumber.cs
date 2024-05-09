@@ -357,7 +357,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
         {
             try
             {
-                var own_customer = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), SharedSettings.XpoOidUserRecord);
+                var own_customer = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), XPOSettings.XpoOidUserRecord);
                 var stockMovimentOut = (_dataSourceRow as fin_articleserialnumber).StockMovimentOut;
                 bool sucess = false;;
 
@@ -410,7 +410,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
         {
             try
             {
-                var own_customer = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), SharedSettings.XpoOidUserRecord);
+                var own_customer = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), XPOSettings.XpoOidUserRecord);
                 var stockMovimentOut = (_dataSourceRow as fin_articleserialnumber).StockMovimentOut;
                 bool sucess = false;
 

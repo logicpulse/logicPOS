@@ -134,7 +134,7 @@ namespace logicpos.financial.library.Classes.Finance
             SourceMode = PersistFinanceDocumentSourceMode.CurrentOrderMain;
             TotalDelivery = 0.0m;
             TotalChange = 0.0m;
-            _currency = SharedSettings.ConfigurationSystemCurrency.Oid;
+            _currency = XPOSettings.ConfigurationSystemCurrency.Oid;
             //_discount = 0.0m;
             ExchangeRate = 1.0m;
 

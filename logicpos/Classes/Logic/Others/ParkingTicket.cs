@@ -70,14 +70,14 @@ namespace logicpos.Classes.Logic.Others
                 {
                     GlobalApp.PosMainWindow.UpdateWorkSessionUI();
                     GlobalApp.PosMainWindow.TicketList.UpdateOrderStatusBar();
-                    GlobalApp.PosMainWindow.TicketList.InsertOrUpdate(SharedSettings.XpoOidArticleParkingTicket, parkingTicketResult);
+                    GlobalApp.PosMainWindow.TicketList.InsertOrUpdate(XPOSettings.XpoOidArticleParkingTicket, parkingTicketResult);
                 }
                 else
                 {
                     //GlobalApp.WindowPos.UpdateWorkSessionUI();
                     //GlobalApp.WindowPos.TicketList.UpdateOrderStatusBar();
                     //Guid XpoOidArticleParkingCard = Guid.NewGuid();
-                    GlobalApp.PosMainWindow.TicketList.InsertOrUpdate(SharedSettings.XpoOidArticleParkingCard, parkingTicketResult);
+                    GlobalApp.PosMainWindow.TicketList.InsertOrUpdate(XPOSettings.XpoOidArticleParkingCard, parkingTicketResult);
                 }
             }
         }

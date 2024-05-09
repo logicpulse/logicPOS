@@ -41,7 +41,6 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         private string fAccessPassword;
         [Size(50)]
-        [ValueConverter(typeof(Encryption))]
         public string AccessPassword
         {
             get { return fAccessPassword; }

@@ -86,7 +86,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             //Initial Values
             fin_configurationpaymentmethod initialValueConfigurationPaymentMethod = (fin_configurationpaymentmethod)XPOHelper.GetXPGuidObject(typeof(fin_configurationpaymentmethod), POSSettings.XpoOidConfigurationPaymentMethodDefaultInvoicePaymentMethod);
-            cfg_configurationcurrency intialValueConfigurationCurrency = SharedSettings.ConfigurationSystemCurrency;
+            cfg_configurationcurrency intialValueConfigurationCurrency = XPOSettings.ConfigurationSystemCurrency;
             string initialPaymentDate = XPOHelper.CurrentDateTimeAtomic().ToString(CultureSettings.DateTimeFormat);
 
             /* IN009142
@@ -115,7 +115,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             EntryBoxSelectConfigurationPaymentMethod.EntryValidation.IsEditable = false;
 
             //ConfigurationCurrency
-            CriteriaOperator criteriaOperatorConfigurationCurrency = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (ExchangeRate IS NOT NULL OR Oid = '{0}')", SharedSettings.ConfigurationSystemCurrency.Oid.ToString()));
+            CriteriaOperator criteriaOperatorConfigurationCurrency = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (ExchangeRate IS NOT NULL OR Oid = '{0}')", XPOSettings.ConfigurationSystemCurrency.Oid.ToString()));
             EntryBoxSelectConfigurationCurrency = new XPOEntryBoxSelectRecordValidation<cfg_configurationcurrency, TreeViewConfigurationCurrency>(_sourceWindow, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_currency"), "Designation", "Oid", intialValueConfigurationCurrency, criteriaOperatorConfigurationCurrency, LogicPOS.Utility.RegexUtils.RegexGuid, false);
             EntryBoxSelectConfigurationCurrency.EntryValidation.Changed += _entryBoxSelectConfigurationCurrency_Changed;
             EntryBoxSelectConfigurationCurrency.EntryValidation.IsEditable = false;
@@ -178,7 +178,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             //Update Payed amount in default currency, must divided by ExchangeRate, inputs are always in selected Currency 
             PayedAmount = _paymentAmountEntry / _exchangeRate;
-            if (_debug) _logger.Debug(string.Format("_payedAmount/_paymentAmountTotal: [{0}/{1}]", LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(PayedAmount, SharedSettings.ConfigurationSystemCurrency.Acronym), LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_paymentAmountTotal, SharedSettings.ConfigurationSystemCurrency.Acronym)));
+            if (_debug) _logger.Debug(string.Format("_payedAmount/_paymentAmountTotal: [{0}/{1}]", LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(PayedAmount, XPOSettings.ConfigurationSystemCurrency.Acronym), LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_paymentAmountTotal, XPOSettings.ConfigurationSystemCurrency.Acronym)));
 
             //Block Change of Currency to prevent conversion problems
             EntryBoxSelectConfigurationCurrency.EntryValidation.Sensitive = EntryPaymentAmount.EntryValidation.Validated;

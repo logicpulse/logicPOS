@@ -68,7 +68,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             {
                 //Get PriceType Collection : Require Criteria to exclude SettingsApp.XpoOidUndefinedRecord, else we get a Price0 here
                 //pCriteria = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) OR (Oid <> '{0}')", SettingsApp.XpoOidUndefinedRecord));
-                pCriteria = CriteriaOperator.Parse(string.Format("(Oid <> '{0}')", SharedSettings.XpoOidUndefinedRecord));
+                pCriteria = CriteriaOperator.Parse(string.Format("(Oid <> '{0}')", XPOSettings.XpoOidUndefinedRecord));
             }
 
             //Init Collection  based on xpoObjectType

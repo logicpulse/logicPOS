@@ -107,7 +107,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Init Local Vars
             string windowTitle = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_insert_articles");
             //Get Default System Currency
-            _currencyDefaultSystem = SharedSettings.ConfigurationSystemCurrency;
+            _currencyDefaultSystem = XPOSettings.ConfigurationSystemCurrency;
             //Consignation Invoice default values
             _vatRateConsignationInvoice = (fin_configurationvatrate)XPOSettings.Session.GetObjectByKey(typeof(fin_configurationvatrate), InvoiceSettings.XpoOidConfigurationVatRateDutyFree);
             _vatRateConsignationInvoiceExemptionReason = (fin_configurationvatexemptionreason)XPOSettings.Session.GetObjectByKey(typeof(fin_configurationvatexemptionreason), InvoiceSettings.XpoOidConfigurationVatExemptionReasonM99);
@@ -574,7 +574,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     if (_article == null || _article.Oid == Guid.Empty)
                     {
                         //Verifica se artigo já existe
-                        fin_configurationpricetype configurationPriceTypeDefault = (fin_configurationpricetype)XPOSettings.Session.GetObjectByKey(typeof(fin_configurationpricetype), SharedSettings.XpoOidConfigurationPriceTypeDefault);
+                        fin_configurationpricetype configurationPriceTypeDefault = (fin_configurationpricetype)XPOSettings.Session.GetObjectByKey(typeof(fin_configurationpricetype), XPOSettings.XpoOidConfigurationPriceTypeDefault);
 
                         _article = new fin_article(XPOSettings.Session);
                         //Prepare Objects
@@ -673,7 +673,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if (haveCode != null && haveCode != Guid.Empty)
                 {
                     fin_article article = (fin_article)XPOSettings.Session.GetObjectByKey(typeof(fin_article), haveCode);
-                    fin_configurationpricetype configurationPriceTypeDefault = (fin_configurationpricetype)XPOSettings.Session.GetObjectByKey(typeof(fin_configurationpricetype), SharedSettings.XpoOidConfigurationPriceTypeDefault);
+                    fin_configurationpricetype configurationPriceTypeDefault = (fin_configurationpricetype)XPOSettings.Session.GetObjectByKey(typeof(fin_configurationpricetype), XPOSettings.XpoOidConfigurationPriceTypeDefault);
 
                     if (article != null && article.Type.HavePrice && article.Oid != Guid.Empty)
                     {
@@ -823,7 +823,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if (haveCode != null && haveCode != Guid.Empty)
                 {
                     fin_article article = (fin_article)XPOSettings.Session.GetObjectByKey(typeof(fin_article), haveCode);
-                    fin_configurationpricetype configurationPriceTypeDefault = (fin_configurationpricetype)XPOSettings.Session.GetObjectByKey(typeof(fin_configurationpricetype), SharedSettings.XpoOidConfigurationPriceTypeDefault);
+                    fin_configurationpricetype configurationPriceTypeDefault = (fin_configurationpricetype)XPOSettings.Session.GetObjectByKey(typeof(fin_configurationpricetype), XPOSettings.XpoOidConfigurationPriceTypeDefault);
 
                     if (article != null && article.Type.HavePrice && article.Oid != Guid.Empty)
                     {

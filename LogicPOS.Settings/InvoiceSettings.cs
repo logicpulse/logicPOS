@@ -20,5 +20,31 @@ namespace LogicPOS.Settings
         public static Guid XpoOidConfigurationPaymentMethodCurrentAccount { get; set; } = new Guid("6db009fd-6729-4353-a4d0-d599c4c19297");
         public static Guid XpoOidConfigurationPaymentMethodInstantPayment { get; set; } = new Guid("4261daa6-c0bd-4ac9-949a-cae0be2dd472");
         public static Guid XpoOidConfigurationVatExemptionReasonM99 { get; set; } = new Guid("f60f97c0-390e-4d76-90d7-204b6ea57949");
+
+        public static int GetSimplifiedInvoiceMaxItems(Guid countryId)
+        {
+            if (CultureSettings.CountryIdIsPortugal(countryId))
+            {
+                return PluginSettings.HasPlugin
+                    ? PluginSettings.PluginSoftwareVendor.GetSimplifiedInvoiceMaxItems()
+                    : 1000;
+
+            }
+
+            return 999999999;
+        }
+
+        public static int GetSimplifiedInvoiceMaxServices(Guid countryId)
+        {
+            if (CultureSettings.CountryIdIsPortugal(countryId))
+            {
+                return PluginSettings.HasPlugin
+                    ? PluginSettings.PluginSoftwareVendor.GetSimplifiedInvoiceMaxServices()
+                    : 100;
+            }
+
+            return 999999999;
+        }
+
     }
 }

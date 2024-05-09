@@ -86,9 +86,9 @@ namespace logicpos.financial.library.Classes.Reports.BOs
 
                 //Override Default Values
                 //If Simplified Invoice - Remove Customer Details (If System Country Equal to PT)
-                if (XPOSettings.ConfigurationSystemCountry.Oid.Equals(CultureSettings.XpoOidConfigurationCountryPortugal)
-                    || XPOSettings.ConfigurationSystemCountry.Oid.Equals(CultureSettings.XpoOidConfigurationCountryMozambique) /* IN005986 */
-                    || XPOSettings.ConfigurationSystemCountry.Oid.Equals(CultureSettings.XpoOidConfigurationCountryAngola)) /* IN009230 - Angola is now added to this rule */
+                if (XPOSettings.ConfigurationSystemCountry.Oid.Equals(CultureSettings.PortugalCountryId)
+                    || XPOSettings.ConfigurationSystemCountry.Oid.Equals(CultureSettings.MozambiqueCountryId) /* IN005986 */
+                    || XPOSettings.ConfigurationSystemCountry.Oid.Equals(CultureSettings.AngolaCountryId)) /* IN009230 - Angola is now added to this rule */
                 {
                     /* IN009230 - now, only when Final Customer we have data cleaned */
                     //if (SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice.Equals(new Guid(documentFinanceMasterView.DocumentType)) 
@@ -154,7 +154,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                     //TK016319 - Certificação Angola - Alterações para teste da AGT
 					//Notas de Credito
                     string notes = string.Format("{0}: {1}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_source_document"), documentFinanceMaster.DocumentParent.DocumentNumber);
-                    if (CultureSettings.XpoOidConfigurationCountryAngola.Equals(XPOSettings.ConfigurationSystemCountry.Oid))
+                    if (CultureSettings.AngolaCountryId.Equals(XPOSettings.ConfigurationSystemCountry.Oid))
                     {
                         notes = string.Format("{0}: {1}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_source_document_NC_ND"), documentFinanceMaster.DocumentParent.DocumentNumber);
                     }                        

@@ -45,8 +45,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     //Check if Value is Small than AmountInCashDrawer
                     if (MovementAmountMoney > TotalAmountInCashDrawer)
                     {
-                        string movementAmountMoney = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(MovementAmountMoney, SharedSettings.ConfigurationSystemCurrency.Acronym);
-                        string totalAmountInCashDrawer = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalAmountInCashDrawer, SharedSettings.ConfigurationSystemCurrency.Acronym);
+                        string movementAmountMoney = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(MovementAmountMoney, XPOSettings.ConfigurationSystemCurrency.Acronym);
+                        string totalAmountInCashDrawer = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalAmountInCashDrawer, XPOSettings.ConfigurationSystemCurrency.Acronym);
                         
                         logicpos.Utils.ShowMessageTouch(
                             this, DialogFlags.Modal, new Size(500, 350), MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"),

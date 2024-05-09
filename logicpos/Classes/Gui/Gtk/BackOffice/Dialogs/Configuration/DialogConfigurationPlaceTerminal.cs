@@ -5,6 +5,7 @@ using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Xpo;
 using logicpos.shared.App;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
@@ -67,7 +68,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 VBox vboxTab2 = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
 
                 //Printer
-                CriteriaOperator pcriteria = CriteriaOperator.Parse($"(Oid <> '{SharedSettings.XpoOidUndefinedRecord}' AND (PrinterType = '{PrintingSettings.XpoOidConfigurationPrinterTypeGenericWindows}' OR PrinterType = '{PrintingSettings.XpoOidConfigurationPrinterTypeExportPdf}'))");
+                CriteriaOperator pcriteria = CriteriaOperator.Parse($"(Oid <> '{XPOSettings.XpoOidUndefinedRecord}' AND (PrinterType = '{PrintingSettings.XpoOidConfigurationPrinterTypeGenericWindows}' OR PrinterType = '{PrintingSettings.XpoOidConfigurationPrinterTypeExportPdf}'))");
                 XPOComboBox xpoComboBoxPrinter = new XPOComboBox(DataSourceRow.Session, typeof(sys_configurationprinters), (DataSourceRow as pos_configurationplaceterminal).Printer, "Designation", pcriteria);
                 BOWidgetBox boxPrinter = new BOWidgetBox(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_ConfigurationPrinters"), xpoComboBoxPrinter);
                 TreeIter iter;
@@ -87,7 +88,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxPrinter, DataSourceRow, "Printer", LogicPOS.Utility.RegexUtils.RegexGuid, false));
 
                 //ThermalPrinter
-                pcriteria = CriteriaOperator.Parse($"(Oid <> '{SharedSettings.XpoOidUndefinedRecord}' AND (PrinterType = '{PrintingSettings.XpoOidConfigurationPrinterTypeThermalPrinterWindows}'  OR PrinterType = '{PrintingSettings.XpoOidConfigurationPrinterTypeThermalPrinterSocket}' OR PrinterType = '{PrintingSettings.XpoOidConfigurationPrinterTypeThermalPrinterUsb}'))");
+                pcriteria = CriteriaOperator.Parse($"(Oid <> '{XPOSettings.XpoOidUndefinedRecord}' AND (PrinterType = '{PrintingSettings.XpoOidConfigurationPrinterTypeThermalPrinterWindows}'  OR PrinterType = '{PrintingSettings.XpoOidConfigurationPrinterTypeThermalPrinterSocket}' OR PrinterType = '{PrintingSettings.XpoOidConfigurationPrinterTypeThermalPrinterUsb}'))");
 
                 XPOComboBox xpoComboBoxThermalPrinter = new XPOComboBox(DataSourceRow.Session, typeof(sys_configurationprinters), (DataSourceRow as pos_configurationplaceterminal).ThermalPrinter, "Designation", pcriteria);
                 BOWidgetBox boxThermalPrinter = new BOWidgetBox(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_printer_thermal_printer"), xpoComboBoxThermalPrinter);

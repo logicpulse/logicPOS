@@ -72,7 +72,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 VBox _vbox = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
 
                 //Get PriceType Collection : Require Criteria to exclude SettingsApp.XpoOidUndefinedRecord, else we get a Price0 here
-                CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) OR (Oid <> '{0}')", SharedSettings.XpoOidUndefinedRecord));
+                CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) OR (Oid <> '{0}')", XPOSettings.XpoOidUndefinedRecord));
                 XPCollection xpcConfigurationPriceType = new XPCollection(XPOSettings.Session, typeof(fin_configurationpricetype), criteriaOperator);
 
                 xpcConfigurationPriceType.Sorting = XPOHelper.GetXPCollectionDefaultSortingCollection();

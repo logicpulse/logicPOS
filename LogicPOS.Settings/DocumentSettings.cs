@@ -6,8 +6,7 @@ namespace LogicPOS.Settings
     {
         public static bool DocumentFinanceSeriesGenerationFactoryUseRandomAcronymPrefix { get; set; }
         public static string DocumentFinanceSeriesGenerationFactoryAcronymLastSerieFormat { get; set; }
-
-   
+        public static int HashControl { get; set; }
         public static Guid XpoOidDocumentFinanceTypeSimplifiedInvoice { get; set; } = new Guid("2c69b109-318a-4375-a573-28e5984b6503");
         public static Guid XpoOidDocumentFinanceTypeInvoiceAndPayment { get; set; } = new Guid("09b6aa6e-dc0e-41fd-8dbe-8678a3d11cbc");
         public static Guid XpoOidDocumentFinanceTypeDebitNote { get; set; } = new Guid("3942d940-ed13-4a62-a352-97f1ce006d8a");

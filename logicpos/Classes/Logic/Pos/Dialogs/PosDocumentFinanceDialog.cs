@@ -426,8 +426,8 @@ _pagePad2.EntryBoxCustomerEmail.EntryValidation.Text,
                         this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"), 
                         string.Format(
                             CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_value_exceed_customer_card_credit"), 
-                            LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_pagePad2.EntryBoxSelectCustomerName.Value.CardCredit, SharedSettings.ConfigurationSystemCurrency.Acronym), 
-                            LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(articleBag.TotalFinal, SharedSettings.ConfigurationSystemCurrency.Acronym)
+                            LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_pagePad2.EntryBoxSelectCustomerName.Value.CardCredit, XPOSettings.ConfigurationSystemCurrency.Acronym), 
+                            LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(articleBag.TotalFinal, XPOSettings.ConfigurationSystemCurrency.Acronym)
                         )
                     );
                     result = false;

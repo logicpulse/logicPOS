@@ -291,7 +291,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                     // Update Window Title
                     //if (WindowTitle != null) WindowTitle = string.Format(CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_split_payment, numberOfSplits, LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(totalFinal));
-                    if (WindowTitle != null) WindowTitle = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_split_payment"), numberOfSplits, LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_totalPerSplit, SharedSettings.ConfigurationSystemCurrency.Acronym));
+                    if (WindowTitle != null) WindowTitle = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_split_payment"), numberOfSplits, LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_totalPerSplit, XPOSettings.ConfigurationSystemCurrency.Acronym));
                 }
             }
             catch (Exception ex)
@@ -315,7 +315,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     if (item.ProcessFinanceDocumentParameter != null)
                     {
                         if (debug) _logger.Debug(string.Format("TotalFinal: [#{0}]:[{1}]", i,
-                            LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(item.ProcessFinanceDocumentParameter.ArticleBag.TotalFinal, SharedSettings.ConfigurationSystemCurrency.Acronym).PadLeft(padLeftChars, ' ')
+                            LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(item.ProcessFinanceDocumentParameter.ArticleBag.TotalFinal, XPOSettings.ConfigurationSystemCurrency.Acronym).PadLeft(padLeftChars, ' ')
                         ));
 
                         // PersistFinanceDocument

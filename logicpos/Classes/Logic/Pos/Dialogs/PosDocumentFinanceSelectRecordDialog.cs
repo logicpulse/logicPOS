@@ -657,7 +657,7 @@ WHERE
                 string showResults = string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_show_results"), nDocs, countResult);
 
                 //Finish Updating Title
-                _dialogDocumentFinanceMaster.WindowTitle = (TotalDialogFinanceMasterDocuments != 0) ? string.Format("{0} :: {1} - {2}", windowTitleDefault, LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalDialogFinanceMasterDocuments, SharedSettings.ConfigurationSystemCurrency.Acronym), showResults) : string.Format("{0} :: {1}", windowTitleDefault, showResults);
+                _dialogDocumentFinanceMaster.WindowTitle = (TotalDialogFinanceMasterDocuments != 0) ? string.Format("{0} :: {1} - {2}", windowTitleDefault, LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalDialogFinanceMasterDocuments, XPOSettings.ConfigurationSystemCurrency.Acronym), showResults) : string.Format("{0} :: {1}", windowTitleDefault, showResults);
             }
             catch (Exception ex)
             {
@@ -1572,7 +1572,7 @@ WHERE
                             //ATWS: Check if Sent Resend Document to AT WebServices                                                 //WIP: CancellWayBills : 
                             bool sendDocumentToAT = false;                                                                          //WIP: CancellWayBills : 
                             //Financial.service - Correções no envio de documentos AT [IN:014494]
-							if ( XPOSettings.ConfigurationSystemCountry.Oid == CultureSettings.XpoOidConfigurationCountryPortugal     //WIP: CancellWayBills : 
+							if ( CultureSettings.CountryIdIsPortugal(XPOSettings.ConfigurationSystemCountry.Oid)     //WIP: CancellWayBills : 
                                 && documentMaster.DocumentType.WsAtDocument                                                         //WIP: CancellWayBills : 
                                 && documentMaster.DocumentType.WayBill                                                              //WIP: CancellWayBills : 
                                 && documentMaster.DocumentType.Oid != DocumentSettings.XpoOidDocumentFinanceTypeInvoiceWayBill && documentMaster.ShipToCountry != null && documentMaster.ShipToCountry == "PT"       //Envio de Documentos transporte AT (Estrangeiro) [IN:016502]               //WIP: CancellWayBills : 
@@ -1707,7 +1707,7 @@ WHERE
 
             //Moçambique - Pedidos da reunião 13/10/2020 [IN:014327]
             //Pode cancelar documentos de origem do tipo fatura ou fatura simplificada
-            if ((CultureSettings.XpoOidConfigurationCountryMozambique.Equals(XPOSettings.ConfigurationSystemCountry.Oid) && pDocumentFinanceMaster.DocumentStatusStatus != "A" && currentDateDay == documentDateDay)){
+            if ((CultureSettings.MozambiqueCountryId.Equals(XPOSettings.ConfigurationSystemCountry.Oid) && pDocumentFinanceMaster.DocumentStatusStatus != "A" && currentDateDay == documentDateDay)){
 
                 isCancellable = true;
                 if ((pDocumentFinanceMaster.DocumentType.Oid != DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice && pDocumentFinanceMaster.DocumentType.Oid != InvoiceSettings.XpoOidDocumentFinanceTypeInvoice))

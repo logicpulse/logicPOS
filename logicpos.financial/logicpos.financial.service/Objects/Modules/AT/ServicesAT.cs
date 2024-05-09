@@ -418,7 +418,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
 
             string sbContentCustomerTax;
             //Diferent sbContentCustomerTax if OutSide Portugal
-            if (_documentMaster.EntityCountryOid.Equals(CultureSettings.XpoOidConfigurationCountryPortugal))
+            if (_documentMaster.EntityCountryOid.Equals(CultureSettings.PortugalCountryId))
             {
                 sbContentCustomerTax = string.Format("    <CustomerTaxID>{0}</CustomerTaxID>", customerTaxID);
             }

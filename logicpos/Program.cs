@@ -112,12 +112,12 @@ namespace logicpos
 
                 // PluginSoftwareVendor
                 PluginSettings.PluginSoftwareVendor = PluginSettings.PluginContainer.GetFirstPluginOfType<ISoftwareVendor>();
-                if (PluginSettings.PluginSoftwareVendor != null)
+                if (PluginSettings.HasPlugin)
                 {
                     // Show Loaded Plugin
                     _logger.Debug(string.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ISoftwareVendor), PluginSettings.PluginSoftwareVendor.Name));
                     // Init Plugin
-                    SharedSettings.InitSoftwareVendorPluginSettings();
+                    PluginSettings.InitSoftwareVendorPluginSettings();
                     // Check if all Resources are Embedded
                     PluginSettings.PluginSoftwareVendor.ValidateEmbeddedResources();
                 }
@@ -212,7 +212,7 @@ namespace logicpos
                 else
                 {
                     GeneralSettings.Settings["customCultureResourceDefinition"] = cultureFromDb;
-                    CultureSettings.CurrentCulture = new System.Globalization.CultureInfo(cultureFromDb);
+                    CultureSettings.CurrentCulture = new CultureInfo(cultureFromDb);
                 }
 
             }

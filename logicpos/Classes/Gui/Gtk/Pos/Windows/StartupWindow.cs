@@ -74,9 +74,9 @@ namespace logicpos
                 configurationPreferenceParameterCompanyCountryOid = (XPOHelper.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY_OID")) as cfg_configurationpreferenceparameter);
                 configurationPreferenceParameterSystemCurrencyOid = (XPOHelper.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "SYSTEM_CURRENCY_OID")) as cfg_configurationpreferenceparameter);
                 XPOSettings.ConfigurationSystemCountry = (cfg_configurationcountry)XPOSettings.Session.GetObjectByKey(typeof(cfg_configurationcountry), new Guid(configurationPreferenceParameterCompanyCountryOid.Value));
-                SharedSettings.ConfigurationSystemCurrency = (cfg_configurationcurrency)XPOSettings.Session.GetObjectByKey(typeof(cfg_configurationcurrency), new Guid(configurationPreferenceParameterSystemCurrencyOid.Value));
+                XPOSettings.ConfigurationSystemCurrency = (cfg_configurationcurrency)XPOSettings.Session.GetObjectByKey(typeof(cfg_configurationcurrency), new Guid(configurationPreferenceParameterSystemCurrencyOid.Value));
 
-                _logger.Debug(string.Format("Using System Country: [{0}], Currency: [{1}]", XPOSettings.ConfigurationSystemCountry.Designation, SharedSettings.ConfigurationSystemCurrency.Designation));
+                _logger.Debug(string.Format("Using System Country: [{0}], Currency: [{1}]", XPOSettings.ConfigurationSystemCountry.Designation, XPOSettings.ConfigurationSystemCurrency.Designation));
             }
             catch (Exception ex)
             {

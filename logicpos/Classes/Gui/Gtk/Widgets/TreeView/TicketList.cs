@@ -271,7 +271,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 _labelTotal.ModifyFont(labelTotalFont);
                 _labelTotal.ModifyFg(StateType.Normal, labelTotalFontColor);
                 _labelTotal.SetAlignment(labelTotalAlignmentX, 0.0F);
-                _labelTotal.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(0, SharedSettings.ConfigurationSystemCurrency.Acronym);
+                _labelTotal.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(0, XPOSettings.ConfigurationSystemCurrency.Acronym);
 
                 HBox hboxTotal = new HBox(false, 4);
                 hboxTotal.PackStart(_labelLabelTotal, true, true, 5);
@@ -1408,7 +1408,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 TotalFinal = _articleBag.TotalFinal;
             }
             _labelLabelTotal.Text = labelTotalFinal;
-            _labelTotal.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalFinal, SharedSettings.ConfigurationSystemCurrency.Acronym);
+            _labelTotal.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalFinal, XPOSettings.ConfigurationSystemCurrency.Acronym);
 
             //Update Display
             if (GlobalApp.UsbDisplay != null) GlobalApp.UsbDisplay.ShowOrder(CurrentOrderDetails, _listStoreModelSelectedIndex);
@@ -1447,13 +1447,13 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     SourceWindow.LabelTotalTable.Text =
                       string.Format(labelTotalTableFormat,
                         //Totals From OrderMain and Not From ArticleBag
-                        LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(orderMain.GlobalTotalFinal, SharedSettings.ConfigurationSystemCurrency.Acronym),
+                        LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(orderMain.GlobalTotalFinal, XPOSettings.ConfigurationSystemCurrency.Acronym),
                         orderMain.GlobalTotalTickets
                       );
 
                     //If in OrderMain Mode Update Total
                     if (ListMode == TicketListMode.OrderMain)
-                        _labelTotal.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(orderMain.GlobalTotalFinal, SharedSettings.ConfigurationSystemCurrency.Acronym);
+                        _labelTotal.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(orderMain.GlobalTotalFinal, XPOSettings.ConfigurationSystemCurrency.Acronym);
                 }
                 else
                 {

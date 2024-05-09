@@ -128,7 +128,6 @@
     <Compile Include="Entities\Users\SYS_UserPermissionItem.cs" />
     <Compile Include="Entities\Users\SYS_UserPermissionProfile.cs" />
     <Compile Include="Entities\Users\SYS_UserProfile.cs" />
-    <Compile Include="XPO\ValueConverter.cs" />
     <Compile Include="Entities\WorkSession\POS_WorkSessionMovement.cs" />
     <Compile Include="Entities\WorkSession\POS_WorkSessionMovementType.cs" />
     <Compile Include="Entities\WorkSession\POS_WorkSessionPeriod.cs" />

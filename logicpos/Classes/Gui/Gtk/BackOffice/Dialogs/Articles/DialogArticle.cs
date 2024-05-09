@@ -281,7 +281,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 vboxPrices.PackStart(hboxPrices, false, false, 0);
 
                 //Get PriceType Collection : Require Criteria to exclude SettingsApp.XpoOidUndefinedRecord, else we get a Price0 here
-                CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) OR (Oid <> '{0}')", SharedSettings.XpoOidUndefinedRecord));
+                CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) OR (Oid <> '{0}')", XPOSettings.XpoOidUndefinedRecord));
                 XPCollection xpcConfigurationPriceType = new XPCollection(DataSourceRow.Session, typeof(fin_configurationpricetype), criteriaOperator);
 
                 xpcConfigurationPriceType.Sorting = XPOHelper.GetXPCollectionDefaultSortingCollection();
@@ -1449,7 +1449,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     (pDataSourceRow as fin_articleserialnumber).StockMovimentIn = new fin_articlestock(_dataSourceRow.Session);
                     (pDataSourceRow as fin_articleserialnumber).StockMovimentIn.Article = _article;
                     (pDataSourceRow as fin_articleserialnumber).StockMovimentIn.ArticleSerialNumber = (pDataSourceRow as fin_articleserialnumber);
-                    (pDataSourceRow as fin_articleserialnumber).StockMovimentIn.Customer = (erp_customer)_dataSourceRow.Session.GetObjectByKey(typeof(erp_customer), SharedSettings.XpoOidUserRecord);
+                    (pDataSourceRow as fin_articleserialnumber).StockMovimentIn.Customer = (erp_customer)_dataSourceRow.Session.GetObjectByKey(typeof(erp_customer), XPOSettings.XpoOidUserRecord);
                     (pDataSourceRow as fin_articleserialnumber).StockMovimentIn.DocumentNumber = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_internal_moviment");
                     (pDataSourceRow as fin_articleserialnumber).StockMovimentIn.Quantity = 1;
                     (pDataSourceRow as fin_articleserialnumber).StockMovimentIn.Date = DateTime.Now;
