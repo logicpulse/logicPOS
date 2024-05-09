@@ -15,6 +15,7 @@ using logicpos.shared.App;
 using logicpos.datalayer.Xpo;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -71,7 +72,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     _totalNumberOfFinanceDocuments = Convert.ToUInt16(countResult);
                     /* IN009249 - end */
                     
-                    if (_customer.Oid == SharedSettings.FinalConsumerId) _isFinalConsumerEntity = true;
+                    if (_customer.Oid == InvoiceSettings.FinalConsumerId) _isFinalConsumerEntity = true;
                 }
 
                 //erp_customer customers = null;

@@ -135,7 +135,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             //string appOperationModeToken = LogicPOS.Settings.GeneralSettings.Settings["appOperationModeToken"].ToLower();
 
             //ConferenceDocument : Show Table if in ConferenceDocument and in default AppMode
-            if (_documentType.Oid == SharedSettings.XpoOidDocumentFinanceTypeConferenceDocument && AppOperationModeSettings.IsDefaultTheme)
+            if (_documentType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeConferenceDocument && AppOperationModeSettings.IsDefaultTheme)
             {
                 //Table|Order #2|Name/Zone
                 string tableZone = string.Format("{0} : #{1}/{2}"
@@ -325,7 +325,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 dataTable.Rows.Add(dataRow);
 
                 //If Simplified Invoice, Payment Method MONEY and has Total Change, add it
-                if (new Guid(_documentFinanceMasterList[0].DocumentType) == SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice
+                if (new Guid(_documentFinanceMasterList[0].DocumentType) == DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice
                     && _documentFinanceMasterList[0].PaymentMethodToken == "MONEY"
                     && _documentFinanceMasterList[0].TotalChange > 0
                     )

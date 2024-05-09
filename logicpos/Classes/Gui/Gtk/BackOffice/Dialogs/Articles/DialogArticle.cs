@@ -698,8 +698,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 if (
                         (
-                            (_xpoComboBoxVatOnTable != null && _xpoComboBoxVatOnTable.Value != null && _xpoComboBoxVatOnTable.Value.Oid == SharedSettings.XpoOidConfigurationVatRateDutyFree)
-                            || (_xpoComboBoxVatDirectSelling != null && _xpoComboBoxVatDirectSelling.Value != null && _xpoComboBoxVatDirectSelling.Value.Oid == SharedSettings.XpoOidConfigurationVatRateDutyFree)
+                            (_xpoComboBoxVatOnTable != null && _xpoComboBoxVatOnTable.Value != null && _xpoComboBoxVatOnTable.Value.Oid == InvoiceSettings.XpoOidConfigurationVatRateDutyFree)
+                            || (_xpoComboBoxVatDirectSelling != null && _xpoComboBoxVatDirectSelling.Value != null && _xpoComboBoxVatDirectSelling.Value.Oid == InvoiceSettings.XpoOidConfigurationVatRateDutyFree)
                         ) && requireToChooseVatExemptionReason
                     )
                 {

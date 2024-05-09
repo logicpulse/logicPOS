@@ -88,7 +88,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             _intialValueConfigurationCountry = XPOSettings.ConfigurationSystemCountry;
 
             //Defaults
-            Guid initialDocumentFinanceTypeGuid = SharedSettings.XpoOidDocumentFinanceTypeInvoice;
+            Guid initialDocumentFinanceTypeGuid = InvoiceSettings.XpoOidDocumentFinanceTypeInvoice;
             Guid initialConfigurationPaymentConditionGuid = POSSettings.XpoOidConfigurationPaymentConditionDefaultInvoicePaymentCondition;
             Guid initialConfigurationPaymentMethodGuid = POSSettings.XpoOidConfigurationPaymentMethodDefaultInvoicePaymentMethod;
             Guid initialConfigurationCurrencyGuid = SharedSettings.ConfigurationSystemCurrency.Oid;
@@ -153,7 +153,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
             CriteriaOperator criteriaOperatorConfigurationPaymentMethod = CriteriaOperator.Parse(string.Format(
                 "(Disabled IS NULL OR Disabled  <> 1)  AND Oid <> '{0}' AND {1}", 
-                SharedSettings.XpoOidConfigurationPaymentMethodCurrentAccount.ToString(),
+                InvoiceSettings.XpoOidConfigurationPaymentMethodCurrentAccount.ToString(),
                 filterValidPaymentMethod));
             /* IN009142 - End */
             EntryBoxSelectConfigurationPaymentMethod = new XPOEntryBoxSelectRecordValidation<fin_configurationpaymentmethod, TreeViewConfigurationPaymentMethod>(_sourceWindow, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_payment_method"), "Designation", "Oid", null, criteriaOperatorConfigurationPaymentMethod, LogicPOS.Utility.RegexUtils.RegexGuid, false);
@@ -287,11 +287,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 string filterBaseCustomer = "(Disabled IS NULL OR Disabled  <> 1) AND (Hidden IS NULL OR Hidden = 0)";
 
                 //If Not SimplifiedInvoice
-                if (EntryBoxSelectDocumentFinanceType.Value.Oid != SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice && EntryBoxSelectDocumentFinanceType.Value.Oid != SharedSettings.XpoOidDocumentFinanceTypeCreditNote)
+                if (EntryBoxSelectDocumentFinanceType.Value.Oid != DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice && EntryBoxSelectDocumentFinanceType.Value.Oid != DocumentSettings.XpoOidDocumentFinanceTypeCreditNote)
                 {
-                    filterBaseCustomer = filterBaseCustomer + string.Format(" AND Oid <> '{0}'", SharedSettings.FinalConsumerId);
+                    filterBaseCustomer = filterBaseCustomer + string.Format(" AND Oid <> '{0}'", InvoiceSettings.FinalConsumerId);
                     //If FinalConsumerEntity, Clean it
-                    if (_pagePad2.EntryBoxSelectCustomerName != null || _pagePad2.EntryBoxSelectCustomerName.Value.Oid == SharedSettings.FinalConsumerId)
+                    if (_pagePad2.EntryBoxSelectCustomerName != null || _pagePad2.EntryBoxSelectCustomerName.Value.Oid == InvoiceSettings.FinalConsumerId)
                     {
                         if (EntryBoxSelectCopyDocumentFinance.Value == null)
                         {
@@ -303,9 +303,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 else
                 {
                     //If SimplifiedInvoice Update to it, If not FinalConsumerEntity, Update to it (Consumidor Final)
-                    if (_pagePad2.EntryBoxSelectCustomerName.Value == null || _pagePad2.EntryBoxSelectCustomerName.Value.Oid != SharedSettings.FinalConsumerId)
+                    if (_pagePad2.EntryBoxSelectCustomerName.Value == null || _pagePad2.EntryBoxSelectCustomerName.Value.Oid != InvoiceSettings.FinalConsumerId)
                     {
-                        erp_customer customer = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), SharedSettings.FinalConsumerId);
+                        erp_customer customer = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), InvoiceSettings.FinalConsumerId);
                         //Assign Value From FiscalNumber
                         _pagePad2.GetCustomerDetails("Oid", customer.Oid.ToString());
                     }
@@ -324,7 +324,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
                 //Detected SourceDocumentFinance:CreditNote
                 if (
-                    EntryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeCreditNote
+                    EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.XpoOidDocumentFinanceTypeCreditNote
                 )
                 {
                     //Set Required EntryBoxSelectSourceDocumentFinance
@@ -374,13 +374,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
                 //Detected SourceDocumentFinance:WayBill
                 if (
-                    EntryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeInvoice ||
-                    EntryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeDeliveryNote ||
-                    EntryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeTransportationGuide ||
-                    EntryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeOwnAssetsDriveGuide ||
-                    EntryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeConsignmentGuide ||
-                    EntryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeInvoiceWayBill ||
-                    EntryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeReturnGuide
+                    EntryBoxSelectDocumentFinanceType.Value.Oid == InvoiceSettings.XpoOidDocumentFinanceTypeInvoice ||
+                    EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.XpoOidDocumentFinanceTypeDeliveryNote ||
+                    EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.XpoOidDocumentFinanceTypeTransportationGuide ||
+                    EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.XpoOidDocumentFinanceTypeOwnAssetsDriveGuide ||
+                    EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.XpoOidDocumentFinanceTypeConsignmentGuide ||
+                    EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.XpoOidDocumentFinanceTypeInvoiceWayBill ||
+                    EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.XpoOidDocumentFinanceTypeReturnGuide
                 )
                 {
                     _pagePad2.AssignShipToDetails();
@@ -391,8 +391,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
                 //Detected SourceDocumentFinance:Budget/ProForma Invoice
                 if (
-                    EntryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeBudget ||
-                    EntryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeProformaInvoice
+                    EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.XpoOidDocumentFinanceTypeBudget ||
+                    EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.XpoOidDocumentFinanceTypeProformaInvoice
                 )
                 {
                     EntryBoxSelectSourceDocumentFinance.EntryValidation.Sensitive = false;
@@ -522,11 +522,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             string result = string.Empty;
 
             Guid[] excludedDocumentTypes = new Guid[] {
-                SharedSettings.XpoOidDocumentFinanceTypeCurrentAccountInput,
+                DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput,
                 //SettingsApp.XpoOidDocumentFinanceTypeInvoiceAndPayment,
-                SharedSettings.XpoOidDocumentFinanceTypeConferenceDocument,
-                SharedSettings.XpoOidDocumentFinanceTypePayment,
-                SharedSettings.XpoOidDocumentFinanceTypeDebitNote
+                DocumentSettings.XpoOidDocumentFinanceTypeConferenceDocument,
+                DocumentSettings.XpoOidDocumentFinanceTypePayment,
+                DocumentSettings.XpoOidDocumentFinanceTypeDebitNote
             };
 
             for (int i = 0; i < excludedDocumentTypes.Length; i++)
@@ -610,9 +610,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 //If Working on a CreditNote Document(Target), we must Check Already Credited Items in Reference Table, to prevent to Add same items to TreeView 
                 /* IN009206 - Added GT and GR */
 				Guid oid = EntryBoxSelectDocumentFinanceType.Value.Oid;
-                if (SharedSettings.XpoOidDocumentFinanceTypeCreditNote.Equals(oid) 
-                    || SharedSettings.XpoOidDocumentFinanceTypeTransportationGuide.Equals(oid)
-                    || SharedSettings.XpoOidDocumentFinanceTypeDeliveryNote.Equals(oid))
+                if (DocumentSettings.XpoOidDocumentFinanceTypeCreditNote.Equals(oid) 
+                    || DocumentSettings.XpoOidDocumentFinanceTypeTransportationGuide.Equals(oid)
+                    || DocumentSettings.XpoOidDocumentFinanceTypeDeliveryNote.Equals(oid))
                 {
                     string creditedDocuments;
                     addToTree = FinancialLibraryUtils.GetUnCreditedItemsFromSourceDocument(sourceDocument, out creditedDocuments);
@@ -808,10 +808,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 			/* IN009206 - Added GT and GR */
             Guid oid = EntryBoxSelectDocumentFinanceType.Value.Oid;
             if (
-                !SharedSettings.XpoOidDocumentFinanceTypeDebitNote.Equals(oid)
-                && !SharedSettings.XpoOidDocumentFinanceTypeCreditNote.Equals(oid)
-                && !SharedSettings.XpoOidDocumentFinanceTypeTransportationGuide.Equals(oid)
-                && !SharedSettings.XpoOidDocumentFinanceTypeDeliveryNote.Equals(oid)
+                !DocumentSettings.XpoOidDocumentFinanceTypeDebitNote.Equals(oid)
+                && !DocumentSettings.XpoOidDocumentFinanceTypeCreditNote.Equals(oid)
+                && !DocumentSettings.XpoOidDocumentFinanceTypeTransportationGuide.Equals(oid)
+                && !DocumentSettings.XpoOidDocumentFinanceTypeDeliveryNote.Equals(oid)
             )
             {
                 EntryBoxSelectConfigurationCurrency.ButtonSelectValue.Sensitive = false;
@@ -824,8 +824,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 {
                     fin_documentfinancemaster sourceDocument;
                     sourceDocument = EntryBoxSelectSourceDocumentFinance.Value;
-                    if (sourceDocument != null && (sourceDocument.DocumentType.Oid == SharedSettings.XpoOidDocumentFinanceTypeProformaInvoice || 
-                        sourceDocument.DocumentType.Oid == SharedSettings.XpoOidDocumentFinanceTypeBudget))
+                    if (sourceDocument != null && (sourceDocument.DocumentType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeProformaInvoice || 
+                        sourceDocument.DocumentType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeBudget))
                     {
                         _pagePad3.TreeViewArticles.ReadOnly = false;
                         _pagePad3.TreeViewArticles.AllowRecordUpdate = true;
@@ -872,11 +872,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
             //ConfigurationPaymentCondition
             if (
-                EntryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeInvoice ||
-                EntryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeConsignationInvoice ||
-                EntryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeBudget ||
-                EntryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeProformaInvoice ||
-                EntryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeCurrentAccountInput
+                EntryBoxSelectDocumentFinanceType.Value.Oid == InvoiceSettings.XpoOidDocumentFinanceTypeInvoice ||
+                EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.XpoOidDocumentFinanceTypeConsignationInvoice ||
+                EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.XpoOidDocumentFinanceTypeBudget ||
+                EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.XpoOidDocumentFinanceTypeProformaInvoice ||
+                EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput
             )
             {
                 //Enable Widget
@@ -902,8 +902,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             }
             //ConfigurationPaymentMethod
             else if (
-                EntryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice ||
-                EntryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment
+                EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice ||
+                EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment
             )
             {
                 //Enable Widget

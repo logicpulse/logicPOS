@@ -320,22 +320,22 @@ namespace logicpos.financial.library.Classes.Finance
 
                 //P1
                 bool requiredPaymentCondition = (
-                    pParameters.DocumentType == SharedSettings.XpoOidDocumentFinanceTypeInvoice ||
-                    pParameters.DocumentType == SharedSettings.XpoOidDocumentFinanceTypeConsignationInvoice ||
-                    pParameters.DocumentType == SharedSettings.XpoOidDocumentFinanceTypeBudget ||
-                    pParameters.DocumentType == SharedSettings.XpoOidDocumentFinanceTypeProformaInvoice
+                    pParameters.DocumentType == InvoiceSettings.XpoOidDocumentFinanceTypeInvoice ||
+                    pParameters.DocumentType == DocumentSettings.XpoOidDocumentFinanceTypeConsignationInvoice ||
+                    pParameters.DocumentType == DocumentSettings.XpoOidDocumentFinanceTypeBudget ||
+                    pParameters.DocumentType == DocumentSettings.XpoOidDocumentFinanceTypeProformaInvoice
                 );
                 bool requiredPaymentMethod = (
-                    pParameters.DocumentType == SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice ||
-                    pParameters.DocumentType == SharedSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment
+                    pParameters.DocumentType == DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice ||
+                    pParameters.DocumentType == DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment
                 );
-                bool requireParentDocument = (pParameters.DocumentType == SharedSettings.XpoOidDocumentFinanceTypeCreditNote);
+                bool requireParentDocument = (pParameters.DocumentType == DocumentSettings.XpoOidDocumentFinanceTypeCreditNote);
 
                 //P2
                 bool requireAllCustomerFields = (
                     //SimplifiedInvoice
                     (
-                        pParameters.DocumentType == SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice &&
+                        pParameters.DocumentType == DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice &&
                         pParameters.ArticleBag.TotalFinal > financeRuleRequiredCustomerDetailsAboveValue &&
                         !customerIsSingularEntity
                     )
@@ -583,9 +583,9 @@ namespace logicpos.financial.library.Classes.Finance
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
                 //Customer <> ParentDocument.Customer (And ConferenceDocument)
 				// Moçambique - Pedidos da reunião 13/10/2020 + Faturas no Front-Office [IN:014327]
-                if (customer != null && customerParentDocument != null && customer != customerParentDocument && documentParent.DocumentType.Oid != SharedSettings.XpoOidDocumentFinanceTypeConferenceDocument)
+                if (customer != null && customerParentDocument != null && customer != customerParentDocument && documentParent.DocumentType.Oid != DocumentSettings.XpoOidDocumentFinanceTypeConferenceDocument)
                 {
-                    if (!CultureSettings.XpoOidConfigurationCountryMozambique.Equals(XPOSettings.ConfigurationSystemCountry.Oid) && (documentParent.DocumentType.Oid != SharedSettings.XpoOidDocumentFinanceTypeInvoice || documentParent.DocumentType.Oid != SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice))
+                    if (!CultureSettings.XpoOidConfigurationCountryMozambique.Equals(XPOSettings.ConfigurationSystemCountry.Oid) && (documentParent.DocumentType.Oid != InvoiceSettings.XpoOidDocumentFinanceTypeInvoice || documentParent.DocumentType.Oid != DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice))
                     {
                         ResultAdd(FinanceValidationError.ERROR_RULE_PARENT_DOCUMENT_CUSTOMER_AND_CURRENT_DOCUMENT_CUSTOMER_INVALID);
                     }                       
@@ -639,9 +639,9 @@ namespace logicpos.financial.library.Classes.Finance
 
                 if (pParameters.PaymentCondition == Guid.Empty &&
                     (
-                        pParameters.DocumentType == SharedSettings.XpoOidDocumentFinanceTypeInvoice ||
-                        pParameters.DocumentType == SharedSettings.XpoOidDocumentFinanceTypeProformaInvoice ||
-                        pParameters.DocumentType == SharedSettings.XpoOidDocumentFinanceTypeBudget
+                        pParameters.DocumentType == InvoiceSettings.XpoOidDocumentFinanceTypeInvoice ||
+                        pParameters.DocumentType == DocumentSettings.XpoOidDocumentFinanceTypeProformaInvoice ||
+                        pParameters.DocumentType == DocumentSettings.XpoOidDocumentFinanceTypeBudget
                     )
                 )
                 {
@@ -653,8 +653,8 @@ namespace logicpos.financial.library.Classes.Finance
 
                 if (pParameters.PaymentMethod == Guid.Empty &&
                     (
-                        pParameters.DocumentType == SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice ||
-                        pParameters.DocumentType == SharedSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment
+                        pParameters.DocumentType == DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice ||
+                        pParameters.DocumentType == DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment
                     )
                 )
                 {
@@ -664,7 +664,7 @@ namespace logicpos.financial.library.Classes.Finance
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
                 //SimplifiedInvoice
 
-                if (pParameters.DocumentType == SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice)
+                if (pParameters.DocumentType == DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice)
                 {
                     //Check if SimplifiedInvoice is Service Total > MaxTotalServices
                     if (pParameters.ArticleBag.GetClassTotals("S") > financeRuleSimplifiedInvoiceMaxTotalServices)
@@ -697,7 +697,7 @@ namespace logicpos.financial.library.Classes.Finance
                 }
 
                 //ParentDocuments: Credit Note
-                if (pParameters.DocumentType == SharedSettings.XpoOidDocumentFinanceTypeCreditNote)
+                if (pParameters.DocumentType == DocumentSettings.XpoOidDocumentFinanceTypeCreditNote)
                 {
                     if (documentParent == null)
                     {
@@ -746,16 +746,16 @@ namespace logicpos.financial.library.Classes.Finance
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
                 //ParentDocument : Customer <> ParentDocument Customer
 
-                if (documentType != null && customer != null && customer.Oid == SharedSettings.FinalConsumerId
+                if (documentType != null && customer != null && customer.Oid == InvoiceSettings.FinalConsumerId
                     && (
-                        documentType.Oid != SharedSettings.XpoOidDocumentFinanceTypeInvoice
-                        && documentType.Oid != SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice
-                        && documentType.Oid != SharedSettings.XpoOidDocumentFinanceTypeConferenceDocument
+                        documentType.Oid != InvoiceSettings.XpoOidDocumentFinanceTypeInvoice
+                        && documentType.Oid != DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice
+                        && documentType.Oid != DocumentSettings.XpoOidDocumentFinanceTypeConferenceDocument
                         )
                     )
                 {
                     //Has an Exception to base Rule, is Valid if is Derived from a Parent Document 
-                    if (documentParent != null && documentParent.EntityOid != SharedSettings.FinalConsumerId)
+                    if (documentParent != null && documentParent.EntityOid != InvoiceSettings.FinalConsumerId)
                     {
                         ResultAdd(FinanceValidationError.ERROR_RULE_DOCUMENT_FINANCE_TYPE_WITH_FINAL_CONSUMER_INVALID);
                     }
@@ -767,9 +767,9 @@ namespace logicpos.financial.library.Classes.Finance
                 if (documentType != null && customer != null
                     &&
                     (
-                        documentType.Oid == SharedSettings.XpoOidDocumentFinanceTypeInvoice ||
-                        documentType.Oid == SharedSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment ||
-                        documentType.Oid == SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice
+                        documentType.Oid == InvoiceSettings.XpoOidDocumentFinanceTypeInvoice ||
+                        documentType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment ||
+                        documentType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice
                     )
                     &&
                     FinancialLibraryUtils.IsInValidFinanceDocumentCustomer(
@@ -884,7 +884,7 @@ namespace logicpos.financial.library.Classes.Finance
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
                 //Validate Invoice Documents
-                List<Guid> validCustomerPaymentInvoices = FinancialLibraryUtils.GetValidDocumentsForPayment(customer.Oid, SharedSettings.XpoOidDocumentFinanceTypeInvoice);
+                List<Guid> validCustomerPaymentInvoices = FinancialLibraryUtils.GetValidDocumentsForPayment(customer.Oid, InvoiceSettings.XpoOidDocumentFinanceTypeInvoice);
                 foreach (var item in pInvoices)
                 {
                     if (!validCustomerPaymentInvoices.Contains(item.Oid)
@@ -896,7 +896,7 @@ namespace logicpos.financial.library.Classes.Finance
                 }
 
                 //Validate Invoice Documents
-                List<Guid> validCustomerPaymentCreditNotes = FinancialLibraryUtils.GetValidDocumentsForPayment(customer.Oid, SharedSettings.XpoOidDocumentFinanceTypeCreditNote);
+                List<Guid> validCustomerPaymentCreditNotes = FinancialLibraryUtils.GetValidDocumentsForPayment(customer.Oid, DocumentSettings.XpoOidDocumentFinanceTypeCreditNote);
                 foreach (var item in pCreditNotes)
                 {
                     if (!validCustomerPaymentCreditNotes.Contains(item.Oid)
@@ -1151,7 +1151,7 @@ namespace logicpos.financial.library.Classes.Finance
                     //Rules Validation
 
                     //If is a ConsignationInvoice all Articles must have VatRateDutyFree Vat
-                    if (pDocumentType.Oid == SharedSettings.XpoOidDocumentFinanceTypeConsignationInvoice)
+                    if (pDocumentType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeConsignationInvoice)
                     {
                         if (item.Key.Vat != 0.0m)
                         {
@@ -1159,7 +1159,7 @@ namespace logicpos.financial.library.Classes.Finance
                             hasArticlesWithoutVatRateDutyFree = true;
                         }
 
-                        if (item.Key.VatExemptionReasonOid != SharedSettings.XpoOidConfigurationVatExemptionReasonM99)
+                        if (item.Key.VatExemptionReasonOid != InvoiceSettings.XpoOidConfigurationVatExemptionReasonM99)
                         {
                             hasArticlesWithInvalidVatExemptionReason = true;
                             hasArticlesWithoutVatExemptionReasonM99 = true;

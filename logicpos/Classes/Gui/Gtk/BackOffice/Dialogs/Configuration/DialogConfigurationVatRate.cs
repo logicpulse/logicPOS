@@ -6,6 +6,7 @@ using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.shared.App;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 using LogicPOS.Settings.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
@@ -93,15 +94,15 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //Disable Components
                 bool enableComponents = !(
-                    _configurationVatRate.Oid == SharedSettings.XpoOidConfigurationVatRateNormalPT ||
-                    _configurationVatRate.Oid == SharedSettings.XpoOidConfigurationVatRateIntermediatePT ||
-                    _configurationVatRate.Oid == SharedSettings.XpoOidConfigurationVatRateReducedPT ||
-                    _configurationVatRate.Oid == SharedSettings.XpoOidConfigurationVatRateNormalPTMA ||
-                    _configurationVatRate.Oid == SharedSettings.XpoOidConfigurationVatRateIntermediatePTMA ||
-                    _configurationVatRate.Oid == SharedSettings.XpoOidConfigurationVatRateReducedPTMA ||
-                    _configurationVatRate.Oid == SharedSettings.XpoOidConfigurationVatRateNormalPTAC ||
-                    _configurationVatRate.Oid == SharedSettings.XpoOidConfigurationVatRateIntermediatePTAC ||
-                    _configurationVatRate.Oid == SharedSettings.XpoOidConfigurationVatRateReducedPTAC
+                    _configurationVatRate.Oid == InvoiceSettings.XpoOidConfigurationVatRateNormalPT ||
+                    _configurationVatRate.Oid == InvoiceSettings.XpoOidConfigurationVatRateIntermediatePT ||
+                    _configurationVatRate.Oid == InvoiceSettings.XpoOidConfigurationVatRateReducedPT ||
+                    _configurationVatRate.Oid == InvoiceSettings.XpoOidConfigurationVatRateNormalPTMA ||
+                    _configurationVatRate.Oid == InvoiceSettings.XpoOidConfigurationVatRateIntermediatePTMA ||
+                    _configurationVatRate.Oid == InvoiceSettings.XpoOidConfigurationVatRateReducedPTMA ||
+                    _configurationVatRate.Oid == InvoiceSettings.XpoOidConfigurationVatRateNormalPTAC ||
+                    _configurationVatRate.Oid == InvoiceSettings.XpoOidConfigurationVatRateIntermediatePTAC ||
+                    _configurationVatRate.Oid == InvoiceSettings.XpoOidConfigurationVatRateReducedPTAC
                 );
                 entryDesignation.Sensitive = enableComponents;
                 entryTaxType.Sensitive = enableComponents;

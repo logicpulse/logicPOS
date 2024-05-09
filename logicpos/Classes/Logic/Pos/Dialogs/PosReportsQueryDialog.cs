@@ -13,6 +13,7 @@ using System.Data;
 using System.Drawing;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -294,7 +295,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 /* IN009204 - RCs should be removed from this report, only AT Financial documents here */
                 if (Enums.Reports.ReportsQueryDialogMode.COMPANY_BILLING.Equals(_reportsQueryDialogMode))
                 {
-                    string documentTypeOid = SharedSettings.XpoOidDocumentFinanceTypePayment.ToString();
+                    string documentTypeOid = DocumentSettings.XpoOidDocumentFinanceTypePayment.ToString();
                     string documentTypeDesignation = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_type_title_rc");
                     /* Based on "view_documentfinancecustomerbalancedetails" we are removing RCs ("a009168d-fed1-4f52-b9e3-77e280b18ff5") */
                     filter += $" AND DocumentTypeOid <> '{documentTypeOid}'";

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 using LogicPOS.Settings.Extensions;
 
 namespace logicpos.shared.App
@@ -11,9 +12,9 @@ namespace logicpos.shared.App
         //Log4Net
         private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static readonly DocumentType TRANSPORT_DOCUMENT = new DocumentType(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_type_title_gt"), SharedSettings.XpoOidDocumentFinanceTypeTransportationGuide, Enums.DocumentType.WayBill, "GT", false, true, 0, true, true, true, 2, false);
-        public static readonly DocumentType CREDIT_SLIP = new DocumentType(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_type_title_nc"), SharedSettings.XpoOidDocumentFinanceTypeCreditNote, Enums.DocumentType.Invoice, "NC", false, false, 1, false, true, true, 1, false);
-        public static readonly DocumentType DELIVERY_NOTE = new DocumentType(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_type_title_gr"), SharedSettings.XpoOidDocumentFinanceTypeDeliveryNote, Enums.DocumentType.WayBill, "GR", false, true, 0, true, true, true, 2, false);
+        public static readonly DocumentType TRANSPORT_DOCUMENT = new DocumentType(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_type_title_gt"), DocumentSettings.XpoOidDocumentFinanceTypeTransportationGuide, Enums.DocumentType.WayBill, "GT", false, true, 0, true, true, true, 2, false);
+        public static readonly DocumentType CREDIT_SLIP = new DocumentType(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_type_title_nc"), DocumentSettings.XpoOidDocumentFinanceTypeCreditNote, Enums.DocumentType.Invoice, "NC", false, false, 1, false, true, true, 1, false);
+        public static readonly DocumentType DELIVERY_NOTE = new DocumentType(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_type_title_gr"), DocumentSettings.XpoOidDocumentFinanceTypeDeliveryNote, Enums.DocumentType.WayBill, "GR", false, true, 0, true, true, true, 2, false);
 
         public static IEnumerable<DocumentType> Values
         {

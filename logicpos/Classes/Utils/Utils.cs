@@ -2539,7 +2539,7 @@ namespace logicpos
         {
             bool customerExists = false;
             erp_customer result;
-            erp_customer finalConsumerEntity = (erp_customer)XPOHelper.GetXPGuidObject(typeof(erp_customer), SharedSettings.FinalConsumerId);
+            erp_customer finalConsumerEntity = (erp_customer)XPOHelper.GetXPGuidObject(typeof(erp_customer), InvoiceSettings.FinalConsumerId);
             fin_configurationpricetype configurationPriceType = (fin_configurationpricetype)XPOHelper.GetXPGuidObject(typeof(fin_configurationpricetype), SharedSettings.XpoOidConfigurationPriceTypeDefault);
 
             SortingCollection sortCollection = new SortingCollection

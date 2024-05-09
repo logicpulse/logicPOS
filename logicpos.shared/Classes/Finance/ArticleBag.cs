@@ -7,6 +7,7 @@ using logicpos.shared.App;
 using logicpos.shared.Classes.Orders;
 using logicpos.shared.Enums;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 using LogicPOS.Settings.Extensions;
 using System;
 using System.Collections.Generic;
@@ -628,7 +629,7 @@ namespace logicpos.shared.Classes.Finance
                             //Proteção para artigos do tipo "Sem Preço" [IN:013329]
                             //First check if article have price
                             //&& (Convert.ToDecimal(row.Values[selectedDataDocuments.GetFieldIndex("Price")]) > 0.0m)
-                            if (row.Values[selectedDataDocuments.GetFieldIndex("DocumentType")].ToString() != SharedSettings.XpoOidDocumentFinanceTypeConferenceDocument.ToString()
+                            if (row.Values[selectedDataDocuments.GetFieldIndex("DocumentType")].ToString() != DocumentSettings.XpoOidDocumentFinanceTypeConferenceDocument.ToString()
                                 && row.Values[selectedDataDocuments.GetFieldIndex("Price")] != null)
                             {
 

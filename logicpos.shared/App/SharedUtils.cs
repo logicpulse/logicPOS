@@ -615,7 +615,7 @@ namespace logicpos.shared.App
                         //:::: Notification : CurrentAccountDocumentsToInvoice ::::
                         //ProcessFinanceDocumentToInvoice to Create Notification in Spool for CurrentAccount Documents
                         //systemNotificationType = (SystemNotificationType)pSession.GetObjectByKey(typeof(SystemNotificationType), SettingsApp.XpoOidSystemNotificationTypeCurrentAccountDocumentsToInvoice);
-                        systemNotification = ProcessFinanceDocumentToInvoice(pSession, SharedSettings.XpoOidSystemNotificationTypeCurrentAccountDocumentsToInvoice, SharedSettings.XpoOidDocumentFinanceTypeCurrentAccountInput, "(Payed = 0 OR Payed IS NULL)", defaultBackDaysForInvoice);
+                        systemNotification = ProcessFinanceDocumentToInvoice(pSession, SharedSettings.XpoOidSystemNotificationTypeCurrentAccountDocumentsToInvoice, DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput, "(Payed = 0 OR Payed IS NULL)", defaultBackDaysForInvoice);
                         if (systemNotification != null)
                         {
                             systemNotification.Ord = ord; systemNotification.Save(); ord++;
@@ -625,7 +625,7 @@ namespace logicpos.shared.App
                         //:::: Notification : ConsignationInvoiceDocumentsToInvoice ::::
                         //ProcessFinanceDocumentToInvoice to Create Notification in Spool for CurrentAccount Documents
                         //systemNotificationType = (SystemNotificationType)pSession.GetObjectByKey(typeof(SystemNotificationType), SettingsApp.XpoOidSystemNotificationTypeConsignationInvoiceDocumentsToInvoice);
-                        systemNotification = ProcessFinanceDocumentToInvoice(pSession, SharedSettings.XpoOidSystemNotificationTypeConsignationInvoiceDocumentsToInvoice, SharedSettings.XpoOidDocumentFinanceTypeConsignationInvoice, "(DocumentChild IS NULL)", defaultBackDaysForInvoice);
+                        systemNotification = ProcessFinanceDocumentToInvoice(pSession, SharedSettings.XpoOidSystemNotificationTypeConsignationInvoiceDocumentsToInvoice, DocumentSettings.XpoOidDocumentFinanceTypeConsignationInvoice, "(DocumentChild IS NULL)", defaultBackDaysForInvoice);
                         if (systemNotification != null)
                         {
                             systemNotification.Ord = ord; systemNotification.Save(); ord++;

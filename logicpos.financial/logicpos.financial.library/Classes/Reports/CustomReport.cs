@@ -620,7 +620,7 @@ namespace logicpos.financial.library.Classes.Reports
 
                 if (XPOSettings.ConfigurationSystemCountry.Oid.Equals(CultureSettings.XpoOidConfigurationCountryAngola))
                 {
-                    if (documentMaster.DocumentParent != null && documentMaster.DocumentType.Oid.ToString() == SharedSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment.ToString())
+                    if (documentMaster.DocumentParent != null && documentMaster.DocumentType.Oid.ToString() == DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment.ToString())
                     {
                         documentMaster.Notes += string.Format(
                             CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_source_document") + ": " + documentMaster.DocumentParent.DocumentNumber);
@@ -1496,7 +1496,7 @@ namespace logicpos.financial.library.Classes.Reports
                     }
 
                     /* If "Nota de Crédito" (NC) */
-                    if (SharedSettings.XpoOidDocumentFinanceTypeCreditNote.Equals(item.DocumentType.Oid))
+                    if (DocumentSettings.XpoOidDocumentFinanceTypeCreditNote.Equals(item.DocumentType.Oid))
                     {
                         item.PaymentMethod = new fin_configurationpaymentmethod { Designation = item.DocumentType.Designation, Ord = 999, Code = 999 }; /* Setting to 999 to avoid NC being grouped with other Payment Method created */
                         item.PaymentCondition = new fin_configurationpaymentcondition { Designation = item.DocumentType.Designation, Ord = 999, Code = 999 }; /* Sets the same as above in order to keep the pattern */
@@ -1516,7 +1516,7 @@ namespace logicpos.financial.library.Classes.Reports
                         /* Case FS */
                         if (item.PaymentCondition == null)
                         {
-                            item.PaymentCondition = (fin_configurationpaymentcondition)uowSession.GetObjectByKey(typeof(fin_configurationpaymentcondition), SharedSettings.XpoOidConfigurationPaymentMethodInstantPayment); /* Sets "Pronto Pagamento" to FS */
+                            item.PaymentCondition = (fin_configurationpaymentcondition)uowSession.GetObjectByKey(typeof(fin_configurationpaymentcondition), InvoiceSettings.XpoOidConfigurationPaymentMethodInstantPayment); /* Sets "Pronto Pagamento" to FS */
                         }
                         /* Case FT */
                         if (item.PaymentMethod == null)
@@ -1622,7 +1622,7 @@ namespace logicpos.financial.library.Classes.Reports
                             /* IN009075 */
                             item.EntityFiscalNumber = PluginSettings.PluginSoftwareVendor.Decrypt(item.EntityFiscalNumber);
                             /* IN009072 - this is used on reports to subtract the below values from totals when financial document is "NC" (see IN009066) */
-                            if (SharedSettings.XpoOidDocumentFinanceTypeCreditNote.Equals(new Guid(item.DocumentType)))
+                            if (DocumentSettings.XpoOidDocumentFinanceTypeCreditNote.Equals(new Guid(item.DocumentType)))
                             {
                                 item.ArticleQuantity *= -1;
                                 item.ArticleTotalFinal *= -1;
@@ -1649,7 +1649,7 @@ namespace logicpos.financial.library.Classes.Reports
                                 if (item.PaymentCondition == null)
                                 {
                                     /* Sets "Pronto Pagamento" to FS */
-                                    fin_configurationpaymentcondition paymentCondition = (fin_configurationpaymentcondition)uowSession.GetObjectByKey(typeof(fin_configurationpaymentcondition), SharedSettings.XpoOidConfigurationPaymentMethodInstantPayment);
+                                    fin_configurationpaymentcondition paymentCondition = (fin_configurationpaymentcondition)uowSession.GetObjectByKey(typeof(fin_configurationpaymentcondition), InvoiceSettings.XpoOidConfigurationPaymentMethodInstantPayment);
                                     item.PaymentCondition = paymentCondition.Designation;
                                 }
                                 /* Case FT */
@@ -1717,7 +1717,7 @@ namespace logicpos.financial.library.Classes.Reports
                             }
 
                             /* IN009072 - "NCs" must have their values subtracted from totals (see IN009066) */
-                            if (SharedSettings.XpoOidDocumentFinanceTypeCreditNote.Equals(new Guid(item.DocumentType)))
+                            if (DocumentSettings.XpoOidDocumentFinanceTypeCreditNote.Equals(new Guid(item.DocumentType)))
                             {
                                 item.ArticleQuantity *= -1;
                                 item.ArticleTotalNet *= -1;

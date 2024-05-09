@@ -4,6 +4,7 @@ using logicpos.datalayer.Xpo;
 using logicpos.financial.service.Objects.Modules.AT;
 using logicpos.shared.App;
 using LogicPOS.DTOs.Common;
+using LogicPOS.Settings;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -122,7 +123,7 @@ namespace logicpos.financial.service.Objects
                     AND (fm.EntityOid <> '{0}')
                 )"
                 // Skip FinalConsumer
-                , SharedSettings.FinalConsumerId
+                , InvoiceSettings.FinalConsumerId
                 );
             }
 

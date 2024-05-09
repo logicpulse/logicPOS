@@ -6,6 +6,7 @@ using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.shared.App;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 using LogicPOS.Settings.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
@@ -72,7 +73,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
                 //Disable/Enable Components
-                bool enableEdit = (_dataSourceRow.Oid != SharedSettings.XpoOidConfigurationVatExemptionReasonM99);
+                bool enableEdit = (_dataSourceRow.Oid != InvoiceSettings.XpoOidConfigurationVatExemptionReasonM99);
                 entryOrd.Sensitive = enableEdit;
                 entryCode.Sensitive = enableEdit;
                 entryDesignation.Sensitive = enableEdit;

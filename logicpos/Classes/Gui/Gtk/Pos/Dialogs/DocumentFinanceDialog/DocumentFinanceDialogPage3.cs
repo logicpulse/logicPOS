@@ -10,6 +10,7 @@ using logicpos.financial.library.App;
 using logicpos.shared.App;
 using logicpos.shared.Classes.Finance;
 using logicpos.shared.Enums;
+using LogicPOS.Settings;
 using System;
 using System.Data;
 
@@ -102,9 +103,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         {
             //If not a Invoice|InvoiceAndPayment|Simplified Invoice
             if (TreeViewArticles.DataSource.Rows.Count > 0 
-                && _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid != SharedSettings.XpoOidDocumentFinanceTypeInvoice 
-                && _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid != SharedSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment 
-                && _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid != SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice
+                && _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid != InvoiceSettings.XpoOidDocumentFinanceTypeInvoice 
+                && _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid != DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment 
+                && _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid != DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice
             )
             {
                 _validated = true;
@@ -130,7 +131,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             else if (
                 TreeViewArticles.DataSource.Rows.Count > 0 &&
                 (
-                    _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice 
+                    _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice 
                     && (
                         //Check Total Final and Total Services
                         ArticleBag.TotalFinal > SharedSettings.FinanceRuleSimplifiedInvoiceMaxTotal ||

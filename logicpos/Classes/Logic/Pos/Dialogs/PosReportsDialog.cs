@@ -81,15 +81,15 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 {
                     /* IN009066 - FS and NC added to reports */
                     extraFilter = $@" AND ({statusField} <> 'A') AND (
-{filterField} = '{SharedSettings.XpoOidDocumentFinanceTypeInvoice}' OR 
-{filterField} = '{SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice}' OR 
-{filterField} = '{SharedSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment}' OR 
-{filterField} = '{SharedSettings.XpoOidDocumentFinanceTypeConsignationInvoice}' OR 
-{filterField} = '{SharedSettings.XpoOidDocumentFinanceTypeDebitNote}' OR 
-{filterField} = '{SharedSettings.XpoOidDocumentFinanceTypeCreditNote}' OR 
-{filterField} = '{SharedSettings.XpoOidDocumentFinanceTypePayment}' 
+{filterField} = '{InvoiceSettings.XpoOidDocumentFinanceTypeInvoice}' OR 
+{filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice}' OR 
+{filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment}' OR 
+{filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeConsignationInvoice}' OR 
+{filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeDebitNote}' OR 
+{filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeCreditNote}' OR 
+{filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypePayment}' 
 OR 
-{filterField} = '{SharedSettings.XpoOidDocumentFinanceTypeCurrentAccountInput}'
+{filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput}'
 )".Replace(Environment.NewLine, string.Empty);
                     /* IN009089 - # TO DO: above, we need to check with business this condition:  {filterField} = '{SettingsApp.XpoOidDocumentFinanceTypeCurrentAccountInput}' */
                 }

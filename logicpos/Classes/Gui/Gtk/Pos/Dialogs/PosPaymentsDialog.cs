@@ -33,7 +33,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private PosSelectRecordDialog<DataTable, DataRow, TreeViewPartialPayment> _dialogPartialPayment;
         private decimal _totalPartialPaymentItems = 0;
         //Default DocumentType (FS)
-        private Guid _processDocumentType = SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice;
+        private Guid _processDocumentType = DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice;
         //ResponseType (Above 10)
         private readonly ResponseType _responseTypeClearCustomer = (ResponseType)11;
         private readonly ResponseType _responseTypeFullPayment = (ResponseType)12;
@@ -349,7 +349,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if (ProcessFinanceDocumentParameter == null)
                 {
                     //If ProcessFinanceDocumentParameter is not null fill Dialog with value from ProcessFinanceDocumentParameter, implemented for SplitPayments
-                    GetCustomerDetails("Oid", SharedSettings.FinalConsumerId.ToString());
+                    GetCustomerDetails("Oid", InvoiceSettings.FinalConsumerId.ToString());
                 }
                 //Fill Dialog Inputs with Stored Values, ex when we Work with SplitPayments
                 else

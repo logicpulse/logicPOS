@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -181,17 +182,17 @@ SELECT
 (
 	CASE  
 		WHEN DFM.DocumentType IN (
-            '{SharedSettings.XpoOidDocumentFinanceTypeBudget}', 
-            '{SharedSettings.XpoOidDocumentFinanceTypeConferenceDocument}', 
-            '{SharedSettings.XpoOidDocumentFinanceTypeConsignmentGuide}', 
-            '{SharedSettings.XpoOidDocumentFinanceTypeCreditNote}', 
-            '{SharedSettings.XpoOidDocumentFinanceTypeDeliveryNote}', 
-            '{SharedSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment}', 
-            '{SharedSettings.XpoOidDocumentFinanceTypeOwnAssetsDriveGuide}', 
-            '{SharedSettings.XpoOidDocumentFinanceTypeProformaInvoice}', 
-            '{SharedSettings.XpoOidDocumentFinanceTypeReturnGuide}', 
-            '{SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice}', 
-            '{SharedSettings.XpoOidDocumentFinanceTypeTransportationGuide}'
+            '{DocumentSettings.XpoOidDocumentFinanceTypeBudget}', 
+            '{DocumentSettings.XpoOidDocumentFinanceTypeConferenceDocument}', 
+            '{DocumentSettings.XpoOidDocumentFinanceTypeConsignmentGuide}', 
+            '{DocumentSettings.XpoOidDocumentFinanceTypeCreditNote}', 
+            '{DocumentSettings.XpoOidDocumentFinanceTypeDeliveryNote}', 
+            '{DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment}', 
+            '{DocumentSettings.XpoOidDocumentFinanceTypeOwnAssetsDriveGuide}', 
+            '{DocumentSettings.XpoOidDocumentFinanceTypeProformaInvoice}', 
+            '{DocumentSettings.XpoOidDocumentFinanceTypeReturnGuide}', 
+            '{DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice}', 
+            '{DocumentSettings.XpoOidDocumentFinanceTypeTransportationGuide}'
         ) THEN NULL 
 		ELSE (
 			DFM.TotalFinal - (

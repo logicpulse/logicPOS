@@ -192,7 +192,7 @@ namespace logicpos
             if (XPOSettings.ConfigurationSystemCountry.Oid == CultureSettings.XpoOidConfigurationCountryPortugal && documentFinanceMaster.DocumentType.WsAtDocument)
             {
                 //Documents
-                if (!documentFinanceMaster.DocumentType.WayBill || documentFinanceMaster.DocumentType.Oid == SharedSettings.XpoOidDocumentFinanceTypeInvoiceWayBill)
+                if (!documentFinanceMaster.DocumentType.WayBill || documentFinanceMaster.DocumentType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeInvoiceWayBill)
                 {
                     //If Enabled in Config
                     result = false; //(SettingsApp.ServiceATSendDocuments);
@@ -203,7 +203,7 @@ namespace logicpos
                     //If Enabled in Config and is not a FinalConsumer
                     //É obrigatório comunicar um documento de transporte à AT cujo destinatário seja um consumidor final?
                     //Não. Estão excluídos das obrigações de comunicação os documentos de transporte em que o destinatário ou adquirente seja consumidor final.
-                    result = (/*SettingsApp.ServiceATSendDocumentsWayBill &&*/ documentFinanceMaster.EntityOid != SharedSettings.FinalConsumerId);
+                    result = (/*SettingsApp.ServiceATSendDocumentsWayBill &&*/ documentFinanceMaster.EntityOid != InvoiceSettings.FinalConsumerId);
                 }
             }
 

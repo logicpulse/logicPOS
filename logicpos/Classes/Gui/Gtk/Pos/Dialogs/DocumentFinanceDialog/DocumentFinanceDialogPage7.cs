@@ -8,6 +8,7 @@ using logicpos.shared.App;
 using logicpos.shared.Classes.Finance;
 using logicpos.shared.Classes.Orders;
 using logicpos.shared.Enums;
+using LogicPOS.Settings;
 using System;
 using System.Collections.Generic;
 
@@ -122,7 +123,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         //5.2: FT: Fatura
         private void buttonPrintInvoice_Clicked(object sender, EventArgs e)
         {
-            Guid documentTypeGuid = SharedSettings.XpoOidDocumentFinanceTypeInvoice;
+            Guid documentTypeGuid = InvoiceSettings.XpoOidDocumentFinanceTypeInvoice;
             Guid customerGuid = new Guid("6223881a-4d2d-4de4-b254-f8529193da33");
 
             //Prepare ProcessFinanceDocumentParameter
@@ -153,7 +154,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         //OrderReferences
         private void buttonOrderReferences_Clicked(object sender, EventArgs e)
         {
-            Guid documentTypeGuid = SharedSettings.XpoOidDocumentFinanceTypeInvoice;
+            Guid documentTypeGuid = InvoiceSettings.XpoOidDocumentFinanceTypeInvoice;
             Guid customerGuid = new Guid("6223881a-4d2d-4de4-b254-f8529193da33");
             Guid orderReference = new Guid("fbec0056-71a7-4d5b-8bfa-d5e887ec585f");
 
@@ -184,7 +185,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         //NC : Credit Note
         private void buttonCreditNote_Clicked(object sender, EventArgs e)
         {
-            Guid documentTypeGuid = SharedSettings.XpoOidDocumentFinanceTypeCreditNote;
+            Guid documentTypeGuid = DocumentSettings.XpoOidDocumentFinanceTypeCreditNote;
             Guid reference = new Guid("daecbf1d-6211-4e74-a8cd-81795e347656");
 
             //FT FT2015S0001/16
@@ -212,7 +213,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         //FT: Vats
         private void buttonPrintInvoiceVat_Clicked(object sender, EventArgs e)
         {
-            Guid documentTypeGuid = SharedSettings.XpoOidDocumentFinanceTypeInvoice;
+            Guid documentTypeGuid = InvoiceSettings.XpoOidDocumentFinanceTypeInvoice;
             Guid customerGuid = new Guid("6223881a-4d2d-4de4-b254-f8529193da33");
             Guid vatExemptionReasonGuid = new Guid("8311ce58-50ee-4115-9cf9-dbca86538fdd");
             fin_configurationvatexemptionreason vatExemptionReason = (fin_configurationvatexemptionreason)XPOSettings.Session.GetObjectByKey(typeof(fin_configurationvatexemptionreason), vatExemptionReasonGuid);
@@ -255,7 +256,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
         private void buttonPrintInvoiceDiscount_Clicked(object sender, EventArgs e)
         {
-            Guid documentTypeGuid = SharedSettings.XpoOidDocumentFinanceTypeInvoice;
+            Guid documentTypeGuid = InvoiceSettings.XpoOidDocumentFinanceTypeInvoice;
             Guid customerGuid = new Guid("6223881a-4d2d-4de4-b254-f8529193da33");
 
             //Article:Line1
@@ -288,7 +289,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
         private void buttonPrintInvoiceExchangeRate_Clicked(object sender, EventArgs e)
         {
-            Guid documentTypeGuid = SharedSettings.XpoOidDocumentFinanceTypeInvoice;
+            Guid documentTypeGuid = InvoiceSettings.XpoOidDocumentFinanceTypeInvoice;
             Guid customerGuid = new Guid("6223881a-4d2d-4de4-b254-f8529193da33");
             Guid currencyGuid = new Guid("28d692ad-0083-11e4-96ce-00ff2353398c");
             cfg_configurationcurrency currency = (cfg_configurationcurrency)XPOSettings.Session.GetObjectByKey(typeof(cfg_configurationcurrency), currencyGuid);
@@ -325,7 +326,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
         private void buttonPrintInvoiceJohnDoe1_Clicked(object sender, EventArgs e)
         {
-            Guid documentTypeGuid = SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice;
+            Guid documentTypeGuid = DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice;
             Guid customerGuid = new Guid("d8ce6455-e1a4-41dc-a475-223c00de3a91");//John Doe1
 
             //Article
@@ -354,7 +355,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
         private void buttonPrintInvoiceJohnDoe2_Clicked(object sender, EventArgs e)
         {
-            Guid documentTypeGuid = SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice;
+            Guid documentTypeGuid = DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice;
             Guid customerGuid = new Guid("f5a382bb-f826-40d8-8910-cfb18df8a41e");//John Doe2
 
             //Article

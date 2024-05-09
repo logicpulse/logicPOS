@@ -12,13 +12,6 @@ namespace logicpos.shared.App
     {
         private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-#if DEBUG
-        public static bool DeveloperMode { get; set; } = true;
-        public static bool PrintPDFEnabled { get; set; } = false;
-#else
-        public static bool DeveloperMode {get;set;} = false;
-        public static bool PrintPDFEnabled {get;set} = false;
-#endif                                                                                                                                                                                  
 
         public static string AppSessionFile { get; set; } = "appsession_{0}.json";
         public static bool AppSessionFileJsonIndented { get; set; } = true;
@@ -34,9 +27,7 @@ namespace logicpos.shared.App
         //This rule is to force fill Customer details if total document value is Greater or Equal to
         public static int FinanceRuleRequiredCustomerDetailsAboveValue { get { return GetFinanceRuleRequiredCustomerDetailsAboveValue(); } }
 
-        public static bool DocumentFinanceSeriesGenerationFactoryUseRandomAcronymPrefix { get; set; }
-
-        public static string DocumentFinanceSeriesGenerationFactoryAcronymLastSerieFormat { get; set; }
+       
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Developer Config
@@ -48,60 +39,6 @@ namespace logicpos.shared.App
 
         //ArticleClass
         public static Guid XpoOidArticleClassCustomerCard { get; set; } = new Guid("49ea35ba-35f3-440f-946e-ab32578ed741");
-
-        //Customer | Final Consumer | 999999990
-        public static Guid FinalConsumerId { get; set; } = new Guid("0cf40622-578b-417d-b50f-e945fefb5d68");
-
-        //ConfigurationPaymentMethod
-        public static Guid XpoOidConfigurationPaymentMethodCurrentAccount { get; set; } = new Guid("6db009fd-6729-4353-a4d0-d599c4c19297");
-
-        //ConfigurationPaymentCondition
-        public static Guid XpoOidConfigurationPaymentMethodInstantPayment { get; set; } = new Guid("4261daa6-c0bd-4ac9-949a-cae0be2dd472");//Pronto Pagamento
-
-        //DocumentFinanceType
-
-        //SaftDocumentType 1
-        public static Guid XpoOidDocumentFinanceTypeInvoice { get; set; } = new Guid("7af04618-74a6-42a3-aaba-454b7076f5a6");
-        public static Guid XpoOidDocumentFinanceTypeSimplifiedInvoice { get; set; } = new Guid("2c69b109-318a-4375-a573-28e5984b6503");
-        public static Guid XpoOidDocumentFinanceTypeInvoiceAndPayment { get; set; } = new Guid("09b6aa6e-dc0e-41fd-8dbe-8678a3d11cbc");
-        public static Guid XpoOidDocumentFinanceTypeDebitNote { get; set; } = new Guid("3942d940-ed13-4a62-a352-97f1ce006d8a");
-        public static Guid XpoOidDocumentFinanceTypeCreditNote { get; set; } = new Guid("fa924162-beed-4f2f-938d-919deafb7d47");
-
-        //SaftDocumentType 2
-        public static Guid XpoOidDocumentFinanceTypeDeliveryNote { get; set; } = new Guid("95f6a472-1b12-43aa-a215-a4b406b18924");
-        public static Guid XpoOidDocumentFinanceTypeTransportationGuide { get; set; } = new Guid("96bcf534-0dab-48bb-a69e-166e81ae6f7b");
-        public static Guid XpoOidDocumentFinanceTypeOwnAssetsDriveGuide { get; set; } = new Guid("f8e96786-fed8-4143-be9e-b03c3a984a2c");
-        public static Guid XpoOidDocumentFinanceTypeConsignmentGuide { get; set; } = new Guid("63d8eb04-983c-4524-96de-979a240b362c");
-        public static Guid XpoOidDocumentFinanceTypeReturnGuide { get; set; } = new Guid("f03d2788-bed6-41ab-8d44-100039103e83");
-        //SaftDocumentType 3
-        public static Guid XpoOidDocumentFinanceTypeConferenceDocument { get; set; } = new Guid("afed98d3-eae7-43a7-a7be-515753594c8f");
-        public static Guid XpoOidDocumentFinanceTypeConsignationInvoice { get; set; } = new Guid("b8554d36-642a-4083-b608-8f1da35f0fec");
-        public static Guid XpoOidDocumentFinanceTypeBudget { get; set; } = new Guid("005ac531-31a1-44bb-9346-058f9c9ad01a");
-        public static Guid XpoOidDocumentFinanceTypeProformaInvoice { get; set; } = new Guid("6f4249d0-4aaf-4711-814f-7f9533a1ef7f");
-        //SaftDocumentType 4
-        public static Guid XpoOidDocumentFinanceTypePayment { get; set; } = new Guid("a009168d-fed1-4f52-b9e3-77e280b18ff5");
-        //SaftDocumentType 0 : INTERNAL, not used in SAF-T PT
-        public static Guid XpoOidDocumentFinanceTypeInvoiceWayBill { get; set; } = new Guid("f8878cf5-0f88-4270-8a55-1fc2488d81a2");
-        public static Guid XpoOidDocumentFinanceTypeCurrentAccountInput { get; set; } = new Guid("235f06f3-5ec3-4e13-977b-325614b07e35");
-
-
-        //Tax/VatRate
-        public static Guid XpoOidConfigurationVatRateDutyFree { get; set; } = new Guid("e74faad7-f5c9-4206-a662-f95820014195");//0
-        //(Continente)
-        public static Guid XpoOidConfigurationVatRateNormalPT { get; set; } = new Guid("cee00590-7317-41b8-af46-66560401096b");//23
-        public static Guid XpoOidConfigurationVatRateIntermediatePT { get; set; } = new Guid("f73e3b41-4967-48c6-9f9a-260abf2146e1");//13
-        public static Guid XpoOidConfigurationVatRateReducedPT { get; set; } = new Guid("7e89eaed-ce56-4565-8eec-98f2e8d004a5");//6
-        //(R.A.Madeira)
-        public static Guid XpoOidConfigurationVatRateNormalPTMA { get; set; } = new Guid("ecd64d02-5249-4303-a35c-c662ffba4844");//22
-        public static Guid XpoOidConfigurationVatRateIntermediatePTMA { get; set; } = new Guid("f0281b91-83d7-482f-bfd8-e52461983136");//12
-        public static Guid XpoOidConfigurationVatRateReducedPTMA { get; set; } = new Guid("b57d85a5-843e-4b84-9660-9124006b9b05");//5
-        //(R.A.Açores)
-        public static Guid XpoOidConfigurationVatRateNormalPTAC { get; set; } = new Guid("389661c1-05f6-4830-bc06-176e2fdb3dc2");//18
-        public static Guid XpoOidConfigurationVatRateIntermediatePTAC { get; set; } = new Guid("52c6ce3c-9246-4b8b-a143-b84733a074d4");//9
-        public static Guid XpoOidConfigurationVatRateReducedPTAC { get; set; } = new Guid("e4478dea-9272-4090-a71a-df775b96c4b3");//4
-
-        //VatExemptionReason
-        public static Guid XpoOidConfigurationVatExemptionReasonM99 { get; set; } = new Guid("f60f97c0-390e-4d76-90d7-204b6ea57949");
 
         //Notifications
         /// <summary>
@@ -121,7 +58,6 @@ namespace logicpos.shared.App
         /* TK013134 - Parking Ticket */
         public static Guid XpoOidArticleParkingTicket { get; set; } = new Guid("f4c6294d-0a57-4f36-951d-87ab2e076ef1");
         public static Guid XpoOidArticleParkingCard { get; set; } = new Guid("32829702-33fa-48d5-917c-4c1db8720777");
-        public static Guid XpoOidArticleParkingSubfamily { get; set; } = new Guid("d0c8169b-a5bc-46cb-b8ff-186b0ba39929");
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Reports
@@ -171,12 +107,11 @@ namespace logicpos.shared.App
             SaftCurrencyCode = GetSoftwareVendorValueAsString(nameof(SaftCurrencyCode));
             SaftCurrencyCodeAO = GetSoftwareVendorValueAsString(nameof(SaftCurrencyCodeAO));
 
-            DocumentFinanceSeriesGenerationFactoryUseRandomAcronymPrefix = GetSoftwareVendorValueAsBool(nameof(DocumentFinanceSeriesGenerationFactoryUseRandomAcronymPrefix));
-            DocumentFinanceSeriesGenerationFactoryAcronymLastSerieFormat = GetSoftwareVendorValueAsString(nameof(DocumentFinanceSeriesGenerationFactoryAcronymLastSerieFormat));
+            DocumentSettings.DocumentFinanceSeriesGenerationFactoryUseRandomAcronymPrefix = GetSoftwareVendorValueAsBool(nameof(DocumentSettings.DocumentFinanceSeriesGenerationFactoryUseRandomAcronymPrefix));
+            DocumentSettings.DocumentFinanceSeriesGenerationFactoryAcronymLastSerieFormat = GetSoftwareVendorValueAsString(nameof(DocumentSettings.DocumentFinanceSeriesGenerationFactoryAcronymLastSerieFormat));
         }
 
-      
-
+    
         //Use to limit Simplified Invoices to have a total limit of 1000 (Articles Products + Services)
         private static int GetFinanceRuleSimplifiedInvoiceMaxTotal()
         {

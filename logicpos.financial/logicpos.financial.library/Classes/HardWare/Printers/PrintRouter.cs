@@ -12,6 +12,7 @@ using logicpos.shared.App;
 using logicpos.datalayer.Xpo;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 
 namespace logicpos.financial.library.Classes.Hardware.Printers
 {
@@ -28,7 +29,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
             string result = pPrinterToken;
 
             //Check if Developer Enabled PDF Printer
-            if (SharedSettings.PrintPDFEnabled)
+            if (PrintingSettings.PrintPDFEnabled)
             {
                 result = "REPORT_EXPORT_PDF";
             }

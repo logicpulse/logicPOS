@@ -46,10 +46,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private readonly TouchButtonIconWithText botao15;
         private readonly TouchButtonIconWithText botao16;
         private readonly ICollection collectionDocuments = null;
-        private readonly string creditNoteOid = SharedSettings.XpoOidDocumentFinanceTypeCreditNote.ToString();
-        private readonly string invoiceOid = SharedSettings.XpoOidDocumentFinanceTypeInvoice.ToString();
-        private readonly string simpleInvoiceOid = SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice.ToString();
-        private readonly string invoiceAndPaymentOid = SharedSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment.ToString();
+        private readonly string creditNoteOid = DocumentSettings.XpoOidDocumentFinanceTypeCreditNote.ToString();
+        private readonly string invoiceOid = InvoiceSettings.XpoOidDocumentFinanceTypeInvoice.ToString();
+        private readonly string simpleInvoiceOid = DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice.ToString();
+        private readonly string invoiceAndPaymentOid = DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment.ToString();
 
         public string eventBackGround = "Backgrounds/Windows/LogicPOS_WorkFlow.png";
 

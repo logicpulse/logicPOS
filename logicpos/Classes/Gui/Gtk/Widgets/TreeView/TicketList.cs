@@ -734,7 +734,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 //Check if is a TaxDutyFree(Isento) Article, and Show Info Message.
                 //TODO
                 //Create Protection for Invalid Product, ex Product Without Vat, Create a Shared Method to check if is a Valid Article
-                if (requireToChooseVatExemptionReason && article.VatDirectSelling.Oid == SharedSettings.XpoOidConfigurationVatRateDutyFree && article.VatExemptionReason == null)
+                if (requireToChooseVatExemptionReason && article.VatDirectSelling.Oid == InvoiceSettings.XpoOidConfigurationVatRateDutyFree && article.VatExemptionReason == null)
                 {
                     //TODO: Implement VatExemptionReason in TicketList (Both Modes) 
                     //Guid vatExemptionReasonGuid = GetVatExemptionReason();

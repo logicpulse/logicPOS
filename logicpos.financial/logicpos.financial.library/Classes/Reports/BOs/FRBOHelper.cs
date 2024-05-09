@@ -64,12 +64,12 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                 fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(fin_documentfinancemaster), pDocumentFinanceMasterOid);
 
                 bool retificationDocuments = (
-                     documentFinanceMaster.DocumentType.Oid == SharedSettings.XpoOidDocumentFinanceTypeCreditNote
+                     documentFinanceMaster.DocumentType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeCreditNote
                 );
                 /* IN009173 */
                 bool isTransportDocument = (
-                    documentFinanceMaster.DocumentType.Oid == SharedSettings.XpoOidDocumentFinanceTypeTransportationGuide ||
-                    documentFinanceMaster.DocumentType.Oid == SharedSettings.XpoOidDocumentFinanceTypeDeliveryNote
+                    documentFinanceMaster.DocumentType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeTransportationGuide ||
+                    documentFinanceMaster.DocumentType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeDeliveryNote
                 );
 
                 string sqlFilter = string.Format("fmOid = '{0}'", documentFinanceMaster.Oid.ToString());

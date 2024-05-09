@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -67,7 +68,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             );
 
             //Protected Records
-            ProtectedRecords.Add(SharedSettings.XpoOidConfigurationVatExemptionReasonM99);//M99
+            ProtectedRecords.Add(InvoiceSettings.XpoOidConfigurationVatExemptionReasonM99);//M99
         }
     }
 }

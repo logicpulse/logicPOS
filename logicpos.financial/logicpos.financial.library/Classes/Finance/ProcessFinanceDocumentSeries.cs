@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Data;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 
 namespace logicpos.financial.library.Classes.Finance
 {
@@ -43,8 +44,8 @@ namespace logicpos.financial.library.Classes.Finance
             //If DocumentTypeInvoiceWayBill Replace/Override Helper Document Type InvoiceWayBill with InvoiceWay to get Invoice Serie, 
             //this way we have Invoice Serie but DocumentMaster keeps DocumentFinanceType has DocumentFinanceTypeInvoiceWayBill
             //Usefull for Future Documents WayBill distinct code, ex have WayBill, ex Re-Print Documents in WayBillMode etc
-            Guid documentFinanceTypeSerieGuid = (documentFinanceType.Oid == SharedSettings.XpoOidDocumentFinanceTypeInvoiceWayBill)
-                ? SharedSettings.XpoOidDocumentFinanceTypeInvoice
+            Guid documentFinanceTypeSerieGuid = (documentFinanceType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeInvoiceWayBill)
+                ? InvoiceSettings.XpoOidDocumentFinanceTypeInvoice
                 : documentFinanceType.Oid
             ;
 
@@ -240,7 +241,7 @@ namespace logicpos.financial.library.Classes.Finance
                         DateTime now = XPOHelper.CurrentDateTimeAtomic();
                         string acronymPrefix;
                         //AcronymPrefix ex FT[QN3T1U401]2016S001, works with Random and AcronymLastSerie modes
-                        if (SharedSettings.DocumentFinanceSeriesGenerationFactoryUseRandomAcronymPrefix)
+                        if (DocumentSettings.DocumentFinanceSeriesGenerationFactoryUseRandomAcronymPrefix)
                         {
                             acronymPrefix = DateToAcronymPrefix(new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, now.Second));
                         }
@@ -248,7 +249,7 @@ namespace logicpos.financial.library.Classes.Finance
                         else
                         {
                             //Get acronymPrefix in first DocumentFinanceType, not in every Document, this way we have uniform series
-                            acronymPrefix = (xpDocumentFinanceType[0] as fin_documentfinancetype).AcronymLastSerie.ToString(SharedSettings.DocumentFinanceSeriesGenerationFactoryAcronymLastSerieFormat);
+                            acronymPrefix = (xpDocumentFinanceType[0] as fin_documentfinancetype).AcronymLastSerie.ToString(DocumentSettings.DocumentFinanceSeriesGenerationFactoryAcronymLastSerieFormat);
                         }
 
                         //Add to Created List
@@ -257,7 +258,7 @@ namespace logicpos.financial.library.Classes.Finance
                         foreach (fin_documentfinancetype documentFinanceType in xpDocumentFinanceType)
                         {
                             //Ignored DocumentTypes (DocumentFinanceTypeInvoiceWayBill, this DocumentType use DocumentFinanceTypeInvoice Serie)
-                            if (documentFinanceType.Oid != SharedSettings.XpoOidDocumentFinanceTypeInvoiceWayBill)
+                            if (documentFinanceType.Oid != DocumentSettings.XpoOidDocumentFinanceTypeInvoiceWayBill)
                             {
                                 //2018-05-08 : Old Format : [FT005012018S1] : Search GenDocumentNumber in ProcessFinanceDocument
                                 //acronym = string.Format("{0}{1}{2}{3}", documentFinanceType.Acronym, acronymPrefix, terminalInc.ToString("00"), pAcronym);

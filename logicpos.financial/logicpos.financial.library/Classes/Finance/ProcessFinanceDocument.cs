@@ -152,16 +152,16 @@ namespace logicpos.financial.library.Classes.Finance
                         {
                             //Source Document Document Status: SourceDocument was Invoiced|InvoiceAndPayment|SimplifiedInvoice > change SourceDocument Status to F (Invoiced/Faturado)
                             if (
-                                documentFinanceType.Oid == SharedSettings.XpoOidDocumentFinanceTypeInvoice ||
-                                documentFinanceType.Oid == SharedSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment ||
-                                documentFinanceType.Oid == SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice
+                                documentFinanceType.Oid == InvoiceSettings.XpoOidDocumentFinanceTypeInvoice ||
+                                documentFinanceType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment ||
+                                documentFinanceType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice
                             )
                             {
                                 documentFinanceMasterParentDocument.DocumentStatusStatus = "F";
                             }
 
                             //Detected in Certification : Credit Notes dont Change Status Details like other Documents
-                            if (documentFinanceType.Oid != SharedSettings.XpoOidDocumentFinanceTypeCreditNote)
+                            if (documentFinanceType.Oid != DocumentSettings.XpoOidDocumentFinanceTypeCreditNote)
                             {
                                 //Assign Date and User for all Other
                                 documentFinanceMasterParentDocument.DocumentStatusDate = documentDateTime.ToString(CultureSettings.DateTimeFormatCombinedDateTime);
@@ -247,7 +247,7 @@ namespace logicpos.financial.library.Classes.Finance
                     }
                     //Assign Only it was not Null
                     // Moçambique - Pedidos da reunião 13/10/2020 + Faturas no Front-Office [IN:014327]
-                    if (paymentMethod != null && paymentMethod.Oid != SharedSettings.XpoOidConfigurationPaymentMethodCurrentAccount)
+                    if (paymentMethod != null && paymentMethod.Oid != InvoiceSettings.XpoOidConfigurationPaymentMethodCurrentAccount)
                     {
                         documentFinanceMaster.PaymentMethod = paymentMethod;
                     }
@@ -277,14 +277,14 @@ namespace logicpos.financial.library.Classes.Finance
 
                     //Assign Document Status for FT | FS | FR | DC | NC | CC | WorkingDocuments, else Ignore DocumentStatusStatus
                     if (
-                        documentFinanceType.Oid == SharedSettings.XpoOidDocumentFinanceTypeInvoice ||
-                        documentFinanceType.Oid == SharedSettings.XpoOidDocumentFinanceTypeInvoiceWayBill ||
-                        documentFinanceType.Oid == SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice ||
-                        documentFinanceType.Oid == SharedSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment ||
-                        documentFinanceType.Oid == SharedSettings.XpoOidDocumentFinanceTypeCreditNote ||
-                        documentFinanceType.Oid == SharedSettings.XpoOidDocumentFinanceTypeBudget ||
-                        documentFinanceType.Oid == SharedSettings.XpoOidDocumentFinanceTypeProformaInvoice ||
-                        documentFinanceType.Oid == SharedSettings.XpoOidDocumentFinanceTypeCurrentAccountInput ||
+                        documentFinanceType.Oid == InvoiceSettings.XpoOidDocumentFinanceTypeInvoice ||
+                        documentFinanceType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeInvoiceWayBill ||
+                        documentFinanceType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice ||
+                        documentFinanceType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment ||
+                        documentFinanceType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeCreditNote ||
+                        documentFinanceType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeBudget ||
+                        documentFinanceType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeProformaInvoice ||
+                        documentFinanceType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput ||
                         documentFinanceType.SaftDocumentType == SaftDocumentType.WorkingDocuments ||
                         documentFinanceType.SaftDocumentType == SaftDocumentType.MovementOfGoods
                     )
@@ -602,7 +602,7 @@ namespace logicpos.financial.library.Classes.Finance
                     if (!documentFinanceType.Payed) paymentMethod = null;
 
                     //PersistFinanceDocumentWorkSession if document is Payed or if it is a CurrentAccount (Splited in Prints with SplitCurrentAccountMode Enum)
-                    if (SharedFramework.WorkSessionPeriodTerminal != null && (paymentMethod != null || documentFinanceType.Oid == SharedSettings.XpoOidDocumentFinanceTypeCurrentAccountInput))
+                    if (SharedFramework.WorkSessionPeriodTerminal != null && (paymentMethod != null || documentFinanceType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput))
                     {
                         //Call PersistFinanceDocumentWorkSession to do WorkSession Job
                         PersistFinanceDocumentWorkSession(uowSession, documentFinanceMaster, pParameters, paymentMethod);
@@ -614,7 +614,7 @@ namespace logicpos.financial.library.Classes.Finance
                     try
                     {
                         //Working on OrderMain Mode, if Not TableConsult or CreditNote
-                        if (pParameters.SourceMode == PersistFinanceDocumentSourceMode.CurrentOrderMain && documentFinanceType.Oid != SharedSettings.XpoOidDocumentFinanceTypeConferenceDocument)
+                        if (pParameters.SourceMode == PersistFinanceDocumentSourceMode.CurrentOrderMain && documentFinanceType.Oid != DocumentSettings.XpoOidDocumentFinanceTypeConferenceDocument)
                         {
                             //Commit UOW Changes : Before get current OrderMain
                             uowSession.CommitChanges();
@@ -1030,7 +1030,7 @@ namespace logicpos.financial.library.Classes.Finance
                 try
                 {
                     //Get DocumentType
-                    fin_documentfinancetype documentFinanceType = (fin_documentfinancetype)uowSession.GetObjectByKey(typeof(fin_documentfinancetype), SharedSettings.XpoOidDocumentFinanceTypePayment);
+                    fin_documentfinancetype documentFinanceType = (fin_documentfinancetype)uowSession.GetObjectByKey(typeof(fin_documentfinancetype), DocumentSettings.XpoOidDocumentFinanceTypePayment);
                     if (documentFinanceType == null)
                     {
                         throw new Exception("ERROR_MISSING_DOCUMENT_TYPE");
@@ -1042,7 +1042,7 @@ namespace logicpos.financial.library.Classes.Finance
                     fin_documentfinanceseries documentFinanceSerie = null;
                     fin_documentfinanceyearserieterminal documentFinanceYearSerieTerminal = null;
                     //Get Document Serie for current Terminal
-                    documentFinanceYearSerieTerminal = ProcessFinanceDocumentSeries.GetDocumentFinanceYearSerieTerminal(uowSession, SharedSettings.XpoOidDocumentFinanceTypePayment);
+                    documentFinanceYearSerieTerminal = ProcessFinanceDocumentSeries.GetDocumentFinanceYearSerieTerminal(uowSession, DocumentSettings.XpoOidDocumentFinanceTypePayment);
                     if (documentFinanceYearSerieTerminal != null)
                     {
                         documentFinanceSerie = documentFinanceYearSerieTerminal.Serie;
@@ -1177,17 +1177,17 @@ SELECT
 (
 	CASE  
 		WHEN DFM.DocumentType IN (
-            '{SharedSettings.XpoOidDocumentFinanceTypeBudget}', 
-            '{SharedSettings.XpoOidDocumentFinanceTypeConferenceDocument}', 
-            '{SharedSettings.XpoOidDocumentFinanceTypeConsignmentGuide}', 
-            '{SharedSettings.XpoOidDocumentFinanceTypeCreditNote}', 
-            '{SharedSettings.XpoOidDocumentFinanceTypeDeliveryNote}', 
-            '{SharedSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment}', 
-            '{SharedSettings.XpoOidDocumentFinanceTypeOwnAssetsDriveGuide}', 
-            '{SharedSettings.XpoOidDocumentFinanceTypeProformaInvoice}', 
-            '{SharedSettings.XpoOidDocumentFinanceTypeReturnGuide}', 
-            '{SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice}', 
-            '{SharedSettings.XpoOidDocumentFinanceTypeTransportationGuide}'
+            '{DocumentSettings.XpoOidDocumentFinanceTypeBudget}', 
+            '{DocumentSettings.XpoOidDocumentFinanceTypeConferenceDocument}', 
+            '{DocumentSettings.XpoOidDocumentFinanceTypeConsignmentGuide}', 
+            '{DocumentSettings.XpoOidDocumentFinanceTypeCreditNote}', 
+            '{DocumentSettings.XpoOidDocumentFinanceTypeDeliveryNote}', 
+            '{DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment}', 
+            '{DocumentSettings.XpoOidDocumentFinanceTypeOwnAssetsDriveGuide}', 
+            '{DocumentSettings.XpoOidDocumentFinanceTypeProformaInvoice}', 
+            '{DocumentSettings.XpoOidDocumentFinanceTypeReturnGuide}', 
+            '{DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice}', 
+            '{DocumentSettings.XpoOidDocumentFinanceTypeTransportationGuide}'
         ) THEN NULL 
 		ELSE (
 			DFM.TotalFinal - (COALESCE(

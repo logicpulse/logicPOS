@@ -108,7 +108,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             fin_documentfinancemaster sourceFinanceMaster = null;
             string referencesReason = string.Empty;
             if (
-                _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeCreditNote
+                _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.XpoOidDocumentFinanceTypeCreditNote
                 && _pagePad1.EntryBoxSelectSourceDocumentFinance.Value != null
                 && _pagePad1.EntryBoxSelectSourceDocumentFinance.Value.Oid != new Guid()
             )
@@ -119,7 +119,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 referencesReason = _pagePad1.EntryBoxReason.EntryValidation.Text;
             };
 
-            if(_pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeCreditNote)
+            if(_pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.XpoOidDocumentFinanceTypeCreditNote)
             {
 
                 List<DataRow> dataRows = new List<DataRow>();

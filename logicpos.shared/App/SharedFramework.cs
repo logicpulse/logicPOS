@@ -1,6 +1,5 @@
 ﻿using logicpos.datalayer.DataLayer.Xpo;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace logicpos.shared.App
@@ -10,7 +9,7 @@ namespace logicpos.shared.App
         public static string ServerVersion { get; set; }
         public static pos_worksessionperiod WorkSessionPeriodDay { get; set; }
         public static pos_worksessionperiod WorkSessionPeriodTerminal { get; set; }
-        public static GlobalFrameworkSession SessionApp { get; set; }  
+        public static GlobalFrameworkSession SessionApp { get; set; }
         public static Dictionary<string, bool> LoggedUserPermissions { get; set; }
 
         public static bool AppUseParkingTicketModule = false;

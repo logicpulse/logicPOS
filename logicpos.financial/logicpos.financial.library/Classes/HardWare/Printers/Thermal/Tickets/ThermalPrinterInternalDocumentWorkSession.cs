@@ -133,11 +133,11 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                         break;
                     case SplitCurrentAccountMode.NonCurrentAcount:
                         //Diferent from DocumentType CC
-                        splitCurrentAccountFilter = string.Format("AND DocumentType <> '{0}'", SharedSettings.XpoOidDocumentFinanceTypeCurrentAccountInput);
+                        splitCurrentAccountFilter = string.Format("AND DocumentType <> '{0}'", DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput);
                         break;
                     case SplitCurrentAccountMode.CurrentAcount:
                         //Only DocumentType CC
-                        splitCurrentAccountFilter = string.Format("AND DocumentType = '{0}'", SharedSettings.XpoOidDocumentFinanceTypeCurrentAccountInput);
+                        splitCurrentAccountFilter = string.Format("AND DocumentType = '{0}'", DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput);
                         break;
                 }
 

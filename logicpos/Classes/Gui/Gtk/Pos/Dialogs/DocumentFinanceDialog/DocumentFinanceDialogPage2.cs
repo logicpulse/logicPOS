@@ -296,8 +296,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 if (
                     isFinalConsumerEntity &&
                     (
-                        _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid != SharedSettings.XpoOidDocumentFinanceTypeInvoice &&
-                        _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid != SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice
+                        _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid != InvoiceSettings.XpoOidDocumentFinanceTypeInvoice &&
+                        _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid != DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice
                     )
                    )
                 {
@@ -354,9 +354,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             string filterBase = "(Disabled IS NULL OR Disabled  <> 1) AND (Hidden IS NULL OR Hidden = 0)";
             string filterExtra =
                 (
-                    _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid != SharedSettings.XpoOidDocumentFinanceTypeInvoice &&
-                    _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid != SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice
-                ) ? string.Format("AND (Oid <> '{0}')", SharedSettings.FinalConsumerId) : string.Empty;
+                    _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid != InvoiceSettings.XpoOidDocumentFinanceTypeInvoice &&
+                    _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid != DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice
+                ) ? string.Format("AND (Oid <> '{0}')", InvoiceSettings.FinalConsumerId) : string.Empty;
             EntryBoxSelectCustomerName.CriteriaOperator = CriteriaOperator.Parse(string.Format("{0} AND (Country = '{1}') {2}", filterBase, EntryBoxSelectCustomerCountry.Value.Oid, filterExtra));
             EntryBoxSelectCustomerFiscalNumber.CriteriaOperator = CriteriaOperator.Parse(string.Format("{0 } AND (Country = '{1}') AND (FiscalNumber IS NOT NULL AND FiscalNumber <> '') {2}", filterBase, EntryBoxSelectCustomerCountry.Value.Oid, filterExtra));
             EntryBoxSelectCustomerCardNumber.CriteriaOperator = CriteriaOperator.Parse(string.Format("{0} AND (Country = '{1}') AND (CardNumber IS NOT NULL AND CardNumber <> '') {2}", filterBase, EntryBoxSelectCustomerCountry.Value.Oid, filterExtra));
@@ -651,7 +651,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             {
                 //Init Variables
                 decimal totalDocument = (_pagePad3.ArticleBag != null && _pagePad3.ArticleBag.TotalFinal > 0) ? _pagePad3.ArticleBag.TotalFinal : 0.0m;
-                bool isFinalConsumerEntity = (_pagePad.Customer != null && _pagePad.Customer.Oid == SharedSettings.FinalConsumerId);
+                bool isFinalConsumerEntity = (_pagePad.Customer != null && _pagePad.Customer.Oid == InvoiceSettings.FinalConsumerId);
                 bool isHiddenConsumerEntity = (_pagePad.Customer != null && _pagePad.Customer.FiscalNumber == SaftSettings.FinanceFinalConsumerFiscalNumber);
                 bool isSingularEntity = (isFinalConsumerEntity || FiscalNumber.IsSingularEntity(EntryBoxSelectCustomerFiscalNumber.EntryValidation.Text, EntryBoxSelectCustomerCountry.Value.Code2));
                 bool isInvoice = false;
@@ -671,9 +671,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
                 if (_pagePad1.EntryBoxSelectDocumentFinanceType.Value != null)
                 {
-                    isInvoice = (_pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeInvoice);
-                    isSimplifiedInvoice = (_pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice);
-                    isConferenceDocument = (_pagePad1.EntryBoxSelectSourceDocumentFinance.Value != null && _pagePad1.EntryBoxSelectSourceDocumentFinance.Value.DocumentType.Oid == SharedSettings.XpoOidDocumentFinanceTypeConferenceDocument);
+                    isInvoice = (_pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid == InvoiceSettings.XpoOidDocumentFinanceTypeInvoice);
+                    isSimplifiedInvoice = (_pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice);
+                    isConferenceDocument = (_pagePad1.EntryBoxSelectSourceDocumentFinance.Value != null && _pagePad1.EntryBoxSelectSourceDocumentFinance.Value.DocumentType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeConferenceDocument);
                     isWayBill = _pagePad1.EntryBoxSelectDocumentFinanceType.Value.WayBill;
                 }
 				// Moçambique - Pedidos da reunião 13/10/2020 + Faturas no Front-Office [IN:014327]
@@ -682,7 +682,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
                 if(_pagePad1.EntryBoxSelectSourceDocumentFinance.Value != null && CultureSettings.XpoOidConfigurationCountryMozambique.Equals(XPOSettings.ConfigurationSystemCountry.Oid) 
                     && _pagePad1.EntryBoxSelectSourceDocumentFinance.Value != null 
-                    && (_pagePad1.EntryBoxSelectSourceDocumentFinance.Value.DocumentType.Oid == SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice || _pagePad1.EntryBoxSelectSourceDocumentFinance.Value.DocumentType.Oid == SharedSettings.XpoOidDocumentFinanceTypeInvoice))
+                    && (_pagePad1.EntryBoxSelectSourceDocumentFinance.Value.DocumentType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice || _pagePad1.EntryBoxSelectSourceDocumentFinance.Value.DocumentType.Oid == InvoiceSettings.XpoOidDocumentFinanceTypeInvoice))
                 {
 
                     _posDocumentFinanceDialog.ButtonClearCustomer.Sensitive = true;
@@ -921,7 +921,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             try
             {
                 bool isRequiredAllCustomerDetails = (_pagePad3.ArticleBag != null && _pagePad3.ArticleBag.TotalFinal > SharedSettings.FinanceRuleRequiredCustomerDetailsAboveValue);
-                bool isFinalConsumerEntity = (EntryBoxSelectCustomerName.Value != null && EntryBoxSelectCustomerName.Value.Oid == SharedSettings.FinalConsumerId);
+                bool isFinalConsumerEntity = (EntryBoxSelectCustomerName.Value != null && EntryBoxSelectCustomerName.Value.Oid == InvoiceSettings.FinalConsumerId);
                 bool isSingularEntity = (
                     isFinalConsumerEntity ||
                     EntryBoxSelectCustomerFiscalNumber.EntryValidation.Validated &&

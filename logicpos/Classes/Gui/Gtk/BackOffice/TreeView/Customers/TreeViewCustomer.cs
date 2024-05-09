@@ -1,15 +1,15 @@
 ﻿using DevExpress.Data.Filtering;
 using DevExpress.Xpo;
 using Gtk;
-using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
+using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Xpo;
+using LogicPOS.Globalization;
+using LogicPOS.Settings;
+using LogicPOS.Settings.Extensions;
 using System;
 using System.Collections.Generic;
-using logicpos.Classes.Enums.GenericTreeView;
-using logicpos.shared.App;
-using logicpos.datalayer.Xpo;
-using LogicPOS.Settings.Extensions;
-using LogicPOS.Globalization;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -79,7 +79,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             );
 
             //Protected Records
-            ProtectedRecords.Add(SharedSettings.FinalConsumerId);//FinalConsumerEntity
+            ProtectedRecords.Add(InvoiceSettings.FinalConsumerId);//FinalConsumerEntity
         }
     }
 }

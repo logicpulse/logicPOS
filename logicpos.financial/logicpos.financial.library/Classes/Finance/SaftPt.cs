@@ -38,7 +38,7 @@ namespace logicpos.financial.library.Classes.Finance
         private static readonly string _decimalFormat = CultureSettings.DecimalFormatSAFTPT;
         private static readonly string _decimalFormatTotals = CultureSettings.DecimalFormatGrossTotalSAFTPT;
         //Default Customer
-        private static readonly erp_customer _defaultCustomer = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), SharedSettings.FinalConsumerId);
+        private static readonly erp_customer _defaultCustomer = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), InvoiceSettings.FinalConsumerId);
         //Default Currency
         private static readonly cfg_configurationcurrency _defaultCurrency = SharedSettings.ConfigurationSystemCurrency;
 
@@ -366,7 +366,7 @@ namespace logicpos.financial.library.Classes.Finance
                 ;"
                 , _documentDateStart.ToString(CultureSettings.DateTimeFormat)
                 , _documentDateEnd.ToString(CultureSettings.DateTimeFormat)
-                , SharedSettings.FinalConsumerId
+                , InvoiceSettings.FinalConsumerId
             );
             //_logger.Debug(string.Format("sqlCheckDefaultCustomer: [{0}]", sqlCheckDefaultCustomer));
 
@@ -1327,7 +1327,7 @@ namespace logicpos.financial.library.Classes.Finance
 
             //Protection to skip Export <OrderReferences> when Document Type is CreditNote
             fin_documentfinancedetail documentFinanceDetail = (fin_documentfinancedetail)XPOSettings.Session.GetObjectByKey(typeof(fin_documentfinancedetail), pDocumentMasterDetail);
-            if (documentFinanceDetail.DocumentMaster.DocumentType.Oid != SharedSettings.XpoOidDocumentFinanceTypeCreditNote)
+            if (documentFinanceDetail.DocumentMaster.DocumentType.Oid != DocumentSettings.XpoOidDocumentFinanceTypeCreditNote)
             {
                 try
                 {
@@ -1382,7 +1382,7 @@ namespace logicpos.financial.library.Classes.Finance
 
             //Protection to skip Export <References> when Document Type is NOT CreditNote
             fin_documentfinancedetail documentFinanceDetail = (fin_documentfinancedetail)XPOSettings.Session.GetObjectByKey(typeof(fin_documentfinancedetail), pDocumentMasterDetail);
-            if (documentFinanceDetail.DocumentMaster.DocumentType.Oid == SharedSettings.XpoOidDocumentFinanceTypeCreditNote)
+            if (documentFinanceDetail.DocumentMaster.DocumentType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeCreditNote)
             {
                 try
                 {

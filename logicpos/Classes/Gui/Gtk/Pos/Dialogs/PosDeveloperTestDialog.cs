@@ -100,7 +100,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _vbox.PackStart(entryBoxValidationButton, true, true, _padding);
 
             //Test XPOEntryBoxSelectRecordValidation without KeyBoard Input
-            fin_documentfinancetype defaultValueDocumentFinanceType = (fin_documentfinancetype)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(fin_documentfinancetype), SharedSettings.XpoOidDocumentFinanceTypeInvoice);
+            fin_documentfinancetype defaultValueDocumentFinanceType = (fin_documentfinancetype)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(fin_documentfinancetype), InvoiceSettings.XpoOidDocumentFinanceTypeInvoice);
             CriteriaOperator criteriaOperatorDocumentFinanceType = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1)");
             XPOEntryBoxSelectRecordValidation<fin_documentfinancetype, TreeViewDocumentFinanceType> entryBoxSelectDocumentFinanceType = new XPOEntryBoxSelectRecordValidation<fin_documentfinancetype, TreeViewDocumentFinanceType>(this, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_documentfinanceseries_documenttype"), "Designation", "Oid", defaultValueDocumentFinanceType, criteriaOperatorDocumentFinanceType, LogicPOS.Utility.RegexUtils.RegexGuid, true);
             //entryBoxSelectDocumentFinanceType.EntryValidation.IsEditable = false;

@@ -168,7 +168,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 //All
                 case "ALL":
-                    criteriaOperator = CriteriaOperator.Parse(string.Format("{0} DocumentType <> '{1}'", criteriaOperatorShared, SharedSettings.XpoOidDocumentFinanceTypeCurrentAccountInput));
+                    criteriaOperator = CriteriaOperator.Parse(string.Format("{0} DocumentType <> '{1}'", criteriaOperatorShared, DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput));
                     CriteriaOperatorBase = criteriaOperator;// IN009223 IN009227
 
                     var countResult = XPOSettings.Session.Evaluate(typeof(fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), CriteriaOperatorBase);
@@ -225,7 +225,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         payed = "0";
                     }
                     else { payed = "False"; }
-                    string criteriaOperatorString = string.Format("{0} (DocumentType = '{1}' OR DocumentType = '{2}' OR DocumentType = '{4}') AND DocumentStatusStatus <> 'A' AND Payed = '{3}'", criteriaOperatorShared, SharedSettings.XpoOidDocumentFinanceTypeInvoice, SharedSettings.XpoOidDocumentFinanceTypeCreditNote, payed, SharedSettings.XpoOidDocumentFinanceTypeInvoiceWayBill);
+                    string criteriaOperatorString = string.Format("{0} (DocumentType = '{1}' OR DocumentType = '{2}' OR DocumentType = '{4}') AND DocumentStatusStatus <> 'A' AND Payed = '{3}'", criteriaOperatorShared, InvoiceSettings.XpoOidDocumentFinanceTypeInvoice, DocumentSettings.XpoOidDocumentFinanceTypeCreditNote, payed, DocumentSettings.XpoOidDocumentFinanceTypeInvoiceWayBill);
                     criteriaOperator = CriteriaOperator.Parse(criteriaOperatorString);
 
                     //string criteriaOperatorString2 = string.Format("{0} (DocumentType = '{1}' OR (DocumentType = '{2}' AND (DocFinMaster.DocumentParent NOT IN (SELECT DocFinMaster2.Oid FROM fin_documentfinancemaster DocFinMaster2 WHERE DocFinMaster2.Oid = DocFinMaster.DocumentParent AND Payed = 'False') OR DocFinMaster.DocumentParent IS NULL)) OR DocumentType = '{4}') AND DocumentStatusStatus <> 'A' AND Payed = '{3}'", criteriaOperatorShared, SettingsApp.XpoOidDocumentFinanceTypeInvoice, SettingsApp.XpoOidDocumentFinanceTypeCreditNote, payed, SettingsApp.XpoOidDocumentFinanceTypeInvoiceWayBill);
@@ -302,8 +302,8 @@ WHERE
                         //Mostrar notas de crédito apenas para para clientes com saldo positivo / Mostrar notas crédito de documentos que já tenham sido liquidados
                         var sqlbalanceTotal = string.Format("SELECT Balance FROM view_documentfinancecustomerbalancesummary WHERE (EntityOid = '{0}');", Convert.ToString(item.Values[1]));
                         var getCustomerBalance = XPOSettings.Session.ExecuteScalar(sqlbalanceTotal);
-                        if((getCustomerBalance != null && (Convert.ToDecimal(getCustomerBalance) > 0) && Guid.Parse(Convert.ToString(item.Values[2])) == SharedSettings.XpoOidDocumentFinanceTypeCreditNote) ||
-                            (Guid.Parse(Convert.ToString(item.Values[2])) != SharedSettings.XpoOidDocumentFinanceTypeCreditNote) ||
+                        if((getCustomerBalance != null && (Convert.ToDecimal(getCustomerBalance) > 0) && Guid.Parse(Convert.ToString(item.Values[2])) == DocumentSettings.XpoOidDocumentFinanceTypeCreditNote) ||
+                            (Guid.Parse(Convert.ToString(item.Values[2])) != DocumentSettings.XpoOidDocumentFinanceTypeCreditNote) ||
                             showCreditNote
                             )
                         {
@@ -391,7 +391,7 @@ WHERE
                     break;
                 // CurrentAccount
                 case "CC":
-                    criteriaOperator = CriteriaOperator.Parse(string.Format("{0} DocumentType = '{1}' AND Payed = 0", criteriaOperatorShared, SharedSettings.XpoOidDocumentFinanceTypeCurrentAccountInput));
+                    criteriaOperator = CriteriaOperator.Parse(string.Format("{0} DocumentType = '{1}' AND Payed = 0", criteriaOperatorShared, DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput));
                     CriteriaOperatorBase = criteriaOperator;// IN009223 IN009227
 
                     countResult = XPOSettings.Session.Evaluate(typeof(fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), CriteriaOperatorBase);
@@ -947,15 +947,15 @@ WHERE
 
                         /* IN009066 - FS and NC added to reports */
                         extraFilter = $@" AND ({statusField} <> 'A') AND (
-			                    {filterField} = '{SharedSettings.XpoOidDocumentFinanceTypeInvoice}' OR 
-			                    {filterField} = '{SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice}' OR 
-			                    {filterField} = '{SharedSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment}' OR 
-			                    {filterField} = '{SharedSettings.XpoOidDocumentFinanceTypeConsignationInvoice}' OR 
-			                    {filterField} = '{SharedSettings.XpoOidDocumentFinanceTypeDebitNote}' OR 
-			                    {filterField} = '{SharedSettings.XpoOidDocumentFinanceTypeCreditNote}' OR 
-			                    {filterField} = '{SharedSettings.XpoOidDocumentFinanceTypePayment}' 
+			                    {filterField} = '{InvoiceSettings.XpoOidDocumentFinanceTypeInvoice}' OR 
+			                    {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice}' OR 
+			                    {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment}' OR 
+			                    {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeConsignationInvoice}' OR 
+			                    {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeDebitNote}' OR 
+			                    {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeCreditNote}' OR 
+			                    {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypePayment}' 
 			                    OR 
-			                    {filterField} = '{SharedSettings.XpoOidDocumentFinanceTypeCurrentAccountInput}'
+			                    {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput}'
 			                    )".Replace(Environment.NewLine, string.Empty);
                         /* IN009089 - # TO DO: above, we need to check with business this condition:  {filterField} = '{SettingsApp.XpoOidDocumentFinanceTypeCurrentAccountInput}' */
 
@@ -1102,7 +1102,7 @@ WHERE
                 {
                     //Prepare ProcessFinanceDocumentParameter
                     ProcessFinanceDocumentParameter processFinanceDocumentParameter = new ProcessFinanceDocumentParameter(
-                      SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice, dialog.ArticleBagFullPayment)
+                      DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice, dialog.ArticleBagFullPayment)
                     {
                         SourceMode = PersistFinanceDocumentSourceMode.CurrentAcountDocuments,
                         FinanceDocuments = pFinanceDocuments,
@@ -1575,7 +1575,7 @@ WHERE
 							if ( XPOSettings.ConfigurationSystemCountry.Oid == CultureSettings.XpoOidConfigurationCountryPortugal     //WIP: CancellWayBills : 
                                 && documentMaster.DocumentType.WsAtDocument                                                         //WIP: CancellWayBills : 
                                 && documentMaster.DocumentType.WayBill                                                              //WIP: CancellWayBills : 
-                                && documentMaster.DocumentType.Oid != SharedSettings.XpoOidDocumentFinanceTypeInvoiceWayBill && documentMaster.ShipToCountry != null && documentMaster.ShipToCountry == "PT"       //Envio de Documentos transporte AT (Estrangeiro) [IN:016502]               //WIP: CancellWayBills : 
+                                && documentMaster.DocumentType.Oid != DocumentSettings.XpoOidDocumentFinanceTypeInvoiceWayBill && documentMaster.ShipToCountry != null && documentMaster.ShipToCountry == "PT"       //Envio de Documentos transporte AT (Estrangeiro) [IN:016502]               //WIP: CancellWayBills : 
                                 )                                                                                                   //WIP: CancellWayBills : 
                             {                                                                                                       //WIP: CancellWayBills : 
                                 sendDocumentToAT = true;                                                                            //WIP: CancellWayBills : 
@@ -1710,7 +1710,7 @@ WHERE
             if ((CultureSettings.XpoOidConfigurationCountryMozambique.Equals(XPOSettings.ConfigurationSystemCountry.Oid) && pDocumentFinanceMaster.DocumentStatusStatus != "A" && currentDateDay == documentDateDay)){
 
                 isCancellable = true;
-                if ((pDocumentFinanceMaster.DocumentType.Oid != SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice && pDocumentFinanceMaster.DocumentType.Oid != SharedSettings.XpoOidDocumentFinanceTypeInvoice))
+                if ((pDocumentFinanceMaster.DocumentType.Oid != DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice && pDocumentFinanceMaster.DocumentType.Oid != InvoiceSettings.XpoOidDocumentFinanceTypeInvoice))
                 {/* IN009083 - if invoice products are already in transport */
                     _logger.Debug("Moçambique : Document Type not Invoice or Simplified Invoice");
                     return false;
@@ -2267,15 +2267,15 @@ WHERE
 
                             /* IN009066 - FS and NC added to reports */
                             extraFilter = $@" AND ({statusField} <> 'A') AND (
-			                    {filterField} = '{SharedSettings.XpoOidDocumentFinanceTypeInvoice}' OR 
-			                    {filterField} = '{SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice}' OR 
-			                    {filterField} = '{SharedSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment}' OR 
-			                    {filterField} = '{SharedSettings.XpoOidDocumentFinanceTypeConsignationInvoice}' OR 
-			                    {filterField} = '{SharedSettings.XpoOidDocumentFinanceTypeDebitNote}' OR 
-			                    {filterField} = '{SharedSettings.XpoOidDocumentFinanceTypeCreditNote}' OR 
-			                    {filterField} = '{SharedSettings.XpoOidDocumentFinanceTypePayment}' 
+			                    {filterField} = '{InvoiceSettings.XpoOidDocumentFinanceTypeInvoice}' OR 
+			                    {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice}' OR 
+			                    {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment}' OR 
+			                    {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeConsignationInvoice}' OR 
+			                    {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeDebitNote}' OR 
+			                    {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeCreditNote}' OR 
+			                    {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypePayment}' 
 			                    OR 
-			                    {filterField} = '{SharedSettings.XpoOidDocumentFinanceTypeCurrentAccountInput}'
+			                    {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput}'
 			                    )".Replace(Environment.NewLine, string.Empty);
                             /* IN009089 - # TO DO: above, we need to check with business this condition:  {filterField} = '{SettingsApp.XpoOidDocumentFinanceTypeCurrentAccountInput}' */
 
@@ -2584,11 +2584,11 @@ WHERE
             bool result = true;
             // Valid DocumentTypes
             Guid[] validDocumentTypes = new Guid[] {
-                SharedSettings.XpoOidDocumentFinanceTypeInvoice,
-                SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice,
-                SharedSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment,
-                SharedSettings.XpoOidDocumentFinanceTypeBudget,
-                SharedSettings.XpoOidDocumentFinanceTypeProformaInvoice
+                InvoiceSettings.XpoOidDocumentFinanceTypeInvoice,
+                DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice,
+                DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment,
+                DocumentSettings.XpoOidDocumentFinanceTypeBudget,
+                DocumentSettings.XpoOidDocumentFinanceTypeProformaInvoice
             };
 
             try

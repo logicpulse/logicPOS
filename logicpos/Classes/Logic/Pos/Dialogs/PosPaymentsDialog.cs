@@ -89,7 +89,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         if (
                             PaymentMethod != null && PaymentMethod.Token == "CURRENT_ACCOUNT" &&
                             (
-                                Customer.Oid == SharedSettings.FinalConsumerId ||
+                                Customer.Oid == InvoiceSettings.FinalConsumerId ||
                                 _entryBoxSelectCustomerName.EntryValidation.Text == string.Empty ||
                                 _entryBoxSelectCustomerFiscalNumber.EntryValidation.Text == string.Empty
                             )
@@ -104,8 +104,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         {
                             //Get Document Type to Emmit, based on Payment Mode
                             _processDocumentType = (PaymentMethod.Token == "CURRENT_ACCOUNT")
-                                ? SharedSettings.XpoOidDocumentFinanceTypeInvoice
-                                : SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice;
+                                ? InvoiceSettings.XpoOidDocumentFinanceTypeInvoice
+                                : DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice;
 
                             ArticleBag processArticleBag;
 
@@ -122,7 +122,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             ResponseType responseTypeOverrideDefaultDocumentTypeSimplifiedInvoice = ResponseType.None;
                             //Get response for user confirmation to emmit Invoice-Payment before Extra Protections, we must have user respose before enter in "Extra Protections" above
                             if (
-                                    _processDocumentType != SharedSettings.XpoOidDocumentFinanceTypeInvoice &&
+                                    _processDocumentType != InvoiceSettings.XpoOidDocumentFinanceTypeInvoice &&
                                     (processArticleBag.TotalFinal > SharedSettings.FinanceRuleSimplifiedInvoiceMaxTotal ||
                                     processArticleBag.GetClassTotals("S") > SharedSettings.FinanceRuleSimplifiedInvoiceMaxTotalServices)
                                 )
@@ -131,7 +131,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 //Override Back processDocumentType if Exceed FS Max Total
                                 if (responseTypeOverrideDefaultDocumentTypeSimplifiedInvoice == ResponseType.Yes)
                                 {
-                                    _processDocumentType = SharedSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment;
+                                    _processDocumentType = DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment;
                                 }
                             }
 
@@ -152,9 +152,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             //Check if TotalFinal is above 1000 and request fill all customer details
                             else if (
                                 (
-                                    _processDocumentType == SharedSettings.XpoOidDocumentFinanceTypeInvoice ||
-                                    _processDocumentType == SharedSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment ||
-                                    _processDocumentType == SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice
+                                    _processDocumentType == InvoiceSettings.XpoOidDocumentFinanceTypeInvoice ||
+                                    _processDocumentType == DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment ||
+                                    _processDocumentType == DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice
                                 ) &&
                                 FinancialLibraryUtils.IsInValidFinanceDocumentCustomer(
                                     processArticleBag.TotalFinal,
@@ -282,11 +282,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 else if(pResponse == _responseTypeCurrentAccount)
                 {
                     _buttonCurrentAccount.Token = "CURRENT_ACCOUNT";
-                    _buttonCurrentAccount.CurrentButtonOid = SharedSettings.XpoOidConfigurationPaymentMethodCurrentAccount;
+                    _buttonCurrentAccount.CurrentButtonOid = InvoiceSettings.XpoOidConfigurationPaymentMethodCurrentAccount;
                     //Prevent Default Customer Entity and Hidden Customer (Only with Name Filled) to Process CC Documents
                     if (                      
                         (Customer != null &&(
-                            Customer.Oid == SharedSettings.FinalConsumerId ||
+                            Customer.Oid == InvoiceSettings.FinalConsumerId ||
                             _entryBoxSelectCustomerName.EntryValidation.Text == string.Empty ||
                             _entryBoxSelectCustomerFiscalNumber.EntryValidation.Text == string.Empty)
                         )
@@ -765,7 +765,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 //Init Variables
                 decimal totalDocument = (ArticleBagPartialPayment == null) ? ArticleBagFullPayment.TotalFinal : ArticleBagPartialPayment.TotalFinal;
-                bool isFinalConsumerEntity = (Customer != null && Customer.Oid == SharedSettings.FinalConsumerId);
+                bool isFinalConsumerEntity = (Customer != null && Customer.Oid == InvoiceSettings.FinalConsumerId);
                 bool isSingularEntity = (isFinalConsumerEntity || FiscalNumber.IsSingularEntity(_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text, _entryBoxSelectCustomerCountry.Value.Code2));
                 // Encrypt pFieldValue to use in Sql Filter
                 string fiscalNumberFilterValue = string.Empty;
@@ -918,7 +918,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         //Update Address And FiscalNumber Require Fields
         private void UpdateCustomerAddressAndFiscalNumberRequireFields()
         {
-            bool isFinalConsumerEntity = (Customer != null && Customer.Oid == SharedSettings.FinalConsumerId);
+            bool isFinalConsumerEntity = (Customer != null && Customer.Oid == InvoiceSettings.FinalConsumerId);
             bool isSingularEntity = (
                 isFinalConsumerEntity ||
                 _entryBoxSelectCustomerFiscalNumber.EntryValidation.Validated &&

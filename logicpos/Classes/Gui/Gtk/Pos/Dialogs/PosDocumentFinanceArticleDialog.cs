@@ -109,8 +109,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Get Default System Currency
             _currencyDefaultSystem = SharedSettings.ConfigurationSystemCurrency;
             //Consignation Invoice default values
-            _vatRateConsignationInvoice = (fin_configurationvatrate)XPOSettings.Session.GetObjectByKey(typeof(fin_configurationvatrate), SharedSettings.XpoOidConfigurationVatRateDutyFree);
-            _vatRateConsignationInvoiceExemptionReason = (fin_configurationvatexemptionreason)XPOSettings.Session.GetObjectByKey(typeof(fin_configurationvatexemptionreason), SharedSettings.XpoOidConfigurationVatExemptionReasonM99);
+            _vatRateConsignationInvoice = (fin_configurationvatrate)XPOSettings.Session.GetObjectByKey(typeof(fin_configurationvatrate), InvoiceSettings.XpoOidConfigurationVatRateDutyFree);
+            _vatRateConsignationInvoiceExemptionReason = (fin_configurationvatexemptionreason)XPOSettings.Session.GetObjectByKey(typeof(fin_configurationvatexemptionreason), InvoiceSettings.XpoOidConfigurationVatExemptionReasonM99);
 
             //TODO:THEME
             _windowSize = new Size(900, 360);
@@ -144,11 +144,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             Fixed fixedContent = new Fixed();
 
             //Init Transport Documents Lists
-            _listSaftDocumentType.Add(SharedSettings.XpoOidDocumentFinanceTypeDeliveryNote.ToString());
-            _listSaftDocumentType.Add(SharedSettings.XpoOidDocumentFinanceTypeTransportationGuide.ToString());
-            _listSaftDocumentType.Add(SharedSettings.XpoOidDocumentFinanceTypeOwnAssetsDriveGuide.ToString());
-            _listSaftDocumentType.Add(SharedSettings.XpoOidDocumentFinanceTypeConsignmentGuide.ToString());
-            _listSaftDocumentType.Add(SharedSettings.XpoOidDocumentFinanceTypeReturnGuide.ToString());
+            _listSaftDocumentType.Add(DocumentSettings.XpoOidDocumentFinanceTypeDeliveryNote.ToString());
+            _listSaftDocumentType.Add(DocumentSettings.XpoOidDocumentFinanceTypeTransportationGuide.ToString());
+            _listSaftDocumentType.Add(DocumentSettings.XpoOidDocumentFinanceTypeOwnAssetsDriveGuide.ToString());
+            _listSaftDocumentType.Add(DocumentSettings.XpoOidDocumentFinanceTypeConsignmentGuide.ToString());
+            _listSaftDocumentType.Add(DocumentSettings.XpoOidDocumentFinanceTypeReturnGuide.ToString());
 
             //Init Components
             InitUI();
@@ -487,7 +487,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _vboxEntrys.WidthRequest = _windowSize.Width - 13;
 
             // CreditNote : Protect all components, only Quantity is Editable in CreditMode
-            if (_documentFinanceType.Oid == SharedSettings.XpoOidDocumentFinanceTypeCreditNote)
+            if (_documentFinanceType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeCreditNote)
             {
                 //Article
                 _entryBoxSelectArticle.Entry.Sensitive = false;
@@ -1014,9 +1014,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private void ToggleVatExemptionReasonEditMode()
         {
             //Default Mode
-            if (_documentFinanceType.Oid != SharedSettings.XpoOidDocumentFinanceTypeConsignationInvoice)
+            if (_documentFinanceType.Oid != DocumentSettings.XpoOidDocumentFinanceTypeConsignationInvoice)
             {
-                if (_entryBoxSelectVatRate.Value != null && _entryBoxSelectVatRate.Value.Oid == SharedSettings.XpoOidConfigurationVatRateDutyFree)
+                if (_entryBoxSelectVatRate.Value != null && _entryBoxSelectVatRate.Value.Oid == InvoiceSettings.XpoOidConfigurationVatRateDutyFree)
                 {
                     _entryBoxSelectVatExemptionReason.Entry.Sensitive = true;
                     _entryBoxSelectVatExemptionReason.ButtonSelectValue.Sensitive = true;

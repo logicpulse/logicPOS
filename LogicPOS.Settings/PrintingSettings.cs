@@ -5,6 +5,11 @@ namespace LogicPOS.Settings
 {
     public static class PrintingSettings
     {
+#if DEBUG
+        public static bool PrintPDFEnabled { get; set; } = false;
+#else
+        public static bool PrintPDFEnabled {get;set} = false;
+#endif   
         public static bool PrintQRCode { get; set; } = true;
         public static Dictionary<string, string> FastReportSystemVars { get; set; }
         public static Dictionary<string, string> FastReportCustomVars { get; set; }
@@ -24,9 +29,7 @@ namespace LogicPOS.Settings
         public static Guid XpoOidConfigurationPrintersTemplateWorkSessionMovement { get; set; } = new Guid("f6a25476-40b0-4287-9284-d5db3280d7f1");
         //Modelo para impressão de Entradas/Saidas de Numerário
         public static Guid XpoOidConfigurationPrintersTemplateCashDrawerOpenAndMoneyInOut { get; set; } = new Guid("f6565476-28b0-4287-9284-d5db3280d421");
-
         public static Guid XpoOidConfigurationPrinterGeneric { get; set; } = new Guid("b0c917c7-2ea1-4e08-afa5-4744c19e1c5c");
-
         public static string PrinterThermalEncoding { get; set; } = "PC860";
         public static string PrinterThermalImageCompanyLogo { get; set; } = "Images/Tickets/company_loggero_thermal.bmp";
         public static int PrinterThermalMaxCharsPerLineNormal { get; set; } = 48;
