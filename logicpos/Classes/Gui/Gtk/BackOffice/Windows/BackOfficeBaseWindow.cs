@@ -107,7 +107,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             _clockFormat = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "backoffice_datetime_format_status_bar");
 
             string fontBackOfficeStatusBar = GeneralSettings.Settings["fontPosStatusBar"];
-            string fileImageBackOfficeLogoLong = GeneralSettings.Path["themes"] + @"Default\Images\logo_backoffice_long.png";
+            string fileImageBackOfficeLogoLong = GeneralSettings.Paths["themes"] + @"Default\Images\logo_backoffice_long.png";
             string fileImageBackOfficeLogo = logicpos.Utils.GetThemeFileLocation(GeneralSettings.Settings["fileImageBackOfficeLogo"]);
 
             //Colors
@@ -120,7 +120,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             ModifyBg(StateType.Normal, colorBackOfficeContentBackground.ToGdkColor());
 
             //Icon
-            string fileImageAppIcon = string.Format("{0}{1}", GeneralSettings.Path["images"], POSSettings.AppIcon);
+            string fileImageAppIcon = string.Format("{0}{1}", GeneralSettings.Paths["images"], POSSettings.AppIcon);
             if (File.Exists(fileImageAppIcon)) Icon = logicpos.Utils.ImageToPixbuf(System.Drawing.Image.FromFile(fileImageAppIcon));
 
             //Start Pack UI
@@ -154,11 +154,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             //Style StatusBarFont
             Pango.FontDescription fontDescriptionStatusBar = Pango.FontDescription.FromString(fontBackOfficeStatusBar);
-            string _dashboardIcon = GeneralSettings.Path["images"] + @"Icons\BackOffice\icon_dashboard.png";
-            string _updateIcon = GeneralSettings.Path["images"] + @"Icons\BackOffice\icon_update.png";
-            string _exitIcon = GeneralSettings.Path["images"] + @"Icons\BackOffice\icon_pos_close_backoffice.png";
-            string _backPOSIcon = GeneralSettings.Path["images"] + @"Icons\BackOffice\icon_pos_front_office.png";
-            string _iconDashBoard = GeneralSettings.Path["images"] + @"Icons\BackOffice\icon_other_tables.png";
+            string _dashboardIcon = GeneralSettings.Paths["images"] + @"Icons\BackOffice\icon_dashboard.png";
+            string _updateIcon = GeneralSettings.Paths["images"] + @"Icons\BackOffice\icon_update.png";
+            string _exitIcon = GeneralSettings.Paths["images"] + @"Icons\BackOffice\icon_pos_close_backoffice.png";
+            string _backPOSIcon = GeneralSettings.Paths["images"] + @"Icons\BackOffice\icon_pos_front_office.png";
+            string _iconDashBoard = GeneralSettings.Paths["images"] + @"Icons\BackOffice\icon_other_tables.png";
 
             //Active Content
             _labelActiveContent = new Label() { WidthRequest = 300 };

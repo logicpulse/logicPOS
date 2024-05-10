@@ -109,7 +109,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 
                 string logo = string.Format(
                     @"{0}{1}",
-                    GeneralSettings.Path["assets"],
+                    GeneralSettings.Paths["assets"],
                     _companyLogo
                 );
 

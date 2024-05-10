@@ -47,8 +47,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             string fontPagePadNavigatorButton = GeneralSettings.Settings["fontPagePadNavigatorButton"];
             Size sizePagesPadNavigatorButton = logicpos.Utils.StringToSize(GeneralSettings.Settings["sizePagesPadNavigatorButton"]);
             Size sizePagesPadNavigatorButtonIcon = logicpos.Utils.StringToSize(GeneralSettings.Settings["sizePagesPadNavigatorButtonIcon"]);
-            string iconPrev = string.Format("{0}{1}", GeneralSettings.Path["images"], @"Icons/icon_pos_pagepad_prev.png");
-            string iconNext = string.Format("{0}{1}", GeneralSettings.Path["images"], @"Icons/icon_pos_pagepad_next.png");
+            string iconPrev = string.Format("{0}{1}", GeneralSettings.Paths["images"], @"Icons/icon_pos_pagepad_prev.png");
+            string iconNext = string.Format("{0}{1}", GeneralSettings.Paths["images"], @"Icons/icon_pos_pagepad_next.png");
 
             //Parameters
             Pages = pPages;

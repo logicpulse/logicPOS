@@ -271,7 +271,7 @@ namespace logicpos.App
                  */
                 result = string.Format(
                     "{0}{1}",
-                    GeneralSettings.Path["themes"],
+                    GeneralSettings.Paths["themes"],
                     string.Format(
                         FileFormatThemeFile
                         , GeneralSettings.AppTheme.ToLower() /* IN008024: Before, from Database :LogicPOS.Settings.AppSettings.PreferenceParameters["APP_THEME"].ToLower() */

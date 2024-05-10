@@ -69,8 +69,8 @@ namespace logicpos.financial.library.Classes.Finance
             string fileSaftPT = CultureSettings.FileFormatSaftPT;
             string dateTimeFileFormat = CultureSettings.FileFormatDateTime;
             string dateTime = XPOHelper.CurrentDateTimeAtomic().ToString(dateTimeFileFormat);
-            string fileName = GeneralSettings.Path["saftpt"] + string.Format(fileSaftPT, SaftSettings.SaftVersionPrefix, SaftSettings.SaftVersion, dateTime).ToLower();
-            if (!FinancialLibraryUtils.HasWritePermissionOnDir(GeneralSettings.Path["saftpt"].ToString()))
+            string fileName = GeneralSettings.Paths["saftpt"] + string.Format(fileSaftPT, SaftSettings.SaftVersionPrefix, SaftSettings.SaftVersion, dateTime).ToLower();
+            if (!FinancialLibraryUtils.HasWritePermissionOnDir(GeneralSettings.Paths["saftpt"].ToString()))
             {
                 fileName = string.Format("\\temp\\" + fileSaftPT, SaftSettings.SaftVersionPrefix, SaftSettings.SaftVersion, dateTime).ToLower();
             }

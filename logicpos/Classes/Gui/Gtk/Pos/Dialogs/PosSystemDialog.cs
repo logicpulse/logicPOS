@@ -15,7 +15,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Init Local Vars
             string windowTitle = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_system");
             Size windowSize = new Size(620, 205/*321 2 rows*/);
-            string fileDefaultWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_system.png";
+            string fileDefaultWindowIcon = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_window_system.png";
 
             Size sizeIcon = new Size(50, 50);
             int buttonWidth = 162;
@@ -23,9 +23,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             uint tablePadding = 15;
 
             //Icons
-            string fileIconConfiguration = GeneralSettings.Path["images"] + @"Icons\icon_pos_configuration.png";
-            string fileIconCashRegister = GeneralSettings.Path["images"] + @"Icons\icon_pos_ticketpad_cashregister.png";
-            string fileIconReports = GeneralSettings.Path["images"] + @"Icons\icon_pos_reports.png";
+            string fileIconConfiguration = GeneralSettings.Paths["images"] + @"Icons\icon_pos_configuration.png";
+            string fileIconCashRegister = GeneralSettings.Paths["images"] + @"Icons\icon_pos_ticketpad_cashregister.png";
+            string fileIconReports = GeneralSettings.Paths["images"] + @"Icons\icon_pos_reports.png";
 
             //Buttons
             TouchButtonIconWithText buttonSetup = new TouchButtonIconWithText("touchButtonSetup_Green", _colorBaseDialogDefaultButtonBackground, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_application_setup"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, fileIconConfiguration, sizeIcon, buttonWidth, buttonHeight);

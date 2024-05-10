@@ -28,7 +28,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Init Local Vars
             string windowTitle = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_readcard");
             Size windowSize = new Size(462, 320);//400 With Other Payments
-            string fileDefaultWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_read_card.png";
+            string fileDefaultWindowIcon = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_window_read_card.png";
 
             //EntryDescription
             _entryBoxMovementDescription = new EntryBoxValidation(this, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_read_card"), KeyboardMode.AlfaNumeric, regexAlfaNumericExtended, false);

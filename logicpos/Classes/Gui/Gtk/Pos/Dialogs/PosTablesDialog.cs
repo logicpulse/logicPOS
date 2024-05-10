@@ -22,8 +22,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private Size _sizePosTableButton = logicpos.Utils.StringToSize(GeneralSettings.Settings["sizePosTableButton"]);
         private Size _sizeIconScrollLeftRight = new Size(62, 31);
         //Files
-        private readonly string _fileScrollLeftImage = GeneralSettings.Path["images"] + @"Buttons\Pos\button_subfamily_article_scroll_left.png";
-        private readonly string _fileScrollRightImage = GeneralSettings.Path["images"] + @"Buttons\Pos\button_subfamily_article_scroll_right.png";
+        private readonly string _fileScrollLeftImage = GeneralSettings.Paths["images"] + @"Buttons\Pos\button_subfamily_article_scroll_left.png";
+        private readonly string _fileScrollRightImage = GeneralSettings.Paths["images"] + @"Buttons\Pos\button_subfamily_article_scroll_right.png";
         //UI
         private readonly Fixed _fixedContent;
         private TablePad _tablePadPlace;
@@ -79,22 +79,22 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             /* IN008024 */
             if (!AppOperationModeSettings.IsDefaultTheme)
             {
-                fileDefaultWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_tables_retail.png";
-                fileActionViewOrders = GeneralSettings.Path["images"] + @"Icons\icon_pos_retail_view_order.png";
+                fileDefaultWindowIcon = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_window_tables_retail.png";
+                fileActionViewOrders = GeneralSettings.Paths["images"] + @"Icons\icon_pos_retail_view_order.png";
             }
             else
             {
-                fileDefaultWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_tables.png";
-                fileActionViewOrders = GeneralSettings.Path["images"] + @"Icons\icon_pos_table_view_order.png";
+                fileDefaultWindowIcon = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_window_tables.png";
+                fileActionViewOrders = GeneralSettings.Paths["images"] + @"Icons\icon_pos_table_view_order.png";
             }
 
             //ActionArea Icons
-            string fileActionTableReservation = GeneralSettings.Path["images"] + @"Icons\icon_pos_table_reservation.png";
-            string fileActionTableFilterAll = GeneralSettings.Path["images"] + @"Icons\icon_pos_table_filter_all.png";
-            string fileActionTableFilterFree = GeneralSettings.Path["images"] + @"Icons\icon_pos_table_filter_free.png";
-            string fileActionTableFilterOpen = GeneralSettings.Path["images"] + @"Icons\icon_pos_table_filter_open.png"  ;
-            string fileActionTableFilterReserved = GeneralSettings.Path["images"] + @"Icons\icon_pos_table_filter_reserved.png";
-            string fileActionTableViewTables = GeneralSettings.Path["images"] + @"Icons\icon_pos_table_view_tables.png";
+            string fileActionTableReservation = GeneralSettings.Paths["images"] + @"Icons\icon_pos_table_reservation.png";
+            string fileActionTableFilterAll = GeneralSettings.Paths["images"] + @"Icons\icon_pos_table_filter_all.png";
+            string fileActionTableFilterFree = GeneralSettings.Paths["images"] + @"Icons\icon_pos_table_filter_free.png";
+            string fileActionTableFilterOpen = GeneralSettings.Paths["images"] + @"Icons\icon_pos_table_filter_open.png"  ;
+            string fileActionTableFilterReserved = GeneralSettings.Paths["images"] + @"Icons\icon_pos_table_filter_reserved.png";
+            string fileActionTableViewTables = GeneralSettings.Paths["images"] + @"Icons\icon_pos_table_view_tables.png";
 
             //Parameters
             _FilterMode = pFilterMode;

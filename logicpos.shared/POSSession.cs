@@ -16,7 +16,7 @@ namespace logicpos.shared
     {
         private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public string JsonFileLocation { get; private set; }
+        private string JsonFileLocation { get; set; }
 
         public DateTime SessionStartDate { get; set; }
 
@@ -28,7 +28,7 @@ namespace logicpos.shared
         public Dictionary<Guid, OrderMain> OrderMains { get; set; }
 
         public Dictionary<string, object> Tokens { get; set; }
-        public bool IsEmpty => OrderMains.Count == 0 && LoggedUsers.Count == 0;
+        private bool IsEmpty => OrderMains.Count == 0 && LoggedUsers.Count == 0;
 
         public POSSession(string jsonFileLocation)
         {
@@ -176,7 +176,7 @@ namespace logicpos.shared
             {
                 appSession = new POSSession(jsonFileLocation);
                 appSession.Save();
-            };
+            }
 
             return appSession;
         }

@@ -115,7 +115,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //TODO:THEME
             _windowSize = new Size(900, 360);
 
-            string fileDefaultWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_finance_article.png";
+            string fileDefaultWindowIcon = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_window_finance_article.png";
 
             //Get Discount from Select Customer
             DiscountGlobal = LogicPOS.Utility.DataConversionUtils.StringToDecimal(((pSourceWindow as PosDocumentFinanceDialog).PagePad.Pages[1] as DocumentFinanceDialogPage2).EntryBoxCustomerDiscount.EntryValidation.Text);

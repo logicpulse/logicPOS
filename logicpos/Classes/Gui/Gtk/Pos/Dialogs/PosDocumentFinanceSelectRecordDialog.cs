@@ -27,10 +27,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _sourceWindow = pSourceWindow;            
 
             //Settings
-            string _fileIconListFinanceDocuments = GeneralSettings.Path["images"] + @"Icons\icon_pos_toolbar_finance_document.png";
-            string _fileIconListCurrentAccountDocuments = GeneralSettings.Path["images"] + @"Icons\icon_pos_toolbar_reports.png";
-            string _fileIconListWorksessionPeriods = GeneralSettings.Path["images"] + @"Icons\icon_pos_toolbar_cashdrawer.png";
-            string _fileIconListMerchandiseEntry = GeneralSettings.Path["images"] + @"Icons\icon_pos_toolbar_merchandise_entry.png";
+            string _fileIconListFinanceDocuments = GeneralSettings.Paths["images"] + @"Icons\icon_pos_toolbar_finance_document.png";
+            string _fileIconListCurrentAccountDocuments = GeneralSettings.Paths["images"] + @"Icons\icon_pos_toolbar_reports.png";
+            string _fileIconListWorksessionPeriods = GeneralSettings.Paths["images"] + @"Icons\icon_pos_toolbar_cashdrawer.png";
+            string _fileIconListMerchandiseEntry = GeneralSettings.Paths["images"] + @"Icons\icon_pos_toolbar_merchandise_entry.png";
 
             //Sizes
             Size sizeIcon = new Size(50, 50);
@@ -43,7 +43,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Init Local Vars
             string windowTitle = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_document_finance");
             Size windowSize = new Size(windowSizeWidth, windowSizeHeight);
-            string fileDefaultWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_documents.png";
+            string fileDefaultWindowIcon = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_window_documents.png";
 
             //Buttons
             _touchButtonPosToolbarFinanceDocuments = new TouchButtonIconWithText("touchButtonPosToolbarFinanceDocuments_Green", _colorBaseDialogDefaultButtonBackground, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_button_label_select_record_finance_documents"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileIconListFinanceDocuments, sizeIcon, buttonWidth, buttonHeight) { Token = "ALL" };

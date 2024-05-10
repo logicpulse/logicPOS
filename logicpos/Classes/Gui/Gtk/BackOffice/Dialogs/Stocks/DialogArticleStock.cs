@@ -836,7 +836,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             TouchButtonIconWithText result = null;
             try
             {
-                string fileIcon = GeneralSettings.Path["images"] + pIcon;
+                string fileIcon = GeneralSettings.Paths["images"] + pIcon;
                 string fontBaseDialogActionAreaButton = GeneralSettings.Settings["fontBaseDialogActionAreaButton"];
                 Color colorBaseDialogActionAreaButtonBackground = Color.Transparent;
                 Color colorBaseDialogActionAreaButtonFont = GeneralSettings.Settings["colorBaseDialogActionAreaButtonFont"].StringToColor();

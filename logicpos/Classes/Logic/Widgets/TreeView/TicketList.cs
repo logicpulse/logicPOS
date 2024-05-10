@@ -460,7 +460,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //BarCode
         private void _buttonKeyBarCode_Clicked(object sender, EventArgs e)
         {
-            string fileWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_input_text_barcode.png";
+            string fileWindowIcon = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_window_input_text_barcode.png";
             logicpos.Utils.ResponseText dialogResponse = logicpos.Utils.GetInputText(SourceWindow, DialogFlags.Modal, fileWindowIcon, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_barcode_articlecode"), string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true);
 
             if (dialogResponse.ResponseType == ResponseType.Ok)
@@ -479,7 +479,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //IN009279 CardCode scanner
         private void _buttonKeyCardCode_Clicked(object sender, EventArgs e)
         {
-            string fileWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_pos_ticketpad_card_entry.png";
+            string fileWindowIcon = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_pos_ticketpad_card_entry.png";
             logicpos.Utils.ResponseText dialogResponse = logicpos.Utils.GetInputText(SourceWindow, DialogFlags.Modal, fileWindowIcon, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_cardcode_small"), string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true);
 
             if (dialogResponse.ResponseType == ResponseType.Ok)

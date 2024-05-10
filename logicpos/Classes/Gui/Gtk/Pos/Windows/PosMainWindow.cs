@@ -23,7 +23,7 @@ namespace logicpos
     {
 
         //Files
-        private readonly string _fileBaseButtonOverlay = GeneralSettings.Path["images"] + @"Buttons\Pos\button_overlay.png";
+        private readonly string _fileBaseButtonOverlay = GeneralSettings.Paths["images"] + @"Buttons\Pos\button_overlay.png";
 
         /* IN006045 */
         //private string _clockFormat = LogicPOS.Settings.GeneralSettings.Settings["dateTimeFormatStatusBar"];
@@ -219,11 +219,11 @@ namespace logicpos
             Image imageLogo = new Image(Utils.GetThemeFileLocation(GeneralSettings.Settings["fileImageBackOfficeLogo"]));
             if (PluginSettings.PluginLicenceManager != null)
             {
-                string fileImageBackOfficeLogo = string.Format(GeneralSettings.Path["themes"] + @"Default\Images\logicPOS_loggericpulse_loggerin.png");
+                string fileImageBackOfficeLogo = string.Format(GeneralSettings.Paths["themes"] + @"Default\Images\logicPOS_loggericpulse_loggerin.png");
 
                 if (!string.IsNullOrEmpty(LicenseSettings.LicenseReseller) && LicenseSettings.LicenseReseller == "NewTech")
                 {
-                    fileImageBackOfficeLogo = string.Format(GeneralSettings.Path["themes"] + @"Default\Images\Branding\{0}\logicPOS_loggericpulse_loggerin.png", "NT");
+                    fileImageBackOfficeLogo = string.Format(GeneralSettings.Paths["themes"] + @"Default\Images\Branding\{0}\logicPOS_loggericpulse_loggerin.png", "NT");
                 }
 
                 //var bitmapImage = GlobalFramework.PluginLicenceManager.DecodeImage(fileImageBackOfficeLogo, eventBoxImageLogoSize.Width, eventBoxImageLogoSize.Height);

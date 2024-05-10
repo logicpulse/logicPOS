@@ -16,7 +16,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Init Local Vars
             string windowTitle = string.Format("{0} : {1} #{2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_orders"), CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_place_table"), pTable);
             Size windowSize = new Size(429, 205);//618 (3buts)
-            string fileDefaultWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_orders.png";
+            string fileDefaultWindowIcon = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_window_orders.png";
 
             Size sizeIcon = new Size(50, 50);
             int buttonWidth = 162;
@@ -24,8 +24,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             uint tablePadding = 15;
 
             //Icons
-            string fileIconListOrders = GeneralSettings.Path["images"] + @"Icons\icon_pos_ticketpad_orderlist.png";
-            string fileIconPrintOrder = GeneralSettings.Path["images"] + @"Icons\icon_pos_print.png";
+            string fileIconListOrders = GeneralSettings.Paths["images"] + @"Icons\icon_pos_ticketpad_orderlist.png";
+            string fileIconPrintOrder = GeneralSettings.Paths["images"] + @"Icons\icon_pos_print.png";
             //String fileIconListFinanceDocuments = SharedUtils.OSSlash(GeneralSettings.Path["images"] + @"Icons\icon_pos_default.png");
 
             //Buttons

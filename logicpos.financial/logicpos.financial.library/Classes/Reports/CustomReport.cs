@@ -240,13 +240,13 @@ namespace logicpos.financial.library.Classes.Reports
 
                         fileNameExport = string.Format("print_{0}{1}{2}", dateTime, reportName, ".xlsx");
                         fileNameExport = fileNameExport.Replace('/', '-').Replace(' ', '_');
-                        fileNameExport = string.Format(@"{0}{1}", GeneralSettings.Path["temp"], fileNameExport);
+                        fileNameExport = string.Format(@"{0}{1}", GeneralSettings.Paths.GetTempFolderLocation(), fileNameExport);
 
 
                         fileName = string.Format("print_{0}{1}{2}", dateTime, reportName, ".pdf");
                         fileName = fileName.Replace('/', '-').Replace(' ', '_');
                         //2015-06-12 apmuga
-                        fileName = string.Format(@"{0}{1}", GeneralSettings.Path["temp"], fileName);
+                        fileName = string.Format(@"{0}{1}", GeneralSettings.Paths.GetTempFolderLocation(), fileName);
 
                         //Mario
                         //fileName = (LogicPOS.Settings.GeneralSettings.Settings["AppEnvironment"].ToUpper() == "web".ToUpper()) 
@@ -577,7 +577,7 @@ namespace logicpos.financial.library.Classes.Reports
                 {
                     fileName = fileName.Replace(".frx", "_QRCode.frx");
                 }
-                string fileUserReportDocumentFinance = string.Format("{0}{1}\\{2}", GeneralSettings.Path["reports"], "UserReports", fileName);
+                string fileUserReportDocumentFinance = string.Format("{0}{1}\\{2}", GeneralSettings.Paths["reports"], "UserReports", fileName);
 
                 CustomReport customReport = new CustomReport(fileUserReportDocumentFinance, FILENAME_TEMPLATE_BASE, pCopyNames);
                 customReport.DoublePass = (documentMaster.DocumentDetail.Count > 15);
@@ -697,7 +697,7 @@ namespace logicpos.financial.library.Classes.Reports
 
 
                 string fileFrxFromCulture = string.Format("ReportDocumentFinancePayment_" + currentCulture + ".frx");
-                string fileUserReportDocumentFinancePayment = string.Format("{0}{1}\\{2}", GeneralSettings.Path["reports"], "UserReports", fileFrxFromCulture);
+                string fileUserReportDocumentFinancePayment = string.Format("{0}{1}\\{2}", GeneralSettings.Paths["reports"], "UserReports", fileFrxFromCulture);
                 _logger.Debug("Current Culture: " + currentCulture);
                 CustomReport customReport = new CustomReport(fileUserReportDocumentFinancePayment, FILENAME_TEMPLATE_BASE, pCopyNames);
 
@@ -1948,7 +1948,7 @@ namespace logicpos.financial.library.Classes.Reports
 
         private static string GetReportFilePath(string fileName)
         {
-            string result = string.Format("{0}{1}\\{2}", GeneralSettings.Path["reports"], "UserReports", fileName);
+            string result = string.Format("{0}{1}\\{2}", GeneralSettings.Paths["reports"], "UserReports", fileName);
             if (!File.Exists(result))
             {
                 // Force Exception, Report must Exist else its hard to find errors, dont catch exception

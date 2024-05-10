@@ -263,11 +263,11 @@ namespace logicpos
                     //LOGO
                     if (PluginSettings.PluginLicenceManager != null)
                     {
-                        string fileImageBackOfficeLogo = string.Format(GeneralSettings.Path["themes"] + @"Default\Images\logicPOS_loggericpulse_loggerin.png");
+                        string fileImageBackOfficeLogo = string.Format(GeneralSettings.Paths["themes"] + @"Default\Images\logicPOS_loggericpulse_loggerin.png");
 
                         if (!string.IsNullOrEmpty(LicenseSettings.LicenseReseller) && LicenseSettings.LicenseReseller == "NewTech")
                         {
-                            fileImageBackOfficeLogo = string.Format(GeneralSettings.Path["themes"] + @"Default\Images\Branding\{0}\logicPOS_loggericpulse_loggerin.png", "NT");
+                            fileImageBackOfficeLogo = string.Format(GeneralSettings.Paths["themes"] + @"Default\Images\Branding\{0}\logicPOS_loggericpulse_loggerin.png", "NT");
                         }
 
                         // var bitmapImage = GlobalFramework.PluginLicenceManager.DecodeImage(fileImageBackOfficeLogo, (GlobalApp.ScreenSize.Width - 550), (GlobalApp.ScreenSize.Height - 550));

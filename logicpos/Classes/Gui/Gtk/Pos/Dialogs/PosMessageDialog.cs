@@ -64,7 +64,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Init Local Vars
             string windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_message_dialog");
             System.Drawing.Size windowSize = pSize;
-            string fileDefaultWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_default.png";
+            string fileDefaultWindowIcon = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_window_default.png";
 
             if (!pTitle.Equals(string.Empty))
             {
@@ -73,7 +73,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             if (!pImageWindowIcon.Equals(string.Empty))
             {
-                fileDefaultWindowIcon = GeneralSettings.Path["images"] + pImageWindowIcon;
+                fileDefaultWindowIcon = GeneralSettings.Paths["images"] + pImageWindowIcon;
             }
 
             //Text View
@@ -107,7 +107,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             Fixed fixedContent = new Fixed();
 
             //Add content, with or without ImageDialog
-            string fileImageDialog = GeneralSettings.Path["images"] + pImageDialog;
+            string fileImageDialog = GeneralSettings.Paths["images"] + pImageDialog;
             if (pImageDialog != string.Empty && File.Exists(fileImageDialog))
             {
                 Gdk.Pixbuf pixBuf = logicpos.Utils.FileToPixBuf(fileImageDialog);

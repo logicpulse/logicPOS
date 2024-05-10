@@ -108,7 +108,7 @@ namespace logicpos
                 SetCulture();
 
                 // Init PluginContainer
-                PluginSettings.PluginContainer = new PluginContainer(GeneralSettings.Path["plugins"].ToString());
+                PluginSettings.PluginContainer = new PluginContainer(GeneralSettings.Paths["plugins"].ToString());
 
                 // PluginSoftwareVendor
                 PluginSettings.PluginSoftwareVendor = PluginSettings.PluginContainer.GetFirstPluginOfType<ISoftwareVendor>();

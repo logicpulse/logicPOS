@@ -63,7 +63,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public void InitObject(Window pSourceWindow, DialogFlags pDialogFlags, string pWindowTitle, decimal pInitialValue = 0.0m, decimal pTotalOrder = 0.0m)
         {
             Size windowSize = new Size(524, 497);
-            string fileDefaultWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_payments.png";
+            string fileDefaultWindowIcon = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_window_payments.png";
 
             //Init MoneyPad
             _moneyPad = new MoneyPad(pSourceWindow, pInitialValue);

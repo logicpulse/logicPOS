@@ -33,9 +33,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private readonly uint _borderWidth = 5;
         //private Gtk.Style _styleBackground;
         //Assets
-        protected string _fileDefaultWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_default.png";
-        private readonly string _fileDefaultWindowIconClose = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_window_close.png";
-        private readonly string _fileDefaultWindowIconMinimize = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_window_minimize.png";
+        protected string _fileDefaultWindowIcon = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_window_default.png";
+        private readonly string _fileDefaultWindowIconClose = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_window_window_close.png";
+        private readonly string _fileDefaultWindowIconMinimize = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_window_window_minimize.png";
         //Colors
         private readonly System.Drawing.Color _colorBaseDialogTitleBackground = GeneralSettings.Settings["colorBaseDialogTitleBackground"].StringToColor();
         private readonly System.Drawing.Color _colorBaseDialogWindowBackground = GeneralSettings.Settings["colorBaseDialogWindowBackground"].StringToColor();
@@ -58,12 +58,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         protected System.Drawing.Color _colorBaseDialogActionAreaButtonBackground = GeneralSettings.Settings["colorBaseDialogActionAreaButtonBackground"].StringToColor();
         protected string _fontBaseDialogButton = GeneralSettings.Settings["fontBaseDialogButton"];
         protected string _fontBaseDialogActionAreaButton = GeneralSettings.Settings["fontBaseDialogActionAreaButton"];
-        protected string _fileActionDefault = GeneralSettings.Path["images"] + @"Icons\icon_pos_default.png";
-        protected string _fileActionOK = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
-        protected string _fileActionCancel = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png";
-        protected string _fileDemoData = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_demo.png";
+        protected string _fileActionDefault = GeneralSettings.Paths["images"] + @"Icons\icon_pos_default.png";
+        protected string _fileActionOK = GeneralSettings.Paths["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
+        protected string _fileActionCancel = GeneralSettings.Paths["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png";
+        protected string _fileDemoData = GeneralSettings.Paths["images"] + @"Icons\Dialogs\icon_pos_demo.png";
         //IN009223 IN009227
-        protected string _fileActionMore = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_nav_new.png";
+        protected string _fileActionMore = GeneralSettings.Paths["images"] + @"Icons\Dialogs\icon_pos_nav_new.png";
 
         //Public Properties
         protected Window _sourceWindow;
@@ -472,19 +472,19 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //System.Drawing.Color colorBaseDialogActionAreaButtonBackground = FrameworkUtils.StringToColor(LogicPOS.Settings.GeneralSettings.Settings["colorBaseDialogActionAreaButtonBackground"]);
             string fontBaseDialogActionAreaButton = GeneralSettings.Settings["fontBaseDialogActionAreaButton"];
             //Icons
-            string fileActionDefault = GeneralSettings.Path["images"] + @"Icons\icon_pos_default.png";
-            string fileActionOK = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
-            string fileActionCancel = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png";
-            string fileActionYes = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_yes.png";
-            string fileActionNo = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_no.png";
-            string fileActionClose = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_close.png"  ;
-            string fileActionPrint = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_print.png";
-            string fileActionPrintAs = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_print_as.png";
-            string fileActionHelp = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_help.png";
-            string fileActionCloneDocument = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_clone_document.png ";
-            string fileActionOpenDocument = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_open_document.png";
-            string fileActionSendEmailDocument = GeneralSettings.Path["images"] + @"Icons\icon_pos_dialog_send_email.png";
-            string fileActionCleanFilter = GeneralSettings.Path["images"] + @"Icons\icon_pos_clean_filter.png";
+            string fileActionDefault = GeneralSettings.Paths["images"] + @"Icons\icon_pos_default.png";
+            string fileActionOK = GeneralSettings.Paths["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
+            string fileActionCancel = GeneralSettings.Paths["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png";
+            string fileActionYes = GeneralSettings.Paths["images"] + @"Icons\Dialogs\icon_pos_dialog_action_yes.png";
+            string fileActionNo = GeneralSettings.Paths["images"] + @"Icons\Dialogs\icon_pos_dialog_action_no.png";
+            string fileActionClose = GeneralSettings.Paths["images"] + @"Icons\Dialogs\icon_pos_dialog_action_close.png"  ;
+            string fileActionPrint = GeneralSettings.Paths["images"] + @"Icons\Dialogs\icon_pos_dialog_action_print.png";
+            string fileActionPrintAs = GeneralSettings.Paths["images"] + @"Icons\Dialogs\icon_pos_dialog_action_print_as.png";
+            string fileActionHelp = GeneralSettings.Paths["images"] + @"Icons\Dialogs\icon_pos_dialog_action_help.png";
+            string fileActionCloneDocument = GeneralSettings.Paths["images"] + @"Icons\Dialogs\icon_pos_dialog_action_clone_document.png ";
+            string fileActionOpenDocument = GeneralSettings.Paths["images"] + @"Icons\Dialogs\icon_pos_dialog_action_open_document.png";
+            string fileActionSendEmailDocument = GeneralSettings.Paths["images"] + @"Icons\icon_pos_dialog_send_email.png";
+            string fileActionCleanFilter = GeneralSettings.Paths["images"] + @"Icons\icon_pos_clean_filter.png";
 
             //Assign ButtonType to Name, Override After Switch
             string buttonName = (pButtonName != string.Empty) ? pButtonName : string.Format("touchButton{0}_DialogActionArea", pButtonType.ToString());
@@ -577,19 +577,19 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             System.Drawing.Color colorBaseDialogActionAreaButtonFont = GeneralSettings.Settings["colorBaseDialogActionAreaButtonFont"].StringToColor();
             //Icons
-            string fileActionDefault = GeneralSettings.Path["images"] + @"Icons\icon_pos_default.png";
-            string fileActionOK = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
-            string fileActionCancel = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png";
-            string fileActionYes = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_yes.png";
-            string fileActionNo = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_no.png";
-            string fileActionClose = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_close.png";
-            string fileActionPrint = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_print.png";
-            string fileActionPrintAs = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_print_as.png";
-            string fileActionHelp = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_help.png";
-            string fileActionCloneDocument = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_clone_document.png ";
-            string fileActionOpenDocument = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_open_document.png";
-            string fileActionSendEmailDocument = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_send_email.png";
-            string fileActionCleanFilter = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_clean_filter.png";
+            string fileActionDefault = GeneralSettings.Paths["images"] + @"Icons\icon_pos_default.png";
+            string fileActionOK = GeneralSettings.Paths["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
+            string fileActionCancel = GeneralSettings.Paths["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png";
+            string fileActionYes = GeneralSettings.Paths["images"] + @"Icons\Dialogs\icon_pos_dialog_action_yes.png";
+            string fileActionNo = GeneralSettings.Paths["images"] + @"Icons\Dialogs\icon_pos_dialog_action_no.png";
+            string fileActionClose = GeneralSettings.Paths["images"] + @"Icons\Dialogs\icon_pos_dialog_action_close.png";
+            string fileActionPrint = GeneralSettings.Paths["images"] + @"Icons\Dialogs\icon_pos_dialog_action_print.png";
+            string fileActionPrintAs = GeneralSettings.Paths["images"] + @"Icons\Dialogs\icon_pos_dialog_action_print_as.png";
+            string fileActionHelp = GeneralSettings.Paths["images"] + @"Icons\Dialogs\icon_pos_dialog_action_help.png";
+            string fileActionCloneDocument = GeneralSettings.Paths["images"] + @"Icons\Dialogs\icon_pos_dialog_action_clone_document.png ";
+            string fileActionOpenDocument = GeneralSettings.Paths["images"] + @"Icons\Dialogs\icon_pos_dialog_action_open_document.png";
+            string fileActionSendEmailDocument = GeneralSettings.Paths["images"] + @"Icons\Dialogs\icon_pos_dialog_send_email.png";
+            string fileActionCleanFilter = GeneralSettings.Paths["images"] + @"Icons\Dialogs\icon_pos_clean_filter.png";
 
             //Assign ButtonType to Name, Override After Switch
             string buttonName = (pButtonName != string.Empty) ? pButtonName : string.Format("touchButton{0}_DialogActionArea", pButtonType.ToString());

@@ -136,16 +136,16 @@ namespace logicpos.financial.service.App
         private static string GetServicesATFilePublicKey(bool pTestMode)
         {
             return (pTestMode)
-                ? string.Format(@"{0}{1}", GeneralSettings.Path["certificates"], GeneralSettings.Settings["servicesATTestModeFilePublicKey"])
-                : string.Format(@"{0}{1}", GeneralSettings.Path["certificates"], GeneralSettings.Settings["servicesATProdModeFilePublicKey"])
+                ? string.Format(@"{0}{1}", GeneralSettings.Paths["certificates"], GeneralSettings.Settings["servicesATTestModeFilePublicKey"])
+                : string.Format(@"{0}{1}", GeneralSettings.Paths["certificates"], GeneralSettings.Settings["servicesATProdModeFilePublicKey"])
             ;
         }
 
         private static string GetServicesATFileCertificate(bool pTestMode)
         {
             return (pTestMode)
-                ? string.Format(@"{0}{1}", GeneralSettings.Path["certificates"], GeneralSettings.Settings["servicesATTestModeFileCertificate"])
-                : string.Format(@"{0}{1}", GeneralSettings.Path["certificates"], GeneralSettings.Settings["servicesATProdModeFileCertificate"])
+                ? string.Format(@"{0}{1}", GeneralSettings.Paths["certificates"], GeneralSettings.Settings["servicesATTestModeFileCertificate"])
+                : string.Format(@"{0}{1}", GeneralSettings.Paths["certificates"], GeneralSettings.Settings["servicesATProdModeFileCertificate"])
             ;
         }
 

@@ -24,8 +24,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
         private fin_warehouse _Warehouse;
         private ScrolledWindow _scrolledWindow;
         private VBox vboxTab2;
-        private readonly string iconAddRecord = string.Format("{0}{1}", GeneralSettings.Path["images"], @"Icons/icon_pos_nav_new.png");
-        private readonly string iconClearRecord = string.Format("{0}{1}", GeneralSettings.Path["images"], @"Icons/Windows/icon_window_delete_record.png");
+        private readonly string iconAddRecord = string.Format("{0}{1}", GeneralSettings.Paths["images"], @"Icons/icon_pos_nav_new.png");
+        private readonly string iconClearRecord = string.Format("{0}{1}", GeneralSettings.Paths["images"], @"Icons/Windows/icon_window_delete_record.png");
 
         public DialogConfigurationWarehouse(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)

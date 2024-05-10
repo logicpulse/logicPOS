@@ -102,7 +102,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 SetSizeRequest(500, 660);
             }
-            string fileDefaultWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_stocks.png";
+            string fileDefaultWindowIcon = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_window_stocks.png";
             InitUI();
             //InitNotes();
             ValidateDialog();
@@ -141,7 +141,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 //DocumentNumber
                 Color colorBaseDialogEntryBoxBackground = GeneralSettings.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
-                string _fileIconListFinanceDocuments = GeneralSettings.Path["images"] + @"Icons\icon_pos_toolbar_finance_document.png";
+                string _fileIconListFinanceDocuments = GeneralSettings.Paths["images"] + @"Icons\icon_pos_toolbar_finance_document.png";
                 HBox hBoxDocument = new HBox(false, 0);
                 _entryBoxDocumentNumber = new EntryBoxValidation(this, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_document_number"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false, true);
                 if (_initialDocumentNumber != string.Empty) _entryBoxDocumentNumber.EntryValidation.Text = _initialDocumentNumber;

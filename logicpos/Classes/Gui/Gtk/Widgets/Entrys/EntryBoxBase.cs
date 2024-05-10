@@ -231,7 +231,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         public TouchButtonIcon AddButton(string pObjectName, string pFileNameIcon)
         {
-            string icon = string.Format("{0}{1}", GeneralSettings.Path["images"], pFileNameIcon);
+            string icon = string.Format("{0}{1}", GeneralSettings.Paths["images"], pFileNameIcon);
             TouchButtonIcon result = GetButton(pObjectName, icon);
             _hbox.PackStart(result, false, false, 0);
             return result;
@@ -256,7 +256,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             //Prepare KeyBoard
             if (keyboardMode != KeyboardMode.None)
             {
-                string iconKeyboard = string.Format("{0}{1}", GeneralSettings.Path["images"], @"Icons/Windows/icon_window_keyboard.png");
+                string iconKeyboard = string.Format("{0}{1}", GeneralSettings.Paths["images"], @"Icons/Windows/icon_window_keyboard.png");
                 _buttonKeyBoard = GetButton(iconKeyboard);
                 _hbox.PackStart(_buttonKeyBoard, false, false, 0);
                 _buttonKeyBoard.Clicked += delegate

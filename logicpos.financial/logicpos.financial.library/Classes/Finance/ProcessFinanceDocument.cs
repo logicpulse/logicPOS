@@ -1622,7 +1622,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                             ? string.Format("_{0}", PluginSettings.PluginSoftwareVendor.Decrypt(documentFinanceMaster.EntityName).ToLower().Replace(' ', '_')) /* IN009075 */
                             : string.Empty;
                         string reportFilename = string.Format("{0}/{1}{2}.pdf",
-                            GeneralSettings.Path["documents"],
+                            GeneralSettings.Paths["documents"],
                             documentFinanceMaster.DocumentNumber.Replace('/', '-').Replace(' ', '_'),
                             entityName
                         );
@@ -1672,7 +1672,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                         erp_customer customer = (erp_customer)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(erp_customer), documentFinancePayment.EntityOid);
                         string entityName = (customer != null && !string.IsNullOrEmpty(customer.Name)) ? string.Format("_{0}", customer.Name.ToLower().Replace(' ', '_')) : string.Empty;
                         string reportFilename = string.Format("{0}/{1}{2}.pdf",
-                            GeneralSettings.Path["documents"],
+                            GeneralSettings.Paths["documents"],
                             documentFinancePayment.PaymentRefNo.Replace('/', '-').Replace(' ', '_'),
                             entityName
                         );

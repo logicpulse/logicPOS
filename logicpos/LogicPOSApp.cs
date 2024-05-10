@@ -462,9 +462,9 @@ namespace logicpos
 #endif
 
                 //Clean Documents Folder on New Database, else we have Document files that dont correspond to Database
-                if (databaseCreated && Directory.Exists(GeneralSettings.Path["documents"].ToString()))
+                if (databaseCreated && Directory.Exists(GeneralSettings.Paths["documents"].ToString()))
                 {
-                    string documentsFolder = GeneralSettings.Path["documents"].ToString();
+                    string documentsFolder = GeneralSettings.Paths["documents"].ToString();
                     System.IO.DirectoryInfo di = new DirectoryInfo(documentsFolder);
                     if (di.GetFiles().Length > 0)
                     {
@@ -497,13 +497,13 @@ namespace logicpos
         private void InitBackupTimerProcess()
         {
             bool xpoCreateDatabaseAndSchema = POSSettings.XPOCreateDatabaseAndSchema;
-            bool validDirectoryBackup = GeneralUtils.CreateDirectory(Convert.ToString(GeneralSettings.Path["backups"]));
+            bool validDirectoryBackup = GeneralUtils.CreateDirectory(Convert.ToString(GeneralSettings.Paths["backups"]));
             _logger.Debug("void InitBackupTimerProcess() :: xpoCreateDatabaseAndSchema [ " + xpoCreateDatabaseAndSchema + " ] :: validDirectoryBackup [ " + validDirectoryBackup + " ]");
 
             //Show Dialog if Cant Create Backups Directory (Extra Protection for Shared Network Folders)
             if (!validDirectoryBackup)
             {
-                ResponseType response = Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, MessageType.Question, ButtonsType.YesNo, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_error"), string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_error_create_directory_backups"), Convert.ToString(GeneralSettings.Path["backups"])));
+                ResponseType response = Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, MessageType.Question, ButtonsType.YesNo, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_error"), string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_error_create_directory_backups"), Convert.ToString(GeneralSettings.Paths["backups"])));
                 //Enable Quit After BootStrap, Preventing Application.Run()
                 if (response == ResponseType.No) _quitAfterBootStrap = true;
             }
@@ -606,7 +606,7 @@ namespace logicpos
         {
             bool result = false;
             string[] files = new string[pFileList.Count + 1];
-            string filename = string.Format("{0}{1}", GeneralSettings.Path["temp"], "protected.zip");
+            string filename = string.Format("{0}{1}", GeneralSettings.Paths.GetTempFolderLocation(), "protected.zip");
 
             try
             {

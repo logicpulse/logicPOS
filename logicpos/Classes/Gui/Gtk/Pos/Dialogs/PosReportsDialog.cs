@@ -31,12 +31,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Init Local Vars
             string windowTitle = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_reports");
             System.Drawing.Size windowSize = new System.Drawing.Size(500, 509);//454
-            string fileDefaultWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_reports.png";
+            string fileDefaultWindowIcon = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_window_reports.png";
 
             System.Drawing.Size sizeIcon = new System.Drawing.Size(50, 50);
 
             //Icons
-            string fileIconDefault = GeneralSettings.Path["images"] + @"Icons\icon_pos_default.png";
+            string fileIconDefault = GeneralSettings.Paths["images"] + @"Icons\icon_pos_default.png";
 
             // InitUI
             InitUI();

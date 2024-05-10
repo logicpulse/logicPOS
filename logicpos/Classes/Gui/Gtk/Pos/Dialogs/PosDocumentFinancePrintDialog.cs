@@ -38,7 +38,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Init Local Vars
             string windowTitle = string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_document_finance_print"), pDocumentFinanceMaster.DocumentNumber);
             Size windowSize = new Size(400, 259);
-            string fileDefaultWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_document_new.png";
+            string fileDefaultWindowIcon = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_window_document_new.png";
             //Parameters
             _documentFinanceMaster = pDocumentFinanceMaster;
             //Vars

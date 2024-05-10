@@ -3,14 +3,7 @@ using LogicPOS.Settings;
 using System;
 using System.IO;
 using System.Reflection;
-
-// Use c:\Users\mario.monteiro\Desktop\Development\logicpulseProjects\logic.pos\Other\Sheets\invoicediscounts.ods 
-// To Get Helper Data
-
-//Use Prices in logicpos
-// PriceUser   - Price input by user, only used to cal PriceNet
-// PriceNet    - Price to used in Everywhere/Persistance etc, the Final Price, with With priceWithVat False
-// PriceFinal  - Price to Show to User, Includes Discount, Discount Global and Vat
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos.shared.Classes.Finance
 {
@@ -216,7 +209,7 @@ namespace logicpos.shared.Classes.Finance
         {
             PropertyInfo[] pis = this.GetType().GetProperties(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public);
 
-            StreamWriter sw = new StreamWriter(string.Format("{0}output.txt", GeneralSettings.Path["temp"]), true);
+            StreamWriter sw = new StreamWriter(string.Format("{0}output.txt", GeneralSettings.Paths.GetTempFolderLocation()), true);
             sw.WriteLine(pLabel);
 
             foreach (PropertyInfo p in pis)

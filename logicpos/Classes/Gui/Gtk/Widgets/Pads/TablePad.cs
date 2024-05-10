@@ -24,7 +24,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         private readonly int _posBaseButtonMaxCharsPerLabel = Convert.ToInt16(GeneralSettings.Settings["posBaseButtonMaxCharsPerLabel"]);
         protected int _fontPosBaseButtonSize = Convert.ToInt16(GeneralSettings.Settings["fontPosBaseButtonSize"]);
         //Paths/Files
-        protected string _fileBaseButtonOverlay = GeneralSettings.Path["images"] + @"Buttons\Pos\button_overlay.png";
+        protected string _fileBaseButtonOverlay = GeneralSettings.Paths["images"] + @"Buttons\Pos\button_overlay.png";
         //TouchButton List        
         private List<TouchButtonBase> _listButtons;
         //TouchButton Properties

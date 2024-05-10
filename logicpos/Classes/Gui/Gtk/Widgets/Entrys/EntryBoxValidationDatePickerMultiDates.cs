@@ -126,7 +126,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         private void AddDateTimeEntry(DateTime pDateTime, bool pAddDateTimeToList)
         {
-            string iconFileName = string.Format("{0}{1}", GeneralSettings.Path["images"], @"Icons/Windows/icon_window_delete_record.png");
+            string iconFileName = string.Format("{0}{1}", GeneralSettings.Paths["images"], @"Icons/Windows/icon_window_delete_record.png");
             EntryBoxValidationButton entryBoxValidation = new EntryBoxValidationButton(_sourceWindow, string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_date"), Value.Count + 1), KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexDate, true, iconFileName);
             entryBoxValidation.EntryValidation.Validate();
             entryBoxValidation.EntryValidation.Sensitive = false;

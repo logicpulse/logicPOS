@@ -68,7 +68,7 @@ namespace logicpos.financial.library.Classes.Finance
             string fileSaftAO = CultureSettings.FileFormatSaftAO;
             string dateTimeFileFormat = CultureSettings.FileFormatDateTime;
             string dateTime = XPOHelper.CurrentDateTimeAtomic().ToString(dateTimeFileFormat);
-            string fileName = GeneralSettings.Path["saftAO"] + string.Format(fileSaftAO, SaftSettings.SaftVersionPrefixAO, SaftSettings.SaftVersionAO, dateTime).ToLower();
+            string fileName = GeneralSettings.Paths["saftAO"] + string.Format(fileSaftAO, SaftSettings.SaftVersionPrefixAO, SaftSettings.SaftVersionAO, dateTime).ToLower();
 
             //XmlWriterSettings
             XmlWriterSettings xmlWriterSettings = new XmlWriterSettings();

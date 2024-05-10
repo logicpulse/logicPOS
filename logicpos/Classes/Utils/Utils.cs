@@ -144,11 +144,11 @@ namespace logicpos
             string fileImageDialogBaseMessageTypeImage = GeneralSettings.Settings["fileImageDialogBaseMessageTypeImage"];
             string fileImageDialogBaseMessageTypeIcon = GeneralSettings.Settings["fileImageDialogBaseMessageTypeIcon"];
             //Files
-            string fileActionOK = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
-            string fileActionCancel = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png";
-            string fileActionYes = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_yes.png";
-            string fileActionNo = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_no.png";
-            string fileActionClose = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_close.png";
+            string fileActionOK = GeneralSettings.Paths["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
+            string fileActionCancel = GeneralSettings.Paths["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png";
+            string fileActionYes = GeneralSettings.Paths["images"] + @"Icons\Dialogs\icon_pos_dialog_action_yes.png";
+            string fileActionNo = GeneralSettings.Paths["images"] + @"Icons\Dialogs\icon_pos_dialog_action_no.png";
+            string fileActionClose = GeneralSettings.Paths["images"] + @"Icons\Dialogs\icon_pos_dialog_action_close.png";
             //Init Local Vars
             string fileImageDialog, fileImageWindowIcon;
             ResponseType resultResponse = ResponseType.None;
@@ -888,7 +888,7 @@ namespace logicpos
             proc.EnableRaisingEvents = false;
             proc.StartInfo.FileName = "aplay";
             //TODO: Put Sound in config
-            proc.StartInfo.Arguments = "-t wav " + GeneralSettings.Path["sounds"] + @"Clicks\button2.wav";
+            proc.StartInfo.Arguments = "-t wav " + GeneralSettings.Paths["sounds"] + @"Clicks\button2.wav";
             proc.Start();
         }
 
@@ -985,7 +985,7 @@ namespace logicpos
 
         public static Gdk.Pixbuf ScreenCapture()
         {
-            string tempPath = Convert.ToString(GeneralSettings.Path["temp"]);
+            string tempPath = Convert.ToString(GeneralSettings.Paths.GetTempFolderLocation());
 
             Gdk.Window window = Gdk.Global.DefaultRootWindow;
             if (window != null)
@@ -1425,7 +1425,7 @@ namespace logicpos
         public static EventBox GetMinimizeEventBox()
         {
 
-            string _fileDefaultWindowIconMinimize = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_window_minimize.png";
+            string _fileDefaultWindowIconMinimize = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_window_window_minimize.png";
             EventBox result = null;
 
             try
@@ -1473,7 +1473,7 @@ namespace logicpos
 
         public static Dialog GetThreadDialog(Window pSourceWindow, bool dbExists, string backupProcess)
         {
-            string fileWorking = GeneralSettings.Path["images"] + @"Other\working.gif";
+            string fileWorking = GeneralSettings.Paths["images"] + @"Other\working.gif";
 
             Dialog dialog = new Dialog("Working", pSourceWindow, DialogFlags.Modal | DialogFlags.DestroyWithParent);
             dialog.WindowPosition = WindowPosition.Center;
@@ -1963,7 +1963,7 @@ namespace logicpos
 
         public static string GetThemeFileLocation(string pFile)
         {
-            string pathThemes = GeneralSettings.Path["themes"].ToString();
+            string pathThemes = GeneralSettings.Paths["themes"].ToString();
             /* IN008024 */
             return string.Format(@"{0}{1}\{2}", pathThemes, GeneralSettings.AppTheme, pFile);
         }
@@ -2646,7 +2646,10 @@ namespace logicpos
 
         public static string GetSessionFileName()
         {
-            string result = Path.Combine(GeneralSettings.Path["temp"].ToString(), string.Format(GeneralSettings.AppSessionFile, LicenseSettings.LicenseHardwareId));
+            string result = Path.Combine(
+                GeneralSettings.Paths.GetTempFolderLocation(),
+                GeneralSettings.POSSessionJsonFileName);
+
             return result;
         }
 

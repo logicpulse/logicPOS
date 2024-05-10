@@ -63,8 +63,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         private CheckButton _checkButtonComposite;
         private CheckButton _checkButtonUniqueArticles;
         private ICollection<Tuple<fin_articleserialnumber, Entry, GenericCRUDWidgetXPO, GenericCRUDWidgetXPO, GenericCRUDWidgetXPO, HBox>> _serialNumberCollection;
-        private readonly string iconAddRecord = string.Format("{0}{1}", GeneralSettings.Path["images"], @"Icons/icon_pos_nav_new.png");
-        private readonly string iconClearRecord = string.Format("{0}{1}", GeneralSettings.Path["images"], @"Icons/Windows/icon_window_delete_record.png");
+        private readonly string iconAddRecord = string.Format("{0}{1}", GeneralSettings.Paths["images"], @"Icons/icon_pos_nav_new.png");
+        private readonly string iconClearRecord = string.Format("{0}{1}", GeneralSettings.Paths["images"], @"Icons/Windows/icon_window_delete_record.png");
 
         private int _totalCompositeEntrys = 0;
 

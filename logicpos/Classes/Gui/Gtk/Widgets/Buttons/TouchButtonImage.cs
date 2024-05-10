@@ -2,6 +2,7 @@
 using LogicPOS.Settings;
 using System;
 using System.IO;
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
 {
@@ -12,7 +13,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
         private const int _BUTTON_TEXT_ALPHA_OVERLAY = 250;
         private readonly bool _useCachedImages = logicpos.Utils.UseCache();
         private readonly bool _useVatAutocompletee = logicpos.Utils.UseVatAutocomplete();
-        private readonly string _pathCache = Convert.ToString(GeneralSettings.Path["cache"]);
+        private readonly string _pathCache = Convert.ToString(GeneralSettings.Paths["cache"]);
 
         public Widget widget;
 
@@ -71,7 +72,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
             if (debug)
             {
                 stringResolution = bitmap.HorizontalResolution + "x" + bitmap.VerticalResolution;
-                bitmap.Save(GeneralSettings.Path["temp"] + name + "_1_new_" + stringResolution + ".png");
+                bitmap.Save(GeneralSettings.Paths.GetTempFolderLocation() + name + "_1_new_" + stringResolution + ".png");
             };
 #pragma warning restore
 
@@ -89,7 +90,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
                         if (debug)
                         {
                             stringResolution = imageButton.HorizontalResolution + "x" + imageButton.VerticalResolution;
-                            imageButton.Save(GeneralSettings.Path["temp"] + name + "_2_image_" + stringResolution + ".png");
+                            imageButton.Save(GeneralSettings.Paths.GetTempFolderLocation() + name + "_2_image_" + stringResolution + ".png");
                         };
 #pragma warning restore
 
@@ -100,7 +101,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
                         if (debug)
                         {
                             stringResolution = bitmap.HorizontalResolution + "x" + bitmap.VerticalResolution;
-                            bitmap.Save(GeneralSettings.Path["temp"] + name + "_3_image_resized_" + stringResolution + ".png");
+                            bitmap.Save(GeneralSettings.Paths.GetTempFolderLocation() + name + "_3_image_resized_" + stringResolution + ".png");
                         };
 #pragma warning restore
                     }
@@ -125,7 +126,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
                         if (debug)
                         {
                             stringResolution = imageOverlay.HorizontalResolution + "x" + imageOverlay.VerticalResolution;
-                            imageOverlay.Save(GeneralSettings.Path["temp"] + name + "_4_overlay_" + stringResolution + ".png");
+                            imageOverlay.Save(GeneralSettings.Paths.GetTempFolderLocation() + name + "_4_overlay_" + stringResolution + ".png");
                         };
 #pragma warning restore
 
@@ -136,7 +137,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
                         if (debug)
                         {
                             stringResolution = bitmap.HorizontalResolution + "x" + bitmap.VerticalResolution;
-                            bitmap.Save(GeneralSettings.Path["temp"] + name + "_5_resized_" + stringResolution + ".png");
+                            bitmap.Save(GeneralSettings.Paths.GetTempFolderLocation() + name + "_5_resized_" + stringResolution + ".png");
                         };
 #pragma warning restore
                     }
@@ -158,7 +159,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
                 logicpos.Utils.ImageTextOverlay(bitmap, labelText, transpRectangle, System.Drawing.Color.Black, "Arial", fontSize, _BUTTON_TEXT_ALPHA_OVERLAY);
 
 #pragma warning disable
-                if (debug) bitmap.Save(GeneralSettings.Path["temp"] + @"touchbuttonImage6_" + stringResolution + "_textoverlay.png");
+                if (debug) bitmap.Save(GeneralSettings.Paths.GetTempFolderLocation() + @"touchbuttonImage6_" + stringResolution + "_textoverlay.png");
 #pragma warning restore
             }
 

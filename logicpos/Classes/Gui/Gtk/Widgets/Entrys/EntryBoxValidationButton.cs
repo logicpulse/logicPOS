@@ -24,7 +24,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             : base(pSourceWindow, pLabelText, pBOSource)
         {
             //Settings
-            string iconSelectRecord = string.Format("{0}{1}", GeneralSettings.Path["images"], @"Icons/Windows/icon_window_select_record.png");
+            string iconSelectRecord = string.Format("{0}{1}", GeneralSettings.Paths["images"], @"Icons/Windows/icon_window_select_record.png");
             string iconFile = (pIconFile != string.Empty) ? pIconFile : iconSelectRecord;
 
             //Init Button

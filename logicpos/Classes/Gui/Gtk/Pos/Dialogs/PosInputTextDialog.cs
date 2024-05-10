@@ -54,7 +54,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             if (!File.Exists(pWindowIcon))
             {
-                pWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_system.png";
+                pWindowIcon = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_window_system.png";
             }
 
             //Always assign  pInitialValue to Dialog.Value

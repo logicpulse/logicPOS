@@ -1,4 +1,5 @@
-﻿using System.Collections.Specialized;
+﻿using System.Collections;
+using System.Collections.Specialized;
 
 namespace LogicPOS.Settings.Extensions
 {
@@ -8,5 +9,11 @@ namespace LogicPOS.Settings.Extensions
         {
             return settings["customCultureResourceDefinition"];
         }
+
+        public static string GetTempFolderLocation(this Hashtable paths)
+        {
+            return paths["temp"].ToString();
+        }
+
     }
 }

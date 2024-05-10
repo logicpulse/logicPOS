@@ -2,7 +2,6 @@
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Finance;
-using logicpos.shared.App;
 using LogicPOS.DTOs.Common;
 using LogicPOS.Settings;
 using System;
@@ -15,6 +14,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
+using LogicPOS.Settings.Extensions;
 
 namespace logicpos.financial.service.Objects.Modules.AT
 {
@@ -61,7 +61,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
         //Sample Document Details : Shared for Documents and DocumentWayBill
         private readonly string _sampleXXCustomerTaxID = "508278155";//299999998 | 111111111
 
-        
+
         //XPObjects
         private readonly fin_documentfinancemaster _documentMaster;
 
@@ -76,16 +76,16 @@ namespace logicpos.financial.service.Objects.Modules.AT
         private static string GetServicesATFilePublicKey(bool pTestMode)
         {
             return (pTestMode)
-                ? string.Format(@"{0}{1}", GeneralSettings.Path["certificates"], GeneralSettings.Settings["servicesATTestModeFilePublicKey"])
-                : string.Format(@"{0}{1}", GeneralSettings.Path["certificates"], GeneralSettings.Settings["servicesATProdModeFilePublicKey"])
+                ? string.Format(@"{0}{1}", GeneralSettings.Paths["certificates"], GeneralSettings.Settings["servicesATTestModeFilePublicKey"])
+                : string.Format(@"{0}{1}", GeneralSettings.Paths["certificates"], GeneralSettings.Settings["servicesATProdModeFilePublicKey"])
             ;
         }
 
         private static string GetServicesATFileCertificate(bool pTestMode)
         {
             return (pTestMode)
-                ? string.Format(@"{0}{1}", GeneralSettings.Path["certificates"], GeneralSettings.Settings["servicesATTestModeFileCertificate"])
-                : string.Format(@"{0}{1}", GeneralSettings.Path["certificates"], GeneralSettings.Settings["servicesATProdModeFileCertificate"])
+                ? string.Format(@"{0}{1}", GeneralSettings.Paths["certificates"], GeneralSettings.Settings["servicesATTestModeFileCertificate"])
+                : string.Format(@"{0}{1}", GeneralSettings.Paths["certificates"], GeneralSettings.Settings["servicesATProdModeFileCertificate"])
             ;
         }
 
@@ -165,7 +165,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
         {
             //Init Settings Main Config Settings
             GeneralSettings.Settings = ConfigurationManager.AppSettings;
-            
+
             //Parameters
             _documentMaster = pFinanceMaster;
             //Prepare Local Vars : Must be WayBill and Not a InvoiceWayBill, InvoiceWayBill always are processed like normal Documents
@@ -176,9 +176,9 @@ namespace logicpos.financial.service.Objects.Modules.AT
             _wayBillMode = (_documentMaster.DocumentType.WayBill);
 
             //Init WebService parameters and Files
-            _pathSaveSoap = string.Format(@"{0}{1}", GeneralSettings.Path["temp"], "soapsend.xml");
-            _pathSaveSoapResult = string.Format(@"{0}{1}", GeneralSettings.Path["temp"], "soapresult.xml");
-            _pathSaveSoapResultError = string.Format(@"{0}{1}", GeneralSettings.Path["temp"], "soapresult_error.xml");
+            _pathSaveSoap = string.Format(@"{0}{1}", GeneralSettings.Paths.GetTempFolderLocation(), "soapsend.xml");
+            _pathSaveSoapResult = string.Format(@"{0}{1}", GeneralSettings.Paths.GetTempFolderLocation(), "soapresult.xml");
+            _pathSaveSoapResultError = string.Format(@"{0}{1}", GeneralSettings.Paths.GetTempFolderLocation(), "soapresult_error.xml");
             _urlWebService = (!_wayBillMode) ? GetServicesATDCUri(false) : GetServicesATWBUri(testMode, false);
             _urlSoapAction = (!_wayBillMode) ? ServicesATUriDocumentsSOAPAction : ServicesATUriDocumentsWayBillSOAPAction;
             _pathPublicKey = GetServicesATFilePublicKey(testMode);
@@ -485,22 +485,22 @@ namespace logicpos.financial.service.Objects.Modules.AT
              *      &   &amp;
              */
             _logger.Debug($"string ServicesAT.GenerateXmlStringWB() :: {_documentMaster.DocumentNumber}");
-			//IN009347 Documentos PT - Alteração do Layout dos dados do Cliente #Lindote 2020
+            //IN009347 Documentos PT - Alteração do Layout dos dados do Cliente #Lindote 2020
             /* IN009150 (IN009075) - Decrypt phase */
-            string entityName           = "";
-            string entityAddress        = "";
-            string entityZipCode        = "";
-            string entityCity           = "";
+            string entityName = "";
+            string entityAddress = "";
+            string entityZipCode = "";
+            string entityCity = "";
             // string entityCountry        = "";
-            string entityFiscalNumber   = "";
+            string entityFiscalNumber = "";
 
-            if (!string.IsNullOrEmpty(_documentMaster.EntityName))          { entityName = PluginSettings.PluginSoftwareVendor.Decrypt(_documentMaster.EntityName); }
-            if (!string.IsNullOrEmpty(_documentMaster.EntityAddress))       { entityAddress = PluginSettings.PluginSoftwareVendor.Decrypt(_documentMaster.EntityAddress); }
-            if (!string.IsNullOrEmpty(_documentMaster.EntityZipCode))       { entityZipCode = PluginSettings.PluginSoftwareVendor.Decrypt(_documentMaster.EntityZipCode); }
-            if (!string.IsNullOrEmpty(_documentMaster.EntityCity))          { entityCity = PluginSettings.PluginSoftwareVendor.Decrypt(_documentMaster.EntityCity); }
-            if (!string.IsNullOrEmpty(_documentMaster.EntityLocality))      { entityCity = PluginSettings.PluginSoftwareVendor.Decrypt(_documentMaster.EntityLocality); }
+            if (!string.IsNullOrEmpty(_documentMaster.EntityName)) { entityName = PluginSettings.PluginSoftwareVendor.Decrypt(_documentMaster.EntityName); }
+            if (!string.IsNullOrEmpty(_documentMaster.EntityAddress)) { entityAddress = PluginSettings.PluginSoftwareVendor.Decrypt(_documentMaster.EntityAddress); }
+            if (!string.IsNullOrEmpty(_documentMaster.EntityZipCode)) { entityZipCode = PluginSettings.PluginSoftwareVendor.Decrypt(_documentMaster.EntityZipCode); }
+            if (!string.IsNullOrEmpty(_documentMaster.EntityCity)) { entityCity = PluginSettings.PluginSoftwareVendor.Decrypt(_documentMaster.EntityCity); }
+            if (!string.IsNullOrEmpty(_documentMaster.EntityLocality)) { entityCity = PluginSettings.PluginSoftwareVendor.Decrypt(_documentMaster.EntityLocality); }
             // if (!string.IsNullOrEmpty(_documentMaster.EntityCountry))       { entityCountry = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Decrypt(_documentMaster.EntityCountry); }
-            if (!string.IsNullOrEmpty(_documentMaster.EntityFiscalNumber))  { entityFiscalNumber = PluginSettings.PluginSoftwareVendor.Decrypt(_documentMaster.EntityFiscalNumber); }
+            if (!string.IsNullOrEmpty(_documentMaster.EntityFiscalNumber)) { entityFiscalNumber = PluginSettings.PluginSoftwareVendor.Decrypt(_documentMaster.EntityFiscalNumber); }
             /* IN009150 - end */
 
             //Init Local Vars

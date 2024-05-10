@@ -39,7 +39,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Init Local Vars
             string windowTitle = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_license");
             System.Drawing.Size windowSize = new System.Drawing.Size(890, 650);
-            string fileDefaultWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_license.png";
+            string fileDefaultWindowIcon = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_window_license.png";
 
             //If detected empty Hardware Id from Parameters, get it from IntelliLock
             if (string.IsNullOrEmpty(pHardwareId))
@@ -52,8 +52,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
 
             //Files
-            string fileActionRegister = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_register.png";
-            string fileActionContinue = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
+            string fileActionRegister = GeneralSettings.Paths["images"] + @"Icons\Dialogs\icon_pos_dialog_action_register.png";
+            string fileActionContinue = GeneralSettings.Paths["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
 
             //ActionArea Buttons
             _buttonRegister = new TouchButtonIconWithText("touchButtonRegister_DialogActionArea", System.Drawing.Color.Transparent, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "pos_button_label_licence_register"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionRegister, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Sensitive = false };
@@ -81,7 +81,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private void InitUI()
         {
             //Files
-            string fileAppBanner = GeneralSettings.Path["images"] + @"Licence\licence.png";
+            string fileAppBanner = GeneralSettings.Paths["images"] + @"Licence\licence.png";
             //Init
             int padding = 2;
             //Init Fonts

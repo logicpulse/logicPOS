@@ -136,8 +136,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                 TouchButtonIconWithText buttonMore;
                 TouchButtonIconWithText buttonFilter;
 
-                string fileActionMore = GeneralSettings.Path["images"] + @"Icons\icon_pos_more.png";
-                string fileActionFilter = GeneralSettings.Path["images"] + @"Icons\icon_pos_filter.png";
+                string fileActionMore = GeneralSettings.Paths["images"] + @"Icons\icon_pos_more.png";
+                string fileActionFilter = GeneralSettings.Paths["images"] + @"Icons\icon_pos_filter.png";
                 buttonMore = new TouchButtonIconWithText("touchButtonSearchAdvanced_DialogActionArea", colorBaseDialogActionAreaButtonBackground, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_button_label_more"), ExpressionEvaluatorExtended.fontDocumentsSizeDefault, colorBaseDialogActionAreaButtonFont, fileActionMore, sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon, sizeBaseDialogActionAreaBackOfficeNavigatorButton.Width, sizeBaseDialogActionAreaBackOfficeNavigatorButton.Height) { Sensitive = true };
                 buttonFilter = new TouchButtonIconWithText("touchButtonSearchAdvanced_DialogActionArea", colorBaseDialogActionAreaButtonBackground, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_button_label_filter"), ExpressionEvaluatorExtended.fontDocumentsSizeDefault, colorBaseDialogActionAreaButtonFont, fileActionFilter, sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon, sizeBaseDialogActionAreaBackOfficeNavigatorButton.Width, sizeBaseDialogActionAreaBackOfficeNavigatorButton.Height) { Sensitive = true };
 

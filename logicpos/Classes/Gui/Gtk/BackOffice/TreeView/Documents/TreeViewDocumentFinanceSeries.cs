@@ -266,7 +266,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             try
             {
-                string fileWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_input_text_default.png";
+                string fileWindowIcon = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_window_input_text_default.png";
 
                 PosInputTextDialog dialog = new PosInputTextDialog(
                     pSourceWindow,

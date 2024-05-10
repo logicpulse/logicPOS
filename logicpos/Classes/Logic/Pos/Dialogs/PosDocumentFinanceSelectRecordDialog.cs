@@ -114,14 +114,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Settings
 
 			// IN009223 IN009227
-            string fileActionMore = GeneralSettings.Path["images"] + @"Icons\icon_pos_more.png";
-            string fileActionFilter = GeneralSettings.Path["images"] + @"Icons\icon_pos_filter.png";
+            string fileActionMore = GeneralSettings.Paths["images"] + @"Icons\icon_pos_more.png";
+            string fileActionFilter = GeneralSettings.Paths["images"] + @"Icons\icon_pos_filter.png";
             
-			string fileActionClose = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_close.png";
-            string fileActionPrint = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_print.png";
-            string fileActionNewDocument = GeneralSettings.Path["images"] + @"Icons\icon_pos_toolbar_finance_new_document.png";
-            string fileActionPayInvoice = GeneralSettings.Path["images"] + @"Icons\icon_pos_payment_full.png";
-            string fileActionCancel = GeneralSettings.Path["images"] + @"Icons\icon_pos_cancel_document.png";
+			string fileActionClose = GeneralSettings.Paths["images"] + @"Icons\Dialogs\icon_pos_dialog_action_close.png";
+            string fileActionPrint = GeneralSettings.Paths["images"] + @"Icons\Dialogs\icon_pos_dialog_action_print.png";
+            string fileActionNewDocument = GeneralSettings.Paths["images"] + @"Icons\icon_pos_toolbar_finance_new_document.png";
+            string fileActionPayInvoice = GeneralSettings.Paths["images"] + @"Icons\icon_pos_payment_full.png";
+            string fileActionCancel = GeneralSettings.Paths["images"] + @"Icons\icon_pos_cancel_document.png";
             bool generatePdfDocuments = Convert.ToBoolean(GeneralSettings.Settings["generatePdfDocuments"]);
 
             //Default/Shared ActionArea Buttons
@@ -1555,7 +1555,7 @@ WHERE
                     //Check if Can Cancell Document
                     if (CanCancelFinanceMasterDocument(documentMaster))
                     {
-                        string fileWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_input_text_default.png";
+                        string fileWindowIcon = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_window_input_text_default.png";
 
                         //Call Request Motive Dialog
                         dialogResponse = logicpos.Utils.GetInputText(pDialog, DialogFlags.Modal, fileWindowIcon, string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_cancel_document_input_text_label"), documentMaster.DocumentNumber), string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtendedForMotive, true);
@@ -2425,7 +2425,7 @@ WHERE
                 {
                     if (CanCancelFinancePaymentDocument(document))
                     {
-                        string fileWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_input_text_default.png";
+                        string fileWindowIcon = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_window_input_text_default.png";
 
                         dialogResponse =  logicpos.Utils.GetInputText(pDialog, DialogFlags.Modal, fileWindowIcon, string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_cancel_document_input_text_label"), document.PaymentRefNo), string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtendedForMotive, true);
                         if (dialogResponse.ResponseType == ResponseType.Ok)

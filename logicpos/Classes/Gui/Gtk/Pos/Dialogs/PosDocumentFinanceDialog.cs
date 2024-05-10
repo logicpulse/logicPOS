@@ -43,9 +43,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Init Local Vars
             Size windowSize = new Size(790, 546);
             //Image Icons
-            string fileDefaultWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_document_new.png";
-            string fileActionPreview = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_preview.png";
-            string fileIconClearCustomer = GeneralSettings.Path["images"] + @"Icons\icon_pos_nav_delete.png";
+            string fileDefaultWindowIcon = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_window_document_new.png";
+            string fileActionPreview = GeneralSettings.Paths["images"] + @"Icons\Dialogs\icon_pos_dialog_preview.png";
+            string fileIconClearCustomer = GeneralSettings.Paths["images"] + @"Icons\icon_pos_nav_delete.png";
 
             InitPages();
 
@@ -92,11 +92,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Assign Page Title
             _windowTitle = GetPageTitle(0);
 
-            string icon1 = GeneralSettings.Path["images"] + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_1_new_document.png";
-            string icon2 = GeneralSettings.Path["images"] + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_2_customer.png";
-            string icon3 = GeneralSettings.Path["images"] + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_3_article.png";
-            string icon4 = GeneralSettings.Path["images"] + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_4_waybill_to.png";
-            string icon5 = GeneralSettings.Path["images"] + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_5_waybill_from.png";
+            string icon1 = GeneralSettings.Paths["images"] + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_1_new_document.png";
+            string icon2 = GeneralSettings.Paths["images"] + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_2_customer.png";
+            string icon3 = GeneralSettings.Paths["images"] + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_3_article.png";
+            string icon4 = GeneralSettings.Paths["images"] + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_4_waybill_to.png";
+            string icon5 = GeneralSettings.Paths["images"] + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_5_waybill_from.png";
 
             _pagePad1 = new DocumentFinanceDialogPage1(this, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_document_finance_page1"), icon1, null);
             _pagePad2 = new DocumentFinanceDialogPage2(this, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_document_finance_page2"), icon2, null);

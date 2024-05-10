@@ -51,9 +51,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             // Title will be Overrided in CalculateTotalPerSplit
             string windowTitle = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_split_payment");
             Size windowSize = new Size(600, 460);
-            string fileDefaultWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_split_payments.png";
-            string fileAddSplitIcon = GeneralSettings.Path["images"] + @"Icons\icon_pos_nav_new.png";
-            string fileRemoveSplitIcon = GeneralSettings.Path["images"] + @"Icons\icon_pos_nav_delete.png";
+            string fileDefaultWindowIcon = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_window_split_payments.png";
+            string fileAddSplitIcon = GeneralSettings.Paths["images"] + @"Icons\icon_pos_nav_new.png";
+            string fileRemoveSplitIcon = GeneralSettings.Paths["images"] + @"Icons\icon_pos_nav_delete.png";
 
             //Init Content : ViewPort
             _vbox = new VBox(false, 2);

@@ -130,7 +130,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //_actionAreaButtons = pActionAreaButtons;
 
             //Init Local Vars
-            string fileDefaultWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_select_record.png";
+            string fileDefaultWindowIcon = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_window_select_record.png";
             Size usefullAreaSize = new Size(windowSize.Width - 14, windowSize.Height - 124);
 
             //Modify default genericTreeView properties

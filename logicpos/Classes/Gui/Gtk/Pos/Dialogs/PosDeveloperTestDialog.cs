@@ -34,7 +34,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             //Init Local Vars
             string windowTitle = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_template");
-            string fileDefaultWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_default.png";
+            string fileDefaultWindowIcon = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_window_default.png";
             _windowSize = new Size(595, 740);
 
             //Init VBox

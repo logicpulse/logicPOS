@@ -41,7 +41,7 @@ namespace logicpos
 
         private string GetAppIconFileLocation()
         {
-            return string.Format("{0}{1}", GeneralSettings.Path["images"], @"Icos\application.ico");
+            return string.Format("{0}{1}", GeneralSettings.Paths["images"], @"Icos\application.ico");
         }
 
         private void SetAppIcon()

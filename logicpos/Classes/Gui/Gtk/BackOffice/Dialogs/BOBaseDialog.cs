@@ -111,7 +111,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             if (pDataSourceRow != null) _crudWidgetList = new GenericCRUDWidgetListXPO(_dataSourceRow.Session);
 
             //Icon
-            string fileImageAppIcon = string.Format("{0}{1}", GeneralSettings.Path["images"], POSSettings.AppIcon);
+            string fileImageAppIcon = string.Format("{0}{1}", GeneralSettings.Paths["images"], POSSettings.AppIcon);
             if (File.Exists(fileImageAppIcon)) Icon = logicpos.Utils.ImageToPixbuf(System.Drawing.Image.FromFile(fileImageAppIcon));
 
             //Init StatusBar
@@ -132,8 +132,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         {
             //Settings
             string fontBaseDialogActionAreaButton = GeneralSettings.Settings["fontBaseDialogActionAreaButton"];
-            string tmpFileActionOK = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
-            string tmpFileActionCancel = GeneralSettings.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png";
+            string tmpFileActionOK = GeneralSettings.Paths["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
+            string tmpFileActionCancel = GeneralSettings.Paths["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png";
             System.Drawing.Size sizeBaseDialogActionAreaButtonIcon = logicpos.Utils.StringToSize(GeneralSettings.Settings["sizeBaseDialogActionAreaButtonIcon"]);
             System.Drawing.Size sizeBaseDialogActionAreaButton = logicpos.Utils.StringToSize(GeneralSettings.Settings["sizeBaseDialogActionAreaButton"]);
             System.Drawing.Color colorBaseDialogActionAreaButtonBackground = GeneralSettings.Settings["colorBaseDialogActionAreaButtonBackground"].StringToColor();

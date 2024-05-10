@@ -111,7 +111,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Init Local Vars
             string windowTitle = _windowTitle;
             Size windowSize = new Size(540, 568);
-            string fileDefaultWindowIcon = GeneralSettings.Path["images"] + @"Icons\Windows\icon_window_date_picker.png";
+            string fileDefaultWindowIcon = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_window_date_picker.png";
 
             /* IN009010 */
             if (!ReportsQueryDialogMode.CUSTOMER_BALANCE_SUMMARY.Equals(_reportsQueryDialogMode))
@@ -161,9 +161,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _scrolledWindow.ResizeMode = ResizeMode.Parent;
             //ActionArea Buttons
             // IN009223 IN009227
-            string fileActionFilter = GeneralSettings.Path["images"] + @"Icons\icon_pos_clean_filter.png";
-            string fileActionExportPdf = GeneralSettings.Path["images"] + @"Icons\icon_pos_export_pdf.png";
-            string fileActionExportXls = GeneralSettings.Path["images"] + @"Icons\icon_pos_export_xls.png";
+            string fileActionFilter = GeneralSettings.Paths["images"] + @"Icons\icon_pos_clean_filter.png";
+            string fileActionExportPdf = GeneralSettings.Paths["images"] + @"Icons\icon_pos_export_pdf.png";
+            string fileActionExportXls = GeneralSettings.Paths["images"] + @"Icons\icon_pos_export_xls.png";
 
             _buttonCleanFilter = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.CleanFilter, "Clean Filter", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_button_label_filter_clear"), fileActionFilter);
             //Export to Xls/pdf
