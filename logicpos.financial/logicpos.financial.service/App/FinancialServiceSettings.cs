@@ -177,7 +177,7 @@ namespace logicpos.financial.service.App
             //LogicPOS.Settings.GeneralSettings.Settings["servicesATProdModeCertificatePassword"];
             return (pTestMode)
                 ? "TESTEwebservice"
-                : PluginSettings.PluginSoftwareVendor.GetAppSoftwareATWSProdModeCertificatePassword();
+                : PluginSettings.SoftwareVendor.GetAppSoftwareATWSProdModeCertificatePassword();
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

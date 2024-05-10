@@ -21,7 +21,7 @@ namespace logicpos.Classes.Formatters
             {
                 if (arg != null)
                 {
-                    result = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Decrypt((arg).ToString());
+                    result = LogicPOS.Settings.PluginSettings.SoftwareVendor.Decrypt((arg).ToString());
                 }
             }
             catch (Exception ex)

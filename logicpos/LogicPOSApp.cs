@@ -14,7 +14,6 @@ using logicpos.financial.library.App;
 using logicpos.financial.library.Classes.Reports;
 using logicpos.financial.library.Classes.Utils;
 using logicpos.financial.library.Classes.WorkSession;
-using logicpos.plugin.contracts;
 using logicpos.shared;
 using logicpos.shared.App;
 using LogicPOS.Globalization;
@@ -240,7 +239,7 @@ namespace logicpos
 #endif
                 // Assign PluginSoftwareVendor Reference to DataLayer SettingsApp to use In Date Protection, we Required to assign it Statically to Prevent Circular References
                 // Required to be here, before it is used in above lines, ex Utils.GetTerminal()
-                if (PluginSettings.HasPlugin) PluginContractsSettings.PluginSoftwareVendor = PluginSettings.PluginSoftwareVendor;
+                if (PluginSettings.HasPlugin) PluginSettings.PluginSoftwareVendor = PluginSettings.SoftwareVendor;
 
                 //If not in Xpo create database Scheme Mode, Get Terminal from Db
                 if (!xpoCreateDatabaseAndSchema)
@@ -410,7 +409,7 @@ namespace logicpos
                 if (databaseCreated) SharedUtils.Audit("DATABASE_CREATE");
 
                 // Plugin Errors Messages
-                if (PluginSettings.PluginSoftwareVendor == null || !PluginSettings.PluginSoftwareVendor.IsValidSecretKey(FinancialLibrarySettings.SecretKey))
+                if (PluginSettings.SoftwareVendor == null || !PluginSettings.SoftwareVendor.IsValidSecretKey(FinancialLibrarySettings.SecretKey))
                 {
                     /* IN009034 */
                     GlobalApp.DialogThreadNotify.WakeupMain();

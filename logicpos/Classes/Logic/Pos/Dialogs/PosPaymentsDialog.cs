@@ -575,7 +575,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     // Only Encrypt Encrypted Fields
                     if (pFieldName == nameof(erp_customer.FiscalNumber) || pFieldName == nameof(erp_customer.CardNumber))
                     {
-                        pFieldValue = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Encrypt(pFieldValue);
+                        pFieldValue = LogicPOS.Settings.PluginSettings.SoftwareVendor.Encrypt(pFieldValue);
                     }
                 }
 
@@ -771,7 +771,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 string fiscalNumberFilterValue = string.Empty;
                 if (LogicPOS.Settings.PluginSettings.HasPlugin)
                 {
-                    fiscalNumberFilterValue = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Encrypt(_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text);
+                    fiscalNumberFilterValue = LogicPOS.Settings.PluginSettings.SoftwareVendor.Encrypt(_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text);
                 }
                 //Used To Disable FiscalNumber Edits and to Get Customer
                 string sql = string.Format("SELECT Oid FROM erp_customer WHERE FiscalNumber = '{0}' AND (Hidden IS NULL OR Hidden = 0);", fiscalNumberFilterValue);

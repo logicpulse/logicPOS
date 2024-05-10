@@ -117,7 +117,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
             //LogicPOS.Settings.GeneralSettings.Settings["servicesATProdModeCertificatePassword"];
             return (pTestMode)
                 ? "TESTEwebservice"
-                : PluginSettings.PluginSoftwareVendor.GetAppSoftwareATWSProdModeCertificatePassword();
+                : PluginSettings.SoftwareVendor.GetAppSoftwareATWSProdModeCertificatePassword();
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -407,7 +407,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
 
             /* IN009150 (IN009075) */
             string entityFiscalNumber = "";
-            if (!string.IsNullOrEmpty(_documentMaster.EntityFiscalNumber)) { entityFiscalNumber = PluginSettings.PluginSoftwareVendor.Decrypt(_documentMaster.EntityFiscalNumber); }
+            if (!string.IsNullOrEmpty(_documentMaster.EntityFiscalNumber)) { entityFiscalNumber = PluginSettings.SoftwareVendor.Decrypt(_documentMaster.EntityFiscalNumber); }
             /* IN009150 - end */
 
             //Init Local Vars
@@ -494,13 +494,13 @@ namespace logicpos.financial.service.Objects.Modules.AT
             // string entityCountry        = "";
             string entityFiscalNumber = "";
 
-            if (!string.IsNullOrEmpty(_documentMaster.EntityName)) { entityName = PluginSettings.PluginSoftwareVendor.Decrypt(_documentMaster.EntityName); }
-            if (!string.IsNullOrEmpty(_documentMaster.EntityAddress)) { entityAddress = PluginSettings.PluginSoftwareVendor.Decrypt(_documentMaster.EntityAddress); }
-            if (!string.IsNullOrEmpty(_documentMaster.EntityZipCode)) { entityZipCode = PluginSettings.PluginSoftwareVendor.Decrypt(_documentMaster.EntityZipCode); }
-            if (!string.IsNullOrEmpty(_documentMaster.EntityCity)) { entityCity = PluginSettings.PluginSoftwareVendor.Decrypt(_documentMaster.EntityCity); }
-            if (!string.IsNullOrEmpty(_documentMaster.EntityLocality)) { entityCity = PluginSettings.PluginSoftwareVendor.Decrypt(_documentMaster.EntityLocality); }
+            if (!string.IsNullOrEmpty(_documentMaster.EntityName)) { entityName = PluginSettings.SoftwareVendor.Decrypt(_documentMaster.EntityName); }
+            if (!string.IsNullOrEmpty(_documentMaster.EntityAddress)) { entityAddress = PluginSettings.SoftwareVendor.Decrypt(_documentMaster.EntityAddress); }
+            if (!string.IsNullOrEmpty(_documentMaster.EntityZipCode)) { entityZipCode = PluginSettings.SoftwareVendor.Decrypt(_documentMaster.EntityZipCode); }
+            if (!string.IsNullOrEmpty(_documentMaster.EntityCity)) { entityCity = PluginSettings.SoftwareVendor.Decrypt(_documentMaster.EntityCity); }
+            if (!string.IsNullOrEmpty(_documentMaster.EntityLocality)) { entityCity = PluginSettings.SoftwareVendor.Decrypt(_documentMaster.EntityLocality); }
             // if (!string.IsNullOrEmpty(_documentMaster.EntityCountry))       { entityCountry = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Decrypt(_documentMaster.EntityCountry); }
-            if (!string.IsNullOrEmpty(_documentMaster.EntityFiscalNumber)) { entityFiscalNumber = PluginSettings.PluginSoftwareVendor.Decrypt(_documentMaster.EntityFiscalNumber); }
+            if (!string.IsNullOrEmpty(_documentMaster.EntityFiscalNumber)) { entityFiscalNumber = PluginSettings.SoftwareVendor.Decrypt(_documentMaster.EntityFiscalNumber); }
             /* IN009150 - end */
 
             //Init Local Vars
@@ -673,7 +673,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
                 //cert.Import(_pathCertificate, _atPasswordCertificate, X509KeyStorageFlags.Exportable);
 
                 // New Method : Import Certificate From VendorPlugin
-                X509Certificate2 cert = PluginSettings.PluginSoftwareVendor.ImportCertificate(testMode, _pathCertificate);
+                X509Certificate2 cert = PluginSettings.SoftwareVendor.ImportCertificate(testMode, _pathCertificate);
 
                 // Output Certificate 
                 Utils.Log(string.Format("Cert Subject: [{0}], NotBefore: [{1}], NotAfter: [{2}]", cert.Subject, cert.NotBefore, cert.NotAfter));

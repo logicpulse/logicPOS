@@ -403,7 +403,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                     // Only Encrypt Encrypted Fields
                     if (pFieldName == nameof(Erp_customer.FiscalNumber) || pFieldName == nameof(Erp_customer.CardNumber))
                     {
-                        pFieldValue = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Encrypt(pFieldValue);
+                        pFieldValue = LogicPOS.Settings.PluginSettings.SoftwareVendor.Encrypt(pFieldValue);
                     }
                 }
 
@@ -663,7 +663,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 string fiscalNumberFilterValue = string.Empty;
                 if (LogicPOS.Settings.PluginSettings.HasPlugin)
                 {
-                    fiscalNumberFilterValue = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Encrypt(EntryBoxSelectCustomerFiscalNumber.EntryValidation.Text);
+                    fiscalNumberFilterValue = LogicPOS.Settings.PluginSettings.SoftwareVendor.Encrypt(EntryBoxSelectCustomerFiscalNumber.EntryValidation.Text);
                 }
                 string sql = string.Format("SELECT Oid FROM erp_customer WHERE FiscalNumber = '{0}' AND (Hidden IS NULL OR Hidden = 0);", fiscalNumberFilterValue);
                 Guid customerGuid = XPOHelper.GetGuidFromQuery(sql);

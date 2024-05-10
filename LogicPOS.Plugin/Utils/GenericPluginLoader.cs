@@ -3,16 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 
-namespace logicpos.plugin.library
+namespace LogicPOS.Plugin.Utils
 {
-    public static class GenericPluginLoader<T>
+    public static class PluginLoader<T>
     {
-        //Log4Net
-        private static log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
         public static ICollection<T> LoadPlugins(string path)
         {
-            string[] dllFileNames = null;
+            string[] dllFileNames;
 
             if (Directory.Exists(path))
             {
@@ -46,7 +43,6 @@ namespace logicpos.plugin.library
                                 {
                                     if (type.GetInterface(pluginType.FullName) != null)
                                     {
-                                        //_logger.Debug(String.Format("GenericPluginLoader Add Plugin: [{0}]", type));
                                         pluginTypes.Add(type);
                                     }
                                 }

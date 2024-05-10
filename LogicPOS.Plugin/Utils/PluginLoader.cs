@@ -1,16 +1,16 @@
-﻿using logicpos.plugin.contracts;
+﻿using LogicPOS.Plugin.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 
-namespace logicpos.plugin.library
+namespace LogicPOS.Plugin.Utils
 {
     public static class PluginLoader
     {
         public static ICollection<IPlugin> LoadPlugins(string path)
         {
-            string[] dllFileNames = null;
+            string[] dllFileNames;
 
             if (Directory.Exists(path))
             {

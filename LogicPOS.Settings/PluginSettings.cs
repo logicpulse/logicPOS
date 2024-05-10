@@ -1,7 +1,7 @@
-﻿using logicpos.plugin.contracts;
-using logicpos.plugin.library;
-using System.Reflection;
+﻿using LogicPOS.Plugin.Abstractions;
+using LogicPOS.Plugin.Utils;
 using System;
+using System.Reflection;
 
 namespace LogicPOS.Settings
 {
@@ -16,7 +16,8 @@ namespace LogicPOS.Settings
 
         public static PluginContainer PluginContainer { get; set; }
         public static ISoftwareVendor PluginSoftwareVendor { get; set; }
-        public static ILicenceManager PluginLicenceManager { get; set; }
+        public static ISoftwareVendor SoftwareVendor { get; set; }
+        public static ILicenseManager LicenceManager { get; set; }
 
         public static string GetSoftwareVendorValueAsString(string property)
         {
@@ -37,13 +38,13 @@ namespace LogicPOS.Settings
         {
             object resultObject = null;
 
-            if (PluginSoftwareVendor != null)
+            if (SoftwareVendor != null)
             {
-                Type thisType = PluginSoftwareVendor.GetType();
+                Type thisType = SoftwareVendor.GetType();
                 string methodName = $"Get{property}";
                 MethodInfo methodInfo = thisType.GetMethod(methodName);
                 object[] methodParameters = null;
-                resultObject = methodInfo.Invoke(PluginSoftwareVendor, methodParameters);
+                resultObject = methodInfo.Invoke(SoftwareVendor, methodParameters);
             }
             if (resultObject != null)
             {
@@ -55,7 +56,7 @@ namespace LogicPOS.Settings
             }
         }
 
-        public static bool HasPlugin => PluginSoftwareVendor != null;
+        public static bool HasPlugin => SoftwareVendor != null;
 
         public static void InitSoftwareVendorPluginSettings()
         {

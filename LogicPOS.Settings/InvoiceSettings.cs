@@ -26,7 +26,7 @@ namespace LogicPOS.Settings
             if (CultureSettings.CountryIdIsPortugal(countryId))
             {
                 return PluginSettings.HasPlugin
-                    ? PluginSettings.PluginSoftwareVendor.GetSimplifiedInvoiceMaxItems()
+                    ? PluginSettings.SoftwareVendor.GetSimplifiedInvoiceMaxItems()
                     : 1000;
 
             }
@@ -39,7 +39,7 @@ namespace LogicPOS.Settings
             if (CultureSettings.CountryIdIsPortugal(countryId))
             {
                 return PluginSettings.HasPlugin
-                    ? PluginSettings.PluginSoftwareVendor.GetSimplifiedInvoiceMaxServices()
+                    ? PluginSettings.SoftwareVendor.GetSimplifiedInvoiceMaxServices()
                     : 100;
             }
 

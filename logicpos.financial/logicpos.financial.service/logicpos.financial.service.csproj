@@ -102,9 +102,9 @@
       <Project>{e23bdf58-f0a9-40ac-acce-57235fb7a7f1}</Project>
       <Name>LogicPOS.DTOs</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\logicpos.plugins\logicpos.plugin.contracts\logicpos.plugin.contracts.csproj">
-      <Project>{43c879d1-31ae-424f-91d1-92cf286d5497}</Project>
-      <Name>logicpos.plugin.contracts</Name>
+    <ProjectReference Include="..\..\LogicPOS.Plugin\LogicPOS.Plugin.csproj">
+      <Project>{50C2F757-8478-4FD3-8B35-89BC12E7ACA0}</Project>
+      <Name>LogicPOS.Plugin</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\LogicPOS.Settings\LogicPOS.Settings.csproj">
       <Project>{a4e7f0ea-8360-41f2-a625-517f6e943a29}</Project>
@@ -121,10 +121,6 @@
     <ProjectReference Include="..\..\logicpos.datalayer\logicpos.datalayer.csproj">
       <Project>{42af3be2-44b4-477d-8e45-55c64992b805}</Project>
       <Name>logicpos.datalayer</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\logicpos.plugins\logicpos.plugin.library\logicpos.plugin.library.csproj">
-      <Project>{5601ef61-d598-4d93-83ad-7a55bf627708}</Project>
-      <Name>logicpos.plugin.library</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\logicpos.shared\logicpos.shared.csproj">
       <Project>{fb74327c-1794-47ec-8f52-fd3f464f3258}</Project>

@@ -164,7 +164,7 @@ namespace logicpos.Classes.DataLayer
                         fullFileNamePacked = string.Format(@"{0}\{1}", systemBackup.FilePath, systemBackup.FileNamePacked);
                         // Old Method before PluginSoftwareVendor Implementation
                         //backupResult = Utils.ZipPack(new string[] { fileName }, fullFileNamePacked);
-                        backupResult = PluginSettings.PluginSoftwareVendor.BackupDatabase(FinancialLibrarySettings.SecretKey, new string[] { fileName }, fullFileNamePacked);
+                        backupResult = PluginSettings.SoftwareVendor.BackupDatabase(FinancialLibrarySettings.SecretKey, new string[] { fileName }, fullFileNamePacked);
                         // Add FileHash
                         if (backupResult) systemBackup.FileHash = LogicPOS.Utility.StringUtils.MD5HashFile(fullFileNamePacked);
                     }
@@ -308,7 +308,7 @@ namespace logicpos.Classes.DataLayer
                     {
                         // Old Method before PluginSoftwareVendor Implementation
                         //restoreResult = Utils.ZipUnPack(fileNamePacked, pathBackups, true);
-                        restoreResult = PluginSettings.PluginSoftwareVendor.RestoreBackup(FinancialLibrarySettings.SecretKey, fileNamePacked, pathBackups, true);
+                        restoreResult = PluginSettings.SoftwareVendor.RestoreBackup(FinancialLibrarySettings.SecretKey, fileNamePacked, pathBackups, true);
                         if (_debug) _logger.Debug(string.Format("RestoreBackup: unpackResult:[{0}]", restoreResult));
                     }
 

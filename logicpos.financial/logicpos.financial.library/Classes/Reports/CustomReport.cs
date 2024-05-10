@@ -65,7 +65,7 @@ namespace logicpos.financial.library.Classes.Reports
             if ((!Debugger.IsAttached || _forceReleaseMode) && !string.IsNullOrEmpty(pTemplateBase))
             {
                 // Get Protected temporary Reports
-                tempReports = PluginSettings.PluginSoftwareVendor.GetReportFileName(FinancialLibrarySettings.SecretKey, _reportFileName, pTemplateBase);
+                tempReports = PluginSettings.SoftwareVendor.GetReportFileName(FinancialLibrarySettings.SecretKey, _reportFileName, pTemplateBase);
                 // Override Default Reports FileName
                 _reportFileName = tempReports[0];
             }
@@ -815,19 +815,19 @@ namespace logicpos.financial.library.Classes.Reports
                         {
                             foreach (var item in gcCustomers.List)
                             {
-                                item.Name = PluginSettings.PluginSoftwareVendor.Decrypt(item.Name);
-                                item.Address = PluginSettings.PluginSoftwareVendor.Decrypt(item.Address);
-                                item.Locality = PluginSettings.PluginSoftwareVendor.Decrypt(item.Locality);
-                                item.ZipCode = PluginSettings.PluginSoftwareVendor.Decrypt(item.ZipCode);
-                                item.City = PluginSettings.PluginSoftwareVendor.Decrypt(item.City);
-                                item.DateOfBirth = PluginSettings.PluginSoftwareVendor.Decrypt(item.DateOfBirth);
-                                item.Phone = PluginSettings.PluginSoftwareVendor.Decrypt(item.Phone);
-                                item.Fax = PluginSettings.PluginSoftwareVendor.Decrypt(item.Fax);
-                                item.MobilePhone = PluginSettings.PluginSoftwareVendor.Decrypt(item.MobilePhone);
-                                item.Email = PluginSettings.PluginSoftwareVendor.Decrypt(item.Email);
-                                item.WebSite = PluginSettings.PluginSoftwareVendor.Decrypt(item.WebSite);
-                                item.FiscalNumber = PluginSettings.PluginSoftwareVendor.Decrypt(item.FiscalNumber);
-                                item.CardNumber = PluginSettings.PluginSoftwareVendor.Decrypt(item.CardNumber);
+                                item.Name = PluginSettings.SoftwareVendor.Decrypt(item.Name);
+                                item.Address = PluginSettings.SoftwareVendor.Decrypt(item.Address);
+                                item.Locality = PluginSettings.SoftwareVendor.Decrypt(item.Locality);
+                                item.ZipCode = PluginSettings.SoftwareVendor.Decrypt(item.ZipCode);
+                                item.City = PluginSettings.SoftwareVendor.Decrypt(item.City);
+                                item.DateOfBirth = PluginSettings.SoftwareVendor.Decrypt(item.DateOfBirth);
+                                item.Phone = PluginSettings.SoftwareVendor.Decrypt(item.Phone);
+                                item.Fax = PluginSettings.SoftwareVendor.Decrypt(item.Fax);
+                                item.MobilePhone = PluginSettings.SoftwareVendor.Decrypt(item.MobilePhone);
+                                item.Email = PluginSettings.SoftwareVendor.Decrypt(item.Email);
+                                item.WebSite = PluginSettings.SoftwareVendor.Decrypt(item.WebSite);
+                                item.FiscalNumber = PluginSettings.SoftwareVendor.Decrypt(item.FiscalNumber);
+                                item.CardNumber = PluginSettings.SoftwareVendor.Decrypt(item.CardNumber);
                             }
                         }
                     }
@@ -997,7 +997,7 @@ namespace logicpos.financial.library.Classes.Reports
                 //Decrypt Name
                 foreach (FRBOArticleStockSupplierView line in gcArticleStockSupplier)
                 {
-                    line.ArticleStockCostumerName = PluginSettings.PluginSoftwareVendor.Decrypt(line.ArticleStockCostumerName);
+                    line.ArticleStockCostumerName = PluginSettings.SoftwareVendor.Decrypt(line.ArticleStockCostumerName);
                     if (string.IsNullOrEmpty(line.ArticleStockCurrency)) line.ArticleStockCurrency = configurationCurrency.Acronym;
                 }
 
@@ -1144,7 +1144,7 @@ namespace logicpos.financial.library.Classes.Reports
                     {
                         if (item.UserDetailName != null)
                         {
-                            item.UserDetailName = PluginSettings.PluginSoftwareVendor.Decrypt(item.UserDetailName);
+                            item.UserDetailName = PluginSettings.SoftwareVendor.Decrypt(item.UserDetailName);
                         }
                     }
                 }
@@ -1191,8 +1191,8 @@ namespace logicpos.financial.library.Classes.Reports
                 {
                     foreach (var item in gcCurrentAccount)
                     {
-                        if (item.EntityName != null) item.EntityName = PluginSettings.PluginSoftwareVendor.Decrypt(item.EntityName);
-                        if (item.EntityFiscalNumber != null) item.EntityFiscalNumber = PluginSettings.PluginSoftwareVendor.Decrypt(item.EntityFiscalNumber);
+                        if (item.EntityName != null) item.EntityName = PluginSettings.SoftwareVendor.Decrypt(item.EntityName);
+                        if (item.EntityFiscalNumber != null) item.EntityFiscalNumber = PluginSettings.SoftwareVendor.Decrypt(item.EntityFiscalNumber);
                     }
                 }
 
@@ -1244,8 +1244,8 @@ namespace logicpos.financial.library.Classes.Reports
                     foreach (var item in gcCustomerBalanceDetails)
                     {
 
-                        if (item.EntityName != null) item.EntityName = PluginSettings.PluginSoftwareVendor.Decrypt(item.EntityName);
-                        if (item.EntityFiscalNumber != null) item.EntityFiscalNumber = PluginSettings.PluginSoftwareVendor.Decrypt(item.EntityFiscalNumber);
+                        if (item.EntityName != null) item.EntityName = PluginSettings.SoftwareVendor.Decrypt(item.EntityName);
+                        if (item.EntityFiscalNumber != null) item.EntityFiscalNumber = PluginSettings.SoftwareVendor.Decrypt(item.EntityFiscalNumber);
 
                         if (item.EntityOid != null) customer = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), Guid.Parse(item.EntityOid));
                         if (!customersList.Contains(customer))
@@ -1314,8 +1314,8 @@ namespace logicpos.financial.library.Classes.Reports
                 {
                     foreach (var item in gcCustomerBalanceDetails)
                     {
-                        if (item.EntityName != null) item.EntityName = PluginSettings.PluginSoftwareVendor.Decrypt(item.EntityName);
-                        if (item.EntityFiscalNumber != null) item.EntityFiscalNumber = PluginSettings.PluginSoftwareVendor.Decrypt(item.EntityFiscalNumber);
+                        if (item.EntityName != null) item.EntityName = PluginSettings.SoftwareVendor.Decrypt(item.EntityName);
+                        if (item.EntityFiscalNumber != null) item.EntityFiscalNumber = PluginSettings.SoftwareVendor.Decrypt(item.EntityFiscalNumber);
                     }
                 }
 
@@ -1364,8 +1364,8 @@ namespace logicpos.financial.library.Classes.Reports
                     foreach (var customerBalance in gcCustomerBalanceDetails)
                     {
                         erp_customer customer = null;
-                        if (customerBalance.EntityName != null) customerBalance.EntityName = PluginSettings.PluginSoftwareVendor.Decrypt(customerBalance.EntityName);
-                        if (customerBalance.EntityFiscalNumber != null) customerBalance.EntityFiscalNumber = PluginSettings.PluginSoftwareVendor.Decrypt(customerBalance.EntityFiscalNumber);
+                        if (customerBalance.EntityName != null) customerBalance.EntityName = PluginSettings.SoftwareVendor.Decrypt(customerBalance.EntityName);
+                        if (customerBalance.EntityFiscalNumber != null) customerBalance.EntityFiscalNumber = PluginSettings.SoftwareVendor.Decrypt(customerBalance.EntityFiscalNumber);
 
                         foreach (var summary in gcCustomerBalanceSummary)
                         {
@@ -1428,7 +1428,7 @@ namespace logicpos.financial.library.Classes.Reports
                     {
                         if (item.UserName != null)
                         {
-                            item.UserName = PluginSettings.PluginSoftwareVendor.Decrypt(item.UserName);
+                            item.UserName = PluginSettings.SoftwareVendor.Decrypt(item.UserName);
                         }
                     }
                 }
@@ -1490,9 +1490,9 @@ namespace logicpos.financial.library.Classes.Reports
                     if (PluginSettings.HasPlugin)
                     {
                         /* IN009076 */
-                        item.EntityName = PluginSettings.PluginSoftwareVendor.Decrypt(item.EntityName);
+                        item.EntityName = PluginSettings.SoftwareVendor.Decrypt(item.EntityName);
                         /* IN009075 */
-                        item.EntityFiscalNumber = PluginSettings.PluginSoftwareVendor.Decrypt(item.EntityFiscalNumber);
+                        item.EntityFiscalNumber = PluginSettings.SoftwareVendor.Decrypt(item.EntityFiscalNumber);
                     }
 
                     /* If "Nota de Crédito" (NC) */
@@ -1617,10 +1617,10 @@ namespace logicpos.financial.library.Classes.Reports
 
                         foreach (var item in gcDocumentFinanceMasterDetail)
                         {
-                            item.UserDetailName = PluginSettings.PluginSoftwareVendor.Decrypt(item.UserDetailName);
-                            item.EntityName = PluginSettings.PluginSoftwareVendor.Decrypt(item.EntityName);
+                            item.UserDetailName = PluginSettings.SoftwareVendor.Decrypt(item.UserDetailName);
+                            item.EntityName = PluginSettings.SoftwareVendor.Decrypt(item.EntityName);
                             /* IN009075 */
-                            item.EntityFiscalNumber = PluginSettings.PluginSoftwareVendor.Decrypt(item.EntityFiscalNumber);
+                            item.EntityFiscalNumber = PluginSettings.SoftwareVendor.Decrypt(item.EntityFiscalNumber);
                             /* IN009072 - this is used on reports to subtract the below values from totals when financial document is "NC" (see IN009066) */
                             if (DocumentSettings.XpoOidDocumentFinanceTypeCreditNote.Equals(new Guid(item.DocumentType)))
                             {
@@ -1713,7 +1713,7 @@ namespace logicpos.financial.library.Classes.Reports
 
                             if (decryptGroupField)
                             {
-                                item.GroupDesignation = PluginSettings.PluginSoftwareVendor.Decrypt(item.GroupDesignation);
+                                item.GroupDesignation = PluginSettings.SoftwareVendor.Decrypt(item.GroupDesignation);
                             }
 
                             /* IN009072 - "NCs" must have their values subtracted from totals (see IN009066) */

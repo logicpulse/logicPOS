@@ -65,7 +65,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     _customer = (_dataSourceRow as erp_customer);
 
                     /* IN009249 - begin */
-                    string customerFiscalNumberCrypto = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Encrypt(_customer.FiscalNumber);
+                    string customerFiscalNumberCrypto = LogicPOS.Settings.PluginSettings.SoftwareVendor.Encrypt(_customer.FiscalNumber);
                     string countSQL = string.Format("EntityFiscalNumber = '{0}'", customerFiscalNumberCrypto);
 
                     var countResult = XPOSettings.Session.Evaluate(typeof(fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse(countSQL));
@@ -377,7 +377,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             bool fiscalNumberAlreadyExists = false;
             try
             {
-                string encryptedFiscalNumber = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Encrypt(fiscalNumber);
+                string encryptedFiscalNumber = LogicPOS.Settings.PluginSettings.SoftwareVendor.Encrypt(fiscalNumber);
 
                 string sqlForFiscalNumberCount = string.Format("SELECT COUNT(*) as Count FROM erp_customer WHERE FiscalNumber = '{0}';", encryptedFiscalNumber);
                 var sqlResult = XPOSettings.Session.ExecuteScalar(sqlForFiscalNumberCount);

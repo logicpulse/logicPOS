@@ -71,10 +71,6 @@
       <Project>{18488ce5-c06f-40f5-9339-0467a47d7985}</Project>
       <Name>LogicPOS.Utility</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\logicpos.plugin.contracts\logicpos.plugin.contracts.csproj">
-      <Project>{43c879d1-31ae-424f-91d1-92cf286d5497}</Project>
-      <Name>logicpos.plugin.contracts</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportArticleList.frx">

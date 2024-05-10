@@ -4,17 +4,16 @@ using logicpos.Classes.Enums.App;
 using logicpos.Classes.Logic.License;
 using logicpos.Classes.Utils;
 using logicpos.datalayer.Xpo;
-using logicpos.plugin.contracts;
-using logicpos.plugin.library;
-using logicpos.shared.App;
+using LogicPOS.Globalization;
+using LogicPOS.Plugin.Abstractions;
+using LogicPOS.Plugin.Utils;
+using LogicPOS.Settings;
+using LogicPOS.Settings.Extensions;
 using System;
 using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
-using LogicPOS.Settings.Extensions;
-using LogicPOS.Globalization;
-using LogicPOS.Settings;
 
 [assembly: log4net.Config.XmlConfigurator(Watch = true)]
 
@@ -64,99 +63,81 @@ namespace logicpos
         [STAThread]
         public static void Main(string[] args)
         {
-            try
-            {
-                _logger.Debug($"Use configuration file: [{ConfigurationFile}]");
+            _logger.Debug($"Use configuration file: [{ConfigurationFile}]");
 
-                using (_singleProgramInstance)
+            using (_singleProgramInstance)
+            {
+                InitializeSettings();
+
+                Paths.InitializePaths();
+
+                InitializeGtk();
+
+                ShowLoadingScreen();
+
+                InitializePluguins();
+
+                KeepUIResponsive();
+
+
+                if (_singleProgramInstance.IsSingleInstance)
                 {
-                    InitializeSettings();
-
-                    Paths.InitializePaths();
-
-                    InitializeGtk();
-
-                    ShowLoadingScreen();
-
-                    InitializePluguins();
-
-                    KeepUIResponsive();
-
-    
-                    if (_singleProgramInstance.IsSingleInstance)
-                    {
-                        StartApp();
-                    }
-                    else
-                    {
-                        Utils.ShowMessageNonTouch(null, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_pos_instance_already_running"), CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_information"));
-                        return;
-                    }
+                    StartApp();
                 }
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
+                else
+                {
+                    Utils.ShowMessageNonTouch(null, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_pos_instance_already_running"), CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_information"));
+                    return;
+                }
             }
         }
 
         private static void InitializePluguins()
         {
-            try
+            SetCulture();
+
+            // Init PluginContainer
+            PluginSettings.PluginContainer = new PluginContainer(GeneralSettings.Paths["plugins"].ToString());
+
+            // PluginSoftwareVendor
+            PluginSettings.SoftwareVendor = PluginSettings.PluginContainer.GetFirstPluginOfType<ISoftwareVendor>();
+            if (PluginSettings.HasPlugin)
             {
-                //IN009296 BackOffice - Mudar o idioma da aplicação
-                SetCulture();
-
-                // Init PluginContainer
-                PluginSettings.PluginContainer = new PluginContainer(GeneralSettings.Paths["plugins"].ToString());
-
-                // PluginSoftwareVendor
-                PluginSettings.PluginSoftwareVendor = PluginSettings.PluginContainer.GetFirstPluginOfType<ISoftwareVendor>();
-                if (PluginSettings.HasPlugin)
-                {
-                    // Show Loaded Plugin
-                    _logger.Debug(string.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ISoftwareVendor), PluginSettings.PluginSoftwareVendor.Name));
-                    // Init Plugin
-                    PluginSettings.InitSoftwareVendorPluginSettings();
-                    // Check if all Resources are Embedded
-                    PluginSettings.PluginSoftwareVendor.ValidateEmbeddedResources();
-                }
-                else
-                {
-                    // Show Loaded Plugin
-                    _logger.Error($"Error missing required plugin type Installed: [{typeof(ISoftwareVendor)}]");
-                }
-
-                // Init Stock Module
-                POSFramework.StockManagementModule = (PluginSettings.PluginContainer.GetFirstPluginOfType<IStockManagementModule>());
-
-                // Try to Get LicenceManager IntellilockPlugin if in Release 
-                if (!Debugger.IsAttached || _forceShowPluginLicenceWithDebugger)
-                {
-                    PluginSettings.PluginLicenceManager = (PluginSettings.PluginContainer.GetFirstPluginOfType<ILicenceManager>());
-                    // Show Loaded Plugin
-                    if (PluginSettings.PluginLicenceManager != null)
-                    {
-                        _logger.Debug(string.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ILicenceManager), PluginSettings.PluginLicenceManager.Name));
-                    }
-                }
-
-                _loadingThread.Abort();
-
-                DialogLoading.Destroy();
+                // Show Loaded Plugin
+                _logger.Debug(string.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ISoftwareVendor), PluginSettings.SoftwareVendor.Name));
+                // Init Plugin
+                PluginSettings.InitSoftwareVendorPluginSettings();
+                // Check if all Resources are Embedded
+                PluginSettings.SoftwareVendor.ValidateEmbeddedResources();
             }
-            catch (Exception ex)
+            else
             {
-                _logger.Error(ex.Message, ex);
-                _loadingThread.Abort();
-                DialogLoading.Destroy();
+                // Show Loaded Plugin
+                _logger.Error($"Error missing required plugin type Installed: [{typeof(ISoftwareVendor)}]");
             }
 
+            // Init Stock Module
+            POSFramework.StockManagementModule = (PluginSettings.PluginContainer.GetFirstPluginOfType<IStockManagementModule>());
+
+            // Try to Get LicenceManager IntellilockPlugin if in Release 
+            if (!Debugger.IsAttached || _forceShowPluginLicenceWithDebugger)
+            {
+                PluginSettings.LicenceManager = (PluginSettings.PluginContainer.GetFirstPluginOfType<ILicenseManager>());
+                // Show Loaded Plugin
+                if (PluginSettings.LicenceManager != null)
+                {
+                    _logger.Debug(string.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ILicenseManager), PluginSettings.LicenceManager.Name));
+                }
+            }
+
+            _loadingThread.Abort();
+
+            DialogLoading.Destroy();
         }
 
         private static void StartApp()
         {
-            if (PluginSettings.PluginLicenceManager != null && (!Debugger.IsAttached || _forceShowPluginLicenceWithDebugger))
+            if (PluginSettings.LicenceManager != null && (!Debugger.IsAttached || _forceShowPluginLicenceWithDebugger))
             {
                 _logger.Debug("void StartApp() :: Boot LogicPos after LicenceManager.IntellilockPlugin");
                 // Boot LogicPos after LicenceManager.IntellilockPlugin

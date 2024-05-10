@@ -250,9 +250,9 @@ namespace logicpos.Classes.Logic.License
             LicenseSettings.LicenseReseller = "Logicpulse";
 #endif
 
-            SortedList sortedList = PluginSettings.PluginLicenceManager.GetLicenseInformation();
+            SortedList sortedList = PluginSettings.LicenceManager.GetLicenseInformation();
 
-            SharedFramework.ServerVersion = PluginSettings.PluginLicenceManager.GetCurrentVersion();
+            SharedFramework.ServerVersion = PluginSettings.LicenceManager.GetCurrentVersion();
             //GlobalFramework.ServerVersion = "2.0.0.0";
 
             if (showDebug)
@@ -310,7 +310,7 @@ namespace logicpos.Classes.Logic.License
 
         public static bool NeedToRegister()
         {
-            if (!PluginSettings.PluginLicenceManager.IsLicensed())
+            if (!PluginSettings.LicenceManager.IsLicensed())
             {
                 if (showDebug)
                 {

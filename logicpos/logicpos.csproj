@@ -6697,13 +6697,9 @@
       <Project>{b9e8d813-d694-4a7f-955e-ccc4b10f3774}</Project>
       <Name>LogicPOS.Globalization</Name>
     </ProjectReference>
-    <ProjectReference Include="..\logicpos.plugins\logicpos.plugin.contracts\logicpos.plugin.contracts.csproj">
-      <Project>{43c879d1-31ae-424f-91d1-92cf286d5497}</Project>
-      <Name>logicpos.plugin.contracts</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\logicpos.plugins\logicpos.plugin.library\logicpos.plugin.library.csproj">
-      <Project>{5601ef61-d598-4d93-83ad-7a55bf627708}</Project>
-      <Name>logicpos.plugin.library</Name>
+    <ProjectReference Include="..\LogicPOS.Plugin\LogicPOS.Plugin.csproj">
+      <Project>{50C2F757-8478-4FD3-8B35-89BC12E7ACA0}</Project>
+      <Name>LogicPOS.Plugin</Name>
     </ProjectReference>
     <ProjectReference Include="..\LogicPOS.Settings\LogicPOS.Settings.csproj">
       <Project>{a4e7f0ea-8360-41f2-a625-517f6e943a29}</Project>

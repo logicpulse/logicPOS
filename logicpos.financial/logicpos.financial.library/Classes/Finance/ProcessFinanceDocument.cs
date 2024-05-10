@@ -179,7 +179,7 @@ namespace logicpos.financial.library.Classes.Finance
                         documentFinanceMaster.EntityOid = customer.Oid;
                         //Store CodeInternal to use in SAF-T
                         documentFinanceMaster.EntityInternalCode = customer.CodeInternal;
-                        documentFinanceMaster.EntityFiscalNumber = PluginSettings.PluginSoftwareVendor.Encrypt(customer.FiscalNumber); /* IN009075 */
+                        documentFinanceMaster.EntityFiscalNumber = PluginSettings.SoftwareVendor.Encrypt(customer.FiscalNumber); /* IN009075 */
                         //Always Update EntityCountryOid, usefull to AT WebServices to detect Country
                         if (customer.Country != null)
                         {
@@ -205,11 +205,11 @@ namespace logicpos.financial.library.Classes.Finance
                             )
                         {
                             /* IN009075 - encrypting customer datum when persisting finance document */
-                            documentFinanceMaster.EntityName = PluginSettings.PluginSoftwareVendor.Encrypt(customer.Name);
-                            documentFinanceMaster.EntityAddress = PluginSettings.PluginSoftwareVendor.Encrypt(customer.Address);
-                            documentFinanceMaster.EntityLocality = PluginSettings.PluginSoftwareVendor.Encrypt(customer.Locality);
-                            documentFinanceMaster.EntityZipCode = PluginSettings.PluginSoftwareVendor.Encrypt(customer.ZipCode);
-                            documentFinanceMaster.EntityCity = PluginSettings.PluginSoftwareVendor.Encrypt(customer.City);
+                            documentFinanceMaster.EntityName = PluginSettings.SoftwareVendor.Encrypt(customer.Name);
+                            documentFinanceMaster.EntityAddress = PluginSettings.SoftwareVendor.Encrypt(customer.Address);
+                            documentFinanceMaster.EntityLocality = PluginSettings.SoftwareVendor.Encrypt(customer.Locality);
+                            documentFinanceMaster.EntityZipCode = PluginSettings.SoftwareVendor.Encrypt(customer.ZipCode);
+                            documentFinanceMaster.EntityCity = PluginSettings.SoftwareVendor.Encrypt(customer.City);
                             //Deprecated Now Always assign Country, usefull to AT WebServices to detect Country 
                             //if (customer.Country != null)
                             //{
@@ -220,7 +220,7 @@ namespace logicpos.financial.library.Classes.Finance
                         //Persist Name if is has a FinalConsumer NIF and Name (Hidden Customer)
                         else if (FinancialLibraryUtils.IsFinalConsumerEntity(customer.FiscalNumber) && customer.Name != string.Empty)
                         {
-                            documentFinanceMaster.EntityName = PluginSettings.PluginSoftwareVendor.Encrypt(customer.Name); /* IN009075 */
+                            documentFinanceMaster.EntityName = PluginSettings.SoftwareVendor.Encrypt(customer.Name); /* IN009075 */
                         }
                     }
 
@@ -788,7 +788,7 @@ namespace logicpos.financial.library.Classes.Finance
             // Sign Document if has a valid PluginSoftwareVendor 
             if (PluginSettings.HasPlugin)
             {
-                resultSignedHash = PluginSettings.PluginSoftwareVendor.SignDataToSHA1Base64(FinancialLibrarySettings.SecretKey, signTargetString, debug);
+                resultSignedHash = PluginSettings.SoftwareVendor.SignDataToSHA1Base64(FinancialLibrarySettings.SecretKey, signTargetString, debug);
             }
             else
             {
@@ -867,7 +867,7 @@ namespace logicpos.financial.library.Classes.Finance
             //S Outras informações Exemplo S: NU; 0.80 ++
 
             string A = "A:" + GeneralSettings.PreferenceParameters["COMPANY_FISCALNUMBER"] + "*";
-            string B = "B:" + PluginSettings.PluginSoftwareVendor.Decrypt(doc.EntityFiscalNumber) + "*";
+            string B = "B:" + PluginSettings.SoftwareVendor.Decrypt(doc.EntityFiscalNumber) + "*";
             string C = "C:" + doc.EntityCountry + "*";
             string D = "D:" + pDocType.Acronym + "*";
             string E = "E:" + doc.DocumentStatusStatus + "*";
@@ -1619,7 +1619,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                     if (generatePdfDocuments)
                     {
                         string entityName = (!string.IsNullOrEmpty(documentFinanceMaster.EntityName))
-                            ? string.Format("_{0}", PluginSettings.PluginSoftwareVendor.Decrypt(documentFinanceMaster.EntityName).ToLower().Replace(' ', '_')) /* IN009075 */
+                            ? string.Format("_{0}", PluginSettings.SoftwareVendor.Decrypt(documentFinanceMaster.EntityName).ToLower().Replace(' ', '_')) /* IN009075 */
                             : string.Empty;
                         string reportFilename = string.Format("{0}/{1}{2}.pdf",
                             GeneralSettings.Paths["documents"],

@@ -118,15 +118,15 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                 /* IN009075 - decrypt phase */
                 if (!customerDataHasBeenCleaned)
                 {
-                    documentFinanceMasterView.EntityName = PluginSettings.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityName);
-                    documentFinanceMasterView.EntityAddress = PluginSettings.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityAddress);
-                    documentFinanceMasterView.EntityZipCode = PluginSettings.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityZipCode);
-                    documentFinanceMasterView.EntityCity = PluginSettings.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityCity);
-                    documentFinanceMasterView.EntityLocality = PluginSettings.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityLocality);
+                    documentFinanceMasterView.EntityName = PluginSettings.SoftwareVendor.Decrypt(documentFinanceMasterView.EntityName);
+                    documentFinanceMasterView.EntityAddress = PluginSettings.SoftwareVendor.Decrypt(documentFinanceMasterView.EntityAddress);
+                    documentFinanceMasterView.EntityZipCode = PluginSettings.SoftwareVendor.Decrypt(documentFinanceMasterView.EntityZipCode);
+                    documentFinanceMasterView.EntityCity = PluginSettings.SoftwareVendor.Decrypt(documentFinanceMasterView.EntityCity);
+                    documentFinanceMasterView.EntityLocality = PluginSettings.SoftwareVendor.Decrypt(documentFinanceMasterView.EntityLocality);
                     // documentFinanceMasterView.EntityCountry = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityCountry);
                     // EntityLocality???
                     /* IN009230 */
-                    documentFinanceMasterView.EntityFiscalNumber = PluginSettings.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityFiscalNumber);
+                    documentFinanceMasterView.EntityFiscalNumber = PluginSettings.SoftwareVendor.Decrypt(documentFinanceMasterView.EntityFiscalNumber);
                 }
 
                 /* IN009173 - add Parent document number to Notes field */

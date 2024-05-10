@@ -709,7 +709,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 //Page2:FiscalNumber
                 _pagePad2.EntryBoxSelectCustomerFiscalNumber.Value = null;
                 /* IN009154 - why Fiscal Number come from DocFinMaster table and not from Customer table? Applying decrypt on it...  */
-                _pagePad2.EntryBoxSelectCustomerFiscalNumber.EntryValidation.Text = (sourceDocument.EntityFiscalNumber != null) ? PluginSettings.PluginSoftwareVendor.Decrypt(sourceDocument.EntityFiscalNumber) : string.Empty;
+                _pagePad2.EntryBoxSelectCustomerFiscalNumber.EntryValidation.Text = (sourceDocument.EntityFiscalNumber != null) ? PluginSettings.SoftwareVendor.Decrypt(sourceDocument.EntityFiscalNumber) : string.Empty;
                 _pagePad2.EntryBoxSelectCustomerFiscalNumber.EntryValidation.Rule = customer.Country.RegExFiscalNumber;
                 _pagePad2.EntryBoxSelectCustomerFiscalNumber.EntryValidation.Validate();
                 //Page2:CardNumber

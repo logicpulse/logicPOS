@@ -301,7 +301,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                                     // Override Encrypted values
                                     if (PluginSettings.HasPlugin && item.Key.Equals(DataTableGroupPropertiesType.DocumentsUser) || item.Key.Equals(DataTableGroupPropertiesType.PaymentsUser))
                                     {
-                                        designation = PluginSettings.PluginSoftwareVendor.Decrypt(designation);
+                                        designation = PluginSettings.SoftwareVendor.Decrypt(designation);
                                     }
                                     //Sum Summary Totals
                                     summaryTotalQuantity += quantity;

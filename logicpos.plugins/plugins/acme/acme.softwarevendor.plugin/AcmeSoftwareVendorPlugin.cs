@@ -309,7 +309,7 @@ namespace acme.softwarevendor.plugin
             string resourceBaseLocation = "acme.softwarevendor.plugin.Resources.Reports.UserReports.{0}";
             string[] files = Directory.GetFiles(resourcePathLocation, "*.frx");
             List<string> emmbededFilesMissing = new List<string>();
-            var resources = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.GetType().Assembly.GetManifestResourceNames();
+            var resources = LogicPOS.Settings.PluginSettings.SoftwareVendor.GetType().Assembly.GetManifestResourceNames();
             foreach (var item in files)
             {
                 string fileName = item.Replace(resourcePathLocation, string.Empty);

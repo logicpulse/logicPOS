@@ -36,7 +36,7 @@ namespace LogicPOS.Settings
             if (CultureSettings.CountryIdIsPortugal(countryId))
             {
                 return PluginSettings.HasPlugin
-                    ? PluginSettings.PluginSoftwareVendor.GetRequiredCustomerDetailsAboveValue()
+                    ? PluginSettings.SoftwareVendor.GetRequiredCustomerDetailsAboveValue()
                     : 1000;
 
             }

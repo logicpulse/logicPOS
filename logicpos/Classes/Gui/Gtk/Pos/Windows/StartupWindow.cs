@@ -261,7 +261,7 @@ namespace logicpos
                         buttonDeveloper.Clicked += buttonDeveloper_Clicked;
                     }
                     //LOGO
-                    if (PluginSettings.PluginLicenceManager != null)
+                    if (PluginSettings.LicenceManager != null)
                     {
                         string fileImageBackOfficeLogo = string.Format(GeneralSettings.Paths["themes"] + @"Default\Images\logicPOS_loggericpulse_loggerin.png");
 
