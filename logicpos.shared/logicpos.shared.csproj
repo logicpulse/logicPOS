@@ -68,7 +68,7 @@
     <Compile Include="Enums\ThermalPrinter\WorkSessionMovementResumeQueryMode.cs" />
     <Compile Include="App\SharedUtils.cs" />
     <Compile Include="App\SharedFramework.cs" />
-    <Compile Include="GlobalFrameworkSession.cs" />
+    <Compile Include="POSSession.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Enums\TableFilterMode.cs" />
   </ItemGroup>

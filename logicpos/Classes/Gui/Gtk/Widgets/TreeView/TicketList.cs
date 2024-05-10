@@ -18,6 +18,7 @@ using System.Drawing;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using logicpos.shared;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -294,7 +295,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 ListStoreModel.RowInserted += _listStoreModel_RowInserted;
 
                 //Only UpdateModel if has a CurrentOrderMainId
-                if (SharedFramework.SessionApp.OrdersMain.Count > 0) UpdateModel();
+                if (POSSession.CurrentSession.OrderMains.Count > 0) UpdateModel();
                 scrolledWindow.Add(_treeView);
 
                 //Update ArticleBag
@@ -424,9 +425,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 _listStoreModelTotalItems = 0;
 
                 //Init Values from SessionApp
-                _currentOrderMainOid = SharedFramework.SessionApp.CurrentOrderMainOid;
-                _currentTicketId = SharedFramework.SessionApp.OrdersMain[_currentOrderMainOid].CurrentTicketId;
-                CurrentOrderDetails = SharedFramework.SessionApp.OrdersMain[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails;
+                _currentOrderMainOid = POSSession.CurrentSession.CurrentOrderMainId;
+                _currentTicketId = POSSession.CurrentSession.OrderMains[_currentOrderMainOid].CurrentTicketId;
+                CurrentOrderDetails = POSSession.CurrentSession.OrderMains[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails;
 
                 //Change BackGround Color ListMode
                 Gdk.Color colorListMode = (ListMode == TicketListMode.Ticket) ? colorListMode = _colorPosTicketListModeTicketBackground.ToGdkColor() : colorListMode = _colorPosTicketListModeOrderMainBackground.ToGdkColor();
@@ -525,9 +526,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
                     OrderDetailLine newLine;
                     //Init Values from SessionApp
-                    _currentOrderMainOid = SharedFramework.SessionApp.CurrentOrderMainOid;
-                    _currentTicketId = SharedFramework.SessionApp.OrdersMain[_currentOrderMainOid].CurrentTicketId;
-                    CurrentOrderDetails = SharedFramework.SessionApp.OrdersMain[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails;
+                    _currentOrderMainOid = POSSession.CurrentSession.CurrentOrderMainId;
+                    _currentTicketId = POSSession.CurrentSession.OrderMains[_currentOrderMainOid].CurrentTicketId;
+                    CurrentOrderDetails = POSSession.CurrentSession.OrderMains[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails;
                     int currentTicketAux = _currentTicketId;
                     bool newArticleLine = true;
                     //Change BackGround Color ListMode
@@ -535,9 +536,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     //_treeView.ModifyBase(StateType.Normal, colorListMode);
 
                     //If ticket was empty Create new line
-                    if (SharedFramework.SessionApp.OrdersMain[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails.Lines.Count == 0)
+                    if (POSSession.CurrentSession.OrderMains[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails.Lines.Count == 0)
                     {
-                        SharedFramework.SessionApp.OrdersMain[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails = new OrderDetail();
+                        POSSession.CurrentSession.OrderMains[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails = new OrderDetail();
 
                         if (_currentDetailArticle != null)
                         {
@@ -550,7 +551,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                             //newLine.Properties.Quantity -= GetArticleDefaultQuantity(_currentDetailArticle.Oid);
                             newLine.Properties.Quantity = -1;
 
-                            SharedFramework.SessionApp.OrdersMain[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails.Lines.Add(newLine);
+                            POSSession.CurrentSession.OrderMains[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails.Lines.Add(newLine);
                         }
                     }
                     //Else update line with article update
@@ -558,15 +559,15 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     {
                         if (_currentDetailArticle != null)
                         {
-                            for (int i = 0; i < SharedFramework.SessionApp.OrdersMain[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails.Lines.Count; i++)
+                            for (int i = 0; i < POSSession.CurrentSession.OrderMains[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails.Lines.Count; i++)
                             {
-                                if (SharedFramework.SessionApp.OrdersMain[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails.Lines[i].ArticleOid == _currentDetailArticle.Oid &&
-                                    SharedFramework.SessionApp.OrdersMain[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails.Lines[i].Properties.PriceNet == SharedFramework.SessionApp.OrdersMain[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails.Lines[i].Properties.PriceNet)
+                                if (POSSession.CurrentSession.OrderMains[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails.Lines[i].ArticleOid == _currentDetailArticle.Oid &&
+                                    POSSession.CurrentSession.OrderMains[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails.Lines[i].Properties.PriceNet == POSSession.CurrentSession.OrderMains[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails.Lines[i].Properties.PriceNet)
                                 {
-                                    SharedFramework.SessionApp.OrdersMain[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails.Lines[i].Properties.Quantity = -1;
-                                    SharedFramework.SessionApp.OrdersMain[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails.Lines[i].Properties.PriceNet = SharedFramework.SessionApp.OrdersMain[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails.Lines[i].Properties.PriceFinal;
-                                    SharedFramework.SessionApp.OrdersMain[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails.Lines[i].Properties.TotalFinal = (SharedFramework.SessionApp.OrdersMain[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails.Lines[i].Properties.TotalFinal
-                                                                                                                                                                           - (SharedFramework.SessionApp.OrdersMain[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails.Lines[i].Properties.PriceNet));
+                                    POSSession.CurrentSession.OrderMains[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails.Lines[i].Properties.Quantity = -1;
+                                    POSSession.CurrentSession.OrderMains[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails.Lines[i].Properties.PriceNet = POSSession.CurrentSession.OrderMains[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails.Lines[i].Properties.PriceFinal;
+                                    POSSession.CurrentSession.OrderMains[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails.Lines[i].Properties.TotalFinal = (POSSession.CurrentSession.OrderMains[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails.Lines[i].Properties.TotalFinal
+                                                                                                                                                                           - (POSSession.CurrentSession.OrderMains[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails.Lines[i].Properties.PriceNet));
                                     newArticleLine = false;
                                 }
                             }
@@ -586,14 +587,14 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
                                     //newLine.Properties.Quantity -= GetArticleDefaultQuantity(_currentDetailArticle.Oid);
                                     newLine.Properties.Quantity = -1;
-                                    SharedFramework.SessionApp.OrdersMain[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails.Lines.Add(newLine);
+                                    POSSession.CurrentSession.OrderMains[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails.Lines.Add(newLine);
                                 }
                             }
                         }
                     }
 
 
-                    SharedFramework.SessionApp.OrdersMain[_currentOrderMainOid].FinishOrder(XPOSettings.Session, false, true);
+                    POSSession.CurrentSession.OrderMains[_currentOrderMainOid].FinishOrder(XPOSettings.Session, false, true);
                     //UpdateModel();
                     //UpdateOrderStatusBar();
                     _buttonKeyFinishOrder.Sensitive = true;
@@ -784,7 +785,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         }
                     }
                     //Get Place Object to extract TaxSellType Normal|TakeWay
-                    OrderMain currentOrderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];
+                    OrderMain currentOrderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];
                     pos_configurationplace configurationPlace = (pos_configurationplace)XPOSettings.Session.GetObjectByKey(typeof(pos_configurationplace), currentOrderMain.Table.PlaceId);
                     fin_articletype articletype = (fin_articletype)XPOSettings.Session.GetObjectByKey(typeof(fin_articletype), article.Type.Oid);
 
@@ -854,7 +855,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                       price,
                       1.0m,
                       article.Discount,
-                      SharedUtils.GetDiscountGlobal(),
+                      SharedUtils.GetGlobalDiscount(),
                       priceTax
                     );
 
@@ -1057,9 +1058,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         public void DeleteItem_ListModeTicket()
         {
             //Get Article defaultQuantity
-            _currentOrderMainOid = SharedFramework.SessionApp.CurrentOrderMainOid;
-            _currentTicketId = SharedFramework.SessionApp.OrdersMain[_currentOrderMainOid].CurrentTicketId;
-            CurrentOrderDetails = SharedFramework.SessionApp.OrdersMain[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails;
+            _currentOrderMainOid = POSSession.CurrentSession.CurrentOrderMainId;
+            _currentTicketId = POSSession.CurrentSession.OrderMains[_currentOrderMainOid].CurrentTicketId;
+            CurrentOrderDetails = POSSession.CurrentSession.OrderMains[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails;
             decimal defaultQuantity = GetArticleDefaultQuantity(_currentDetailArticleOid);
             DeleteItem_ListModeTicket(defaultQuantity);
         }
@@ -1189,8 +1190,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             try
             {
-                if (SharedFramework.SessionApp.CurrentOrderMainOid != Guid.Empty && SharedFramework.SessionApp.OrdersMain.ContainsKey(SharedFramework.SessionApp.CurrentOrderMainOid))
-                    _articleBag = ArticleBag.TicketOrderToArticleBag(SharedFramework.SessionApp.OrdersMain[_currentOrderMainOid]);
+                if (POSSession.CurrentSession.CurrentOrderMainId != Guid.Empty && POSSession.CurrentSession.OrderMains.ContainsKey(POSSession.CurrentSession.CurrentOrderMainId))
+                    _articleBag = ArticleBag.TicketOrderToArticleBag(POSSession.CurrentSession.OrderMains[_currentOrderMainOid]);
             }
             catch (Exception ex)
             {
@@ -1328,7 +1329,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             if (_buttonKeyPayments != null)
             {
                 //If has a Working Order
-                if (SharedFramework.SessionApp.CurrentOrderMainOid != Guid.Empty && SharedFramework.SessionApp.OrdersMain.ContainsKey(SharedFramework.SessionApp.CurrentOrderMainOid))
+                if (POSSession.CurrentSession.CurrentOrderMainId != Guid.Empty && POSSession.CurrentSession.OrderMains.ContainsKey(POSSession.CurrentSession.CurrentOrderMainId))
                 {
                     // Always Enable Buttons if have Order/Table Open
                     _buttonKeyBarCode.Sensitive = true;
@@ -1339,7 +1340,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         _buttonKeyPayments.Sensitive = true;
                         _buttonKeySplitAccount.Sensitive = true;
                         _buttonKeyChangeTable.Sensitive = false;
-                        if (SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid].OrderStatus == OrderStatus.Open)
+                        if (POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId].OrderStatus == OrderStatus.Open)
                         {
                             _buttonKeyListOrder.Sensitive = true;
                         }
@@ -1350,7 +1351,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     }
                     else if (_listStoreModelTotalItemsTicketListMode == 0)
                     {
-                        if (SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid].OrderStatus == OrderStatus.Open &&
+                        if (POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId].OrderStatus == OrderStatus.Open &&
                             _articleBag.TotalFinal > 0.00m)
                         {
                             _buttonKeyPayments.Sensitive = true;
@@ -1422,12 +1423,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             {
                 //If has Working Order
                 if (
-                    SharedFramework.SessionApp.OrdersMain != null &&
-                    SharedFramework.SessionApp.CurrentOrderMainOid != null &&
-                    SharedFramework.SessionApp.OrdersMain.ContainsKey(SharedFramework.SessionApp.CurrentOrderMainOid)
+                    POSSession.CurrentSession.OrderMains != null &&
+                    POSSession.CurrentSession.CurrentOrderMainId != null &&
+                    POSSession.CurrentSession.OrderMains.ContainsKey(POSSession.CurrentSession.CurrentOrderMainId)
                 )
                 {
-                    OrderMain orderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];
+                    OrderMain orderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];
                     orderMain.UpdateTotals();
 
                     string labelCurrentTableFormat = "{0} {1} ({2}%) {3}";
@@ -1440,7 +1441,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                       string.Format(labelCurrentTableFormat
                         , global_table
                         , orderMain.Table.Name
-                        , SharedUtils.GetDiscountGlobal()
+                        , SharedUtils.GetGlobalDiscount()
                         , lastUserName
                         );
 

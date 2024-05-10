@@ -8,6 +8,7 @@ using System;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using logicpos.datalayer.Xpo;
+using logicpos.shared;
 
 namespace logicpos
 {
@@ -103,10 +104,10 @@ namespace logicpos
         public void LogOutUser(bool pGotoStartupWindow, sys_userdetail pUserDetail)
         {
             if (
-                SharedFramework.SessionApp.LoggedUsers.ContainsKey(pUserDetail.Oid))
+                POSSession.CurrentSession.LoggedUsers.ContainsKey(pUserDetail.Oid))
             {
-                SharedFramework.SessionApp.LoggedUsers.Remove(pUserDetail.Oid);
-                SharedFramework.SessionApp.Write();
+                POSSession.CurrentSession.LoggedUsers.Remove(pUserDetail.Oid);
+                POSSession.CurrentSession.Save();
                 SharedUtils.Audit("USER_loggerOUT", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_user_loggerout"), pUserDetail.Name));
                 //Only Reset LoggedUser if equal to pUser
                 if (XPOSettings.LoggedUser.Equals(pUserDetail))

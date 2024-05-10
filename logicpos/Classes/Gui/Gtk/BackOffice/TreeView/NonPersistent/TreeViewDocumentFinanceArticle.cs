@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Data;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using logicpos.shared;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -136,13 +137,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             if (pGetArticlesFromCurrentOrderMain)
             {
                 //Check if we have a Valid Session Order
-                if (SharedFramework.SessionApp.OrdersMain.ContainsKey(SharedFramework.SessionApp.CurrentOrderMainOid))
+                if (POSSession.CurrentSession.OrderMains.ContainsKey(POSSession.CurrentSession.CurrentOrderMainId))
                 {
                     //Init Local Vars
                     fin_article article;
                     fin_configurationvatrate configurationVatRate;
                     //WIP: ConfigurationUnitMeasure configurationUnitMeasure;
-                    OrderMain orderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];
+                    OrderMain orderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];
                     ArticleBag articleBag = ArticleBag.TicketOrderToArticleBag(orderMain);
 
                     //Init DataRow

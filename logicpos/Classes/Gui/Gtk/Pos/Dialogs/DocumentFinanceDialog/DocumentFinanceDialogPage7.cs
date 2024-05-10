@@ -4,6 +4,7 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Finance;
+using logicpos.shared;
 using logicpos.shared.App;
 using logicpos.shared.Classes.Finance;
 using logicpos.shared.Classes.Orders;
@@ -95,9 +96,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             _hboxButtons2.PackStart(buttonPrintTransportationGuideWithoutTotals, true, true, 2);
 
             //Shared : Prepare ArticleBag
-            if (SharedFramework.SessionApp.OrdersMain.ContainsKey(SharedFramework.SessionApp.CurrentOrderMainOid))
+            if (POSSession.CurrentSession.OrderMains.ContainsKey(POSSession.CurrentSession.CurrentOrderMainId))
             {
-                _orderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];
+                _orderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];
                 if (_orderMain != null) _articleBag = ArticleBag.TicketOrderToArticleBag(_orderMain);
                 if (_articleBag != null && _articleBag.Count > 0)
                 {

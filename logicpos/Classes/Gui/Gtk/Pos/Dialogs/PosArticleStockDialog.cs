@@ -19,6 +19,7 @@ using System.Drawing;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using logicpos.shared;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -248,9 +249,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public void Load()
         {
             //Get From Session if Exists
-            object supplier = SharedFramework.SessionApp.GetToken(string.Format("{0}_{1}", this.GetType().Name, "supplier").ToUpper());
-            object documentDate = SharedFramework.SessionApp.GetToken(string.Format("{0}_{1}", this.GetType().Name, "documentDate").ToUpper());
-            object documentNumber = SharedFramework.SessionApp.GetToken(string.Format("{0}_{1}", this.GetType().Name, "documentNumber").ToUpper());
+            object supplier = POSSession.CurrentSession.GetToken(string.Format("{0}_{1}", this.GetType().Name, "supplier").ToUpper());
+            object documentDate = POSSession.CurrentSession.GetToken(string.Format("{0}_{1}", this.GetType().Name, "documentDate").ToUpper());
+            object documentNumber = POSSession.CurrentSession.GetToken(string.Format("{0}_{1}", this.GetType().Name, "documentNumber").ToUpper());
             //Assign if Valid
             try
             {
@@ -295,10 +296,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             try
             {
-                SharedFramework.SessionApp.SetToken(string.Format("{0}_{1}", this.GetType().Name, "supplier").ToUpper(), _entryBoxSelectSupplier.Value.Oid);
-                SharedFramework.SessionApp.SetToken(string.Format("{0}_{1}", this.GetType().Name, "documentDate").ToUpper(), _entryBoxDocumentDate.Value);
-                SharedFramework.SessionApp.SetToken(string.Format("{0}_{1}", this.GetType().Name, "documentNumber").ToUpper(), _entryBoxDocumentNumber.EntryValidation.Text);
-                SharedFramework.SessionApp.Write();
+                POSSession.CurrentSession.SetToken(string.Format("{0}_{1}", this.GetType().Name, "supplier").ToUpper(), _entryBoxSelectSupplier.Value.Oid);
+                POSSession.CurrentSession.SetToken(string.Format("{0}_{1}", this.GetType().Name, "documentDate").ToUpper(), _entryBoxDocumentDate.Value);
+                POSSession.CurrentSession.SetToken(string.Format("{0}_{1}", this.GetType().Name, "documentNumber").ToUpper(), _entryBoxDocumentNumber.EntryValidation.Text);
+                POSSession.CurrentSession.Save();
             }
             catch (Exception ex)
             {

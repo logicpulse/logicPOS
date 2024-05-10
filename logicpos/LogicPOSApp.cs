@@ -307,7 +307,7 @@ namespace logicpos
                 //Init AppSession
                 string appSessionFile = Utils.GetSessionFileName();
                 if (databaseCreated && File.Exists(appSessionFile)) File.Delete(appSessionFile);
-                SharedFramework.SessionApp = GlobalFrameworkSession.InitSession(appSessionFile);
+                POSSession.CurrentSession = POSSession.GetSessionFromFile(appSessionFile);
 
                 //Try to Get open Session Day/Terminal for this Terminal
                 SharedFramework.WorkSessionPeriodDay = ProcessWorkSessionPeriod.GetSessionPeriod(WorkSessionPeriodType.Day);
@@ -674,8 +674,8 @@ namespace logicpos
                 if (pAudit) SharedUtils.Audit("APP_CLOSE");
                 //Before use DeleteSession()
                 /* IN005943 */
-                SharedFramework.SessionApp.CleanSession();
-                SharedFramework.SessionApp.Write();
+                POSSession.CurrentSession.CleanSession();
+                POSSession.CurrentSession.Save();
                 //GlobalFramework.SessionApp.DeleteSession();
                 //Disconnect SessionXpo
                 XPOSettings.Session.Disconnect();

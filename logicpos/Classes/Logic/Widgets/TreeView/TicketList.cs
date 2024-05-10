@@ -21,6 +21,7 @@ using System.IO.Ports;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using logicpos.shared;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -53,7 +54,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         _listStoreModelSelectedIndex = -1;
                         _listStoreModelTotalItems = 0;
                         //Get Reference to current OrderMain
-                        OrderMain orderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];
+                        OrderMain orderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];
                         fin_documentordermain documentOrderMain = null;
                         //Get current OrderMain Article Bag, After Process Payment/PartialPayment to check if current OrderMain has Items, or is Empty
                         ArticleBag pParameters = ArticleBag.TicketOrderToArticleBag(orderMain);
@@ -96,8 +97,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                                 //Clean Session if Commited without problems
                                 orderMain.OrderStatus = OrderStatus.Close;
                                 orderMain.CleanSessionOrder();
-                                SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid] = orderMain;
-                                SharedFramework.SessionApp.DeleteEmptyTickets();
+                                POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId] = orderMain;
+                                POSSession.CurrentSession.DeleteEmptyTickets();
                                 //obalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid].CleanSessionOrder();
                                 uowSession.CommitChanges();
                             }
@@ -324,7 +325,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             try
             {
                 //Call Framework FinishOrder
-                OrderMain orderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];
+                OrderMain orderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];
                 //CurrentOrderDetailsAll = CurrentOrderDetails;
                 /* 
                  * TK013134 
@@ -394,7 +395,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 };
 
                 //Get Reference to current OrderMain
-                OrderMain orderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];
+                OrderMain orderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];
 
                 //Finish Order, if Has Ticket Details
                 if (orderMain.OrderTickets[orderMain.CurrentTicketId].OrderDetails.Lines.Count > 0)
@@ -499,7 +500,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             try
             {
-                OrderMain currentOrderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];
+                OrderMain currentOrderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];
                 PosOrdersDialog dialog = new PosOrdersDialog(this.SourceWindow, DialogFlags.DestroyWithParent, currentOrderMain.Table.Name);
                 ResponseType response = (ResponseType)dialog.Run();
                 dialog.Destroy();
@@ -520,7 +521,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             {
                 if (response == ResponseType.Ok)
                 {
-                    OrderMain currentOrderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];
+                    OrderMain currentOrderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];
                     pos_configurationplacetable xOldTable = (pos_configurationplacetable)XPOHelper.GetXPGuidObject(typeof(pos_configurationplacetable), currentOrderMain.Table.Oid);
                     pos_configurationplacetable xNewTable = (pos_configurationplacetable)XPOHelper.GetXPGuidObject(typeof(pos_configurationplacetable), dialog.CurrentTableOid);
                     //Require to Prevent A first chance exception of type 'DevExpress.Xpo.DB.Exceptions.LockingException' occurred in DevExpress.Xpo.v13.2.dll when it is Changed in Diferent Session ex UnitOfWork
@@ -562,7 +563,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         currentOrderMain.Table.PriceType = (PriceType)xNewTable.Place.PriceType.EnumValue;
                         currentOrderMain.OrderTickets[currentOrderMain.CurrentTicketId].PriceType = (PriceType)xNewTable.Place.PriceType.EnumValue;
                         currentOrderMain.Table.PlaceId = xNewTable.Place.Oid;
-                        SharedFramework.SessionApp.Write();
+                        POSSession.CurrentSession.Save();
                         //Finally Update Status Bar, Table Name, Totals Etc
                         UpdateOrderStatusBar();
                     }

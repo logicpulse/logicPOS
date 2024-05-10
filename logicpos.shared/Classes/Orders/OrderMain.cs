@@ -98,7 +98,7 @@ namespace logicpos.shared.Classes.Orders
             bool isInUOW = (_sessionXpo.GetType() == typeof(UnitOfWork));
 
             //Get current Working Order from SessionApp
-            OrderMain currentOrderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];
+            OrderMain currentOrderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];
             OrderTicket currentOrderTicket = currentOrderMain.OrderTickets[currentOrderMain.CurrentTicketId];
 
             //Get Place Object to extract TaxSellType Normal|TakeWay
@@ -371,7 +371,7 @@ namespace logicpos.shared.Classes.Orders
 
 
             //Finish Writing Session
-            SharedFramework.SessionApp.Write();
+            POSSession.CurrentSession.Save();
 
             return xOrderTicket;
 
@@ -648,7 +648,7 @@ namespace logicpos.shared.Classes.Orders
             {
                 { CurrentTicketId, new OrderTicket(this, Table.PriceType) }
             };
-            SharedFramework.SessionApp.Write();
+            POSSession.CurrentSession.Save();
         }
 
         /// <summary>
@@ -664,7 +664,7 @@ namespace logicpos.shared.Classes.Orders
             GlobalTotalFinal = 0;
             GlobalTotalTickets = 0;
             OrderTickets.Add(CurrentTicketId, new OrderTicket(this, Table.PriceType));
-            SharedFramework.SessionApp.Write();
+            POSSession.CurrentSession.Save();
         }
 
         /// <summary>
@@ -688,7 +688,7 @@ namespace logicpos.shared.Classes.Orders
             fin_documentordermain xOrderMain = (fin_documentordermain)XPOHelper.GetXPGuidObject(_sessionXpo, typeof(fin_documentordermain), _persistentOid);
 
             //Get current Working Order from SessionApp
-            OrderMain currentOrderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];
+            OrderMain currentOrderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];
             OrderTicket currentOrderTicket = currentOrderMain.OrderTickets[currentOrderMain.CurrentTicketId];
 
             OrderDetailLine[] orderDetailsLines = currentOrderTicket.OrderDetails.Lines.ToArray();

@@ -29,37 +29,32 @@ namespace logicpos.shared.App
         private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 
-        public static decimal GetDiscountGlobal()
+        public static decimal GetGlobalDiscount()
         {
             decimal result = 0.0m;
-            try
+
+            if (POSSession.CurrentSession != null
+                && POSSession.CurrentSession.OrderMains.ContainsKey(POSSession.CurrentSession.CurrentOrderMainId)
+            )
             {
-                if (SharedFramework.SessionApp != null
-                    && SharedFramework.SessionApp.OrdersMain.ContainsKey(SharedFramework.SessionApp.CurrentOrderMainOid)
-                )
+                //get CurrentOrderMain
+                OrderMain orderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];
+                //Get Table to Get Discount
+                pos_configurationplacetable xConfigurationPlaceTable = (pos_configurationplacetable)GetXPGuidObject(XPOSettings.Session, typeof(pos_configurationplacetable), orderMain.Table.Oid);
+                //Get Fresh Discount From Table/Future 
+                if (xConfigurationPlaceTable != null)
                 {
-                    //get CurrentOrderMain
-                    OrderMain orderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];
-                    //Get Table to Get Discount
-                    pos_configurationplacetable xConfigurationPlaceTable = (pos_configurationplacetable)GetXPGuidObject(XPOSettings.Session, typeof(pos_configurationplacetable), orderMain.Table.Oid);
-                    //Get Fresh Discount From Table/Future 
-                    if (xConfigurationPlaceTable != null)
-                    {
-                        result = xConfigurationPlaceTable.Discount;
-                    }
+                    result = xConfigurationPlaceTable.Discount;
                 }
             }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
+
             return result;
         }
 
         public static PriceProperties GetArticlePrice(fin_article pArticle, TaxSellType pTaxSellType)
         {
             //get PriceType from CurrentOrderMain Table
-            OrderMain orderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];
+            OrderMain orderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];
             return GetArticlePrice(pArticle, orderMain.Table.PriceType, pTaxSellType);
         }
 
@@ -157,7 +152,7 @@ namespace logicpos.shared.App
               priceSource,
               1.0m,
               pArticle.Discount,
-              GetDiscountGlobal(),
+              GetGlobalDiscount(),
               priceTax
             );
 

@@ -97,7 +97,7 @@ namespace logicpos.shared.Classes.Orders
                 TotalFinal += line.Properties.TotalFinal;
                 TotalItems += line.Properties.Quantity;
             }
-            SharedFramework.SessionApp.Write();
+            POSSession.CurrentSession.Save();
         }
     }
 }

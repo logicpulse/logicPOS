@@ -2,6 +2,7 @@
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.App;
+using logicpos.shared;
 using logicpos.shared.App;
 using logicpos.shared.Classes.Finance;
 using logicpos.shared.Enums;
@@ -557,9 +558,9 @@ namespace logicpos.financial.library.Classes.Finance
                 switch (pParameters.SourceMode)
                 {
                     case PersistFinanceDocumentSourceMode.CurrentOrderMain:
-                        if (SharedFramework.SessionApp == null
-                            || SharedFramework.SessionApp.OrdersMain == null
-                            || SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid] == null
+                        if (POSSession.CurrentSession == null
+                            || POSSession.CurrentSession.OrderMains == null
+                            || POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId] == null
                         )
                         {
                             ResultAdd(FinanceValidationError.ERROR_RULE_SOURCE_MODE_ORDERMAIN_EMPTY);

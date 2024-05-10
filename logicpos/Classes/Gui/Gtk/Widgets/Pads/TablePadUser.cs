@@ -1,4 +1,5 @@
 ﻿using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
+using logicpos.shared;
 using logicpos.shared.App;
 using System;
 using System.Drawing;
@@ -14,7 +15,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         public override TouchButtonBase InitializeButton()
         {
-            bool logged = SharedFramework.SessionApp.LoggedUsers.ContainsKey(new Guid(_resultRow.Values[_fieldIndex["id"]].ToString()));
+            bool logged = POSSession.CurrentSession.LoggedUsers.ContainsKey(new Guid(_resultRow.Values[_fieldIndex["id"]].ToString()));
             return new TouchButtonUser(_strButtonName, _colorButton, _strButtonLabel, _fontPosBaseButtonSize.ToString(), _buttonWidth, _buttonHeight, logged);
         }
     }

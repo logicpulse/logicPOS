@@ -15,6 +15,7 @@ using System;
 using System.Drawing;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using logicpos.shared;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -25,7 +26,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             try
             {
                 //Get Current OrderMain
-                OrderMain currentOrderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];
+                OrderMain currentOrderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];
                 //Initialize ArticleBag to Send to ProcessFinanceDocuments or Compare
                 ArticleBag articleBag = ArticleBag.TicketOrderToArticleBag(currentOrderMain);
 
@@ -92,7 +93,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private void buttonPrintOrder_Clicked(object sender, EventArgs e)
         {
             if (logicpos.Utils.ShowMessageTouchRequiredValidPrinter(this, XPOSettings.LoggedTerminal.ThermalPrinter)) return;
-            OrderMain currentOrderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];
+            OrderMain currentOrderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];
             Guid orderTicketOid = new Guid();
 
             string sql = string.Format(@"SELECT COUNT(*) AS Count FROM fin_documentorderticket WHERE OrderMain = '{0}';", currentOrderMain.PersistentOid);

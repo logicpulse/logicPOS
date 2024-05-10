@@ -40,7 +40,7 @@ namespace logicpos.shared.Classes.Finance
             : base(new ArticleBagKey.EqualityComparer())
         {
             //Get Default Global Discount
-            DiscountGlobal = SharedUtils.GetDiscountGlobal();
+            DiscountGlobal = SharedUtils.GetGlobalDiscount();
         }
 
         public ArticleBag(decimal pDiscountGlobal)
@@ -360,7 +360,7 @@ namespace logicpos.shared.Classes.Finance
             //Start UnitOfWork
             using (UnitOfWork uowSession = new UnitOfWork())
             {
-                OrderMain orderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];
+                OrderMain orderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];
                 fin_documentordermain xDocumentOrderMain = (fin_documentordermain)XPOHelper.GetXPGuidObject(uowSession, typeof(fin_documentordermain), orderMain.PersistentOid);
 
                 if (xDocumentOrderMain != null && xDocumentOrderMain.OrderTicket != null)

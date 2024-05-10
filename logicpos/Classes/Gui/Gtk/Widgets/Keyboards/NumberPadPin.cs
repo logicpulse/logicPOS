@@ -12,6 +12,7 @@ using LogicPOS.Settings.Extensions;
 using LogicPOS.Utility;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using logicpos.shared;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -423,15 +424,15 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             SharedUtils.Audit("USER_loggerIN", string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "audit_message_user_loggerin"), pUserDetail.Name));
 
             //SessionApp Add LoggedUser
-            if (!SharedFramework.SessionApp.LoggedUsers.ContainsKey(XPOSettings.LoggedUser.Oid))
+            if (!POSSession.CurrentSession.LoggedUsers.ContainsKey(XPOSettings.LoggedUser.Oid))
             {
-                SharedFramework.SessionApp.LoggedUsers.Add(pUserDetail.Oid, XPOHelper.CurrentDateTimeAtomic());
+                POSSession.CurrentSession.LoggedUsers.Add(pUserDetail.Oid, XPOHelper.CurrentDateTimeAtomic());
             }
             else
             {
-                SharedFramework.SessionApp.LoggedUsers[XPOSettings.LoggedUser.Oid] = XPOHelper.CurrentDateTimeAtomic();
+                POSSession.CurrentSession.LoggedUsers[XPOSettings.LoggedUser.Oid] = XPOHelper.CurrentDateTimeAtomic();
             }
-            SharedFramework.SessionApp.Write();
+            POSSession.CurrentSession.Save();
 
             //Returns to default mode
             _mode = NumberPadPinMode.Password;

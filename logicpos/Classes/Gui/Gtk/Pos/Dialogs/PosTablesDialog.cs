@@ -11,6 +11,7 @@ using System.Drawing;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using logicpos.shared;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -319,10 +320,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             //Prepare current table
             Guid currentTableOid = Guid.Empty;
-            if (SharedFramework.SessionApp.OrdersMain.ContainsKey(SharedFramework.SessionApp.CurrentOrderMainOid)
-              && SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid].Table != null)
+            if (POSSession.CurrentSession.OrderMains.ContainsKey(POSSession.CurrentSession.CurrentOrderMainId)
+              && POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId].Table != null)
             {
-                currentTableOid = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid].Table.Oid;
+                currentTableOid = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId].Table.Oid;
             }
 
             //Initialize TablePad

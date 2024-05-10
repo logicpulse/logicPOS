@@ -18,6 +18,7 @@ using System.IO;
 using System.Linq;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using logicpos.shared;
 
 namespace logicpos.financial.library.Classes.Finance
 {
@@ -78,7 +79,7 @@ namespace logicpos.financial.library.Classes.Finance
                     fin_documentordermain documentOrderMain = null;
                     if (pParameters.SourceMode == PersistFinanceDocumentSourceMode.CurrentOrderMain)
                     {
-                        orderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];
+                        orderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];
                         //Get Persistent Oid from orderMain
                         documentOrderMain = (fin_documentordermain)uowSession.GetObjectByKey(typeof(fin_documentordermain), orderMain.PersistentOid);
                     }

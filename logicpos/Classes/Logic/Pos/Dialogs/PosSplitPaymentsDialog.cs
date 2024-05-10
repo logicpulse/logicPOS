@@ -11,6 +11,7 @@ using logicpos.shared.Classes.Orders;
 using System;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using logicpos.shared;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -197,7 +198,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 // Init Object to Use priceTax on above Loop
                 //Get Place Objects to extract TaxSellType Normal|TakeWay, Place, Tables etc
-                OrderMain currentOrderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];
+                OrderMain currentOrderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];
                 pos_configurationplace configurationPlace = (pos_configurationplace)XPOSettings.Session.GetObjectByKey(typeof(pos_configurationplace), currentOrderMain.Table.PlaceId);
 
                 // Loop articleBag, and Add the quantity for Each Split (Total Article Quantity / numberOfSplits)
@@ -331,13 +332,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 //If has Working Order
                 if (
-                    SharedFramework.SessionApp.OrdersMain != null &&
-                    SharedFramework.SessionApp.CurrentOrderMainOid != null &&
-                    SharedFramework.SessionApp.OrdersMain.ContainsKey(SharedFramework.SessionApp.CurrentOrderMainOid)
+                    POSSession.CurrentSession.OrderMains != null &&
+                    POSSession.CurrentSession.CurrentOrderMainId != null &&
+                    POSSession.CurrentSession.OrderMains.ContainsKey(POSSession.CurrentSession.CurrentOrderMainId)
                 )
                 {
                     // Get Current working orderMain
-                    OrderMain currentOrderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];
+                    OrderMain currentOrderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];
                     if (debug) _logger.Debug(string.Format("Working on currentOrderMain.PersistentOid: [{0}]", currentOrderMain.PersistentOid));
                     //Get OrderDetail
                     OrderDetail currentOrderDetails = currentOrderMain.OrderTickets[currentOrderMain.CurrentTicketId].OrderDetails;

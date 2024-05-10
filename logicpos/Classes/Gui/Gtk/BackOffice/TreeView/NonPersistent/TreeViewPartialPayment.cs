@@ -12,6 +12,7 @@ using System.Data;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using logicpos.datalayer.Xpo;
+using logicpos.shared;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -97,7 +98,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             DataTable resultDataTable = new DataTable();
             Type dataTableColumnType;
             fin_article article;
-            OrderMain orderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];
+            OrderMain orderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];
             ArticleBag articleBag = ArticleBag.TicketOrderToArticleBag(orderMain);
             pos_configurationplace configurationPlace;
 

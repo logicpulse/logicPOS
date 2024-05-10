@@ -6,6 +6,7 @@ using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Finance;
 using logicpos.financial.library.Classes.Reports;
+using logicpos.shared;
 using logicpos.shared.App;
 using logicpos.shared.Classes.Finance;
 using logicpos.shared.Classes.Orders;
@@ -551,16 +552,16 @@ namespace logicpos.financial.library.App
             //Declare local Variables
             fin_documentfinancemaster lastDocument = null;
             fin_documentfinancemaster result = null;
-            Guid currentOrderMainOid = SharedFramework.SessionApp.CurrentOrderMainOid;
+            Guid currentOrderMainOid = POSSession.CurrentSession.CurrentOrderMainId;
             _logger.Debug("fin_documentfinancemaster GetOrderMainLastDocumentConference(bool pGenerateNewIfDiferentFromArticleBag = false) :: currentOrderMainOid: " + currentOrderMainOid);
             OrderMain currentOrderMain = null;
             
             try
             {
                 /* IN009179 - System.Collections.Generic.KeyNotFoundException */
-                if (SharedFramework.SessionApp.OrdersMain.Count > 0)
+                if (POSSession.CurrentSession.OrderMains.Count > 0)
                 {
-                    currentOrderMain = SharedFramework.SessionApp.OrdersMain[currentOrderMainOid];
+                    currentOrderMain = POSSession.CurrentSession.OrderMains[currentOrderMainOid];
                 }
                 else
                 {

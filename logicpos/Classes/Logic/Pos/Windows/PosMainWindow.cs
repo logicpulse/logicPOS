@@ -11,6 +11,7 @@ using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Hardware.Printers;
 using logicpos.financial.library.Classes.WorkSession;
+using logicpos.shared;
 using logicpos.shared.App;
 using logicpos.shared.Classes.Orders;
 using LogicPOS.Globalization;
@@ -193,7 +194,7 @@ namespace logicpos
                 if (responseChangeUser == (int)ResponseType.Ok)
                 {
                     //Already logged
-                    if (SharedFramework.SessionApp.LoggedUsers.ContainsKey(dialogChangeUser.UserDetail.Oid))
+                    if (POSSession.CurrentSession.LoggedUsers.ContainsKey(dialogChangeUser.UserDetail.Oid))
                     {
                         XPOSettings.LoggedUser = (sys_userdetail)XPOHelper.GetXPGuidObject(typeof(sys_userdetail), dialogChangeUser.UserDetail.Oid);
                         SharedFramework.LoggedUserPermissions = SharedUtils.GetUserPermissions();
@@ -209,10 +210,10 @@ namespace logicpos
                         int responsePinPad = dialogPinPad.Run();
                         if (responsePinPad == (int)ResponseType.Ok)
                         {
-                            if (!SharedFramework.SessionApp.LoggedUsers.ContainsKey(dialogChangeUser.UserDetail.Oid))
+                            if (!POSSession.CurrentSession.LoggedUsers.ContainsKey(dialogChangeUser.UserDetail.Oid))
                             {
-                                SharedFramework.SessionApp.LoggedUsers.Add(dialogChangeUser.UserDetail.Oid, XPOHelper.CurrentDateTimeAtomic());
-                                SharedFramework.SessionApp.Write();
+                                POSSession.CurrentSession.LoggedUsers.Add(dialogChangeUser.UserDetail.Oid, XPOHelper.CurrentDateTimeAtomic());
+                                POSSession.CurrentSession.Save();
                                 XPOSettings.LoggedUser = (sys_userdetail)XPOHelper.GetXPGuidObject(typeof(sys_userdetail), dialogChangeUser.UserDetail.Oid);
                                 SharedFramework.LoggedUserPermissions = SharedUtils.GetUserPermissions();
                                 TicketList.UpdateTicketListButtons();
@@ -436,8 +437,8 @@ namespace logicpos
                     //With Valid WorkSessionPeriodTerminal
                     if (SharedFramework.WorkSessionPeriodTerminal != null && SharedFramework.WorkSessionPeriodTerminal.SessionStatus == WorkSessionPeriodStatus.Open)
                     {
-                        bool isTableOpened = SharedFramework.SessionApp.OrdersMain.ContainsKey(SharedFramework.SessionApp.CurrentOrderMainOid)
-                          && SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid].Table != null;
+                        bool isTableOpened = POSSession.CurrentSession.OrderMains.ContainsKey(POSSession.CurrentSession.CurrentOrderMainId)
+                          && POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId].Table != null;
                         //IN009231
                         //Abrir ordem na abertura
                         SelectedData xpoSelectedData = null;
@@ -463,8 +464,8 @@ namespace logicpos
                             //string filterCriteria = string.Format("Oid = '{0}'", SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity.ToString());
 
                             Guid newOrderMainOid = Guid.NewGuid();
-                            SharedFramework.SessionApp.OrdersMain.Add(newOrderMainOid, new OrderMain(newOrderMainOid, currentTableOid));
-                            OrderMain newOrderMain = SharedFramework.SessionApp.OrdersMain[newOrderMainOid];
+                            POSSession.CurrentSession.OrderMains.Add(newOrderMainOid, new OrderMain(newOrderMainOid, currentTableOid));
+                            OrderMain newOrderMain = POSSession.CurrentSession.OrderMains[newOrderMainOid];
                             OrderTicket orderTicket = new OrderTicket(newOrderMain, (PriceType)newOrderMain.Table.PriceType);
                             //Create Reference to SessionApp OrderMain with Open Ticket, Ready to Add Details
                             newOrderMain.OrderTickets.Add(1, orderTicket);
@@ -481,8 +482,8 @@ namespace logicpos
                             currentOrderMain.OrderStatus = (OrderStatus)currentOrderMain.GetOpenTableFieldValue(pTableOid, "OrderStatus");
 
                             //Shared Code
-                            SharedFramework.SessionApp.CurrentOrderMainOid = currentOrderMain.Table.OrderMainOid;
-                            SharedFramework.SessionApp.Write();
+                            POSSession.CurrentSession.CurrentOrderMainId = currentOrderMain.Table.OrderMainOid;
+                            POSSession.CurrentSession.Save();
                             TicketList.UpdateModel();
 
                             //GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid].Table.OrderMainOid = currentTableOid;
@@ -534,9 +535,9 @@ namespace logicpos
                 _labelClock.Text = XPOHelper.CurrentDateTime(_clockFormat);
 
                 //Call Current OrderMain Update Status
-                if (SharedFramework.SessionApp.CurrentOrderMainOid != Guid.Empty && SharedFramework.SessionApp.OrdersMain.ContainsKey(SharedFramework.SessionApp.CurrentOrderMainOid))
+                if (POSSession.CurrentSession.CurrentOrderMainId != Guid.Empty && POSSession.CurrentSession.OrderMains.ContainsKey(POSSession.CurrentSession.CurrentOrderMainId))
                 {
-                    UpdateGUITimer(SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid], TicketList);
+                    UpdateGUITimer(POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId], TicketList);
                 }
 
                 //Update UI Button and Get WorkSessionPeriodDay if is Opened by Other Terminal
@@ -592,7 +593,7 @@ namespace logicpos
                     //Debug
                     if (debug) _logger.Debug(string.Format("UpdateGUITimer(): Table Status Updated [{0}], _persistentOid [{1}], _orderStatus [{2}], _UpdatedAt [{3}], dateLastDBUpdate [{4}]", orderMain.Table.Name, orderMain.PersistentOid, Convert.ToInt16(OrderStatus.Open), orderMain.UpdatedAt, dateLastDBUpdate));
 
-                    SharedFramework.SessionApp.Write();
+                    POSSession.CurrentSession.Save();
                 }
             }
             //Cant Get Table Open Status
@@ -607,7 +608,7 @@ namespace logicpos
                 pTicketList.UpdateOrderStatusBar();
                 pTicketList.UpdateTicketListOrderButtons();
 
-                SharedFramework.SessionApp.Write();
+                POSSession.CurrentSession.Save();
 
                 //Debug
                 //if (debug) _logger.Debug(string.Format("UpdateGUITimer(): Cant Get Table Status [{0}], sql:[{1}]", orderMain.Table.Name, sqlOrderMainUpdatedAt));
@@ -617,8 +618,8 @@ namespace logicpos
         //UpdateUI if detect open Orders
         private void UpdateUIIfHasWorkingOrder()
         {
-            if (SharedFramework.SessionApp.OrdersMain.ContainsKey(SharedFramework.SessionApp.CurrentOrderMainOid)
-              && SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid].Table != null)
+            if (POSSession.CurrentSession.OrderMains.ContainsKey(POSSession.CurrentSession.CurrentOrderMainId)
+              && POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId].Table != null)
             {
                 //Update Order Summary Status Bar
                 TicketList.UpdateOrderStatusBar();

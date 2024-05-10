@@ -5,7 +5,7 @@ using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
-using logicpos.shared.App;
+using logicpos.shared;
 using logicpos.shared.Classes.Orders;
 using System;
 using System.Linq;
@@ -40,19 +40,21 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //Helper Methods
         public void SelectTableOrder(Guid pTableOid)
         {
-			//TicketPad - Modo Retalho - Mesa/ordem por defeito [IN:016529]
+            //TicketPad - Modo Retalho - Mesa/ordem por defeito [IN:016529]
             OrderMain currentOrderMain = null;
-			if(pTableOid == POSSettings.XpoOidConfigurationPlaceTableDefaultOpenTable){
-            	var configurationPlace = (pos_configurationplace)XPOSettings.Session.GetObjectByKey(typeof(pos_configurationplace), POSSettings.XpoOidConfigurationPlaceTableDefaultOpenTable);
-            	if (configurationPlace == null) { 
-                    pTableOid = ((pos_configurationplacetable)XPOHelper.GetXPGuidObjectFromCriteria(typeof(pos_configurationplacetable), string.Format("(Code = '{0}')", "10")) as pos_configurationplacetable).Oid; 
+            if (pTableOid == POSSettings.XpoOidConfigurationPlaceTableDefaultOpenTable)
+            {
+                var configurationPlace = (pos_configurationplace)XPOSettings.Session.GetObjectByKey(typeof(pos_configurationplace), POSSettings.XpoOidConfigurationPlaceTableDefaultOpenTable);
+                if (configurationPlace == null)
+                {
+                    pTableOid = ((pos_configurationplacetable)XPOHelper.GetXPGuidObjectFromCriteria(typeof(pos_configurationplacetable), string.Format("(Code = '{0}')", "10")) as pos_configurationplacetable).Oid;
                 }
-			}
+            }
             //Try to Get OrderMain Object From TableId Parameter
-            if (SharedFramework.SessionApp.OrdersMain.Count > 0)
+            if (POSSession.CurrentSession.OrderMains.Count > 0)
             {
                 //Get OrderMain Object from CurrentTableId with LINQ
-                currentOrderMain = SharedFramework.SessionApp.OrdersMain.Values.Where<OrderMain>(key => key.Table.Oid == pTableOid).FirstOrDefault<OrderMain>();
+                currentOrderMain = POSSession.CurrentSession.OrderMains.Values.Where<OrderMain>(key => key.Table.Oid == pTableOid).FirstOrDefault<OrderMain>();
             }
 
             //Always start in OrderMain Mode, when we change Table, IF WE HAVE Tickets, else leave it in TicketMode, Else Alt.List button may be OFF, and we cant Toggle Mode, Only occur if we dont have Tickets or Items in OrderMain
@@ -69,8 +71,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             if (currentOrderMain == null)
             {
                 Guid newOrderMainOid = Guid.NewGuid();
-                SharedFramework.SessionApp.OrdersMain.Add(newOrderMainOid, new OrderMain(newOrderMainOid, pTableOid));
-                OrderMain newOrderMain = SharedFramework.SessionApp.OrdersMain[newOrderMainOid];
+                POSSession.CurrentSession.OrderMains.Add(newOrderMainOid, new OrderMain(newOrderMainOid, pTableOid));
+                OrderMain newOrderMain = POSSession.CurrentSession.OrderMains[newOrderMainOid];
                 OrderTicket orderTicket = new OrderTicket(newOrderMain, (PriceType)newOrderMain.Table.PriceType);
                 //Create Reference to SessionApp OrderMain with Open Ticket, Ready to Add Details
                 newOrderMain.OrderTickets.Add(1, orderTicket);
@@ -83,8 +85,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             currentOrderMain.OrderStatus = (OrderStatus)currentOrderMain.GetOpenTableFieldValue(pTableOid, "OrderStatus");
 
             //Shared Code
-            SharedFramework.SessionApp.CurrentOrderMainOid = currentOrderMain.Table.OrderMainOid;
-            SharedFramework.SessionApp.Write();
+            POSSession.CurrentSession.CurrentOrderMainId = currentOrderMain.Table.OrderMainOid;
+            POSSession.CurrentSession.Save();
             _ticketList.UpdateModel();
 
             //Update PosMainWindow Components
