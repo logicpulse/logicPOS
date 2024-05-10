@@ -1,7 +1,9 @@
 ﻿using acme.softwarevendor.plugin.App;
 using logicpos;
 using logicpos.plugin.contracts;
-using logicpos.shared.App;
+using LogicPOS.Settings;
+using LogicPOS.Settings.Extensions;
+using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -255,16 +257,16 @@ namespace acme.softwarevendor.plugin
             {
                 // Get TemplateContent
                 Stream stream = GetType().Module.Assembly.GetManifestResourceStream(resourceTemplateLocation);
-                string templateContent = SharedUtils.StreamToString(stream);
+                string templateContent = StringUtils.StreamToString(stream);
                 // Get ReportContent
                 stream = GetType().Module.Assembly.GetManifestResourceStream(resourceReportLocation);
-                string reportContent = SharedUtils.StreamToString(stream);
+                string reportContent = StringUtils.StreamToString(stream);
 
                 string randomPrefix = LogicPOS.Utility.StringUtils.GenerateRandomString(8);
                 string targetTemplateFileName = $"{randomPrefix}.{templateBase}";
-                string targetTemplateFilePath = $"{GeneralSettings.Path["temp"]}{targetTemplateFileName}";
+                string targetTemplateFilePath = $"{GeneralSettings.Paths.GetTempFolderLocation()}{targetTemplateFileName}";
                 string targetReportFileName = $"{randomPrefix}.{reportName}";
-                string targetReportFilePath = $"{GeneralSettings.Path["temp"]}{targetReportFileName}";
+                string targetReportFilePath = $"{GeneralSettings.Paths.GetTempFolderLocation()}{targetReportFileName}";
 
                 // Replace templateBase (TemplateBase.frx) with targetTemplateFileName, WE MUST Change Template Name in Template Childs Sub Reports
                 if (reportContent.Contains(templateBase))
