@@ -8,17 +8,17 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
+using logicpos.shared;
 using logicpos.shared.App;
 using logicpos.shared.Classes.Finance;
 using logicpos.shared.Classes.Orders;
 using logicpos.shared.Enums;
-using LogicPOS.Settings.Enums;
-using System;
-using System.Drawing;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
-using logicpos.shared;
+using LogicPOS.Settings.Enums;
+using LogicPOS.Settings.Extensions;
+using System;
+using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -1010,7 +1010,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
                                 if (ListMode == TicketListMode.Ticket) _listStoreModelTotalItemsTicketListMode = ListStoreModel.IterNChildren();
 
-                                Prev();
+                                Previous();
 
                                 UpdateModel();
 
@@ -1089,7 +1089,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
                 if (ListMode == TicketListMode.Ticket) _listStoreModelTotalItemsTicketListMode = ListStoreModel.IterNChildren();
 
-                Prev();
+                Previous();
 
                 //Update Buttons
                 UpdateTicketListButtons();
@@ -1143,7 +1143,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     //Update Total Items Member
                     _listStoreModelTotalItems = ListStoreModel.IterNChildren();
 
-                    Prev();
+                    Previous();
 
                     //Update Buttons
                     UpdateTicketListButtons();
@@ -1160,30 +1160,20 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             }
         }
 
-        public void Prev()
+        public void Previous()
         {
-            try
-            {
-                _treePath.Prev();
-                _treeView.SetCursor(_treePath, null, false);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
+            if (_treePath is null) return;
+            _treePath.Prev();
+            _treeView.SetCursor(_treePath, null, false);
+
         }
 
         public void Next()
         {
-            try
-            {
-                _treePath.Next();
-                _treeView.SetCursor(_treePath, null, false);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
+            if (_treePath is null) return;
+            _treePath.Next();
+            _treeView.SetCursor(_treePath, null, false);
+
         }
 
         public void UpdateArticleBag()

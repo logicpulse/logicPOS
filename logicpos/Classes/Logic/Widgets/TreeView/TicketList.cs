@@ -30,7 +30,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //Prev
         private void _buttonKeyPrev_Clicked(object sender, EventArgs e)
         {
-            Prev();
+            Previous();
         }
 
         //Next
