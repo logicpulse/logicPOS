@@ -1,20 +1,19 @@
-﻿using LogicPOS.Plugin.Abstractions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 
 namespace LogicPOS.Plugin.Utils
 {
-    public static class PluginLoader
+    public static class PluginLoader<T>
     {
-        public static ICollection<IPlugin> LoadPlugins(string path)
+        public static ICollection<T> LoadPlugins(string path)
         {
             string[] dllFileNames;
 
             if (Directory.Exists(path))
             {
-                dllFileNames = Directory.GetFiles(path, "*.dll");
+                dllFileNames = Directory.GetFiles(path, "*Plugin.dll");
 
                 ICollection<Assembly> assemblies = new List<Assembly>(dllFileNames.Length);
                 foreach (string dllFile in dllFileNames)
@@ -24,35 +23,42 @@ namespace LogicPOS.Plugin.Utils
                     assemblies.Add(assembly);
                 }
 
-                Type pluginType = typeof(IPlugin);
+                Type pluginType = typeof(T);
                 ICollection<Type> pluginTypes = new List<Type>();
                 foreach (Assembly assembly in assemblies)
                 {
                     if (assembly != null)
                     {
-                        Type[] types = assembly.GetTypes();
-
-                        foreach (Type type in types)
+                        try
                         {
-                            if (type.IsInterface || type.IsAbstract)
+                            Type[] types = assembly.GetTypes();
+
+                            foreach (Type type in types)
                             {
-                                continue;
-                            }
-                            else
-                            {
-                                if (type.GetInterface(pluginType.FullName) != null)
+                                if (type.IsInterface || type.IsAbstract)
                                 {
-                                    pluginTypes.Add(type);
+                                    continue;
+                                }
+                                else
+                                {
+                                    if (type.GetInterface(pluginType.FullName) != null)
+                                    {
+                                        pluginTypes.Add(type);
+                                    }
                                 }
                             }
+                        }
+                        catch (Exception ex)
+                        {
+                            throw ex;
                         }
                     }
                 }
 
-                ICollection<IPlugin> plugins = new List<IPlugin>(pluginTypes.Count);
+                ICollection<T> plugins = new List<T>(pluginTypes.Count);
                 foreach (Type type in pluginTypes)
                 {
-                    IPlugin plugin = (IPlugin)Activator.CreateInstance(type);
+                    T plugin = (T)Activator.CreateInstance(type);
                     plugins.Add(plugin);
                 }
 
