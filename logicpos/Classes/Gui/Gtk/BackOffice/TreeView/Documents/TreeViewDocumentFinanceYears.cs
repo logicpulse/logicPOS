@@ -7,12 +7,12 @@ using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Finance;
-using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -121,7 +121,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 treeViewDocumentFinanceSeries.Refresh();
                 if (treeViewDocumentFinanceYearSerieTerminal != null) treeViewDocumentFinanceYearSerieTerminal.Refresh();
                 //Apply Permissions ButtonCreateDocumentFinanceSeries
-                treeViewDocumentFinanceSeries.ButtonCreateDocumentFinanceSeries.Sensitive = SharedUtils.HasPermissionTo("BACKOFFICE_MAN_DOCUMENTFINANCESERIES_MANAGE_SERIES");
+                treeViewDocumentFinanceSeries.ButtonCreateDocumentFinanceSeries.Sensitive = GeneralSettings.HasPermissionTo("BACKOFFICE_MAN_DOCUMENTFINANCESERIES_MANAGE_SERIES");
 
                 //Request Create Series for all Type of Finance Documents
                 ResponseType responseType = logicpos.Utils.ShowMessageTouch(

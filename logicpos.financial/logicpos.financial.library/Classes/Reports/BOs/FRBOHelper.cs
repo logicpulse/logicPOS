@@ -2,7 +2,6 @@
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.App;
 using logicpos.financial.library.Classes.Reports.BOs.Documents;
-using logicpos.shared.App;
 using System;
 using System.Reflection;
 using LogicPOS.Settings.Extensions;

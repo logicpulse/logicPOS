@@ -10,12 +10,12 @@ using logicpos.financial.library.Classes.Reports.BOs.Customers;
 using logicpos.financial.library.Classes.Reports.BOs.Documents;
 using logicpos.financial.library.Classes.Reports.BOs.System;
 using logicpos.financial.library.Classes.Reports.BOs.Users;
-using logicpos.shared.App;
 using logicpos.shared.Enums;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Shared.CustomDocument;
+using LogicPOS.Utility;
 using Patagames.Pdf.Net;
 using Patagames.Pdf.Net.Controls.WinForms;
 using System;
@@ -326,7 +326,7 @@ namespace logicpos.financial.library.Classes.Reports
                     //Show Pdf 
                     if ((pViewMode == CustomReportDisplayMode.ExportPDF) && File.Exists(fileName))
                     {
-                        if (SharedUtils.UsePosPDFViewer() == true)
+                        if (GeneralSettings.UsePosPDFViewer == true)
                         {
                             string docPath = string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileName);
                             var ScreenSizePDF = GeneralSettings.ScreenSize;
@@ -1933,7 +1933,7 @@ namespace logicpos.financial.library.Classes.Reports
             {
                 if (pCopyNames.Count > 0)
                 {
-                    result = SharedUtils.StringListToCommaDelimitedString<int>(pCopyNames, ',');
+                    result = StringUtils.StringListToCommaDelimitedString<int>(pCopyNames, ',');
                 }
             }
             catch (Exception ex)

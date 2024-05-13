@@ -2,7 +2,6 @@
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.service.Objects.Modules.AT;
-using logicpos.shared.App;
 using LogicPOS.DTOs.Common;
 using LogicPOS.Settings;
 using System;

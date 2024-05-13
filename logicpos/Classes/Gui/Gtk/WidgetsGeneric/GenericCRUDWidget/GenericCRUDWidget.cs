@@ -5,7 +5,7 @@ using System;
 using System.Drawing;
 using System.Reflection;
 using logicpos.Extensions;
-using logicpos.shared.App;
+using LogicPOS.Utility;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {
@@ -439,7 +439,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                 //Required + Validate
                 if ((_widget as XPOComboBox).Value != null)
                 {
-                    _validated = (SharedUtils.ValidateString((_widget as XPOComboBox).Value.Oid.ToString(), _validationRule));
+                    _validated = (GeneralUtils.ValidateString((_widget as XPOComboBox).Value.Oid.ToString(), _validationRule));
                     //Call Validate Func Here
                     if (pFunc != null) _validatedFunc = pFunc();
 
@@ -502,7 +502,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                 //Required + Validate
                 if (dynamicWiget.Value != null)
                 {
-                    _validated = (SharedUtils.ValidateString(dynamicWiget.Value.Oid.ToString(), _validationRule));
+                    _validated = (GeneralUtils.ValidateString(dynamicWiget.Value.Oid.ToString(), _validationRule));
                     //Call Validate Func Here
                     if (pFunc != null) _validatedFunc = pFunc();
                 }
@@ -553,7 +553,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             //Required + Validate + Validate Func
             else if (pText != string.Empty)
             {
-                _validated = (SharedUtils.ValidateString(pText, _validationRule, _fieldType));
+                _validated = (GeneralUtils.ValidateString(pText, _validationRule, _fieldType));
                 //Call Validate Func Here
                 if (pFunc != null) _validatedFunc = pFunc();
             };

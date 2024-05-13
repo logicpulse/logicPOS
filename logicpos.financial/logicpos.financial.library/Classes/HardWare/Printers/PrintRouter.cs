@@ -8,7 +8,6 @@ using logicpos.shared.Enums;
 using logicpos.shared.Enums.ThermalPrinter;
 using System;
 using System.Collections.Generic;
-using logicpos.shared.App;
 using logicpos.datalayer.Xpo;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
@@ -100,7 +99,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                         //Commit UOW Changes : Before get current OrderMain
                         uowSession.CommitChanges();
                         //Audit
-                        SharedUtils.Audit("SYSTEM_PRINT_FINANCE_DOCUMENT", designation);
+                       XPOHelper.Audit("SYSTEM_PRINT_FINANCE_DOCUMENT", designation);
                         result = true;
                     }
                     catch (Exception ex)
@@ -388,7 +387,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                 bool result = false;
                 if (XPOSettings.LoggedTerminal.ThermalPrinter != null)
                 {                    
-                    bool hasPermission = SharedUtils.HasPermissionTo("HARDWARE_DRAWER_OPEN");
+                    bool hasPermission = GeneralSettings.HasPermissionTo("HARDWARE_DRAWER_OPEN");
                     int m = XPOSettings.LoggedTerminal.ThermalPrinter.ThermalOpenDrawerValueM;
                     int t1 = XPOSettings.LoggedTerminal.ThermalPrinter.ThermalOpenDrawerValueT1;
                     int t2 = XPOSettings.LoggedTerminal.ThermalPrinter.ThermalOpenDrawerValueT2;
@@ -413,7 +412,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                                     //TK016249 - Impressoras - Diferenciação entre Tipos
                                     printObjectSINOCAN.OpenDoor(XPOSettings.LoggedTerminal.ThermalPrinter.PrinterType.Token, XPOSettings.LoggedTerminal.ThermalPrinter.NetworkName, m, t1, t2);
                                     //Audit
-                                    SharedUtils.Audit("CASHDRAWER_OPEN", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_cashdrawer_open"));
+                                   XPOHelper.Audit("CASHDRAWER_OPEN", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_cashdrawer_open"));
 
                                     break;
                             }

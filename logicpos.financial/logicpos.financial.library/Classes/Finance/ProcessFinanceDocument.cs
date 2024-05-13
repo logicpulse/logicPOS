@@ -6,7 +6,6 @@ using logicpos.financial.library.App;
 using logicpos.financial.library.Classes.Reports;
 using logicpos.financial.library.Classes.Stocks;
 using logicpos.financial.library.Classes.WorkSession;
-using logicpos.shared.App;
 using logicpos.shared.Enums;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
@@ -650,7 +649,7 @@ namespace logicpos.financial.library.Classes.Finance
                                 if (placeTable != null)
                                 {
                                     placeTable.TableStatus = TableStatus.Free;
-                                    SharedUtils.Audit("TABLE_OPEN", string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "audit_message_table_open"), placeTable.Designation));
+                                   XPOHelper.Audit("TABLE_OPEN", string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "audit_message_table_open"), placeTable.Designation));
                                     placeTable.DateTableClosed = documentDateTime;
                                     placeTable.TotalOpen = 0;
                                     //Required to Reload Objects after has been changed in Another Session(uowSession)
@@ -710,7 +709,7 @@ namespace logicpos.financial.library.Classes.Finance
                             }
 
                         //Audit
-                        SharedUtils.Audit("FINANCE_DOCUMENT_CREATED", string.Format("{0} {1}: {2}", documentFinanceMaster.DocumentType.Designation, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_document_created"), documentFinanceMaster.DocumentNumber));
+                       XPOHelper.Audit("FINANCE_DOCUMENT_CREATED", string.Format("{0} {1}: {2}", documentFinanceMaster.DocumentType.Designation, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_document_created"), documentFinanceMaster.DocumentNumber));
 
                         //Process Stock
                         try

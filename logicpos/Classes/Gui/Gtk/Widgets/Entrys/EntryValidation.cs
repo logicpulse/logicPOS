@@ -1,8 +1,8 @@
 ﻿using Gtk;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets;
-using logicpos.shared.App;
 using LogicPOS.DTOs.Common;
+using LogicPOS.Utility;
 using System;
 
 namespace logicpos
@@ -91,7 +91,7 @@ namespace logicpos
         public void Validate(string pValue)
         {
             //Default FieldValidateValue is the Entry.Text
-            _validated = SharedUtils.Validate(pValue, _rule, _required);
+            _validated = GeneralUtils.Validate(pValue, _rule, _required);
             Utils.ValidateUpdateColors(this, Label, _validated, Label2, Label3);
         }
 
@@ -99,7 +99,7 @@ namespace logicpos
         {
             if (Maxlength > 0 || _maxWords > 0)
             {
-                ValidateMaxLenghtMaxWordsResult result = SharedUtils.ValidateMaxLenghtMaxWords(Text, LabelText, Maxlength, _maxWords);
+                ValidateMaxLenghtMaxWordsResult result = GeneralUtils.ValidateMaxLenghtMaxWords(Text, LabelText, Maxlength, _maxWords);
                 Text = result.Text;
                 Label.Text = result.LabelText;
                 Length = result.Length;

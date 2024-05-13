@@ -18,7 +18,6 @@ using System.Collections;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.financial.library.App;
-using logicpos.shared.App;
 using logicpos.datalayer.Xpo;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;

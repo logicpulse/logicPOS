@@ -12,7 +12,6 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
 using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
-using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

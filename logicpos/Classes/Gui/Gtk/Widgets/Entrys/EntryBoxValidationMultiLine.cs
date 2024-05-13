@@ -1,7 +1,7 @@
 ﻿using Gtk;
 using logicpos.Classes.Enums.Keyboard;
-using logicpos.shared.App;
 using LogicPOS.DTOs.Common;
+using LogicPOS.Utility;
 using System;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets.Entrys
@@ -71,7 +71,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Entrys
         {
             if (MaxLength > 0 || MaxWords > 0)
             {
-                ValidateMaxLenghtMaxWordsResult result = SharedUtils.ValidateMaxLenghtMaxWords(EntryMultiline.Value.Text, _initialLabelText, MaxLength, MaxWords);
+                ValidateMaxLenghtMaxWordsResult result = GeneralUtils.ValidateMaxLenghtMaxWords(EntryMultiline.Value.Text, _initialLabelText, MaxLength, MaxWords);
                 //Only update if changes else infinite loop
                 if (EntryMultiline.Value.Text != result.Text) EntryMultiline.Value.Text = result.Text;
                 Label.Text = result.LabelText;
@@ -92,7 +92,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Entrys
         public void Validate(string pValue)
         {
             //Default FieldValidateValue is the Entry.Text
-            Validated = SharedUtils.Validate(pValue, Rule, Required);
+            Validated = GeneralUtils.Validate(pValue, Rule, Required);
             logicpos.Utils.ValidateUpdateColors(this, _label, _validated, _label2, _label3);
         }
     }

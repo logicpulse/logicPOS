@@ -8,7 +8,6 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Documents;
 using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
-using logicpos.shared.App;
 using LogicPOS.Settings;
 using System;
 using System.Collections.Generic;

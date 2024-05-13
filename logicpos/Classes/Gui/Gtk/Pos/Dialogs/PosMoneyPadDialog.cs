@@ -2,7 +2,6 @@
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.shared.App;
 using System;
 using System.Drawing;
 using LogicPOS.Settings.Extensions;

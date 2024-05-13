@@ -8,7 +8,6 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Finance;
 using logicpos.financial.library.Classes.Reports;
-using logicpos.shared.App;
 using logicpos.shared.Enums;
 using System;
 using System.Collections.Generic;

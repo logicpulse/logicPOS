@@ -1,6 +1,6 @@
 ﻿using acme.softwarevendor.plugin.App;
 using logicpos;
-using logicpos.plugin.contracts;
+using LogicPOS.Plugin.Abstractions;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Utility;

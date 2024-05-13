@@ -14,7 +14,6 @@ using logicpos.datalayer.Xpo;
 using logicpos.documentviewer;
 using logicpos.financial.library.Classes.Finance;
 using logicpos.financial.library.Classes.Stocks;
-using logicpos.shared.App;
 using logicpos.shared.Enums;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
@@ -56,7 +55,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private string _selectRecordWindowTitle;
         private string _afterFilterTitle = null;
         //Permissions
-        private readonly bool permissionFinanceDocumentCancelDocument = SharedUtils.HasPermissionTo("FINANCE_DOCUMENT_CANCEL_DOCUMENT");
+        private readonly bool permissionFinanceDocumentCancelDocument = GeneralSettings.HasPermissionTo("FINANCE_DOCUMENT_CANCEL_DOCUMENT");
         //Require reference to use in TransientFor inside the TreeModelForEachTask_ActionPrintDocuments
         private PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewDocumentFinanceMaster> _dialogFinanceDocumentsResponse;
         //Used to Store Button that Call dialogFinanceMaster, usefull for ex to get buttonToken :)
@@ -1666,7 +1665,7 @@ WHERE
                             documentMaster.Save();
 
                             //Audit
-                            SharedUtils.Audit("FINANCE_DOCUMENT_CANCELLED", string.Format("{0} {1}: {2}", documentMaster.DocumentType.Designation, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_document_cancelled"), documentMaster.DocumentNumber));
+                           XPOHelper.Audit("FINANCE_DOCUMENT_CANCELLED", string.Format("{0} {1}: {2}", documentMaster.DocumentType.Designation, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_document_cancelled"), documentMaster.DocumentNumber));
                         }
                         else
                         {
@@ -2441,7 +2440,7 @@ WHERE
                             document.Save();
 
                             //Audit
-                            SharedUtils.Audit("FINANCE_DOCUMENT_CANCELLED", string.Format("{0} {1}: {2}", document.DocumentType.Designation, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_document_cancelled"), document.PaymentRefNo));
+                           XPOHelper.Audit("FINANCE_DOCUMENT_CANCELLED", string.Format("{0} {1}: {2}", document.DocumentType.Designation, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_document_cancelled"), document.PaymentRefNo));
 
                             //Removed Payed BIT to all DocumentPayment Documents (FT and NC)
                             foreach (fin_documentfinancemasterpayment documentPayment in document.DocumentPayment)

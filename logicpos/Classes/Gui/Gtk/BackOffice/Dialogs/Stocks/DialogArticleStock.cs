@@ -14,7 +14,6 @@ using logicpos.documentviewer;
 using logicpos.Extensions;
 using logicpos.financial.library.Classes.Finance;
 using logicpos.financial.library.Classes.Reports;
-using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

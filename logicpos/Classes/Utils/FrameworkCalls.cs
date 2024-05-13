@@ -10,7 +10,6 @@ using logicpos.financial.library.Classes.Finance;
 using logicpos.financial.library.Classes.Hardware.Printers;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets;
 using logicpos.financial.service.Objects.Modules.AT;
-using logicpos.shared.App;
 using LogicPOS.DTOs.Common;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
@@ -578,7 +577,7 @@ namespace logicpos
                             }
                             else
                             {
-                                SharedUtils.Audit("CASHDRAWER_OUT", string.Format(
+                               XPOHelper.Audit("CASHDRAWER_OUT", string.Format(
                                 CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_cashdrawer_out"),
                                 XPOSettings.LoggedTerminal.Designation,
                                 "Button Open Door"));

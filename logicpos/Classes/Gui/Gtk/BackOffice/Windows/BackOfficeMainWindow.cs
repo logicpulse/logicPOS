@@ -9,7 +9,6 @@ using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.financial.library.Classes.WorkSession;
-using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -75,7 +74,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //Hide/Show Current Active Content based on user privileges
                 string currentNodePrivilegesToken = string.Format(_privilegesBackOfficeMenuOperation, Accordion.CurrentChildButtonContent.Name.ToUpper());
-                _nodeContent.Sensitive = SharedUtils.HasPermissionTo(currentNodePrivilegesToken);
+                _nodeContent.Sensitive = GeneralSettings.HasPermissionTo(currentNodePrivilegesToken);
             }
         }
 

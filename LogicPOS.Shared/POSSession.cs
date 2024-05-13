@@ -1,7 +1,6 @@
 ﻿using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
-using logicpos.shared.App;
 using LogicPOS.Globalization;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Shared.Orders;
@@ -81,7 +80,7 @@ namespace LogicPOS.Shared
             foreach (Guid item in CurrentSession.LoggedUsers.Keys)
             {
                 sys_userdetail user = (sys_userdetail)XPOHelper.GetXPGuidObject(typeof(sys_userdetail), item);
-                SharedUtils.Audit("USER_loggerOUT", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_used_forced_loggerout"), user.Name));
+                XPOHelper.Audit("USER_loggerOUT", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_used_forced_loggerout"), user.Name));
             }
             CurrentSession.LoggedUsers.Clear();
         }

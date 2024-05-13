@@ -7,11 +7,11 @@ using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
-using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -131,7 +131,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             TouchButtonIconWithText buttonApplyPrivileges = Navigator.GetNewButton("touchButtonApplyPrivileges_DialogActionArea", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_user_apply_privileges"), @"Icons/icon_pos_nav_refresh.png");
             //buttonApplyPrivileges.WidthRequest = 110;
             //Apply Permissions
-            buttonApplyPrivileges.Sensitive = SharedUtils.HasPermissionTo("BACKOFFICE_MAN_USER_PRIVILEGES_APPLY");
+            buttonApplyPrivileges.Sensitive = GeneralSettings.HasPermissionTo("BACKOFFICE_MAN_USER_PRIVILEGES_APPLY");
             //Event
             buttonApplyPrivileges.Clicked += delegate
             {

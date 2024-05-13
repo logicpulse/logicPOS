@@ -9,7 +9,6 @@ using logicpos.Classes.DataLayer;
 using System;
 using System.Collections;
 using System.Drawing;
-using logicpos.shared.App;
 using logicpos.datalayer.Xpo;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
@@ -278,7 +277,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 else
                                 {
                                     //Audit
-                                    SharedUtils.Audit(audit, string.Format(
+                                   XPOHelper.Audit(audit, string.Format(
                                         CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), moneyInOutLabelAudit),
                                         LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(addedMoney, XPOSettings.ConfigurationSystemCurrency.Acronym),
                                         dialogCashDrawer.MovementDescription)
@@ -356,7 +355,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 else
                                 {
                                     //Audit
-                                    SharedUtils.Audit(audit, string.Format(
+                                   XPOHelper.Audit(audit, string.Format(
                                         CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), moneyInOutLabelAudit),
                                         LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(addedMoney, XPOSettings.ConfigurationSystemCurrency.Acronym),
                                         dialogCashDrawer.MovementDescription)
@@ -440,7 +439,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             else
                             {
                                 //Audit
-                                SharedUtils.Audit("CASHDRAWER_IN", string.Format(
+                               XPOHelper.Audit("CASHDRAWER_IN", string.Format(
                                     CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_cashdrawer_in"),
                                     LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(dialogCashDrawer.MovementAmountMoney, XPOSettings.ConfigurationSystemCurrency.Acronym),
                                     dialogCashDrawer.MovementDescription)
@@ -487,7 +486,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             else
                             {
                                 //Audit
-                                SharedUtils.Audit("CASHDRAWER_OUT", string.Format(
+                               XPOHelper.Audit("CASHDRAWER_OUT", string.Format(
                                     CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_cashdrawer_out"),
                                     LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(dialogCashDrawer.MovementAmountMoney, XPOSettings.ConfigurationSystemCurrency.Acronym),
                                     dialogCashDrawer.MovementDescription)

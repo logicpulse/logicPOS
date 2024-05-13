@@ -5,14 +5,12 @@ using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
-using logicpos.shared.App;
 using System;
 using System.Drawing;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Utility;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
-using logicpos.shared;
 using LogicPOS.Shared;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
@@ -283,7 +281,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                             pUserDetail.PasswordReset = false;
                             pUserDetail.PasswordResetDate = XPOHelper.CurrentDateTimeAtomic();
                             pUserDetail.Save();
-                            SharedUtils.Audit("USER_CHANGE_PASSWORD", string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "audit_message_user_change_password"), pUserDetail.Name));
+                           XPOHelper.Audit("USER_CHANGE_PASSWORD", string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "audit_message_user_change_password"), pUserDetail.Name));
                             ResponseType responseType = logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_change_password"), CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "pos_pinpad_message_password_changed"));
                             //Start Application
                             ProcessLogin(pUserDetail);
@@ -358,7 +356,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 }
                 else
                 {
-                    SharedUtils.Audit("USER_loggerIN_ERROR", string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "audit_message_user_loggerin_error"), pUserDetail.Name));                    
+                   XPOHelper.Audit("USER_loggerIN_ERROR", string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "audit_message_user_loggerin_error"), pUserDetail.Name));                    
                     EntryPin.ModifyText(StateType.Normal, Color.Red.ToGdkColor());
                     EntryPin.Text = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "status_message_pin_error");
                     EntryPin.Visibility = true;
@@ -421,8 +419,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         private void ProcessLogin(sys_userdetail pUserDetail)
         {
             XPOSettings.LoggedUser = pUserDetail;
-            GeneralSettings.LoggedUserPermissions = SharedUtils.GetUserPermissions();
-            SharedUtils.Audit("USER_loggerIN", string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "audit_message_user_loggerin"), pUserDetail.Name));
+            GeneralSettings.LoggedUserPermissions = XPOHelper.GetUserPermissions();
+           XPOHelper.Audit("USER_loggerIN", string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "audit_message_user_loggerin"), pUserDetail.Name));
 
             //SessionApp Add LoggedUser
             if (!POSSession.CurrentSession.LoggedUsers.ContainsKey(XPOSettings.LoggedUser.Oid))

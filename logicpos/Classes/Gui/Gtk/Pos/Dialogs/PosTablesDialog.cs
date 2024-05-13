@@ -4,14 +4,12 @@ using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Logic.Others;
 using logicpos.datalayer.Enums;
-using logicpos.shared.App;
 using logicpos.shared.Enums;
 using System;
 using System.Drawing;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
-using logicpos.shared;
 using LogicPOS.Shared;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs

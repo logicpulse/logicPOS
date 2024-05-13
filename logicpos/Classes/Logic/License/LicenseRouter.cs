@@ -1,7 +1,6 @@
 ﻿using Gtk;
 using logicpos.App;
 using logicpos.Classes.Enums.App;
-using logicpos.shared.App;
 using LogicPOS.Settings;
 using System;
 using System.Collections;

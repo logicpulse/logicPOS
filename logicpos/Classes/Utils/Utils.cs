@@ -20,7 +20,6 @@ using logicpos.datalayer.DataLayer.Xpo.Articles;
 using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
 using logicpos.financial.library.Classes.Finance;
-using logicpos.shared.App;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;

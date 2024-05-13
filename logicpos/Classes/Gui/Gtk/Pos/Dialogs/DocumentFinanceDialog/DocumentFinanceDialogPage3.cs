@@ -7,7 +7,6 @@ using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.App;
-using logicpos.shared.App;
 using logicpos.shared.Enums;
 using LogicPOS.Settings;
 using LogicPOS.Shared.Article;

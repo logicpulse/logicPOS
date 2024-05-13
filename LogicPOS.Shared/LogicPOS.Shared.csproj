@@ -49,6 +49,7 @@
     <Compile Include="Article\ArticleBag.cs" />
     <Compile Include="Article\ArticleBagKey.cs" />
     <Compile Include="Article\ArticleBagProperties.cs" />
+    <Compile Include="Article\ArticleUtils.cs" />
     <Compile Include="Article\PriceProperties.cs" />
     <Compile Include="Article\TaxBagProperties.cs" />
     <Compile Include="Orders\OrderDetail.cs" />
@@ -67,7 +68,6 @@
     <Compile Include="Enums\ThermalPrinter\DataTableGroupPropertiesType.cs" />
     <Compile Include="Enums\ThermalPrinter\SplitCurrentAccountMode.cs" />
     <Compile Include="Enums\ThermalPrinter\WorkSessionMovementResumeQueryMode.cs" />
-    <Compile Include="App\SharedUtils.cs" />
     <Compile Include="POSSession.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Enums\TableFilterMode.cs" />

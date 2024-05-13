@@ -3,12 +3,10 @@ using logicpos.App;
 using logicpos.Classes.Enums.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.shared.App;
 using System;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using logicpos.datalayer.Xpo;
-using logicpos.shared;
 using LogicPOS.Shared;
 using LogicPOS.Settings;
 
@@ -110,7 +108,7 @@ namespace logicpos
             {
                 POSSession.CurrentSession.LoggedUsers.Remove(pUserDetail.Oid);
                 POSSession.CurrentSession.Save();
-                SharedUtils.Audit("USER_loggerOUT", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_user_loggerout"), pUserDetail.Name));
+               XPOHelper.Audit("USER_loggerOUT", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_user_loggerout"), pUserDetail.Name));
                 //Only Reset LoggedUser if equal to pUser
                 if (XPOSettings.LoggedUser.Equals(pUserDetail))
                 {

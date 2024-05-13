@@ -1,5 +1,4 @@
 ﻿using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.shared.App;
 using System;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;

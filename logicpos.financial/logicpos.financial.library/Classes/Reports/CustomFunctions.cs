@@ -1,7 +1,6 @@
 ﻿using FastReport.Utils;
 using logicpos.financial.library.Classes.Finance;
 using LogicPOS.Globalization.Resources.Localization;
-using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
 using System.Reflection;

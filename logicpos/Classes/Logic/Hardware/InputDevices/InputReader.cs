@@ -1,7 +1,7 @@
 ﻿using Gtk;
 using logicpos.Classes.Enums.Hardware;
 using logicpos.datalayer.Xpo;
-using logicpos.shared.App;
+using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 
@@ -43,7 +43,7 @@ namespace logicpos.Classes.Logic.Hardware
             {
                 if (XPOSettings.LoggedTerminal.BarcodeReader != null)
                 {
-                    _barCodeReaderList = SharedUtils.CommaDelimitedStringToIntList(XPOSettings.LoggedTerminal.BarcodeReader.ReaderSizes);
+                    _barCodeReaderList = GeneralUtils.CommaDelimitedStringToIntList(XPOSettings.LoggedTerminal.BarcodeReader.ReaderSizes);
                     
                     for (int i = 0; i < _barCodeReaderList.Count; i++)
                     {
@@ -53,7 +53,7 @@ namespace logicpos.Classes.Logic.Hardware
 
                 if (XPOSettings.LoggedTerminal.CardReader != null)
                 {
-                    _cardReaderList = SharedUtils.CommaDelimitedStringToIntList(XPOSettings.LoggedTerminal.CardReader.ReaderSizes);
+                    _cardReaderList = GeneralUtils.CommaDelimitedStringToIntList(XPOSettings.LoggedTerminal.CardReader.ReaderSizes);
                     
                     for (int i = 0; i < _cardReaderList.Count; i++)
                     {

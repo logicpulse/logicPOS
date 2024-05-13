@@ -11,13 +11,13 @@ using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Finance;
-using logicpos.shared.App;
 using LogicPOS.Settings;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Utility;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -168,7 +168,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         label = (item.ResourceString != null && CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), item.ResourceString) != null)
                             ? CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), item.ResourceString)
                             : string.Empty;
-                        regExObj = SharedUtils.GetFieldValueFromType(typeof(POSSettings), item.RegEx);
+                        regExObj = GeneralUtils.GetFieldValueFromType(typeof(POSSettings), item.RegEx);
                         regEx = (regExObj != null) ? regExObj.ToString() : string.Empty;
                         required = Convert.ToBoolean(item.Required);
 

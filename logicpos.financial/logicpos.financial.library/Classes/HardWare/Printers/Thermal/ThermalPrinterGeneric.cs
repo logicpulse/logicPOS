@@ -2,7 +2,6 @@
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Enums;
 using logicpos.printer.generic;
-using logicpos.shared.App;
 using LogicPOS.Settings;
 using System;
 

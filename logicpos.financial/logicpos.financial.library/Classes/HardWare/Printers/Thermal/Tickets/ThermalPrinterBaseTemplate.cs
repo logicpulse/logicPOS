@@ -2,7 +2,6 @@
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Enums;
 using logicpos.financial.library.Classes.Reports;
-using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
 using System.IO;

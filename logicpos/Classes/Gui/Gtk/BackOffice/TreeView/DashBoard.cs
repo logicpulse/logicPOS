@@ -10,7 +10,6 @@ using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
-using logicpos.shared.App;
 using LogicPOS.Settings;
 using Medsphere.Widgets;
 using Pango;
@@ -203,26 +202,26 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 PosReportsDialog reportsClicked = new PosReportsDialog();
 
                 //Permissões dos botões
-                botao1.Sensitive = SharedUtils.HasPermissionTo("BACKOFFICE_MAN_CONFIGURATIONPLACETERMINAL_MENU");
-                botao2.Sensitive = SharedUtils.HasPermissionTo("BACKOFFICE_MAN_CONFIGURATIONPREFERENCEPARAMETER_VIEW");
-                botao3.Sensitive = SharedUtils.HasPermissionTo("BACKOFFICE_MAN_DOCUMENTFINANCEYEARS_CREATE");
-                botao4.Sensitive = SharedUtils.HasPermissionTo("BACKOFFICE_MAN_CONFIGURATIONPRINTERS_VIEW");
+                botao1.Sensitive = GeneralSettings.HasPermissionTo("BACKOFFICE_MAN_CONFIGURATIONPLACETERMINAL_MENU");
+                botao2.Sensitive = GeneralSettings.HasPermissionTo("BACKOFFICE_MAN_CONFIGURATIONPREFERENCEPARAMETER_VIEW");
+                botao3.Sensitive = GeneralSettings.HasPermissionTo("BACKOFFICE_MAN_DOCUMENTFINANCEYEARS_CREATE");
+                botao4.Sensitive = GeneralSettings.HasPermissionTo("BACKOFFICE_MAN_CONFIGURATIONPRINTERS_VIEW");
 
-                botao5.Sensitive = SharedUtils.HasPermissionTo("BACKOFFICE_MAN_ARTICLE_VIEW");
-                botao6.Sensitive = SharedUtils.HasPermissionTo("BACKOFFICE_MAN_CUSTOMER_VIEW");
-                botao7.Sensitive = SharedUtils.HasPermissionTo("BACKOFFICE_MAN_USERDETAIL_VIEW");
-                botao8.Sensitive = SharedUtils.HasPermissionTo("BACKOFFICE_MAN_CONFIGURATIONPLACETABLE_VIEW");
+                botao5.Sensitive = GeneralSettings.HasPermissionTo("BACKOFFICE_MAN_ARTICLE_VIEW");
+                botao6.Sensitive = GeneralSettings.HasPermissionTo("BACKOFFICE_MAN_CUSTOMER_VIEW");
+                botao7.Sensitive = GeneralSettings.HasPermissionTo("BACKOFFICE_MAN_USERDETAIL_VIEW");
+                botao8.Sensitive = GeneralSettings.HasPermissionTo("BACKOFFICE_MAN_CONFIGURATIONPLACETABLE_VIEW");
 
-                botao9.Sensitive = SharedUtils.HasPermissionTo("BACKOFFICE_MAN_DOCUMENTFINANCETYPE_MENU");
-                botao10.Sensitive = SharedUtils.HasPermissionTo("BACKOFFICE_MAN_DOCUMENTFINANCETYPE_CREATE");
-                botao11.Sensitive = SharedUtils.HasPermissionTo("BACKOFFICE_MAN_DOCUMENTFINANCEYEARS_VIEW");
-                botao12.Sensitive = SharedUtils.HasPermissionTo("STOCK_MERCHANDISE_ENTRY_ACCESS");
+                botao9.Sensitive = GeneralSettings.HasPermissionTo("BACKOFFICE_MAN_DOCUMENTFINANCETYPE_MENU");
+                botao10.Sensitive = GeneralSettings.HasPermissionTo("BACKOFFICE_MAN_DOCUMENTFINANCETYPE_CREATE");
+                botao11.Sensitive = GeneralSettings.HasPermissionTo("BACKOFFICE_MAN_DOCUMENTFINANCEYEARS_VIEW");
+                botao12.Sensitive = GeneralSettings.HasPermissionTo("STOCK_MERCHANDISE_ENTRY_ACCESS");
 
                 //Este fica comentado, porque o próprio menu dos reports tem controlo de previlégios
                 //botao13.Sensitive = FrameworkUtils.HasPermissionTo("REPORT_ACCESS");
-                botao14.Sensitive = SharedUtils.HasPermissionTo("REPORT_COMPANY_BILLING");
-                botao15.Sensitive = SharedUtils.HasPermissionTo("REPORT_CUSTOMER_BALANCE_DETAILS");
-                botao16.Sensitive = SharedUtils.HasPermissionTo("REPORT_SALES_DETAIL_PER_DATE");
+                botao14.Sensitive = GeneralSettings.HasPermissionTo("REPORT_COMPANY_BILLING");
+                botao15.Sensitive = GeneralSettings.HasPermissionTo("REPORT_CUSTOMER_BALANCE_DETAILS");
+                botao16.Sensitive = GeneralSettings.HasPermissionTo("REPORT_SALES_DETAIL_PER_DATE");
 
 
                 //Actions Configurações

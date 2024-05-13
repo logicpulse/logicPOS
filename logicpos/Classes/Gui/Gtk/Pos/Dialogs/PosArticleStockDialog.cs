@@ -11,7 +11,6 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
 using logicpos.financial.library.Classes.Stocks;
-using logicpos.shared.App;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -19,7 +18,6 @@ using System.Drawing;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
-using logicpos.shared;
 using LogicPOS.Shared;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs

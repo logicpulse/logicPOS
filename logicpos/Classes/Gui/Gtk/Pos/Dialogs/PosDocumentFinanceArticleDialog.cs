@@ -17,7 +17,6 @@ using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.Keyboard;
 using DevExpress.Xpo;
 using System.Collections;
-using logicpos.shared.App;
 using logicpos.datalayer.Xpo;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
@@ -708,7 +707,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         ;
 
                         //Common changes for MediaNova | Non-MediaNova Articles | Here Prices are always in Retail Mode
-                        PriceProperties priceProperties = SharedUtils.GetArticlePrice(article, priceType, TaxSellType.Normal);
+                        PriceProperties priceProperties = ArticleUtils.GetArticlePrice(article, priceType, TaxSellType.Normal);
 
 
                         //Price
@@ -868,7 +867,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         ;
 
                         //Common changes for MediaNova | Non-MediaNova Articles | Here Prices are always in Retail Mode
-                        PriceProperties priceProperties = SharedUtils.GetArticlePrice(article, priceType, TaxSellType.Normal);
+                        PriceProperties priceProperties = ArticleUtils.GetArticlePrice(article, priceType, TaxSellType.Normal);
 
                         //Price
                         _articlePrice = priceProperties.PriceNet;

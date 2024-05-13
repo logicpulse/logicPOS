@@ -3,7 +3,6 @@ using logicpos.financial.library.Classes.Finance;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Enums;
 using logicpos.financial.library.Classes.Reports.BOs;
 using logicpos.financial.library.Classes.Reports.BOs.Documents;
-using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
 using System.Data;

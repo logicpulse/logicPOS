@@ -10,7 +10,6 @@ using System.Drawing;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Extensions;
-using logicpos.shared.App;
 using logicpos.datalayer.Xpo;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;

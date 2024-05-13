@@ -9,7 +9,6 @@ using System.Data;
 using SkiaSharp;
 using SkiaSharp.QrCode.Image;
 using System.IO;
-using logicpos.shared.App;
 using logicpos.datalayer.Xpo;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;

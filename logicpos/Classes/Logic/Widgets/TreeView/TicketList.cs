@@ -11,7 +11,6 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
-using logicpos.shared.App;
 using logicpos.shared.Enums;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
@@ -78,7 +77,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                                 documentOrderMain = (fin_documentordermain)uowSession.GetObjectByKey(typeof(fin_documentordermain), orderMain.PersistentOid);
 
                                 placeTable.TableStatus = TableStatus.Free;
-                                SharedUtils.Audit("TABLE_OPEN", string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "audit_message_table_open"), placeTable.Designation));
+                               XPOHelper.Audit("TABLE_OPEN", string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "audit_message_table_open"), placeTable.Designation));
                                 placeTable.DateTableClosed = DateTime.Now;
                                 placeTable.TotalOpen = 0;
                                 placeTable.Save();
@@ -541,12 +540,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         //Put Old table Status to Free
                         xOldTable.TableStatus = TableStatus.Free;
                         xOldTable.Save();
-                        SharedUtils.Audit("TABLE_OPEN", string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "audit_message_table_open"), xOldTable.Designation));
+                       XPOHelper.Audit("TABLE_OPEN", string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "audit_message_table_open"), xOldTable.Designation));
 
                         //Put New table Status to Open
                         xNewTable.TableStatus = TableStatus.Open;
                         xNewTable.Save();
-                        SharedUtils.Audit("TABLE_CLOSE", string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "audit_message_table_close"), xNewTable.Designation));
+                       XPOHelper.Audit("TABLE_CLOSE", string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "audit_message_table_close"), xNewTable.Designation));
 
                         //Change DocumentOrderMain table, If OpenOrder Exists in That table
                         Guid documentOrderMainOid = currentOrderMain.GetOpenTableFieldValueGuid(xOldTable.Oid, "Oid");

@@ -3,7 +3,6 @@ using logicpos.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
-using logicpos.shared.App;
 using LogicPOS.Settings;
 using System;
 using System.Collections.Generic;
@@ -259,7 +258,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                             accordionParentButton.ChildBox.PackStart(accordionChildButton, false, false, 2);
 
                             //If have (Content | Events | ExternalApp) & Privileges or the Button is Enabled, Else is Disabled
-                            accordionChildButton.Sensitive = (SharedUtils.HasPermissionTo(currentNodePrivilegesToken) && (childLevel.Value.Content != null || childLevel.Value.Clicked != null || childLevel.Value.ExternalAppFileName != null) && (childLevel.Value.Sensitive));
+                            accordionChildButton.Sensitive = (GeneralSettings.HasPermissionTo(currentNodePrivilegesToken) && (childLevel.Value.Content != null || childLevel.Value.Clicked != null || childLevel.Value.ExternalAppFileName != null) && (childLevel.Value.Sensitive));
 
                             //EventHandler, Redirected to public Clicked, this way we have ouside Access
                             accordionChildButton.Clicked += accordionChildButton_Clicked;
@@ -286,7 +285,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             //Required to Reload Object before Get New Permissions
             XPOSettings.LoggedUser = (sys_userdetail)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(sys_userdetail), XPOSettings.LoggedUser.Oid);
             //Update Session Privileges
-            GeneralSettings.LoggedUserPermissions = SharedUtils.GetUserPermissions(XPOSettings.LoggedUser);
+            GeneralSettings.LoggedUserPermissions = XPOHelper.GetUserPermissions(XPOSettings.LoggedUser);
 
             //Update Backoffice Menu
             if (_accordionDefinition != null && _accordionDefinition.Count > 0)
@@ -300,7 +299,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                             currentNodePrivilegesToken = string.Format(_nodePrivilegesTokenFormat, childLevel.Key.ToUpper());
                             //_logger.Debug(string.Format("[{0}]=[{1}] [{2}]=[{3}]", childLevel.Value.NodeButton.Sensitive, childLevel.Value.NodeButton.Name, currentNodePrivilegesToken, FrameworkUtils.HasPermissionTo(currentNodePrivilegesToken)));
                             //If have (Content | Events | ExternalApp) & Privileges or the Button is Enabled, Else is Disabled
-                            if (SharedUtils.HasPermissionTo(currentNodePrivilegesToken) && (childLevel.Value.Content != null || childLevel.Value.Clicked != null || childLevel.Value.ExternalAppFileName != null))
+                            if (GeneralSettings.HasPermissionTo(currentNodePrivilegesToken) && (childLevel.Value.Content != null || childLevel.Value.Clicked != null || childLevel.Value.ExternalAppFileName != null))
                             {
                                 childLevel.Value.NodeButton.Sensitive = true;
                             }

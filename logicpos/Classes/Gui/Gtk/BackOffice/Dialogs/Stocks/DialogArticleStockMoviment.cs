@@ -10,7 +10,6 @@ using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
 using logicpos.Extensions;
-using logicpos.shared.App;
 using System;
 using System.Drawing;
 using System.IO;

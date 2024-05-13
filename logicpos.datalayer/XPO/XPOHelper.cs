@@ -3,8 +3,11 @@ using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
 using DevExpress.Xpo.Metadata;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Enums;
+using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
+using LogicPOS.Settings.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -399,6 +402,386 @@ namespace logicpos.datalayer.Xpo
         public static string GuidToStringId(string pGuidString)
         {
             return pGuidString.Substring(0, 30);
+        }
+
+        public static Dictionary<string, string> GetPreferencesParameters()
+        {
+            return GetPreferencesParameters(XPOSettings.Session);
+        }
+
+        public static Dictionary<string, string> GetPreferencesParameters(Session pSession)
+        {
+            Dictionary<string, string> resultPreferences = new Dictionary<string, string>();
+
+            SortingCollection sortingCollection = new SortingCollection
+                {
+                    new SortProperty("Ord", SortingDirection.Ascending)
+                };
+            CriteriaOperator criteriaOperator = CriteriaOperator.Parse("Disabled = 0 OR Disabled is NULL");
+            XPCollection xpcPreferenceParameter = new XPCollection(pSession, typeof(cfg_configurationpreferenceparameter), criteriaOperator);
+
+            foreach (cfg_configurationpreferenceparameter item in xpcPreferenceParameter)
+            {
+                resultPreferences.Add(item.Token, item.Value);
+            }
+
+            return resultPreferences;
+        }
+
+        public static Dictionary<string, bool> GetUserPermissions(sys_userdetail pUser)
+        {
+
+            Dictionary<string, bool> resultPermissions = new Dictionary<string, bool>
+            {
+                { "BACKOFFICE_MAN_SYSTEM_MENU_MENU", true },
+                { "BACKOFFICE_MAN_SYSTEM_POS_MENU", true },
+                { "BACKOFFICE_MAN_SYSTEM_QUIT_MENU", true },
+                { "BACKOFFICE_MAN_SYSTEM_NOTIFICATION_MENU", true },
+                { "BACKOFFICE_MAN_SYSTEM_CHANGELOG_MENU", true }
+            };
+
+            if (pUser != null)
+            {
+                if (pUser.Profile != null)
+                {
+                    foreach (sys_userpermissionprofile item in pUser.Profile.Permissions)
+                    {
+
+                        resultPermissions.Add(item.PermissionItem.Token, item.Granted);
+                    }
+                }
+            }
+
+            return resultPermissions;
+        }
+
+        public static Dictionary<string, bool> GetUserPermissions()
+        {
+            return GetUserPermissions(XPOSettings.LoggedUser);
+        }
+
+        public static void SystemNotification()
+        {
+            SystemNotification(XPOSettings.Session);
+        }
+
+        public static void SystemNotification(Session xpoSession)
+        {
+            string cultureFinancialRules = GeneralSettings.Settings["cultureFinancialRules"];
+
+            uint ord = 1;
+            sys_systemnotificationtype systemNotificationType;
+            sys_systemnotification systemNotification;
+            CriteriaOperator criteriaOperator;
+            XPCollection xpcSystemNotification;
+
+            systemNotificationType = (sys_systemnotificationtype)xpoSession.GetObjectByKey(typeof(sys_systemnotificationtype), NotificationSettings.XpoOidSystemNotificationTypeNewTerminalRegistered);
+            if (systemNotificationType != null)
+            {
+                criteriaOperator = CriteriaOperator.Parse(string.Format("NotificationType = '{0}' AND TerminalLastRead = '{1}'", NotificationSettings.XpoOidSystemNotificationTypeNewTerminalRegistered, XPOSettings.LoggedTerminal.Oid));
+                xpcSystemNotification = new XPCollection(xpoSession, typeof(sys_systemnotification), criteriaOperator);
+                //Create Notification
+                if (xpcSystemNotification.Count == 0)
+                {
+                    systemNotification = new sys_systemnotification(xpoSession);
+                    systemNotification.Ord = ord;
+                    systemNotification.NotificationType = systemNotificationType;
+                    systemNotification.Message = string.Format(systemNotificationType.Message, XPOSettings.LoggedTerminal.Designation);
+                    systemNotification.Save();
+                    ord++;
+                }
+            };
+
+            //:::: Notification : RequestPasswordChange ::::
+            //Check existing Notification before Create
+            /* DISABLE Currently in Progress
+            systemNotificationType = (SystemNotificationType)pSession.GetObjectByKey(typeof(SystemNotificationType), SettingsApp.XpoOidSystemNotificationTypeFirstLoginRequestPasswordChange);
+            if (systemNotificationType != null)
+            {
+                criteriaOperator = CriteriaOperator.Parse(string.Format("NotificationType = '{0}' AND UserLastRead = '{1}'", SettingsApp.XpoOidSystemNotificationTypeFirstLoginRequestPasswordChange, XPOSettings.LoggedUser));
+                xpcSystemNotification = new XPCollection(pSession, typeof(SystemNotification), criteriaOperator);
+                //Create Notification
+                if (xpcSystemNotification.Count == 0)
+                {
+                    systemNotification = new SystemNotification(pSession);
+                    systemNotification.Ord = ord;
+                    systemNotification.NotificationType = systemNotificationType;
+                    systemNotification.Message = string.Format(systemNotificationType.Message, XPOSettings.LoggedUser.Login, XPOSettings.LoggedUser.Name);
+                    systemNotification.Save();
+                    ord++;
+                    if (debug) _logger.Debug(string.Format("Notification created: [{0}]", systemNotificationType.Designation));
+                }
+            };
+            */
+
+            //:::: Notification : ProprietaryTestMessage ::::
+            //Check existing Notification before Create
+            /*TEMP REMOVED FOR MediaNova
+            systemNotificationType = (SystemNotificationType)pSession.GetObjectByKey(typeof(SystemNotificationType), SettingsApp.XpoOidSystemNotificationTypeProprietaryTestMessage);
+            criteriaOperator = CriteriaOperator.Parse(string.Format("NotificationType = '{0}' AND UserTarget = '{1}'", SettingsApp.XpoOidSystemNotificationTypeProprietaryTestMessage, userProprietary));
+            xpcSystemNotification = new XPCollection(pSession, typeof(SystemNotification), criteriaOperator);
+            //Create Notification
+            if (xpcSystemNotification.Count == 0)
+            {
+                UserDetail user = (UserDetail)pSession.GetObjectByKey(typeof(UserDetail), new Guid(userProprietary));
+                systemNotification = new SystemNotification(pSession)
+                {
+                    Ord = ord,
+                    NotificationType = systemNotificationType,
+                    Message = string.Format(systemNotificationType.Message, user.Name),
+                    UserTarget = user
+                };
+                systemNotification.Save();
+                ord++;
+                if (debug) _logger.Debug(string.Format("Notification created: [{0}]", systemNotificationType.Designation));
+            }
+            */
+
+            //Financial Culture Notifications
+            //switch (LogicPOS.Settings.CultureSettings.CurrentCulture.ToString())
+            switch (cultureFinancialRules)
+            {
+                case "pt-PT":
+                    int defaultBackDaysForInvoice = NotificationSettings.XpoOidSystemNotificationDaysBackWhenFiltering;
+
+                    //:::: Notification : CurrentAccountDocumentsToInvoice ::::
+                    //ProcessFinanceDocumentToInvoice to Create Notification in Spool for CurrentAccount Documents
+                    //systemNotificationType = (SystemNotificationType)pSession.GetObjectByKey(typeof(SystemNotificationType), SettingsApp.XpoOidSystemNotificationTypeCurrentAccountDocumentsToInvoice);
+                    systemNotification = ProcessFinanceDocumentToInvoice(xpoSession, NotificationSettings.XpoOidSystemNotificationTypeCurrentAccountDocumentsToInvoice, DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput, "(Payed = 0 OR Payed IS NULL)", defaultBackDaysForInvoice);
+                    if (systemNotification != null)
+                    {
+                        systemNotification.Ord = ord; systemNotification.Save();
+                        ord++;
+
+                    };
+
+                    //:::: Notification : ConsignationInvoiceDocumentsToInvoice ::::
+                    //ProcessFinanceDocumentToInvoice to Create Notification in Spool for CurrentAccount Documents
+                    //systemNotificationType = (SystemNotificationType)pSession.GetObjectByKey(typeof(SystemNotificationType), SettingsApp.XpoOidSystemNotificationTypeConsignationInvoiceDocumentsToInvoice);
+                    systemNotification = ProcessFinanceDocumentToInvoice(xpoSession, NotificationSettings.XpoOidSystemNotificationTypeConsignationInvoiceDocumentsToInvoice, DocumentSettings.XpoOidDocumentFinanceTypeConsignationInvoice, "(DocumentChild IS NULL)", defaultBackDaysForInvoice);
+                    if (systemNotification != null)
+                    {
+                        systemNotification.Ord = ord; systemNotification.Save();
+                        ord++;
+
+                    };
+
+                    //:::: Notification : SaftDocumentType.MovementOfGoodsToInvoice ::::
+                    //ProcessFinanceDocumentToInvoice to Create Notification in Spool for CurrentAccount Documents
+                    systemNotification = ProcessFinanceDocumentToInvoice(xpoSession, NotificationSettings.XpoOidSystemNotificationTypeSaftDocumentTypeMovementOfGoods, SaftDocumentType.MovementOfGoods, "(DocumentChild IS NULL AND DocumentStatusStatus = 'N')", defaultBackDaysForInvoice);
+                    if (systemNotification != null)
+                    {
+                        systemNotification.Ord = ord; systemNotification.Save(); ord++;
+                    };
+
+                    break;
+
+                default:
+                    break;
+            }
+
+        }
+
+        public static sys_systemnotification ProcessFinanceDocumentToInvoice(Session pSession, Guid pSystemNotificationTypeGuid, Guid pDocumentType, string pExtraFilter, int pDaysBack)
+        {
+            string filter = string.Format("(DocumentType = '{0}' AND DocumentStatusStatus = 'N')", pDocumentType.ToString());
+            return ProcessFinanceDocumentToInvoice(pSession, pSystemNotificationTypeGuid, filter, pExtraFilter, pDaysBack);
+        }
+
+        public static sys_systemnotification ProcessFinanceDocumentToInvoice(Session pSession, Guid pSystemNotificationTypeGuid, SaftDocumentType pSaftDocumentType, string pExtraFilter, int pDaysBack)
+        {
+            string filter = string.Empty;
+
+            CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("(SaftDocumentType = {0})", Convert.ToInt16(pSaftDocumentType)));
+            XPCollection xpcDocumentFinanceType = new XPCollection(pSession, typeof(fin_documentfinancetype), criteriaOperator);
+            if (xpcDocumentFinanceType.Count > 0)
+            {
+                int i = 0;
+                foreach (fin_documentfinancetype item in xpcDocumentFinanceType)
+                {
+                    i++;
+                    filter += (string.Format("DocumentType = '{0}'{1}", item.Oid, (i < xpcDocumentFinanceType.Count) ? " OR " : string.Empty));
+                }
+                filter = string.Format("({0})", filter);
+            }
+
+            return ProcessFinanceDocumentToInvoice(pSession, pSystemNotificationTypeGuid, filter, pExtraFilter, pDaysBack);
+        }
+
+        public static sys_systemnotification ProcessFinanceDocumentToInvoice(Session pSession, Guid pSystemNotificationTypeGuid, string pFilter, string pExtraFilter, int pDaysBackToFilter)
+        {
+            //Init Local Vars
+            sys_systemnotificationtype systemNotificationType = (sys_systemnotificationtype)pSession.GetObjectByKey(typeof(sys_systemnotificationtype), pSystemNotificationTypeGuid);
+            sys_systemnotification result = null;
+            //Used to Persist sys_systemnotification if greater than 0
+            int totalNotificatedDocuments = 0;
+            //Ignore Notificate Documents after Documents Have Been Notified a determined Number Of Times
+            int ignoreNotificationsAfterHaveBeenNotificatedNumberOfTimes = 0;
+
+            ignoreNotificationsAfterHaveBeenNotificatedNumberOfTimes = Convert.ToInt16(GeneralSettings.PreferenceParameters["NOTIFICATION_DOCUMENTS_TO_INVOICE_IGNORE_AFTER_SHOW_NUMBER_OF_TIMES"]);
+
+
+            //Get Date Back DaysBackToFilter (Without WeekEnds and Holidays)
+            int warnDaysBefore = (systemNotificationType.WarnDaysBefore > 0) ? systemNotificationType.WarnDaysBefore : 0;
+            int daysBackToFilter = pDaysBackToFilter - warnDaysBefore;
+            DateTime dateFilterFrom = GetDateTimeBackUtilDays(CurrentDateTimeAtomicMidnight(), daysBackToFilter, true);
+
+            //Extra Filter 
+            string filter = pFilter;
+            if (pExtraFilter != string.Empty) filter = string.Format("{0} AND {1}", filter, pExtraFilter);
+            filter = string.Format("{0} AND (Date <= '{1} 23:59:59')", filter, dateFilterFrom.ToString(CultureSettings.DateFormat));
+
+            CriteriaOperator criteriaOperator = CriteriaOperator.Parse(filter);
+            SortProperty sortProperty = new SortProperty("CreatedAt", SortingDirection.Ascending);
+            XPCollection xpcDocumentFinanceMaster = new XPCollection(pSession, typeof(fin_documentfinancemaster), criteriaOperator, sortProperty);
+
+            // Debug Helper
+            //if (pSystemNotificationTypeGuid.Equals(SettingsApp.XpoOidSystemNotificationTypeSaftDocumentTypeMovementOfGoods))
+            //{
+            //    _logger.Debug("BREAK");
+            //}
+
+            if (xpcDocumentFinanceMaster.Count > 0)
+            {
+                int i = 0;
+                string documentsMessage = string.Empty;
+                int documentBackUtilDays = 0;
+
+                //Generate DocumentNumber List documentsMessage
+                foreach (fin_documentfinancemaster item in xpcDocumentFinanceMaster)
+                {
+                    i++;
+                    //Get BackDays
+                    documentBackUtilDays = GetUtilDays(item.Date, true).Count;
+                    //Show total Showed Notification in Document
+                    // Get total notification for Current Document
+                    int totalNotificationsInDocument = item.Notifications.Count;
+
+                    // If document has less notifications show it again, or if is ignored with ignoreNotificationsAfterBeenNotificatedTimes == 0
+                    if (ignoreNotificationsAfterHaveBeenNotificatedNumberOfTimes == 0 || totalNotificationsInDocument < ignoreNotificationsAfterHaveBeenNotificatedNumberOfTimes)
+                    {
+                        // Increment notifications counter
+                        totalNotificatedDocuments++;
+                        // Add To Message
+                        documentsMessage += string.Format(
+                            "- {0} : {1} : {2} {3} : (#{4})",
+                            item.DocumentNumber, item.Date,
+                            documentBackUtilDays,
+                            CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(),
+                            "global_day_days"),
+                            item.Notifications.Count + 1);
+
+                        //Add New Line if not Last Document
+                        if (i < xpcDocumentFinanceMaster.Count) documentsMessage += Environment.NewLine;
+                    }
+                }
+
+                // Create Notification Object if has notifications
+                if (totalNotificatedDocuments > 0)
+                {
+                    result = new sys_systemnotification(pSession)
+                    {
+                        NotificationType = systemNotificationType,
+                        Message = string.Format(systemNotificationType.Message, totalNotificatedDocuments, pDaysBackToFilter, documentsMessage)
+                    };
+                    result.Save();
+
+                    //Persist sys_systemnotificationdocumentmaster manyToMany Relantionship
+                    foreach (fin_documentfinancemaster item in xpcDocumentFinanceMaster)
+                    {
+                        sys_systemnotificationdocumentmaster notificationDocumentMasterReference = new sys_systemnotificationdocumentmaster(pSession)
+                        {
+                            DocumentMaster = item,
+                            Notification = result
+                        };
+                        notificationDocumentMasterReference.Save();
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        public static bool Audit(string pAuditTypeToken, string pDescription = "")
+        {
+            return Audit(
+                XPOSettings.Session,
+                XPOSettings.LoggedUser ?? null,
+                XPOSettings.LoggedTerminal ?? null,
+                pAuditTypeToken,
+                pDescription
+            );
+        }
+
+        public static bool Audit(Session pSession, sys_userdetail pLoggedUser, pos_configurationplaceterminal pLoggedTerminal, string pAuditTypeToken, string pDescription = "")
+        {
+            bool result = false;
+            DateTime dateTime = CurrentDateTimeAtomic();
+            string executeSql = string.Format(@"SELECT Oid FROM sys_systemaudittype WHERE (Disabled IS NULL or Disabled  <> 1) AND Token = '{0}';", pAuditTypeToken);
+
+            //Check if has a Valid LoggedUser else Assign NULL to INSERT, usefull to log stuff when User is not Yet Logged
+            //string loggedUserOid = (pLoggedUser != null) ? string.Format("'{0}'", pLoggedUser.Oid.ToString()) : "NULL";
+
+           
+                //Get auditType Guid from Query
+                Guid guidAuditType = GetGuidFromQuery(executeSql);
+
+                if (!guidAuditType.Equals(Guid.Empty))
+                {
+                    //Fresh User and Terminal, to prevent Object Delection Problem
+                    sys_userdetail xpoUserDetail = (pLoggedUser != null) ? (sys_userdetail)GetXPGuidObject(typeof(sys_userdetail), pLoggedUser.Oid) : null;
+                    pos_configurationplaceterminal xpoTerminal = (pos_configurationplaceterminal)GetXPGuidObject(typeof(pos_configurationplaceterminal), pLoggedTerminal.Oid);
+                    //get AuditType Object
+                    sys_systemaudittype xpoAuditType = (sys_systemaudittype)GetXPGuidObject(typeof(sys_systemaudittype), guidAuditType);
+                    string description = (pDescription != string.Empty) ? pDescription
+                      : (xpoAuditType.ResourceString != null && CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), xpoAuditType.ResourceString) != null)
+                      ? CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), xpoAuditType.ResourceString) : xpoAuditType.Designation;
+
+                    sys_systemaudit systemAudit = new sys_systemaudit(pSession)
+                    {
+                        Date = dateTime,
+                        Description = description,
+                        UserDetail = xpoUserDetail,
+                        Terminal = xpoTerminal,
+                        AuditType = xpoAuditType
+                    };
+                    systemAudit.Save();
+
+                 
+
+                    result = true;
+                }
+                else
+                {
+                    string exceptionMessage = string.Format("Invalid AuditType: [{0}]", pAuditTypeToken);
+                    throw (new Exception(exceptionMessage));
+                }
+           
+            return result;
+        }
+
+        public static decimal GetPartialPaymentPayedItems(Session pSession, Guid pDocumentOrderMain, Guid pArticle)
+        {
+            decimal result = 0.0m;
+
+            string sql = string.Format(@"
+                SELECT 
+                  SUM(fdQuantity) AS Quantity 
+                FROM 
+                  view_documentfinance 
+                WHERE 
+                  fmSourceOrderMain = '{0}' AND 
+                  fdArticle = '{1}'
+                ;"
+              , pDocumentOrderMain
+              , pArticle
+            );
+            //_logger.Debug(string.Format("sql: [{0}]", sql));
+            var partialPayedItems = pSession.ExecuteScalar(sql);
+
+            return (partialPayedItems != null && Convert.ToDecimal(partialPayedItems) > 0)
+              ? Convert.ToDecimal(partialPayedItems)
+              : result;
         }
     }
 }

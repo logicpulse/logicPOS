@@ -11,7 +11,6 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.App;
 using logicpos.financial.library.Classes.Finance;
-using logicpos.shared.App;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
 using MySql.Data.MySqlClient;
@@ -186,7 +185,7 @@ namespace logicpos.Classes.DataLayer
                         //catch (Exception ex) { _logger.Error(ex.Message, ex); }
 
                         //Post Backup
-                        SharedUtils.Audit("DATABASE_BACKUP", string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "audit_message_database_backup"),
+                       XPOHelper.Audit("DATABASE_BACKUP", string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "audit_message_database_backup"),
                             (fullFileNamePacked != string.Empty) ? fullFileNamePacked : systemBackup.FileNamePacked
                         ));
 
@@ -331,7 +330,7 @@ namespace logicpos.Classes.DataLayer
                         if (Restore(pSourceWindow, fileName, fileNamePacked, systemBackup))
                         {
                             //Audit DATABASE_RESTORE
-                            SharedUtils.Audit("DATABASE_RESTORE", string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "audit_message_database_restore"), fileNamePacked));
+                           XPOHelper.Audit("DATABASE_RESTORE", string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "audit_message_database_restore"), fileNamePacked));
                             //Required to DropIdentity before get currentDocumentFinanceYear Object, else it exists in old non restored Session
                             XPOSettings.Session.DropIdentityMap();
                             //Get Current Active FinanceYear
@@ -362,7 +361,7 @@ namespace logicpos.Classes.DataLayer
                             }
 
                             //Audit
-                            SharedUtils.Audit("APP_CLOSE");
+                           XPOHelper.Audit("APP_CLOSE");
                             //Call QuitWithoutConfirmation without Audit
                             LogicPOSApp.QuitWithoutConfirmation(false);
 

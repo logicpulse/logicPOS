@@ -3,7 +3,6 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.App;
-using logicpos.shared.App;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Extensions;
@@ -110,7 +109,7 @@ namespace logicpos.financial.library.Classes.Finance
                 }
 
                 //Audit
-                SharedUtils.Audit("EXPORT_SAF-T", string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "audit_message_export_saft"), fileName, _documentDateStart.ToString(CultureSettings.DateFormat), _documentDateEnd.ToString(CultureSettings.DateFormat)));
+               XPOHelper.Audit("EXPORT_SAF-T", string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "audit_message_export_saft"), fileName, _documentDateStart.ToString(CultureSettings.DateFormat), _documentDateEnd.ToString(CultureSettings.DateFormat)));
 
                 return fileName;
             }

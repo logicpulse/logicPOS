@@ -3,8 +3,6 @@ using DevExpress.Xpo.DB;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
-using logicpos.shared;
-using logicpos.shared.App;
 using logicpos.shared.Enums;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
@@ -268,7 +266,7 @@ namespace LogicPOS.Shared.Article
             pos_configurationplace configurationPlace = (pos_configurationplace)XPOSettings.Session.GetObjectByKey(typeof(pos_configurationplace), pPlaceOid);
             TaxSellType taxSellType = (configurationPlace.MovementType.VatDirectSelling) ? TaxSellType.TakeAway : TaxSellType.Normal;
 
-            PriceProperties priceProperties = SharedUtils.GetArticlePrice(pArticle, taxSellType);
+            PriceProperties priceProperties = ArticleUtils.GetArticlePrice(pArticle, taxSellType);
 
             //Prepare articleBag Key and Props
             articleBagKey = new ArticleBagKey(
@@ -402,7 +400,7 @@ namespace LogicPOS.Shared.Article
                 //_logger.Debug(string.Format("Delete(): sql [{0}]", string.Format(sql, where)));
 
                 //Audit
-                SharedUtils.Audit("ORDER_ARTICLE_REMOVED", string.Format(
+                XPOHelper.Audit("ORDER_ARTICLE_REMOVED", string.Format(
                         CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_order_article_removed"),
                         articleDesignation,
                         1,
@@ -444,7 +442,7 @@ namespace LogicPOS.Shared.Article
                             //Open Table
                             deleteOrderMain.PlaceTable.TableStatus = TableStatus.Free;
                             //Audit
-                            SharedUtils.Audit("TABLE_OPEN", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_table_open"), deleteOrderMain.PlaceTable.Designation));
+                            XPOHelper.Audit("TABLE_OPEN", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_table_open"), deleteOrderMain.PlaceTable.Designation));
                             //Delete OrderMain
                             deleteOrderMain.Delete();
                         };
@@ -464,7 +462,7 @@ namespace LogicPOS.Shared.Article
 
                     //SEARCH#001
                     //Require to Remove PartialPayed Items Quantity
-                    return resultRemainQuantity - SharedUtils.GetPartialPaymentPayedItems(uowSession, xDocumentOrderMain.Oid, pKey.ArticleOid);
+                    return resultRemainQuantity - XPOHelper.GetPartialPaymentPayedItems(uowSession, xDocumentOrderMain.Oid, pKey.ArticleOid);
                 }
                 catch (Exception ex)
                 {

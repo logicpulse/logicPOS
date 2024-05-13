@@ -1,7 +1,6 @@
 ﻿using logicpos.App;
 using logicpos.Classes.Enums.TicketList;
 using logicpos.datalayer.Xpo;
-using logicpos.shared.App;
 using LogicPOS.Settings;
 using System;
 using System.Net;

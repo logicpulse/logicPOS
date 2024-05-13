@@ -2,8 +2,6 @@
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
-using logicpos.shared;
-using logicpos.shared.App;
 using logicpos.shared.Enums;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
@@ -120,7 +118,7 @@ namespace LogicPOS.Shared.Orders
             if (xTable.TableStatus != TableStatus.Open)
             {
                 xTable.TableStatus = TableStatus.Open;
-                SharedUtils.Audit("TABLE_OPEN", string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "audit_message_table_open"), xTable.Designation));
+                XPOHelper.Audit("TABLE_OPEN", string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "audit_message_table_open"), xTable.Designation));
                 xTable.DateTableOpen = XPOHelper.CurrentDateTimeAtomic();
                 if (!isInUOW) xTable.Save();
             }

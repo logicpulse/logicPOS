@@ -2,12 +2,12 @@
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.App;
-using logicpos.shared.App;
 using logicpos.shared.Enums;
 using LogicPOS.Settings;
 using LogicPOS.Shared;
 using LogicPOS.Shared.Article;
 using LogicPOS.Shared.CustomDocument;
+using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -1033,7 +1033,7 @@ namespace logicpos.financial.library.Classes.Finance
                     _logger.Debug("BREAKPOINT");
                 }
 
-                bool result = SharedUtils.Validate(value, item.Value.Rule, item.Value.Required);
+                bool result = GeneralUtils.Validate(value, item.Value.Rule, item.Value.Required);
 
                 //Extra Validation for types that have more than RegEx Requirements
                 if (result && item.Key == FinanceValidationError.ERROR_FIELD_CUSTOMER_FISCAL_NUMBER_INVALID)
@@ -1106,17 +1106,17 @@ namespace logicpos.financial.library.Classes.Finance
                     validationFieldVat.Value = item.Key.Vat;
                     validationFieldVatExemptionReason.Value = item.Key.VatExemptionReasonOid;
                     //Validate ValidationField: Oid
-                    if (!SharedUtils.Validate(validationFieldOid.Value.ToString(), validationFieldOid.Rule, validationFieldOid.Required))
+                    if (!GeneralUtils.Validate(validationFieldOid.Value.ToString(), validationFieldOid.Rule, validationFieldOid.Required))
                     {
                         hasArticlesWithInvalidOid = true;
                     }
                     //Validate ValidationField: Code
-                    if (!SharedUtils.Validate(validationFieldCode.Value.ToString(), validationFieldCode.Rule, validationFieldCode.Required))
+                    if (!GeneralUtils.Validate(validationFieldCode.Value.ToString(), validationFieldCode.Rule, validationFieldCode.Required))
                     {
                         hasArticlesWithInvalidCode = true;
                     }
                     //Validate ValidationField: Designation
-                    if (!SharedUtils.Validate(validationFieldDesignation.Value.ToString(), validationFieldDesignation.Rule, validationFieldDesignation.Required))
+                    if (!GeneralUtils.Validate(validationFieldDesignation.Value.ToString(), validationFieldDesignation.Rule, validationFieldDesignation.Required))
                     {
                         hasArticlesWithInvalidDesignation = true;
                     }
@@ -1136,17 +1136,17 @@ namespace logicpos.financial.library.Classes.Finance
                     //    hasArticlesWithInvalidUnitMeasureAcronym = true;
                     //}
                     //Validate ValidationField: Discount
-                    if (!SharedUtils.Validate(validationFieldDiscount.Value.ToString(), validationFieldDiscount.Rule, validationFieldDiscount.Required))
+                    if (!GeneralUtils.Validate(validationFieldDiscount.Value.ToString(), validationFieldDiscount.Rule, validationFieldDiscount.Required))
                     {
                         hasArticlesWithInvalidDiscount = true;
                     }
                     //Validate ValidationField: Vat
-                    if (!SharedUtils.Validate(validationFieldVat.Value.ToString(), validationFieldVat.Rule, validationFieldVat.Required))
+                    if (!GeneralUtils.Validate(validationFieldVat.Value.ToString(), validationFieldVat.Rule, validationFieldVat.Required))
                     {
                         hasArticlesWithInvalidVat = true;
                     }
                     //Validate ValidationField: VatExemptionReason
-                    if (!SharedUtils.Validate(validationFieldVatExemptionReason.Value.ToString(), validationFieldVatExemptionReason.Rule, (item.Key.Vat == 0.0m)))
+                    if (!GeneralUtils.Validate(validationFieldVatExemptionReason.Value.ToString(), validationFieldVatExemptionReason.Rule, (item.Key.Vat == 0.0m)))
                     {
                         hasArticlesWithInvalidVatExemptionReason = true;
                     }

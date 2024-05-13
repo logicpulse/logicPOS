@@ -7,11 +7,11 @@ using System.IO;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using System.Collections.Generic;
 using logicpos.Extensions;
-using logicpos.shared.App;
 using logicpos.datalayer.Xpo;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using LogicPOS.Utility;
 
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
@@ -406,7 +406,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     {
                         if (clickedButton.ExternalAppFileName != null)
                         {
-                            SharedUtils.ExecuteExternalProcess(clickedButton.ExternalAppFileName);
+                            GeneralUtils.ExecuteExternalProcess(clickedButton.ExternalAppFileName);
                         }
                     }
                 }

@@ -11,7 +11,6 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.financial.library.Classes.Finance;
 using System;
 using System.Collections;
-using logicpos.shared.App;
 using logicpos.datalayer.Xpo;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;

@@ -1,7 +1,6 @@
 ﻿using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
 using logicpos.App;
-using logicpos.shared.App;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
 using System;

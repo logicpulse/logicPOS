@@ -7,7 +7,6 @@ using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
-using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

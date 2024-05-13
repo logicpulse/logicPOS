@@ -22,7 +22,7 @@ namespace LogicPOS.Utility
         }
 
         public static string ReplaceTextTokens(
-            string input, 
+            string input,
             List<Dictionary<string, string>> tokensDictionaryList)
         {
             Dictionary<string, string> tokensDictionary = new Dictionary<string, string>();
@@ -40,7 +40,7 @@ namespace LogicPOS.Utility
         }
 
         public static string ReplaceTextTokens(
-            string input, 
+            string input,
             Dictionary<string, string> tokensDictionary)
         {
             string result = input;
@@ -129,10 +129,10 @@ namespace LogicPOS.Utility
             return (result);
         }
 
-        public static int GetNumWords(string text,int minWordLengthConsidered)
+        public static int GetNumWords(string text, int minWordLengthConsidered)
         {
             int result = 0;
-            
+
             text = PrepareCutWord(text);
 
             text = text.Replace("\n", " ");
@@ -172,6 +172,21 @@ namespace LogicPOS.Utility
                 sb.Append(string.Format("{0:X2}", b));
             }
             string result = sb.ToString().ToLower();
+
+            return result;
+        }
+
+        public static string StringListToCommaDelimitedString<T>(List<T> pList, char pSeparator)
+        {
+            string result = string.Empty;
+
+            int i = 0;
+            foreach (var item in pList)
+            {
+                i++;
+                result += item.ToString();
+                if (i < pList.Count) result += pSeparator.ToString();
+            }
 
             return result;
         }

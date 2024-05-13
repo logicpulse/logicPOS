@@ -6,7 +6,6 @@ using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
 using logicpos.datalayer.Xpo;
-using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
 using LogicPOS.Settings.Extensions;
@@ -115,10 +114,10 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             //Assign CRUD permissions to private members, Overriding Defaults
             if (GeneralSettings.LoggedUserPermissions != null)
             {
-                _allowRecordDelete = SharedUtils.HasPermissionTo(tokenAllowDelete);
-                _allowRecordInsert = SharedUtils.HasPermissionTo(tokenAllowInsert);
-                _allowRecordUpdate = SharedUtils.HasPermissionTo(tokenAllowUpdate);
-                _allowRecordView = SharedUtils.HasPermissionTo(tokenAllowView);
+                _allowRecordDelete = GeneralSettings.HasPermissionTo(tokenAllowDelete);
+                _allowRecordInsert = GeneralSettings.HasPermissionTo(tokenAllowInsert);
+                _allowRecordUpdate = GeneralSettings.HasPermissionTo(tokenAllowUpdate);
+                _allowRecordView = GeneralSettings.HasPermissionTo(tokenAllowView);
             }
 
             //Update Navigator Permissions

@@ -8,10 +8,10 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using LogicPOS.Globalization;
-using logicpos.shared.App;
 using System;
 using System.Configuration;
 using LogicPOS.Settings.Extensions;
+using LogicPOS.Utility;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -71,7 +71,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 if (dataSourceRow.RegEx != null)
                 {
                     //Try to get Value
-                    object objectValueRegEx = SharedUtils.GetFieldValueFromType(typeof(POSSettings), dataSourceRow.RegEx);
+                    object objectValueRegEx = GeneralUtils.GetFieldValueFromType(typeof(POSSettings), dataSourceRow.RegEx);
                     if (objectValueRegEx != null) valueRegEx = objectValueRegEx.ToString();
                 }
 

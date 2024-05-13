@@ -3,7 +3,6 @@ using DevExpress.Xpo;
 using Gtk;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
-using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
 using LogicPOS.Settings.Extensions;

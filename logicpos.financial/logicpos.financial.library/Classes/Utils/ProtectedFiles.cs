@@ -1,5 +1,4 @@
-﻿using logicpos.shared.App;
-using LogicPOS.Utility;
+﻿using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -81,7 +80,7 @@ namespace logicpos.financial.library.Classes.Utils
             bool result = false;
             try
             {
-                Dictionary<string, string> filesDictionary = SharedUtils.CSVFileToDictionary(pFilePath);
+                Dictionary<string, string> filesDictionary = GeneralUtils.CSVFileToDictionary(pFilePath);
                 //Clear before Load 
                 if (this.Count > 0) this.Clear();
 
@@ -174,7 +173,7 @@ namespace logicpos.financial.library.Classes.Utils
                 getMissingFiles
             };
             //Get Distinct Filenames
-            List<string> result = SharedUtils.MergeGenericLists(listList);
+            List<string> result = GeneralUtils.MergeGenericLists(listList);
 
             return result;
         }

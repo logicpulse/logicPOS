@@ -2,7 +2,6 @@
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.Extensions;
-using logicpos.shared.App;
 using System;
 using System.Drawing;
 using LogicPOS.Settings.Extensions;
@@ -104,7 +103,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
                 _eventBoxTotalOrStatus.VisibleWindow = true;
                 SetBackgroundColor(_colorPosTablePadTableTableStatusReservedButtonBackground, _eventBoxTotalOrStatus);
                 xTable.TableStatus = TableStatus.Reserved;
-                SharedUtils.Audit("TABLE_RESERVED", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_table_reserved"), xTable.Designation));
+               XPOHelper.Audit("TABLE_RESERVED", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_table_reserved"), xTable.Designation));
             }
             else
             {
@@ -112,7 +111,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
                 _eventBoxTotalOrStatus.VisibleWindow = false;
                 SetBackgroundColor(_buttonColor, _eventBoxTotalOrStatus);
                 xTable.TableStatus = TableStatus.Free;
-                SharedUtils.Audit("TABLE_UNRESERVED", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_table_unreserved"), xTable.Designation));
+               XPOHelper.Audit("TABLE_UNRESERVED", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_table_unreserved"), xTable.Designation));
             }
             //_logger.Debug(string.Format("1 pTableStatus: [{0}] [{1}]", xTable.Designation, pTableStatus));
             //Update Status State  
