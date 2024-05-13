@@ -13,6 +13,7 @@ namespace LogicPOS.Settings
         public static Hashtable Paths { get; set; }
         public static NameValueCollection Settings { get; set; }
         public static Dictionary<string, string> PreferenceParameters { get; set; }
+        public static string ServerVersion { get; set; }
         public static string ProductVersion
         {
             get
@@ -30,7 +31,7 @@ namespace LogicPOS.Settings
             }
         }
         public static string POSSessionJsonFileName => $"appsession_{LicenseSettings.LicenseHardwareId}.json";
-        
+        public static System.Drawing.Size ScreenSize { get; set; }
         public static int GetRequiredCustomerDetailsAboveValue(Guid countryId)
         {
             if (CultureSettings.CountryIdIsPortugal(countryId))
@@ -43,6 +44,13 @@ namespace LogicPOS.Settings
 
             return 999999999;
         }
+        public static Dictionary<string, bool> LoggedUserPermissions { get; set; }
+        public static bool AppUseParkingTicketModule { get; set; } = false;
+        public static bool CheckStocks { get; set; } = true;
+        public static bool CheckStockMessage { get; set; } = true;
+        public static bool AppUseBackOfficeMode { get; set; } = false;
+        public static Dictionary<string, Guid> PendentPaidParkingTickets { get; set; } = new Dictionary<string, Guid>();
+        public static Dictionary<string, Guid> PendentPaidParkingCards { get; set; } = new Dictionary<string, Guid>();
 
     }
 }

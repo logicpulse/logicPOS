@@ -2351,13 +2351,13 @@ namespace logicpos
             {
                 string query = string.Format("SELECT Value FROM cfg_configurationpreferenceparameter WHERE Token = 'CHECK_STOCKS' AND (Disabled = 0 OR Disabled is NULL);");
                 result = Convert.ToBoolean(XPOSettings.Session.ExecuteScalar(query));
-                SharedFramework.CheckStocks = result;
+                GeneralSettings.CheckStocks = result;
             }
             catch (Exception ex)
             {
                 _logger.Error(ex.Message, ex);
                 result = Convert.ToBoolean(GeneralSettings.PreferenceParameters["CHECK_STOCKS"]);
-                SharedFramework.CheckStocks = result;
+                GeneralSettings.CheckStocks = result;
                 return true;
             }
 
@@ -2371,13 +2371,13 @@ namespace logicpos
             {
                 string query = string.Format("SELECT Value FROM cfg_configurationpreferenceparameter WHERE Token = 'CHECK_STOCKS_MESSAGE';");
                 result = Convert.ToBoolean(XPOSettings.Session.ExecuteScalar(query));
-                SharedFramework.CheckStockMessage = result;
+                GeneralSettings.CheckStockMessage = result;
             }
             catch (Exception ex)
             {
                 _logger.Error(ex.Message, ex);
                 result = Convert.ToBoolean(GeneralSettings.PreferenceParameters["CHECK_STOCKS_MESSAGE"]);
-                SharedFramework.CheckStockMessage = result;
+                GeneralSettings.CheckStockMessage = result;
                 return true;
             }
 

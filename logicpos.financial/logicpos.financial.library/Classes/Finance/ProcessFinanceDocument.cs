@@ -7,19 +7,19 @@ using logicpos.financial.library.Classes.Reports;
 using logicpos.financial.library.Classes.Stocks;
 using logicpos.financial.library.Classes.WorkSession;
 using logicpos.shared.App;
-using logicpos.shared.Classes.Finance;
-using logicpos.shared.Classes.Orders;
 using logicpos.shared.Enums;
+using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
+using LogicPOS.Settings.Extensions;
+using LogicPOS.Shared;
+using LogicPOS.Shared.Article;
+using LogicPOS.Shared.CustomDocument;
+using LogicPOS.Shared.Orders;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using LogicPOS.Settings.Extensions;
-using LogicPOS.Globalization;
-using logicpos.shared;
-using LogicPOS.Shared.CustomDocument;
 
 namespace logicpos.financial.library.Classes.Finance
 {
@@ -477,7 +477,7 @@ namespace logicpos.financial.library.Classes.Finance
                             }
 
                             // TK013134
-                            if (SharedFramework.AppUseParkingTicketModule)
+                            if (GeneralSettings.AppUseParkingTicketModule)
                             {
                                 //Add to PendentPayedParkingTickets
                                 //if (item.Key.ArticleOid.Equals(SettingsApp.XpoOidArticleParkingTicket))
@@ -506,10 +506,10 @@ namespace logicpos.financial.library.Classes.Finance
                                     int quantity = Convert.ToInt32(item.Value.Quantity);
                                     documentFinanceMaster.Notes += string.Format("{0} ", quantity.ToString());
                                     //documentOrderMain.Notes = item.Value.Quantity.ToString();
-                                    SharedFramework.PendentPayedParkingCards.Add(output, documentOrderMain.Oid);
+                                    GeneralSettings.PendentPaidParkingCards.Add(output, documentOrderMain.Oid);
                                 }
                                 //IN009279 If Card
-                                else SharedFramework.PendentPayedParkingTickets.Add(output, documentOrderMain.Oid);
+                                else GeneralSettings.PendentPaidParkingTickets.Add(output, documentOrderMain.Oid);
                             }
                         }
                     }
@@ -604,7 +604,7 @@ namespace logicpos.financial.library.Classes.Finance
                     if (!documentFinanceType.Payed) paymentMethod = null;
 
                     //PersistFinanceDocumentWorkSession if document is Payed or if it is a CurrentAccount (Splited in Prints with SplitCurrentAccountMode Enum)
-                    if (SharedFramework.WorkSessionPeriodTerminal != null && (paymentMethod != null || documentFinanceType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput))
+                    if (XPOSettings.WorkSessionPeriodTerminal != null && (paymentMethod != null || documentFinanceType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput))
                     {
                         //Call PersistFinanceDocumentWorkSession to do WorkSession Job
                         PersistFinanceDocumentWorkSession(uowSession, documentFinanceMaster, pParameters, paymentMethod);
@@ -686,7 +686,7 @@ namespace logicpos.financial.library.Classes.Finance
                         uowSession.CommitChanges();
 
                         // TK013134
-                        if (SharedFramework.AppUseParkingTicketModule)
+                        if (GeneralSettings.AppUseParkingTicketModule)
                             //{
                             //    foreach (var item in GlobalFramework.PendentPayedParkingTickets)
                             //    {
@@ -1410,7 +1410,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
             try
             {
                 //Get Period WorkSessionPeriodTerminal, UserDetail and Terminal
-                pos_worksessionperiod workSessionPeriod = (pos_worksessionperiod)XPOHelper.GetXPGuidObject(pSession, typeof(pos_worksessionperiod), SharedFramework.WorkSessionPeriodTerminal.Oid);
+                pos_worksessionperiod workSessionPeriod = (pos_worksessionperiod)XPOHelper.GetXPGuidObject(pSession, typeof(pos_worksessionperiod), XPOSettings.WorkSessionPeriodTerminal.Oid);
                 sys_userdetail userDetail = (sys_userdetail)XPOHelper.GetXPGuidObject(pSession, typeof(sys_userdetail), XPOSettings.LoggedUser.Oid);
                 pos_configurationplaceterminal configurationPlaceTerminal = (pos_configurationplaceterminal)XPOHelper.GetXPGuidObject(pSession, typeof(pos_configurationplaceterminal), XPOSettings.LoggedTerminal.Oid);
 

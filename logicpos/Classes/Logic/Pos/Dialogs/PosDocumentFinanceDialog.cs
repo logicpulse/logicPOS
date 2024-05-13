@@ -1,21 +1,20 @@
 ﻿using DevExpress.Xpo.DB.Exceptions;
 using Gtk;
+using logicpos.Classes.Enums.Dialogs;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Enums;
+using logicpos.datalayer.Xpo;
+using logicpos.financial.library.App;
 using logicpos.financial.library.Classes.Finance;
 using logicpos.shared.Enums;
-using logicpos.datalayer.Enums;
-using logicpos.shared.Classes.Finance;
+using LogicPOS.Globalization;
+using LogicPOS.Settings;
+using LogicPOS.Settings.Extensions;
+using LogicPOS.Shared.Article;
+using LogicPOS.Shared.CustomDocument;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using logicpos.Classes.Enums.Dialogs;
-using logicpos.shared.App;
-using logicpos.financial.library.App;
-using logicpos.datalayer.Xpo;
-using LogicPOS.Settings.Extensions;
-using LogicPOS.Globalization;
-using LogicPOS.Settings;
-using LogicPOS.Shared.CustomDocument;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -35,11 +34,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 {
                     //Procced After Post Validation
                     ResponseType response = ShowPreview(DocumentFinanceDialogPreviewMode.Confirmation);
-                
+
                     if (response == ResponseType.Yes)
                     {
                         //Get Parameters
-						//TK016249 - Impressoras - Diferenciação entre Tipos
+                        //TK016249 - Impressoras - Diferenciação entre Tipos
                         PrintingSettings.UsingThermalPrinter = false;
                         ProcessFinanceDocumentParameter processFinanceDocumentParameter = GetFinanceDocumentParameter();
 
@@ -75,7 +74,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         //Keep Running
                         this.Run();
                     }
-                }                
+                }
             }
             else if (pResponse == _responseTypePreview)
             {
@@ -120,7 +119,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 referencesReason = _pagePad1.EntryBoxReason.EntryValidation.Text;
             };
 
-            if(_pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid == CustomDocumentSettings.CreditNoteDocumentTypeId)
+            if (_pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid == CustomDocumentSettings.CreditNoteDocumentTypeId)
             {
 
                 List<DataRow> dataRows = new List<DataRow>();
@@ -146,12 +145,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 newRow["Warehouse"] = splitArticleWareHouse[i];
                                 newRow["SerialNumber"] = splitArticleSerialNumber[i];
                                 newRow["Quantity"] = 1;
-                                dataRows.Add(newRow);                                
+                                dataRows.Add(newRow);
                             }
                             item["Warehouse"] = splitArticleWareHouse[0];
                             item["SerialNumber"] = splitArticleSerialNumber[0];
                         }
-                    }              
+                    }
                 }
                 if (dataRows.Count > 0)
                 {
@@ -169,7 +168,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 article = (item["Article.Code"] as fin_article);
                 configurationVatRate = (item["ConfigurationVatRate.Value"] as fin_configurationvatrate);
                 configurationVatExemptionReason = (item["VatExemptionReason.Acronym"] as fin_configurationvatexemptionreason);
-               
+
 
                 PriceProperties priceProperties = PriceProperties.GetPriceProperties(
                 PricePropertiesSourceMode.FromPriceUser,
@@ -199,7 +198,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                   Convert.ToDecimal(item["Price"]),     //Always use Price in DefaultCurrency
                   LogicPOS.Utility.DataConversionUtils.StringToDecimal(item["Discount"].ToString()),
                   configurationVatRate.Value,
-                    //If has a Valid ConfigurationVatExemptionReason use it Else send New Guid
+                  //If has a Valid ConfigurationVatExemptionReason use it Else send New Guid
                   (configurationVatExemptionReason != null) ? configurationVatExemptionReason.Oid : new Guid()
                 );
                 articleBagProps = new ArticleBagProperties(
@@ -339,7 +338,7 @@ _pagePad2.EntryBoxCustomerEmail.EntryValidation.Text,
             //TotalChange
 
             //OrderReferences
-            if (_pagePad1.EntryBoxSelectSourceDocumentFinance.Value != null) 
+            if (_pagePad1.EntryBoxSelectSourceDocumentFinance.Value != null)
             {
                 List<fin_documentfinancemaster> orderReferences = new List<fin_documentfinancemaster>
                 {
@@ -399,9 +398,9 @@ _pagePad2.EntryBoxCustomerEmail.EntryValidation.Text,
         {
             //Always Recreate ArticleBag before contruct ProcessFinanceDocumentParameter
             //_pagePad3.ArticleBag = GetArticleBag();            
-            
+
             DocumentFinanceDialogPreview dialog = new DocumentFinanceDialogPreview(this, DialogFlags.DestroyWithParent, pMode, _pagePad3.ArticleBag, _pagePad1.EntryBoxSelectConfigurationCurrency.Value);
-            ResponseType response = (ResponseType) dialog.Run();
+            ResponseType response = (ResponseType)dialog.Run();
             dialog.Destroy();
             return response;
         }
@@ -418,16 +417,16 @@ _pagePad2.EntryBoxCustomerEmail.EntryValidation.Text,
                 //Protection to prevent Exceed Customer CardCredit
                 if (
                     //Can be null if not in a Payable DocumentType
-                    _pagePad1.EntryBoxSelectConfigurationPaymentMethod.Value != null 
-                    && _pagePad1.EntryBoxSelectConfigurationPaymentMethod.Value.Token == "CUSTOMER_CARD" 
+                    _pagePad1.EntryBoxSelectConfigurationPaymentMethod.Value != null
+                    && _pagePad1.EntryBoxSelectConfigurationPaymentMethod.Value.Token == "CUSTOMER_CARD"
                     && articleBag.TotalFinal > _pagePad2.EntryBoxSelectCustomerName.Value.CardCredit
                 )
                 {
                     logicpos.Utils.ShowMessageTouch(
-                        this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"), 
+                        this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"),
                         string.Format(
-                            CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_value_exceed_customer_card_credit"), 
-                            LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_pagePad2.EntryBoxSelectCustomerName.Value.CardCredit, XPOSettings.ConfigurationSystemCurrency.Acronym), 
+                            CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_value_exceed_customer_card_credit"),
+                            LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_pagePad2.EntryBoxSelectCustomerName.Value.CardCredit, XPOSettings.ConfigurationSystemCurrency.Acronym),
                             LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(articleBag.TotalFinal, XPOSettings.ConfigurationSystemCurrency.Acronym)
                         )
                     );
@@ -435,7 +434,7 @@ _pagePad2.EntryBoxCustomerEmail.EntryValidation.Text,
                 }
 
                 //Protection to Prevent Recharge Customer Card with Invalid User (User without Card or FinalConsumer...)
-                if (result && ! FinancialLibraryUtils.IsCustomerCardValidForArticleBag(articleBag, _pagePad2.EntryBoxSelectCustomerName.Value))
+                if (result && !FinancialLibraryUtils.IsCustomerCardValidForArticleBag(articleBag, _pagePad2.EntryBoxSelectCustomerName.Value))
                 {
                     logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_invalid_customer_card_detected"));
                     result = false;

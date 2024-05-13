@@ -1,8 +1,8 @@
-﻿using logicpos.shared.Classes.Finance;
+﻿using LogicPOS.Shared.Article;
 using Newtonsoft.Json;
 using System;
 
-namespace logicpos.shared.Classes.Orders
+namespace LogicPOS.Shared.Orders
 {
     public class OrderDetailLine
     {

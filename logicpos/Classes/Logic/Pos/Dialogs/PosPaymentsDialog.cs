@@ -14,15 +14,14 @@ using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
 using logicpos.financial.library.App;
 using logicpos.financial.library.Classes.Finance;
-using logicpos.shared.App;
-using logicpos.shared.Classes.Finance;
+using LogicPOS.Globalization;
+using LogicPOS.Settings;
+using LogicPOS.Settings.Extensions;
+using LogicPOS.Shared.Article;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
-using LogicPOS.Settings.Extensions;
-using LogicPOS.Globalization;
-using LogicPOS.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -61,7 +60,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //ResponseTypeOk
                 else if (pResponse == ResponseType.Ok)
                 {
-					//TK016249 - Impressoras - Diferenciação entre Tipos
+                    //TK016249 - Impressoras - Diferenciação entre Tipos
                     PrintingSettings.UsingThermalPrinter = true;
                     //SaveOrUpdateCustomer Before use _selectedCustomer (Can be null)
                     resultObject = logicpos.Utils.SaveOrUpdateCustomer(
@@ -275,17 +274,17 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     ClearCustomer();
                     if (PaymentMethod != null) PaymentMethod = null;
                     if (SelectedPaymentMethodButton != null) SelectedPaymentMethodButton.Sensitive = true;
-                    
+
                     //Prevent Parent Dialog Payments from Close 
                     this.Run();
                 }
-                else if(pResponse == _responseTypeCurrentAccount)
+                else if (pResponse == _responseTypeCurrentAccount)
                 {
                     _buttonCurrentAccount.Token = "CURRENT_ACCOUNT";
                     _buttonCurrentAccount.CurrentButtonOid = InvoiceSettings.XpoOidConfigurationPaymentMethodCurrentAccount;
                     //Prevent Default Customer Entity and Hidden Customer (Only with Name Filled) to Process CC Documents
-                    if (                      
-                        (Customer != null &&(
+                    if (
+                        (Customer != null && (
                             Customer.Oid == InvoiceSettings.FinalConsumerId ||
                             _entryBoxSelectCustomerName.EntryValidation.Text == string.Empty ||
                             _entryBoxSelectCustomerFiscalNumber.EntryValidation.Text == string.Empty)
@@ -295,7 +294,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_cant_create_cc_document_with_default_entity"));
                         //Prevent Parent Dialog Payments from Close
                         this.Run();
-                    }else if (_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text == string.Empty || _entryBoxSelectCustomerName.EntryValidation.Text == string.Empty)
+                    }
+                    else if (_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text == string.Empty || _entryBoxSelectCustomerName.EntryValidation.Text == string.Empty)
                     {
                         logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_cant_create_cc_document_with_default_entity"));
                         //Prevent Parent Dialog Payments from Close
@@ -314,7 +314,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         //Keep Running
                         this.Run();
                     }
-               
+
                 }
             }
             catch (Exception ex)
@@ -620,7 +620,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 else if (logicpos.Utils.UseVatAutocomplete())
                 {
                     string cod_FiscalNumber = string.Format("{0}{1}", cfg_configurationpreferenceparameter.GetCountryCode2, _entryBoxSelectCustomerFiscalNumber.EntryValidation.Text);
-                    if(EuropeanVatInformation.Get(cod_FiscalNumber) != null)
+                    if (EuropeanVatInformation.Get(cod_FiscalNumber) != null)
                     {
                         var address = EuropeanVatInformation.Get(cod_FiscalNumber).Address.Split('\n');
                         string zip = address[2].Substring(0, address[2].IndexOf(' '));
@@ -782,7 +782,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if (isFinalConsumerEntity)
                 {
                     //EntryBox
-					//Janela Pagamentos - Aplicação de desconto total ao utilizador consumidor-final
+                    //Janela Pagamentos - Aplicação de desconto total ao utilizador consumidor-final
                     _entryBoxCustomerDiscount.EntryValidation.Sensitive = true;
                     _entryBoxCustomerAddress.EntryValidation.Sensitive = false;
                     _entryBoxCustomerLocality.EntryValidation.Sensitive = false;
@@ -983,7 +983,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //If Has a _articleBagPartialPayment Defined use its Total else use _articleBagFullPayment TotalFinal
                 decimal _totalOrder = (ArticleBagPartialPayment == null) ? ArticleBagFullPayment.TotalFinal : ArticleBagPartialPayment.TotalFinal;
                 TotalChange = Math.Round(TotalDelivery, decimalRoundTo) - Math.Round(_totalOrder, decimalRoundTo);
-                if (_labelChangeValue.Text != LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalChange, XPOSettings.ConfigurationSystemCurrency.Acronym)) _labelChangeValue.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalChange,XPOSettings.ConfigurationSystemCurrency.Acronym);
+                if (_labelChangeValue.Text != LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalChange, XPOSettings.ConfigurationSystemCurrency.Acronym)) _labelChangeValue.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalChange, XPOSettings.ConfigurationSystemCurrency.Acronym);
             }
         }
 
@@ -998,7 +998,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Default ActionArea Buttons
             TouchButtonIconWithText buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);
             TouchButtonIconWithText buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
-            
+
             //Pagamentos parciais -Escolher valor a pagar por artigo[TK: 019295]
             TouchButtonIconWithText touchButtonChangePrice = new TouchButtonIconWithText("touchButtonChangePrice", Color.Transparent, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_price"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, buttonIconChangePrice, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height);
             buttonOk.Sensitive = false;
@@ -1013,12 +1013,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             ActionAreaButton actionAreaButtonChangePrice = new ActionAreaButton(touchButtonChangePrice, ResponseType.Apply);
             actionAreaButtons.Add(actionAreaButtonChangePrice);
             actionAreaButtonChangePrice.Button.Sensitive = false;
-            
+
             actionAreaButtons.Add(actionAreaButtonOk);
             actionAreaButtons.Add(actionAreaButtonCancel);
             //if(_articleBagFullPayment.TotalQuantity <= 1)
             //{
-            
+
 
             //Reset Vars in Next Call
             _totalPartialPaymentItems = 0;
@@ -1050,11 +1050,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 else if (_dialogPartialPayment.GenericTreeViewMode == GenericTreeViewMode.CheckBox)
                 {
                     actionAreaButtonOk.Button.Sensitive = (_dialogPartialPayment.GenericTreeView.MarkedCheckBoxs > 0);
-					
-					//Pagamentos parciais - Escolher valor a pagar por artigo [TK:019295]
+
+                    //Pagamentos parciais - Escolher valor a pagar por artigo [TK:019295]
                     actionAreaButtonChangePrice.Button.Sensitive = (_dialogPartialPayment.GenericTreeView.MarkedCheckBoxs > 0);
-                    
-					//Get Indexes
+
+                    //Get Indexes
                     int indexColumnCheckBox = _dialogPartialPayment.GenericTreeView.DataSource.Columns.IndexOf("CheckBox");
                     int indexColumnPrice = _dialogPartialPayment.GenericTreeView.DataSource.Columns.IndexOf("Price");
                     int indexColumnDiscount = _dialogPartialPayment.GenericTreeView.DataSource.Columns.IndexOf("Discount");
@@ -1110,14 +1110,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if (args.ResponseId == ResponseType.Apply)
                 {
                     //Init Global ArticleBag
-                    if(ArticleBagPartialPayment == null)
+                    if (ArticleBagPartialPayment == null)
                     {
                         ArticleBagPartialPayment = new ArticleBag();
                     }
 
                     dialog.GenericTreeView.ListStoreModel.Foreach(new TreeModelForeachFunc(TreeModelForEachTaskDivide));
 
-                    if(newValuePrice > 0)
+                    if (newValuePrice > 0)
                     {
                         ProcessPartialPayment(ArticleBagPartialPayment, false);
                     }
@@ -1204,7 +1204,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     string priceFinalText = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(priceFinal, XPOSettings.ConfigurationSystemCurrency.Acronym);
 
                     string moneyPadTitle = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_moneypad_product_price") + " :: " + (string)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Designation")] + " :: " +
-                        priceFinalText); 
+                        priceFinalText);
 
 
                     MoneyPadResult result = PosMoneyPadDialog.RequestDecimalValue(_sourceWindow, moneyPadTitle, priceFinal, priceFinal);
@@ -1295,7 +1295,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _partialPaymentEnabled = pIsPartialPayment;
             // Commented to Prevend Cleaning _totalDelivery and _totalChange
             //Shared: Update Total Delivery and TotalChange 
-            if (pResetPaymentMethodButton) 
+            if (pResetPaymentMethodButton)
             {
                 TotalDelivery = 0;
                 TotalChange = 0;

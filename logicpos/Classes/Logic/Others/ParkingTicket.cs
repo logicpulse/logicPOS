@@ -2,6 +2,7 @@
 using logicpos.Classes.Enums.TicketList;
 using logicpos.datalayer.Xpo;
 using logicpos.shared.App;
+using LogicPOS.Settings;
 using System;
 using System.Net;
 
@@ -57,11 +58,11 @@ namespace logicpos.Classes.Logic.Others
                 //{
                 //    GlobalApp.WindowPos.TicketList.ArticleNotFound();
                 //}
-                if (SharedFramework.AppUseParkingTicketModule && parkingTicketResult == null)
+                if (GeneralSettings.AppUseParkingTicketModule && parkingTicketResult == null)
                 {
 
                 }
-                else if (SharedFramework.AppUseParkingTicketModule && parkingTicketResult.Date == null && ean.Length == 13)
+                else if (GeneralSettings.AppUseParkingTicketModule && parkingTicketResult.Date == null && ean.Length == 13)
                 {
                     GlobalApp.PosMainWindow.TicketList.ArticleNotFound();
                 }

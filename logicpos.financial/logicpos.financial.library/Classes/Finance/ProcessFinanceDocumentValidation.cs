@@ -2,11 +2,11 @@
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.App;
-using logicpos.shared;
 using logicpos.shared.App;
-using logicpos.shared.Classes.Finance;
 using logicpos.shared.Enums;
 using LogicPOS.Settings;
+using LogicPOS.Shared;
+using LogicPOS.Shared.Article;
 using LogicPOS.Shared.CustomDocument;
 using System;
 using System.Collections.Generic;
@@ -317,7 +317,7 @@ namespace logicpos.financial.library.Classes.Finance
                 int financeRuleSimplifiedInvoiceMaxTotal = InvoiceSettings.GetSimplifiedInvoiceMaxItems(XPOSettings.ConfigurationSystemCountry.Oid);
                 int financeRuleSimplifiedInvoiceMaxTotalServices = InvoiceSettings.GetSimplifiedInvoiceMaxServices(XPOSettings.ConfigurationSystemCountry.Oid);
                 int financeRuleRequiredCustomerDetailsAboveValue = GeneralSettings.GetRequiredCustomerDetailsAboveValue(XPOSettings.ConfigurationSystemCountry.Oid);
-                    
+
 
                 //Required Fields
 
@@ -585,13 +585,13 @@ namespace logicpos.financial.library.Classes.Finance
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
                 //Customer <> ParentDocument.Customer (And ConferenceDocument)
-				// Moçambique - Pedidos da reunião 13/10/2020 + Faturas no Front-Office [IN:014327]
+                // Moçambique - Pedidos da reunião 13/10/2020 + Faturas no Front-Office [IN:014327]
                 if (customer != null && customerParentDocument != null && customer != customerParentDocument && documentParent.DocumentType.Oid != DocumentSettings.XpoOidDocumentFinanceTypeConferenceDocument)
                 {
                     if (!CultureSettings.MozambiqueCountryId.Equals(XPOSettings.ConfigurationSystemCountry.Oid) && (documentParent.DocumentType.Oid != InvoiceSettings.XpoOidDocumentFinanceTypeInvoice || documentParent.DocumentType.Oid != DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice))
                     {
                         ResultAdd(FinanceValidationError.ERROR_RULE_PARENT_DOCUMENT_CUSTOMER_AND_CURRENT_DOCUMENT_CUSTOMER_INVALID);
-                    }                       
+                    }
                 }
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -696,7 +696,7 @@ namespace logicpos.financial.library.Classes.Finance
                     {
                         ResultAdd(FinanceValidationError.ERROR_RULE_DOCUMENT_FINANCE_TYPE_PARENT_DOCUMENT_INVALID);
                     }
-                       
+
                 }
 
                 //ParentDocuments: Credit Note

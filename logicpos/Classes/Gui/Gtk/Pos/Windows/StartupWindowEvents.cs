@@ -9,6 +9,8 @@ using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using logicpos.datalayer.Xpo;
 using logicpos.shared;
+using LogicPOS.Shared;
+using LogicPOS.Settings;
 
 namespace logicpos
 {
@@ -113,7 +115,7 @@ namespace logicpos
                 if (XPOSettings.LoggedUser.Equals(pUserDetail))
                 {
                     XPOSettings.LoggedUser = null;
-                    SharedFramework.LoggedUserPermissions = null;
+                    GeneralSettings.LoggedUserPermissions = null;
                 }
             }
             //Update Table, In case user change Users in BackOffice

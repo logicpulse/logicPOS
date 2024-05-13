@@ -20,6 +20,7 @@ using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using logicpos.shared;
+using LogicPOS.Shared;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {

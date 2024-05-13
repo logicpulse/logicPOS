@@ -1,22 +1,21 @@
 ﻿using DevExpress.Data.Filtering;
 using DevExpress.Xpo;
 using Gtk;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial.library.Classes.Finance;
+using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
+using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
-using logicpos.shared.Classes.Finance;
-using System;
-using logicpos.Classes.Enums.Keyboard;
-using System.Collections;
-using logicpos.shared.App;
-using logicpos.financial.library.App;
 using logicpos.datalayer.Xpo;
-using LogicPOS.Settings.Extensions;
+using logicpos.financial.library.App;
+using logicpos.financial.library.Classes.Finance;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using LogicPOS.Settings.Extensions;
+using LogicPOS.Shared.Article;
+using System;
+using System.Collections;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 {
@@ -105,18 +104,18 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             _posDocumentFinanceDialog = (_sourceWindow as PosDocumentFinanceDialog);
 
             //Initials Values
-            _intialValueConfigurationCountry = XPOSettings.ConfigurationSystemCountry;            
+            _intialValueConfigurationCountry = XPOSettings.ConfigurationSystemCountry;
             //Customer Name
             CriteriaOperator criteriaOperatorCustomerName = null;
-			//TK016251 - FrontOffice - Criar novo documento com auto-complete para artigos e clientes 
+            //TK016251 - FrontOffice - Criar novo documento com auto-complete para artigos e clientes 
             treeViewCustomer = new TreeViewCustomer(
               pSourceWindow,
               null,//DefaultValue 
               null,//DialogType
-              null         
+              null
             );
 
-         
+
             erp_customer customer = null;
             SortingCollection sortCollection = new SortingCollection
             {
@@ -132,26 +131,26 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             customer.Name = "";
             customer.FiscalNumber = "";
             EntryBoxSelectCustomerName = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(
-                _sourceWindow, 
-                CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_customer"), 
-                "Name", 
-                "Name", 
-                customer, 
-                criteriaOperatorCustomerName, 
-                KeyboardMode.Alfa, 
-                LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, 
+                _sourceWindow,
+                CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_customer"),
+                "Name",
+                "Name",
+                customer,
+                criteriaOperatorCustomerName,
+                KeyboardMode.Alfa,
+                LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus,
                 true);
-            
+
             EntryBoxSelectCustomerName.ClosePopup += delegate
             {
                 GetCustomerDetails("Oid", EntryBoxSelectCustomerName.Value.Oid.ToString());
                 Validate();
             };
-			//TK016251 - FrontOffice - Criar novo documento com auto-complete para artigos e clientes 
+            //TK016251 - FrontOffice - Criar novo documento com auto-complete para artigos e clientes 
             EntryBoxSelectCustomerName.EntryValidation.Changed += delegate
             {
                 _entryBoxSelectCustomerName_Changed(EntryBoxSelectCustomerName.EntryValidation, null);
-                if(EntryBoxSelectCustomerFiscalNumber.EntryValidation.Text == string.Empty)
+                if (EntryBoxSelectCustomerFiscalNumber.EntryValidation.Text == string.Empty)
                 {
                     EntryBoxSelectCustomerFiscalNumber.EntryValidation.Validated = false;
                     _pagePad.ButtonNext.Sensitive = false;
@@ -206,14 +205,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //Customer CardNumber
             CriteriaOperator criteriaOperatorCustomerCardNumber = null;
             EntryBoxSelectCustomerCardNumber = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(
-                _sourceWindow, 
-                CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_card_number"), 
-                "CardNumber", 
-                "CardNumber", 
-                null, 
-                criteriaOperatorCustomerCardNumber, 
-                KeyboardMode.AlfaNumeric, 
-                LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, 
+                _sourceWindow,
+                CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_card_number"),
+                "CardNumber",
+                "CardNumber",
+                null,
+                criteriaOperatorCustomerCardNumber,
+                KeyboardMode.AlfaNumeric,
+                LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended,
                 false);
 
             EntryBoxSelectCustomerCardNumber.ClosePopup += delegate
@@ -224,10 +223,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
             //Customer Discount
             EntryBoxCustomerDiscount = new EntryBoxValidation(
-                _sourceWindow, 
+                _sourceWindow,
                 CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_discount"),
-                KeyboardMode.Alfa, 
-                LogicPOS.Utility.RegexUtils.RegexPercentage, 
+                KeyboardMode.Alfa,
+                LogicPOS.Utility.RegexUtils.RegexPercentage,
                 true);
 
             EntryBoxCustomerDiscount.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.DecimalToString(0.0m);
@@ -676,12 +675,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                     isConferenceDocument = (_pagePad1.EntryBoxSelectSourceDocumentFinance.Value != null && _pagePad1.EntryBoxSelectSourceDocumentFinance.Value.DocumentType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeConferenceDocument);
                     isWayBill = _pagePad1.EntryBoxSelectDocumentFinanceType.Value.WayBill;
                 }
-				// Moçambique - Pedidos da reunião 13/10/2020 + Faturas no Front-Office [IN:014327]
+                // Moçambique - Pedidos da reunião 13/10/2020 + Faturas no Front-Office [IN:014327]
                 //Disable/Enable ButtonClearCustomer based on SourceDocument, if has SourceDocument Disable ClearButton
                 _posDocumentFinanceDialog.ButtonClearCustomer.Sensitive = (_pagePad1.EntryBoxSelectSourceDocumentFinance.Value == null);
 
-                if(_pagePad1.EntryBoxSelectSourceDocumentFinance.Value != null && CultureSettings.MozambiqueCountryId.Equals(XPOSettings.ConfigurationSystemCountry.Oid) 
-                    && _pagePad1.EntryBoxSelectSourceDocumentFinance.Value != null 
+                if (_pagePad1.EntryBoxSelectSourceDocumentFinance.Value != null && CultureSettings.MozambiqueCountryId.Equals(XPOSettings.ConfigurationSystemCountry.Oid)
+                    && _pagePad1.EntryBoxSelectSourceDocumentFinance.Value != null
                     && (_pagePad1.EntryBoxSelectSourceDocumentFinance.Value.DocumentType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice || _pagePad1.EntryBoxSelectSourceDocumentFinance.Value.DocumentType.Oid == InvoiceSettings.XpoOidDocumentFinanceTypeInvoice))
                 {
 

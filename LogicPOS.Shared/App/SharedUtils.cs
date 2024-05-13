@@ -4,14 +4,15 @@ using DevExpress.Xpo.DB;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
-using logicpos.shared.Classes.Finance;
-using logicpos.shared.Classes.Orders;
 using logicpos.shared.Enums;
 using LogicPOS.DTOs.Common;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
 using LogicPOS.Settings.Extensions;
+using LogicPOS.Shared;
+using LogicPOS.Shared.Article;
+using LogicPOS.Shared.Orders;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -27,29 +28,6 @@ namespace logicpos.shared.App
     {
         //Log4Net
         private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
-
-        public static decimal GetGlobalDiscount()
-        {
-            decimal result = 0.0m;
-
-            if (POSSession.CurrentSession != null
-                && POSSession.CurrentSession.OrderMains.ContainsKey(POSSession.CurrentSession.CurrentOrderMainId)
-            )
-            {
-                //get CurrentOrderMain
-                OrderMain orderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];
-                //Get Table to Get Discount
-                pos_configurationplacetable xConfigurationPlaceTable = (pos_configurationplacetable)GetXPGuidObject(XPOSettings.Session, typeof(pos_configurationplacetable), orderMain.Table.Oid);
-                //Get Fresh Discount From Table/Future 
-                if (xConfigurationPlaceTable != null)
-                {
-                    result = xConfigurationPlaceTable.Discount;
-                }
-            }
-
-            return result;
-        }
 
         public static PriceProperties GetArticlePrice(fin_article pArticle, TaxSellType pTaxSellType)
         {
@@ -152,7 +130,7 @@ namespace logicpos.shared.App
               priceSource,
               1.0m,
               pArticle.Discount,
-              GetGlobalDiscount(),
+              POSSession.GetGlobalDiscount(),
               priceTax
             );
 
@@ -475,9 +453,9 @@ namespace logicpos.shared.App
         public static bool HasPermissionTo(string pToken)
         {
             bool result;
-            if (SharedFramework.LoggedUserPermissions != null && SharedFramework.LoggedUserPermissions.ContainsKey(pToken))
+            if (GeneralSettings.LoggedUserPermissions != null && GeneralSettings.LoggedUserPermissions.ContainsKey(pToken))
             {
-                result = SharedFramework.LoggedUserPermissions[pToken];
+                result = GeneralSettings.LoggedUserPermissions[pToken];
             }
             else
             {

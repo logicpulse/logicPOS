@@ -64,7 +64,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 //PrintWorkSessionMovement
                 //PrintRouter.PrintWorkSessionMovement(XPOSettings.LoggedTerminal.Printer, GlobalFramework.WorkSessionPeriodTerminal);
-                FrameworkCalls.PrintWorkSessionMovement(this, XPOSettings.LoggedTerminal.ThermalPrinter, SharedFramework.WorkSessionPeriodTerminal);
+                FrameworkCalls.PrintWorkSessionMovement(this, XPOSettings.LoggedTerminal.ThermalPrinter, XPOSettings.WorkSessionPeriodTerminal);
 
                 //PrintTicket.PrintWorkSessionMovement(XPOSettings.LoggedTerminal.Printer, GlobalFramework.WorkSessionPeriodDay);
                 //PrintTicket.PrintWorkSessionMovement(XPOSettings.LoggedTerminal.Printer, GlobalFramework.WorkSessionPeriodTerminal);

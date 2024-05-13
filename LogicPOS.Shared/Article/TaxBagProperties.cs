@@ -1,4 +1,4 @@
-﻿namespace logicpos.shared.Classes.Finance
+﻿namespace LogicPOS.Shared.Article
 {
     public class TaxBagProperties
     {

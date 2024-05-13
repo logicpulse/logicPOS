@@ -3,6 +3,7 @@ using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Logic.Others;
 using logicpos.Extensions;
 using logicpos.shared.App;
+using LogicPOS.Settings;
 using System;
 using System.Drawing;
 
@@ -242,7 +243,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             //_buttonSplitAccount.Sensitive = false;
 
             //IN009279 Parking ticket Service - implementar Cartão cliente
-            if (SharedFramework.AppUseParkingTicketModule)
+            if (GeneralSettings.AppUseParkingTicketModule)
             {
                 _buttonCardCode.Visible = true;
                 buttonCardCodeVisible = true;

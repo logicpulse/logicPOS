@@ -11,12 +11,12 @@ using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Hardware.Printers;
 using logicpos.financial.library.Classes.WorkSession;
-using logicpos.shared;
 using logicpos.shared.App;
-using logicpos.shared.Classes.Orders;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Extensions;
+using LogicPOS.Shared;
+using LogicPOS.Shared.Orders;
 using System;
 
 namespace logicpos
@@ -197,7 +197,7 @@ namespace logicpos
                     if (POSSession.CurrentSession.LoggedUsers.ContainsKey(dialogChangeUser.UserDetail.Oid))
                     {
                         XPOSettings.LoggedUser = (sys_userdetail)XPOHelper.GetXPGuidObject(typeof(sys_userdetail), dialogChangeUser.UserDetail.Oid);
-                        SharedFramework.LoggedUserPermissions = SharedUtils.GetUserPermissions();
+                        GeneralSettings.LoggedUserPermissions = SharedUtils.GetUserPermissions();
                         TicketList.UpdateTicketListButtons();
                         SharedUtils.Audit("USER_CHANGE", string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "audit_message_user_change"), XPOSettings.LoggedUser.Name));
                         terminalInfo = string.Format("{0} : {1}", XPOSettings.LoggedTerminal.Designation, XPOSettings.LoggedUser.Name);
@@ -215,7 +215,7 @@ namespace logicpos
                                 POSSession.CurrentSession.LoggedUsers.Add(dialogChangeUser.UserDetail.Oid, XPOHelper.CurrentDateTimeAtomic());
                                 POSSession.CurrentSession.Save();
                                 XPOSettings.LoggedUser = (sys_userdetail)XPOHelper.GetXPGuidObject(typeof(sys_userdetail), dialogChangeUser.UserDetail.Oid);
-                                SharedFramework.LoggedUserPermissions = SharedUtils.GetUserPermissions();
+                                GeneralSettings.LoggedUserPermissions = SharedUtils.GetUserPermissions();
                                 TicketList.UpdateTicketListButtons();
                                 SharedUtils.Audit("USER_loggerIN", string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "audit_message_user_loggerin"), XPOSettings.LoggedUser.Name));
                                 terminalInfo = string.Format("{0} : {1}", XPOSettings.LoggedTerminal.Designation, XPOSettings.LoggedUser.Name);
@@ -279,7 +279,7 @@ namespace logicpos
             //Article Filter : When Change Family always change Article too
             TablePadArticle.Filter = " AND (SubFamily = '" + getFirstSubFamily + "')";
             //IN009277ENDS
-          
+
             //Debug
             //_logger.Debug(string.Format("_tablePadFamily_Clicked(): F:CurrentId: [{0}], Name: [{1}]", button.CurrentId, button.Name));
             //_logger.Debug(string.Format("_tablePadFamily_Clicked(): SubFamily.Sql:[{0}{1}{2}]", _tablePadSubFamily.Sql, _tablePadSubFamily.Filter, _tablePadSubFamily.Order));
@@ -358,12 +358,12 @@ namespace logicpos
                             XPOSettings.LoggedTerminal.Designation,
                             "Button Open Door"));
                     }
-                    
+
                 };
 
                 dialogPinPad.Destroy();
 
-             
+
             }
         }
 
@@ -379,7 +379,7 @@ namespace logicpos
              */
             if (GlobalApp.PosMainWindow.TicketList.CurrentOrderDetails != null)
             {
-                    switch (GlobalApp.BarCodeReader.Device)
+                switch (GlobalApp.BarCodeReader.Device)
                 {
                     case InputReaderDevice.None:
                         break;
@@ -387,7 +387,7 @@ namespace logicpos
                     case InputReaderDevice.CardReader:
                         /* TK013134 - Parking Ticket */
                         // TODO implement a message dialog for UX purposes informing user that needs to select a table before scan a barcode
-                        if (SharedFramework.AppUseParkingTicketModule)
+                        if (GeneralSettings.AppUseParkingTicketModule)
                         {
                             GlobalApp.ParkingTicket.GetTicketDetailFromWS(GlobalApp.BarCodeReader.Buffer);
                             //TicketList.InsertOrUpdate(GlobalApp.BarCodeReader.Buffer);
@@ -398,7 +398,7 @@ namespace logicpos
                             TicketList.InsertOrUpdate(GlobalApp.BarCodeReader.Buffer);
                         }
                         break;
-                    
+
                     default:
                         break;
                 }
@@ -424,10 +424,10 @@ namespace logicpos
             //_logger.Debug("void UpdateWorkSessionUI() :: Starting..."); /* IN009008 */
 
             //Update Toolbar UI Buttons After ToolBox and ToolBar
-            if (SharedFramework.WorkSessionPeriodDay != null)
+            if (XPOSettings.WorkSessionPeriodDay != null)
             {
                 //With Valid WorkSessionPeriodDay
-                if (SharedFramework.WorkSessionPeriodDay.SessionStatus == WorkSessionPeriodStatus.Open)
+                if (XPOSettings.WorkSessionPeriodDay.SessionStatus == WorkSessionPeriodStatus.Open)
                 {
                     //if (_touchButtonPosToolbarCashDrawer.LabelText != CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_worksession_close_day)
                     //  _touchButtonPosToolbarCashDrawer.LabelText = CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_worksession_close_day;
@@ -435,7 +435,7 @@ namespace logicpos
                     //  _touchButtonPosToolbarCashDrawer.Sensitive = true;
 
                     //With Valid WorkSessionPeriodTerminal
-                    if (SharedFramework.WorkSessionPeriodTerminal != null && SharedFramework.WorkSessionPeriodTerminal.SessionStatus == WorkSessionPeriodStatus.Open)
+                    if (XPOSettings.WorkSessionPeriodTerminal != null && XPOSettings.WorkSessionPeriodTerminal.SessionStatus == WorkSessionPeriodStatus.Open)
                     {
                         bool isTableOpened = POSSession.CurrentSession.OrderMains.ContainsKey(POSSession.CurrentSession.CurrentOrderMainId)
                           && POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId].Table != null;
@@ -456,8 +456,8 @@ namespace logicpos
 
                         SelectStatementResultRow[] selectStatementResultMeta = xpoSelectedData.ResultSet[0].Rows;
                         SelectStatementResultRow[] selectStatementResultData = xpoSelectedData.ResultSet[1].Rows;
-                        if (!isTableOpened && !SharedFramework.AppUseBackOfficeMode)                        
-                        {                         
+                        if (!isTableOpened && !GeneralSettings.AppUseBackOfficeMode)
+                        {
 
                             Guid currentTableOid = Guid.Parse(selectStatementResultData[0].Values[0].ToString());
 
@@ -489,14 +489,14 @@ namespace logicpos
                             //GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid].Table.OrderMainOid = currentTableOid;
                             _ticketPad.Sensitive = true;
                         }
-                        if (!SharedFramework.AppUseBackOfficeMode)
+                        if (!GeneralSettings.AppUseBackOfficeMode)
                             TablePadArticle.Sensitive = true;
 
-                        if (!_ticketPad.Sensitive == true && !SharedFramework.AppUseBackOfficeMode)
+                        if (!_ticketPad.Sensitive == true && !GeneralSettings.AppUseBackOfficeMode)
                             _ticketPad.Sensitive = true;
                     }
                     //With No WorkSessionPeriodTerminal
-                    else if (!SharedFramework.AppUseBackOfficeMode)
+                    else if (!GeneralSettings.AppUseBackOfficeMode)
                     {
                         if (!_ticketPad.Sensitive == false)
                             _ticketPad.Sensitive = false;
@@ -506,7 +506,7 @@ namespace logicpos
                 }
             }
             //No WorkSessionPeriodDay
-            else if (!SharedFramework.AppUseBackOfficeMode)
+            else if (!GeneralSettings.AppUseBackOfficeMode)
             {
                 //if (_touchButtonPosToolbarCashDrawer.LabelText != CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_worksession_open_day)
                 //  _touchButtonPosToolbarCashDrawer.LabelText = CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_worksession_open_day;
@@ -541,21 +541,21 @@ namespace logicpos
                 }
 
                 //Update UI Button and Get WorkSessionPeriodDay if is Opened by Other Terminal
-                if (SharedFramework.WorkSessionPeriodTerminal == null
-                  || (SharedFramework.WorkSessionPeriodTerminal != null && SharedFramework.WorkSessionPeriodTerminal.SessionStatus == WorkSessionPeriodStatus.Close))
+                if (XPOSettings.WorkSessionPeriodTerminal == null
+                  || (XPOSettings.WorkSessionPeriodTerminal != null && XPOSettings.WorkSessionPeriodTerminal.SessionStatus == WorkSessionPeriodStatus.Close))
                 {
                     pos_worksessionperiod workSessionPeriodDay = ProcessWorkSessionPeriod.GetSessionPeriod(WorkSessionPeriodType.Day);
 
                     if (workSessionPeriodDay == null)
                     {
-                        SharedFramework.WorkSessionPeriodDay = null;
+                        XPOSettings.WorkSessionPeriodDay = null;
                         UpdateWorkSessionUI();
                     }
                     else
                     {
                         if (workSessionPeriodDay.SessionStatus == WorkSessionPeriodStatus.Open)
                         {
-                            SharedFramework.WorkSessionPeriodDay = workSessionPeriodDay;
+                            XPOSettings.WorkSessionPeriodDay = workSessionPeriodDay;
                             UpdateWorkSessionUI();
                         }
                     }

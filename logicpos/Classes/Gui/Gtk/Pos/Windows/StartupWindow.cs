@@ -441,7 +441,7 @@ namespace logicpos
             /*
             UserDetail userDetail = (UserDetail)XPOSettings.Session.GetObjectByKey(typeof(UserDetail), new Guid("090c5684-52ba-4d7a-8bc3-a00320ef503d"));
             userDetail.Profile.Permissions.Reload();
-            SharedFramework.LoggedUserPermissions = SharedUtils.GetUserPermissions(userDetail);
+            GeneralSettings.LoggedUserPermissions = SharedUtils.GetUserPermissions(userDetail);
             bool BACKOFFICE_ACCESS = FrameworkUtils.HasPermissionTo("BACKOFFICE_ACCESS");
             _logger.Debug(string.Format("HasPermissionTo(BACKOFFICE_ACCESS) : [{0}]", BACKOFFICE_ACCESS));
             */

@@ -3,16 +3,17 @@ using DevExpress.Xpo.DB;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
+using logicpos.shared;
 using logicpos.shared.App;
-using logicpos.shared.Classes.Orders;
 using logicpos.shared.Enums;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Extensions;
+using LogicPOS.Shared.Orders;
 using System;
 using System.Collections.Generic;
 
-namespace logicpos.shared.Classes.Finance
+namespace LogicPOS.Shared.Article
 {
     public class ArticleBag : Dictionary<ArticleBagKey, ArticleBagProperties>
     {
@@ -39,8 +40,7 @@ namespace logicpos.shared.Classes.Finance
         public ArticleBag()
             : base(new ArticleBagKey.EqualityComparer())
         {
-            //Get Default Global Discount
-            DiscountGlobal = SharedUtils.GetGlobalDiscount();
+            DiscountGlobal = POSSession.GetGlobalDiscount();
         }
 
         public ArticleBag(decimal pDiscountGlobal)

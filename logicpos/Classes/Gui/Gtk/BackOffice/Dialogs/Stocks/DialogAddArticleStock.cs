@@ -26,6 +26,7 @@ using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using logicpos.shared;
+using LogicPOS.Shared;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -426,8 +427,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _serialNumbersInCache = new Dictionary<EntryValidation, string>();
 
             //Get From Session if Exists
-            object supplier = POSSession.CurrentSession.GetToken(string.Format("{0}_{1}", this.GetType().Name, "supplier").ToUpper());
-            object documentDate = POSSession.CurrentSession.GetToken(string.Format("{0}_{1}", this.GetType().Name, "documentDate").ToUpper());
+            object supplier = POSSession.CurrentSession.GetToken($"{this.GetType().Name}_{"supplier"}".ToUpper());
+            object documentDate = POSSession.CurrentSession.GetToken($"{this.GetType().Name}_{"documentDate"}".ToUpper());
             //object documentNumber = GlobalFramework.SessionApp.GetToken(string.Format("{0}_{1}", this.GetType().Name, "documentNumber").ToUpper());
             //Assign if Valid
             try

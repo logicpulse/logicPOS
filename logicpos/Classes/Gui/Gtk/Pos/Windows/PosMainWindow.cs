@@ -704,7 +704,7 @@ namespace logicpos
             TouchButtonPosToolbarNewFinanceDocument = getButton(buttonNewFinanceDocumentName, buttonNewFinanceDocumentText, buttonNewFinanceDocumentImageFileName);
 
             //Toggle Sensitive Buttons
-            TouchButtonPosToolbarNewFinanceDocument.Sensitive = (SharedFramework.WorkSessionPeriodTerminal != null && SharedFramework.WorkSessionPeriodTerminal.SessionStatus == WorkSessionPeriodStatus.Open);
+            TouchButtonPosToolbarNewFinanceDocument.Sensitive = (XPOSettings.WorkSessionPeriodTerminal != null && XPOSettings.WorkSessionPeriodTerminal.SessionStatus == WorkSessionPeriodStatus.Open);
             //Pack Buttons
             HBox hboxToolbar = new HBox(false, 0);
             hboxToolbar.BorderWidth = 10;

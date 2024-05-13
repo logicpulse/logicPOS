@@ -8,15 +8,15 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
-using logicpos.shared;
 using logicpos.shared.App;
-using logicpos.shared.Classes.Finance;
-using logicpos.shared.Classes.Orders;
 using logicpos.shared.Enums;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
 using LogicPOS.Settings.Extensions;
+using LogicPOS.Shared;
+using LogicPOS.Shared.Article;
+using LogicPOS.Shared.Orders;
 using System;
 using System.Drawing;
 
@@ -679,7 +679,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 string originalDesignation = article.Designation;
                 /* TK013134 */
                 string ean = parkingTicketResult.Ean;
-                bool isAppUseParkingTicketModule = SharedFramework.AppUseParkingTicketModule && !string.IsNullOrEmpty(ean);
+                bool isAppUseParkingTicketModule = GeneralSettings.AppUseParkingTicketModule && !string.IsNullOrEmpty(ean);
                 // Override default Designation with pToken1 : Priority
                 if (isAppUseParkingTicketModule)
                 {
@@ -728,7 +728,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
                 //Get Article defaultQuantity
                 decimal defaultQuantity = GetArticleDefaultQuantity(pArticleOid);
-                if (SharedFramework.AppUseParkingTicketModule) { defaultQuantity = article.DefaultQuantity; if (defaultQuantity == 0) defaultQuantity = 1; }
+                if (GeneralSettings.AppUseParkingTicketModule) { defaultQuantity = article.DefaultQuantity; if (defaultQuantity == 0) defaultQuantity = 1; }
                 else { defaultQuantity = GetArticleDefaultQuantity(pArticleOid); }
                 decimal price = 0.0m;
 
@@ -760,7 +760,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
                 //Update
                 //Ticket não incrementar com codigo barras desconhecido (acrescentado -> && GlobalFramework.AppUseParkingTicketModule && isAppUseParkingTicketModule)
-                if (_listStoreModelSelectedIndex != -1 && SharedFramework.AppUseParkingTicketModule && isAppUseParkingTicketModule)
+                if (_listStoreModelSelectedIndex != -1 && GeneralSettings.AppUseParkingTicketModule && isAppUseParkingTicketModule)
 
                 {
                     //Update orderDetails SessionApp
@@ -855,7 +855,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                       price,
                       1.0m,
                       article.Discount,
-                      SharedUtils.GetGlobalDiscount(),
+                      POSSession.GetGlobalDiscount(),
                       priceTax
                     );
 
@@ -937,7 +937,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         //Assign SessionApp TreeIter, get ArticleId with LINQ
                         _listStoreModelSelectedIndex = CurrentOrderDetails.Lines.FindIndex(item => item.ArticleOid == pArticleOid);
                         CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].TreeIter = _treeIter;
-                        if (SharedFramework.AppUseParkingTicketModule) { CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity = defaultQuantity; }
+                        if (GeneralSettings.AppUseParkingTicketModule) { CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity = defaultQuantity; }
                     }
                 };
 
@@ -973,7 +973,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 ListStoreModel.SetValue(_treeIter, (int)TicketListColumns.Total, LogicPOS.Utility.DataConversionUtils.DecimalToString(CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.TotalFinal));
                 //Update Total
                 UpdateTicketListTotal();
-                if (SharedFramework.AppUseParkingTicketModule) CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity = pQuantity; ;
+                if (GeneralSettings.AppUseParkingTicketModule) CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity = pQuantity; ;
             }
         }
 
@@ -1289,7 +1289,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 if (_toolbarCashDrawer != null /*&& !_toolbarCashDrawer.Sensitive*/) _toolbarCashDrawer.Sensitive = (SharedUtils.HasPermissionTo("WORKSESSION_ALL"));
                 if (_toolbarFinanceDocuments != null && !_toolbarFinanceDocuments.Sensitive) _toolbarFinanceDocuments.Sensitive = true;
                 //With Valid Open WorkSessionPeriodTerminal
-                if (SharedFramework.WorkSessionPeriodTerminal != null && SharedFramework.WorkSessionPeriodTerminal.SessionStatus == WorkSessionPeriodStatus.Open)
+                if (XPOSettings.WorkSessionPeriodTerminal != null && XPOSettings.WorkSessionPeriodTerminal.SessionStatus == WorkSessionPeriodStatus.Open)
                 {
                     if (_toolbarNewFinanceDocument != null && !_toolbarNewFinanceDocument.Sensitive) _toolbarNewFinanceDocument.Sensitive = true;
                 }
@@ -1409,7 +1409,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             //_logger.Debug("void UpdateOrderStatusBar() :: Starting..."); /* IN009008 */
             //If CashDrawer Open
-            if (SharedFramework.WorkSessionPeriodTerminal != null && SharedFramework.WorkSessionPeriodTerminal.SessionStatus == WorkSessionPeriodStatus.Open)
+            if (XPOSettings.WorkSessionPeriodTerminal != null && XPOSettings.WorkSessionPeriodTerminal.SessionStatus == WorkSessionPeriodStatus.Open)
             {
                 //If has Working Order
                 if (
@@ -1431,7 +1431,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                       string.Format(labelCurrentTableFormat
                         , global_table
                         , orderMain.Table.Name
-                        , SharedUtils.GetGlobalDiscount()
+                        , POSSession.GetGlobalDiscount()
                         , lastUserName
                         );
 

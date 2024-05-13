@@ -11,14 +11,13 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
 using logicpos.financial.library.Classes.Finance;
-using logicpos.shared.App;
-using logicpos.shared.Classes.Finance;
+using LogicPOS.Globalization;
+using LogicPOS.Settings;
+using LogicPOS.Settings.Extensions;
+using LogicPOS.Shared.Article;
 using System;
 using System.Data;
 using System.Drawing;
-using LogicPOS.Settings.Extensions;
-using LogicPOS.Globalization;
-using LogicPOS.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -38,7 +37,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private readonly ResponseType _responseTypeClearCustomer = (ResponseType)11;
         private readonly ResponseType _responseTypeFullPayment = (ResponseType)12;
         private readonly ResponseType _responseTypePartialPayment = (ResponseType)13;
-        private readonly ResponseType _responseTypeCurrentAccount= (ResponseType)14;
+        private readonly ResponseType _responseTypeCurrentAccount = (ResponseType)14;
         //UI
         private readonly Label _labelTotalValue;
         private readonly Label _labelDeliveryValue;
@@ -121,7 +120,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 bool enableCurrentAccountButton = pEnableCurrentAccountButton;
                 //if (enablePartialPaymentButtons) enablePartialPaymentButtons = (_articleBagFullPayment.TotalQuantity > 1) ? true : false;
                 //Files
-				//TK016311 Botão Novo Cliente nos pagamentos do TicketPad 
+                //TK016311 Botão Novo Cliente nos pagamentos do TicketPad 
                 string fileIconNewCustomer = GeneralSettings.Paths["images"] + @"Icons\icon_pos_clients.png";
                 string fileIconClearCustomer = GeneralSettings.Paths["images"] + @"Icons\icon_pos_nav_delete.png";
                 string fileIconFullPayment = GeneralSettings.Paths["images"] + @"Icons\icon_pos_payment_full.png";
@@ -129,7 +128,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 string fileIconCurrentAccount = GeneralSettings.Paths["images"] + @"Icons\icon_pos_toolbar_finance_document.png";
                 //Valor a pagar 
                 //Pagamentos parciais - Escolher valor a pagar por artigo [TK:019295]
-               string fileIconChangePaumentAmount = GeneralSettings.Paths["images"] + @"Icons\BackOffice\icon_pos_toolbar_finance_document.png";
+                string fileIconChangePaumentAmount = GeneralSettings.Paths["images"] + @"Icons\BackOffice\icon_pos_toolbar_finance_document.png";
 
                 //Colors
                 Color colorPosPaymentsDialogTotalPannelBackground = GeneralSettings.Settings["colorPosPaymentsDialogTotalPannelBackground"].StringToColor();
@@ -251,14 +250,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //TotalPannel
                 EventBox eventboxTotalPannel = new EventBox();
                 eventboxTotalPannel.BorderWidth = 4;
-                eventboxTotalPannel.ModifyBg(StateType.Normal,colorPosPaymentsDialogTotalPannelBackground.ToGdkColor());
+                eventboxTotalPannel.ModifyBg(StateType.Normal, colorPosPaymentsDialogTotalPannelBackground.ToGdkColor());
                 eventboxTotalPannel.Add(tableTotalPannel);
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
                 //Customer Name
                 CriteriaOperator criteriaOperatorCustomerName = null;
-				/* IN009202 */
+                /* IN009202 */
                 _entryBoxSelectCustomerName = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(_sourceWindow, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_customer"), "Name", "Name", null, criteriaOperatorCustomerName, KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, false);
                 _entryBoxSelectCustomerName.ClosePopup += delegate
                 {
@@ -299,7 +298,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _entryBoxCustomerZipCode = new EntryBoxValidation(this, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_zipcode"), KeyboardMode.Alfa, XPOSettings.ConfigurationSystemCountry.RegExZipCode, false);
                 _entryBoxCustomerZipCode.WidthRequest = 150;
                 _entryBoxCustomerZipCode.EntryValidation.Changed += delegate { Validate(); };
-                
+
                 //City
                 _entryBoxCustomerCity = new EntryBoxValidation(this, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_city"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, false);/* IN009253 */
                 _entryBoxCustomerCity.WidthRequest = 200;
@@ -370,32 +369,33 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     // PaymentMethod
                     PaymentMethod = (fin_configurationpaymentmethod)XPOHelper.GetXPGuidObject(typeof(fin_configurationpaymentmethod), ProcessFinanceDocumentParameter.PaymentMethod);
                     // Restore Selected Payment Method, require to associate button reference to selectedPaymentMethodButton
-                    if (!string.IsNullOrEmpty(pSelectedPaymentMethodButtonName)) {
+                    if (!string.IsNullOrEmpty(pSelectedPaymentMethodButtonName))
+                    {
                         switch (pSelectedPaymentMethodButtonName)
                         {
-                            case "touchButtonMoney_Green" :
+                            case "touchButtonMoney_Green":
                                 SelectedPaymentMethodButton = buttonMoney;
                                 break;
-                            case "touchButtonCheck_Green" :
+                            case "touchButtonCheck_Green":
                                 SelectedPaymentMethodButton = buttonCheck;
                                 break;
-                            case "touchButtonMB_Green" :
+                            case "touchButtonMB_Green":
                                 SelectedPaymentMethodButton = buttonMB;
                                 break;
-                            case "touchButtonCreditCard_Green" :
+                            case "touchButtonCreditCard_Green":
                                 SelectedPaymentMethodButton = buttonCreditCard;
                                 break;
                             /* IN009142 */
-                            case "touchButtonDebitCard_Green" :
+                            case "touchButtonDebitCard_Green":
                                 SelectedPaymentMethodButton = buttonDebitCard;
                                 break;
                             case "touchButtonVisa_Green":
                                 SelectedPaymentMethodButton = buttonVisa;
                                 break;
-                            case "touchButtonCurrentAccount_Green" :
+                            case "touchButtonCurrentAccount_Green":
                                 SelectedPaymentMethodButton = buttonCurrentAccount;
                                 break;
-                            case "touchButtonCustomerCard_Green" :
+                            case "touchButtonCustomerCard_Green":
                                 SelectedPaymentMethodButton = buttonCustomerCard;
                                 break;
                         }

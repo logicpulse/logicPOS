@@ -1,16 +1,16 @@
 ﻿using Gtk;
-using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.shared.Classes.Finance;
+using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.Extensions;
+using LogicPOS.Globalization;
+using LogicPOS.Settings;
+using LogicPOS.Settings.Extensions;
+using LogicPOS.Shared.Article;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using logicpos.Classes.Enums.Dialogs;
-using logicpos.Extensions;
-using LogicPOS.Settings.Extensions;
-using LogicPOS.Globalization;
-using LogicPOS.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -26,7 +26,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             Size windowSize = new Size(700, 360);
             string fileDefaultWindowIcon = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_window_preview.png";
-            
+
             //Parameters
             _articleBag = pArticleBag;
             _configurationCurrency = pConfigurationCurrency;
@@ -84,17 +84,17 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 Label labelTitleTotalNet = new Label(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_totalnet"));
                 Label labelTitleTotalGross = new Label(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_totalgross"));
                 Label labelTitleDiscountTotal = new Label(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_total_discount")); /* IN009206 */
-				/* IN009206 */
+                /* IN009206 */
                 //Label labelTitleDiscountPaymentConditions = new Label(CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_discount_payment_conditions);
                 Label labelTitleTotalTax = new Label(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_totaltax")); /* IN009206 */
                 Label labelTitleTotalFinal = new Label(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_totalfinal"));
 
-				//Values: Table Totals
-				/* IN009206 - Begin */
+                //Values: Table Totals
+                /* IN009206 - Begin */
                 Label labelValueTotalGross = new Label(LogicPOS.Utility.DataConversionUtils.DecimalToString(_articleBag.TotalGross * exchangeRate));
                 Label labelValueDiscountCustomer = new Label(LogicPOS.Utility.DataConversionUtils.DecimalToString(_articleBag.DiscountGlobal)) { WidthRequest = 100 };
-				/* IN009206 */                
-				//Label labelValueDiscountPaymentConditions  = new Label(LogicPOS.Utility.DataConversionUtils.DecimalToString(0.0m));
+                /* IN009206 */
+                //Label labelValueDiscountPaymentConditions  = new Label(LogicPOS.Utility.DataConversionUtils.DecimalToString(0.0m));
                 Label labelValueDiscountTotal = new Label(LogicPOS.Utility.DataConversionUtils.DecimalToString(_articleBag.TotalDiscount * exchangeRate));
                 Label labelValueTotalNet = new Label(LogicPOS.Utility.DataConversionUtils.DecimalToString(_articleBag.TotalNet * exchangeRate));
                 Label labelValueTotalTax = new Label(LogicPOS.Utility.DataConversionUtils.DecimalToString(_articleBag.TotalTax * exchangeRate));
@@ -111,7 +111,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 labelsTitle.Add(labelTitleDiscountCustomer);
                 labelsValue.Add(labelValueDiscountCustomer);
 
-				/* IN009206 */
+                /* IN009206 */
                 //labelsTitle.Add(labelTitleDiscountPaymentConditions);
                 //labelsValue.Add(labelValueDiscountPaymentConditions);
 
@@ -123,11 +123,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 labelsTitle.Add(labelTitleTotalTax);
                 labelsValue.Add(labelValueTotalTax);
-				/* IN009206 - End */
+                /* IN009206 - End */
 
                 labelsTitle.Add(labelTitleTotalFinal);
                 labelsValue.Add(labelValueTotalFinal);
-                
+
                 //Add Tax Table and Rows
                 uint row = 0;
                 Table tableTax = new Table(Convert.ToUInt16(_articleBag.TaxBag.Count), 4, false);
@@ -171,16 +171,16 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 tableTotal.Attach(labelValueDiscountCustomer, 1, 2, row, row + 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
                 //Row2
                 row++;
-				/* IN009206 */
+                /* IN009206 */
                 //tableTotal.Attach(labelTitleDiscountPaymentConditions, 0, 1, row, row + 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
                 //tableTotal.Attach(labelValueDiscountPaymentConditions, 1, 2, row, row + 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
                 //Row3
-				/* IN009206 */
+                /* IN009206 */
                 row++;
                 tableTotal.Attach(labelTitleDiscountTotal, 0, 1, row, row + 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
                 tableTotal.Attach(labelValueDiscountTotal, 1, 2, row, row + 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
                 //Row4
-				/* IN009206 */
+                /* IN009206 */
                 row++;
                 tableTotal.Attach(labelTitleTotalNet, 0, 1, row, row + 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
                 tableTotal.Attach(labelValueTotalNet, 1, 2, row, row + 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);

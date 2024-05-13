@@ -1,24 +1,24 @@
 ﻿using Gtk;
 using logicpos.App;
+using logicpos.Classes.Enums.Finance;
+using logicpos.Classes.Enums.Tickets;
+using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Enums;
+using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Finance;
 using logicpos.financial.library.Classes.Hardware.Printers;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets;
-using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
-using logicpos.shared.Classes.Orders;
+using logicpos.financial.service.Objects.Modules.AT;
+using logicpos.shared.App;
+using LogicPOS.DTOs.Common;
+using LogicPOS.Globalization;
+using LogicPOS.Settings;
+using LogicPOS.Settings.Extensions;
+using LogicPOS.Shared.Orders;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using logicpos.Classes.Enums.Finance;
-using logicpos.Classes.Enums.Tickets;
-using logicpos.datalayer.Enums;
-using logicpos.financial.service.Objects.Modules.AT;
-using logicpos.shared.App;
-using logicpos.datalayer.Xpo;
-using LogicPOS.DTOs.Common;
-using LogicPOS.Settings.Extensions;
-using LogicPOS.Globalization;
-using LogicPOS.Settings;
 
 //Class to Link Project LogicPos to FrameWork API, used to Show Common Messages for LogicPos
 
@@ -56,23 +56,23 @@ namespace logicpos
                         //Financial.service - Envio de Documentos transporte AT (Estrangeiro) [IN:016502]
                         //It is not necessary to communicate to AT if the destination country is different from Portugal
                         //https://suportesage.zendesk.com/hc/pt/articles/203628246-Se-efectuar-um-documento-de-transporte-para-o-estrangeiro-tenho-que-comunicar-
-                        if (documentFinanceMaster.DocumentType.SaftDocumentType == SaftDocumentType.MovementOfGoods && documentFinanceMaster.ShipToCountry == "PT" )
+                        if (documentFinanceMaster.DocumentType.SaftDocumentType == SaftDocumentType.MovementOfGoods && documentFinanceMaster.ShipToCountry == "PT")
                         {
                             try
                             {
                                 _logger.Debug(string.Format("Send Document {0} to AT", documentFinanceMaster.DocumentNumber));
                                 SendDocumentToATWSDialog(pSourceWindow, documentFinanceMaster);
                             }
-                            catch(Exception Ex)
+                            catch (Exception Ex)
                             {
                                 _logger.Error(Ex.Message);
                             }
-                            
+
                             //SendDocumentToATWSDialog(pSourceWindow, documentFinanceMaster);
-                        }                 
+                        }
                     }
                     /* TK013134 - Parking Ticket Module */
-                    foreach (var item in SharedFramework.PendentPayedParkingTickets)
+                    foreach (var item in GeneralSettings.PendentPaidParkingTickets)
                     {
                         _logger.Debug("[PARKING TICKET] Informing Access.Track that the parking ticket has been payed...");
                         AccessTrackParkingTicketService.TimeService accessTrackParkingTicketService = new AccessTrackParkingTicketService.TimeService();
@@ -98,7 +98,7 @@ namespace logicpos
                     }
                     //IN009279 Parking ticket Service - implementar Cartão cliente 
                     int i = 0;
-                    foreach (var item in SharedFramework.PendentPayedParkingCards)
+                    foreach (var item in GeneralSettings.PendentPaidParkingCards)
                     {
                         _logger.Debug("[PARKING TICKET] Informing Access.Track that the parking card has been payed...");
                         AccessTrackParkingTicketService.TimeService accessTrackParkingTicketService = new AccessTrackParkingTicketService.TimeService();
@@ -183,7 +183,7 @@ namespace logicpos
         }
 
         //ATWS: Check if Document is a Valid Document to send to ATWebServices
-		//Financial.service - Correções no envio de documentos AT [IN:014494]
+        //Financial.service - Correções no envio de documentos AT [IN:014494]
         public static bool SendDocumentToATWSEnabled(fin_documentfinancemaster documentFinanceMaster)
         {
             bool result = false;
@@ -237,7 +237,7 @@ namespace logicpos
             }
             return isCanceledByUser;
         }
-		//Financial.service - Correções no envio de documentos AT [IN:014494]
+        //Financial.service - Correções no envio de documentos AT [IN:014494]
         //NEW SEND METHOD
         public static ServicesATSoapResult SendDocumentToATWS(fin_documentfinancemaster pDocumentFinanceMaster)
         {
@@ -294,16 +294,16 @@ namespace logicpos
         }
 
 
-       
-       
+
+
         public static fin_documentfinancepayment PersistFinanceDocumentPayment(
-            Window pSourceWindow, 
-            List<fin_documentfinancemaster> pInvoices, 
-            List<fin_documentfinancemaster> pCreditNotes, 
-            Guid pCustomer, 
-            Guid pPaymentMethod, 
-            Guid pConfigurationCurrency, 
-            decimal pPaymentAmount, 
+            Window pSourceWindow,
+            List<fin_documentfinancemaster> pInvoices,
+            List<fin_documentfinancemaster> pCreditNotes,
+            Guid pCustomer,
+            Guid pPaymentMethod,
+            Guid pConfigurationCurrency,
+            decimal pPaymentAmount,
             string pPaymentNotes = "")
         {
             fin_documentfinancepayment result = null;
@@ -391,8 +391,8 @@ namespace logicpos
                 //Overload Management
                 if (pDateTimeStart == null || pDateTimeEnd == null)
                 {
-					//Angola - Certificação [TK:016268]
-                    if(System.Configuration.ConfigurationManager.AppSettings["cultureFinancialRules"] == "pt-PT")
+                    //Angola - Certificação [TK:016268]
+                    if (System.Configuration.ConfigurationManager.AppSettings["cultureFinancialRules"] == "pt-PT")
                     {
                         result = SaftPt.ExportSaftPt();
                     }
@@ -405,7 +405,7 @@ namespace logicpos
                 {
                     DateTime dateTimeStart = Convert.ToDateTime(pDateTimeStart);
                     DateTime dateTimeEnd = Convert.ToDateTime(pDateTimeEnd);
-					//Angola - Certificação [TK:016268]
+                    //Angola - Certificação [TK:016268]
                     if (System.Configuration.ConfigurationManager.AppSettings["cultureFinancialRules"] == "pt-PT")
                     {
                         result = SaftPt.ExportSaftPt(dateTimeStart, dateTimeEnd);
@@ -414,7 +414,7 @@ namespace logicpos
                     {
                         result = SaftAo.ExportSaftAO(dateTimeStart, dateTimeEnd);
                     }
-                    
+
                 }
 
                 Utils.ShowMessageTouch(
@@ -481,10 +481,10 @@ namespace logicpos
                 Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(pSourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_printing_function_disabled"));
                 return false;
             }
-			//TK016249 - Impressoras - Diferenciação entre Tipos
+            //TK016249 - Impressoras - Diferenciação entre Tipos
             //Deteta janela de origem de forma a escolher qual impressora usar - TicketList -> ThermalPrinter | PosDocumentFinanceDialog -> Printer
             sys_configurationprinters printer;
-            sys_configurationprinters printerDoc;            
+            sys_configurationprinters printerDoc;
             if (PrintingSettings.UsingThermalPrinter)
             {
                 //Both printer can be the same, if not Defined in DocumentType
@@ -567,9 +567,9 @@ namespace logicpos
                         result = PrintRouter.PrintFinanceDocument(printerDoc, pDocumentFinanceMaster, response.CopyNames, response.SecondCopy, response.Motive);
 
 
-                        
+
                         //OpenDoor use Printer Drawer
-                        if (openDrawer && pDocumentFinanceMaster.DocumentType.PrintOpenDrawer && !response.SecondCopy) 
+                        if (openDrawer && pDocumentFinanceMaster.DocumentType.PrintOpenDrawer && !response.SecondCopy)
                         {
                             var resultOpenDoor = PrintRouter.OpenDoor(XPOSettings.LoggedTerminal.Printer);
                             if (!resultOpenDoor)
@@ -583,9 +583,9 @@ namespace logicpos
                                 XPOSettings.LoggedTerminal.Designation,
                                 "Button Open Door"));
                             }
-                          
+
                         }
-                    
+
                     }
                 }
 
@@ -651,7 +651,7 @@ namespace logicpos
                     //Recibos com impressão em impressora térmica
                     if (XPOSettings.LoggedTerminal.ThermalPrinter != null)
                     {
-                        ResponseType responseType = Utils.ShowMessageTouch(pSourceWindow, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.YesNo, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_edit_DialogConfigurationPrintersType_tab1_label"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_printer_choose_printer")); 
+                        ResponseType responseType = Utils.ShowMessageTouch(pSourceWindow, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.YesNo, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_edit_DialogConfigurationPrintersType_tab1_label"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_printer_choose_printer"));
 
                         if (responseType == ResponseType.Yes)
                         {

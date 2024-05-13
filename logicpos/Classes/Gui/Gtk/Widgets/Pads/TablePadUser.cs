@@ -1,6 +1,7 @@
 ﻿using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.shared;
 using logicpos.shared.App;
+using LogicPOS.Shared;
 using System;
 using System.Drawing;
 

@@ -3,7 +3,7 @@ using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using System;
 
-namespace logicpos.shared.Classes.Orders
+namespace LogicPOS.Shared.Orders
 {
     public class OrderMainTable
     {

@@ -4,13 +4,12 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Finance;
-using logicpos.shared;
-using logicpos.shared.App;
-using logicpos.shared.Classes.Finance;
-using logicpos.shared.Classes.Orders;
 using logicpos.shared.Enums;
 using LogicPOS.Settings;
+using LogicPOS.Shared;
+using LogicPOS.Shared.Article;
 using LogicPOS.Shared.CustomDocument;
+using LogicPOS.Shared.Orders;
 using System;
 using System.Collections.Generic;
 

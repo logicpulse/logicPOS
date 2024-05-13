@@ -2,15 +2,16 @@
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using logicpos.shared.App;
-using logicpos.shared.Classes.Orders;
 using LogicPOS.Globalization;
 using LogicPOS.Settings.Extensions;
+using LogicPOS.Shared.Orders;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using static logicpos.datalayer.Xpo.XPOHelper;
 
-namespace logicpos.shared
+namespace LogicPOS.Shared
 {
     public class POSSession
     {
@@ -182,6 +183,26 @@ namespace logicpos.shared
         }
         public static POSSession CurrentSession { get; set; }
         public static bool HasCurrentSession => CurrentSession != null;
+        public static decimal GetGlobalDiscount()
+        {
+            decimal result = 0.0m;
+
+            if (POSSession.HasCurrentSession
+                && POSSession.CurrentSession.OrderMains.ContainsKey(POSSession.CurrentSession.CurrentOrderMainId)
+            )
+            {
+                OrderMain orderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];
+
+                pos_configurationplacetable xConfigurationPlaceTable = (pos_configurationplacetable)GetXPGuidObject(XPOSettings.Session, typeof(pos_configurationplacetable), orderMain.Table.Oid);
+
+                if (xConfigurationPlaceTable != null)
+                {
+                    result = xConfigurationPlaceTable.Discount;
+                }
+            }
+
+            return result;
+        }
         #endregion
     }
 }

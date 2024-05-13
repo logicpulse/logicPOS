@@ -13,6 +13,9 @@ namespace logicpos.datalayer.Xpo
         public static cfg_configurationcountry ConfigurationSystemCountry { get; set; } = null;
         public static cfg_configurationcurrency ConfigurationSystemCurrency { get; set; } = null;
 
+        public static pos_worksessionperiod WorkSessionPeriodDay { get; set; }
+        public static pos_worksessionperiod WorkSessionPeriodTerminal { get; set; }
+
         public static Guid XpoOidArticleDefaultType { get; set; } = new Guid("edf4841e-e451-4c7b-9bd0-ee02860ba937");
         public static Guid XpoOidArticleDefaultClass { get; set; } = new Guid("6924945d-f99e-476b-9c4d-78fb9e2b30a3");
         public static Guid XpoOidArticleDefaultVatDirectSelling { get; set; } = new Guid("cee00590-7317-41b8-af46-66560401096b");

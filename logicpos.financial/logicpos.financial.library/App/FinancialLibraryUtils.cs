@@ -6,18 +6,17 @@ using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Finance;
 using logicpos.financial.library.Classes.Reports;
-using logicpos.shared;
-using logicpos.shared.App;
-using logicpos.shared.Classes.Finance;
-using logicpos.shared.Classes.Orders;
 using LogicPOS.Settings;
+using LogicPOS.Shared;
+using LogicPOS.Shared.Article;
 using LogicPOS.Shared.CustomDocument;
+using LogicPOS.Shared.Orders;
 using System;
 using System.Collections.Generic;
 
 namespace logicpos.financial.library.App
 {
-    public class FinancialLibraryUtils 
+    public class FinancialLibraryUtils
     {
         //Log4Net
         private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -112,7 +111,7 @@ namespace logicpos.financial.library.App
                     //Moçambique - Pedidos da reunião 13/10/2020 [IN:014327]
                     //- Fatura simplificada em documentos de origem, para inserir nº contribuinte após emissão de fatura
                     if (CultureSettings.MozambiqueCountryId.Equals(XPOSettings.ConfigurationSystemCountry.Oid))
-                    {      
+                    {
                         result = new Guid[] {
                         //SaftDocumentType = 2
                         InvoiceSettings.XpoOidDocumentFinanceTypeInvoice,
@@ -147,7 +146,7 @@ namespace logicpos.financial.library.App
                         DocumentSettings.XpoOidDocumentFinanceTypeBudget,
                         DocumentSettings.XpoOidDocumentFinanceTypeProformaInvoice };
                     }
-                   
+
                 }
                 //CreditNote
                 else if (
@@ -194,7 +193,7 @@ namespace logicpos.financial.library.App
                     pDocumentFinanceType == CustomDocumentSettings.DeliveryNoteDocumentTypeId
                     )
                 { /* #TODO check this list and all others here */
-                    result = new Guid[] { 
+                    result = new Guid[] {
                         InvoiceSettings.XpoOidDocumentFinanceTypeInvoice,
                         DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice,
                         DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment,
@@ -281,7 +280,7 @@ namespace logicpos.financial.library.App
                             itemSource.TotalGross -= itemReferences.DocumentDetail.TotalGross;
                             itemSource.TotalNet = itemOldTotalNetValue - itemTotalNetValue;
                             itemSource.TotalFinal = itemOldTotalFinalValue - itemTotalFinalValue;
-							/* IN009235 - End */
+                            /* IN009235 - End */
 
                             // Debug Helper
                             //_logger.Debug(string.Format("DocumentNumber: [{0}], Designation: [{1}], Quantity: [{2}], itemReferences.Quantity: [{3}]",
@@ -289,7 +288,8 @@ namespace logicpos.financial.library.App
                             //    );
 
                             // Add Document to listCreditedDocuments, this list will be shown in showMessage when all articles are credited for sourceDocument
-                            if (!listCreditedDocuments.Contains(itemReferences.DocumentDetail.DocumentMaster.DocumentNumber)) {
+                            if (!listCreditedDocuments.Contains(itemReferences.DocumentDetail.DocumentMaster.DocumentNumber))
+                            {
                                 listCreditedDocuments.Add(itemReferences.DocumentDetail.DocumentMaster.DocumentNumber);
                             }
                         }
@@ -556,7 +556,7 @@ namespace logicpos.financial.library.App
             Guid currentOrderMainOid = POSSession.CurrentSession.CurrentOrderMainId;
             _logger.Debug("fin_documentfinancemaster GetOrderMainLastDocumentConference(bool pGenerateNewIfDiferentFromArticleBag = false) :: currentOrderMainOid: " + currentOrderMainOid);
             OrderMain currentOrderMain = null;
-            
+
             try
             {
                 /* IN009179 - System.Collections.Generic.KeyNotFoundException */

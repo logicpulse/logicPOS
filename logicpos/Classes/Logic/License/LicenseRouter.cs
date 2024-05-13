@@ -206,7 +206,7 @@ namespace logicpos.Classes.Logic.License
         /// </summary>
         private static void StartPOSFrontOffice()
         {
-            if (!SharedFramework.AppUseBackOfficeMode)
+            if (!GeneralSettings.AppUseBackOfficeMode)
             {
                 LogicPOSApp logicPos = new LogicPOSApp();
                 logicPos.StartApp(AppMode.FrontOffice);
@@ -237,7 +237,7 @@ namespace logicpos.Classes.Logic.License
             LicenseSettings.LicenseEmail = "Email DEMO";
             LicenseSettings.LicenseTelephone = "Telefone DEMO";
             LicenseSettings.LicenseReseller = "LogicPulse";
-            SharedFramework.ServerVersion = "1.0";
+            GeneralSettings.ServerVersion = "1.0";
             LicenseSettings.LicenceUpdateDate = DateTime.Now.AddDays(-1);
 #if DEBUG
             LicenseSettings.LicenseVersion = "LOGICPOS_CORPORATE";
@@ -252,7 +252,7 @@ namespace logicpos.Classes.Logic.License
 
             SortedList sortedList = PluginSettings.LicenceManager.GetLicenseInformation();
 
-            SharedFramework.ServerVersion = PluginSettings.LicenceManager.GetCurrentVersion();
+            GeneralSettings.ServerVersion = PluginSettings.LicenceManager.GetCurrentVersion();
             //GlobalFramework.ServerVersion = "2.0.0.0";
 
             if (showDebug)

@@ -6,15 +6,14 @@ using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
-using logicpos.shared.App;
-using logicpos.shared.Classes.Finance;
-using logicpos.shared.Classes.Orders;
+using LogicPOS.Globalization;
+using LogicPOS.Settings.Extensions;
+using LogicPOS.Shared;
+using LogicPOS.Shared.Article;
+using LogicPOS.Shared.Orders;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using LogicPOS.Settings.Extensions;
-using LogicPOS.Globalization;
-using logicpos.shared;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {

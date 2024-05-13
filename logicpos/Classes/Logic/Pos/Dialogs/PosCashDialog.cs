@@ -21,7 +21,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private void _touchButtonStartStopWorkSessionPeriodDay_Clicked(object sender, EventArgs e)
         {
             //Stop WorkSessionPeriodDay
-            if (SharedFramework.WorkSessionPeriodDay != null && SharedFramework.WorkSessionPeriodDay.SessionStatus == WorkSessionPeriodStatus.Open)
+            if (XPOSettings.WorkSessionPeriodDay != null && XPOSettings.WorkSessionPeriodDay.SessionStatus == WorkSessionPeriodStatus.Open)
             {
                 //Check if we can StopSessionPeriodDay
                 bool resultCanClose = CanCloseWorkSessionPeriodDay();
@@ -35,14 +35,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 }
 
                 //Stop WorkSession Period Day
-                bool result = ProcessWorkSessionPeriod.SessionPeriodClose(SharedFramework.WorkSessionPeriodDay);
+                bool result = ProcessWorkSessionPeriod.SessionPeriodClose(XPOSettings.WorkSessionPeriodDay);
                 if (result)
                 {
                     _touchButtonStartStopWorkSessionPeriodDay.LabelText = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_worksession_open_day");
                     _touchButtonCashDrawer.Sensitive = false;
 
                     //Show ClosePeriodMessage
-                    ShowClosePeriodMessage(this, SharedFramework.WorkSessionPeriodDay); /* IN009054 -  WorkSessionPeriodDay: NullReferenceException when closing day on non-licensed app */
+                    ShowClosePeriodMessage(this, XPOSettings.WorkSessionPeriodDay); /* IN009054 -  WorkSessionPeriodDay: NullReferenceException when closing day on non-licensed app */
 
                     //PrintWorkSessionMovement Day
                     //PrintRouter.PrintWorkSessionMovement(XPOSettings.LoggedTerminal.Printer, GlobalFramework.WorkSessionPeriodDay);
@@ -53,7 +53,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                     if (pResponse == ResponseType.Yes)
                     {
-                        FrameworkCalls.PrintWorkSessionMovement(this, XPOSettings.LoggedTerminal.ThermalPrinter, SharedFramework.WorkSessionPeriodTerminal);
+                        FrameworkCalls.PrintWorkSessionMovement(this, XPOSettings.LoggedTerminal.ThermalPrinter, XPOSettings.WorkSessionPeriodTerminal);
                     }
                     //FrameworkCalls.PrintWorkSessionMovement(this, XPOSettings.LoggedTerminal.ThermalPrinter, GlobalFramework.WorkSessionPeriodDay);
                 }
@@ -162,8 +162,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             if (response == (int)ResponseType.Ok)
             {
                 //Get Fresh XPO Objects, Prevent Deleted Object Bug
-                pos_worksessionperiod workSessionPeriodDay = XPOSettings.Session.GetObjectByKey<pos_worksessionperiod>(SharedFramework.WorkSessionPeriodDay.Oid);
-                pos_worksessionperiod workSessionPeriodTerminal = SharedFramework.WorkSessionPeriodTerminal;
+                pos_worksessionperiod workSessionPeriodDay = XPOSettings.Session.GetObjectByKey<pos_worksessionperiod>(XPOSettings.WorkSessionPeriodDay.Oid);
+                pos_worksessionperiod workSessionPeriodTerminal = XPOSettings.WorkSessionPeriodTerminal;
                 var originalMovType = dialogCashDrawer.MovementType;
                 decimal addedMoney;
                 switch (dialogCashDrawer.MovementType.Token)
@@ -180,7 +180,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                             //Here we already have GlobalFramework.WorkSessionPeriodTerminal, assigned on ProcessWorkSessionPeriod.SessionPeriodStart
                             //Get Fresh XPO Objects, Prevent Deleted Object Bug
-                            workSessionPeriodTerminal = XPOSettings.Session.GetObjectByKey<pos_worksessionperiod>(SharedFramework.WorkSessionPeriodTerminal.Oid);
+                            workSessionPeriodTerminal = XPOSettings.Session.GetObjectByKey<pos_worksessionperiod>(XPOSettings.WorkSessionPeriodTerminal.Oid);
 
                             result = ProcessWorkSessionMovement.PersistWorkSessionMovement(
                              workSessionPeriodTerminal,
@@ -251,7 +251,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                             // GlobalFramework.WorkSessionPeriodTerminal = XPOSettings.Session.GetObjectByKey<pos_worksessionperiod>(GlobalFramework.WorkSessionPeriodDay.Oid);
 
-                            workSessionPeriodTerminal = XPOSettings.Session.GetObjectByKey<pos_worksessionperiod>(SharedFramework.WorkSessionPeriodTerminal.Oid);
+                            workSessionPeriodTerminal = XPOSettings.Session.GetObjectByKey<pos_worksessionperiod>(XPOSettings.WorkSessionPeriodTerminal.Oid);
 
                             var resultProcess = ProcessWorkSessionMovement.PersistWorkSessionMovement(
                               workSessionPeriodTerminal,
@@ -329,7 +329,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                             // GlobalFramework.WorkSessionPeriodTerminal = XPOSettings.Session.GetObjectByKey<pos_worksessionperiod>(GlobalFramework.WorkSessionPeriodDay.Oid);
 
-                            workSessionPeriodTerminal = XPOSettings.Session.GetObjectByKey<pos_worksessionperiod>(SharedFramework.WorkSessionPeriodTerminal.Oid);
+                            workSessionPeriodTerminal = XPOSettings.Session.GetObjectByKey<pos_worksessionperiod>(XPOSettings.WorkSessionPeriodTerminal.Oid);
 
                             var resultProcess = ProcessWorkSessionMovement.PersistWorkSessionMovement(
                               workSessionPeriodTerminal,
@@ -415,7 +415,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                         dialogCashDrawer.TotalAmountInCashDrawer += dialogCashDrawer.MovementAmountMoney;
 
-                        workSessionPeriodTerminal = XPOSettings.Session.GetObjectByKey<pos_worksessionperiod>(SharedFramework.WorkSessionPeriodTerminal.Oid);
+                        workSessionPeriodTerminal = XPOSettings.Session.GetObjectByKey<pos_worksessionperiod>(XPOSettings.WorkSessionPeriodTerminal.Oid);
 
                         result = ProcessWorkSessionMovement.PersistWorkSessionMovement(
                           workSessionPeriodTerminal,
@@ -461,7 +461,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                         dialogCashDrawer.TotalAmountInCashDrawer -= dialogCashDrawer.MovementAmountMoney;
 
-                        workSessionPeriodTerminal = XPOSettings.Session.GetObjectByKey<pos_worksessionperiod>(SharedFramework.WorkSessionPeriodTerminal.Oid);
+                        workSessionPeriodTerminal = XPOSettings.Session.GetObjectByKey<pos_worksessionperiod>(XPOSettings.WorkSessionPeriodTerminal.Oid);
 
                         //In Period Terminal
                         result = ProcessWorkSessionMovement.PersistWorkSessionMovement(
@@ -525,10 +525,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public void UpdateButtons()
         {
             //Update Toolbar UI Buttons After ToolBox and ToolBar
-            if (SharedFramework.WorkSessionPeriodDay != null)
+            if (XPOSettings.WorkSessionPeriodDay != null)
             {
                 //With Valid WorkSessionPeriodDay
-                if (SharedFramework.WorkSessionPeriodDay.SessionStatus == WorkSessionPeriodStatus.Open)
+                if (XPOSettings.WorkSessionPeriodDay.SessionStatus == WorkSessionPeriodStatus.Open)
                 {
                     if (_touchButtonStartStopWorkSessionPeriodDay.LabelText != CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_worksession_close_day"))
                     {

@@ -197,7 +197,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 
             }
 
-            if (SharedFramework.AppUseBackOfficeMode)
+            if (GeneralSettings.AppUseBackOfficeMode)
             {
                 EventBox eventBoxMinimize = logicpos.Utils.GetMinimizeEventBox();
                 eventBoxMinimize.ButtonReleaseEvent += delegate {
@@ -231,7 +231,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             _fixAccordion.Add(_dashboardButton);
                         
             //Redimensionar Botões do Backoffice para 1024x768
-            if (!SharedFramework.AppUseBackOfficeMode)
+            if (!GeneralSettings.AppUseBackOfficeMode)
             {
                 if (GlobalApp.BoScreenSize.Height <= 800)
                 {
@@ -262,14 +262,14 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             bool needToUpdate = false;
             //GlobalFramework.ServerVersion = "1.3.0000";
-            if (SharedFramework.ServerVersion != null)
+            if (GeneralSettings.ServerVersion != null)
             {
                 try
                 {
                     string[] tmpNew = appVersion.Split('.');
                     long tmpNewVer = int.Parse(tmpNew[0]) * 10000000 + int.Parse(tmpNew[1]) * 10000 + int.Parse(tmpNew[2]);
 
-                    string[] tmpOld = SharedFramework.ServerVersion.ToString().Split('.');
+                    string[] tmpOld = GeneralSettings.ServerVersion.ToString().Split('.');
                     long tmpOldVer = int.Parse(tmpOld[0]) * 10000000 + int.Parse(tmpOld[1]) * 10000 + int.Parse(tmpOld[2]);
 
                     if (tmpNewVer < tmpOldVer)
@@ -284,11 +284,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 if (needToUpdate)
                 {
-                    if (SharedFramework.AppUseBackOfficeMode)
+                    if (GeneralSettings.AppUseBackOfficeMode)
                     {
                         if (GlobalApp.BoScreenSize.Height <= 800)
                         {
-                            _labelUpdate = new Label(string.Format(string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_new_version"), SharedFramework.ServerVersion.ToString())));
+                            _labelUpdate = new Label(string.Format(string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_new_version"), GeneralSettings.ServerVersion.ToString())));
                             _labelUpdate.ModifyFont(fontDescriptionStatusBar);
                             _labelUpdate.ModifyFg(StateType.Normal,("61, 61, 61").StringToColor().ToGdkColor());
                             _labelUpdate.SetAlignment(1.0F, 0.5F);
@@ -299,7 +299,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         }
                         else
                         {
-                            _labelUpdate = new Label(string.Format(string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_new_version"), SharedFramework.ServerVersion.ToString())));
+                            _labelUpdate = new Label(string.Format(string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_new_version"), GeneralSettings.ServerVersion.ToString())));
                             _labelUpdate.ModifyFont(fontDescriptionStatusBar);
                             _labelUpdate.ModifyFg(StateType.Normal, ("61, 61, 61").StringToColor().ToGdkColor());
                             _labelUpdate.SetAlignment(1.0F, 0.5F);
@@ -313,7 +313,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     {
                         if (GlobalApp.BoScreenSize.Height <= 800)
                         {
-                            _labelUpdate = new Label(string.Format(string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_new_version"), SharedFramework.ServerVersion.ToString())));
+                            _labelUpdate = new Label(string.Format(string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_new_version"), GeneralSettings.ServerVersion.ToString())));
                             _labelUpdate.ModifyFont(fontDescriptionStatusBar);
                             _labelUpdate.ModifyFg(StateType.Normal, ("61, 61, 61").StringToColor().ToGdkColor());
                             _labelUpdate.SetAlignment(1.0F, 0.5F);
@@ -324,7 +324,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         }
                         else
                         {
-                            _labelUpdate = new Label(string.Format(string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_new_version"), SharedFramework.ServerVersion.ToString())));
+                            _labelUpdate = new Label(string.Format(string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_new_version"), GeneralSettings.ServerVersion.ToString())));
                             _labelUpdate.ModifyFont(fontDescriptionStatusBar);
                             _labelUpdate.ModifyFg(StateType.Normal, ("61, 61, 61").StringToColor().ToGdkColor());
                             _labelUpdate.SetAlignment(1.0F, 0.5F);

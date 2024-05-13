@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace logicpos.shared.Classes.Finance
+namespace LogicPOS.Shared.Article
 {
     public class ArticleBagKey
     {

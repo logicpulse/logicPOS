@@ -3,7 +3,7 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using System;
 
-namespace logicpos.shared.Classes.Finance
+namespace LogicPOS.Shared.Article
 {
     public class ArticleBagProperties
     {

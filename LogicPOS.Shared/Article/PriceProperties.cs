@@ -5,7 +5,7 @@ using System.IO;
 using System.Reflection;
 using LogicPOS.Settings.Extensions;
 
-namespace logicpos.shared.Classes.Finance
+namespace LogicPOS.Shared.Article
 {
     public class PriceProperties
     {

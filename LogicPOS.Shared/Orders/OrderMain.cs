@@ -2,18 +2,19 @@
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
+using logicpos.shared;
 using logicpos.shared.App;
-using logicpos.shared.Classes.Finance;
 using logicpos.shared.Enums;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
 using LogicPOS.Settings.Extensions;
+using LogicPOS.Shared.Article;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
-namespace logicpos.shared.Classes.Orders
+namespace LogicPOS.Shared.Orders
 {
     public class OrderMain
     {

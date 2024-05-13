@@ -3,7 +3,7 @@ using logicpos.datalayer.Xpo;
 using Newtonsoft.Json;
 using System;
 
-namespace logicpos.shared.Classes.Orders
+namespace LogicPOS.Shared.Orders
 {
     public class OrderTicket
     {

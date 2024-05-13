@@ -1,7 +1,7 @@
 ﻿using Gtk;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.financial.library.Classes.Finance;
-using logicpos.shared.Classes.Finance;
+using LogicPOS.Shared.Article;
 using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
@@ -44,7 +44,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
             SetFont(string.Format("Bold {0}", pFont));
             //Label for PaymentDetails
             LabelPaymentDetails = new Label(string.Empty);
-            LabelPaymentDetails.Text = string.Empty;;
+            LabelPaymentDetails.Text = string.Empty; ;
             _eventBoxPaymentDetails = new EventBox() { VisibleWindow = false };
             _eventBoxPaymentDetails.Add(LabelPaymentDetails);
             //_eventBoxPaymentDetails.CanFocus = false;

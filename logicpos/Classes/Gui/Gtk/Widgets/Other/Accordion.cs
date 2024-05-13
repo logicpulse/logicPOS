@@ -4,6 +4,7 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
 using logicpos.shared.App;
+using LogicPOS.Settings;
 using System;
 using System.Collections.Generic;
 
@@ -285,7 +286,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             //Required to Reload Object before Get New Permissions
             XPOSettings.LoggedUser = (sys_userdetail)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(sys_userdetail), XPOSettings.LoggedUser.Oid);
             //Update Session Privileges
-            SharedFramework.LoggedUserPermissions = SharedUtils.GetUserPermissions(XPOSettings.LoggedUser);
+            GeneralSettings.LoggedUserPermissions = SharedUtils.GetUserPermissions(XPOSettings.LoggedUser);
 
             //Update Backoffice Menu
             if (_accordionDefinition != null && _accordionDefinition.Count > 0)

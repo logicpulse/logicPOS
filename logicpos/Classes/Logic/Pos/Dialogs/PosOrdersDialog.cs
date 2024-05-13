@@ -8,14 +8,13 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.App;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets;
-using logicpos.shared.App;
-using logicpos.shared.Classes.Finance;
-using logicpos.shared.Classes.Orders;
+using LogicPOS.Globalization;
+using LogicPOS.Settings.Extensions;
+using LogicPOS.Shared;
+using LogicPOS.Shared.Article;
+using LogicPOS.Shared.Orders;
 using System;
 using System.Drawing;
-using LogicPOS.Settings.Extensions;
-using LogicPOS.Globalization;
-using logicpos.shared;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {

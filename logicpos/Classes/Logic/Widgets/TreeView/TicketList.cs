@@ -12,16 +12,16 @@ using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
 using logicpos.shared.App;
-using logicpos.shared.Classes.Finance;
-using logicpos.shared.Classes.Orders;
 using logicpos.shared.Enums;
+using LogicPOS.Globalization;
+using LogicPOS.Settings;
+using LogicPOS.Settings.Extensions;
+using LogicPOS.Shared;
+using LogicPOS.Shared.Article;
+using LogicPOS.Shared.Orders;
 using System;
 using System.Collections.Generic;
 using System.IO.Ports;
-using LogicPOS.Settings.Extensions;
-using LogicPOS.Globalization;
-using LogicPOS.Settings;
-using logicpos.shared;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -44,7 +44,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             if (ListMode == TicketListMode.OrderMain)
             {
-                ResponseType responseType = logicpos.Utils.ShowMessageTouch(SourceWindow, DialogFlags.Modal, new System.Drawing.Size(400, 280), MessageType.Question, ButtonsType.YesNo, string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_warning"), SharedFramework.ServerVersion), CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message__pos_order_cancel"));
+                ResponseType responseType = logicpos.Utils.ShowMessageTouch(SourceWindow, DialogFlags.Modal, new System.Drawing.Size(400, 280), MessageType.Question, ButtonsType.YesNo, string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_warning"), GeneralSettings.ServerVersion), CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message__pos_order_cancel"));
 
                 if (responseType == ResponseType.Yes)
                 {
@@ -182,7 +182,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         private void _buttonKeyIncrease_Clicked(object sender, EventArgs e)
         {
             try
-            {       
+            {
                 //Get Article defaultQuantity
                 decimal defaultQuantity = GetArticleDefaultQuantity(_currentDetailArticleOid);
                 var price = Convert.ToDecimal(ListStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price));
@@ -231,7 +231,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 bool showMessage;
                 if (newValueQnt > 0)
                 {
-                    if (logicpos.Utils.CheckStocks()) 
+                    if (logicpos.Utils.CheckStocks())
                     {
                         if (!logicpos.Utils.ShowMessageMinimumStock(SourceWindow, CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].ArticleOid, newValueQnt, out showMessage))
                         {
@@ -258,7 +258,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             try
             {
                 //Get Index of article with correct final price
-                _listStoreModelSelectedIndex = CurrentOrderDetails.Lines.FindIndex(item => item.ArticleOid == (Guid)ListStoreModel.GetValue(_treeIter, 
+                _listStoreModelSelectedIndex = CurrentOrderDetails.Lines.FindIndex(item => item.ArticleOid == (Guid)ListStoreModel.GetValue(_treeIter,
                     (int)TicketListColumns.ArticleId) && Math.Round(Convert.ToDecimal(item.Properties.PriceFinal), CultureSettings.DecimalRoundTo) == Convert.ToDecimal(ListStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price)));
 
                 decimal oldValueQuantity = CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity;
@@ -294,7 +294,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     if (countDuplicatedArticles > 1)
                     {
                         int oldIndex = _listStoreModelSelectedIndex;
-                        _listStoreModelSelectedIndex = CurrentOrderDetails.Lines.FindIndex(item => item.ArticleOid == (Guid)ListStoreModel.GetValue(_treeIter, (int)TicketListColumns.ArticleId) 
+                        _listStoreModelSelectedIndex = CurrentOrderDetails.Lines.FindIndex(item => item.ArticleOid == (Guid)ListStoreModel.GetValue(_treeIter, (int)TicketListColumns.ArticleId)
                         && item.Properties.PriceFinal == priceProperties.PriceFinal);
                         oldValueQuantity += CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity;
                         CurrentOrderDetails.Delete(oldIndex);
@@ -309,7 +309,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     decimal totalLine = CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.TotalFinal;
                     ListStoreModel.SetValue(_treeIter, (int)TicketListColumns.Total, LogicPOS.Utility.DataConversionUtils.DecimalToString(totalLine));
                 }
-                UpdateTicketListTotal();                
+                UpdateTicketListTotal();
                 UpdateModel();
                 UpdateTicketListButtons();
             }
@@ -331,7 +331,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                  * TK013134 
                  * Parking Ticket Module: Checking for duplicates in Order Main after finishing order
                  */
-                if (SharedFramework.AppUseParkingTicketModule)
+                if (GeneralSettings.AppUseParkingTicketModule)
                 {
                     orderMain.CheckForDuplicatedArticleInArticleBag(XPOSettings.Session);
                 }
@@ -348,12 +348,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 {
                     //public static bool PrintOrderRequest(Window pSourceWindow, sys_configurationprinters pPrinter, OrderMain pDocumentOrderMain, fin_documentorderticket pOrderTicket)
                     //IN009239 - This avoids orders being printed when in use of ParkingTicketModule
-					//Opção para imprimir ou não o ticket
+                    //Opção para imprimir ou não o ticket
                     //bool printTicket = true;
                     //printTicket = Convert.ToBoolean(LogicPOS.Settings.GeneralSettings.Settings["printTicket"]);
 
-					//Criação de variável nas configurações para imprimir ou não ticket's [IN:013328]
-                    if (!SharedFramework.AppUseParkingTicketModule && logicpos.Utils.PrintTicket())
+                    //Criação de variável nas configurações para imprimir ou não ticket's [IN:013328]
+                    if (!GeneralSettings.AppUseParkingTicketModule && logicpos.Utils.PrintTicket())
                     {
                         // TK016249 Impressoras - Diferenciação entre Tipos 
                         FrameworkCalls.PrintOrderRequest(SourceWindow, XPOSettings.LoggedTerminal.ThermalPrinter, orderMain, orderTicket);
@@ -465,7 +465,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
             if (dialogResponse.ResponseType == ResponseType.Ok)
             {
-                if (SharedFramework.AppUseParkingTicketModule) /* IN009239 */
+                if (GeneralSettings.AppUseParkingTicketModule) /* IN009239 */
                 {
                     GlobalApp.ParkingTicket.GetTicketDetailFromWS(dialogResponse.Text);
                 }
@@ -484,7 +484,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
             if (dialogResponse.ResponseType == ResponseType.Ok)
             {
-                if (SharedFramework.AppUseParkingTicketModule) /* IN009239 */
+                if (GeneralSettings.AppUseParkingTicketModule) /* IN009239 */
                 {
                     GlobalApp.ParkingTicket.GetTicketDetailFromWS(dialogResponse.Text);
                 }
@@ -633,7 +633,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 //_currentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity = quantity;
                 if (logicpos.Utils.CheckStocks())
                 {
-                    if(logicpos.Utils.ShowMessageMinimumStock(SourceWindow, CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].ArticleOid, quantity))
+                    if (logicpos.Utils.ShowMessageMinimumStock(SourceWindow, CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].ArticleOid, quantity))
                     {
                         ChangeQuantity(quantity);
                     }

@@ -20,6 +20,7 @@ using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
 using LogicPOS.Settings.Extensions;
+using LogicPOS.Shared;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -309,8 +310,8 @@ namespace logicpos
                 POSSession.CurrentSession = POSSession.GetSessionFromFile(appSessionFile);
 
                 //Try to Get open Session Day/Terminal for this Terminal
-                SharedFramework.WorkSessionPeriodDay = ProcessWorkSessionPeriod.GetSessionPeriod(WorkSessionPeriodType.Day);
-                SharedFramework.WorkSessionPeriodTerminal = ProcessWorkSessionPeriod.GetSessionPeriod(WorkSessionPeriodType.Terminal);
+                XPOSettings.WorkSessionPeriodDay = ProcessWorkSessionPeriod.GetSessionPeriod(WorkSessionPeriodType.Day);
+                XPOSettings.WorkSessionPeriodTerminal = ProcessWorkSessionPeriod.GetSessionPeriod(WorkSessionPeriodType.Terminal);
 
                 //Use Detected ScreenSize
                 string appScreenSize = string.IsNullOrEmpty(GeneralSettings.Settings["appScreenSize"])
@@ -340,7 +341,7 @@ namespace logicpos
                 // Add Variables to ExpressionEvaluator.Variables Singleton
                 GlobalApp.ExpressionEvaluator.Variables.Add("globalScreenSize", GlobalApp.ScreenSize);
                 //to used in shared projects
-                SharedFramework.ScreenSize = GlobalApp.ScreenSize;
+                GeneralSettings.ScreenSize = GlobalApp.ScreenSize;
                 //Parse and store Theme in Singleton
                 try
                 {
@@ -434,20 +435,20 @@ namespace logicpos
                     /* IN009239 */
                     //GlobalFramework.AppUseParkingTicketModule = Convert.ToBoolean(LogicPOS.Settings.GeneralSettings.Settings["appMultiUserEnvironment"]);
                     CustomAppOperationMode customAppOperationMode = AppOperationModeSettings.GetCustomAppOperationMode();
-                    SharedFramework.AppUseParkingTicketModule = CustomAppOperationMode.PARKING.Equals(customAppOperationMode);
+                    GeneralSettings.AppUseParkingTicketModule = CustomAppOperationMode.PARKING.Equals(customAppOperationMode);
 
                     //TK016235 BackOffice - Mode
-                    SharedFramework.AppUseBackOfficeMode = CustomAppOperationMode.BACKOFFICE.Equals(customAppOperationMode);
+                    GeneralSettings.AppUseBackOfficeMode = CustomAppOperationMode.BACKOFFICE.Equals(customAppOperationMode);
 
                     // Init Global Object GlobalApp.ParkingTicket
-                    if (SharedFramework.AppUseParkingTicketModule)
+                    if (GeneralSettings.AppUseParkingTicketModule)
                     {
                         GlobalApp.ParkingTicket = new ParkingTicket();
                     }
                 }
                 catch (Exception)
                 {
-                    _logger.Error(string.Format("void Init() :: Missing AppUseParkingTicketModule Token in Settings, using default value: [{0}]", SharedFramework.AppUseParkingTicketModule));
+                    _logger.Error(string.Format("void Init() :: Missing AppUseParkingTicketModule Token in Settings, using default value: [{0}]", GeneralSettings.AppUseParkingTicketModule));
                 }
 
 

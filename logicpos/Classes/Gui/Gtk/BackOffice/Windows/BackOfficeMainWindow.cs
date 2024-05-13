@@ -45,7 +45,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Info
             _logger.Debug("BackOfficeMainWindow(): Create object BackOfficeMainWindow");
 
-            if (!SharedFramework.AppUseBackOfficeMode)
+            if (!GeneralSettings.AppUseBackOfficeMode)
             {
                 this.WindowStateEvent += PosMainWindow_WindowStateEvent;
             }
@@ -115,7 +115,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 if (File.Exists(lPathToUpdater))
                 {
-                    ResponseType responseType = logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new System.Drawing.Size(600, 400), MessageType.Question, ButtonsType.YesNo, string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_update_POS"), SharedFramework.ServerVersion), CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_pos_update"));
+                    ResponseType responseType = logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new System.Drawing.Size(600, 400), MessageType.Question, ButtonsType.YesNo, string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_update_POS"), GeneralSettings.ServerVersion), CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_pos_update"));
 
                     if (responseType == ResponseType.Yes)
                     {
@@ -214,14 +214,14 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 CriteriaOperator criteriaConfigurationPreferenceParameterSystem = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1) AND (FormType = 2)");
 
                 //START WORK SESSION AND DAY FOR BACKOFFICE MODE
-                if (SharedFramework.AppUseBackOfficeMode)
+                if (GeneralSettings.AppUseBackOfficeMode)
                 {
                     bool openDay = ProcessWorkSessionPeriod.SessionPeriodOpen(WorkSessionPeriodType.Day, "");
                     if (openDay)
                     {
                         pos_worksessionperiod workSessionPeriodDay = ProcessWorkSessionPeriod.GetSessionPeriod(WorkSessionPeriodType.Day);
-                        SharedFramework.WorkSessionPeriodTerminal = ProcessWorkSessionPeriod.GetSessionPeriod(WorkSessionPeriodType.Day);
-                        SharedFramework.WorkSessionPeriodTerminal.SessionStatus = WorkSessionPeriodStatus.Open;
+                        XPOSettings.WorkSessionPeriodTerminal = ProcessWorkSessionPeriod.GetSessionPeriod(WorkSessionPeriodType.Day);
+                        XPOSettings.WorkSessionPeriodTerminal.SessionStatus = WorkSessionPeriodStatus.Open;
                     }
                 }
 
@@ -376,7 +376,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //Compose Main Accordion Parent Buttons
                 //TK016235 BackOffice - Mode
-                if (SharedFramework.AppUseBackOfficeMode)
+                if (GeneralSettings.AppUseBackOfficeMode)
                 {
                     accordionDefinition.Add("TopMenuFinanceDocuments", new AccordionNode(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_button_label_select_record_finance_documents")) { Childs = _accordionChildDocuments, GroupIcon = new Image("Assets/Images/Icons/Accordion/pos_backoffice_documentos.png") });
                 }
@@ -388,7 +388,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 accordionDefinition.Add("TopMenuOtherTables", new AccordionNode(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_other_tables")) { Childs = _accordionChildAuxiliarTables, GroupIcon = new Image("Assets/Images/Icons/Accordion/pos_backoffice_outras_tabelas.png") });
                 accordionDefinition.Add("TopMenuConfiguration", new AccordionNode(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_configuration")) { Childs = _accordionChildConfiguration, GroupIcon = new Image("Assets/Images/Icons/Accordion/pos_backoffice_configuracao.png") });
                 //TK016235 BackOffice - Mode
-                if (SharedFramework.AppUseBackOfficeMode)
+                if (GeneralSettings.AppUseBackOfficeMode)
                 {
                     accordionDefinition.Add("TopMenuReports", new AccordionNode(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_reports")) { Childs = _accordionChildReports, GroupIcon = new Image("Assets/Images/Icons/Accordion/pos_backoffice_relatorios.png") });
                 }

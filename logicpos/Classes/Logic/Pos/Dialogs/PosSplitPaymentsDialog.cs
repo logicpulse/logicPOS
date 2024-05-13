@@ -5,13 +5,12 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Finance;
-using logicpos.shared.App;
-using logicpos.shared.Classes.Finance;
-using logicpos.shared.Classes.Orders;
-using System;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
-using logicpos.shared;
+using LogicPOS.Settings.Extensions;
+using LogicPOS.Shared;
+using LogicPOS.Shared.Article;
+using LogicPOS.Shared.Orders;
+using System;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {

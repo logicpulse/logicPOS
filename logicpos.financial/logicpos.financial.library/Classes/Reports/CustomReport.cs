@@ -329,7 +329,7 @@ namespace logicpos.financial.library.Classes.Reports
                         if (SharedUtils.UsePosPDFViewer() == true)
                         {
                             string docPath = string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileName);
-                            var ScreenSizePDF = SharedFramework.ScreenSize;
+                            var ScreenSizePDF = GeneralSettings.ScreenSize;
                             int widthPDF = ScreenSizePDF.Width;
                             int heightPDF = ScreenSizePDF.Height;
                             bool exportXls = true;

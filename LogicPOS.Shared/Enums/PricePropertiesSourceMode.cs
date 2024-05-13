@@ -2,6 +2,8 @@
 {
     public enum PricePropertiesSourceMode
     {
-        FromPriceUser, FromPriceNet, FromTotalFinal
+        FromPriceUser, 
+        FromPriceNet, 
+        FromTotalFinal
     }
 }

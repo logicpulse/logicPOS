@@ -79,7 +79,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 
                 //Call base PrintNotes();
                 //IN009279 Wont print notes on ticket mode 
-                if (_documentFinanceMasterList[0].Notes != null && !SharedFramework.AppUseParkingTicketModule) PrintNotes(_documentFinanceMasterList[0].Notes.ToString());
+                if (_documentFinanceMasterList[0].Notes != null && !GeneralSettings.AppUseParkingTicketModule) PrintNotes(_documentFinanceMasterList[0].Notes.ToString());
 
                 //Only Print if is in Portugal ex "Os artigos faturados...."
                 //Call base PrintDocumentTypeFooterString();

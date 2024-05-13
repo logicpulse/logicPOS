@@ -8,9 +8,9 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.App;
 using logicpos.shared.App;
-using logicpos.shared.Classes.Finance;
 using logicpos.shared.Enums;
 using LogicPOS.Settings;
+using LogicPOS.Shared.Article;
 using System;
 using System.Data;
 
@@ -39,9 +39,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         }
 
         //Constructor
-        public DocumentFinanceDialogPage3(Window pSourceWindow, string pPageName) 
+        public DocumentFinanceDialogPage3(Window pSourceWindow, string pPageName)
             : this(pSourceWindow, pPageName, "", null, true) { }
-        public DocumentFinanceDialogPage3(Window pSourceWindow, string pPageName, Widget pWidget) 
+        public DocumentFinanceDialogPage3(Window pSourceWindow, string pPageName, Widget pWidget)
             : this(pSourceWindow, pPageName, "", pWidget, true) { }
         public DocumentFinanceDialogPage3(Window pSourceWindow, string pPageName, string pPageIcon, Widget pWidget, bool pEnabled = true)
             : base(pSourceWindow, pPageName, pPageIcon, pWidget, pEnabled)
@@ -68,7 +68,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //Disable View Button
             TreeViewArticles.Navigator.ButtonView.Sensitive = false;
 
-            if(!SharedFramework.AppUseBackOfficeMode) TreeViewArticles.Columns[18].Visible = false;
+            if (!GeneralSettings.AppUseBackOfficeMode) TreeViewArticles.Columns[18].Visible = false;
 
             PackStart(TreeViewArticles);
 
@@ -93,7 +93,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             _pagePad2.UpdateCustomerEditMode();
             //Validate this PagePad
             Validate();
-			//TK016236 FrontOffice - Salvar sessão para novo documento 
+            //TK016236 FrontOffice - Salvar sessão para novo documento 
             //GlobalFramework.SessionApp.CurrentOrderMainOid = currentOrderMain.Table.OrderMainOid;
             //GlobalFramework.SessionApp.Write();
         }
@@ -102,9 +102,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         public override void Validate()
         {
             //If not a Invoice|InvoiceAndPayment|Simplified Invoice
-            if (TreeViewArticles.DataSource.Rows.Count > 0 
-                && _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid != InvoiceSettings.XpoOidDocumentFinanceTypeInvoice 
-                && _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid != DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment 
+            if (TreeViewArticles.DataSource.Rows.Count > 0
+                && _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid != InvoiceSettings.XpoOidDocumentFinanceTypeInvoice
+                && _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid != DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment
                 && _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid != DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice
             )
             {
@@ -114,7 +114,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             else if (
                 TreeViewArticles.DataSource.Rows.Count > 0 &&
                 FinancialLibraryUtils.IsInValidFinanceDocumentCustomer(
-                    ArticleBag.TotalFinal, 
+                    ArticleBag.TotalFinal,
                     _pagePad2.EntryBoxSelectCustomerName.EntryValidation.Text,
                     _pagePad2.EntryBoxCustomerAddress.EntryValidation.Text,
                     _pagePad2.EntryBoxCustomerZipCode.EntryValidation.Text,
@@ -131,7 +131,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             else if (
                 TreeViewArticles.DataSource.Rows.Count > 0 &&
                 (
-                    _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice 
+                    _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice
                     && (
                         //Check Total Final and Total Services
                         ArticleBag.TotalFinal > InvoiceSettings.GetSimplifiedInvoiceMaxItems(XPOSettings.ConfigurationSystemCountry.Oid) ||

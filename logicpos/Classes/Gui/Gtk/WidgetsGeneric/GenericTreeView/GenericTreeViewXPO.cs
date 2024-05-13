@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {
@@ -112,7 +113,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             //}
 
             //Assign CRUD permissions to private members, Overriding Defaults
-            if (SharedFramework.LoggedUserPermissions != null)
+            if (GeneralSettings.LoggedUserPermissions != null)
             {
                 _allowRecordDelete = SharedUtils.HasPermissionTo(tokenAllowDelete);
                 _allowRecordInsert = SharedUtils.HasPermissionTo(tokenAllowInsert);

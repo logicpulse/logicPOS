@@ -9,12 +9,11 @@ using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.App;
-using logicpos.shared.Classes.Finance;
-using LogicPOS.Shared.CustomDocument;
-using LogicPOS.DTOs;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Extensions;
+using LogicPOS.Shared.Article;
+using LogicPOS.Shared.CustomDocument;
 using System;
 using System.Data;
 

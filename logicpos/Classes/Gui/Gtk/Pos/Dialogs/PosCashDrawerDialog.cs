@@ -52,11 +52,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _sourceWindow = pSourceWindow;
 
                 //If has a valid open session
-                if (SharedFramework.WorkSessionPeriodTerminal != null)
+                if (XPOSettings.WorkSessionPeriodTerminal != null)
                 {
 					//Alteração no funcionamento do Inicio/fecho Sessão [IN:014330]
                     //Get From MoneyInCashDrawer, Includes CASHDRAWER_START and Money Movements
-                    TotalAmountInCashDrawer = ProcessWorkSessionPeriod.GetSessionPeriodMovementTotal(SharedFramework.WorkSessionPeriodTerminal, MovementTypeTotal.MoneyInCashDrawer);
+                    TotalAmountInCashDrawer = ProcessWorkSessionPeriod.GetSessionPeriodMovementTotal(XPOSettings.WorkSessionPeriodTerminal, MovementTypeTotal.MoneyInCashDrawer);
                     if (TotalAmountInCashDrawer < 0) TotalAmountInCashDrawer = TotalAmountInCashDrawer * (-1);
                 }
                 //Dont have Open Terminal Session YET, use from last Closed CashDrawer
@@ -115,7 +115,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 //Initial Button Status, Based on Open/Close Terminal Session
                 string initialButtonToken;
-                if (SharedFramework.WorkSessionPeriodTerminal != null && SharedFramework.WorkSessionPeriodTerminal.SessionStatus == WorkSessionPeriodStatus.Open)
+                if (XPOSettings.WorkSessionPeriodTerminal != null && XPOSettings.WorkSessionPeriodTerminal.SessionStatus == WorkSessionPeriodStatus.Open)
                 {
                     buttonBag["CASHDRAWER_OPEN"].Sensitive = false;
                     buttonBag["CASHDRAWER_CLOSE"].Sensitive = true;

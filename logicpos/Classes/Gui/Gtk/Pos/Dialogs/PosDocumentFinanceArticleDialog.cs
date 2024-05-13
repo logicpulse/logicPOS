@@ -8,7 +8,6 @@ using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.datalayer.Enums;
-using logicpos.shared.Classes.Finance;
 using logicpos.shared.Enums;
 using System;
 using System.Collections.Generic;
@@ -24,6 +23,7 @@ using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Shared.CustomDocument;
+using LogicPOS.Shared.Article;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -412,7 +412,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             HBox ArticleCodeAndArticleName = new HBox(false, 0);
             //Invisible, only used to Debug, to View Values in System Currency
             //hboxPriceQuantityDiscountAndTotals.PackStart(_entryBoxValidationPrice, true, true, 0);
-            if(SharedFramework.AppUseBackOfficeMode && LicenseSettings.LicenseModuleStocks) ArticleCodeAndArticleName.PackStart(_entryBoxSelectArticleWarehouse, false, false, 0); 
+            if(GeneralSettings.AppUseBackOfficeMode && LicenseSettings.LicenseModuleStocks) ArticleCodeAndArticleName.PackStart(_entryBoxSelectArticleWarehouse, false, false, 0); 
             ArticleCodeAndArticleName.PackStart(_entryBoxSelectArticleCode, false, false, 0);
             ArticleCodeAndArticleName.PackStart(_entryBoxSelectArticle, true, true, 0);
             ArticleCodeAndArticleName.PackStart(_entryBoxSelectArticleFamily, false, false, 0);

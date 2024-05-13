@@ -39,7 +39,7 @@ namespace logicpos.financial.library.Classes.WorkSession
                 if (pWorkSessionPeriodType == WorkSessionPeriodType.Terminal)
                 {
                     //Child > Parent Reference
-                    resultWorkSessionPeriod.Parent = SharedFramework.WorkSessionPeriodDay;
+                    resultWorkSessionPeriod.Parent = XPOSettings.WorkSessionPeriodDay;
                 }
 
                 return resultWorkSessionPeriod;
@@ -70,18 +70,18 @@ namespace logicpos.financial.library.Classes.WorkSession
                 //Assign Parent
                 if (pWorkSessionPeriodType == WorkSessionPeriodType.Terminal)
                 {
-                    workSessionPeriod.Parent = XPOSettings.Session.GetObjectByKey<pos_worksessionperiod>(SharedFramework.WorkSessionPeriodDay.Oid);
+                    workSessionPeriod.Parent = XPOSettings.Session.GetObjectByKey<pos_worksessionperiod>(XPOSettings.WorkSessionPeriodDay.Oid);
                 }
                 //Persist
                 workSessionPeriod.Save();
 
                 if (pWorkSessionPeriodType == WorkSessionPeriodType.Day)
                 {
-                    SharedFramework.WorkSessionPeriodDay = workSessionPeriod;
+                    XPOSettings.WorkSessionPeriodDay = workSessionPeriod;
                 }
                 else
                 {
-                    SharedFramework.WorkSessionPeriodTerminal = workSessionPeriod;
+                    XPOSettings.WorkSessionPeriodTerminal = workSessionPeriod;
                 }
                 return true;
             }
@@ -116,11 +116,11 @@ namespace logicpos.financial.library.Classes.WorkSession
                     //Assign to Singleton
                     if (workSessionPeriod.PeriodType == WorkSessionPeriodType.Day)
                     {
-                        SharedFramework.WorkSessionPeriodDay = workSessionPeriod;
+                        XPOSettings.WorkSessionPeriodDay = workSessionPeriod;
                     }
                     else
                     {
-                        SharedFramework.WorkSessionPeriodTerminal = workSessionPeriod;
+                        XPOSettings.WorkSessionPeriodTerminal = workSessionPeriod;
                     }
 
                     result = true;
@@ -253,7 +253,7 @@ namespace logicpos.financial.library.Classes.WorkSession
             try
             {
                 //string sql = string.Format(@"SELECT Count(*) as Count FROM pos_worksessionperiod WHERE Parent = '{0}' AND SessionStatus = 0;", GlobalFramework.WorkSessionPeriodDay.Oid.ToString());
-                string sql = string.Format(@"SELECT Oid, Designation, DateStart, Terminal FROM pos_worksessionperiod WHERE PeriodType = 1 AND Parent = '{0}' AND SessionStatus = 0;", SharedFramework.WorkSessionPeriodDay.Oid.ToString());
+                string sql = string.Format(@"SELECT Oid, Designation, DateStart, Terminal FROM pos_worksessionperiod WHERE PeriodType = 1 AND Parent = '{0}' AND SessionStatus = 0;", XPOSettings.WorkSessionPeriodDay.Oid.ToString());
                 XPSelectData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
                 return xPSelectData;
             }
@@ -398,7 +398,7 @@ namespace logicpos.financial.library.Classes.WorkSession
 
         public static decimal GetSessionPeriodCashDrawerOpenOrCloseAmount(string pMoventTypeToken)
         {
-            return GetSessionPeriodTerminalCashDrawerOpenOrCloseAmount(XPOSettings.Session, SharedFramework.WorkSessionPeriodTerminal, pMoventTypeToken);
+            return GetSessionPeriodTerminalCashDrawerOpenOrCloseAmount(XPOSettings.Session, XPOSettings.WorkSessionPeriodTerminal, pMoventTypeToken);
         }
 
         public static decimal GetSessionPeriodCashDrawerOpenOrCloseAmount(pos_worksessionperiod pWorkSessionPeriod, string pMoventTypeToken)

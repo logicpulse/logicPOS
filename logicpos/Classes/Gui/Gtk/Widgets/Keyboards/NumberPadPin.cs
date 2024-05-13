@@ -13,6 +13,7 @@ using LogicPOS.Utility;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using logicpos.shared;
+using LogicPOS.Shared;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -420,7 +421,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         private void ProcessLogin(sys_userdetail pUserDetail)
         {
             XPOSettings.LoggedUser = pUserDetail;
-            SharedFramework.LoggedUserPermissions = SharedUtils.GetUserPermissions();
+            GeneralSettings.LoggedUserPermissions = SharedUtils.GetUserPermissions();
             SharedUtils.Audit("USER_loggerIN", string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "audit_message_user_loggerin"), pUserDetail.Name));
 
             //SessionApp Add LoggedUser
@@ -444,7 +445,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             //Utils.ShowNotifications(_sourceWindow, pUserDetail.Oid);
 
             //TK016235 BackOffice - Mode
-            if (SharedFramework.AppUseBackOfficeMode)
+            if (GeneralSettings.AppUseBackOfficeMode)
                 logicpos.Utils.ShowBackOffice(_sourceWindow);
             else
                 logicpos.Utils.ShowFrontOffice(_sourceWindow);

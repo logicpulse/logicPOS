@@ -46,16 +46,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\Finance\ArticleBag.cs" />
-    <Compile Include="Classes\Finance\ArticleBagKey.cs" />
-    <Compile Include="Classes\Finance\ArticleBagProperties.cs" />
-    <Compile Include="Classes\Finance\PriceProperties.cs" />
-    <Compile Include="Classes\Finance\TaxBagProperties.cs" />
-    <Compile Include="Classes\Orders\OrderDetail.cs" />
-    <Compile Include="Classes\Orders\OrderDetailLine.cs" />
-    <Compile Include="Classes\Orders\OrderMain.cs" />
-    <Compile Include="Classes\Orders\OrderMainTable.cs" />
-    <Compile Include="Classes\Orders\OrderTicket.cs" />
+    <Compile Include="Article\ArticleBag.cs" />
+    <Compile Include="Article\ArticleBagKey.cs" />
+    <Compile Include="Article\ArticleBagProperties.cs" />
+    <Compile Include="Article\PriceProperties.cs" />
+    <Compile Include="Article\TaxBagProperties.cs" />
+    <Compile Include="Orders\OrderDetail.cs" />
+    <Compile Include="Orders\OrderDetailLine.cs" />
+    <Compile Include="Orders\OrderMain.cs" />
+    <Compile Include="Orders\OrderMainTable.cs" />
+    <Compile Include="Orders\OrderTicket.cs" />
     <Compile Include="CustomDocument\CustomDocumentSettings.cs" />
     <Compile Include="CustomDocument\CustomDocumentType.cs" />
     <Compile Include="CustomDocument\CustomDocumentTypes.cs" />
@@ -68,7 +68,6 @@
     <Compile Include="Enums\ThermalPrinter\SplitCurrentAccountMode.cs" />
     <Compile Include="Enums\ThermalPrinter\WorkSessionMovementResumeQueryMode.cs" />
     <Compile Include="App\SharedUtils.cs" />
-    <Compile Include="App\SharedFramework.cs" />
     <Compile Include="POSSession.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Enums\TableFilterMode.cs" />
