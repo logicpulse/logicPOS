@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LogicPOS.CustomDocument
+namespace LogicPOS.Shared.CustomDocument
 {
     public class CustomDocumentType
     {

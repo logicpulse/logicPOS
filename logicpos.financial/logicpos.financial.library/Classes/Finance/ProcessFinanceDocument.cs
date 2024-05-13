@@ -19,6 +19,7 @@ using System.Linq;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using logicpos.shared;
+using LogicPOS.Shared.CustomDocument;
 
 namespace logicpos.financial.library.Classes.Finance
 {
@@ -162,7 +163,7 @@ namespace logicpos.financial.library.Classes.Finance
                             }
 
                             //Detected in Certification : Credit Notes dont Change Status Details like other Documents
-                            if (documentFinanceType.Oid != DocumentSettings.XpoOidDocumentFinanceTypeCreditNote)
+                            if (documentFinanceType.Oid != CustomDocumentSettings.CreditNoteDocumentTypeId)
                             {
                                 //Assign Date and User for all Other
                                 documentFinanceMasterParentDocument.DocumentStatusDate = documentDateTime.ToString(CultureSettings.DateTimeFormatCombinedDateTime);
@@ -282,7 +283,7 @@ namespace logicpos.financial.library.Classes.Finance
                         documentFinanceType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeInvoiceWayBill ||
                         documentFinanceType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice ||
                         documentFinanceType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment ||
-                        documentFinanceType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeCreditNote ||
+                        documentFinanceType.Oid == CustomDocumentSettings.CreditNoteDocumentTypeId ||
                         documentFinanceType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeBudget ||
                         documentFinanceType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeProformaInvoice ||
                         documentFinanceType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput ||
@@ -1181,14 +1182,14 @@ SELECT
             '{DocumentSettings.XpoOidDocumentFinanceTypeBudget}', 
             '{DocumentSettings.XpoOidDocumentFinanceTypeConferenceDocument}', 
             '{DocumentSettings.XpoOidDocumentFinanceTypeConsignmentGuide}', 
-            '{DocumentSettings.XpoOidDocumentFinanceTypeCreditNote}', 
-            '{DocumentSettings.XpoOidDocumentFinanceTypeDeliveryNote}', 
+            '{CustomDocumentSettings.CreditNoteDocumentTypeId}', 
+            '{CustomDocumentSettings.DeliveryNoteDocumentTypeId}', 
             '{DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment}', 
             '{DocumentSettings.XpoOidDocumentFinanceTypeOwnAssetsDriveGuide}', 
             '{DocumentSettings.XpoOidDocumentFinanceTypeProformaInvoice}', 
             '{DocumentSettings.XpoOidDocumentFinanceTypeReturnGuide}', 
             '{DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice}', 
-            '{DocumentSettings.TransportDocumentId}'
+            '{CustomDocumentSettings.TransportDocumentTypeId}'
         ) THEN NULL 
 		ELSE (
 			DFM.TotalFinal - (COALESCE(

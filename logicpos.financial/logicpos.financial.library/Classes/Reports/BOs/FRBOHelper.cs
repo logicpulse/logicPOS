@@ -8,6 +8,7 @@ using System.Reflection;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using LogicPOS.Shared.CustomDocument;
 
 namespace logicpos.financial.library.Classes.Reports.BOs
 {
@@ -64,12 +65,12 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                 fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(fin_documentfinancemaster), pDocumentFinanceMasterOid);
 
                 bool retificationDocuments = (
-                     documentFinanceMaster.DocumentType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeCreditNote
+                     documentFinanceMaster.DocumentType.Oid == CustomDocumentSettings.CreditNoteDocumentTypeId
                 );
                 /* IN009173 */
                 bool isTransportDocument = (
-                    documentFinanceMaster.DocumentType.Oid == DocumentSettings.TransportDocumentId ||
-                    documentFinanceMaster.DocumentType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeDeliveryNote
+                    documentFinanceMaster.DocumentType.Oid == CustomDocumentSettings.TransportDocumentTypeId ||
+                    documentFinanceMaster.DocumentType.Oid == CustomDocumentSettings.DeliveryNoteDocumentTypeId
                 );
 
                 string sqlFilter = string.Format("fmOid = '{0}'", documentFinanceMaster.Oid.ToString());

@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using LogicPOS.Shared.CustomDocument;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -185,14 +186,14 @@ SELECT
             '{DocumentSettings.XpoOidDocumentFinanceTypeBudget}', 
             '{DocumentSettings.XpoOidDocumentFinanceTypeConferenceDocument}', 
             '{DocumentSettings.XpoOidDocumentFinanceTypeConsignmentGuide}', 
-            '{DocumentSettings.XpoOidDocumentFinanceTypeCreditNote}', 
-            '{DocumentSettings.XpoOidDocumentFinanceTypeDeliveryNote}', 
+            '{CustomDocumentSettings.CreditNoteDocumentTypeId}', 
+            '{CustomDocumentSettings.DeliveryNoteDocumentTypeId}', 
             '{DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment}', 
             '{DocumentSettings.XpoOidDocumentFinanceTypeOwnAssetsDriveGuide}', 
             '{DocumentSettings.XpoOidDocumentFinanceTypeProformaInvoice}', 
             '{DocumentSettings.XpoOidDocumentFinanceTypeReturnGuide}', 
             '{DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice}', 
-            '{DocumentSettings.TransportDocumentId}'
+            '{CustomDocumentSettings.TransportDocumentTypeId}'
         ) THEN NULL 
 		ELSE (
 			DFM.TotalFinal - (

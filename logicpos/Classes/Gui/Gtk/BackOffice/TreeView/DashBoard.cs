@@ -21,6 +21,7 @@ using LogicPOS.Settings.Extensions;
 using Alignment = Gtk.Alignment;
 using Color = System.Drawing.Color;
 using LogicPOS.Globalization;
+using LogicPOS.Shared.CustomDocument;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -46,7 +47,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private readonly TouchButtonIconWithText botao15;
         private readonly TouchButtonIconWithText botao16;
         private readonly ICollection collectionDocuments = null;
-        private readonly string creditNoteOid = DocumentSettings.XpoOidDocumentFinanceTypeCreditNote.ToString();
+        private readonly string creditNoteOid = CustomDocumentSettings.CreditNoteDocumentTypeId.ToString();
         private readonly string invoiceOid = InvoiceSettings.XpoOidDocumentFinanceTypeInvoice.ToString();
         private readonly string simpleInvoiceOid = DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice.ToString();
         private readonly string invoiceAndPaymentOid = DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment.ToString();

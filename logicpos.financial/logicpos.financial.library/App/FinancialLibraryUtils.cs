@@ -11,6 +11,7 @@ using logicpos.shared.App;
 using logicpos.shared.Classes.Finance;
 using logicpos.shared.Classes.Orders;
 using LogicPOS.Settings;
+using LogicPOS.Shared.CustomDocument;
 using System;
 using System.Collections.Generic;
 
@@ -117,9 +118,9 @@ namespace logicpos.financial.library.App
                         InvoiceSettings.XpoOidDocumentFinanceTypeInvoice,
                         DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice,
                         DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment,
-                        DocumentSettings.XpoOidDocumentFinanceTypeDeliveryNote,
+                        CustomDocumentSettings.DeliveryNoteDocumentTypeId,
                         DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput,
-                        DocumentSettings.TransportDocumentId,
+                        CustomDocumentSettings.TransportDocumentTypeId,
                         DocumentSettings.XpoOidDocumentFinanceTypeOwnAssetsDriveGuide,
                         DocumentSettings.XpoOidDocumentFinanceTypeConsignmentGuide,
                         DocumentSettings.XpoOidDocumentFinanceTypeReturnGuide,
@@ -134,8 +135,8 @@ namespace logicpos.financial.library.App
                     {
                         result = new Guid[] {
                         //SaftDocumentType = 2
-                        DocumentSettings.XpoOidDocumentFinanceTypeDeliveryNote,
-                        DocumentSettings.TransportDocumentId,
+                        CustomDocumentSettings.DeliveryNoteDocumentTypeId,
+                        CustomDocumentSettings.TransportDocumentTypeId,
                         DocumentSettings.XpoOidDocumentFinanceTypeOwnAssetsDriveGuide,
                         DocumentSettings.XpoOidDocumentFinanceTypeConsignmentGuide,
                         DocumentSettings.XpoOidDocumentFinanceTypeReturnGuide,
@@ -150,7 +151,7 @@ namespace logicpos.financial.library.App
                 }
                 //CreditNote
                 else if (
-                    pDocumentFinanceType == DocumentSettings.XpoOidDocumentFinanceTypeCreditNote
+                    pDocumentFinanceType == CustomDocumentSettings.CreditNoteDocumentTypeId
                 )
                 {
                     result = new Guid[] { 
@@ -189,8 +190,8 @@ namespace logicpos.financial.library.App
                 }
                 /* IN009175 - Transport Documents ("Guia de Transporte" and "Guia de Remessa") */
                 else if (
-                    pDocumentFinanceType == DocumentSettings.TransportDocumentId ||
-                    pDocumentFinanceType == DocumentSettings.XpoOidDocumentFinanceTypeDeliveryNote
+                    pDocumentFinanceType == CustomDocumentSettings.TransportDocumentTypeId ||
+                    pDocumentFinanceType == CustomDocumentSettings.DeliveryNoteDocumentTypeId
                     )
                 { /* #TODO check this list and all others here */
                     result = new Guid[] { 
@@ -341,7 +342,7 @@ namespace logicpos.financial.library.App
                         resultParentDocument = XPOSettings.Session.ExecuteScalar(sql);
                         totalParentDocument = (resultParentDocument != null) ? Convert.ToDecimal(resultParentDocument) : 0.0m;
 
-                        sql = string.Format("SELECT SUM(fdQuantity) AS Total FROM view_documentfinance WHERE ftOid = '{0}' AND fmDocumentParent = '{1}' AND fdArticle = '{2}';", DocumentSettings.XpoOidDocumentFinanceTypeCreditNote, pDocumentParent.Oid, item.Key.ArticleOid);
+                        sql = string.Format("SELECT SUM(fdQuantity) AS Total FROM view_documentfinance WHERE ftOid = '{0}' AND fmDocumentParent = '{1}' AND fdArticle = '{2}';", CustomDocumentSettings.CreditNoteDocumentTypeId, pDocumentParent.Oid, item.Key.ArticleOid);
                         resultAlreadyCredited = XPOSettings.Session.ExecuteScalar(sql);
                         totalAlreadyCredited = (resultAlreadyCredited != null) ? Convert.ToDecimal(resultAlreadyCredited) : 0.0m;
 
@@ -399,7 +400,7 @@ namespace logicpos.financial.library.App
                     ;",
                     pCustomer,
                     InvoiceSettings.XpoOidDocumentFinanceTypeInvoice,
-                    DocumentSettings.XpoOidDocumentFinanceTypeCreditNote,
+                    CustomDocumentSettings.CreditNoteDocumentTypeId,
                     DocumentSettings.XpoOidDocumentFinanceTypeDebitNote
                 );
 
@@ -522,7 +523,7 @@ namespace logicpos.financial.library.App
             {
                 result = string.Format(
                     "(Disabled IS NULL OR Disabled  <> 1) AND (DocumentType = '{0}' OR DocumentType = '{1}' OR DocumentType = '{2}') AND Payed = 0 AND DocumentStatusStatus <> 'A'"
-                    , InvoiceSettings.XpoOidDocumentFinanceTypeInvoice, DocumentSettings.XpoOidDocumentFinanceTypeCreditNote, DocumentSettings.XpoOidDocumentFinanceTypeDebitNote
+                    , InvoiceSettings.XpoOidDocumentFinanceTypeInvoice, CustomDocumentSettings.CreditNoteDocumentTypeId, DocumentSettings.XpoOidDocumentFinanceTypeDebitNote
                 );
                 //Add Customer Filter if Defined
                 if (pCustomer != Guid.Empty)

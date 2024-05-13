@@ -23,6 +23,7 @@ using logicpos.datalayer.Xpo;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using LogicPOS.Shared.CustomDocument;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -144,8 +145,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             Fixed fixedContent = new Fixed();
 
             //Init Transport Documents Lists
-            _listSaftDocumentType.Add(DocumentSettings.XpoOidDocumentFinanceTypeDeliveryNote.ToString());
-            _listSaftDocumentType.Add(DocumentSettings.TransportDocumentId.ToString());
+            _listSaftDocumentType.Add(CustomDocumentSettings.DeliveryNoteDocumentTypeId.ToString());
+            _listSaftDocumentType.Add(CustomDocumentSettings.TransportDocumentTypeId.ToString());
             _listSaftDocumentType.Add(DocumentSettings.XpoOidDocumentFinanceTypeOwnAssetsDriveGuide.ToString());
             _listSaftDocumentType.Add(DocumentSettings.XpoOidDocumentFinanceTypeConsignmentGuide.ToString());
             _listSaftDocumentType.Add(DocumentSettings.XpoOidDocumentFinanceTypeReturnGuide.ToString());
@@ -487,7 +488,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _vboxEntrys.WidthRequest = _windowSize.Width - 13;
 
             // CreditNote : Protect all components, only Quantity is Editable in CreditMode
-            if (_documentFinanceType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeCreditNote)
+            if (_documentFinanceType.Oid == CustomDocumentSettings.CreditNoteDocumentTypeId)
             {
                 //Article
                 _entryBoxSelectArticle.Entry.Sensitive = false;

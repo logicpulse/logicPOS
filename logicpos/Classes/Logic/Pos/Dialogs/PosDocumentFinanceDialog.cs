@@ -15,6 +15,7 @@ using logicpos.datalayer.Xpo;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using LogicPOS.Shared.CustomDocument;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -108,7 +109,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             fin_documentfinancemaster sourceFinanceMaster = null;
             string referencesReason = string.Empty;
             if (
-                _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.XpoOidDocumentFinanceTypeCreditNote
+                _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid == CustomDocumentSettings.CreditNoteDocumentTypeId
                 && _pagePad1.EntryBoxSelectSourceDocumentFinance.Value != null
                 && _pagePad1.EntryBoxSelectSourceDocumentFinance.Value.Oid != new Guid()
             )
@@ -119,7 +120,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 referencesReason = _pagePad1.EntryBoxReason.EntryValidation.Text;
             };
 
-            if(_pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.XpoOidDocumentFinanceTypeCreditNote)
+            if(_pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid == CustomDocumentSettings.CreditNoteDocumentTypeId)
             {
 
                 List<DataRow> dataRows = new List<DataRow>();

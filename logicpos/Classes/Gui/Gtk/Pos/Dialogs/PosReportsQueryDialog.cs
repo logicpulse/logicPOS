@@ -15,6 +15,7 @@ using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using logicpos.datalayer.Xpo;
 using LogicPOS.Settings;
+using LogicPOS.Shared.CustomDocument;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -361,7 +362,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         string extraFilter = $@" AND (
 Oid = '{XPOSettings.XpoOidUndefinedRecord}' OR 
 Oid = '{InvoiceSettings.XpoOidDocumentFinanceTypeInvoice}' OR 
-Oid = '{DocumentSettings.XpoOidDocumentFinanceTypeCreditNote}'
+Oid = '{CustomDocumentSettings.CreditNoteDocumentTypeId}'
 )".Replace(Environment.NewLine, string.Empty);
                         _entryBoxSelectDocumentFinanceType = SelectionBoxFactory<fin_documentfinancetype, TreeViewDocumentFinanceType>(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_documentfinanceseries_documenttype"), "Designation", extraFilter);
                         _selectionBoxs.Add(typeof(fin_documentfinancetype).Name, _entryBoxSelectDocumentFinanceType);
@@ -376,12 +377,12 @@ Oid = '{DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice}' OR
 Oid = '{DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment}' OR 
 Oid = '{DocumentSettings.XpoOidDocumentFinanceTypeConsignmentGuide}' OR 
 Oid = '{DocumentSettings.XpoOidDocumentFinanceTypeProformaInvoice}' OR 
-Oid = '{DocumentSettings.TransportDocumentId}' OR 
+Oid = '{CustomDocumentSettings.TransportDocumentTypeId}' OR 
 Oid = '{DocumentSettings.XpoOidDocumentFinanceTypeBudget}' OR 
 Oid = '{DocumentSettings.XpoOidDocumentFinanceTypeOwnAssetsDriveGuide}' OR 
-Oid = '{DocumentSettings.XpoOidDocumentFinanceTypeCreditNote}' OR 
+Oid = '{CustomDocumentSettings.CreditNoteDocumentTypeId}' OR 
 Oid = '{DocumentSettings.XpoOidDocumentFinanceTypeReturnGuide}' OR 
-Oid = '{DocumentSettings.XpoOidDocumentFinanceTypeDeliveryNote}' OR 
+Oid = '{CustomDocumentSettings.DeliveryNoteDocumentTypeId}' OR 
 Oid = '{DocumentSettings.XpoOidDocumentFinanceTypeConsignationInvoice}'
 )".Replace(Environment.NewLine, string.Empty);
                         _entryBoxSelectDocumentFinanceType = SelectionBoxFactory<fin_documentfinancetype, TreeViewDocumentFinanceType>(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_documentfinanceseries_documenttype"), "Designation", extraFilter);

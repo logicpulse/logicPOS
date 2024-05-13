@@ -10,7 +10,7 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.App;
 using logicpos.shared.Classes.Finance;
-using LogicPOS.CustomDocument;
+using LogicPOS.Shared.CustomDocument;
 using LogicPOS.DTOs;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
@@ -288,7 +288,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 string filterBaseCustomer = "(Disabled IS NULL OR Disabled  <> 1) AND (Hidden IS NULL OR Hidden = 0)";
 
                 //If Not SimplifiedInvoice
-                if (EntryBoxSelectDocumentFinanceType.Value.Oid != DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice && EntryBoxSelectDocumentFinanceType.Value.Oid != DocumentSettings.XpoOidDocumentFinanceTypeCreditNote)
+                if (EntryBoxSelectDocumentFinanceType.Value.Oid != DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice && EntryBoxSelectDocumentFinanceType.Value.Oid != CustomDocumentSettings.CreditNoteDocumentTypeId)
                 {
                     filterBaseCustomer = filterBaseCustomer + string.Format(" AND Oid <> '{0}'", InvoiceSettings.FinalConsumerId);
                     //If FinalConsumerEntity, Clean it
@@ -325,7 +325,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
                 //Detected SourceDocumentFinance:CreditNote
                 if (
-                    EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.XpoOidDocumentFinanceTypeCreditNote
+                    EntryBoxSelectDocumentFinanceType.Value.Oid == CustomDocumentSettings.CreditNoteDocumentTypeId
                 )
                 {
                     //Set Required EntryBoxSelectSourceDocumentFinance
@@ -376,8 +376,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 //Detected SourceDocumentFinance:WayBill
                 if (
                     EntryBoxSelectDocumentFinanceType.Value.Oid == InvoiceSettings.XpoOidDocumentFinanceTypeInvoice ||
-                    EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.XpoOidDocumentFinanceTypeDeliveryNote ||
-                    EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.TransportDocumentId ||
+                    EntryBoxSelectDocumentFinanceType.Value.Oid == CustomDocumentSettings.DeliveryNoteDocumentTypeId ||
+                    EntryBoxSelectDocumentFinanceType.Value.Oid == CustomDocumentSettings.TransportDocumentTypeId ||
                     EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.XpoOidDocumentFinanceTypeOwnAssetsDriveGuide ||
                     EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.XpoOidDocumentFinanceTypeConsignmentGuide ||
                     EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.XpoOidDocumentFinanceTypeInvoiceWayBill ||
@@ -611,9 +611,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 //If Working on a CreditNote Document(Target), we must Check Already Credited Items in Reference Table, to prevent to Add same items to TreeView 
                 /* IN009206 - Added GT and GR */
                 Guid oid = EntryBoxSelectDocumentFinanceType.Value.Oid;
-                if (DocumentSettings.XpoOidDocumentFinanceTypeCreditNote.Equals(oid)
-                    || DocumentSettings.TransportDocumentId.Equals(oid)
-                    || DocumentSettings.XpoOidDocumentFinanceTypeDeliveryNote.Equals(oid))
+                if (CustomDocumentSettings.CreditNoteDocumentTypeId.Equals(oid)
+                    || CustomDocumentSettings.TransportDocumentTypeId.Equals(oid)
+                    || CustomDocumentSettings.DeliveryNoteDocumentTypeId.Equals(oid))
                 {
                     string creditedDocuments;
                     addToTree = FinancialLibraryUtils.GetUnCreditedItemsFromSourceDocument(sourceDocument, out creditedDocuments);
@@ -810,9 +810,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             Guid oid = EntryBoxSelectDocumentFinanceType.Value.Oid;
             if (
                 !DocumentSettings.XpoOidDocumentFinanceTypeDebitNote.Equals(oid)
-                && !DocumentSettings.XpoOidDocumentFinanceTypeCreditNote.Equals(oid)
-                && !DocumentSettings.TransportDocumentId.Equals(oid)
-                && !DocumentSettings.XpoOidDocumentFinanceTypeDeliveryNote.Equals(oid)
+                && !CustomDocumentSettings.CreditNoteDocumentTypeId.Equals(oid)
+                && !CustomDocumentSettings.TransportDocumentTypeId.Equals(oid)
+                && !CustomDocumentSettings.DeliveryNoteDocumentTypeId.Equals(oid)
             )
             {
                 EntryBoxSelectConfigurationCurrency.ButtonSelectValue.Sensitive = false;

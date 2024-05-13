@@ -7,6 +7,7 @@ using logicpos.shared.App;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Extensions;
+using LogicPOS.Shared.CustomDocument;
 using System;
 using System.Text;
 using System.Xml;
@@ -1327,7 +1328,7 @@ namespace logicpos.financial.library.Classes.Finance
 
             //Protection to skip Export <OrderReferences> when Document Type is CreditNote
             fin_documentfinancedetail documentFinanceDetail = (fin_documentfinancedetail)XPOSettings.Session.GetObjectByKey(typeof(fin_documentfinancedetail), pDocumentMasterDetail);
-            if (documentFinanceDetail.DocumentMaster.DocumentType.Oid != DocumentSettings.XpoOidDocumentFinanceTypeCreditNote)
+            if (documentFinanceDetail.DocumentMaster.DocumentType.Oid != CustomDocumentSettings.CreditNoteDocumentTypeId)
             {
                 try
                 {
@@ -1382,7 +1383,7 @@ namespace logicpos.financial.library.Classes.Finance
 
             //Protection to skip Export <References> when Document Type is NOT CreditNote
             fin_documentfinancedetail documentFinanceDetail = (fin_documentfinancedetail)XPOSettings.Session.GetObjectByKey(typeof(fin_documentfinancedetail), pDocumentMasterDetail);
-            if (documentFinanceDetail.DocumentMaster.DocumentType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeCreditNote)
+            if (documentFinanceDetail.DocumentMaster.DocumentType.Oid == CustomDocumentSettings.CreditNoteDocumentTypeId)
             {
                 try
                 {

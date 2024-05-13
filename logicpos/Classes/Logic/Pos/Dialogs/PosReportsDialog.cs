@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using LogicPOS.Shared.CustomDocument;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -86,7 +87,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment}' OR 
 {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeConsignationInvoice}' OR 
 {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeDebitNote}' OR 
-{filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeCreditNote}' OR 
+{filterField} = '{CustomDocumentSettings.CreditNoteDocumentTypeId}' OR 
 {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypePayment}' 
 OR 
 {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput}'

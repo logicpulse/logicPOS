@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace LogicPOS.CustomDocument
+namespace LogicPOS.Shared.CustomDocument
 {
     public static class CustomDocumentTypes
     {
@@ -13,7 +13,7 @@ namespace LogicPOS.CustomDocument
             CultureResources.GetResourceByLanguage(
                 GeneralSettings.Settings.GetCultureName(),
                 "global_documentfinance_type_title_gt"),
-            DocumentSettings.TransportDocumentId,
+            CustomDocumentSettings.TransportDocumentTypeId,
             Domain.Enums.DocumentType.WayBill,
             "GT",
             false,
@@ -25,11 +25,11 @@ namespace LogicPOS.CustomDocument
             2,
             false);
 
-        public static readonly CustomDocumentType CreditSlip = new CustomDocumentType(
+        public static readonly CustomDocumentType CreditNote = new CustomDocumentType(
             CultureResources.GetResourceByLanguage(
                 GeneralSettings.Settings.GetCultureName(),
                 "global_documentfinance_type_title_nc"),
-            DocumentSettings.XpoOidDocumentFinanceTypeCreditNote,
+            CustomDocumentSettings.CreditNoteDocumentTypeId,
             Domain.Enums.DocumentType.Invoice,
             "NC",
             false,
@@ -45,7 +45,7 @@ namespace LogicPOS.CustomDocument
             CultureResources.GetResourceByLanguage(
                 GeneralSettings.Settings.GetCultureName(),
                 "global_documentfinance_type_title_gr"),
-            DocumentSettings.XpoOidDocumentFinanceTypeDeliveryNote,
+            CustomDocumentSettings.DeliveryNoteDocumentTypeId,
             LogicPOS.Domain.Enums.DocumentType.WayBill,
             "GR",
             false,
@@ -61,7 +61,7 @@ namespace LogicPOS.CustomDocument
         {
             get
             {
-                yield return CreditSlip;
+                yield return CreditNote;
                 yield return TransportDocument;
                 yield return DeliveryNote;
             }

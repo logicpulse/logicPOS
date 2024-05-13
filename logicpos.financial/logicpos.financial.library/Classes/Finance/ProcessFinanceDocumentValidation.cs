@@ -7,6 +7,7 @@ using logicpos.shared.App;
 using logicpos.shared.Classes.Finance;
 using logicpos.shared.Enums;
 using LogicPOS.Settings;
+using LogicPOS.Shared.CustomDocument;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -331,7 +332,7 @@ namespace logicpos.financial.library.Classes.Finance
                     pParameters.DocumentType == DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice ||
                     pParameters.DocumentType == DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment
                 );
-                bool requireParentDocument = (pParameters.DocumentType == DocumentSettings.XpoOidDocumentFinanceTypeCreditNote);
+                bool requireParentDocument = (pParameters.DocumentType == CustomDocumentSettings.CreditNoteDocumentTypeId);
 
                 //P2
                 bool requireAllCustomerFields = (
@@ -699,7 +700,7 @@ namespace logicpos.financial.library.Classes.Finance
                 }
 
                 //ParentDocuments: Credit Note
-                if (pParameters.DocumentType == DocumentSettings.XpoOidDocumentFinanceTypeCreditNote)
+                if (pParameters.DocumentType == CustomDocumentSettings.CreditNoteDocumentTypeId)
                 {
                     if (documentParent == null)
                     {
@@ -898,7 +899,7 @@ namespace logicpos.financial.library.Classes.Finance
                 }
 
                 //Validate Invoice Documents
-                List<Guid> validCustomerPaymentCreditNotes = FinancialLibraryUtils.GetValidDocumentsForPayment(customer.Oid, DocumentSettings.XpoOidDocumentFinanceTypeCreditNote);
+                List<Guid> validCustomerPaymentCreditNotes = FinancialLibraryUtils.GetValidDocumentsForPayment(customer.Oid, CustomDocumentSettings.CreditNoteDocumentTypeId);
                 foreach (var item in pCreditNotes)
                 {
                     if (!validCustomerPaymentCreditNotes.Contains(item.Oid)

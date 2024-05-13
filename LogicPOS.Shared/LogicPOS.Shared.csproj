@@ -56,6 +56,9 @@
     <Compile Include="Classes\Orders\OrderMain.cs" />
     <Compile Include="Classes\Orders\OrderMainTable.cs" />
     <Compile Include="Classes\Orders\OrderTicket.cs" />
+    <Compile Include="CustomDocument\CustomDocumentSettings.cs" />
+    <Compile Include="CustomDocument\CustomDocumentType.cs" />
+    <Compile Include="CustomDocument\CustomDocumentTypes.cs" />
     <Compile Include="Enums\CustomReportDisplayMode.cs" />
     <Compile Include="Enums\PersistFinanceDocumentSourceMode.cs" />
     <Compile Include="Enums\PricePropertiesSourceMode.cs" />

@@ -15,6 +15,7 @@ using logicpos.shared.Enums;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Extensions;
+using LogicPOS.Shared.CustomDocument;
 using Patagames.Pdf.Net;
 using Patagames.Pdf.Net.Controls.WinForms;
 using System;
@@ -1496,7 +1497,7 @@ namespace logicpos.financial.library.Classes.Reports
                     }
 
                     /* If "Nota de Crédito" (NC) */
-                    if (DocumentSettings.XpoOidDocumentFinanceTypeCreditNote.Equals(item.DocumentType.Oid))
+                    if (CustomDocumentSettings.CreditNoteDocumentTypeId.Equals(item.DocumentType.Oid))
                     {
                         item.PaymentMethod = new fin_configurationpaymentmethod { Designation = item.DocumentType.Designation, Ord = 999, Code = 999 }; /* Setting to 999 to avoid NC being grouped with other Payment Method created */
                         item.PaymentCondition = new fin_configurationpaymentcondition { Designation = item.DocumentType.Designation, Ord = 999, Code = 999 }; /* Sets the same as above in order to keep the pattern */
@@ -1622,7 +1623,7 @@ namespace logicpos.financial.library.Classes.Reports
                             /* IN009075 */
                             item.EntityFiscalNumber = PluginSettings.SoftwareVendor.Decrypt(item.EntityFiscalNumber);
                             /* IN009072 - this is used on reports to subtract the below values from totals when financial document is "NC" (see IN009066) */
-                            if (DocumentSettings.XpoOidDocumentFinanceTypeCreditNote.Equals(new Guid(item.DocumentType)))
+                            if (CustomDocumentSettings.CreditNoteDocumentTypeId.Equals(new Guid(item.DocumentType)))
                             {
                                 item.ArticleQuantity *= -1;
                                 item.ArticleTotalFinal *= -1;
@@ -1717,7 +1718,7 @@ namespace logicpos.financial.library.Classes.Reports
                             }
 
                             /* IN009072 - "NCs" must have their values subtracted from totals (see IN009066) */
-                            if (DocumentSettings.XpoOidDocumentFinanceTypeCreditNote.Equals(new Guid(item.DocumentType)))
+                            if (CustomDocumentSettings.CreditNoteDocumentTypeId.Equals(new Guid(item.DocumentType)))
                             {
                                 item.ArticleQuantity *= -1;
                                 item.ArticleTotalNet *= -1;

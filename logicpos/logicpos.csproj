@@ -189,9 +189,6 @@
     <Compile Include="Classes\Utils\EuropeanVatInformation.cs" />
     <Compile Include="Classes\Utils\Paths.cs" />
     <Compile Include="Classes\Utils\Win32APIWindowHelper.cs" />
-    <Compile Include="CustomDocument\CustomDocumentSettings.cs" />
-    <Compile Include="CustomDocument\CustomDocumentType.cs" />
-    <Compile Include="CustomDocument\CustomDocumentTypes.cs" />
     <Compile Include="Extensions\ColorExtension.cs" />
     <Compile Include="IStockManagementModule.cs" />
     <Compile Include="Program.cs" />

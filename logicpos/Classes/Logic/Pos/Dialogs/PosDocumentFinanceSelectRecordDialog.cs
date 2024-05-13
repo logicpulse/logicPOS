@@ -25,6 +25,7 @@ using logicpos.datalayer.Xpo;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Shared.CustomDocument;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -225,7 +226,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         payed = "0";
                     }
                     else { payed = "False"; }
-                    string criteriaOperatorString = string.Format("{0} (DocumentType = '{1}' OR DocumentType = '{2}' OR DocumentType = '{4}') AND DocumentStatusStatus <> 'A' AND Payed = '{3}'", criteriaOperatorShared, InvoiceSettings.XpoOidDocumentFinanceTypeInvoice, DocumentSettings.XpoOidDocumentFinanceTypeCreditNote, payed, DocumentSettings.XpoOidDocumentFinanceTypeInvoiceWayBill);
+                    string criteriaOperatorString = string.Format("{0} (DocumentType = '{1}' OR DocumentType = '{2}' OR DocumentType = '{4}') AND DocumentStatusStatus <> 'A' AND Payed = '{3}'", criteriaOperatorShared, InvoiceSettings.XpoOidDocumentFinanceTypeInvoice, CustomDocumentSettings.CreditNoteDocumentTypeId, payed, DocumentSettings.XpoOidDocumentFinanceTypeInvoiceWayBill);
                     criteriaOperator = CriteriaOperator.Parse(criteriaOperatorString);
 
                     //string criteriaOperatorString2 = string.Format("{0} (DocumentType = '{1}' OR (DocumentType = '{2}' AND (DocFinMaster.DocumentParent NOT IN (SELECT DocFinMaster2.Oid FROM fin_documentfinancemaster DocFinMaster2 WHERE DocFinMaster2.Oid = DocFinMaster.DocumentParent AND Payed = 'False') OR DocFinMaster.DocumentParent IS NULL)) OR DocumentType = '{4}') AND DocumentStatusStatus <> 'A' AND Payed = '{3}'", criteriaOperatorShared, SettingsApp.XpoOidDocumentFinanceTypeInvoice, SettingsApp.XpoOidDocumentFinanceTypeCreditNote, payed, SettingsApp.XpoOidDocumentFinanceTypeInvoiceWayBill);
@@ -302,8 +303,8 @@ WHERE
                         //Mostrar notas de crédito apenas para para clientes com saldo positivo / Mostrar notas crédito de documentos que já tenham sido liquidados
                         var sqlbalanceTotal = string.Format("SELECT Balance FROM view_documentfinancecustomerbalancesummary WHERE (EntityOid = '{0}');", Convert.ToString(item.Values[1]));
                         var getCustomerBalance = XPOSettings.Session.ExecuteScalar(sqlbalanceTotal);
-                        if((getCustomerBalance != null && (Convert.ToDecimal(getCustomerBalance) > 0) && Guid.Parse(Convert.ToString(item.Values[2])) == DocumentSettings.XpoOidDocumentFinanceTypeCreditNote) ||
-                            (Guid.Parse(Convert.ToString(item.Values[2])) != DocumentSettings.XpoOidDocumentFinanceTypeCreditNote) ||
+                        if((getCustomerBalance != null && (Convert.ToDecimal(getCustomerBalance) > 0) && Guid.Parse(Convert.ToString(item.Values[2])) == CustomDocumentSettings.CreditNoteDocumentTypeId) ||
+                            (Guid.Parse(Convert.ToString(item.Values[2])) != CustomDocumentSettings.CreditNoteDocumentTypeId) ||
                             showCreditNote
                             )
                         {
@@ -952,7 +953,7 @@ WHERE
 			                    {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment}' OR 
 			                    {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeConsignationInvoice}' OR 
 			                    {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeDebitNote}' OR 
-			                    {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeCreditNote}' OR 
+			                    {filterField} = '{CustomDocumentSettings.CreditNoteDocumentTypeId}' OR 
 			                    {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypePayment}' 
 			                    OR 
 			                    {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput}'
@@ -2272,7 +2273,7 @@ WHERE
 			                    {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment}' OR 
 			                    {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeConsignationInvoice}' OR 
 			                    {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeDebitNote}' OR 
-			                    {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeCreditNote}' OR 
+			                    {filterField} = '{CustomDocumentSettings.CreditNoteDocumentTypeId}' OR 
 			                    {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypePayment}' 
 			                    OR 
 			                    {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput}'

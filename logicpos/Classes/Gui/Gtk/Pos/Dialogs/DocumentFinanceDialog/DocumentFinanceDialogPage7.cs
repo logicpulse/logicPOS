@@ -10,6 +10,7 @@ using logicpos.shared.Classes.Finance;
 using logicpos.shared.Classes.Orders;
 using logicpos.shared.Enums;
 using LogicPOS.Settings;
+using LogicPOS.Shared.CustomDocument;
 using System;
 using System.Collections.Generic;
 
@@ -186,7 +187,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         //NC : Credit Note
         private void buttonCreditNote_Clicked(object sender, EventArgs e)
         {
-            Guid documentTypeGuid = DocumentSettings.XpoOidDocumentFinanceTypeCreditNote;
+            Guid documentTypeGuid = CustomDocumentSettings.CreditNoteDocumentTypeId;
             Guid reference = new Guid("daecbf1d-6211-4e74-a8cd-81795e347656");
 
             //FT FT2015S0001/16
