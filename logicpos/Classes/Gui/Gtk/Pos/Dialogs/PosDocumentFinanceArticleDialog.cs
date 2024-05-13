@@ -145,7 +145,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             //Init Transport Documents Lists
             _listSaftDocumentType.Add(DocumentSettings.XpoOidDocumentFinanceTypeDeliveryNote.ToString());
-            _listSaftDocumentType.Add(DocumentSettings.XpoOidDocumentFinanceTypeTransportationGuide.ToString());
+            _listSaftDocumentType.Add(DocumentSettings.TransportDocumentId.ToString());
             _listSaftDocumentType.Add(DocumentSettings.XpoOidDocumentFinanceTypeOwnAssetsDriveGuide.ToString());
             _listSaftDocumentType.Add(DocumentSettings.XpoOidDocumentFinanceTypeConsignmentGuide.ToString());
             _listSaftDocumentType.Add(DocumentSettings.XpoOidDocumentFinanceTypeReturnGuide.ToString());

@@ -119,7 +119,7 @@ namespace logicpos.financial.library.App
                         DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment,
                         DocumentSettings.XpoOidDocumentFinanceTypeDeliveryNote,
                         DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput,
-                        DocumentSettings.XpoOidDocumentFinanceTypeTransportationGuide,
+                        DocumentSettings.TransportDocumentId,
                         DocumentSettings.XpoOidDocumentFinanceTypeOwnAssetsDriveGuide,
                         DocumentSettings.XpoOidDocumentFinanceTypeConsignmentGuide,
                         DocumentSettings.XpoOidDocumentFinanceTypeReturnGuide,
@@ -135,7 +135,7 @@ namespace logicpos.financial.library.App
                         result = new Guid[] {
                         //SaftDocumentType = 2
                         DocumentSettings.XpoOidDocumentFinanceTypeDeliveryNote,
-                        DocumentSettings.XpoOidDocumentFinanceTypeTransportationGuide,
+                        DocumentSettings.TransportDocumentId,
                         DocumentSettings.XpoOidDocumentFinanceTypeOwnAssetsDriveGuide,
                         DocumentSettings.XpoOidDocumentFinanceTypeConsignmentGuide,
                         DocumentSettings.XpoOidDocumentFinanceTypeReturnGuide,
@@ -189,7 +189,7 @@ namespace logicpos.financial.library.App
                 }
                 /* IN009175 - Transport Documents ("Guia de Transporte" and "Guia de Remessa") */
                 else if (
-                    pDocumentFinanceType == DocumentSettings.XpoOidDocumentFinanceTypeTransportationGuide ||
+                    pDocumentFinanceType == DocumentSettings.TransportDocumentId ||
                     pDocumentFinanceType == DocumentSettings.XpoOidDocumentFinanceTypeDeliveryNote
                     )
                 { /* #TODO check this list and all others here */

@@ -122,9 +122,9 @@
       <Project>{42af3be2-44b4-477d-8e45-55c64992b805}</Project>
       <Name>logicpos.datalayer</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\logicpos.shared\logicpos.shared.csproj">
+    <ProjectReference Include="..\..\logicpos.shared\LogicPOS.Shared.csproj">
       <Project>{fb74327c-1794-47ec-8f52-fd3f464f3258}</Project>
-      <Name>logicpos.shared</Name>
+      <Name>LogicPOS.Shared</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -1,4 +1,4 @@
-﻿namespace logicpos.shared.Enums
+﻿namespace LogicPOS.Domain.Enums
 {
     public enum DocumentType
     {

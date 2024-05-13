@@ -9,13 +9,14 @@ using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.App;
-using logicpos.shared.App;
 using logicpos.shared.Classes.Finance;
-using System;
-using System.Data;
-using LogicPOS.Settings.Extensions;
+using LogicPOS.CustomDocument;
+using LogicPOS.DTOs;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using LogicPOS.Settings.Extensions;
+using System;
+using System.Data;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 {
@@ -152,7 +153,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             filterValidPaymentMethod = string.Format(filterValidPaymentMethod, additionalFilter);
 
             CriteriaOperator criteriaOperatorConfigurationPaymentMethod = CriteriaOperator.Parse(string.Format(
-                "(Disabled IS NULL OR Disabled  <> 1)  AND Oid <> '{0}' AND {1}", 
+                "(Disabled IS NULL OR Disabled  <> 1)  AND Oid <> '{0}' AND {1}",
                 InvoiceSettings.XpoOidConfigurationPaymentMethodCurrentAccount.ToString(),
                 filterValidPaymentMethod));
             /* IN009142 - End */
@@ -268,7 +269,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
                 //Always Clear Articles when change DocumentType, if not in CopyDocument mode
                 //_treeViewArticles.DeleteRecords();
-                
+
                 //Always Clear ArticleBag when change DocumentType
                 (_pagePad.Pages[2] as DocumentFinanceDialogPage3).ArticleBag = new ArticleBag();
 
@@ -279,7 +280,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 //if (_entryBoxReason.EntryValidation.Text != string.Empty) { _entryBoxReason.EntryValidation.Text = string.Empty; };
 
                 // Fill Default Notes From DocumentFinanceType, usefull for IBANS and Other Custom/Generic Notes
-                if(EntryBoxSelectCopyDocumentFinance.Value == null)
+                if (EntryBoxSelectCopyDocumentFinance.Value == null)
                 {
                     UpdateDocumentMasterNotesFromDocumentFinanceTypeNotes();
                 }
@@ -376,7 +377,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 if (
                     EntryBoxSelectDocumentFinanceType.Value.Oid == InvoiceSettings.XpoOidDocumentFinanceTypeInvoice ||
                     EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.XpoOidDocumentFinanceTypeDeliveryNote ||
-                    EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.XpoOidDocumentFinanceTypeTransportationGuide ||
+                    EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.TransportDocumentId ||
                     EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.XpoOidDocumentFinanceTypeOwnAssetsDriveGuide ||
                     EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.XpoOidDocumentFinanceTypeConsignmentGuide ||
                     EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.XpoOidDocumentFinanceTypeInvoiceWayBill ||
@@ -451,7 +452,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                     EntryBoxSelectDocumentFinanceType.Value = sourceDocument.DocumentType;
                     EntryBoxSelectDocumentFinanceType.EntryValidation.Text = sourceDocument.DocumentType.Designation;
                     //Copy notes from Copy Document #Lindote
-                    if(sourceDocument.Notes != null) EntryBoxDocumentMasterNotes.EntryValidation.Text = sourceDocument.Notes;
+                    if (sourceDocument.Notes != null) EntryBoxDocumentMasterNotes.EntryValidation.Text = sourceDocument.Notes;
                     // Call Update SelectionBox Shared Method
                     SharedUpdateSelectionBoxsAndPageNavigatorOnChangeDocumentType();
                 }
@@ -609,9 +610,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
                 //If Working on a CreditNote Document(Target), we must Check Already Credited Items in Reference Table, to prevent to Add same items to TreeView 
                 /* IN009206 - Added GT and GR */
-				Guid oid = EntryBoxSelectDocumentFinanceType.Value.Oid;
-                if (DocumentSettings.XpoOidDocumentFinanceTypeCreditNote.Equals(oid) 
-                    || DocumentSettings.XpoOidDocumentFinanceTypeTransportationGuide.Equals(oid)
+                Guid oid = EntryBoxSelectDocumentFinanceType.Value.Oid;
+                if (DocumentSettings.XpoOidDocumentFinanceTypeCreditNote.Equals(oid)
+                    || DocumentSettings.TransportDocumentId.Equals(oid)
                     || DocumentSettings.XpoOidDocumentFinanceTypeDeliveryNote.Equals(oid))
                 {
                     string creditedDocuments;
@@ -633,11 +634,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                             EntryBoxSelectSourceDocumentFinance.EntryValidation.Validate(new Guid().ToString());
                         }
                         //Show Message and Return
-						/* IN009241 */
+                        /* IN009241 */
                         string message = string.Format(
                             CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_info_all_lines_from_this_document_was_already_credited"),
-                            DocumentType.GetDocumentTypeByOid(oid).Designation, 
-                            CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_source_finance_document"), 
+                            CustomDocumentTypes.GetDocumentTypeById(oid).Designation,
+                            CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_source_finance_document"),
                             creditedDocuments);
 
                         logicpos.Utils.ShowMessageTouch(
@@ -754,7 +755,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                     dataRow["ConfigurationVatRate.Value"] = item.VatRate;
                     dataRow["VatExemptionReason.Acronym"] = item.VatExemptionReason;
                     dataRow["Discount"] = item.Discount;
-					/* IN009206 */
+                    /* IN009206 */
                     dataRow["TotalNet"] = item.TotalNet * EntryBoxSelectConfigurationCurrency.Value.ExchangeRate;
                     dataRow["TotalFinal"] = item.TotalFinal * EntryBoxSelectConfigurationCurrency.Value.ExchangeRate;
                     dataRow["PriceFinal"] = item.PriceFinal * EntryBoxSelectConfigurationCurrency.Value.ExchangeRate;
@@ -805,12 +806,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //If Consignation Invoice enable ReadOny Mode
             //if (_entryBoxSelectSourceDocumentFinance.Value.DocumentType.Oid == SettingsApp.XpoOidDocumentFinanceTypeConsignationInvoice)
             //Protect Edits all Documents Articled Except Credit and Debit Notes
-			/* IN009206 - Added GT and GR */
+            /* IN009206 - Added GT and GR */
             Guid oid = EntryBoxSelectDocumentFinanceType.Value.Oid;
             if (
                 !DocumentSettings.XpoOidDocumentFinanceTypeDebitNote.Equals(oid)
                 && !DocumentSettings.XpoOidDocumentFinanceTypeCreditNote.Equals(oid)
-                && !DocumentSettings.XpoOidDocumentFinanceTypeTransportationGuide.Equals(oid)
+                && !DocumentSettings.TransportDocumentId.Equals(oid)
                 && !DocumentSettings.XpoOidDocumentFinanceTypeDeliveryNote.Equals(oid)
             )
             {
@@ -820,19 +821,19 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
                 // SourceDocument
                 // Edit articles from pro-forma
-                if(EntryBoxSelectSourceDocumentFinance.Value != null)
+                if (EntryBoxSelectSourceDocumentFinance.Value != null)
                 {
                     fin_documentfinancemaster sourceDocument;
                     sourceDocument = EntryBoxSelectSourceDocumentFinance.Value;
-                    if (sourceDocument != null && (sourceDocument.DocumentType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeProformaInvoice || 
+                    if (sourceDocument != null && (sourceDocument.DocumentType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeProformaInvoice ||
                         sourceDocument.DocumentType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeBudget))
                     {
                         _pagePad3.TreeViewArticles.ReadOnly = false;
                         _pagePad3.TreeViewArticles.AllowRecordUpdate = true;
-                        _pagePad3.TreeViewArticles.AllowRecordInsert = true;                        
+                        _pagePad3.TreeViewArticles.AllowRecordInsert = true;
                     }
                 }
- 
+
             }
             else
             {
@@ -857,7 +858,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 ? EntryBoxSelectDocumentFinanceType.Value.Notes
                 : null;
         }
-        
+
         private void SharedUpdateSelectionBoxsAndPageNavigatorOnChangeDocumentType()
         {
             //Get and Update WayBill Mode
@@ -867,7 +868,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             foreach (PagePadPage page in _pagePad.Pages)
             {
                 i++;
-                page.NavigatorButton.Visible = (wayBillMode) || (! wayBillMode && i <= 3);
+                page.NavigatorButton.Visible = (wayBillMode) || (!wayBillMode && i <= 3);
             }
 
             //ConfigurationPaymentCondition

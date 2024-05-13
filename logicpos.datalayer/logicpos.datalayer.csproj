@@ -56,6 +56,7 @@
     <Compile Include="Entities\Documents\FIN_WarehouseLocation.cs" />
     <Compile Include="Entities\Documents\VIEW_ViewDocumentFinancePaymentTotals.cs" />
     <Compile Include="Entities\System\SYS_SystemNotificationDocumentMaster.cs" />
+    <Compile Include="Enums\DocumentType.cs" />
     <Compile Include="XPO\XPGuidObjectAttribute.cs" />
     <Compile Include="Enums\ArticleSerialNumberStatus.cs" />
     <Compile Include="Enums\OrderStatus.cs" />

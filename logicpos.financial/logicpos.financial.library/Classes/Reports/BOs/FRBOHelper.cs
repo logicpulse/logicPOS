@@ -68,7 +68,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                 );
                 /* IN009173 */
                 bool isTransportDocument = (
-                    documentFinanceMaster.DocumentType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeTransportationGuide ||
+                    documentFinanceMaster.DocumentType.Oid == DocumentSettings.TransportDocumentId ||
                     documentFinanceMaster.DocumentType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeDeliveryNote
                 );
 

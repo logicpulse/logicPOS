@@ -13,7 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "logicpos.plugins", "logicpo
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "logicpos.hardware", "logicpos.hardware", "{A5B28328-FBED-45CE-A530-184308495E09}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "logicpos.shared", "logicpos.shared\logicpos.shared.csproj", "{FB74327C-1794-47EC-8F52-FD3F464F3258}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogicPOS.Shared", "LogicPOS.Shared\LogicPOS.Shared.csproj", "{FB74327C-1794-47EC-8F52-FD3F464F3258}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "logicpos.datalayer", "logicpos.datalayer\logicpos.datalayer.csproj", "{42AF3BE2-44B4-477D-8E45-55C64992B805}"
 EndProject
@@ -47,7 +47,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "logicpos.financial.service"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicPOS.DTOs", "LogicPOS.DTOs\LogicPOS.DTOs.csproj", "{E23BDF58-F0A9-40AC-ACCE-57235FB7A7F1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogicPOS.Plugin", "LogicPOS.Plugin\LogicPOS.Plugin.csproj", "{50C2F757-8478-4FD3-8B35-89BC12E7ACA0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicPOS.Plugin", "LogicPOS.Plugin\LogicPOS.Plugin.csproj", "{50C2F757-8478-4FD3-8B35-89BC12E7ACA0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

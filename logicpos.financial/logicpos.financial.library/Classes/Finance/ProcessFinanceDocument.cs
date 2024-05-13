@@ -1188,7 +1188,7 @@ SELECT
             '{DocumentSettings.XpoOidDocumentFinanceTypeProformaInvoice}', 
             '{DocumentSettings.XpoOidDocumentFinanceTypeReturnGuide}', 
             '{DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice}', 
-            '{DocumentSettings.XpoOidDocumentFinanceTypeTransportationGuide}'
+            '{DocumentSettings.TransportDocumentId}'
         ) THEN NULL 
 		ELSE (
 			DFM.TotalFinal - (COALESCE(
