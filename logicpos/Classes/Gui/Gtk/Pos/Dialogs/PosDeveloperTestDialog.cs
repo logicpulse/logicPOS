@@ -32,8 +32,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
-            string windowTitle = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_template");
-            string fileDefaultWindowIcon = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_window_default.png";
+            string windowTitle = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_template");
+            string fileDefaultWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_default.png";
             _windowSize = new Size(595, 740);
 
             //Init VBox
@@ -101,7 +101,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Test XPOEntryBoxSelectRecordValidation without KeyBoard Input
             fin_documentfinancetype defaultValueDocumentFinanceType = (fin_documentfinancetype)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(fin_documentfinancetype), InvoiceSettings.XpoOidDocumentFinanceTypeInvoice);
             CriteriaOperator criteriaOperatorDocumentFinanceType = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1)");
-            XPOEntryBoxSelectRecordValidation<fin_documentfinancetype, TreeViewDocumentFinanceType> entryBoxSelectDocumentFinanceType = new XPOEntryBoxSelectRecordValidation<fin_documentfinancetype, TreeViewDocumentFinanceType>(this, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_documentfinanceseries_documenttype"), "Designation", "Oid", defaultValueDocumentFinanceType, criteriaOperatorDocumentFinanceType, LogicPOS.Utility.RegexUtils.RegexGuid, true);
+            XPOEntryBoxSelectRecordValidation<fin_documentfinancetype, TreeViewDocumentFinanceType> entryBoxSelectDocumentFinanceType = new XPOEntryBoxSelectRecordValidation<fin_documentfinancetype, TreeViewDocumentFinanceType>(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_documentfinanceseries_documenttype"), "Designation", "Oid", defaultValueDocumentFinanceType, criteriaOperatorDocumentFinanceType, LogicPOS.Utility.RegexUtils.RegexGuid, true);
             //entryBoxSelectDocumentFinanceType.EntryValidation.IsEditable = false;
             entryBoxSelectDocumentFinanceType.ClosePopup += delegate { };
             _vbox.PackStart(entryBoxSelectDocumentFinanceType, true, true, _padding);
@@ -123,7 +123,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             
             //Test DateTime Picker
             DateTime initalDateTime = DateTime.Now;
-            EntryBoxValidationDatePickerDialog entryBoxShipToDeliveryDate = new EntryBoxValidationDatePickerDialog(this, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_ship_to_delivery_date"), "dateFormat", DateTime.Now, LogicPOS.Utility.RegexUtils.RegexDate, true, CultureSettings.DateFormat);
+            EntryBoxValidationDatePickerDialog entryBoxShipToDeliveryDate = new EntryBoxValidationDatePickerDialog(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_to_delivery_date"), "dateFormat", DateTime.Now, LogicPOS.Utility.RegexUtils.RegexDate, true, CultureSettings.DateFormat);
             //entryBoxShipToDeliveryDate.EntryValidation.Sensitive = true;
             entryBoxShipToDeliveryDate.EntryValidation.Text = initalDateTime.ToString(CultureSettings.DateFormat);
 
@@ -132,7 +132,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _vbox.PackStart(entryBoxShipToDeliveryDate, true, true, _padding);
 
             //Test DateTime Picker with KeyBoard
-            EntryBoxValidationDatePickerDialog entryBoxShipToDeliveryDateKeyboard = new EntryBoxValidationDatePickerDialog(this, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_ship_to_delivery_date"), CultureSettings.DateTimeFormat, DateTime.Now, KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexDateTime, true, CultureSettings.DateTimeFormat);
+            EntryBoxValidationDatePickerDialog entryBoxShipToDeliveryDateKeyboard = new EntryBoxValidationDatePickerDialog(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_to_delivery_date"), CultureSettings.DateTimeFormat, DateTime.Now, KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexDateTime, true, CultureSettings.DateTimeFormat);
             entryBoxShipToDeliveryDateKeyboard.EntryValidation.Sensitive = false;
             entryBoxShipToDeliveryDateKeyboard.ButtonKeyBoard.Sensitive = false;
             //entryBoxShipToDeliveryDate.EntryValidation.Sensitive = true;
@@ -172,11 +172,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _fixedContent.Put(listRadioButtonTouch, 100, 320);
 
             string initialShipFromDeliveryDate = FrameworkUtils.CurrentDateTimeAtomic().ToString(SettingsApp.DateFormat);
-            //EntryBoxValidationButton entryBoxDate = new EntryBoxValidationButton(this, CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ship_from_delivery_date, KeyboardModes.Alfa, regexDate, false);
+            //EntryBoxValidationButton entryBoxDate = new EntryBoxValidationButton(this, CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_ship_from_delivery_date, KeyboardModes.Alfa, regexDate, false);
             //entryBoxDate.EntryValidation.Text = initialShipFromDeliveryDate;
             //entryBoxDate.EntryValidation.Validate();
 
-            EntryBoxValidationDatePickerDialog entryBoxDate = new EntryBoxValidationDatePickerDialog(this, CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ship_from_delivery_date, SettingsApp.RegexDate, false);
+            EntryBoxValidationDatePickerDialog entryBoxDate = new EntryBoxValidationDatePickerDialog(this, CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_ship_from_delivery_date, SettingsApp.RegexDate, false);
             entryBoxDate.EntryValidation.Text = initialShipFromDeliveryDate;
             entryBoxDate.EntryValidation.Validate();
             entryBoxDate.ClosePopup += delegate

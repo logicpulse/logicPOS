@@ -118,9 +118,9 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             QtdEntry = pQtdentry;
             CodeEntry = pCodeEntry;
             //Settings
-            string iconSelectRecord = string.Format("{0}{1}", GeneralSettings.Paths["images"], @"Icons/Windows/icon_window_select_record.png");
-            string iconClearRecord = string.Format("{0}{1}", GeneralSettings.Paths["images"], @"Icons/Windows/icon_window_delete_record.png");
-            string iconAddRecord = string.Format("{0}{1}", GeneralSettings.Paths["images"], @"Icons/icon_pos_nav_new.png");
+            string iconSelectRecord = string.Format("{0}{1}", PathsSettings.ImagesFolderLocation, @"Icons/Windows/icon_window_select_record.png");
+            string iconClearRecord = string.Format("{0}{1}", PathsSettings.ImagesFolderLocation, @"Icons/Windows/icon_window_delete_record.png");
+            string iconAddRecord = string.Format("{0}{1}", PathsSettings.ImagesFolderLocation, @"Icons/icon_pos_nav_new.png");
             //Init Button
             ButtonSelectValue = new TouchButtonIcon("touchButtonIcon", Color.Transparent, iconSelectRecord, new Size(20, 20), 30, 30);
             ButtonClearValue = new TouchButtonIcon("touchButtonIcon", Color.Transparent, iconClearRecord, new Size(20, 20), 30, 30);
@@ -208,7 +208,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             Entry = pEntry;
             ListStore store = null;
             //Settings
-            string iconSelectRecord = string.Format("{0}{1}", GeneralSettings.Paths["images"], @"Icons/Windows/icon_window_select_record.png");
+            string iconSelectRecord = string.Format("{0}{1}", PathsSettings.ImagesFolderLocation, @"Icons/Windows/icon_window_select_record.png");
             //Init Button
             ButtonSelectValue = new TouchButtonIcon("touchButtonIcon", Color.Transparent, iconSelectRecord, new Size(20, 20), 30, 30);
             //UI/Pack
@@ -389,10 +389,10 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                 }
                 
 
-                pEntry.Text = (value != null) ? value.ToString() : CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_error");
+                pEntry.Text = (value != null) ? value.ToString() : CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error");
 
-                pEntryCode.Text = (value != null) ? value.Code.ToString() : CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_error");
-                pEntryQtd.Text = (value != null) ? value.DefaultQuantity.ToString() : CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_error");
+                pEntryCode.Text = (value != null) ? value.Code.ToString() : CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error");
+                pEntryQtd.Text = (value != null) ? value.DefaultQuantity.ToString() : CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error");
                 
                 OnClosePopup();
             }
@@ -494,7 +494,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                 }
                 else
                 {
-                    pEntry.Text = (value != null) ? value.ToString() : CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_error");
+                    pEntry.Text = (value != null) ? value.ToString() : CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error");
                 }           
                 OnClosePopup();
             }
@@ -526,7 +526,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                   dialog = new PosSelectRecordDialog<XPCollection, XPGuidObject, T2>(
                     _sourceWindow,
                     DialogFlags.DestroyWithParent,
-                    CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_select_record"),
+                    CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_select_record"),
                     _dialogSize,
                     _value,
                     CriteriaOperator,
@@ -609,7 +609,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                 {
                     pEntry.Text = (value != null) ? value.ToString() : "";
                 }
-                 //CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error");
+                 //CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error");
             }
             if (typeof(T2) == typeof(TreeViewArticleWarehouse))
             {
@@ -666,7 +666,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
 
                 List<string> result = new List<string>();
 				//Titulo nas janelas de filtro de relatório [IN:014328]
-                PosReportsQueryDialog dialogFilter = new PosReportsQueryDialog(dialog, DialogFlags.DestroyWithParent, ReportsQueryDialogMode.FILTER_DOCUMENTS_PAGINATION, "fin_documentfinancemaster", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_report_filter"));
+                PosReportsQueryDialog dialogFilter = new PosReportsQueryDialog(dialog, DialogFlags.DestroyWithParent, ReportsQueryDialogMode.FILTER_DOCUMENTS_PAGINATION, "fin_documentfinancemaster", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_report_filter"));
                 DialogResponseType responseFilter = (DialogResponseType)dialogFilter.Run();
 
                 //If button Clean Filter Clicked

@@ -137,7 +137,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 }
                 else
                 {
-                    logicpos.Utils.ShowMessageTouch(ParentDialog, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_field_validation_error_keyboardpad"));
+                    logicpos.Utils.ShowMessageTouch(ParentDialog, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_field_validation_error_keyboardpad"));
                 }
             }
         }
@@ -366,7 +366,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     }
                     else
                     {
-                        logicpos.Utils.ShowMessageTouch(ParentDialog, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_field_validation_error_keyboardpad"));
+                        logicpos.Utils.ShowMessageTouch(ParentDialog, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_field_validation_error_keyboardpad"));
                     };
                     break;
                 //Show/Hide Number Lock

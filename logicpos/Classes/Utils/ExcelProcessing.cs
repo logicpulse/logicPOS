@@ -58,7 +58,7 @@ namespace logicpos
                 {
                     case ImportExportFileOpen.OpenExcelArticles:
 
-                        string windowName = (CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_articles"));
+                        string windowName = (CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_articles"));
                         FileFilter fileFilterBackups = Utils.GetFileFilterImportExport();
                         PosFilePickerDialog dialog = new PosFilePickerDialog(pSourceWindow, DialogFlags.DestroyWithParent, fileFilterBackups, FileChooserAction.Open, windowName);
                         ResponseType response = (ResponseType)dialog.Run();
@@ -91,7 +91,7 @@ namespace logicpos
 
                     case ImportExportFileOpen.OpenExcelCostumers:
 
-                        windowName = (CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_customer"));
+                        windowName = (CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_customer"));
                         fileFilterBackups = Utils.GetFileFilterImportExport();
                         dialog = new PosFilePickerDialog(pSourceWindow, DialogFlags.DestroyWithParent, fileFilterBackups, FileChooserAction.Open, windowName);
                         response = (ResponseType)dialog.Run();
@@ -124,7 +124,7 @@ namespace logicpos
 
                     case ImportExportFileOpen.ExportArticles:
 
-                        windowName = (CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_articles"));
+                        windowName = (CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_articles"));
                         fileFilterBackups = Utils.GetFileFilterImportExport();
                         dialog = new PosFilePickerDialog(pSourceWindow, DialogFlags.DestroyWithParent, fileFilterBackups, FileChooserAction.Save, windowName);
                         response = (ResponseType)dialog.Run();
@@ -158,7 +158,7 @@ namespace logicpos
 
                     case ImportExportFileOpen.ExportCustomers:
 
-                        windowName = (CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_customer"));
+                        windowName = (CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_customer"));
                         fileFilterBackups = Utils.GetFileFilterImportExport();
                         dialog = new PosFilePickerDialog(pSourceWindow, DialogFlags.DestroyWithParent, fileFilterBackups, FileChooserAction.Save, windowName);
                         response = (ResponseType)dialog.Run();
@@ -245,13 +245,13 @@ namespace logicpos
                     {
                         case ImportExportFileOpen.OpenExcelArticles:
                             _threadImport = new Thread(() => result = SaveArticles(dtResult, pSourceWindow));
-                            Utils.ThreadStart(pSourceWindow, _threadImport, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_import_articles"));
+                            Utils.ThreadStart(pSourceWindow, _threadImport, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_import_articles"));
                             _threadImport.Abort();
                             //SaveArticles(dtResult, pSourceWindow);
                             break;
                         case ImportExportFileOpen.OpenExcelCostumers:
                             _threadImport = new Thread(() => result = SaveCostumers(dtResult, pSourceWindow));
-                            Utils.ThreadStart(pSourceWindow, _threadImport, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_import_customers"));
+                            Utils.ThreadStart(pSourceWindow, _threadImport, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_import_customers"));
                             _threadImport.Abort();
                             //SaveCostumers(dtResult, pSourceWindow);
                             break;
@@ -261,22 +261,22 @@ namespace logicpos
                     }
                     if(result == 1)
                     {
-                        Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_operation_successfully"), CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_import_successfully"));
+                        Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_operation_successfully"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_import_successfully"));
                     }
                     else if(result == -1)
                     {
-                       Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Warning, ButtonsType.Close, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_warning"), CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_partial_import"));
+                       Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Warning, ButtonsType.Close, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_warning"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_partial_import"));
                     }
                     else
                     {
-                        Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_error"), CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_import_error"));
+                        Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_import_error"));
                     }
                 }
             }
             catch (Exception ex)
             {
                 _logger.Error("ReadExcel: Error proccess file " + ex.Message, ex);
-                Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_error"), string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_import_error")));
+                Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"), string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_import_error")));
             }
 
             return dtResult;
@@ -740,14 +740,14 @@ namespace logicpos
                         }
                         bool result = false;
                         _threadExport = new Thread(() => result = ExportExcel(importFromDBdataTable, path, true, pSourceWindow));
-                        Utils.ThreadStart(pSourceWindow, _threadExport, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_export_articles"));
+                        Utils.ThreadStart(pSourceWindow, _threadExport, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_export_articles"));
                         if (result)
                         {
-                            Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_operation_successfully"), CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_exported_successfully"));
+                            Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_operation_successfully"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_exported_successfully"));
                         }
                         else
                         {
-                            Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_error"), "Empty Database");
+                            Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"), "Empty Database");
                         }
                         break;
 
@@ -824,15 +824,15 @@ namespace logicpos
                         }
                         result = false;
                         _threadExport = new Thread(() => result = ExportExcel(importFromDBdataTable, path, true, pSourceWindow));
-                        Utils.ThreadStart(pSourceWindow, _threadExport, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_export_customers"));
-                        Utils.ThreadStart(pSourceWindow, _threadExport, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_export_articles"));
+                        Utils.ThreadStart(pSourceWindow, _threadExport, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_export_customers"));
+                        Utils.ThreadStart(pSourceWindow, _threadExport, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_export_articles"));
                         if (result)
                         {
-                            Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_operation_successfully"), CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_exported_successfully"));
+                            Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_operation_successfully"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_exported_successfully"));
                         }
                         else
                         {
-                            Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_error"), "Empty Database");
+                            Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"), "Empty Database");
                         }
                         break;
 
@@ -844,7 +844,7 @@ namespace logicpos
             catch (Exception ex)
             {
                 _logger.Error(ex.Message, ex);
-                Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_error"), CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_export_error"));
+                Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_export_error"));
             }
 
         }

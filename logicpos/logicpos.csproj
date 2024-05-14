@@ -190,7 +190,7 @@
     <Compile Include="Classes\Utils\Paths.cs" />
     <Compile Include="Classes\Utils\Win32APIWindowHelper.cs" />
     <Compile Include="Extensions\ColorExtension.cs" />
-    <Compile Include="IStockManagementModule.cs" />
+    <Compile Include="Modules\IStockManagementModule.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="App\GlobalApp.cs">
@@ -450,22 +450,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.map</DependentUpon>
     </Compile>
-    <None Include="..\logicpos.financial\logicpos.financial.service\Utils\service_install.bat">
-      <Link>Scripts\Win\AtWs\service_install.bat</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="..\logicpos.financial\logicpos.financial.service\Utils\service_start.bat">
-      <Link>Scripts\Win\AtWs\service_start.bat</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="..\logicpos.financial\logicpos.financial.service\Utils\service_stop.bat">
-      <Link>Scripts\Win\AtWs\service_stop.bat</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="..\logicpos.financial\logicpos.financial.service\Utils\service_uninstall.bat">
-      <Link>Scripts\Win\AtWs\service_uninstall.bat</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="app.manifest" />
     <Content Include="..\libs\SQLite.Interop.dll">
       <Link>SQLite.Interop.dll</Link>
@@ -2097,22 +2081,6 @@
   <ItemGroup>
     <Content Include="..\libs\sqlite3.dll">
       <Link>sqlite3.dll</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\logicpos.financial\logicpos.financial.service\Utils\service_install.txt">
-      <Link>Scripts\Win\AtWs\service_install.txt</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\logicpos.financial\logicpos.financial.service\Utils\service_install_1.png">
-      <Link>Scripts\Win\AtWs\service_install_1.png</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\logicpos.financial\logicpos.financial.service\Utils\service_install_2.png">
-      <Link>Scripts\Win\AtWs\service_install_2.png</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\logicpos.financial\logicpos.financial.service\Utils\service_install_3.png">
-      <Link>Scripts\Win\AtWs\service_install_3.png</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="application.ico" />
@@ -6688,10 +6656,6 @@
     <ProjectReference Include="..\logicpos.documentviewer\logicpos.documentviewer\logicpos.documentviewer.csproj">
       <Project>{e39a7986-4c2f-4ebe-a31b-59c766150eac}</Project>
       <Name>logicpos.documentviewer</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\logicpos.financial\logicpos.financial.service\logicpos.financial.service.csproj">
-      <Project>{72f34abb-d3cf-4430-85f0-fd5bd3ee3aa7}</Project>
-      <Name>logicpos.financial.service</Name>
     </ProjectReference>
     <ProjectReference Include="..\LogicPOS.Globalization\LogicPOS.Globalization.csproj">
       <Project>{b9e8d813-d694-4a7f-955e-ccc4b10f3774}</Project>

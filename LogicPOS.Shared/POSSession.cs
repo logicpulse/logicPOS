@@ -80,7 +80,7 @@ namespace LogicPOS.Shared
             foreach (Guid item in CurrentSession.LoggedUsers.Keys)
             {
                 sys_userdetail user = (sys_userdetail)XPOHelper.GetXPGuidObject(typeof(sys_userdetail), item);
-                XPOHelper.Audit("USER_loggerOUT", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_used_forced_loggerout"), user.Name));
+                XPOHelper.Audit("USER_loggerOUT", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_used_forced_loggerout"), user.Name));
             }
             CurrentSession.LoggedUsers.Clear();
         }

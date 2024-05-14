@@ -1,11 +1,13 @@
 ﻿using DevExpress.Xpo.DB;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial.service.App;
+using logicpos.datalayer.Xpo;
 using logicpos.financial.service.Objects.Modules.AT;
+using LogicPOS.DTOs.Common;
+using LogicPOS.Settings;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics;
+using System.Security;
 using System.Text;
 using System.Xml.Linq;
 
@@ -13,10 +15,10 @@ namespace logicpos.financial.service.Objects
 {
     //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-    public class Utils
+    public class FinancialServiceUtils
     {
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -27,7 +29,7 @@ namespace logicpos.financial.service.Objects
 
         public static void Log(string pMessage, bool pEndWithBlankLine)
         {
-            _log.Debug(pMessage);
+            _logger.Debug(pMessage);
             if (Environment.UserInteractive)
             {
                 Console.WriteLine(pMessage);
@@ -38,7 +40,7 @@ namespace logicpos.financial.service.Objects
                 }
             }
         }
-        
+
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
         public static string GetDocumentsQuery(bool pWayBillMode)
@@ -48,8 +50,11 @@ namespace logicpos.financial.service.Objects
 
         public static string GetDocumentsQuery(bool pWayBillMode, Guid pDocumentMaster)
         {
-            //Common
-            string where = "(ft.WsAtDocument = 1 AND (fm.ATValidAuditResult IS NULL OR fm.ATResendDocument = 1)) AND";
+            //Common : Require to Check if has Records with ReturnCode -3 (Já foi registado um documento idêntico.)
+            string where = @"(
+                ft.WsAtDocument = 1 AND (fm.ATValidAuditResult IS NULL OR fm.ATResendDocument = 1)  
+                AND (SELECT COUNT(*) FROM sys_systemauditat WHERE DocumentMaster = fm.Oid AND ReturnCode = '-3') = 0
+            ) AND";
 
             //Invoices
             //
@@ -67,10 +72,15 @@ namespace logicpos.financial.service.Objects
             if (!pWayBillMode)
             {
                 //Includes FR SAF-T v1.03
-                where += @"(
+                where += @" (
                     ((ft.Acronym = 'FT' AND ft.WayBill <> 1) OR ft.Acronym = 'FS' OR ft.Acronym = 'NC' OR ft.Acronym = 'ND' OR ft.Acronym = 'FR') 
-                    AND (fm.DocumentStatusStatus = 'N' OR fm.DocumentStatusStatus = 'A')
+                    AND (fm.DocumentStatusStatus = 'N' OR fm.DocumentStatusStatus = 'A') 
+                    AND ((SELECT COUNT(*) FROM sys_systemauditat WHERE DocumentMaster = fm.Oid AND ReturnCode = '0') = 0 ) 
                 )";
+                /* IN009083 - Premisses:
+                 * - we do not cancel financial documents already received by AT, therefore, do not resend them (COUNT statement)
+                 * - "fm.ATResendDocument = 1" is not settled to ft.WayBill <> 1 (non-WayBill documents)
+                 */
             }
             //TransportDocuments/WayBill
             //
@@ -105,14 +115,14 @@ namespace logicpos.financial.service.Objects
             //Não. Estão excluídos das obrigações de comunicação os documentos de transporte em que o destinatário ou adquirente seja consumidor final.
             else
             {
-                where += string.Format(@"(
+                where += string.Format(@" (
                     (ft.Acronym = 'GR' OR ft.Acronym = 'GT' OR ft.Acronym = 'GA' OR ft.Acronym = 'GC' OR ft.Acronym = 'GD')
                     AND (fm.DocumentStatusStatus = 'N' OR fm.DocumentStatusStatus = 'T' OR fm.DocumentStatusStatus = 'A')
                     AND (fm.ShipToCountry = 'PT' AND fm.ShipFromCountry = 'PT')
                     AND (fm.EntityOid <> '{0}')
                 )"
                 // Skip FinalConsumer
-                , SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity
+                , InvoiceSettings.FinalConsumerId
                 );
             }
 
@@ -127,8 +137,10 @@ namespace logicpos.financial.service.Objects
                 SELECT 
                     fm.Oid AS Oid
                 FROM
-                    (fin_documentfinancemaster fm
-                    left join fin_documentfinancetype ft ON (fm.DocumentType = ft.Oid))
+                    (
+                        fin_documentfinancemaster fm
+                        LEFT JOIN fin_documentfinancetype ft ON (fm.DocumentType = ft.Oid)
+                    )
                 WHERE
                     {0}
                 ORDER BY 
@@ -170,9 +182,9 @@ namespace logicpos.financial.service.Objects
                 var elReference = itm.Element(d + "bookingReference").Value;
                 var elPrice = itm.Element(d + "price").Value;
 
-                _log.Debug(String.Format("elStatus: [{0}]", elStatus));
-                _log.Debug(String.Format("elReference: [{0}]", elReference));
-                _log.Debug(String.Format("elPrice: [{0}]", elPrice));
+                _logger.Debug(string.Format("elStatus: [{0}]", elStatus));
+                _logger.Debug(string.Format("elReference: [{0}]", elReference));
+                _logger.Debug(string.Format("elPrice: [{0}]", elPrice));
 
                 Console.WriteLine(elStatus);
                 Console.WriteLine(elReference);
@@ -183,30 +195,6 @@ namespace logicpos.financial.service.Objects
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Invoices
 
-        /// <summary>
-        /// Increase DocumentNumber, used to Fake It, to always be valid
-        /// </summary>
-        /// <param name="DocumentNumber"></param>
-        /// <returns></returns>
-        public static string IncreaseDocumentNumber(FIN_DocumentFinanceMaster pDocumentMaster)
-        {
-            string result = string.Empty;
-
-            try
-            {
-                string documentNumber = pDocumentMaster.DocumentNumber;
-                string[] split = documentNumber.Split('/');
-                int number = Convert.ToInt16(split[1]) + 1;
-                pDocumentMaster.DocumentNumber = string.Format("{0}/{1}", split[0], number);
-                pDocumentMaster.Save();
-            }
-            catch (Exception ex)
-            {
-                throw (ex);
-            }
-
-            return result;
-        }
 
         /// <summary>
         /// Get Document <Line>s Splitted by Tax and <DocumentTotals> Content
@@ -216,16 +204,18 @@ namespace logicpos.financial.service.Objects
         /// </summary>
         /// <param name="DocumentMaster"></param>
         /// <returns></returns>
-        public static string GetDocumentContentLinesAndDocumentTotals(FIN_DocumentFinanceMaster pDocumentMaster)
+        public static string GetDocumentContentLinesAndDocumentTotals(fin_documentfinancemaster pDocumentMaster)
         {
-            //Init Locals Vars
-            string result = string.Empty;
+            _logger.Debug($"string GetDocumentContentLinesAndDocumentTotals(fin_documentfinancemaster pDocumentMaster) :: {pDocumentMaster.DocumentNumber}");
             decimal taxPayable = 0.0m;
             decimal netTotal = 0.0m;
             decimal grossTotal = 0.0m;
             //Prepare Node Name
             string nodeName = (pDocumentMaster.DocumentType.Credit) ? "CreditAmount" : "DebitAmount";
 
+
+            //Init Locals Vars
+            string result;
             try
             {
                 string sql = string.Format(@"
@@ -252,7 +242,7 @@ namespace logicpos.financial.service.Objects
                     , pDocumentMaster.Oid
                 );
 
-                DataTable dtResult = FrameworkUtils.GetDataTableFromQuery(sql);
+                DataTable dtResult = XPOHelper.GetDataTableFromQuery(sql);
 
                 //Init StringBuilder
                 StringBuilder sb = new StringBuilder();
@@ -274,10 +264,10 @@ namespace logicpos.financial.service.Objects
     </Line>
 "
                         , nodeName
-                        , FrameworkUtils.DecimalToString(Convert.ToDecimal(item["TotalNet"]), GlobalFramework.CurrentCultureNumberFormat)
+                        , LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(item["TotalNet"]))
                         , item["TaxType"]
                         , item["TaxCountryRegion"]
-                        , FrameworkUtils.DecimalToString(Convert.ToDecimal(item["Vat"]), GlobalFramework.CurrentCultureNumberFormat)
+                        , LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(item["Vat"]))
                         , taxExemptionReason
                     ));
 
@@ -294,9 +284,9 @@ namespace logicpos.financial.service.Objects
       <ns2:NetTotal>{1}</ns2:NetTotal>
       <ns2:GrossTotal>{2}</ns2:GrossTotal>
     </DocumentTotals>"
-                    , FrameworkUtils.DecimalToString(taxPayable, GlobalFramework.CurrentCultureNumberFormat)
-                    , FrameworkUtils.DecimalToString(netTotal, GlobalFramework.CurrentCultureNumberFormat)
-                    , FrameworkUtils.DecimalToString(grossTotal, GlobalFramework.CurrentCultureNumberFormat)
+                    , LogicPOS.Utility.DataConversionUtils.DecimalToString(taxPayable)
+                    , LogicPOS.Utility.DataConversionUtils.DecimalToString(netTotal)
+                    , LogicPOS.Utility.DataConversionUtils.DecimalToString(grossTotal)
                 ));
 
                 result = sb.ToString();
@@ -312,17 +302,10 @@ namespace logicpos.financial.service.Objects
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //WayBill
 
-        /// <summary>
-        /// Get Document <Line>s
-        /// 	Linhas do Documento(Line)
-        /// </summary>
-        /// <param name="DocumentMaster"></param>
-        /// <returns></returns>
-        public static string GetDocumentWayBillContentLines(FIN_DocumentFinanceMaster pDocumentMaster)
+        public static string GetDocumentWayBillContentLines(fin_documentfinancemaster pDocumentMaster)
         {
-            //Init Locals Vars
-            string result = string.Empty;
-
+           
+            string result;
             try
             {
                 string sql = string.Format(@"
@@ -339,7 +322,7 @@ namespace logicpos.financial.service.Objects
                     , pDocumentMaster.Oid
                 );
 
-                DataTable dtResult = FrameworkUtils.GetDataTableFromQuery(sql);
+                DataTable dtResult = XPOHelper.GetDataTableFromQuery(sql);
 
                 //Init StringBuilder
                 StringBuilder sb = new StringBuilder();
@@ -361,10 +344,10 @@ namespace logicpos.financial.service.Objects
     </Line>
 "
                         , orderReferences
-                        , item["ProductDescription"]
-                        , FrameworkUtils.DecimalToString(Convert.ToDecimal(item["Quantity"]), GlobalFramework.CurrentCultureNumberFormat)
+                        , SecurityElement.Escape(item["ProductDescription"].ToString())
+                        , LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(item["Quantity"]))
                         , item["UnitOfMeasure"]
-                        , FrameworkUtils.DecimalToString(Convert.ToDecimal(item["UnitPrice"]), GlobalFramework.CurrentCultureNumberFormat)
+                        , LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(item["UnitPrice"]))
                     ));
                 }
 
@@ -378,77 +361,56 @@ namespace logicpos.financial.service.Objects
             return result;
         }
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-        //If can launch command, to register urlacl is because VS is not running in Admin Mode, launch ConsoleApplicationServer.exe with Admin to Register urlacl
-        //Required else error occurs when runnig without admin privileges ex inside VS or Running Console exe
-        //An unhandled exception of type 'System.ServiceModel.AddressAccessDeniedException' occurred in System.ServiceModel.dll
-        //Additional information: O HTTP não conseguiu registar o URL http://+:8733/hello/. O processo não tem direitos de acesso a este espaço de nomes (consulte http://go.microsoft.com/fwlink/?LinkId=70353 para obter detalhes).
-        public static void ModifyHttpSettings()
+    
+        public static Dictionary<fin_documentfinancemaster, ServicesATSoapResult> ServiceSendPendentDocuments()
         {
-            //The SID "S-1-1-0" is a wellknown SID and stands for the "Everyone" account. 
-            //The SID is the same for all localizations of windows. The method Translate of SecurityIdentifier class returns the localized name of the Everyone account.
-            string everyone = new System.Security.Principal.SecurityIdentifier(
-                "S-1-1-0").Translate(typeof(System.Security.Principal.NTAccount)).ToString();
-
-            string parameter = string.Format(@"http add urlacl url=http://+:{0}/ user=\{1}", Program.ServicePort, everyone);
-
-            _log.Debug(string.Format("ModifyHttpSettings: 'netsh {0}'", parameter));
-            ProcessStartInfo psi = new ProcessStartInfo("netsh", parameter);
-
-            psi.Verb = "runas";
-            psi.RedirectStandardOutput = false;
-            psi.CreateNoWindow = true;
-            psi.WindowStyle = ProcessWindowStyle.Hidden;
-            psi.UseShellExecute = false;
-            Process.Start(psi);
-        }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Timer Service 
-
-        public static Dictionary<FIN_DocumentFinanceMaster, ServicesATSoapResult> ServiceSendPendentDocuments()
-        {
-            Dictionary<FIN_DocumentFinanceMaster, ServicesATSoapResult> result = new Dictionary<FIN_DocumentFinanceMaster, ServicesATSoapResult>();
-            Guid key = Guid.Empty;
-            FIN_DocumentFinanceMaster documentMaster = null;
+            _logger.Debug("Dictionary<fin_documentfinancemaster, ServicesATSoapResult> Utils.ServiceSendPendentDocuments()");
+            Dictionary<fin_documentfinancemaster, ServicesATSoapResult> result = new Dictionary<fin_documentfinancemaster, ServicesATSoapResult>();
             ServicesATSoapResult soapResult = new ServicesATSoapResult();
 
+            // Financial.service - Correções no envio de documentos AT [IN:014494]
+            /* IN009083 - #TODO apply same validation for when sending documents to AT */
             try
             {
+                Guid key;
+                fin_documentfinancemaster documentMaster;
                 //Invoice Documents
-                if (SettingsApp.ServiceATSendDocuments)
+                if (Convert.ToBoolean(LogicPOS.Settings.GeneralSettings.Settings["ServiceATSendDocuments"]))
                 {
                     string sqlDocuments = GetDocumentsQuery(false);
-                    _log.Debug(String.Format("sqlDocuments: [{0}]", FrameworkUtils.RemoveCarriageReturnAndExtraWhiteSpaces(sqlDocuments)));
+                    //_logger.Debug(String.Format("sqlDocuments: [{0}]", FrameworkUtils.RemoveCarriageReturnAndExtraWhiteSpaces(sqlDocuments)));
 
-                    XPSelectData xPSelectData = FrameworkUtils.GetSelectedDataFromQuery(sqlDocuments);
+                    XPSelectData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sqlDocuments);
                     foreach (SelectStatementResultRow row in xPSelectData.Data)
                     {
                         key = new Guid(row.Values[xPSelectData.GetFieldIndex("Oid")].ToString());
-                        documentMaster = (FIN_DocumentFinanceMaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(FIN_DocumentFinanceMaster), key);
+                        documentMaster = (fin_documentfinancemaster)XPOSettings.Session.GetObjectByKey(typeof(fin_documentfinancemaster), key);
                         //SendDocument
                         soapResult = SendDocument(documentMaster);
+
+                        //Helper to Detect Documents
                         //Detect if Document is Already in AT System / -3 = "Já foi registado um documento idêntico."
-                        if (soapResult.ReturnCode.Equals("-3"))
-                        {
-                            _log.Debug("BREAK");
-                        }
+                        //200 = Detect The operation has timed out | The remote name could not be resolved: 'servicos.portaldasfinancas.gov.pt'
+                        //if (soapResult.ReturnCode.Equals("-3"))
+                        //{
+                        //    _logger.Debug("BREAK");
+                        //}
+
                         result.Add(documentMaster, soapResult);
                     }
                 }
 
                 //WayBill Documents
-                if (SettingsApp.ServiceATSendDocumentsWayBill)
+                if (Convert.ToBoolean(LogicPOS.Settings.GeneralSettings.Settings["ServiceATSendDocumentsWayBill"]))
                 {
                     string sqlDocumentsWayBill = GetDocumentsQuery(true);
-                    //_log.Debug(String.Format("sqlDocumentsWayBill: [{0}]", FrameworkUtils.RemoveCarriageReturnAndExtraWhiteSpaces(sqlDocumentsWayBill)));
+                    //_logger.Debug(String.Format("sqlDocumentsWayBill: [{0}]", FrameworkUtils.RemoveCarriageReturnAndExtraWhiteSpaces(sqlDocumentsWayBill)));
 
-                    XPSelectData xPSelectData = FrameworkUtils.GetSelectedDataFromQuery(sqlDocumentsWayBill);
+                    XPSelectData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sqlDocumentsWayBill);
                     foreach (SelectStatementResultRow row in xPSelectData.Data)
                     {
                         key = new Guid(row.Values[xPSelectData.GetFieldIndex("Oid")].ToString());
-                        documentMaster = (FIN_DocumentFinanceMaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(FIN_DocumentFinanceMaster), key);
+                        documentMaster = (fin_documentfinancemaster)XPOSettings.Session.GetObjectByKey(typeof(fin_documentfinancemaster), key);
                         //SendDocument
                         soapResult = SendDocument(documentMaster);
                         result.Add(documentMaster, soapResult);
@@ -457,17 +419,14 @@ namespace logicpos.financial.service.Objects
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 Console.Write($"Error: [{ex.Message}]");
             }
 
             return result;
         }
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Send Document : Used from Tests and From Timer Service
-
-        public static ServicesATSoapResult SendDocument(FIN_DocumentFinanceMaster documentMaster)
+        public static ServicesATSoapResult SendDocument(fin_documentfinancemaster documentMaster)
         {
             //Send Document
             ServicesAT sendDocument = new ServicesAT(documentMaster);

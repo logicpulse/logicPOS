@@ -100,14 +100,14 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             //}
 
             //Initialize Buttons     
-            ButtonPrevRecord = GetNewButton("touchButtonPrev_DialogActionArea", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "widget_generictreeviewnavigator_record_prev"), @"Icons/icon_pos_nav_prev.png");
-            ButtonNextRecord = GetNewButton("touchButtonNext_DialogActionArea", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "widget_generictreeviewnavigator_record_next"), @"Icons/icon_pos_nav_next.png");
-            ButtonInsert = GetNewButton("touchButtonInsert_DialogActionArea", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "widget_generictreeviewnavigator_insert"), @"Icons/icon_pos_nav_new.png");
-            ButtonView = GetNewButton("touchButtonView_DialogActionArea", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "widget_generictreeviewnavigator_view"), @"Icons/icon_pos_nav_view.png");
-            ButtonUpdate = GetNewButton("touchButtonUpdate_DialogActionArea", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "widget_generictreeviewnavigator_update"), @"Icons/icon_pos_nav_update.png");
-            ButtonDelete = GetNewButton("touchButtonDelete_DialogActionArea", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "widget_generictreeviewnavigator_delete"), @"Icons/icon_pos_nav_delete.png");
-            ButtonRefresh = GetNewButton("touchButtonRefresh_DialogActionArea", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "widget_generictreeviewnavigator_refresh"), @"Icons/icon_pos_nav_refresh.png");
-            //_buttonClose = GetNewButton("touchButtonPosToolbarApplicationClose_Red", CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_pos, @"Icons/icon_pos_toolbar_application_close.png");
+            ButtonPrevRecord = GetNewButton("touchButtonPrev_DialogActionArea", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "widget_generictreeviewnavigator_record_prev"), @"Icons/icon_pos_nav_prev.png");
+            ButtonNextRecord = GetNewButton("touchButtonNext_DialogActionArea", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "widget_generictreeviewnavigator_record_next"), @"Icons/icon_pos_nav_next.png");
+            ButtonInsert = GetNewButton("touchButtonInsert_DialogActionArea", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "widget_generictreeviewnavigator_insert"), @"Icons/icon_pos_nav_new.png");
+            ButtonView = GetNewButton("touchButtonView_DialogActionArea", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "widget_generictreeviewnavigator_view"), @"Icons/icon_pos_nav_view.png");
+            ButtonUpdate = GetNewButton("touchButtonUpdate_DialogActionArea", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "widget_generictreeviewnavigator_update"), @"Icons/icon_pos_nav_update.png");
+            ButtonDelete = GetNewButton("touchButtonDelete_DialogActionArea", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "widget_generictreeviewnavigator_delete"), @"Icons/icon_pos_nav_delete.png");
+            ButtonRefresh = GetNewButton("touchButtonRefresh_DialogActionArea", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "widget_generictreeviewnavigator_refresh"), @"Icons/icon_pos_nav_refresh.png");
+            //_buttonClose = GetNewButton("touchButtonPosToolbarApplicationClose_Red", CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_pos, @"Icons/icon_pos_toolbar_application_close.png");
 
             //Events
             //GenericTreeView : Shared
@@ -153,7 +153,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             TouchButtonIconWithText result = null;
             try
             {
-                string fileIcon = GeneralSettings.Paths["images"] + pIcon;
+                string fileIcon = PathsSettings.ImagesFolderLocation + pIcon;
                 string fontBaseDialogActionAreaButton = GeneralSettings.Settings["fontBaseDialogActionAreaButton"];
                 Color colorBaseDialogActionAreaButtonBackground = Color.Transparent;
                 Color colorBaseDialogActionAreaButtonFont = GeneralSettings.Settings["colorBaseDialogActionAreaButtonFont"].StringToColor();

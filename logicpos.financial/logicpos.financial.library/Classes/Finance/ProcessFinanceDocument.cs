@@ -649,7 +649,7 @@ namespace logicpos.financial.library.Classes.Finance
                                 if (placeTable != null)
                                 {
                                     placeTable.TableStatus = TableStatus.Free;
-                                   XPOHelper.Audit("TABLE_OPEN", string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "audit_message_table_open"), placeTable.Designation));
+                                   XPOHelper.Audit("TABLE_OPEN", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_table_open"), placeTable.Designation));
                                     placeTable.DateTableClosed = documentDateTime;
                                     placeTable.TotalOpen = 0;
                                     //Required to Reload Objects after has been changed in Another Session(uowSession)
@@ -709,7 +709,7 @@ namespace logicpos.financial.library.Classes.Finance
                             }
 
                         //Audit
-                       XPOHelper.Audit("FINANCE_DOCUMENT_CREATED", string.Format("{0} {1}: {2}", documentFinanceMaster.DocumentType.Designation, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_document_created"), documentFinanceMaster.DocumentNumber));
+                       XPOHelper.Audit("FINANCE_DOCUMENT_CREATED", string.Format("{0} {1}: {2}", documentFinanceMaster.DocumentType.Designation, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_document_created"), documentFinanceMaster.DocumentNumber));
 
                         //Process Stock
                         try
@@ -958,7 +958,7 @@ namespace logicpos.financial.library.Classes.Finance
             // Protection In case of bad hash, ex when we dont have SoftwareVendorPlugin Registered
             if (string.IsNullOrEmpty(pHash))
             {
-                throw new Exception(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_error_creating_financial_document_bad_hash_detected"));
+                throw new Exception(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document_bad_hash_detected"));
             }
             else
             {
@@ -1271,7 +1271,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                                 documentMaster.PayedDate = currentDateTime;
 
                                 //On Full Invoice Payment Call ChangePayedInvoiceAndRelatedDocumentsStatus (Change status of Parent Document to F)
-                                string statusReason = string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_documents_status_document_invoiced"), documentMaster.DocumentNumber);
+                                string statusReason = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_documents_status_document_invoiced"), documentMaster.DocumentNumber);
                                 //Get Fresh Object in UOW
                                 fin_documentfinancemaster documentParent = null;
                                 //Send with UOW Objects
@@ -1301,18 +1301,18 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                             {
                                 if (!string.IsNullOrEmpty(documentFinancePayment.Notes))
                                 {
-                                    if (documentFinancePayment.Notes.Contains(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_document_finance_column_related_doc")))
+                                    if (documentFinancePayment.Notes.Contains(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_document_finance_column_related_doc")))
                                     {
                                         documentFinancePayment.Notes += "; [" + documentMaster.DocumentNumber + "] " + relatedDocuments;
                                     }
                                     else
                                     {
-                                        documentFinancePayment.Notes += Environment.NewLine + CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_document_finance_column_related_doc") + ": [" + documentMaster.DocumentNumber + "] " + relatedDocuments;
+                                        documentFinancePayment.Notes += Environment.NewLine + CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_document_finance_column_related_doc") + ": [" + documentMaster.DocumentNumber + "] " + relatedDocuments;
                                     }
                                 }
                                 else
                                 {
-                                    documentFinancePayment.Notes += CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_document_finance_column_related_doc") + ": [" + documentMaster.DocumentNumber + "] " + relatedDocuments;
+                                    documentFinancePayment.Notes += CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_document_finance_column_related_doc") + ": [" + documentMaster.DocumentNumber + "] " + relatedDocuments;
                                 }
                             }
                         }
@@ -1426,9 +1426,9 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                 {
                     documentDate = pDocumentFinanceMaster.Date;
                     movementAmount = pDocumentFinanceMaster.TotalFinal;
-                    movementDescriptionDocument = string.Format("{0} : {1}", pDocumentFinanceMaster.DocumentNumber, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_finance_document"));
-                    movementDescriptionTotalDelivery = string.Format("{0} : {1}", pDocumentFinanceMaster.DocumentNumber, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_total_deliver"));
-                    movementDescriptionTotalChange = string.Format("{0} : {1}", pDocumentFinanceMaster.DocumentNumber, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_total_change"));
+                    movementDescriptionDocument = string.Format("{0} : {1}", pDocumentFinanceMaster.DocumentNumber, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_finance_document"));
+                    movementDescriptionTotalDelivery = string.Format("{0} : {1}", pDocumentFinanceMaster.DocumentNumber, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_total_deliver"));
+                    movementDescriptionTotalChange = string.Format("{0} : {1}", pDocumentFinanceMaster.DocumentNumber, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_total_change"));
                     if (pParameters.TotalDelivery > 0) totalDelivery = pParameters.TotalDelivery;
                     if (pParameters.TotalChange > 0) totalChange = pParameters.TotalChange;
                 }
@@ -1436,9 +1436,9 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                 {
                     documentDate = pDocumentFinancePayment.CreatedAt;//.PaymentDate
                     movementAmount = pDocumentFinancePayment.PaymentAmount;
-                    movementDescriptionDocument = string.Format("{0} : {1}", pDocumentFinancePayment.PaymentRefNo, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_payment_document"));
-                    movementDescriptionTotalDelivery = string.Format("{0} : {1}", pDocumentFinancePayment.PaymentRefNo, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_total_deliver"));
-                    movementDescriptionTotalChange = string.Format("{0} : {1}", pDocumentFinancePayment.PaymentRefNo, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_total_change"));
+                    movementDescriptionDocument = string.Format("{0} : {1}", pDocumentFinancePayment.PaymentRefNo, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_payment_document"));
+                    movementDescriptionTotalDelivery = string.Format("{0} : {1}", pDocumentFinancePayment.PaymentRefNo, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_total_deliver"));
+                    movementDescriptionTotalChange = string.Format("{0} : {1}", pDocumentFinancePayment.PaymentRefNo, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_total_change"));
                     //TODO: Improve with Payment TotalChange Functionality
                     totalDelivery = movementAmount;
                 }
@@ -1622,7 +1622,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                             ? string.Format("_{0}", PluginSettings.SoftwareVendor.Decrypt(documentFinanceMaster.EntityName).ToLower().Replace(' ', '_')) /* IN009075 */
                             : string.Empty;
                         string reportFilename = string.Format("{0}/{1}{2}.pdf",
-                            GeneralSettings.Paths["documents"],
+                            PathsSettings.Paths["documents"],
                             documentFinanceMaster.DocumentNumber.Replace('/', '-').Replace(' ', '_'),
                             entityName
                         );
@@ -1672,7 +1672,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                         erp_customer customer = (erp_customer)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(erp_customer), documentFinancePayment.EntityOid);
                         string entityName = (customer != null && !string.IsNullOrEmpty(customer.Name)) ? string.Format("_{0}", customer.Name.ToLower().Replace(' ', '_')) : string.Empty;
                         string reportFilename = string.Format("{0}/{1}{2}.pdf",
-                            GeneralSettings.Paths["documents"],
+                            PathsSettings.Paths["documents"],
                             documentFinancePayment.PaymentRefNo.Replace('/', '-').Replace(' ', '_'),
                             entityName
                         );

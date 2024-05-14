@@ -139,8 +139,8 @@ namespace logicpos.Classes.Logic.Hardware
             }
             catch (Exception ex)
             {
-                //Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(500, 340), MessageType.Error, ButtonsType.Ok, CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"),
-                //    string.Format(CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_error_initializing_weighing_balance"), XPOSettings.LoggedTerminal.WeighingMachine.Designation, ex.Message)
+                //Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(500, 340), MessageType.Error, ButtonsType.Ok, CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error"),
+                //    string.Format(CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_initializing_weighing_balance"), XPOSettings.LoggedTerminal.WeighingMachine.Designation, ex.Message)
                 //    );
                 _logger.Error(ex.Message, ex);
                 return false;
@@ -581,7 +581,7 @@ namespace logicpos.Classes.Logic.Hardware
             string price = string.Format("{0}", DataConversionUtils.DecimalToString(pPrice));
             string line1 = TextJustified(article, price, Convert.ToInt16(_charactersPerLine));
             Write(RemoveAccents(line1), 1);
-            WriteJustified(RemoveAccents(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_pole_display_global_total")), DataConversionUtils.DecimalToString(pTotal), 2);
+            WriteJustified(RemoveAccents(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_pole_display_global_total")), DataConversionUtils.DecimalToString(pTotal), 2);
             EnableStandBy();
         }
 

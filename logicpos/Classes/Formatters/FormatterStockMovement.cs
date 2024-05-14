@@ -18,7 +18,7 @@ namespace logicpos.Classes.Formatters
             try
             {
                 decimal quantity = Convert.ToDecimal(arg);
-                result = (quantity > 0) ? CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_stock_movement_in") : CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_stock_movement_out");
+                result = (quantity > 0) ? CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_stock_movement_in") : CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_stock_movement_out");
             }
             catch (Exception ex)
             {

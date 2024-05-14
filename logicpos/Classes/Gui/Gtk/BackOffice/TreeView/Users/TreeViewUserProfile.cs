@@ -34,8 +34,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             // XPO column properties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
             {
-                new GenericTreeViewColumnProperty("Code") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_record_code"), MinWidth = 100 },
-                new GenericTreeViewColumnProperty("Designation") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_profile"), Expand = true }
+                new GenericTreeViewColumnProperty("Code") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_record_code"), MinWidth = 100 },
+                new GenericTreeViewColumnProperty("Designation") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_profile"), Expand = true }
             };
 
             //configure criteria/xpcollection/model

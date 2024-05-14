@@ -27,9 +27,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
-            string windowTitle = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_template");
+            string windowTitle = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_template");
             Size windowSize = new Size(600, 340);
-            string fileDefaultWindowIcon = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_window_default.png";
+            string fileDefaultWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_default.png";
 
             //Init Content
             Fixed fixedContent = new Fixed();

@@ -33,7 +33,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
         public DialogArticleWarehouse(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pDialogFlags, DialogMode dialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pDialogFlags, dialogMode, pXPGuidObject)
         {
-            this.Title = logicpos.Utils.GetWindowTitle(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_warehose_management"));
+            this.Title = logicpos.Utils.GetWindowTitle(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_warehose_management"));
 
             if (GlobalApp.ScreenSize.Width == 800 && GlobalApp.ScreenSize.Height == 600)
             {
@@ -73,7 +73,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 
                 //Articles
                 CriteriaOperator articleCriteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL)"));
-                _articleBoxSelectRecord = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_article"), "Designation", "Oid", (_dataSourceRow as fin_articlewarehouse).Article, articleCriteria, LogicPOS.Utility.RegexUtils.RegexAlfaNumeric, true, true);
+                _articleBoxSelectRecord = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_article"), "Designation", "Oid", (_dataSourceRow as fin_articlewarehouse).Article, articleCriteria, LogicPOS.Utility.RegexUtils.RegexAlfaNumeric, true, true);
                 GenericCRUDWidgetXPO genericCRUDWidgetXPO = new GenericCRUDWidgetXPO(_articleBoxSelectRecord, _dataSourceRow, "Article", "", true);
                 _crudWidgetList.Add(genericCRUDWidgetXPO);
                 _articleBoxSelectRecord.EntryValidation.IsEditable = true;
@@ -91,7 +91,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                     serialNumberCriteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND Article == '{0}'", (_dataSourceRow as fin_articlewarehouse).Article.Oid));
                 }
 
-                _entryBoxArticleSerialNumber = new XPOEntryBoxSelectRecordValidation<fin_articleserialnumber, TreeViewArticleSerialNumber>(this, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_serialnumber"), "SerialNumber", "Oid", (_dataSourceRow as fin_articlewarehouse).ArticleSerialNumber, serialNumberCriteria, LogicPOS.Utility.RegexUtils.RegexGuid, true, true);
+                _entryBoxArticleSerialNumber = new XPOEntryBoxSelectRecordValidation<fin_articleserialnumber, TreeViewArticleSerialNumber>(this, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_serialnumber"), "SerialNumber", "Oid", (_dataSourceRow as fin_articlewarehouse).ArticleSerialNumber, serialNumberCriteria, LogicPOS.Utility.RegexUtils.RegexGuid, true, true);
                 _entryBoxArticleSerialNumber.EntryValidation.IsEditable = true;
                 _entryBoxArticleSerialNumber.EntryValidation.Completion.PopupCompletion = true;
                 _entryBoxArticleSerialNumber.EntryValidation.Completion.InlineCompletion = false;
@@ -107,7 +107,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                 CriteriaOperator defaultWarehouseCriteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND IsDefault == '1'"));
                 fin_warehouse defaultWareHouse = ((_dataSourceRow as fin_articlewarehouse).Warehouse != null) ? (_dataSourceRow as fin_articlewarehouse).Warehouse : (fin_warehouse)_dataSourceRow.Session.FindObject(typeof(fin_warehouse), defaultWarehouseCriteria);
                 xpoComboBoxWarehouse = new XPOComboBox(DataSourceRow.Session, typeof(fin_warehouse), defaultWareHouse, "Designation", null);
-                BOWidgetBox boxWareHouse = new BOWidgetBox(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_warehouse"), xpoComboBoxWarehouse);
+                BOWidgetBox boxWareHouse = new BOWidgetBox(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_warehouse"), xpoComboBoxWarehouse);
                 genericCRUDWidgetXPO = new GenericCRUDWidgetXPO(boxWareHouse, _dataSourceRow, "Warehouse", LogicPOS.Utility.RegexUtils.RegexAlfaNumeric, false);
                 _crudWidgetList.Add(genericCRUDWidgetXPO);
                 vboxTab1.PackStart(boxWareHouse, false, false, 0);
@@ -120,20 +120,20 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                 }
                 fin_warehouselocation defaultLocation = ((_dataSourceRow as fin_articlewarehouse).Location != null) ? (_dataSourceRow as fin_articlewarehouse).Location : (fin_warehouselocation)_dataSourceRow.Session.FindObject(typeof(fin_warehouselocation), criteria);
                 xpoComboBoxWarehouseLocation = new XPOComboBox(DataSourceRow.Session, typeof(fin_warehouselocation), defaultLocation, "Designation", criteria);
-                BOWidgetBox boxWareHouseLocation = new BOWidgetBox(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_ConfigurationDevice_PlaceTerminal"), xpoComboBoxWarehouseLocation);
+                BOWidgetBox boxWareHouseLocation = new BOWidgetBox(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_ConfigurationDevice_PlaceTerminal"), xpoComboBoxWarehouseLocation);
                 genericCRUDWidgetXPO = new GenericCRUDWidgetXPO(boxWareHouseLocation, _dataSourceRow, "Location", LogicPOS.Utility.RegexUtils.RegexAlfaNumeric, false);
                 _crudWidgetList.Add(genericCRUDWidgetXPO);
                 vboxTab1.PackStart(boxWareHouseLocation, false, false, 0);
 
 
                 entryQuantity = new Entry();
-                boxQuantity = new BOWidgetBox(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_quantity"), entryQuantity);
+                boxQuantity = new BOWidgetBox(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_quantity"), entryQuantity);
                 vboxTab1.PackStart(boxQuantity, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxQuantity, _dataSourceRow, "Quantity", LogicPOS.Utility.RegexUtils.RegexDecimal, false));
 
 
                 //Append Tab
-                _notebook.AppendPage(vboxTab1, new Label(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_article_location")));
+                _notebook.AppendPage(vboxTab1, new Label(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_article_location")));
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -207,7 +207,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                 string stockQuery = string.Format("SELECT SUM(Quantity) as Result FROM fin_articlestock WHERE Article = '{0}' AND (Disabled = 0 OR Disabled is NULL) GROUP BY Article;", _selectedArticle.Oid);
                 boxQuantity.TooltipText = _dataSourceRow.Session.ExecuteScalar(stockQuery).ToString();
                 _selectedArticle.Accounting = Convert.ToDecimal(boxQuantity.TooltipText);
-                boxQuantity.LabelComponent.Text = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_quantity") + " :: Total em Stock: " + _selectedArticle.Accounting.ToString());
+                boxQuantity.LabelComponent.Text = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_quantity") + " :: Total em Stock: " + _selectedArticle.Accounting.ToString());
             }
             if (xpoComboBoxWarehouse.Value == null)
             {
@@ -266,14 +266,14 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                 EntryValidation entryValidation = (EntryValidation)sender;
                 _selectedArticle = _articleBoxSelectRecord.Value;
                 boxQuantity.TooltipText = _selectedArticle.Accounting.ToString();
-                boxQuantity.LabelComponent.Text = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_quantity") + " :: Total em Stock: " + _selectedArticle.Accounting.ToString());
+                boxQuantity.LabelComponent.Text = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_quantity") + " :: Total em Stock: " + _selectedArticle.Accounting.ToString());
 
                 if (_selectedArticle != null)
                 {
                     string stockQuery = string.Format("SELECT SUM(Quantity) as Result FROM fin_articlestock WHERE Article = '{0}' AND (Disabled = 0 OR Disabled is NULL) GROUP BY Article;", _selectedArticle.Oid);
                     boxQuantity.TooltipText = _dataSourceRow.Session.ExecuteScalar(stockQuery).ToString();
                     _selectedArticle.Accounting = Convert.ToDecimal(boxQuantity.TooltipText);
-                    boxQuantity.LabelComponent.Text = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_quantity") + " :: Total em Stock: " + _selectedArticle.Accounting.ToString());
+                    boxQuantity.LabelComponent.Text = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_quantity") + " :: Total em Stock: " + _selectedArticle.Accounting.ToString());
                 }
 
                 ValidateDialog();

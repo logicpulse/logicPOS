@@ -49,10 +49,10 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             _thermalPrinterGeneric.SetAlignCenter();
 
             //Extended Footer Text
-            _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_internal_document_footer1"));
-            _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_internal_document_footer2"));
+            _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_internal_document_footer1"));
+            _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_internal_document_footer2"));
             _thermalPrinterGeneric.LineFeed();
-            _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_internal_document_footer3"));
+            _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_internal_document_footer3"));
 
             //Reset to Left
             _thermalPrinterGeneric.SetAlignLeft();

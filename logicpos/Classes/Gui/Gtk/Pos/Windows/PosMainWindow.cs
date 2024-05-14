@@ -22,11 +22,11 @@ namespace logicpos
     {
 
         //Files
-        private readonly string _fileBaseButtonOverlay = GeneralSettings.Paths["images"] + @"Buttons\Pos\button_overlay.png";
+        private readonly string _fileBaseButtonOverlay = PathsSettings.ImagesFolderLocation + @"Buttons\Pos\button_overlay.png";
 
         /* IN006045 */
         //private string _clockFormat = LogicPOS.Settings.GeneralSettings.Settings["dateTimeFormatStatusBar"];
-        private readonly string _clockFormat = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "frontoffice_datetime_format_status_bar");
+        private readonly string _clockFormat = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "frontoffice_datetime_format_status_bar");
 
         private readonly Color _colorPosNumberPadLeftButtonBackground = GeneralSettings.Settings["colorPosNumberPadLeftButtonBackground"].StringToColor();
         private readonly Color _colorPosNumberRightButtonBackground = GeneralSettings.Settings["colorPosNumberRightButtonBackground"].StringToColor();
@@ -182,7 +182,7 @@ namespace logicpos
                         ICollection collectionDocumentFinanceSeries = XPOSettings.Session.GetObjects(XPOSettings.Session.GetClassInfo(typeof(fin_documentfinanceyearserieterminal)), criteria, sortCollection, int.MaxValue, false, true);
                         if (collectionDocumentFinanceSeries.Count == 0)
                         {
-                            Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Warning, ButtonsType.Ok, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_warning"), CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_warning_open_fiscal_year"));
+                            Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Warning, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_warning"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_warning_open_fiscal_year"));
                         }
                     }
                     catch (Exception ex)
@@ -218,11 +218,11 @@ namespace logicpos
             Image imageLogo = new Image(Utils.GetThemeFileLocation(GeneralSettings.Settings["fileImageBackOfficeLogo"]));
             if (PluginSettings.LicenceManager != null)
             {
-                string fileImageBackOfficeLogo = string.Format(GeneralSettings.Paths["themes"] + @"Default\Images\logicPOS_loggericpulse_loggerin.png");
+                string fileImageBackOfficeLogo = string.Format(PathsSettings.Paths["themes"] + @"Default\Images\logicPOS_loggericpulse_loggerin.png");
 
                 if (!string.IsNullOrEmpty(LicenseSettings.LicenseReseller) && LicenseSettings.LicenseReseller == "NewTech")
                 {
-                    fileImageBackOfficeLogo = string.Format(GeneralSettings.Paths["themes"] + @"Default\Images\Branding\{0}\logicPOS_loggericpulse_loggerin.png", "NT");
+                    fileImageBackOfficeLogo = string.Format(PathsSettings.Paths["themes"] + @"Default\Images\Branding\{0}\logicPOS_loggericpulse_loggerin.png", "NT");
                 }
 
                 //var bitmapImage = GlobalFramework.PluginLicenceManager.DecodeImage(fileImageBackOfficeLogo, eventBoxImageLogoSize.Width, eventBoxImageLogoSize.Height);
@@ -339,7 +339,7 @@ namespace logicpos
             eventBoxStatusBar2.ModifyBg(StateType.Normal, eventBoxStatusBar2BackgroundColor);
 
             //EventBoxStatusBar2:vboxCurrentTable:LabelCurrentTableLabel
-            string global_table = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), string.Format("global_table_appmode_{0}", AppOperationModeSettings.CustomAppOperationMode.AppOperationTheme).ToLower()); /* IN008024 */
+            string global_table = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, string.Format("global_table_appmode_{0}", AppOperationModeSettings.CustomAppOperationMode.AppOperationTheme).ToLower()); /* IN008024 */
             Label labelCurrentTableLabel = new Label(global_table);
             labelCurrentTableLabel.ModifyFont(labelCurrentTableLabelFont);
             labelCurrentTableLabel.ModifyFg(StateType.Normal, labelCurrentTableLabelFontColor);
@@ -357,7 +357,7 @@ namespace logicpos
             vboxCurrentTable.PackStart(LabelCurrentTable);
 
             //EventBoxStatusBar2:vboxTotalTable:LabelTotalTableLabel
-            Label labelTotalTableLabel = new Label(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_total_price_to_pay"));
+            Label labelTotalTableLabel = new Label(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_total_price_to_pay"));
             labelTotalTableLabel.ModifyFont(labelTotalTableLabelFont);
             labelTotalTableLabel.ModifyFg(StateType.Normal, labelTotalTableLabelFontColor);
             labelTotalTableLabel.SetAlignment(labelTotalTableLabelAlignmentX, 0.5F);

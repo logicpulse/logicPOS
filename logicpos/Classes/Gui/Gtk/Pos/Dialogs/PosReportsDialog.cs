@@ -29,14 +29,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
-            string windowTitle = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_reports");
+            string windowTitle = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_reports");
             System.Drawing.Size windowSize = new System.Drawing.Size(500, 509);//454
-            string fileDefaultWindowIcon = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_window_reports.png";
+            string fileDefaultWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_reports.png";
 
             System.Drawing.Size sizeIcon = new System.Drawing.Size(50, 50);
 
             //Icons
-            string fileIconDefault = GeneralSettings.Paths["images"] + @"Icons\icon_pos_default.png";
+            string fileIconDefault = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_default.png";
 
             // InitUI
             InitUI();
@@ -107,7 +107,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     // Init AccordionChild
                     Dictionary<string, AccordionNode> accordionChilds = new Dictionary<string, AccordionNode>();
 
-                    buttonLabelReportTypeString = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), reportType.ResourceString);
+                    buttonLabelReportTypeString = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, reportType.ResourceString);
                     // Try to get Resource
                     if (string.IsNullOrEmpty(buttonLabelReportTypeString))
                     {

@@ -35,12 +35,12 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             // XPO column properties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
             {
-                new GenericTreeViewColumnProperty("Code") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_record_code"), MinWidth = 100 },
-                new GenericTreeViewColumnProperty("Name") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_users"), Expand = true },
-                new GenericTreeViewColumnProperty("Profile") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_profile"), ChildName = "Designation", MinWidth = 160 },
-                //columnProperties.Add(new GenericTreeViewColumnProperty("MobilePhone") { Title = CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_mobile_phone });
-                new GenericTreeViewColumnProperty("FiscalNumber") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_fiscal_number"), MinWidth = 100 },
-                new GenericTreeViewColumnProperty("UpdatedAt") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
+                new GenericTreeViewColumnProperty("Code") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_record_code"), MinWidth = 100 },
+                new GenericTreeViewColumnProperty("Name") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_users"), Expand = true },
+                new GenericTreeViewColumnProperty("Profile") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_profile"), ChildName = "Designation", MinWidth = 160 },
+                //columnProperties.Add(new GenericTreeViewColumnProperty("MobilePhone") { Title = CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_mobile_phone });
+                new GenericTreeViewColumnProperty("FiscalNumber") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_fiscal_number"), MinWidth = 100 },
+                new GenericTreeViewColumnProperty("UpdatedAt") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
             };
 
             //configure criteria/xpcollection/model

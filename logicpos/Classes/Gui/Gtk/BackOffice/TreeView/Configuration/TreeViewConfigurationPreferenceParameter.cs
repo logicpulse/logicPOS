@@ -35,9 +35,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
             {
-                new GenericTreeViewColumnProperty("ResourceString") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_designation"), Expand = true, ResourceString = true },
-                new GenericTreeViewColumnProperty("Value") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_value"), Expand = true },
-                new GenericTreeViewColumnProperty("UpdatedAt") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
+                new GenericTreeViewColumnProperty("ResourceString") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_designation"), Expand = true, ResourceString = true },
+                new GenericTreeViewColumnProperty("Value") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_value"), Expand = true },
+                new GenericTreeViewColumnProperty("UpdatedAt") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
             };
 
             //Configure Criteria/XPCollection/Model : pXpoCriteria Parameter sent by BO

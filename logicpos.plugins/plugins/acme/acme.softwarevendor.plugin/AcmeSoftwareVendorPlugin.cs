@@ -264,9 +264,9 @@ namespace acme.softwarevendor.plugin
 
                 string randomPrefix = LogicPOS.Utility.StringUtils.GenerateRandomString(8);
                 string targetTemplateFileName = $"{randomPrefix}.{templateBase}";
-                string targetTemplateFilePath = $"{GeneralSettings.Paths.GetTempFolderLocation()}{targetTemplateFileName}";
+                string targetTemplateFilePath = $"{PathsSettings.TempFolderLocation}{targetTemplateFileName}";
                 string targetReportFileName = $"{randomPrefix}.{reportName}";
-                string targetReportFilePath = $"{GeneralSettings.Paths.GetTempFolderLocation()}{targetReportFileName}";
+                string targetReportFilePath = $"{PathsSettings.TempFolderLocation}{targetReportFileName}";
 
                 // Replace templateBase (TemplateBase.frx) with targetTemplateFileName, WE MUST Change Template Name in Template Childs Sub Reports
                 if (reportContent.Contains(templateBase))

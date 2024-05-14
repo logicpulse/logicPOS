@@ -24,7 +24,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         private readonly int _posBaseButtonMaxCharsPerLabel = Convert.ToInt16(GeneralSettings.Settings["posBaseButtonMaxCharsPerLabel"]);
         protected int _fontPosBaseButtonSize = Convert.ToInt16(GeneralSettings.Settings["fontPosBaseButtonSize"]);
         //Paths/Files
-        protected string _fileBaseButtonOverlay = GeneralSettings.Paths["images"] + @"Buttons\Pos\button_overlay.png";
+        protected string _fileBaseButtonOverlay = PathsSettings.ImagesFolderLocation + @"Buttons\Pos\button_overlay.png";
         //TouchButton List        
         private List<TouchButtonBase> _listButtons;
         //TouchButton Properties
@@ -264,7 +264,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     }
                     else
                     {
-                        logicpos.Utils.ShowMessageTouch(GlobalApp.PosMainWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_error"), "TablePad: Cant create TablePad, invalid query! You must supply mandatory fields name in Sql (id, name, label and image)!");
+                        logicpos.Utils.ShowMessageTouch(GlobalApp.PosMainWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"), "TablePad: Cant create TablePad, invalid query! You must supply mandatory fields name in Sql (id, name, label and image)!");
                     };
                 }
                 else

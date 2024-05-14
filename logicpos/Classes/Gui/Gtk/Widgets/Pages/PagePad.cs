@@ -47,15 +47,15 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             string fontPagePadNavigatorButton = GeneralSettings.Settings["fontPagePadNavigatorButton"];
             Size sizePagesPadNavigatorButton = logicpos.Utils.StringToSize(GeneralSettings.Settings["sizePagesPadNavigatorButton"]);
             Size sizePagesPadNavigatorButtonIcon = logicpos.Utils.StringToSize(GeneralSettings.Settings["sizePagesPadNavigatorButtonIcon"]);
-            string iconPrev = string.Format("{0}{1}", GeneralSettings.Paths["images"], @"Icons/icon_pos_pagepad_prev.png");
-            string iconNext = string.Format("{0}{1}", GeneralSettings.Paths["images"], @"Icons/icon_pos_pagepad_next.png");
+            string iconPrev = string.Format("{0}{1}", PathsSettings.ImagesFolderLocation, @"Icons/icon_pos_pagepad_prev.png");
+            string iconNext = string.Format("{0}{1}", PathsSettings.ImagesFolderLocation, @"Icons/icon_pos_pagepad_next.png");
 
             //Parameters
             Pages = pPages;
 
             HBox navigatorButtons = new HBox(true, 0);
-            ButtonPrev = new TouchButtonIconWithText("buttonPrev", _colorPagePadHotButtonBackground, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "pos_button_label_prev_pages_toolbar"), fontPagePadNavigatorButton, Color.White, iconPrev, sizePagesPadNavigatorButtonIcon, sizePagesPadNavigatorButton.Width, sizePagesPadNavigatorButton.Height) { Sensitive = false };
-            ButtonNext = new TouchButtonIconWithText("buttonNext", _colorPagePadHotButtonBackground, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "pos_button_label_next_pages_toolbar"), fontPagePadNavigatorButton, Color.White, iconNext, sizePagesPadNavigatorButtonIcon, sizePagesPadNavigatorButton.Width, sizePagesPadNavigatorButton.Height);
+            ButtonPrev = new TouchButtonIconWithText("buttonPrev", _colorPagePadHotButtonBackground, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "pos_button_label_prev_pages_toolbar"), fontPagePadNavigatorButton, Color.White, iconPrev, sizePagesPadNavigatorButtonIcon, sizePagesPadNavigatorButton.Width, sizePagesPadNavigatorButton.Height) { Sensitive = false };
+            ButtonNext = new TouchButtonIconWithText("buttonNext", _colorPagePadHotButtonBackground, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "pos_button_label_next_pages_toolbar"), fontPagePadNavigatorButton, Color.White, iconNext, sizePagesPadNavigatorButtonIcon, sizePagesPadNavigatorButton.Width, sizePagesPadNavigatorButton.Height);
 
             //Events
             ButtonPrev.Clicked += buttonPrev_Clicked;

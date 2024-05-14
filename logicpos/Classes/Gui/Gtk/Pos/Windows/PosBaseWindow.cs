@@ -41,7 +41,7 @@ namespace logicpos
 
         private string GetAppIconFileLocation()
         {
-            return string.Format("{0}{1}", GeneralSettings.Paths["images"], @"Icos\application.ico");
+            return string.Format("{0}{1}", PathsSettings.ImagesFolderLocation, @"Icos\application.ico");
         }
 
         private void SetAppIcon()
@@ -168,8 +168,8 @@ namespace logicpos
                         DialogFlags.Modal, 
                         MessageType.Error, 
                         ButtonsType.Ok, 
-                        CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_error"), 
-                        string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_low_resolution_detected"), 
+                        CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"), 
+                        string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_low_resolution_detected"), 
                         width, 
                         height));
                     Environment.Exit(0);

@@ -198,7 +198,7 @@ namespace logicpos
                         XPOSettings.LoggedUser = (sys_userdetail)XPOHelper.GetXPGuidObject(typeof(sys_userdetail), dialogChangeUser.UserDetail.Oid);
                         GeneralSettings.LoggedUserPermissions = XPOHelper.GetUserPermissions();
                         TicketList.UpdateTicketListButtons();
-                       XPOHelper.Audit("USER_CHANGE", string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "audit_message_user_change"), XPOSettings.LoggedUser.Name));
+                       XPOHelper.Audit("USER_CHANGE", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_user_change"), XPOSettings.LoggedUser.Name));
                         terminalInfo = string.Format("{0} : {1}", XPOSettings.LoggedTerminal.Designation, XPOSettings.LoggedUser.Name);
                         if (LabelTerminalInfo.Text != terminalInfo) LabelTerminalInfo.Text = terminalInfo;
                     }
@@ -216,7 +216,7 @@ namespace logicpos
                                 XPOSettings.LoggedUser = (sys_userdetail)XPOHelper.GetXPGuidObject(typeof(sys_userdetail), dialogChangeUser.UserDetail.Oid);
                                 GeneralSettings.LoggedUserPermissions = XPOHelper.GetUserPermissions();
                                 TicketList.UpdateTicketListButtons();
-                               XPOHelper.Audit("USER_loggerIN", string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "audit_message_user_loggerin"), XPOSettings.LoggedUser.Name));
+                               XPOHelper.Audit("USER_loggerIN", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_user_loggerin"), XPOSettings.LoggedUser.Name));
                                 terminalInfo = string.Format("{0} : {1}", XPOSettings.LoggedTerminal.Designation, XPOSettings.LoggedUser.Name);
                                 if (LabelTerminalInfo.Text != terminalInfo) LabelTerminalInfo.Text = terminalInfo;
                                 //After First time Login ShowNotifications
@@ -347,13 +347,13 @@ namespace logicpos
                     var resultOpenDoor = PrintRouter.OpenDoor(XPOSettings.LoggedTerminal.Printer);
                     if (!resultOpenDoor)
                     {
-                        Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_information"), string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "open_cash_draw_permissions")));
+                        Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_information"), string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "open_cash_draw_permissions")));
                     }
                     else
                     {
                         //Audit
                        XPOHelper.Audit("CASHDRAWER_OUT", string.Format(
-                            CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "audit_message_cashdrawer_out"),
+                            CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_cashdrawer_out"),
                             XPOSettings.LoggedTerminal.Designation,
                             "Button Open Door"));
                     }
@@ -428,8 +428,8 @@ namespace logicpos
                 //With Valid WorkSessionPeriodDay
                 if (XPOSettings.WorkSessionPeriodDay.SessionStatus == WorkSessionPeriodStatus.Open)
                 {
-                    //if (_touchButtonPosToolbarCashDrawer.LabelText != CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_worksession_close_day)
-                    //  _touchButtonPosToolbarCashDrawer.LabelText = CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_worksession_close_day;
+                    //if (_touchButtonPosToolbarCashDrawer.LabelText != CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_worksession_close_day)
+                    //  _touchButtonPosToolbarCashDrawer.LabelText = CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_worksession_close_day;
                     //if (!_touchButtonPosToolbarCashDrawer.Sensitive == true)
                     //  _touchButtonPosToolbarCashDrawer.Sensitive = true;
 
@@ -507,8 +507,8 @@ namespace logicpos
             //No WorkSessionPeriodDay
             else if (!GeneralSettings.AppUseBackOfficeMode)
             {
-                //if (_touchButtonPosToolbarCashDrawer.LabelText != CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_worksession_open_day)
-                //  _touchButtonPosToolbarCashDrawer.LabelText = CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_worksession_open_day;
+                //if (_touchButtonPosToolbarCashDrawer.LabelText != CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_worksession_open_day)
+                //  _touchButtonPosToolbarCashDrawer.LabelText = CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_worksession_open_day;
                 //if (!_touchButtonPosToolbarCashDrawer.Sensitive == false)
                 //  _touchButtonPosToolbarCashDrawer.Sensitive = false;
                 if (!_ticketPad.Sensitive == false)

@@ -108,7 +108,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 
                 string logo = string.Format(
                     @"{0}{1}",
-                    GeneralSettings.Paths["assets"],
+                    PathsSettings.Paths["assets"],
                     _companyLogo
                 );
 
@@ -197,7 +197,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 //Print Notes
                 if (pNotes != string.Empty)
                 {
-                    _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_notes"), WriteLineTextMode.Bold);
+                    _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_notes"), WriteLineTextMode.Bold);
                     _thermalPrinterGeneric.WriteLine(pNotes);
                     //Line Feed
                     _thermalPrinterGeneric.LineFeed();

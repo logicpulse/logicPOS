@@ -20,8 +20,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private Size _sizePosUserButton = logicpos.Utils.StringToSize(GeneralSettings.Settings["sizePosUserButton"]);
         private Size _sizeIconScrollLeftRight = new Size(62, 31);
         //Files
-        private readonly string _fileScrollLeftImage = GeneralSettings.Paths["images"] + @"Buttons\Pos\button_subfamily_article_scroll_left.png";
-        private readonly string _fileScrollRightImage = GeneralSettings.Paths["images"] + @"Buttons\Pos\button_subfamily_article_scroll_right.png";
+        private readonly string _fileScrollLeftImage = PathsSettings.ImagesFolderLocation + @"Buttons\Pos\button_subfamily_article_scroll_left.png";
+        private readonly string _fileScrollRightImage = PathsSettings.ImagesFolderLocation + @"Buttons\Pos\button_subfamily_article_scroll_right.png";
 
         //Private Gui Members
         private readonly Fixed _fixedContent;
@@ -36,9 +36,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
-            string windowTitle = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_change_user");
+            string windowTitle = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_change_user");
             Size windowSize = new Size(559, 562);
-            string fileDefaultWindowIcon = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_window_users.png";
+            string fileDefaultWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_users.png";
 
             //Init Content
             _fixedContent = new Fixed();
@@ -114,8 +114,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             if (UserDetail.PasswordReset)
             {
                 //_logger.Debug(string.Format("Name: [{0}], PasswordReset: [{1}]", _selectedUserDetail.Name, _selectedUserDetail.PasswordReset));
-                logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_information"),
-                    string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_user_request_change_password"), UserDetail.Name, XPOSettings.DefaultValueUserDetailAccessPin)
+                logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_information"),
+                    string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_user_request_change_password"), UserDetail.Name, XPOSettings.DefaultValueUserDetailAccessPin)
                 );
             }
 

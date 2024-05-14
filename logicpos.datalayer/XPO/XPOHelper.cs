@@ -667,7 +667,7 @@ namespace logicpos.datalayer.Xpo
                             "- {0} : {1} : {2} {3} : (#{4})",
                             item.DocumentNumber, item.Date,
                             documentBackUtilDays,
-                            CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(),
+                            CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName,
                             "global_day_days"),
                             item.Notifications.Count + 1);
 
@@ -734,8 +734,8 @@ namespace logicpos.datalayer.Xpo
                     //get AuditType Object
                     sys_systemaudittype xpoAuditType = (sys_systemaudittype)GetXPGuidObject(typeof(sys_systemaudittype), guidAuditType);
                     string description = (pDescription != string.Empty) ? pDescription
-                      : (xpoAuditType.ResourceString != null && CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), xpoAuditType.ResourceString) != null)
-                      ? CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), xpoAuditType.ResourceString) : xpoAuditType.Designation;
+                      : (xpoAuditType.ResourceString != null && CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, xpoAuditType.ResourceString) != null)
+                      ? CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, xpoAuditType.ResourceString) : xpoAuditType.Designation;
 
                     sys_systemaudit systemAudit = new sys_systemaudit(pSession)
                     {

@@ -190,7 +190,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                     if (fieldValue.GetType() == typeof(bool))
                     {
                         bool boolValue = Convert.ToBoolean(fieldValue);
-                        fieldValue = (boolValue) ? CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_treeview_true") : CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_treeview_false");
+                        fieldValue = (boolValue) ? CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_treeview_true") : CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_treeview_false");
                     }
                     else
                     {

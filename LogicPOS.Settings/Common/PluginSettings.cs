@@ -58,7 +58,7 @@ namespace LogicPOS.Settings
 
         public static bool HasPlugin => SoftwareVendor != null;
 
-        public static void InitSoftwareVendorPluginSettings()
+        public static void InitializeSoftwareVendorPluginSettings()
         {
             AppSoftwareName = GetSoftwareVendorValueAsString(nameof(AppSoftwareName));
             AppCompanyName = GetSoftwareVendorValueAsString(nameof(AppCompanyName));
@@ -94,6 +94,13 @@ namespace LogicPOS.Settings
 
             DocumentSettings.DocumentFinanceSeriesGenerationFactoryUseRandomAcronymPrefix = GetSoftwareVendorValueAsBool(nameof(DocumentSettings.DocumentFinanceSeriesGenerationFactoryUseRandomAcronymPrefix));
             DocumentSettings.DocumentFinanceSeriesGenerationFactoryAcronymLastSerieFormat = GetSoftwareVendorValueAsString(nameof(DocumentSettings.DocumentFinanceSeriesGenerationFactoryAcronymLastSerieFormat));
+        }
+
+        public static string PluginsFolderLocation => PathsSettings.Paths["plugins"].ToString();
+
+        public static void InitializeContainer()
+        {
+            PluginContainer = new PluginContainer(PluginsFolderLocation);
         }
     }
 }

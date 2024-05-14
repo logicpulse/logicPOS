@@ -46,7 +46,6 @@ namespace logicpos
 
         public static void ShowLoadingScreen()
         {
-            _logger.Debug("void StartApp() :: Show 'loading'");
             DialogLoading = Utils.GetThreadDialog(new Window("POS start loading"), true);
             _loadingThread = new Thread(() => DialogLoading.Run());
             _loadingThread.Start();
@@ -75,7 +74,7 @@ namespace logicpos
 
                 ShowLoadingScreen();
 
-                InitializePluguins();
+                InitializePlugins();
 
                 KeepUIResponsive();
 
@@ -86,34 +85,24 @@ namespace logicpos
                 }
                 else
                 {
-                    Utils.ShowMessageNonTouch(null, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_pos_instance_already_running"), CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_information"));
+                    Utils.ShowMessageNonTouch(null, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_pos_instance_already_running"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_information"));
                     return;
                 }
             }
         }
 
-        private static void InitializePluguins()
+        private static void InitializePlugins()
         {
             SetCulture();
 
-            // Init PluginContainer
-            PluginSettings.PluginContainer = new PluginContainer(GeneralSettings.Paths["plugins"].ToString());
+            PluginSettings.InitializeContainer();
 
-            // PluginSoftwareVendor
             PluginSettings.SoftwareVendor = PluginSettings.PluginContainer.GetFirstPluginOfType<ISoftwareVendor>();
+
             if (PluginSettings.HasPlugin)
             {
-                // Show Loaded Plugin
-                _logger.Debug(string.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ISoftwareVendor), PluginSettings.SoftwareVendor.Name));
-                // Init Plugin
-                PluginSettings.InitSoftwareVendorPluginSettings();
-                // Check if all Resources are Embedded
+                PluginSettings.InitializeSoftwareVendorPluginSettings();
                 PluginSettings.SoftwareVendor.ValidateEmbeddedResources();
-            }
-            else
-            {
-                // Show Loaded Plugin
-                _logger.Error($"Error missing required plugin type Installed: [{typeof(ISoftwareVendor)}]");
             }
 
             // Init Stock Module
@@ -207,11 +196,11 @@ namespace logicpos
                 }
                 else
                 {
-                    CultureSettings.CurrentCulture = new CultureInfo(GeneralSettings.Settings.GetCultureName());
+                    CultureSettings.CurrentCulture = new CultureInfo(CultureSettings.CurrentCultureName);
                     GeneralSettings.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
                 }
 
-                _logger.Error(string.Format("Missing Culture in DataBase or DB not created yet, using {0} from config.", GeneralSettings.Settings.GetCultureName()));
+                _logger.Error(string.Format("Missing Culture in DataBase or DB not created yet, using {0} from config.", CultureSettings.CurrentCultureName));
             }
         }
     }

@@ -39,9 +39,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _fileChooserAction = pFileChooserAction;
 
             //Init Local Vars
-            string windowTitle = string.Format("{0} {1}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_filepicker"), windowName);
+            string windowTitle = string.Format("{0} {1}", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_filepicker"), windowName);
             _windowSize = new Size(700, 473);
-            string fileDefaultWindowIcon = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_window_select_record.png";
+            string fileDefaultWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_select_record.png";
 
             //Init Content
             _fixedContent = new Fixed();

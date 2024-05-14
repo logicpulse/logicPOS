@@ -38,7 +38,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             {
                 new GenericTreeViewColumnProperty("Version")
                 {
-                    Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_version"),
+                    Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_version"),
                     MinWidth = 60,
                     CellRenderer = new CellRendererText()
                     {
@@ -46,9 +46,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         Xalign = 1.0F
                     }
                 },
-                new GenericTreeViewColumnProperty("CreatedAt") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_date"), MinWidth = 180 },
-                new GenericTreeViewColumnProperty("FileNamePacked") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_file"), MinWidth = 240 },
-                new GenericTreeViewColumnProperty("UpdatedAt") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
+                new GenericTreeViewColumnProperty("CreatedAt") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_date"), MinWidth = 180 },
+                new GenericTreeViewColumnProperty("FileNamePacked") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_file"), MinWidth = 240 },
+                new GenericTreeViewColumnProperty("UpdatedAt") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
             };
 
             //Sort Order

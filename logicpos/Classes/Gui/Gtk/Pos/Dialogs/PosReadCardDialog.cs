@@ -26,12 +26,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             string regexAlfaNumericExtended = LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended;
 
             //Init Local Vars
-            string windowTitle = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_readcard");
+            string windowTitle = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_readcard");
             Size windowSize = new Size(462, 320);//400 With Other Payments
-            string fileDefaultWindowIcon = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_window_read_card.png";
+            string fileDefaultWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_read_card.png";
 
             //EntryDescription
-            _entryBoxMovementDescription = new EntryBoxValidation(this, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_read_card"), KeyboardMode.AlfaNumeric, regexAlfaNumericExtended, false);
+            _entryBoxMovementDescription = new EntryBoxValidation(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_read_card"), KeyboardMode.AlfaNumeric, regexAlfaNumericExtended, false);
             //_entryBoxMovementDescription.EntryValidation.Changed += delegate { ValidateDialog(); };
             //VBox
             VBox vbox = new VBox(true, 0);

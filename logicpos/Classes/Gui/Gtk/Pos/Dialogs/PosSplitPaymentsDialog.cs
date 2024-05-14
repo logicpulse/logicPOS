@@ -49,11 +49,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             //Init Local Vars
             // Title will be Overrided in CalculateTotalPerSplit
-            string windowTitle = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_split_payment");
+            string windowTitle = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_split_payment");
             Size windowSize = new Size(600, 460);
-            string fileDefaultWindowIcon = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_window_split_payments.png";
-            string fileAddSplitIcon = GeneralSettings.Paths["images"] + @"Icons\icon_pos_nav_new.png";
-            string fileRemoveSplitIcon = GeneralSettings.Paths["images"] + @"Icons\icon_pos_nav_delete.png";
+            string fileDefaultWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_split_payments.png";
+            string fileAddSplitIcon = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_nav_new.png";
+            string fileRemoveSplitIcon = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_nav_delete.png";
 
             //Init Content : ViewPort
             _vbox = new VBox(false, 2);
@@ -72,9 +72,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
             _buttonOk.Sensitive = false;
 
-            _buttonTableAddSplit = new TouchButtonIconWithText("touchButtonTableIncrementSplit_DialogActionArea", _colorBaseDialogActionAreaButtonBackground, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_add"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileAddSplitIcon, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height)
+            _buttonTableAddSplit = new TouchButtonIconWithText("touchButtonTableIncrementSplit_DialogActionArea", _colorBaseDialogActionAreaButtonBackground, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_add"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileAddSplitIcon, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height)
             { Sensitive = true };
-            _buttonTableRemoveSplit = new TouchButtonIconWithText("touchButtonTableDecrementSplit_DialogActionArea", _colorBaseDialogActionAreaButtonBackground, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_remove"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileRemoveSplitIcon, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height)
+            _buttonTableRemoveSplit = new TouchButtonIconWithText("touchButtonTableDecrementSplit_DialogActionArea", _colorBaseDialogActionAreaButtonBackground, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_remove"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileRemoveSplitIcon, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height)
             { Sensitive = true };
 
             //ActionArea

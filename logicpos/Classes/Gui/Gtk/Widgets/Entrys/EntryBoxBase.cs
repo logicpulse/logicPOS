@@ -191,11 +191,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 _label = new Label(pLabelText);
                 _label.ModifyFont(fontDescriptionLabel);
                 _label.SetAlignment(0, 2.5F);
-                _label2 = new Label(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_article_code") + "   ");
+                _label2 = new Label(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_article_code") + "   ");
                 _label2.ModifyFont(fontDescriptionLabel);
                 _label2.ModifyBg(StateType.Normal, validLabel.ToGdkColor());
                 _label2.SetAlignment(0, 0.5F);
-                _label3 = new Label("                                                         " + CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "pos_ticketlist_label_quantity"));
+                _label3 = new Label("                                                         " + CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "pos_ticketlist_label_quantity"));
                 _label3.ModifyFont(fontDescriptionLabel);
                 _label3.ModifyBg(StateType.Normal, validLabel.ToGdkColor());
                 _label3.SetAlignment(0, 0.5F);
@@ -231,7 +231,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         public TouchButtonIcon AddButton(string pObjectName, string pFileNameIcon)
         {
-            string icon = string.Format("{0}{1}", GeneralSettings.Paths["images"], pFileNameIcon);
+            string icon = string.Format("{0}{1}", PathsSettings.ImagesFolderLocation, pFileNameIcon);
             TouchButtonIcon result = GetButton(pObjectName, icon);
             _hbox.PackStart(result, false, false, 0);
             return result;
@@ -256,7 +256,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             //Prepare KeyBoard
             if (keyboardMode != KeyboardMode.None)
             {
-                string iconKeyboard = string.Format("{0}{1}", GeneralSettings.Paths["images"], @"Icons/Windows/icon_window_keyboard.png");
+                string iconKeyboard = string.Format("{0}{1}", PathsSettings.ImagesFolderLocation, @"Icons/Windows/icon_window_keyboard.png");
                 _buttonKeyBoard = GetButton(iconKeyboard);
                 _hbox.PackStart(_buttonKeyBoard, false, false, 0);
                 _buttonKeyBoard.Clicked += delegate

@@ -14,9 +14,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
-            string windowTitle = string.Format("{0} : {1} #{2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_orders"), CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_place_table"), pTable);
+            string windowTitle = string.Format("{0} : {1} #{2}", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_orders"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_place_table"), pTable);
             Size windowSize = new Size(429, 205);//618 (3buts)
-            string fileDefaultWindowIcon = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_window_orders.png";
+            string fileDefaultWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_orders.png";
 
             Size sizeIcon = new Size(50, 50);
             int buttonWidth = 162;
@@ -24,14 +24,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             uint tablePadding = 15;
 
             //Icons
-            string fileIconListOrders = GeneralSettings.Paths["images"] + @"Icons\icon_pos_ticketpad_orderlist.png";
-            string fileIconPrintOrder = GeneralSettings.Paths["images"] + @"Icons\icon_pos_print.png";
+            string fileIconListOrders = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_ticketpad_orderlist.png";
+            string fileIconPrintOrder = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_print.png";
             //String fileIconListFinanceDocuments = SharedUtils.OSSlash(GeneralSettings.Path["images"] + @"Icons\icon_pos_default.png");
 
             //Buttons
-            TouchButtonIconWithText buttonPrintOrder = new TouchButtonIconWithText("touchButtonPrintOrder_Green", _colorBaseDialogDefaultButtonBackground, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_orders_button_label_print_order"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, fileIconPrintOrder, sizeIcon, buttonWidth, buttonHeight);
-            TouchButtonIconWithText buttonTableConsult = new TouchButtonIconWithText("touchButtonListOrders_Green", _colorBaseDialogDefaultButtonBackground, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_orders_button_label_table_consult"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, fileIconListOrders, sizeIcon, buttonWidth, buttonHeight);
-            //TouchButtonIconWithText buttonListFinanceDocuments = new TouchButtonIconWithText("touchButtonListFinanceDocuments_Green", _colorBaseDialogDefaultButtonBackground, CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_button_label_select_record_finance_documents, _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, fileIconPrintOrder, sizeIcon, buttonWidth, buttonHeight);
+            TouchButtonIconWithText buttonPrintOrder = new TouchButtonIconWithText("touchButtonPrintOrder_Green", _colorBaseDialogDefaultButtonBackground, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_orders_button_label_print_order"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, fileIconPrintOrder, sizeIcon, buttonWidth, buttonHeight);
+            TouchButtonIconWithText buttonTableConsult = new TouchButtonIconWithText("touchButtonListOrders_Green", _colorBaseDialogDefaultButtonBackground, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_orders_button_label_table_consult"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, fileIconListOrders, sizeIcon, buttonWidth, buttonHeight);
+            //TouchButtonIconWithText buttonListFinanceDocuments = new TouchButtonIconWithText("touchButtonListFinanceDocuments_Green", _colorBaseDialogDefaultButtonBackground, CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_button_label_select_record_finance_documents, _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, fileIconPrintOrder, sizeIcon, buttonWidth, buttonHeight);
 
             //Table
             Table table = new Table(1, 2, true);

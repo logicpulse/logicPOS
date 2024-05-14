@@ -135,8 +135,8 @@ namespace logicpos
                             DialogFlags.Modal,
                             MessageType.Question,
                             ButtonsType.YesNo,
-                            CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_document_finance"),
-                            CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_request_print_document_confirmation")
+                            CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_dialog_document_finance"),
+                            CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_request_print_document_confirmation")
                         );
 
                         if (responseType == ResponseType.No) printDocument = false;
@@ -154,17 +154,17 @@ namespace logicpos
                 switch (ex.Message)
                 {
                     case "ERROR_MISSING_SERIE":
-                        errorMessage = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_error_creating_financial_document"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_error_creating_financial_document_missing_series"));
+                        errorMessage = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document_missing_series"));
                         break;
                     case "ERROR_INVALID_DOCUMENT_NUMBER":
-                        errorMessage = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_error_creating_financial_document"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_error_creating_financial_document_invalid_documentnumber"));
+                        errorMessage = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document_invalid_documentnumber"));
                         break;
                     case "ERROR_COMMIT_FINANCE_DOCUMENT":
-                        errorMessage = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_error_creating_financial_document"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_error_creating_financial_document_commit_session"));
+                        errorMessage = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document_commit_session"));
                         break;
                     //TODO: NEW CLASS FinanceDocumentValidate : IMPLEMENT HERE THE RESULT EXCEPTION FOR VALIDATE_SIMPLIFIED_INVOICE
                     default:
-                        errorMessage = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_error_creating_financial_document"), ex.Message);
+                        errorMessage = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document"), ex.Message);
                         break;
                 }
                 Utils.ShowMessageTouch(
@@ -173,7 +173,7 @@ namespace logicpos
                   _sizeDefaultWindowSize,
                   MessageType.Error,
                   ButtonsType.Close,
-                  CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"),
+                  CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error"),
                   errorMessage
                 );
             }
@@ -224,8 +224,8 @@ namespace logicpos
 
                 if (sendDocumentResult == null || sendDocumentResult.ReturnCode != "0")
                 {
-                    dialogResponse = Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(700, 440), MessageType.Error, ButtonsType.YesNo, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"),
-                        string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_error_in_at_webservice"), sendDocumentResult.ReturnCode, sendDocumentResult.ReturnMessage)
+                    dialogResponse = Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(700, 440), MessageType.Error, ButtonsType.YesNo, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error"),
+                        string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_in_at_webservice"), sendDocumentResult.ReturnCode, sendDocumentResult.ReturnMessage)
                     );
                     /* IN009083 - returns true when WS call fails and user opts to do not retry */
                     if (ResponseType.No.Equals(dialogResponse))
@@ -325,11 +325,11 @@ namespace logicpos
                 switch (ex.Message)
                 {
                     case "ERROR_MISSING_SERIE":
-                        errorMessage = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_error_creating_financial_document"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_error_creating_financial_document_missing_series"));
+                        errorMessage = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document_missing_series"));
                         break;
                     case "ERROR_COMMIT_FINANCE_DOCUMENT_PAYMENT":
                     default:
-                        errorMessage = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_error_creating_financial_document"), ex.Exception.Message);
+                        errorMessage = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document"), ex.Exception.Message);
                         break;
                 }
                 Utils.ShowMessageTouch(
@@ -338,7 +338,7 @@ namespace logicpos
                   _sizeDefaultWindowSize,
                   MessageType.Error,
                   ButtonsType.Close,
-                  CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"),
+                  CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error"),
                   errorMessage
                 );
             }
@@ -422,8 +422,8 @@ namespace logicpos
                   _sizeDefaultWindowSize,
                   MessageType.Info,
                   ButtonsType.Close,
-                  CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_information"),
-                  string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_saftpt_exported_successfully"), result)
+                  CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_information"),
+                  string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_saftpt_exported_successfully"), result)
                 );
             }
             catch (Exception ex)
@@ -434,8 +434,8 @@ namespace logicpos
                   _sizeDefaultWindowSize,
                   MessageType.Error,
                   ButtonsType.Close,
-                  CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"),
-                  CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_saftpt_exported_error")
+                  CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error"),
+                  CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_saftpt_exported_error")
                 );
                 _logger.Error(ex.Message, ex);
             }
@@ -477,7 +477,7 @@ namespace logicpos
 
             if (!LicenceManagement.IsLicensed || !LicenceManagement.CanPrint)
             {
-                Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(pSourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_printing_function_disabled"));
+                Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(pSourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_printing_function_disabled"));
                 return false;
             }
             //TK016249 - Impressoras - Diferenciação entre Tipos
@@ -507,7 +507,7 @@ namespace logicpos
                     //Notification : Show Message TouchTerminalWithoutAssociatedPrinter and Store user input, to Show Next Time(Yes) or Not (No)
                     if (printerDoc == null)
                     {
-                        Utils.ShowMessageTouchTerminalWithoutAssociatedPrinter(pSourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), pDocumentFinanceMaster.DocumentType.ResourceString));
+                        Utils.ShowMessageTouchTerminalWithoutAssociatedPrinter(pSourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, pDocumentFinanceMaster.DocumentType.ResourceString));
                     }
                     else
                     {
@@ -519,7 +519,7 @@ namespace logicpos
                 else
                 {
                     bool validFiles = true;
-                    string extraMessage = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_error_protected_files_invalid_files_detected_print_document_ignored"), pDocumentFinanceMaster.DocumentNumber);
+                    string extraMessage = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_protected_files_invalid_files_detected_print_document_ignored"), pDocumentFinanceMaster.DocumentNumber);
 
                     //Printer Drawer : Set openDrawer
                     switch (PrintRouter.GetPrinterToken(printer.PrinterType.Token))
@@ -573,12 +573,12 @@ namespace logicpos
                             var resultOpenDoor = PrintRouter.OpenDoor(XPOSettings.LoggedTerminal.Printer);
                             if (!resultOpenDoor)
                             {
-                                Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_information"), string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "open_cash_draw_permissions")));
+                                Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_information"), string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "open_cash_draw_permissions")));
                             }
                             else
                             {
                                XPOHelper.Audit("CASHDRAWER_OUT", string.Format(
-                                CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_cashdrawer_out"),
+                                CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_cashdrawer_out"),
                                 XPOSettings.LoggedTerminal.Designation,
                                 "Button Open Door"));
                             }
@@ -611,7 +611,7 @@ namespace logicpos
 
             if (!LicenceManagement.IsLicensed || !LicenceManagement.CanPrint)
             {
-                Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(pSourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_printing_function_disabled"));
+                Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(pSourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_printing_function_disabled"));
                 return false;
             }
 
@@ -624,13 +624,13 @@ namespace logicpos
                 //Notification : Show Message TouchTerminalWithoutAssociatedPrinter and Store user input, to Show Next Time(Yes) or Not (No)
                 if (printer == null)
                 {
-                    Utils.ShowMessageTouchTerminalWithoutAssociatedPrinter(pSourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_type_title_rc"));
+                    Utils.ShowMessageTouchTerminalWithoutAssociatedPrinter(pSourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_documentfinance_type_title_rc"));
                 }
                 else
                 {
                     //ProtectedFiles Protection
                     bool validFiles = true;
-                    string extraMessage = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_error_protected_files_invalid_files_detected_print_document_ignored"), pDocumentFinancePayment.PaymentRefNo);
+                    string extraMessage = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_protected_files_invalid_files_detected_print_document_ignored"), pDocumentFinancePayment.PaymentRefNo);
                     switch (PrintRouter.GetPrinterToken(printer.PrinterType.Token))
                     {
                         //ThermalPrinter : Ticket Files
@@ -650,7 +650,7 @@ namespace logicpos
                     //Recibos com impressão em impressora térmica
                     if (XPOSettings.LoggedTerminal.ThermalPrinter != null)
                     {
-                        ResponseType responseType = Utils.ShowMessageTouch(pSourceWindow, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.YesNo, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_edit_DialogConfigurationPrintersType_tab1_label"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_printer_choose_printer"));
+                        ResponseType responseType = Utils.ShowMessageTouch(pSourceWindow, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.YesNo, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_edit_DialogConfigurationPrintersType_tab1_label"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_printer_choose_printer"));
 
                         if (responseType == ResponseType.Yes)
                         {
@@ -686,7 +686,7 @@ namespace logicpos
 
             if (!LicenceManagement.IsLicensed || !LicenceManagement.CanPrint)
             {
-                Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(pSourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_printing_function_disabled"));
+                Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(pSourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_printing_function_disabled"));
             }
             else
             {
@@ -699,16 +699,16 @@ namespace logicpos
                         switch (pTicketType)
                         {
                             case TicketType.TableOrder:
-                                ticketTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentticket_type_title_tt");
+                                ticketTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_documentticket_type_title_tt");
                                 break;
                             case TicketType.ArticleOrder:
-                                ticketTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentticket_type_title_ar");
+                                ticketTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_documentticket_type_title_ar");
                                 break;
                             case TicketType.WorkSession:
-                                ticketTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentticket_type_title_ws");
+                                ticketTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_documentticket_type_title_ws");
                                 break;
                             case TicketType.CashDrawer:
-                                ticketTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentticket_type_title_cs");
+                                ticketTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_documentticket_type_title_cs");
                                 break;
                             default:
                                 break;
@@ -845,9 +845,9 @@ namespace logicpos
 
             if (!result)
             {
-                string message = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "dialog_message_error_protected_files_invalid_files_detected"), pFilePath);
+                string message = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_protected_files_invalid_files_detected"), pFilePath);
                 if (pExtraMessage != string.Empty) message = string.Format("{1}{0}{0}{2}", Environment.NewLine, message, pExtraMessage);
-                Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(800, 400), MessageType.Error, ButtonsType.Close, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_error"), message);
+                Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(800, 400), MessageType.Error, ButtonsType.Close, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error"), message);
             }
 
             return result;

@@ -290,8 +290,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     UpdateTouchButtonSplitPaymentLabels(item);
 
                     // Update Window Title
-                    //if (WindowTitle != null) WindowTitle = string.Format(CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_split_payment, numberOfSplits, LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(totalFinal));
-                    if (WindowTitle != null) WindowTitle = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_split_payment"), numberOfSplits, LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_totalPerSplit, XPOSettings.ConfigurationSystemCurrency.Acronym));
+                    //if (WindowTitle != null) WindowTitle = string.Format(CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_dialog_split_payment, numberOfSplits, LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(totalFinal));
+                    if (WindowTitle != null) WindowTitle = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_dialog_split_payment"), numberOfSplits, LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_totalPerSplit, XPOSettings.ConfigurationSystemCurrency.Acronym));
                 }
             }
             catch (Exception ex)

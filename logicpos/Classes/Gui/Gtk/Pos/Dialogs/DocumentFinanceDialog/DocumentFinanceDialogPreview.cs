@@ -25,7 +25,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pDialogFlags)
         {
             Size windowSize = new Size(700, 360);
-            string fileDefaultWindowIcon = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_window_preview.png";
+            string fileDefaultWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_preview.png";
 
             //Parameters
             _articleBag = pArticleBag;
@@ -38,15 +38,15 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             string windowTitle;
             if (pMode == DocumentFinanceDialogPreviewMode.Preview)
             {
-                windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_documentfinance_preview_totals_mode_preview");
+                windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_dialog_documentfinance_preview_totals_mode_preview");
                 //ActionArea Buttons
-                TouchButtonIconWithText buttonOk = new TouchButtonIconWithText("touchButtonOk_DialogActionArea", _colorBaseDialogActionAreaButtonBackground, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_button_label_ok"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, _fileActionOK, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height);
+                TouchButtonIconWithText buttonOk = new TouchButtonIconWithText("touchButtonOk_DialogActionArea", _colorBaseDialogActionAreaButtonBackground, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_button_label_ok"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, _fileActionOK, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height);
                 //ActionArea
                 actionAreaButtons.Add(new ActionAreaButton(buttonOk, ResponseType.Ok));
             }
             else
             {
-                windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_documentfinance_preview_totals_mode_confirm");
+                windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_dialog_documentfinance_preview_totals_mode_confirm");
                 //ActionArea Buttons
                 TouchButtonIconWithText buttonNo = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.No);
                 TouchButtonIconWithText buttonYes = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Yes);
@@ -75,19 +75,19 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 Pango.FontDescription fontDescriptionValue = Pango.FontDescription.FromString("11");
 
                 //Titles: Table Tax
-                Label labelTitleTaxDesignation = new Label(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_designation"));
-                Label labelTitleTaxValue = new Label(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_tax"));
-                Label labelTitleTaxBase = new Label(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_total_tax_base"));
-                Label labelTitleTaxTotal = new Label(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_totaltax_acronym"));
+                Label labelTitleTaxDesignation = new Label(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_designation"));
+                Label labelTitleTaxValue = new Label(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_tax"));
+                Label labelTitleTaxBase = new Label(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_total_tax_base"));
+                Label labelTitleTaxTotal = new Label(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_documentfinance_totaltax_acronym"));
                 //Titles: Table Totals
-                Label labelTitleDiscountCustomer = new Label(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_discount_customer") + " (%)"); /* IN009206 */
-                Label labelTitleTotalNet = new Label(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_totalnet"));
-                Label labelTitleTotalGross = new Label(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_totalgross"));
-                Label labelTitleDiscountTotal = new Label(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_total_discount")); /* IN009206 */
+                Label labelTitleDiscountCustomer = new Label(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_documentfinance_discount_customer") + " (%)"); /* IN009206 */
+                Label labelTitleTotalNet = new Label(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_totalnet"));
+                Label labelTitleTotalGross = new Label(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_documentfinance_totalgross"));
+                Label labelTitleDiscountTotal = new Label(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_documentfinance_total_discount")); /* IN009206 */
                 /* IN009206 */
-                //Label labelTitleDiscountPaymentConditions = new Label(CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_discount_payment_conditions);
-                Label labelTitleTotalTax = new Label(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_totaltax")); /* IN009206 */
-                Label labelTitleTotalFinal = new Label(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_documentfinance_totalfinal"));
+                //Label labelTitleDiscountPaymentConditions = new Label(CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_documentfinance_discount_payment_conditions);
+                Label labelTitleTotalTax = new Label(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_documentfinance_totaltax")); /* IN009206 */
+                Label labelTitleTotalFinal = new Label(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_documentfinance_totalfinal"));
 
                 //Values: Table Totals
                 /* IN009206 - Begin */

@@ -81,7 +81,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                     {
                         fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)XPOHelper.GetXPGuidObject(uowSession, typeof(fin_documentfinancemaster), pDocumentFinanceMaster.Oid);
                         systemPrint.DocumentMaster = documentFinanceMaster;
-                        designation = string.Format("{0} {1} : {2}", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_printed"), documentFinanceMaster.DocumentType.Designation, documentFinanceMaster.DocumentNumber);
+                        designation = string.Format("{0} {1} : {2}", CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_printed"), documentFinanceMaster.DocumentType.Designation, documentFinanceMaster.DocumentNumber);
                         //Update DocumentFinanceMaster
                         if (!documentFinanceMaster.Printed) documentFinanceMaster.Printed = true;
                     }
@@ -90,7 +90,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                     {
                         fin_documentfinancepayment documentFinancePayment = (fin_documentfinancepayment)XPOHelper.GetXPGuidObject(uowSession, typeof(fin_documentfinancepayment), pDocumentFinancePayment.Oid);
                         systemPrint.DocumentPayment = documentFinancePayment;
-                        designation = string.Format("{0} {1} : {2}", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_printed"), documentFinancePayment.DocumentType.Designation, documentFinancePayment.PaymentRefNo);
+                        designation = string.Format("{0} {1} : {2}", CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_printed"), documentFinancePayment.DocumentType.Designation, documentFinancePayment.PaymentRefNo);
                     }
                     systemPrint.Designation = designation;
 
@@ -412,7 +412,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                                     //TK016249 - Impressoras - Diferenciação entre Tipos
                                     printObjectSINOCAN.OpenDoor(XPOSettings.LoggedTerminal.ThermalPrinter.PrinterType.Token, XPOSettings.LoggedTerminal.ThermalPrinter.NetworkName, m, t1, t2);
                                     //Audit
-                                   XPOHelper.Audit("CASHDRAWER_OPEN", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_cashdrawer_open"));
+                                   XPOHelper.Audit("CASHDRAWER_OPEN", CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_cashdrawer_open"));
 
                                     break;
                             }

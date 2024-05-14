@@ -26,10 +26,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _sourceWindow = pSourceWindow;            
 
             //Settings
-            string _fileIconListFinanceDocuments = GeneralSettings.Paths["images"] + @"Icons\icon_pos_toolbar_finance_document.png";
-            string _fileIconListCurrentAccountDocuments = GeneralSettings.Paths["images"] + @"Icons\icon_pos_toolbar_reports.png";
-            string _fileIconListWorksessionPeriods = GeneralSettings.Paths["images"] + @"Icons\icon_pos_toolbar_cashdrawer.png";
-            string _fileIconListMerchandiseEntry = GeneralSettings.Paths["images"] + @"Icons\icon_pos_toolbar_merchandise_entry.png";
+            string _fileIconListFinanceDocuments = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_toolbar_finance_document.png";
+            string _fileIconListCurrentAccountDocuments = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_toolbar_reports.png";
+            string _fileIconListWorksessionPeriods = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_toolbar_cashdrawer.png";
+            string _fileIconListMerchandiseEntry = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_toolbar_merchandise_entry.png";
 
             //Sizes
             Size sizeIcon = new Size(50, 50);
@@ -40,17 +40,17 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             int windowSizeHeight = (buttonHeight + Convert.ToInt16(tablePadding)) * 2 + 90;
 
             //Init Local Vars
-            string windowTitle = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_document_finance");
+            string windowTitle = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_document_finance");
             Size windowSize = new Size(windowSizeWidth, windowSizeHeight);
-            string fileDefaultWindowIcon = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_window_documents.png";
+            string fileDefaultWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_documents.png";
 
             //Buttons
-            _touchButtonPosToolbarFinanceDocuments = new TouchButtonIconWithText("touchButtonPosToolbarFinanceDocuments_Green", _colorBaseDialogDefaultButtonBackground, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_button_label_select_record_finance_documents"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileIconListFinanceDocuments, sizeIcon, buttonWidth, buttonHeight) { Token = "ALL" };
-            _toolbarFinanceDocumentsInvoicesUnpayed = new TouchButtonIconWithText("touchButtonPosToolbarFinanceDocumentsInvoicesForPayment_Green", _colorBaseDialogDefaultButtonBackground, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_button_label_select_finance_documents_ft_unpaid"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileIconListFinanceDocuments, sizeIcon, buttonWidth, buttonHeight) { Token = "FT_UNPAYED" };
-            _toolbarFinanceDocumentsPayments = new TouchButtonIconWithText("touchButtonPosToolbarFinanceDocumentsPayments_Green", _colorBaseDialogDefaultButtonBackground, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_button_label_select_payments"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileIconListFinanceDocuments, sizeIcon, buttonWidth, buttonHeight);
-            _touchButtonPosToolbarCurrentAccountDocuments = new TouchButtonIconWithText("REPORT_CUSTOMER_BALANCE_DETAILS", _colorBaseDialogDefaultButtonBackground, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_button_label_select_finance_documents_cc"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileIconListCurrentAccountDocuments, sizeIcon, buttonWidth, buttonHeight) { Token = "CC" };
-            _touchButtonPosToolbarWorkSessionPeriods = new TouchButtonIconWithText("touchButtonPosToolbarWorkSessionPeriods_Green", _colorBaseDialogDefaultButtonBackground, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_button_label_select_worksession_period"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileIconListWorksessionPeriods, sizeIcon, buttonWidth, buttonHeight);
-            _touchButtonPosToolbarMerchandiseEntry = new TouchButtonIconWithText("touchButtonPosToolbarMerchandiseEntry_Green", _colorBaseDialogDefaultButtonBackground, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_button_label_select_merchandise_entry"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileIconListMerchandiseEntry, sizeIcon, buttonWidth, buttonHeight);
+            _touchButtonPosToolbarFinanceDocuments = new TouchButtonIconWithText("touchButtonPosToolbarFinanceDocuments_Green", _colorBaseDialogDefaultButtonBackground, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_button_label_select_record_finance_documents"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileIconListFinanceDocuments, sizeIcon, buttonWidth, buttonHeight) { Token = "ALL" };
+            _toolbarFinanceDocumentsInvoicesUnpayed = new TouchButtonIconWithText("touchButtonPosToolbarFinanceDocumentsInvoicesForPayment_Green", _colorBaseDialogDefaultButtonBackground, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_button_label_select_finance_documents_ft_unpaid"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileIconListFinanceDocuments, sizeIcon, buttonWidth, buttonHeight) { Token = "FT_UNPAYED" };
+            _toolbarFinanceDocumentsPayments = new TouchButtonIconWithText("touchButtonPosToolbarFinanceDocumentsPayments_Green", _colorBaseDialogDefaultButtonBackground, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_button_label_select_payments"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileIconListFinanceDocuments, sizeIcon, buttonWidth, buttonHeight);
+            _touchButtonPosToolbarCurrentAccountDocuments = new TouchButtonIconWithText("REPORT_CUSTOMER_BALANCE_DETAILS", _colorBaseDialogDefaultButtonBackground, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_button_label_select_finance_documents_cc"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileIconListCurrentAccountDocuments, sizeIcon, buttonWidth, buttonHeight) { Token = "CC" };
+            _touchButtonPosToolbarWorkSessionPeriods = new TouchButtonIconWithText("touchButtonPosToolbarWorkSessionPeriods_Green", _colorBaseDialogDefaultButtonBackground, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_button_label_select_worksession_period"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileIconListWorksessionPeriods, sizeIcon, buttonWidth, buttonHeight);
+            _touchButtonPosToolbarMerchandiseEntry = new TouchButtonIconWithText("touchButtonPosToolbarMerchandiseEntry_Green", _colorBaseDialogDefaultButtonBackground, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_button_label_select_merchandise_entry"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileIconListMerchandiseEntry, sizeIcon, buttonWidth, buttonHeight);
             //Permission
             _touchButtonPosToolbarMerchandiseEntry.Sensitive = GeneralSettings.HasPermissionTo("STOCK_MERCHANDISE_ENTRY_ACCESS");
 

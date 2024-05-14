@@ -20,7 +20,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             int currentYear = XPOHelper.CurrentDateTimeAtomic().Year;
             FiscalYear = currentYear;
             Acronym = string.Format("{0}{1}{2}", FiscalYear, "A", Code/10);
-            Designation = string.Format("{0} {1} {2}{3}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_fiscal_year"), FiscalYear, "A", Code/10);
+            Designation = string.Format("{0} {1} {2}{3}", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_fiscal_year"), FiscalYear, "A", Code/10);
         }
 
         private uint fOrd;

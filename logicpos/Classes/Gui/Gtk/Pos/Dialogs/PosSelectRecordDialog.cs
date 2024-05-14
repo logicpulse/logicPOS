@@ -130,7 +130,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //_actionAreaButtons = pActionAreaButtons;
 
             //Init Local Vars
-            string fileDefaultWindowIcon = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_window_select_record.png";
+            string fileDefaultWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_select_record.png";
             Size usefullAreaSize = new Size(windowSize.Width - 14, windowSize.Height - 124);
 
             //Modify default genericTreeView properties
@@ -159,8 +159,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             //string fileActionMore = SharedUtils.OSSlash(GeneralSettings.Path["images"] + @"Icons\icon_pos_more.png");
             //string fileActionFilter = SharedUtils.OSSlash(GeneralSettings.Path["images"] + @"Icons\icon_pos_filter.png");
-            //TouchButtonIconWithText _buttonMore = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.More, "touchButtonMore_Grey", string.Format(CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_button_label_more, SettingsApp.PaginationRowsPerPage), fileActionMore);
-            //TouchButtonIconWithText _buttonFilter = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Filter, "touchButtonMore_Green", string.Format(CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_button_label_filter, SettingsApp.PaginationRowsPerPage), fileActionFilter);
+            //TouchButtonIconWithText _buttonMore = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.More, "touchButtonMore_Grey", string.Format(CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_button_label_more, SettingsApp.PaginationRowsPerPage), fileActionMore);
+            //TouchButtonIconWithText _buttonFilter = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Filter, "touchButtonMore_Green", string.Format(CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_button_label_filter, SettingsApp.PaginationRowsPerPage), fileActionFilter);
             //_buttonMore.Clicked += _genericTreeView_ButtonMoreClicked;
 
             //Default ActionArea Buttons
@@ -258,7 +258,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
               new PosSelectRecordDialog<T1, T2, T3>(
                 pSourceWindow,
                 DialogFlags.DestroyWithParent,
-                CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_select_record"),
+                CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_select_record"),
                 GlobalApp.MaxWindowSize,
                 null, //pDefaultValue : Require to Send a DataRow
                 GenericTreeViewMode.CheckBox,
@@ -287,8 +287,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     //string designation = (string)(_dialogSelectRecord.GenericTreeView.DataSourceRow as DataRow).ItemArray[indexColumnDesignation];
                     //_dialogSelectRecord.WindowTitle = 
                     //    (_dialogSelectRecord.GenericTreeView.MarkedCheckBoxs > 0) 
-                    //    ? string.Format("{0} : MarkedCheckBoxs:[{1}] : Last:[{2}]", CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_select_record, _dialogSelectRecord.GenericTreeView.MarkedCheckBoxs, designation) 
-                    //    : CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_select_record
+                    //    ? string.Format("{0} : MarkedCheckBoxs:[{1}] : Last:[{2}]", CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_dialog_select_record, _dialogSelectRecord.GenericTreeView.MarkedCheckBoxs, designation) 
+                    //    : CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_dialog_select_record
                     //;
                 }
             };

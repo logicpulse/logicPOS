@@ -50,7 +50,7 @@ namespace logicpos.Classes.Gui.Gtk.Samples
               new PosSelectRecordDialog<DataTable, DataRow, TreeViewTerminalSeries>(
                 _sourceWindow,
                 DialogFlags.DestroyWithParent,
-                CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_select_record"),
+                CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_dialog_select_record"),
                 GlobalApp.MaxWindowSize,
                 null, //pDefaultValue : Require to Send a DataRow
                 GenericTreeViewMode.CheckBox,
@@ -79,8 +79,8 @@ namespace logicpos.Classes.Gui.Gtk.Samples
                     string designation = (string)_dialogSelectRecord.GenericTreeView.DataSourceRow.ItemArray[indexColumnDesignation];
                     _dialogSelectRecord.WindowTitle =
                         (_dialogSelectRecord.GenericTreeView.MarkedCheckBoxs > 0)
-                        ? string.Format("{0} : MarkedCheckBoxs:[{1}] : Last:[{2}]", CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_select_record"), _dialogSelectRecord.GenericTreeView.MarkedCheckBoxs, designation)
-                        : CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_select_record")
+                        ? string.Format("{0} : MarkedCheckBoxs:[{1}] : Last:[{2}]", CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_dialog_select_record"), _dialogSelectRecord.GenericTreeView.MarkedCheckBoxs, designation)
+                        : CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_dialog_select_record")
                     ;
                 }
             };

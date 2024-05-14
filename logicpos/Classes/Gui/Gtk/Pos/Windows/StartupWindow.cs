@@ -262,11 +262,11 @@ namespace logicpos
                     //LOGO
                     if (PluginSettings.LicenceManager != null)
                     {
-                        string fileImageBackOfficeLogo = string.Format(GeneralSettings.Paths["themes"] + @"Default\Images\logicPOS_loggericpulse_loggerin.png");
+                        string fileImageBackOfficeLogo = string.Format(PathsSettings.Paths["themes"] + @"Default\Images\logicPOS_loggericpulse_loggerin.png");
 
                         if (!string.IsNullOrEmpty(LicenseSettings.LicenseReseller) && LicenseSettings.LicenseReseller == "NewTech")
                         {
-                            fileImageBackOfficeLogo = string.Format(GeneralSettings.Paths["themes"] + @"Default\Images\Branding\{0}\logicPOS_loggericpulse_loggerin.png", "NT");
+                            fileImageBackOfficeLogo = string.Format(PathsSettings.Paths["themes"] + @"Default\Images\Branding\{0}\logicPOS_loggericpulse_loggerin.png", "NT");
                         }
 
                         // var bitmapImage = GlobalFramework.PluginLicenceManager.DecodeImage(fileImageBackOfficeLogo, (GlobalApp.ScreenSize.Width - 550), (GlobalApp.ScreenSize.Height - 550));
@@ -666,7 +666,7 @@ namespace logicpos
             //Get BarCode Input
 
             //logicpos.Utils.ResponseText dialogResponse;
-            //dialogResponse = Utils.GetInputText(this, DialogFlags.Modal, CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_barcode, string.Empty, SettingsApp.RegexInteger, true);
+            //dialogResponse = Utils.GetInputText(this, DialogFlags.Modal, CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_barcode, string.Empty, SettingsApp.RegexInteger, true);
             //if (dialogResponse.ResponseType == ResponseType.Ok)
             //{
             //    _logger.Debug(String.Format("BarCode: [{0}]", dialogResponse.Text));

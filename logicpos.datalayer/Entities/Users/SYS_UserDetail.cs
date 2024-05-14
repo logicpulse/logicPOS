@@ -26,7 +26,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             //Required for New Users
             AccessPin = CryptographyUtils.GenerateSaltedString(XPOSettings.DefaultValueUserDetailAccessPin);
             PasswordReset = true;
-            ButtonImage = string.Format("{0}{1}", GeneralSettings.Paths["assets"], XPOSettings.DefaultValueUserDetailButtonImage);
+            ButtonImage = string.Format("{0}{1}", PathsSettings.Paths["assets"], XPOSettings.DefaultValueUserDetailButtonImage);
         }
 
         protected override void OnNewRecordSaving()

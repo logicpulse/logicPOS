@@ -114,24 +114,24 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Settings
 
             // IN009223 IN009227
-            string fileActionMore = GeneralSettings.Paths["images"] + @"Icons\icon_pos_more.png";
-            string fileActionFilter = GeneralSettings.Paths["images"] + @"Icons\icon_pos_filter.png";
+            string fileActionMore = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_more.png";
+            string fileActionFilter = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_filter.png";
 
-            string fileActionClose = GeneralSettings.Paths["images"] + @"Icons\Dialogs\icon_pos_dialog_action_close.png";
-            string fileActionPrint = GeneralSettings.Paths["images"] + @"Icons\Dialogs\icon_pos_dialog_action_print.png";
-            string fileActionNewDocument = GeneralSettings.Paths["images"] + @"Icons\icon_pos_toolbar_finance_new_document.png";
-            string fileActionPayInvoice = GeneralSettings.Paths["images"] + @"Icons\icon_pos_payment_full.png";
-            string fileActionCancel = GeneralSettings.Paths["images"] + @"Icons\icon_pos_cancel_document.png";
+            string fileActionClose = PathsSettings.ImagesFolderLocation + @"Icons\Dialogs\icon_pos_dialog_action_close.png";
+            string fileActionPrint = PathsSettings.ImagesFolderLocation + @"Icons\Dialogs\icon_pos_dialog_action_print.png";
+            string fileActionNewDocument = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_toolbar_finance_new_document.png";
+            string fileActionPayInvoice = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_payment_full.png";
+            string fileActionCancel = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_cancel_document.png";
             bool generatePdfDocuments = Convert.ToBoolean(GeneralSettings.Settings["generatePdfDocuments"]);
 
             //Default/Shared ActionArea Buttons
             // IN009223 IN009227
-            TouchButtonIconWithText buttonMore = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(PosBaseDialogButtonType.More, "touchButtonMore_Grey", string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_button_label_more"), POSSettings.PaginationRowsPerPage), fileActionMore);
+            TouchButtonIconWithText buttonMore = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(PosBaseDialogButtonType.More, "touchButtonMore_Grey", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_button_label_more"), POSSettings.PaginationRowsPerPage), fileActionMore);
             TouchButtonIconWithText buttonFilter = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(PosBaseDialogButtonType.Filter, "touchButtonFilter_Green", "Filter", fileActionFilter);
             TouchButtonIconWithText buttonClose = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(PosBaseDialogButtonType.Close);
             TouchButtonIconWithText buttonPrintDocument = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(PosBaseDialogButtonType.Print, "touchButtonPrintDocument_Green");
             TouchButtonIconWithText buttonPrintDocumentAs = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(PosBaseDialogButtonType.PrintAs, "touchButtonPrintDocumentAs_Green");
-            TouchButtonIconWithText buttonCancelDocument = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButtonCancelDocument_Green", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_button_label_cancel_document"), _fileActionCancel);
+            TouchButtonIconWithText buttonCancelDocument = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButtonCancelDocument_Green", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_button_label_cancel_document"), _fileActionCancel);
             TouchButtonIconWithText buttonOpenDocument = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(PosBaseDialogButtonType.OpenDocument, "touchButtonOpenDocument_Green");
             TouchButtonIconWithText buttonSendEmailDocument = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(PosBaseDialogButtonType.SendEmailDocument, "touchButtonSendEmailDocument_Green");
             buttonPrintDocument.Sensitive = false;
@@ -189,12 +189,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     {
                         sqlCountResultTopResults = POSSettings.PaginationRowsPerPage.ToString();
                     }
-                    windowTitleDefault = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_select_finance_document");
-                    string showResults = string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_show_results"), sqlCountResultTopResults, countResult.ToString());
+                    windowTitleDefault = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_select_finance_document");
+                    string showResults = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_show_results"), sqlCountResultTopResults, countResult.ToString());
                     _selectRecordWindowTitle = string.Format("{0} :: {1}", windowTitleDefault, showResults);
 
                     //Add aditional Buttons to ActionArea
-                    TouchButtonIconWithText buttonNewDocument = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButtonNewDocument_Green", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_button_label_new_financial_document"), fileActionNewDocument);
+                    TouchButtonIconWithText buttonNewDocument = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButtonNewDocument_Green", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_button_label_new_financial_document"), fileActionNewDocument);
                     _actionAreaButtonNewDocument = new ActionAreaButton(buttonNewDocument, _responseTypeNewDocument);
                     TouchButtonIconWithText buttonCloneDocument = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(PosBaseDialogButtonType.CloneDocument, "touchButtonCloneDocument_Green");
                     buttonCloneDocument.Sensitive = false;
@@ -368,8 +368,8 @@ WHERE
                     criteriaOperator = CriteriaOperator.And(criteriaOperator, new InOperator("Oid", resultList));
                     CriteriaOperatorBase = criteriaOperator;// IN009223 IN009227
 
-                    windowTitleDefault = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_select_finance_document_ft_unpaid");
-                    showResults = string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_show_results"), sqlCountResultTopResults, countResult);
+                    windowTitleDefault = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_select_finance_document_ft_unpaid");
+                    showResults = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_show_results"), sqlCountResultTopResults, countResult);
                     if (!string.IsNullOrEmpty(showResults))
                     {
                         _selectRecordWindowTitle = string.Format("{0} :: {1}", windowTitleDefault, showResults);
@@ -380,7 +380,7 @@ WHERE
                     }
 
                     //Add aditional Buttons to ActionArea
-                    TouchButtonIconWithText buttonPayInvoice = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButtonPayInvoice_Green", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_button_label_pay_invoice"), fileActionPayInvoice);
+                    TouchButtonIconWithText buttonPayInvoice = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButtonPayInvoice_Green", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_button_label_pay_invoice"), fileActionPayInvoice);
                     buttonPayInvoice.Sensitive = false;
                     _actionAreaButtonPayInvoice = new ActionAreaButton(buttonPayInvoice, _responseTypePayInvoice);
                     actionAreaButtons.Add(_actionAreaButtonPayInvoice);
@@ -410,12 +410,12 @@ WHERE
 
 
 
-                    windowTitleDefault = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_select_finance_document_cc");
-                    showResults = string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_show_results"), sqlCountResultTopResults, countResult);
+                    windowTitleDefault = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_select_finance_document_cc");
+                    showResults = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_show_results"), sqlCountResultTopResults, countResult);
                     _selectRecordWindowTitle = string.Format("{0} :: {1}", windowTitleDefault, showResults);
 
                     //Add aditional Buttons to ActionArea
-                    TouchButtonIconWithText buttonPayCurrentAcountDocument = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButtonPayCurrentAcountDocument_Green", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_button_label_pay"), fileActionPayInvoice);
+                    TouchButtonIconWithText buttonPayCurrentAcountDocument = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButtonPayCurrentAcountDocument_Green", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_button_label_pay"), fileActionPayInvoice);
                     buttonPayCurrentAcountDocument.Sensitive = false;
                     _actionAreaButtonPayCurrentAcountsDocument = new ActionAreaButton(buttonPayCurrentAcountDocument, _responseTypePayCurrentAcountsDocument);
                     actionAreaButtons.Add(_actionAreaButtonPayCurrentAcountsDocument);
@@ -654,7 +654,7 @@ WHERE
 
                 var countResult = XPOSettings.Session.Evaluate(typeof(fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), criteriaCount);
                 string nDocs = _dialogDocumentFinanceMaster.GenericTreeView.DataSource.Count.ToString();
-                string showResults = string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_show_results"), nDocs, countResult);
+                string showResults = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_show_results"), nDocs, countResult);
 
                 //Finish Updating Title
                 _dialogDocumentFinanceMaster.WindowTitle = (TotalDialogFinanceMasterDocuments != 0) ? string.Format("{0} :: {1} - {2}", windowTitleDefault, LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalDialogFinanceMasterDocuments, XPOSettings.ConfigurationSystemCurrency.Acronym), showResults) : string.Format("{0} :: {1}", windowTitleDefault, showResults);
@@ -772,14 +772,14 @@ WHERE
 
                             var countResult = XPOSettings.Session.Evaluate(typeof(fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), CriteriaOperatorBase);
                             nDocs = _dialogDocumentFinanceMaster.GenericTreeView.DataSource.Count.ToString();
-                            var showResults = string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_show_results"), nDocs, countResult);
+                            var showResults = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_show_results"), nDocs, countResult);
                             _selectRecordWindowTitle = string.Format("{0} :: {1}", windowTitleDefault, showResults);
                             _dialogDocumentFinanceMaster.WindowTitle = _selectRecordWindowTitle;
                         }
                         else
                         {
                             var countResult = XPOSettings.Session.Evaluate(typeof(fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), criteriaOperatorFilter);
-                            string showResults = string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_show_results"), nDocs, countResult);
+                            string showResults = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_show_results"), nDocs, countResult);
                             _selectRecordWindowTitle = string.Format("{0} :: {1}", windowTitleDefault, showResults);
                             _dialogDocumentFinanceMaster.WindowTitle = _selectRecordWindowTitle;
                             _afterFilterTitle = null;
@@ -816,8 +816,8 @@ WHERE
                         }
 
                         // Call Dialog
-                        ResponseType dialogResponse = logicpos.Utils.ShowMessageTouch(_dialogFinanceDocumentsResponse, DialogFlags.Modal, new Size(700, 440), MessageType.Question, ButtonsType.OkCancel, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_question"),
-                            string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_clone_documents_confirmation"), documentList)
+                        ResponseType dialogResponse = logicpos.Utils.ShowMessageTouch(_dialogFinanceDocumentsResponse, DialogFlags.Modal, new Size(700, 440), MessageType.Question, ButtonsType.OkCancel, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_question"),
+                            string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_clone_documents_confirmation"), documentList)
                         );
 
                         if (dialogResponse == ResponseType.Ok)
@@ -830,7 +830,7 @@ WHERE
 
                             //IN009255 Usabilidade - Opção de Copiar Documentos não apresenta mensagem de sucesso ao usuário. 
                             //Mensagem de sucesso clone
-                            logicpos.Utils.ShowMessageTouch(this, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_button_label_clone_document"), CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_operation_successfully"));
+                            logicpos.Utils.ShowMessageTouch(this, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_button_label_clone_document"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_operation_successfully"));
                         }
                     }
                     //SendEmail Documents
@@ -904,7 +904,7 @@ WHERE
 
                     var countResult = XPOSettings.Session.Evaluate(typeof(fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), criteriaCount);
                     string nDocs = _dialogDocumentFinanceMaster.GenericTreeView.DataSource.Count.ToString();
-                    string showResults = string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_show_results"), nDocs, countResult);
+                    string showResults = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_show_results"), nDocs, countResult);
 
                     _dialogDocumentFinanceMaster.WindowTitle = string.Format("{0} :: {1}", windowTitleDefault, showResults);
                     //_dialogDocumentFinanceMaster.WindowTitle = _selectRecordWindowTitle;
@@ -921,7 +921,7 @@ WHERE
 
                     List<string> result = new List<string>();
 
-                    PosReportsQueryDialog dialog = new PosReportsQueryDialog(_dialogFinanceDocumentsResponse, DialogFlags.Modal, _filterChoice, "fin_documentfinancemaster", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_report_filter"));
+                    PosReportsQueryDialog dialog = new PosReportsQueryDialog(_dialogFinanceDocumentsResponse, DialogFlags.Modal, _filterChoice, "fin_documentfinancemaster", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_report_filter"));
                     DialogResponseType response = (DialogResponseType)dialog.Run();
 
                     //IF button Clean Filter Clicked
@@ -935,7 +935,7 @@ WHERE
 
                         var countResult = XPOSettings.Session.Evaluate(typeof(fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), CriteriaOperatorBase);
                         string nDocs = _dialogDocumentFinanceMaster.GenericTreeView.DataSource.Count.ToString();
-                        string showResults = string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_show_results"), nDocs, countResult);
+                        string showResults = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_show_results"), nDocs, countResult);
 
                         _selectRecordWindowTitle = string.Format("{0} :: {1}", windowTitleDefault, showResults);
                         _dialogDocumentFinanceMaster.WindowTitle = _selectRecordWindowTitle;
@@ -972,7 +972,7 @@ WHERE
 
                         var countResult = XPOSettings.Session.Evaluate(typeof(fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), criteriaOperatorFilter);
                         string nDocs = _dialogDocumentFinanceMaster.GenericTreeView.DataSource.Count.ToString();
-                        string showResults = string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_show_results"), nDocs, countResult);
+                        string showResults = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_show_results"), nDocs, countResult);
 
                         _dialogDocumentFinanceMaster.WindowTitle = string.Format("{0} :: {1}", windowTitleDefault, showResults);
                         _afterFilterTitle = _dialogDocumentFinanceMaster.WindowTitle;
@@ -1115,7 +1115,7 @@ WHERE
 
                     //Always refresh TreeView, After Valid Payment
                     parentDialog.GenericTreeView.Refresh();
-                    parentDialog.WindowTitle = _selectRecordWindowTitle;// CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_select_finance_document_cc;
+                    parentDialog.WindowTitle = _selectRecordWindowTitle;// CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_select_finance_document_cc;
                                                                         //Reset Totals
                     TotalDialogFinanceMasterDocuments = 0.0m;
                     //Disable Action Buttons Liquidar(0)/Print(0) after Refresh
@@ -1243,11 +1243,11 @@ WHERE
                 {
                     if (document.SourceOrderMain != null)
                     {
-                        logicpos.Utils.ShowMessageTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_warning_cant_open_title")), string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_dialog_cant_open_document"), document.DocumentNumber));
+                        logicpos.Utils.ShowMessageTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_warning_cant_open_title")), string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_dialog_cant_open_document"), document.DocumentNumber));
                     }
                     else if (!LicenceManagement.IsLicensed || !LicenceManagement.CanPrint)
                     {
-                        logicpos.Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(this, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_printing_function_disabled"));
+                        logicpos.Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_printing_function_disabled"));
                     }
                     else
                     {
@@ -1259,7 +1259,7 @@ WHERE
                 {
                     if (!LicenceManagement.IsLicensed || !LicenceManagement.CanPrint)
                     {
-                        logicpos.Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(this, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_printing_function_disabled"));
+                        logicpos.Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_printing_function_disabled"));
                     }
                     else if (File.Exists(item))
                     {
@@ -1342,7 +1342,7 @@ WHERE
                     pSourceWindow,
                     DialogFlags.Modal,
                     new System.Drawing.Size(800, 640),
-                    CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_send_email"),
+                    CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_send_email"),
                     subject,
                     customerEmail,
                     mailBody,
@@ -1402,7 +1402,7 @@ WHERE
                     pSourceWindow,
                     DialogFlags.Modal,
                     new System.Drawing.Size(800, 640),
-                    CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_send_email"),
+                    CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_send_email"),
                     "Subject",
                     customerEmail,
                     mailBody,
@@ -1555,10 +1555,10 @@ WHERE
                     //Check if Can Cancell Document
                     if (CanCancelFinanceMasterDocument(documentMaster))
                     {
-                        string fileWindowIcon = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_window_input_text_default.png";
+                        string fileWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_input_text_default.png";
 
                         //Call Request Motive Dialog
-                        dialogResponse = logicpos.Utils.GetInputText(pDialog, DialogFlags.Modal, fileWindowIcon, string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_cancel_document_input_text_label"), documentMaster.DocumentNumber), string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtendedForMotive, true);
+                        dialogResponse = logicpos.Utils.GetInputText(pDialog, DialogFlags.Modal, fileWindowIcon, string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_cancel_document_input_text_label"), documentMaster.DocumentNumber), string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtendedForMotive, true);
 
                         if (dialogResponse.ResponseType == ResponseType.Ok)
                         {
@@ -1638,7 +1638,7 @@ WHERE
                                 }
 
                                 _logger.Debug("void PosDocumentFinanceSelectRecordDialog.CallCancelFinanceMasterDocumentsDialog(Window pDialog, List<fin_documentfinancemaster> pListSelectDocuments) :: AT Document Cancellation Process: real time process cancelled by user [" + documentMaster.DocumentNumber + "]");
-                                ignoredDocuments.Add(string.Format("{0} [{1}]", documentMaster.DocumentNumber, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_error_in_at_ws_call_status")));
+                                ignoredDocuments.Add(string.Format("{0} [{1}]", documentMaster.DocumentNumber, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_error_in_at_ws_call_status")));
                             }
                             try
                             {
@@ -1665,7 +1665,7 @@ WHERE
                             documentMaster.Save();
 
                             //Audit
-                           XPOHelper.Audit("FINANCE_DOCUMENT_CANCELLED", string.Format("{0} {1}: {2}", documentMaster.DocumentType.Designation, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_document_cancelled"), documentMaster.DocumentNumber));
+                           XPOHelper.Audit("FINANCE_DOCUMENT_CANCELLED", string.Format("{0} {1}: {2}", documentMaster.DocumentType.Designation, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_document_cancelled"), documentMaster.DocumentNumber));
                         }
                         else
                         {
@@ -1852,7 +1852,7 @@ WHERE
               dialogWorkSessionPeriods = new PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewWorkSessionPeriod>(
                 this,
                 DialogFlags.DestroyWithParent,
-                CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_select_worksession_period_day"),
+                CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_select_worksession_period_day"),
                 GlobalApp.MaxWindowSize,
                 null, //XpoDefaultValue
                 criteriaOperator,
@@ -1985,12 +1985,12 @@ WHERE
 
             //Default ActionArea Buttons
             // IN009223 IN009227
-            //TouchButtonIconWithText buttonMore = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.More, "touchButtonMore_Grey", string.Format(CultureResources.GetCustomResources(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_button_label_more, SettingsApp.PaginationRowsPerPage), fileActionMore);
+            //TouchButtonIconWithText buttonMore = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.More, "touchButtonMore_Grey", string.Format(CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_button_label_more, SettingsApp.PaginationRowsPerPage), fileActionMore);
             //TouchButtonIconWithText buttonFilter = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Filter, "touchButtonFilter_Green", "Filter", fileActionFilter);
             TouchButtonIconWithText buttonClose = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(PosBaseDialogButtonType.Close);
             TouchButtonIconWithText buttonPrintDocument = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(PosBaseDialogButtonType.Print, "touchButtonPrintDocument_Green");
             TouchButtonIconWithText buttonPrintDocumentAs = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(PosBaseDialogButtonType.PrintAs, "touchButtonPrintDocumentAs_Green");
-            TouchButtonIconWithText buttonCancelDocument = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButtonCancelDocument_Green", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_button_label_cancel_document"), _fileActionCancel);
+            TouchButtonIconWithText buttonCancelDocument = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButtonCancelDocument_Green", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_button_label_cancel_document"), _fileActionCancel);
             TouchButtonIconWithText buttonOpenDocument = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(PosBaseDialogButtonType.OpenDocument, "touchButtonOpenDocument_Green");
             TouchButtonIconWithText buttonSendEmailDocument = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(PosBaseDialogButtonType.SendEmailDocument, "touchButtonSendEmailDocument_Green");
             buttonPrintDocument.Sensitive = false;
@@ -2044,9 +2044,9 @@ WHERE
             }
 
 
-            windowTitleDefault = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_document_finance_payment");
+            windowTitleDefault = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_document_finance_payment");
             //NOT IN USE string nDocs = _dialogDocumentFinanceMaster.GenericTreeView.DataSource.Count.ToString();
-            string showResults = string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_show_results"), sqlCountResultTopResults, countResult);
+            string showResults = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_show_results"), sqlCountResultTopResults, countResult);
             _selectRecordWindowTitle = string.Format("{0} :: {1}", windowTitleDefault, showResults);
 
             PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewDocumentFinancePayment>
@@ -2228,7 +2228,7 @@ WHERE
 
                         var countResult = XPOSettings.Session.Evaluate(typeof(fin_documentfinancepayment), CriteriaOperator.Parse("Count()"), criteriaCount);
                         string nDocs = dialog.GenericTreeView.DataSource.Count.ToString();
-                        string showResults = string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_show_results"), nDocs, countResult);
+                        string showResults = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_show_results"), nDocs, countResult);
 
                         _selectRecordWindowTitle = string.Format("{0} :: {1}", windowTitleDefault, showResults);
                         dialog.WindowTitle = _selectRecordWindowTitle;
@@ -2238,7 +2238,7 @@ WHERE
                         //Reset current page to 1 ( Pagination go to defined initialy )
                         dialog.GenericTreeView.CurrentPageNumber = 1;
 
-                        PosReportsQueryDialog dialogPayedDocuments = new PosReportsQueryDialog(dialog, DialogFlags.Modal, ReportsQueryDialogMode.FILTER_PAYMENT_DOCUMENTS, typeof(fin_documentfinancepayment).Name, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_report_filter"));
+                        PosReportsQueryDialog dialogPayedDocuments = new PosReportsQueryDialog(dialog, DialogFlags.Modal, ReportsQueryDialogMode.FILTER_PAYMENT_DOCUMENTS, typeof(fin_documentfinancepayment).Name, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_report_filter"));
                         DialogResponseType response = (DialogResponseType)dialogPayedDocuments.Run();
                         List<string> result = new List<string>();
 
@@ -2257,7 +2257,7 @@ WHERE
 
                             var countResult = XPOSettings.Session.Evaluate(typeof(fin_documentfinancepayment), CriteriaOperator.Parse("Count()"), CriteriaOperatorBase);
                             string nDocs = dialog.GenericTreeView.DataSource.Count.ToString();
-                            string showResults = string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_show_results"), nDocs, countResult);
+                            string showResults = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_show_results"), nDocs, countResult);
                             //Finish Updating Title
                             dialog.WindowTitle = string.Format("{0} :: {1} ", windowTitleDefault, showResults);
                         }
@@ -2299,7 +2299,7 @@ WHERE
 
                             var countResult = XPOSettings.Session.Evaluate(typeof(fin_documentfinancepayment), CriteriaOperator.Parse("Count()"), criteriaOperatorFilter);
                             string nDocs = dialog.GenericTreeView.DataSource.Count.ToString();
-                            string showResults = string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_show_results"), nDocs, countResult);
+                            string showResults = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_show_results"), nDocs, countResult);
                             //Finish Updating Title
                             dialog.WindowTitle = $"{windowTitleDefault} :: {showResults} ";
                         }
@@ -2426,9 +2426,9 @@ WHERE
                 {
                     if (CanCancelFinancePaymentDocument(document))
                     {
-                        string fileWindowIcon = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_window_input_text_default.png";
+                        string fileWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_input_text_default.png";
 
-                        dialogResponse = logicpos.Utils.GetInputText(pDialog, DialogFlags.Modal, fileWindowIcon, string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_cancel_document_input_text_label"), document.PaymentRefNo), string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtendedForMotive, true);
+                        dialogResponse = logicpos.Utils.GetInputText(pDialog, DialogFlags.Modal, fileWindowIcon, string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_cancel_document_input_text_label"), document.PaymentRefNo), string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtendedForMotive, true);
                         if (dialogResponse.ResponseType == ResponseType.Ok)
                         {
                             //_logger.Debug(string.Format("PaymentRefNo:[{0}], DocumentStatusStatus:[{1}], reason:[{2}]", document.PaymentRefNo, document.PaymentStatus, dialogResponse.InputText));
@@ -2440,7 +2440,7 @@ WHERE
                             document.Save();
 
                             //Audit
-                           XPOHelper.Audit("FINANCE_DOCUMENT_CANCELLED", string.Format("{0} {1}: {2}", document.DocumentType.Designation, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_document_cancelled"), document.PaymentRefNo));
+                           XPOHelper.Audit("FINANCE_DOCUMENT_CANCELLED", string.Format("{0} {1}: {2}", document.DocumentType.Designation, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_document_cancelled"), document.PaymentRefNo));
 
                             //Removed Payed BIT to all DocumentPayment Documents (FT and NC)
                             foreach (fin_documentfinancemasterpayment documentPayment in document.DocumentPayment)
@@ -2500,7 +2500,7 @@ WHERE
                 {
                     if (!LicenceManagement.IsLicensed || !LicenceManagement.CanPrint)
                     {
-                        logicpos.Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(this, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_printing_function_disabled"));
+                        logicpos.Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_printing_function_disabled"));
                     }
                     else documents.Add(ProcessFinanceDocument.GenerateDocumentFinancePaymentPDFIfNotExists(document));
                 }
@@ -2509,7 +2509,7 @@ WHERE
                 {
                     if (!LicenceManagement.IsLicensed || !LicenceManagement.CanPrint)
                     {
-                        logicpos.Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(this, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_printing_function_disabled"));
+                        logicpos.Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_printing_function_disabled"));
                     }
                     else if (File.Exists(item))
                     {
@@ -2551,8 +2551,8 @@ WHERE
                     ignoredDocumentsMessage += string.Format("{0}{1}", Environment.NewLine, pIgnoredDocuments[i]);
                 }
 
-                string infoMessage = string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "app_info_show_ignored_cancelled_documents"), ignoredDocumentsMessage);
-                logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(600, 400), MessageType.Info, ButtonsType.Ok, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_information"), infoMessage);
+                string infoMessage = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "app_info_show_ignored_cancelled_documents"), ignoredDocumentsMessage);
+                logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(600, 400), MessageType.Info, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_information"), infoMessage);
             }
         }
 

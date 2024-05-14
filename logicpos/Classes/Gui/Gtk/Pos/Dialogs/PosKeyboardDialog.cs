@@ -32,10 +32,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public PosKeyboardDialog(Window pSourceWindow, DialogFlags pDialogFlags, KeyboardMode pKeyboardMode, string pTextEntry, string pValidationRule) : base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
-            string windowTitle = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_virtual_keyboard");
+            string windowTitle = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_virtual_keyboard");
             Size windowSize = new Size(916, 358);
-            string fileDefaultWindowIcon = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_window_keyboard.png";
-            string fileKeyboardXML = GeneralSettings.Paths["keyboards"] + @"163.xml";
+            string fileDefaultWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_keyboard.png";
+            string fileKeyboardXML = PathsSettings.Paths["keyboards"] + @"163.xml";
 
             //Init Content
             Fixed fixedContent = new Fixed();

@@ -43,27 +43,27 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
             {
-                new GenericTreeViewColumnProperty("Date") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_document_date"), MinWidth = 140 },
-                new GenericTreeViewColumnProperty("DocumentNumber") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_document_number"), MinWidth = 120 }, /* IN009067 */
+                new GenericTreeViewColumnProperty("Date") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_document_date"), MinWidth = 140 },
+                new GenericTreeViewColumnProperty("DocumentNumber") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_document_number"), MinWidth = 120 }, /* IN009067 */
                 //#if (DEBUG)
-                new GenericTreeViewColumnProperty("DocumentStatusStatus") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_document_status"), MinWidth = 50, MaxWidth = 50 },
+                new GenericTreeViewColumnProperty("DocumentStatusStatus") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_document_status"), MinWidth = 50, MaxWidth = 50 },
                 //#endif
                 new GenericTreeViewColumnProperty("EntityName")
                 {
-                    Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_entity"),
+                    Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_entity"),
                     MinWidth = 260,
                     MaxWidth = 260,
                     FormatProvider = new FormatterDecrypt() /* IN009075 - FormatterDecrypt() created */
                 }, /* IN009067 */
                 new GenericTreeViewColumnProperty("EntityFiscalNumber")
                 {
-                    Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_fiscal_number"),
+                    Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_fiscal_number"),
                     MinWidth = 100,
                     FormatProvider = new FormatterDecrypt() /* IN009075 - FormatterDecrypt() created */
                 }, /* IN009067 */
                 new GenericTreeViewColumnProperty("TotalFinal")
                 { /* IN009166 */
-                    Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_total_final"),
+                    Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_total_final"),
                     MinWidth = 100,
                     //Alignment = 1.0F,
                     FormatProvider = new FormatterDecimalCurrency(),
@@ -122,7 +122,7 @@ GROUP BY
             columnProperties.Add(new GenericTreeViewColumnProperty("TotalOfCredit")
             {
                 Query = queryForTotalOfCredit,
-                Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_document_finance_column_total_credit_rc_nc_based"),
+                Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_dialog_document_finance_column_total_credit_rc_nc_based"),
                 MinWidth = 100,
                 //Alignment = 1.0F,
                 FormatProvider = new FormatterDecimalCurrency(),
@@ -267,7 +267,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
             {
                 //This Query Exists 3 Locations, Find it and change in all Locations - Required "GROUP BY fmaOid,fmaTotalFinal" to work with SQLServer
                 Query = queryForTotalDebit,
-                Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "global_debit"),
+                Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_debit"),
                 MinWidth = 100,
                 //Alignment = 1.0F,
                 FormatProvider = new FormatterDecimalCurrency(),
@@ -285,7 +285,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
             columnProperties.Add(new GenericTreeViewColumnProperty("RelatedDocuments")
             {
                 Query = relatedDocumentsQuery,
-                Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_document_finance_column_related_doc"),
+                Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_dialog_document_finance_column_related_doc"),
                 MinWidth = 100
             });
 

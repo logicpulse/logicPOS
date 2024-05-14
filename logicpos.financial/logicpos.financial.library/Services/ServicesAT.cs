@@ -76,16 +76,16 @@ namespace logicpos.financial.service.Objects.Modules.AT
         private static string GetServicesATFilePublicKey(bool pTestMode)
         {
             return (pTestMode)
-                ? string.Format(@"{0}{1}", GeneralSettings.Paths["certificates"], GeneralSettings.Settings["servicesATTestModeFilePublicKey"])
-                : string.Format(@"{0}{1}", GeneralSettings.Paths["certificates"], GeneralSettings.Settings["servicesATProdModeFilePublicKey"])
+                ? string.Format(@"{0}{1}", PathsSettings.Paths["certificates"], GeneralSettings.Settings["servicesATTestModeFilePublicKey"])
+                : string.Format(@"{0}{1}", PathsSettings.Paths["certificates"], GeneralSettings.Settings["servicesATProdModeFilePublicKey"])
             ;
         }
 
         private static string GetServicesATFileCertificate(bool pTestMode)
         {
             return (pTestMode)
-                ? string.Format(@"{0}{1}", GeneralSettings.Paths["certificates"], GeneralSettings.Settings["servicesATTestModeFileCertificate"])
-                : string.Format(@"{0}{1}", GeneralSettings.Paths["certificates"], GeneralSettings.Settings["servicesATProdModeFileCertificate"])
+                ? string.Format(@"{0}{1}", PathsSettings.Paths["certificates"], GeneralSettings.Settings["servicesATTestModeFileCertificate"])
+                : string.Format(@"{0}{1}", PathsSettings.Paths["certificates"], GeneralSettings.Settings["servicesATProdModeFileCertificate"])
             ;
         }
 
@@ -176,9 +176,9 @@ namespace logicpos.financial.service.Objects.Modules.AT
             _wayBillMode = (_documentMaster.DocumentType.WayBill);
 
             //Init WebService parameters and Files
-            _pathSaveSoap = string.Format(@"{0}{1}", GeneralSettings.Paths.GetTempFolderLocation(), "soapsend.xml");
-            _pathSaveSoapResult = string.Format(@"{0}{1}", GeneralSettings.Paths.GetTempFolderLocation(), "soapresult.xml");
-            _pathSaveSoapResultError = string.Format(@"{0}{1}", GeneralSettings.Paths.GetTempFolderLocation(), "soapresult_error.xml");
+            _pathSaveSoap = string.Format(@"{0}{1}", PathsSettings.TempFolderLocation, "soapsend.xml");
+            _pathSaveSoapResult = string.Format(@"{0}{1}", PathsSettings.TempFolderLocation, "soapresult.xml");
+            _pathSaveSoapResultError = string.Format(@"{0}{1}", PathsSettings.TempFolderLocation, "soapresult_error.xml");
             _urlWebService = (!_wayBillMode) ? GetServicesATDCUri(false) : GetServicesATWBUri(testMode, false);
             _urlSoapAction = (!_wayBillMode) ? ServicesATUriDocumentsSOAPAction : ServicesATUriDocumentsWayBillSOAPAction;
             _pathPublicKey = GetServicesATFilePublicKey(testMode);
@@ -202,9 +202,9 @@ namespace logicpos.financial.service.Objects.Modules.AT
             {
                 // Log Paths
                 _logger.Debug(string.Format("Using pathPublicKey: [{0}]", _pathPublicKey));
-                Utils.Log(string.Format("Using pathCertificate: [{0}]", _pathCertificate));
+                FinancialServiceUtils.Log(string.Format("Using pathCertificate: [{0}]", _pathCertificate));
                 // Log Parameters
-                Utils.Log(string.Format("TaxRegistrationNumber :[{0}], AccountFiscalNumber: [{1}], AccountPassword: [{2}]", _atTaxRegistrationNumber, _atAccountFiscalNumber, _atAccountPassword));
+                FinancialServiceUtils.Log(string.Format("TaxRegistrationNumber :[{0}], AccountFiscalNumber: [{1}], AccountPassword: [{2}]", _atTaxRegistrationNumber, _atAccountFiscalNumber, _atAccountPassword));
             }
 
             if (File.Exists(_pathPublicKey) && File.Exists(_pathCertificate))
@@ -434,7 +434,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
             }
 
             //Get Lines Content
-            string sbContentLinesAndDocumentTotals = Utils.GetDocumentContentLinesAndDocumentTotals(_documentMaster);
+            string sbContentLinesAndDocumentTotals = FinancialServiceUtils.GetDocumentContentLinesAndDocumentTotals(_documentMaster);
 
             //Init StringBuilder
             StringBuilder sb = new StringBuilder();
@@ -512,7 +512,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
             if (_increaseDocumentNumber) _documentMaster.IncreaseDocumentNumber();
 
             //Get Lines Content
-            string sbContentLines = Utils.GetDocumentWayBillContentLines(_documentMaster);
+            string sbContentLines = FinancialServiceUtils.GetDocumentWayBillContentLines(_documentMaster);
 
             StringBuilder sb = new StringBuilder();
             //Soap Envelope
@@ -639,15 +639,15 @@ namespace logicpos.financial.service.Objects.Modules.AT
 
         public string Send()
         {
-            Utils.Log(string.Format("urlWebService: {0}", _urlWebService));
-            Utils.Log(string.Format("urlSoapAction: {0}", _urlSoapAction));
-            Utils.Log(string.Format("Send Document DocumentNumber: [{0}]/WayBillMode: [{1}]", _documentMaster.DocumentNumber, _wayBillMode));
+            FinancialServiceUtils.Log(string.Format("urlWebService: {0}", _urlWebService));
+            FinancialServiceUtils.Log(string.Format("urlSoapAction: {0}", _urlSoapAction));
+            FinancialServiceUtils.Log(string.Format("Send Document DocumentNumber: [{0}]/WayBillMode: [{1}]", _documentMaster.DocumentNumber, _wayBillMode));
 
             //Check Certificates
             if (!ValidCerificates)
             {
                 string msg = string.Format("Invalid Certificates: [{0}], [{1}] in current Directory [{2}]", _pathPublicKey, _pathCertificate, Directory.GetCurrentDirectory());
-                Utils.Log(msg);
+                FinancialServiceUtils.Log(msg);
                 return string.Format(msg);
             }
 
@@ -676,7 +676,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
                 X509Certificate2 cert = PluginSettings.SoftwareVendor.ImportCertificate(testMode, _pathCertificate);
 
                 // Output Certificate 
-                Utils.Log(string.Format("Cert Subject: [{0}], NotBefore: [{1}], NotAfter: [{2}]", cert.Subject, cert.NotBefore, cert.NotAfter));
+                FinancialServiceUtils.Log(string.Format("Cert Subject: [{0}], NotBefore: [{1}], NotAfter: [{2}]", cert.Subject, cert.NotBefore, cert.NotAfter));
 
                 request.ClientCertificates.Add(cert);
 
@@ -713,8 +713,8 @@ namespace logicpos.financial.service.Objects.Modules.AT
                 _soapResult = (!_wayBillMode) ? GetSoapResultDC() : GetSoapResultWB();
 
                 //Log
-                Utils.Log(string.Format("Send Document ReturnCode: [{0}]", _soapResult.ReturnCode));
-                Utils.Log(string.Format("Send Document ReturnMessage: [{0}]", _soapResult.ReturnMessage), true);
+                FinancialServiceUtils.Log(string.Format("Send Document ReturnCode: [{0}]", _soapResult.ReturnCode));
+                FinancialServiceUtils.Log(string.Format("Send Document ReturnMessage: [{0}]", _soapResult.ReturnMessage), true);
 
                 //Persist Result in Database
                 PersistResult(_soapResult);
@@ -734,13 +734,13 @@ namespace logicpos.financial.service.Objects.Modules.AT
                     //Save Result Error to File
                     File.WriteAllText(_pathSaveSoapResultError, streamResult);
                     //Log
-                    Utils.Log(string.Format("Send ProtocolError StreamResult: [{0}]", streamResult), true);
+                    FinancialServiceUtils.Log(string.Format("Send ProtocolError StreamResult: [{0}]", streamResult), true);
                     return streamResult;
                 }
                 else
                 {
                     //Log
-                    Utils.Log(string.Format("Exception: [{0}]", ex.Message), true);
+                    FinancialServiceUtils.Log(string.Format("Exception: [{0}]", ex.Message), true);
                     return ex.Message;
                 }
             }

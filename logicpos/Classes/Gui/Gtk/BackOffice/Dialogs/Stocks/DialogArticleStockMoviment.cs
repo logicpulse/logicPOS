@@ -71,7 +71,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 
                 //Supplier
                 CriteriaOperator criteriaOperatorSupplier = CriteriaOperator.Parse("(Supplier = 1)");
-                _entryBoxSelectSupplier = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(this, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_supplier"), "Name", "Oid", (_dataSourceRow as fin_articlestock).Customer, criteriaOperatorSupplier, LogicPOS.Utility.RegexUtils.RegexGuid, true, true);
+                _entryBoxSelectSupplier = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_supplier"), "Name", "Oid", (_dataSourceRow as fin_articlestock).Customer, criteriaOperatorSupplier, LogicPOS.Utility.RegexUtils.RegexGuid, true, true);
                 _entryBoxSelectSupplier.EntryValidation.IsEditable = true;
                 _entryBoxSelectSupplier.EntryValidation.Completion.PopupCompletion = true;
                 _entryBoxSelectSupplier.EntryValidation.Completion.InlineCompletion = false;
@@ -84,7 +84,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                 //_entryBoxSelectSupplier.EntryValidation.Changed += delegate { ValidateDialog(); };
 
                 //DocumentDate
-                _entryBoxDocumentDateIn = new EntryBoxValidationDatePickerDialog(this, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_date"), CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_date"), (_dataSourceRow as fin_articlestock).Date, LogicPOS.Utility.RegexUtils.RegexDate, true, CultureSettings.DateFormat, true);
+                _entryBoxDocumentDateIn = new EntryBoxValidationDatePickerDialog(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_date"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_date"), (_dataSourceRow as fin_articlestock).Date, LogicPOS.Utility.RegexUtils.RegexDate, true, CultureSettings.DateFormat, true);
                 //_entryBoxDocumentDate.EntryValidation.Sensitive = true;
                 _entryBoxDocumentDateIn.EntryValidation.Text = (_dataSourceRow as fin_articlestock).Date.ToString(CultureSettings.DateFormat);
                 _entryBoxDocumentDateIn.EntryValidation.Validate();
@@ -96,9 +96,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 
                 //DocumentNumber
                 Color colorBaseDialogEntryBoxBackground = GeneralSettings.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
-                string _fileIconListFinanceDocuments = GeneralSettings.Paths["images"] + @"Icons\icon_pos_toolbar_finance_document.png";
+                string _fileIconListFinanceDocuments = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_toolbar_finance_document.png";
                 HBox hBoxDocument = new HBox(false, 0);
-                _entryBoxDocumentNumber = new EntryBoxValidation(this, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_document_number"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false, true);
+                _entryBoxDocumentNumber = new EntryBoxValidation(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_document_number"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false, true);
                 if ((_dataSourceRow as fin_articlestock).DocumentNumber != string.Empty) _entryBoxDocumentNumber.EntryValidation.Text = (_dataSourceRow as fin_articlestock).DocumentNumber;
                 //_entryBoxDocumentNumber.EntryValidation.Changed += delegate { ValidateDialog(); };
                 TouchButtonIcon attachPDFButton = new TouchButtonIcon("attachPDFButton", colorBaseDialogEntryBoxBackground, _fileIconListFinanceDocuments, new Size(20, 20), 30, 30);
@@ -108,7 +108,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                 vboxTab3.PackStart(_entryBoxDocumentNumber, false, false, 0);
 
                 //Quantity
-                _entryBoxQuantity = new EntryBoxValidation(this, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_quantity"), KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexDecimal, false, true);
+                _entryBoxQuantity = new EntryBoxValidation(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_quantity"), KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexDecimal, false, true);
                 _entryBoxQuantity.WidthRequest = 40;
                 _entryBoxQuantity.EntryValidation.Text = (_dataSourceRow as fin_articlestock).Quantity.ToString();
                 _entryBoxQuantity.Sensitive = ((_dataSourceRow as fin_articlestock).DocumentMaster == null);
@@ -117,7 +117,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                 vboxTab3.PackStart(_entryBoxQuantity, false, false, 0);
 
                 //Price
-                _entryBoxPrice1 = new EntryBoxValidation(this, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_price"), KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexDecimal, false, true);
+                _entryBoxPrice1 = new EntryBoxValidation(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_price"), KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexDecimal, false, true);
                 _entryBoxPrice1.WidthRequest = 40;
                 _entryBoxPrice1.EntryValidation.Text = (_dataSourceRow as fin_articlestock).PurchasePrice.ToString();
                 _entryBoxPrice1.Sensitive = ((_dataSourceRow as fin_articlestock).DocumentMaster == null);
@@ -164,7 +164,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                     (_dataSourceRow as fin_articlestock).Save();
                     _logger.Debug("Sock Moviment In Changed with sucess");
 
-                    ResponseType responseType = logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.Ok, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "dialog_message_operation_successfully"), string.Format(CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_documentticket_type_title_cs_short"), GeneralSettings.ServerVersion));
+                    ResponseType responseType = logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_operation_successfully"), string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_documentticket_type_title_cs_short"), GeneralSettings.ServerVersion));
                 }
 
             }

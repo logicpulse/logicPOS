@@ -20,7 +20,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public Calendar Calendar { get; set; }
 
         public PosDatePickerDialog(Window pSourceWindow, DialogFlags pDialogFlags)
-            : this(pSourceWindow, pDialogFlags, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_datepicker"), XPOHelper.CurrentDateTimeAtomic())
+            : this(pSourceWindow, pDialogFlags, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_dialog_datepicker"), XPOHelper.CurrentDateTimeAtomic())
         {
         }
 
@@ -30,7 +30,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         }
 
         public PosDatePickerDialog(Window pSourceWindow, DialogFlags pDialogFlags, DateTime pDateTime)
-            : this(pSourceWindow, pDialogFlags, CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "window_title_dialog_datepicker"), pDateTime)
+            : this(pSourceWindow, pDialogFlags, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_dialog_datepicker"), pDateTime)
         {
         }
 
@@ -42,7 +42,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             //Init Local Vars
             string windowTitle = pDialogTitle;
-            string fileDefaultWindowIcon = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_window_date_picker.png";
+            string fileDefaultWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_date_picker.png";
             _windowSize = new Size(600, 373);
 
             //Init Content

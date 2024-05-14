@@ -219,7 +219,7 @@ namespace LogicPOS.Utility
                     //Cut Text
                     result.Text = pValue.Substring(0, pMaxLength);
                 }
-                lengthLabelText = string.Format("{0}: {1}/{2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_characters"), result.Length, pMaxLength);
+                lengthLabelText = string.Format("{0}: {1}/{2}", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_characters"), result.Length, pMaxLength);
             }
             var minWordLengthConsidered = Convert.ToInt16(GeneralSettings.Settings["MinWordLengthConsidered"]);
 
@@ -234,7 +234,7 @@ namespace LogicPOS.Utility
                     result.Words = pMaxWords;
                     result.Text = StringUtils.GetWords(result.Text, pMaxWords);
                 }
-                maxWordsLabelText = string.Format("{0}: {1}/{2}", CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_words"), result.Words, pMaxWords);
+                maxWordsLabelText = string.Format("{0}: {1}/{2}", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_words"), result.Words, pMaxWords);
             }
 
             if (result.Length > 0)

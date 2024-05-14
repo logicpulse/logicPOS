@@ -401,7 +401,7 @@ namespace LogicPOS.Shared.Article
 
                 //Audit
                 XPOHelper.Audit("ORDER_ARTICLE_REMOVED", string.Format(
-                        CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_order_article_removed"),
+                        CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_order_article_removed"),
                         articleDesignation,
                         1,
                         resultRemainQuantity - 1,
@@ -442,7 +442,7 @@ namespace LogicPOS.Shared.Article
                             //Open Table
                             deleteOrderMain.PlaceTable.TableStatus = TableStatus.Free;
                             //Audit
-                            XPOHelper.Audit("TABLE_OPEN", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.GeneralSettings.Settings.GetCultureName(), "audit_message_table_open"), deleteOrderMain.PlaceTable.Designation));
+                            XPOHelper.Audit("TABLE_OPEN", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_table_open"), deleteOrderMain.PlaceTable.Designation));
                             //Delete OrderMain
                             deleteOrderMain.Delete();
                         };

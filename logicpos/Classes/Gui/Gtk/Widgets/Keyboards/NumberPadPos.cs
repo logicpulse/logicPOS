@@ -14,10 +14,10 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             //Init Local Vars
             Size sizeIcon = new Size(28, 28);
-            string icon1 = GeneralSettings.Paths["images"] + @"Icons\icon_pos_numberpad_1_splitaccount.png";
-            string icon2 = GeneralSettings.Paths["images"] + @"Icons\icon_pos_numberpad_2_messages.png";
-            string icon3 = GeneralSettings.Paths["images"] + @"Icons\icon_pos_numberpad_3_gifts.png";
-            string icon4 = GeneralSettings.Paths["images"] + @"Icons\icon_pos_numberpad_4_weight.png";
+            string icon1 = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_numberpad_1_splitaccount.png";
+            string icon2 = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_numberpad_2_messages.png";
+            string icon3 = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_numberpad_3_gifts.png";
+            string icon4 = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_numberpad_4_weight.png";
 
             Color colorFont = Color.Black;
 
@@ -25,10 +25,10 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             Table.Homogeneous = false;
             Table.NColumns = 4;
 
-            TouchButtonIconWithText buttonKeySplitAccount = new TouchButtonIconWithText("buttonKeySplitAccount", colorRightButton, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_split_account"), fontRightButton, colorFont, icon1, sizeIcon, rightButtonWidth, buttonHeight);
-            TouchButtonIconWithText buttonKeyMessages = new TouchButtonIconWithText("buttonKeyMessages", colorRightButton, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_messages"), fontRightButton, colorFont, icon2, sizeIcon, rightButtonWidth, buttonHeight);
-            TouchButtonIconWithText buttonKeyGifts = new TouchButtonIconWithText("buttonKeyGifts", colorRightButton, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_gifts"), fontRightButton, colorFont, icon3, sizeIcon, rightButtonWidth, buttonHeight);
-            TouchButtonIconWithText buttonKeyWeight = new TouchButtonIconWithText("buttonKeyWeight", colorRightButton, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_weight"), fontRightButton, colorFont, icon4, sizeIcon, rightButtonWidth, buttonHeight);
+            TouchButtonIconWithText buttonKeySplitAccount = new TouchButtonIconWithText("buttonKeySplitAccount", colorRightButton, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_split_account"), fontRightButton, colorFont, icon1, sizeIcon, rightButtonWidth, buttonHeight);
+            TouchButtonIconWithText buttonKeyMessages = new TouchButtonIconWithText("buttonKeyMessages", colorRightButton, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_messages"), fontRightButton, colorFont, icon2, sizeIcon, rightButtonWidth, buttonHeight);
+            TouchButtonIconWithText buttonKeyGifts = new TouchButtonIconWithText("buttonKeyGifts", colorRightButton, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_gifts"), fontRightButton, colorFont, icon3, sizeIcon, rightButtonWidth, buttonHeight);
+            TouchButtonIconWithText buttonKeyWeight = new TouchButtonIconWithText("buttonKeyWeight", colorRightButton, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_weight"), fontRightButton, colorFont, icon4, sizeIcon, rightButtonWidth, buttonHeight);
             buttonKeyMessages.Sensitive = false;
             buttonKeyGifts.Sensitive = false;
 

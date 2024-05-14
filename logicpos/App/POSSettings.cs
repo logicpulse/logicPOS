@@ -271,7 +271,7 @@ namespace logicpos.App
                  */
                 result = string.Format(
                     "{0}{1}",
-                    GeneralSettings.Paths["themes"],
+                    PathsSettings.Paths["themes"],
                     string.Format(
                         FileFormatThemeFile
                         , GeneralSettings.AppTheme.ToLower() /* IN008024: Before, from Database :LogicPOS.Settings.AppSettings.PreferenceParameters["APP_THEME"].ToLower() */
@@ -313,7 +313,7 @@ namespace logicpos.App
             {
                 CustomAppOperationMode customAppOperationMode = CustomAppOperationMode.GetAppOperationMode(GeneralSettings.Settings["appOperationModeToken"]);
                         
-                string cultureName = GeneralSettings.Settings.GetCultureName();
+                string cultureName = CultureSettings.CurrentCultureName;
                 string cultureCountryPrefix = cultureName.Substring(0, cultureName.IndexOf('-'));         
 
                 if (demo)

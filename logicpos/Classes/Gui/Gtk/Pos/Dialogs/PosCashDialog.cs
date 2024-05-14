@@ -16,13 +16,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pDialogFlags)
         {
             //Settings
-            string _fileToolbarStartStopWorkSessionPeriodDay = GeneralSettings.Paths["images"] + @"Icons\icon_pos_toolbar_start_stop_worksession_period_day.png";
-            string _fileToolbarCashDrawer = GeneralSettings.Paths["images"] + @"Icons\icon_pos_toolbar_cashdrawer.png";
+            string _fileToolbarStartStopWorkSessionPeriodDay = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_toolbar_start_stop_worksession_period_day.png";
+            string _fileToolbarCashDrawer = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_toolbar_cashdrawer.png";
 
             //Init Local Vars
-            string windowTitle = CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "window_title_dialog_cash");
+            string windowTitle = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_cash");
             Size windowSize = new Size(428, 205);
-            string fileDefaultWindowIcon = GeneralSettings.Paths["images"] + @"Icons\Windows\icon_window_cash_drawer.png";
+            string fileDefaultWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_cash_drawer.png";
 
             Size sizeIcon = new Size(50, 50);
             int buttonWidth = 162;
@@ -30,8 +30,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             uint tablePadding = 15;
 
             //Buttons
-            _touchButtonStartStopWorkSessionPeriodDay = new TouchButtonIconWithText("touchButtonStartStopWorkSessionPeriodDay_Green", _colorBaseDialogDefaultButtonBackground, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "global_worksession_open_day"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileToolbarStartStopWorkSessionPeriodDay, sizeIcon, buttonWidth, buttonHeight);
-            _touchButtonCashDrawer = new TouchButtonIconWithText("touchButtonCashDrawer_Green", _colorBaseDialogDefaultButtonBackground, CultureResources.GetResourceByLanguage(GeneralSettings.Settings.GetCultureName(), "pos_button_label_cashdrawer"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileToolbarCashDrawer, sizeIcon, buttonWidth, buttonHeight) { Sensitive = false };
+            _touchButtonStartStopWorkSessionPeriodDay = new TouchButtonIconWithText("touchButtonStartStopWorkSessionPeriodDay_Green", _colorBaseDialogDefaultButtonBackground, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_worksession_open_day"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileToolbarStartStopWorkSessionPeriodDay, sizeIcon, buttonWidth, buttonHeight);
+            _touchButtonCashDrawer = new TouchButtonIconWithText("touchButtonCashDrawer_Green", _colorBaseDialogDefaultButtonBackground, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "pos_button_label_cashdrawer"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileToolbarCashDrawer, sizeIcon, buttonWidth, buttonHeight) { Sensitive = false };
 
             //Table
             Table table = new Table(1, 1, true);

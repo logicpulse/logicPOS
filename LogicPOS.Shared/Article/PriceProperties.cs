@@ -209,7 +209,7 @@ namespace LogicPOS.Shared.Article
         {
             PropertyInfo[] pis = this.GetType().GetProperties(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public);
 
-            StreamWriter sw = new StreamWriter(string.Format("{0}output.txt", GeneralSettings.Paths.GetTempFolderLocation()), true);
+            StreamWriter sw = new StreamWriter(string.Format("{0}output.txt", PathsSettings.TempFolderLocation), true);
             sw.WriteLine(pLabel);
 
             foreach (PropertyInfo p in pis)
