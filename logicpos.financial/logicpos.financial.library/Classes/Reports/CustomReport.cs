@@ -13,7 +13,6 @@ using logicpos.financial.library.Classes.Reports.BOs.Users;
 using logicpos.shared.Enums;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Shared.CustomDocument;
 using LogicPOS.Utility;
 using Patagames.Pdf.Net;
@@ -69,6 +68,7 @@ namespace logicpos.financial.library.Classes.Reports
                 tempReports = PluginSettings.SoftwareVendor.GetReportFileName(FinancialLibrarySettings.SecretKey, _reportFileName, pTemplateBase);
                 // Override Default Reports FileName
                 _reportFileName = tempReports[0];
+                
             }
 
             //First Load File report
@@ -335,8 +335,8 @@ namespace logicpos.financial.library.Classes.Reports
                             bool exportXls = true;
 
                             if (!PrintingSettings.UsingThermalPrinter) exportXls = false;
-
-                            Application.Run(new logicpos.documentviewer.startDocumentViewer(docPath, widthPDF - 50, heightPDF - 20, exportXls));
+                            
+                            Application.Run(new LogicPOS.PDFViewer.Winforms.PDFViewer(docPath, widthPDF - 50, heightPDF - 20, exportXls));
                         }
                         else
                         {

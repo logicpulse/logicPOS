@@ -141,13 +141,9 @@
       <Project>{42af3be2-44b4-477d-8e45-55c64992b805}</Project>
       <Name>logicpos.datalayer</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\logicpos.documentviewer\logicpos.documentviewer.source\logicpos.documentviewer.source.csproj">
+    <ProjectReference Include="..\..\logicpos.documentviewer\logicpos.documentviewer.source\Patagames.Pdf.WinForms.csproj">
       <Project>{1c688b96-9fcc-465a-9347-1f933c703e21}</Project>
-      <Name>logicpos.documentviewer.source</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\logicpos.documentviewer\logicpos.documentviewer\logicpos.documentviewer.csproj">
-      <Project>{e39a7986-4c2f-4ebe-a31b-59c766150eac}</Project>
-      <Name>logicpos.documentviewer</Name>
+      <Name>Patagames.Pdf.WinForms</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\LogicPOS.DTOs\LogicPOS.DTOs.csproj">
       <Project>{e23bdf58-f0a9-40ac-acce-57235fb7a7f1}</Project>
@@ -172,6 +168,10 @@
     <ProjectReference Include="..\..\logicpos.hardware\logicpos.printer.generic\logicpos.printer.generic.csproj">
       <Project>{692407af-fe0e-4d94-8db1-be8b210017ba}</Project>
       <Name>logicpos.printer.generic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\LogicPOS.PDFViewer\LogicPOS.PDFViewer.Winforms\LogicPOS.PDFViewer.Winforms.csproj">
+      <Project>{e39a7986-4c2f-4ebe-a31b-59c766150eac}</Project>
+      <Name>LogicPOS.PDFViewer.Winforms</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\LogicPOS.Plugin\LogicPOS.Plugin.csproj">
       <Project>{50C2F757-8478-4FD3-8B35-89BC12E7ACA0}</Project>

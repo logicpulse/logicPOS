@@ -11,7 +11,6 @@ using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
-using logicpos.documentviewer;
 using logicpos.financial.library.Classes.Finance;
 using logicpos.financial.library.Classes.Stocks;
 using logicpos.shared.Enums;
@@ -1269,7 +1268,7 @@ WHERE
                             var ScreenSizePDF = GlobalApp.ScreenSize;
                             int widthPDF = ScreenSizePDF.Width;
                             int heightPDF = ScreenSizePDF.Height;
-                            System.Windows.Forms.Application.Run(new startDocumentViewer(docPath, widthPDF - 50, heightPDF - 25, false));
+                            System.Windows.Forms.Application.Run(new LogicPOS.PDFViewer.Winforms.PDFViewer(docPath, widthPDF - 50, heightPDF - 25, false));
                         }
 
                     }
@@ -1665,7 +1664,7 @@ WHERE
                             documentMaster.Save();
 
                             //Audit
-                           XPOHelper.Audit("FINANCE_DOCUMENT_CANCELLED", string.Format("{0} {1}: {2}", documentMaster.DocumentType.Designation, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_document_cancelled"), documentMaster.DocumentNumber));
+                            XPOHelper.Audit("FINANCE_DOCUMENT_CANCELLED", string.Format("{0} {1}: {2}", documentMaster.DocumentType.Designation, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_document_cancelled"), documentMaster.DocumentNumber));
                         }
                         else
                         {
@@ -2440,7 +2439,7 @@ WHERE
                             document.Save();
 
                             //Audit
-                           XPOHelper.Audit("FINANCE_DOCUMENT_CANCELLED", string.Format("{0} {1}: {2}", document.DocumentType.Designation, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_document_cancelled"), document.PaymentRefNo));
+                            XPOHelper.Audit("FINANCE_DOCUMENT_CANCELLED", string.Format("{0} {1}: {2}", document.DocumentType.Designation, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_document_cancelled"), document.PaymentRefNo));
 
                             //Removed Payed BIT to all DocumentPayment Documents (FT and NC)
                             foreach (fin_documentfinancemasterpayment documentPayment in document.DocumentPayment)
@@ -2519,7 +2518,7 @@ WHERE
                             var ScreenSizePDF = GlobalApp.ScreenSize;
                             int widthPDF = ScreenSizePDF.Width;
                             int heightPDF = ScreenSizePDF.Height;
-                            System.Windows.Forms.Application.Run(new startDocumentViewer(docPath, widthPDF - 50, heightPDF - 25, false));
+                            System.Windows.Forms.Application.Run(new LogicPOS.PDFViewer.Winforms.PDFViewer(docPath, widthPDF - 50, heightPDF - 25, false));
                         }
                         else
                         {

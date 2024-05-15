@@ -10,18 +10,17 @@ using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
-using logicpos.documentviewer;
+using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
 using logicpos.financial.library.Classes.Finance;
 using logicpos.financial.library.Classes.Reports;
+using LogicPOS.Globalization;
+using LogicPOS.PDFViewer.Winforms;
+using LogicPOS.Settings;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using LogicPOS.Settings.Extensions;
-using LogicPOS.Globalization;
-using LogicPOS.Settings;
-using logicpos.datalayer.Xpo;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -299,7 +298,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                             var ScreenSizePDF = GlobalApp.ScreenSize;
                             int widthPDF = ScreenSizePDF.Width;
                             int heightPDF = ScreenSizePDF.Height;
-                            System.Windows.Forms.Application.Run(new startDocumentViewer(docPath, widthPDF - 50, heightPDF - 25, false));
+                            System.Windows.Forms.Application.Run(new LogicPOS.PDFViewer.Winforms.PDFViewer(docPath, widthPDF - 50, heightPDF - 25, false));
                         }
 
                     }
@@ -326,13 +325,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                     if (File.Exists(selecteRow.DocumentNumber + ".pdf"))
                     {
-                       if (logicpos.Utils.UsePosPDFViewer() == true)
+                        if (logicpos.Utils.UsePosPDFViewer() == true)
                         {
                             string docPath = string.Format(@"{0}\{1}", Environment.CurrentDirectory, selecteRow.DocumentNumber + ".pdf");
                             var ScreenSizePDF = GlobalApp.ScreenSize;
                             int widthPDF = ScreenSizePDF.Width;
                             int heightPDF = ScreenSizePDF.Height;
-                            System.Windows.Forms.Application.Run(new startDocumentViewer(docPath, widthPDF - 50, heightPDF - 25, false));
+                            System.Windows.Forms.Application.Run(new LogicPOS.PDFViewer.Winforms.PDFViewer(docPath, widthPDF - 50, heightPDF - 25, false));
                         }
                         File.Delete(selecteRow.DocumentNumber + ".pdf");
                     }
@@ -753,13 +752,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                     if (File.Exists(fileToOpen))
                     {
-                      if (logicpos.Utils.UsePosPDFViewer() == true)
+                        if (logicpos.Utils.UsePosPDFViewer() == true)
                         {
                             string docPath = $@"{Environment.CurrentDirectory}\{fileToOpen}";
                             var ScreenSizePDF = GlobalApp.ScreenSize;
                             int widthPDF = ScreenSizePDF.Width;
                             int heightPDF = ScreenSizePDF.Height;
-                            System.Windows.Forms.Application.Run(new startDocumentViewer(docPath, widthPDF - 50, heightPDF - 25, false));
+                            System.Windows.Forms.Application.Run(new LogicPOS.PDFViewer.Winforms.PDFViewer(docPath, widthPDF - 50, heightPDF - 25, false));
                         }
 
                     }
@@ -792,7 +791,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                             var ScreenSizePDF = GlobalApp.ScreenSize;
                             int widthPDF = ScreenSizePDF.Width;
                             int heightPDF = ScreenSizePDF.Height;
-                            System.Windows.Forms.Application.Run(new startDocumentViewer(docPath, widthPDF - 50, heightPDF - 25, false));
+                            System.Windows.Forms.Application.Run(new LogicPOS.PDFViewer.Winforms.PDFViewer(docPath, widthPDF - 50, heightPDF - 25, false));
                         }
                         File.Delete(selecteRow.StockMovimentIn.DocumentNumber + ".pdf");
                     }
