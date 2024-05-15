@@ -2473,13 +2473,13 @@ namespace logicpos
                     INIFile iNIFile = new INIFile(pFileName);
 
                     //Load
-                    LicenseSettings.LicenseHardwareId = CryptorEngine.Decrypt(iNIFile.GetValue("Licence", "HardwareId", "Empresa Demonstração"), true);
-                    LicenseSettings.LicenseCompany = CryptorEngine.Decrypt(iNIFile.GetValue("Licence", "Company", "NIF Demonstração"), true);
-                    LicenseSettings.LicenseNif = CryptorEngine.Decrypt(iNIFile.GetValue("Licence", "Nif", "Morada Demonstração"), true);
-                    LicenseSettings.LicenseAddress = CryptorEngine.Decrypt(iNIFile.GetValue("Licence", "Address", "mail@demonstracao.tld"), true);
-                    LicenseSettings.LicenseEmail = CryptorEngine.Decrypt(iNIFile.GetValue("Licence", "Email", string.Empty), true);
-                    LicenseSettings.LicenseTelephone = CryptorEngine.Decrypt(iNIFile.GetValue("Licence", "Telephone", "Telefone Demonstração"), true);
-                    LicenseSettings.LicenseReseller = CryptorEngine.Decrypt(iNIFile.GetValue("Licence", "Reseller", "LogicPulse"), true);
+                    LicenseSettings.LicenseHardwareId = CryptographyUtils.Decrypt(iNIFile.GetValue("Licence", "HardwareId", "Empresa Demonstração"), true);
+                    LicenseSettings.LicenseCompany = CryptographyUtils.Decrypt(iNIFile.GetValue("Licence", "Company", "NIF Demonstração"), true);
+                    LicenseSettings.LicenseNif = CryptographyUtils.Decrypt(iNIFile.GetValue("Licence", "Nif", "Morada Demonstração"), true);
+                    LicenseSettings.LicenseAddress = CryptographyUtils.Decrypt(iNIFile.GetValue("Licence", "Address", "mail@demonstracao.tld"), true);
+                    LicenseSettings.LicenseEmail = CryptographyUtils.Decrypt(iNIFile.GetValue("Licence", "Email", string.Empty), true);
+                    LicenseSettings.LicenseTelephone = CryptographyUtils.Decrypt(iNIFile.GetValue("Licence", "Telephone", "Telefone Demonstração"), true);
+                    LicenseSettings.LicenseReseller = CryptographyUtils.Decrypt(iNIFile.GetValue("Licence", "Reseller", "LogicPulse"), true);
                     //Test
                     if (pDebug)
                     {

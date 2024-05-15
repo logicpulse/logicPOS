@@ -427,7 +427,6 @@
     <Compile Include="Classes\Logic\Pos\Windows\PosMainWindow.cs" />
     <Compile Include="Classes\Logic\Widgets\Pads\TicketPad.cs" />
     <Compile Include="Classes\Logic\Widgets\TreeView\TicketList.cs" />
-    <Compile Include="Classes\Utils\CryptorEngine.cs" />
     <Compile Include="Classes\Utils\DataLayer.cs" />
     <Compile Include="Classes\Utils\FrameworkCalls.cs" />
     <Compile Include="Classes\Utils\INIFile.cs" />

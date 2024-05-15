@@ -22,6 +22,7 @@ using logicpos.datalayer.Xpo;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using LogicPOS.Utility;
 
 //Note: This component dont have Validation, is used to be the Base XPOEntryBoxSelectRecordValidation 
 //and to be used with CrudWidgetList Validation
@@ -603,7 +604,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             {
                 if(_value != null && _value.Oid == XPOSettings.XpoOidUserRecord)
                 {
-                    pEntry.Text = (value != null) ? CryptorEngine.Decrypt(value.ToString(), true, FinancialLibrarySettings.SecretKey) : "";
+                    pEntry.Text = (value != null) ? CryptographyUtils.Decrypt(value.ToString(), true, FinancialLibrarySettings.SecretKey) : "";
                 }
                 else
                 {

@@ -342,7 +342,7 @@ namespace acme.softwarevendor.plugin
 
             try
             {
-                result = CryptorEngine.Encrypt(toEncrypt, true, AcmeSettings.SecretKey);
+                result = CryptographyUtils.Encrypt(toEncrypt, true, AcmeSettings.SecretKey);
             }
             catch (Exception ex)
             {
@@ -358,7 +358,7 @@ namespace acme.softwarevendor.plugin
 
             try
             {
-                result = CryptorEngine.Decrypt(cipherString, true, AcmeSettings.SecretKey);
+                result = CryptographyUtils.Decrypt(cipherString, true, AcmeSettings.SecretKey);
             }
             catch (Exception ex)
             {

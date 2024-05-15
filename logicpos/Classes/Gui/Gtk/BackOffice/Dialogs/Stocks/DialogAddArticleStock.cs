@@ -436,7 +436,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if (own_customer != null && string.IsNullOrEmpty(own_customer.Name))
                 {
                     //update owner customer for internal stock moviments                        
-                    //own_customer.FiscalNumber = CryptorEngine.Encrypt(GlobalFramework.PreferenceParameters["COMPANY_FISCALNUMBER"], true, SettingsApp.SecretKey);
+                    //own_customer.FiscalNumber = CryptographyUtils.Encrypt(GlobalFramework.PreferenceParameters["COMPANY_FISCALNUMBER"], true, SettingsApp.SecretKey);
                     own_customer.FiscalNumber = GeneralSettings.PreferenceParameters["COMPANY_FISCALNUMBER"];
                     own_customer.Name = GeneralSettings.PreferenceParameters["COMPANY_NAME"];
                     own_customer.Save();
