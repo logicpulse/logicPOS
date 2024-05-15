@@ -2,7 +2,6 @@
 using logicpos;
 using LogicPOS.Plugin.Abstractions;
 using LogicPOS.Settings;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;

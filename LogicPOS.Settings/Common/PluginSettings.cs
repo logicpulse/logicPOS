@@ -36,24 +36,15 @@ namespace LogicPOS.Settings
 
         public static object GetPluginSoftwareVendorValue(string property)
         {
-            object resultObject = null;
-
             if (SoftwareVendor != null)
             {
-                Type thisType = SoftwareVendor.GetType();
-                string methodName = $"Get{property}";
-                MethodInfo methodInfo = thisType.GetMethod(methodName);
-                object[] methodParameters = null;
-                resultObject = methodInfo.Invoke(SoftwareVendor, methodParameters);
+                Type pluginType = SoftwareVendor.GetType();
+                string pluginMethodName = $"Get{property}";
+                MethodInfo methodInfo = pluginType.GetMethod(pluginMethodName);
+                return methodInfo?.Invoke(SoftwareVendor,null);
             }
-            if (resultObject != null)
-            {
-                return resultObject;
-            }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
 
         public static bool HasPlugin => SoftwareVendor != null;
