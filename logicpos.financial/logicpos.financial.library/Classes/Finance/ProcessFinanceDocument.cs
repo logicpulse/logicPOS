@@ -359,7 +359,7 @@ namespace logicpos.financial.library.Classes.Finance
                         if (item.Value.Quantity > 0)
                         {
                             //Get Article
-                            article = (fin_article)uowSession.GetObjectByKey(typeof(fin_article), item.Key.ArticleOid);
+                            article = (fin_article)uowSession.GetObjectByKey(typeof(fin_article), item.Key.ArticleId);
                             //Get VatRate formated for filter, in sql server gives error without this it filters 23,0000 and not 23.0000 resulting in null vatRate
                             string filterVat = LogicPOS.Utility.DataConversionUtils.DecimalToString(item.Key.Vat);
                             string executeSql = string.Format(@"SELECT Oid FROM fin_configurationvatrate WHERE Value = '{0}';", filterVat);
@@ -481,7 +481,7 @@ namespace logicpos.financial.library.Classes.Finance
                                 //Add to PendentPayedParkingTickets
                                 //if (item.Key.ArticleOid.Equals(SettingsApp.XpoOidArticleParkingTicket))
                                 //Get Original Designation from Fresh Object
-                                fin_article articleForDesignation = (fin_article)XPOHelper.GetXPGuidObject(uowSession, typeof(fin_article), item.Key.ArticleOid);
+                                fin_article articleForDesignation = (fin_article)XPOHelper.GetXPGuidObject(uowSession, typeof(fin_article), item.Key.ArticleId);
                                 // Extract Ean from Designation 
                                 string ticketEan = item.Key.Designation
                                     .Replace($"{articleForDesignation.Designation} [", string.Empty)
@@ -589,7 +589,7 @@ namespace logicpos.financial.library.Classes.Finance
                     foreach (var item in pParameters.ArticleBag)
                     {
                         //Get Article
-                        article = (fin_article)uowSession.GetObjectByKey(typeof(fin_article), item.Key.ArticleOid);
+                        article = (fin_article)uowSession.GetObjectByKey(typeof(fin_article), item.Key.ArticleId);
                         if (article.Type.Oid == XPOSettings.XpoOidArticleClassCustomerCard)
                         {
                             customer.CardCredit = customer.CardCredit + item.Value.TotalFinal;

@@ -85,7 +85,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     MaxWidth = 60,
                     Alignment = 1.0F,
                     //TODO: Put to Work for SqlServer else appears has 23.0000 not 23.00
-                    FormatProvider = new FormatterDecimal(),
+                    FormatProvider = new DecimalFormatter(),
                     CellRenderer = new CellRendererText() { Alignment = Pango.Alignment.Right, Xalign = 1.0F, }
                 },
                 /*09*/
@@ -152,7 +152,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     foreach (var item in articleBag)
                     {
                         //Get XPGuidObjects to Assign to Columns
-                        article = (fin_article)XPOHelper.GetXPGuidObject(typeof(fin_article), item.Key.ArticleOid);
+                        article = (fin_article)XPOHelper.GetXPGuidObject(typeof(fin_article), item.Key.ArticleId);
                         configurationVatRate = (fin_configurationvatrate)XPOHelper.GetXPGuidObject(typeof(fin_configurationvatrate),
                           XPOHelper.GetGuidFromQuery(string.Format(@"SELECT Oid FROM fin_configurationvatrate WHERE (Disabled IS NULL OR Disabled  <> 1) AND Value = '{0}';", item.Key.Vat))
                         );
@@ -161,7 +161,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         //);
 
                         //Column Fields
-                        dataRow[0] = item.Key.ArticleOid;
+                        dataRow[0] = item.Key.ArticleId;
                         dataRow[1] = article.Code;                   //Article.Code
                         dataRow[2] = article;                   //Article.Designation
                         dataRow[3] = item.Value.Quantity;

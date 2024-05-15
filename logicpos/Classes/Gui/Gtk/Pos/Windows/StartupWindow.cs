@@ -105,11 +105,11 @@ namespace logicpos
                     //Globals
                     Title = Convert.ToString(theme.Globals.Name);
                     //Objects:LabelVersion
-                    Position labelVersionPosition = Utils.StringToPosition(theme.Objects.LabelVersion.Position);
+                    Point labelVersionPosition = Utils.StringToPosition(theme.Objects.LabelVersion.Position);
                     string labelVersionFont = theme.Objects.LabelVersion.Font;
                     Color labelVersionFontColor = (theme.Objects.LabelVersion.FontColor as string).StringToGdkColor();
                     //Objects:NumberPadPin
-                    Position numberPadPinPosition = Utils.StringToPosition(theme.Objects.NumberPadPin.Position);
+                    Point numberPadPinPosition = Utils.StringToPosition(theme.Objects.NumberPadPin.Position);
                     System.Drawing.Size numberPadPinButtonSize = Utils.StringToSize(theme.Objects.NumberPadPin.ButtonSize);
                     string numberPadPinFont = theme.Objects.NumberPadPin.Font;
                     System.Drawing.Color numberPadPinFontColor = (theme.Objects.NumberPadPin.FontColor as string).StringToColor();
@@ -129,15 +129,15 @@ namespace logicpos
                     //string numberPadPinButtonPasswordResetImageFileName = themeWindow.Objects.NumberPadPin.ButtonPasswordReset.ImageFileName;
 
                     //Objects:TablePadUserButtonPrev
-                    Position tablePadUserButtonPrevPosition = Utils.StringToPosition(theme.Objects.TablePadUser.TablePadUserButtonPrev.Position);
+                    Point tablePadUserButtonPrevPosition = Utils.StringToPosition(theme.Objects.TablePadUser.TablePadUserButtonPrev.Position);
                     System.Drawing.Size tablePadUserButtonPrevSize = Utils.StringToSize(theme.Objects.TablePadUser.TablePadUserButtonPrev.Size);
                     string tablePadUserButtonPrevImageFileName = theme.Objects.TablePadUser.TablePadUserButtonPrev.ImageFileName;
                     //Objects:TablePadUserButtonNext
-                    Position tablePadUserButtonNextPosition = Utils.StringToPosition(theme.Objects.TablePadUser.TablePadUserButtonNext.Position);
+                    Point tablePadUserButtonNextPosition = Utils.StringToPosition(theme.Objects.TablePadUser.TablePadUserButtonNext.Position);
                     System.Drawing.Size tablePadUserButtonNextSize = Utils.StringToSize(theme.Objects.TablePadUser.TablePadUserButtonNext.Size);
                     string tablePadUserButtonNextImageFileName = theme.Objects.TablePadUser.TablePadUserButtonNext.ImageFileName;
                     //Objects:TablePadUser
-                    Position tablePadUserPosition = Utils.StringToPosition(theme.Objects.TablePadUser.Position);
+                    Point tablePadUserPosition = Utils.StringToPosition(theme.Objects.TablePadUser.Position);
                     System.Drawing.Size tablePadUserButtonSize = Utils.StringToSize(theme.Objects.TablePadUser.ButtonSize);
                     TableConfig tablePadUserTableConfig = Utils.StringToTableConfig(theme.Objects.TablePadUser.TableConfig);
                     bool tablePadUserVisible = Convert.ToBoolean(theme.Objects.TablePadUser.Visible);

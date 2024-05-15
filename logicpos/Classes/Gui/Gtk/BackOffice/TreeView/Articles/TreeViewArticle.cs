@@ -47,7 +47,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_total_stock"),
                     MinWidth = 100,
                     //Alignment = 1.0F,
-                    FormatProvider = new FormatterDecimal(),
+                    FormatProvider = new DecimalFormatter(),
                     //CellRenderer = new CellRendererText()
                     //{
                     //    FontDesc = new Pango.FontDescription() { Size = fontGenericTreeViewColumn },

@@ -3,7 +3,7 @@ using System.IO;
 
 namespace logicpos
 {
-    internal class INIFile
+    internal class IniFileParser
     {
         private readonly object _lock = new object();
         internal string FileName { get; private set; }
@@ -14,7 +14,7 @@ namespace logicpos
 
         private bool _cacheModified = false;
 
-        public INIFile(string FileName)
+        public IniFileParser(string FileName)
         {
             Initialize(FileName, false);
         }

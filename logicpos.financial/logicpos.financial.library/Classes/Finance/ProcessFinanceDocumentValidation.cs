@@ -1095,7 +1095,7 @@ namespace logicpos.financial.library.Classes.Finance
                     validationFieldVat = _fieldsArticle[FinanceValidationError.ERROR_FIELD_ARTICLE_VAT_RATE_INVALID];
                     validationFieldVatExemptionReason = _fieldsArticle[FinanceValidationError.ERROR_FIELD_ARTICLE_VAT_EXEMPTION_REASON_INVALID];
                     //Assign current article values to Validation Rules References (Optional), this way code is cleaner, all properties are in ProcessFinanceDocumentValidationField
-                    validationFieldOid.Value = item.Key.ArticleOid;
+                    validationFieldOid.Value = item.Key.ArticleId;
                     validationFieldCode.Value = item.Value.Code;
                     validationFieldDesignation.Value = item.Key.Designation;
                     validationFieldPrice.Value = validationFieldPrice.Value = item.Key.Price;

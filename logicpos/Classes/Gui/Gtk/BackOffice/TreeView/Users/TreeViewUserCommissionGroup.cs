@@ -46,7 +46,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_commission"),
                     MinWidth = 100,
                     //Alignment = 1.0F,
-                    FormatProvider = new FormatterDecimal(),
+                    FormatProvider = new DecimalFormatter(),
                     //CellRenderer = new CellRendererText()
                     //{
                     //    FontDesc = new Pango.FontDescription() { Size = fontGenericTreeViewColumn },

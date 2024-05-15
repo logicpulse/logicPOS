@@ -470,7 +470,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     //Loop ArticleBag, and create new FinanceDetail Document lines
                     foreach (var item in _articleBag)
                     {
-                        ArticleBagKey articleBagKey = new ArticleBagKey(item.Key.ArticleOid, item.Key.Designation, item.Key.Price, item.Key.Discount, item.Key.Vat);
+                        ArticleBagKey articleBagKey = new ArticleBagKey(item.Key.ArticleId, item.Key.Designation, item.Key.Price, item.Key.Discount, item.Key.Vat);
 
                         //Detect and Assign VatExemptionReason to ArticleBak Key
                         if (item.Key.VatExemptionReasonOid != null && item.Key.VatExemptionReasonOid != Guid.Empty)
@@ -480,7 +480,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         if (item.Value.Quantity > 0)
                         {
                             ListStoreModel.AppendValues(
-                            item.Key.ArticleOid,
+                            item.Key.ArticleId,
                             item.Key.Designation,
                             LogicPOS.Utility.DataConversionUtils.DecimalToString(item.Value.PriceFinal),
                             LogicPOS.Utility.DataConversionUtils.DecimalToString(item.Value.Quantity),

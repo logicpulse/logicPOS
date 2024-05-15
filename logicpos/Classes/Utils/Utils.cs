@@ -947,20 +947,12 @@ namespace logicpos
             }
         }
 
-        public static Position StringToPosition(string pPosition)
+        public static Point StringToPosition(string position)
         {
-            string[] splitted = pPosition.Split(',');
-            Position resultPosition = new Position();
-            try
-            {
-                resultPosition = new Position(Convert.ToInt16(splitted[0]), Convert.ToInt16(splitted[1]));
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-                return resultPosition;
-            }
-            return resultPosition;
+            string[] splitted = position.Split(',');
+            short x = Convert.ToInt16(splitted[0]);
+            short y = Convert.ToInt16(splitted[1]);
+            return new Point(x, y);
         }
 
         public static TableConfig StringToTableConfig(string pTableConfig)
@@ -1506,18 +1498,7 @@ namespace logicpos
             }
         }
 
-        public static bool OSHasCulture(string culture)
-        {
-            foreach (CultureInfo ci in CultureInfo.GetCultures(CultureTypes.AllCultures))
-            {
-                if (culture == CultureInfo.CreateSpecificCulture(ci.Name).Name)
-                {
-                    return true;
-                }
-
-            }
-            return false;
-        }
+        
 
         public static Session SessionXPO()
         {
@@ -2470,7 +2451,7 @@ namespace logicpos
                 StreamReader sr = null;
                 try
                 {
-                    INIFile iNIFile = new INIFile(pFileName);
+                    IniFileParser iNIFile = new IniFileParser(pFileName);
 
                     //Load
                     LicenseSettings.LicenseHardwareId = CryptographyUtils.Decrypt(iNIFile.GetValue("Licence", "HardwareId", "Empresa Demonstração"), true);

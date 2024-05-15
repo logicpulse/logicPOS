@@ -42,8 +42,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
             {
-                new GenericTreeViewColumnProperty("Quantity") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_stock_movement"), MinWidth = 100, FormatProvider = new FormatterStockMovement(), },
-                new GenericTreeViewColumnProperty("Date") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_date"), MinWidth = 100, FormatProvider = new FormatterDate(), },
+                new GenericTreeViewColumnProperty("Quantity") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_stock_movement"), MinWidth = 100, FormatProvider = new StockMovementFormatter(), },
+                new GenericTreeViewColumnProperty("Date") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_date"), MinWidth = 100, FormatProvider = new DateFormatter(), },
                 new GenericTreeViewColumnProperty("Customer") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_entity"), ChildName = "Name", DecryptValue = true, MinWidth = 125 },
                 new GenericTreeViewColumnProperty("DocumentNumber") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_document_number"), MinWidth = 125 },
                 new GenericTreeViewColumnProperty("Article") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_article"), ChildName = "Designation", MinWidth = 125 },
@@ -52,7 +52,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_quantity"),
                     MinWidth = 100,
                     //Alignment = 1.0F,
-                    FormatProvider = new FormatterDecimal(),
+                    FormatProvider = new DecimalFormatter(),
                     //CellRenderer = new CellRendererText()
                     //{
                     //    FontDesc = new Pango.FontDescription() { Size = fontGenericTreeViewColumn },

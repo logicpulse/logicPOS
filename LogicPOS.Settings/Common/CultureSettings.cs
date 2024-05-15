@@ -33,6 +33,19 @@ namespace LogicPOS.Settings
         public static Guid USDCurrencyId { get; set; } = new Guid("28d692ad-0083-11e4-96ce-00ff2353398c");
         public static Guid AngolaCountryId { get; set; } = new Guid("9655510a-ff58-461e-9719-c037058f10ed");
 
+        public static bool OSHasCulture(string culture)
+        {
+            foreach (CultureInfo ci in CultureInfo.GetCultures(CultureTypes.AllCultures))
+            {
+                if (culture == CultureInfo.CreateSpecificCulture(ci.Name).Name)
+                {
+                    return true;
+                }
+
+            }
+            return false;
+        }
+
         public static bool CountryIdIsPortugal(Guid countryId)
         {
             return countryId == PortugalCountryId;

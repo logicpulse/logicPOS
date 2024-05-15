@@ -6,7 +6,6 @@ using logicpos.datalayer.Xpo;
 using logicpos.shared.Enums;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Shared.Orders;
 using System;
 using System.Collections.Generic;
@@ -36,13 +35,13 @@ namespace LogicPOS.Shared.Article
 
         //New Override Dictionary EqualityComparer
         public ArticleBag()
-            : base(new ArticleBagKey.EqualityComparer())
+            : base(new ArticleBagKeyEqualityComparer())
         {
             DiscountGlobal = POSSession.GetGlobalDiscount();
         }
 
         public ArticleBag(decimal pDiscountGlobal)
-            : base(new ArticleBagKey.EqualityComparer())
+            : base(new ArticleBagKeyEqualityComparer())
         {
             //Get Discount from Parameter
             DiscountGlobal = pDiscountGlobal;
@@ -304,7 +303,7 @@ namespace LogicPOS.Shared.Article
             {
                 foreach (var item in this)
                 {
-                    article = (fin_article)XPOSettings.Session.GetObjectByKey(typeof(fin_article), item.Key.ArticleOid);
+                    article = (fin_article)XPOSettings.Session.GetObjectByKey(typeof(fin_article), item.Key.ArticleId);
                     if (!result.ContainsKey(article.Class.Acronym))
                     {
                         result.Add(article.Class.Acronym, item.Value.TotalFinal);
@@ -370,7 +369,7 @@ namespace LogicPOS.Shared.Article
                             try
                             {
                                 //Check Equal Key
-                                if (pKey.ArticleOid == detail.Article.Oid && pKey.Price == detail.Price && pKey.Discount == detail.Discount && pKey.Vat == detail.Vat)
+                                if (pKey.ArticleId == detail.Article.Oid && pKey.Price == detail.Price && pKey.Discount == detail.Discount && pKey.Vat == detail.Vat)
                                 {
                                     articleDesignation = pKey.Designation;
                                     resultRemainQuantity += detail.Quantity;
@@ -462,7 +461,7 @@ namespace LogicPOS.Shared.Article
 
                     //SEARCH#001
                     //Require to Remove PartialPayed Items Quantity
-                    return resultRemainQuantity - XPOHelper.GetPartialPaymentPayedItems(uowSession, xDocumentOrderMain.Oid, pKey.ArticleOid);
+                    return resultRemainQuantity - XPOHelper.GetPartialPaymentPayedItems(uowSession, xDocumentOrderMain.Oid, pKey.ArticleId);
                 }
                 catch (Exception ex)
                 {
@@ -658,7 +657,7 @@ namespace LogicPOS.Shared.Article
                                     //Remove PartialPayed Item Quantity from ArticleBag that price was changed
                                     foreach (var article in articleBag)
                                     {
-                                        if (article.Key.ArticleOid == articleBagKey.ArticleOid)
+                                        if (article.Key.ArticleId == articleBagKey.ArticleId)
                                         {
                                             //Remove PartialPayed Item Quantity from ArticleBag
                                             articleBag.Remove(article.Key, Convert.ToDecimal(row.Values[selectedDataDocuments.GetFieldIndex("Quantity")]));

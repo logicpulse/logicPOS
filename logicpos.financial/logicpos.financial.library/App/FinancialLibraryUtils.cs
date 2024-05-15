@@ -338,11 +338,11 @@ namespace logicpos.financial.library.App
                     foreach (var item in pArticleBag)
                     {
                         //Get Total Already Credit Items in this Document
-                        sql = string.Format("SELECT Quantity AS Total FROM fin_documentfinancedetail WHERE DocumentMaster = '{0}' AND Article = '{1}';", pDocumentParent.Oid, item.Key.ArticleOid);
+                        sql = string.Format("SELECT Quantity AS Total FROM fin_documentfinancedetail WHERE DocumentMaster = '{0}' AND Article = '{1}';", pDocumentParent.Oid, item.Key.ArticleId);
                         resultParentDocument = XPOSettings.Session.ExecuteScalar(sql);
                         totalParentDocument = (resultParentDocument != null) ? Convert.ToDecimal(resultParentDocument) : 0.0m;
 
-                        sql = string.Format("SELECT SUM(fdQuantity) AS Total FROM view_documentfinance WHERE ftOid = '{0}' AND fmDocumentParent = '{1}' AND fdArticle = '{2}';", CustomDocumentSettings.CreditNoteDocumentTypeId, pDocumentParent.Oid, item.Key.ArticleOid);
+                        sql = string.Format("SELECT SUM(fdQuantity) AS Total FROM view_documentfinance WHERE ftOid = '{0}' AND fmDocumentParent = '{1}' AND fdArticle = '{2}';", CustomDocumentSettings.CreditNoteDocumentTypeId, pDocumentParent.Oid, item.Key.ArticleId);
                         resultAlreadyCredited = XPOSettings.Session.ExecuteScalar(sql);
                         totalAlreadyCredited = (resultAlreadyCredited != null) ? Convert.ToDecimal(resultAlreadyCredited) : 0.0m;
 
@@ -476,7 +476,7 @@ namespace logicpos.financial.library.App
                 foreach (var item in pArticleBag)
                 {
                     //Get Article
-                    article = (fin_article)XPOSettings.Session.GetObjectByKey(typeof(fin_article), item.Key.ArticleOid);
+                    article = (fin_article)XPOSettings.Session.GetObjectByKey(typeof(fin_article), item.Key.ArticleId);
                     //Assign Required if ArticleClassCustomerCard Detected
                     if (article.Type.Oid == XPOSettings.XpoOidArticleClassCustomerCard
                         && (

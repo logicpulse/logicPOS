@@ -208,7 +208,7 @@ namespace logicpos
             _logger.Debug("void InitUIEventBoxImageLogo(dynamic pThemeWindow) :: Starting..."); /* IN009008 */
             dynamic themeWindow = pThemeWindow;
             //Objects:EventBoxImageLogo
-            Position eventBoxImageLogoPosition = Utils.StringToPosition(themeWindow.Objects.EventBoxImageLogo.Position);
+            Point eventBoxImageLogoPosition = Utils.StringToPosition(themeWindow.Objects.EventBoxImageLogo.Position);
             Size eventBoxImageLogoSize = Utils.StringToSize(themeWindow.Objects.EventBoxImageLogo.Size);
             bool eventBoxImageLogoVisible = Convert.ToBoolean(themeWindow.Objects.EventBoxImageLogo.Visible);
             bool eventBoxImageLogoVisibleWindow = Convert.ToBoolean(themeWindow.Objects.EventBoxImageLogo.VisibleWindow);
@@ -252,7 +252,7 @@ namespace logicpos
             //VARS
 
             //Objects:EventBoxStatusBar1
-            Position eventBoxStatusBar1Position = Utils.StringToPosition(themeWindow.Objects.EventBoxStatusBar1.Position); ;
+            Point eventBoxStatusBar1Position = Utils.StringToPosition(themeWindow.Objects.EventBoxStatusBar1.Position); ;
             Size eventBoxStatusBar1Size = Utils.StringToSize(themeWindow.Objects.EventBoxStatusBar1.Size);
             bool eventBoxStatusBar1Visible = Convert.ToBoolean(themeWindow.Objects.EventBoxStatusBar1.Visible);
             bool eventBoxStatusBar1VisibleWindow = Convert.ToBoolean(themeWindow.Objects.EventBoxStatusBar1.VisibleWindow);
@@ -304,7 +304,7 @@ namespace logicpos
             //VARS
 
             //Objects:EventBoxStatusBar2
-            Position eventBoxStatusBar2Position = Utils.StringToPosition(themeWindow.Objects.EventBoxStatusBar2.Position); ;
+            Point eventBoxStatusBar2Position = Utils.StringToPosition(themeWindow.Objects.EventBoxStatusBar2.Position); ;
             Size eventBoxStatusBar2Size = Utils.StringToSize(themeWindow.Objects.EventBoxStatusBar2.Size);
             bool eventBoxStatusBar2Visible = Convert.ToBoolean(themeWindow.Objects.EventBoxStatusBar2.Visible);
             bool eventBoxStatusBar2VisibleWindow = Convert.ToBoolean(themeWindow.Objects.EventBoxStatusBar2.VisibleWindow);
@@ -390,7 +390,7 @@ namespace logicpos
             //VARS
 
             //Objects:ButtonFavorites
-            Position buttonFavoritesPosition = Utils.StringToPosition(themeWindow.Objects.ButtonFavorites.Position);
+            Point buttonFavoritesPosition = Utils.StringToPosition(themeWindow.Objects.ButtonFavorites.Position);
             Size buttonFavoritesButtonSize = Utils.StringToSize(themeWindow.Objects.ButtonFavorites.ButtonSize);
             string buttonFavoritesImageFileName = themeWindow.Objects.ButtonFavorites.ImageFileName;
             string buttonFavoritesText = themeWindow.Objects.ButtonFavorites.Text;
@@ -415,43 +415,43 @@ namespace logicpos
             //VARS
 
             //Objects:TablePadFamilyButtonPrev
-            Position TablePadFamilyButtonPrevPosition = Utils.StringToPosition(themeWindow.Objects.TablePadFamily.TablePadFamilyButtonPrev.Position);
+            Point TablePadFamilyButtonPrevPosition = Utils.StringToPosition(themeWindow.Objects.TablePadFamily.TablePadFamilyButtonPrev.Position);
             Size TablePadFamilyButtonPrevSize = Utils.StringToSize(themeWindow.Objects.TablePadFamily.TablePadFamilyButtonPrev.Size);
             string TablePadFamilyButtonPrevImageFileName = themeWindow.Objects.TablePadFamily.TablePadFamilyButtonPrev.ImageFileName;
             //Objects:TablePadFamilyButtonNext
-            Position TablePadFamilyButtonNextPosition = Utils.StringToPosition(themeWindow.Objects.TablePadFamily.TablePadFamilyButtonNext.Position);
+            Point TablePadFamilyButtonNextPosition = Utils.StringToPosition(themeWindow.Objects.TablePadFamily.TablePadFamilyButtonNext.Position);
             Size TablePadFamilyButtonNextSize = Utils.StringToSize(themeWindow.Objects.TablePadFamily.TablePadFamilyButtonNext.Size);
             string TablePadFamilyButtonNextImageFileName = themeWindow.Objects.TablePadFamily.TablePadFamilyButtonNext.ImageFileName;
             //Objects:TablePadFamily
-            Position tablePadFamilyPosition = Utils.StringToPosition(themeWindow.Objects.TablePadFamily.Position);
+            Point tablePadFamilyPosition = Utils.StringToPosition(themeWindow.Objects.TablePadFamily.Position);
             Size tablePadFamilyButtonSize = Utils.StringToSize(themeWindow.Objects.TablePadFamily.ButtonSize);
             TableConfig tablePadFamilyTableConfig = Utils.StringToTableConfig(themeWindow.Objects.TablePadFamily.TableConfig);
             bool tablePadFamilyVisible = Convert.ToBoolean(themeWindow.Objects.TablePadFamily.Visible);
 
             //Objects:TablePadSubFamilyButtonPrev
-            Position TablePadSubFamilyButtonPrevPosition = Utils.StringToPosition(themeWindow.Objects.TablePadSubFamily.TablePadSubFamilyButtonPrev.Position);
+            Point TablePadSubFamilyButtonPrevPosition = Utils.StringToPosition(themeWindow.Objects.TablePadSubFamily.TablePadSubFamilyButtonPrev.Position);
             Size TablePadSubFamilyButtonPrevSize = Utils.StringToSize(themeWindow.Objects.TablePadSubFamily.TablePadSubFamilyButtonPrev.Size);
             string TablePadSubFamilyButtonPrevImageFileName = themeWindow.Objects.TablePadSubFamily.TablePadSubFamilyButtonPrev.ImageFileName;
             //Objects:TablePadSubFamilyButtonNext
-            Position TablePadSubFamilyButtonNextPosition = Utils.StringToPosition(themeWindow.Objects.TablePadSubFamily.TablePadSubFamilyButtonNext.Position);
+            Point TablePadSubFamilyButtonNextPosition = Utils.StringToPosition(themeWindow.Objects.TablePadSubFamily.TablePadSubFamilyButtonNext.Position);
             Size TablePadSubFamilyButtonNextSize = Utils.StringToSize(themeWindow.Objects.TablePadSubFamily.TablePadSubFamilyButtonNext.Size);
             string TablePadSubFamilyButtonNextImageFileName = themeWindow.Objects.TablePadSubFamily.TablePadSubFamilyButtonNext.ImageFileName;
             //Objects:TablePadSubFamily
-            Position tablePadSubFamilyPosition = Utils.StringToPosition(themeWindow.Objects.TablePadSubFamily.Position);
+            Point tablePadSubFamilyPosition = Utils.StringToPosition(themeWindow.Objects.TablePadSubFamily.Position);
             Size tablePadSubFamilyButtonSize = Utils.StringToSize(themeWindow.Objects.TablePadSubFamily.ButtonSize);
             TableConfig tablePadSubFamilyTableConfig = Utils.StringToTableConfig(themeWindow.Objects.TablePadSubFamily.TableConfig);
             bool tablePadSubFamilyVisible = Convert.ToBoolean(themeWindow.Objects.TablePadSubFamily.Visible);
 
             //Objects:TablePadArticleButtonPrev
-            Position TablePadArticleButtonPrevPosition = Utils.StringToPosition(themeWindow.Objects.TablePadArticle.TablePadArticleButtonPrev.Position);
+            Point TablePadArticleButtonPrevPosition = Utils.StringToPosition(themeWindow.Objects.TablePadArticle.TablePadArticleButtonPrev.Position);
             Size TablePadArticleButtonPrevSize = Utils.StringToSize(themeWindow.Objects.TablePadArticle.TablePadArticleButtonPrev.Size);
             string TablePadArticleButtonPrevImageFileName = themeWindow.Objects.TablePadArticle.TablePadArticleButtonPrev.ImageFileName;
             //Objects:TablePadArticleButtonNext
-            Position TablePadArticleButtonNextPosition = Utils.StringToPosition(themeWindow.Objects.TablePadArticle.TablePadArticleButtonNext.Position);
+            Point TablePadArticleButtonNextPosition = Utils.StringToPosition(themeWindow.Objects.TablePadArticle.TablePadArticleButtonNext.Position);
             Size TablePadArticleButtonNextSize = Utils.StringToSize(themeWindow.Objects.TablePadArticle.TablePadArticleButtonNext.Size);
             string TablePadArticleButtonNextImageFileName = themeWindow.Objects.TablePadArticle.TablePadArticleButtonNext.ImageFileName;
             //Objects:TablePadArticle
-            Position tablePadArticlePosition = Utils.StringToPosition(themeWindow.Objects.TablePadArticle.Position);
+            Point tablePadArticlePosition = Utils.StringToPosition(themeWindow.Objects.TablePadArticle.Position);
             Size tablePadArticleButtonSize = Utils.StringToSize(themeWindow.Objects.TablePadArticle.ButtonSize);
             TableConfig tablePadArticleTableConfig = Utils.StringToTableConfig(themeWindow.Objects.TablePadArticle.TableConfig);
             bool tablePadArticleVisible = Convert.ToBoolean(themeWindow.Objects.TablePadArticle.Visible);
@@ -602,7 +602,7 @@ namespace logicpos
             dynamic themeWindow = pThemeWindow;
 
             //Objects:EventboxToolbar
-            Position eventboxToolbarPosition = Utils.StringToPosition(themeWindow.Objects.EventboxToolbar.Position);
+            Point eventboxToolbarPosition = Utils.StringToPosition(themeWindow.Objects.EventboxToolbar.Position);
             Size eventboxToolbarSize = Utils.StringToSize(themeWindow.Objects.EventboxToolbar.Size);
             Size eventboxToolbarButtonSize = Utils.StringToSize(themeWindow.Objects.EventboxToolbar.ButtonSize);
             Size eventboxToolbarIconSize = Utils.StringToSize(themeWindow.Objects.EventboxToolbar.IconSize);
@@ -752,7 +752,7 @@ namespace logicpos
             dynamic themeWindow = pThemeWindow;
 
             //Objects:EventBoxPosTicketPad
-            Position eventBoxPosTicketPadPosition = Utils.StringToPosition(themeWindow.Objects.EventBoxPosTicketPad.Position);
+            Point eventBoxPosTicketPadPosition = Utils.StringToPosition(themeWindow.Objects.EventBoxPosTicketPad.Position);
             Size eventBoxPosTicketPadSize = Utils.StringToSize(themeWindow.Objects.EventBoxPosTicketPad.Size);
             Gdk.Color eventBoxPosTicketPadBackgroundColor = (themeWindow.Objects.EventBoxPosTicketPad.BackgroundColor as string).StringToGdkColor();
             bool eventBoxPosTicketPadVisible = Convert.ToBoolean(themeWindow.Objects.EventBoxPosTicketPad.Visible);
@@ -780,7 +780,7 @@ namespace logicpos
             dynamic themeWindow = pThemeWindow;
 
             //Objects:EventBoxPosTicketList
-            Position eventBoxPosTicketListPosition = Utils.StringToPosition(themeWindow.Objects.EventBoxPosTicketList.Position);
+            Point eventBoxPosTicketListPosition = Utils.StringToPosition(themeWindow.Objects.EventBoxPosTicketList.Position);
             Size eventBoxPosTicketListSize = Utils.StringToSize(themeWindow.Objects.EventBoxPosTicketList.Size);
             bool eventBoxPosTicketListVisible = Convert.ToBoolean(themeWindow.Objects.EventBoxPosTicketList.Visible);
             bool eventBoxPosTicketListVisibleWindow = Convert.ToBoolean(themeWindow.Objects.EventBoxPosTicketList.VisibleWindow);

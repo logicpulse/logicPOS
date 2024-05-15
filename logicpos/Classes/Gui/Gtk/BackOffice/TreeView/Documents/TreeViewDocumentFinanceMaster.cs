@@ -53,20 +53,20 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_entity"),
                     MinWidth = 260,
                     MaxWidth = 260,
-                    FormatProvider = new FormatterDecrypt() /* IN009075 - FormatterDecrypt() created */
+                    FormatProvider = new DecryptFormatter() /* IN009075 - FormatterDecrypt() created */
                 }, /* IN009067 */
                 new GenericTreeViewColumnProperty("EntityFiscalNumber")
                 {
                     Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_fiscal_number"),
                     MinWidth = 100,
-                    FormatProvider = new FormatterDecrypt() /* IN009075 - FormatterDecrypt() created */
+                    FormatProvider = new DecryptFormatter() /* IN009075 - FormatterDecrypt() created */
                 }, /* IN009067 */
                 new GenericTreeViewColumnProperty("TotalFinal")
                 { /* IN009166 */
                     Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_total_final"),
                     MinWidth = 100,
                     //Alignment = 1.0F,
-                    FormatProvider = new FormatterDecimalCurrency(),
+                    FormatProvider = new DecimalCurrencyFormatter(),
                     CellRenderer = new CellRendererText()
                     {
                         FontDesc = new Pango.FontDescription() { Size = fontGenericTreeViewColumn },
@@ -125,7 +125,7 @@ GROUP BY
                 Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_dialog_document_finance_column_total_credit_rc_nc_based"),
                 MinWidth = 100,
                 //Alignment = 1.0F,
-                FormatProvider = new FormatterDecimalCurrency(),
+                FormatProvider = new DecimalCurrencyFormatter(),
                 /* IN009067 */
                 CellRenderer = new CellRendererText()
                 {
@@ -270,7 +270,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                 Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_debit"),
                 MinWidth = 100,
                 //Alignment = 1.0F,
-                FormatProvider = new FormatterDecimalCurrency(),
+                FormatProvider = new DecimalCurrencyFormatter(),
                 /* IN009067 */
                 CellRenderer = new CellRendererText()
                 {

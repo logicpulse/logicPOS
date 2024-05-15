@@ -1091,7 +1091,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 {
                     foreach (var item in (_posDocumentFinanceDialog.PagePad.Pages[2] as DocumentFinanceDialogPage3).ArticleBag)
                     {
-                        if ((item.Key as ArticleBagKey).ArticleOid == Guid.Parse(_dataSourceRow[1].ToString()))
+                        if ((item.Key as ArticleBagKey).ArticleId == Guid.Parse(_dataSourceRow[1].ToString()))
                         {
                             if (!string.IsNullOrEmpty(_dataSourceRow["SerialNumber"].ToString()) && (item.Value as ArticleBagProperties).SerialNumber.Contains(_dataSourceRow["SerialNumber"].ToString()) && _dialogMode != DialogMode.Update)
                             {

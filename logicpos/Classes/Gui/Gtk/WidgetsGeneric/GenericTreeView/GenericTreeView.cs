@@ -16,6 +16,7 @@ using logicpos.financial.library.Classes.Stocks;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using LogicPOS.Settings.Extensions;
+using LogicPOS.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {
@@ -299,7 +300,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             if (_showStatusBar)
             {
                 _statusbar = new Statusbar() { HasResizeGrip = false };
-                _statusbar.Push(0, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_statusbar"));
+                _statusbar.Push(0, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_statusbar"));
             };
 
             //1) Add Model to TreeModelFilter
@@ -368,7 +369,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             if (_showStatusBar)
             {
                 _statusbar = new Statusbar() { HasResizeGrip = false };
-                _statusbar.Push(0, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_statusbar"));
+                _statusbar.Push(0, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_statusbar"));
             };
 
             //Navigator
@@ -770,8 +771,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                       DialogFlags.DestroyWithParent | DialogFlags.Modal,
                       MessageType.Question,
                       ButtonsType.YesNo,
-                      CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_dialog_delete_record"),
-                      CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_delete_record"))
+                      CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_delete_record"),
+                      CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_delete_record"))
                     ;
 
                 if (response == ResponseType.Yes)
@@ -847,8 +848,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                     catch (Exception ex)
                     {
                         _logger.Error("void Delete() :: Class '" + _dataSourceRow.GetType().Name + "' : " + ex.Message, ex);
-                        string message = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_delete_record_constraint_violation_exception"), _dataSourceRow.GetType().Name);
-                        logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error"), message);
+                        string message = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_delete_record_constraint_violation_exception"), _dataSourceRow.GetType().Name);
+                        logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"), message);
                     }
                 }
             }
@@ -947,7 +948,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         if (code == "10")
                         {
                             countResult = 1;
-                            code = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_delete_record_show_protected_record"));
+                            code = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_delete_record_show_protected_record"));
                             break;
                         }
                         countResult = (int)XPOSettings.Session.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.pos_configurationplacetable), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Place] = ?", oid));
@@ -962,7 +963,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         if (code == "10")
                         {
                             countResult = 1;
-                            code = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_delete_record_show_protected_record"));
+                            code = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_delete_record_show_protected_record"));
                             break;
                         }
                         countResult = (int)XPOSettings.Session.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_documentordermain), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[PlaceTable] = ?"));
@@ -977,7 +978,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         if (XPOSettings.LoggedTerminal.Oid == oid)
                         {
                             countResult = 1;
-                            code = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_delete_record_show_protected_record")); ;
+                            code = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_delete_record_show_protected_record")); ;
                             break;
                         }
                         /* If logged terminal is referenced on documents */
@@ -1055,7 +1056,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         if (code == "10")
                         {
                             countResult = 1;
-                            code = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_delete_record_show_protected_record")); ;
+                            code = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_delete_record_show_protected_record")); ;
                             break;
                         }
                         /* If Customer type are referenced on Customer */
@@ -1071,7 +1072,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         if (code == "10")
                         {
                             countResult = 1;
-                            code = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_delete_record_show_protected_record")); ;
+                            code = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_delete_record_show_protected_record")); ;
                             break;
                         }
                         /* If Payment Condition is referenced on creted documents*/
@@ -1087,7 +1088,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         if (code == "10")
                         {
                             countResult = 1;
-                            code = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_delete_record_show_protected_record"));
+                            code = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_delete_record_show_protected_record"));
                             break;
                         }
                         /* If Vat Rate is referenced on creted articles / subfamily*/
@@ -1122,7 +1123,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                             case "90":
                             case "300":
                                 countResult = 1;
-                                code = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_delete_record_show_protected_record"));
+                                code = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_delete_record_show_protected_record"));
                                 break;
                             default: break;
                         }
@@ -1163,7 +1164,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                     case "cfg_configurationunitmeasure":
                     case "cfg_configurationunitsize":
                         /* Tables protected records */
-                        code = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_delete_record_show_protected_record"));
+                        code = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_delete_record_show_protected_record"));
                         countResult = 1;
                         break;
 
@@ -1174,8 +1175,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                 {
                     registerHasReferences = true;
 
-                    _logger.Error("void bool CheckItemForReferences() :: '" + _dataSourceRow.GetType().FullName + "' [" + oid + "] : " + CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_delete_record_constraint_violation_exception"));
-                    logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error"), string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_delete_record_show_referenced_record_message"), className, code));
+                    _logger.Error("void bool CheckItemForReferences() :: '" + _dataSourceRow.GetType().FullName + "' [" + oid + "] : " + CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_delete_record_constraint_violation_exception"));
+                    logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"), string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_delete_record_show_referenced_record_message"), className, code));
                 }
                 return registerHasReferences;
             }
@@ -1261,7 +1262,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                                 // Reflection : Get Property from Column.Name and Update its Value with reflection propertyInfo
                                 // This is the Trick to update Column display ResourceString after we Change/Update records
                                 string columnValue = pDataObject.GetType().GetProperty(column.Name).GetValue(pDataObject).ToString();
-                                pDataObject.GetType().GetProperty(column.Name).SetValue(pDataObject, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, columnValue).ToString());
+                                pDataObject.GetType().GetProperty(column.Name).SetValue(pDataObject, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, columnValue).ToString());
                                 if (Debugger.IsAttached)
                                 {
                                     _logger.Debug($"GenericTreeView: Replaced ResourceString column name [{column.Name}] with value [{columnValue}] after Update Record...");
@@ -1269,30 +1270,30 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                                 //IN009296 BackOffice - Mudar o idioma da aplicação
                                 if (columnValue == "prefparam_culture")
                                 {
-                                    string getCultureFromDB;
+                                    string cultureFromDb;
                                     try
                                     {
                                         string sql = "SELECT value FROM cfg_configurationpreferenceparameter where token = 'CULTURE';";
-                                        getCultureFromDB = XPOSettings.Session.ExecuteScalar(sql).ToString();
+                                        cultureFromDb = XPOSettings.Session.ExecuteScalar(sql).ToString();
                                     }
                                     catch
                                     {
-                                        getCultureFromDB = LogicPOS.Settings.CultureSettings.CurrentCultureName;
+                                        cultureFromDb = CultureSettings.CurrentCultureName;
 
                                     }
-                                    if (!logicpos.Utils.OSHasCulture(getCultureFromDB))
+                                    if (CultureSettings.OSHasCulture(cultureFromDb) == false)
                                     {
-                                        LogicPOS.Settings.CultureSettings.CurrentCulture = new System.Globalization.CultureInfo(ConfigurationManager.AppSettings["customCultureResourceDefinition"]);
-                                        LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
+                                        CultureSettings.CurrentCulture = new System.Globalization.CultureInfo(ConfigurationManager.AppSettings["customCultureResourceDefinition"]);
+                                        GeneralSettings.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
                                         CultureResources.UpdateLanguage(ConfigurationManager.AppSettings["customCultureResourceDefinition"]);
                                     }
                                     else
                                     {
-                                        LogicPOS.Settings.CultureSettings.CurrentCulture = new System.Globalization.CultureInfo(getCultureFromDB);
-                                        LogicPOS.Settings.GeneralSettings.Settings["customCultureResourceDefinition"] = getCultureFromDB;
-                                        CultureResources.UpdateLanguage(getCultureFromDB);
+                                        CultureSettings.CurrentCulture = new System.Globalization.CultureInfo(cultureFromDb);
+                                        GeneralSettings.Settings["customCultureResourceDefinition"] = cultureFromDb;
+                                        CultureResources.UpdateLanguage(cultureFromDb);
                                     }
-                                    logicpos.Utils.ShowMessageTouch(GlobalApp.BackOfficeMainWindow, DialogFlags.Modal, new System.Drawing.Size(600, 400), MessageType.Warning, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_language"), string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_culture_change"), LogicPOS.Settings.CultureSettings.CurrentCultureName));
+                                    logicpos.Utils.ShowMessageTouch(GlobalApp.BackOfficeMainWindow, DialogFlags.Modal, new System.Drawing.Size(600, 400), MessageType.Warning, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_language"), string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_culture_change"), CultureSettings.CurrentCultureName));
 
                                 }
                                 //IN009296 ENDS
@@ -1807,8 +1808,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         public void FormatColumnPropertiesForTouch()
         {
             //Settings
-            string fontGenericTreeViewSelectRecordColumnTitle = LogicPOS.Settings.GeneralSettings.Settings["fontGenericTreeViewSelectRecordColumnTitle"];
-            string fontGenericTreeViewSelectRecordColumn = LogicPOS.Settings.GeneralSettings.Settings["fontGenericTreeViewSelectRecordColumn"];
+            string fontGenericTreeViewSelectRecordColumnTitle = GeneralSettings.Settings["fontGenericTreeViewSelectRecordColumnTitle"];
+            string fontGenericTreeViewSelectRecordColumn = GeneralSettings.Settings["fontGenericTreeViewSelectRecordColumn"];
 
             FormatColumnPropertiesForTouch(fontGenericTreeViewSelectRecordColumnTitle, fontGenericTreeViewSelectRecordColumn);
         }

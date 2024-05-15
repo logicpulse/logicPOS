@@ -234,7 +234,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                         // ArticleBagKey
                         ArticleBagKey articleBagKey = new ArticleBagKey(
-                            article.Key.ArticleOid,
+                            article.Key.ArticleId,
                             article.Key.Designation,
                             article.Key.Price,
                             article.Key.Discount,

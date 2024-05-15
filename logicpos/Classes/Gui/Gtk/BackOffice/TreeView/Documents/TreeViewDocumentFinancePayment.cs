@@ -70,7 +70,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_total"),
                 MinWidth = 100,
                 //Alignment = 1.0F,
-                FormatProvider = new FormatterDecimalCurrency(),
+                FormatProvider = new DecimalCurrencyFormatter(),
                 /* IN009067 */
                 CellRenderer = new CellRendererText()
                 {

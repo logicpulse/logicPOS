@@ -292,17 +292,17 @@ namespace logicpos
                 TableConfig tableConfigTablePadArticle = new TableConfig(Convert.ToUInt16(guessedTablePadColumns - 1), Convert.ToUInt16(guessedTablePadRows - 1));
 
                 // After has final sizePosBaseButton
-                Position positionButtonFavorites = new Position(posMainWindowComponentsMargin, (posMainWindowEventBoxStatusBar1And2Height * 2) + posMainWindowComponentsMargin);
-                Position positionTablePadFamily = new Position(posMainWindowComponentsMargin, (posMainWindowEventBoxStatusBar1And2Height * 2) + sizePosBaseButtonSize.Height + posMainWindowComponentsMargin);
-                Position positionTablePadSubFamily = new Position(posMainWindowComponentsMargin + sizePosBaseButtonSize.Width, (posMainWindowEventBoxStatusBar1And2Height * 2) + posMainWindowComponentsMargin);
-                Position positionTablePadArticle = new Position(posMainWindowComponentsMargin + sizePosBaseButtonSize.Width, (posMainWindowEventBoxStatusBar1And2Height * 2) + sizePosBaseButtonSize.Height + posMainWindowComponentsMargin);
+                Point positionButtonFavorites = new Point(posMainWindowComponentsMargin, (posMainWindowEventBoxStatusBar1And2Height * 2) + posMainWindowComponentsMargin);
+                Point positionTablePadFamily = new Point(posMainWindowComponentsMargin, (posMainWindowEventBoxStatusBar1And2Height * 2) + sizePosBaseButtonSize.Height + posMainWindowComponentsMargin);
+                Point positionTablePadSubFamily = new Point(posMainWindowComponentsMargin + sizePosBaseButtonSize.Width, (posMainWindowEventBoxStatusBar1And2Height * 2) + posMainWindowComponentsMargin);
+                Point positionTablePadArticle = new Point(posMainWindowComponentsMargin + sizePosBaseButtonSize.Width, (posMainWindowEventBoxStatusBar1And2Height * 2) + sizePosBaseButtonSize.Height + posMainWindowComponentsMargin);
                 // ButtonNext/Prev
-                Position tablePadFamilyButtonPrevPosition = new Position(posMainWindowComponentsMargin, posMainWindowEventBoxStatusBar1And2Height + posMainWindowComponentsMargin);
-                Position tablePadFamilyButtonNextPosition = new Position(posMainWindowComponentsMargin, (posMainWindowEventBoxStatusBar1And2Height * 2) + (posMainWindowComponentsMargin / 2) + (sizePosBaseButtonSize.Height * guessedTablePadRows) + (posMainWindowComponentsMargin / 2));
-                Position tablePadSubFamilyButtonPrevPosition = new Position(posMainWindowComponentsMargin + (sizePosBaseButtonSize.Width * (guessedTablePadColumns - 1)), tablePadFamilyButtonPrevPosition.Y);
-                Position tablePadSubFamilyButtonNextPosition = new Position(posMainWindowComponentsMargin + (sizePosBaseButtonSize.Width * (guessedTablePadColumns - 1)) + (sizePosBaseButtonSize.Width / 2), tablePadFamilyButtonPrevPosition.Y);
-                Position tablePadArticleButtonPrevPosition = new Position(tablePadSubFamilyButtonPrevPosition.X, tablePadFamilyButtonNextPosition.Y);
-                Position tablePadArticleButtonNextPosition = new Position(tablePadSubFamilyButtonNextPosition.X, tablePadFamilyButtonNextPosition.Y);
+                Point tablePadFamilyButtonPrevPosition = new Point(posMainWindowComponentsMargin, posMainWindowEventBoxStatusBar1And2Height + posMainWindowComponentsMargin);
+                Point tablePadFamilyButtonNextPosition = new Point(posMainWindowComponentsMargin, (posMainWindowEventBoxStatusBar1And2Height * 2) + (posMainWindowComponentsMargin / 2) + (sizePosBaseButtonSize.Height * guessedTablePadRows) + (posMainWindowComponentsMargin / 2));
+                Point tablePadSubFamilyButtonPrevPosition = new Point(posMainWindowComponentsMargin + (sizePosBaseButtonSize.Width * (guessedTablePadColumns - 1)), tablePadFamilyButtonPrevPosition.Y);
+                Point tablePadSubFamilyButtonNextPosition = new Point(posMainWindowComponentsMargin + (sizePosBaseButtonSize.Width * (guessedTablePadColumns - 1)) + (sizePosBaseButtonSize.Width / 2), tablePadFamilyButtonPrevPosition.Y);
+                Point tablePadArticleButtonPrevPosition = new Point(tablePadSubFamilyButtonPrevPosition.X, tablePadFamilyButtonNextPosition.Y);
+                Point tablePadArticleButtonNextPosition = new Point(tablePadSubFamilyButtonNextPosition.X, tablePadFamilyButtonNextPosition.Y);
                 Size sizePosSmallButtonScrollerSize = new Size(Convert.ToInt16(sizePosBaseButtonSize.Width / 2), posMainWindowEventBoxStatusBar1And2Height);
 
                 GlobalApp.ExpressionEvaluator.Variables.Add("posMainWindowBaseButtonSize", sizePosBaseButtonSize);

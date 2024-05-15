@@ -45,7 +45,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 new GenericTreeViewColumnProperty("IsSold") { Title = "Vendido", Expand = false },
                 new GenericTreeViewColumnProperty("Status") { Title = "Estado", Expand = true, MinWidth = 150 },
                 new GenericTreeViewColumnProperty("Article") { ChildName = "IsComposed", Title = "Artigo Composto", Expand = false },
-                new GenericTreeViewColumnProperty("StockMovimentIn") { ChildName = "Date", Title = "Data de Compra", Expand = true, FormatProvider = new FormatterDate() },
+                new GenericTreeViewColumnProperty("StockMovimentIn") { ChildName = "Date", Title = "Data de Compra", Expand = true, FormatProvider = new DateFormatter() },
                 new GenericTreeViewColumnProperty("StockMovimentIn")
                 {
                     Query = "SELECT Name as Result FROM erp_customer WHERE Oid = '{0}';",

@@ -18,19 +18,6 @@ namespace LogicPOS.Utility
         {
             return (pType.IsGenericType && pType.GetGenericTypeDefinition() == typeof(Nullable<>));
         }
-
-        public static bool CreateDirectory(string pPath)
-        {
-            if (Directory.Exists(pPath))
-            {
-                return true;
-            }
-
-            Directory.CreateDirectory(pPath);
-
-            return true;
-        }
-
         public static bool IsRunningOnMono => Type.GetType("Mono.Runtime") != null;
 
         public static void ExecuteExternalProcess(string processFileName)

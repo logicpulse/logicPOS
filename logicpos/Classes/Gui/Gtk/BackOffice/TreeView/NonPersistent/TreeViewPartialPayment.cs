@@ -116,7 +116,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             {
                 //Pagamentos parciais - Escolher valor a pagar por artigo [TK:019295]
                 decimal remainQuantity = item.Value.Quantity;
-                article = (fin_article)XPOHelper.GetXPGuidObject(typeof(fin_article), item.Key.ArticleOid);
+                article = (fin_article)XPOHelper.GetXPGuidObject(typeof(fin_article), item.Key.ArticleId);
                 if (article.Type.HavePrice)
                 {
                     configurationPlace = (pos_configurationplace)XPOHelper.GetXPGuidObject(typeof(pos_configurationplace), item.Value.PlaceOid);
@@ -126,7 +126,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         if (remainQuantity >= 1)
                         {
                             //Column Fields
-                            dataRow[0] = item.Key.ArticleOid;
+                            dataRow[0] = item.Key.ArticleId;
                             dataRow[1] = item.Value.Code;
                             dataRow[2] = item.Key.Designation;
                             dataRow[3] = item.Value.PriceFinal;
@@ -146,7 +146,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         else
                         {
                             //Column Fields
-                            dataRow[0] = item.Key.ArticleOid;
+                            dataRow[0] = item.Key.ArticleId;
                             dataRow[1] = item.Value.Code;
                             dataRow[2] = item.Key.Designation;
                             dataRow[3] = item.Value.PriceFinal * remainQuantity;

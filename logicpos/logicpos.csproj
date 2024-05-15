@@ -149,10 +149,10 @@
     <Compile Include="Classes\Enums\Widgets\MoneyPadMode.cs" />
     <Compile Include="Classes\Enums\Widgets\NumberPadPinMode.cs" />
     <Compile Include="Classes\Enums\Xml\ReplaceType.cs" />
-    <Compile Include="Classes\Formatters\FormatterDate.cs" />
-    <Compile Include="Classes\Formatters\FormatterDecimal.cs" />
-    <Compile Include="Classes\Formatters\FormatterDecimalCurrency.cs" />
-    <Compile Include="Classes\Formatters\FormatterStockMovement.cs" />
+    <Compile Include="Classes\Formatters\DateFormatter.cs" />
+    <Compile Include="Classes\Formatters\DecimalFormatter.cs" />
+    <Compile Include="Classes\Formatters\DecimalCurrencyFormatter.cs" />
+    <Compile Include="Classes\Formatters\StockMovementFormatter.cs" />
     <Compile Include="Classes\Gui\Gtk\BackOffice\Dialogs\Configuration\DialogConfigurationInputReader.cs" />
     <Compile Include="Classes\Gui\Gtk\BackOffice\Dialogs\Configuration\DialogConfigurationPoleDisplay.cs" />
     <Compile Include="Classes\Gui\Gtk\BackOffice\Dialogs\Configuration\DialogConfigurationWeighingMachine .cs" />
@@ -187,7 +187,6 @@
     <Compile Include="Classes\Utils\ExpressionEvaluatorExtended.cs" />
     <Compile Include="Classes\Mutex\SingleProgramInstance.cs" />
     <Compile Include="Classes\Utils\EuropeanVatInformation.cs" />
-    <Compile Include="Classes\Utils\Paths.cs" />
     <Compile Include="Classes\Utils\Win32APIWindowHelper.cs" />
     <Compile Include="Extensions\ColorExtension.cs" />
     <Compile Include="Modules\IStockManagementModule.cs" />
@@ -203,7 +202,7 @@
     <Compile Include="Classes\Enums\TicketList\TicketListColumns.cs" />
     <Compile Include="Classes\Enums\TicketList\TicketListDeleteMode.cs" />
     <Compile Include="Classes\Enums\TicketList\TicketListMode.cs" />
-    <Compile Include="Classes\Formatters\FormatterDecrypt.cs" />
+    <Compile Include="Classes\Formatters\DecryptFormatter.cs" />
     <Compile Include="Classes\Gui\Gtk\BackOffice\Dialogs\Articles\DialogArticleClass.cs" />
     <Compile Include="Classes\Gui\Gtk\BackOffice\Dialogs\Configuration\DialogConfigurationCountry.cs" />
     <Compile Include="Classes\Gui\Gtk\BackOffice\Dialogs\Configuration\DialogConfigurationVatExemptionReason.cs" />
@@ -411,7 +410,6 @@
     <Compile Include="Classes\Gui\Gtk\Widgets\Pads\TablePadUser.cs" />
     <Compile Include="Classes\Gui\Gtk\Widgets\Pads\TicketPad.cs" />
     <Compile Include="Classes\Gui\Gtk\Widgets\TreeView\TicketList.cs" />
-    <Compile Include="Classes\Logic\Others\Position.cs" />
     <Compile Include="Classes\Logic\Others\TableConfig.cs" />
     <Compile Include="Classes\Logic\Pos\Dialogs\PosCashDialog.cs" />
     <Compile Include="Classes\Logic\Pos\Dialogs\PosDocumentFinanceDialog.cs" />
@@ -429,7 +427,7 @@
     <Compile Include="Classes\Logic\Widgets\TreeView\TicketList.cs" />
     <Compile Include="Classes\Utils\DataLayer.cs" />
     <Compile Include="Classes\Utils\FrameworkCalls.cs" />
-    <Compile Include="Classes\Utils\INIFile.cs" />
+    <Compile Include="Classes\Utils\IniFileParser.cs" />
     <Compile Include="Classes\Utils\Utils.cs" />
     <Compile Include="LogicPOSApp.cs" />
     <Compile Include="Classes\Utils\UtilsGraphic.cs" />

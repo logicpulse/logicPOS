@@ -33,7 +33,7 @@ namespace logicpos.Classes.DataLayer
         //Settings
         private static string _backupConnectionString;
         private static string _fileExtension;
-        private static readonly string _pathBackups = PathsSettings.Paths["backups"].ToString();
+        private static readonly string _pathBackups = PathsSettings.BackupsFolderLocation;
         //Private Vars
         private static readonly Size _sizeDialog = new Size(800, 300);
 
@@ -447,7 +447,7 @@ namespace logicpos.Classes.DataLayer
         private static string GetBackupFileName(string pFileExtension, uint pFileVersion, string pFilename)
         {
             //Settings
-            string pathBackups = PathsSettings.Paths["backups"].ToString();
+            string pathBackups = PathsSettings.BackupsFolderLocation;
             string fileDataBaseBackup = POSSettings.FileFormatDataBaseBackup;
             string dateTimeFileFormat = CultureSettings.FileFormatDateTime;
             //Local Vars

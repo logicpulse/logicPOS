@@ -50,6 +50,7 @@
     <Compile Include="Article\ArticleBagKey.cs" />
     <Compile Include="Article\ArticleBagProperties.cs" />
     <Compile Include="Article\ArticleUtils.cs" />
+    <Compile Include="Article\ArticleBagKeyEqualityComparer.cs" />
     <Compile Include="Article\PriceProperties.cs" />
     <Compile Include="Article\TaxBagProperties.cs" />
     <Compile Include="Orders\OrderDetail.cs" />

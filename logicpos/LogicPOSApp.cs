@@ -271,7 +271,7 @@ namespace logicpos
                 //Init PreferenceParameters
                 GeneralSettings.PreferenceParameters = XPOHelper.GetPreferencesParameters();
                 //Init Preferences Path
-                Paths.InitializePathsPrefs();
+                PathsSettings.InitializePreferencesPaths();
 
                 //CultureInfo/Localization
                 string culture = GeneralSettings.PreferenceParameters["CULTURE"];
@@ -495,19 +495,18 @@ namespace logicpos
         private void InitBackupTimerProcess()
         {
             bool xpoCreateDatabaseAndSchema = POSSettings.XPOCreateDatabaseAndSchema;
-            bool validDirectoryBackup = GeneralUtils.CreateDirectory(Convert.ToString(PathsSettings.Paths["backups"]));
-            _logger.Debug("void InitBackupTimerProcess() :: xpoCreateDatabaseAndSchema [ " + xpoCreateDatabaseAndSchema + " ] :: validDirectoryBackup [ " + validDirectoryBackup + " ]");
-
-            //Show Dialog if Cant Create Backups Directory (Extra Protection for Shared Network Folders)
-            if (!validDirectoryBackup)
+            Directory.CreateDirectory(PathsSettings.BackupsFolderLocation);
+            bool backupsFolderExists = Directory.Exists(PathsSettings.BackupsFolderLocation);
+        
+            if (backupsFolderExists == false)
             {
-                ResponseType response = Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, MessageType.Question, ButtonsType.YesNo, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"), string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_error_create_directory_backups"), Convert.ToString(PathsSettings.Paths["backups"])));
+                ResponseType response = Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, MessageType.Question, ButtonsType.YesNo, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"), string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_error_create_directory_backups"), PathsSettings.BackupsFolderLocation));
                 //Enable Quit After BootStrap, Preventing Application.Run()
                 if (response == ResponseType.No) _quitAfterBootStrap = true;
             }
 
             //Start Database Backup Timer if not create XPO Schema and SoftwareVendor is Active
-            if (PluginSettings.HasPlugin && validDirectoryBackup && !xpoCreateDatabaseAndSchema)
+            if (PluginSettings.HasPlugin && backupsFolderExists && xpoCreateDatabaseAndSchema == false)
             {
                 /* IN009163 and IN009164 - Opt to auto-backup flow */
                 _autoBackupFlowIsEnabled = bool.Parse(GeneralSettings.PreferenceParameters["DATABASE_BACKUP_AUTOMATIC_ENABLED"]);

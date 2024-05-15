@@ -68,7 +68,7 @@ namespace logicpos
             {
                 InitializeSettings();
 
-                Paths.InitializePaths();
+                PathsSettings.InitializePaths();
 
                 InitializeGtk();
 
@@ -174,7 +174,7 @@ namespace logicpos
             {
                 string cultureFromDb = GetCultureFromDb();
 
-                if (Utils.OSHasCulture(cultureFromDb) == false)
+                if (CultureSettings.OSHasCulture(cultureFromDb) == false)
                 {
                     CultureSettings.CurrentCulture = new CultureInfo("pt-PT");
                     GeneralSettings.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
@@ -189,7 +189,7 @@ namespace logicpos
             catch
             {
 
-                if (!Utils.OSHasCulture(ConfigurationManager.AppSettings["customCultureResourceDefinition"]))
+                if (CultureSettings.OSHasCulture(ConfigurationManager.AppSettings["customCultureResourceDefinition"]) == false)
                 {
                     CultureSettings.CurrentCulture = new CultureInfo("pt-PT");
                     GeneralSettings.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];

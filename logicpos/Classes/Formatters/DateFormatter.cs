@@ -5,24 +5,12 @@ namespace logicpos.Classes.Formatters
 {
     //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-    public class FormatterDate : IFormatProvider, ICustomFormatter
+    public class DateFormatter : IFormatProvider, ICustomFormatter
     {
-        //Log4Net
-        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public string Format(string format, object arg, IFormatProvider formatProvider)
         {
-            string result = string.Empty; 
-
-            try
-            {
-                result = XPOHelper.DateToString(arg).ToString();
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
-            return result;
+            return XPOHelper.DateToString(arg).ToString();
         }
 
         public object GetFormat(Type formatType)
