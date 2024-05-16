@@ -52,10 +52,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\logicpos.datalayer\logicpos.datalayer.csproj">
-      <Project>{42af3be2-44b4-477d-8e45-55c64992b805}</Project>
-      <Name>logicpos.datalayer</Name>
-    </ProjectReference>
     <ProjectReference Include="..\LogicPOS.Plugin\LogicPOS.Plugin.csproj">
       <Project>{50C2F757-8478-4FD3-8B35-89BC12E7ACA0}</Project>
       <Name>LogicPOS.Plugin</Name>
