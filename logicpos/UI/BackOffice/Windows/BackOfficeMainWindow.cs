@@ -235,7 +235,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 };
                 //_accordionChildDocuments.Add("DocumentsListall", new AccordionNode(CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_worksession_resume_finance_documents")) {  Content = Utils.GetGenericTreeViewXPO<DashBoard>(this) }); ;
                 logicpos.Utils util = new logicpos.Utils();
-                util._accordionChildDocumentsTemp = _accordionChildDocuments;
+                util.AccordionChildDocumentsTemp = _accordionChildDocuments;
                 Dictionary<string, AccordionNode> _accordionChildReports = new Dictionary<string, AccordionNode>
                 {
                     { "DocumentsReports", new AccordionNode(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_reports")) { Clicked = delegate { logicpos.Utils.StartReportsMenuFromBackOffice(this); } } }

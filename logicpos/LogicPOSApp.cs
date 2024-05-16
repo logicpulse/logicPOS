@@ -127,7 +127,7 @@ namespace logicpos
                 DatabaseSettings.DatabaseName = (string.IsNullOrEmpty(configDatabaseName)) ? POSSettings.DatabaseName : configDatabaseName;
                 //Xpo Connection String
                 string xpoConnectionString = string.Format(GeneralSettings.Settings["xpoConnectionString"], DatabaseSettings.DatabaseName.ToLower());
-                Utils.AssignConnectionStringToSettings(xpoConnectionString);
+                DatabaseSettings.AssignConnectionStringToSettings(xpoConnectionString);
 
                 //Removed Protected Files
                 //ProtectedFiles, Before Create Database from Scripts, usefull if Scripts are modified by User

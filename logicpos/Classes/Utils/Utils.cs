@@ -48,56 +48,10 @@ namespace logicpos
     {
         private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        private readonly Hashtable commands = new Hashtable();
+        private readonly Hashtable _commands = new Hashtable();
 
-        public Dictionary<string, AccordionNode> _accordionChildDocumentsTemp = new Dictionary<string, AccordionNode>();
-        public Dictionary<string, AccordionNode> _accordionChildArticlesTemp = new Dictionary<string, AccordionNode>();
-        public Dictionary<string, AccordionNode> _accordionChildCostumersTemp = new Dictionary<string, AccordionNode>();
-        public Dictionary<string, AccordionNode> _accordionChildUsersTemp = new Dictionary<string, AccordionNode>();
-        public Dictionary<string, AccordionNode> _accordionChildOtherTablesTemp = new Dictionary<string, AccordionNode>();
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //DataBase
-
-        public static void AssignConnectionStringToSettings(string pConnectionString)
-        {
-            Dictionary<string, string> connectionStringToDictionary = ConnectionStringToDictionary(pConnectionString);
-
-            switch (DatabaseSettings.DatabaseType)
-            {
-                case DatabaseType.SQLite:
-                case DatabaseType.MonoLite:
-                    break;
-                case DatabaseType.MSSqlServer:
-                    DatabaseSettings.DatabaseServer = connectionStringToDictionary["Data Source"];
-                    DatabaseSettings.DatabaseUser = connectionStringToDictionary["User ID"];
-                    DatabaseSettings.DatabasePassword = connectionStringToDictionary["Password"];
-                    break;
-                case DatabaseType.MySql:
-                    DatabaseSettings.DatabaseServer = connectionStringToDictionary["server"];
-                    DatabaseSettings.DatabaseUser = connectionStringToDictionary["user id"];
-                    DatabaseSettings.DatabasePassword = connectionStringToDictionary["password"];
-                    break;
-            }
-        }
-
-        public static Dictionary<string, string> ConnectionStringToDictionary(string pConnectionString)
-        {
-            try
-            {
-                Dictionary<string, string> connStringParts = pConnectionString.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
-                  .Select(t => t.Split(new char[] { '=' }, 2))
-                  .ToDictionary(t => t[0].Trim(), t => t[1].Trim(), StringComparer.InvariantCultureIgnoreCase);
-
-                return connStringParts;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-                throw;
-            }
-        }
-
+        public Dictionary<string, AccordionNode> AccordionChildDocumentsTemp { get; set; } = new Dictionary<string, AccordionNode>();
+ 
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //ShowMessage Non Touch
@@ -220,14 +174,6 @@ namespace logicpos
             {
                 if (resultResponse != ResponseType.Apply) { dialog.Destroy(); }
             }
-        }
-
-        public static ResponseType ShowMessageTouchUnderConstruction(Window pSourceWindow)
-        {
-            ResponseType responseType = ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_information"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_under_construction_function"));
-            _logger.Debug(string.Format("ShowMessageUnderConstruction(): {0} {1} ", MessageType.Error, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_under_construction_function")));
-            _logger.Debug(string.Format("responseType: [{0}]", responseType));
-            return responseType;
         }
 
         internal static ResponseType ShowMessageTouchErrorPrintingTicket(Gtk.Window pSourceWindow, sys_configurationprinters pPrinter, Exception pEx)
@@ -2371,7 +2317,7 @@ namespace logicpos
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         // Change Widgets Validation Colors
 
-        public static void ValidateUpdateColors(Widget widget, bool validated, params Label[] labels)
+        public static void UpdateWidgetColorsAfterValidation(Widget widget, bool validated, params Label[] labels)
         {
             widget = widget.GetType() == typeof(EntryBoxValidationMultiLine)
                 ? (widget as EntryBoxValidationMultiLine).EntryMultiline.TextView
