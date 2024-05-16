@@ -150,7 +150,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             try
             {
                 int i = 0;
-                var price = Convert.ToDecimal(ListStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price));
+                var price = Convert.ToDecimal(((string)ListStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price)).Replace('.',','));
                 //_listStoreModelSelectedIndex = _currentOrderDetails.Lines.FindLastIndex(item => item.ArticleOid == _currentDetailArticleOid && item.Properties.PriceFinal == _currentDetailArticle.Price1);
                 foreach (var item in CurrentOrderDetails.Lines)
                 {
@@ -184,7 +184,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             {
                 //Get Article defaultQuantity
                 decimal defaultQuantity = GetArticleDefaultQuantity(_currentDetailArticleOid);
-                var price = Convert.ToDecimal(ListStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price));
+                var price = Convert.ToDecimal(((string)ListStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price)).Replace('.',','));
                 //_listStoreModelSelectedIndex = _currentOrderDetails.Lines.FindIndex(item => item.ArticleOid == _currentDetailArticleOid && item.Properties.PriceFinal == _currentDetailArticle.Price1);
                 //foreach (var item in CurrentOrderDetails.Lines)
                 //{
@@ -194,10 +194,10 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 //    }
                 //    i++;
                 //}
-                decimal oldValueQnt = Convert.ToDecimal(ListStoreModel.GetValue(_treeIter, (int)TicketListColumns.Quantity));
-                if (logicpos.Utils.CheckStocks())
+                decimal oldValueQnt = Convert.ToDecimal(((string)ListStoreModel.GetValue(_treeIter, (int)TicketListColumns.Quantity)).Replace('.',','));
+                if (!logicpos.Utils.CheckStocks())
                 {
-                    if (!logicpos.Utils.ShowMessageMinimumStock(SourceWindow, CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].ArticleOid, (oldValueQnt + defaultQuantity)))
+                    if (logicpos.Utils.ShowMessageMinimumStock(SourceWindow, CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].ArticleOid, (oldValueQnt + defaultQuantity)))
                     {
                         ChangeQuantity(oldValueQnt + defaultQuantity);
                         UpdateTicketListButtons();
@@ -258,7 +258,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             {
                 //Get Index of article with correct final price
                 _listStoreModelSelectedIndex = CurrentOrderDetails.Lines.FindIndex(item => item.ArticleOid == (Guid)ListStoreModel.GetValue(_treeIter,
-                    (int)TicketListColumns.ArticleId) && Math.Round(Convert.ToDecimal(item.Properties.PriceFinal), CultureSettings.DecimalRoundTo) == Convert.ToDecimal(ListStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price)));
+                    (int)TicketListColumns.ArticleId));
 
                 decimal oldValueQuantity = CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity;
                 decimal oldValuePrice = CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.PriceFinal;
