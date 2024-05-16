@@ -9,9 +9,6 @@ namespace logicpos
 {
     public class ValidatableTextBox : ValidatableTextBoxBase
     {
-        //Log4Net
-        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
         public Label Label { get; set; }
         public Label Label2 { get; set; }
         public Label Label3 { get; set; }
@@ -31,29 +28,24 @@ namespace logicpos
             set
             {
                 _validated = value;
-                Utils.ValidateUpdateColors(this, Label, _validated, Label2, Label3);
+                Utils.ValidateUpdateColors(this, _validated, Label, Label2, Label3);
             }
         }
 
         //Constructor
         public ValidatableTextBox()
         {
-            try
-            {
-                Validate();
-                Required = false;
-                KeyboardMode = KeyboardMode.None;
+            Validate();
+            Required = false;
+            KeyboardMode = KeyboardMode.None;
 
-                //Events
-                Changed += delegate { Validate(); };
+            //Events
+            Changed += delegate { Validate(); };
 
-                //Get Initial Label Text
-                if (Label != null) LabelText = Label.Text;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
+            //Get Initial Label Text
+            if (Label != null) LabelText = Label.Text;
+
+
         }
 
         public ValidatableTextBox(Window pSourceWindow, KeyboardMode pKeyboardMode, string pRule, bool pRequired)
@@ -87,7 +79,7 @@ namespace logicpos
         {
             //Default FieldValidateValue is the Entry.Text
             _validated = GeneralUtils.Validate(pValue, Rule, Required);
-            Utils.ValidateUpdateColors(this, Label, _validated, Label2, Label3);
+            Utils.ValidateUpdateColors(this, _validated, Label, Label2, Label3);
         }
 
         private void EntryValidation_Changed(object sender, EventArgs e)
