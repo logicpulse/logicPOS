@@ -2314,43 +2314,7 @@ namespace logicpos
             return result;
         }
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        // Change Widgets Validation Colors
 
-        public static void UpdateWidgetColorsAfterValidation(Widget widget, bool validated, params Label[] labels)
-        {
-            widget = widget.GetType() == typeof(EntryBoxValidationMultiLine)
-                ? (widget as EntryBoxValidationMultiLine).EntryMultiline.TextView
-                : widget;
-
-            var validColor = ColorSettings.ValidTextBoxColor.StringToGdkColor();
-            var invalidColor = ColorSettings.InvalidTextBoxColor.StringToGdkColor();
-            var validBackgroundColor = ColorSettings.ValidTextBoxBackgroundColor.StringToGdkColor();
-            var invalidBackgroundColor = ColorSettings.InvalidTextBoxBackgroundColor.StringToGdkColor();
-
-            if (validated)
-            {
-                widget.ModifyText(StateType.Normal, validColor);
-                widget.ModifyText(StateType.Active, validColor);
-                widget.ModifyBase(StateType.Normal, validBackgroundColor);
-
-                foreach(var label in labels)
-                {
-                    label.ModifyFg(StateType.Normal, validColor);
-                }
-            
-                return;
-            }
-
-            widget.ModifyText(StateType.Normal, invalidColor);
-            widget.ModifyText(StateType.Active, invalidColor);
-            widget.ModifyBase(StateType.Normal, invalidBackgroundColor);
-
-            foreach (var label in labels)
-            {
-                label.ModifyFg(StateType.Normal, invalidColor);
-            }
-        }
 
         //TK016235 BackOffice - Mode
         public static void StartReportsMenuFromBackOffice(Window pSourceWindow)

@@ -14,6 +14,7 @@ using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using logicpos.datalayer.Xpo;
 using LogicPOS.Settings;
+using LogicPOS.UI;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -184,7 +185,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             EntryBoxSelectConfigurationCurrency.ButtonSelectValue.Sensitive = EntryPaymentAmount.EntryValidation.Validated;
 
             /* IN009183 */
-            logicpos.Utils.UpdateWidgetColorsAfterValidation(EntryPaymentAmount.EntryValidation, (_validated && _diference >= 0), EntryPaymentAmount.Label);
+            GtkUtils.UpdateWidgetColorsAfterValidation(EntryPaymentAmount.EntryValidation, (_validated && _diference >= 0), EntryPaymentAmount.Label);
             //_entryPaymentAmount.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.DecimalToString(_paymentAmountEntry, LogicPOS.Settings.CultureSettings.CurrentCulture, SettingsApp.DecimalFormat); //LogicPOS.Utility.DataConversionUtils.DecimalToString(_paymentAmountEntry);
             // _paymentAmountEntry = Math.Round(_paymentAmountEntry, decimalRoundTo);
 
