@@ -427,7 +427,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         private void _entryBoxCountry_EntryValidation_FocusGrabbed(object sender, EventArgs e)
         {
-            EntryValidation entryValidation = (EntryValidation)sender;
+            ValidatableTextBox entryValidation = (ValidatableTextBox)sender;
             //Initialize Country DeafultValue
             cfg_configurationcountry defaultValue = (Customer.Country != null)
               ? Customer.Country

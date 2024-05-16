@@ -23,7 +23,6 @@ using logicpos.financial.library.Classes.Finance;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Utility;
 using System;
 using System.Collections;
@@ -855,83 +854,7 @@ namespace logicpos
             return pImage;
         }
 
-        //Draw RoundedCornerRectangles in graphics
-        public static void DrawRoundedRectangle(Graphics pGraphics, Rectangle pBounds, int pCornerRadius, Pen pDrawPen, Color pFillColor)
-        {
-            int strokeOffset = Convert.ToInt32(Math.Ceiling(pDrawPen.Width));
-            pBounds = Rectangle.Inflate(pBounds, -strokeOffset, -strokeOffset);
-
-            pDrawPen.EndCap = pDrawPen.StartCap = LineCap.Round;
-
-            GraphicsPath graphicsPath = new GraphicsPath();
-
-            if (pCornerRadius > 0)
-            {
-                graphicsPath.AddArc(pBounds.X, pBounds.Y, pCornerRadius, pCornerRadius, 180, 90);
-                graphicsPath.AddArc(pBounds.X + pBounds.Width - pCornerRadius, pBounds.Y, pCornerRadius, pCornerRadius, 270, 90);
-                graphicsPath.AddArc(pBounds.X + pBounds.Width - pCornerRadius, pBounds.Y + pBounds.Height - pCornerRadius, pCornerRadius, pCornerRadius, 0, 90);
-                graphicsPath.AddArc(pBounds.X, pBounds.Y + pBounds.Height - pCornerRadius, pCornerRadius, pCornerRadius, 90, 90);
-            }
-            graphicsPath.CloseAllFigures();
-
-            pGraphics.FillPath(new SolidBrush(pFillColor), graphicsPath);
-            pGraphics.DrawPath(pDrawPen, graphicsPath);
-        }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Multimedia
-
-        public static void ButtonSoundClick()
-        {
-            System.Diagnostics.Process proc = new System.Diagnostics.Process();
-            proc.EnableRaisingEvents = false;
-            proc.StartInfo.FileName = "aplay";
-            //TODO: Put Sound in config
-            proc.StartInfo.Arguments = "-t wav " + PathsSettings.Paths["sounds"] + @"Clicks\button2.wav";
-            proc.Start();
-        }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        // TypeConverter
-
-        public static Gdk.Color StringToGTKColor(string pColor)
-        {
-            Gdk.Color result = new Gdk.Color(255, 0, 0);
-            try
-            {
-                string[] splitted = pColor.Split(',');
-
-                try
-                {
-                    result = new Gdk.Color(Convert.ToByte(splitted[0]), Convert.ToByte(splitted[1]), Convert.ToByte(splitted[2]));
-                }
-                catch (Exception ex)
-                {
-                    _logger.Error(ex.Message, ex);
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
-            return (result);
-        }
-
-        //Converts a Size to String using TypeConverter, used to Store values in Appsettings
-        public static string SizeToString(Size pSize)
-        {
-            try
-            {
-                TypeConverter converter = TypeDescriptor.GetConverter(typeof(Size));
-                return converter.ConvertToInvariantString(pSize);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-                return "0, 0";
-            }
-        }
-
+      
         //Converts a String to Size using TypeConverter, used to Store values in Appsettings
         public static Size StringToSize(string pSize)
         {
@@ -971,44 +894,12 @@ namespace logicpos
             return resultTableConfig;
         }
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Screen Shoots
-
-        public static Gdk.Pixbuf ScreenCapture()
-        {
-            string tempPath = Convert.ToString(PathsSettings.TempFolderLocation);
-
-            Gdk.Window window = Gdk.Global.DefaultRootWindow;
-            if (window != null)
-            {
-                Gdk.Pixbuf pixBuf = new Gdk.Pixbuf(Gdk.Colorspace.Rgb, false, 8, window.Screen.Width, window.Screen.Height);
-                pixBuf.GetFromDrawable(window, Gdk.Colormap.System, 0, 0, 0, 0, window.Screen.Width, window.Screen.Height);
-                pixBuf.SaturateAndPixelate(pixBuf, 0.025F, false);
-                pixBuf.ScaleSimple(400, 300, Gdk.InterpType.Bilinear);
-                pixBuf.Save(tempPath + "screenshoot.png", "png");
-                return pixBuf;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //UnicodeHexadecimal 00C1
-
         public static char UnicodeHexadecimalStringToChar(string pInput)
         {
             char result = (char)int.Parse(pInput, NumberStyles.HexNumber);
             return result;
         }
 
-        //UnicodeJavascript \u00C1
-        public static char UnicodeJavascriptStringToChar(string pInput)
-        {
-            char result = (char)int.Parse(pInput.Substring(2), NumberStyles.HexNumber);
-            return result;
-        }
 
         //Check if is letter with RegEx, better than Char.IsLetter that returns º and ª too
         public static bool IsLetter(char input)
@@ -1017,63 +908,6 @@ namespace logicpos
             Regex regex = new Regex(pattern);
             return regex.IsMatch(Convert.ToString(input));
         }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Reflection - Not Used but Maybe Usefull
-
-        public static FieldInfo[] GetFieldInfosIncludingBaseClasses(Type pType)
-        {
-            BindingFlags bindingFlags = BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public;
-            return GetFieldInfosIncludingBaseClasses(pType, bindingFlags);
-        }
-
-        public static FieldInfo[] GetFieldInfosIncludingBaseClasses(Type pType, BindingFlags pBindingFlags)
-        {
-            FieldInfo[] fieldInfo = pType.GetFields(pBindingFlags);
-
-            // If this class doesn't have a base, don't waste any time
-            if (pType.BaseType == typeof(object))
-            {
-                return fieldInfo;
-            }
-            else
-            { // Otherwise, collect all types up to the furthest base class
-                var fieldInfoList = new List<FieldInfo>(fieldInfo);
-                while (pType.BaseType != typeof(object))
-                {
-                    pType = pType.BaseType;
-                    fieldInfo = pType.GetFields(pBindingFlags);
-
-                    // Look for fields we do not have listed yet and merge them into the main list
-                    for (int index = 0; index < fieldInfo.Length; ++index)
-                    {
-                        bool found = false;
-
-                        for (int searchIndex = 0; searchIndex < fieldInfoList.Count; ++searchIndex)
-                        {
-                            bool match =
-                                (fieldInfoList[searchIndex].DeclaringType == fieldInfo[index].DeclaringType) &&
-                                (fieldInfoList[searchIndex].Name == fieldInfo[index].Name);
-
-                            if (match)
-                            {
-                                found = true;
-                                break;
-                            }
-                        }
-
-                        if (!found)
-                        {
-                            fieldInfoList.Add(fieldInfo[index]);
-                        }
-                    }
-                }
-                return fieldInfoList.ToArray();
-            }
-        }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //FileFilters
 
         public static FileFilter GetFileFilterImages()
         {
@@ -1184,41 +1018,6 @@ namespace logicpos
             filter.AddPattern("*.xls");
             filter.AddPattern("*.xlsx");
             return filter;
-        }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Localization
-
-        //Test with Utils.ShowCultureInfo(LogicPOS.Settings.CultureSettings.CurrentCulture.ToString());
-        public static void ShowCultureInfo(string pCulture)
-        {
-            // Creates and initializes the CultureInfo which uses the international sort.
-            CultureInfo myCIintl = new CultureInfo(pCulture, false);
-
-            // Creates and initializes the CultureInfo which uses the traditional sort.
-            CultureInfo myCItrad = new CultureInfo(0x040A, false);
-
-            // Displays the properties of each culture.
-
-            _logger.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "PROPERTY", "INTERNATIONAL", "TRADITIONAL"));
-            _logger.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "CompareInfo", myCIintl.CompareInfo, myCItrad.CompareInfo));
-            _logger.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "DisplayName", myCIintl.DisplayName, myCItrad.DisplayName));
-            _logger.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "EnglishName", myCIintl.EnglishName, myCItrad.EnglishName));
-            _logger.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "IsNeutralCulture", myCIintl.IsNeutralCulture, myCItrad.IsNeutralCulture));
-            _logger.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "IsReadOnly", myCIintl.IsReadOnly, myCItrad.IsReadOnly));
-            _logger.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "LCID", myCIintl.LCID, myCItrad.LCID));
-            _logger.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "Name", myCIintl.Name, myCItrad.Name));
-            _logger.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "NativeName", myCIintl.NativeName, myCItrad.NativeName));
-            _logger.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "Parent", myCIintl.Parent, myCItrad.Parent));
-            _logger.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "TextInfo", myCIintl.TextInfo, myCItrad.TextInfo));
-            _logger.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "ThreeLetterISOLanguageName", myCIintl.ThreeLetterISOLanguageName, myCItrad.ThreeLetterISOLanguageName));
-            _logger.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "ThreeLetterWindowsLanguageName", myCIintl.ThreeLetterWindowsLanguageName, myCItrad.ThreeLetterWindowsLanguageName));
-            _logger.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "TwoLetterISOLanguageName", myCIintl.TwoLetterISOLanguageName, myCItrad.TwoLetterISOLanguageName));
-            _logger.Debug("");
-            // Compare two strings using myCIintl.
-            _logger.Debug("Comparing \"llegar\" and \"lugar\"");
-            _logger.Debug(string.Format("   With myCIintl.CompareInfo.Compare: {0}", myCIintl.CompareInfo.Compare("llegar", "lugar")));
-            _logger.Debug(string.Format("   With myCItrad.CompareInfo.Compare: {0}", myCItrad.CompareInfo.Compare("llegar", "lugar")));
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -1413,48 +1212,6 @@ namespace logicpos
             return supportedScreenSizeEnum;
         }
 
-        public static EventBox GetMinimizeEventBox()
-        {
-
-            string _fileDefaultWindowIconMinimize = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_window_minimize.png";
-            EventBox result = null;
-
-            try
-            {
-                Gdk.Pixbuf pixbufIconWindowMinimize = new Gdk.Pixbuf(_fileDefaultWindowIconMinimize);
-                Gtk.Image gtkimageIconWindowMinimize = new Gtk.Image(pixbufIconWindowMinimize);
-                EventBox eventBoxMinimize = new EventBox();
-                eventBoxMinimize.WidthRequest = pixbufIconWindowMinimize.Width;
-                eventBoxMinimize.HeightRequest = pixbufIconWindowMinimize.Height;
-                eventBoxMinimize.Add(gtkimageIconWindowMinimize);
-                //eventBoxMinimize.VisibleWindow = true;
-                //eventBoxMinimize.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(Color.Red));
-                result = eventBoxMinimize;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
-
-            return result;
-        }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Loading Dialog / HourGlass GTK
-
-        //Hourglass (Windows) or watch (Linux).
-        public static void SetHourGlass(Window pSourceWindow, bool pShowHourGlass)
-        {
-            if (pShowHourGlass == true)
-            {
-                pSourceWindow.GdkWindow.Cursor = new Gdk.Cursor(Gdk.CursorType.Watch);
-            }
-            else
-            {
-                pSourceWindow.GdkWindow.Cursor = new Gdk.Cursor(Gdk.CursorType.LeftPtr);
-            }
-        }
-
         public static Dialog GetThreadDialog(Window pSourceWindow, bool dbExists)
         {
             string backupProcess = string.Empty;
@@ -1498,7 +1255,7 @@ namespace logicpos
             }
         }
 
-        
+
 
         public static Session SessionXPO()
         {
@@ -1589,15 +1346,6 @@ namespace logicpos
             {
                 _logger.Error(ex.Message, ex);
             }
-        }
-
-        public static bool ThreadRoutine(int pMilliseconds)
-        {
-            LargeComputation(pMilliseconds);
-            //Notify WakeupMain and Call ReadyEvent
-            GlobalApp.DialogThreadNotify.WakeupMain();
-
-            return true;
         }
 
         //Sample Test Routines : Used in Startup Window
@@ -1923,19 +1671,6 @@ namespace logicpos
             {
                 _logger.Error(ex.Message, ex);
             }
-        }
-
-        public static void ShowReports(Window pHideWindow)
-        {
-            if (GlobalApp.BackOfficeReportWindow == null)
-            {
-                GlobalApp.BackOfficeReportWindow = new BackOfficeReportWindow();
-            }
-            else
-            {
-                GlobalApp.BackOfficeReportWindow.Show();
-            };
-            pHideWindow.Hide();
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -2636,113 +2371,39 @@ namespace logicpos
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         // Change Widgets Validation Colors
 
-        public static void ValidateUpdateColors(Widget pWidget, Label pLabel, bool pValidated, Label pLabel2 = null, Label pLabel3 = null)
+        public static void ValidateUpdateColors(Widget widget, bool validated, params Label[] labels)
         {
-            //Use source widget or child Widget based on Type 
-            Widget target = (pWidget.GetType() != typeof(EntryBoxValidationMultiLine))
-                ? pWidget
-                : (pWidget as EntryBoxValidationMultiLine).EntryMultiline.TextView;
+            widget = widget.GetType() == typeof(EntryBoxValidationMultiLine)
+                ? (widget as EntryBoxValidationMultiLine).EntryMultiline.TextView
+                : widget;
 
-            try
+            var validColor = ColorSettings.ValidTextBoxColor.StringToGdkColor();
+            var invalidColor = ColorSettings.InvalidTextBoxColor.StringToGdkColor();
+            var validBackgroundColor = ColorSettings.ValidTextBoxBackgroundColor.StringToGdkColor();
+            var invalidBackgroundColor = ColorSettings.InvalidTextBoxBackgroundColor.StringToGdkColor();
+
+            if (validated)
             {
-                Color colorEntryValidationValidFont = GeneralSettings.Settings["colorEntryValidationValidFont"].StringToColor();
-                Color colorEntryValidationInvalidFont = GeneralSettings.Settings["colorEntryValidationInvalidFont"].StringToColor();
-                Color colorEntryValidationValidBackground = GeneralSettings.Settings["colorEntryValidationValidBackground"].StringToColor();
-                Color colorEntryValidationInvalidBackground = GeneralSettings.Settings["colorEntryValidationInvalidBackground"].StringToColor();
+                widget.ModifyText(StateType.Normal, validColor);
+                widget.ModifyText(StateType.Active, validColor);
+                widget.ModifyBase(StateType.Normal, validBackgroundColor);
 
-                if (pValidated)
+                foreach(var label in labels)
                 {
-                    target.ModifyText(StateType.Normal, colorEntryValidationValidFont.ToGdkColor());
-                    target.ModifyText(StateType.Active, colorEntryValidationValidFont.ToGdkColor());
-                    target.ModifyBase(StateType.Normal, colorEntryValidationValidBackground.ToGdkColor());
-                    if (pLabel != null) pLabel.ModifyFg(StateType.Normal, colorEntryValidationValidFont.ToGdkColor());
-                    if (pLabel2 != null) pLabel.ModifyFg(StateType.Normal, colorEntryValidationValidFont.ToGdkColor());
-                    if (pLabel3 != null) pLabel.ModifyFg(StateType.Normal, colorEntryValidationValidFont.ToGdkColor());
+                    label.ModifyFg(StateType.Normal, validColor);
                 }
-                else
-                {
-                    target.ModifyText(StateType.Normal, colorEntryValidationInvalidFont.ToGdkColor());
-                    target.ModifyText(StateType.Active, colorEntryValidationInvalidFont.ToGdkColor());
-                    target.ModifyBase(StateType.Normal, colorEntryValidationInvalidBackground.ToGdkColor());
-                    if (pLabel != null) pLabel.ModifyFg(StateType.Normal, colorEntryValidationInvalidFont.ToGdkColor());
-                    if (pLabel2 != null) pLabel.ModifyFg(StateType.Normal, colorEntryValidationValidFont.ToGdkColor());
-                    if (pLabel3 != null) pLabel.ModifyFg(StateType.Normal, colorEntryValidationValidFont.ToGdkColor());
-                }
+            
+                return;
             }
-            catch (Exception ex)
+
+            widget.ModifyText(StateType.Normal, invalidColor);
+            widget.ModifyText(StateType.Active, invalidColor);
+            widget.ModifyBase(StateType.Normal, invalidBackgroundColor);
+
+            foreach (var label in labels)
             {
-                _logger.Error(ex.Message, ex);
+                label.ModifyFg(StateType.Normal, invalidColor);
             }
-        }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Protection
-
-        //UNDER CONSTRUCTION
-        //Required to add other Parameters to be Full Protected, Initialized Date etc
-        public static bool SaveSystemProtection(cfg_configurationcountry pConfigurationCountry, cfg_configurationcurrency pConfigurationCurrency)
-        {
-            bool result = false;
-
-            try
-            {
-                //COMPANY_NAME
-                cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyName = (XPOHelper.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_NAME")) as cfg_configurationpreferenceparameter);
-                //COMPANY_FISCALNUMBER
-                cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyFiscalNumber = (XPOHelper.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_FISCALNUMBER")) as cfg_configurationpreferenceparameter);
-                //COMPANY_CAE
-                cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCAE = (XPOHelper.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_CAE")) as cfg_configurationpreferenceparameter);
-                //COMPANY_CIVIL_REGISTRATION
-                cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCivilRegistration = (XPOHelper.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_CIVIL_REGISTRATION")) as cfg_configurationpreferenceparameter);
-                //COMPANY_CIVIL_REGISTRATION_ID
-                cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCivilRegistrationID = (XPOHelper.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_CIVIL_REGISTRATION_ID")) as cfg_configurationpreferenceparameter);
-                //COMPANY_COUNTRY
-                //Assign and Save Country and Country Code 2 From entryBoxSelectCustomerCountry
-                cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCountry = (XPOHelper.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY")) as cfg_configurationpreferenceparameter);
-                configurationPreferenceParameterCompanyCountry.Value = pConfigurationCountry.Designation;
-                configurationPreferenceParameterCompanyCountry.Save();
-                //COMPANY_COUNTRY_CODE2
-                cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCountryCode2 = (XPOHelper.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY_CODE2")) as cfg_configurationpreferenceparameter);
-                configurationPreferenceParameterCompanyCountryCode2.Value = pConfigurationCountry.Code2;
-                configurationPreferenceParameterCompanyCountryCode2.Save();
-
-                //Lock Country creating Hash
-                string systemProtected = string.Format(
-                    "{0}:{1}:{2}:{3}:{4}:{5}:{6}:{7}",
-                    //Config
-                    pConfigurationCountry.Oid.ToString(),
-                    pConfigurationCountry.Code2,
-                    pConfigurationCurrency.Oid.ToString(),
-                    //Database
-                    configurationPreferenceParameterCompanyName.Value,
-                    configurationPreferenceParameterCompanyFiscalNumber.Value,
-                    configurationPreferenceParameterCompanyCAE.Value,
-                    configurationPreferenceParameterCompanyCivilRegistration.Value,
-                    configurationPreferenceParameterCompanyCivilRegistrationID.Value
-                );
-
-                string systemProtectedSalted = CryptographyUtils.GenerateSaltedString(systemProtected);
-                _logger.Debug(string.Format("systemProtected: [{0}]", systemProtected));
-                _logger.Debug(string.Format("systemProtectedSalted: [{0}]", systemProtectedSalted));
-
-                //Change Configuration
-                Dictionary<string, string> values = new Dictionary<string, string>
-                {
-                    { "appSystemProtection", systemProtectedSalted },
-                    { "xpoOidConfigurationCountrySystemCountry", pConfigurationCountry.Oid.ToString() },
-                    { "xpoOidConfigurationCountrySystemCountryCountryCode2", pConfigurationCountry.Code2 },
-                    { "xpoOidConfigurationCurrencySystemCurrency)", pConfigurationCurrency.Oid.ToString() }
-                };
-                AddUpdateSettings(values);
-
-                result = true;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
-
-            return result;
         }
 
         //TK016235 BackOffice - Mode
