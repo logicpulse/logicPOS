@@ -956,7 +956,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         public void ChangeQuantity(decimal pQuantity)
         {
             _listStoreModelSelectedIndex = CurrentOrderDetails.Lines.FindIndex(item => item.ArticleOid == (Guid)ListStoreModel.GetValue(_treeIter,
-                    (int)TicketListColumns.ArticleId) && Math.Round(Convert.ToDecimal(item.Properties.PriceFinal), CultureSettings.DecimalRoundTo) == Convert.ToDecimal(ListStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price)));
+                    (int)TicketListColumns.ArticleId));
 
             decimal oldValueQnt = CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity;
 
@@ -1067,7 +1067,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         public void DeleteItem_ListModeTicket(decimal pRemoveQuantity)
         {
             //Get Current Quantity
-            var quantity = ListStoreModel.GetValue(_treeIter, (int)TicketListColumns.Quantity);
+            var quantity = ((string)ListStoreModel.GetValue(_treeIter, (int)TicketListColumns.Quantity)).Replace('.',',');
 
             decimal totalQtd = Convert.ToDecimal(quantity) - pRemoveQuantity;
 
@@ -1226,7 +1226,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 else
                 {
                     if (_buttonKeyIncrease != null && _buttonKeyIncrease.Sensitive) _buttonKeyIncrease.Sensitive = false;
-                    if (_buttonKeyDecrease != null && !_buttonKeyDecrease.Sensitive) _buttonKeyDecrease.Sensitive = true;
+                    if (_buttonKeyDecrease != null && _buttonKeyDecrease.Sensitive) _buttonKeyDecrease.Sensitive = false;
                     //Always Disabled in Orders
                     //_buttonKeyDelete.Sensitive = false;
                     //Enabled Again
