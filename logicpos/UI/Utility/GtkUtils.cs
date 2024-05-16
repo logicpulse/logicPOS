@@ -37,10 +37,13 @@ namespace LogicPOS.UI
                 widget.ModifyText(StateType.Normal, validColor);
                 widget.ModifyText(StateType.Active, validColor);
                 widget.ModifyBase(StateType.Normal, validBackgroundColor);
-
-                foreach (var label in labels)
+                 
+                foreach (Label label in labels)
                 {
-                    label.ModifyFg(StateType.Normal, validColor);
+                    if(label != null)
+                    {
+                        label.ModifyFg(StateType.Normal, validColor);
+                    }
                 }
 
                 return;
@@ -50,9 +53,12 @@ namespace LogicPOS.UI
             widget.ModifyText(StateType.Active, invalidColor);
             widget.ModifyBase(StateType.Normal, invalidBackgroundColor);
 
-            foreach (var label in labels)
+            foreach (Label label in labels)
             {
-                label.ModifyFg(StateType.Normal, invalidColor);
+                if (label != null)
+                {
+                    label.ModifyFg(StateType.Normal, invalidColor);
+                }
             }
         }
     }
