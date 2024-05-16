@@ -2,6 +2,7 @@
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using LogicPOS.DTOs.Common;
+using LogicPOS.UI;
 using LogicPOS.Utility;
 using System;
 
@@ -28,7 +29,7 @@ namespace logicpos
             set
             {
                 _validated = value;
-                Utils.ValidateUpdateColors(this, _validated, Label, Label2, Label3);
+                GtkUtils.UpdateWidgetColorsAfterValidation(this, _validated, Label, Label2, Label3);
             }
         }
 
@@ -79,7 +80,7 @@ namespace logicpos
         {
             //Default FieldValidateValue is the Entry.Text
             _validated = GeneralUtils.Validate(pValue, Rule, Required);
-            Utils.ValidateUpdateColors(this, _validated, Label, Label2, Label3);
+            GtkUtils.UpdateWidgetColorsAfterValidation(this, _validated, Label, Label2, Label3);
         }
 
         private void EntryValidation_Changed(object sender, EventArgs e)

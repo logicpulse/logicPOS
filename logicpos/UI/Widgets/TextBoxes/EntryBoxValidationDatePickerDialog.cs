@@ -5,6 +5,7 @@ using logicpos.Classes.Enums.Keyboard;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using logicpos.datalayer.Xpo;
+using LogicPOS.UI;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -140,7 +141,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 _entryValidation.Validated = false;
             }
 
-            logicpos.Utils.UpdateWidgetColorsAfterValidation(
+            GtkUtils.UpdateWidgetColorsAfterValidation(
                 _entryValidation, 
                 _entryValidation.Validated, 
                 _entryValidation.Label, 
