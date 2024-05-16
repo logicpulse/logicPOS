@@ -93,7 +93,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Entrys
         {
             //Default FieldValidateValue is the Entry.Text
             Validated = GeneralUtils.Validate(pValue, Rule, Required);
-            logicpos.Utils.ValidateUpdateColors(this, _label, _validated, _label2, _label3);
+            logicpos.Utils.ValidateUpdateColors(this,  _validated, _label, _label2, _label3);
         }
     }
 }
