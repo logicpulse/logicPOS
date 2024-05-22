@@ -19,7 +19,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\logicpos\bin\Debug\</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -27,7 +27,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\logicpos\bin\Release\</OutputPath>
+    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -124,6 +124,7 @@
     <Compile Include="Classes\Reports\CustomReport.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Classes\Stocks\IStockManagementModule.cs" />
     <Compile Include="Classes\Stocks\ProcessArticleStock.cs" />
     <Compile Include="Classes\Stocks\ProcessArticleStockParameter.cs" />
     <Compile Include="Classes\Utils\ProtectedFile.cs" />
@@ -153,20 +154,12 @@
       <Project>{b9e8d813-d694-4a7f-955e-ccc4b10f3774}</Project>
       <Name>LogicPOS.Globalization</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\logicpos.hardware\logicpos.printer.genericsocket\logicpos.printer.genericsocket.csproj">
-      <Project>{7bc439de-3799-461a-8fc1-d7f1644667fb}</Project>
-      <Name>logicpos.printer.genericsocket</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\logicpos.hardware\logicpos.printer.genericusb\logicpos.printer.genericusb.csproj">
       <Project>{ff9298dd-4b4b-412f-a260-e504d0079ead}</Project>
       <Name>logicpos.printer.genericusb</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\logicpos.hardware\logicpos.printer.genericwindows\logicpos.printer.genericwindows.csproj">
-      <Project>{d0f2b3c4-ae83-46e1-82f7-5fb9b6ca352f}</Project>
-      <Name>logicpos.printer.genericwindows</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\logicpos.hardware\logicpos.printer.generic\logicpos.printer.generic.csproj">
-      <Project>{692407af-fe0e-4d94-8db1-be8b210017ba}</Project>
+      <Project>{692407AF-FE0E-4D94-8DB1-BE8B210017BA}</Project>
       <Name>logicpos.printer.generic</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\LogicPOS.PDFViewer\LogicPOS.PDFViewer.Winforms\LogicPOS.PDFViewer.Winforms.csproj">

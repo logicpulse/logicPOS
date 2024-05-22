@@ -15,7 +15,7 @@ namespace LogicPOS.Settings
         public static string AppSoftwareVersionFormat { get; set; }
 
         public static PluginContainer PluginContainer { get; set; }
-        public static ISoftwareVendor PluginSoftwareVendor { get; set; }
+        //public static ISoftwareVendor PluginSoftwareVendor { get; set; } -> Trying to use only PlgunSettings.SoftwareVendor @tchial0
         public static ISoftwareVendor SoftwareVendor { get; set; }
         public static ILicenseManager LicenceManager { get; set; }
 
@@ -47,7 +47,7 @@ namespace LogicPOS.Settings
             return null;
         }
 
-        public static bool HasPlugin => SoftwareVendor != null;
+        public static bool HasSoftwareVendorPlugin => SoftwareVendor != null;
 
         public static void InitializeSoftwareVendorPluginSettings()
         {

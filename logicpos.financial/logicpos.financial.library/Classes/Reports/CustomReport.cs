@@ -812,7 +812,7 @@ namespace logicpos.financial.library.Classes.Reports
                     if (gcCustomers != null && gcCustomers.List.Count > 0)
                     {
                         // Decrypt Phase
-                        if (PluginSettings.HasPlugin)
+                        if (PluginSettings.HasSoftwareVendorPlugin)
                         {
                             foreach (var item in gcCustomers.List)
                             {
@@ -1139,7 +1139,7 @@ namespace logicpos.financial.library.Classes.Reports
                 FRBOGenericCollection<FRBOSystemAuditView> gcSystemAudit = new FRBOGenericCollection<FRBOSystemAuditView>(filter, string.Empty, "SauDate");
 
                 // Decrypt Phase
-                if (PluginSettings.HasPlugin)
+                if (PluginSettings.HasSoftwareVendorPlugin)
                 {
                     foreach (var item in gcSystemAudit)
                     {
@@ -1188,7 +1188,7 @@ namespace logicpos.financial.library.Classes.Reports
                 FRBOGenericCollection<FRBODocumentFinanceCurrentAccount> gcCurrentAccount = new FRBOGenericCollection<FRBODocumentFinanceCurrentAccount>(filter);
 
                 // Decrypt Phase
-                if (PluginSettings.HasPlugin)
+                if (PluginSettings.HasSoftwareVendorPlugin)
                 {
                     foreach (var item in gcCurrentAccount)
                     {
@@ -1240,7 +1240,7 @@ namespace logicpos.financial.library.Classes.Reports
                 List<erp_customer> customersList = new List<erp_customer>();
                 bool printTotalBalance = true;
                 // Decrypt Phase
-                if (PluginSettings.HasPlugin)
+                if (PluginSettings.HasSoftwareVendorPlugin)
                 {
                     foreach (var item in gcCustomerBalanceDetails)
                     {
@@ -1311,7 +1311,7 @@ namespace logicpos.financial.library.Classes.Reports
                 FRBOGenericCollection<FRBODocumentFinanceCustomerBalanceDetails> gcCustomerBalanceDetails = new FRBOGenericCollection<FRBODocumentFinanceCustomerBalanceDetails>(filter);
 
                 /* Decrypt phase */
-                if (PluginSettings.HasPlugin)
+                if (PluginSettings.HasSoftwareVendorPlugin)
                 {
                     foreach (var item in gcCustomerBalanceDetails)
                     {
@@ -1360,7 +1360,7 @@ namespace logicpos.financial.library.Classes.Reports
                 FRBOGenericCollection<FRBODocumentFinanceCustomerBalanceDetails> gcCustomerBalanceDetails = new FRBOGenericCollection<FRBODocumentFinanceCustomerBalanceDetails>(filter.Replace("CustomerSinceDate", "Date"));
 
                 // Decrypt Phase
-                if (PluginSettings.HasPlugin)
+                if (PluginSettings.HasSoftwareVendorPlugin)
                 {
                     foreach (var customerBalance in gcCustomerBalanceDetails)
                     {
@@ -1423,7 +1423,7 @@ namespace logicpos.financial.library.Classes.Reports
                 FRBOGenericCollection<FRBOUserCommission> gcUserCommission = new FRBOGenericCollection<FRBOUserCommission>(filter);
 
                 // Decrypt Phase
-                if (PluginSettings.HasPlugin && gcUserCommission != null)
+                if (PluginSettings.HasSoftwareVendorPlugin && gcUserCommission != null)
                 {
                     foreach (var item in gcUserCommission)
                     {
@@ -1488,7 +1488,7 @@ namespace logicpos.financial.library.Classes.Reports
                 foreach (var item in gcDocumentFinanceMaster)
                 {
                     /* Decrypt phase - see IN009078, IN009079 and IN009080 */
-                    if (PluginSettings.HasPlugin)
+                    if (PluginSettings.HasSoftwareVendorPlugin)
                     {
                         /* IN009076 */
                         item.EntityName = PluginSettings.SoftwareVendor.Decrypt(item.EntityName);
@@ -1611,7 +1611,7 @@ namespace logicpos.financial.library.Classes.Reports
                         gcDocumentFinanceMasterDetail = new FRBOGenericCollection<FRBODocumentFinanceMasterDetailView>();
                     }
                     // Decrypt Phase
-                    if (PluginSettings.HasPlugin)
+                    if (PluginSettings.HasSoftwareVendorPlugin)
                     {
                         /* IN009077 - # TO DO (IN009078, IN009079, IN009080) */
                         DevExpress.Xpo.UnitOfWork uowSession = new DevExpress.Xpo.UnitOfWork();
@@ -1704,7 +1704,7 @@ namespace logicpos.financial.library.Classes.Reports
                     FRBOGenericCollection<FRBODocumentFinanceMasterDetailGroupView> gcDocumentFinanceMasterDetail = new FRBOGenericCollection<FRBODocumentFinanceMasterDetailGroupView>(filter, queryGroupFields, string.Empty, queryFields);
 
                     // Decrypt Phase
-                    if (PluginSettings.HasPlugin) /* IN009072 */
+                    if (PluginSettings.HasSoftwareVendorPlugin) /* IN009072 */
                     {
                         //gcDocumentFinanceMasterDetail.Get(0).GroupDesignation                    
                         foreach (var item in gcDocumentFinanceMasterDetail)
@@ -1835,7 +1835,7 @@ namespace logicpos.financial.library.Classes.Reports
 
             List<FRBOArticleSerialNumber> fRBOArticleSerialNumbers = new List<FRBOArticleSerialNumber>();
 
-            if (PluginSettings.HasPlugin)
+            if (PluginSettings.HasSoftwareVendorPlugin)
             {
                 if (pListArticleSerialNumber != null)
                 {

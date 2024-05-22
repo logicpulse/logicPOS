@@ -1,4 +1,6 @@
-﻿namespace logicpos.App
+﻿using logicpos.financial.library.Classes.Stocks;
+
+namespace logicpos.App
 {
     /// <summary>
     /// This force not using class confilt namespace when using GlobalFramework

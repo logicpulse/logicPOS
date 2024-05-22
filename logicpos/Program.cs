@@ -1,9 +1,11 @@
 using Gtk;
 using logicpos.App;
 using logicpos.Classes.Enums.App;
+using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Logic.License;
 using logicpos.Classes.Utils;
 using logicpos.datalayer.Xpo;
+using logicpos.financial.library.Classes.Stocks;
 using LogicPOS.Globalization;
 using LogicPOS.Plugin.Abstractions;
 using LogicPOS.Plugin.Utils;
@@ -99,7 +101,7 @@ namespace logicpos
 
             PluginSettings.SoftwareVendor = PluginSettings.PluginContainer.GetFirstPluginOfType<ISoftwareVendor>();
 
-            if (PluginSettings.HasPlugin)
+            if (PluginSettings.HasSoftwareVendorPlugin)
             {
                 PluginSettings.InitializeSoftwareVendorPluginSettings();
                 PluginSettings.SoftwareVendor.ValidateEmbeddedResources();

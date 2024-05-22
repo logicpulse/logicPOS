@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Data;
+using System.Drawing;
 
 namespace LogicPOS.Plugin.Abstractions
 {
@@ -8,11 +9,11 @@ namespace LogicPOS.Plugin.Abstractions
         string GetHardwareID();
 
         byte[] GetLicence(
-            string hardwareID, 
-            string version, 
-            bool hasLicense, 
-            byte[] licence, 
-            DataTable licenseKeys);
+            string hardwareID,
+            string version,
+            bool haveLicence,
+            byte[] licence,
+            DataTable keysLicence);
 
         SortedList GetLicenseInformation();
 
@@ -23,22 +24,30 @@ namespace LogicPOS.Plugin.Abstractions
         bool ConnectToWS();
 
         byte[] ActivateLicense(
-            string name, 
-            string company, 
-            string fiscalNumber, 
-            string address, 
-            string email, 
-            string phone, 
-            string hardwareId, 
-            string assemblyVersion, 
+            string name,
+            string company,
+            string fiscalNumber,
+            string address,
+            string email,
+            string phone,
+            string hardwareId,
+            string assemblyVersion,
+            int idCountry,
             string softwareKey);
 
-		string GetCurrentVersion();
+        string GetCurrentVersion();
 
-        int UpdateCurrentVersion(
-            string hardwareID, 
-            string productID, 
-            string appVersion);
+        DataTable GetCountries();
+
+        int updateCurrentVersion(
+            string hardwareID,
+            string productID,
+            string versionApp);
+
+        Image DecodeImage(
+            string filePath,
+            int width,
+            int height);
 
     }
 }

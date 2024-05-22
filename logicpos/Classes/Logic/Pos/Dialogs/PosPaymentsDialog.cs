@@ -570,7 +570,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 Guid customerGuid = new Guid();
 
                 // Encrypt pFieldValue to use in Sql Filter
-                if (LogicPOS.Settings.PluginSettings.HasPlugin)
+                if (LogicPOS.Settings.PluginSettings.HasSoftwareVendorPlugin)
                 {
                     // Only Encrypt Encrypted Fields
                     if (pFieldName == nameof(erp_customer.FiscalNumber) || pFieldName == nameof(erp_customer.CardNumber))
@@ -769,7 +769,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 bool isSingularEntity = (isFinalConsumerEntity || FiscalNumber.IsSingularEntity(_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text, _entryBoxSelectCustomerCountry.Value.Code2));
                 // Encrypt pFieldValue to use in Sql Filter
                 string fiscalNumberFilterValue = string.Empty;
-                if (LogicPOS.Settings.PluginSettings.HasPlugin)
+                if (LogicPOS.Settings.PluginSettings.HasSoftwareVendorPlugin)
                 {
                     fiscalNumberFilterValue = LogicPOS.Settings.PluginSettings.SoftwareVendor.Encrypt(_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text);
                 }

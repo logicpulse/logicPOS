@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace logicpos
 {
-    internal interface IStockManagementModule
+    internal interface IStrangeStockManagementModule
     {
         bool Add(
             Session session, 

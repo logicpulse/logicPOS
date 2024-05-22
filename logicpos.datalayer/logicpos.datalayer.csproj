@@ -159,7 +159,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="DevExpress.Xpo">
-      <Version>23.2.5</Version>
+      <Version>23.2.6</Version>
     </PackageReference>
     <PackageReference Include="log4net">
       <Version>2.0.17</Version>

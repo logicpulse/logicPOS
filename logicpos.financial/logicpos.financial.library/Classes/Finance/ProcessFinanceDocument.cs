@@ -786,7 +786,7 @@ namespace logicpos.financial.library.Classes.Finance
             // Old Method without Plugin
             //resultSignedHash = FrameworkUtils.SignDataToSHA1Base64(signTargetString, debug);
             // Sign Document if has a valid PluginSoftwareVendor 
-            if (PluginSettings.HasPlugin)
+            if (PluginSettings.HasSoftwareVendorPlugin)
             {
                 resultSignedHash = PluginSettings.SoftwareVendor.SignDataToSHA1Base64(FinancialLibrarySettings.SecretKey, signTargetString, debug);
             }
@@ -887,7 +887,7 @@ namespace logicpos.financial.library.Classes.Finance
 
             //byte[] resultQRCode = new byte[64]; 
             string resultQRCode;
-            if (PluginSettings.HasPlugin && (pDocType.SaftDocumentType == SaftDocumentType.SalesInvoices || pDocType.SaftDocumentType == SaftDocumentType.Payments))
+            if (PluginSettings.HasSoftwareVendorPlugin && (pDocType.SaftDocumentType == SaftDocumentType.SalesInvoices || pDocType.SaftDocumentType == SaftDocumentType.Payments))
             {
                 //resultSignedHash = LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.SignDataToSHA1Base64(SettingsApp.SecretKey, signTargetString, debug);
 

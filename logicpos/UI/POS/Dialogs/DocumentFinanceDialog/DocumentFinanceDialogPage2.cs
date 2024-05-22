@@ -397,7 +397,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 EnableGetCustomerDetails = false;
 
                 // Encrypt pFieldValue to use in Sql Filter
-                if (LogicPOS.Settings.PluginSettings.HasPlugin)
+                if (LogicPOS.Settings.PluginSettings.HasSoftwareVendorPlugin)
                 {
                     // Only Encrypt Encrypted Fields
                     if (pFieldName == nameof(Erp_customer.FiscalNumber) || pFieldName == nameof(Erp_customer.CardNumber))
@@ -660,7 +660,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 //Used To Disable FiscalNumber Edits
                 // Encrypt pFieldValue to use in Sql Filter
                 string fiscalNumberFilterValue = string.Empty;
-                if (LogicPOS.Settings.PluginSettings.HasPlugin)
+                if (LogicPOS.Settings.PluginSettings.HasSoftwareVendorPlugin)
                 {
                     fiscalNumberFilterValue = LogicPOS.Settings.PluginSettings.SoftwareVendor.Encrypt(EntryBoxSelectCustomerFiscalNumber.EntryValidation.Text);
                 }

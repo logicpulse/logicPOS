@@ -1,5 +1,4 @@
 ﻿using acme.softwarevendor.plugin.App;
-using logicpos;
 using LogicPOS.Plugin.Abstractions;
 using LogicPOS.Settings;
 using LogicPOS.Utility;
@@ -209,7 +208,7 @@ namespace acme.softwarevendor.plugin
             {
                 try
                 {
-                    result = LogicPOS.Utility.Compression.ZipPack(files, fileDestination, AcmeSettings.BackupPassword);
+                    result = LogicPOS.Utility.CompressionUtils.ZipPack(files, fileDestination, AcmeSettings.BackupPassword);
                 }
                 catch (Exception ex)
                 {
@@ -228,7 +227,7 @@ namespace acme.softwarevendor.plugin
             {
                 try
                 {
-                    result = LogicPOS.Utility.Compression.ZipUnPack(fileName, destinationPath, AcmeSettings.BackupPassword, flattenFoldersOnExtract);
+                    result = LogicPOS.Utility.CompressionUtils.ZipUnPack(fileName, destinationPath, AcmeSettings.BackupPassword, flattenFoldersOnExtract);
                 }
                 catch (Exception ex)
                 {

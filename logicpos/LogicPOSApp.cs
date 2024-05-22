@@ -238,7 +238,7 @@ namespace logicpos
 #endif
                 // Assign PluginSoftwareVendor Reference to DataLayer SettingsApp to use In Date Protection, we Required to assign it Statically to Prevent Circular References
                 // Required to be here, before it is used in above lines, ex Utils.GetTerminal()
-                if (PluginSettings.HasPlugin) PluginSettings.PluginSoftwareVendor = PluginSettings.SoftwareVendor;
+                //if (PluginSettings.HasSoftwareVendorPlugin) PluginSettings.PluginSoftwareVendor = PluginSettings.SoftwareVendor; -> Trying to use only PluginSettings.SoftwareVendor @tchial0
 
                 //If not in Xpo create database Scheme Mode, Get Terminal from Db
                 if (!xpoCreateDatabaseAndSchema)
@@ -506,7 +506,7 @@ namespace logicpos
             }
 
             //Start Database Backup Timer if not create XPO Schema and SoftwareVendor is Active
-            if (PluginSettings.HasPlugin && backupsFolderExists && xpoCreateDatabaseAndSchema == false)
+            if (PluginSettings.HasSoftwareVendorPlugin && backupsFolderExists && xpoCreateDatabaseAndSchema == false)
             {
                 /* IN009163 and IN009164 - Opt to auto-backup flow */
                 _autoBackupFlowIsEnabled = bool.Parse(GeneralSettings.PreferenceParameters["DATABASE_BACKUP_AUTOMATIC_ENABLED"]);
@@ -614,7 +614,7 @@ namespace logicpos
                 files[pFileList.Count] = POSSettings.ProtectedFilesFileName;
 
                 //Empty password, to zip without password
-                result = LogicPOS.Utility.Compression.ZipPack(files, filename, string.Empty);
+                result = LogicPOS.Utility.CompressionUtils.ZipPack(files, filename, string.Empty);
             }
             catch (Exception ex)
             {

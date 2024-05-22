@@ -6,16 +6,22 @@ using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Logic.License;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
-using LogicPOS.Settings.Extensions;
 using Pango;
 using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
     internal class PosLicenceDialog : PosBaseDialog
     {
         //Parameters
-        private readonly string _hardwareId;
+        private string _hardwareId;
+        private DataTable _countrys;
+        private Dictionary<int, string> _countrysList = new Dictionary<int, string>();
+        private List<string> _countrysListSource = new List<string>();
+
         //Ui
         private HBox _hboxMain;
         private EntryBoxValidation _entryBoxHardwareId;
@@ -26,14 +32,16 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         public EntryBoxValidation EntryBoxName { get; set; }
         public EntryBoxValidation EntryBoxCompany { get; set; }
-
         public EntryBoxValidation EntryBoxFiscalNumber { get; set; }
         public EntryBoxValidation EntryBoxAddress { get; set; }
-
         public EntryBoxValidation EntryBoxEmail { get; set; }
         public EntryBoxValidation EntryBoxPhone { get; set; }
+        public ListComboBox ComboBoxCountry { get; set; }
 
-        public PosLicenceDialog(Window pSourceWindow, DialogFlags pDialogFlags, string pHardwareId)
+        public PosLicenceDialog(
+            Window pSourceWindow,
+            DialogFlags pDialogFlags,
+            string pHardwareId)
                     : base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
@@ -51,13 +59,45 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _hardwareId = pHardwareId;
             }
 
+            _countrys = PluginSettings.LicenceManager.GetCountries();
+
+            if (_countrys != null)
+            {
+                foreach (DataRow dr in _countrys.Rows)
+                {
+                    _countrysList.Add(Convert.ToInt32(dr["idCountry"]), dr["name"].ToString());
+                    _countrysListSource.Add(dr["name"].ToString());
+                }
+            }
+
             //Files
             string fileActionRegister = PathsSettings.ImagesFolderLocation + @"Icons\Dialogs\icon_pos_dialog_action_register.png";
             string fileActionContinue = PathsSettings.ImagesFolderLocation + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
 
             //ActionArea Buttons
-            _buttonRegister = new TouchButtonIconWithText("touchButtonRegister_DialogActionArea", System.Drawing.Color.Transparent, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "pos_button_label_licence_register"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionRegister, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Sensitive = false };
-            _buttonContinue = new TouchButtonIconWithText("touchButtonContinue_DialogActionArea", System.Drawing.Color.Transparent, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "pos_button_label_licence_continue"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionContinue, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height);
+            _buttonRegister = new TouchButtonIconWithText(
+                "touchButtonRegister_DialogActionArea",
+                System.Drawing.Color.Transparent,
+                CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "pos_button_label_licence_register"),
+                _fontBaseDialogActionAreaButton,
+                _colorBaseDialogActionAreaButtonFont,
+                fileActionRegister,
+                _sizeBaseDialogActionAreaButtonIcon,
+                _sizeBaseDialogActionAreaButton.Width,
+                _sizeBaseDialogActionAreaButton.Height)
+            { Sensitive = false };
+
+            _buttonContinue = new TouchButtonIconWithText(
+                "touchButtonContinue_DialogActionArea",
+                System.Drawing.Color.Transparent,
+                CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "pos_button_label_licence_continue"),
+                _fontBaseDialogActionAreaButton,
+                _colorBaseDialogActionAreaButtonFont,
+                fileActionContinue,
+                _sizeBaseDialogActionAreaButtonIcon,
+                _sizeBaseDialogActionAreaButton.Width,
+                _sizeBaseDialogActionAreaButton.Height);
+
             _buttonClose = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Close);
 
             //ActionArea
@@ -125,7 +165,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             VBox vboxInnerLeft = new VBox(false, 0);
             vboxInnerLeft.WidthRequest = 390;
             VBox vboxInnerRight = new VBox(false, 0);
-            VBox vboxHardwareId = new VBox(false, 0);            
+            VBox vboxHardwareId = new VBox(false, 0);
             hboxInner.PackStart(vboxInnerLeft, false, false, 0);
             hboxInner.PackStart(vboxInnerRight, false, false, (uint)padding * 2);
 
@@ -216,7 +256,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             vboxInnerRight.PackStart(labelWithoutInternetContactCompanyNameValue, false, false, 0);
 
             //Phone
-            string[] primaryPhones = PluginSettings.AppCompanyPhone.Split(new string[] { " / " }, StringSplitOptions.None);
+            string[] primaryPhones = PluginSettings.AppCompanyPhone?.Split(new string[] { " / " }, StringSplitOptions.None);
             Label labelWithoutInternetContactCompanyPhoneLabel = new Label(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_phone"));
             labelWithoutInternetContactCompanyPhoneLabel.SetAlignment(0.0F, 0.0F);
             labelWithoutInternetContactCompanyPhoneLabel.ModifyFont(FontDescription.FromString("Arial 10 bold"));
@@ -226,17 +266,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             labelWithoutInternetContactCompanyPhoneValue.ModifyFont(FontDescription.FromString("Courier 10"));
             vboxInnerRight.PackStart(labelWithoutInternetContactCompanyPhoneValue, false, false, 0);
 
-            //Email
-            Label labelWithoutInternetContactCompanyEmailLabel = new Label(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_email"));
-            labelWithoutInternetContactCompanyEmailLabel.SetAlignment(0.0F, 0.0F);
-            labelWithoutInternetContactCompanyEmailLabel.ModifyFont(FontDescription.FromString("Arial 10 bold"));
-            vboxInnerRight.PackStart(labelWithoutInternetContactCompanyEmailLabel, false, false, (uint)padding * 2);
-            Label labelWithoutInternetContactCompanyEmailValue = new Label(PluginSettings.AppCompanyEmail);
-            labelWithoutInternetContactCompanyEmailValue.SetAlignment(0.0F, 0.0F);
-            labelWithoutInternetContactCompanyEmailValue.ModifyFont(FontDescription.FromString("Courier 10"));
-            vboxInnerRight.PackStart(labelWithoutInternetContactCompanyEmailValue, false, false, 0);
-
-            //Email
+            //Website
             Label labelWithoutInternetContactCompanyWebLabel = new Label(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_website"));
             labelWithoutInternetContactCompanyWebLabel.SetAlignment(0.0F, 0.0F);
             labelWithoutInternetContactCompanyWebLabel.ModifyFont(FontDescription.FromString("Arial 10 bold"));
@@ -245,6 +275,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             labelWithoutInternetContactCompanyWebValue.SetAlignment(0.0F, 0.0F);
             labelWithoutInternetContactCompanyWebValue.ModifyFont(FontDescription.FromString("Courier 10"));
             vboxInnerRight.PackStart(labelWithoutInternetContactCompanyWebValue, false, false, 0);
+
+            //Country
+            Label labelCountryLabel = new Label(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_country"));
+            labelCountryLabel.SetAlignment(0.0F, 0.0F);
+            labelCountryLabel.ModifyFont(FontDescription.FromString("Arial 10 bold"));
+            vboxInnerRight.PackStart(labelCountryLabel, false, false, (uint)padding * 2);
+            ComboBoxCountry = new ListComboBox(_countrysListSource, _countrysList[168]);
+            vboxInnerRight.PackStart(ComboBoxCountry, false, false, (uint)padding * 2);
 
         }
 
@@ -256,26 +294,31 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 EntryBoxFiscalNumber.EntryValidation.Validated &&
                 EntryBoxAddress.EntryValidation.Validated &&
                 EntryBoxEmail.EntryValidation.Validated &&
-                EntryBoxPhone.EntryValidation.Validated && _entryBoxSoftwareKey.EntryValidation.Validated
+                EntryBoxPhone.EntryValidation.Validated &&
+                _entryBoxSoftwareKey.EntryValidation.Validated
             );
         }
 
-        protected override void OnResponse(ResponseType pResponse)
+        protected override void OnResponse(ResponseType response)
         {
-            switch (pResponse)
+            if (response == ResponseType.Accept)
             {
-                case ResponseType.Accept:
-                    _logger.Debug("ActionRegister()");
-                    ActionRegister();
-                    break;
+                ActionRegister();
             }
         }
 
         private void ActionRegister()
         {
-            if (!PluginSettings.LicenceManager.ConnectToWS())
+            if (PluginSettings.LicenceManager.ConnectToWS() == false)
             {
-                logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new System.Drawing.Size(600, 300), MessageType.Error, ButtonsType.Close, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_license_ws_connection_error"));
+                logicpos.Utils.ShowMessageTouch(
+                    this, 
+                    DialogFlags.Modal, 
+                    new System.Drawing.Size(600, 300), 
+                    MessageType.Error, 
+                    ButtonsType.Close, 
+                    CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"), 
+                    CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_license_ws_connection_error"));
 
                 return;
             }
@@ -299,6 +342,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     EntryBoxPhone.EntryValidation.Text,
                     _entryBoxHardwareId.EntryValidation.Text,
                     System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(),
+                    _countrysList.FirstOrDefault(x => x.Value == ComboBoxCountry.Value).Key,
                     _entryBoxSoftwareKey.EntryValidation.Text
                 );
 

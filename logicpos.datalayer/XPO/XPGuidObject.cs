@@ -335,7 +335,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             Type propertyType;
 
             // If has Model has encryptedAttributes and has valid PluginSoftwareVendor to Encrypt
-            if (_encryptedAttributes != null && PluginSettings.PluginSoftwareVendor != null)
+            if (_encryptedAttributes != null && PluginSettings.HasSoftwareVendorPlugin)
             {
                 foreach (var attr in _encryptedAttributes)
                 {
@@ -357,12 +357,12 @@ namespace logicpos.datalayer.DataLayer.Xpo
                                 if (encrypt)
                                 {
                                     // Encrypt Property Value
-                                    targetPropertValue = PluginSettings.PluginSoftwareVendor.Encrypt(sourcePropertValue);
+                                    targetPropertValue = PluginSettings.SoftwareVendor.Encrypt(sourcePropertValue);
                                 }
                                 else
                                 {
                                     // DeEncrypt Property Value
-                                    targetPropertValue = PluginSettings.PluginSoftwareVendor.Decrypt(sourcePropertValue);
+                                    targetPropertValue = PluginSettings.SoftwareVendor.Decrypt(sourcePropertValue);
                                 }
 
                                 // Set Value value to PropertyInfo
@@ -469,7 +469,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
                             if ((row.Values[i] != null))
                             {
                                 columnValue = row.Values[i].ToString();
-                                columnValueDecrypted = PluginSettings.PluginSoftwareVendor.Decrypt(columnValue);
+                                columnValueDecrypted = PluginSettings.SoftwareVendor.Decrypt(columnValue);
                                 if (debug) log.Debug($"Detected Encrypted Column ColumName: [{columnName}], ColumnValue: [{columnValue}], ColumnValueDecrypted: [{columnValueDecrypted}]");
                                 // Replace Original Value
                                 row.Values[i] = columnValueDecrypted;
@@ -495,9 +495,9 @@ namespace logicpos.datalayer.DataLayer.Xpo
             try
             {
                 // Decrypt Properties
-                if (PluginSettings.PluginSoftwareVendor != null && source != null)
+                if (PluginSettings.SoftwareVendor != null && source != null)
                 {
-                    result = PluginSettings.PluginSoftwareVendor.Decrypt(source.ToString());
+                    result = PluginSettings.SoftwareVendor.Decrypt(source.ToString());
                 }
             }
             catch (Exception ex)

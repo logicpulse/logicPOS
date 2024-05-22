@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LogicPOS.Settings;
+using System;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -123,6 +124,39 @@ namespace LogicPOS.Utility
             result = Encoding.UTF8.GetString(resultArray);
 
             return result;
+        }
+
+        public static string SignDataToSHA1Base64(string pPrivateKeyPT, string pPrivateKeyAO, string pEncryptData, bool pDebug = false)
+        {
+            if (GeneralSettings.Settings["cultureFinancialRules"] == "pt-AO")
+            {
+                return SHA1SignMessage(pPrivateKeyAO, Encoding.UTF8.GetBytes(pEncryptData), pDebug);
+            }
+
+            return SHA1SignMessage(pPrivateKeyPT, Encoding.UTF8.GetBytes(pEncryptData), pDebug);
+        }
+
+        private static string SHA1SignMessage(string pPrivateKey, byte[] pMessage, bool pDebug = false)
+        {
+            String tempPath = Convert.ToString(PathsSettings.TempFolderLocation);
+
+            //Init RSACryptoServiceProvider with Key
+            RSACryptoServiceProvider rsaCryptoServiceProvider = new RSACryptoServiceProvider();
+
+            rsaCryptoServiceProvider.FromXmlString(pPrivateKey);
+
+            //SHA1 Sign 
+            byte[] signature = rsaCryptoServiceProvider.SignData(pMessage, CryptoConfig.MapNameToOID("SHA1"));
+            string signatureBase64 = Convert.ToBase64String(signature);
+
+            if (pDebug)
+            {
+                System.IO.File.WriteAllBytes(tempPath + "encrypt.txt", pMessage);
+                System.IO.File.WriteAllBytes(tempPath + "encrypted.sha1", signature);
+                System.IO.File.WriteAllText(tempPath + "encrypted.b64", signatureBase64);
+            }
+
+            return signatureBase64;
         }
     }
 }

@@ -344,7 +344,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 // Add Menu Items Based On Plugins PluginSoftwareVendor
                 Dictionary<string, AccordionNode> _accordionChildExport = new Dictionary<string, AccordionNode>();
                 //Export
-                if (PluginSettings.HasPlugin && (CultureSettings.CountryIdIsPortugal(XPOSettings.ConfigurationSystemCountry.Oid) || CultureSettings.CountryIdIsAngola(XPOSettings.ConfigurationSystemCountry.Oid)))
+                if (PluginSettings.HasSoftwareVendorPlugin && (CultureSettings.CountryIdIsPortugal(XPOSettings.ConfigurationSystemCountry.Oid) || CultureSettings.CountryIdIsAngola(XPOSettings.ConfigurationSystemCountry.Oid)))
                 {
                     if ((System.Configuration.ConfigurationManager.AppSettings["cultureFinancialRules"] == "pt-AO") || (System.Configuration.ConfigurationManager.AppSettings["cultureFinancialRules"] == "pt-PT"))
                     {
@@ -363,7 +363,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     { "System_ChangeLog", new AccordionNode(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "change_logger")) { Clicked = delegate { logicpos.Utils.ShowChangeLog(this); } } }
                 };
                 // Add Menu Items Based On Plugins PluginSoftwareVendor
-                if (PluginSettings.HasPlugin)
+                if (PluginSettings.HasSoftwareVendorPlugin)
                 {
                     _accordionChildSystem.Add("System_DataBaseBackup", new AccordionNode(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_database_backup")) { Clicked = delegate { DataBaseBackup.Backup(this); } });
                     _accordionChildSystem.Add("System_DataBaseRestore_FromSystem", new AccordionNode(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_database_restore")) { Clicked = delegate { DataBaseBackup.Restore(this, DataBaseRestoreFrom.SystemBackup); } });

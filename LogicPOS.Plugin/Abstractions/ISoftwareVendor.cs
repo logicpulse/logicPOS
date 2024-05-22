@@ -41,11 +41,11 @@ namespace LogicPOS.Plugin.Abstractions
         string GetSaftCurrencyCode();
 
        
-        int GetSimplifiedInvoiceMaxItems();
+        int GetFinanceRuleSimplifiedInvoiceMaxTotal();
      
-        int GetSimplifiedInvoiceMaxServices();
+        int GetFinanceRuleSimplifiedInvoiceMaxTotalServices();
    
-        int GetRequiredCustomerDetailsAboveValue();
+        int GetFinanceRuleRequiredCustomerDetailsAboveValue();
 
       
         int GetDocumentsPadLengthAO();

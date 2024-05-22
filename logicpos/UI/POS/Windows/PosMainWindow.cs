@@ -225,10 +225,10 @@ namespace logicpos
                 {
                     fileImageBackOfficeLogo = string.Format(PathsSettings.Paths["themes"] + @"Default\Images\Branding\{0}\logicPOS_loggericpulse_loggerin.png", "NT");
                 }
-
-                //var bitmapImage = GlobalFramework.PluginLicenceManager.DecodeImage(fileImageBackOfficeLogo, eventBoxImageLogoSize.Width, eventBoxImageLogoSize.Height);
-                //Gdk.Pixbuf pixbufImageLogo = Utils.ImageToPixbuf(bitmapImage);
-                //imageLogo = new Image(pixbufImageLogo);
+                
+                var bitmapImage = PluginSettings.LicenceManager.DecodeImage(fileImageBackOfficeLogo, eventBoxImageLogoSize.Width, eventBoxImageLogoSize.Height);
+                Gdk.Pixbuf pixbufImageLogo = Utils.ImageToPixbuf(bitmapImage);
+                imageLogo = new Image(pixbufImageLogo);
             }
 
             //fix.Put(imageLogo, GlobalApp.ScreenSize.Width - 300, 50);

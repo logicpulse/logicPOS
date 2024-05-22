@@ -97,7 +97,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="DevExpress.Xpo">
-      <Version>23.2.5</Version>
+      <Version>23.2.6</Version>
     </PackageReference>
     <PackageReference Include="DotNetZip">
       <Version>1.16.0</Version>

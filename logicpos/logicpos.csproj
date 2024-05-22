@@ -35,7 +35,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug</OutputPath>
+    <OutputPath>..\..\artifacts\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -46,7 +46,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Release</OutputPath>
+    <OutputPath>..\..\artifacts\Release\</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -189,7 +189,7 @@
     <Compile Include="Classes\Utils\EuropeanVatInformation.cs" />
     <Compile Include="Classes\Utils\Win32APIWindowHelper.cs" />
     <Compile Include="Extensions\ColorExtension.cs" />
-    <Compile Include="Modules\IStockManagementModule.cs" />
+    <Compile Include="Modules\IStrangeStockManagementModule.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="App\GlobalApp.cs">
@@ -6637,13 +6637,13 @@
       <Project>{e23bdf58-f0a9-40ac-acce-57235fb7a7f1}</Project>
       <Name>LogicPOS.DTOs</Name>
     </ProjectReference>
-    <ProjectReference Include="..\logicpos.financial\logicpos.financial.library\logicpos.financial.library.csproj">
-      <Project>{7f643f3c-0f7b-451a-aa16-a9a25a56ccf3}</Project>
-      <Name>logicpos.financial.library</Name>
-    </ProjectReference>
     <ProjectReference Include="..\logicpos.datalayer\logicpos.datalayer.csproj">
       <Project>{42af3be2-44b4-477d-8e45-55c64992b805}</Project>
       <Name>logicpos.datalayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\logicpos.financial\logicpos.financial.library\logicpos.financial.library.csproj">
+      <Project>{7F643F3C-0F7B-451A-AA16-A9A25A56CCF3}</Project>
+      <Name>logicpos.financial.library</Name>
     </ProjectReference>
     <ProjectReference Include="..\LogicPOS.Globalization\LogicPOS.Globalization.csproj">
       <Project>{b9e8d813-d694-4a7f-955e-ccc4b10f3774}</Project>
@@ -6698,7 +6698,7 @@
       <Version>0.102.2</Version>
     </PackageReference>
     <PackageReference Include="DevExpress.Xpo">
-      <Version>23.2.5</Version>
+      <Version>23.2.6</Version>
     </PackageReference>
     <PackageReference Include="DocumentFormat.OpenXml">
       <Version>2.20.0</Version>

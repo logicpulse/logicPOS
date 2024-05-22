@@ -3,7 +3,7 @@ using System.IO;
 
 namespace LogicPOS.Utility
 {
-    public static class Compression
+    public static class CompressionUtils
     {
         public static bool ZipPack(
             string[] pFiles,
