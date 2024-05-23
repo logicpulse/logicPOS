@@ -387,7 +387,7 @@
     <Compile Include="UI\POS\Dialogs\PosKeyboardDialog.cs" />
     <Compile Include="UI\POS\Dialogs\PosMessageDialog.cs" />
     <Compile Include="UI\POS\Dialogs\PosMoneyPadDialog.cs" />
-    <Compile Include="UI\POS\Dialogs\PosPaymentsDialog.cs" />
+    <Compile Include="UI\POS\Dialogs\PaymentDialog\PaymentDialog.cs" />
     <Compile Include="UI\POS\Dialogs\PosPinPadDialog.cs" />
     <Compile Include="UI\POS\Dialogs\PosReportsDialog.cs" />
     <Compile Include="UI\POS\Dialogs\PosSystemDialog.cs" />
@@ -419,7 +419,7 @@
     <Compile Include="Classes\Logic\Pos\Dialogs\PosTablesDialog.cs" />
     <Compile Include="Classes\Logic\Pos\Dialogs\PosReadCardDialog.cs" />
     <Compile Include="UI\POS\Windows\StartupWindowEvents.cs" />
-    <Compile Include="Classes\Logic\Pos\Dialogs\PosPaymentsDialog.cs" />
+    <Compile Include="UI\POS\Dialogs\PaymentDialog\PaymentDialog.Functions.cs" />
     <Compile Include="Classes\Logic\Pos\Dialogs\PosSystemDialog.cs" />
     <Compile Include="Classes\Logic\Pos\Windows\PosMainWindow.cs" />
     <Compile Include="Classes\Logic\Widgets\Pads\TicketPad.cs" />

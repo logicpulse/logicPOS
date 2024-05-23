@@ -104,7 +104,7 @@ namespace logicpos
             if (PluginSettings.HasSoftwareVendorPlugin)
             {
                 PluginSettings.InitializeSoftwareVendorPluginSettings();
-                PluginSettings.SoftwareVendor.ValidateEmbeddedResources();
+                //PluginSettings.SoftwareVendor.ValidateEmbeddedResources();
             }
 
             // Init Stock Module

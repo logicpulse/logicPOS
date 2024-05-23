@@ -21,7 +21,7 @@ using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    internal partial class PosPaymentsDialog : PosBaseDialog
+    internal partial class PaymentDialog : PosBaseDialog
     {
         //Settings
         private readonly Color _colorEntryValidationValidFont = GeneralSettings.Settings["colorEntryValidationValidFont"].StringToColor();
@@ -86,21 +86,40 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public ProcessFinanceDocumentParameter ProcessFinanceDocumentParameter { get; set; }
 
         //Constructors
-        public PosPaymentsDialog(Window pSourceWindow, DialogFlags pDialogFlags, ArticleBag pArticleBag)
+        public PaymentDialog(
+            Window pSourceWindow, 
+            DialogFlags pDialogFlags, 
+            ArticleBag pArticleBag)
             : this(pSourceWindow, pDialogFlags, pArticleBag, true) { }
 
-        public PosPaymentsDialog(Window pSourceWindow, DialogFlags pDialogFlags, ArticleBag pArticleBag, bool pEnablePartialPaymentButtons)
+        public PaymentDialog(
+            Window pSourceWindow, 
+            DialogFlags pDialogFlags, 
+            ArticleBag pArticleBag, 
+            bool pEnablePartialPaymentButtons)
             : this(pSourceWindow, pDialogFlags, pArticleBag, pEnablePartialPaymentButtons, true) { }
 
         /* Please see ERR201810#14 */
         // A call to this overloaded contructor have issues when user is paying "Conta Corrente", when it is causing 2 invoices being created.
         // We changed the call to this overloaded method, directing the flow to main constructor from calling class.
-        public PosPaymentsDialog(Window pSourceWindow, DialogFlags pDialogFlags, ArticleBag pArticleBag, bool pEnablePartialPaymentButtons, bool pEnableCurrentAccountButton)
+        public PaymentDialog(
+            Window pSourceWindow, 
+            DialogFlags pDialogFlags, 
+            ArticleBag pArticleBag, 
+            bool pEnablePartialPaymentButtons, 
+            bool pEnableCurrentAccountButton)
             : this(pSourceWindow, pDialogFlags, pArticleBag, pEnablePartialPaymentButtons, pEnableCurrentAccountButton, false, null, null) { }
 
 
-
-        public PosPaymentsDialog(Window pSourceWindow, DialogFlags pDialogFlags, ArticleBag pArticleBag, bool pEnablePartialPaymentButtons, bool pEnableCurrentAccountButton, bool pSkipPersistFinanceDocument, ProcessFinanceDocumentParameter pProcessFinanceDocumentParameter, string pSelectedPaymentMethodButtonName)
+        public PaymentDialog(
+            Window pSourceWindow, 
+            DialogFlags pDialogFlags, 
+            ArticleBag pArticleBag, 
+            bool pEnablePartialPaymentButtons, 
+            bool pEnableCurrentAccountButton, 
+            bool pSkipPersistFinanceDocument, 
+            ProcessFinanceDocumentParameter pProcessFinanceDocumentParameter, 
+            string pSelectedPaymentMethodButtonName)
             : base(pSourceWindow, pDialogFlags, false)
         {
             try

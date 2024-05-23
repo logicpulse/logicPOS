@@ -391,7 +391,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //}
 
                 // Using RequestProcessFinanceDocumentParameter, to prevent Emmit Document On Ok/Close
-                PosPaymentsDialog dialog = new PosPaymentsDialog(_sourceWindow, DialogFlags.DestroyWithParent, touchButtonSplitPayment.ArticleBag, false, true, true, touchButtonSplitPayment.ProcessFinanceDocumentParameter, touchButtonSplitPayment.SelectedPaymentMethodButtonName);
+                PaymentDialog dialog = new PaymentDialog(_sourceWindow, DialogFlags.DestroyWithParent, touchButtonSplitPayment.ArticleBag, false, true, true, touchButtonSplitPayment.ProcessFinanceDocumentParameter, touchButtonSplitPayment.SelectedPaymentMethodButtonName);
                 int response = dialog.Run();
 
                 if (response == (int)ResponseType.Ok)

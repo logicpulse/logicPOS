@@ -25,7 +25,7 @@ using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    internal partial class PosPaymentsDialog
+    internal partial class PaymentDialog
     {
         //Commmon Button Event
         private void buttonCheck_Clicked(object sender, EventArgs e) { AssignPaymentMethod(sender); }

@@ -426,7 +426,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 // Get Dialog Reference
                 if (button.Name.Equals("touchButtonPosTicketPadPayments_Green"))
                 {
-                    dialog = new PosPaymentsDialog(SourceWindow, DialogFlags.DestroyWithParent, articleBag);
+                    dialog = new PaymentDialog(SourceWindow, DialogFlags.DestroyWithParent, articleBag);
                 }
                 else
                 if (button.Name.Equals("touchButtonPosTicketPadSplitAccount_Green"))

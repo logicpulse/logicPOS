@@ -408,7 +408,8 @@ namespace logicpos
                 if (databaseCreated)XPOHelper.Audit("DATABASE_CREATE");
 
                 // Plugin Errors Messages
-                if (PluginSettings.SoftwareVendor == null || !PluginSettings.SoftwareVendor.IsValidSecretKey(FinancialLibrarySettings.SecretKey))
+                if (PluginSettings.HasSoftwareVendorPlugin == false || 
+                    PluginSettings.SoftwareVendor.IsValidSecretKey(FinancialLibrarySettings.SecretKey) == false)
                 {
                     /* IN009034 */
                     GlobalApp.DialogThreadNotify.WakeupMain();

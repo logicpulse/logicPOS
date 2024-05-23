@@ -1094,7 +1094,7 @@ WHERE
                 //
                 // We are now calling main class constructor method, setting "pSkipPersistFinanceDocument" parameter to "true" instead, 
                 // avoiding double invoice creation issue for "Conta Corrente" payments.
-                PosPaymentsDialog dialog = new PosPaymentsDialog(pSourceWindow, DialogFlags.DestroyWithParent, articleBag, false, false, true, ccCustomerOid, null);
+                PaymentDialog dialog = new PaymentDialog(pSourceWindow, DialogFlags.DestroyWithParent, articleBag, false, false, true, ccCustomerOid, null);
 
                 int response = dialog.Run();
                 if (response == (int)ResponseType.Ok)
