@@ -1,8 +1,8 @@
 ﻿using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
-using logicpos.financial.library.Classes.Finance;
 using LogicPOS.DTOs.Common;
+using LogicPOS.Finance.Utility;
 using LogicPOS.Settings;
 using System;
 using System.Configuration;
@@ -14,7 +14,6 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
-using LogicPOS.Settings.Extensions;
 
 namespace logicpos.financial.service.Objects.Modules.AT
 {
@@ -411,7 +410,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
             /* IN009150 - end */
 
             //Init Local Vars
-            string customerTaxID = FiscalNumber.ExtractFiscalNumber(entityFiscalNumber);
+            string customerTaxID = FiscalNumberUtils.ExtractFiscalNumber(entityFiscalNumber);
 
             //Test mode, increase DocumentNumber only when Develop
             if (_increaseDocumentNumber) _documentMaster.IncreaseDocumentNumber();
@@ -504,7 +503,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
             /* IN009150 - end */
 
             //Init Local Vars
-            string customerTaxID = FiscalNumber.ExtractFiscalNumber(entityFiscalNumber);
+            string customerTaxID = FiscalNumberUtils.ExtractFiscalNumber(entityFiscalNumber);
             //MovementStartTime equal/greater system DateTime to prevent -100 error (Override _documentMaster.MovementStartTime)
             _movementStartTime = DateTime.Now;
 

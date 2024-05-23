@@ -601,7 +601,7 @@ namespace logicpos.financial.library.App
                         )
                     {
                         //Prepare ProcessFinanceDocumentParameter
-                        ProcessFinanceDocumentParameter processFinanceDocumentParameter = new ProcessFinanceDocumentParameter(DocumentSettings.XpoOidDocumentFinanceTypeConferenceDocument, articleBag)
+                        FinanceDocumentProcessingParameters processFinanceDocumentParameter = new FinanceDocumentProcessingParameters(DocumentSettings.XpoOidDocumentFinanceTypeConferenceDocument, articleBag)
                         {
                             Customer = InvoiceSettings.FinalConsumerId
                         };
@@ -618,7 +618,7 @@ namespace logicpos.financial.library.App
                         }
 
                         //Generate New Document
-                        fin_documentfinancemaster newDocument = ProcessFinanceDocument.PersistFinanceDocument(processFinanceDocumentParameter, false);
+                        fin_documentfinancemaster newDocument = FinanceDocumentProcessingUtils.PersistFinanceDocument(processFinanceDocumentParameter, false);
 
                         //Assign DocumentStatus and OrderReferences
                         if (newDocument != null)

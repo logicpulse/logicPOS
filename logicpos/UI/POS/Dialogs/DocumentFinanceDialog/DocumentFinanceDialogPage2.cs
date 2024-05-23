@@ -10,6 +10,7 @@ using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.App;
 using logicpos.financial.library.Classes.Finance;
+using LogicPOS.Finance.Utility;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Extensions;
@@ -305,7 +306,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
                 if (EntryBoxSelectCustomerFiscalNumber.EntryValidation.Validated)
                 {
-                    bool isValidFiscalNumber = FiscalNumber.IsValidFiscalNumber(EntryBoxSelectCustomerFiscalNumber.EntryValidation.Text, EntryBoxSelectCustomerCountry.Value.Code2);
+                    bool isValidFiscalNumber = FiscalNumberUtils.IsValidFiscalNumber(EntryBoxSelectCustomerFiscalNumber.EntryValidation.Text, EntryBoxSelectCustomerCountry.Value.Code2);
                     //Get Customer from Fiscal Number
                     if (isValidFiscalNumber)
                     {
@@ -652,7 +653,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 decimal totalDocument = (_pagePad3.ArticleBag != null && _pagePad3.ArticleBag.TotalFinal > 0) ? _pagePad3.ArticleBag.TotalFinal : 0.0m;
                 bool isFinalConsumerEntity = (_pagePad.Customer != null && _pagePad.Customer.Oid == InvoiceSettings.FinalConsumerId);
                 bool isHiddenConsumerEntity = (_pagePad.Customer != null && _pagePad.Customer.FiscalNumber == SaftSettings.FinanceFinalConsumerFiscalNumber);
-                bool isSingularEntity = (isFinalConsumerEntity || FiscalNumber.IsSingularEntity(EntryBoxSelectCustomerFiscalNumber.EntryValidation.Text, EntryBoxSelectCustomerCountry.Value.Code2));
+                bool isSingularEntity = (isFinalConsumerEntity || FiscalNumberUtils.IsSingularEntity(EntryBoxSelectCustomerFiscalNumber.EntryValidation.Text, EntryBoxSelectCustomerCountry.Value.Code2));
                 bool isInvoice = false;
                 bool isSimplifiedInvoice = false;
                 bool isConferenceDocument = false;
@@ -889,7 +890,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 //ReCheck if FiscalNumber is Valid
                 if (EntryBoxSelectCustomerFiscalNumber.EntryValidation.Text != string.Empty && EntryBoxSelectCustomerFiscalNumber.EntryValidation.Validated)
                 {
-                    bool isValidFiscalNumber = FiscalNumber.IsValidFiscalNumber(EntryBoxSelectCustomerFiscalNumber.EntryValidation.Text, EntryBoxSelectCustomerCountry.Value.Code2);
+                    bool isValidFiscalNumber = FiscalNumberUtils.IsValidFiscalNumber(EntryBoxSelectCustomerFiscalNumber.EntryValidation.Text, EntryBoxSelectCustomerCountry.Value.Code2);
                     EntryBoxSelectCustomerFiscalNumber.EntryValidation.Validated = isValidFiscalNumber;
                     //Disable FiscalNumber Entry
                     //_entryBoxSelectCustomerFiscalNumber.EntryValidation.Sensitive = !isValidFiscalNumber;
@@ -924,7 +925,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 bool isSingularEntity = (
                     isFinalConsumerEntity ||
                     EntryBoxSelectCustomerFiscalNumber.EntryValidation.Validated &&
-                    FiscalNumber.IsSingularEntity(EntryBoxSelectCustomerFiscalNumber.EntryValidation.Text, EntryBoxSelectCustomerCountry.Value.Code2)
+                    FiscalNumberUtils.IsSingularEntity(EntryBoxSelectCustomerFiscalNumber.EntryValidation.Text, EntryBoxSelectCustomerCountry.Value.Code2)
                 );
 
                 //If is a SingularEntity and Not isRequiredAllCustomerDetails Disable Address, ZipCode and City

@@ -113,7 +113,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 }catch(Exception ex) { _logger.Error("QRCode print error: " + ex.Message); }
 
                 //Get Hash4Chars from Hash
-                string hash4Chars = ProcessFinanceDocument.GenDocumentHash4Chars(_documentMaster.Hash);
+                string hash4Chars = FinanceDocumentProcessingUtils.GenDocumentHash4Chars(_documentMaster.Hash);
                 //Call Base CertificationText 
                 PrintCertificationText(hash4Chars);
             }

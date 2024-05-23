@@ -9,6 +9,7 @@ using System.Data;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using logicpos.datalayer.Xpo;
+using LogicPOS.Finance.Utility;
 
 namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 {
@@ -198,7 +199,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 if (_documentFinancePaymentList[0].CurrencyAcronym != XPOSettings.ConfigurationSystemCurrency.Acronym)
                 {
                     //Get ExtendedValue
-                    ExtendValue extendValue = new ExtendValue();
+                    NumberToWordsUtility extendValue = new NumberToWordsUtility();
                     extended = extendValue.GetExtendedValue(_documentFinancePaymentList[0].PaymentAmount * _documentFinancePaymentList[0].ExchangeRate, _documentFinancePaymentList[0].CurrencyDesignation);
                 }
 

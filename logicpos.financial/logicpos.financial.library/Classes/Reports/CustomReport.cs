@@ -1766,7 +1766,7 @@ namespace logicpos.financial.library.Classes.Reports
             {
                 //Generate Default CopyNames from DocumentType
                 List<int> copyNames = CopyNames(pDocumentFinanceMaster.DocumentType.PrintCopies);
-                string hash4Chars = ProcessFinanceDocument.GenDocumentHash4Chars(pDocumentFinanceMaster.Hash);
+                string hash4Chars = FinanceDocumentProcessingUtils.GenDocumentHash4Chars(pDocumentFinanceMaster.Hash);
                 pDestinationFileName = pDestinationFileName.Replace('\n'.ToString(), "");
                 result = ProcessReportFinanceDocument(pDisplayMode, pDocumentFinanceMaster.Oid, hash4Chars, copyNames, pDestinationFileName);
             }

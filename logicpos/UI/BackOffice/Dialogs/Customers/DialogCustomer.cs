@@ -15,6 +15,7 @@ using logicpos.datalayer.Xpo;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using LogicPOS.Finance.Utility;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -344,7 +345,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             bool result = false;
             //IN:009268 BackOffice - NIF auto-complete Clean fields on insert different VAT
 
-            if (_configurationCountry != null) result = FiscalNumber.IsValidFiscalNumber(_entryFiscalNumber.Text, _configurationCountry.Code2);
+            if (_configurationCountry != null) result = FiscalNumberUtils.IsValidFiscalNumber(_entryFiscalNumber.Text, _configurationCountry.Code2);
             /* IN009061 - used to force field to be shown in error or not */
             _genericCRUDWidgetXPOFiscalNumber.Validated = result;
 

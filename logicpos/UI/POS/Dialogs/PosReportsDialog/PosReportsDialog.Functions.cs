@@ -33,7 +33,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 //Generate Default CopyNames from DocumentType
                 List<int> copyNames = CustomReport.CopyNames(documentFinanceMaster.DocumentType.PrintCopies);
-                string hash4Chars = ProcessFinanceDocument.GenDocumentHash4Chars(documentFinanceMaster.Hash);
+                string hash4Chars = FinanceDocumentProcessingUtils.GenDocumentHash4Chars(documentFinanceMaster.Hash);
                 string destinationFileName = "";
                 string result = CustomReport.ProcessReportFinanceDocument(CustomReportDisplayMode.Design, documentFinanceMaster.Oid, hash4Chars, copyNames, destinationFileName);
                 _logger.Debug(string.Format("Result: [{0}]", result));

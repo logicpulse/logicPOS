@@ -14,6 +14,7 @@ using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
 using logicpos.financial.library.App;
 using logicpos.financial.library.Classes.Finance;
+using LogicPOS.Finance.Utility;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Extensions;
@@ -196,7 +197,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             else
                             {
                                 //Prepare ProcessFinanceDocumentParameter : Shared for PartialPayment and FullPayment
-                                ProcessFinanceDocumentParameter = new ProcessFinanceDocumentParameter(
+                                ProcessFinanceDocumentParameter = new FinanceDocumentProcessingParameters(
                                     _processDocumentType, processArticleBag
                                 )
                                 {
@@ -408,7 +409,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 if (_entryBoxSelectCustomerFiscalNumber.EntryValidation.Validated)
                 {
-                    bool isValidFiscalNumber = FiscalNumber.IsValidFiscalNumber(_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text, _entryBoxSelectCustomerCountry.Value.Code2);
+                    bool isValidFiscalNumber = FiscalNumberUtils.IsValidFiscalNumber(_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text, _entryBoxSelectCustomerCountry.Value.Code2);
                     //Get Customer from Fiscal Number
                     if (isValidFiscalNumber)
                     {
@@ -766,7 +767,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //Init Variables
                 decimal totalDocument = (ArticleBagPartialPayment == null) ? ArticleBagFullPayment.TotalFinal : ArticleBagPartialPayment.TotalFinal;
                 bool isFinalConsumerEntity = (Customer != null && Customer.Oid == InvoiceSettings.FinalConsumerId);
-                bool isSingularEntity = (isFinalConsumerEntity || FiscalNumber.IsSingularEntity(_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text, _entryBoxSelectCustomerCountry.Value.Code2));
+                bool isSingularEntity = (isFinalConsumerEntity || FiscalNumberUtils.IsSingularEntity(_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text, _entryBoxSelectCustomerCountry.Value.Code2));
                 // Encrypt pFieldValue to use in Sql Filter
                 string fiscalNumberFilterValue = string.Empty;
                 if (LogicPOS.Settings.PluginSettings.HasSoftwareVendorPlugin)
@@ -899,7 +900,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //ReCheck if FiscalNumber is Valid
                 if (_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text != string.Empty && _entryBoxSelectCustomerFiscalNumber.EntryValidation.Validated)
                 {
-                    bool isValidFiscalNumber = FiscalNumber.IsValidFiscalNumber(_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text, _entryBoxSelectCustomerCountry.Value.Code2);
+                    bool isValidFiscalNumber = FiscalNumberUtils.IsValidFiscalNumber(_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text, _entryBoxSelectCustomerCountry.Value.Code2);
                     _entryBoxSelectCustomerFiscalNumber.EntryValidation.Validated = isValidFiscalNumber;
                 }
 
@@ -922,7 +923,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             bool isSingularEntity = (
                 isFinalConsumerEntity ||
                 _entryBoxSelectCustomerFiscalNumber.EntryValidation.Validated &&
-                FiscalNumber.IsSingularEntity(_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text, _entryBoxSelectCustomerCountry.Value.Code2)
+                FiscalNumberUtils.IsSingularEntity(_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text, _entryBoxSelectCustomerCountry.Value.Code2)
             );
 
             //If is a SingularEntity Disable Address, ZipCode and City

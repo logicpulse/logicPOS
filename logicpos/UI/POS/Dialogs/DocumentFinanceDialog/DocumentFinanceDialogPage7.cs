@@ -128,7 +128,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             Guid customerGuid = new Guid("6223881a-4d2d-4de4-b254-f8529193da33");
 
             //Prepare ProcessFinanceDocumentParameter
-            ProcessFinanceDocumentParameter processFinanceDocumentParameter = new ProcessFinanceDocumentParameter(
+            FinanceDocumentProcessingParameters processFinanceDocumentParameter = new FinanceDocumentProcessingParameters(
               documentTypeGuid, _articleBag)
             {
                 Customer = customerGuid
@@ -171,7 +171,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             ArticleBag articleBag = ArticleBag.DocumentFinanceMasterToArticleBag(documentOrderReference);
 
             //Prepare ProcessFinanceDocumentParameter
-            ProcessFinanceDocumentParameter processFinanceDocumentParameter = new ProcessFinanceDocumentParameter(
+            FinanceDocumentProcessingParameters processFinanceDocumentParameter = new FinanceDocumentProcessingParameters(
               documentTypeGuid, articleBag)
             {
                 Customer = customerGuid,
@@ -201,7 +201,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             ArticleBag articleBag = ArticleBag.DocumentFinanceMasterToArticleBag(documentReference);
 
             //Prepare ProcessFinanceDocumentParameter
-            ProcessFinanceDocumentParameter processFinanceDocumentParameter = new ProcessFinanceDocumentParameter(
+            FinanceDocumentProcessingParameters processFinanceDocumentParameter = new FinanceDocumentProcessingParameters(
               documentTypeGuid, articleBag)
             {
                 Customer = documentReference.EntityOid,
@@ -246,7 +246,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             };
 
             //Prepare ProcessFinanceDocumentParameter
-            ProcessFinanceDocumentParameter processFinanceDocumentParameter = new ProcessFinanceDocumentParameter(
+            FinanceDocumentProcessingParameters processFinanceDocumentParameter = new FinanceDocumentProcessingParameters(
                 documentTypeGuid, articleBag)
             {
                 Customer = customerGuid,
@@ -279,7 +279,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             };
 
             //Prepare ProcessFinanceDocumentParameter
-            ProcessFinanceDocumentParameter processFinanceDocumentParameter = new ProcessFinanceDocumentParameter(
+            FinanceDocumentProcessingParameters processFinanceDocumentParameter = new FinanceDocumentProcessingParameters(
               documentTypeGuid, articleBag)
             {
                 Customer = customerGuid,
@@ -314,7 +314,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             };
 
             //Prepare ProcessFinanceDocumentParameter
-            ProcessFinanceDocumentParameter processFinanceDocumentParameter = new ProcessFinanceDocumentParameter(
+            FinanceDocumentProcessingParameters processFinanceDocumentParameter = new FinanceDocumentProcessingParameters(
               documentTypeGuid, articleBag)
             {
                 Customer = customerGuid,
@@ -345,7 +345,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             };
 
             //Prepare ProcessFinanceDocumentParameter
-            ProcessFinanceDocumentParameter processFinanceDocumentParameter = new ProcessFinanceDocumentParameter(
+            FinanceDocumentProcessingParameters processFinanceDocumentParameter = new FinanceDocumentProcessingParameters(
               documentTypeGuid, articleBag)
             {
                 Customer = customerGuid,
@@ -374,7 +374,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             };
 
             //Prepare ProcessFinanceDocumentParameter
-            ProcessFinanceDocumentParameter processFinanceDocumentParameter = new ProcessFinanceDocumentParameter(
+            FinanceDocumentProcessingParameters processFinanceDocumentParameter = new FinanceDocumentProcessingParameters(
               documentTypeGuid, articleBag)
             {
                 Customer = customerGuid,
@@ -403,7 +403,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             };
 
             //Prepare ProcessFinanceDocumentParameter
-            ProcessFinanceDocumentParameter processFinanceDocumentParameter = new ProcessFinanceDocumentParameter(
+            FinanceDocumentProcessingParameters processFinanceDocumentParameter = new FinanceDocumentProcessingParameters(
               documentTypeGuid, articleBag)
             {
                 Customer = customerGuid,
@@ -432,7 +432,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             };
 
             //Prepare ProcessFinanceDocumentParameter
-            ProcessFinanceDocumentParameter processFinanceDocumentParameter = new ProcessFinanceDocumentParameter(
+            FinanceDocumentProcessingParameters processFinanceDocumentParameter = new FinanceDocumentProcessingParameters(
               documentTypeGuid, articleBag)
             {
                 Customer = customerGuid,

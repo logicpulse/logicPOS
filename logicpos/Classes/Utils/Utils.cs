@@ -226,7 +226,7 @@ namespace logicpos
             ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"), errorMessage);
         }
 
-        public static ResponseType ShowMessageTouchCheckIfFinanceDocumentHasValidDocumentDate(Window pSourceWindow, ProcessFinanceDocumentParameter pParameters)
+        public static ResponseType ShowMessageTouchCheckIfFinanceDocumentHasValidDocumentDate(Window pSourceWindow, FinanceDocumentProcessingParameters pParameters)
         {
             //Default is Yes
             ResponseType result = ResponseType.Yes;
@@ -256,7 +256,7 @@ namespace logicpos
                 DateTime dateLastDocumentFromSerie = DateTime.MaxValue;
                 if (documentFinanceSerie != null)
                 {
-                    dateLastDocumentFromSerie = ProcessFinanceDocument.GetLastDocumentDateTime(string.Format("DocumentSerie = '{0}'", documentFinanceSerie.Oid)).Date;
+                    dateLastDocumentFromSerie = FinanceDocumentProcessingUtils.GetLastDocumentDateTime(string.Format("DocumentSerie = '{0}'", documentFinanceSerie.Oid)).Date;
                 }
 
                 //Check if DocumentDate is greater than dateLastDocumentFromSerie (If Defined) else if is First Document in Series Skip
@@ -267,7 +267,7 @@ namespace logicpos
                 else
                 {
                     //WARNING_RULE_SYSTEM_DATE_GLOBAL
-                    DateTime dateTimeLastDocument = ProcessFinanceDocument.GetLastDocumentDateTime();
+                    DateTime dateTimeLastDocument = FinanceDocumentProcessingUtils.GetLastDocumentDateTime();
                     //Check if DocumentDate is greater than dateLastDocument (If Defined) else if is First Document in Series Skip
                     if (pParameters.DocumentDateTime < dateTimeLastDocument && dateTimeLastDocument != DateTime.MinValue)
                     {

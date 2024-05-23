@@ -40,7 +40,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         //Get Parameters
                         //TK016249 - Impressoras - Diferenciação entre Tipos
                         PrintingSettings.UsingThermalPrinter = false;
-                        ProcessFinanceDocumentParameter processFinanceDocumentParameter = GetFinanceDocumentParameter();
+                        FinanceDocumentProcessingParameters processFinanceDocumentParameter = GetFinanceDocumentParameter();
 
                         //If error in Save or Update Customer
                         if (processFinanceDocumentParameter.Customer == Guid.Empty)
@@ -242,7 +242,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             return articleBag;
         }
 
-        private ProcessFinanceDocumentParameter GetFinanceDocumentParameter()
+        private FinanceDocumentProcessingParameters GetFinanceDocumentParameter()
         {
             //Always Recreate ArticleBag before contruct ProcessFinanceDocumentParameter
             _pagePad3.ArticleBag = GetArticleBag();
@@ -285,7 +285,7 @@ _pagePad2.EntryBoxCustomerEmail.EntryValidation.Text,
             }
 
             //Construct ProcessFinanceDocumentParameter
-            ProcessFinanceDocumentParameter result = new ProcessFinanceDocumentParameter(
+            FinanceDocumentProcessingParameters result = new FinanceDocumentProcessingParameters(
               _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid, _pagePad3.ArticleBag
             )
             {

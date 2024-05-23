@@ -34,7 +34,7 @@ namespace logicpos
         //ProcessFinanceDocument
         //Use: DocumentFinanceMaster resultDocument = FrameworkCalls.ProcessFinanceDocument(SourceWindow, processFinanceDocumentParameter);
 
-        public static fin_documentfinancemaster PersistFinanceDocument(Window pSourceWindow, ProcessFinanceDocumentParameter pProcessFinanceDocumentParameter)
+        public static fin_documentfinancemaster PersistFinanceDocument(Window pSourceWindow, FinanceDocumentProcessingParameters pProcessFinanceDocumentParameter)
         {
             bool printDocument = true;
             fin_documentfinancemaster result = null;
@@ -45,7 +45,7 @@ namespace logicpos
                 ResponseType responseType = Utils.ShowMessageTouchCheckIfFinanceDocumentHasValidDocumentDate(pSourceWindow, pProcessFinanceDocumentParameter);
                 if (responseType != ResponseType.Yes) return result;
 
-                fin_documentfinancemaster documentFinanceMaster = ProcessFinanceDocument.PersistFinanceDocument(pProcessFinanceDocumentParameter, true);
+                fin_documentfinancemaster documentFinanceMaster = FinanceDocumentProcessingUtils.PersistFinanceDocument(pProcessFinanceDocumentParameter, true);
                 fin_documentfinancedetailorderreference fin_documentfinancedetailorderreference = new fin_documentfinancedetailorderreference();
                 if (documentFinanceMaster != null)
                 {
@@ -309,7 +309,7 @@ namespace logicpos
 
             try
             {
-                fin_documentfinancepayment documentFinancePayment = ProcessFinanceDocument.PersistFinanceDocumentPayment(pInvoices, pCreditNotes, pCustomer, pPaymentMethod, pConfigurationCurrency, pPaymentAmount, pPaymentNotes);
+                fin_documentfinancepayment documentFinancePayment = FinanceDocumentProcessingUtils.PersistFinanceDocumentPayment(pInvoices, pCreditNotes, pCustomer, pPaymentMethod, pConfigurationCurrency, pPaymentAmount, pPaymentNotes);
                 if (documentFinancePayment != null)
                 {
                     //Always send back the Valid Document

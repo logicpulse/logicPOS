@@ -1,16 +1,13 @@
 ﻿using LogicPOS.Globalization;
+using LogicPOS.Settings;
 using System;
 using System.Collections;
-using System.Configuration;
 using System.Text.RegularExpressions;
 
-namespace logicpos.financial.library.Classes.Finance
+namespace LogicPOS.Finance.Utility
 {
-    public class ExtendValue
+    public class NumberToWordsUtility
     {
-        //Log4Net
-        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
         /// <summary>
         /// Função para escrever por extenso os valores em Real (em C# - suporta até R$ 9.999.999.999,99)     
         /// Rotina Criada para ler um número e transformá-lo em extenso                                       
@@ -35,13 +32,13 @@ namespace logicpos.financial.library.Classes.Finance
             string moedaPlural = ApplyPluralizationForCurrency(pAcronym);
 
             /* IN009018 */
-   
+
             string moedaDecimalSingular = CultureResources.GetResourceByLanguage("", "numbers_to_words_cent");//Centavo
             string moedaDecimalPlural = CultureResources.GetResourceByLanguage("", "numbers_to_words_cents");//Centavos
-            if (ConfigurationManager.AppSettings["cultureFinancialRules"] == "pt-MZ" || ConfigurationManager.AppSettings["cultureFinancialRules"] == "pt-AO")
+            if (GeneralSettings.Settings["cultureFinancialRules"] == "pt-MZ" || GeneralSettings.Settings["cultureFinancialRules"] == "pt-AO")
             {
-                moedaDecimalSingular = CultureResources.GetResourceByLanguage(ConfigurationManager.AppSettings["cultureFinancialRules"], "numbers_to_words_cent");//Centavo
-                moedaDecimalPlural = CultureResources.GetResourceByLanguage(ConfigurationManager.AppSettings["cultureFinancialRules"], "numbers_to_words_cents");//Centavos
+                moedaDecimalSingular = CultureResources.GetResourceByLanguage(GeneralSettings.Settings["cultureFinancialRules"], "numbers_to_words_cent");//Centavo
+                moedaDecimalPlural = CultureResources.GetResourceByLanguage(GeneralSettings.Settings["cultureFinancialRules"], "numbers_to_words_cents");//Centavos
             }
 
             string strValorExtenso = ""; //Variável que irá armazenar o valor por extenso do número informado
@@ -71,16 +68,10 @@ namespace logicpos.financial.library.Classes.Finance
                 //Gerar Extenso Centavos 
                 pValue = (decimal.Round(pValue, 2));
 
-                try
-                {
-                    // Fix Force .00 2 zeros else errors arrise
-                    pValue = decimal.Parse(pValue.ToString("F"));
-                    dblCentavos = pValue - (long)pValue;
-                }
-                catch (Exception ex)
-                {
-                    _logger.Error(ex.Message, ex);
-                }
+
+                // Fix Force .00 2 zeros else errors arrise
+                pValue = decimal.Parse(pValue.ToString("F"));
+                dblCentavos = pValue - (long)pValue;
 
                 //Gerar Extenso parte Inteira
                 decimal dblValorInteiro = (long)pValue;
@@ -307,7 +298,7 @@ namespace logicpos.financial.library.Classes.Finance
 
             if (!string.IsNullOrEmpty(currency))
             {
-				/* #TODO: Improve this block of code */
+                /* #TODO: Improve this block of code */
                 if (currency.ToUpper().EndsWith("L")) /* Real, Metical, ... */
                 {
                     int place = currency.LastIndexOf("l");

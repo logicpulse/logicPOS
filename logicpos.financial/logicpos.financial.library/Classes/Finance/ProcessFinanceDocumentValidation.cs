@@ -3,6 +3,7 @@ using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.App;
 using logicpos.shared.Enums;
+using LogicPOS.Finance.Utility;
 using LogicPOS.Settings;
 using LogicPOS.Shared;
 using LogicPOS.Shared.Article;
@@ -245,13 +246,13 @@ namespace logicpos.financial.library.Classes.Finance
         private static bool _requireToChooseVatExemptionReason = true;
 
         //Constructors
-        public static SortedDictionary<FinanceValidationError, object> ValidatePersistFinanceDocument(ProcessFinanceDocumentParameter pParameters, bool pIgnoreWarning = false)
+        public static SortedDictionary<FinanceValidationError, object> ValidatePersistFinanceDocument(FinanceDocumentProcessingParameters pParameters, bool pIgnoreWarning = false)
         {
             Guid userDetailGuid = (XPOSettings.LoggedUser != null) ? XPOSettings.LoggedUser.Oid : Guid.Empty;
             return ValidatePersistFinanceDocument(pParameters, userDetailGuid, pIgnoreWarning);
         }
 
-        public static SortedDictionary<FinanceValidationError, object> ValidatePersistFinanceDocument(ProcessFinanceDocumentParameter pParameters, Guid pLoggedUser, bool pIgnoreWarning = false)
+        public static SortedDictionary<FinanceValidationError, object> ValidatePersistFinanceDocument(FinanceDocumentProcessingParameters pParameters, Guid pLoggedUser, bool pIgnoreWarning = false)
         {
             //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
             //Init Common Variables
@@ -309,7 +310,7 @@ namespace logicpos.financial.library.Classes.Finance
                     : totalDocumentForeignCurrency
                 ;
                 bool customerIsSingularEntity = customer == null || customer.Country == null
-|| FiscalNumber.IsSingularEntity(customer.FiscalNumber, customer.Country.Code2);
+|| FiscalNumberUtils.IsSingularEntity(customer.FiscalNumber, customer.Country.Code2);
                 //RegEx
                 //If not Saft Document Type 2, required greater than zero in Price, else we can have zero or greater from Document Type 2 (ex Transportation Guide)
                 string regExArticlePrice = (documentType != null && documentType.SaftDocumentType != SaftDocumentType.MovementOfGoods) ? LogicPOS.Utility.RegexUtils.RegexDecimalGreaterThanZero : LogicPOS.Utility.RegexUtils.RegexDecimalGreaterEqualThanZero;
@@ -608,7 +609,7 @@ namespace logicpos.financial.library.Classes.Finance
                 //This code is similar to : ShowMessageTouchCheckIfFinanceDocumentHasValidDocumentDate, change in both
 
                 //Protection to Check if System.DateTime is < Last Document.DateTime (All Finance Documents)
-                DateTime dateTimeLastDocument = ProcessFinanceDocument.GetLastDocumentDateTime();
+                DateTime dateTimeLastDocument = FinanceDocumentProcessingUtils.GetLastDocumentDateTime();
                 if (!pIgnoreWarning && pParameters.DocumentDateTime < dateTimeLastDocument && dateTimeLastDocument != DateTime.MinValue)
                 {
                     ResultAdd(FinanceValidationError.WARNING_RULE_SYSTEM_DATE_GLOBAL);
@@ -621,7 +622,7 @@ namespace logicpos.financial.library.Classes.Finance
                 DateTime dateLastDocumentFromSerie = DateTime.MaxValue;
                 if (documentFinanceSerie != null)
                 {
-                    dateLastDocumentFromSerie = ProcessFinanceDocument.GetLastDocumentDateTime(string.Format("DocumentSerie = '{0}'", documentFinanceSerie.Oid)).Date;
+                    dateLastDocumentFromSerie = FinanceDocumentProcessingUtils.GetLastDocumentDateTime(string.Format("DocumentSerie = '{0}'", documentFinanceSerie.Oid)).Date;
                 }
 
                 if (!pIgnoreWarning && pParameters.DocumentDateTime < dateLastDocumentFromSerie && dateLastDocumentFromSerie != DateTime.MinValue)
@@ -1038,7 +1039,7 @@ namespace logicpos.financial.library.Classes.Finance
                 //Extra Validation for types that have more than RegEx Requirements
                 if (result && item.Key == FinanceValidationError.ERROR_FIELD_CUSTOMER_FISCAL_NUMBER_INVALID)
                 {
-                    result = FiscalNumber.IsValidFiscalNumber(value, _countryCode2);
+                    result = FiscalNumberUtils.IsValidFiscalNumber(value, _countryCode2);
                 }
 
                 if (!result)

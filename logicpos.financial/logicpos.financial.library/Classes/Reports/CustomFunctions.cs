@@ -9,6 +9,7 @@ using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using logicpos.datalayer.Xpo;
 using LogicPOS.Settings;
+using LogicPOS.Finance.Utility;
 
 namespace logicpos.financial.library.Classes.Reports
 {
@@ -299,7 +300,7 @@ namespace logicpos.financial.library.Classes.Reports
         {
             try
             {
-                ExtendValue extendValue = new ExtendValue();
+                NumberToWordsUtility extendValue = new NumberToWordsUtility();
                 return extendValue.GetExtendedValue(pValue, pAcronym);
             }
             catch (Exception ex)
