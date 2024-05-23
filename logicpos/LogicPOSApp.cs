@@ -409,12 +409,12 @@ namespace logicpos
 
                 // Plugin Errors Messages
                 if (PluginSettings.HasSoftwareVendorPlugin == false || 
-                    PluginSettings.SoftwareVendor.IsValidSecretKey(FinancialLibrarySettings.SecretKey) == false)
+                    PluginSettings.SoftwareVendor.IsValidSecretKey(PluginSettings.SecretKey) == false)
                 {
                     /* IN009034 */
                     GlobalApp.DialogThreadNotify.WakeupMain();
 
-                    _logger.Debug(string.Format("void Init() :: Wrong key detected [{0}]. Use a valid LogicposFinantialLibrary with same key as SoftwareVendorPlugin", FinancialLibrarySettings.SecretKey));
+                    _logger.Debug(string.Format("void Init() :: Wrong key detected [{0}]. Use a valid LogicposFinantialLibrary with same key as SoftwareVendorPlugin", PluginSettings.SecretKey));
                     Utils.ShowMessageTouch(
                         GlobalApp.StartupWindow,
                         DialogFlags.Modal,

@@ -7,6 +7,8 @@ namespace LogicPOS.Settings
 {
     public static class PluginSettings
     {
+        public static string SecretKey = ")p[r#HW'gOg|KNI1L3k]H&~D!DKy`Y[fx2/t&s7{:!S<xDl,l#5)[YHcVf'3UUc";
+
         public static string AppSoftwareName { get; set; }
         public static string AppCompanyName { get; set; }
         public static string AppCompanyPhone { get; set; }
@@ -15,7 +17,7 @@ namespace LogicPOS.Settings
         public static string AppSoftwareVersionFormat { get; set; }
 
         public static PluginContainer PluginContainer { get; set; }
-        //public static ISoftwareVendor PluginSoftwareVendor { get; set; } -> Trying to use only PlgunSettings.SoftwareVendor @tchial0
+
         public static ISoftwareVendor SoftwareVendor { get; set; }
         public static ILicenseManager LicenceManager { get; set; }
 
