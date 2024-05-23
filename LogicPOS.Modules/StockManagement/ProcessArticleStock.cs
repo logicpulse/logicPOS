@@ -3,11 +3,10 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
-using System;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using System;
 
-namespace logicpos.financial.library.Classes.Stocks
+namespace LogicPOS.Modules.StockManagement
 {
     public class ProcessArticleStock
     {
@@ -88,10 +87,10 @@ namespace logicpos.financial.library.Classes.Stocks
                 switch (pMode)
                 {
                     case ProcessArticleStockMode.Out:
-                       XPOHelper.Audit("STOCK_MOVEMENT_OUT", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_stock_movement_out"), article.Designation, LogicPOS.Utility.DataConversionUtils.DecimalToString(quantity, LogicPOS.Settings.CultureSettings.DecimalFormatStockQuantity)));
+                        XPOHelper.Audit("STOCK_MOVEMENT_OUT", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_stock_movement_out"), article.Designation, LogicPOS.Utility.DataConversionUtils.DecimalToString(quantity, LogicPOS.Settings.CultureSettings.DecimalFormatStockQuantity)));
                         break;
                     case ProcessArticleStockMode.In:
-                       XPOHelper.Audit("STOCK_MOVEMENT_IN", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_stock_movement_in"), article.Designation, LogicPOS.Utility.DataConversionUtils.DecimalToString(quantity, LogicPOS.Settings.CultureSettings.DecimalFormatStockQuantity)));
+                        XPOHelper.Audit("STOCK_MOVEMENT_IN", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_stock_movement_in"), article.Designation, LogicPOS.Utility.DataConversionUtils.DecimalToString(quantity, LogicPOS.Settings.CultureSettings.DecimalFormatStockQuantity)));
                         break;
                 }
 

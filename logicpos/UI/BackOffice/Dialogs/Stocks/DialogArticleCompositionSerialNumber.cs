@@ -12,13 +12,13 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
 using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
+using LogicPOS.Globalization;
+using LogicPOS.Modules;
+using LogicPOS.Settings;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using LogicPOS.Settings.Extensions;
-using LogicPOS.Globalization;
-using LogicPOS.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 {
@@ -33,7 +33,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
         private XPOEntryBoxSelectRecordValidation<fin_articleserialnumber, TreeViewArticleSerialNumber> _entryBoxArticleSerialNumber;
         private XPOEntryBoxSelectRecordValidation<fin_articleserialnumber, TreeViewArticleSerialNumber> _entryBoxArticleSerialNumberToChange;
         private XPOEntryBoxSelectRecordValidation<fin_articleserialnumber, TreeViewArticleSerialNumber> _entryBoxArticleSerialNumberCompositionArticles;
-        private XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>  _entryBoxSelectSupplier;
+        private XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer> _entryBoxSelectSupplier;
         private XPOEntryBoxSelectRecordValidation<fin_documentfinancemaster, TreeViewDocumentFinanceMaster> _entryBoxSelectDocumentOut;
         private EntryBoxValidation _entryBoxDocumentNumber;
         private EntryBoxValidation _entryBoxPrice1;
@@ -70,12 +70,12 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
             _xPGuidObject = pXPGuidObject;
             this.Title = "Editar Artigo Único";
             _serialNumber = pSerialNumber;
-            SelectedAssocietedArticles = new List<fin_articleserialnumber> ();
+            SelectedAssocietedArticles = new List<fin_articleserialnumber>();
             _backupAssocietedArticles = new List<fin_articleserialnumber>();
             if (pSelectedAssocietedArticles != null)
             {
                 SelectedAssocietedArticles = pSelectedAssocietedArticles;
-       
+
                 foreach (var line in pSelectedAssocietedArticles)
                 {
                     _backupAssocietedArticles.Add(line);
@@ -113,7 +113,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 
                 _selectedArticle = _xPGuidObject as fin_article;
 
-                if(_selectedArticle == null) _selectedArticle = (_xPGuidObject as fin_articleserialnumber).Article;
+                if (_selectedArticle == null) _selectedArticle = (_xPGuidObject as fin_articleserialnumber).Article;
 
                 //Selected Article
                 HBox hBoxTitle = new HBox();
@@ -124,7 +124,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                 //SerialNumber
                 EntryBoxSerialNumber1 = new EntryBoxValidation(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_serial_number"), KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true, true);
 
-                if(_xPGuidObject.GetType() == typeof(fin_articleserialnumber) && (_xPGuidObject as fin_articleserialnumber).IsSold)
+                if (_xPGuidObject.GetType() == typeof(fin_articleserialnumber) && (_xPGuidObject as fin_articleserialnumber).IsSold)
                 {
                     EntryBoxSerialNumber1.Sensitive = false;
                 }
@@ -134,8 +134,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 
                 //Associated articles                
                 Label associatedArticlesTitleLabel = new Label("Artigos Associados");
-                
-                if(_selectedArticle.ArticleComposition.Count > 0 && _selectedArticle.IsComposed)
+
+                if (_selectedArticle.ArticleComposition.Count > 0 && _selectedArticle.IsComposed)
                 {
                     vboxTab1.PackStart(associatedArticlesTitleLabel, false, false, 5);
                 }
@@ -148,13 +148,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                 //    }
                 //}
                 //else
-                
+
                 foreach (var associatedArticles in _selectedArticle.ArticleComposition)
                 {
-                    for(int i=0; i < associatedArticles.Quantity; i++)
+                    for (int i = 0; i < associatedArticles.Quantity; i++)
                     {
                         AddSerialNumber(associatedArticles);
-                    }                  
+                    }
                 }
                 _viewport.Add(vboxTab1);
 
@@ -294,7 +294,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                     _entryBoxDocumentDateOut.EntryValidation.Validate();
                     _entryBoxDocumentDateOut.EntryValidation.Sensitive = !((_dataSourceRow as fin_articleserialnumber).IsSold);
                     //_entryBoxDocumentDate.ClosePopup += delegate { ValidateDialog(); };
-                 
+
                     vboxTab4.PackStart(_entryBoxDocumentDateOut, false, false, 0);
 
                     //Button Out
@@ -326,7 +326,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
             try
             {
                 //Edit stock moviment IN
-                if(_entryBoxSelectSupplier.EntryValidation.Validated && _entryBoxDocumentNumber.EntryValidation.Validated && _entryBoxPrice1.EntryValidation.Validated && _entryBoxDocumentDateIn.EntryValidation.Validated)
+                if (_entryBoxSelectSupplier.EntryValidation.Validated && _entryBoxDocumentNumber.EntryValidation.Validated && _entryBoxPrice1.EntryValidation.Validated && _entryBoxDocumentDateIn.EntryValidation.Validated)
                 {
                     (_dataSourceRow as fin_articleserialnumber).StockMovimentIn.Customer = _entryBoxSelectSupplier.Value;
                     (_dataSourceRow as fin_articleserialnumber).StockMovimentIn.DocumentNumber = _entryBoxDocumentNumber.EntryValidation.Text;
@@ -358,37 +358,37 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
             {
                 var own_customer = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), XPOSettings.XpoOidUserRecord);
                 var stockMovimentOut = (_dataSourceRow as fin_articleserialnumber).StockMovimentOut;
-                bool sucess = false;;
+                bool sucess = false; ;
 
                 //Devolver artigo original
-                sucess = POSFramework.StockManagementModule.Add(_dataSourceRow.Session, 
-                    datalayer.Enums.ProcessArticleStockMode.In, 
-                    own_customer, 
-                    0, 
-                    DateTime.Now, 
-                    "", 
-                    (_dataSourceRow as fin_articleserialnumber).Article, 
-                    1, 
-                    string.Format("Troca de artigos: " + (_dataSourceRow as fin_articleserialnumber).SerialNumber + " / " + (_entryBoxArticleSerialNumberToChange.Value as fin_articleserialnumber).SerialNumber), 
-                    (_dataSourceRow as fin_articleserialnumber).SerialNumber, 
-                    (_dataSourceRow as fin_articleserialnumber).StockMovimentIn.PurchasePrice, 
-                    (_dataSourceRow as fin_articleserialnumber).ArticleWarehouse.Location, 
+                sucess = ModulesSettings.StockManagementModule.Add(_dataSourceRow.Session,
+                    datalayer.Enums.ProcessArticleStockMode.In,
+                    own_customer,
+                    0,
+                    DateTime.Now,
+                    "",
+                    (_dataSourceRow as fin_articleserialnumber).Article,
+                    1,
+                    string.Format("Troca de artigos: " + (_dataSourceRow as fin_articleserialnumber).SerialNumber + " / " + (_entryBoxArticleSerialNumberToChange.Value as fin_articleserialnumber).SerialNumber),
+                    (_dataSourceRow as fin_articleserialnumber).SerialNumber,
+                    (_dataSourceRow as fin_articleserialnumber).StockMovimentIn.PurchasePrice,
+                    (_dataSourceRow as fin_articleserialnumber).ArticleWarehouse.Location,
                     null, SelectedAssocietedArticles, true, true);
 
                 //Criar movimento de saida do artigo novo
-                sucess = POSFramework.StockManagementModule.Add(_dataSourceRow.Session, 
+                sucess = ModulesSettings.StockManagementModule.Add(_dataSourceRow.Session,
                     datalayer.Enums.ProcessArticleStockMode.Out,
                     stockMovimentOut.DocumentDetail,
-                    own_customer, 
-                    0, 
+                    own_customer,
+                    0,
                     DateTime.Now,
-                    "", 
-                    (_dataSourceRow as fin_articleserialnumber).Article, 
+                    "",
+                    (_dataSourceRow as fin_articleserialnumber).Article,
                     1,
                      string.Format("Troca de artigos: " + (_dataSourceRow as fin_articleserialnumber).SerialNumber + " / " + (_entryBoxArticleSerialNumberToChange.Value as fin_articleserialnumber).SerialNumber),
-                    (_entryBoxArticleSerialNumberToChange.Value as fin_articleserialnumber).SerialNumber, 
+                    (_entryBoxArticleSerialNumberToChange.Value as fin_articleserialnumber).SerialNumber,
                     (_entryBoxArticleSerialNumberToChange.Value as fin_articleserialnumber).StockMovimentIn.PurchasePrice,
-                    (_entryBoxArticleSerialNumberToChange.Value as fin_articleserialnumber).ArticleWarehouse.Location, 
+                    (_entryBoxArticleSerialNumberToChange.Value as fin_articleserialnumber).ArticleWarehouse.Location,
                     null, SelectedAssocietedArticles, false, true);
 
                 if (sucess)
@@ -417,7 +417,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                 documentDetail.DocumentMaster = _entryBoxSelectDocumentOut.Value;
 
                 //Criar movimento de saida do artigo 
-                sucess = POSFramework.StockManagementModule.Add(_dataSourceRow.Session,
+                sucess = ModulesSettings.StockManagementModule.Add(_dataSourceRow.Session,
                     datalayer.Enums.ProcessArticleStockMode.Out,
                     documentDetail,
                     own_customer,
@@ -473,7 +473,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
         private void _entryBoxArticleSerialNumberCompositionArticles_Changed(object sender, EventArgs e)
         {
             var selectedArticle = sender as ValidatableTextBox;
-            
+
             SelectedAssocietedArticles.Clear();
             foreach (var entrySerialNumber in (selectedArticle.Parent.Parent.Parent.Parent as VBox).Children)
             {
@@ -495,9 +495,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                 if (entrySerialNumber.GetType() == typeof(XPOEntryBoxSelectRecordValidation<fin_articleserialnumber, TreeViewArticleSerialNumber>))
                 {
                     var selectedSerialNumberEntry = entrySerialNumber as XPOEntryBoxSelectRecordValidation<fin_articleserialnumber, TreeViewArticleSerialNumber>;
-                    for(int i= 0; i < _backupAssocietedArticles.Count; i++)
+                    for (int i = 0; i < _backupAssocietedArticles.Count; i++)
                     {
-                        if(selectedSerialNumberEntry.Article == _backupAssocietedArticles[i].Article)
+                        if (selectedSerialNumberEntry.Article == _backupAssocietedArticles[i].Article)
                         {
                             selectedSerialNumberEntry.Value = _backupAssocietedArticles[i];
                             selectedSerialNumberEntry.EntryValidation.Text = _backupAssocietedArticles[i].SerialNumber;
@@ -515,7 +515,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
             SelectedAssocietedArticles.Clear();
             foreach (var comboBox in (selectedArticle.Parent.Parent as VBox).Children)
             {
-                if(comboBox.GetType() == typeof(BOWidgetBox))
+                if (comboBox.GetType() == typeof(BOWidgetBox))
                 {
                     var selectedSerialNumber = (((comboBox as BOWidgetBox).Children[1] as XPOComboBox).Value as fin_articleserialnumber);
                     if (selectedSerialNumber != null)

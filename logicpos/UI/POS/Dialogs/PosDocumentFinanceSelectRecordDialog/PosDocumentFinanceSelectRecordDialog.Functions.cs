@@ -12,9 +12,10 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Finance;
-using logicpos.financial.library.Classes.Stocks;
 using logicpos.shared.Enums;
 using LogicPOS.Globalization;
+using LogicPOS.Modules;
+using LogicPOS.Modules.StockManagement;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Shared.Article;
@@ -1646,9 +1647,9 @@ WHERE
                                 {
                                     //Process Stock : Restore Stock after Cancelling Documents
                                     _logger.Debug("void PosDocumentFinanceSelectRecordDialog.CallCancelFinanceMasterDocumentsDialog(Window pDialog, List<fin_documentfinancemaster> pListSelectDocuments) :: Process Stock : restoring stock after cancelling [" + documentMaster.DocumentNumber + "] document");
-                                    if (LicenseSettings.LicenseModuleStocks && POSFramework.StockManagementModule != null)
+                                    if (LicenseSettings.LicenseModuleStocks && ModulesSettings.StockManagementModule != null)
                                     {
-                                        POSFramework.StockManagementModule.Add(documentMaster, true);
+                                        ModulesSettings.StockManagementModule.Add(documentMaster, true);
                                     }
                                     else
                                     {

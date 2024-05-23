@@ -39,6 +39,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogicPOS.PDFViewer.Controls
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogicPOS.PDFViewer.Winforms", "LogicPOS.PDFViewer\LogicPOS.PDFViewer.Winforms\LogicPOS.PDFViewer.Winforms.csproj", "{E39A7986-4C2F-4EBE-A31B-59C766150EAC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogicPOS.Modules", "LogicPOS.Modules\LogicPOS.Modules.csproj", "{96E6AD22-DC88-4F9B-89B7-0F78E59F9070}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Basic|Any CPU = Basic|Any CPU
@@ -498,6 +500,36 @@ Global
 		{E39A7986-4C2F-4EBE-A31B-59C766150EAC}.WinForms|Mixed Platforms.Build.0 = Debug|Any CPU
 		{E39A7986-4C2F-4EBE-A31B-59C766150EAC}.WinForms|x86.ActiveCfg = Debug|Any CPU
 		{E39A7986-4C2F-4EBE-A31B-59C766150EAC}.WinForms|x86.Build.0 = Debug|Any CPU
+		{96E6AD22-DC88-4F9B-89B7-0F78E59F9070}.Basic|Any CPU.ActiveCfg = Debug|Any CPU
+		{96E6AD22-DC88-4F9B-89B7-0F78E59F9070}.Basic|Any CPU.Build.0 = Debug|Any CPU
+		{96E6AD22-DC88-4F9B-89B7-0F78E59F9070}.Basic|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{96E6AD22-DC88-4F9B-89B7-0F78E59F9070}.Basic|Mixed Platforms.Build.0 = Debug|Any CPU
+		{96E6AD22-DC88-4F9B-89B7-0F78E59F9070}.Basic|x86.ActiveCfg = Debug|Any CPU
+		{96E6AD22-DC88-4F9B-89B7-0F78E59F9070}.Basic|x86.Build.0 = Debug|Any CPU
+		{96E6AD22-DC88-4F9B-89B7-0F78E59F9070}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96E6AD22-DC88-4F9B-89B7-0F78E59F9070}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96E6AD22-DC88-4F9B-89B7-0F78E59F9070}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{96E6AD22-DC88-4F9B-89B7-0F78E59F9070}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{96E6AD22-DC88-4F9B-89B7-0F78E59F9070}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{96E6AD22-DC88-4F9B-89B7-0F78E59F9070}.Debug|x86.Build.0 = Debug|Any CPU
+		{96E6AD22-DC88-4F9B-89B7-0F78E59F9070}.Demo|Any CPU.ActiveCfg = Debug|Any CPU
+		{96E6AD22-DC88-4F9B-89B7-0F78E59F9070}.Demo|Any CPU.Build.0 = Debug|Any CPU
+		{96E6AD22-DC88-4F9B-89B7-0F78E59F9070}.Demo|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{96E6AD22-DC88-4F9B-89B7-0F78E59F9070}.Demo|Mixed Platforms.Build.0 = Debug|Any CPU
+		{96E6AD22-DC88-4F9B-89B7-0F78E59F9070}.Demo|x86.ActiveCfg = Debug|Any CPU
+		{96E6AD22-DC88-4F9B-89B7-0F78E59F9070}.Demo|x86.Build.0 = Debug|Any CPU
+		{96E6AD22-DC88-4F9B-89B7-0F78E59F9070}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96E6AD22-DC88-4F9B-89B7-0F78E59F9070}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96E6AD22-DC88-4F9B-89B7-0F78E59F9070}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{96E6AD22-DC88-4F9B-89B7-0F78E59F9070}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{96E6AD22-DC88-4F9B-89B7-0F78E59F9070}.Release|x86.ActiveCfg = Release|Any CPU
+		{96E6AD22-DC88-4F9B-89B7-0F78E59F9070}.Release|x86.Build.0 = Release|Any CPU
+		{96E6AD22-DC88-4F9B-89B7-0F78E59F9070}.WinForms|Any CPU.ActiveCfg = Debug|Any CPU
+		{96E6AD22-DC88-4F9B-89B7-0F78E59F9070}.WinForms|Any CPU.Build.0 = Debug|Any CPU
+		{96E6AD22-DC88-4F9B-89B7-0F78E59F9070}.WinForms|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{96E6AD22-DC88-4F9B-89B7-0F78E59F9070}.WinForms|Mixed Platforms.Build.0 = Debug|Any CPU
+		{96E6AD22-DC88-4F9B-89B7-0F78E59F9070}.WinForms|x86.ActiveCfg = Debug|Any CPU
+		{96E6AD22-DC88-4F9B-89B7-0F78E59F9070}.WinForms|x86.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -4,13 +4,13 @@ using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.App;
 using logicpos.financial.library.Classes.Reports;
-using logicpos.financial.library.Classes.Stocks;
 using logicpos.financial.library.Classes.WorkSession;
 using logicpos.shared.Enums;
 using LogicPOS.Globalization;
+using LogicPOS.Modules;
+using LogicPOS.Modules.StockManagement;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Shared;
 using LogicPOS.Shared.Article;
 using LogicPOS.Shared.CustomDocument;
@@ -649,7 +649,7 @@ namespace logicpos.financial.library.Classes.Finance
                                 if (placeTable != null)
                                 {
                                     placeTable.TableStatus = TableStatus.Free;
-                                   XPOHelper.Audit("TABLE_OPEN", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_table_open"), placeTable.Designation));
+                                    XPOHelper.Audit("TABLE_OPEN", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_table_open"), placeTable.Designation));
                                     placeTable.DateTableClosed = documentDateTime;
                                     placeTable.TotalOpen = 0;
                                     //Required to Reload Objects after has been changed in Another Session(uowSession)
@@ -709,15 +709,18 @@ namespace logicpos.financial.library.Classes.Finance
                             }
 
                         //Audit
-                       XPOHelper.Audit("FINANCE_DOCUMENT_CREATED", string.Format("{0} {1}: {2}", documentFinanceMaster.DocumentType.Designation, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_document_created"), documentFinanceMaster.DocumentNumber));
+                        XPOHelper.Audit("FINANCE_DOCUMENT_CREATED", string.Format("{0} {1}: {2}", documentFinanceMaster.DocumentType.Designation, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_document_created"), documentFinanceMaster.DocumentNumber));
 
                         //Process Stock
                         try
                         {
-                            FinancialLibraryFramework.StockManagementModule = (PluginSettings.PluginContainer.GetFirstPluginOfType<IStockManagementModule>());
-                            if (LicenseSettings.LicenseModuleStocks && FinancialLibraryFramework.StockManagementModule != null)
+                            ModulesSettings.StockManagementModule = (PluginSettings.PluginContainer.GetFirstPluginOfType<IStockManagementModule>());
+
+                            if (
+                                LicenseSettings.LicenseModuleStocks && 
+                                ModulesSettings.HasStockManagementModule)
                             {
-                                FinancialLibraryFramework.StockManagementModule.Add(documentFinanceMaster);
+                                ModulesSettings.StockManagementModule.Add(documentFinanceMaster);
                             }
                             else
                             {

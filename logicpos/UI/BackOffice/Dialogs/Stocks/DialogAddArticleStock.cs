@@ -15,16 +15,15 @@ using logicpos.datalayer.DataLayer.Xpo.Articles;
 using logicpos.datalayer.DataLayer.Xpo.Documents;
 using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
-using logicpos.financial.library.Classes.Stocks;
+using LogicPOS.Globalization;
+using LogicPOS.Modules.StockManagement;
+using LogicPOS.Settings;
+using LogicPOS.Shared;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using LogicPOS.Settings.Extensions;
-using LogicPOS.Globalization;
-using LogicPOS.Settings;
-using LogicPOS.Shared;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -431,7 +430,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Assign if Valid
             try
             {
-               //if (supplier != null) //_initialSupplier = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), new Guid(supplier.ToString()));
+                //if (supplier != null) //_initialSupplier = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), new Guid(supplier.ToString()));
                 var own_customer = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), XPOSettings.XpoOidUserRecord);
                 if (own_customer != null && string.IsNullOrEmpty(own_customer.Name))
                 {
@@ -442,7 +441,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     own_customer.Save();
                     _logger.Debug("Updating own supplier name and fiscal number");
                     //if (supplier == null) { supplier = own_customer; }
-                }          
+                }
 
             }
             catch (Exception ex)
@@ -550,7 +549,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                         pPurchasePrice.EntryValidation.Text = (getLastPrice != null) ? LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(getLastPrice), "0.00").Replace(".", ",") : LogicPOS.Utility.DataConversionUtils.StringToDecimal("0,00").ToString();
 
-                    
+
                         return;
                     }
                     pXPOEntry.EntryValidation.Changed -= delegate { pXPOEntry.EntryValidation.Validate(); };
@@ -932,7 +931,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 }
                 if (entrySelected.Value != null && (entrySelected.Value as fin_article).UnitMeasure.Code == 10)
                 {
-                    if (Convert.ToInt32(entrySelected.EntryQtdValidation.Text) > 50){
+                    if (Convert.ToInt32(entrySelected.EntryQtdValidation.Text) > 50)
+                    {
                         entrySelected.EntryQtdValidation.TooltipText = "Numero demasiado grande para adicionar SN!";
                         return;
                     }
@@ -994,7 +994,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND SerialNumber == '{0}'", entrySerialNumber.Text));
                 _collectionSavedArticleSerialNumber = XPOSettings.Session.GetObjects(XPOSettings.Session.GetClassInfo(typeof(fin_articleserialnumber)), criteria, sortCollection, int.MaxValue, false, true);
 
-                if((_collectionSavedArticleSerialNumber != null && _collectionSavedArticleSerialNumber.Count > 0) || (_serialNumbersInCache.ContainsValue(entrySerialNumber.Text)))
+                if ((_collectionSavedArticleSerialNumber != null && _collectionSavedArticleSerialNumber.Count > 0) || (_serialNumbersInCache.ContainsValue(entrySerialNumber.Text)))
                 {
                     entrySerialNumber.Validated = false;
                     entrySerialNumber.TooltipText = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_serial_number") + " já existe!";
@@ -1009,7 +1009,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 if (ArticleCollection.Count > 0 && entrySerialNumber.Validated)
                 {
-                    
+
                     if (ArticleCollection[selectedArticle].Item2 == null)
                     {
                         _entrySerialNumberCacheList = new Dictionary<ValidatableTextBox, List<fin_articleserialnumber>>
@@ -1106,7 +1106,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 {
                     selectedArticle = ((selectedWareHouseCB.Parent.Parent.Parent as VBox).Children[0] as XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>).Value;
                     var newTuple = new Tuple<decimal, Dictionary<ValidatableTextBox, List<fin_articleserialnumber>>, decimal, fin_warehouselocation>(ArticleCollection[selectedArticle].Item1, ArticleCollection[selectedArticle].Item2, ArticleCollection[selectedArticle].Item3, wareHouseLocationCB.Value as fin_warehouselocation);
-                    ArticleCollection[selectedArticle] = newTuple;                
+                    ArticleCollection[selectedArticle] = newTuple;
                 }
 
                 if (selectedWareHouseCB.Value != null)
@@ -1128,7 +1128,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             try
             {
                 var selectedWareHouseLocationCB = sender as XPOComboBox;
-                if(selectedWareHouseLocationCB.Value == null)
+                if (selectedWareHouseLocationCB.Value == null)
                 {
                     buttonOk.Sensitive = false;
                     return;

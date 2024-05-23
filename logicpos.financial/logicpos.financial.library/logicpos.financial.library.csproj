@@ -60,9 +60,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App\FinancialLibraryFramework.cs" />
     <Compile Include="Classes\Finance\ExtendValue.cs" />
-    <Compile Include="Classes\Finance\IStockManagementModule.cs" />
     <Compile Include="Classes\Finance\ProcessFinanceDocument.cs" />
     <Compile Include="Classes\Finance\ProcessFinanceDocumentParameter.cs" />
     <Compile Include="Classes\Finance\ProcessFinanceDocumentSeries.cs" />
@@ -123,9 +121,6 @@
     <Compile Include="Classes\Reports\CustomReport.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Classes\Stocks\IStockManagementModule.cs" />
-    <Compile Include="Classes\Stocks\ProcessArticleStock.cs" />
-    <Compile Include="Classes\Stocks\ProcessArticleStockParameter.cs" />
     <Compile Include="Classes\Utils\ProtectedFile.cs" />
     <Compile Include="Classes\Utils\ProtectedFiles.cs" />
     <Compile Include="Classes\WorkSession\ProcessWorkSessionMovement.cs" />
@@ -160,6 +155,10 @@
     <ProjectReference Include="..\..\logicpos.hardware\logicpos.printer.generic\logicpos.printer.generic.csproj">
       <Project>{692407AF-FE0E-4D94-8DB1-BE8B210017BA}</Project>
       <Name>logicpos.printer.generic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\LogicPOS.Modules\LogicPOS.Modules.csproj">
+      <Project>{96e6ad22-dc88-4f9b-89b7-0f78e59f9070}</Project>
+      <Name>LogicPOS.Modules</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\LogicPOS.PDFViewer\LogicPOS.PDFViewer.Winforms\LogicPOS.PDFViewer.Winforms.csproj">
       <Project>{e39a7986-4c2f-4ebe-a31b-59c766150eac}</Project>

@@ -7,11 +7,10 @@ using logicpos.Classes.Formatters;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
-using logicpos.financial.library.Classes.Stocks;
+using LogicPOS.Globalization;
+using LogicPOS.Modules.StockManagement;
 using System;
 using System.Collections.Generic;
-using LogicPOS.Settings.Extensions;
-using LogicPOS.Globalization;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
