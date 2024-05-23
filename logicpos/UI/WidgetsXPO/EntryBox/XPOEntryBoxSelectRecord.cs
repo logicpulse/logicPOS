@@ -604,7 +604,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             {
                 if(_value != null && _value.Oid == XPOSettings.XpoOidUserRecord)
                 {
-                    pEntry.Text = (value != null) ? CryptographyUtils.Decrypt(value.ToString(), true, FinancialLibrarySettings.SecretKey) : "";
+                    pEntry.Text = (value != null) ? CryptographyUtils.Decrypt(value.ToString(), true, PluginSettings.SecretKey) : "";
                 }
                 else
                 {

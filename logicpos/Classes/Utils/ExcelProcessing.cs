@@ -561,7 +561,7 @@ namespace logicpos
             }
             for (int j = 1; j < costumersInDb.ResultSet[1].Rows.Length; j++)
             {
-                costumersInDbCollection.Add(CryptographyUtils.Decrypt(costumersInDb.ResultSet[1].Rows[j].Values[indexFiscalNumber].ToString(), true, FinancialLibrarySettings.SecretKey), costumersInDb.ResultSet[1].Rows[j].Values[0].ToString());
+                costumersInDbCollection.Add(CryptographyUtils.Decrypt(costumersInDb.ResultSet[1].Rows[j].Values[indexFiscalNumber].ToString(), true, PluginSettings.SecretKey), costumersInDb.ResultSet[1].Rows[j].Values[0].ToString());
             }
 
             try
@@ -595,15 +595,15 @@ namespace logicpos
 
                     if (row.ItemArray.GetValue(0).ToString() != "") { costumer.Code = Convert.ToUInt32(row.ItemArray.GetValue(0)); } else { costumer.Code = (Convert.ToUInt32(GetLastCodeFromTable("erp_customer")) + 10); }
                     if (row.ItemArray.GetValue(0).ToString() != "") { costumer.Ord = Convert.ToUInt32(row.ItemArray.GetValue(0)); } else { costumer.Ord = (Convert.ToUInt32(GetLastCodeFromTable("erp_customer")) + 10); }
-                    if (row.ItemArray.GetValue(1).ToString() != "") costumer.FiscalNumber = CryptographyUtils.Encrypt(row.ItemArray.GetValue(1).ToString(), true, FinancialLibrarySettings.SecretKey); else costumer.FiscalNumber = CryptographyUtils.Encrypt("", true, FinancialLibrarySettings.SecretKey);
-                    if (row.ItemArray.GetValue(2).ToString() != "") costumer.Name = CryptographyUtils.Encrypt(row.ItemArray.GetValue(2).ToString(), true, FinancialLibrarySettings.SecretKey); else costumer.Name = CryptographyUtils.Encrypt("", true, FinancialLibrarySettings.SecretKey);
-                    if (row.ItemArray.GetValue(3).ToString() != "") costumer.Address = CryptographyUtils.Encrypt(row.ItemArray.GetValue(3).ToString(), true, FinancialLibrarySettings.SecretKey); else costumer.Address = CryptographyUtils.Encrypt("", true, FinancialLibrarySettings.SecretKey);
-                    if (row.ItemArray.GetValue(4).ToString() != "") costumer.Locality = CryptographyUtils.Encrypt(row.ItemArray.GetValue(4).ToString(), true, FinancialLibrarySettings.SecretKey); else costumer.Locality = CryptographyUtils.Encrypt("", true, FinancialLibrarySettings.SecretKey);
-                    if (row.ItemArray.GetValue(5).ToString() != "") costumer.ZipCode = CryptographyUtils.Encrypt(row.ItemArray.GetValue(5).ToString(), true, FinancialLibrarySettings.SecretKey); else costumer.ZipCode = CryptographyUtils.Encrypt("", true, FinancialLibrarySettings.SecretKey);
-                    if (row.ItemArray.GetValue(6).ToString() != "") costumer.City = CryptographyUtils.Encrypt(row.ItemArray.GetValue(6).ToString(), true, FinancialLibrarySettings.SecretKey); else costumer.City = CryptographyUtils.Encrypt("", true, FinancialLibrarySettings.SecretKey);
-                    if (row.ItemArray.GetValue(7).ToString() != "") costumer.Phone = CryptographyUtils.Encrypt(row.ItemArray.GetValue(7).ToString(), true, FinancialLibrarySettings.SecretKey); else costumer.Phone = CryptographyUtils.Encrypt("", true, FinancialLibrarySettings.SecretKey);
-                    if (row.ItemArray.GetValue(8).ToString() != "") costumer.MobilePhone = CryptographyUtils.Encrypt(row.ItemArray.GetValue(8).ToString(), true, FinancialLibrarySettings.SecretKey); else costumer.MobilePhone = CryptographyUtils.Encrypt("", true, FinancialLibrarySettings.SecretKey);
-                    if (row.ItemArray.GetValue(9).ToString() != "") costumer.Email = CryptographyUtils.Encrypt(row.ItemArray.GetValue(9).ToString(), true, FinancialLibrarySettings.SecretKey); else costumer.Email = CryptographyUtils.Encrypt("", true, FinancialLibrarySettings.SecretKey);
+                    if (row.ItemArray.GetValue(1).ToString() != "") costumer.FiscalNumber = CryptographyUtils.Encrypt(row.ItemArray.GetValue(1).ToString(), true, PluginSettings.SecretKey); else costumer.FiscalNumber = CryptographyUtils.Encrypt("", true, PluginSettings.SecretKey);
+                    if (row.ItemArray.GetValue(2).ToString() != "") costumer.Name = CryptographyUtils.Encrypt(row.ItemArray.GetValue(2).ToString(), true, PluginSettings.SecretKey); else costumer.Name = CryptographyUtils.Encrypt("", true, PluginSettings.SecretKey);
+                    if (row.ItemArray.GetValue(3).ToString() != "") costumer.Address = CryptographyUtils.Encrypt(row.ItemArray.GetValue(3).ToString(), true, PluginSettings.SecretKey); else costumer.Address = CryptographyUtils.Encrypt("", true, PluginSettings.SecretKey);
+                    if (row.ItemArray.GetValue(4).ToString() != "") costumer.Locality = CryptographyUtils.Encrypt(row.ItemArray.GetValue(4).ToString(), true, PluginSettings.SecretKey); else costumer.Locality = CryptographyUtils.Encrypt("", true, PluginSettings.SecretKey);
+                    if (row.ItemArray.GetValue(5).ToString() != "") costumer.ZipCode = CryptographyUtils.Encrypt(row.ItemArray.GetValue(5).ToString(), true, PluginSettings.SecretKey); else costumer.ZipCode = CryptographyUtils.Encrypt("", true, PluginSettings.SecretKey);
+                    if (row.ItemArray.GetValue(6).ToString() != "") costumer.City = CryptographyUtils.Encrypt(row.ItemArray.GetValue(6).ToString(), true, PluginSettings.SecretKey); else costumer.City = CryptographyUtils.Encrypt("", true, PluginSettings.SecretKey);
+                    if (row.ItemArray.GetValue(7).ToString() != "") costumer.Phone = CryptographyUtils.Encrypt(row.ItemArray.GetValue(7).ToString(), true, PluginSettings.SecretKey); else costumer.Phone = CryptographyUtils.Encrypt("", true, PluginSettings.SecretKey);
+                    if (row.ItemArray.GetValue(8).ToString() != "") costumer.MobilePhone = CryptographyUtils.Encrypt(row.ItemArray.GetValue(8).ToString(), true, PluginSettings.SecretKey); else costumer.MobilePhone = CryptographyUtils.Encrypt("", true, PluginSettings.SecretKey);
+                    if (row.ItemArray.GetValue(9).ToString() != "") costumer.Email = CryptographyUtils.Encrypt(row.ItemArray.GetValue(9).ToString(), true, PluginSettings.SecretKey); else costumer.Email = CryptographyUtils.Encrypt("", true, PluginSettings.SecretKey);
 
                     try
                     {
@@ -813,15 +813,15 @@ namespace logicpos
                         for (int j = 2; j < customersInDb.ResultSet[1].Rows.Length; j++)
                         {
                             importFromDBdataTable.Rows.Add(customersInDb.ResultSet[1].Rows[j].Values[indexCode],
-                            customersInDb.ResultSet[1].Rows[j].Values[indexFiscalNumber] == null ? "" : CryptographyUtils.Decrypt(customersInDb.ResultSet[1].Rows[j].Values[indexFiscalNumber].ToString(), true, FinancialLibrarySettings.SecretKey),
-                            customersInDb.ResultSet[1].Rows[j].Values[indexName] == null ? "" : CryptographyUtils.Decrypt(customersInDb.ResultSet[1].Rows[j].Values[indexName].ToString(), true, FinancialLibrarySettings.SecretKey),
-                            customersInDb.ResultSet[1].Rows[j].Values[indexAddress] == null ? "" : CryptographyUtils.Decrypt(customersInDb.ResultSet[1].Rows[j].Values[indexAddress].ToString(), true, FinancialLibrarySettings.SecretKey),
-                            customersInDb.ResultSet[1].Rows[j].Values[indexLocality] == null ? "" : CryptographyUtils.Decrypt(customersInDb.ResultSet[1].Rows[j].Values[indexLocality].ToString(), true, FinancialLibrarySettings.SecretKey),
-                            customersInDb.ResultSet[1].Rows[j].Values[indexZipCode] == null ? "" : CryptographyUtils.Decrypt(customersInDb.ResultSet[1].Rows[j].Values[indexZipCode].ToString(), true, FinancialLibrarySettings.SecretKey),
-                            customersInDb.ResultSet[1].Rows[j].Values[indexCity] == null ? "" : CryptographyUtils.Decrypt(customersInDb.ResultSet[1].Rows[j].Values[indexCity].ToString(), true, FinancialLibrarySettings.SecretKey),
-                            customersInDb.ResultSet[1].Rows[j].Values[indexPhone] == null ? "" : CryptographyUtils.Decrypt(customersInDb.ResultSet[1].Rows[j].Values[indexPhone].ToString(), true, FinancialLibrarySettings.SecretKey),
-                            customersInDb.ResultSet[1].Rows[j].Values[indexMobilePhone] == null ? "" : CryptographyUtils.Decrypt(customersInDb.ResultSet[1].Rows[j].Values[indexMobilePhone].ToString(), true, FinancialLibrarySettings.SecretKey),
-                            customersInDb.ResultSet[1].Rows[j].Values[indexEmail] == null ? "" : CryptographyUtils.Decrypt(customersInDb.ResultSet[1].Rows[j].Values[indexEmail].ToString(), true, FinancialLibrarySettings.SecretKey));
+                            customersInDb.ResultSet[1].Rows[j].Values[indexFiscalNumber] == null ? "" : CryptographyUtils.Decrypt(customersInDb.ResultSet[1].Rows[j].Values[indexFiscalNumber].ToString(), true, PluginSettings.SecretKey),
+                            customersInDb.ResultSet[1].Rows[j].Values[indexName] == null ? "" : CryptographyUtils.Decrypt(customersInDb.ResultSet[1].Rows[j].Values[indexName].ToString(), true, PluginSettings.SecretKey),
+                            customersInDb.ResultSet[1].Rows[j].Values[indexAddress] == null ? "" : CryptographyUtils.Decrypt(customersInDb.ResultSet[1].Rows[j].Values[indexAddress].ToString(), true, PluginSettings.SecretKey),
+                            customersInDb.ResultSet[1].Rows[j].Values[indexLocality] == null ? "" : CryptographyUtils.Decrypt(customersInDb.ResultSet[1].Rows[j].Values[indexLocality].ToString(), true, PluginSettings.SecretKey),
+                            customersInDb.ResultSet[1].Rows[j].Values[indexZipCode] == null ? "" : CryptographyUtils.Decrypt(customersInDb.ResultSet[1].Rows[j].Values[indexZipCode].ToString(), true, PluginSettings.SecretKey),
+                            customersInDb.ResultSet[1].Rows[j].Values[indexCity] == null ? "" : CryptographyUtils.Decrypt(customersInDb.ResultSet[1].Rows[j].Values[indexCity].ToString(), true, PluginSettings.SecretKey),
+                            customersInDb.ResultSet[1].Rows[j].Values[indexPhone] == null ? "" : CryptographyUtils.Decrypt(customersInDb.ResultSet[1].Rows[j].Values[indexPhone].ToString(), true, PluginSettings.SecretKey),
+                            customersInDb.ResultSet[1].Rows[j].Values[indexMobilePhone] == null ? "" : CryptographyUtils.Decrypt(customersInDb.ResultSet[1].Rows[j].Values[indexMobilePhone].ToString(), true, PluginSettings.SecretKey),
+                            customersInDb.ResultSet[1].Rows[j].Values[indexEmail] == null ? "" : CryptographyUtils.Decrypt(customersInDb.ResultSet[1].Rows[j].Values[indexEmail].ToString(), true, PluginSettings.SecretKey));
                         }
                         result = false;
                         _threadExport = new Thread(() => result = ExportExcel(importFromDBdataTable, path, true, pSourceWindow));

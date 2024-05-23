@@ -65,7 +65,7 @@ namespace logicpos.financial.library.Classes.Reports
             if ((!Debugger.IsAttached || _forceReleaseMode) && !string.IsNullOrEmpty(pTemplateBase))
             {
                 // Get Protected temporary Reports
-                tempReports = PluginSettings.SoftwareVendor.GetReportFileName(FinancialLibrarySettings.SecretKey, _reportFileName, pTemplateBase);
+                tempReports = PluginSettings.SoftwareVendor.GetReportFileName(PluginSettings.SecretKey, _reportFileName, pTemplateBase);
                 // Override Default Reports FileName
                 _reportFileName = tempReports[0];
                 

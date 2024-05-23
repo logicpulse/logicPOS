@@ -788,7 +788,7 @@ namespace logicpos.financial.library.Classes.Finance
             // Sign Document if has a valid PluginSoftwareVendor 
             if (PluginSettings.HasSoftwareVendorPlugin)
             {
-                resultSignedHash = PluginSettings.SoftwareVendor.SignDataToSHA1Base64(FinancialLibrarySettings.SecretKey, signTargetString, debug);
+                resultSignedHash = PluginSettings.SoftwareVendor.SignDataToSHA1Base64(PluginSettings.SecretKey, signTargetString, debug);
             }
             else
             {
