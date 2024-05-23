@@ -4,7 +4,7 @@ using logicpos.datalayer.DataLayer.Xpo.Documents;
 using System;
 using System.Collections.Generic;
 
-namespace logicpos.financial.library.Classes.Stocks
+namespace LogicPOS.Modules.StockManagement
 {
     public class ProcessArticleStockParameter
     {

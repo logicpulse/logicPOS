@@ -1,22 +1,21 @@
-﻿using Gtk;
+﻿using DevExpress.Data.Filtering;
+using Gtk;
 using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Reflection;
-using DevExpress.Data.Filtering;
-using LogicPOS.Globalization;
-using System.Configuration;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial.library.Classes.Stocks;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
-using LogicPOS.Settings.Extensions;
+using LogicPOS.Globalization;
+using LogicPOS.Modules.StockManagement;
 using LogicPOS.Settings;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Diagnostics;
+using System.Reflection;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {
@@ -817,7 +816,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                             (_dataSourceRow as fin_warehouse).DeletedAt = DateTime.Now;
                             (_dataSourceRow as fin_warehouse).Save();
 
-                            
+
                         }
                         else if (_dataSourceRow.GetType() == typeof(fin_articlewarehouse))
                         {
@@ -833,7 +832,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                             //FIX DOUBLEDELETE in Cloned Documents (Search for FIX DOUBLEDELETE) : Line Above Commented, Model.Remove inside DataSourceRowDelete for both modes XPO and DataTable
                             //_listStoreModel.Remove(ref _treeIterModel);
 
-                 
+
                             //Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_information"), "***Record Deleted***");
                         }
                         //Update ModelFilter after changes in Base Model

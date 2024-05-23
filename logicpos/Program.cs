@@ -1,16 +1,13 @@
 using Gtk;
 using logicpos.App;
 using logicpos.Classes.Enums.App;
-using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Logic.License;
-using logicpos.Classes.Utils;
 using logicpos.datalayer.Xpo;
-using logicpos.financial.library.Classes.Stocks;
 using LogicPOS.Globalization;
+using LogicPOS.Modules;
+using LogicPOS.Modules.StockManagement;
 using LogicPOS.Plugin.Abstractions;
-using LogicPOS.Plugin.Utils;
 using LogicPOS.Settings;
-using LogicPOS.Settings.Extensions;
 using System;
 using System.Configuration;
 using System.Diagnostics;
@@ -108,7 +105,7 @@ namespace logicpos
             }
 
             // Init Stock Module
-            POSFramework.StockManagementModule = (PluginSettings.PluginContainer.GetFirstPluginOfType<IStockManagementModule>());
+            ModulesSettings.StockManagementModule = (PluginSettings.PluginContainer.GetFirstPluginOfType<IStockManagementModule>());
 
             // Try to Get LicenceManager IntellilockPlugin if in Release 
             if (!Debugger.IsAttached || _forceShowPluginLicenceWithDebugger)

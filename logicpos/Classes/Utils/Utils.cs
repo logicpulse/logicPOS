@@ -21,6 +21,7 @@ using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
 using logicpos.financial.library.Classes.Finance;
 using LogicPOS.Globalization;
+using LogicPOS.Modules;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
 using LogicPOS.Utility;
@@ -2374,7 +2375,7 @@ namespace logicpos
         {
             try
             {
-                if (LicenseSettings.LicenseModuleStocks && POSFramework.StockManagementModule != null)
+                if (LicenseSettings.LicenseModuleStocks && ModulesSettings.StockManagementModule != null)
                 {
                     DialogArticleStock dialog = new DialogArticleStock(pSourceWindow);
                     ResponseType response = (ResponseType)dialog.Run();

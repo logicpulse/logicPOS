@@ -1,21 +1,21 @@
 ﻿using Gtk;
 using logicpos.App;
-using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.BackOffice;
+using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
+using logicpos.Classes.Gui.Gtk.Widgets;
+using logicpos.Classes.Gui.Gtk.WidgetsXPO;
+using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.DataLayer.Xpo.Articles;
+using logicpos.datalayer.Enums;
+using logicpos.datalayer.Xpo;
+using logicpos.financial.library.Classes.Reports;
+using LogicPOS.Globalization;
+using LogicPOS.Modules;
+using LogicPOS.Modules.StockManagement;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using logicpos.Classes.Gui.Gtk.Widgets;
-using logicpos.Classes.Gui.Gtk.WidgetsXPO;
-using logicpos.Classes.Enums.Dialogs;
-using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
-using logicpos.financial.library.Classes.Stocks;
-using logicpos.datalayer.Enums;
-using logicpos.datalayer.DataLayer.Xpo.Articles;
-using logicpos.financial.library.Classes.Reports;
-using logicpos.datalayer.Xpo;
-using LogicPOS.Settings.Extensions;
-using LogicPOS.Globalization;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {
@@ -48,7 +48,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         public abstract bool Save();
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-		//Documentos - Acerto de arredondamentos [IN:019542]
+        //Documentos - Acerto de arredondamentos [IN:019542]
         public bool Modified(object pSource, object pTarget, Type pType, string pFieldName = "")
         {
             bool result;
@@ -58,14 +58,14 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             }
             if (pSource != null)
             {
-                if(pType == typeof(decimal) && pFieldName == "Price")
+                if (pType == typeof(decimal) && pFieldName == "Price")
                 {
-                    result = !(Math.Round(Convert.ToDecimal(LogicPOS.Utility.DataConversionUtils.StringToDecimal(Convert.ToString(pSource))),2).Equals(Math.Round(Convert.ToDecimal(LogicPOS.Utility.DataConversionUtils.StringToDecimal(Convert.ToString(pTarget))),2)));
+                    result = !(Math.Round(Convert.ToDecimal(LogicPOS.Utility.DataConversionUtils.StringToDecimal(Convert.ToString(pSource))), 2).Equals(Math.Round(Convert.ToDecimal(LogicPOS.Utility.DataConversionUtils.StringToDecimal(Convert.ToString(pTarget))), 2)));
                 }
                 else
                 {
                     result = !(pSource.Equals(pTarget));
-                }                
+                }
             }
             else if (pTarget != null)
             {
@@ -104,7 +104,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             {
                 return this[GetFieldIndex(pFieldName)];
             }
-            else {
+            else
+            {
                 return null;
             }
         }
@@ -463,7 +464,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                             foreach (var item in res.ArticleCollection)
                             {
                                 res.Quantity = item.Value.Item1;
-                                
+
                                 res.PurchasePrice = item.Value.Item3;
                                 res.Article = item.Key;
                                 res.WarehouseLocation = item.Value.Item4;
@@ -475,7 +476,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                                         res.Quantity = 1;
                                         res.SerialNumber = itemS.Key;
                                         res.AssociatedArticles = itemS.Value;
-                                        POSFramework.StockManagementModule.Add(ProcessArticleStockMode.In, res);
+                                        ModulesSettings.StockManagementModule.Add(ProcessArticleStockMode.In, res);
                                         string sql = string.Format("SELECT Oid FROM fin_articleserialnumber WHERE SerialNumber = '{0}';", res.SerialNumber.ToString());
                                         var serialNumberOid = XPOSettings.Session.ExecuteScalar(sql);
                                         if (serialNumberOid != null)
@@ -485,8 +486,9 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                                         }
                                     }
                                 }
-                                else {
-                                    POSFramework.StockManagementModule.Add(ProcessArticleStockMode.In, res);
+                                else
+                                {
+                                    ModulesSettings.StockManagementModule.Add(ProcessArticleStockMode.In, res);
                                 }
                                 if (barCodeLabelList.Count > 0)
                                 {
