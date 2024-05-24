@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LogicPOS.Globalization\LogicPOS.Globalization.csproj" />
+    <ProjectReference Include="..\LogicPOS.Settings\LogicPOS.Settings.csproj" />
+  </ItemGroup>
+
+</Project>

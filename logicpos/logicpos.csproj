@@ -6640,6 +6640,10 @@
       <Project>{42af3be2-44b4-477d-8e45-55c64992b805}</Project>
       <Name>logicpos.datalayer</Name>
     </ProjectReference>
+    <ProjectReference Include="..\LogicPOS.Finance\LogicPOS.Finance.csproj">
+      <Project>{6F50BD8B-A054-424C-9247-3892EFCC25B6}</Project>
+      <Name>LogicPOS.Finance</Name>
+    </ProjectReference>
     <ProjectReference Include="..\logicpos.financial\logicpos.financial.library\logicpos.financial.library.csproj">
       <Project>{7F643F3C-0F7B-451A-AA16-A9A25A56CCF3}</Project>
       <Name>logicpos.financial.library</Name>

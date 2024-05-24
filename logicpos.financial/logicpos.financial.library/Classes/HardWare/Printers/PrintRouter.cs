@@ -126,7 +126,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
             {
                 int printCopies = pCopyNames.Count;
                 //Get Hash4Chars from Hash
-                string hash4Chars = ProcessFinanceDocument.GenDocumentHash4Chars(pDocumentFinanceMaster.Hash);
+                string hash4Chars = FinanceDocumentProcessingUtils.GenDocumentHash4Chars(pDocumentFinanceMaster.Hash);
 
                 try
                 {

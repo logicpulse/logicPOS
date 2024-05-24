@@ -93,7 +93,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             try
             {
                 string labelPaymentDetails = string.Empty;
-                ProcessFinanceDocumentParameter processFinanceDocumentParameter = touchButtonSplitPayment.ProcessFinanceDocumentParameter;
+                FinanceDocumentProcessingParameters processFinanceDocumentParameter = touchButtonSplitPayment.ProcessFinanceDocumentParameter;
 
                 if (processFinanceDocumentParameter != null)
                 {
@@ -273,7 +273,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             ? item.ProcessFinanceDocumentParameter.TotalDelivery
                             : item.ArticleBag.TotalFinal;
 
-                        item.ProcessFinanceDocumentParameter = new ProcessFinanceDocumentParameter(
+                        item.ProcessFinanceDocumentParameter = new FinanceDocumentProcessingParameters(
                             item.ProcessFinanceDocumentParameter.DocumentType, item.ArticleBag
                         )
                         {

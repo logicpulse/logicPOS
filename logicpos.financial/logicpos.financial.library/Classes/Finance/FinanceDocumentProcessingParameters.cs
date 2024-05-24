@@ -7,52 +7,8 @@ using System.Collections.Generic;
 
 namespace logicpos.financial.library.Classes.Finance
 {
-    public class DocumentReference
-    {
-        public fin_documentfinancemaster Reference { get; set; }
 
-        public string Reason { get; set; }
-
-        public DocumentReference(fin_documentfinancemaster pDocumentFinanceMaster, string pReason)
-        {
-            Reference = pDocumentFinanceMaster;
-            Reason = pReason;
-        }
-    }
-
-    public class MovementOfGoodsProperties
-    {
-        public string DeliveryID { get; set; }
-
-        public DateTime DeliveryDate { get; set; }
-
-        public string WarehouseID { get; set; }
-
-        public string LocationID { get; set; }
-
-        public string BuildingNumber { get; set; }
-
-        public string StreetName { get; set; }
-
-        public string AddressDetail { get; set; }
-
-        public string PostalCode { get; set; }
-
-        public string City { get; set; }
-
-        public string Region { get; set; }
-
-        public string Country { get; set; }
-
-        private Guid _countryGuid;
-        public Guid CountryGuid
-        {
-            get { return _countryGuid; }
-            set { _countryGuid = value; }
-        }
-    }
-
-    public class ProcessFinanceDocumentParameter
+    public class FinanceDocumentProcessingParameters
     {
         //Required: DocumentType
         private Guid _documentType;
@@ -126,7 +82,7 @@ namespace logicpos.financial.library.Classes.Finance
 
         public string Notes { get; set; }
 
-        public ProcessFinanceDocumentParameter(Guid pDocumentType, ArticleBag pArticleBag)
+        public FinanceDocumentProcessingParameters(Guid pDocumentType, ArticleBag pArticleBag)
         {
             //Init Default Values
             DocumentDateTime = XPOHelper.CurrentDateTimeAtomic();

@@ -1088,7 +1088,7 @@ WHERE
                     }
                 }
                 //IN009284 POS - Pagamento conta-corrente - Cliente por defeito 
-                ProcessFinanceDocumentParameter ccCustomerOid = new ProcessFinanceDocumentParameter(pFinanceDocuments[0].EntityOid, articleBag);
+                FinanceDocumentProcessingParameters ccCustomerOid = new FinanceDocumentProcessingParameters(pFinanceDocuments[0].EntityOid, articleBag);
                 ccCustomerOid.Customer = pFinanceDocuments[0].EntityOid;
                 /* Please see ERR201810#14 */
                 // Call to overloaded constructor method, where "pSkipPersistFinanceDocument" parameter was settled to false when calling main constructor method.
@@ -1101,7 +1101,7 @@ WHERE
                 if (response == (int)ResponseType.Ok)
                 {
                     //Prepare ProcessFinanceDocumentParameter
-                    ProcessFinanceDocumentParameter processFinanceDocumentParameter = new ProcessFinanceDocumentParameter(
+                    FinanceDocumentProcessingParameters processFinanceDocumentParameter = new FinanceDocumentProcessingParameters(
                       DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice, dialog.ArticleBagFullPayment)
                     {
                         SourceMode = PersistFinanceDocumentSourceMode.CurrentAcountDocuments,
@@ -1251,7 +1251,7 @@ WHERE
                     }
                     else
                     {
-                        documents.Add(ProcessFinanceDocument.GenerateDocumentFinanceMasterPDFIfNotExists(document));
+                        documents.Add(FinanceDocumentProcessingUtils.GenerateDocumentFinanceMasterPDFIfNotExists(document));
                     }
                 }
 
@@ -1305,7 +1305,7 @@ WHERE
                 // Call GenerateDocument and add it to List
                 foreach (fin_documentfinancemaster document in pDocuments)
                 {
-                    documents.Add(document, ProcessFinanceDocument.GenerateDocumentFinanceMasterPDFIfNotExists(document));
+                    documents.Add(document, FinanceDocumentProcessingUtils.GenerateDocumentFinanceMasterPDFIfNotExists(document));
                 }
 
                 foreach (var item in documents)
@@ -1386,7 +1386,7 @@ WHERE
                 // Call GenerateDocument and add it to List
                 foreach (fin_documentfinancepayment document in pDocuments)
                 {
-                    documents.Add(document, ProcessFinanceDocument.GenerateDocumentFinancePaymentPDFIfNotExists(document));
+                    documents.Add(document, FinanceDocumentProcessingUtils.GenerateDocumentFinancePaymentPDFIfNotExists(document));
                 }
 
                 foreach (var item in documents)
@@ -1491,7 +1491,7 @@ WHERE
                     }
 
                     // Init ProcessFinanceDocumentParameter
-                    ProcessFinanceDocumentParameter processFinanceDocumentParameter = new ProcessFinanceDocumentParameter(document.DocumentType.Oid, articleBag)
+                    FinanceDocumentProcessingParameters processFinanceDocumentParameter = new FinanceDocumentProcessingParameters(document.DocumentType.Oid, articleBag)
                     {
                         Customer = document.EntityOid,
                         SourceMode = PersistFinanceDocumentSourceMode.CustomArticleBag
@@ -1514,7 +1514,7 @@ WHERE
                     }
 
                     // PersistFinanceDocument
-                    ProcessFinanceDocument.PersistFinanceDocument(processFinanceDocumentParameter);
+                    FinanceDocumentProcessingUtils.PersistFinanceDocument(processFinanceDocumentParameter);
                 }
             }
             catch (Exception ex)
@@ -2502,7 +2502,7 @@ WHERE
                     {
                         logicpos.Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_printing_function_disabled"));
                     }
-                    else documents.Add(ProcessFinanceDocument.GenerateDocumentFinancePaymentPDFIfNotExists(document));
+                    else documents.Add(FinanceDocumentProcessingUtils.GenerateDocumentFinancePaymentPDFIfNotExists(document));
                 }
 
                 foreach (var item in documents)

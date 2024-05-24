@@ -83,7 +83,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public ArticleBag ArticleBagFullPayment { get; set; }
         public ArticleBag ArticleBagPartialPayment { get; set; }
 
-        public ProcessFinanceDocumentParameter ProcessFinanceDocumentParameter { get; set; }
+        public FinanceDocumentProcessingParameters ProcessFinanceDocumentParameter { get; set; }
 
         //Constructors
         public PaymentDialog(
@@ -118,7 +118,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             bool pEnablePartialPaymentButtons, 
             bool pEnableCurrentAccountButton, 
             bool pSkipPersistFinanceDocument, 
-            ProcessFinanceDocumentParameter pProcessFinanceDocumentParameter, 
+            FinanceDocumentProcessingParameters pProcessFinanceDocumentParameter, 
             string pSelectedPaymentMethodButtonName)
             : base(pSourceWindow, pDialogFlags, false)
         {

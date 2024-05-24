@@ -3,13 +3,12 @@ using DevExpress.Xpo.DB;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
+using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using LogicPOS.Shared.CustomDocument;
 using System;
 using System.Text;
 using System.Xml;
-using LogicPOS.Settings.Extensions;
-using LogicPOS.Globalization;
-using LogicPOS.Shared.CustomDocument;
 
 //TK016268 Angola - Certificação 
 
@@ -104,7 +103,7 @@ namespace logicpos.financial.library.Classes.Finance
                 }
 
                 //Audit
-               XPOHelper.Audit("EXPORT_SAF-T", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_export_saft"), fileName, _documentDateStart.ToString(CultureSettings.DateFormat), _documentDateEnd.ToString(CultureSettings.DateFormat)));
+                XPOHelper.Audit("EXPORT_SAF-T", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_export_saft"), fileName, _documentDateStart.ToString(CultureSettings.DateFormat), _documentDateEnd.ToString(CultureSettings.DateFormat)));
 
                 return fileName;
             }
@@ -986,7 +985,7 @@ namespace logicpos.financial.library.Classes.Finance
 
                     //<DocumentTotals>
                     _xmlWriter.WriteStartElement("DocumentTotals");
-                    WriteElement("TaxPayable", LogicPOS.Utility.DataConversionUtils.DecimalToString(totalLineResult.TaxPayable,  _decimalFormatTotals));
+                    WriteElement("TaxPayable", LogicPOS.Utility.DataConversionUtils.DecimalToString(totalLineResult.TaxPayable, _decimalFormatTotals));
                     WriteElement("NetTotal", LogicPOS.Utility.DataConversionUtils.DecimalToString(totalLineResult.NetTotal, _decimalFormatTotals));
                     WriteElement("GrossTotal", LogicPOS.Utility.DataConversionUtils.DecimalToString(totalLineResult.GrossTotal, _decimalFormatTotals));
 
@@ -1247,7 +1246,7 @@ namespace logicpos.financial.library.Classes.Finance
 
                         WriteElement("Description", row.Values[xPSelectData.GetFieldIndex("ProductDescription")]);
                         //CreditAmount|DebitAmount
-                        WriteElement(nodeNameCreditOrDebitAmount, LogicPOS.Utility.DataConversionUtils.DecimalToString(lineCreditOrDebit,  _decimalFormat));
+                        WriteElement(nodeNameCreditOrDebitAmount, LogicPOS.Utility.DataConversionUtils.DecimalToString(lineCreditOrDebit, _decimalFormat));
 
                         //<Tax>
                         _xmlWriter.WriteStartElement("Tax");

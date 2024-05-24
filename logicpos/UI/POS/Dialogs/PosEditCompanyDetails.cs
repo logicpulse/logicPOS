@@ -18,6 +18,7 @@ using System.Drawing;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using LogicPOS.Utility;
+using LogicPOS.Finance.Utility;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -125,7 +126,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     _entryBoxFiscalNumber.EntryValidation.Validate();
                     if (_entryBoxFiscalNumber.EntryValidation.Validated)
                     {
-                        bool isValidFiscalNumber = FiscalNumber.IsValidFiscalNumber(_entryBoxFiscalNumber.EntryValidation.Text, _entryBoxSelectSystemCountry.Value.Code2);
+                        bool isValidFiscalNumber = FiscalNumberUtils.IsValidFiscalNumber(_entryBoxFiscalNumber.EntryValidation.Text, _entryBoxSelectSystemCountry.Value.Code2);
                         _entryBoxFiscalNumber.EntryValidation.Validated = isValidFiscalNumber;
                     }
                     //Call Main Validate
@@ -264,7 +265,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 if (input.EntryValidation.Validated && input.Name == "COMPANY_FISCALNUMBER")
                 {
-                    bool isValidFiscalNumber = FiscalNumber.IsValidFiscalNumber(input.EntryValidation.Text, _entryBoxSelectSystemCountry.Value.Code2);
+                    bool isValidFiscalNumber = FiscalNumberUtils.IsValidFiscalNumber(input.EntryValidation.Text, _entryBoxSelectSystemCountry.Value.Code2);
                     input.EntryValidation.Validated = isValidFiscalNumber;
                 }
                 Validate();

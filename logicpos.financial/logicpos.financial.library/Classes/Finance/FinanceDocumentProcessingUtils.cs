@@ -6,6 +6,7 @@ using logicpos.financial.library.App;
 using logicpos.financial.library.Classes.Reports;
 using logicpos.financial.library.Classes.WorkSession;
 using logicpos.shared.Enums;
+using LogicPOS.Finance.Utility;
 using LogicPOS.Globalization;
 using LogicPOS.Modules;
 using LogicPOS.Modules.StockManagement;
@@ -22,12 +23,12 @@ using System.Linq;
 
 namespace logicpos.financial.library.Classes.Finance
 {
-    public class ProcessFinanceDocument
+    public class FinanceDocumentProcessingUtils
     {
         //Log4Net
         private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static fin_documentfinancemaster PersistFinanceDocument(ProcessFinanceDocumentParameter pParameters, bool pIgnoreWarning = false)
+        public static fin_documentfinancemaster PersistFinanceDocument(FinanceDocumentProcessingParameters pParameters, bool pIgnoreWarning = false)
         {
             Guid userDetailGuid = (XPOSettings.LoggedUser != null) ? XPOSettings.LoggedUser.Oid : Guid.Empty;
             Guid terminalGuid = (XPOSettings.LoggedTerminal != null) ? XPOSettings.LoggedTerminal.Oid : Guid.Empty;
@@ -35,7 +36,7 @@ namespace logicpos.financial.library.Classes.Finance
             return (PersistFinanceDocument(pParameters, userDetailGuid, terminalGuid, pIgnoreWarning));
         }
 
-        public static fin_documentfinancemaster PersistFinanceDocument(ProcessFinanceDocumentParameter pParameters, Guid pLoggedUser, Guid pTerminal, bool pIgnoreWarning = false)
+        public static fin_documentfinancemaster PersistFinanceDocument(FinanceDocumentProcessingParameters pParameters, Guid pLoggedUser, Guid pTerminal, bool pIgnoreWarning = false)
         {
             fin_documentfinancemaster result = null;
 
@@ -1325,7 +1326,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                     totalPayedDocument = totalPayed - totalCreditNotes;
 
                     //Get ExtendedValue
-                    ExtendValue extendValue = new ExtendValue();
+                    NumberToWordsUtility extendValue = new NumberToWordsUtility();
                     extended = extendValue.GetExtendedValue(totalPayedDocument, defaultCurrency.Designation);
                     if (debug) _logger.Debug(string.Format("extended: [{0}]", extended));
 
@@ -1400,13 +1401,13 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
         }
 
         //Used With DocumentFinanceMaster
-        public static bool PersistFinanceDocumentWorkSession(Session pSession, fin_documentfinancemaster pDocumentFinanceMaster, ProcessFinanceDocumentParameter pParameters, fin_configurationpaymentmethod pPaymentMethod)
+        public static bool PersistFinanceDocumentWorkSession(Session pSession, fin_documentfinancemaster pDocumentFinanceMaster, FinanceDocumentProcessingParameters pParameters, fin_configurationpaymentmethod pPaymentMethod)
         {
             return PersistFinanceDocumentWorkSession(pSession, pDocumentFinanceMaster, pParameters, null, pPaymentMethod);
         }
 
         //Main Method
-        public static bool PersistFinanceDocumentWorkSession(Session pSession, fin_documentfinancemaster pDocumentFinanceMaster, ProcessFinanceDocumentParameter pParameters, fin_documentfinancepayment pDocumentFinancePayment, fin_configurationpaymentmethod pPaymentMethod)
+        public static bool PersistFinanceDocumentWorkSession(Session pSession, fin_documentfinancemaster pDocumentFinanceMaster, FinanceDocumentProcessingParameters pParameters, fin_documentfinancepayment pDocumentFinancePayment, fin_configurationpaymentmethod pPaymentMethod)
         {
             bool result;
             try

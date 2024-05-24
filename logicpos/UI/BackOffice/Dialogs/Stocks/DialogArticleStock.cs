@@ -288,7 +288,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 var selecteRow = _treeViewXPO_StockMov.DataSourceRow as fin_articlestock;
                 if (selecteRow != null && selecteRow.DocumentMaster != null)
                 {
-                    var fileToOpen = ProcessFinanceDocument.GenerateDocumentFinanceMasterPDFIfNotExists(selecteRow.DocumentMaster);
+                    var fileToOpen = FinanceDocumentProcessingUtils.GenerateDocumentFinanceMasterPDFIfNotExists(selecteRow.DocumentMaster);
 
                     if (File.Exists(fileToOpen))
                     {
@@ -748,7 +748,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 var selecteRow = _treeViewXPO_ArticleHistory.DataSourceRow as fin_articleserialnumber;
                 if (selecteRow.StockMovimentOut != null && selecteRow.StockMovimentOut.DocumentMaster != null)
                 {
-                    var fileToOpen = ProcessFinanceDocument.GenerateDocumentFinanceMasterPDFIfNotExists(selecteRow.StockMovimentOut.DocumentMaster);
+                    var fileToOpen = FinanceDocumentProcessingUtils.GenerateDocumentFinanceMasterPDFIfNotExists(selecteRow.StockMovimentOut.DocumentMaster);
 
                     if (File.Exists(fileToOpen))
                     {

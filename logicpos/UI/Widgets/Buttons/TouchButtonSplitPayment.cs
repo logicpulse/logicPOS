@@ -15,7 +15,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
 
         public Label LabelPaymentDetails { get; set; }
         public ArticleBag ArticleBag { get; set; }
-        public ProcessFinanceDocumentParameter ProcessFinanceDocumentParameter { get; set; }
+        public FinanceDocumentProcessingParameters ProcessFinanceDocumentParameter { get; set; }
         public fin_documentfinancemaster DocumentFinanceMaster { get; set; }
         public string SelectedPaymentMethodButtonName { get; set; }
 
