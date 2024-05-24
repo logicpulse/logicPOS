@@ -1,13 +1,12 @@
 ﻿using Gtk;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial.library.Classes.WorkSession;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
+using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Xpo;
+using logicpos.Extensions;
+using LogicPOS.Finance.WorkSession;
+using LogicPOS.Globalization;
 using System;
 using System.Drawing;
-using logicpos.Extensions;
-using logicpos.datalayer.Xpo;
-using LogicPOS.Settings.Extensions;
-using LogicPOS.Globalization;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -27,7 +26,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 }
                 else if (MovementType.Token == "CASHDRAWER_CLOSE")
                 {
-					//Alteração no funcionamento do Inicio/fecho Sessão [IN:014330]
+                    //Alteração no funcionamento do Inicio/fecho Sessão [IN:014330]
                     cashLastMovementTypeAmount = ProcessWorkSessionPeriod.GetSessionPeriodCashDrawerOpenOrCloseAmount("CASHDRAWER_OPEN");
                     //Keep Running            
                     //if (!IsCashDrawerAmountValid(cashLastMovementTypeAmount))
@@ -36,7 +35,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     //}
                     //else
                     //{
-                      
+
                     //}
                 }
                 else if (MovementType.Token == "CASHDRAWER_OUT")
@@ -46,7 +45,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     {
                         string movementAmountMoney = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(MovementAmountMoney, XPOSettings.ConfigurationSystemCurrency.Acronym);
                         string totalAmountInCashDrawer = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalAmountInCashDrawer, XPOSettings.ConfigurationSystemCurrency.Acronym);
-                        
+
                         logicpos.Utils.ShowMessageTouch(
                             this, DialogFlags.Modal, new Size(500, 350), MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error"),
                             string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_cashdrawer_money_out_error"), movementAmountMoney, totalAmountInCashDrawer)
@@ -165,7 +164,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 //Toggle Button Off
                 _selectedCashDrawerButton.ModifyBg(
-                    StateType.Normal, 
+                    StateType.Normal,
                     _colorBaseDialogDefaultButtonBackground.ToGdkColor());
             }
 
@@ -173,7 +172,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _selectedCashDrawerButton = pButton;
             //Toggle Button On
             _selectedCashDrawerButton.ModifyBg(
-                StateType.Normal, 
+                StateType.Normal,
                 _colorBaseDialogDefaultButtonBackground.Lighten(0.50f).ToGdkColor());
 
             //Validate
@@ -192,19 +191,19 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                   (
                     _selectedCashDrawerButton != null &&
                     (
-                    //Validated or Zero
+                      //Validated or Zero
                       (_entryBoxMovementAmountMoney.EntryValidation.Validated)
                       &&
-                    //TODO: Enable Other Payments
-                    //_entryBoxMovementAmountOtherPayments.EntryValidation.Validated &&
+                      //TODO: Enable Other Payments
+                      //_entryBoxMovementAmountOtherPayments.EntryValidation.Validated &&
                       _entryBoxMovementDescription.EntryValidation.Validated
                     )
                     //One of them must be filled
                     &&
                     (
                       _entryBoxMovementAmountMoney.EntryValidation.Text != string.Empty //||
-                    //TODO: Enable Other Payments
-                    //_entryBoxMovementAmountOtherPayments.EntryValidation.Text != string.Empty
+                                                                                        //TODO: Enable Other Payments
+                                                                                        //_entryBoxMovementAmountOtherPayments.EntryValidation.Text != string.Empty
                     )
                   );
         }

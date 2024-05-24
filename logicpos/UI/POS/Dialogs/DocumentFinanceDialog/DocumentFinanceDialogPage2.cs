@@ -8,12 +8,9 @@ using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
-using logicpos.financial.library.App;
-using logicpos.financial.library.Classes.Finance;
 using LogicPOS.Finance.Utility;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Shared.Article;
 using System;
 using System.Collections;
@@ -292,7 +289,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 UpdateCustomerAddressAndFiscalNumberRequireFields();
 
                 //Extra Protection to only use FinanceFinalConsumerFiscalNumber on FS and FT else is Invalid
-                bool isFinalConsumerEntity = FinancialLibraryUtils.IsFinalConsumerEntity(EntryBoxSelectCustomerFiscalNumber.EntryValidation.Text);
+                bool isFinalConsumerEntity = XPOHelper.IsFinalConsumerEntity(EntryBoxSelectCustomerFiscalNumber.EntryValidation.Text);
                 if (
                     isFinalConsumerEntity &&
                     (

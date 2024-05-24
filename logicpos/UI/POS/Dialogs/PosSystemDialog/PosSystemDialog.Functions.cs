@@ -2,7 +2,6 @@
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Hardware.Printers;
 using LogicPOS.Globalization;
-using LogicPOS.Settings.Extensions;
 using System;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs

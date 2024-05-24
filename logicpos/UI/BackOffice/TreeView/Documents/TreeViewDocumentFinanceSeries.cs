@@ -9,15 +9,14 @@ using logicpos.Classes.Gui.Gtk.Widgets.Entrys;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
-using logicpos.financial.library.Classes.Finance;
-using logicpos.financial.library.Results;
+using LogicPOS.DTOs.Common;
+using LogicPOS.Finance.DocumentProcessing;
+using LogicPOS.Globalization;
+using LogicPOS.Settings;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
-using LogicPOS.Settings.Extensions;
-using LogicPOS.Globalization;
-using LogicPOS.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -77,7 +76,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             ButtonCreateDocumentFinanceSeries = Navigator.GetNewButton("touchButtonCreateDocumentFinanceSeries_DialogActionArea", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "pos_button_create_series"), @"Icons/icon_pos_nav_new.png");
             //_buttonCreateDocumentFinanceSeries.WidthRequest = 110;
             //Check if Has an Active Year Open before apply Permissions
-            fin_documentfinanceyears currentDocumentFinanceYear = ProcessFinanceDocumentSeries.GetCurrentDocumentFinanceYear();
+            fin_documentfinanceyears currentDocumentFinanceYear = DocumentProcessingSeriesUtils.GetCurrentDocumentFinanceYear();
             //Apply Permissions 
             ButtonCreateDocumentFinanceSeries.Sensitive = (currentDocumentFinanceYear != null && GeneralSettings.HasPermissionTo("BACKOFFICE_MAN_DOCUMENTFINANCESERIES_MANAGE_SERIES"));
             //Event
@@ -110,7 +109,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 });
 
                 //Get Current Active FinanceYear
-                fin_documentfinanceyears currentDocumentFinanceYear = ProcessFinanceDocumentSeries.GetCurrentDocumentFinanceYear();
+                fin_documentfinanceyears currentDocumentFinanceYear = DocumentProcessingSeriesUtils.GetCurrentDocumentFinanceYear();
 
                 //If has Active FiscalYear, Show Warning Request to Close/Open
                 if (currentDocumentFinanceYear != null)
@@ -212,7 +211,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         if (responseType == ResponseType.Yes)
                         {
                             //Get Result
-                            FrameworkCallsResult frameworkCallsResult = ProcessFinanceDocumentSeries.CreateDocumentFinanceYearSeriesTerminal(pDocumentFinanceYear, dataTableSelectedTerminals, resultAcronym.Text, false);
+                            FrameworkCallResult frameworkCallsResult = DocumentProcessingSeriesUtils.CreateDocumentFinanceYearSeriesTerminal(pDocumentFinanceYear, dataTableSelectedTerminals, resultAcronym.Text, false);
                             //Prepare Result
                             result = frameworkCallsResult.Result;
                             //Refresh Child Trees DocumentFinanceYearSerieTerminal
@@ -260,8 +259,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
         public static logicpos.Utils.ResponseText PosConfirmAcronymSeriesDialog(Window pSourceWindow, fin_documentfinanceyears pDocumentFinanceYear, DataTable pTerminals, string pInitialValue)
         {
-            logicpos.Utils.ResponseText result = new logicpos.  Utils.ResponseText();
-            FrameworkCallsResult frameworkCallsResult;
+            logicpos.Utils.ResponseText result = new logicpos.Utils.ResponseText();
+            FrameworkCallResult frameworkCallsResult;
 
             try
             {
@@ -286,7 +285,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 entryBoxValidationMultiLine.EntryMultiline.TextView.Sensitive = false;
 
                 //Start with Preview
-                frameworkCallsResult = ProcessFinanceDocumentSeries.CreateDocumentFinanceYearSeriesTerminal(pDocumentFinanceYear, pTerminals, dialog.EntryBoxValidation.EntryValidation.Text, true);
+                frameworkCallsResult = DocumentProcessingSeriesUtils.CreateDocumentFinanceYearSeriesTerminal(pDocumentFinanceYear, pTerminals, dialog.EntryBoxValidation.EntryValidation.Text, true);
                 entryBoxValidationMultiLine.EntryMultiline.TextView.Buffer.Text = frameworkCallsResult.Output;
 
                 //Pack Widgets
@@ -296,7 +295,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 {
                     if (dialog.EntryBoxValidation.EntryValidation.Validated)
                     {
-                        frameworkCallsResult = ProcessFinanceDocumentSeries.CreateDocumentFinanceYearSeriesTerminal(pDocumentFinanceYear, pTerminals, dialog.EntryBoxValidation.EntryValidation.Text, true);
+                        frameworkCallsResult = DocumentProcessingSeriesUtils.CreateDocumentFinanceYearSeriesTerminal(pDocumentFinanceYear, pTerminals, dialog.EntryBoxValidation.EntryValidation.Text, true);
                         entryBoxValidationMultiLine.EntryMultiline.TextView.Buffer.Text = frameworkCallsResult.Output;
                     }
                 };

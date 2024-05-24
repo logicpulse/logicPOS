@@ -7,17 +7,14 @@ using logicpos.Classes.Enums.App;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Logic.Hardware;
 using logicpos.Classes.Logic.Others;
-using logicpos.Classes.Utils;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
-using logicpos.financial.library.App;
-using logicpos.financial.library.Classes.Reports;
 using logicpos.financial.library.Classes.Utils;
-using logicpos.financial.library.Classes.WorkSession;
+using LogicPOS.Finance.WorkSession;
 using LogicPOS.Globalization;
+using LogicPOS.Reporting;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Shared;
 using LogicPOS.Utility;
 using System;
@@ -404,11 +401,11 @@ namespace logicpos
                 _logger.Debug(string.Format("void Init() :: ProductVersion: [{0}], ImageRuntimeVersion: [{1}], IsLicensed: [{2}]", GeneralSettings.ProductVersion, GeneralSettings.ProductAssembly.ImageRuntimeVersion, LicenceManagement.IsLicensed));
 
                 //Audit
-               XPOHelper.Audit("APP_START", string.Format("{0} {1} clr {2}", POSSettings.AppName, GeneralSettings.ProductVersion, GeneralSettings.ProductAssembly.ImageRuntimeVersion));
-                if (databaseCreated)XPOHelper.Audit("DATABASE_CREATE");
+                XPOHelper.Audit("APP_START", string.Format("{0} {1} clr {2}", POSSettings.AppName, GeneralSettings.ProductVersion, GeneralSettings.ProductAssembly.ImageRuntimeVersion));
+                if (databaseCreated) XPOHelper.Audit("DATABASE_CREATE");
 
                 // Plugin Errors Messages
-                if (PluginSettings.HasSoftwareVendorPlugin == false || 
+                if (PluginSettings.HasSoftwareVendorPlugin == false ||
                     PluginSettings.SoftwareVendor.IsValidSecretKey(PluginSettings.SecretKey) == false)
                 {
                     /* IN009034 */
@@ -498,7 +495,7 @@ namespace logicpos
             bool xpoCreateDatabaseAndSchema = POSSettings.XPOCreateDatabaseAndSchema;
             Directory.CreateDirectory(PathsSettings.BackupsFolderLocation);
             bool backupsFolderExists = Directory.Exists(PathsSettings.BackupsFolderLocation);
-        
+
             if (backupsFolderExists == false)
             {
                 ResponseType response = Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, MessageType.Question, ButtonsType.YesNo, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"), string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_error_create_directory_backups"), PathsSettings.BackupsFolderLocation));
@@ -669,7 +666,7 @@ namespace logicpos
             try
             {
                 //Audit
-                if (pAudit)XPOHelper.Audit("APP_CLOSE");
+                if (pAudit) XPOHelper.Audit("APP_CLOSE");
                 //Before use DeleteSession()
                 /* IN005943 */
                 POSSession.CurrentSession.CleanSession();

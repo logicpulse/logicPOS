@@ -6,8 +6,8 @@ using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
-using logicpos.financial.library.App;
 using logicpos.shared.Enums;
+using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Settings;
 using LogicPOS.Shared.Article;
 using System;
@@ -112,7 +112,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //Check TotalFinal with Current Customer Details
             else if (
                 TreeViewArticles.DataSource.Rows.Count > 0 &&
-                FinancialLibraryUtils.IsInValidFinanceDocumentCustomer(
+                DocumentProcessingUtils.IsInValidFinanceDocumentCustomer(
                     ArticleBag.TotalFinal,
                     _pagePad2.EntryBoxSelectCustomerName.EntryValidation.Text,
                     _pagePad2.EntryBoxCustomerAddress.EntryValidation.Text,

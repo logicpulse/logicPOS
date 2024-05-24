@@ -7,7 +7,6 @@ using logicpos.Classes.Enums;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
-using logicpos.financial.library.App;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
@@ -260,13 +259,13 @@ namespace logicpos
                         default:
                             break;
                     }
-                    if(result == 1)
+                    if (result == 1)
                     {
                         Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_operation_successfully"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_import_successfully"));
                     }
-                    else if(result == -1)
+                    else if (result == -1)
                     {
-                       Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Warning, ButtonsType.Close, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_warning"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_partial_import"));
+                        Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Warning, ButtonsType.Close, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_warning"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_partial_import"));
                     }
                     else
                     {

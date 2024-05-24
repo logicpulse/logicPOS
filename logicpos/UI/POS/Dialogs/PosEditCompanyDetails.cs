@@ -10,15 +10,13 @@ using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
-using logicpos.financial.library.Classes.Finance;
+using LogicPOS.Finance.Utility;
+using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using LogicPOS.Settings.Extensions;
-using LogicPOS.Globalization;
-using LogicPOS.Utility;
-using LogicPOS.Finance.Utility;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -199,7 +197,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             if (item.Token == "COMPANY_CITY") { entryBoxValidation.EntryValidation.Text = "Figueira da Foz"; }
                             if (item.Token == "COMPANY_POSTALCODE") { entryBoxValidation.EntryValidation.Text = "3080-000"; }
                             if (item.Token == "COMPANY_COUNTRY") { entryBoxValidation.EntryValidation.Text = "Portugal"; }
-                            if (item.Token == "COMPANY_FISCALNUMBER") {entryBoxValidation.EntryValidation.Text = "999999990"; }
+                            if (item.Token == "COMPANY_FISCALNUMBER") { entryBoxValidation.EntryValidation.Text = "999999990"; }
                             if (item.Token == "COMPANY_STOCK_CAPITAL") { entryBoxValidation.EntryValidation.Text = "1000"; }
                             if (item.Token == "COMPANY_EMAIL") { entryBoxValidation.EntryValidation.Text = "comercial@logicpulse.com"; }
                             if (item.Token == "COMPANY_WEBSITE") { entryBoxValidation.EntryValidation.Text = "www.logicpulse.com"; }

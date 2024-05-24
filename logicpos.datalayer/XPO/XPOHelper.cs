@@ -7,7 +7,6 @@ using logicpos.datalayer.Enums;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
-using LogicPOS.Settings.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -722,41 +721,41 @@ namespace logicpos.datalayer.Xpo
             //Check if has a Valid LoggedUser else Assign NULL to INSERT, usefull to log stuff when User is not Yet Logged
             //string loggedUserOid = (pLoggedUser != null) ? string.Format("'{0}'", pLoggedUser.Oid.ToString()) : "NULL";
 
-           
-                //Get auditType Guid from Query
-                Guid guidAuditType = GetGuidFromQuery(executeSql);
 
-                if (!guidAuditType.Equals(Guid.Empty))
+            //Get auditType Guid from Query
+            Guid guidAuditType = GetGuidFromQuery(executeSql);
+
+            if (!guidAuditType.Equals(Guid.Empty))
+            {
+                //Fresh User and Terminal, to prevent Object Delection Problem
+                sys_userdetail xpoUserDetail = (pLoggedUser != null) ? (sys_userdetail)GetXPGuidObject(typeof(sys_userdetail), pLoggedUser.Oid) : null;
+                pos_configurationplaceterminal xpoTerminal = (pos_configurationplaceterminal)GetXPGuidObject(typeof(pos_configurationplaceterminal), pLoggedTerminal.Oid);
+                //get AuditType Object
+                sys_systemaudittype xpoAuditType = (sys_systemaudittype)GetXPGuidObject(typeof(sys_systemaudittype), guidAuditType);
+                string description = (pDescription != string.Empty) ? pDescription
+                  : (xpoAuditType.ResourceString != null && CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, xpoAuditType.ResourceString) != null)
+                  ? CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, xpoAuditType.ResourceString) : xpoAuditType.Designation;
+
+                sys_systemaudit systemAudit = new sys_systemaudit(pSession)
                 {
-                    //Fresh User and Terminal, to prevent Object Delection Problem
-                    sys_userdetail xpoUserDetail = (pLoggedUser != null) ? (sys_userdetail)GetXPGuidObject(typeof(sys_userdetail), pLoggedUser.Oid) : null;
-                    pos_configurationplaceterminal xpoTerminal = (pos_configurationplaceterminal)GetXPGuidObject(typeof(pos_configurationplaceterminal), pLoggedTerminal.Oid);
-                    //get AuditType Object
-                    sys_systemaudittype xpoAuditType = (sys_systemaudittype)GetXPGuidObject(typeof(sys_systemaudittype), guidAuditType);
-                    string description = (pDescription != string.Empty) ? pDescription
-                      : (xpoAuditType.ResourceString != null && CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, xpoAuditType.ResourceString) != null)
-                      ? CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, xpoAuditType.ResourceString) : xpoAuditType.Designation;
+                    Date = dateTime,
+                    Description = description,
+                    UserDetail = xpoUserDetail,
+                    Terminal = xpoTerminal,
+                    AuditType = xpoAuditType
+                };
+                systemAudit.Save();
 
-                    sys_systemaudit systemAudit = new sys_systemaudit(pSession)
-                    {
-                        Date = dateTime,
-                        Description = description,
-                        UserDetail = xpoUserDetail,
-                        Terminal = xpoTerminal,
-                        AuditType = xpoAuditType
-                    };
-                    systemAudit.Save();
 
-                 
 
-                    result = true;
-                }
-                else
-                {
-                    string exceptionMessage = string.Format("Invalid AuditType: [{0}]", pAuditTypeToken);
-                    throw (new Exception(exceptionMessage));
-                }
-           
+                result = true;
+            }
+            else
+            {
+                string exceptionMessage = string.Format("Invalid AuditType: [{0}]", pAuditTypeToken);
+                throw (new Exception(exceptionMessage));
+            }
+
             return result;
         }
 
@@ -782,6 +781,26 @@ namespace logicpos.datalayer.Xpo
             return (partialPayedItems != null && Convert.ToDecimal(partialPayedItems) > 0)
               ? Convert.ToDecimal(partialPayedItems)
               : result;
+        }
+
+        public static erp_customer GetFinalConsumerEntity()
+        {
+            erp_customer result = null;
+
+            string filterCriteria = string.Format("Oid = '{0}'", InvoiceSettings.FinalConsumerId.ToString());
+            result = GetXPGuidObjectFromCriteria(typeof(erp_customer), filterCriteria) as erp_customer;
+
+            return result;
+        }
+
+        public static bool IsFinalConsumerEntity(string pFiscalNumber)
+        {
+            bool result = false;
+
+            var entity = GetFinalConsumerEntity();
+            result = (entity != null && pFiscalNumber == entity.FiscalNumber);
+
+            return result;
         }
     }
 }

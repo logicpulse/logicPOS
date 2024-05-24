@@ -1,17 +1,16 @@
 ﻿using DevExpress.Xpo.DB;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Enums;
-using logicpos.financial.library.Classes.WorkSession;
 using logicpos.shared.Enums.ThermalPrinter;
+using LogicPOS.Finance.WorkSession;
+using LogicPOS.Globalization;
+using LogicPOS.Settings;
+using LogicPOS.Settings.Enums;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
-using logicpos.datalayer.Xpo;
-using LogicPOS.Settings;
-using LogicPOS.Settings.Enums;
-using LogicPOS.Settings.Extensions;
-using LogicPOS.Globalization;
 
 namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 {

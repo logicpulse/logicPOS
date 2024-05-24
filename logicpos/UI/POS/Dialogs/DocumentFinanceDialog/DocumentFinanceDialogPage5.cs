@@ -6,11 +6,10 @@ using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial.library.App;
-using System;
-using LogicPOS.Settings.Extensions;
-using LogicPOS.Globalization;
 using logicpos.datalayer.Xpo;
+using LogicPOS.Globalization;
+using LogicPOS.Utility;
+using System;
 
 //THIS CLASS is ALMOST EQUAL to DocumentFinanceDialogPage4, but with Search Replace 
 //"ShipTo" to "ShipFrom" and "_ship_to_" to ""_ship_from_""
@@ -73,13 +72,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //ShipFrom Country
             CriteriaOperator criteriaOperatorCustomerCountry = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1)");
             EntryBoxSelectShipFromCountry = new XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry>(
-                _sourceWindow, 
-                CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_country"), 
-                "Designation", 
-                "Oid", 
-                _intialValueConfigurationCountry, 
-                criteriaOperatorCustomerCountry, 
-                LogicPOS.Utility.RegexUtils.RegexGuid, 
+                _sourceWindow,
+                CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_country"),
+                "Designation",
+                "Oid",
+                _intialValueConfigurationCountry,
+                criteriaOperatorCustomerCountry,
+                LogicPOS.Utility.RegexUtils.RegexGuid,
                 true);
 
             EntryBoxSelectShipFromCountry.EntryValidation.IsEditable = false;
@@ -144,7 +143,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         //Override Base Validate
         public override void Validate()
         {
-            _validated = 
+            _validated =
               EntryBoxShipFromAddressDetail.EntryValidation.Validated &&
               EntryBoxShipFromRegion.EntryValidation.Validated &&
               EntryBoxShipFromPostalCode.EntryValidation.Validated &&
@@ -190,10 +189,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         {
             //Initials Values
             /* IN007018 */
-            string initialShipFromAddressDetail = FinancialLibraryUtils.GetPreferenceParameter("COMPANY_ADDRESS");
-            string initialShipFromRegion = FinancialLibraryUtils.GetPreferenceParameter("COMPANY_REGION");
-            string initialShipFromPostalCode = FinancialLibraryUtils.GetPreferenceParameter("COMPANY_POSTALCODE");
-            string initialShipFromCity = FinancialLibraryUtils.GetPreferenceParameter("COMPANY_CITY");
+            string initialShipFromAddressDetail = PreferencesUtils.GetPreferenceParameterFromToken("COMPANY_ADDRESS");
+            string initialShipFromRegion = PreferencesUtils.GetPreferenceParameterFromToken("COMPANY_REGION");
+            string initialShipFromPostalCode = PreferencesUtils.GetPreferenceParameterFromToken("COMPANY_POSTALCODE");
+            string initialShipFromCity = PreferencesUtils.GetPreferenceParameterFromToken("COMPANY_CITY");
 
             cfg_configurationcountry intialValueConfigurationCountry = XPOSettings.ConfigurationSystemCountry;
             /* IN007018 

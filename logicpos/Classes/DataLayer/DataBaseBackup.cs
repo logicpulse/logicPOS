@@ -9,8 +9,8 @@ using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
-using logicpos.financial.library.App;
-using logicpos.financial.library.Classes.Finance;
+using LogicPOS.Finance.DocumentProcessing;
+using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
 using MySql.Data.MySqlClient;
@@ -18,8 +18,6 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Threading;
-using LogicPOS.Settings.Extensions;
-using LogicPOS.Globalization;
 
 namespace logicpos.Classes.DataLayer
 {
@@ -71,7 +69,7 @@ namespace logicpos.Classes.DataLayer
                     break;
             }
         }
-      
+
 
         public static bool Backup(Window pSourceWindow)
         {
@@ -89,7 +87,7 @@ namespace logicpos.Classes.DataLayer
 
                 /* IN009164 - Begin */
                 string xpoConnectionString = string.Format(
-                    GeneralSettings.Settings["xpoConnectionString"], 
+                    GeneralSettings.Settings["xpoConnectionString"],
                     DatabaseSettings.DatabaseName.ToLower());
 
                 XpoDefault.DataLayer = XpoDefault.GetDataLayer(xpoConnectionString, AutoCreateOption.None);
@@ -185,9 +183,9 @@ namespace logicpos.Classes.DataLayer
                         //catch (Exception ex) { _logger.Error(ex.Message, ex); }
 
                         //Post Backup
-                       XPOHelper.Audit("DATABASE_BACKUP", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_database_backup"),
-                            (fullFileNamePacked != string.Empty) ? fullFileNamePacked : systemBackup.FileNamePacked
-                        ));
+                        XPOHelper.Audit("DATABASE_BACKUP", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_database_backup"),
+                             (fullFileNamePacked != string.Empty) ? fullFileNamePacked : systemBackup.FileNamePacked
+                         ));
 
                         //Moved to Thread Outside > Only Show if not in Silence Mode
                         if (pSourceWindow != null) logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, _sizeDialog, MessageType.Info, ButtonsType.Close, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_information"), string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_database_backup_successfully"), systemBackup.FileNamePacked));
@@ -330,14 +328,14 @@ namespace logicpos.Classes.DataLayer
                         if (Restore(pSourceWindow, fileName, fileNamePacked, systemBackup))
                         {
                             //Audit DATABASE_RESTORE
-                           XPOHelper.Audit("DATABASE_RESTORE", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_database_restore"), fileNamePacked));
+                            XPOHelper.Audit("DATABASE_RESTORE", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_database_restore"), fileNamePacked));
                             //Required to DropIdentity before get currentDocumentFinanceYear Object, else it exists in old non restored Session
                             XPOSettings.Session.DropIdentityMap();
                             //Get Current Active FinanceYear
-                            fin_documentfinanceyears currentDocumentFinanceYear = ProcessFinanceDocumentSeries.GetCurrentDocumentFinanceYear();
+                            fin_documentfinanceyears currentDocumentFinanceYear = DocumentProcessingSeriesUtils.GetCurrentDocumentFinanceYear();
 
                             //Disable all Active FinanceYear Series and SeriesTerminal if Exists
-                            if (currentDocumentFinanceYear != null) ProcessFinanceDocumentSeries.DisableActiveYearSeriesAndTerminalSeries(currentDocumentFinanceYear);
+                            if (currentDocumentFinanceYear != null) DocumentProcessingSeriesUtils.DisableActiveYearSeriesAndTerminalSeries(currentDocumentFinanceYear);
 
                             //Restore SystemBackup properties else it keeps temp names after Restore acegvpls.soj & n2sjiamk.32o, empty hash etc
                             if (systemBackupGuid != Guid.Empty)
@@ -361,7 +359,7 @@ namespace logicpos.Classes.DataLayer
                             }
 
                             //Audit
-                           XPOHelper.Audit("APP_CLOSE");
+                            XPOHelper.Audit("APP_CLOSE");
                             //Call QuitWithoutConfirmation without Audit
                             LogicPOSApp.QuitWithoutConfirmation(false);
 
@@ -503,11 +501,11 @@ namespace logicpos.Classes.DataLayer
             if (pFilename == "")
             {
                 return pathBackups + string.Format(
-                    fileDataBaseBackup, 
-                    DatabaseSettings.DatabaseType, 
+                    fileDataBaseBackup,
+                    DatabaseSettings.DatabaseType,
                     DatabaseSettings.DatabaseName,
-                    pFileVersion, 
-                    dateTime, 
+                    pFileVersion,
+                    dateTime,
                     pFileExtension).ToLower();
             }
             else

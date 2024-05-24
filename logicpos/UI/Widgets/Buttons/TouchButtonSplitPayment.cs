@@ -1,6 +1,6 @@
 ﻿using Gtk;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial.library.Classes.Finance;
+using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Shared.Article;
 using System.Drawing;
 
@@ -15,7 +15,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
 
         public Label LabelPaymentDetails { get; set; }
         public ArticleBag ArticleBag { get; set; }
-        public FinanceDocumentProcessingParameters ProcessFinanceDocumentParameter { get; set; }
+        public DocumentProcessingParameters ProcessFinanceDocumentParameter { get; set; }
         public fin_documentfinancemaster DocumentFinanceMaster { get; set; }
         public string SelectedPaymentMethodButtonName { get; set; }
 

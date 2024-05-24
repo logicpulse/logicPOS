@@ -6,10 +6,9 @@ using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
-using logicpos.financial.library.App;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets;
+using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Globalization;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Shared;
 using LogicPOS.Shared.Article;
 using LogicPOS.Shared.Orders;
@@ -30,7 +29,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 ArticleBag articleBag = ArticleBag.TicketOrderToArticleBag(currentOrderMain);
 
                 //Get Latest DocumentConference Document without Recreate it if Diference, compare it in Above Line
-                fin_documentfinancemaster lastDocument = FinancialLibraryUtils.GetOrderMainLastDocumentConference(false);
+                fin_documentfinancemaster lastDocument = DocumentProcessingUtils.GetOrderMainLastDocumentConference(false);
 
                 //Reprint Existing Document After compare with current ArticleBag
                 if (
@@ -46,7 +45,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     try
                     {
                         //Call Recreate New Document
-                        fin_documentfinancemaster newDocument = FinancialLibraryUtils.GetOrderMainLastDocumentConference(true);
+                        fin_documentfinancemaster newDocument = DocumentProcessingUtils.GetOrderMainLastDocumentConference(true);
 
                         //Call Print New Document
                         FrameworkCalls.PrintFinanceDocument(this, newDocument);

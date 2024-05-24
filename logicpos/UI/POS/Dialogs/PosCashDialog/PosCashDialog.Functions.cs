@@ -2,16 +2,15 @@
 using DevExpress.Xpo.DB;
 using Gtk;
 using logicpos.App;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial.library.Classes.Hardware.Printers;
-using logicpos.financial.library.Classes.WorkSession;
 using logicpos.Classes.DataLayer;
+using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Xpo;
+using logicpos.financial.library.Classes.Hardware.Printers;
+using LogicPOS.Finance.WorkSession;
+using LogicPOS.Globalization;
 using System;
 using System.Collections;
 using System.Drawing;
-using logicpos.datalayer.Xpo;
-using LogicPOS.Settings.Extensions;
-using LogicPOS.Globalization;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -113,28 +112,29 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     openTerminals += string.Format("{0}{1} - {2}", Environment.NewLine, currentOpenSessionTerminal.Designation, row.Values[xPSelectDataTerminals.GetFieldIndex("Designation")].ToString());
                 }
 
-////Check if Has Opened Terminal Connections before Close Day
-//PosMessageDialog messageDialog = new PosMessageDialog(
-//    this,
-//    DialogFlags.DestroyWithParent,
-//    new Size(600, 300),
-//    string.Format(CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_worksession_period_warning_open_terminals, noOfTerminalOpenSessions, string.Format("{0}{1}", Environment.NewLine, openTerminals)),
-//    MessageType.Warning,
-//    ResponseType.Ok,
-//    CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_button_label_ok
-//);
+                ////Check if Has Opened Terminal Connections before Close Day
+                //PosMessageDialog messageDialog = new PosMessageDialog(
+                //    this,
+                //    DialogFlags.DestroyWithParent,
+                //    new Size(600, 300),
+                //    string.Format(CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_worksession_period_warning_open_terminals, noOfTerminalOpenSessions, string.Format("{0}{1}", Environment.NewLine, openTerminals)),
+                //    MessageType.Warning,
+                //    ResponseType.Ok,
+                //    CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_button_label_ok
+                //);
 
-//int messageDialogResponse = messageDialog.Run();
-//messageDialog.Destroy();
+                //int messageDialogResponse = messageDialog.Run();
+                //messageDialog.Destroy();
 
                 ResponseType responseType = logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new Size(600, 400), MessageType.Question, ButtonsType.YesNo, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_information"),
                     string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_worksession_period_warning_open_terminals"), noOfTerminalOpenSessions, string.Format("{0}{1}", Environment.NewLine, openTerminals))
                 );
 
-                if (responseType == ResponseType.Yes) {
+                if (responseType == ResponseType.Yes)
+                {
                     return logicpos.Utils.CloseAllOpenTerminals(this, XPOSettings.Session);
 
-                } 
+                }
                 else
                 {
                     //Exit Event Button Without Close Period Day Session
@@ -152,7 +152,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             bool result;
             //Update UI
             GlobalApp.PosMainWindow.UpdateWorkSessionUI();
-           
+
 
             //ProcessWorkSessionPeriod.GetSessionPeriodMovementTotalDebug(GlobalFramework.WorkSessionPeriodTerminal, true );
             PosCashDrawerDialog dialogCashDrawer = new PosCashDrawerDialog(this, DialogFlags.DestroyWithParent);
@@ -277,11 +277,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 else
                                 {
                                     //Audit
-                                   XPOHelper.Audit(audit, string.Format(
-                                        CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, moneyInOutLabelAudit),
-                                        LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(addedMoney, XPOSettings.ConfigurationSystemCurrency.Acronym),
-                                        dialogCashDrawer.MovementDescription)
-                                    );
+                                    XPOHelper.Audit(audit, string.Format(
+                                         CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, moneyInOutLabelAudit),
+                                         LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(addedMoney, XPOSettings.ConfigurationSystemCurrency.Acronym),
+                                         dialogCashDrawer.MovementDescription)
+                                     );
                                 }
                             }
                         }
@@ -355,11 +355,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 else
                                 {
                                     //Audit
-                                   XPOHelper.Audit(audit, string.Format(
-                                        CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, moneyInOutLabelAudit),
-                                        LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(addedMoney, XPOSettings.ConfigurationSystemCurrency.Acronym),
-                                        dialogCashDrawer.MovementDescription)
-                                    );
+                                    XPOHelper.Audit(audit, string.Format(
+                                         CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, moneyInOutLabelAudit),
+                                         LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(addedMoney, XPOSettings.ConfigurationSystemCurrency.Acronym),
+                                         dialogCashDrawer.MovementDescription)
+                                     );
                                 }
                             }
                         }
@@ -439,11 +439,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             else
                             {
                                 //Audit
-                               XPOHelper.Audit("CASHDRAWER_IN", string.Format(
-                                    CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_cashdrawer_in"),
-                                    LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(dialogCashDrawer.MovementAmountMoney, XPOSettings.ConfigurationSystemCurrency.Acronym),
-                                    dialogCashDrawer.MovementDescription)
-                                );
+                                XPOHelper.Audit("CASHDRAWER_IN", string.Format(
+                                     CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_cashdrawer_in"),
+                                     LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(dialogCashDrawer.MovementAmountMoney, XPOSettings.ConfigurationSystemCurrency.Acronym),
+                                     dialogCashDrawer.MovementDescription)
+                                 );
                             }
 
                             //ShowMessage
@@ -486,11 +486,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             else
                             {
                                 //Audit
-                               XPOHelper.Audit("CASHDRAWER_OUT", string.Format(
-                                    CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_cashdrawer_out"),
-                                    LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(dialogCashDrawer.MovementAmountMoney, XPOSettings.ConfigurationSystemCurrency.Acronym),
-                                    dialogCashDrawer.MovementDescription)
-                                );
+                                XPOHelper.Audit("CASHDRAWER_OUT", string.Format(
+                                     CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_cashdrawer_out"),
+                                     LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(dialogCashDrawer.MovementAmountMoney, XPOSettings.ConfigurationSystemCurrency.Acronym),
+                                     dialogCashDrawer.MovementDescription)
+                                 );
                             }
 
                             //ShowMessage

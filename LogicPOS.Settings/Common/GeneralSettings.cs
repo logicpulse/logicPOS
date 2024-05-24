@@ -11,6 +11,7 @@ namespace LogicPOS.Settings
     {
         public static string AppTheme = "Default";
         public static NameValueCollection Settings { get; set; }
+
         public static Dictionary<string, string> PreferenceParameters { get; set; }
         public static string ServerVersion { get; set; }
         public static string ProductVersion

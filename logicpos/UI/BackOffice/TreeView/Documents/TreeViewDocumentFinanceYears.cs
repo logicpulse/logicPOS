@@ -6,13 +6,12 @@ using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
-using logicpos.financial.library.Classes.Finance;
+using LogicPOS.Finance.DocumentProcessing;
+using LogicPOS.Globalization;
+using LogicPOS.Settings;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using LogicPOS.Settings.Extensions;
-using LogicPOS.Globalization;
-using LogicPOS.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -67,7 +66,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             try
             {
                 //Get Current Active FinanceYear
-                fin_documentfinanceyears currentDocumentFinanceYear = ProcessFinanceDocumentSeries.GetCurrentDocumentFinanceYear();
+                fin_documentfinanceyears currentDocumentFinanceYear = DocumentProcessingSeriesUtils.GetCurrentDocumentFinanceYear();
 
                 //If has Active FiscalYear, Show Warning Request to Close/Open
                 if (currentDocumentFinanceYear != null)
@@ -88,7 +87,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     if (responseType == ResponseType.Yes)
                     {
                         //Disable All Related Year Series and TerminalSeries
-                        bool resultDisableFiscalYear = ProcessFinanceDocumentSeries.DisableActiveYearSeriesAndTerminalSeries(currentDocumentFinanceYear);
+                        bool resultDisableFiscalYear = DocumentProcessingSeriesUtils.DisableActiveYearSeriesAndTerminalSeries(currentDocumentFinanceYear);
                         //Now we can disable currentDocumentFinanceYear
                         if (resultDisableFiscalYear)
                         {
@@ -130,14 +129,14 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     new Size(600, 400),
                     MessageType.Question,
                     ButtonsType.YesNo,
-                    CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_series_create_series"),
-                    CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_series_create_document_type_series")
+                    CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_series_create_series"),
+                    CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_series_create_document_type_series")
                 );
 
                 if (responseType == ResponseType.Yes)
                 {
                     //Get Current Active FinanceYear
-                    fin_documentfinanceyears currentDocumentFinanceYear = ProcessFinanceDocumentSeries.GetCurrentDocumentFinanceYear();
+                    fin_documentfinanceyears currentDocumentFinanceYear = DocumentProcessingSeriesUtils.GetCurrentDocumentFinanceYear();
                     bool result = TreeViewDocumentFinanceSeries.UICreateDocumentFinanceYearSeriesTerminal(_sourceWindow, currentDocumentFinanceYear);
                 }
             }

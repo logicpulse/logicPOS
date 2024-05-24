@@ -1,18 +1,17 @@
 ﻿using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial.library.Classes.Finance;
+using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Enums;
-using logicpos.financial.library.Classes.Reports.BOs;
-using logicpos.financial.library.Classes.Reports.BOs.Documents;
+using LogicPOS.Globalization;
+using LogicPOS.Reporting.BOs;
+using LogicPOS.Reporting.BOs.Documents;
+using LogicPOS.Settings;
+using LogicPOS.Utility;
+using SkiaSharp;
+using SkiaSharp.QrCode.Image;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using SkiaSharp;
-using SkiaSharp.QrCode.Image;
 using System.IO;
-using logicpos.datalayer.Xpo;
-using LogicPOS.Settings.Extensions;
-using LogicPOS.Globalization;
-using LogicPOS.Settings;
 
 namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 {
@@ -110,10 +109,11 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 
                         }
                     }
-                }catch(Exception ex) { _logger.Error("QRCode print error: " + ex.Message); }
+                }
+                catch (Exception ex) { _logger.Error("QRCode print error: " + ex.Message); }
 
                 //Get Hash4Chars from Hash
-                string hash4Chars = FinanceDocumentProcessingUtils.GenDocumentHash4Chars(_documentMaster.Hash);
+                string hash4Chars = CryptographyUtils.GetDocumentHash4Chars(_documentMaster.Hash);
                 //Call Base CertificationText 
                 PrintCertificationText(hash4Chars);
             }
@@ -163,13 +163,14 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                  * The conversion will be done when printing the DataRow for VatRate and Discount fields (LogicPOS.Utility.DataConversionUtils.DecimalToString(pFinanceDetail.Vat)).
                  */
                 //Colum
-                if (CultureSettings.CountryIdIsPortugal(XPOSettings.ConfigurationSystemCountry.Oid)){
+                if (CultureSettings.CountryIdIsPortugal(XPOSettings.ConfigurationSystemCountry.Oid))
+                {
                     columns.Add(new TicketColumn("VatRate", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "IVA") + "%", 6, TicketColumnsAlign.Right, typeof(decimal), "{0:00.00}"));
                 }
                 else
                 {
                     columns.Add(new TicketColumn("VatRate", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_vat_rate") + "%", 6, TicketColumnsAlign.Right, typeof(decimal), "{0:00.00}"));
-                }                
+                }
                 columns.Add(new TicketColumn("Quantity", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_quantity_acronym"), 8, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));
                 columns.Add(new TicketColumn("UnitMeasure", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_unit_measure_acronym"), 3, TicketColumnsAlign.Right));
                 if (CultureSettings.CountryIdIsPortugal(XPOSettings.ConfigurationSystemCountry.Oid))
@@ -244,10 +245,10 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 /* IN009211 block - begin 
                  * Method "LogicPOS.Utility.DataConversionUtils.DecimalToString(pFinanceDetail.Vat)" is safe for "%" format
                  */
-				dataRow[0] = pFinanceDetail.Vat;
+                dataRow[0] = pFinanceDetail.Vat;
                 dataRow[1] = pFinanceDetail.Quantity;
                 dataRow[2] = pFinanceDetail.UnitMeasure;
-				//Layout talões PT - Preço Unitário em vez de Preço sem IVA [IN:016509]
+                //Layout talões PT - Preço Unitário em vez de Preço sem IVA [IN:016509]
                 dataRow[3] = pFinanceDetail.UnitPrice;
                 dataRow[4] = pFinanceDetail.Discount;
                 //dataRow[5] = pFinanceDetail.TotalNet * _documentFinanceMasterList[0].ExchangeRate;
@@ -301,7 +302,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                     dataRow[1] = LogicPOS.Utility.DataConversionUtils.DecimalToString(_documentFinanceMasterList[0].TotalDiscount * _documentFinanceMasterList[0].ExchangeRate);
                     dataTable.Rows.Add(dataRow);
                 }
-                
+
                 /* #TODO IN009214 */
                 //Add Row : Discount PaymentCondition
                 //WIP Always 0

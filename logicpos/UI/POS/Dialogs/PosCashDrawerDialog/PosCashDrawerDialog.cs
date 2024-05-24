@@ -1,19 +1,18 @@
 ﻿using DevExpress.Xpo.DB;
 using Gtk;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial.library.Classes.WorkSession;
+using logicpos.Classes.Enums.Dialogs;
+using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
+using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Xpo;
+using logicpos.Extensions;
+using LogicPOS.Finance.WorkSession;
+using LogicPOS.Globalization;
+using LogicPOS.Settings;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using logicpos.Classes.Enums.Keyboard;
-using logicpos.Classes.Enums.Dialogs;
-using logicpos.Extensions;
-using logicpos.datalayer.Xpo;
-using LogicPOS.Settings.Extensions;
-using LogicPOS.Globalization;
-using LogicPOS.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -53,7 +52,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //If has a valid open session
                 if (XPOSettings.WorkSessionPeriodTerminal != null)
                 {
-					//Alteração no funcionamento do Inicio/fecho Sessão [IN:014330]
+                    //Alteração no funcionamento do Inicio/fecho Sessão [IN:014330]
                     //Get From MoneyInCashDrawer, Includes CASHDRAWER_START and Money Movements
                     TotalAmountInCashDrawer = ProcessWorkSessionPeriod.GetSessionPeriodMovementTotal(XPOSettings.WorkSessionPeriodTerminal, MovementTypeTotal.MoneyInCashDrawer);
                     if (TotalAmountInCashDrawer < 0) TotalAmountInCashDrawer = TotalAmountInCashDrawer * (-1);
@@ -141,7 +140,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //EntryAmountMoney
                 _entryBoxMovementAmountMoney = new EntryBoxValidation(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_money"), KeyboardMode.Money, LogicPOS.Utility.RegexUtils.RegexDecimalGreaterEqualThanZero, true);
                 _entryBoxMovementAmountMoney.EntryValidation.Changed += delegate { ValidateDialog(); };
-				//Alteração no funcionamento do Inicio/fecho Sessão [IN:014330]
+                //Alteração no funcionamento do Inicio/fecho Sessão [IN:014330]
                 _entryBoxMovementAmountMoney.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.DecimalToString(TotalAmountInCashDrawer);
 
                 //TODO: Enable Other Payments
