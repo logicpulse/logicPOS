@@ -12,12 +12,10 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
-using logicpos.financial.library.App;
-using logicpos.financial.library.Classes.Finance;
+using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Finance.Utility;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Shared.Article;
 using System;
 using System.Collections.Generic;
@@ -156,7 +154,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                     _processDocumentType == DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment ||
                                     _processDocumentType == DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice
                                 ) &&
-                                FinancialLibraryUtils.IsInValidFinanceDocumentCustomer(
+                                DocumentProcessingUtils.IsInValidFinanceDocumentCustomer(
                                     processArticleBag.TotalFinal,
                                     _entryBoxSelectCustomerName.EntryValidation.Text,
                                     _entryBoxCustomerAddress.EntryValidation.Text,
@@ -187,7 +185,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             }
                             //Protection to Prevent Recharge Customer Card with Invalid User (User without Card or FinalConsumer...)
                             //Check if Article Bag Full|Partial has Recharge Article and Valid customer Card
-                            else if (!FinancialLibraryUtils.IsCustomerCardValidForArticleBag(processArticleBag, Customer))
+                            else if (!DocumentProcessingUtils.IsCustomerCardValidForArticleBag(processArticleBag, Customer))
                             {
                                 logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_invalid_customer_card_detected"));
 
@@ -197,7 +195,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             else
                             {
                                 //Prepare ProcessFinanceDocumentParameter : Shared for PartialPayment and FullPayment
-                                ProcessFinanceDocumentParameter = new FinanceDocumentProcessingParameters(
+                                ProcessFinanceDocumentParameter = new DocumentProcessingParameters(
                                     _processDocumentType, processArticleBag
                                 )
                                 {
@@ -209,7 +207,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 };
 
                                 //Get Latest DocumentConference Document if Exists, and assign if (REMOVED Total Equality, Request from Carlos)
-                                fin_documentfinancemaster conferenceDocument = FinancialLibraryUtils.GetOrderMainLastDocumentConference(false);
+                                fin_documentfinancemaster conferenceDocument = DocumentProcessingUtils.GetOrderMainLastDocumentConference(false);
                                 if (
                                     conferenceDocument != null
                                 /*&& (conferenceDocument.TotalFinal.Equals(processArticleBag.TotalFinal) && conferenceDocument.DocumentDetail.Count.Equals(processArticleBag.Count))*/

@@ -1,13 +1,12 @@
 ﻿using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Enums;
-using logicpos.financial.library.Classes.Reports;
+using LogicPOS.Globalization;
+using LogicPOS.Reporting;
+using LogicPOS.Settings;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using LogicPOS.Settings.Extensions;
-using LogicPOS.Globalization;
-using LogicPOS.Settings;
 
 namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 {
@@ -55,7 +54,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 _companyLogo = pCompanyLogo;
 
                 //Init Custom Vars From FastReport
-                _customVars =  PrintingSettings.FastReportCustomVars;
+                _customVars = PrintingSettings.FastReportCustomVars;
                 //_systemVars = GlobalFramework.FastReportSystemVars;
                 //Test FastReport Helpers with
                 //_customVars["COMPANY_NAME"])) | _systemVars["APP_NAME"])) | CustomFunctions.Res("global_printed_on_date")
@@ -129,16 +128,16 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                     }
                     _thermalPrinterGeneric.PrintImage(logo);
                 }
-                
+
                 else if (isOrder) /* IN009055 */
                 {
                     _thermalPrinterGeneric.WriteLine(companyBusinessName, WriteLineTextMode.DoubleHeightBold);
                 }
-                else if(printComercialName != null && !Convert.ToBoolean(printComercialName))
+                else if (printComercialName != null && !Convert.ToBoolean(printComercialName))
                 {
                     _thermalPrinterGeneric.WriteLine(_customVars["COMPANY_NAME"]);
                 }
-                else if(!string.IsNullOrEmpty(companyBusinessName) && companyBusinessName.Length > 20)
+                else if (!string.IsNullOrEmpty(companyBusinessName) && companyBusinessName.Length > 20)
                 {
                     _thermalPrinterGeneric.WriteLine(companyBusinessName, WriteLineTextMode.DoubleHeightBold);
                     _thermalPrinterGeneric.WriteLine(_customVars["COMPANY_NAME"]);

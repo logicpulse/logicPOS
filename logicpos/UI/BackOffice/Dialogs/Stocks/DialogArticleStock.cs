@@ -12,10 +12,8 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
 using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
-using logicpos.financial.library.Classes.Finance;
-using logicpos.financial.library.Classes.Reports;
 using LogicPOS.Globalization;
-using LogicPOS.PDFViewer.Winforms;
+using LogicPOS.Reporting;
 using LogicPOS.Settings;
 using System;
 using System.Collections.Generic;
@@ -288,7 +286,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 var selecteRow = _treeViewXPO_StockMov.DataSourceRow as fin_articlestock;
                 if (selecteRow != null && selecteRow.DocumentMaster != null)
                 {
-                    var fileToOpen = FinanceDocumentProcessingUtils.GenerateDocumentFinanceMasterPDFIfNotExists(selecteRow.DocumentMaster);
+                    var fileToOpen = CustomReport.GenerateDocumentFinanceMasterPDFIfNotExists(selecteRow.DocumentMaster);
 
                     if (File.Exists(fileToOpen))
                     {
@@ -748,7 +746,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 var selecteRow = _treeViewXPO_ArticleHistory.DataSourceRow as fin_articleserialnumber;
                 if (selecteRow.StockMovimentOut != null && selecteRow.StockMovimentOut.DocumentMaster != null)
                 {
-                    var fileToOpen = FinanceDocumentProcessingUtils.GenerateDocumentFinanceMasterPDFIfNotExists(selecteRow.StockMovimentOut.DocumentMaster);
+                    var fileToOpen = CustomReport.GenerateDocumentFinanceMasterPDFIfNotExists(selecteRow.StockMovimentOut.DocumentMaster);
 
                     if (File.Exists(fileToOpen))
                     {

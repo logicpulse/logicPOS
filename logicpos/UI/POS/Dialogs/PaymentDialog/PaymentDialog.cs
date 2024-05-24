@@ -10,10 +10,9 @@ using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
-using logicpos.financial.library.Classes.Finance;
+using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Shared.Article;
 using System;
 using System.Data;
@@ -83,19 +82,19 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public ArticleBag ArticleBagFullPayment { get; set; }
         public ArticleBag ArticleBagPartialPayment { get; set; }
 
-        public FinanceDocumentProcessingParameters ProcessFinanceDocumentParameter { get; set; }
+        public DocumentProcessingParameters ProcessFinanceDocumentParameter { get; set; }
 
         //Constructors
         public PaymentDialog(
-            Window pSourceWindow, 
-            DialogFlags pDialogFlags, 
+            Window pSourceWindow,
+            DialogFlags pDialogFlags,
             ArticleBag pArticleBag)
             : this(pSourceWindow, pDialogFlags, pArticleBag, true) { }
 
         public PaymentDialog(
-            Window pSourceWindow, 
-            DialogFlags pDialogFlags, 
-            ArticleBag pArticleBag, 
+            Window pSourceWindow,
+            DialogFlags pDialogFlags,
+            ArticleBag pArticleBag,
             bool pEnablePartialPaymentButtons)
             : this(pSourceWindow, pDialogFlags, pArticleBag, pEnablePartialPaymentButtons, true) { }
 
@@ -103,22 +102,22 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         // A call to this overloaded contructor have issues when user is paying "Conta Corrente", when it is causing 2 invoices being created.
         // We changed the call to this overloaded method, directing the flow to main constructor from calling class.
         public PaymentDialog(
-            Window pSourceWindow, 
-            DialogFlags pDialogFlags, 
-            ArticleBag pArticleBag, 
-            bool pEnablePartialPaymentButtons, 
+            Window pSourceWindow,
+            DialogFlags pDialogFlags,
+            ArticleBag pArticleBag,
+            bool pEnablePartialPaymentButtons,
             bool pEnableCurrentAccountButton)
             : this(pSourceWindow, pDialogFlags, pArticleBag, pEnablePartialPaymentButtons, pEnableCurrentAccountButton, false, null, null) { }
 
 
         public PaymentDialog(
-            Window pSourceWindow, 
-            DialogFlags pDialogFlags, 
-            ArticleBag pArticleBag, 
-            bool pEnablePartialPaymentButtons, 
-            bool pEnableCurrentAccountButton, 
-            bool pSkipPersistFinanceDocument, 
-            FinanceDocumentProcessingParameters pProcessFinanceDocumentParameter, 
+            Window pSourceWindow,
+            DialogFlags pDialogFlags,
+            ArticleBag pArticleBag,
+            bool pEnablePartialPaymentButtons,
+            bool pEnableCurrentAccountButton,
+            bool pSkipPersistFinanceDocument,
+            DocumentProcessingParameters pProcessFinanceDocumentParameter,
             string pSelectedPaymentMethodButtonName)
             : base(pSourceWindow, pDialogFlags, false)
         {

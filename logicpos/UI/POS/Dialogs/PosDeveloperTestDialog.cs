@@ -1,21 +1,20 @@
 ﻿using DevExpress.Data.Filtering;
 using Gtk;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial.library.Classes.Reports;
+using logicpos.Classes.Enums.Dialogs;
+using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.Widgets.Entrys;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
+using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Xpo;
+using LogicPOS.Globalization;
+using LogicPOS.Reporting;
+using LogicPOS.Settings;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using logicpos.Classes.Enums.Dialogs;
-using logicpos.Classes.Enums.Keyboard;
-using logicpos.datalayer.Xpo;
-using LogicPOS.Settings.Extensions;
-using LogicPOS.Globalization;
-using LogicPOS.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -38,7 +37,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             //Init VBox
             _vbox = new VBox(false, 2) { WidthRequest = _windowSize.Width - 44 };
-            
+
             //Call InitUI
             InitUI1();
             //InitUI_FilePicker();
@@ -120,7 +119,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer> xPOEntryBoxSelectRecordValidationGuidMode = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(this, "XPOEntryBoxSelectRecordValidationGuidMode", "Name", "Oid", null, criteriaOperatorXPOEntryBoxSelectRecordValidationGuidMode, KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexGuid, true);
             _xPOEntryBoxSelectRecordValidationTextMode.ClosePopup += delegate { };
             _vbox.PackStart(xPOEntryBoxSelectRecordValidationGuidMode, true, true, _padding);
-            
+
             //Test DateTime Picker
             DateTime initalDateTime = DateTime.Now;
             EntryBoxValidationDatePickerDialog entryBoxShipToDeliveryDate = new EntryBoxValidationDatePickerDialog(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_to_delivery_date"), "dateFormat", DateTime.Now, LogicPOS.Utility.RegexUtils.RegexDate, true, CultureSettings.DateFormat);

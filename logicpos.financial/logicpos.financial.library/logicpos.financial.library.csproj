@@ -60,15 +60,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\Finance\DocumentReference.cs" />
-    <Compile Include="Classes\Finance\FinanceDocumentProcessingUtils.cs" />
-    <Compile Include="Classes\Finance\MovementOfGoodsProperties.cs" />
-    <Compile Include="Classes\Finance\FinanceDocumentProcessingParameters.cs" />
-    <Compile Include="Classes\Finance\ProcessFinanceDocumentSeries.cs" />
-    <Compile Include="Classes\Finance\ProcessFinanceDocumentValidation.cs" />
-    <Compile Include="Classes\Finance\ProcessFinanceDocumentValidationException.cs" />
-    <Compile Include="Classes\Finance\SaftAo.cs" />
-    <Compile Include="Classes\Finance\SaftPt.cs" />
     <Compile Include="Classes\HardWare\Printers\PrintRouter.cs" />
     <Compile Include="Classes\HardWare\Printers\Thermal\Enums\TicketColumnsAlign.cs" />
     <Compile Include="Classes\HardWare\Printers\Thermal\Enums\WriteLineTextMode.cs" />
@@ -87,46 +78,8 @@
     <Compile Include="Classes\HardWare\Printers\Thermal\TicketTable.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Classes\Reports\BOs\Articles\FRBOArticle.cs" />
-    <Compile Include="Classes\Reports\BOs\Articles\FRBOArticleFamily.cs" />
-    <Compile Include="Classes\Reports\BOs\Articles\FRBOArticleSerialNumber.cs" />
-    <Compile Include="Classes\Reports\BOs\Articles\FRBOArticleStockMovementView.cs" />
-    <Compile Include="Classes\Reports\BOs\Articles\FRBOArticleStockSupplierView.cs" />
-    <Compile Include="Classes\Reports\BOs\Articles\FRBOArticleStockView.cs" />
-    <Compile Include="Classes\Reports\BOs\Articles\FRBOArticleStockWareHouseView.cs" />
-    <Compile Include="Classes\Reports\BOs\Articles\FRBOArticleSubFamily.cs" />
-    <Compile Include="Classes\Reports\BOs\Customers\FRBOCustomer.cs" />
-    <Compile Include="Classes\Reports\BOs\Customers\FRBOCustomerType.cs" />
-    <Compile Include="Classes\Reports\BOs\Documents\FRBODocumentFinanceCurrentAccount.cs" />
-    <Compile Include="Classes\Reports\BOs\Documents\FRBODocumentFinanceCustomerBalanceDetails.cs" />
-    <Compile Include="Classes\Reports\BOs\Documents\FRBODocumentFinanceCustomerBalanceSummary.cs" />
-    <Compile Include="Classes\Reports\BOs\Documents\FRBODocumentFinanceDetail.cs" />
-    <Compile Include="Classes\Reports\BOs\Documents\FRBODocumentFinanceMaster.cs" />
-    <Compile Include="Classes\Reports\BOs\Documents\FRBODocumentFinanceMasterDetailGroupView.cs" />
-    <Compile Include="Classes\Reports\BOs\Documents\FRBODocumentFinanceMasterDetailView.cs" />
-    <Compile Include="Classes\Reports\BOs\Documents\FRBODocumentFinanceMasterTotalView.cs" />
-    <Compile Include="Classes\Reports\BOs\Documents\FRBODocumentFinanceMasterView.cs" />
-    <Compile Include="Classes\Reports\BOs\Documents\FRBODocumentFinancePaymentDocumentView.cs" />
-    <Compile Include="Classes\Reports\BOs\Documents\FRBODocumentFinancePaymentView.cs" />
-    <Compile Include="Classes\Reports\BOs\Documents\FRBODocumentFinanceVatSalesByClassSummary.cs" />
-    <Compile Include="Classes\Reports\BOs\Documents\FRBODocumentFinanceVatSalesSummary.cs" />
-    <Compile Include="Classes\Reports\BOs\FRBOAttribute.cs" />
-    <Compile Include="Classes\Reports\BOs\FRBOBaseObject.cs" />
-    <Compile Include="Classes\Reports\BOs\FRBOGenericCollection.cs" />
-    <Compile Include="Classes\Reports\BOs\FRBOTemplate.cs" />
-    <Compile Include="Classes\Reports\BOs\FRBOHelper.cs" />
-    <Compile Include="Classes\Reports\BOs\System\FRBOSystemAuditView.cs" />
-    <Compile Include="Classes\Reports\BOs\Users\FRBOUserCommission.cs" />
-    <Compile Include="Classes\Reports\CustomFunctions.cs" />
-    <Compile Include="Classes\Reports\CustomReport.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Classes\Utils\ProtectedFile.cs" />
     <Compile Include="Classes\Utils\ProtectedFiles.cs" />
-    <Compile Include="Classes\WorkSession\ProcessWorkSessionMovement.cs" />
-    <Compile Include="Classes\WorkSession\ProcessWorkSessionPeriod.cs" />
-    <Compile Include="Classes\Results\FrameworkCallsResult.cs" />
-    <Compile Include="App\FinancialLibraryUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\FinancialServiceUtils.cs" />
     <Compile Include="Services\ServicesAT.cs" />
@@ -171,6 +124,10 @@
     <ProjectReference Include="..\..\LogicPOS.Plugin\LogicPOS.Plugin.csproj">
       <Project>{50C2F757-8478-4FD3-8B35-89BC12E7ACA0}</Project>
       <Name>LogicPOS.Plugin</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\LogicPOS.Reporting\LogicPOS.Reporting.csproj">
+      <Project>{E8105C12-D5FA-4AFB-906B-F762BD2F9A27}</Project>
+      <Name>LogicPOS.Reporting</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\LogicPOS.Settings\LogicPOS.Settings.csproj">
       <Project>{a4e7f0ea-8360-41f2-a625-517f6e943a29}</Project>

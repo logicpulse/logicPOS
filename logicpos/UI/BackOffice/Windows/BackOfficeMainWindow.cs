@@ -8,14 +8,13 @@ using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial.library.Classes.WorkSession;
+using logicpos.datalayer.Xpo;
+using LogicPOS.Finance.WorkSession;
+using LogicPOS.Globalization;
+using LogicPOS.Settings;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using LogicPOS.Settings.Extensions;
-using LogicPOS.Globalization;
-using LogicPOS.Settings;
-using logicpos.datalayer.Xpo;
 
 //Notes
 
@@ -247,7 +246,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     //, Clicked = testClickedEventHandlerFromOutside }
                     { "ArticleFamily", new AccordionNode(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_families")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewArticleFamily>(this) } }
                 };
-;
+                ;
                 _accordionChildArticles.Add("ArticleSubFamily", new AccordionNode(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_subfamilies")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewArticleSubFamily>(this) });
                 _accordionChildArticles.Add("Article", new AccordionNode(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_articles")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewArticle>(this) });
                 _accordionChildArticles.Add("ArticleType", new AccordionNode(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_article_types")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewArticleType>(this) });

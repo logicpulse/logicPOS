@@ -1,15 +1,14 @@
 ﻿using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
+using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Enums;
-using logicpos.financial.library.Classes.Reports;
+using LogicPOS.Globalization;
+using LogicPOS.Reporting;
+using LogicPOS.Settings;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
-using LogicPOS.Settings.Extensions;
-using LogicPOS.Globalization;
-using logicpos.datalayer.Xpo;
-using LogicPOS.Settings;
 
 namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 {
@@ -96,7 +95,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             //Extended Header
             _thermalPrinterGeneric.WriteLine(string.Format("{0}", _customVars["COMPANY_ADDRESS"]));
             _thermalPrinterGeneric.WriteLine(string.Format("{0} {1} - {2}", _customVars["COMPANY_POSTALCODE"], _customVars["COMPANY_CITY"], _customVars["COMPANY_COUNTRY"]));
-			/* IN009055 block */
+            /* IN009055 block */
             _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "prefparam_company_telephone"), _customVars["COMPANY_TELEPHONE"]);
             //_thermalPrinterGeneric.WriteLine(CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_mobile_phone, _customVars["COMPANY_MOBILEPHONE"]);
             //_thermalPrinterGeneric.WriteLine(CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_fax, _customVars["COMPANY_FAX"]);
@@ -130,7 +129,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
         //Child Shared PrintCustomer
         protected void PrintCustomer(string pName, string pAddress, string pZipCode, string pCity, string pCountry, string pFiscalNumber)
         {
-			/* IN009055 block */
+            /* IN009055 block */
             string fiscalNumber = pFiscalNumber;
             string name = pName;
 
@@ -142,7 +141,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 name = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_final_consumer");
             }
 
-			/* IN009055 block - begin */
+            /* IN009055 block - begin */
             _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_customer"), name, false);
             _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_address"), pAddress, false);
 
@@ -253,7 +252,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             //Reset to Left
             _thermalPrinterGeneric.SetAlignLeft();
         }
-		//ATCUD Documentos - Criação do QRCode e ATCUD IN016508
+        //ATCUD Documentos - Criação do QRCode e ATCUD IN016508
         //Print QRCode
         protected void PrintQRCode(string QRCode)
         {
@@ -331,7 +330,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             string center = ESC + "a" + (char)1; //align center
 
             _thermalPrinterGeneric.PrintImage(@"temp/qrcode.Bmp", true);
-       
+
             //Line Feed
             _thermalPrinterGeneric.LineFeed();
 
@@ -383,14 +382,14 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             /* IN005975 and IN005979 for Mozambique deployment */
             else if (CultureSettings.MozambiqueCountryId.Equals(XPOSettings.ConfigurationSystemCountry.Oid))
             {/* IN009055 - related to IN006047 */
-				/* {Processado por computador} || Autorização da Autoridade Tributária: {DAFM1 - 0198 / 2018} */
+                /* {Processado por computador} || Autorização da Autoridade Tributária: {DAFM1 - 0198 / 2018} */
                 certificationText = string.Format(
                     CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_report_overlay_software_certification_short"),
-                    CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_report_overlay_software_certification_moz_tax_authority_cert_number") + "\n" + 
+                    CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_report_overlay_software_certification_moz_tax_authority_cert_number") + "\n" +
                     CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_report_overlay_software_certification_processed")
                  );
             }
-			//TK016268 Angola - Certificação 
+            //TK016268 Angola - Certificação 
             else if (CultureSettings.AngolaCountryId.Equals(XPOSettings.ConfigurationSystemCountry.Oid))
             {
                 //All Finance Documents use Processed, else Payments that use Emmited 
@@ -403,11 +402,12 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                     prefix,
                     SaftSettings.SaftSoftwareCertificateNumberAO,
                     SaftSettings.SaftProductIDAO,
-                    localDate);  
+                    localDate);
             }
 
-            else {
-				/* All other countries: "Processado por computador" */
+            else
+            {
+                /* All other countries: "Processado por computador" */
                 certificationText = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_report_overlay_software_certification_processed");
             }
 

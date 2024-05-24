@@ -1,6 +1,6 @@
-﻿using DevExpress.Xpo;
+﻿using DevExpress.Data.Filtering;
+using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
-using DevExpress.Data.Filtering;
 using Gtk;
 using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
@@ -8,14 +8,12 @@ using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial.library.Classes.Finance;
-using System;
-using System.Collections;
 using logicpos.datalayer.Xpo;
-using LogicPOS.Settings.Extensions;
+using LogicPOS.Finance.Utility;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
-using LogicPOS.Finance.Utility;
+using System;
+using System.Collections;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -71,7 +69,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     var countResult = XPOSettings.Session.Evaluate(typeof(fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse(countSQL));
                     _totalNumberOfFinanceDocuments = Convert.ToUInt16(countResult);
                     /* IN009249 - end */
-                    
+
                     if (_customer.Oid == InvoiceSettings.FinalConsumerId) _isFinalConsumerEntity = true;
                 }
 
@@ -82,7 +80,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 };
                 CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL)"));
                 ICollection collectionCustomers = XPOSettings.Session.GetObjects(XPOSettings.Session.GetClassInfo(typeof(erp_customer)), criteria, sortCollection, int.MaxValue, false, true);
-                
+
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
                 //Tab1
                 VBox vboxTab1 = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
@@ -110,7 +108,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 BOWidgetBox boxName = new BOWidgetBox(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_name"), _entryName);
                 vboxTab1.PackStart(boxName, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxName, _dataSourceRow, "Name", LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, true));/* IN009253 */
-                               
+
                 //Discount
                 Entry entryDiscount = new Entry();
                 BOWidgetBox boxDiscount = new BOWidgetBox(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_discount"), entryDiscount);
@@ -131,7 +129,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 BOWidgetBox boxCustomerType = new BOWidgetBox(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_customer_types"), _xpoComboBoxCustomerType);
                 vboxTab1.PackStart(boxCustomerType, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCustomerType, DataSourceRow, "CustomerType", LogicPOS.Utility.RegexUtils.RegexGuid, true));
-                
+
                 ////DISABLED : DiscountGroup
                 //XPOComboBox xpoComboBoxDiscountGroup = new XPOComboBox(DataSourceRow.Session, typeof(erp_customerdiscountgroup), (DataSourceRow as erp_customer).DiscountGroup, "Designation");
                 //BOWidgetBox boxDiscountGroup = new BOWidgetBox(CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_discount_group, xpoComboBoxDiscountGroup);
@@ -395,7 +393,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 {
 
                     string cod_FiscalNumber = string.Format("{0}{1}", cfg_configurationpreferenceparameter.GetCountryCode2, fiscalNumber);
-                   
+
                     if (EuropeanVatInformation.Get(cod_FiscalNumber) != null)
                     {
                         var address = (EuropeanVatInformation.Get(cod_FiscalNumber).Address.Split('\n'));

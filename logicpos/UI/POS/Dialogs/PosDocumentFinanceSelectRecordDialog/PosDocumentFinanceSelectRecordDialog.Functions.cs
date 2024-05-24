@@ -11,11 +11,12 @@ using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
-using logicpos.financial.library.Classes.Finance;
 using logicpos.shared.Enums;
+using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Globalization;
 using LogicPOS.Modules;
 using LogicPOS.Modules.StockManagement;
+using LogicPOS.Reporting;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Shared.Article;
@@ -1088,7 +1089,7 @@ WHERE
                     }
                 }
                 //IN009284 POS - Pagamento conta-corrente - Cliente por defeito 
-                FinanceDocumentProcessingParameters ccCustomerOid = new FinanceDocumentProcessingParameters(pFinanceDocuments[0].EntityOid, articleBag);
+                DocumentProcessingParameters ccCustomerOid = new DocumentProcessingParameters(pFinanceDocuments[0].EntityOid, articleBag);
                 ccCustomerOid.Customer = pFinanceDocuments[0].EntityOid;
                 /* Please see ERR201810#14 */
                 // Call to overloaded constructor method, where "pSkipPersistFinanceDocument" parameter was settled to false when calling main constructor method.
@@ -1101,7 +1102,7 @@ WHERE
                 if (response == (int)ResponseType.Ok)
                 {
                     //Prepare ProcessFinanceDocumentParameter
-                    FinanceDocumentProcessingParameters processFinanceDocumentParameter = new FinanceDocumentProcessingParameters(
+                    DocumentProcessingParameters processFinanceDocumentParameter = new DocumentProcessingParameters(
                       DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice, dialog.ArticleBagFullPayment)
                     {
                         SourceMode = PersistFinanceDocumentSourceMode.CurrentAcountDocuments,
@@ -1215,7 +1216,7 @@ WHERE
                 }
                 return FrameworkCalls.PersistFinanceDocumentPayment(pSourceWindow, listInvoices, listCreditNotes, pCustomer, pPaymentMethod, pConfigurationCurrency, pPaymentAmount, pPaymentNotes);
             }
-            catch (ProcessFinanceDocumentValidationException ex)
+            catch (DocumentProcessingValidationException ex)
             {
                 _logger.Error(ex.Message, ex);
                 return resultDocument;
@@ -1251,7 +1252,7 @@ WHERE
                     }
                     else
                     {
-                        documents.Add(FinanceDocumentProcessingUtils.GenerateDocumentFinanceMasterPDFIfNotExists(document));
+                        documents.Add(CustomReport.GenerateDocumentFinanceMasterPDFIfNotExists(document));
                     }
                 }
 
@@ -1275,7 +1276,7 @@ WHERE
                     }
                 }
             }
-            catch (ProcessFinanceDocumentValidationException ex)
+            catch (DocumentProcessingValidationException ex)
             {
                 _logger.Error(ex.Message, ex);
             }
@@ -1305,7 +1306,7 @@ WHERE
                 // Call GenerateDocument and add it to List
                 foreach (fin_documentfinancemaster document in pDocuments)
                 {
-                    documents.Add(document, FinanceDocumentProcessingUtils.GenerateDocumentFinanceMasterPDFIfNotExists(document));
+                    documents.Add(document, CustomReport.GenerateDocumentFinanceMasterPDFIfNotExists(document));
                 }
 
                 foreach (var item in documents)
@@ -1354,7 +1355,7 @@ WHERE
 
                 return responseType;
             }
-            catch (ProcessFinanceDocumentValidationException ex)
+            catch (DocumentProcessingValidationException ex)
             {
                 _logger.Error(ex.Message, ex);
                 return ResponseType.None;
@@ -1386,7 +1387,7 @@ WHERE
                 // Call GenerateDocument and add it to List
                 foreach (fin_documentfinancepayment document in pDocuments)
                 {
-                    documents.Add(document, FinanceDocumentProcessingUtils.GenerateDocumentFinancePaymentPDFIfNotExists(document));
+                    documents.Add(document, CustomReport.GenerateDocumentFinancePaymentPDFIfNotExists(document));
                 }
 
                 foreach (var item in documents)
@@ -1412,7 +1413,7 @@ WHERE
                 ResponseType responseType = (ResponseType)dialog.Run();
                 dialog.Destroy();
             }
-            catch (ProcessFinanceDocumentValidationException ex)
+            catch (DocumentProcessingValidationException ex)
             {
                 _logger.Error(ex.Message, ex);
             }
@@ -1491,7 +1492,7 @@ WHERE
                     }
 
                     // Init ProcessFinanceDocumentParameter
-                    FinanceDocumentProcessingParameters processFinanceDocumentParameter = new FinanceDocumentProcessingParameters(document.DocumentType.Oid, articleBag)
+                    DocumentProcessingParameters processFinanceDocumentParameter = new DocumentProcessingParameters(document.DocumentType.Oid, articleBag)
                     {
                         Customer = document.EntityOid,
                         SourceMode = PersistFinanceDocumentSourceMode.CustomArticleBag
@@ -1514,7 +1515,7 @@ WHERE
                     }
 
                     // PersistFinanceDocument
-                    FinanceDocumentProcessingUtils.PersistFinanceDocument(processFinanceDocumentParameter);
+                    DocumentProcessingUtils.PersistFinanceDocument(processFinanceDocumentParameter);
                 }
             }
             catch (Exception ex)
@@ -2502,7 +2503,7 @@ WHERE
                     {
                         logicpos.Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_printing_function_disabled"));
                     }
-                    else documents.Add(FinanceDocumentProcessingUtils.GenerateDocumentFinancePaymentPDFIfNotExists(document));
+                    else documents.Add(CustomReport.GenerateDocumentFinancePaymentPDFIfNotExists(document));
                 }
 
                 foreach (var item in documents)

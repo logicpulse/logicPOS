@@ -1,17 +1,17 @@
 ﻿using DevExpress.Xpo;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial.library.Classes.Finance;
+using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets;
-using logicpos.financial.library.Classes.Reports;
 using logicpos.printer.generic;
 using logicpos.shared.Enums;
 using logicpos.shared.Enums.ThermalPrinter;
+using LogicPOS.Finance.DocumentProcessing;
+using LogicPOS.Globalization;
+using LogicPOS.Reporting;
+using LogicPOS.Settings;
+using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
-using logicpos.datalayer.Xpo;
-using LogicPOS.Settings.Extensions;
-using LogicPOS.Globalization;
-using LogicPOS.Settings;
 
 namespace logicpos.financial.library.Classes.Hardware.Printers
 {
@@ -99,7 +99,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                         //Commit UOW Changes : Before get current OrderMain
                         uowSession.CommitChanges();
                         //Audit
-                       XPOHelper.Audit("SYSTEM_PRINT_FINANCE_DOCUMENT", designation);
+                        XPOHelper.Audit("SYSTEM_PRINT_FINANCE_DOCUMENT", designation);
                         result = true;
                     }
                     catch (Exception ex)
@@ -126,7 +126,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
             {
                 int printCopies = pCopyNames.Count;
                 //Get Hash4Chars from Hash
-                string hash4Chars = FinanceDocumentProcessingUtils.GenDocumentHash4Chars(pDocumentFinanceMaster.Hash);
+                string hash4Chars = CryptographyUtils.GetDocumentHash4Chars(pDocumentFinanceMaster.Hash);
 
                 try
                 {
@@ -192,7 +192,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
             try
             {
                 //Finish Payment with Print Job + Open Drawer (If Not TableConsult)
-                fin_documentfinanceyearserieterminal xDocumentFinanceYearSerieTerminal = ProcessFinanceDocumentSeries.GetDocumentFinanceYearSerieTerminal(pSession, pDocumentFinanceMaster.DocumentType.Oid);
+                fin_documentfinanceyearserieterminal xDocumentFinanceYearSerieTerminal = DocumentProcessingSeriesUtils.GetDocumentFinanceYearSerieTerminal(pSession, pDocumentFinanceMaster.DocumentType.Oid);
                 PrintFinanceDocument(XPOSettings.LoggedTerminal.Printer, pDocumentFinanceMaster, pCopyNames, pSecondCopy, pMotive);
 
                 //Open Door if Has Valid Payment
@@ -284,11 +284,11 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                             thermalPrinterInternalDocumentWorkSession.Print();
                             //CurrentAcount
                             //Use Config to print this
-                            if(Convert.ToBoolean(LogicPOS.Settings.GeneralSettings.PreferenceParameters["USE_CC_DAILY_TICKET"]))
+                            if (Convert.ToBoolean(LogicPOS.Settings.GeneralSettings.PreferenceParameters["USE_CC_DAILY_TICKET"]))
                             {
                                 thermalPrinterInternalDocumentWorkSession = new ThermalPrinterInternalDocumentWorkSession(pPrinter, pWorkSessionPeriod, SplitCurrentAccountMode.CurrentAcount);
                                 thermalPrinterInternalDocumentWorkSession.Print();
-                            }                            
+                            }
                             break;
                         case "GENERIC_PRINTER_WINDOWS":
                             break;
@@ -386,7 +386,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
             {
                 bool result = false;
                 if (XPOSettings.LoggedTerminal.ThermalPrinter != null)
-                {                    
+                {
                     bool hasPermission = GeneralSettings.HasPermissionTo("HARDWARE_DRAWER_OPEN");
                     int m = XPOSettings.LoggedTerminal.ThermalPrinter.ThermalOpenDrawerValueM;
                     int t1 = XPOSettings.LoggedTerminal.ThermalPrinter.ThermalOpenDrawerValueT1;
@@ -412,7 +412,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                                     //TK016249 - Impressoras - Diferenciação entre Tipos
                                     printObjectSINOCAN.OpenDoor(XPOSettings.LoggedTerminal.ThermalPrinter.PrinterType.Token, XPOSettings.LoggedTerminal.ThermalPrinter.NetworkName, m, t1, t2);
                                     //Audit
-                                   XPOHelper.Audit("CASHDRAWER_OPEN", CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_cashdrawer_open"));
+                                    XPOHelper.Audit("CASHDRAWER_OPEN", CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_cashdrawer_open"));
 
                                     break;
                             }
@@ -431,12 +431,12 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                 return result;
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.Error("Error open cash drawer :" + ex.Message);
                 return false;
             }
-            
+
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

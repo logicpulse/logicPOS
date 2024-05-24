@@ -6,15 +6,14 @@ using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
-using logicpos.financial.library.Classes.Finance;
-using logicpos.financial.library.Classes.Reports;
 using logicpos.shared.Enums;
-using System;
-using System.Collections.Generic;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Reporting;
 using LogicPOS.Settings;
 using LogicPOS.Shared.CustomDocument;
+using LogicPOS.Utility;
+using System;
+using System.Collections.Generic;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -33,7 +32,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 //Generate Default CopyNames from DocumentType
                 List<int> copyNames = CustomReport.CopyNames(documentFinanceMaster.DocumentType.PrintCopies);
-                string hash4Chars = FinanceDocumentProcessingUtils.GenDocumentHash4Chars(documentFinanceMaster.Hash);
+                string hash4Chars = CryptographyUtils.GetDocumentHash4Chars(documentFinanceMaster.Hash);
                 string destinationFileName = "";
                 string result = CustomReport.ProcessReportFinanceDocument(CustomReportDisplayMode.Design, documentFinanceMaster.Oid, hash4Chars, copyNames, destinationFileName);
                 _logger.Debug(string.Format("Result: [{0}]", result));

@@ -12,18 +12,16 @@ using logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.Classes.Gui.Gtk.Widgets.Entrys;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Logic.Others;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
 using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
-using logicpos.financial.library.Classes.Finance;
+using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Globalization;
 using LogicPOS.Modules;
 using LogicPOS.Settings;
-using LogicPOS.Settings.Enums;
 using LogicPOS.Utility;
 using System;
 using System.Collections;
@@ -37,7 +35,6 @@ using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.IO.Ports;
-using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -52,7 +49,7 @@ namespace logicpos
         private readonly Hashtable _commands = new Hashtable();
 
         public Dictionary<string, AccordionNode> AccordionChildDocumentsTemp { get; set; } = new Dictionary<string, AccordionNode>();
- 
+
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //ShowMessage Non Touch
@@ -226,7 +223,7 @@ namespace logicpos
             ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"), errorMessage);
         }
 
-        public static ResponseType ShowMessageTouchCheckIfFinanceDocumentHasValidDocumentDate(Window pSourceWindow, FinanceDocumentProcessingParameters pParameters)
+        public static ResponseType ShowMessageTouchCheckIfFinanceDocumentHasValidDocumentDate(Window pSourceWindow, DocumentProcessingParameters pParameters)
         {
             //Default is Yes
             ResponseType result = ResponseType.Yes;
@@ -237,7 +234,7 @@ namespace logicpos
                 fin_documentfinanceseries documentFinanceSerie = null;
                 if (XPOSettings.LoggedTerminal != null)
                 {
-                    documentFinanceYearSerieTerminal = ProcessFinanceDocumentSeries.GetDocumentFinanceYearSerieTerminal(pParameters.DocumentType);
+                    documentFinanceYearSerieTerminal = DocumentProcessingSeriesUtils.GetDocumentFinanceYearSerieTerminal(pParameters.DocumentType);
                     if (documentFinanceYearSerieTerminal != null) documentFinanceSerie = documentFinanceYearSerieTerminal.Serie;
                 }
 
@@ -256,7 +253,7 @@ namespace logicpos
                 DateTime dateLastDocumentFromSerie = DateTime.MaxValue;
                 if (documentFinanceSerie != null)
                 {
-                    dateLastDocumentFromSerie = FinanceDocumentProcessingUtils.GetLastDocumentDateTime(string.Format("DocumentSerie = '{0}'", documentFinanceSerie.Oid)).Date;
+                    dateLastDocumentFromSerie = DocumentProcessingUtils.GetLastDocumentDateTime(string.Format("DocumentSerie = '{0}'", documentFinanceSerie.Oid)).Date;
                 }
 
                 //Check if DocumentDate is greater than dateLastDocumentFromSerie (If Defined) else if is First Document in Series Skip
@@ -267,7 +264,7 @@ namespace logicpos
                 else
                 {
                     //WARNING_RULE_SYSTEM_DATE_GLOBAL
-                    DateTime dateTimeLastDocument = FinanceDocumentProcessingUtils.GetLastDocumentDateTime();
+                    DateTime dateTimeLastDocument = DocumentProcessingUtils.GetLastDocumentDateTime();
                     //Check if DocumentDate is greater than dateLastDocument (If Defined) else if is First Document in Series Skip
                     if (pParameters.DocumentDateTime < dateTimeLastDocument && dateTimeLastDocument != DateTime.MinValue)
                     {
@@ -801,7 +798,7 @@ namespace logicpos
             return pImage;
         }
 
-      
+
         //Converts a String to Size using TypeConverter, used to Store values in Appsettings
         public static Size StringToSize(string pSize)
         {

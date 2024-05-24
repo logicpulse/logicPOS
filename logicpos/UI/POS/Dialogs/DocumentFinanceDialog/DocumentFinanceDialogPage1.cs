@@ -8,10 +8,9 @@ using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
-using logicpos.financial.library.App;
+using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Shared.Article;
 using LogicPOS.Shared.CustomDocument;
 using System;
@@ -546,7 +545,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //Hide Cancelled and Invoiced Documents from Source
             string filterBase = "(Disabled IS NULL OR Disabled  <> 1) AND (DocumentStatusStatus <> 'A' AND DocumentStatusStatus <> 'F') {0}";
             string filterDocs = string.Empty;
-            Guid[] listDocumentTypes = FinancialLibraryUtils.GetDocumentTypeValidSourceDocuments(EntryBoxSelectDocumentFinanceType.Value.Oid);
+            Guid[] listDocumentTypes = DocumentProcessingUtils.GetDocumentTypeValidSourceDocuments(EntryBoxSelectDocumentFinanceType.Value.Oid);
 
             //Generate Filter Docs from listDocumentTypes Array
             for (int i = 0; i < listDocumentTypes.Length; i++)
@@ -615,7 +614,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                     || CustomDocumentSettings.DeliveryNoteDocumentTypeId.Equals(oid))
                 {
                     string creditedDocuments;
-                    addToTree = FinancialLibraryUtils.GetUnCreditedItemsFromSourceDocument(sourceDocument, out creditedDocuments);
+                    addToTree = DocumentProcessingUtils.GetUnCreditedItemsFromSourceDocument(sourceDocument, out creditedDocuments);
                     if (addToTree.Count <= 0)
                     {
                         //Restore Old Value

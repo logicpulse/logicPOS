@@ -4,9 +4,8 @@ using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
-using logicpos.financial.library.Classes.Finance;
+using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Globalization;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Shared;
 using LogicPOS.Shared.Article;
 using LogicPOS.Shared.Orders;
@@ -93,7 +92,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             try
             {
                 string labelPaymentDetails = string.Empty;
-                FinanceDocumentProcessingParameters processFinanceDocumentParameter = touchButtonSplitPayment.ProcessFinanceDocumentParameter;
+                DocumentProcessingParameters processFinanceDocumentParameter = touchButtonSplitPayment.ProcessFinanceDocumentParameter;
 
                 if (processFinanceDocumentParameter != null)
                 {
@@ -273,7 +272,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             ? item.ProcessFinanceDocumentParameter.TotalDelivery
                             : item.ArticleBag.TotalFinal;
 
-                        item.ProcessFinanceDocumentParameter = new FinanceDocumentProcessingParameters(
+                        item.ProcessFinanceDocumentParameter = new DocumentProcessingParameters(
                             item.ProcessFinanceDocumentParameter.DocumentType, item.ArticleBag
                         )
                         {

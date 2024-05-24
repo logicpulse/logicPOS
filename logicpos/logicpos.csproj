@@ -6664,6 +6664,10 @@
       <Project>{50C2F757-8478-4FD3-8B35-89BC12E7ACA0}</Project>
       <Name>LogicPOS.Plugin</Name>
     </ProjectReference>
+    <ProjectReference Include="..\LogicPOS.Reporting\LogicPOS.Reporting.csproj">
+      <Project>{e8105c12-d5fa-4afb-906b-f762bd2f9a27}</Project>
+      <Name>LogicPOS.Reporting</Name>
+    </ProjectReference>
     <ProjectReference Include="..\LogicPOS.Settings\LogicPOS.Settings.csproj">
       <Project>{a4e7f0ea-8360-41f2-a625-517f6e943a29}</Project>
       <Name>LogicPOS.Settings</Name>

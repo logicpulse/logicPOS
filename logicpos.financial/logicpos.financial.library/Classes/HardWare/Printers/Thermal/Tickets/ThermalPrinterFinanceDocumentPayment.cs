@@ -1,15 +1,13 @@
 ﻿using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial.library.Classes.Finance;
+using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Enums;
-using logicpos.financial.library.Classes.Reports.BOs;
-using logicpos.financial.library.Classes.Reports.BOs.Documents;
+using LogicPOS.Globalization;
+using LogicPOS.Reporting.BOs;
+using LogicPOS.Reporting.BOs.Documents;
+using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using LogicPOS.Settings.Extensions;
-using LogicPOS.Globalization;
-using logicpos.datalayer.Xpo;
-using LogicPOS.Finance.Utility;
 
 namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 {

@@ -6,14 +6,14 @@ using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
-using logicpos.financial.library.Classes.Finance;
 using logicpos.financial.library.Classes.Hardware.Printers;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets;
 using logicpos.financial.service.Objects.Modules.AT;
 using LogicPOS.DTOs.Common;
+using LogicPOS.Finance.DocumentProcessing;
+using LogicPOS.Finance.Saft;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Shared.Orders;
 using System;
 using System.Collections.Generic;
@@ -34,7 +34,7 @@ namespace logicpos
         //ProcessFinanceDocument
         //Use: DocumentFinanceMaster resultDocument = FrameworkCalls.ProcessFinanceDocument(SourceWindow, processFinanceDocumentParameter);
 
-        public static fin_documentfinancemaster PersistFinanceDocument(Window pSourceWindow, FinanceDocumentProcessingParameters pProcessFinanceDocumentParameter)
+        public static fin_documentfinancemaster PersistFinanceDocument(Window pSourceWindow, DocumentProcessingParameters pProcessFinanceDocumentParameter)
         {
             bool printDocument = true;
             fin_documentfinancemaster result = null;
@@ -45,7 +45,7 @@ namespace logicpos
                 ResponseType responseType = Utils.ShowMessageTouchCheckIfFinanceDocumentHasValidDocumentDate(pSourceWindow, pProcessFinanceDocumentParameter);
                 if (responseType != ResponseType.Yes) return result;
 
-                fin_documentfinancemaster documentFinanceMaster = FinanceDocumentProcessingUtils.PersistFinanceDocument(pProcessFinanceDocumentParameter, true);
+                fin_documentfinancemaster documentFinanceMaster = DocumentProcessingUtils.PersistFinanceDocument(pProcessFinanceDocumentParameter, true);
                 fin_documentfinancedetailorderreference fin_documentfinancedetailorderreference = new fin_documentfinancedetailorderreference();
                 if (documentFinanceMaster != null)
                 {
@@ -309,7 +309,7 @@ namespace logicpos
 
             try
             {
-                fin_documentfinancepayment documentFinancePayment = FinanceDocumentProcessingUtils.PersistFinanceDocumentPayment(pInvoices, pCreditNotes, pCustomer, pPaymentMethod, pConfigurationCurrency, pPaymentAmount, pPaymentNotes);
+                fin_documentfinancepayment documentFinancePayment = DocumentProcessingUtils.PersistFinanceDocumentPayment(pInvoices, pCreditNotes, pCustomer, pPaymentMethod, pConfigurationCurrency, pPaymentAmount, pPaymentNotes);
                 if (documentFinancePayment != null)
                 {
                     //Always send back the Valid Document
@@ -319,17 +319,17 @@ namespace logicpos
                     PrintFinanceDocumentPayment(pSourceWindow, documentFinancePayment);
                 }
             }
-            catch (ProcessFinanceDocumentValidationException ex)
+            catch (DocumentProcessingValidationException ex)
             {
                 string errorMessage;
                 switch (ex.Message)
                 {
                     case "ERROR_MISSING_SERIE":
-                        errorMessage = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document_missing_series"));
+                        errorMessage = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document_missing_series"));
                         break;
                     case "ERROR_COMMIT_FINANCE_DOCUMENT_PAYMENT":
                     default:
-                        errorMessage = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document"), ex.Exception.Message);
+                        errorMessage = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document"), ex.Exception.Message);
                         break;
                 }
                 Utils.ShowMessageTouch(
@@ -338,7 +338,7 @@ namespace logicpos
                   _sizeDefaultWindowSize,
                   MessageType.Error,
                   ButtonsType.Close,
-                  CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error"),
+                  CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"),
                   errorMessage
                 );
             }
@@ -577,10 +577,10 @@ namespace logicpos
                             }
                             else
                             {
-                               XPOHelper.Audit("CASHDRAWER_OUT", string.Format(
-                                CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_cashdrawer_out"),
-                                XPOSettings.LoggedTerminal.Designation,
-                                "Button Open Door"));
+                                XPOHelper.Audit("CASHDRAWER_OUT", string.Format(
+                                 CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_cashdrawer_out"),
+                                 XPOSettings.LoggedTerminal.Designation,
+                                 "Button Open Door"));
                             }
 
                         }

@@ -4,12 +4,10 @@ using logicpos.Classes.Enums.Dialogs;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
-using logicpos.financial.library.App;
-using logicpos.financial.library.Classes.Finance;
 using logicpos.shared.Enums;
+using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Shared.Article;
 using LogicPOS.Shared.CustomDocument;
 using System;
@@ -40,7 +38,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         //Get Parameters
                         //TK016249 - Impressoras - Diferenciação entre Tipos
                         PrintingSettings.UsingThermalPrinter = false;
-                        FinanceDocumentProcessingParameters processFinanceDocumentParameter = GetFinanceDocumentParameter();
+                        DocumentProcessingParameters processFinanceDocumentParameter = GetFinanceDocumentParameter();
 
                         //If error in Save or Update Customer
                         if (processFinanceDocumentParameter.Customer == Guid.Empty)
@@ -242,7 +240,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             return articleBag;
         }
 
-        private FinanceDocumentProcessingParameters GetFinanceDocumentParameter()
+        private DocumentProcessingParameters GetFinanceDocumentParameter()
         {
             //Always Recreate ArticleBag before contruct ProcessFinanceDocumentParameter
             _pagePad3.ArticleBag = GetArticleBag();
@@ -285,7 +283,7 @@ _pagePad2.EntryBoxCustomerEmail.EntryValidation.Text,
             }
 
             //Construct ProcessFinanceDocumentParameter
-            FinanceDocumentProcessingParameters result = new FinanceDocumentProcessingParameters(
+            DocumentProcessingParameters result = new DocumentProcessingParameters(
               _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid, _pagePad3.ArticleBag
             )
             {
@@ -434,7 +432,7 @@ _pagePad2.EntryBoxCustomerEmail.EntryValidation.Text,
                 }
 
                 //Protection to Prevent Recharge Customer Card with Invalid User (User without Card or FinalConsumer...)
-                if (result && !FinancialLibraryUtils.IsCustomerCardValidForArticleBag(articleBag, _pagePad2.EntryBoxSelectCustomerName.Value))
+                if (result && !DocumentProcessingUtils.IsCustomerCardValidForArticleBag(articleBag, _pagePad2.EntryBoxSelectCustomerName.Value))
                 {
                     logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_invalid_customer_card_detected"));
                     result = false;
