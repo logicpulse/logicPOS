@@ -1,7 +1,6 @@
-﻿using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Enums;
-using System;
+﻿using System;
 
-namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
+namespace LogicPOS.Printing.Tickets
 {
     public class TicketColumn
     {

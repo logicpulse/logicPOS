@@ -1,11 +1,10 @@
 ﻿using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
-using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Enums;
-using LogicPOS.Printing.Generic;
+using LogicPOS.Printing.Enums;
 using LogicPOS.Settings;
 using System;
 
-namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
+namespace LogicPOS.Printing.Common
 {
     public class GenericThermalPrinter : ThermalPrinter
     {
@@ -67,7 +66,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
                 switch (Printer.PrinterType.Token)
                 {
                     case "THERMAL_PRINTER_WINDOWS":
-                         LogicPOS.Printing.Usb.Print.USBPrintWindows(Printer.Designation, getByteArray());
+                        LogicPOS.Printing.Usb.Print.USBPrintWindows(Printer.Designation, getByteArray());
                         break;
                     case "THERMAL_PRINTER_SOCKET":
                         LogicPOS.Printing.Usb.Print.USBPrintWindows(Printer.NetworkName, getByteArray());

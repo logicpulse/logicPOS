@@ -1,13 +1,14 @@
 ﻿using DevExpress.Xpo;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
+using logicpos.shared.Enums;
+using logicpos.shared.Enums.ThermalPrinter;
 using LogicPOS.Finance.DocumentProcessing;
-using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets;
 using LogicPOS.Globalization;
+using LogicPOS.Printing.Common;
+using LogicPOS.Printing.Documents;
 using LogicPOS.Reporting;
 using LogicPOS.Settings;
-using logicpos.shared.Enums.ThermalPrinter;
-using logicpos.shared.Enums;
 using LogicPOS.Utility;
 using System;
 using System.Collections;
@@ -16,7 +17,7 @@ using System.Data;
 using System.Drawing;
 using System.Xml;
 
-namespace LogicPOS.Printing.Generic
+namespace LogicPOS.Printing.Utility
 {
 
     public static class PrintingUtils

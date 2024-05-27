@@ -1,9 +1,10 @@
 ﻿using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
-using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Enums;
 using LogicPOS.Globalization;
-using LogicPOS.Printing.Generic;
+using LogicPOS.Printing.Common;
+using LogicPOS.Printing.Enums;
+using LogicPOS.Printing.Tickets;
 using LogicPOS.Reporting;
 using LogicPOS.Settings;
 using System;
@@ -11,7 +12,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 
-namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
+namespace LogicPOS.Printing.Templates
 {
     public abstract class ThermalPrinterBaseFinanceTemplate : ThermalPrinterBaseTemplate
     {
@@ -536,27 +537,6 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                     Height = bitmap.Height,
                     Width = bitmap.Width
                 };
-            }
-        }
-
-        public class BitmapData
-        {
-            public System.Collections.BitArray Dots
-            {
-                get;
-                set;
-            }
-
-            public int Height
-            {
-                get;
-                set;
-            }
-
-            public int Width
-            {
-                get;
-                set;
             }
         }
     }

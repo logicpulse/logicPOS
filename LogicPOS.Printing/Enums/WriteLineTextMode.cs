@@ -1,4 +1,4 @@
-﻿namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Enums
+﻿namespace LogicPOS.Printing.Enums
 {
     public enum WriteLineTextMode
     {

@@ -1,14 +1,15 @@
 ﻿using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
-using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Enums;
 using LogicPOS.Globalization;
+using LogicPOS.Printing.Common;
+using LogicPOS.Printing.Enums;
 using LogicPOS.Reporting;
 using LogicPOS.Settings;
 using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
+namespace LogicPOS.Printing.Templates
 {
     public abstract class ThermalPrinterBaseTemplate
     {

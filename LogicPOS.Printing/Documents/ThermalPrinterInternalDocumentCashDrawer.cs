@@ -1,17 +1,17 @@
 ﻿using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Enums;
-using System;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Printing.Enums;
+using LogicPOS.Printing.Templates;
+using System;
 
-namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
+namespace LogicPOS.Printing.Documents
 {
     public class ThermalPrinterInternalDocumentCashDrawer : ThermalPrinterBaseInternalTemplate
     {
         private readonly decimal _totalAmountInCashDrawer = 0.0m;
         private readonly decimal _movementAmount = 0.0m;
         private readonly string _movementDescription = string.Empty;
-        
+
         public ThermalPrinterInternalDocumentCashDrawer(sys_configurationprinters pPrinter, string pTicketTitle, decimal pTotalAmountInCashDrawer)
             : this(pPrinter, pTicketTitle, pTotalAmountInCashDrawer, 0.0m) { }
 
@@ -34,7 +34,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             {
                 //Call Base Template PrintHeader
                 PrintTitles();
-                
+
                 //Align Center
                 _thermalPrinterGeneric.SetAlignCenter();
 
@@ -58,7 +58,8 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             _thermalPrinterGeneric.WriteLine(LogicPOS.Utility.DataConversionUtils.DecimalToString(_totalAmountInCashDrawer), WriteLineTextMode.Big);
             _thermalPrinterGeneric.LineFeed();
 
-            if (_movementAmount < 0.0m || _movementAmount > 0.0m)  {
+            if (_movementAmount < 0.0m || _movementAmount > 0.0m)
+            {
                 _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_movement_amount"));
                 _thermalPrinterGeneric.WriteLine(LogicPOS.Utility.DataConversionUtils.DecimalToString(_movementAmount), WriteLineTextMode.Big);
                 _thermalPrinterGeneric.LineFeed();

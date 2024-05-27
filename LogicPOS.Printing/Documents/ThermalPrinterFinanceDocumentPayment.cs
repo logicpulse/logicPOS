@@ -1,7 +1,9 @@
 ﻿using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
-using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Enums;
 using LogicPOS.Globalization;
+using LogicPOS.Printing.Enums;
+using LogicPOS.Printing.Templates;
+using LogicPOS.Printing.Tickets;
 using LogicPOS.Reporting.BOs;
 using LogicPOS.Reporting.BOs.Documents;
 using LogicPOS.Utility;
@@ -9,7 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 
-namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
+namespace LogicPOS.Printing.Documents
 {
     public class ThermalPrinterFinanceDocumentPayment : ThermalPrinterBaseFinanceTemplate
     {

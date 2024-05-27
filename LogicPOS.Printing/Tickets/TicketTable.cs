@@ -2,13 +2,14 @@
 using DevExpress.Xpo.DB;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
-using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Enums;
+using LogicPOS.Printing.Common;
+using LogicPOS.Printing.Enums;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Data;
 
-namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
+namespace LogicPOS.Printing.Tickets
 {
     public class TicketTable : DataTable
     {
@@ -316,7 +317,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
 
         public void Print(GenericThermalPrinter pThermalPrinterGeneric)
         {
-            Print (pThermalPrinterGeneric, WriteLineTextMode.Normal);
+            Print(pThermalPrinterGeneric, WriteLineTextMode.Normal);
         }
 
         public void Print(GenericThermalPrinter pThermalPrinterGeneric, WriteLineTextMode pTextMode)
@@ -346,7 +347,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
             try
             {
                 List<string> table = GetTable();
-                
+
                 int startRow = (pIgnoreFirstRow || string.IsNullOrEmpty(table[0].Trim())) ? 1 : 0;
 
                 for (int i = startRow; i < table.Count; i++)

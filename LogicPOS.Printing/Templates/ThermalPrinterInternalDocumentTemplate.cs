@@ -3,7 +3,7 @@ using logicpos.datalayer.DataLayer.Xpo;
 
 //Used this to SubClass ThermalPrinterBaseInternalTemplate
 
-namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
+namespace LogicPOS.Printing.Templates
 {
     public class ThermalPrinterInternalDocumentTemplate : ThermalPrinterBaseInternalTemplate
     {

@@ -4,7 +4,7 @@ using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 
-namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
+namespace LogicPOS.Printing.Templates
 {
     public abstract class ThermalPrinterBaseInternalTemplate : ThermalPrinterBaseTemplate
     {

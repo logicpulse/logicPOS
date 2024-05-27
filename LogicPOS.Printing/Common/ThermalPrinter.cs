@@ -1,3 +1,4 @@
+using LogicPOS.Printing.Utility;
 using LogicPOS.Settings;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace LogicPOS.Printing.Generic
+namespace LogicPOS.Printing.Common
 {
     public class ThermalPrinter
     {

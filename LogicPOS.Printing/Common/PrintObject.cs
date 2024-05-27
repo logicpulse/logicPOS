@@ -1,11 +1,12 @@
-﻿using System;
+﻿using LogicPOS.Printing.Utility;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Xml;
 
-namespace LogicPOS.Printing.Generic
+namespace LogicPOS.Printing.Common
 {
     public class PrintObject : IComparable<PrintObject>
     {

@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace LogicPOS.Printing.Generic
+namespace LogicPOS.Printing.Common
 {
     public class BitmapData
     {

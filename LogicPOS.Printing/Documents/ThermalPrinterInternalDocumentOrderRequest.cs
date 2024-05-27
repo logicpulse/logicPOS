@@ -1,13 +1,13 @@
 ﻿using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Enums;
+using LogicPOS.Globalization;
+using LogicPOS.Printing.Templates;
+using LogicPOS.Printing.Tickets;
+using LogicPOS.Settings;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using LogicPOS.Settings.Extensions;
-using LogicPOS.Globalization;
-using LogicPOS.Settings;
 
-namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
+namespace LogicPOS.Printing.Documents
 {
     public class ThermalPrinterInternalDocumentOrderRequest : ThermalPrinterBaseInternalTemplate
     {
@@ -18,7 +18,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
         private readonly bool _enableArticlePrinter;
 
         public ThermalPrinterInternalDocumentOrderRequest(sys_configurationprinters pPrinter, fin_documentorderticket pOrderTicket)
-            :this(pPrinter, pOrderTicket, false) { }
+            : this(pPrinter, pOrderTicket, false) { }
 
         public ThermalPrinterInternalDocumentOrderRequest(sys_configurationprinters pPrinter, fin_documentorderticket pOrderTicket, bool pEnableArticlePrinter)
             : base(pPrinter)
@@ -91,7 +91,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             foreach (fin_documentorderdetail item in _orderTicket.OrderDetail)
             {
                 //Add All Rows if Normal Mode without explicit ArticlePrinter defined, or print Printer Articles for explicit defined ArticlePrinter 
-                if (! _enableArticlePrinter || _thermalPrinterGeneric.Printer == item.Article.Printer)
+                if (!_enableArticlePrinter || _thermalPrinterGeneric.Printer == item.Article.Printer)
                 {
                     //Add Rows to main Ticket
                     dataRow = ticketTable.NewRow();

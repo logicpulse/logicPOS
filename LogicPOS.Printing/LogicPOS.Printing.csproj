@@ -50,10 +50,10 @@
     <Compile Include="Common\BitmapData.cs" />
     <Compile Include="Common\PrintObject.cs" />
     <Compile Include="Common\ThermalPrinter.cs" />
-    <Compile Include="Ticket\TicketColumnsAlignment.cs" />
+    <Compile Include="Tickets\TicketColumnsAlignment.cs" />
     <Compile Include="Enums\WriteLineTextMode.cs" />
     <Compile Include="Common\GenericThermalPrinter.cs" />
-    <Compile Include="Ticket\TicketColumn.cs" />
+    <Compile Include="Tickets\TicketColumn.cs" />
     <Compile Include="Templates\ThermalPrinterInternalDocumentTemplate.cs" />
     <Compile Include="Templates\ThermalPrinterBaseFinanceTemplate.cs" />
     <Compile Include="Templates\ThermalPrinterBaseInternalTemplate.cs" />
@@ -63,7 +63,7 @@
     <Compile Include="Documents\ThermalPrinterInternalDocumentCashDrawer.cs" />
     <Compile Include="Documents\ThermalPrinterInternalDocumentOrderRequest.cs" />
     <Compile Include="Documents\ThermalPrinterInternalDocumentWorkSession.cs" />
-    <Compile Include="Ticket\TicketTable.cs">
+    <Compile Include="Tickets\TicketTable.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Socket\Print.cs" />
