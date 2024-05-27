@@ -52,7 +52,6 @@
     <Compile Include="Generic\ThermalPrinter.cs" />
     <Compile Include="Printers\Thermal\Enums\TicketColumnsAlign.cs" />
     <Compile Include="Printers\Thermal\Enums\WriteLineTextMode.cs" />
-    <Compile Include="Printers\Thermal\PrintTransportObject.cs" />
     <Compile Include="Printers\Thermal\ThermalPrinterGeneric.cs" />
     <Compile Include="Printers\Thermal\TicketColumn.cs" />
     <Compile Include="Printers\Thermal\Tickets\ChildBaseTemplate\ThermalPrinterInternalDocumentTemplate.cs" />
