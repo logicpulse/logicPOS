@@ -6644,10 +6644,6 @@
       <Project>{6F50BD8B-A054-424C-9247-3892EFCC25B6}</Project>
       <Name>LogicPOS.Finance</Name>
     </ProjectReference>
-    <ProjectReference Include="..\logicpos.financial\logicpos.financial.library\logicpos.financial.library.csproj">
-      <Project>{7F643F3C-0F7B-451A-AA16-A9A25A56CCF3}</Project>
-      <Name>logicpos.financial.library</Name>
-    </ProjectReference>
     <ProjectReference Include="..\LogicPOS.Globalization\LogicPOS.Globalization.csproj">
       <Project>{b9e8d813-d694-4a7f-955e-ccc4b10f3774}</Project>
       <Name>LogicPOS.Globalization</Name>

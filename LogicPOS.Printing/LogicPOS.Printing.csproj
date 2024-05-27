@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FastReport.Mono">
+      <HintPath>..\libs\fastreport\FastReport.Mono.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -47,6 +50,24 @@
     <Compile Include="Generic\BitmapData.cs" />
     <Compile Include="Generic\PrintObject.cs" />
     <Compile Include="Generic\ThermalPrinter.cs" />
+    <Compile Include="Printers\PrintRouter.cs" />
+    <Compile Include="Printers\Thermal\Enums\TicketColumnsAlign.cs" />
+    <Compile Include="Printers\Thermal\Enums\WriteLineTextMode.cs" />
+    <Compile Include="Printers\Thermal\PrintTransportObject.cs" />
+    <Compile Include="Printers\Thermal\ThermalPrinterGeneric.cs" />
+    <Compile Include="Printers\Thermal\TicketColumn.cs" />
+    <Compile Include="Printers\Thermal\Tickets\ChildBaseTemplate\ThermalPrinterInternalDocumentTemplate.cs" />
+    <Compile Include="Printers\Thermal\Tickets\ThermalPrinterBaseFinanceTemplate.cs" />
+    <Compile Include="Printers\Thermal\Tickets\ThermalPrinterBaseInternalTemplate.cs" />
+    <Compile Include="Printers\Thermal\Tickets\ThermalPrinterBaseTemplate.cs" />
+    <Compile Include="Printers\Thermal\Tickets\ThermalPrinterFinanceDocumentMaster.cs" />
+    <Compile Include="Printers\Thermal\Tickets\ThermalPrinterFinanceDocumentPayment.cs" />
+    <Compile Include="Printers\Thermal\Tickets\ThermalPrinterInternalDocumentCashDrawer.cs" />
+    <Compile Include="Printers\Thermal\Tickets\ThermalPrinterInternalDocumentOrderRequest.cs" />
+    <Compile Include="Printers\Thermal\Tickets\ThermalPrinterInternalDocumentWorkSession.cs" />
+    <Compile Include="Printers\Thermal\TicketTable.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Socket\Print.cs" />
     <Compile Include="Socket\RawPrinterHelper.cs" />
     <Compile Include="Usb\Print.cs" />
@@ -58,15 +79,55 @@
     <Compile Include="Windows\RawPrinterHelper.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\logicpos.datalayer\logicpos.datalayer.csproj">
+      <Project>{42af3be2-44b4-477d-8e45-55c64992b805}</Project>
+      <Name>logicpos.datalayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LogicPOS.Finance\LogicPOS.Finance.csproj">
+      <Project>{6f50bd8b-a054-424c-9247-3892efcc25b6}</Project>
+      <Name>LogicPOS.Finance</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LogicPOS.Globalization\LogicPOS.Globalization.csproj">
+      <Project>{b9e8d813-d694-4a7f-955e-ccc4b10f3774}</Project>
+      <Name>LogicPOS.Globalization</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LogicPOS.Plugin\LogicPOS.Plugin.csproj">
+      <Project>{50c2f757-8478-4fd3-8b35-89bc12e7aca0}</Project>
+      <Name>LogicPOS.Plugin</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LogicPOS.Reporting\LogicPOS.Reporting.csproj">
+      <Project>{e8105c12-d5fa-4afb-906b-f762bd2f9a27}</Project>
+      <Name>LogicPOS.Reporting</Name>
+    </ProjectReference>
     <ProjectReference Include="..\LogicPOS.Settings\LogicPOS.Settings.csproj">
       <Project>{A4E7F0EA-8360-41F2-A625-517F6E943A29}</Project>
       <Name>LogicPOS.Settings</Name>
     </ProjectReference>
+    <ProjectReference Include="..\LogicPOS.Shared\LogicPOS.Shared.csproj">
+      <Project>{fb74327c-1794-47ec-8f52-fd3f464f3258}</Project>
+      <Name>LogicPOS.Shared</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LogicPOS.Utility\LogicPOS.Utility.csproj">
+      <Project>{18488ce5-c06f-40f5-9339-0467a47d7985}</Project>
+      <Name>LogicPOS.Utility</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="DevExpress.Xpo">
+      <Version>23.2.6</Version>
+    </PackageReference>
     <PackageReference Include="LibUsbDotNet">
       <Version>2.2.29</Version>
     </PackageReference>
+    <PackageReference Include="SkiaSharp">
+      <Version>2.88.8</Version>
+    </PackageReference>
+    <PackageReference Include="SkiaSharp.QrCode">
+      <Version>0.7.0</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Common\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
