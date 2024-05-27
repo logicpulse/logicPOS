@@ -12,6 +12,7 @@ using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Hardware.Printers;
 using LogicPOS.Finance.WorkSession;
 using LogicPOS.Globalization;
+using LogicPOS.Printing.Generic;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Shared;
@@ -344,7 +345,7 @@ namespace logicpos
                 int responsePinPad = dialogPinPad.Run();
                 if (responsePinPad == (int)ResponseType.Ok)
                 {
-                    var resultOpenDoor = PrintRouter.OpenDoor(XPOSettings.LoggedTerminal.Printer);
+                    var resultOpenDoor = PrintingUtils.OpenDoor(XPOSettings.LoggedTerminal.Printer);
                     if (!resultOpenDoor)
                     {
                         Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_information"), string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "open_cash_draw_permissions")));

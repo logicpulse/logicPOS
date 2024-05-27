@@ -13,6 +13,7 @@ using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Finance.Saft;
 using LogicPOS.Finance.Services;
 using LogicPOS.Globalization;
+using LogicPOS.Printing.Generic;
 using LogicPOS.Settings;
 using LogicPOS.Shared.Orders;
 using System;
@@ -513,7 +514,7 @@ namespace logicpos
                     {
                         response = PosDocumentFinancePrintDialog.GetDocumentFinancePrintProperties(pSourceWindow, pDocumentFinanceMaster);
                         //Print with default DocumentFinanceYearSerieTerminal Template
-                        if (response.Response == ResponseType.Ok) result = PrintRouter.PrintFinanceDocument(pDocumentFinanceMaster);
+                        if (response.Response == ResponseType.Ok) result = PrintingUtils.PrintFinanceDocument(pDocumentFinanceMaster);
                     }
                 }
                 else
@@ -522,7 +523,7 @@ namespace logicpos
                     string extraMessage = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_protected_files_invalid_files_detected_print_document_ignored"), pDocumentFinanceMaster.DocumentNumber);
 
                     //Printer Drawer : Set openDrawer
-                    switch (PrintRouter.GetPrinterToken(printer.PrinterType.Token))
+                    switch (PrintingUtils.GetPrinterToken(printer.PrinterType.Token))
                     {
                         //ThermalPrinter : Ticket Files
                         case "THERMAL_PRINTER_WINDOWS":
@@ -533,7 +534,7 @@ namespace logicpos
                     }
 
                     //Printer Document : Set Valid Files
-                    switch (PrintRouter.GetPrinterToken(printerDoc.PrinterType.Token))
+                    switch (PrintingUtils.GetPrinterToken(printerDoc.PrinterType.Token))
                     {
                         //ThermalPrinter : Ticket Files
                         case "THERMAL_PRINTER_WINDOWS":
@@ -563,14 +564,14 @@ namespace logicpos
                     if (response.Response == ResponseType.Ok)
                     {
                         //Print Document use Printer Document
-                        result = PrintRouter.PrintFinanceDocument(printerDoc, pDocumentFinanceMaster, response.CopyNames, response.SecondCopy, response.Motive);
+                        result = PrintingUtils.PrintFinanceDocument(printerDoc, pDocumentFinanceMaster, response.CopyNames, response.SecondCopy, response.Motive);
 
 
 
                         //OpenDoor use Printer Drawer
                         if (openDrawer && pDocumentFinanceMaster.DocumentType.PrintOpenDrawer && !response.SecondCopy)
                         {
-                            var resultOpenDoor = PrintRouter.OpenDoor(XPOSettings.LoggedTerminal.Printer);
+                            var resultOpenDoor = PrintingUtils.OpenDoor(XPOSettings.LoggedTerminal.Printer);
                             if (!resultOpenDoor)
                             {
                                 Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_information"), string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "open_cash_draw_permissions")));
@@ -631,7 +632,7 @@ namespace logicpos
                     //ProtectedFiles Protection
                     bool validFiles = true;
                     string extraMessage = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_protected_files_invalid_files_detected_print_document_ignored"), pDocumentFinancePayment.PaymentRefNo);
-                    switch (PrintRouter.GetPrinterToken(printer.PrinterType.Token))
+                    switch (PrintingUtils.GetPrinterToken(printer.PrinterType.Token))
                     {
                         //ThermalPrinter : Ticket Files
                         case "THERMAL_PRINTER_WINDOWS":
@@ -655,17 +656,17 @@ namespace logicpos
                         if (responseType == ResponseType.Yes)
                         {
                             //Call Print Document thermal
-                            result = PrintRouter.PrintFinanceDocumentPayment(XPOSettings.LoggedTerminal.ThermalPrinter, pDocumentFinancePayment);
+                            result = PrintingUtils.PrintFinanceDocumentPayment(XPOSettings.LoggedTerminal.ThermalPrinter, pDocumentFinancePayment);
                         }
                         else
                         {
-                            result = PrintRouter.PrintFinanceDocumentPayment(printer, pDocumentFinancePayment);
+                            result = PrintingUtils.PrintFinanceDocumentPayment(printer, pDocumentFinancePayment);
                         }
                     }
                     else
                     {
                         //Call Print Document A4
-                        result = PrintRouter.PrintFinanceDocumentPayment(printer, pDocumentFinancePayment);
+                        result = PrintingUtils.PrintFinanceDocumentPayment(printer, pDocumentFinancePayment);
                     }
                 }
             }
@@ -763,7 +764,7 @@ namespace logicpos
                 //Removed: Printer is always NULL, is defined in Ticket Article
                 //if (SharedPrintTicket(pSourceWindow, null, TicketType.ArticleOrder))
                 //{
-                result = PrintRouter.PrintArticleRequest(pOrderTicket);
+                result = PrintingUtils.PrintArticleRequest(pOrderTicket);
                 //}
             }
             catch (Exception ex)
@@ -787,7 +788,7 @@ namespace logicpos
                 if (SharedPrintTicket(pSourceWindow, pPrinter, TicketType.WorkSession))
                 {
                     //PrintWorkSessionMovement
-                    result = PrintRouter.PrintWorkSessionMovement(pPrinter, pWorkSessionPeriod);
+                    result = PrintingUtils.PrintWorkSessionMovement(pPrinter, pWorkSessionPeriod);
                 }
             }
             catch (Exception ex)
@@ -810,7 +811,7 @@ namespace logicpos
             {
                 if (SharedPrintTicket(pSourceWindow, pPrinter, TicketType.CashDrawer))
                 {
-                    result = PrintRouter.PrintCashDrawerOpenAndMoneyInOut(pPrinter, pTicketTitle, pMovementAmount, pTotalAmountInCashDrawer, pMovementDescription);
+                    result = PrintingUtils.PrintCashDrawerOpenAndMoneyInOut(pPrinter, pTicketTitle, pMovementAmount, pTotalAmountInCashDrawer, pMovementDescription);
                 }
             }
             catch (Exception ex)

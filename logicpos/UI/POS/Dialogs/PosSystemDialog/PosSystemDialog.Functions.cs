@@ -2,6 +2,7 @@
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Hardware.Printers;
 using LogicPOS.Globalization;
+using LogicPOS.Printing.Generic;
 using System;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
@@ -17,7 +18,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             if (XPOSettings.LoggedTerminal.Printer != null)
             {
-                var resultOpenDoor = PrintRouter.OpenDoor(XPOSettings.LoggedTerminal.Printer);
+                var resultOpenDoor = PrintingUtils.OpenDoor(XPOSettings.LoggedTerminal.Printer);
                 if (!resultOpenDoor)
                 {
                     logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_information"), string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "open_cash_draw_permissions")));

@@ -1,4 +1,15 @@
-﻿using System;
+﻿using DevExpress.Xpo;
+using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Xpo;
+using LogicPOS.Finance.DocumentProcessing;
+using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets;
+using LogicPOS.Globalization;
+using LogicPOS.Reporting;
+using LogicPOS.Settings;
+using logicpos.shared.Enums.ThermalPrinter;
+using logicpos.shared.Enums;
+using LogicPOS.Utility;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
@@ -10,10 +21,6 @@ namespace LogicPOS.Printing.Generic
 
     public static class PrintingUtils
     {
-
-        //Settings
-        //private static string _financeFinalConsumerFiscalNumber = "999999990";//<<< SettingsApp.FinanceFinalConsumerFiscalNumber | Cant Add Framework, circular dependency
-
         public static BitmapData GetBitmapData(string bmpFileName)
         {
             using (var bitmap = (Bitmap)Image.FromFile(bmpFileName))
@@ -70,161 +77,6 @@ namespace LogicPOS.Printing.Generic
                     Width = bitmap.Width
                 };
             }
-        }
-
-
-        public static void TestReceipt(ref ThermalPrinter printer)
-        {
-            Dictionary<string, int> ItemList = new Dictionary<string, int>(100);
-            //printer.Reset();
-
-            printer.SetEncoding("PC860");
-
-            printer.SetLineSpacing(0);
-            printer.SetAlignCenter();
-            printer.WriteLine("LogicPulse Lda",
-                (byte)ThermalPrinter.PrintingStyle.DoubleHeight
-                + (byte)ThermalPrinter.PrintingStyle.DoubleWidth);
-
-            printer.SetFont(0);
-
-            printer.WriteLine("<Rua da República n23, Figueira da Foz>");
-            printer.LineFeed();
-            printer.LineFeed();
-
-            printer.SetFont(1);
-
-            ItemList.Add("Item #1", 8990);
-            ItemList.Add("Item #2 goes here", 2000);
-            ItemList.Add("Item #3", 1490);
-            ItemList.Add("Item number four", 490);
-            ItemList.Add("Item #5 is cheap", 245);
-            ItemList.Add("Item #6", 2990);
-            ItemList.Add("The seventh item", 790);
-
-            int total = 0;
-            foreach (KeyValuePair<string, int> item in ItemList)
-            {
-                CashRegister(ref printer, item.Key, item.Value);
-                total += item.Value;
-            }
-
-            //printer.HorizontalLine(32);
-
-            double dTotal = Convert.ToDouble(total) / 100;
-            double VAT = 10.0;
-
-            printer.SetFont(48);
-
-            printer.WriteLine(string.Format("{0:0.00}", (dTotal)).PadLeft(32));
-
-            printer.WriteLine("VAT 10,0%" + string.Format("{0:0.00}", (dTotal * VAT / 100)).PadLeft(23));
-
-            printer.WriteLine(string.Format("$ {0:0.00}", dTotal * VAT / 100 + dTotal).PadLeft(16),
-                ThermalPrinter.PrintingStyle.DoubleWidth);
-
-            printer.LineFeed();
-            printer.WriteLine("CASH" + string.Format("{0:0.00}", (double)total / 100).PadLeft(38));
-            printer.LineFeed();
-            printer.LineFeed();
-            printer.SetAlignCenter();
-            printer.WriteLine("Have a good day.", ThermalPrinter.PrintingStyle.Bold);
-
-            printer.LineFeed();
-            printer.SetAlignLeft();
-            printer.WriteLine("Seller : Carlos Fernandes");
-            printer.WriteLine(DateTime.Now.ToShortDateString());
-            printer.LineFeed();
-            printer.LineFeed();
-            printer.LineFeed();
-            printer.LineFeed();
-            printer.LineFeed();
-
-            printer.Cut(true);
-        }
-
-        private static void CashRegister(ref ThermalPrinter printer, string item, int price)
-        {
-            printer.Reset();
-            printer.Indent(0);
-
-            if (item.Length > 24)
-            {
-                item = item.Substring(0, 23) + ".";
-            }
-
-            printer.WriteToBuffer(item.ToUpper());
-            printer.Indent(25);
-            string sPrice = string.Format("{0:0.00}", (double)price / 100);
-
-            sPrice = sPrice.PadLeft(7);
-
-            printer.WriteLine(sPrice);
-            printer.Reset();
-        }
-
-        public static void TestBarcode(ref ThermalPrinter printer)
-        {
-            //ThermalPrinter.BarcodeType myType = ThermalPrinter.BarcodeType.ean13;
-            string myData = "3350030103392";
-            printer.Reset();
-
-            //printer.SetBarcodeLeftSpace(10);
-
-            printer.SelectFontHRIBarcode(0);
-            printer.SelectPrintingPositionHRIBarcode(2);
-
-            printer.SetAlignCenter();
-
-            printer.SetBarcodeWidth(4);
-            printer.PrintBarcode(ThermalPrinter.BarcodeType.ean13, myData);
-            printer.SetBarcodeWidth(2);
-            printer.LineFeed();
-            printer.LineFeed();
-            printer.LineFeed();
-            printer.LineFeed();
-            printer.Cut(false);
-        }
-
-        public static void TestImage(ref ThermalPrinter printer)
-        {
-            printer.Reset();
-
-            // Render the logo
-            printer.PrintImage("Logo.bmp");
-
-            printer.FeedVerticalAndCut(1);
-        }
-
-        public static void TestPrint1(ref ThermalPrinter printer)
-        {
-            printer.Reset();
-
-            printer.SetEncoding("PC860");
-
-            printer.SetLineSpacing(0);
-            printer.HorizontalLine(48);
-            printer.SetAlignLeft();
-            printer.WriteLine("1234567890123456789012345678901234567890123456789012345678901234567890",
-                +(byte)ThermalPrinter.PrintingStyle.DoubleWidth);
-
-            printer.WriteLine("1234567890123456789012345678901234567890123456789012345678901234567890",
-                +(byte)ThermalPrinter.PrintingStyle.DoubleHeight);
-
-            printer.WriteLine("1234567890123456789012345678901234567890123456789012345678901234567890",
-               (byte)ThermalPrinter.PrintingStyle.DoubleHeight
-               + (byte)ThermalPrinter.PrintingStyle.DoubleWidth);
-
-            //printer.FeedDots(2);
-            printer.SetAlignLeft();
-            //printer.Indent(10);
-            printer.WriteLine("teste2");
-            printer.WriteLine("1234567890123456789012345678901234567890123456789012345678901234567890");
-            printer.HorizontalLine(48);
-
-            printer.FeedVerticalAndCut(1);
-
-            //printer.Cut(true);
         }
 
         public static List<PrintObject> CalculatePrintCoordinates(List<PrintObject> printObjects, int PrintCharWidth, int PrintLineHeight)
@@ -679,43 +531,6 @@ namespace LogicPOS.Printing.Generic
             printer.FeedVerticalAndCut(1);
 
 
-        }
-
-        public static List<PrintObject> GetObjectsFromTemplate(XmlDocument appconfigdoc)
-        {
-
-            List<PrintObject> printObjects = new List<PrintObject>();
-            XmlNodeList controls = appconfigdoc.GetElementsByTagName("Control");
-
-            foreach (XmlNode dev in controls)
-            {
-
-                switch (dev.Attributes["ID"].InnerText)
-                {
-                    case "Window":
-                        PrintObject windows = new PrintObject(0);
-                        windows.loadCanvasXML(dev, 0, windows);
-                        printObjects.Add(windows);
-                        break;
-                    case "Picture":
-                        PrintObject Picture = new PrintObject(2);
-                        Picture.loadImageXML(dev, 0);
-                        printObjects.Add(Picture);
-                        break;
-                    case "Texto":
-                        PrintObject Texto = new PrintObject(1);
-                        Texto.loadTextXML(dev, 0);
-                        printObjects.Add(Texto);
-                        break;
-                    case "Barcode":
-                        PrintObject Barcode = new PrintObject(3);
-                        Barcode.loadBarcodeXML(dev, 0);
-                        printObjects.Add(Barcode);
-                        break;
-                }
-            }
-
-            return printObjects;
         }
 
         public static PrintObject applyTextProperties(PrintObject Texto, DataRow[] drTemp, PrintObject prt, int maxLenght, int dataCount)
@@ -1317,5 +1132,345 @@ namespace LogicPOS.Printing.Generic
 
             return printObjects;
         }
+
+        //Get Printer Token 
+        public static string GetPrinterToken(string pPrinterToken)
+        {
+            string result = pPrinterToken;
+
+            //Check if Developer Enabled PDF Printer
+            if (PrintingSettings.PrintPDFEnabled)
+            {
+                result = "REPORT_EXPORT_PDF";
+            }
+
+            return result;
+        }
+
+        private static bool SystemPrintInsert(fin_documentfinancemaster pDocumentFinanceMaster, string pPrinterDesignation, int pPrintCopies, List<int> pCopyNames, bool pSecondPrint, string pPrintMotive)
+        {
+            return SystemPrintInsert(pDocumentFinanceMaster, null, pPrinterDesignation, pPrintCopies, pCopyNames, pSecondPrint, pPrintMotive, XPOSettings.LoggedUser, XPOSettings.LoggedTerminal);
+        }
+
+        private static bool SystemPrintInsert(fin_documentfinancepayment pDocumentFinancePayment, string pPrinterDesignation, int pPrintCopies, List<int> pCopyNames)
+        {
+            return SystemPrintInsert(null, pDocumentFinancePayment, pPrinterDesignation, pPrintCopies, pCopyNames, false, string.Empty, XPOSettings.LoggedUser, XPOSettings.LoggedTerminal);
+        }
+
+        private static bool SystemPrintInsert(fin_documentfinancemaster pDocumentFinanceMaster, fin_documentfinancepayment pDocumentFinancePayment, string pPrinterDesignation, int pPrintCopies, List<int> pCopyNames, bool pSecondPrint, string pPrintMotive, sys_userdetail pUserDetail, pos_configurationplaceterminal pConfigurationPlaceTerminal)
+        {
+            bool result = false;
+
+            //Start UnitOfWork
+            using (UnitOfWork uowSession = new UnitOfWork())
+            {
+                string designation = string.Empty;
+                //Get Objects into Current UOW Session
+                sys_userdetail userDetail = (sys_userdetail)XPOHelper.GetXPGuidObject(uowSession, typeof(sys_userdetail), pUserDetail.Oid);
+                pos_configurationplaceterminal configurationPlaceTerminal = (pos_configurationplaceterminal)XPOHelper.GetXPGuidObject(uowSession, typeof(pos_configurationplaceterminal), pConfigurationPlaceTerminal.Oid);
+
+                //Convert CopyNames List to Comma Delimited String
+                string copyNamesCommaDelimited = CustomReport.CopyNamesCommaDelimited(pCopyNames);
+
+                //SystemPrint
+                sys_systemprint systemPrint = new sys_systemprint(uowSession)
+                {
+                    Date = XPOHelper.CurrentDateTimeAtomic(),
+                    Designation = designation,
+                    PrintCopies = pPrintCopies,
+                    CopyNames = copyNamesCommaDelimited,
+                    SecondPrint = pSecondPrint,
+                    UserDetail = userDetail,
+                    Terminal = configurationPlaceTerminal
+                };
+                if (pPrintMotive != string.Empty) systemPrint.PrintMotive = pPrintMotive;
+
+                //Mode: DocumentFinanceMaster
+                if (pDocumentFinanceMaster != null)
+                {
+                    fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)XPOHelper.GetXPGuidObject(uowSession, typeof(fin_documentfinancemaster), pDocumentFinanceMaster.Oid);
+                    systemPrint.DocumentMaster = documentFinanceMaster;
+                    designation = string.Format("{0} {1} : {2}", CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_printed"), documentFinanceMaster.DocumentType.Designation, documentFinanceMaster.DocumentNumber);
+                    //Update DocumentFinanceMaster
+                    if (!documentFinanceMaster.Printed) documentFinanceMaster.Printed = true;
+                }
+                //Mode: DocumentFinancePayment
+                if (pDocumentFinancePayment != null)
+                {
+                    fin_documentfinancepayment documentFinancePayment = (fin_documentfinancepayment)XPOHelper.GetXPGuidObject(uowSession, typeof(fin_documentfinancepayment), pDocumentFinancePayment.Oid);
+                    systemPrint.DocumentPayment = documentFinancePayment;
+                    designation = string.Format("{0} {1} : {2}", CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_printed"), documentFinancePayment.DocumentType.Designation, documentFinancePayment.PaymentRefNo);
+                }
+                systemPrint.Designation = designation;
+
+                try
+                {
+                    //Commit UOW Changes : Before get current OrderMain
+                    uowSession.CommitChanges();
+                    //Audit
+                    XPOHelper.Audit("SYSTEM_PRINT_FINANCE_DOCUMENT", designation);
+                    result = true;
+                }
+                catch (Exception ex)
+                {
+                    uowSession.RollbackTransaction();
+                }
+            }
+
+            return result;
+        }
+
+        public static bool PrintFinanceDocument(sys_configurationprinters pPrinter, fin_documentfinancemaster pDocumentFinanceMaster, List<int> pCopyNames, bool pSecondCopy, string pMotive)
+        {
+            bool result = false;
+
+            if (pPrinter != null)
+            {
+                int printCopies = pCopyNames.Count;
+                //Get Hash4Chars from Hash
+                string hash4Chars = CryptographyUtils.GetDocumentHash4Chars(pDocumentFinanceMaster.Hash);
+
+                //Init Helper Vars
+                bool resultSystemPrint;
+                switch (GetPrinterToken(pPrinter.PrinterType.Token))
+                {
+                    //Impressora SINOCAN em ambiente Windows
+                    case "THERMAL_PRINTER_WINDOWS":
+                    //Impressora SINOCAN em ambiente Linux
+                    //Impressora SINOCAN em ambiente WindowsLinux/Socket
+                    case "THERMAL_PRINTER_SOCKET":
+                        ThermalPrinterFinanceDocumentMaster thermalPrinterFinanceDocument = new ThermalPrinterFinanceDocumentMaster(pPrinter, pDocumentFinanceMaster, pCopyNames, pSecondCopy, pMotive);
+                        thermalPrinterFinanceDocument.Print();
+                        //Add to SystemPrint Audit
+                        resultSystemPrint = SystemPrintInsert(pDocumentFinanceMaster, pPrinter.Designation, printCopies, pCopyNames, pSecondCopy, pMotive);
+                        break;
+                    case "GENERIC_PRINTER_WINDOWS":
+                        CustomReport.ProcessReportFinanceDocument(CustomReportDisplayMode.Print, pDocumentFinanceMaster.Oid, hash4Chars, pCopyNames, pSecondCopy, pMotive);
+                        //Add to SystemPrint Audit
+                        resultSystemPrint = SystemPrintInsert(pDocumentFinanceMaster, pPrinter.Designation, printCopies, pCopyNames, pSecondCopy, pMotive);
+                        break;
+                    case "REPORT_EXPORT_PDF":
+                        CustomReport.ProcessReportFinanceDocument(CustomReportDisplayMode.ExportPDF, pDocumentFinanceMaster.Oid, hash4Chars, pCopyNames, pSecondCopy, pMotive);
+                        //Add to SystemPrint Audit : Developer : Use here Only to Test SystemPrintInsert
+                        resultSystemPrint = SystemPrintInsert(pDocumentFinanceMaster, pPrinter.Designation, printCopies, pCopyNames, pSecondCopy, pMotive);
+                        break;
+                }
+                result = true;
+
+            }
+
+            return result;
+        }
+
+        //Quick function to get Printer and Template and Send to Base PrintFinanceDocument, and Open Drawer if Has a Valid Payment Method
+        public static bool PrintFinanceDocument(fin_documentfinancemaster pDocumentFinanceMaster)
+        {
+            return PrintFinanceDocument(XPOSettings.Session, pDocumentFinanceMaster);
+        }
+
+        public static bool PrintFinanceDocument(Session pSession, fin_documentfinancemaster pDocumentFinanceMaster)
+        {
+            List<int> printCopies = new List<int>();
+            for (int i = 0; i < pDocumentFinanceMaster.DocumentType.PrintCopies; i++)
+            {
+                printCopies.Add(i);
+            }
+
+            return PrintFinanceDocument(pSession, pDocumentFinanceMaster, printCopies, false, string.Empty);
+        }
+
+        public static bool PrintFinanceDocument(Session pSession, fin_documentfinancemaster pDocumentFinanceMaster, List<int> pCopyNames, bool pSecondCopy, string pMotive)
+        {
+            bool result;
+
+            //Finish Payment with Print Job + Open Drawer (If Not TableConsult)
+            fin_documentfinanceyearserieterminal xDocumentFinanceYearSerieTerminal = DocumentProcessingSeriesUtils.GetDocumentFinanceYearSerieTerminal(pSession, pDocumentFinanceMaster.DocumentType.Oid);
+            PrintFinanceDocument(XPOSettings.LoggedTerminal.Printer, pDocumentFinanceMaster, pCopyNames, pSecondCopy, pMotive);
+
+            //Open Door if Has Valid Payment
+            if (pDocumentFinanceMaster.PaymentMethod != null)
+            {
+                OpenDoor(XPOSettings.LoggedTerminal.ThermalPrinter);
+            }
+            result = true;
+
+            return result;
+        }
+
+        public static bool PrintFinanceDocumentPayment(sys_configurationprinters pPrinter, fin_documentfinancepayment pDocumentFinancePayment)
+        {
+            bool result = false;
+
+            if (pPrinter != null)
+            {
+                //Initialize CopyNames List from PrintCopies
+                List<int> copyNames = CustomReport.CopyNames(pDocumentFinancePayment.DocumentType.PrintCopies);
+                int printCopies = copyNames.Count;
+
+                //Init Helper Vars
+                bool resultSystemPrint;
+                switch (GetPrinterToken(pPrinter.PrinterType.Token))
+                {
+                    //Impressora SINOCAN em ambiente Windows
+                    case "THERMAL_PRINTER_WINDOWS":
+                    //Impressora SINOCAN em ambiente Linux
+                    case "THERMAL_PRINTER_LINUX":
+                    //Impressora SINOCAN em ambiente WindowsLinux/Socket
+                    case "THERMAL_PRINTER_SOCKET":
+                        ThermalPrinterFinanceDocumentPayment thermalPrinterFinanceDocumentPayment = new ThermalPrinterFinanceDocumentPayment(pPrinter, pDocumentFinancePayment, copyNames, false);
+                        thermalPrinterFinanceDocumentPayment.Print();
+                        //Add to SystemPrint Audit
+                        resultSystemPrint = SystemPrintInsert(pDocumentFinancePayment, pPrinter.Designation, printCopies, copyNames);
+                        break;
+                    case "GENERIC_PRINTER_WINDOWS":
+                        CustomReport.ProcessReportFinanceDocumentPayment(CustomReportDisplayMode.Print, pDocumentFinancePayment.Oid, copyNames);
+                        //Add to SystemPrint Audit
+                        resultSystemPrint = SystemPrintInsert(pDocumentFinancePayment, pPrinter.Designation, printCopies, copyNames);
+                        break;
+                    case "REPORT_EXPORT_PDF":
+                        CustomReport.ProcessReportFinanceDocumentPayment(CustomReportDisplayMode.ExportPDF, pDocumentFinancePayment.Oid, copyNames);
+                        //Add to SystemPrint Audit : Developer : Use here Only to Test SystemPrintInsert
+                        resultSystemPrint = SystemPrintInsert(pDocumentFinancePayment, pPrinter.Designation, printCopies, copyNames);
+                        break;
+                }
+                result = true;
+
+            }
+            return result;
+        }
+
+        public static bool PrintWorkSessionMovement(sys_configurationprinters pPrinter, pos_worksessionperiod pWorkSessionPeriod)
+        {
+            bool result = false;
+
+            if (pPrinter != null)
+            {
+
+                switch (GetPrinterToken(pPrinter.PrinterType.Token))
+                {
+                    //Impressora SINOCAN em ambiente Windows
+                    case "THERMAL_PRINTER_WINDOWS":
+                    //Impressora SINOCAN em ambiente Linux
+                    case "THERMAL_PRINTER_LINUX":
+                    //Impressora SINOCAN em ambiente WindowsLinux/Socket
+                    case "THERMAL_PRINTER_SOCKET":
+                        //NonCurrentAcount
+                        ThermalPrinterInternalDocumentWorkSession thermalPrinterInternalDocumentWorkSession = new ThermalPrinterInternalDocumentWorkSession(pPrinter, pWorkSessionPeriod, SplitCurrentAccountMode.NonCurrentAcount);
+                        thermalPrinterInternalDocumentWorkSession.Print();
+                        //CurrentAcount
+                        //Use Config to print this
+                        if (Convert.ToBoolean(LogicPOS.Settings.GeneralSettings.PreferenceParameters["USE_CC_DAILY_TICKET"]))
+                        {
+                            thermalPrinterInternalDocumentWorkSession = new ThermalPrinterInternalDocumentWorkSession(pPrinter, pWorkSessionPeriod, SplitCurrentAccountMode.CurrentAcount);
+                            thermalPrinterInternalDocumentWorkSession.Print();
+                        }
+                        break;
+                    case "GENERIC_PRINTER_WINDOWS":
+                        break;
+                    case "REPORT_EXPORT_PDF":
+                        break;
+                }
+                result = true;
+
+            }
+            return result;
+        }
+
+        public static bool PrintArticleRequest(fin_documentorderticket pOrderTicket)
+        {
+            bool result;
+
+            //Initialize printerArticleQueue to Store Articles > Printer Queue
+            List<sys_configurationprinters> printerArticles = new List<sys_configurationprinters>();
+            foreach (fin_documentorderdetail item in pOrderTicket.OrderDetail)
+            {
+                if (item.Article.Printer != null && item.Article.Printer.PrinterType.ThermalPrinter)
+                {
+                    //Add Printer
+                    if (!printerArticles.Contains(item.Article.Printer)) printerArticles.Add(item.Article.Printer);
+                }
+            }
+
+            //Print Tickets for Article Printers
+            if (printerArticles.Count > 0)
+            {
+                foreach (sys_configurationprinters item in printerArticles)
+                {
+                    ThermalPrinterInternalDocumentOrderRequest thermalPrinterInternalDocumentOrderRequest = new ThermalPrinterInternalDocumentOrderRequest(item, pOrderTicket, true);
+                    thermalPrinterInternalDocumentOrderRequest.Print();
+                }
+            }
+            result = true;
+
+            return result;
+        }
+
+        //Used for Money Movements and Open/Close Terminal/Day Sessions
+        public static bool PrintCashDrawerOpenAndMoneyInOut(sys_configurationprinters pPrinter, string pTicketTitle, decimal pMovementAmount, decimal pTotalAmountInCashDrawer, string pMovementDescription)
+        {
+            bool result = false;
+
+            if (pPrinter != null)
+            {
+                switch (GetPrinterToken(pPrinter.PrinterType.Token))
+                {
+                    //Impressora SINOCAN em ambiente Windows
+                    case "THERMAL_PRINTER_WINDOWS":
+                    //Impressora SINOCAN em ambiente Linux
+                    case "THERMAL_PRINTER_LINUX":
+                    //Impressora SINOCAN em ambiente WindowsLinux/Socket
+                    case "THERMAL_PRINTER_SOCKET":
+                        ThermalPrinterInternalDocumentCashDrawer thermalPrinterInternalDocumentCashDrawer = new ThermalPrinterInternalDocumentCashDrawer(pPrinter, pTicketTitle, pTotalAmountInCashDrawer, pMovementAmount, pMovementDescription);
+                        thermalPrinterInternalDocumentCashDrawer.Print();
+                        break;
+                }
+                result = true;
+            }
+            return result;
+        }
+
+        public static bool OpenDoor(sys_configurationprinters pPrinter)
+        {
+            bool result = false;
+            if (XPOSettings.LoggedTerminal.ThermalPrinter != null)
+            {
+                bool hasPermission = GeneralSettings.HasPermissionTo("HARDWARE_DRAWER_OPEN");
+                int m = XPOSettings.LoggedTerminal.ThermalPrinter.ThermalOpenDrawerValueM;
+                int t1 = XPOSettings.LoggedTerminal.ThermalPrinter.ThermalOpenDrawerValueT1;
+                int t2 = XPOSettings.LoggedTerminal.ThermalPrinter.ThermalOpenDrawerValueT2;
+                PrintObject printObjectSINOCAN = new PrintObject(0);
+                if (XPOSettings.LoggedTerminal.ThermalPrinter != null && hasPermission)
+                {
+                    switch (XPOSettings.LoggedTerminal.ThermalPrinter.PrinterType.Token)
+                    {
+                        //Impressora SINOCAN em ambiente Windows
+                        case "THERMAL_PRINTER_WINDOWS":
+                            printObjectSINOCAN.OpenDoor(XPOSettings.LoggedTerminal.ThermalPrinter.PrinterType.Token, XPOSettings.LoggedTerminal.ThermalPrinter.Designation, m, t1, t2);
+                            break;
+                        //Impressora SINOCAN em ambiente Linux
+                        case "THERMAL_PRINTER_SOCKET":
+                            // Deprecated
+                            //int m = Convert.ToInt32(LogicPOS.Settings.GeneralSettings.Settings["DoorValueM"]);
+                            //int t1 = Convert.ToInt32(LogicPOS.Settings.GeneralSettings.Settings["DoorValueT1"]);
+                            //int t2 = Convert.ToInt32(LogicPOS.Settings.GeneralSettings.Settings["DoorValueT2"]);
+                            // Open Drawer
+                            //TK016249 - Impressoras - Diferenciação entre Tipos
+                            printObjectSINOCAN.OpenDoor(XPOSettings.LoggedTerminal.ThermalPrinter.PrinterType.Token, XPOSettings.LoggedTerminal.ThermalPrinter.NetworkName, m, t1, t2);
+                            //Audit
+                            XPOHelper.Audit("CASHDRAWER_OPEN", CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_cashdrawer_open"));
+
+                            break;
+                    }
+
+                    result = true;
+                }
+
+                return result;
+            }
+
+            return result;
+
+        }
+
     }
 }

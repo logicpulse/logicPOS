@@ -50,7 +50,6 @@
     <Compile Include="Generic\BitmapData.cs" />
     <Compile Include="Generic\PrintObject.cs" />
     <Compile Include="Generic\ThermalPrinter.cs" />
-    <Compile Include="Printers\PrintRouter.cs" />
     <Compile Include="Printers\Thermal\Enums\TicketColumnsAlign.cs" />
     <Compile Include="Printers\Thermal\Enums\WriteLineTextMode.cs" />
     <Compile Include="Printers\Thermal\PrintTransportObject.cs" />
