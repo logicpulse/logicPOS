@@ -5,13 +5,10 @@ using System.Data;
 using System.IO;
 using System.Xml;
 
-namespace logicpos.printer.generic
+namespace LogicPOS.Printing.Generic
 {
     public class PrintObject : IComparable<PrintObject>
     {
-        //Log4Net
-        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
         public int ObjectType { get; set; } = 0;
 
         public string Text { get; set; } = string.Empty;
@@ -267,7 +264,6 @@ namespace logicpos.printer.generic
 
         public void printTicket(DataTable dataLoop, DataTable dataStatic, string pDriver, string pPrinterName, string pathXml)
         {
-            _logger.Debug($"BO printTicket {pDriver}:pPrinterName{pPrinterName}");
 
             int coluneSize = 8;
             int LineSize = 20;
@@ -280,30 +276,28 @@ namespace logicpos.printer.generic
             //xml = replaceReservedStringsFromDatabase(dataProducts, xml.InnerXml);
             XmlDocument xmlDoc = replaceReservedStrings(xml.InnerXml);
 
-            List<PrintObject> printobjects = Util.GetObjectsFromTemplate(this, xmlDoc, dataLoop, dataStatic);
+            List<PrintObject> printobjects = PrintingUtils.GetObjectsFromTemplate(this, xmlDoc, dataLoop, dataStatic);
 
             printobjects.Sort(); // sort by x coordinate
 
-            List<PrintObject> printobjectsCalculate = Util.CalculatePrintCoordinates(printobjects, coluneSize, LineSize);
+            List<PrintObject> printobjectsCalculate = PrintingUtils.CalculatePrintCoordinates(printobjects, coluneSize, LineSize);
 
             ThermalPrinter printer = new ThermalPrinter("PC860");
 
-            Util.PreparePrintDocument(ref printer, printobjectsCalculate, coluneSize, LineSize);
+            PrintingUtils.PreparePrintDocument(ref printer, printobjectsCalculate, coluneSize, LineSize);
 
             switch (pDriver)
             {
                 case "THERMAL_PRINTER_WINDOWS":
                     //Impressora SINOCAN em ambiente Windows 
-					//TK016310 Configuração Impressoras Windows 
-                    genericwindows.Print.USBPrintWindows(pPrinterName, printer.getByteArray());
+                    //TK016310 Configuração Impressoras Windows 
+                    Windows.Print.USBPrintWindows(pPrinterName, printer.getByteArray());
                     break;
                 case "THERMAL_PRINTER_SOCKET":
                     //Impressora SINOCAN em ambiente Linux Socket
-                    genericsocket.Print.SocketPrint(pPrinterName, printer.getByteArray());
+                    Socket.Print.SocketPrint(pPrinterName, printer.getByteArray());
                     break;
             }
-
-            _logger.Debug("EO printTicket");
         }
 
         private string GetXmlString(string strFile)
@@ -352,38 +346,31 @@ namespace logicpos.printer.generic
 
         public void OpenDoor(string pDriver, string pPrinterName, int m, int t1, int t2)
         {
-            try
+            bool defaultValue = false;
+
+            if (m == 0 && t1 == 0 && t2 == 0)
             {
-                bool defaultValue = false;
-
-                if(m == 0 && t1 == 0 && t2 == 0)
-                {
-                    defaultValue = true;
-                }
-
-                ThermalPrinter printer = new ThermalPrinter("PC860");
-
-                printer.WakeUp();
-
-                printer.GeneratePulse(m, t1, t2);
-
-                switch (pDriver)
-                {
-                    case "THERMAL_PRINTER_WINDOWS":
-                        //Impressora SINOCAN em ambiente Windows 
-                        //TK016310 Configuração Impressoras Windows 
-                        genericusb.Print.USBPrintWindows(pPrinterName, printer.getByteArray(), defaultValue);
-                        //genericwindows.Print.USBPrintWindows(pPrinterName, printer.getByteArray());
-                        break;
-                    case "THERMAL_PRINTER_SOCKET":
-                        //Impressora SINOCAN em ambiente Linux Socket
-                        genericusb.Print.USBPrintWindows(pPrinterName, printer.getByteArray(), defaultValue);
-                        break;
-                }
+                defaultValue = true;
             }
-            catch (Exception ex)
+
+            ThermalPrinter printer = new ThermalPrinter("PC860");
+
+            printer.WakeUp();
+
+            printer.GeneratePulse(m, t1, t2);
+
+            switch (pDriver)
             {
-                _logger.Error("void OpenDoor(string pDriver, string pPrinterName, int m, int t1, int t2) :: " + ex.Message, ex);
+                case "THERMAL_PRINTER_WINDOWS":
+                    //Impressora SINOCAN em ambiente Windows 
+                    //TK016310 Configuração Impressoras Windows 
+                    Usb.Print.USBPrintWindows(pPrinterName, printer.getByteArray(), defaultValue);
+                    //genericwindows.Print.USBPrintWindows(pPrinterName, printer.getByteArray());
+                    break;
+                case "THERMAL_PRINTER_SOCKET":
+                    //Impressora SINOCAN em ambiente Linux Socket
+                    Usb.Print.USBPrintWindows(pPrinterName, printer.getByteArray(), defaultValue);
+                    break;
             }
         }
     }

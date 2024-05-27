@@ -2,11 +2,11 @@
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets;
-using logicpos.printer.generic;
 using logicpos.shared.Enums;
 using logicpos.shared.Enums.ThermalPrinter;
 using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Globalization;
+using LogicPOS.Printing.Generic;
 using LogicPOS.Reporting;
 using LogicPOS.Settings;
 using LogicPOS.Utility;

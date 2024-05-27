@@ -5,33 +5,11 @@ using System.Data;
 using System.Drawing;
 using System.Xml;
 
-namespace logicpos.printer.generic
+namespace LogicPOS.Printing.Generic
 {
-    public class BitmapData
+
+    public static class PrintingUtils
     {
-        public BitArray Dots
-        {
-            get;
-            set;
-        }
-
-        public int Height
-        {
-            get;
-            set;
-        }
-
-        public int Width
-        {
-            get;
-            set;
-        }
-    }
-
-    public static class Util
-    {
-        //Log4Net
-        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Settings
         //private static string _financeFinalConsumerFiscalNumber = "999999990";//<<< SettingsApp.FinanceFinalConsumerFiscalNumber | Cant Add Framework, circular dependency
@@ -422,14 +400,7 @@ namespace logicpos.printer.generic
                             }
                             else
                             {
-                                try
-                                {
-                                    printText = printText.Remove(pObject.Col - 1, pObject.Text.Length).Insert(pObject.Col - 1, pObject.Text);
-                                }
-                                catch (Exception ex)
-                                {
-                                    _logger.Error(ex.Message, ex);
-                                }
+                                printText = printText.Remove(pObject.Col - 1, pObject.Text.Length).Insert(pObject.Col - 1, pObject.Text);
                             }
                             //printText += (new String(' ', pObject.Col - 1)) + pObject.Text;
                         }

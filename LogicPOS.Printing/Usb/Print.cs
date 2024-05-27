@@ -2,14 +2,11 @@
 using LibUsbDotNet.Main;
 using System;
 
-namespace logicpos.printer.genericusb
+namespace LogicPOS.Printing.Usb
 {
     public static class Print
     {
-        //Log4Net
-        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		
-		//TK016310 Configuração Impressoras Windows 
+        //TK016310 Configuração Impressoras Windows 
         public static void USBPrintWindows(string printerName, byte[] document, bool DefaultDoorOpenCommand = false)
         {
             byte[] buffer = new byte[5]
@@ -38,8 +35,6 @@ namespace logicpos.printer.genericusb
 
         public static void USBPrint(string printerName, byte[] document)
         {
-            _logger.Debug(string.Format("USBPrint to printerName: [{0}], document: [{1}]", printerName, document.ToString()));
-
             UsbDevice usbDevice;
             UsbEndpointWriter usbWriter;
             ErrorCode usbErrorCode = ErrorCode.None;
@@ -55,72 +50,58 @@ namespace logicpos.printer.genericusb
             WriteEndpointID endpointWrite = GetWriteEndpointFromString(printerParam[2]);
             ReadEndpointID endpointRead = GetReadEndpointFromString(printerParam[2]);
 
-            try
+
+            //Init Usb Finder
+            UsbDeviceFinder usbFinder = new UsbDeviceFinder(vid, pid);
+
+            // Find and open the usb device.
+            usbDevice = UsbDevice.OpenUsbDevice(usbFinder);
+
+            // If the device is open and ready
+            if (usbDevice == null) throw new Exception(string.Format("UsbDisplayDevice: Device NOT Found [ VID:{0}, PID:{1}, ENDPOINT:{2} ]", vid, pid, endpointWrite));
+
+            // If this is a "whole" usb device (libusb-win32, linux libusb)
+            // it will have an IUsbDevice interface. If not (WinUSB) the
+            // variable will be null indicating this is an interface of a
+            // device.
+            IUsbDevice wholeUsbDevice = usbDevice as IUsbDevice;
+            if (!ReferenceEquals(wholeUsbDevice, null))
             {
-                //Init Usb Finder
-                UsbDeviceFinder usbFinder = new UsbDeviceFinder(vid, pid);
+                // This is a "whole" USB device. Before it can be used,
+                // the desired configuration and interface must be selected.
 
-                // Find and open the usb device.
-                usbDevice = UsbDevice.OpenUsbDevice(usbFinder);
+                // Select config
+                wholeUsbDevice.SetConfiguration(1);
 
-                // If the device is open and ready
-                if (usbDevice == null) throw new Exception(string.Format("UsbDisplayDevice: Device NOT Found [ VID:{0}, PID:{1}, ENDPOINT:{2} ]", vid, pid, endpointWrite));
-
-                // If this is a "whole" usb device (libusb-win32, linux libusb)
-                // it will have an IUsbDevice interface. If not (WinUSB) the
-                // variable will be null indicating this is an interface of a
-                // device.
-                IUsbDevice wholeUsbDevice = usbDevice as IUsbDevice;
-                if (!ReferenceEquals(wholeUsbDevice, null))
-                {
-                    // This is a "whole" USB device. Before it can be used,
-                    // the desired configuration and interface must be selected.
-
-                    // Select config
-                    wholeUsbDevice.SetConfiguration(1);
-
-                    // Claim interface
-                    wholeUsbDevice.ClaimInterface(1);
-                }
-
-                // open read endpoint
-                UsbEndpointReader reader = usbDevice.OpenEndpointReader(endpointRead);
-                reader.DataReceived += Reader_DataReceived;
-
-                // open write endpoint
-                usbWriter = usbDevice.OpenEndpointWriter(endpointWrite);
-
-                //byte[] document = Encoding.ASCII.GetBytes("Hello World");
-
-                try
-                {
-                    // write data, read data
-                    int bytesWritten;
-                    usbErrorCode = usbWriter.Write(document, 2000, out bytesWritten);
-
-                    if (usbErrorCode != ErrorCode.None)
-                    {
-                        Close(usbDevice);
-                        // Write that output to the console.
-                        throw new Exception(UsbDevice.LastErrorString);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-
-
+                // Claim interface
+                wholeUsbDevice.ClaimInterface(1);
             }
-            catch (Exception ex)
-            {
-                _logger.Error((usbErrorCode != ErrorCode.None ? usbErrorCode + ":" : string.Empty) + ex.Message);
-            }
+
+            // open read endpoint
+            UsbEndpointReader reader = usbDevice.OpenEndpointReader(endpointRead);
+            reader.DataReceived += Reader_DataReceived;
+
+            // open write endpoint
+            usbWriter = usbDevice.OpenEndpointWriter(endpointWrite);
+
+            //byte[] document = Encoding.ASCII.GetBytes("Hello World");
+
+           
+                // write data, read data
+                int bytesWritten;
+                usbErrorCode = usbWriter.Write(document, 2000, out bytesWritten);
+
+                if (usbErrorCode != ErrorCode.None)
+                {
+                    Close(usbDevice);
+                    // Write that output to the console.
+                    throw new Exception(UsbDevice.LastErrorString);
+                }
         }
 
         private static void Reader_DataReceived(object sender, EndpointDataEventArgs e)
         {
-            _logger.Debug(string.Format("Reader DataReceived: Count:[{0}], Buffer: [{1}]", e.Count, e.Buffer));
+           
         }
 
         public static WriteEndpointID GetWriteEndpointFromString(string pValue)

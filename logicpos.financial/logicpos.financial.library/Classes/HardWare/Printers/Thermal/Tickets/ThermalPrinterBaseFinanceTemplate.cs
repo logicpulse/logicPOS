@@ -3,6 +3,7 @@ using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Enums;
 using LogicPOS.Globalization;
+using LogicPOS.Printing.Generic;
 using LogicPOS.Reporting;
 using LogicPOS.Settings;
 using System;
@@ -310,7 +311,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             _thermalPrinterGeneric.SetAlignCenter();
 
             _thermalPrinterGeneric.SetBarcodeWidth(4);
-            _thermalPrinterGeneric.PrintBarcode(printer.generic.ThermalPrinter.BarcodeType.qrcode, myData);
+            _thermalPrinterGeneric.PrintBarcode(ThermalPrinter.BarcodeType.qrcode, myData);
             _thermalPrinterGeneric.SetBarcodeWidth(2);
             _thermalPrinterGeneric.LineFeed();
             _thermalPrinterGeneric.LineFeed();

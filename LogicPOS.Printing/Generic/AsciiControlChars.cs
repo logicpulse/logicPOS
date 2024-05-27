@@ -1,4 +1,4 @@
-﻿namespace logicpos.printer.generic
+﻿namespace LogicPOS.Printing.Generic
 {
     /// <summary>
     /// A listing of byte control characters for readability.

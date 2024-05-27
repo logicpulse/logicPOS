@@ -3,7 +3,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace logicpos.printer.genericsocket
+namespace LogicPOS.Printing.Usb
 {
     internal class RawPrinterHelper
     {

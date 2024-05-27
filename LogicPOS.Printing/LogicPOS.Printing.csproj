@@ -33,6 +33,8 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -41,7 +43,30 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Generic\AsciiControlChars.cs" />
+    <Compile Include="Generic\BitmapData.cs" />
+    <Compile Include="Generic\PrintObject.cs" />
+    <Compile Include="Generic\ThermalPrinter.cs" />
+    <Compile Include="Socket\Print.cs" />
+    <Compile Include="Socket\RawPrinterHelper.cs" />
+    <Compile Include="Usb\Print.cs" />
+    <Compile Include="Usb\RawPrinterHelper.cs" />
+    <Compile Include="Utility\PrintingUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Windows\NativeMethods.cs" />
+    <Compile Include="Windows\Print.cs" />
+    <Compile Include="Windows\RawPrinterHelper.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\LogicPOS.Settings\LogicPOS.Settings.csproj">
+      <Project>{A4E7F0EA-8360-41F2-A625-517F6E943A29}</Project>
+      <Name>LogicPOS.Settings</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="LibUsbDotNet">
+      <Version>2.2.29</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

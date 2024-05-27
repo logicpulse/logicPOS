@@ -3,7 +3,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace logicpos.printer.genericwindows
+namespace LogicPOS.Printing.Socket
 {
     internal class RawPrinterHelper
     {
@@ -57,45 +57,38 @@ namespace logicpos.printer.genericwindows
         // Returns true on success, false on failure.
         public static bool SendBytesToPrinter(string szPrinterName, IntPtr pBytes, int dwCount)
         {
-            try
+            var hPrinter = new IntPtr(0);
+            var di = new DOCINFOA();
+            var bSuccess = false; // Assume failure unless you specifically succeed.
+
+            di.pDocName = "VIP RAW PrinterDocument";
+            di.pDataType = "RAW";
+
+            // Open the printer.
+            if (OpenPrinter(szPrinterName.Normalize(), out hPrinter, IntPtr.Zero))
             {
-                int dwError = 0, dwWritten = 0;
-                var hPrinter = new IntPtr(0);
-                var di = new DOCINFOA();
-                var bSuccess = false; // Assume failure unless you specifically succeed.
-
-                di.pDocName = "VIP RAW PrinterDocument";
-                di.pDataType = "RAW";
-
-                // Open the printer.
-                if (OpenPrinter(szPrinterName.Normalize(), out hPrinter, IntPtr.Zero))
+                // Start a document.
+                if (StartDocPrinter(hPrinter, 1, di))
                 {
-                    // Start a document.
-                    if (StartDocPrinter(hPrinter, 1, di))
+                    // Start a page.
+                    if (StartPagePrinter(hPrinter))
                     {
-                        // Start a page.
-                        if (StartPagePrinter(hPrinter))
-                        {
-                            // Write your bytes.
-                            bSuccess = WritePrinter(hPrinter, pBytes, dwCount, out dwWritten);
-                            EndPagePrinter(hPrinter);
-                        }
-                        EndDocPrinter(hPrinter);
+                        int dwWritten;
+                        // Write your bytes.
+                        bSuccess = WritePrinter(hPrinter, pBytes, dwCount, out dwWritten);
+                        EndPagePrinter(hPrinter);
                     }
-                    ClosePrinter(hPrinter);
+                    EndDocPrinter(hPrinter);
                 }
-                // If you did not succeed, GetLastError may give more information
-                // about why not.
-                if (bSuccess == false)
-                    dwError = Marshal.GetLastWin32Error();
+                ClosePrinter(hPrinter);
+            }
+            int dwError;
+            // If you did not succeed, GetLastError may give more information
+            // about why not.
+            if (bSuccess == false)
+                dwError = Marshal.GetLastWin32Error();
 
-                return bSuccess;
-            }
-            catch
-            {
-                return false;
-            }
-            
+            return bSuccess;
         }
 
         public static bool SendFileToPrinter(string szPrinterName, string szFileName)

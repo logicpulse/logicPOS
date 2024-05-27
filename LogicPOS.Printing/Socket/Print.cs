@@ -3,7 +3,7 @@ using System.Net.Sockets;
 
 //NetWork Name ex : IP:PORT | 192.168.1.30:9100
 
-namespace logicpos.printer.genericsocket
+namespace LogicPOS.Printing.Socket
 {
     public static class Print
     {

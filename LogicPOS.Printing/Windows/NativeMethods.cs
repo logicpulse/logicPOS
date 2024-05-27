@@ -1,4 +1,4 @@
-﻿namespace logicpos.printer.genericwindows
+﻿namespace LogicPOS.Printing.Windows
 {
     using System;
     using System.Runtime.InteropServices;

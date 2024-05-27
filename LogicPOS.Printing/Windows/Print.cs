@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace logicpos.printer.genericwindows
+namespace LogicPOS.Printing.Windows
 {
     public static class Print
     {

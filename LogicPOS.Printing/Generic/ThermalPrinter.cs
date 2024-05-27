@@ -1,6 +1,6 @@
+using LogicPOS.Settings;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Globalization;
@@ -8,13 +8,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace logicpos.printer.generic
+namespace LogicPOS.Printing.Generic
 {
     public class ThermalPrinter
-	{
-        //Log4Net
-        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
+    {
         private readonly MemoryStream _memStream = new MemoryStream();
 
         public BinaryWriter BinaryStream { get; set; }
@@ -23,23 +20,23 @@ namespace logicpos.printer.generic
         /// Delay between two picture lines. (in ms)
         /// </summary>
         public int PictureLineSleepTimeMs = 40;
-		/// <summary>
-		/// Delay between two text lines. (in ms)
-		/// </summary>
-		public int WriteLineSleepTimeMs = 0;
-		/// <summary>
-		/// Current encoding used by the printer.
-		/// </summary>
-		public string Encoding { get; private set; }
-		
-		/// <summary>
-		/// Initializes a new instance of the <see cref="ThermalDotNet.ThermalPrinter"/> class.
-		/// </summary>
-		/// <param name='serialPort'>
-		/// Serial port used by printer.
-		/// </param>
+        /// <summary>
+        /// Delay between two text lines. (in ms)
+        /// </summary>
+        public int WriteLineSleepTimeMs = 0;
+        /// <summary>
+        /// Current encoding used by the printer.
+        /// </summary>
+        public string Encoding { get; private set; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ThermalDotNet.ThermalPrinter"/> class.
+        /// </summary>
+        /// <param name='serialPort'>
+        /// Serial port used by printer.
+        /// </param>
         public ThermalPrinter(string encoding)
-		{
+        {
             UTF8Encoding utf8 = new UTF8Encoding();
 
             this.Encoding = encoding;
@@ -48,36 +45,36 @@ namespace logicpos.printer.generic
             Reset();
 
             SetEncoding(this.Encoding);
-		}
+        }
 
 
-		/// <summary>
-		/// Prints the line of text.
-		/// </summary>
-		/// <param name='text'>
-		/// Text to print.
-		/// </param>
-		public void WriteLine(string text)
-		{
+        /// <summary>
+        /// Prints the line of text.
+        /// </summary>
+        /// <param name='text'>
+        /// Text to print.
+        /// </param>
+        public void WriteLine(string text)
+        {
             //martelado pelo carlos
             //SetFont(49);
             //
             WriteToBuffer(text);
             WriteByte(AsciiControlChars.PrintAndLineFeed);
-		}
-		
-		/// <summary>
-		/// Sends the text to the printer buffer. Does not print until a line feed (0x10) is sent.
-		/// </summary>
-		/// <param name='text'>
-		/// Text to print.
-		/// </param>
-		public void WriteToBuffer(string text)
-		{
+        }
+
+        /// <summary>
+        /// Sends the text to the printer buffer. Does not print until a line feed (0x10) is sent.
+        /// </summary>
+        /// <param name='text'>
+        /// Text to print.
+        /// </param>
+        public void WriteToBuffer(string text)
+        {
             string textStrip = ReplaceDiacritics(text);
 
             BinaryStream.Write(System.Text.Encoding.Default.GetBytes(textStrip));
-		}
+        }
 
         public string ReplaceDiacritics(string source)
         {
@@ -120,315 +117,316 @@ namespace logicpos.printer.generic
 
             return result;
         }
-		
-		/// <summary>
-		/// Prints the line of text, white on black.
-		/// </summary>
-		/// <param name='text'>
-		/// Text to print.
-		/// </param>
-		public void WriteLine_Invert(string text)
-		{
-			//Sets inversion on
+
+        /// <summary>
+        /// Prints the line of text, white on black.
+        /// </summary>
+        /// <param name='text'>
+        /// Text to print.
+        /// </param>
+        public void WriteLine_Invert(string text)
+        {
+            //Sets inversion on
             WriteByte(AsciiControlChars.GroupSeparator);
             WriteByte(AsciiControlChars.ReversePrintingMode);
             WriteByte(1);
-			
-			//Sends the text
-			WriteLine(text);
-			
-			//Sets inversion off
+
+            //Sends the text
+            WriteLine(text);
+
+            //Sets inversion off
             WriteByte(AsciiControlChars.GroupSeparator);
             WriteByte(AsciiControlChars.ReversePrintingMode);
             WriteByte(0);
-			
-			LineFeed();
-		}
-		
-		/// <summary>
-		/// Prints the line of text, double size.
-		/// </summary>
-		/// <param name='text'>
-		/// Text to print.
-		/// </param>
-		public void WriteLine_Big(string text)
-		{
-			const byte DoubleHeight = 1 << 4;
-			const byte DoubleWidth = 1 << 5;
-			const byte Bold = 1 << 3;
-			
-			//big on 
+
+            LineFeed();
+        }
+
+        /// <summary>
+        /// Prints the line of text, double size.
+        /// </summary>
+        /// <param name='text'>
+        /// Text to print.
+        /// </param>
+        public void WriteLine_Big(string text)
+        {
+            const byte DoubleHeight = 1 << 4;
+            const byte DoubleWidth = 1 << 5;
+            const byte Bold = 1 << 3;
+
+            //big on 
             WriteByte(AsciiControlChars.Escape);
             WriteByte(AsciiControlChars.SelectPrintMode);
             WriteByte(DoubleHeight + DoubleWidth + Bold);
-			
-			//Sends the text
-			WriteLine(text);
-			
-			//big off
-            WriteByte(AsciiControlChars.Escape);
-            WriteByte(AsciiControlChars.SelectPrintMode);
-            WriteByte(0);
-		}
-	
-		/// <summary>
-		/// Prints the line of text, double height.
-		/// </summary>
-		/// <param name='text'>
-		/// Text to print.
-		/// </param>
-		public void WriteLine_DoubleWidth(string text)
-		{
-			const byte DoubleWidth = 1 << 5;
-			const byte Bold = 1 << 3;
-			
-			//big on 
-            WriteByte(AsciiControlChars.Escape);
-            WriteByte(AsciiControlChars.SelectPrintMode);
-            WriteByte(DoubleWidth + Bold);
-			
-			//Sends the text
-			WriteLine(text);
-			
-			//big off
-            WriteByte(AsciiControlChars.Escape);
-            WriteByte(AsciiControlChars.SelectPrintMode);
-            WriteByte(0);
-		}
 
-		/// <summary>
-		/// Prints the line of text, double height bold.
-		/// </summary>
-		/// <param name='text'>
-		/// Text to print.
-		/// </param>
-		public void WriteLine_DoubleWidthBold(string text)
-		{
-			const byte DoubleWidth = 1 << 5;
-			const byte Bold = 1 << 3;
-			
-			//big on 
+            //Sends the text
+            WriteLine(text);
+
+            //big off
+            WriteByte(AsciiControlChars.Escape);
+            WriteByte(AsciiControlChars.SelectPrintMode);
+            WriteByte(0);
+        }
+
+        /// <summary>
+        /// Prints the line of text, double height.
+        /// </summary>
+        /// <param name='text'>
+        /// Text to print.
+        /// </param>
+        public void WriteLine_DoubleWidth(string text)
+        {
+            const byte DoubleWidth = 1 << 5;
+            const byte Bold = 1 << 3;
+
+            //big on 
             WriteByte(AsciiControlChars.Escape);
             WriteByte(AsciiControlChars.SelectPrintMode);
             WriteByte(DoubleWidth + Bold);
-			
+
+            //Sends the text
+            WriteLine(text);
+
+            //big off
+            WriteByte(AsciiControlChars.Escape);
+            WriteByte(AsciiControlChars.SelectPrintMode);
+            WriteByte(0);
+        }
+
+        /// <summary>
+        /// Prints the line of text, double height bold.
+        /// </summary>
+        /// <param name='text'>
+        /// Text to print.
+        /// </param>
+        public void WriteLine_DoubleWidthBold(string text)
+        {
+            const byte DoubleWidth = 1 << 5;
+            const byte Bold = 1 << 3;
+
+            //big on 
+            WriteByte(AsciiControlChars.Escape);
+            WriteByte(AsciiControlChars.SelectPrintMode);
+            WriteByte(DoubleWidth + Bold);
+
             //bold on
             BoldOn();
-			//Sends the text
-			WriteLine(text);
+            //Sends the text
+            WriteLine(text);
             //bold on
             BoldOff();
-			
-			//big off
+
+            //big off
             WriteByte(AsciiControlChars.Escape);
             WriteByte(AsciiControlChars.SelectPrintMode);
             WriteByte(0);
-		}
+        }
 
-		/// <summary>
-		/// Prints the line of text, double height.
-		/// </summary>
-		/// <param name='text'>
-		/// Text to print.
-		/// </param>
-		public void WriteLine_DoubleHeight(string text)
-		{
-			const byte DoubleHeight = 1 << 4;
-			const byte Bold = 1 << 3;
-			
-			//big on 
-            WriteByte(AsciiControlChars.Escape);
-            WriteByte(AsciiControlChars.SelectPrintMode);
-            WriteByte(DoubleHeight + Bold);
-			
-			//Sends the text
-			WriteLine(text);
-			
-			//big off
-            WriteByte(AsciiControlChars.Escape);
-            WriteByte(AsciiControlChars.SelectPrintMode);
-            WriteByte(0);
-		}
+        /// <summary>
+        /// Prints the line of text, double height.
+        /// </summary>
+        /// <param name='text'>
+        /// Text to print.
+        /// </param>
+        public void WriteLine_DoubleHeight(string text)
+        {
+            const byte DoubleHeight = 1 << 4;
+            const byte Bold = 1 << 3;
 
-		/// <summary>
-		/// Prints the line of text, double height.
-		/// </summary>
-		/// <param name='text'>
-		/// Text to print.
-		/// </param>
-		public void WriteLine_DoubleHeightBold(string text)
-		{
-			const byte DoubleHeight = 1 << 4;
-			const byte Bold = 1 << 3;
-			
-			//big on 
+            //big on 
             WriteByte(AsciiControlChars.Escape);
             WriteByte(AsciiControlChars.SelectPrintMode);
             WriteByte(DoubleHeight + Bold);
 
-            //bold on
-            BoldOn();
-			//Sends the text
-			WriteLine(text);
-            //bold on
-            BoldOff();
-			
-			//big off
+            //Sends the text
+            WriteLine(text);
+
+            //big off
             WriteByte(AsciiControlChars.Escape);
             WriteByte(AsciiControlChars.SelectPrintMode);
             WriteByte(0);
-		}
+        }
 
-		/// <summary>
-		/// Prints the line of text.
-		/// </summary>
-		/// <param name='text'>
-		/// Text to print.
-		/// </param>
-		/// <param name='style'>
-		/// Style of the text.
-		/// </param> 
-		public void WriteLine(string text, PrintingStyle style)
-		{
-			WriteLine(text,(byte)style);
-		}
-		
-		/// <summary>
-		/// Prints the line of text.
-		/// </summary>
-		/// <param name='text'>
-		/// Text to print.
-		/// </param>
-		/// <param name='style'>
-		/// Style of the text. Can be the sum of PrintingStyle enums.
-		/// </param>
-		public void WriteLine(string text, byte style)
-		{
-			byte underlineHeight = 0;
-			
-			if (_BitTest(style, 0))
-			{
-				style = _BitClear(style, 0);
-				underlineHeight = 1;
-			}
-			
-			if (_BitTest(style, 7))
-			{
-				style = _BitClear(style, 7);
-				underlineHeight = 2;
-			}
-			
-			if (underlineHeight != 0) {
+        /// <summary>
+        /// Prints the line of text, double height.
+        /// </summary>
+        /// <param name='text'>
+        /// Text to print.
+        /// </param>
+        public void WriteLine_DoubleHeightBold(string text)
+        {
+            const byte DoubleHeight = 1 << 4;
+            const byte Bold = 1 << 3;
+
+            //big on 
+            WriteByte(AsciiControlChars.Escape);
+            WriteByte(AsciiControlChars.SelectPrintMode);
+            WriteByte(DoubleHeight + Bold);
+
+            //bold on
+            BoldOn();
+            //Sends the text
+            WriteLine(text);
+            //bold on
+            BoldOff();
+
+            //big off
+            WriteByte(AsciiControlChars.Escape);
+            WriteByte(AsciiControlChars.SelectPrintMode);
+            WriteByte(0);
+        }
+
+        /// <summary>
+        /// Prints the line of text.
+        /// </summary>
+        /// <param name='text'>
+        /// Text to print.
+        /// </param>
+        /// <param name='style'>
+        /// Style of the text.
+        /// </param> 
+        public void WriteLine(string text, PrintingStyle style)
+        {
+            WriteLine(text, (byte)style);
+        }
+
+        /// <summary>
+        /// Prints the line of text.
+        /// </summary>
+        /// <param name='text'>
+        /// Text to print.
+        /// </param>
+        /// <param name='style'>
+        /// Style of the text. Can be the sum of PrintingStyle enums.
+        /// </param>
+        public void WriteLine(string text, byte style)
+        {
+            byte underlineHeight = 0;
+
+            if (_BitTest(style, 0))
+            {
+                style = _BitClear(style, 0);
+                underlineHeight = 1;
+            }
+
+            if (_BitTest(style, 7))
+            {
+                style = _BitClear(style, 7);
+                underlineHeight = 2;
+            }
+
+            if (underlineHeight != 0)
+            {
                 WriteByte(AsciiControlChars.Escape);
                 WriteByte(AsciiControlChars.TurnUnderline);
                 WriteByte(underlineHeight);
-			}
-			
-			//style on
+            }
+
+            //style on
             WriteByte(AsciiControlChars.Escape);
             WriteByte(AsciiControlChars.SelectPrintMode);
             WriteByte((byte)style);
-			
-			//Sends the text
-			WriteLine(text);
-			
-			//style off
-			if (underlineHeight != 0) 
+
+            //Sends the text
+            WriteLine(text);
+
+            //style off
+            if (underlineHeight != 0)
             {
                 WriteByte(AsciiControlChars.Escape);
                 WriteByte(AsciiControlChars.TurnUnderline);
                 WriteByte(0);
-			}
+            }
 
             WriteByte(AsciiControlChars.Escape);
             WriteByte(AsciiControlChars.SelectPrintMode);
             WriteByte(0);
-			
-		}
-		
-		/// <summary>
-		/// Prints the line of text in bold.
-		/// </summary>
-		/// <param name='text'>
-		/// Text to print.
-		/// </param>
-		public void WriteLine_Bold(string text)
-		{
-			//bold on
-			BoldOn();
-			
-			//Sends the text
-			WriteLine(text);
-			
-			//bold off
-			BoldOff();
-			
-			//mario Commented : This always print extra Blank Line
+
+        }
+
+        /// <summary>
+        /// Prints the line of text in bold.
+        /// </summary>
+        /// <param name='text'>
+        /// Text to print.
+        /// </param>
+        public void WriteLine_Bold(string text)
+        {
+            //bold on
+            BoldOn();
+
+            //Sends the text
+            WriteLine(text);
+
+            //bold off
+            BoldOff();
+
+            //mario Commented : This always print extra Blank Line
             //LineFeed();
-		}
-		
-		/// <summary>
-		/// Sets bold mode on.
-		/// </summary>
-		public void BoldOn()
-		{
+        }
+
+        /// <summary>
+        /// Sets bold mode on.
+        /// </summary>
+        public void BoldOn()
+        {
             WriteByte(AsciiControlChars.Escape);
             WriteByte(AsciiControlChars.CharacterSpacing);
             WriteByte(1);
             WriteByte(AsciiControlChars.Escape);
             WriteByte(AsciiControlChars.TurnEmphasized);
             WriteByte(1);
-		}
-		
-		/// <summary>
-		/// Sets bold mode off.
-		/// </summary>
-		public void BoldOff()
-		{
+        }
+
+        /// <summary>
+        /// Sets bold mode off.
+        /// </summary>
+        public void BoldOff()
+        {
             WriteByte(AsciiControlChars.Escape);
             WriteByte(AsciiControlChars.CharacterSpacing);
             WriteByte(0);
             WriteByte(AsciiControlChars.Escape);
             WriteByte(AsciiControlChars.TurnEmphasized);
-			WriteByte(0);
-		}
-		
-		/// <summary>
-		/// Sets white on black mode on.
-		/// </summary>
-		public void WhiteOnBlackOn()
-		{
+            WriteByte(0);
+        }
+
+        /// <summary>
+        /// Sets white on black mode on.
+        /// </summary>
+        public void WhiteOnBlackOn()
+        {
             WriteByte(AsciiControlChars.GroupSeparator);
             WriteByte(AsciiControlChars.ReversePrintingMode);
-			WriteByte(1);
-		}
-		
-		/// <summary>
-		/// Sets white on black mode off.
-		/// </summary>
-		public void WhiteOnBlackOff()
-		{
+            WriteByte(1);
+        }
+
+        /// <summary>
+        /// Sets white on black mode off.
+        /// </summary>
+        public void WhiteOnBlackOff()
+        {
             WriteByte(AsciiControlChars.GroupSeparator);
             WriteByte(AsciiControlChars.ReversePrintingMode);
-			WriteByte(0);
-		}
-		
-		/// <summary>
-		/// Sets the text size.
-		/// </summary>
-		/// <param name='doubleWidth'>
-		/// Double width
-		/// </param>
-		/// <param name='doubleHeight'>
-		/// Double height
-		/// </param>
-		public void SetSize(bool doubleWidth, bool doubleHeight)
-		{
-			int sizeValue = (Convert.ToInt32(doubleWidth))*(0xF0) + (Convert.ToInt32(doubleHeight))*(0x0F);
+            WriteByte(0);
+        }
+
+        /// <summary>
+        /// Sets the text size.
+        /// </summary>
+        /// <param name='doubleWidth'>
+        /// Double width
+        /// </param>
+        /// <param name='doubleHeight'>
+        /// Double height
+        /// </param>
+        public void SetSize(bool doubleWidth, bool doubleHeight)
+        {
+            int sizeValue = (Convert.ToInt32(doubleWidth)) * (0xF0) + (Convert.ToInt32(doubleHeight)) * (0x0F);
             WriteByte(AsciiControlChars.GroupSeparator);
             WriteByte(AsciiControlChars.SelectPrintMode);
-			WriteByte((byte)sizeValue);
-		}
+            WriteByte((byte)sizeValue);
+        }
 
         public void SetSize2(int sizeValue) //0; 16;32; 48; 64; 80; 96; 112
         {
@@ -437,20 +435,20 @@ namespace logicpos.printer.generic
             WriteByte((byte)sizeValue);
         }
 
-        public void SetFont(int font) 
+        public void SetFont(int font)
         {
             WriteByte(27);
             WriteByte(77);
             WriteByte((byte)font);
         }
-		
-		///	<summary>
-		/// Prints the contents of the buffer and feeds one line.
-		/// </summary>
-		public void LineFeed()
-		{
+
+        ///	<summary>
+        /// Prints the contents of the buffer and feeds one line.
+        /// </summary>
+        public void LineFeed()
+        {
             WriteByte(AsciiControlChars.PrintAndLineFeed);
-		}
+        }
 
         ///	<summary>
         /// Prints the contents of the buffer and feeds one line.
@@ -469,148 +467,152 @@ namespace logicpos.printer.generic
         /// Number of lines to feed.
         /// </param>
         public void LineFeed(byte lines)
-		{
+        {
             WriteByte(AsciiControlChars.Escape);
             WriteByte(AsciiControlChars.PrintAndFeedNLines);
-			WriteByte(lines);
-		}
-		
-		/// <summary>
-		/// Idents the text.
-		/// </summary>
-		/// <param name='columns'>
-		/// Number of columns.
-		/// </param>
-		public void Indent(byte columns)
-		{
-			if (columns < 0 || columns > 31) {
-				columns = 0;
-			}
+            WriteByte(lines);
+        }
+
+        /// <summary>
+        /// Idents the text.
+        /// </summary>
+        /// <param name='columns'>
+        /// Number of columns.
+        /// </param>
+        public void Indent(byte columns)
+        {
+            if (columns < 0 || columns > 31)
+            {
+                columns = 0;
+            }
 
             WriteByte(AsciiControlChars.Escape);
             WriteByte(AsciiControlChars.ReversePrintingMode);
-			WriteByte(columns);
-		}
-		
-		/// <summary>
-		/// Sets the line spacing.
-		/// </summary>
-		/// <param name='lineSpacing'>
-		/// Line spacing (in dots), default value: 32 dots.
-		/// </param>
-		public void SetLineSpacing(byte lineSpacing)
-		{
+            WriteByte(columns);
+        }
+
+        /// <summary>
+        /// Sets the line spacing.
+        /// </summary>
+        /// <param name='lineSpacing'>
+        /// Line spacing (in dots), default value: 32 dots.
+        /// </param>
+        public void SetLineSpacing(byte lineSpacing)
+        {
             WriteByte(AsciiControlChars.Escape);
-			WriteByte(AsciiControlChars.SetLineSpacing);
-			WriteByte(lineSpacing);
-		}
-		
-		/// <summary>
-		/// Aligns the text to the left.
-		/// </summary>
-		public void SetAlignLeft()
-		{
-            WriteByte(AsciiControlChars.Escape);
-            WriteByte(AsciiControlChars.SelectJustification);
-			WriteByte(0);
-		}
-		
-		/// <summary>
-		/// Centers the text.
-		/// </summary>		
-		public void SetAlignCenter()
-		{
+            WriteByte(AsciiControlChars.SetLineSpacing);
+            WriteByte(lineSpacing);
+        }
+
+        /// <summary>
+        /// Aligns the text to the left.
+        /// </summary>
+        public void SetAlignLeft()
+        {
             WriteByte(AsciiControlChars.Escape);
             WriteByte(AsciiControlChars.SelectJustification);
-			WriteByte(1);
-		}
-		
-		/// <summary>
-		/// Aligns the text to the right.
-		/// </summary>
-		public void SetAlignRight()
-		{
+            WriteByte(0);
+        }
+
+        /// <summary>
+        /// Centers the text.
+        /// </summary>		
+        public void SetAlignCenter()
+        {
             WriteByte(AsciiControlChars.Escape);
             WriteByte(AsciiControlChars.SelectJustification);
-			WriteByte(2);
-		}
-		
-		/// <summary>
-		/// Prints a horizontal line.
-		/// </summary>
-		/// <param name='length'>
-		/// Line length (in characters) (max 32).
-		/// </param>
-		public void HorizontalLine(int length)
-		{
-			if (length > 0) {
-				if (length > 48) {
-					length = 48;
-				}
-				
-				for (int i = 0; i < length; i++) {
-					BinaryStream.Write('-');
-				}
+            WriteByte(1);
+        }
+
+        /// <summary>
+        /// Aligns the text to the right.
+        /// </summary>
+        public void SetAlignRight()
+        {
+            WriteByte(AsciiControlChars.Escape);
+            WriteByte(AsciiControlChars.SelectJustification);
+            WriteByte(2);
+        }
+
+        /// <summary>
+        /// Prints a horizontal line.
+        /// </summary>
+        /// <param name='length'>
+        /// Line length (in characters) (max 32).
+        /// </param>
+        public void HorizontalLine(int length)
+        {
+            if (length > 0)
+            {
+                if (length > 48)
+                {
+                    length = 48;
+                }
+
+                for (int i = 0; i < length; i++)
+                {
+                    BinaryStream.Write('-');
+                }
 
                 WriteByte(AsciiControlChars.PrintAndLineFeed);
-			}
-		}
-		
-		/// <summary>
-		/// Resets the printer.
-		/// </summary>
-		public void Reset()
-		{
+            }
+        }
+
+        /// <summary>
+        /// Resets the printer.
+        /// </summary>
+        public void Reset()
+        {
             WriteByte(AsciiControlChars.Escape);
-            WriteByte(AsciiControlChars.InitializePrinter);	
-			System.Threading.Thread.Sleep(50);
-		}
-		
-		/// <summary>
-		/// List of supported barcode types.
-		/// </summary>
-		public enum BarcodeType
-		{
-			/// <summary>
-			/// UPC-A
-			/// </summary>
-			upc_a = 0,
-			/// <summary>
-			/// UPC-E
-			/// </summary>
-			upc_e = 1,
-			/// <summary>
-			/// EAN13
-			/// </summary>
-			ean13 = 2,
-			/// <summary>
-			/// EAN8
-			/// </summary>
-			ean8 = 3,
-			/// <summary>
-			/// CODE 39
-			/// </summary>
-			code39 = 4,
-			/// <summary>
-			/// I25
-			/// </summary>
-			i25 = 5,
-			/// <summary>
-			/// CODEBAR
-			/// </summary>
-			codebar = 6,
-			/// <summary>
-			/// CODE 93
-			/// </summary>
-			code93 = 7,
-			/// <summary>
-			/// CODE 128
-			/// </summary>
-			code128 = 8,
-			/// <summary>
-			/// CODE 11
-			/// </summary>
-			code11 = 9,
+            WriteByte(AsciiControlChars.InitializePrinter);
+            System.Threading.Thread.Sleep(50);
+        }
+
+        /// <summary>
+        /// List of supported barcode types.
+        /// </summary>
+        public enum BarcodeType
+        {
+            /// <summary>
+            /// UPC-A
+            /// </summary>
+            upc_a = 0,
+            /// <summary>
+            /// UPC-E
+            /// </summary>
+            upc_e = 1,
+            /// <summary>
+            /// EAN13
+            /// </summary>
+            ean13 = 2,
+            /// <summary>
+            /// EAN8
+            /// </summary>
+            ean8 = 3,
+            /// <summary>
+            /// CODE 39
+            /// </summary>
+            code39 = 4,
+            /// <summary>
+            /// I25
+            /// </summary>
+            i25 = 5,
+            /// <summary>
+            /// CODEBAR
+            /// </summary>
+            codebar = 6,
+            /// <summary>
+            /// CODE 93
+            /// </summary>
+            code93 = 7,
+            /// <summary>
+            /// CODE 128
+            /// </summary>
+            code128 = 8,
+            /// <summary>
+            /// CODE 11
+            /// </summary>
+            code11 = 9,
             /// <summary>
             /// MSI
             /// </summary>
@@ -876,130 +878,144 @@ namespace logicpos.printer.generic
             /// </summary>
             Total_Documento_Fiscal = 61
         }
-        
+
         /// <summary>
-		/// Prints the barcode data.
-		/// </summary>
-		/// <param name='type'>
-		/// Type of barcode.
-		/// </param>
-		/// <param name='data'>
-		/// Data to print.
-		/// </param>
-		public void PrintBarcode(BarcodeType type, string data)
-		{
-			byte[] originalBytes;
-			byte[] outputBytes;
-			
-			if (type == BarcodeType.code93 || type == BarcodeType.code128)
-			{
-				originalBytes = System.Text.Encoding.UTF8.GetBytes(data);
-				outputBytes = originalBytes;
-			} else {
-				originalBytes = System.Text.Encoding.UTF8.GetBytes(data.ToUpper());
-				outputBytes = System.Text.Encoding.Convert(System.Text.Encoding.UTF8,System.Text.Encoding.UTF8,originalBytes);
-			}
-			
-			switch (type) {
-			case BarcodeType.upc_a:
-				if (data.Length ==  11 || data.Length ==  12) {
-                    WriteByte(AsciiControlChars.GroupSeparator);
-                    WriteByte(AsciiControlChars.PrintBarcode);
-					WriteByte(0);
-                    WriteBytes(outputBytes);
-					WriteByte(0);
-				}
-				break;
-			case BarcodeType.upc_e:
-				if (data.Length ==  11 || data.Length ==  12) {
-                    WriteByte(AsciiControlChars.GroupSeparator);
-                    WriteByte(AsciiControlChars.PrintBarcode);
-					WriteByte(1);
-                    WriteBytes(outputBytes);
-					WriteByte(0);
-				}
-				break;
-			case BarcodeType.ean13:
-				if (data.Length ==  12 || data.Length ==  13) {
-                    WriteByte(AsciiControlChars.GroupSeparator);
-                    WriteByte(AsciiControlChars.PrintBarcode);
-					WriteByte(2);
-                    WriteBytes(outputBytes);
-					WriteByte(0);
-				}
-				break;
-			case BarcodeType.ean8:
-				if (data.Length ==  7 || data.Length ==  8) {
-                    WriteByte(AsciiControlChars.GroupSeparator);
-                    WriteByte(AsciiControlChars.PrintBarcode);
-					WriteByte(3);
-                    WriteBytes(outputBytes);
-					WriteByte(0);
-				}
-				break;
-			case BarcodeType.code39:
-				if (data.Length > 1) {
-                    WriteByte(AsciiControlChars.GroupSeparator);
-                    WriteByte(AsciiControlChars.PrintBarcode);
-					WriteByte(4);
-                    WriteBytes(outputBytes);
-					WriteByte(0);
-				}
-				break;
-			case BarcodeType.i25:
-				if (data.Length > 1 || data.Length % 2 == 0) {
-                    WriteByte(AsciiControlChars.GroupSeparator);
-                    WriteByte(AsciiControlChars.PrintBarcode);
-					WriteByte(5);
-                    WriteBytes(outputBytes);
-					WriteByte(0);
-				}
-				break;
-			case BarcodeType.codebar:
-				if (data.Length > 1) {
-                    WriteByte(AsciiControlChars.GroupSeparator);
-                    WriteByte(AsciiControlChars.PrintBarcode);
-					WriteByte(6);
-                    WriteBytes(outputBytes);
-					WriteByte(0);
-				}
-				break;
-			case BarcodeType.code93: //TODO: overload PrintBarcode method with a byte array parameter
-				if (data.Length > 1) {
-                    WriteByte(AsciiControlChars.GroupSeparator);
-                    WriteByte(AsciiControlChars.PrintBarcode);
-					WriteByte(7); //TODO: use format 2 (init string : 29,107,72) (0x00 can be a value, too)
-                    WriteBytes(outputBytes);
-					WriteByte(0);
-				}
-				break;
-			case BarcodeType.code128: //TODO: overload PrintBarcode method with a byte array parameter
-				if (data.Length > 1) {
-                    WriteByte(AsciiControlChars.GroupSeparator);
-                    WriteByte(AsciiControlChars.PrintBarcode);
-					WriteByte(8); //TODO: use format 2 (init string : 29,107,73) (0x00 can be a value, too)
-                    WriteBytes(outputBytes);
-					WriteByte(0);
-				}
-				break;
-			case BarcodeType.code11:
-				if (data.Length > 1) {
-                    WriteByte(AsciiControlChars.GroupSeparator);
-                    WriteByte(AsciiControlChars.PrintBarcode);
-					WriteByte(9);
-                    WriteBytes(outputBytes);
-					WriteByte(0);
-				}
-				break;
-			case BarcodeType.msi:
-				if (data.Length > 1) {
-                    WriteByte(AsciiControlChars.GroupSeparator);
-                    WriteByte(AsciiControlChars.PrintBarcode);
-					WriteByte(10);
-                    WriteBytes(outputBytes);
-					WriteByte(0);
-				}
-				break;
+        /// Prints the barcode data.
+        /// </summary>
+        /// <param name='type'>
+        /// Type of barcode.
+        /// </param>
+        /// <param name='data'>
+        /// Data to print.
+        /// </param>
+        public void PrintBarcode(BarcodeType type, string data)
+        {
+            byte[] originalBytes;
+            byte[] outputBytes;
+
+            if (type == BarcodeType.code93 || type == BarcodeType.code128)
+            {
+                originalBytes = System.Text.Encoding.UTF8.GetBytes(data);
+                outputBytes = originalBytes;
+            }
+            else
+            {
+                originalBytes = System.Text.Encoding.UTF8.GetBytes(data.ToUpper());
+                outputBytes = System.Text.Encoding.Convert(System.Text.Encoding.UTF8, System.Text.Encoding.UTF8, originalBytes);
+            }
+
+            switch (type)
+            {
+                case BarcodeType.upc_a:
+                    if (data.Length == 11 || data.Length == 12)
+                    {
+                        WriteByte(AsciiControlChars.GroupSeparator);
+                        WriteByte(AsciiControlChars.PrintBarcode);
+                        WriteByte(0);
+                        WriteBytes(outputBytes);
+                        WriteByte(0);
+                    }
+                    break;
+                case BarcodeType.upc_e:
+                    if (data.Length == 11 || data.Length == 12)
+                    {
+                        WriteByte(AsciiControlChars.GroupSeparator);
+                        WriteByte(AsciiControlChars.PrintBarcode);
+                        WriteByte(1);
+                        WriteBytes(outputBytes);
+                        WriteByte(0);
+                    }
+                    break;
+                case BarcodeType.ean13:
+                    if (data.Length == 12 || data.Length == 13)
+                    {
+                        WriteByte(AsciiControlChars.GroupSeparator);
+                        WriteByte(AsciiControlChars.PrintBarcode);
+                        WriteByte(2);
+                        WriteBytes(outputBytes);
+                        WriteByte(0);
+                    }
+                    break;
+                case BarcodeType.ean8:
+                    if (data.Length == 7 || data.Length == 8)
+                    {
+                        WriteByte(AsciiControlChars.GroupSeparator);
+                        WriteByte(AsciiControlChars.PrintBarcode);
+                        WriteByte(3);
+                        WriteBytes(outputBytes);
+                        WriteByte(0);
+                    }
+                    break;
+                case BarcodeType.code39:
+                    if (data.Length > 1)
+                    {
+                        WriteByte(AsciiControlChars.GroupSeparator);
+                        WriteByte(AsciiControlChars.PrintBarcode);
+                        WriteByte(4);
+                        WriteBytes(outputBytes);
+                        WriteByte(0);
+                    }
+                    break;
+                case BarcodeType.i25:
+                    if (data.Length > 1 || data.Length % 2 == 0)
+                    {
+                        WriteByte(AsciiControlChars.GroupSeparator);
+                        WriteByte(AsciiControlChars.PrintBarcode);
+                        WriteByte(5);
+                        WriteBytes(outputBytes);
+                        WriteByte(0);
+                    }
+                    break;
+                case BarcodeType.codebar:
+                    if (data.Length > 1)
+                    {
+                        WriteByte(AsciiControlChars.GroupSeparator);
+                        WriteByte(AsciiControlChars.PrintBarcode);
+                        WriteByte(6);
+                        WriteBytes(outputBytes);
+                        WriteByte(0);
+                    }
+                    break;
+                case BarcodeType.code93: //TODO: overload PrintBarcode method with a byte array parameter
+                    if (data.Length > 1)
+                    {
+                        WriteByte(AsciiControlChars.GroupSeparator);
+                        WriteByte(AsciiControlChars.PrintBarcode);
+                        WriteByte(7); //TODO: use format 2 (init string : 29,107,72) (0x00 can be a value, too)
+                        WriteBytes(outputBytes);
+                        WriteByte(0);
+                    }
+                    break;
+                case BarcodeType.code128: //TODO: overload PrintBarcode method with a byte array parameter
+                    if (data.Length > 1)
+                    {
+                        WriteByte(AsciiControlChars.GroupSeparator);
+                        WriteByte(AsciiControlChars.PrintBarcode);
+                        WriteByte(8); //TODO: use format 2 (init string : 29,107,73) (0x00 can be a value, too)
+                        WriteBytes(outputBytes);
+                        WriteByte(0);
+                    }
+                    break;
+                case BarcodeType.code11:
+                    if (data.Length > 1)
+                    {
+                        WriteByte(AsciiControlChars.GroupSeparator);
+                        WriteByte(AsciiControlChars.PrintBarcode);
+                        WriteByte(9);
+                        WriteBytes(outputBytes);
+                        WriteByte(0);
+                    }
+                    break;
+                case BarcodeType.msi:
+                    if (data.Length > 1)
+                    {
+                        WriteByte(AsciiControlChars.GroupSeparator);
+                        WriteByte(AsciiControlChars.PrintBarcode);
+                        WriteByte(10);
+                        WriteBytes(outputBytes);
+                        WriteByte(0);
+                    }
+                    break;
                 case BarcodeType.qrcode:
                     if (data.Length > 1)
                     {
@@ -1020,18 +1036,18 @@ namespace logicpos.printer.generic
                     }
                     break;
             }
-		}
-		
-		/// <summary>
+        }
+
+        /// <summary>
         /// Selects Width barcode.
-		/// </summary>
-		/// <param name="size">2 a 6 </param>
+        /// </summary>
+        /// <param name="size">2 a 6 </param>
         public void SetBarcodeWidth(int size)
-		{
+        {
             WriteByte(AsciiControlChars.GroupSeparator);
             WriteByte(AsciiControlChars.SetBarcodeWidth);
             WriteByte((byte)size);
-		}
+        }
 
         /// <summary>
         /// Selects Height barcode.
@@ -1043,13 +1059,13 @@ namespace logicpos.printer.generic
             WriteByte(AsciiControlChars.SetBarcodeHeight);
             WriteByte((byte)size);
         }
-		
-		/// <summary>
-		/// Sets the barcode left space.
-		/// </summary>
-		/// <param name='spacingDots'>
-		/// Spacing dots.
-		/// </param>
+
+        /// <summary>
+        /// Sets the barcode left space.
+        /// </summary>
+        /// <param name='spacingDots'>
+        /// Spacing dots.
+        /// </param>
         [Obsolete("Cannot find in manual")]
         public void SetBarcodeLeftSpace(byte spacingDots)
         {
@@ -1061,7 +1077,7 @@ namespace logicpos.printer.generic
         public void PrintImage(string bmpFilename, bool QrCode = false)
         {
             float widthBMP = QrCode ? 300 : 328;
-            float heightBMP = QrCode ? 300 : 126; 
+            float heightBMP = QrCode ? 300 : 126;
             var brush = new SolidBrush(Color.White);
 
             if (!File.Exists(Path.GetDirectoryName(bmpFilename) + "\\" + Path.GetFileNameWithoutExtension(bmpFilename) + "_temp" + ".bmp"))
@@ -1072,8 +1088,8 @@ namespace logicpos.printer.generic
 
 
                 Bitmap myBitmap = new Bitmap(Dummy);
-                if(!QrCode) ToGrayScale(myBitmap);
-          
+                if (!QrCode) ToGrayScale(myBitmap);
+
 
                 var bmp = new Bitmap((int)widthBMP, (int)heightBMP);
                 var graph = Graphics.FromImage(bmp);
@@ -1094,7 +1110,7 @@ namespace logicpos.printer.generic
             {
                 bmpFilename = Path.GetDirectoryName(bmpFilename) + "\\" + Path.GetFileNameWithoutExtension(bmpFilename) + "_temp" + ".bmp";
             }
-            var data = Util.GetBitmapData(bmpFilename);
+            var data = PrintingUtils.GetBitmapData(bmpFilename);
             var dots = data.Dots;
             var width = BitConverter.GetBytes(data.Width);
 
@@ -1167,7 +1183,7 @@ namespace logicpos.printer.generic
         public void PrintImage(Bitmap myBitmap)
         {
 
-            var data = Util.GetBitmapData(myBitmap);
+            var data = PrintingUtils.GetBitmapData(myBitmap);
             var dots = data.Dots;
             var width = BitConverter.GetBytes(data.Width);
 
@@ -1236,7 +1252,7 @@ namespace logicpos.printer.generic
             WriteByte((byte)30);
         }
 
-       
+
 
         public BitmapData GetBitmapData(Bitmap bmp) // (string bmpFileName)
         {
@@ -1334,28 +1350,28 @@ namespace logicpos.printer.generic
         /// Sets the printer offine.
         /// </summary>
         public void Sleep()
-		{
+        {
             WriteByte(AsciiControlChars.Escape);
-			WriteByte(61);
-			WriteByte(0);
-		}
-		
-		/// <summary>
-		/// Sets the printer online.
-		/// </summary>		
-		public void WakeUp()
-		{
+            WriteByte(61);
+            WriteByte(0);
+        }
+
+        /// <summary>
+        /// Sets the printer online.
+        /// </summary>		
+        public void WakeUp()
+        {
             WriteByte(AsciiControlChars.Escape);
             WriteByte(AsciiControlChars.SetPeripheralDevice);
-			WriteByte(1);
-		}
+            WriteByte(1);
+        }
 
         //[Obsolete("Cannot find in manual")]
 
         public void Cut(bool full)
         {
             //Try to Get CutCommand from Config
-            string printerThermalCutCommand = ConfigurationManager.AppSettings["PrinterThermalCutCommand"];
+            string printerThermalCutCommand = GeneralSettings.Settings["PrinterThermalCutCommand"];
 
             // Send Config CutCommand to Cut Overload
             Cut(full, printerThermalCutCommand);
@@ -1379,15 +1395,11 @@ namespace logicpos.printer.generic
 
             if (configCutCommand != string.Empty)
             {
-                if(configCutCommand != null)
+                if (configCutCommand != null)
                 {
                     // Replace default cutCommand
                     //cutCommand = System.Text.Encoding.ASCII.GetBytes(printerThermalCutCommand);
                     cutCommand = configCutCommand.Split(new[] { ',' }).Select(s => Convert.ToByte(s, 16)).ToArray();
-                }
-                else
-                {
-                    _logger.Error(string.Format("Error: invalid settings for PrinterThermalCutCommand: [{0}]", configCutCommand));
                 }
             };
 
@@ -1541,47 +1553,47 @@ namespace logicpos.printer.generic
             WriteByte((byte)102);
             WriteByte((byte)set);
         }
-		
-		/// <summary>
-		/// Returns a printing style.
-		/// </summary>
-		public enum PrintingStyle
-		{
-			/// <summary>
-			/// White on black.
-			/// </summary>
-			Reverse = 1 << 1,
-			/// <summary>
-			/// Updown characters.
-			/// </summary>
-			Updown = 1 << 2,
-			/// <summary>
-			/// Bold characters.
-			/// </summary>
-			Bold = 1 << 3,
-			/// <summary>
-			/// Double height characters.
-			/// </summary>
-			DoubleHeight = 1 << 4,
-			/// <summary>
-			/// Double width characters.
-			/// </summary>
-			DoubleWidth = 1 << 5,
-			/// <summary>
-			/// Strikes text.
-			/// </summary>
-			DeleteLine = 1 << 6,
-			/// <summary>
-			/// Thin underline.
-			/// </summary>
-			Underline = 1 << 0,
-			/// <summary>
-			/// Thick underline.
-			/// </summary>
-			ThickUnderline = 1 << 7
-		}
-		
-		/// <summary>
+
+        /// <summary>
+        /// Returns a printing style.
+        /// </summary>
+        public enum PrintingStyle
+        {
+            /// <summary>
+            /// White on black.
+            /// </summary>
+            Reverse = 1 << 1,
+            /// <summary>
+            /// Updown characters.
+            /// </summary>
+            Updown = 1 << 2,
+            /// <summary>
+            /// Bold characters.
+            /// </summary>
+            Bold = 1 << 3,
+            /// <summary>
+            /// Double height characters.
+            /// </summary>
+            DoubleHeight = 1 << 4,
+            /// <summary>
+            /// Double width characters.
+            /// </summary>
+            DoubleWidth = 1 << 5,
+            /// <summary>
+            /// Strikes text.
+            /// </summary>
+            DeleteLine = 1 << 6,
+            /// <summary>
+            /// Thin underline.
+            /// </summary>
+            Underline = 1 << 0,
+            /// <summary>
+            /// Thick underline.
+            /// </summary>
+            ThickUnderline = 1 << 7
+        }
+
+        /// <summary>
         /// Tests the value of a given bit.
         /// </summary>
         /// <param name="valueToTest">The value to test</param>
@@ -1621,6 +1633,6 @@ namespace logicpos.printer.generic
             return _memStream.ToArray();
         }
 
-	}
+    }
 }
 
