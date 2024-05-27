@@ -158,25 +158,6 @@ namespace LogicPOS.Utility
             return reader.ReadToEnd();
         }
 
-        public static string MD5HashFile(string file)
-        {
-            MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
-            FileStream stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read, 8192);
-            md5.ComputeHash(stream);
-            stream.Close();
-
-            byte[] hash = md5.Hash;
-            StringBuilder sb = new StringBuilder();
-
-            foreach (byte b in hash)
-            {
-                sb.Append(string.Format("{0:X2}", b));
-            }
-            string result = sb.ToString().ToLower();
-
-            return result;
-        }
-
         public static string StringListToCommaDelimitedString<T>(List<T> pList, char pSeparator)
         {
             string result = string.Empty;

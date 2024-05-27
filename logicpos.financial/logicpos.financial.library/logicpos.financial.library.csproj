@@ -78,10 +78,7 @@
     <Compile Include="Classes\HardWare\Printers\Thermal\TicketTable.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Classes\Utils\ProtectedFile.cs" />
-    <Compile Include="Classes\Utils\ProtectedFiles.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\ServicesAT.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\logicpos.datalayer\logicpos.datalayer.csproj">

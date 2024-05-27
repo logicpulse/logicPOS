@@ -9,7 +9,6 @@ using logicpos.Classes.Logic.Hardware;
 using logicpos.Classes.Logic.Others;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
-using logicpos.financial.library.Classes.Utils;
 using LogicPOS.Finance.WorkSession;
 using LogicPOS.Globalization;
 using LogicPOS.Reporting;
@@ -535,7 +534,7 @@ namespace logicpos
             if (POSSettings.ProtectedFilesRecreateCSV)
             {
                 protectedFiles = new ProtectedFiles(fileList, filePath);
-                string md5FromFile = LogicPOS.Utility.StringUtils.MD5HashFile(filePath);
+                string md5FromFile = CryptographyUtils.MD5HashFile(filePath);
                 //End Xpo Create Scheme and Fixtures, Terminate App and Request assign False to Developer Vars
                 //string message = string.Format(@"ProtectedFiles '{1}' re-created with {2} files found!
                 //    {0}- Assign false to 'SettingsApp.ProtectedFilesRecreateCsv'.

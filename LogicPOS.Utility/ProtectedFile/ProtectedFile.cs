@@ -1,6 +1,4 @@
-﻿using LogicPOS.Utility;
-
-namespace logicpos.financial.library.Classes.Utils
+﻿namespace LogicPOS.Utility
 {
     public class ProtectedFile
     {
@@ -13,7 +11,7 @@ namespace logicpos.financial.library.Classes.Utils
         //Create ProtectedFile Properties from FilePath, used by Developer, when recreate FileCSV
         public ProtectedFile(string pFilePath)
         {
-            Md5 = StringUtils.MD5HashFile(pFilePath);
+            Md5 = CryptographyUtils.MD5HashFile(pFilePath);
             Md5Encrypted = CryptographyUtils.GenerateSaltedString(Md5);
             Valid = true;
         }
@@ -21,7 +19,7 @@ namespace logicpos.financial.library.Classes.Utils
         //Used by Application, to check if files are valid, create from Dictionary(File)
         public ProtectedFile(string pFilePath, string pMd5Salted)
         {
-            Md5 = StringUtils.MD5HashFile(pFilePath);
+            Md5 = CryptographyUtils.MD5HashFile(pFilePath);
             Md5Encrypted = pMd5Salted;
             Valid = (CryptographyUtils.ValidateSaltedString(pMd5Salted, Md5));
         }

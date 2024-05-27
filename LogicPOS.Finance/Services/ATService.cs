@@ -15,14 +15,14 @@ using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace logicpos.financial.service.Objects.Modules.AT
+namespace LogicPOS.Finance.Services
 {
-    public class ServicesAT
+    public class ATService
     {
         //Log4Net
         protected log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public bool ValidCerificates { get; set; } = false;
+        public bool ValidCerificates { get; set; }
         private readonly bool _wayBillMode;
         private readonly Uri _urlWebService;
         private readonly Uri _urlSoapAction;
@@ -160,7 +160,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
         public static Uri ServicesATUriDocumentsSOAPAction = new Uri("http://servicos.portaldasfinancas.gov.pt/faturas/RegisterInvoice");
 
         //Constructor
-        public ServicesAT(fin_documentfinancemaster pFinanceMaster)
+        public ATService(fin_documentfinancemaster pFinanceMaster)
         {
             //Init Settings Main Config Settings
             GeneralSettings.Settings = ConfigurationManager.AppSettings;

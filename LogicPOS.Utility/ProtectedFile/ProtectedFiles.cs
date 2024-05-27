@@ -1,16 +1,11 @@
-﻿using LogicPOS.Utility;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace logicpos.financial.library.Classes.Utils
+namespace LogicPOS.Utility
 {
     public class ProtectedFiles : Dictionary<string, ProtectedFile>
     {
-        //Log4Net
-        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-        //Private Members
         private readonly bool _debug = false;
         private readonly char _splitter = ',';
 
@@ -30,7 +25,6 @@ namespace logicpos.financial.library.Classes.Utils
                     {
                         ProtectedFile protectedFile = new ProtectedFile(fileName);
                         this.Add(fileName, protectedFile);
-                        if (_debug) _logger.Debug(string.Format("fileName: [{0}], Md5: [{1}], Md5Encrypted: [{2}], Valid: [{3}]", fileName, protectedFile.Md5, protectedFile.Md5Encrypted, protectedFile.Valid));
                     }
                 }
             }
@@ -51,25 +45,18 @@ namespace logicpos.financial.library.Classes.Utils
         {
             bool result = false;
 
-            try
-            {
-                using (StreamWriter streamWriter = new StreamWriter(pFilePath, false))
-                {
-                    foreach (var item in this)
-                    {
-                        if (_debug) _logger.Debug(string.Format("ProtectedFile: [{0}], [{1}]", item.Key, item.Value.Md5Encrypted));
-                        streamWriter.WriteLine(string.Format("{1}{0}{2}", _splitter, item.Key, item.Value.Md5Encrypted));
-                    }
-                }
 
-                //Force copy from bin to source path, else on next run, file is blank or missing, or un-updated
-                string targetFile = Environment.CurrentDirectory.Replace(@"bin\Debug", pFilePath);
-                File.Copy(pFilePath, targetFile, true);
-            }
-            catch (Exception ex)
+            using (StreamWriter streamWriter = new StreamWriter(pFilePath, false))
             {
-                _logger.Error(ex.Message, ex);
+                foreach (var item in this)
+                {
+                    streamWriter.WriteLine(string.Format("{1}{0}{2}", _splitter, item.Key, item.Value.Md5Encrypted));
+                }
             }
+
+            //Force copy from bin to source path, else on next run, file is blank or missing, or un-updated
+            string targetFile = Environment.CurrentDirectory.Replace(@"bin\Debug", pFilePath);
+            File.Copy(pFilePath, targetFile, true);
 
             return result;
         }
@@ -78,26 +65,20 @@ namespace logicpos.financial.library.Classes.Utils
         public bool Load(string pFilePath)
         {
             bool result = false;
-            try
-            {
-                Dictionary<string, string> filesDictionary = GeneralUtils.CSVFileToDictionary(pFilePath);
-                //Clear before Load 
-                if (this.Count > 0) this.Clear();
 
-                foreach (var item in filesDictionary)
-                {
-                    string fileName = item.Key;
-                    ProtectedFile protectedFile = new ProtectedFile(fileName, item.Value);
-                    this.Add(fileName, protectedFile);
-                    if (_debug) _logger.Debug(string.Format("fileName: [{0}], Md5: [{1}], Md5Encrypted: [{2}], Valid: [{3}]", fileName, protectedFile.Md5, protectedFile.Md5Encrypted, protectedFile.Valid));
-                }
+            Dictionary<string, string> filesDictionary = GeneralUtils.CSVFileToDictionary(pFilePath);
+            //Clear before Load 
+            if (this.Count > 0) this.Clear();
 
-                result = true;
-            }
-            catch (Exception ex)
+            foreach (var item in filesDictionary)
             {
-                _logger.Error(ex.Message, ex);
+                string fileName = item.Key;
+                ProtectedFile protectedFile = new ProtectedFile(fileName, item.Value);
+                this.Add(fileName, protectedFile);
+
             }
+
+            result = true;
 
             return result;
         }
@@ -114,14 +95,13 @@ namespace logicpos.financial.library.Classes.Utils
                 string md5Encryptd = this[pKey].Md5Encrypted;
                 string md5FromMem = this[pKey].Md5;
                 //get Fresh Hash
-                string md5FromFile = StringUtils.MD5HashFile(pKey);
+                string md5FromFile = CryptographyUtils.MD5HashFile(pKey);
                 //Check if created are equal to encrypted in memory, if false user change file after BootStrap
                 bool valid = CryptographyUtils.ValidateSaltedString(md5Encryptd, md5FromFile);
                 //Update Protected File
                 this[pKey].Md5 = md5FromFile;
                 this[pKey].Valid = valid;
-                //debug
-                if (_debug) _logger.Debug(string.Format("IsValidFile md5FromMem: [{0}], md5FromFile: [{1}], valid: [{2}]", md5FromMem, md5FromFile, valid));
+
                 //Assign to final Result
                 result = valid;
             }
@@ -153,7 +133,6 @@ namespace logicpos.financial.library.Classes.Utils
                 string fileName = item;
                 if (!this.ContainsKey(fileName))
                 {
-                    if (_debug) _logger.Debug(string.Format("Miss filename : [{0}]", fileName));
                     result.Add(fileName);
                 }
             }
