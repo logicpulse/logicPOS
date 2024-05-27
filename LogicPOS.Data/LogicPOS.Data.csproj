@@ -7,8 +7,8 @@
     <ProjectGuid>{42AF3BE2-44B4-477D-8E45-55C64992B805}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>logicpos.datalayer</RootNamespace>
-    <AssemblyName>LogicposDatalayer</AssemblyName>
+    <RootNamespace>LogicPOS.Data</RootNamespace>
+    <AssemblyName>LogicPOS.Data</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

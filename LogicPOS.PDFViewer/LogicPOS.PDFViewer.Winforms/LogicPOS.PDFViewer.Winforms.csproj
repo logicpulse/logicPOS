@@ -95,7 +95,7 @@
   <ItemGroup>
     <ProjectReference Include="..\LogicPOS.PDFViewer.Controls\LogicPOS.PDFViewer.Controls.csproj">
       <Project>{1c688b96-9fcc-465a-9347-1f933c703e21}</Project>
-      <Name>PDFViewer.Controls</Name>
+      <Name>LogicPOS.PDFViewer.Controls</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

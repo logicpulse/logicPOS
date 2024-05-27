@@ -92,9 +92,9 @@
     <Compile Include="Reports\Users\FRBOUserCommission.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\logicpos.datalayer\logicpos.datalayer.csproj">
+    <ProjectReference Include="..\LogicPOS.Data\LogicPOS.Data.csproj">
       <Project>{42af3be2-44b4-477d-8e45-55c64992b805}</Project>
-      <Name>logicpos.datalayer</Name>
+      <Name>LogicPOS.Data</Name>
     </ProjectReference>
     <ProjectReference Include="..\LogicPOS.Globalization\LogicPOS.Globalization.csproj">
       <Project>{b9e8d813-d694-4a7f-955e-ccc4b10f3774}</Project>

@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "logicpos", "logicpos\logicpos.csproj", "{340331CF-94E0-49B0-8EBB-D4DF61A3DCCC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogicPOS.UI", "LogicPOS.UI\LogicPOS.UI.csproj", "{340331CF-94E0-49B0-8EBB-D4DF61A3DCCC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogicPOS.Globalization", "LogicPOS.Globalization\LogicPOS.Globalization.csproj", "{B9E8D813-D694-4A7F-955E-CCC4B10F3774}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogicPOS.Shared", "LogicPOS.Shared\LogicPOS.Shared.csproj", "{FB74327C-1794-47EC-8F52-FD3F464F3258}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "logicpos.datalayer", "logicpos.datalayer\logicpos.datalayer.csproj", "{42AF3BE2-44B4-477D-8E45-55C64992B805}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogicPOS.Data", "LogicPOS.Data\LogicPOS.Data.csproj", "{42AF3BE2-44B4-477D-8E45-55C64992B805}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicPOS.Settings", "LogicPOS.Settings\LogicPOS.Settings.csproj", "{A4E7F0EA-8360-41F2-A625-517F6E943A29}"
 EndProject

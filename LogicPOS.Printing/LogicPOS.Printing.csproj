@@ -77,9 +77,9 @@
     <Compile Include="Windows\RawPrinterHelper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\logicpos.datalayer\logicpos.datalayer.csproj">
+    <ProjectReference Include="..\LogicPOS.Data\LogicPOS.Data.csproj">
       <Project>{42af3be2-44b4-477d-8e45-55c64992b805}</Project>
-      <Name>logicpos.datalayer</Name>
+      <Name>LogicPOS.Data</Name>
     </ProjectReference>
     <ProjectReference Include="..\LogicPOS.Finance\LogicPOS.Finance.csproj">
       <Project>{6f50bd8b-a054-424c-9247-3892efcc25b6}</Project>
