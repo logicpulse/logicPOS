@@ -201,9 +201,6 @@ namespace logicpos.financial.service.Objects.Modules.AT
             {
                 // Log Paths
                 _logger.Debug(string.Format("Using pathPublicKey: [{0}]", _pathPublicKey));
-                FinancialServiceUtils.Log(string.Format("Using pathCertificate: [{0}]", _pathCertificate));
-                // Log Parameters
-                FinancialServiceUtils.Log(string.Format("TaxRegistrationNumber :[{0}], AccountFiscalNumber: [{1}], AccountPassword: [{2}]", _atTaxRegistrationNumber, _atAccountFiscalNumber, _atAccountPassword));
             }
 
             if (File.Exists(_pathPublicKey) && File.Exists(_pathCertificate))
@@ -433,7 +430,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
             }
 
             //Get Lines Content
-            string sbContentLinesAndDocumentTotals = FinancialServiceUtils.GetDocumentContentLinesAndDocumentTotals(_documentMaster);
+            string sbContentLinesAndDocumentTotals = XPOHelper.GetDocumentContentLinesAndDocumentTotals(_documentMaster);
 
             //Init StringBuilder
             StringBuilder sb = new StringBuilder();
@@ -511,7 +508,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
             if (_increaseDocumentNumber) _documentMaster.IncreaseDocumentNumber();
 
             //Get Lines Content
-            string sbContentLines = FinancialServiceUtils.GetDocumentWayBillContentLines(_documentMaster);
+            string sbContentLines = XPOHelper.GetDocumentWayBillContentLines(_documentMaster);
 
             StringBuilder sb = new StringBuilder();
             //Soap Envelope
@@ -638,15 +635,10 @@ namespace logicpos.financial.service.Objects.Modules.AT
 
         public string Send()
         {
-            FinancialServiceUtils.Log(string.Format("urlWebService: {0}", _urlWebService));
-            FinancialServiceUtils.Log(string.Format("urlSoapAction: {0}", _urlSoapAction));
-            FinancialServiceUtils.Log(string.Format("Send Document DocumentNumber: [{0}]/WayBillMode: [{1}]", _documentMaster.DocumentNumber, _wayBillMode));
-
             //Check Certificates
-            if (!ValidCerificates)
+            if (ValidCerificates == false)
             {
                 string msg = string.Format("Invalid Certificates: [{0}], [{1}] in current Directory [{2}]", _pathPublicKey, _pathCertificate, Directory.GetCurrentDirectory());
-                FinancialServiceUtils.Log(msg);
                 return string.Format(msg);
             }
 
@@ -673,9 +665,6 @@ namespace logicpos.financial.service.Objects.Modules.AT
 
                 // New Method : Import Certificate From VendorPlugin
                 X509Certificate2 cert = PluginSettings.SoftwareVendor.ImportCertificate(testMode, _pathCertificate);
-
-                // Output Certificate 
-                FinancialServiceUtils.Log(string.Format("Cert Subject: [{0}], NotBefore: [{1}], NotAfter: [{2}]", cert.Subject, cert.NotBefore, cert.NotAfter));
 
                 request.ClientCertificates.Add(cert);
 
@@ -711,10 +700,6 @@ namespace logicpos.financial.service.Objects.Modules.AT
                 //GetSoapResult
                 _soapResult = (!_wayBillMode) ? GetSoapResultDC() : GetSoapResultWB();
 
-                //Log
-                FinancialServiceUtils.Log(string.Format("Send Document ReturnCode: [{0}]", _soapResult.ReturnCode));
-                FinancialServiceUtils.Log(string.Format("Send Document ReturnMessage: [{0}]", _soapResult.ReturnMessage), true);
-
                 //Persist Result in Database
                 PersistResult(_soapResult);
 
@@ -732,14 +717,11 @@ namespace logicpos.financial.service.Objects.Modules.AT
                     string streamResult = streamReader.ReadToEnd();
                     //Save Result Error to File
                     File.WriteAllText(_pathSaveSoapResultError, streamResult);
-                    //Log
-                    FinancialServiceUtils.Log(string.Format("Send ProtocolError StreamResult: [{0}]", streamResult), true);
+
                     return streamResult;
                 }
                 else
                 {
-                    //Log
-                    FinancialServiceUtils.Log(string.Format("Exception: [{0}]", ex.Message), true);
                     return ex.Message;
                 }
             }
