@@ -8,10 +8,10 @@ using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using logicpos.financial.library.Classes.Hardware.Printers;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets;
-using logicpos.financial.service.Objects.Modules.AT;
 using LogicPOS.DTOs.Common;
 using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Finance.Saft;
+using LogicPOS.Finance.Services;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Shared.Orders;
@@ -248,7 +248,7 @@ namespace logicpos
                 if (documentMaster != null)
                 {
                     //Send Document
-                    ServicesAT servicesAT = new ServicesAT(documentMaster);
+                    ATService servicesAT = new ATService(documentMaster);
                     //Get Result from SendDocument Object
                     string resultSend = servicesAT.Send();
                     //Get SoapResult

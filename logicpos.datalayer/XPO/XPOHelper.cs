@@ -11,6 +11,8 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
+using System.Security;
+using System.Text;
 using static LogicPOS.Utility.DataConversionUtils;
 
 namespace logicpos.datalayer.Xpo
@@ -799,6 +801,279 @@ namespace logicpos.datalayer.Xpo
 
             var entity = GetFinalConsumerEntity();
             result = (entity != null && pFiscalNumber == entity.FiscalNumber);
+
+            return result;
+        }
+
+        public static string GetDocumentsQuery(bool pWayBillMode)
+        {
+            return GetDocumentsQuery(pWayBillMode, Guid.Empty);
+        }
+
+        public static string GetDocumentsQuery(bool pWayBillMode, Guid pDocumentMaster)
+        {
+            //Common : Require to Check if has Records with ReturnCode -3 (Já foi registado um documento idêntico.)
+            string where = @"(
+                ft.WsAtDocument = 1 AND (fm.ATValidAuditResult IS NULL OR fm.ATResendDocument = 1)  
+                AND (SELECT COUNT(*) FROM sys_systemauditat WHERE DocumentMaster = fm.Oid AND ReturnCode = '-3') = 0
+            ) AND";
+
+            //Invoices
+            //
+            //1.4 – Tipo (InvoiceType)
+            //Tipo de documento. Pode assumir os seguintes valores:
+            //    FT – Fatura;
+            //    FS – Fatura Simplificada;
+            //    NC –.Nota de Crédito;
+            //    ND – Nota de Débito;
+            //
+            //1.4 – Estado (InvoiceStatus)	
+            //Estado de documento. Pode assumir os seguintes valores:
+            //    N – Normal;
+            //    A – Anulada;
+            if (!pWayBillMode)
+            {
+                //Includes FR SAF-T v1.03
+                where += @" (
+                    ((ft.Acronym = 'FT' AND ft.WayBill <> 1) OR ft.Acronym = 'FS' OR ft.Acronym = 'NC' OR ft.Acronym = 'ND' OR ft.Acronym = 'FR') 
+                    AND (fm.DocumentStatusStatus = 'N' OR fm.DocumentStatusStatus = 'A') 
+                    AND ((SELECT COUNT(*) FROM sys_systemauditat WHERE DocumentMaster = fm.Oid AND ReturnCode = '0') = 0 ) 
+                )";
+                /* IN009083 - Premisses:
+                 * - we do not cancel financial documents already received by AT, therefore, do not resend them (COUNT statement)
+                 * - "fm.ATResendDocument = 1" is not settled to ft.WayBill <> 1 (non-WayBill documents)
+                 */
+            }
+            //TransportDocuments/WayBill
+            //
+            //1.8 – Tipo do documento (MovementType)
+            //Deve ser preenchido com:
+            //    GR – Guia de remessa;
+            //    GT – Guia de transporte;
+            //    GA – Guia de movimentação de ativos próprios;
+            //    GC – Guia de consignação;
+            //    GD – Guia ou nota de devolução efetuada pelo cliente.
+            //
+            //1.6 - Estado atual do documento
+            //Estado de documento. Pode assumir os seguintes
+            //(MovementStatus)
+            //valores:
+            //    N – Normal;
+            //    T – Por conta de terceiros;
+            //    A – Anulada.
+            //
+            //1.3.4 – Pais (Country)
+            //Preencher com <<PT>>.
+
+            //1.12 – Endereço da Empresa Cliente (CustomerAddress)
+            //1.12.4 – Pais (Country)
+            //Preencher com <<PT>>.
+
+            //1.14 – Local de carga (AddressFrom)
+            //1.14.4 – Pais (Country)
+            //Preencher com PT.
+
+            //É obrigatório comunicar um documento de transporte à AT cujo destinatário seja um consumidor final?
+            //Não. Estão excluídos das obrigações de comunicação os documentos de transporte em que o destinatário ou adquirente seja consumidor final.
+            else
+            {
+                where += string.Format(@" (
+                    (ft.Acronym = 'GR' OR ft.Acronym = 'GT' OR ft.Acronym = 'GA' OR ft.Acronym = 'GC' OR ft.Acronym = 'GD')
+                    AND (fm.DocumentStatusStatus = 'N' OR fm.DocumentStatusStatus = 'T' OR fm.DocumentStatusStatus = 'A')
+                    AND (fm.ShipToCountry = 'PT' AND fm.ShipFromCountry = 'PT')
+                    AND (fm.EntityOid <> '{0}')
+                )"
+                // Skip FinalConsumer
+                , InvoiceSettings.FinalConsumerId
+                );
+            }
+
+            //Shared: If Has Target Document
+            if (pDocumentMaster != Guid.Empty)
+            {
+                where = string.Format("{0} AND fm.Oid='{1}'", where, pDocumentMaster.ToString());
+            }
+
+            //Build Query
+            string result = string.Format(@"
+                SELECT 
+                    fm.Oid AS Oid
+                FROM
+                    (
+                        fin_documentfinancemaster fm
+                        LEFT JOIN fin_documentfinancetype ft ON (fm.DocumentType = ft.Oid)
+                    )
+                WHERE
+                    {0}
+                ORDER BY 
+                    fm.DocumentDate DESC;
+                ",
+                where
+            );
+
+            return result;
+        }
+
+        /// <summary>
+        /// Get Document <Line>s Splitted by Tax and <DocumentTotals> Content
+        /// 	Linhas do Documento por Taxa (Line)
+        /// 	Resumo das linhas da fatura por taxa de imposto, e motivo de isenção ou não liquidação.
+        /// 	Deve existir uma, e uma só linha, por cada taxa (TaxType, TaxCountryRegion, TaxCode) e motivo de isenção ou não liquidação (TaxExemptionReason)
+        /// </summary>
+        /// <param name="DocumentMaster"></param>
+        /// <returns></returns>
+        public static string GetDocumentContentLinesAndDocumentTotals(fin_documentfinancemaster pDocumentMaster)
+        {
+            decimal taxPayable = 0.0m;
+            decimal netTotal = 0.0m;
+            decimal grossTotal = 0.0m;
+            //Prepare Node Name
+            string nodeName = (pDocumentMaster.DocumentType.Credit) ? "CreditAmount" : "DebitAmount";
+
+
+            //Init Locals Vars
+            string result;
+            try
+            {
+                string sql = string.Format(@"
+                    SELECT 
+	                    fdVat AS Vat,
+	                    cvTaxType AS TaxType,
+	                    cvTaxCode AS TaxCode,
+	                    cvTaxCountryRegion AS TaxCountryRegion,
+	                    SUM(fdTotalNet) AS TotalNet,
+	                    SUM(fdTotalGross) AS TotalGross,
+                        SUM(fdTotalDiscount) AS TotalDiscount,
+	                    SUM(fdTotalTax) AS TotalTax,
+	                    SUM(fdTotalFinal) AS TotalFinal,
+	                    cxAcronym AS VatExemptionReasonAcronym
+                    FROM
+	                    view_documentfinance
+                    WHERE 
+	                    fmOid = '{0}'
+                    GROUP BY
+	                    fdVat,cvTaxType,cvTaxCode,cvTaxCountryRegion,cxAcronym
+                    ORDER BY
+	                    fdVat, VatExemptionReasonAcronym
+                    ;"
+                    , pDocumentMaster.Oid
+                );
+
+                DataTable dtResult = XPOHelper.GetDataTableFromQuery(sql);
+
+                //Init StringBuilder
+                StringBuilder sb = new StringBuilder();
+
+                foreach (DataRow item in dtResult.Rows)
+                {
+                    string taxExemptionReason = (!string.IsNullOrEmpty(item["VatExemptionReasonAcronym"].ToString()))
+                        ? string.Format("{0}      <ns2:TaxExemptionReason>{1}</ns2:TaxExemptionReason>", Environment.NewLine, item["VatExemptionReasonAcronym"])
+                        : string.Empty
+                    ;
+
+                    sb.Append(string.Format(@"    <Line>
+      <ns2:{0}>{1}</ns2:{0}>
+      <ns2:Tax>
+        <ns2:TaxType>{2}</ns2:TaxType>
+        <ns2:TaxCountryRegion>{3}</ns2:TaxCountryRegion>
+        <ns2:TaxPercentage>{4}</ns2:TaxPercentage>
+      </ns2:Tax>{5}
+    </Line>
+"
+                        , nodeName
+                        , LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(item["TotalNet"]))
+                        , item["TaxType"]
+                        , item["TaxCountryRegion"]
+                        , LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(item["Vat"]))
+                        , taxExemptionReason
+                    ));
+
+                    //Sum DocumentTotals
+                    taxPayable += Convert.ToDecimal(item["TotalTax"]);
+                    netTotal += Convert.ToDecimal(item["TotalNet"]);
+                    //Is TotalFinal not db TotalGross
+                    grossTotal += Convert.ToDecimal(item["TotalFinal"]);
+                }
+
+                //Add DocumentTotals
+                sb.Append(string.Format(@"    <DocumentTotals>
+      <ns2:TaxPayable>{0}</ns2:TaxPayable>
+      <ns2:NetTotal>{1}</ns2:NetTotal>
+      <ns2:GrossTotal>{2}</ns2:GrossTotal>
+    </DocumentTotals>"
+                    , LogicPOS.Utility.DataConversionUtils.DecimalToString(taxPayable)
+                    , LogicPOS.Utility.DataConversionUtils.DecimalToString(netTotal)
+                    , LogicPOS.Utility.DataConversionUtils.DecimalToString(grossTotal)
+                ));
+
+                result = sb.ToString();
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+            }
+
+            return result;
+        }
+
+        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+        //WayBill
+
+        public static string GetDocumentWayBillContentLines(fin_documentfinancemaster pDocumentMaster)
+        {
+
+            string result;
+            try
+            {
+                string sql = string.Format(@"
+                    SELECT 
+	                    Designation AS ProductDescription, Quantity, UnitMeasure AS UnitOfMeasure, Price AS UnitPrice,
+	                    (SELECT rf.OriginatingON FROM fin_documentfinancedetailorderreference AS rf WHERE rf.DocumentDetail = fd.Oid) AS OrderReferences
+                    FROM 
+	                    fin_documentfinancedetail AS fd 
+                    WHERE 
+	                    DocumentMaster = '{0}' 
+                    ORDER BY 
+	                    Ord
+                    ;"
+                    , pDocumentMaster.Oid
+                );
+
+                DataTable dtResult = XPOHelper.GetDataTableFromQuery(sql);
+
+                //Init StringBuilder
+                StringBuilder sb = new StringBuilder();
+
+                foreach (DataRow item in dtResult.Rows)
+                {
+                    string orderReferences = (!string.IsNullOrEmpty(item["OrderReferences"].ToString()))
+                        ? string.Format(@"{0}      <OrderReferences>
+        <OriginatingON>{1}</OriginatingON>
+      </OrderReferences>", Environment.NewLine, item["OrderReferences"])
+                        : string.Empty
+                    ;
+
+                    sb.Append(string.Format(@"    <Line>{0}
+      <ProductDescription>{1}</ProductDescription>
+      <Quantity>{2}</Quantity>
+      <UnitOfMeasure>{3}</UnitOfMeasure>
+      <UnitPrice>{4}</UnitPrice>
+    </Line>
+"
+                        , orderReferences
+                        , SecurityElement.Escape(item["ProductDescription"].ToString())
+                        , LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(item["Quantity"]))
+                        , item["UnitOfMeasure"]
+                        , LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(item["UnitPrice"]))
+                    ));
+                }
+
+                result = sb.ToString();
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+            }
 
             return result;
         }

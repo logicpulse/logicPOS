@@ -78,11 +78,7 @@
     <Compile Include="Classes\HardWare\Printers\Thermal\TicketTable.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Classes\Utils\ProtectedFile.cs" />
-    <Compile Include="Classes\Utils\ProtectedFiles.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\FinancialServiceUtils.cs" />
-    <Compile Include="Services\ServicesAT.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\logicpos.datalayer\logicpos.datalayer.csproj">
@@ -105,14 +101,6 @@
       <Project>{b9e8d813-d694-4a7f-955e-ccc4b10f3774}</Project>
       <Name>LogicPOS.Globalization</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\logicpos.hardware\logicpos.printer.genericusb\logicpos.printer.genericusb.csproj">
-      <Project>{ff9298dd-4b4b-412f-a260-e504d0079ead}</Project>
-      <Name>logicpos.printer.genericusb</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\logicpos.hardware\logicpos.printer.generic\logicpos.printer.generic.csproj">
-      <Project>{692407AF-FE0E-4D94-8DB1-BE8B210017BA}</Project>
-      <Name>logicpos.printer.generic</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\LogicPOS.Modules\LogicPOS.Modules.csproj">
       <Project>{96e6ad22-dc88-4f9b-89b7-0f78e59f9070}</Project>
       <Name>LogicPOS.Modules</Name>
@@ -124,6 +112,10 @@
     <ProjectReference Include="..\..\LogicPOS.Plugin\LogicPOS.Plugin.csproj">
       <Project>{50C2F757-8478-4FD3-8B35-89BC12E7ACA0}</Project>
       <Name>LogicPOS.Plugin</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\LogicPOS.Printing\LogicPOS.Printing.csproj">
+      <Project>{ee93c7f8-f973-4a6e-8c59-e4bac4ff7bf7}</Project>
+      <Name>LogicPOS.Printing</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\LogicPOS.Reporting\LogicPOS.Reporting.csproj">
       <Project>{E8105C12-D5FA-4AFB-906B-F762BD2F9A27}</Project>

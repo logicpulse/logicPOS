@@ -13,6 +13,7 @@ using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
+using LogicPOS.Utility;
 using MySql.Data.MySqlClient;
 using System;
 using System.Drawing;
@@ -163,7 +164,7 @@ namespace logicpos.Classes.DataLayer
                         //backupResult = Utils.ZipPack(new string[] { fileName }, fullFileNamePacked);
                         backupResult = PluginSettings.SoftwareVendor.BackupDatabase(PluginSettings.SecretKey, new string[] { fileName }, fullFileNamePacked);
                         // Add FileHash
-                        if (backupResult) systemBackup.FileHash = LogicPOS.Utility.StringUtils.MD5HashFile(fullFileNamePacked);
+                        if (backupResult) systemBackup.FileHash = CryptographyUtils.MD5HashFile(fullFileNamePacked);
                     }
                     //MSSqlServer
                     else
@@ -553,7 +554,7 @@ namespace logicpos.Classes.DataLayer
                             resultFileInfo.FileName = string.Format(@"{0}{1}", _pathBackups, systemBackup.FileName);
                             resultFileInfo.FileNamePacked = string.Format(@"{0}{1}", _pathBackups, systemBackup.FileNamePacked);
                             resultFileInfo.FileHashDB = systemBackup.FileHash;
-                            resultFileInfo.FileHashFile = LogicPOS.Utility.StringUtils.MD5HashFile(resultFileInfo.FileNamePacked);
+                            resultFileInfo.FileHashFile = CryptographyUtils.MD5HashFile(resultFileInfo.FileNamePacked);
                         }
                     }
                 }
