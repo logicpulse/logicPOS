@@ -46,24 +46,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Generic\AsciiControlChars.cs" />
-    <Compile Include="Generic\BitmapData.cs" />
-    <Compile Include="Generic\PrintObject.cs" />
-    <Compile Include="Generic\ThermalPrinter.cs" />
-    <Compile Include="Printers\Thermal\Enums\TicketColumnsAlign.cs" />
-    <Compile Include="Printers\Thermal\Enums\WriteLineTextMode.cs" />
-    <Compile Include="Printers\Thermal\ThermalPrinterGeneric.cs" />
-    <Compile Include="Printers\Thermal\TicketColumn.cs" />
-    <Compile Include="Printers\Thermal\Tickets\ChildBaseTemplate\ThermalPrinterInternalDocumentTemplate.cs" />
-    <Compile Include="Printers\Thermal\Tickets\ThermalPrinterBaseFinanceTemplate.cs" />
-    <Compile Include="Printers\Thermal\Tickets\ThermalPrinterBaseInternalTemplate.cs" />
-    <Compile Include="Printers\Thermal\Tickets\ThermalPrinterBaseTemplate.cs" />
-    <Compile Include="Printers\Thermal\Tickets\ThermalPrinterFinanceDocumentMaster.cs" />
-    <Compile Include="Printers\Thermal\Tickets\ThermalPrinterFinanceDocumentPayment.cs" />
-    <Compile Include="Printers\Thermal\Tickets\ThermalPrinterInternalDocumentCashDrawer.cs" />
-    <Compile Include="Printers\Thermal\Tickets\ThermalPrinterInternalDocumentOrderRequest.cs" />
-    <Compile Include="Printers\Thermal\Tickets\ThermalPrinterInternalDocumentWorkSession.cs" />
-    <Compile Include="Printers\Thermal\TicketTable.cs">
+    <Compile Include="Common\AsciiControlChars.cs" />
+    <Compile Include="Common\BitmapData.cs" />
+    <Compile Include="Common\PrintObject.cs" />
+    <Compile Include="Common\ThermalPrinter.cs" />
+    <Compile Include="Ticket\TicketColumnsAlignment.cs" />
+    <Compile Include="Enums\WriteLineTextMode.cs" />
+    <Compile Include="Common\GenericThermalPrinter.cs" />
+    <Compile Include="Ticket\TicketColumn.cs" />
+    <Compile Include="Templates\ThermalPrinterInternalDocumentTemplate.cs" />
+    <Compile Include="Templates\ThermalPrinterBaseFinanceTemplate.cs" />
+    <Compile Include="Templates\ThermalPrinterBaseInternalTemplate.cs" />
+    <Compile Include="Templates\ThermalPrinterBaseTemplate.cs" />
+    <Compile Include="Documents\ThermalPrinterFinanceDocumentMaster.cs" />
+    <Compile Include="Documents\ThermalPrinterFinanceDocumentPayment.cs" />
+    <Compile Include="Documents\ThermalPrinterInternalDocumentCashDrawer.cs" />
+    <Compile Include="Documents\ThermalPrinterInternalDocumentOrderRequest.cs" />
+    <Compile Include="Documents\ThermalPrinterInternalDocumentWorkSession.cs" />
+    <Compile Include="Ticket\TicketTable.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Socket\Print.cs" />
@@ -124,8 +124,6 @@
       <Version>0.7.0</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Common\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

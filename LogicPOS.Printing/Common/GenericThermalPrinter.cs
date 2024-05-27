@@ -7,7 +7,7 @@ using System;
 
 namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
 {
-    public class ThermalPrinterGeneric : ThermalPrinter
+    public class GenericThermalPrinter : ThermalPrinter
     {
         //Log4Net
         private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -29,12 +29,12 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
 
         public int MaxCharsPerLineSmall { get; set; }
 
-        public ThermalPrinterGeneric(sys_configurationprinters pPrinter)
+        public GenericThermalPrinter(sys_configurationprinters pPrinter)
             : this(pPrinter, PrintingSettings.PrinterThermalEncoding)
         {
         }
 
-        public ThermalPrinterGeneric(sys_configurationprinters pPrinter, string pEncoding)
+        public GenericThermalPrinter(sys_configurationprinters pPrinter, string pEncoding)
             // Old HardCoded Method Settings
             //TK016249 - Impressoras - Diferenciação entre Tipos
             //: this(pPrinter, pEncoding, SettingsApp.PrinterThermalMaxCharsPerLineNormal, SettingsApp.PrinterThermalMaxCharsPerLineNormalBold, SettingsApp.PrinterThermalMaxCharsPerLineSmall)
@@ -46,7 +46,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
         {
         }
 
-        public ThermalPrinterGeneric(sys_configurationprinters pPrinter, string pEncoding, int pMaxCharsPerLineNormal, int pMaxCharsPerLineNormalBold, int pMaxCharsPerLineSmall)
+        public GenericThermalPrinter(sys_configurationprinters pPrinter, string pEncoding, int pMaxCharsPerLineNormal, int pMaxCharsPerLineNormalBold, int pMaxCharsPerLineSmall)
             : base(pEncoding)
         {
             //Parameters

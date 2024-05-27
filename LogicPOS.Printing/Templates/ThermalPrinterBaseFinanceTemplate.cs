@@ -223,8 +223,8 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             //Configure Ticket Column Properties
             List<TicketColumn> columns = new List<TicketColumn>
             {
-                new TicketColumn("Label", "", _thermalPrinterGeneric.MaxCharsPerLineNormal / 2, TicketColumnsAlign.Right),
-                new TicketColumn("Value", "", _thermalPrinterGeneric.MaxCharsPerLineNormal / 2, TicketColumnsAlign.Left)
+                new TicketColumn("Label", "", _thermalPrinterGeneric.MaxCharsPerLineNormal / 2, TicketColumnsAlignment.Right),
+                new TicketColumn("Value", "", _thermalPrinterGeneric.MaxCharsPerLineNormal / 2, TicketColumnsAlignment.Left)
             };
 
             //TicketTable(DataTable pDataTable, List<TicketColumn> pColumnsProperties, int pTableWidth)

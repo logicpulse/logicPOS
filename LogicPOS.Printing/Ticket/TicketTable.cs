@@ -264,10 +264,10 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
                     //Padding after Substr
                     switch (ticketColumn.Align)
                     {
-                        case TicketColumnsAlign.Left:
+                        case TicketColumnsAlignment.Left:
                             formatedColumn = formatedColumn.PadRight(ticketColumn.Width);
                             break;
-                        case TicketColumnsAlign.Right:
+                        case TicketColumnsAlignment.Right:
                             formatedColumn = formatedColumn.PadLeft(ticketColumn.Width);
                             break;
                     }
@@ -276,7 +276,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
                     if (debug) _logger.Debug(string.Format(
                         "FormatedColumn[{0}]: [{1}], Width: [{2}], Align: [{3}], Format: [{4}]",
                         i, formatedColumn, ticketColumn.Width,
-                        Enum.GetName(typeof(TicketColumnsAlign), ticketColumn.Align),
+                        Enum.GetName(typeof(TicketColumnsAlignment), ticketColumn.Align),
                         (ticketColumn.Format != string.Empty) ? ticketColumn.Format : "NOFORMAT")
                     );
                 }
@@ -314,32 +314,32 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
             return result;
         }
 
-        public void Print(ThermalPrinterGeneric pThermalPrinterGeneric)
+        public void Print(GenericThermalPrinter pThermalPrinterGeneric)
         {
             Print (pThermalPrinterGeneric, WriteLineTextMode.Normal);
         }
 
-        public void Print(ThermalPrinterGeneric pThermalPrinterGeneric, WriteLineTextMode pTextMode)
+        public void Print(GenericThermalPrinter pThermalPrinterGeneric, WriteLineTextMode pTextMode)
         {
             Print(pThermalPrinterGeneric, pTextMode, false, string.Empty);
         }
 
-        public void Print(ThermalPrinterGeneric pThermalPrinterGeneric, bool pIgnoreFirstRow)
+        public void Print(GenericThermalPrinter pThermalPrinterGeneric, bool pIgnoreFirstRow)
         {
             Print(pThermalPrinterGeneric, WriteLineTextMode.Normal, pIgnoreFirstRow, string.Empty);
         }
 
-        public void Print(ThermalPrinterGeneric pThermalPrinterGeneric, string pLineFormat)
+        public void Print(GenericThermalPrinter pThermalPrinterGeneric, string pLineFormat)
         {
             Print(pThermalPrinterGeneric, WriteLineTextMode.Normal, false, pLineFormat);
         }
 
-        public void Print(ThermalPrinterGeneric pThermalPrinterGeneric, WriteLineTextMode pTextMode, bool pIgnoreFirstRow)
+        public void Print(GenericThermalPrinter pThermalPrinterGeneric, WriteLineTextMode pTextMode, bool pIgnoreFirstRow)
         {
             Print(pThermalPrinterGeneric, pTextMode, pIgnoreFirstRow, string.Empty);
         }
 
-        public void Print(ThermalPrinterGeneric pThermalPrinterGeneric, WriteLineTextMode pTextMode, bool pIgnoreFirstRow, string pLineFormat)
+        public void Print(GenericThermalPrinter pThermalPrinterGeneric, WriteLineTextMode pTextMode, bool pIgnoreFirstRow, string pLineFormat)
         {
             bool debug = false;
 

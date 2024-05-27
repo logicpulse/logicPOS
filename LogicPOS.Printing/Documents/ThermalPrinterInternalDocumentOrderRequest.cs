@@ -77,9 +77,9 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
         {
             List<TicketColumn> columns = new List<TicketColumn>
             {
-                new TicketColumn("Designation", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_designation"), 0, TicketColumnsAlign.Left),
-                new TicketColumn("Quantity", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_quantity_acronym"), 8, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"),
-                new TicketColumn("UnitMeasure", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_unit_measure_acronym"), 3, TicketColumnsAlign.Right)
+                new TicketColumn("Designation", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_designation"), 0, TicketColumnsAlignment.Left),
+                new TicketColumn("Quantity", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_quantity_acronym"), 8, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"),
+                new TicketColumn("UnitMeasure", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_unit_measure_acronym"), 3, TicketColumnsAlignment.Right)
             };
 
             //Prepare Table with Padding

@@ -165,26 +165,26 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 //Colum
                 if (CultureSettings.CountryIdIsPortugal(XPOSettings.ConfigurationSystemCountry.Oid))
                 {
-                    columns.Add(new TicketColumn("VatRate", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "IVA") + "%", 6, TicketColumnsAlign.Right, typeof(decimal), "{0:00.00}"));
+                    columns.Add(new TicketColumn("VatRate", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "IVA") + "%", 6, TicketColumnsAlignment.Right, typeof(decimal), "{0:00.00}"));
                 }
                 else
                 {
-                    columns.Add(new TicketColumn("VatRate", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_vat_rate") + "%", 6, TicketColumnsAlign.Right, typeof(decimal), "{0:00.00}"));
+                    columns.Add(new TicketColumn("VatRate", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_vat_rate") + "%", 6, TicketColumnsAlignment.Right, typeof(decimal), "{0:00.00}"));
                 }
-                columns.Add(new TicketColumn("Quantity", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_quantity_acronym"), 8, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));
-                columns.Add(new TicketColumn("UnitMeasure", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_unit_measure_acronym"), 3, TicketColumnsAlign.Right));
+                columns.Add(new TicketColumn("Quantity", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_quantity_acronym"), 8, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"));
+                columns.Add(new TicketColumn("UnitMeasure", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_unit_measure_acronym"), 3, TicketColumnsAlignment.Right));
                 if (CultureSettings.CountryIdIsPortugal(XPOSettings.ConfigurationSystemCountry.Oid))
                 {
-                    columns.Add(new TicketColumn("UnitPrice", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_short_price"), 11, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));
+                    columns.Add(new TicketColumn("UnitPrice", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_short_price"), 11, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"));
                 }
                 else
                 {
-                    columns.Add(new TicketColumn("Price", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_price"), 11, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));
+                    columns.Add(new TicketColumn("Price", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_price"), 11, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"));
                 }
 
-                columns.Add(new TicketColumn("Discount", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_discount_acronym") + "%", 6, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));
+                columns.Add(new TicketColumn("Discount", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_discount_acronym") + "%", 6, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"));
                 //columns.Add(new TicketColumn("TotalNet", CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_totalnet_acronym, 9, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));
-                columns.Add(new TicketColumn("TotalFinal", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_total_per_item"), 0, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));//Dynamic
+                columns.Add(new TicketColumn("TotalFinal", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_total_per_item"), 0, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"));//Dynamic
                 /* IN009211 - end */
 
                 //Prepare Table with Padding
@@ -365,8 +365,8 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 //Configure Ticket Column Properties
                 List<TicketColumn> columns = new List<TicketColumn>
                 {
-                    new TicketColumn("Label", "", Convert.ToInt16(_maxCharsPerLineNormal / 2) - 2, TicketColumnsAlign.Left),
-                    new TicketColumn("Value", "", Convert.ToInt16(_maxCharsPerLineNormal / 2) - 2, TicketColumnsAlign.Right)
+                    new TicketColumn("Label", "", Convert.ToInt16(_maxCharsPerLineNormal / 2) - 2, TicketColumnsAlignment.Left),
+                    new TicketColumn("Value", "", Convert.ToInt16(_maxCharsPerLineNormal / 2) - 2, TicketColumnsAlignment.Right)
                 };
 
                 //TicketTable(DataTable pDataTable, List<TicketColumn> pColumnsProperties, int pTableWidth)
@@ -423,10 +423,10 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 //Configure Ticket Column Properties
                 List<TicketColumn> columns = new List<TicketColumn>
                 {
-                    new TicketColumn("Designation", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_designation"), 0, TicketColumnsAlign.Left),
-                    new TicketColumn("Tax", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_tax"), 8, TicketColumnsAlign.Right),
-                    new TicketColumn("TotalBase", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_total_tax_base"), 12, TicketColumnsAlign.Right),
-                    new TicketColumn("Total", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_documentfinance_totaltax_acronym"), 10, TicketColumnsAlign.Right)
+                    new TicketColumn("Designation", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_designation"), 0, TicketColumnsAlignment.Left),
+                    new TicketColumn("Tax", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_tax"), 8, TicketColumnsAlignment.Right),
+                    new TicketColumn("TotalBase", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_total_tax_base"), 12, TicketColumnsAlignment.Right),
+                    new TicketColumn("Total", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_documentfinance_totaltax_acronym"), 10, TicketColumnsAlignment.Right)
                 };
 
                 //TicketTable(DataTable pDataTable, List<TicketColumn> pColumnsProperties, int pTableWidth)

@@ -85,11 +85,11 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             {
                 List<TicketColumn> columns = new List<TicketColumn>
                 {
-                    new TicketColumn("DocumentDate", CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_date"), 11, TicketColumnsAlign.Left),
-                    new TicketColumn("DocumentNumber", CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_document_number_acronym"), 0, TicketColumnsAlign.Left),
-                    new TicketColumn("DocumentTotal", CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_document_total"), 10, TicketColumnsAlign.Right, typeof(decimal), "{0:00.00}"),
-                    new TicketColumn("TotalPayed", CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_total_payed_acronym"), 10, TicketColumnsAlign.Right, typeof(decimal), "{0:00.00}"),
-                    new TicketColumn("Payed", "L", 1, TicketColumnsAlign.Right, typeof(bool))
+                    new TicketColumn("DocumentDate", CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_date"), 11, TicketColumnsAlignment.Left),
+                    new TicketColumn("DocumentNumber", CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_document_number_acronym"), 0, TicketColumnsAlignment.Left),
+                    new TicketColumn("DocumentTotal", CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_document_total"), 10, TicketColumnsAlignment.Right, typeof(decimal), "{0:00.00}"),
+                    new TicketColumn("TotalPayed", CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_total_payed_acronym"), 10, TicketColumnsAlignment.Right, typeof(decimal), "{0:00.00}"),
+                    new TicketColumn("Payed", "L", 1, TicketColumnsAlignment.Right, typeof(bool))
                 };
                 //Prepare Table with Padding
                 DataTable dataTable = TicketTable.InitDataTableFromTicketColumns(columns);
@@ -170,8 +170,8 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 //Configure Ticket Column Properties
                 List<TicketColumn> columns = new List<TicketColumn>
                 {
-                    new TicketColumn("Label", "", Convert.ToInt16(_maxCharsPerLineNormal / 2) - 2, TicketColumnsAlign.Left),
-                    new TicketColumn("Value", "", Convert.ToInt16(_maxCharsPerLineNormal / 2) - 2, TicketColumnsAlign.Right)
+                    new TicketColumn("Label", "", Convert.ToInt16(_maxCharsPerLineNormal / 2) - 2, TicketColumnsAlignment.Left),
+                    new TicketColumn("Value", "", Convert.ToInt16(_maxCharsPerLineNormal / 2) - 2, TicketColumnsAlignment.Right)
                 };
 
                 //TicketTable(DataTable pDataTable, List<TicketColumn> pColumnsProperties, int pTableWidth)

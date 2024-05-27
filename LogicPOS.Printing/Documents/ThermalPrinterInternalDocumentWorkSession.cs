@@ -208,8 +208,8 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                     //Configure Ticket Column Properties
                     List<TicketColumn> columns = new List<TicketColumn>
                     {
-                        new TicketColumn("Label", "", Convert.ToInt16(_maxCharsPerLineNormal / 2) - 2, TicketColumnsAlign.Right),
-                        new TicketColumn("Value", "", Convert.ToInt16(_maxCharsPerLineNormal / 2) - 2, TicketColumnsAlign.Left)
+                        new TicketColumn("Label", "", Convert.ToInt16(_maxCharsPerLineNormal / 2) - 2, TicketColumnsAlignment.Right),
+                        new TicketColumn("Value", "", Convert.ToInt16(_maxCharsPerLineNormal / 2) - 2, TicketColumnsAlignment.Left)
                     };
                     TicketTable ticketTable = new TicketTable(dataTable, columns, _thermalPrinterGeneric.MaxCharsPerLineNormalBold);
                     //Print Ticket Table
@@ -274,10 +274,10 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                             //Generate Columns
                             columns = new List<TicketColumn>
                             {
-                                new TicketColumn("GroupTitle", item.Value.Title, 0, TicketColumnsAlign.Left),
-                                new TicketColumn("Quantity", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_quantity_acronym"), 8, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"),
+                                new TicketColumn("GroupTitle", item.Value.Title, 0, TicketColumnsAlignment.Left),
+                                new TicketColumn("Quantity", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_quantity_acronym"), 8, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"),
                                 //columns.Add(new TicketColumn("UnitMeasure", string.Empty, 3));
-                                new TicketColumn("Total", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_totalfinal_acronym"), 10, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}")
+                                new TicketColumn("Total", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_totalfinal_acronym"), 10, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}")
                             };
 
                             //Init DataTable

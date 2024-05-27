@@ -16,7 +16,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
         protected static log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Protected Members
-        protected ThermalPrinterGeneric _thermalPrinterGeneric;
+        protected GenericThermalPrinter _thermalPrinterGeneric;
         protected Dictionary<string, string> _customVars;
         //Protected Dictionary<string, string> _systemVars;
         protected int _maxCharsPerLineNormal = 0;
@@ -47,7 +47,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             try
             {
                 //Init Properties
-                _thermalPrinterGeneric = new ThermalPrinterGeneric(pPrinter);
+                _thermalPrinterGeneric = new GenericThermalPrinter(pPrinter);
                 _maxCharsPerLineNormal = _thermalPrinterGeneric.MaxCharsPerLineNormal;
                 _maxCharsPerLineNormalBold = _thermalPrinterGeneric.MaxCharsPerLineNormalBold;
                 _maxCharsPerLineSmall = _thermalPrinterGeneric.MaxCharsPerLineSmall;

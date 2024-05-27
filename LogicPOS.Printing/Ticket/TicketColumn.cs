@@ -14,8 +14,8 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
         }
 
         public int Width { get; set; }
-        private TicketColumnsAlign _align;
-        public TicketColumnsAlign Align
+        private TicketColumnsAlignment _align;
+        public TicketColumnsAlignment Align
         {
             get { return _align; }
             set { _align = value; }
@@ -30,21 +30,21 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
         }
 
         public TicketColumn(string pName, string pText, int pWidth)
-            : this(pName, pText, pWidth, TicketColumnsAlign.Left, typeof(string), "")
+            : this(pName, pText, pWidth, TicketColumnsAlignment.Left, typeof(string), "")
         {
         }
 
-        public TicketColumn(string pName, string pText, int pWidth, TicketColumnsAlign pAlign)
+        public TicketColumn(string pName, string pText, int pWidth, TicketColumnsAlignment pAlign)
             : this(pName, pText, pWidth, pAlign, typeof(string), string.Empty)
         {
         }
 
-        public TicketColumn(string pName, string pText, int pWidth, TicketColumnsAlign pAlign, Type pDateType)
+        public TicketColumn(string pName, string pText, int pWidth, TicketColumnsAlignment pAlign, Type pDateType)
             : this(pName, pText, pWidth, pAlign, typeof(string), "")
         {
         }
 
-        public TicketColumn(string pName, string pText, int pWidth, TicketColumnsAlign pAlign, Type pDateType, string pFormat)
+        public TicketColumn(string pName, string pText, int pWidth, TicketColumnsAlignment pAlign, Type pDateType, string pFormat)
         {
             Name = pName;
             _title = pText;
