@@ -753,7 +753,8 @@ namespace logicpos
             {
                 if (SharedPrintTicket(pSourceWindow, pPrinter, TicketType.TableOrder))
                 {
-                    ThermalPrinterInternalDocumentOrderRequest thermalPrinterInternalDocumentOrderRequest = new ThermalPrinterInternalDocumentOrderRequest(pPrinter, pOrderTicket);
+                    var printer=MappingUtils.GetPrinterDto(pPrinter);
+                    ThermalPrinterInternalDocumentOrderRequest thermalPrinterInternalDocumentOrderRequest = new ThermalPrinterInternalDocumentOrderRequest(printer, pOrderTicket);
                     thermalPrinterInternalDocumentOrderRequest.Print();
                 }
             }
@@ -802,12 +803,14 @@ namespace logicpos
                 if (SharedPrintTicket(pSourceWindow, pPrinter, TicketType.WorkSession))
                 {
                     //PrintWorkSessionMovement
-                    result = PrintingUtils.PrintWorkSessionMovement(pPrinter, pWorkSessionPeriod);
+                    var printer = MappingUtils.GetPrinterDto(pPrinter);
+                    result = PrintingUtils.PrintWorkSessionMovement(printer, pWorkSessionPeriod);
                 }
             }
             catch (Exception ex)
             {
-                Utils.ShowMessageTouchErrorPrintingTicket(pSourceWindow, pPrinter, ex);
+                var printer=MappingUtils.GetPrinterDto(pPrinter);
+                Utils.ShowMessageTouchErrorPrintingTicket(pSourceWindow, printer, ex);
             }
 
             return result;
@@ -817,7 +820,7 @@ namespace logicpos
         //PrintCashDrawerOpenAndMoneyInOut
 
         public static bool PrintCashDrawerOpenAndMoneyInOut(Window pSourceWindow, sys_configurationprinters pPrinter, string pTicketTitle, decimal pMovementAmount, decimal pTotalAmountInCashDrawer, string pMovementDescription)
-        {
+        {   var printer = MappingUtils.GetPrinterDto(pPrinter);
             bool result = false;
             sys_configurationprinterstemplates template = (sys_configurationprinterstemplates)XPOHelper.GetXPGuidObject(typeof(sys_configurationprinterstemplates), PrintingSettings.CashDrawerMoneyMovementPrintingTemplateId);
 
@@ -825,12 +828,13 @@ namespace logicpos
             {
                 if (SharedPrintTicket(pSourceWindow, pPrinter, TicketType.CashDrawer))
                 {
-                    result = PrintingUtils.PrintCashDrawerOpenAndMoneyInOut(pPrinter, pTicketTitle, pMovementAmount, pTotalAmountInCashDrawer, pMovementDescription);
+                   
+                    result = PrintingUtils.PrintCashDrawerOpenAndMoneyInOut(printer, pTicketTitle, pMovementAmount, pTotalAmountInCashDrawer, pMovementDescription);
                 }
             }
             catch (Exception ex)
             {
-                Utils.ShowMessageTouchErrorPrintingTicket(pSourceWindow, pPrinter, ex);
+                Utils.ShowMessageTouchErrorPrintingTicket(pSourceWindow, printer, ex);
             }
 
             return result;
