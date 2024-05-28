@@ -3,6 +3,7 @@ using logicpos.App;
 using logicpos.Classes.Enums.App;
 using logicpos.Classes.Logic.License;
 using logicpos.datalayer.Xpo;
+using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Globalization;
 using LogicPOS.Modules;
 using LogicPOS.Modules.StockManagement;

@@ -15,6 +15,7 @@ using LogicPOS.Globalization;
 using logicpos.datalayer.Xpo;
 using LogicPOS.Settings;
 using LogicPOS.Shared.CustomDocument;
+using LogicPOS.Data.XPO.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {

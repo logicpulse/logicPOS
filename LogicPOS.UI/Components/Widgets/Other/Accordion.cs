@@ -3,6 +3,7 @@ using logicpos.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
+using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Settings;
 using System;
 using System.Collections.Generic;

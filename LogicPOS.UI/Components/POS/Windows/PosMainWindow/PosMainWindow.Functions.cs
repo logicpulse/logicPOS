@@ -9,6 +9,7 @@ using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
+using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Finance.WorkSession;
 using LogicPOS.Globalization;
 using LogicPOS.Printing.Utility;
@@ -112,10 +113,10 @@ namespace logicpos
             //Test Printer
             //ConfigurationPrintersTemplates configurationPrintersTemplates = (ConfigurationPrintersTemplates)XPOHelper.GetXPGuidObjectFromSession(typeof(ConfigurationPrintersTemplates), new Guid("5409255A-3741-411C-B05B-056CBD470226"));
             //DocumentFinancePayment documentFinancePayment = (DocumentFinancePayment)XPOHelper.GetXPGuidObjectFromSession(typeof(DocumentFinancePayment), new Guid("88F082CE-DA52-48B5-A31D-32BFA87F119D"));
-            //FrameworkCalls.PrintFinanceDocumentPayment(this, XPOSettings.LoggedTerminal.Printer, configurationPrintersTemplates, documentFinancePayment);
+            //FrameworkCalls.PrintFinanceDocumentPayment(this, TerminalSettings.LoggedTerminal.Printer, configurationPrintersTemplates, documentFinancePayment);
 
             //Test WorkSession
-            //PrintTicket.PrintWorkSessionMovement(XPOSettings.LoggedTerminal.Printer, GlobalFramework.WorkSessionPeriodTerminal);
+            //PrintTicket.PrintWorkSessionMovement(TerminalSettings.LoggedTerminal.Printer, GlobalFramework.WorkSessionPeriodTerminal);
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -199,7 +200,7 @@ namespace logicpos
                         GeneralSettings.LoggedUserPermissions = XPOHelper.GetUserPermissions();
                         TicketList.UpdateTicketListButtons();
                         XPOHelper.Audit("USER_CHANGE", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_user_change"), XPOSettings.LoggedUser.Name));
-                        terminalInfo = string.Format("{0} : {1}", XPOSettings.LoggedTerminal.Designation, XPOSettings.LoggedUser.Name);
+                        terminalInfo = string.Format("{0} : {1}", TerminalSettings.LoggedTerminal.Designation, XPOSettings.LoggedUser.Name);
                         if (LabelTerminalInfo.Text != terminalInfo) LabelTerminalInfo.Text = terminalInfo;
                     }
                     //Not Logged, Request Pin Login
@@ -217,7 +218,7 @@ namespace logicpos
                                 GeneralSettings.LoggedUserPermissions = XPOHelper.GetUserPermissions();
                                 TicketList.UpdateTicketListButtons();
                                 XPOHelper.Audit("USER_loggerIN", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_user_loggerin"), XPOSettings.LoggedUser.Name));
-                                terminalInfo = string.Format("{0} : {1}", XPOSettings.LoggedTerminal.Designation, XPOSettings.LoggedUser.Name);
+                                terminalInfo = string.Format("{0} : {1}", TerminalSettings.LoggedTerminal.Designation, XPOSettings.LoggedUser.Name);
                                 if (LabelTerminalInfo.Text != terminalInfo) LabelTerminalInfo.Text = terminalInfo;
                                 //After First time Login ShowNotifications
                                 Utils.ShowNotifications(dialogPinPad);
@@ -338,13 +339,13 @@ namespace logicpos
 
         private void eventBoxImageLogo_ButtonPressEvent(object o, ButtonPressEventArgs args)
         {
-            if (XPOSettings.LoggedTerminal.ThermalPrinter != null)
+            if (TerminalSettings.HasLoggedTerminal)
             {
                 PosPinPadDialog dialogPinPad = new PosPinPadDialog(this, DialogFlags.Modal, XPOSettings.LoggedUser, true);
                 int responsePinPad = dialogPinPad.Run();
                 if (responsePinPad == (int)ResponseType.Ok)
                 {
-                    var resultOpenDoor = PrintingUtils.OpenDoor(XPOSettings.LoggedTerminal.Printer);
+                    var resultOpenDoor = PrintingUtils.OpenDoor(TerminalSettings.LoggedTerminal.Printer);
                     if (!resultOpenDoor)
                     {
                         Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_information"), string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "open_cash_draw_permissions")));
@@ -354,7 +355,7 @@ namespace logicpos
                         //Audit
                         XPOHelper.Audit("CASHDRAWER_OUT", string.Format(
                              CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_cashdrawer_out"),
-                             XPOSettings.LoggedTerminal.Designation,
+                             TerminalSettings.LoggedTerminal.Designation,
                              "Button Open Door"));
                     }
 
@@ -410,7 +411,7 @@ namespace logicpos
         //Update UI, Required to Reflect BO or Outside Changes, Like Database Changes
         public void UpdateUI()
         {
-            LabelTerminalInfo.Text = string.Format("{0} : {1}", XPOSettings.LoggedTerminal.Designation, XPOSettings.LoggedUser.Name);
+            LabelTerminalInfo.Text = string.Format("{0} : {1}", TerminalSettings.LoggedTerminal.Designation, XPOSettings.LoggedUser.Name);
             TablePadFamily.UpdateSql();
             TablePadSubFamily.UpdateSql();
             TablePadArticle.UpdateSql();

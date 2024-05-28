@@ -21,6 +21,7 @@ using Alignment = Gtk.Alignment;
 using Color = System.Drawing.Color;
 using LogicPOS.Globalization;
 using LogicPOS.Shared.CustomDocument;
+using LogicPOS.Data.XPO.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {

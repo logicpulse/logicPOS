@@ -8,6 +8,7 @@ using logicpos.Classes.Logic.Others;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
+using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Settings;
 using LogicPOS.UI;
 using System;

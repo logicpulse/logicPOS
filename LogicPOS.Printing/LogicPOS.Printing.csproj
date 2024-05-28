@@ -46,7 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Common\AsciiControlChars.cs" />
+    <Compile Include="Common\PrintingControlSignals.cs" />
     <Compile Include="Common\BitmapData.cs" />
     <Compile Include="Common\PrintObject.cs" />
     <Compile Include="Common\ThermalPrinter.cs" />

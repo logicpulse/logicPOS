@@ -2,6 +2,7 @@
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using logicpos.shared.Enums;
+using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Finance.Utility;
 using LogicPOS.Settings;
 using LogicPOS.Shared;
@@ -325,7 +326,7 @@ namespace LogicPOS.Finance.DocumentProcessing
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-                if (XPOSettings.LoggedTerminal == null)
+                if (TerminalSettings.LoggedTerminal == null)
                 {
                     ResultAdd(DocumentValidationErrorType.ERROR_RULE_loggerGED_TERMINAL_INVALID);
                 }
@@ -334,7 +335,7 @@ namespace LogicPOS.Finance.DocumentProcessing
                 //Required a Valid LoggedTerminal
 
                 fin_documentfinanceseries documentFinanceSerie = null;
-                if (XPOSettings.LoggedTerminal != null)
+                if (TerminalSettings.LoggedTerminal != null)
                 {
                     documentFinanceSerie = DocumentProcessingSeriesUtils.GetDocumentFinanceYearSerieTerminal(pParameters.DocumentType).Serie;
                 }

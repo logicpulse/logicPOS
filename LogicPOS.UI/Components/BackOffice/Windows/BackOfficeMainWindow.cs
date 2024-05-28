@@ -9,6 +9,7 @@ using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
+using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Finance.WorkSession;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
@@ -66,7 +67,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             if (_activeUserDetail != XPOSettings.LoggedUser)
             {
                 _activeUserDetail = XPOSettings.LoggedUser;
-                _labelTerminalInfo.Text = string.Format("{0} : {1}", XPOSettings.LoggedTerminal.Designation, XPOSettings.LoggedUser.Name);
+                _labelTerminalInfo.Text = string.Format("{0} : {1}", TerminalSettings.LoggedTerminal.Designation, XPOSettings.LoggedUser.Name);
 
                 //Apply Menu Updates
                 Accordion.UpdateMenuPrivileges();

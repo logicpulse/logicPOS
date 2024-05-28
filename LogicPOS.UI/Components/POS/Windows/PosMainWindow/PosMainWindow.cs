@@ -16,6 +16,7 @@ using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.UI;
+using LogicPOS.Data.XPO.Settings;
 
 namespace logicpos
 {
@@ -124,7 +125,7 @@ namespace logicpos
                 this.KeyReleaseEvent += PosMainWindow_KeyReleaseEvent;
 
                 //Hardware Events
-                if (XPOSettings.LoggedTerminal.BarcodeReader != null || XPOSettings.LoggedTerminal.CardReader != null)
+                if (TerminalSettings.LoggedTerminal.BarcodeReader != null || TerminalSettings.LoggedTerminal.CardReader != null)
                 {
                     GlobalApp.BarCodeReader.Captured += HWBarCodeReader_Captured;
                 }
@@ -277,7 +278,7 @@ namespace logicpos
             eventBoxStatusBar1.ModifyBg(StateType.Normal, eventBoxStatusBar1BackgroundColor);
 
             //EventBoxStatusBar1:LabelTerminalInfo
-            LabelTerminalInfo = new Label(string.Format("{0} : {1}", XPOSettings.LoggedTerminal.Designation, XPOSettings.LoggedUser.Name));
+            LabelTerminalInfo = new Label(string.Format("{0} : {1}", TerminalSettings.LoggedTerminal.Designation, XPOSettings.LoggedUser.Name));
             LabelTerminalInfo.ModifyFont(labelTerminalInfoFont);
             LabelTerminalInfo.ModifyFg(StateType.Normal, labelTerminalInfoFontColor);
             LabelTerminalInfo.SetAlignment(labelTerminalInfoAlignmentX, 0.5F);

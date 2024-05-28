@@ -1,6 +1,7 @@
 ﻿using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
+using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Globalization;
 using LogicPOS.Printing.Common;
 using LogicPOS.Printing.Enums;
@@ -30,7 +31,7 @@ namespace LogicPOS.Printing.Templates
         }
 
         public ThermalPrinterBaseFinanceTemplate(sys_configurationprinters pPrinter, fin_documentfinancetype pDocumentType, List<int> pCopyNames, bool pSecondCopy)
-            : base(pPrinter, PrintingSettings.PrinterThermalImageCompanyLogo)
+            : base(pPrinter, PrintingSettings.ThermalPrinter.CompanyLogoLocation)
         {
             //Assign Parameter Properties
             _documentType = pDocumentType;
@@ -92,19 +93,19 @@ namespace LogicPOS.Printing.Templates
         protected void PrintExtendedHeader()
         {
             //Align Center
-            _thermalPrinterGeneric.SetAlignLeft();/* IN009055 */
+            _genericThermalPrinter.SetAlignLeft();/* IN009055 */
 
             //Extended Header
-            _thermalPrinterGeneric.WriteLine(string.Format("{0}", _customVars["COMPANY_ADDRESS"]));
-            _thermalPrinterGeneric.WriteLine(string.Format("{0} {1} - {2}", _customVars["COMPANY_POSTALCODE"], _customVars["COMPANY_CITY"], _customVars["COMPANY_COUNTRY"]));
+            _genericThermalPrinter.WriteLine(string.Format("{0}", _customVars["COMPANY_ADDRESS"]));
+            _genericThermalPrinter.WriteLine(string.Format("{0} {1} - {2}", _customVars["COMPANY_POSTALCODE"], _customVars["COMPANY_CITY"], _customVars["COMPANY_COUNTRY"]));
             /* IN009055 block */
-            _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "prefparam_company_telephone"), _customVars["COMPANY_TELEPHONE"]);
+            _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "prefparam_company_telephone"), _customVars["COMPANY_TELEPHONE"]);
             //_thermalPrinterGeneric.WriteLine(CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_mobile_phone, _customVars["COMPANY_MOBILEPHONE"]);
             //_thermalPrinterGeneric.WriteLine(CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_fax, _customVars["COMPANY_FAX"]);
             //_thermalPrinterGeneric.WriteLine(CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_email"), _customVars["COMPANY_EMAIL"]);
-            _thermalPrinterGeneric.WriteLine(_customVars["COMPANY_WEBSITE"], false); /* IN009211 */
-            _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "prefparam_company_fiscalnumber"), _customVars["COMPANY_FISCALNUMBER"]);
-            _thermalPrinterGeneric.LineFeed();
+            _genericThermalPrinter.WriteLine(_customVars["COMPANY_WEBSITE"], false); /* IN009211 */
+            _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "prefparam_company_fiscalnumber"), _customVars["COMPANY_FISCALNUMBER"]);
+            _genericThermalPrinter.LineFeed();
 
             //Reset to Left
             //_thermalPrinterGeneric.SetAlignLeft(); /* IN009055 */
@@ -117,15 +118,15 @@ namespace LogicPOS.Printing.Templates
             PrintTitles(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, pDocumentTypeResourceString), pDocumentID);
 
             //Set Align Center
-            _thermalPrinterGeneric.SetAlignCenter();
+            _genericThermalPrinter.SetAlignCenter();
 
             //Copy Names + Document Date
-            _thermalPrinterGeneric.WriteLine(_copyName);
-            _thermalPrinterGeneric.WriteLine(pDocumentDateTime);
-            _thermalPrinterGeneric.LineFeed();
+            _genericThermalPrinter.WriteLine(_copyName);
+            _genericThermalPrinter.WriteLine(pDocumentDateTime);
+            _genericThermalPrinter.LineFeed();
 
             //Reset Align 
-            _thermalPrinterGeneric.SetAlignLeft();
+            _genericThermalPrinter.SetAlignLeft();
         }
 
         //Child Shared PrintCustomer
@@ -144,8 +145,8 @@ namespace LogicPOS.Printing.Templates
             }
 
             /* IN009055 block - begin */
-            _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_customer"), name, false);
-            _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_address"), pAddress, false);
+            _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_customer"), name, false);
+            _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_address"), pAddress, false);
 
             string addressDetails = pCountry;
 
@@ -161,10 +162,10 @@ namespace LogicPOS.Printing.Templates
             {
                 addressDetails = string.Format("{0} - {1}", pCity, pCountry);
             }
-            _thermalPrinterGeneric.WriteLine(addressDetails, false); /* When FS, no details */
-            _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_fiscal_number"), fiscalNumber, false); /* Do not print Fiscal Number when empty */
+            _genericThermalPrinter.WriteLine(addressDetails, false); /* When FS, no details */
+            _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_fiscal_number"), fiscalNumber, false); /* Do not print Fiscal Number when empty */
             /* IN009055  block - end */
-            _thermalPrinterGeneric.LineFeed();
+            _genericThermalPrinter.LineFeed();
         }
 
         public void PrintFooterExtended()
@@ -172,16 +173,16 @@ namespace LogicPOS.Printing.Templates
             if (_customVars["TICKET_FOOTER_LINE1"] != string.Empty || _customVars["TICKET_FOOTER_LINE1"] != string.Empty)
             {
                 //Align Center
-                _thermalPrinterGeneric.SetAlignCenter();
+                _genericThermalPrinter.SetAlignCenter();
 
-                if (_customVars["TICKET_FOOTER_LINE1"] != string.Empty) _thermalPrinterGeneric.WriteLine(_customVars["TICKET_FOOTER_LINE1"]);
-                if (_customVars["TICKET_FOOTER_LINE2"] != string.Empty) _thermalPrinterGeneric.WriteLine(_customVars["TICKET_FOOTER_LINE2"]);
+                if (_customVars["TICKET_FOOTER_LINE1"] != string.Empty) _genericThermalPrinter.WriteLine(_customVars["TICKET_FOOTER_LINE1"]);
+                if (_customVars["TICKET_FOOTER_LINE2"] != string.Empty) _genericThermalPrinter.WriteLine(_customVars["TICKET_FOOTER_LINE2"]);
 
                 //Line Feed
-                _thermalPrinterGeneric.LineFeed();
+                _genericThermalPrinter.LineFeed();
 
                 //Reset to Left
-                _thermalPrinterGeneric.SetAlignLeft();
+                _genericThermalPrinter.SetAlignLeft();
             }
         }
 
@@ -224,42 +225,42 @@ namespace LogicPOS.Printing.Templates
             //Configure Ticket Column Properties
             List<TicketColumn> columns = new List<TicketColumn>
             {
-                new TicketColumn("Label", "", _thermalPrinterGeneric.MaxCharsPerLineNormal / 2, TicketColumnsAlignment.Right),
-                new TicketColumn("Value", "", _thermalPrinterGeneric.MaxCharsPerLineNormal / 2, TicketColumnsAlignment.Left)
+                new TicketColumn("Label", "", _genericThermalPrinter.MaxCharsPerLineNormal / 2, TicketColumnsAlignment.Right),
+                new TicketColumn("Value", "", _genericThermalPrinter.MaxCharsPerLineNormal / 2, TicketColumnsAlignment.Left)
             };
 
             //TicketTable(DataTable pDataTable, List<TicketColumn> pColumnsProperties, int pTableWidth)
-            TicketTable ticketTable = new TicketTable(dataTable, columns, _thermalPrinterGeneric.MaxCharsPerLineNormal);
+            TicketTable ticketTable = new TicketTable(dataTable, columns, _genericThermalPrinter.MaxCharsPerLineNormal);
 
             //Create Table Buffer, With Bigger TextMode
-            ticketTable.Print(_thermalPrinterGeneric, true);
+            ticketTable.Print(_genericThermalPrinter, true);
 
             //Line Feed
-            _thermalPrinterGeneric.LineFeed();
+            _genericThermalPrinter.LineFeed();
         }
 
         //Used On Child Finance Documents - ResourceStringReport
         protected void PrintDocumentTypeFooterString(string pDocumentTypeMessage)
         {
             //Align Center
-            _thermalPrinterGeneric.SetAlignCenter();
+            _genericThermalPrinter.SetAlignCenter();
 
             //Differ from Payments and Other Document Types
             string message = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, pDocumentTypeMessage);
-            if (pDocumentTypeMessage != string.Empty && message != null) _thermalPrinterGeneric.WriteLine(message);
+            if (pDocumentTypeMessage != string.Empty && message != null) _genericThermalPrinter.WriteLine(message);
 
             //Line Feed
-            _thermalPrinterGeneric.LineFeed();
+            _genericThermalPrinter.LineFeed();
 
             //Reset to Left
-            _thermalPrinterGeneric.SetAlignLeft();
+            _genericThermalPrinter.SetAlignLeft();
         }
         //ATCUD Documentos - Criação do QRCode e ATCUD IN016508
         //Print QRCode
         protected void PrintQRCode(string QRCode)
         {
             //Align Center
-            _thermalPrinterGeneric.SetAlignCenter();
+            _genericThermalPrinter.SetAlignCenter();
 
             //Convert ASCII/Decimal
             string ESC = Convert.ToString((char)27);
@@ -289,10 +290,10 @@ namespace LogicPOS.Printing.Templates
 
             //Send to Printer
 
-            _thermalPrinterGeneric.WriteLine(buffer);
+            _genericThermalPrinter.WriteLine(buffer);
 
             //Line Feed
-            _thermalPrinterGeneric.LineFeed();
+            _genericThermalPrinter.LineFeed();
 
             //Reset to Left
             //_thermalPrinterGeneric.SetAlignLeft();
@@ -306,38 +307,38 @@ namespace LogicPOS.Printing.Templates
 
             //printer.SetBarcodeLeftSpace(10);
 
-            _thermalPrinterGeneric.SelectFontHRIBarcode(0);
-            _thermalPrinterGeneric.SelectPrintingPositionHRIBarcode(2);
+            _genericThermalPrinter.SelectFontHRIBarcode(0);
+            _genericThermalPrinter.SelectPrintingPositionHRIBarcode(2);
 
-            _thermalPrinterGeneric.SetAlignCenter();
+            _genericThermalPrinter.SetAlignCenter();
 
-            _thermalPrinterGeneric.SetBarcodeWidth(4);
-            _thermalPrinterGeneric.PrintBarcode(ThermalPrinter.BarcodeType.qrcode, myData);
-            _thermalPrinterGeneric.SetBarcodeWidth(2);
-            _thermalPrinterGeneric.LineFeed();
-            _thermalPrinterGeneric.LineFeed();
-            _thermalPrinterGeneric.LineFeed();
-            _thermalPrinterGeneric.LineFeed();
+            _genericThermalPrinter.SetBarcodeWidth(4);
+            _genericThermalPrinter.PrintBarcode(ThermalPrinter.BarcodeType.qrcode, myData);
+            _genericThermalPrinter.SetBarcodeWidth(2);
+            _genericThermalPrinter.LineFeed();
+            _genericThermalPrinter.LineFeed();
+            _genericThermalPrinter.LineFeed();
+            _genericThermalPrinter.LineFeed();
             //_thermalPrinterGeneric.Cut(false);
         }
 
         protected void PrintQRCodeImage(System.Drawing.Bitmap bitmap)
         {
             //Align Center
-            _thermalPrinterGeneric.SetAlignCenter();
+            _genericThermalPrinter.SetAlignCenter();
 
             //Convert ASCII/Decimal
             string ESC = Convert.ToString((char)27);
             string GS = Convert.ToString((char)29);
             string center = ESC + "a" + (char)1; //align center
 
-            _thermalPrinterGeneric.PrintImage(@"temp/qrcode.Bmp", true);
+            _genericThermalPrinter.PrintImage(@"temp/qrcode.Bmp", true);
 
             //Line Feed
-            _thermalPrinterGeneric.LineFeed();
+            _genericThermalPrinter.LineFeed();
 
             //Reset to Left
-            _thermalPrinterGeneric.SetAlignLeft();
+            _genericThermalPrinter.SetAlignLeft();
 
         }
 
@@ -350,7 +351,7 @@ namespace LogicPOS.Printing.Templates
         protected void PrintCertificationText(string pHash4Chars)
         {
             //Align Center
-            _thermalPrinterGeneric.SetAlignCenter();
+            _genericThermalPrinter.SetAlignCenter();
 
             /* IN009211 */
             string copyRightText = string.Format(
@@ -413,9 +414,9 @@ namespace LogicPOS.Printing.Templates
                 certificationText = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_report_overlay_software_certification_processed");
             }
 
-            _thermalPrinterGeneric.WriteLine(certificationText, WriteLineTextMode.Small);
+            _genericThermalPrinter.WriteLine(certificationText, WriteLineTextMode.Small);
 
-            _thermalPrinterGeneric.WriteLine(copyRightText, WriteLineTextMode.Small);
+            _genericThermalPrinter.WriteLine(copyRightText, WriteLineTextMode.Small);
 
             /* IN009211 - it was printing empty label */
             if (!string.IsNullOrEmpty(LicenseSettings.LicenseCompany))
@@ -424,13 +425,13 @@ namespace LogicPOS.Printing.Templates
                     CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_licensed_to"),
                     LicenseSettings.LicenseCompany
             );
-                _thermalPrinterGeneric.WriteLine(licenseText, WriteLineTextMode.Small);
+                _genericThermalPrinter.WriteLine(licenseText, WriteLineTextMode.Small);
             }
 
-            _thermalPrinterGeneric.LineFeed();
+            _genericThermalPrinter.LineFeed();
 
             //Reset to Left
-            _thermalPrinterGeneric.SetAlignLeft();
+            _genericThermalPrinter.SetAlignLeft();
         }
 
         //UTILS

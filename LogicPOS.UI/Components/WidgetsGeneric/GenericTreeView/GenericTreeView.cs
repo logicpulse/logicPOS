@@ -8,6 +8,7 @@ using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
+using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Globalization;
 using LogicPOS.Modules.StockManagement;
 using LogicPOS.Settings;
@@ -974,7 +975,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         oid = terminal.Oid;
                         code = terminal.Code.ToString();
                         /* If logged terminal is the same, cannot delete */
-                        if (XPOSettings.LoggedTerminal.Oid == oid)
+                        if (TerminalSettings.LoggedTerminal.Oid == oid)
                         {
                             countResult = 1;
                             code = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_delete_record_show_protected_record")); ;

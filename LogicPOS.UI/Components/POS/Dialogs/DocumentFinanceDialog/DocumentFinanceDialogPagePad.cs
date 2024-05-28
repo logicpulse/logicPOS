@@ -3,6 +3,7 @@ using Gtk;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
+using LogicPOS.Data.XPO.Settings;
 using System;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog

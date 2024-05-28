@@ -12,6 +12,7 @@ using System;
 using System.Configuration;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Utility;
+using LogicPOS.Data.XPO.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {

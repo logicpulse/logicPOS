@@ -12,6 +12,7 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using logicpos.shared.Enums;
+using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Globalization;
 using LogicPOS.Modules;
@@ -681,11 +682,11 @@ WHERE
                 //Assign Choosed Printer based on user ResponseType
                 if (documentFinanceMaster.SourceOrderMain != null)
                 {
-                    _printerChoosed = (args.ResponseId == _responseTypePrint) ? XPOSettings.LoggedTerminal.ThermalPrinter : _printerGeneric;
+                    _printerChoosed = (args.ResponseId == _responseTypePrint) ? TerminalSettings.LoggedTerminal.ThermalPrinter : _printerGeneric;
                 }
                 else
                 {
-                    _printerChoosed = (args.ResponseId == _responseTypePrint) ? XPOSettings.LoggedTerminal.Printer : _printerGeneric;
+                    _printerChoosed = (args.ResponseId == _responseTypePrint) ? TerminalSettings.LoggedTerminal.Printer : _printerGeneric;
                 }
 
                 if (
@@ -695,8 +696,8 @@ WHERE
                 {
                     //Assign Choosed Printer based on user ResponseType
                     //TK016249 - Impressoras - Diferenciação entre Tipos (helio)
-                    if (documentFinanceMaster.SourceOrderMain == null) { _printerChoosed = (args.ResponseId == _responseTypePrint) ? XPOSettings.LoggedTerminal.Printer : _printerGeneric; }
-                    else { _printerChoosed = (args.ResponseId == _responseTypePrint) ? XPOSettings.LoggedTerminal.ThermalPrinter : _printerGeneric; }
+                    if (documentFinanceMaster.SourceOrderMain == null) { _printerChoosed = (args.ResponseId == _responseTypePrint) ? TerminalSettings.LoggedTerminal.Printer : _printerGeneric; }
+                    else { _printerChoosed = (args.ResponseId == _responseTypePrint) ? TerminalSettings.LoggedTerminal.ThermalPrinter : _printerGeneric; }
 
 
                     //Single Record Mode - Default - USED HERE ONLY TO TEST Both Dialogs Modes (Default and CheckBox)
@@ -1929,7 +1930,7 @@ WHERE
                     pos_worksessionperiod workSessionPeriodParent = (pos_worksessionperiod)XPOHelper.GetXPGuidObject(typeof(pos_worksessionperiod), itemGuid);
                     pos_worksessionperiod workSessionPeriodChild;
                     //Print Parent Session : PrintWorkSessionMovement
-                    FrameworkCalls.PrintWorkSessionMovement(this, XPOSettings.LoggedTerminal.ThermalPrinter, workSessionPeriodParent);
+                    FrameworkCalls.PrintWorkSessionMovement(this, TerminalSettings.LoggedTerminal.ThermalPrinter, workSessionPeriodParent);
 
                     //Get Child Sessions
                     string sql = string.Format(@"SELECT Oid FROM pos_worksessionperiod WHERE Parent = '{0}' ORDER BY DateStart;", workSessionPeriodParent.Oid);
@@ -1939,7 +1940,7 @@ WHERE
                         //Print Child Sessions
                         workSessionPeriodChild = (pos_worksessionperiod)XPOHelper.GetXPGuidObject(typeof(pos_worksessionperiod), new Guid(row.Values[xPSelectData.GetFieldIndex("Oid")].ToString()));
                         //PrintWorkSessionMovement
-                        FrameworkCalls.PrintWorkSessionMovement(this, XPOSettings.LoggedTerminal.ThermalPrinter, workSessionPeriodChild);
+                        FrameworkCalls.PrintWorkSessionMovement(this, TerminalSettings.LoggedTerminal.ThermalPrinter, workSessionPeriodChild);
                     }
                 }
             }
@@ -2143,7 +2144,7 @@ WHERE
                     )
                 {
                     //Assign Choosed Printer based on user ResponseType
-                    _printerChoosed = (args.ResponseId == _responseTypePrint && XPOSettings.LoggedTerminal.Printer != null) ? XPOSettings.LoggedTerminal.Printer : XPOSettings.LoggedTerminal.ThermalPrinter;
+                    _printerChoosed = (args.ResponseId == _responseTypePrint && TerminalSettings.LoggedTerminal.Printer != null) ? TerminalSettings.LoggedTerminal.Printer : TerminalSettings.LoggedTerminal.ThermalPrinter;
 
                     //Single Record Mode - Default - USED HERE ONLY TO TEST Both Dialogs Modes (Default and CheckBox)
                     if (dialog.GenericTreeViewMode == GenericTreeViewMode.Default)

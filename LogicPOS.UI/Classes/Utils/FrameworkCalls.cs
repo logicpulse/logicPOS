@@ -6,6 +6,7 @@ using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
+using LogicPOS.Data.XPO.Settings;
 using LogicPOS.DTOs.Common;
 using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Finance.Saft;
@@ -484,18 +485,18 @@ namespace logicpos
             //Deteta janela de origem de forma a escolher qual impressora usar - TicketList -> ThermalPrinter | PosDocumentFinanceDialog -> Printer
             sys_configurationprinters printer;
             sys_configurationprinters printerDoc;
-            if (PrintingSettings.UsingThermalPrinter)
+            if (PrintingSettings.ThermalPrinter.UsingThermalPrinter)
             {
                 //Both printer can be the same, if not Defined in DocumentType
                 //Printer for Drawer and Document, if not defined in DocumentType
-                printer = (pPrinter != null) ? pPrinter : XPOSettings.LoggedTerminal.ThermalPrinter;
+                printer = (pPrinter != null) ? pPrinter : TerminalSettings.LoggedTerminal.ThermalPrinter;
                 printerDoc = (pDocumentFinanceMaster.DocumentType.Printer != null) ? pDocumentFinanceMaster.DocumentType.Printer : printer;
             }
             else
             {
                 //Both printer can be the same, if not Defined in DocumentType
                 //Printer for Drawer and Document, if not defined in DocumentType
-                printer = (pPrinter != null) ? pPrinter : XPOSettings.LoggedTerminal.Printer;
+                printer = (pPrinter != null) ? pPrinter : TerminalSettings.LoggedTerminal.Printer;
                 printerDoc = (pDocumentFinanceMaster.DocumentType.Printer != null) ? pDocumentFinanceMaster.DocumentType.Printer : printer;
             }
 
@@ -570,7 +571,7 @@ namespace logicpos
                         //OpenDoor use Printer Drawer
                         if (openDrawer && pDocumentFinanceMaster.DocumentType.PrintOpenDrawer && !response.SecondCopy)
                         {
-                            var resultOpenDoor = PrintingUtils.OpenDoor(XPOSettings.LoggedTerminal.Printer);
+                            var resultOpenDoor = PrintingUtils.OpenDoor(TerminalSettings.LoggedTerminal.Printer);
                             if (!resultOpenDoor)
                             {
                                 Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_information"), string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "open_cash_draw_permissions")));
@@ -579,7 +580,7 @@ namespace logicpos
                             {
                                 XPOHelper.Audit("CASHDRAWER_OUT", string.Format(
                                  CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_cashdrawer_out"),
-                                 XPOSettings.LoggedTerminal.Designation,
+                                 TerminalSettings.LoggedTerminal.Designation,
                                  "Button Open Door"));
                             }
 
@@ -617,7 +618,7 @@ namespace logicpos
 
             sys_configurationprinters printer = (pPrinter != null)
               ? pPrinter :
-              XPOSettings.LoggedTerminal.Printer;
+              TerminalSettings.LoggedTerminal.Printer;
 
             try
             {
@@ -648,14 +649,14 @@ namespace logicpos
                     //ProtectedFiles Protection
                     if (!validFiles) return false;
                     //Recibos com impressão em impressora térmica
-                    if (XPOSettings.LoggedTerminal.ThermalPrinter != null)
+                    if (TerminalSettings.HasLoggedTerminal)
                     {
                         ResponseType responseType = Utils.ShowMessageTouch(pSourceWindow, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.YesNo, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_edit_DialogConfigurationPrintersType_tab1_label"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_printer_choose_printer"));
 
                         if (responseType == ResponseType.Yes)
                         {
                             //Call Print Document thermal
-                            result = PrintingUtils.PrintFinanceDocumentPayment(XPOSettings.LoggedTerminal.ThermalPrinter, pDocumentFinancePayment);
+                            result = PrintingUtils.PrintFinanceDocumentPayment(TerminalSettings.LoggedTerminal.ThermalPrinter, pDocumentFinancePayment);
                         }
                         else
                         {
@@ -780,7 +781,7 @@ namespace logicpos
         public static bool PrintWorkSessionMovement(Window pSourceWindow, sys_configurationprinters pPrinter, pos_worksessionperiod pWorkSessionPeriod)
         {
             bool result = false;
-            sys_configurationprinterstemplates template = (sys_configurationprinterstemplates)XPOHelper.GetXPGuidObject(typeof(sys_configurationprinterstemplates), PrintingSettings.XpoOidConfigurationPrintersTemplateWorkSessionMovement);
+            sys_configurationprinterstemplates template = (sys_configurationprinterstemplates)XPOHelper.GetXPGuidObject(typeof(sys_configurationprinterstemplates), PrintingSettings.WorkSessionMovementPrintingTemplateId);
 
             try
             {
@@ -804,7 +805,7 @@ namespace logicpos
         public static bool PrintCashDrawerOpenAndMoneyInOut(Window pSourceWindow, sys_configurationprinters pPrinter, string pTicketTitle, decimal pMovementAmount, decimal pTotalAmountInCashDrawer, string pMovementDescription)
         {
             bool result = false;
-            sys_configurationprinterstemplates template = (sys_configurationprinterstemplates)XPOHelper.GetXPGuidObject(typeof(sys_configurationprinterstemplates), PrintingSettings.XpoOidConfigurationPrintersTemplateCashDrawerOpenAndMoneyInOut);
+            sys_configurationprinterstemplates template = (sys_configurationprinterstemplates)XPOHelper.GetXPGuidObject(typeof(sys_configurationprinterstemplates), PrintingSettings.CashDrawerMoneyMovementPrintingTemplateId);
 
             try
             {

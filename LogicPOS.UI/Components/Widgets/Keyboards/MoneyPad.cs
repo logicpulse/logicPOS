@@ -3,6 +3,7 @@ using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Enums.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.Xpo;
+using LogicPOS.Data.XPO.Settings;
 using System;
 using System.Drawing;
 

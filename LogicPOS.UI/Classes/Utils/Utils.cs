@@ -18,6 +18,7 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
 using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
+using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Globalization;
 using LogicPOS.Modules;
@@ -184,7 +185,7 @@ namespace logicpos
 
         public static bool ShowMessageTouchRequiredValidPrinter(Window pSourceWindow, sys_configurationprinters pPrinter)
         {
-            bool result = pPrinter == null && XPOSettings.LoggedTerminal.ThermalPrinter == null;
+            bool result = pPrinter == null && TerminalSettings.LoggedTerminal.ThermalPrinter == null;
 
             if (result)
             {
@@ -232,7 +233,7 @@ namespace logicpos
             {
                 fin_documentfinanceyearserieterminal documentFinanceYearSerieTerminal = null;
                 fin_documentfinanceseries documentFinanceSerie = null;
-                if (XPOSettings.LoggedTerminal != null)
+                if (TerminalSettings.LoggedTerminal != null)
                 {
                     documentFinanceYearSerieTerminal = DocumentProcessingSeriesUtils.GetDocumentFinanceYearSerieTerminal(pParameters.DocumentType);
                     if (documentFinanceYearSerieTerminal != null) documentFinanceSerie = documentFinanceYearSerieTerminal.Serie;
@@ -1721,7 +1722,7 @@ namespace logicpos
             /* IN006001 */
             try
             {
-                CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("(TerminalTarget = '{0}' OR TerminalTarget IS NULL){1}", XPOSettings.LoggedTerminal.Oid, extraFilter));
+                CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("(TerminalTarget = '{0}' OR TerminalTarget IS NULL){1}", TerminalSettings.LoggedTerminal.Oid, extraFilter));
 
                 /* IN006001 - for "on demand" notification flow */
                 if (showNotificationOnDemand)
@@ -1786,7 +1787,7 @@ namespace logicpos
                             item.DateRead = XPOHelper.CurrentDateTimeAtomic();
                             item.Readed = true;
                             item.UserLastRead = XPOSettings.LoggedUser;
-                            item.TerminalLastRead = XPOSettings.LoggedTerminal;
+                            item.TerminalLastRead = TerminalSettings.LoggedTerminal;
                             item.Save();
                         }
                     }

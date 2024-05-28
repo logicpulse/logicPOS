@@ -2,6 +2,7 @@
 using DevExpress.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
+using LogicPOS.Data.XPO.Settings;
 
 namespace logicpos.datalayer.DataLayer.Xpo
 {

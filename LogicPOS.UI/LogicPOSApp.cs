@@ -9,6 +9,7 @@ using logicpos.Classes.Logic.Hardware;
 using logicpos.Classes.Logic.Others;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
+using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Finance.WorkSession;
 using LogicPOS.Globalization;
 using LogicPOS.Reporting;
@@ -239,7 +240,7 @@ namespace logicpos
                 //If not in Xpo create database Scheme Mode, Get Terminal from Db
                 if (!xpoCreateDatabaseAndSchema)
                 {
-                    XPOSettings.LoggedTerminal = Utils.GetTerminal();
+                    TerminalSettings.LoggedTerminal = Utils.GetTerminal();
                 }
 
                 //After Assigned LoggedUser
@@ -361,7 +362,7 @@ namespace logicpos
                 CustomFunctions.Register(POSSettings.AppName);
 
                 //Hardware : Init Display
-                if (XPOSettings.LoggedTerminal.PoleDisplay != null)
+                if (TerminalSettings.LoggedTerminal.PoleDisplay != null)
                 {
                     GlobalApp.UsbDisplay = (UsbDisplayDevice)UsbDisplayDevice.InitDisplay();
                     GlobalApp.UsbDisplay.WriteCentered(string.Format("{0} {1}", POSSettings.AppName, GeneralSettings.ProductVersion), 1);
@@ -370,25 +371,25 @@ namespace logicpos
                 }
 
                 //Hardware : Init BarCodeReader 
-                if (XPOSettings.LoggedTerminal.BarcodeReader != null)
+                if (TerminalSettings.LoggedTerminal.BarcodeReader != null)
                 {
                     GlobalApp.BarCodeReader = new InputReader();
                 }
 
                 //Hardware : Init WeighingBalance
-                if (XPOSettings.LoggedTerminal.WeighingMachine != null)
+                if (TerminalSettings.LoggedTerminal.WeighingMachine != null)
                 {
                     //Protecções de integridade das BD's [IN:013327]
                     //Check if port is used by pole display
-                    if (XPOSettings.LoggedTerminal.WeighingMachine.PortName == XPOSettings.LoggedTerminal.PoleDisplay.COM)
+                    if (TerminalSettings.LoggedTerminal.WeighingMachine.PortName == TerminalSettings.LoggedTerminal.PoleDisplay.COM)
                     {
-                        _logger.Debug(string.Format("Port " + XPOSettings.LoggedTerminal.WeighingMachine.PortName + "Already taken by pole display"));
+                        _logger.Debug(string.Format("Port " + TerminalSettings.LoggedTerminal.WeighingMachine.PortName + "Already taken by pole display"));
                     }
                     else
                     {
-                        if (Utils.IsPortOpen(XPOSettings.LoggedTerminal.WeighingMachine.PortName))
+                        if (Utils.IsPortOpen(TerminalSettings.LoggedTerminal.WeighingMachine.PortName))
                         {
-                            GlobalApp.WeighingBalance = new WeighingBalance(XPOSettings.LoggedTerminal.WeighingMachine);
+                            GlobalApp.WeighingBalance = new WeighingBalance(TerminalSettings.LoggedTerminal.WeighingMachine);
                             //_logger.Debug(string.Format("IsPortOpen: [{0}]", GlobalApp.WeighingBalance.IsPortOpen())); }
                         }
 

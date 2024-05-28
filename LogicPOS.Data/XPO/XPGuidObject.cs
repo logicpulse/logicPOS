@@ -1,6 +1,7 @@
 ﻿using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
 using logicpos.datalayer.Xpo;
+using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Settings;
 using System;
 using System.Collections.Generic;
@@ -129,9 +130,9 @@ namespace logicpos.datalayer.DataLayer.Xpo
             {
                 UpdatedBy = this.Session.GetObjectByKey<sys_userdetail>(XPOSettings.LoggedUser.Oid);
             }
-            if (XPOSettings.LoggedTerminal != null)
+            if (TerminalSettings.LoggedTerminal != null)
             {
-                UpdatedWhere = this.Session.GetObjectByKey<pos_configurationplaceterminal>(XPOSettings.LoggedTerminal.Oid);
+                UpdatedWhere = this.Session.GetObjectByKey<pos_configurationplaceterminal>(TerminalSettings.LoggedTerminal.Oid);
             }
 
             if (_isNewRecord)
@@ -142,9 +143,9 @@ namespace logicpos.datalayer.DataLayer.Xpo
                 {
                     CreatedBy = this.Session.GetObjectByKey<sys_userdetail>(XPOSettings.LoggedUser.Oid);
                 }
-                if (XPOSettings.LoggedTerminal != null)
+                if (TerminalSettings.LoggedTerminal != null)
                 {
-                    CreatedWhere = this.Session.GetObjectByKey<pos_configurationplaceterminal>(XPOSettings.LoggedTerminal.Oid);
+                    CreatedWhere = this.Session.GetObjectByKey<pos_configurationplaceterminal>(TerminalSettings.LoggedTerminal.Oid);
                 }
                 // Call EncryptProperties to be used when we create Objects outside BO, 
                 // this will trigger Encrypted Automatically
@@ -175,9 +176,9 @@ namespace logicpos.datalayer.DataLayer.Xpo
                 UpdatedBy.Reload();
             }
 
-            if (XPOSettings.LoggedTerminal != null)
+            if (TerminalSettings.LoggedTerminal != null)
             {
-                UpdatedWhere = this.Session.GetObjectByKey<pos_configurationplaceterminal>(XPOSettings.LoggedTerminal.Oid);
+                UpdatedWhere = this.Session.GetObjectByKey<pos_configurationplaceterminal>(TerminalSettings.LoggedTerminal.Oid);
                 // This Prevent : DevExpress.Xpo.DB.Exceptions.LockingException: Cannot persist the object. It was modified or deleted (purged) by another application.
                 // Created to prevent Creating Year Series problems
                 UpdatedWhere.Reload();

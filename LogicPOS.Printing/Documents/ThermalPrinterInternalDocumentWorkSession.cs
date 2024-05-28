@@ -2,6 +2,7 @@
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using logicpos.shared.Enums.ThermalPrinter;
+using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Finance.WorkSession;
 using LogicPOS.Globalization;
 using LogicPOS.Printing.Enums;
@@ -75,15 +76,15 @@ namespace LogicPOS.Printing.Documents
                 PrintTitles(_ticketTitle);
 
                 //Align Center
-                _thermalPrinterGeneric.SetAlignCenter();
+                _genericThermalPrinter.SetAlignCenter();
 
                 PrintDocumentDetails();
 
                 //Reset to Left
-                _thermalPrinterGeneric.SetAlignLeft();
+                _genericThermalPrinter.SetAlignLeft();
 
                 //Line Feed
-                _thermalPrinterGeneric.LineFeed();
+                _genericThermalPrinter.LineFeed();
             }
             catch (Exception ex)
             {
@@ -94,7 +95,7 @@ namespace LogicPOS.Printing.Documents
         private void PrintDocumentDetails()
         {
             //Call PrintWorkSessionMovement
-            PrintWorkSessionMovement(_thermalPrinterGeneric.Printer, _workSessionPeriod, _splitCurrentAccountMode);
+            PrintWorkSessionMovement(_genericThermalPrinter.Printer, _workSessionPeriod, _splitCurrentAccountMode);
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -123,7 +124,7 @@ namespace LogicPOS.Printing.Documents
 
             if (pPrinter != null)
             {
-                sys_configurationprinterstemplates template = (sys_configurationprinterstemplates)XPOHelper.GetXPGuidObject(typeof(sys_configurationprinterstemplates), PrintingSettings.XpoOidConfigurationPrintersTemplateWorkSessionMovement);
+                sys_configurationprinterstemplates template = (sys_configurationprinterstemplates)XPOHelper.GetXPGuidObject(typeof(sys_configurationprinterstemplates), PrintingSettings.WorkSessionMovementPrintingTemplateId);
                 string splitCurrentAccountFilter = string.Empty;
                 string fileTicket = template.FileTemplate;
 
@@ -213,11 +214,11 @@ namespace LogicPOS.Printing.Documents
                         new TicketColumn("Label", "", Convert.ToInt16(_maxCharsPerLineNormal / 2) - 2, TicketColumnsAlignment.Right),
                         new TicketColumn("Value", "", Convert.ToInt16(_maxCharsPerLineNormal / 2) - 2, TicketColumnsAlignment.Left)
                     };
-                    TicketTable ticketTable = new TicketTable(dataTable, columns, _thermalPrinterGeneric.MaxCharsPerLineNormalBold);
+                    TicketTable ticketTable = new TicketTable(dataTable, columns, _genericThermalPrinter.MaxCharsPerLineNormalBold);
                     //Print Ticket Table
-                    ticketTable.Print(_thermalPrinterGeneric);
+                    ticketTable.Print(_genericThermalPrinter);
                     //Line Feed
-                    _thermalPrinterGeneric.LineFeed();
+                    _genericThermalPrinter.LineFeed();
 
                     //Get Final Rendered DataTable Groups
                     Dictionary<DataTableGroupPropertiesType, DataTableGroupProperties> dictGroupProperties = GenDataTableWorkSessionMovementResume(pWorkSessionPeriod.PeriodType, pSplitCurrentAccountMode, sqlWhere);
@@ -253,17 +254,17 @@ namespace LogicPOS.Printing.Documents
                             //Print Group Titles (FinanceDocuments|Payments)
                             if (groupPosition == 0)
                             {
-                                _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_worksession_resume_finance_documents"), WriteLineTextMode.Big);
-                                _thermalPrinterGeneric.LineFeed();
+                                _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_worksession_resume_finance_documents"), WriteLineTextMode.Big);
+                                _genericThermalPrinter.LineFeed();
                             }
                             else if (groupPosition == groupPositionTitlePayments)
                             {
                                 //When finish FinanceDocuemnts groups, print Last Row, the Summary Totals Row
-                                _thermalPrinterGeneric.WriteLine(tableCustomPrint[tableCustomPrint.Count - 1], WriteLineTextMode.DoubleHeight);
-                                _thermalPrinterGeneric.LineFeed();
+                                _genericThermalPrinter.WriteLine(tableCustomPrint[tableCustomPrint.Count - 1], WriteLineTextMode.DoubleHeight);
+                                _genericThermalPrinter.LineFeed();
 
-                                _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_worksession_resume_paymens_documents"), WriteLineTextMode.Big);
-                                _thermalPrinterGeneric.LineFeed();
+                                _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_worksession_resume_paymens_documents"), WriteLineTextMode.Big);
+                                _genericThermalPrinter.LineFeed();
                             }
 
                             //Reset Totals
@@ -336,7 +337,7 @@ namespace LogicPOS.Printing.Documents
                             dataTable.Rows.Add(dataRow);
 
                             //Prepare TicketTable
-                            ticketTable = new TicketTable(dataTable, columns, _thermalPrinterGeneric.MaxCharsPerLineNormal);
+                            ticketTable = new TicketTable(dataTable, columns, _genericThermalPrinter.MaxCharsPerLineNormal);
 
                             //Custom Print Loop, to Print all Table Rows, and Detect Rows to Print in DoubleHeight (Title and Total)
                             tableCustomPrint = ticketTable.GetTable();
@@ -348,16 +349,16 @@ namespace LogicPOS.Printing.Documents
                                 //Prepare TextMode Based on Row
                                 rowTextMode = (i == 0) ? WriteLineTextMode.DoubleHeight : WriteLineTextMode.Normal;
                                 //Print Row
-                                _thermalPrinterGeneric.WriteLine(tableCustomPrint[i], rowTextMode);
+                                _genericThermalPrinter.WriteLine(tableCustomPrint[i], rowTextMode);
                             }
 
                             //Line Feed
-                            _thermalPrinterGeneric.LineFeed();
+                            _genericThermalPrinter.LineFeed();
                         }
                     }
 
                     //When finish all groups, print Last Row, the Summary Totals Row, Ommited in Custom Print Loop
-                    _thermalPrinterGeneric.WriteLine(tableCustomPrint[tableCustomPrint.Count - 1], WriteLineTextMode.DoubleHeight);
+                    _genericThermalPrinter.WriteLine(tableCustomPrint[tableCustomPrint.Count - 1], WriteLineTextMode.DoubleHeight);
 
                     result = true;
                 }

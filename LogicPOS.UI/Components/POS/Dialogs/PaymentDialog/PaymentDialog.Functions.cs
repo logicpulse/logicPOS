@@ -12,6 +12,7 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
+using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Finance.Utility;
 using LogicPOS.Globalization;
@@ -60,7 +61,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 else if (pResponse == ResponseType.Ok)
                 {
                     //TK016249 - Impressoras - Diferenciação entre Tipos
-                    PrintingSettings.UsingThermalPrinter = true;
+                    PrintingSettings.ThermalPrinter.UsingThermalPrinter = true;
                     //SaveOrUpdateCustomer Before use _selectedCustomer (Can be null)
                     resultObject = logicpos.Utils.SaveOrUpdateCustomer(
                         this,

@@ -320,15 +320,15 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 // If Working in ThermalPrinter assign Defaults From Config
                 if (_vboxTab2.Visible)
                 {
-                    if (string.IsNullOrEmpty(_entryThermalEncoding.Text)) _entryThermalEncoding.Text = PrintingSettings.PrinterThermalEncoding;
-                    if (string.IsNullOrEmpty(_entryThermalImageCompanyLogo.Text)) _entryThermalImageCompanyLogo.Text = PrintingSettings.PrinterThermalImageCompanyLogo;
-                    if (_entryThermalMaxCharsPerLineNormal.Text.Equals("0")) _entryThermalMaxCharsPerLineNormal.Text = Convert.ToString(PrintingSettings.PrinterThermalMaxCharsPerLineNormal);
-                    if (_entryThermalMaxCharsPerLineNormalBold.Text.Equals("0")) _entryThermalMaxCharsPerLineNormalBold.Text = Convert.ToString(PrintingSettings.PrinterThermalMaxCharsPerLineNormalBold);
-                    if (_entryThermalMaxCharsPerLineSmall.Text.Equals("0")) _entryThermalMaxCharsPerLineSmall.Text = Convert.ToString(PrintingSettings.PrinterThermalMaxCharsPerLineSmall);
-                    if (string.IsNullOrEmpty(_entryThermalCutCommand.Text)) _entryThermalCutCommand.Text = PrintingSettings.PrinterThermalCutCommand;
-                    if (_entryThermalOpenDrawerValueM.Text.Equals("0")) _entryThermalOpenDrawerValueM.Text = Convert.ToString(PrintingSettings.PrinterThermalOpenDrawerValueM);
-                    if (_entryThermalOpenDrawerValueT1.Text.Equals("0")) _entryThermalOpenDrawerValueT1.Text = Convert.ToString(PrintingSettings.PrinterThermalOpenDrawerValueT1);
-                    if (_entryThermalOpenDrawerValueT2.Text.Equals("0")) _entryThermalOpenDrawerValueT2.Text = Convert.ToString(PrintingSettings.PrinterThermalOpenDrawerValueT2);
+                    if (string.IsNullOrEmpty(_entryThermalEncoding.Text)) _entryThermalEncoding.Text = PrintingSettings.ThermalPrinter.Encoding;
+                    if (string.IsNullOrEmpty(_entryThermalImageCompanyLogo.Text)) _entryThermalImageCompanyLogo.Text = PrintingSettings.ThermalPrinter.CompanyLogoLocation;
+                    if (_entryThermalMaxCharsPerLineNormal.Text.Equals("0")) _entryThermalMaxCharsPerLineNormal.Text = Convert.ToString(PrintingSettings.ThermalPrinter.MaxCharsPerLineNormal);
+                    if (_entryThermalMaxCharsPerLineNormalBold.Text.Equals("0")) _entryThermalMaxCharsPerLineNormalBold.Text = Convert.ToString(PrintingSettings.ThermalPrinter.MaxCharsPerLineNormalBold);
+                    if (_entryThermalMaxCharsPerLineSmall.Text.Equals("0")) _entryThermalMaxCharsPerLineSmall.Text = Convert.ToString(PrintingSettings.ThermalPrinter.MaxCharsPerLineSmall);
+                    if (string.IsNullOrEmpty(_entryThermalCutCommand.Text)) _entryThermalCutCommand.Text = PrintingSettings.ThermalPrinter.CutCommand;
+                    if (_entryThermalOpenDrawerValueM.Text.Equals("0")) _entryThermalOpenDrawerValueM.Text = Convert.ToString(PrintingSettings.ThermalPrinter.OpenDrawerValueM);
+                    if (_entryThermalOpenDrawerValueT1.Text.Equals("0")) _entryThermalOpenDrawerValueT1.Text = Convert.ToString(PrintingSettings.ThermalPrinter.OpenDrawerValueT1);
+                    if (_entryThermalOpenDrawerValueT2.Text.Equals("0")) _entryThermalOpenDrawerValueT2.Text = Convert.ToString(PrintingSettings.ThermalPrinter.OpenDrawerValueT2);
                 }
                 // If Not Working in ThermalPrinter reset Values
                 else

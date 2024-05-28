@@ -1,5 +1,6 @@
 ﻿using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
+using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Globalization;
 using LogicPOS.Printing.Enums;
 using LogicPOS.Printing.Templates;
@@ -98,7 +99,7 @@ namespace LogicPOS.Printing.Documents
                 TicketTable ticketTable = new TicketTable(dataTable, columns, _maxCharsPerLineNormal - _ticketTablePaddingLeftLength);
                 string paddingLeftFormat = "  {0,-" + ticketTable.TableWidth + "}";//"  {0,-TableWidth}"
                 //Print Table Headers
-                ticketTable.Print(_thermalPrinterGeneric, paddingLeftFormat);
+                ticketTable.Print(_genericThermalPrinter, paddingLeftFormat);
 
                 foreach (FRBODocumentFinancePaymentDocumentView item in _documentFinancePaymentDocumentList)
                 {
@@ -108,7 +109,7 @@ namespace LogicPOS.Printing.Documents
                 }
 
                 //Line Feed
-                _thermalPrinterGeneric.LineFeed();
+                _genericThermalPrinter.LineFeed();
             }
             catch (Exception ex)
             {
@@ -127,7 +128,7 @@ namespace LogicPOS.Printing.Documents
                     : pFinancePaymentDocument.DocumentNumber.Substring(0, _maxCharsPerLineNormalBold)
                 ;
                 //Print Document Number : Bold
-                _thermalPrinterGeneric.WriteLine(documentNumber, WriteLineTextMode.Bold);
+                _genericThermalPrinter.WriteLine(documentNumber, WriteLineTextMode.Bold);
 
                 //Document Details
                 DataRow dataRow;
@@ -144,7 +145,7 @@ namespace LogicPOS.Printing.Documents
                 //Add DataRow to Table, Ready for Print
                 pTicketTable.Rows.Add(dataRow);
                 //Print Table Rows
-                pTicketTable.Print(_thermalPrinterGeneric, WriteLineTextMode.Normal, true, pPaddingLeftFormat);
+                pTicketTable.Print(_genericThermalPrinter, WriteLineTextMode.Normal, true, pPaddingLeftFormat);
             }
             catch (Exception ex)
             {
@@ -177,11 +178,11 @@ namespace LogicPOS.Printing.Documents
                 };
 
                 //TicketTable(DataTable pDataTable, List<TicketColumn> pColumnsProperties, int pTableWidth)
-                TicketTable ticketTable = new TicketTable(dataTable, columns, _thermalPrinterGeneric.MaxCharsPerLineNormalBold);
-                ticketTable.Print(_thermalPrinterGeneric, WriteLineTextMode.DoubleHeightBold);
+                TicketTable ticketTable = new TicketTable(dataTable, columns, _genericThermalPrinter.MaxCharsPerLineNormalBold);
+                ticketTable.Print(_genericThermalPrinter, WriteLineTextMode.DoubleHeightBold);
 
                 //Line Feed
-                _thermalPrinterGeneric.LineFeed();
+                _genericThermalPrinter.LineFeed();
             }
             catch (Exception ex)
             {
@@ -204,11 +205,11 @@ namespace LogicPOS.Printing.Documents
                 }
 
                 //ExtendedValue
-                _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_total_extended_label"), WriteLineTextMode.Bold);
-                _thermalPrinterGeneric.WriteLine(extended);
+                _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_total_extended_label"), WriteLineTextMode.Bold);
+                _genericThermalPrinter.WriteLine(extended);
 
                 //Line Feed
-                _thermalPrinterGeneric.LineFeed();
+                _genericThermalPrinter.LineFeed();
             }
             catch (Exception ex)
             {

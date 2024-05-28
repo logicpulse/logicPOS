@@ -5,6 +5,7 @@ using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
+using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Extensions;
@@ -67,10 +68,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             );
 
             //Protected Records
-            ProtectedRecords.Add(PrintingSettings.XpoOidConfigurationPrinterTypeThermalPrinterWindows);
-            ProtectedRecords.Add(PrintingSettings.XpoOidConfigurationPrinterTypeThermalPrinterSocket);
-            ProtectedRecords.Add(PrintingSettings.XpoOidConfigurationPrinterTypeGenericWindows);
-            ProtectedRecords.Add(PrintingSettings.XpoOidConfigurationPrinterTypeExportPdf);
+            ProtectedRecords.Add(PrintingSettings.WindowsThermalPrinterId);
+            ProtectedRecords.Add(PrintingSettings.ThermalSocketPrinterId);
+            ProtectedRecords.Add(PrintingSettings.WindowsGenericPrinterId);
+            ProtectedRecords.Add(PrintingSettings.ExportToPdfPrinterId);
         }
     }
 }

@@ -5,6 +5,7 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using logicpos.shared.Enums;
+using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Finance.Utility;
 using LogicPOS.Finance.WorkSession;
@@ -34,7 +35,7 @@ namespace LogicPOS.Finance.DocumentProcessing
         public static fin_documentfinancemaster PersistFinanceDocument(DocumentProcessingParameters pParameters, bool pIgnoreWarning = false)
         {
             Guid userDetailGuid = (XPOSettings.LoggedUser != null) ? XPOSettings.LoggedUser.Oid : Guid.Empty;
-            Guid terminalGuid = (XPOSettings.LoggedTerminal != null) ? XPOSettings.LoggedTerminal.Oid : Guid.Empty;
+            Guid terminalGuid = (TerminalSettings.LoggedTerminal != null) ? TerminalSettings.LoggedTerminal.Oid : Guid.Empty;
 
             return (PersistFinanceDocument(pParameters, userDetailGuid, terminalGuid, pIgnoreWarning));
         }
@@ -743,7 +744,7 @@ namespace LogicPOS.Finance.DocumentProcessing
                         // Call Generate GenerateDocument
                         //POS front-end - Consulta Mesa + Impressão Ticket's + Gerar PDF em modo Thermal Printer [IN009344]
                         // If is Thermal Print doc don't create PDF + Lindote(06/02/2020)
-                        if (!PrintingSettings.UsingThermalPrinter)
+                        if (!PrintingSettings.ThermalPrinter.UsingThermalPrinter)
                         {
                             CustomReport.GenerateDocumentFinanceMasterPDFIfNotExists(documentFinanceMaster);
                         }
@@ -1388,7 +1389,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                 //Get Period WorkSessionPeriodTerminal, UserDetail and Terminal
                 pos_worksessionperiod workSessionPeriod = (pos_worksessionperiod)XPOHelper.GetXPGuidObject(pSession, typeof(pos_worksessionperiod), XPOSettings.WorkSessionPeriodTerminal.Oid);
                 sys_userdetail userDetail = (sys_userdetail)XPOHelper.GetXPGuidObject(pSession, typeof(sys_userdetail), XPOSettings.LoggedUser.Oid);
-                pos_configurationplaceterminal configurationPlaceTerminal = (pos_configurationplaceterminal)XPOHelper.GetXPGuidObject(pSession, typeof(pos_configurationplaceterminal), XPOSettings.LoggedTerminal.Oid);
+                pos_configurationplaceterminal configurationPlaceTerminal = (pos_configurationplaceterminal)XPOHelper.GetXPGuidObject(pSession, typeof(pos_configurationplaceterminal), TerminalSettings.LoggedTerminal.Oid);
 
                 //Variables to diferent Document Types : DocumentFinanceMaster or DocumentFinancePayment
                 DateTime documentDate = XPOHelper.CurrentDateTimeAtomic();
@@ -1548,7 +1549,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                 //Check if CommissionGroup has Commission
                 if (commissionGroup != null && commissionGroup.Commission > 0 && commissionGroup == pUserDetail.CommissionGroup)
                 {
-                    pos_configurationplaceterminal configurationPlaceTerminal = (pos_configurationplaceterminal)XPOHelper.GetXPGuidObject(pSession, typeof(pos_configurationplaceterminal), XPOSettings.LoggedTerminal.Oid);
+                    pos_configurationplaceterminal configurationPlaceTerminal = (pos_configurationplaceterminal)XPOHelper.GetXPGuidObject(pSession, typeof(pos_configurationplaceterminal), TerminalSettings.LoggedTerminal.Oid);
                     decimal totalCommission = (pDocumentFinanceDetail.TotalNet * pUserDetail.CommissionGroup.Commission) / 100;
 
                     fin_documentfinancecommission documentFinanceCommission = new fin_documentfinancecommission(pSession)

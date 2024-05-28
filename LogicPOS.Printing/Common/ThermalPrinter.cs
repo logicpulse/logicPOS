@@ -13,55 +13,39 @@ namespace LogicPOS.Printing.Common
 {
     public class ThermalPrinter
     {
-        private readonly MemoryStream _memStream = new MemoryStream();
-
+        private readonly MemoryStream _memoryStream = new MemoryStream();
         public BinaryWriter BinaryStream { get; set; }
 
         /// <summary>
         /// Delay between two picture lines. (in ms)
         /// </summary>
-        public int PictureLineSleepTimeMs = 40;
+        public int PictureLineSleepTimeInMs = 40;
+
         /// <summary>
         /// Delay between two text lines. (in ms)
         /// </summary>
-        public int WriteLineSleepTimeMs = 0;
+        public int WriteLineSleepTimeInMs = 0;
+
         /// <summary>
         /// Current encoding used by the printer.
         /// </summary>
         public string Encoding { get; private set; }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ThermalDotNet.ThermalPrinter"/> class.
-        /// </summary>
-        /// <param name='serialPort'>
-        /// Serial port used by printer.
-        /// </param>
         public ThermalPrinter(string encoding)
         {
-            UTF8Encoding utf8 = new UTF8Encoding();
-
-            this.Encoding = encoding;
-            this.BinaryStream = new BinaryWriter(this._memStream, utf8);
-
+            Encoding = encoding;
+            BinaryStream = new BinaryWriter(this._memoryStream, new UTF8Encoding());
             Reset();
-
             SetEncoding(this.Encoding);
         }
 
-
-        /// <summary>
-        /// Prints the line of text.
-        /// </summary>
-        /// <param name='text'>
-        /// Text to print.
-        /// </param>
         public void WriteLine(string text)
         {
             //martelado pelo carlos
             //SetFont(49);
             //
             WriteToBuffer(text);
-            WriteByte(AsciiControlChars.PrintAndLineFeed);
+            WriteByte(PrintingControlSignals.PrintAndLineFeed);
         }
 
         /// <summary>
@@ -128,16 +112,16 @@ namespace LogicPOS.Printing.Common
         public void WriteLine_Invert(string text)
         {
             //Sets inversion on
-            WriteByte(AsciiControlChars.GroupSeparator);
-            WriteByte(AsciiControlChars.ReversePrintingMode);
+            WriteByte(PrintingControlSignals.GroupSeparator);
+            WriteByte(PrintingControlSignals.ReversePrintingMode);
             WriteByte(1);
 
             //Sends the text
             WriteLine(text);
 
             //Sets inversion off
-            WriteByte(AsciiControlChars.GroupSeparator);
-            WriteByte(AsciiControlChars.ReversePrintingMode);
+            WriteByte(PrintingControlSignals.GroupSeparator);
+            WriteByte(PrintingControlSignals.ReversePrintingMode);
             WriteByte(0);
 
             LineFeed();
@@ -156,16 +140,16 @@ namespace LogicPOS.Printing.Common
             const byte Bold = 1 << 3;
 
             //big on 
-            WriteByte(AsciiControlChars.Escape);
-            WriteByte(AsciiControlChars.SelectPrintMode);
+            WriteByte(PrintingControlSignals.Escape);
+            WriteByte(PrintingControlSignals.SelectPrintMode);
             WriteByte(DoubleHeight + DoubleWidth + Bold);
 
             //Sends the text
             WriteLine(text);
 
             //big off
-            WriteByte(AsciiControlChars.Escape);
-            WriteByte(AsciiControlChars.SelectPrintMode);
+            WriteByte(PrintingControlSignals.Escape);
+            WriteByte(PrintingControlSignals.SelectPrintMode);
             WriteByte(0);
         }
 
@@ -181,16 +165,16 @@ namespace LogicPOS.Printing.Common
             const byte Bold = 1 << 3;
 
             //big on 
-            WriteByte(AsciiControlChars.Escape);
-            WriteByte(AsciiControlChars.SelectPrintMode);
+            WriteByte(PrintingControlSignals.Escape);
+            WriteByte(PrintingControlSignals.SelectPrintMode);
             WriteByte(DoubleWidth + Bold);
 
             //Sends the text
             WriteLine(text);
 
             //big off
-            WriteByte(AsciiControlChars.Escape);
-            WriteByte(AsciiControlChars.SelectPrintMode);
+            WriteByte(PrintingControlSignals.Escape);
+            WriteByte(PrintingControlSignals.SelectPrintMode);
             WriteByte(0);
         }
 
@@ -206,8 +190,8 @@ namespace LogicPOS.Printing.Common
             const byte Bold = 1 << 3;
 
             //big on 
-            WriteByte(AsciiControlChars.Escape);
-            WriteByte(AsciiControlChars.SelectPrintMode);
+            WriteByte(PrintingControlSignals.Escape);
+            WriteByte(PrintingControlSignals.SelectPrintMode);
             WriteByte(DoubleWidth + Bold);
 
             //bold on
@@ -218,8 +202,8 @@ namespace LogicPOS.Printing.Common
             BoldOff();
 
             //big off
-            WriteByte(AsciiControlChars.Escape);
-            WriteByte(AsciiControlChars.SelectPrintMode);
+            WriteByte(PrintingControlSignals.Escape);
+            WriteByte(PrintingControlSignals.SelectPrintMode);
             WriteByte(0);
         }
 
@@ -235,16 +219,16 @@ namespace LogicPOS.Printing.Common
             const byte Bold = 1 << 3;
 
             //big on 
-            WriteByte(AsciiControlChars.Escape);
-            WriteByte(AsciiControlChars.SelectPrintMode);
+            WriteByte(PrintingControlSignals.Escape);
+            WriteByte(PrintingControlSignals.SelectPrintMode);
             WriteByte(DoubleHeight + Bold);
 
             //Sends the text
             WriteLine(text);
 
             //big off
-            WriteByte(AsciiControlChars.Escape);
-            WriteByte(AsciiControlChars.SelectPrintMode);
+            WriteByte(PrintingControlSignals.Escape);
+            WriteByte(PrintingControlSignals.SelectPrintMode);
             WriteByte(0);
         }
 
@@ -260,8 +244,8 @@ namespace LogicPOS.Printing.Common
             const byte Bold = 1 << 3;
 
             //big on 
-            WriteByte(AsciiControlChars.Escape);
-            WriteByte(AsciiControlChars.SelectPrintMode);
+            WriteByte(PrintingControlSignals.Escape);
+            WriteByte(PrintingControlSignals.SelectPrintMode);
             WriteByte(DoubleHeight + Bold);
 
             //bold on
@@ -272,8 +256,8 @@ namespace LogicPOS.Printing.Common
             BoldOff();
 
             //big off
-            WriteByte(AsciiControlChars.Escape);
-            WriteByte(AsciiControlChars.SelectPrintMode);
+            WriteByte(PrintingControlSignals.Escape);
+            WriteByte(PrintingControlSignals.SelectPrintMode);
             WriteByte(0);
         }
 
@@ -318,14 +302,14 @@ namespace LogicPOS.Printing.Common
 
             if (underlineHeight != 0)
             {
-                WriteByte(AsciiControlChars.Escape);
-                WriteByte(AsciiControlChars.TurnUnderline);
+                WriteByte(PrintingControlSignals.Escape);
+                WriteByte(PrintingControlSignals.TurnUnderline);
                 WriteByte(underlineHeight);
             }
 
             //style on
-            WriteByte(AsciiControlChars.Escape);
-            WriteByte(AsciiControlChars.SelectPrintMode);
+            WriteByte(PrintingControlSignals.Escape);
+            WriteByte(PrintingControlSignals.SelectPrintMode);
             WriteByte((byte)style);
 
             //Sends the text
@@ -334,13 +318,13 @@ namespace LogicPOS.Printing.Common
             //style off
             if (underlineHeight != 0)
             {
-                WriteByte(AsciiControlChars.Escape);
-                WriteByte(AsciiControlChars.TurnUnderline);
+                WriteByte(PrintingControlSignals.Escape);
+                WriteByte(PrintingControlSignals.TurnUnderline);
                 WriteByte(0);
             }
 
-            WriteByte(AsciiControlChars.Escape);
-            WriteByte(AsciiControlChars.SelectPrintMode);
+            WriteByte(PrintingControlSignals.Escape);
+            WriteByte(PrintingControlSignals.SelectPrintMode);
             WriteByte(0);
 
         }
@@ -371,11 +355,11 @@ namespace LogicPOS.Printing.Common
         /// </summary>
         public void BoldOn()
         {
-            WriteByte(AsciiControlChars.Escape);
-            WriteByte(AsciiControlChars.CharacterSpacing);
+            WriteByte(PrintingControlSignals.Escape);
+            WriteByte(PrintingControlSignals.CharacterSpacing);
             WriteByte(1);
-            WriteByte(AsciiControlChars.Escape);
-            WriteByte(AsciiControlChars.TurnEmphasized);
+            WriteByte(PrintingControlSignals.Escape);
+            WriteByte(PrintingControlSignals.TurnEmphasized);
             WriteByte(1);
         }
 
@@ -384,11 +368,11 @@ namespace LogicPOS.Printing.Common
         /// </summary>
         public void BoldOff()
         {
-            WriteByte(AsciiControlChars.Escape);
-            WriteByte(AsciiControlChars.CharacterSpacing);
+            WriteByte(PrintingControlSignals.Escape);
+            WriteByte(PrintingControlSignals.CharacterSpacing);
             WriteByte(0);
-            WriteByte(AsciiControlChars.Escape);
-            WriteByte(AsciiControlChars.TurnEmphasized);
+            WriteByte(PrintingControlSignals.Escape);
+            WriteByte(PrintingControlSignals.TurnEmphasized);
             WriteByte(0);
         }
 
@@ -397,8 +381,8 @@ namespace LogicPOS.Printing.Common
         /// </summary>
         public void WhiteOnBlackOn()
         {
-            WriteByte(AsciiControlChars.GroupSeparator);
-            WriteByte(AsciiControlChars.ReversePrintingMode);
+            WriteByte(PrintingControlSignals.GroupSeparator);
+            WriteByte(PrintingControlSignals.ReversePrintingMode);
             WriteByte(1);
         }
 
@@ -407,8 +391,8 @@ namespace LogicPOS.Printing.Common
         /// </summary>
         public void WhiteOnBlackOff()
         {
-            WriteByte(AsciiControlChars.GroupSeparator);
-            WriteByte(AsciiControlChars.ReversePrintingMode);
+            WriteByte(PrintingControlSignals.GroupSeparator);
+            WriteByte(PrintingControlSignals.ReversePrintingMode);
             WriteByte(0);
         }
 
@@ -424,15 +408,15 @@ namespace LogicPOS.Printing.Common
         public void SetSize(bool doubleWidth, bool doubleHeight)
         {
             int sizeValue = (Convert.ToInt32(doubleWidth)) * (0xF0) + (Convert.ToInt32(doubleHeight)) * (0x0F);
-            WriteByte(AsciiControlChars.GroupSeparator);
-            WriteByte(AsciiControlChars.SelectPrintMode);
+            WriteByte(PrintingControlSignals.GroupSeparator);
+            WriteByte(PrintingControlSignals.SelectPrintMode);
             WriteByte((byte)sizeValue);
         }
 
         public void SetSize2(int sizeValue) //0; 16;32; 48; 64; 80; 96; 112
         {
-            WriteByte(AsciiControlChars.SelectCharacterSize);
-            WriteByte(AsciiControlChars.SelectPrintMode);
+            WriteByte(PrintingControlSignals.SelectCharacterSize);
+            WriteByte(PrintingControlSignals.SelectPrintMode);
             WriteByte((byte)sizeValue);
         }
 
@@ -448,7 +432,7 @@ namespace LogicPOS.Printing.Common
         /// </summary>
         public void LineFeed()
         {
-            WriteByte(AsciiControlChars.PrintAndLineFeed);
+            WriteByte(PrintingControlSignals.PrintAndLineFeed);
         }
 
         ///	<summary>
@@ -469,8 +453,8 @@ namespace LogicPOS.Printing.Common
         /// </param>
         public void LineFeed(byte lines)
         {
-            WriteByte(AsciiControlChars.Escape);
-            WriteByte(AsciiControlChars.PrintAndFeedNLines);
+            WriteByte(PrintingControlSignals.Escape);
+            WriteByte(PrintingControlSignals.PrintAndFeedNLines);
             WriteByte(lines);
         }
 
@@ -487,8 +471,8 @@ namespace LogicPOS.Printing.Common
                 columns = 0;
             }
 
-            WriteByte(AsciiControlChars.Escape);
-            WriteByte(AsciiControlChars.ReversePrintingMode);
+            WriteByte(PrintingControlSignals.Escape);
+            WriteByte(PrintingControlSignals.ReversePrintingMode);
             WriteByte(columns);
         }
 
@@ -500,8 +484,8 @@ namespace LogicPOS.Printing.Common
         /// </param>
         public void SetLineSpacing(byte lineSpacing)
         {
-            WriteByte(AsciiControlChars.Escape);
-            WriteByte(AsciiControlChars.SetLineSpacing);
+            WriteByte(PrintingControlSignals.Escape);
+            WriteByte(PrintingControlSignals.SetLineSpacing);
             WriteByte(lineSpacing);
         }
 
@@ -510,8 +494,8 @@ namespace LogicPOS.Printing.Common
         /// </summary>
         public void SetAlignLeft()
         {
-            WriteByte(AsciiControlChars.Escape);
-            WriteByte(AsciiControlChars.SelectJustification);
+            WriteByte(PrintingControlSignals.Escape);
+            WriteByte(PrintingControlSignals.SelectJustification);
             WriteByte(0);
         }
 
@@ -520,8 +504,8 @@ namespace LogicPOS.Printing.Common
         /// </summary>		
         public void SetAlignCenter()
         {
-            WriteByte(AsciiControlChars.Escape);
-            WriteByte(AsciiControlChars.SelectJustification);
+            WriteByte(PrintingControlSignals.Escape);
+            WriteByte(PrintingControlSignals.SelectJustification);
             WriteByte(1);
         }
 
@@ -530,8 +514,8 @@ namespace LogicPOS.Printing.Common
         /// </summary>
         public void SetAlignRight()
         {
-            WriteByte(AsciiControlChars.Escape);
-            WriteByte(AsciiControlChars.SelectJustification);
+            WriteByte(PrintingControlSignals.Escape);
+            WriteByte(PrintingControlSignals.SelectJustification);
             WriteByte(2);
         }
 
@@ -555,7 +539,7 @@ namespace LogicPOS.Printing.Common
                     BinaryStream.Write('-');
                 }
 
-                WriteByte(AsciiControlChars.PrintAndLineFeed);
+                WriteByte(PrintingControlSignals.PrintAndLineFeed);
             }
         }
 
@@ -564,8 +548,8 @@ namespace LogicPOS.Printing.Common
         /// </summary>
         public void Reset()
         {
-            WriteByte(AsciiControlChars.Escape);
-            WriteByte(AsciiControlChars.InitializePrinter);
+            WriteByte(PrintingControlSignals.Escape);
+            WriteByte(PrintingControlSignals.InitializePrinter);
             System.Threading.Thread.Sleep(50);
         }
 
@@ -910,8 +894,8 @@ namespace LogicPOS.Printing.Common
                 case BarcodeType.upc_a:
                     if (data.Length == 11 || data.Length == 12)
                     {
-                        WriteByte(AsciiControlChars.GroupSeparator);
-                        WriteByte(AsciiControlChars.PrintBarcode);
+                        WriteByte(PrintingControlSignals.GroupSeparator);
+                        WriteByte(PrintingControlSignals.PrintBarcode);
                         WriteByte(0);
                         WriteBytes(outputBytes);
                         WriteByte(0);
@@ -920,8 +904,8 @@ namespace LogicPOS.Printing.Common
                 case BarcodeType.upc_e:
                     if (data.Length == 11 || data.Length == 12)
                     {
-                        WriteByte(AsciiControlChars.GroupSeparator);
-                        WriteByte(AsciiControlChars.PrintBarcode);
+                        WriteByte(PrintingControlSignals.GroupSeparator);
+                        WriteByte(PrintingControlSignals.PrintBarcode);
                         WriteByte(1);
                         WriteBytes(outputBytes);
                         WriteByte(0);
@@ -930,8 +914,8 @@ namespace LogicPOS.Printing.Common
                 case BarcodeType.ean13:
                     if (data.Length == 12 || data.Length == 13)
                     {
-                        WriteByte(AsciiControlChars.GroupSeparator);
-                        WriteByte(AsciiControlChars.PrintBarcode);
+                        WriteByte(PrintingControlSignals.GroupSeparator);
+                        WriteByte(PrintingControlSignals.PrintBarcode);
                         WriteByte(2);
                         WriteBytes(outputBytes);
                         WriteByte(0);
@@ -940,8 +924,8 @@ namespace LogicPOS.Printing.Common
                 case BarcodeType.ean8:
                     if (data.Length == 7 || data.Length == 8)
                     {
-                        WriteByte(AsciiControlChars.GroupSeparator);
-                        WriteByte(AsciiControlChars.PrintBarcode);
+                        WriteByte(PrintingControlSignals.GroupSeparator);
+                        WriteByte(PrintingControlSignals.PrintBarcode);
                         WriteByte(3);
                         WriteBytes(outputBytes);
                         WriteByte(0);
@@ -950,8 +934,8 @@ namespace LogicPOS.Printing.Common
                 case BarcodeType.code39:
                     if (data.Length > 1)
                     {
-                        WriteByte(AsciiControlChars.GroupSeparator);
-                        WriteByte(AsciiControlChars.PrintBarcode);
+                        WriteByte(PrintingControlSignals.GroupSeparator);
+                        WriteByte(PrintingControlSignals.PrintBarcode);
                         WriteByte(4);
                         WriteBytes(outputBytes);
                         WriteByte(0);
@@ -960,8 +944,8 @@ namespace LogicPOS.Printing.Common
                 case BarcodeType.i25:
                     if (data.Length > 1 || data.Length % 2 == 0)
                     {
-                        WriteByte(AsciiControlChars.GroupSeparator);
-                        WriteByte(AsciiControlChars.PrintBarcode);
+                        WriteByte(PrintingControlSignals.GroupSeparator);
+                        WriteByte(PrintingControlSignals.PrintBarcode);
                         WriteByte(5);
                         WriteBytes(outputBytes);
                         WriteByte(0);
@@ -970,8 +954,8 @@ namespace LogicPOS.Printing.Common
                 case BarcodeType.codebar:
                     if (data.Length > 1)
                     {
-                        WriteByte(AsciiControlChars.GroupSeparator);
-                        WriteByte(AsciiControlChars.PrintBarcode);
+                        WriteByte(PrintingControlSignals.GroupSeparator);
+                        WriteByte(PrintingControlSignals.PrintBarcode);
                         WriteByte(6);
                         WriteBytes(outputBytes);
                         WriteByte(0);
@@ -980,8 +964,8 @@ namespace LogicPOS.Printing.Common
                 case BarcodeType.code93: //TODO: overload PrintBarcode method with a byte array parameter
                     if (data.Length > 1)
                     {
-                        WriteByte(AsciiControlChars.GroupSeparator);
-                        WriteByte(AsciiControlChars.PrintBarcode);
+                        WriteByte(PrintingControlSignals.GroupSeparator);
+                        WriteByte(PrintingControlSignals.PrintBarcode);
                         WriteByte(7); //TODO: use format 2 (init string : 29,107,72) (0x00 can be a value, too)
                         WriteBytes(outputBytes);
                         WriteByte(0);
@@ -990,8 +974,8 @@ namespace LogicPOS.Printing.Common
                 case BarcodeType.code128: //TODO: overload PrintBarcode method with a byte array parameter
                     if (data.Length > 1)
                     {
-                        WriteByte(AsciiControlChars.GroupSeparator);
-                        WriteByte(AsciiControlChars.PrintBarcode);
+                        WriteByte(PrintingControlSignals.GroupSeparator);
+                        WriteByte(PrintingControlSignals.PrintBarcode);
                         WriteByte(8); //TODO: use format 2 (init string : 29,107,73) (0x00 can be a value, too)
                         WriteBytes(outputBytes);
                         WriteByte(0);
@@ -1000,8 +984,8 @@ namespace LogicPOS.Printing.Common
                 case BarcodeType.code11:
                     if (data.Length > 1)
                     {
-                        WriteByte(AsciiControlChars.GroupSeparator);
-                        WriteByte(AsciiControlChars.PrintBarcode);
+                        WriteByte(PrintingControlSignals.GroupSeparator);
+                        WriteByte(PrintingControlSignals.PrintBarcode);
                         WriteByte(9);
                         WriteBytes(outputBytes);
                         WriteByte(0);
@@ -1010,8 +994,8 @@ namespace LogicPOS.Printing.Common
                 case BarcodeType.msi:
                     if (data.Length > 1)
                     {
-                        WriteByte(AsciiControlChars.GroupSeparator);
-                        WriteByte(AsciiControlChars.PrintBarcode);
+                        WriteByte(PrintingControlSignals.GroupSeparator);
+                        WriteByte(PrintingControlSignals.PrintBarcode);
                         WriteByte(10);
                         WriteBytes(outputBytes);
                         WriteByte(0);
@@ -1024,8 +1008,8 @@ namespace LogicPOS.Printing.Common
                         byte store_pL = (byte)(store_len % 256);
                         byte store_pH = (byte)(store_len / 256);
 
-                        WriteByte(AsciiControlChars.GroupSeparator);
-                        WriteByte(AsciiControlChars.PrintBarcode);
+                        WriteByte(PrintingControlSignals.GroupSeparator);
+                        WriteByte(PrintingControlSignals.PrintBarcode);
                         WriteBytes(new byte[] { 29, 40, 107, 4, 0, 49, 65, 50, 0 });
                         WriteBytes(new byte[] { 29, 40, 107, 4, 0, 49, 65, 50, 0 });
                         WriteBytes(new byte[] { 29, 40, 107, 3, 0, 49, 67, 8 });
@@ -1045,8 +1029,8 @@ namespace LogicPOS.Printing.Common
         /// <param name="size">2 a 6 </param>
         public void SetBarcodeWidth(int size)
         {
-            WriteByte(AsciiControlChars.GroupSeparator);
-            WriteByte(AsciiControlChars.SetBarcodeWidth);
+            WriteByte(PrintingControlSignals.GroupSeparator);
+            WriteByte(PrintingControlSignals.SetBarcodeWidth);
             WriteByte((byte)size);
         }
 
@@ -1056,8 +1040,8 @@ namespace LogicPOS.Printing.Common
         /// <param name="size">1 a 255</param>
         public void SetBarcodeHeight(int size)
         {
-            WriteByte(AsciiControlChars.GroupSeparator);
-            WriteByte(AsciiControlChars.SetBarcodeHeight);
+            WriteByte(PrintingControlSignals.GroupSeparator);
+            WriteByte(PrintingControlSignals.SetBarcodeHeight);
             WriteByte((byte)size);
         }
 
@@ -1070,7 +1054,7 @@ namespace LogicPOS.Printing.Common
         [Obsolete("Cannot find in manual")]
         public void SetBarcodeLeftSpace(byte spacingDots)
         {
-            WriteByte(AsciiControlChars.GroupSeparator);
+            WriteByte(PrintingControlSignals.GroupSeparator);
             WriteByte(120);
             WriteByte(spacingDots);
         }
@@ -1126,8 +1110,8 @@ namespace LogicPOS.Printing.Common
 
             // Set the line spacing to 24 dots, the height of each "stripe" of the
             // image that we're drawing.
-            WriteByte(AsciiControlChars.Escape);
-            WriteByte(AsciiControlChars.SetLineSpacing);
+            WriteByte(PrintingControlSignals.Escape);
+            WriteByte(PrintingControlSignals.SetLineSpacing);
             WriteByte((byte)24);
 
             // OK. So, starting from x = 0, read 24 bits down and send that data
@@ -1136,9 +1120,9 @@ namespace LogicPOS.Printing.Common
 
             while (offset < data.Height)
             {
-                WriteByte(AsciiControlChars.Escape);
-                WriteByte(AsciiControlChars.SelectBitImageMode);                // bit-image mode
-                WriteByte(AsciiControlChars.SelectPrintMode);                   // 24-dot double-density
+                WriteByte(PrintingControlSignals.Escape);
+                WriteByte(PrintingControlSignals.SelectBitImageMode);                // bit-image mode
+                WriteByte(PrintingControlSignals.SelectPrintMode);                   // 24-dot double-density
                 WriteByte((byte)width[0]);                                      // width low byte
                 WriteByte((byte)width[1]);                                      // width high byte
 
@@ -1171,12 +1155,12 @@ namespace LogicPOS.Printing.Common
                 }
 
                 offset += 24;
-                WriteByte(AsciiControlChars.Newline);
+                WriteByte(PrintingControlSignals.Newline);
             }
 
             // Restore the line spacing to the default of 30 dots.
-            WriteByte(AsciiControlChars.Escape);
-            WriteByte(AsciiControlChars.SetLineSpacing);
+            WriteByte(PrintingControlSignals.Escape);
+            WriteByte(PrintingControlSignals.SetLineSpacing);
             WriteByte((byte)30);
 
         }
@@ -1199,8 +1183,8 @@ namespace LogicPOS.Printing.Common
 
             // Set the line spacing to 24 dots, the height of each "stripe" of the
             // image that we're drawing.
-            WriteByte(AsciiControlChars.Escape);
-            WriteByte(AsciiControlChars.SetLineSpacing);
+            WriteByte(PrintingControlSignals.Escape);
+            WriteByte(PrintingControlSignals.SetLineSpacing);
             WriteByte((byte)24);
 
             // OK. So, starting from x = 0, read 24 bits down and send that data
@@ -1209,9 +1193,9 @@ namespace LogicPOS.Printing.Common
 
             while (offset < data.Height)
             {
-                WriteByte(AsciiControlChars.Escape);
-                WriteByte(AsciiControlChars.SelectBitImageMode);                // bit-image mode
-                WriteByte(AsciiControlChars.SelectPrintMode);                   // 24-dot double-density
+                WriteByte(PrintingControlSignals.Escape);
+                WriteByte(PrintingControlSignals.SelectBitImageMode);                // bit-image mode
+                WriteByte(PrintingControlSignals.SelectPrintMode);                   // 24-dot double-density
                 WriteByte((byte)width[0]);                                      // width low byte
                 WriteByte((byte)width[1]);                                      // width high byte
 
@@ -1244,12 +1228,12 @@ namespace LogicPOS.Printing.Common
                 }
 
                 offset += 24;
-                WriteByte(AsciiControlChars.Newline);
+                WriteByte(PrintingControlSignals.Newline);
             }
 
             // Restore the line spacing to the default of 30 dots.
-            WriteByte(AsciiControlChars.Escape);
-            WriteByte(AsciiControlChars.SetLineSpacing);
+            WriteByte(PrintingControlSignals.Escape);
+            WriteByte(PrintingControlSignals.SetLineSpacing);
             WriteByte((byte)30);
         }
 
@@ -1352,7 +1336,7 @@ namespace LogicPOS.Printing.Common
         /// </summary>
         public void Sleep()
         {
-            WriteByte(AsciiControlChars.Escape);
+            WriteByte(PrintingControlSignals.Escape);
             WriteByte(61);
             WriteByte(0);
         }
@@ -1362,8 +1346,8 @@ namespace LogicPOS.Printing.Common
         /// </summary>		
         public void WakeUp()
         {
-            WriteByte(AsciiControlChars.Escape);
-            WriteByte(AsciiControlChars.SetPeripheralDevice);
+            WriteByte(PrintingControlSignals.Escape);
+            WriteByte(PrintingControlSignals.SetPeripheralDevice);
             WriteByte(1);
         }
 
@@ -1380,8 +1364,8 @@ namespace LogicPOS.Printing.Common
 
         public void Cut(bool full, string configCutCommand)
         {
-            WriteByte(AsciiControlChars.GroupSeparator);
-            WriteByte(AsciiControlChars.SelectCutModeAndCutPaper);
+            WriteByte(PrintingControlSignals.GroupSeparator);
+            WriteByte(PrintingControlSignals.SelectCutModeAndCutPaper);
 
             //Use to convert
             //http://www.binaryhexconverter.com/decimal-to-hex-converter
@@ -1441,8 +1425,8 @@ namespace LogicPOS.Printing.Common
         public void FeedVerticalAndCut(int m)
         {
             // Feed 3 vertical motion units and cut the paper with a 1 point cut
-            WriteByte(AsciiControlChars.GroupSeparator);
-            WriteByte(AsciiControlChars.SelectCutModeAndCutPaper);
+            WriteByte(PrintingControlSignals.GroupSeparator);
+            WriteByte(PrintingControlSignals.SelectCutModeAndCutPaper);
             WriteByte((byte)66);
             WriteByte((byte)m);
         }
@@ -1455,8 +1439,8 @@ namespace LogicPOS.Printing.Common
         /// </param>
         public void FeedDots(byte dotsToFeed)
         {
-            WriteByte(AsciiControlChars.Escape);
-            WriteByte(AsciiControlChars.PrintAndFeedPaper);
+            WriteByte(PrintingControlSignals.Escape);
+            WriteByte(PrintingControlSignals.PrintAndFeedPaper);
             WriteByte(dotsToFeed);
         }
 
@@ -1465,18 +1449,18 @@ namespace LogicPOS.Printing.Common
             switch (encoding)
             {
                 case "IBM437":
-                    WriteByte(AsciiControlChars.Escape);
-                    WriteByte(AsciiControlChars.SelectCharacterCodeTable);
+                    WriteByte(PrintingControlSignals.Escape);
+                    WriteByte(PrintingControlSignals.SelectCharacterCodeTable);
                     WriteByte(0);
                     break;
                 case "PC850":
-                    WriteByte(AsciiControlChars.Escape);
-                    WriteByte(AsciiControlChars.SelectCharacterCodeTable);
+                    WriteByte(PrintingControlSignals.Escape);
+                    WriteByte(PrintingControlSignals.SelectCharacterCodeTable);
                     WriteByte(2);
                     break;
                 case "PC860":
-                    WriteByte(AsciiControlChars.Escape);
-                    WriteByte(AsciiControlChars.SelectCharacterCodeTable);
+                    WriteByte(PrintingControlSignals.Escape);
+                    WriteByte(PrintingControlSignals.SelectCharacterCodeTable);
                     WriteByte(3);
                     break;
             }
@@ -1489,8 +1473,8 @@ namespace LogicPOS.Printing.Common
         /// <param name="pulse">1 to 8</param>
         public void GeneratePulseRealtime(int connector, int pulse)
         {
-            WriteByte(AsciiControlChars.DLE);
-            WriteByte(AsciiControlChars.GeneratePulseRealtime);
+            WriteByte(PrintingControlSignals.DLE);
+            WriteByte(PrintingControlSignals.GeneratePulseRealtime);
             WriteByte((byte)1);
             WriteByte((byte)connector);
         }
@@ -1503,8 +1487,8 @@ namespace LogicPOS.Printing.Common
         /// <param name="t2">1,49</param>
         public void GeneratePulse(int m, int t1, int t2)
         {
-            WriteByte(AsciiControlChars.Escape);
-            WriteByte(AsciiControlChars.GeneratePulse);
+            WriteByte(PrintingControlSignals.Escape);
+            WriteByte(PrintingControlSignals.GeneratePulse);
             WriteByte((byte)m);
             WriteByte((byte)t1);
             WriteByte((byte)t2);
@@ -1516,7 +1500,7 @@ namespace LogicPOS.Printing.Common
         /// <param name="set"> LSB is 0 - enable; LSB is 1 - disable</param>
         public void SetPanelButton(int set)
         {
-            WriteByte(AsciiControlChars.Escape);
+            WriteByte(PrintingControlSignals.Escape);
             WriteByte(99);
             WriteByte(53);
             WriteByte((byte)set);
@@ -1528,7 +1512,7 @@ namespace LogicPOS.Printing.Common
         /// <param name="set">LSB is 0 - off; LSB is 1 - on</param>
         public void SetupUpsideDownPrinting(int set)
         {
-            WriteByte(AsciiControlChars.Escape);
+            WriteByte(PrintingControlSignals.Escape);
             WriteByte(123);
             WriteByte((byte)set);
         }
@@ -1539,7 +1523,7 @@ namespace LogicPOS.Printing.Common
         /// <param name="set">0,1,2,3</param>
         public void SelectPrintingPositionHRIBarcode(int set)
         {
-            WriteByte(AsciiControlChars.GroupSeparator);
+            WriteByte(PrintingControlSignals.GroupSeparator);
             WriteByte((byte)72);
             WriteByte((byte)set);
         }
@@ -1550,7 +1534,7 @@ namespace LogicPOS.Printing.Common
         /// <param name="set">0,1</param>
         public void SelectFontHRIBarcode(int set)
         {
-            WriteByte(AsciiControlChars.GroupSeparator);
+            WriteByte(PrintingControlSignals.GroupSeparator);
             WriteByte((byte)102);
             WriteByte((byte)set);
         }
@@ -1627,11 +1611,10 @@ namespace LogicPOS.Printing.Common
             BinaryStream.Write(valueToWrite);
         }
 
-        public byte[] getByteArray()
+        public byte[] GetByteArray()
         {
             BinaryStream.Flush();
-
-            return _memStream.ToArray();
+            return _memoryStream.ToArray();
         }
 
     }

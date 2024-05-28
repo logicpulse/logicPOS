@@ -57,15 +57,15 @@ namespace LogicPOS.Printing.Documents
                 PrintTitles();
 
                 //Align Center
-                _thermalPrinterGeneric.SetAlignCenter();
+                _genericThermalPrinter.SetAlignCenter();
 
                 PrintDocumentDetails();
 
                 //Reset to Left
-                _thermalPrinterGeneric.SetAlignLeft();
+                _genericThermalPrinter.SetAlignLeft();
 
                 //Line Feed
-                _thermalPrinterGeneric.LineFeed();
+                _genericThermalPrinter.LineFeed();
             }
             catch (Exception ex)
             {
@@ -91,7 +91,7 @@ namespace LogicPOS.Printing.Documents
             foreach (fin_documentorderdetail item in _orderTicket.OrderDetail)
             {
                 //Add All Rows if Normal Mode without explicit ArticlePrinter defined, or print Printer Articles for explicit defined ArticlePrinter 
-                if (!_enableArticlePrinter || _thermalPrinterGeneric.Printer == item.Article.Printer)
+                if (!_enableArticlePrinter || _genericThermalPrinter.Printer == item.Article.Printer)
                 {
                     //Add Rows to main Ticket
                     dataRow = ticketTable.NewRow();
@@ -104,7 +104,7 @@ namespace LogicPOS.Printing.Documents
             }
 
             //Print Table
-            ticketTable.Print(_thermalPrinterGeneric);
+            ticketTable.Print(_genericThermalPrinter);
         }
     }
 }

@@ -10,6 +10,7 @@ using LogicPOS.Settings.Extensions;
 using LogicPOS.Utility;
 using LogicPOS.Globalization;
 using logicpos.datalayer.Xpo;
+using LogicPOS.Data.XPO.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {

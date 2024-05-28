@@ -3,6 +3,7 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using logicpos.shared.Enums;
 using logicpos.shared.Enums.ThermalPrinter;
+using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Globalization;
 using LogicPOS.Printing.Common;
@@ -1150,12 +1151,12 @@ namespace LogicPOS.Printing.Utility
 
         private static bool SystemPrintInsert(fin_documentfinancemaster pDocumentFinanceMaster, string pPrinterDesignation, int pPrintCopies, List<int> pCopyNames, bool pSecondPrint, string pPrintMotive)
         {
-            return SystemPrintInsert(pDocumentFinanceMaster, null, pPrinterDesignation, pPrintCopies, pCopyNames, pSecondPrint, pPrintMotive, XPOSettings.LoggedUser, XPOSettings.LoggedTerminal);
+            return SystemPrintInsert(pDocumentFinanceMaster, null, pPrinterDesignation, pPrintCopies, pCopyNames, pSecondPrint, pPrintMotive, XPOSettings.LoggedUser, TerminalSettings.LoggedTerminal);
         }
 
         private static bool SystemPrintInsert(fin_documentfinancepayment pDocumentFinancePayment, string pPrinterDesignation, int pPrintCopies, List<int> pCopyNames)
         {
-            return SystemPrintInsert(null, pDocumentFinancePayment, pPrinterDesignation, pPrintCopies, pCopyNames, false, string.Empty, XPOSettings.LoggedUser, XPOSettings.LoggedTerminal);
+            return SystemPrintInsert(null, pDocumentFinancePayment, pPrinterDesignation, pPrintCopies, pCopyNames, false, string.Empty, XPOSettings.LoggedUser, TerminalSettings.LoggedTerminal);
         }
 
         private static bool SystemPrintInsert(fin_documentfinancemaster pDocumentFinanceMaster, fin_documentfinancepayment pDocumentFinancePayment, string pPrinterDesignation, int pPrintCopies, List<int> pCopyNames, bool pSecondPrint, string pPrintMotive, sys_userdetail pUserDetail, pos_configurationplaceterminal pConfigurationPlaceTerminal)
@@ -1286,12 +1287,12 @@ namespace LogicPOS.Printing.Utility
 
             //Finish Payment with Print Job + Open Drawer (If Not TableConsult)
             fin_documentfinanceyearserieterminal xDocumentFinanceYearSerieTerminal = DocumentProcessingSeriesUtils.GetDocumentFinanceYearSerieTerminal(pSession, pDocumentFinanceMaster.DocumentType.Oid);
-            PrintFinanceDocument(XPOSettings.LoggedTerminal.Printer, pDocumentFinanceMaster, pCopyNames, pSecondCopy, pMotive);
+            PrintFinanceDocument(TerminalSettings.LoggedTerminal.Printer, pDocumentFinanceMaster, pCopyNames, pSecondCopy, pMotive);
 
             //Open Door if Has Valid Payment
             if (pDocumentFinanceMaster.PaymentMethod != null)
             {
-                OpenDoor(XPOSettings.LoggedTerminal.ThermalPrinter);
+                OpenDoor(TerminalSettings.LoggedTerminal.ThermalPrinter);
             }
             result = true;
 
@@ -1433,20 +1434,20 @@ namespace LogicPOS.Printing.Utility
         public static bool OpenDoor(sys_configurationprinters pPrinter)
         {
             bool result = false;
-            if (XPOSettings.LoggedTerminal.ThermalPrinter != null)
+            if (TerminalSettings.HasLoggedTerminal)
             {
                 bool hasPermission = GeneralSettings.HasPermissionTo("HARDWARE_DRAWER_OPEN");
-                int m = XPOSettings.LoggedTerminal.ThermalPrinter.ThermalOpenDrawerValueM;
-                int t1 = XPOSettings.LoggedTerminal.ThermalPrinter.ThermalOpenDrawerValueT1;
-                int t2 = XPOSettings.LoggedTerminal.ThermalPrinter.ThermalOpenDrawerValueT2;
+                int m = TerminalSettings.LoggedTerminal.ThermalPrinter.ThermalOpenDrawerValueM;
+                int t1 = TerminalSettings.LoggedTerminal.ThermalPrinter.ThermalOpenDrawerValueT1;
+                int t2 = TerminalSettings.LoggedTerminal.ThermalPrinter.ThermalOpenDrawerValueT2;
                 PrintObject printObjectSINOCAN = new PrintObject(0);
-                if (XPOSettings.LoggedTerminal.ThermalPrinter != null && hasPermission)
+                if (TerminalSettings.HasLoggedTerminal && hasPermission)
                 {
-                    switch (XPOSettings.LoggedTerminal.ThermalPrinter.PrinterType.Token)
+                    switch (TerminalSettings.LoggedTerminal.ThermalPrinter.PrinterType.Token)
                     {
                         //Impressora SINOCAN em ambiente Windows
                         case "THERMAL_PRINTER_WINDOWS":
-                            printObjectSINOCAN.OpenDoor(XPOSettings.LoggedTerminal.ThermalPrinter.PrinterType.Token, XPOSettings.LoggedTerminal.ThermalPrinter.Designation, m, t1, t2);
+                            printObjectSINOCAN.OpenDoor(TerminalSettings.LoggedTerminal.ThermalPrinter.PrinterType.Token, TerminalSettings.LoggedTerminal.ThermalPrinter.Designation, m, t1, t2);
                             break;
                         //Impressora SINOCAN em ambiente Linux
                         case "THERMAL_PRINTER_SOCKET":
@@ -1456,7 +1457,7 @@ namespace LogicPOS.Printing.Utility
                             //int t2 = Convert.ToInt32(LogicPOS.Settings.GeneralSettings.Settings["DoorValueT2"]);
                             // Open Drawer
                             //TK016249 - Impressoras - Diferenciação entre Tipos
-                            printObjectSINOCAN.OpenDoor(XPOSettings.LoggedTerminal.ThermalPrinter.PrinterType.Token, XPOSettings.LoggedTerminal.ThermalPrinter.NetworkName, m, t1, t2);
+                            printObjectSINOCAN.OpenDoor(TerminalSettings.LoggedTerminal.ThermalPrinter.PrinterType.Token, TerminalSettings.LoggedTerminal.ThermalPrinter.NetworkName, m, t1, t2);
                             //Audit
                             XPOHelper.Audit("CASHDRAWER_OPEN", CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_cashdrawer_open"));
 

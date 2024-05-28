@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Data.XPO.Settings;
 
 //Note
 //1) To disable navigator butons ex INS,DEL, use privileges

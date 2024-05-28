@@ -4,6 +4,7 @@ using DevExpress.Xpo.DB;
 using DevExpress.Xpo.Metadata;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
+using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
@@ -479,7 +480,7 @@ namespace logicpos.datalayer.Xpo
             systemNotificationType = (sys_systemnotificationtype)xpoSession.GetObjectByKey(typeof(sys_systemnotificationtype), NotificationSettings.XpoOidSystemNotificationTypeNewTerminalRegistered);
             if (systemNotificationType != null)
             {
-                criteriaOperator = CriteriaOperator.Parse(string.Format("NotificationType = '{0}' AND TerminalLastRead = '{1}'", NotificationSettings.XpoOidSystemNotificationTypeNewTerminalRegistered, XPOSettings.LoggedTerminal.Oid));
+                criteriaOperator = CriteriaOperator.Parse(string.Format("NotificationType = '{0}' AND TerminalLastRead = '{1}'", NotificationSettings.XpoOidSystemNotificationTypeNewTerminalRegistered, TerminalSettings.LoggedTerminal.Oid));
                 xpcSystemNotification = new XPCollection(xpoSession, typeof(sys_systemnotification), criteriaOperator);
                 //Create Notification
                 if (xpcSystemNotification.Count == 0)
@@ -487,7 +488,7 @@ namespace logicpos.datalayer.Xpo
                     systemNotification = new sys_systemnotification(xpoSession);
                     systemNotification.Ord = ord;
                     systemNotification.NotificationType = systemNotificationType;
-                    systemNotification.Message = string.Format(systemNotificationType.Message, XPOSettings.LoggedTerminal.Designation);
+                    systemNotification.Message = string.Format(systemNotificationType.Message, TerminalSettings.LoggedTerminal.Designation);
                     systemNotification.Save();
                     ord++;
                 }
@@ -708,7 +709,7 @@ namespace logicpos.datalayer.Xpo
             return Audit(
                 XPOSettings.Session,
                 XPOSettings.LoggedUser ?? null,
-                XPOSettings.LoggedTerminal ?? null,
+                TerminalSettings.LoggedTerminal ?? null,
                 pAuditTypeToken,
                 pDescription
             );

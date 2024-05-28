@@ -292,11 +292,11 @@ namespace LogicPOS.Printing.Common
                 case "THERMAL_PRINTER_WINDOWS":
                     //Impressora SINOCAN em ambiente Windows 
                     //TK016310 Configuração Impressoras Windows 
-                    Windows.Print.USBPrintWindows(pPrinterName, printer.getByteArray());
+                    Windows.Print.USBPrintWindows(pPrinterName, printer.GetByteArray());
                     break;
                 case "THERMAL_PRINTER_SOCKET":
                     //Impressora SINOCAN em ambiente Linux Socket
-                    Socket.Print.SocketPrint(pPrinterName, printer.getByteArray());
+                    Socket.Print.SocketPrint(pPrinterName, printer.GetByteArray());
                     break;
             }
         }
@@ -365,12 +365,12 @@ namespace LogicPOS.Printing.Common
                 case "THERMAL_PRINTER_WINDOWS":
                     //Impressora SINOCAN em ambiente Windows 
                     //TK016310 Configuração Impressoras Windows 
-                    Usb.Print.USBPrintWindows(pPrinterName, printer.getByteArray(), defaultValue);
+                    Usb.Print.USBPrintWindows(pPrinterName, printer.GetByteArray(), defaultValue);
                     //genericwindows.Print.USBPrintWindows(pPrinterName, printer.getByteArray());
                     break;
                 case "THERMAL_PRINTER_SOCKET":
                     //Impressora SINOCAN em ambiente Linux Socket
-                    Usb.Print.USBPrintWindows(pPrinterName, printer.getByteArray(), defaultValue);
+                    Usb.Print.USBPrintWindows(pPrinterName, printer.GetByteArray(), defaultValue);
                     break;
             }
         }

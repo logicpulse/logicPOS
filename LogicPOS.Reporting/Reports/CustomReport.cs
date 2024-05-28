@@ -3,6 +3,7 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
 using logicpos.datalayer.Xpo;
 using logicpos.shared.Enums;
+using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Globalization;
 using LogicPOS.Reporting.BOs;
 using LogicPOS.Reporting.BOs.Articles;
@@ -267,7 +268,7 @@ namespace LogicPOS.Reporting
                     //if (export.ShowDialog()) this.Export(export, fileName);
                     //TK016206 Reports - Exportação para Xls/pdf
                     //TK016249 - Impressoras - Diferenciação entre Tipos
-                    if ((pViewMode == CustomReportDisplayMode.ExportPDFSilent) || (pViewMode == CustomReportDisplayMode.ExportPDF) || !PrintingSettings.UsingThermalPrinter)
+                    if ((pViewMode == CustomReportDisplayMode.ExportPDFSilent) || (pViewMode == CustomReportDisplayMode.ExportPDF) || !PrintingSettings.ThermalPrinter.UsingThermalPrinter)
                     {
                         FastReport.Export.Pdf.PDFExport export = new FastReport.Export.Pdf.PDFExport();
                         try
@@ -332,7 +333,7 @@ namespace LogicPOS.Reporting
                             int heightPDF = ScreenSizePDF.Height;
                             bool exportXls = true;
 
-                            if (!PrintingSettings.UsingThermalPrinter) exportXls = false;
+                            if (!PrintingSettings.ThermalPrinter.UsingThermalPrinter) exportXls = false;
 
                             Application.Run(new PDFViewer.Winforms.PDFViewer(docPath, widthPDF - 50, heightPDF - 20, exportXls));
                         }

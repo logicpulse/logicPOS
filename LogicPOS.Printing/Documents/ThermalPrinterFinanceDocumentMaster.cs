@@ -1,5 +1,6 @@
 ﻿using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
+using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Globalization;
 using LogicPOS.Printing.Enums;
 using LogicPOS.Printing.Templates;
@@ -130,7 +131,7 @@ namespace LogicPOS.Printing.Documents
         public void PrintDocumentMasterDocumentType()
         {
             //Set Align Center
-            _thermalPrinterGeneric.SetAlignCenter();
+            _genericThermalPrinter.SetAlignCenter();
 
             /* IN008024 */
             //string appOperationModeToken = LogicPOS.Settings.GeneralSettings.Settings["appOperationModeToken"].ToLower();
@@ -144,12 +145,12 @@ namespace LogicPOS.Printing.Documents
                     , _documentMaster.SourceOrderMain.PlaceTable.Designation
                     , _documentMaster.SourceOrderMain.PlaceTable.Place.Designation
                 );
-                _thermalPrinterGeneric.WriteLine(tableZone);
-                _thermalPrinterGeneric.LineFeed();
+                _genericThermalPrinter.WriteLine(tableZone);
+                _genericThermalPrinter.LineFeed();
             }
 
             //Reset Align 
-            _thermalPrinterGeneric.SetAlignLeft();
+            _genericThermalPrinter.SetAlignLeft();
         }
 
         //Loop Details
@@ -194,7 +195,7 @@ namespace LogicPOS.Printing.Documents
                 TicketTable ticketTable = new TicketTable(dataTable, columns, _maxCharsPerLineNormal - _ticketTablePaddingLeftLength);
                 string paddingLeftFormat = "  {0,-" + ticketTable.TableWidth + "}";//"  {0,-TableWidth}"
                 //Print Table Headers
-                ticketTable.Print(_thermalPrinterGeneric, paddingLeftFormat);
+                ticketTable.Print(_genericThermalPrinter, paddingLeftFormat);
 
                 //Print Items
                 foreach (FRBODocumentFinanceDetail item in _documentFinanceDetailList)
@@ -205,7 +206,7 @@ namespace LogicPOS.Printing.Documents
                 }
 
                 //Line Feed
-                _thermalPrinterGeneric.LineFeed();
+                _genericThermalPrinter.LineFeed();
             }
             catch (Exception ex)
             {
@@ -225,7 +226,7 @@ namespace LogicPOS.Printing.Documents
                     : pFinanceDetail.Designation.Substring(0, _maxCharsPerLineNormalBold)
                 ;
                 //Print Item Designation : Bold
-                _thermalPrinterGeneric.WriteLine(designation, WriteLineTextMode.Bold);
+                _genericThermalPrinter.WriteLine(designation, WriteLineTextMode.Bold);
 
                 //Prepare ExemptionReason
                 string exemptionReason = string.Empty;
@@ -265,10 +266,10 @@ namespace LogicPOS.Printing.Documents
                 //Add DataRow to Table, Ready for Print
                 pTicketTable.Rows.Add(dataRow);
                 //Print Table Rows
-                pTicketTable.Print(_thermalPrinterGeneric, WriteLineTextMode.Normal, true, pPaddingLeftFormat);
+                pTicketTable.Print(_genericThermalPrinter, WriteLineTextMode.Normal, true, pPaddingLeftFormat);
 
                 //VatExemptionReason
-                _thermalPrinterGeneric.WriteLine(exemptionReason, WriteLineTextMode.Small); /* IN009211 - WriteLine() already checks for empties and nulls */
+                _genericThermalPrinter.WriteLine(exemptionReason, WriteLineTextMode.Small); /* IN009211 - WriteLine() already checks for empties and nulls */
             }
             catch (Exception ex)
             {
@@ -372,7 +373,7 @@ namespace LogicPOS.Printing.Documents
                 };
 
                 //TicketTable(DataTable pDataTable, List<TicketColumn> pColumnsProperties, int pTableWidth)
-                TicketTable ticketTable = new TicketTable(dataTable, columns, _thermalPrinterGeneric.MaxCharsPerLineNormalBold);
+                TicketTable ticketTable = new TicketTable(dataTable, columns, _genericThermalPrinter.MaxCharsPerLineNormalBold);
 
                 //Custom Print Loop, to Print all Table Rows, and Detect Rows to Print in DoubleHeight (TotalChange(4) and Total(7))
                 List<string> table = ticketTable.GetTable();
@@ -383,11 +384,11 @@ namespace LogicPOS.Printing.Documents
                     //Prepare TextMode Based on Row
                     rowTextMode = (i == 5 || i == 8) ? WriteLineTextMode.DoubleHeightBold : WriteLineTextMode.Bold;
                     //Print Row
-                    _thermalPrinterGeneric.WriteLine(table[i], rowTextMode);
+                    _genericThermalPrinter.WriteLine(table[i], rowTextMode);
                 }
 
                 //Line Feed
-                _thermalPrinterGeneric.LineFeed();
+                _genericThermalPrinter.LineFeed();
             }
             catch (Exception ex)
             {
@@ -432,12 +433,12 @@ namespace LogicPOS.Printing.Documents
                 };
 
                 //TicketTable(DataTable pDataTable, List<TicketColumn> pColumnsProperties, int pTableWidth)
-                TicketTable ticketTable = new TicketTable(dataTable, columns, _thermalPrinterGeneric.MaxCharsPerLineNormal);
+                TicketTable ticketTable = new TicketTable(dataTable, columns, _genericThermalPrinter.MaxCharsPerLineNormal);
                 //Print Table Buffer
-                ticketTable.Print(_thermalPrinterGeneric);
+                ticketTable.Print(_genericThermalPrinter);
 
                 //Line Feed
-                _thermalPrinterGeneric.LineFeed();
+                _genericThermalPrinter.LineFeed();
             }
             catch (Exception ex)
             {
@@ -454,44 +455,44 @@ namespace LogicPOS.Printing.Documents
                 if (_documentFinanceMasterList[0].DocumentTypeWayBill)
                 {
                     //WayBill Local Load
-                    _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_documentfinance_waybill_local_load"), WriteLineTextMode.Bold);
-                    _thermalPrinterGeneric.WriteLine(string.Format("{0} {1}", _documentFinanceMasterList[0].ShipFromAddressDetail, _documentFinanceMasterList[0].ShipFromCity));
-                    _thermalPrinterGeneric.WriteLine(string.Format("{0} {1} [{2}]", _documentFinanceMasterList[0].ShipFromPostalCode, _documentFinanceMasterList[0].ShipFromRegion, _documentFinanceMasterList[0].ShipFromCountry));
-                    _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_from_delivery_date_report"), XPOHelper.DateTimeToString(_documentFinanceMasterList[0].ShipFromDeliveryDate));
-                    _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_from_delivery_id_report"), _documentFinanceMasterList[0].ShipFromDeliveryID);
-                    _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_from_warehouse_id_report"), _documentFinanceMasterList[0].ShipFromWarehouseID);
-                    _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_from_location_id_report"), _documentFinanceMasterList[0].ShipFromLocationID);
+                    _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_documentfinance_waybill_local_load"), WriteLineTextMode.Bold);
+                    _genericThermalPrinter.WriteLine(string.Format("{0} {1}", _documentFinanceMasterList[0].ShipFromAddressDetail, _documentFinanceMasterList[0].ShipFromCity));
+                    _genericThermalPrinter.WriteLine(string.Format("{0} {1} [{2}]", _documentFinanceMasterList[0].ShipFromPostalCode, _documentFinanceMasterList[0].ShipFromRegion, _documentFinanceMasterList[0].ShipFromCountry));
+                    _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_from_delivery_date_report"), XPOHelper.DateTimeToString(_documentFinanceMasterList[0].ShipFromDeliveryDate));
+                    _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_from_delivery_id_report"), _documentFinanceMasterList[0].ShipFromDeliveryID);
+                    _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_from_warehouse_id_report"), _documentFinanceMasterList[0].ShipFromWarehouseID);
+                    _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_from_location_id_report"), _documentFinanceMasterList[0].ShipFromLocationID);
 
                     //Separate with Blank Line
-                    _thermalPrinterGeneric.LineFeed();
+                    _genericThermalPrinter.LineFeed();
 
                     //WayBill Local Download
-                    _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_documentfinance_waybill_local_download"), WriteLineTextMode.Bold);
-                    _thermalPrinterGeneric.WriteLine(string.Format("{0} {1}", _documentFinanceMasterList[0].ShipToAddressDetail, _documentFinanceMasterList[0].ShipToCity));
-                    _thermalPrinterGeneric.WriteLine(string.Format("{0} {1} [{2}]", _documentFinanceMasterList[0].ShipToPostalCode, _documentFinanceMasterList[0].ShipToRegion, _documentFinanceMasterList[0].ShipToCountry));
-                    _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_to_delivery_date_report"), XPOHelper.DateTimeToString(_documentFinanceMasterList[0].ShipToDeliveryDate));
-                    _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_to_delivery_id_report"), _documentFinanceMasterList[0].ShipToDeliveryID);
-                    _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_to_warehouse_id_report"), _documentFinanceMasterList[0].ShipToWarehouseID);
-                    _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_to_location_id_report"), _documentFinanceMasterList[0].ShipToLocationID);
+                    _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_documentfinance_waybill_local_download"), WriteLineTextMode.Bold);
+                    _genericThermalPrinter.WriteLine(string.Format("{0} {1}", _documentFinanceMasterList[0].ShipToAddressDetail, _documentFinanceMasterList[0].ShipToCity));
+                    _genericThermalPrinter.WriteLine(string.Format("{0} {1} [{2}]", _documentFinanceMasterList[0].ShipToPostalCode, _documentFinanceMasterList[0].ShipToRegion, _documentFinanceMasterList[0].ShipToCountry));
+                    _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_to_delivery_date_report"), XPOHelper.DateTimeToString(_documentFinanceMasterList[0].ShipToDeliveryDate));
+                    _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_to_delivery_id_report"), _documentFinanceMasterList[0].ShipToDeliveryID);
+                    _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_to_warehouse_id_report"), _documentFinanceMasterList[0].ShipToWarehouseID);
+                    _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_to_location_id_report"), _documentFinanceMasterList[0].ShipToLocationID);
 
                     //Line Feed
-                    _thermalPrinterGeneric.LineFeed();
+                    _genericThermalPrinter.LineFeed();
 
                     //ATDocCodeID
                     if (!string.IsNullOrEmpty(_documentFinanceMasterList[0].ATDocCodeID))
                     {
                         //Set Align Center
-                        _thermalPrinterGeneric.SetAlignCenter();
+                        _genericThermalPrinter.SetAlignCenter();
 
                         //WayBill Local Load
-                        _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_at_atdoccodeid"), WriteLineTextMode.Bold);
-                        _thermalPrinterGeneric.WriteLine(_documentFinanceMasterList[0].ATDocCodeID, WriteLineTextMode.DoubleHeight);
+                        _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_at_atdoccodeid"), WriteLineTextMode.Bold);
+                        _genericThermalPrinter.WriteLine(_documentFinanceMasterList[0].ATDocCodeID, WriteLineTextMode.DoubleHeight);
 
                         //Reset Align 
-                        _thermalPrinterGeneric.SetAlignLeft();
+                        _genericThermalPrinter.SetAlignLeft();
 
                         //Line Feed
-                        _thermalPrinterGeneric.LineFeed();
+                        _genericThermalPrinter.LineFeed();
                     }
                 }
             }

@@ -3,6 +3,7 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
+using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Globalization;
 using System;
 
@@ -53,7 +54,7 @@ namespace LogicPOS.Modules.StockManagement
                     customer = (erp_customer)pSession.GetObjectByKey(typeof(erp_customer), pCustomer.Oid);
                 }
                 fin_article article = (fin_article)pSession.GetObjectByKey(typeof(fin_article), pArticle.Oid);
-                pos_configurationplaceterminal terminal = (pos_configurationplaceterminal)pSession.GetObjectByKey(typeof(pos_configurationplaceterminal), XPOSettings.LoggedTerminal.Oid);
+                pos_configurationplaceterminal terminal = (pos_configurationplaceterminal)pSession.GetObjectByKey(typeof(pos_configurationplaceterminal), TerminalSettings.LoggedTerminal.Oid);
                 sys_userdetail userDetail = (sys_userdetail)pSession.GetObjectByKey(typeof(sys_userdetail), XPOSettings.LoggedUser.Oid);
 
                 fin_articlestock articleStock = new fin_articlestock(pSession)

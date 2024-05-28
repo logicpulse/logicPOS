@@ -1,6 +1,7 @@
 ﻿using LibUsbDotNet;
 using LibUsbDotNet.Main;
 using logicpos.datalayer.Xpo;
+using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Globalization;
 using LogicPOS.Shared.Orders;
 using LogicPOS.Utility;
@@ -139,7 +140,7 @@ namespace logicpos.Classes.Logic.Hardware
             catch (Exception ex)
             {
                 //Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(500, 340), MessageType.Error, ButtonsType.Ok, CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error"),
-                //    string.Format(CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_initializing_weighing_balance"), XPOSettings.LoggedTerminal.WeighingMachine.Designation, ex.Message)
+                //    string.Format(CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_initializing_weighing_balance"), TerminalSettings.LoggedTerminal.WeighingMachine.Designation, ex.Message)
                 //    );
                 _logger.Error(ex.Message, ex);
                 return false;
@@ -527,16 +528,16 @@ namespace logicpos.Classes.Logic.Hardware
             {
                 //Init
                 UsbDisplayDevice displayDevice = new UsbDisplayDevice(
-                    XPOSettings.LoggedTerminal.PoleDisplay.VID,
-                    XPOSettings.LoggedTerminal.PoleDisplay.PID,
-                    XPOSettings.LoggedTerminal.PoleDisplay.EndPoint,
-                    XPOSettings.LoggedTerminal.PoleDisplay.COM
+                    TerminalSettings.LoggedTerminal.PoleDisplay.VID,
+                    TerminalSettings.LoggedTerminal.PoleDisplay.PID,
+                    TerminalSettings.LoggedTerminal.PoleDisplay.EndPoint,
+                    TerminalSettings.LoggedTerminal.PoleDisplay.COM
                 );
                 //Initializers
-                displayDevice._charactersPerLine = Convert.ToInt16(XPOSettings.LoggedTerminal.PoleDisplay.DisplayCharactersPerLine);
-                displayDevice._standByInSeconds = XPOSettings.LoggedTerminal.PoleDisplay.GoToStandByInSeconds;
-                displayDevice._standByLine1 = XPOSettings.LoggedTerminal.PoleDisplay.StandByLine1;
-                displayDevice._standByLine2 = XPOSettings.LoggedTerminal.PoleDisplay.StandByLine2;
+                displayDevice._charactersPerLine = Convert.ToInt16(TerminalSettings.LoggedTerminal.PoleDisplay.DisplayCharactersPerLine);
+                displayDevice._standByInSeconds = TerminalSettings.LoggedTerminal.PoleDisplay.GoToStandByInSeconds;
+                displayDevice._standByLine1 = TerminalSettings.LoggedTerminal.PoleDisplay.StandByLine1;
+                displayDevice._standByLine2 = TerminalSettings.LoggedTerminal.PoleDisplay.StandByLine2;
                 result = displayDevice;
             }
             catch (Exception ex)

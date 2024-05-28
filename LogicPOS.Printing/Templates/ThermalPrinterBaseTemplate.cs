@@ -1,5 +1,6 @@
 ﻿using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
+using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Globalization;
 using LogicPOS.Printing.Common;
 using LogicPOS.Printing.Enums;
@@ -17,7 +18,7 @@ namespace LogicPOS.Printing.Templates
         protected static log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Protected Members
-        protected GenericThermalPrinter _thermalPrinterGeneric;
+        protected GenericThermalPrinter _genericThermalPrinter;
         protected Dictionary<string, string> _customVars;
         //Protected Dictionary<string, string> _systemVars;
         protected int _maxCharsPerLineNormal = 0;
@@ -39,7 +40,7 @@ namespace LogicPOS.Printing.Templates
         }
 
         public ThermalPrinterBaseTemplate(sys_configurationprinters pPrinter)
-            : this(pPrinter, PrintingSettings.PrinterThermalImageCompanyLogo)
+            : this(pPrinter, PrintingSettings.ThermalPrinter.CompanyLogoLocation)
         {
         }
 
@@ -48,10 +49,10 @@ namespace LogicPOS.Printing.Templates
             try
             {
                 //Init Properties
-                _thermalPrinterGeneric = new GenericThermalPrinter(pPrinter);
-                _maxCharsPerLineNormal = _thermalPrinterGeneric.MaxCharsPerLineNormal;
-                _maxCharsPerLineNormalBold = _thermalPrinterGeneric.MaxCharsPerLineNormalBold;
-                _maxCharsPerLineSmall = _thermalPrinterGeneric.MaxCharsPerLineSmall;
+                _genericThermalPrinter = new GenericThermalPrinter(pPrinter);
+                _maxCharsPerLineNormal = _genericThermalPrinter.MaxCharsPerLineNormal;
+                _maxCharsPerLineNormalBold = _genericThermalPrinter.MaxCharsPerLineNormalBold;
+                _maxCharsPerLineSmall = _genericThermalPrinter.MaxCharsPerLineSmall;
                 _companyLogo = pCompanyLogo;
 
                 //Init Custom Vars From FastReport
@@ -101,7 +102,7 @@ namespace LogicPOS.Printing.Templates
             try
             {
                 //Align Center
-                _thermalPrinterGeneric.SetAlignCenter();
+                _genericThermalPrinter.SetAlignCenter();
 
                 string sql = "SELECT value FROM cfg_configurationpreferenceparameter where token = 'TICKET_FILENAME_loggerO';";
                 string result = XPOSettings.Session.ExecuteScalar(sql).ToString();
@@ -121,39 +122,39 @@ namespace LogicPOS.Printing.Templates
                 string companyBusinessName = _customVars["COMPANY_BUSINESS_NAME"];
                 if (string.IsNullOrEmpty(companyBusinessName)) companyBusinessName = "";
 
-                if (File.Exists(logo) && XPOSettings.LoggedTerminal.ThermalPrinter.ThermalPrintLogo)
+                if (File.Exists(logo) && TerminalSettings.LoggedTerminal.ThermalPrinter.ThermalPrintLogo)
                 {
                     if (!string.IsNullOrEmpty(result))
                     {
                         logo = result;
                     }
-                    _thermalPrinterGeneric.PrintImage(logo);
+                    _genericThermalPrinter.PrintImage(logo);
                 }
 
                 else if (isOrder) /* IN009055 */
                 {
-                    _thermalPrinterGeneric.WriteLine(companyBusinessName, WriteLineTextMode.DoubleHeightBold);
+                    _genericThermalPrinter.WriteLine(companyBusinessName, WriteLineTextMode.DoubleHeightBold);
                 }
                 else if (printComercialName != null && !Convert.ToBoolean(printComercialName))
                 {
-                    _thermalPrinterGeneric.WriteLine(_customVars["COMPANY_NAME"]);
+                    _genericThermalPrinter.WriteLine(_customVars["COMPANY_NAME"]);
                 }
                 else if (!string.IsNullOrEmpty(companyBusinessName) && companyBusinessName.Length > 20)
                 {
-                    _thermalPrinterGeneric.WriteLine(companyBusinessName, WriteLineTextMode.DoubleHeightBold);
-                    _thermalPrinterGeneric.WriteLine(_customVars["COMPANY_NAME"]);
+                    _genericThermalPrinter.WriteLine(companyBusinessName, WriteLineTextMode.DoubleHeightBold);
+                    _genericThermalPrinter.WriteLine(_customVars["COMPANY_NAME"]);
                 }
                 else
                 {
-                    _thermalPrinterGeneric.WriteLine(companyBusinessName, WriteLineTextMode.Big);
-                    _thermalPrinterGeneric.WriteLine(_customVars["COMPANY_NAME"]);
+                    _genericThermalPrinter.WriteLine(companyBusinessName, WriteLineTextMode.Big);
+                    _genericThermalPrinter.WriteLine(_customVars["COMPANY_NAME"]);
                 }
 
                 //Reset to Left
-                _thermalPrinterGeneric.SetAlignLeft();
+                _genericThermalPrinter.SetAlignLeft();
 
                 //Line Feed
-                _thermalPrinterGeneric.LineFeed();
+                _genericThermalPrinter.LineFeed();
             }
             catch (Exception ex)
             {
@@ -177,14 +178,14 @@ namespace LogicPOS.Printing.Templates
         protected void PrintTitles(string pTicketTitle, string pTicketSubTitle)
         {
             //Set Align Center
-            _thermalPrinterGeneric.SetAlignCenter();
+            _genericThermalPrinter.SetAlignCenter();
 
-            if (!string.IsNullOrEmpty(pTicketTitle)) _thermalPrinterGeneric.WriteLine(pTicketTitle, WriteLineTextMode.Big);
-            if (!string.IsNullOrEmpty(pTicketSubTitle)) _thermalPrinterGeneric.WriteLine(pTicketSubTitle, WriteLineTextMode.DoubleHeightBold);
-            _thermalPrinterGeneric.LineFeed();
+            if (!string.IsNullOrEmpty(pTicketTitle)) _genericThermalPrinter.WriteLine(pTicketTitle, WriteLineTextMode.Big);
+            if (!string.IsNullOrEmpty(pTicketSubTitle)) _genericThermalPrinter.WriteLine(pTicketSubTitle, WriteLineTextMode.DoubleHeightBold);
+            _genericThermalPrinter.LineFeed();
 
             //Reset Align 
-            _thermalPrinterGeneric.SetAlignLeft();
+            _genericThermalPrinter.SetAlignLeft();
         }
 
         //Abstract Required Implementation
@@ -197,10 +198,10 @@ namespace LogicPOS.Printing.Templates
                 //Print Notes
                 if (pNotes != string.Empty)
                 {
-                    _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_notes"), WriteLineTextMode.Bold);
-                    _thermalPrinterGeneric.WriteLine(pNotes);
+                    _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_notes"), WriteLineTextMode.Bold);
+                    _genericThermalPrinter.WriteLine(pNotes);
                     //Line Feed
-                    _thermalPrinterGeneric.LineFeed();
+                    _genericThermalPrinter.LineFeed();
                 }
             }
             catch (Exception ex)
@@ -214,17 +215,17 @@ namespace LogicPOS.Printing.Templates
             try
             {
                 //Align Center
-                _thermalPrinterGeneric.SetAlignCenter();
+                _genericThermalPrinter.SetAlignCenter();
 
                 //Set Font Size: Small
-                _thermalPrinterGeneric.SetFont(1);
+                _genericThermalPrinter.SetFont(1);
 
                 //User : Terminal
-                _thermalPrinterGeneric.WriteLine(string.Format("{0} - {1}", XPOSettings.LoggedUser.Name, XPOSettings.LoggedTerminal.Designation));
-                _thermalPrinterGeneric.LineFeed();
+                _genericThermalPrinter.WriteLine(string.Format("{0} - {1}", XPOSettings.LoggedUser.Name, TerminalSettings.LoggedTerminal.Designation));
+                _genericThermalPrinter.LineFeed();
 
                 //Printed On | Company|App|Version
-                _thermalPrinterGeneric.WriteLine(string.Format("{1}: {2}{0}{3}: {4} {5}"
+                _genericThermalPrinter.WriteLine(string.Format("{1}: {2}{0}{3}: {4} {5}"
                     , Environment.NewLine
                     , CustomFunctions.Res("global_printed_on_date")
                     , XPOHelper.CurrentDateTimeAtomic().ToString(CultureSettings.DateTimeFormat)
@@ -235,17 +236,17 @@ namespace LogicPOS.Printing.Templates
                 ); /* IN009211 */
 
                 //Reset Font Size: Normal
-                _thermalPrinterGeneric.SetFont(0);
+                _genericThermalPrinter.SetFont(0);
 
                 //Line Feed
-                _thermalPrinterGeneric.LineFeed();
+                _genericThermalPrinter.LineFeed();
 
                 //Reset to Left
-                _thermalPrinterGeneric.SetAlignLeft();
+                _genericThermalPrinter.SetAlignLeft();
 
                 //Finish With Cut and Print Buffer
                 //TK016249 - Impressoras - Diferenciação entre Tipos
-                _thermalPrinterGeneric.Cut(true, XPOSettings.LoggedTerminal.ThermalPrinter.ThermalCutCommand);
+                _genericThermalPrinter.Cut(true, TerminalSettings.LoggedTerminal.ThermalPrinter.ThermalCutCommand);
             }
             catch (Exception ex)
             {
@@ -257,7 +258,7 @@ namespace LogicPOS.Printing.Templates
         {
             try
             {
-                _thermalPrinterGeneric.PrintBuffer();
+                _genericThermalPrinter.PrintBuffer();
             }
             catch (Exception ex)
             {

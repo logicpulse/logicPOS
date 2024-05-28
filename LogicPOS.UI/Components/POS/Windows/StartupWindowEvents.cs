@@ -9,6 +9,7 @@ using LogicPOS.Globalization;
 using logicpos.datalayer.Xpo;
 using LogicPOS.Shared;
 using LogicPOS.Settings;
+using LogicPOS.Data.XPO.Settings;
 
 namespace logicpos
 {

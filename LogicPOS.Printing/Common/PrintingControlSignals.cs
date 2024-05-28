@@ -3,7 +3,7 @@
     /// <summary>
     /// A listing of byte control characters for readability.
     /// </summary>
-    public static class AsciiControlChars
+    public static class PrintingControlSignals
     {
         /// <summary>
         /// Usually indicates the end of a string.

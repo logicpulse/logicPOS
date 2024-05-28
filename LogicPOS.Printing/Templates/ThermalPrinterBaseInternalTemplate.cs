@@ -9,7 +9,7 @@ namespace LogicPOS.Printing.Templates
     public abstract class ThermalPrinterBaseInternalTemplate : ThermalPrinterBaseTemplate
     {
         public ThermalPrinterBaseInternalTemplate(sys_configurationprinters pPrinter)
-            : base(pPrinter, PrintingSettings.PrinterThermalImageCompanyLogo)
+            : base(pPrinter, PrintingSettings.ThermalPrinter.CompanyLogoLocation)
         {
         }
 
@@ -46,19 +46,19 @@ namespace LogicPOS.Printing.Templates
         public void PrintFooterExtended()
         {
             //Align Center
-            _thermalPrinterGeneric.SetAlignCenter();
+            _genericThermalPrinter.SetAlignCenter();
 
             //Extended Footer Text
-            _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_internal_document_footer1"));
-            _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_internal_document_footer2"));
-            _thermalPrinterGeneric.LineFeed();
-            _thermalPrinterGeneric.WriteLine(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_internal_document_footer3"));
+            _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_internal_document_footer1"));
+            _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_internal_document_footer2"));
+            _genericThermalPrinter.LineFeed();
+            _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_internal_document_footer3"));
 
             //Reset to Left
-            _thermalPrinterGeneric.SetAlignLeft();
+            _genericThermalPrinter.SetAlignLeft();
 
             //Line Feed
-            _thermalPrinterGeneric.LineFeed();
+            _genericThermalPrinter.LineFeed();
         }
     }
 }

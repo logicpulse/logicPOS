@@ -1,6 +1,7 @@
 ﻿using DevExpress.Xpo;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
+using LogicPOS.Data.XPO.Settings;
 using System;
 
 namespace LogicPOS.Finance.WorkSession
@@ -31,7 +32,7 @@ namespace LogicPOS.Finance.WorkSession
         {
             //Prevent Deleted Objects, Get Fresh Objects
             sys_userdetail userDetail = pSession.GetObjectByKey<sys_userdetail>(XPOSettings.LoggedUser.Oid);
-            pos_configurationplaceterminal terminal = pSession.GetObjectByKey<pos_configurationplaceterminal>(XPOSettings.LoggedTerminal.Oid);
+            pos_configurationplaceterminal terminal = pSession.GetObjectByKey<pos_configurationplaceterminal>(TerminalSettings.LoggedTerminal.Oid);
             pos_worksessionmovementtype workSessionMovementType = pSession.GetObjectByKey<pos_worksessionmovementtype>(pWorkSessionMovementType.Oid);
 
             try

@@ -1,84 +1,74 @@
 ﻿using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
+using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Printing.Enums;
 using LogicPOS.Settings;
-using System;
 
 namespace LogicPOS.Printing.Common
 {
     public class GenericThermalPrinter : ThermalPrinter
     {
-        //Log4Net
-        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-        //Object Fields        
         private readonly string _encoding = string.Empty;
         private readonly string _line = string.Empty;
         private readonly char _lineChar = '-';
 
         public sys_configurationprinters Printer { get; set; }
-        private int _maxCharsPerLineNormal = 0;
-        public int MaxCharsPerLineNormal
-        {
-            get { return _maxCharsPerLineNormal; }
-            set { _maxCharsPerLineNormal = value; }
-        }
 
-        public int MaxCharsPerLineNormalBold { get; set; } = 0;
+        public string Designation => Printer.Designation;    
+        public string NetworkName => Printer.NetworkName;
+        public string Token => Printer.PrinterType.Token;
+        
 
+        public int MaxCharsPerLineNormal { get; set; }
+        public int MaxCharsPerLineNormalBold { get; set; }
         public int MaxCharsPerLineSmall { get; set; }
 
-        public GenericThermalPrinter(sys_configurationprinters pPrinter)
-            : this(pPrinter, PrintingSettings.PrinterThermalEncoding)
+        public GenericThermalPrinter(
+            sys_configurationprinters printer)
+            : this(
+                  printer, 
+                  PrintingSettings.ThermalPrinter.Encoding)
         {
         }
 
-        public GenericThermalPrinter(sys_configurationprinters pPrinter, string pEncoding)
-            // Old HardCoded Method Settings
-            //TK016249 - Impressoras - Diferenciação entre Tipos
-            //: this(pPrinter, pEncoding, SettingsApp.PrinterThermalMaxCharsPerLineNormal, SettingsApp.PrinterThermalMaxCharsPerLineNormalBold, SettingsApp.PrinterThermalMaxCharsPerLineSmall)
-            : this(pPrinter, pEncoding,
-                  (XPOSettings.LoggedTerminal.ThermalPrinter != null && XPOSettings.LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineNormal > 0) ? XPOSettings.LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineNormal : PrintingSettings.PrinterThermalMaxCharsPerLineNormal,
-                  (XPOSettings.LoggedTerminal.ThermalPrinter != null && XPOSettings.LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineNormalBold > 0) ? XPOSettings.LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineNormalBold : PrintingSettings.PrinterThermalMaxCharsPerLineNormalBold,
-                  (XPOSettings.LoggedTerminal.ThermalPrinter != null && XPOSettings.LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineSmall > 0) ? XPOSettings.LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineSmall : PrintingSettings.PrinterThermalMaxCharsPerLineSmall
-                  )
+        public GenericThermalPrinter(
+            sys_configurationprinters printer, 
+            string encoding)
+            : this(
+                  printer, 
+                  encoding,
+                  TerminalSettings.ThermalPrinter.MaxCharsPerLineNormal,
+                  TerminalSettings.ThermalPrinter.MaxCharsPerLineNormalBold,
+                  TerminalSettings.ThermalPrinter.MaxCharsPerLineSmall)
         {
         }
 
-        public GenericThermalPrinter(sys_configurationprinters pPrinter, string pEncoding, int pMaxCharsPerLineNormal, int pMaxCharsPerLineNormalBold, int pMaxCharsPerLineSmall)
-            : base(pEncoding)
+        public GenericThermalPrinter(
+            sys_configurationprinters printer, 
+            string encoding, 
+            int maxCharsPerLineNormal, 
+            int maxCharsPerLineNormalBold, 
+            int maxCharsPerLineSmall)
+            : base(encoding)
         {
-            //Parameters
-            Printer = pPrinter;
-            _encoding = pEncoding;
-            _maxCharsPerLineNormal = pMaxCharsPerLineNormal;
-            MaxCharsPerLineNormalBold = pMaxCharsPerLineNormalBold;
-            MaxCharsPerLineSmall = pMaxCharsPerLineSmall;
-            //Other
-            _line = new string(_lineChar, _maxCharsPerLineNormal);
+            Printer = printer;
+            _encoding = encoding;
+            MaxCharsPerLineNormal = maxCharsPerLineNormal;
+            MaxCharsPerLineNormalBold = maxCharsPerLineNormalBold;
+            MaxCharsPerLineSmall = maxCharsPerLineSmall;
+            _line = new string(_lineChar, MaxCharsPerLineNormal);
         }
 
         public void PrintBuffer()
         {
-            try
+            switch (Token)
             {
-
-                switch (Printer.PrinterType.Token)
-                {
-                    case "THERMAL_PRINTER_WINDOWS":
-                        LogicPOS.Printing.Usb.Print.USBPrintWindows(Printer.Designation, getByteArray());
-                        break;
-                    case "THERMAL_PRINTER_SOCKET":
-                        LogicPOS.Printing.Usb.Print.USBPrintWindows(Printer.NetworkName, getByteArray());
-                        break;
-                }
-
-
-            }
-            catch (Exception ex)
-            {
-                _logger.Error("void PrintBuffer() :: " + ex.Message, ex);
-                throw ex;
+                case "THERMAL_PRINTER_WINDOWS":
+                    Usb.Print.USBPrintWindows(Designation, GetByteArray());
+                    break;
+                case "THERMAL_PRINTER_SOCKET":
+                    Usb.Print.USBPrintWindows(NetworkName, GetByteArray());
+                    break;
             }
         }
 
@@ -175,16 +165,13 @@ namespace LogicPOS.Printing.Common
             LineFeed();
 
             WriteLine(_line);
-            WriteLine("ÁÉÍÓÚ-1234567890-1234567890-1234567890-1234567890-1234567890-1234567890".Substring(0, _maxCharsPerLineNormal));
-            WriteLine("ÁÉÍÓÚ-1234567890-1234567890-1234567890-1234567890-1234567890-1234567890".Substring(0, _maxCharsPerLineNormal), (byte)PrintingStyle.Bold);
+            WriteLine("ÁÉÍÓÚ-1234567890-1234567890-1234567890-1234567890-1234567890-1234567890".Substring(0, MaxCharsPerLineNormal));
+            WriteLine("ÁÉÍÓÚ-1234567890-1234567890-1234567890-1234567890-1234567890-1234567890".Substring(0, MaxCharsPerLineNormal), (byte)PrintingStyle.Bold);
             WriteLine("ÁÉÍÓÚ-1234567890-1234567890-1234567890-1234567890-1234567890-1234567890".Substring(0, MaxCharsPerLineSmall), (byte)PrintingStyle.DoubleWidth);
             WriteLine("LINE");
             LineFeed();
             Cut(true);
         }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Static Helpers
 
         public static string TextJustified(string pLeft, string pRight, int pMaxPerLine)
         {

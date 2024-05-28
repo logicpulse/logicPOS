@@ -5,6 +5,7 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using logicpos.shared.Enums;
+using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
@@ -37,7 +38,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     {
                         //Get Parameters
                         //TK016249 - Impressoras - Diferenciação entre Tipos
-                        PrintingSettings.UsingThermalPrinter = false;
+                        PrintingSettings.ThermalPrinter.UsingThermalPrinter = false;
                         DocumentProcessingParameters processFinanceDocumentParameter = GetFinanceDocumentParameter();
 
                         //If error in Save or Update Customer

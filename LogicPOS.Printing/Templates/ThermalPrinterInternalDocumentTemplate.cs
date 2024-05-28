@@ -22,16 +22,16 @@ namespace LogicPOS.Printing.Templates
                 PrintTitles();
                 
                 //Align Center
-                _thermalPrinterGeneric.SetAlignCenter();
+                _genericThermalPrinter.SetAlignCenter();
 
                 //Content
-                _thermalPrinterGeneric.WriteLine("REPLACE CONTENT STUB");
+                _genericThermalPrinter.WriteLine("REPLACE CONTENT STUB");
 
                 //Reset to Left
-                _thermalPrinterGeneric.SetAlignLeft();
+                _genericThermalPrinter.SetAlignLeft();
 
                 //Line Feed
-                _thermalPrinterGeneric.LineFeed();
+                _genericThermalPrinter.LineFeed();
             }
             catch (Exception ex)
             {

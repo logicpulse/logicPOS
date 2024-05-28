@@ -12,6 +12,7 @@ using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
 using logicpos.shared.Enums;
+using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Extensions;
@@ -340,9 +341,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
                 // If OrderTicket and has a ThermalPrinter connected
                 // Impressoras - Diferenciação entre Tipos [TK:016249]
-                PrintingSettings.UsingThermalPrinter = true;
-                if (XPOSettings.LoggedTerminal.ThermalPrinter != null &&
-                    XPOSettings.LoggedTerminal.ThermalPrinter.PrinterType.ThermalPrinter &&
+                PrintingSettings.ThermalPrinter.UsingThermalPrinter = true;
+                if (TerminalSettings.HasLoggedTerminal &&
+                    TerminalSettings.LoggedTerminal.ThermalPrinter.PrinterType.ThermalPrinter &&
                     orderTicket.OrderDetail.Count != 0)
                 {
                     //public static bool PrintOrderRequest(Window pSourceWindow, sys_configurationprinters pPrinter, OrderMain pDocumentOrderMain, fin_documentorderticket pOrderTicket)
@@ -355,7 +356,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     if (!GeneralSettings.AppUseParkingTicketModule && logicpos.Utils.PrintTicket())
                     {
                         // TK016249 Impressoras - Diferenciação entre Tipos 
-                        FrameworkCalls.PrintOrderRequest(SourceWindow, XPOSettings.LoggedTerminal.ThermalPrinter, orderMain, orderTicket);
+                        FrameworkCalls.PrintOrderRequest(SourceWindow, TerminalSettings.LoggedTerminal.ThermalPrinter, orderMain, orderTicket);
                     }
                     FrameworkCalls.PrintArticleRequest(SourceWindow, orderTicket);
                 }
@@ -403,7 +404,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     orderMain.FinishOrder(XPOSettings.Session, printTicket);
                     //TODO: Continue to implement FrameworkCall here
                     //DocumentOrderTicket documentOrderTicket = orderMain.FinishOrder(XPOSettings.Session, printTicket);
-                    //if (printTicket) FrameworkCalls.PrintTableTicket(_sourceWindow, XPOSettings.LoggedTerminal.Printer, XPOSettings.LoggedTerminal.TemplateTicket, orderMain, documentOrderTicket.Oid);
+                    //if (printTicket) FrameworkCalls.PrintTableTicket(_sourceWindow, TerminalSettings.LoggedTerminal.Printer, TerminalSettings.LoggedTerminal.TemplateTicket, orderMain, documentOrderTicket.Oid);
 
                     //Reset TicketList TotalItems Counter
                     _listStoreModelTotalItemsTicketListMode = 0;

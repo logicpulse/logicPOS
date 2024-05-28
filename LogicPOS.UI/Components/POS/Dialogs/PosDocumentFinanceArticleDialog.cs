@@ -23,6 +23,7 @@ using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Shared.CustomDocument;
 using LogicPOS.Shared.Article;
+using LogicPOS.Data.XPO.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {

@@ -13,6 +13,7 @@ using System.Drawing;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using LogicPOS.Data.XPO.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -323,8 +324,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //{
             //    _logger.Debug("BREAK");
             //}
-            T1 defaultValue = (T1)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(T1), XPOSettings.XpoOidUndefinedRecord);            
-            CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("((Disabled IS NULL OR Disabled  <> 1) OR (Oid = '{0}') OR (Oid = '{1}')) {2}", XPOSettings.XpoOidUndefinedRecord,XPOSettings.XpoOidUserRecord, extraFilter));
+            T1 defaultValue = (T1)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(T1), XPOSettings.XpoOidUndefinedRecord);
+            CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("((Disabled IS NULL OR Disabled  <> 1) OR (Oid = '{0}') OR (Oid = '{1}')) {2}", XPOSettings.XpoOidUndefinedRecord, XPOSettings.XpoOidUserRecord, extraFilter));
             resultObject = new XPOEntryBoxSelectRecordValidation<T1, T2>(this, labelText, fieldDisplayValue, "Oid", (defaultValue as T1), criteriaOperator, LogicPOS.Utility.RegexUtils.RegexGuid, true);
             resultObject.Name = typeof(T1).Name;
             resultObject.EntryValidation.IsEditable = true;

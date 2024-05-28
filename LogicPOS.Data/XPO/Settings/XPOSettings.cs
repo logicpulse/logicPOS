@@ -2,12 +2,11 @@
 using logicpos.datalayer.DataLayer.Xpo;
 using System;
 
-namespace logicpos.datalayer.Xpo
+namespace LogicPOS.Data.XPO.Settings
 {
     public static class XPOSettings
     {
         public static sys_userdetail LoggedUser { get; set; }
-        public static pos_configurationplaceterminal LoggedTerminal { get; set; }
         public static Session Session { get; set; }
 
         public static cfg_configurationcountry ConfigurationSystemCountry { get; set; } = null;

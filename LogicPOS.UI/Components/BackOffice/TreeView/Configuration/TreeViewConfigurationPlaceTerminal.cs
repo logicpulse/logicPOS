@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Data.XPO.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -78,11 +79,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 ConfigurationPlaceTerminal configurationPlaceTerminal = ((_dialog as DialogConfigurationPlaceTerminal).DataSourceRow as ConfigurationPlaceTerminal);
 
                 //If change Active Terminal, Changed Logged Printer
-                if (configurationPlaceTerminal == XPOSettings.LoggedTerminal)
+                if (configurationPlaceTerminal == TerminalSettings.LoggedTerminal)
                 {
-                    if (XPOSettings.LoggedTerminal.Printer != configurationPlaceTerminal.Printer)
+                    if (TerminalSettings.LoggedTerminal.Printer != configurationPlaceTerminal.Printer)
                     {
-                        XPOSettings.LoggedTerminal.Printer = configurationPlaceTerminal.Printer;
+                        TerminalSettings.LoggedTerminal.Printer = configurationPlaceTerminal.Printer;
                     }
                 }
             }

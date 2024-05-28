@@ -13,6 +13,7 @@ using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Utility;
 using LogicPOS.UI;
+using LogicPOS.Data.XPO.Settings;
 
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
@@ -168,7 +169,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             _labelActiveContent.SetAlignment(0.0F, 0.5F);
 
             //TerminalInfo : Terminal : User
-            _labelTerminalInfo = new Label(string.Format("{0} : {1}", XPOSettings.LoggedTerminal.Designation, XPOSettings.LoggedUser.Name));
+            _labelTerminalInfo = new Label(string.Format("{0} : {1}", TerminalSettings.LoggedTerminal.Designation, XPOSettings.LoggedUser.Name));
             _labelTerminalInfo.ModifyFont(fontDescriptionStatusBar);
             _labelTerminalInfo.ModifyFg(StateType.Normal, colorBackOfficeStatusBarFont.ToGdkColor());
             _labelTerminalInfo.SetAlignment(0.5F, 0.5F);

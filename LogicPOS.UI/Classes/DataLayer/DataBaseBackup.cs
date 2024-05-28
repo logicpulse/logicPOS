@@ -9,6 +9,7 @@ using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
+using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
@@ -103,7 +104,7 @@ namespace logicpos.Classes.DataLayer
                     FileNamePacked = Path.GetRandomFileName(),
                     DataBaseType = DatabaseSettings.DatabaseType,
                     Version = XPOHelper.GetNextTableFieldID("sys_systembackup", "Version", false),
-                    Terminal = (pos_configurationplaceterminal)SessionXpoForBackupPurposes.GetObjectByKey(typeof(pos_configurationplaceterminal), XPOSettings.LoggedTerminal.Oid)
+                    Terminal = (pos_configurationplaceterminal)SessionXpoForBackupPurposes.GetObjectByKey(typeof(pos_configurationplaceterminal), TerminalSettings.LoggedTerminal.Oid)
                 };
                 systemBackup.Save();
                 string backupProcess = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_database_backup");
