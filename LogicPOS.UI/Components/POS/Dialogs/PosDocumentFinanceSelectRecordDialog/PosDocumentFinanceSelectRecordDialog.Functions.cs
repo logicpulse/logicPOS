@@ -13,6 +13,7 @@ using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using logicpos.shared.Enums;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Globalization;
 using LogicPOS.Modules;
@@ -108,7 +109,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //FinanceMaster: Click Event
-
+        
         private void touchButtonPosToolbarFinanceDocuments_Clicked(object sender, EventArgs e)
         {
             _dialogFinanceMasterCallerButton = (sender as TouchButtonIconWithText);
@@ -2149,7 +2150,8 @@ WHERE
                     //Single Record Mode - Default - USED HERE ONLY TO TEST Both Dialogs Modes (Default and CheckBox)
                     if (dialog.GenericTreeViewMode == GenericTreeViewMode.Default)
                     {
-                        FrameworkCalls.PrintFinanceDocumentPayment(this, _printerChoosed, documentFinancePayment);
+                        var printer = MappingUtils.GetPrinterDto(_printerChoosed);
+                        FrameworkCalls.PrintFinanceDocumentPayment(this, printer, documentFinancePayment);
                     }
                     //Multi Record Mode - CheckBox - ACTIVE MODE
                     else if (dialog.GenericTreeViewMode == GenericTreeViewMode.CheckBox)
@@ -2398,8 +2400,8 @@ WHERE
                 if (itemChecked)
                 {
                     fin_documentfinancepayment documentFinancePayment = (fin_documentfinancepayment)XPOHelper.GetXPGuidObject(typeof(fin_documentfinancepayment), itemGuid);
-
-                    FrameworkCalls.PrintFinanceDocumentPayment(this, _printerChoosed, documentFinancePayment);
+                    var PrinterChoosed = MappingUtils.GetPrinterDto(_printerChoosed);
+                    FrameworkCalls.PrintFinanceDocumentPayment(this, PrinterChoosed, documentFinancePayment);
                 }
             }
             catch (Exception ex)

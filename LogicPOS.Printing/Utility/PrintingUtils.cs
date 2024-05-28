@@ -1244,6 +1244,7 @@ namespace LogicPOS.Printing.Utility
                 bool resultSystemPrint;
                 switch (GetPrinterToken(printer.Token))
                 {
+                    
                     //Impressora SINOCAN em ambiente Windows
                     case "THERMAL_PRINTER_WINDOWS":
                     //Impressora SINOCAN em ambiente Linux

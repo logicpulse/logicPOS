@@ -7,6 +7,7 @@ using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Globalization;
 using LogicPOS.Printing.Documents;
@@ -134,7 +135,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 fin_documentorderticket orderTicket = (fin_documentorderticket)XPOSettings.Session.GetObjectByKey(typeof(fin_documentorderticket), orderTicketOid);
                 //POS front-end - Consulta Mesa + Impressão Ticket's + Gerar PDF em modo Thermal Printer [IN009344]
-                ThermalPrinterInternalDocumentOrderRequest thermalPrinterInternalDocumentOrderRequest = new ThermalPrinterInternalDocumentOrderRequest(TerminalSettings.LoggedTerminal.ThermalPrinter, orderTicket);
+                var ThermalPrinter = TerminalSettings.ThermalPrinter.GetLoggedTerminalPrinterDto();
+                ThermalPrinterInternalDocumentOrderRequest thermalPrinterInternalDocumentOrderRequest = new ThermalPrinterInternalDocumentOrderRequest(ThermalPrinter, orderTicket);
                 thermalPrinterInternalDocumentOrderRequest.Print();
             }
         }
