@@ -330,7 +330,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         errorMessage = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document"), ex.Message);
                         break;
                 }
-                logicpos.Utils.ShowMessageTouch(
+                logicpos.Utils.ShowMessageBox(
                     _sourceWindow,
                     DialogFlags.Modal,
                     new Size(600, 400),

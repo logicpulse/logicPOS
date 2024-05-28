@@ -640,7 +640,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                             CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_source_finance_document"),
                             creditedDocuments);
 
-                        logicpos.Utils.ShowMessageTouch(
+                        logicpos.Utils.ShowMessageBox(
                             this.SourceWindow.TransientFor, DialogFlags.Modal,
                             new System.Drawing.Size(550, 450),
                             MessageType.Info,

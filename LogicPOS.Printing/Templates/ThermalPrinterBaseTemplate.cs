@@ -40,7 +40,7 @@ namespace LogicPOS.Printing.Templates
             set { _ticketSubTitle = value; }
         }
 
-        public ThermalPrinterBaseTemplate(PrinterReferenceDto printer)
+        public ThermalPrinterBaseTemplate(PrinterDto printer)
             : this(
                   printer, 
                   PrintingSettings.ThermalPrinter.CompanyLogoLocation)
@@ -48,7 +48,7 @@ namespace LogicPOS.Printing.Templates
         }
 
         public ThermalPrinterBaseTemplate(
-            PrinterReferenceDto printer, 
+            PrinterDto printer, 
             string pCompanyLogo)
         {
             try

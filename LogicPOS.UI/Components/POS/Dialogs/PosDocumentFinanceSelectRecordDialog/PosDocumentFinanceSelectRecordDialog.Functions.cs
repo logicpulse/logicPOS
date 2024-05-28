@@ -818,7 +818,7 @@ WHERE
                         }
 
                         // Call Dialog
-                        ResponseType dialogResponse = logicpos.Utils.ShowMessageTouch(_dialogFinanceDocumentsResponse, DialogFlags.Modal, new Size(700, 440), MessageType.Question, ButtonsType.OkCancel, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_question"),
+                        ResponseType dialogResponse = logicpos.Utils.ShowMessageBox(_dialogFinanceDocumentsResponse, DialogFlags.Modal, new Size(700, 440), MessageType.Question, ButtonsType.OkCancel, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_question"),
                             string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_clone_documents_confirmation"), documentList)
                         );
 
@@ -1249,7 +1249,7 @@ WHERE
                     }
                     else if (!LicenceManagement.IsLicensed || !LicenceManagement.CanPrint)
                     {
-                        logicpos.Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_printing_function_disabled"));
+                        logicpos.Utils.ShowMessageBoxUnlicensedError(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_printing_function_disabled"));
                     }
                     else
                     {
@@ -1261,7 +1261,7 @@ WHERE
                 {
                     if (!LicenceManagement.IsLicensed || !LicenceManagement.CanPrint)
                     {
-                        logicpos.Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_printing_function_disabled"));
+                        logicpos.Utils.ShowMessageBoxUnlicensedError(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_printing_function_disabled"));
                     }
                     else if (File.Exists(item))
                     {
@@ -2502,7 +2502,7 @@ WHERE
                 {
                     if (!LicenceManagement.IsLicensed || !LicenceManagement.CanPrint)
                     {
-                        logicpos.Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_printing_function_disabled"));
+                        logicpos.Utils.ShowMessageBoxUnlicensedError(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_printing_function_disabled"));
                     }
                     else documents.Add(CustomReport.GenerateDocumentFinancePaymentPDFIfNotExists(document));
                 }
@@ -2511,7 +2511,7 @@ WHERE
                 {
                     if (!LicenceManagement.IsLicensed || !LicenceManagement.CanPrint)
                     {
-                        logicpos.Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_printing_function_disabled"));
+                        logicpos.Utils.ShowMessageBoxUnlicensedError(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_printing_function_disabled"));
                     }
                     else if (File.Exists(item))
                     {
@@ -2554,7 +2554,7 @@ WHERE
                 }
 
                 string infoMessage = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "app_info_show_ignored_cancelled_documents"), ignoredDocumentsMessage);
-                logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(600, 400), MessageType.Info, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_information"), infoMessage);
+                logicpos.Utils.ShowMessageBox(pSourceWindow, DialogFlags.Modal, new Size(600, 400), MessageType.Info, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_information"), infoMessage);
             }
         }
 

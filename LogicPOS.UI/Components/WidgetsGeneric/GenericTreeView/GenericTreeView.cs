@@ -1293,7 +1293,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                                         GeneralSettings.Settings["customCultureResourceDefinition"] = cultureFromDb;
                                         CultureResources.UpdateLanguage(cultureFromDb);
                                     }
-                                    logicpos.Utils.ShowMessageTouch(GlobalApp.BackOfficeMainWindow, DialogFlags.Modal, new System.Drawing.Size(600, 400), MessageType.Warning, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_language"), string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_culture_change"), CultureSettings.CurrentCultureName));
+                                    logicpos.Utils.ShowMessageBox(GlobalApp.BackOfficeMainWindow, DialogFlags.Modal, new System.Drawing.Size(600, 400), MessageType.Warning, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_language"), string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_culture_change"), CultureSettings.CurrentCultureName));
 
                                 }
                                 //IN009296 ENDS

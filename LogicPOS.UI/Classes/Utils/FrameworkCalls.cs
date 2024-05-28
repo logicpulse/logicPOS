@@ -7,7 +7,9 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO.Utility;
 using LogicPOS.DTOs.Common;
+using LogicPOS.DTOs.Printing;
 using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Finance.Saft;
 using LogicPOS.Finance.Services;
@@ -136,8 +138,8 @@ namespace logicpos
                             DialogFlags.Modal,
                             MessageType.Question,
                             ButtonsType.YesNo,
-                            CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_dialog_document_finance"),
-                            CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_request_print_document_confirmation")
+                            CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_document_finance"),
+                            CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_request_print_document_confirmation")
                         );
 
                         if (responseType == ResponseType.No) printDocument = false;
@@ -155,26 +157,26 @@ namespace logicpos
                 switch (ex.Message)
                 {
                     case "ERROR_MISSING_SERIE":
-                        errorMessage = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document_missing_series"));
+                        errorMessage = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document_missing_series"));
                         break;
                     case "ERROR_INVALID_DOCUMENT_NUMBER":
-                        errorMessage = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document_invalid_documentnumber"));
+                        errorMessage = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document_invalid_documentnumber"));
                         break;
                     case "ERROR_COMMIT_FINANCE_DOCUMENT":
-                        errorMessage = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document_commit_session"));
+                        errorMessage = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document_commit_session"));
                         break;
                     //TODO: NEW CLASS FinanceDocumentValidate : IMPLEMENT HERE THE RESULT EXCEPTION FOR VALIDATE_SIMPLIFIED_INVOICE
                     default:
-                        errorMessage = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document"), ex.Message);
+                        errorMessage = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document"), ex.Message);
                         break;
                 }
-                Utils.ShowMessageTouch(
+                Utils.ShowMessageBox(
                   pSourceWindow,
                   DialogFlags.Modal,
                   _sizeDefaultWindowSize,
                   MessageType.Error,
                   ButtonsType.Close,
-                  CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error"),
+                  CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"),
                   errorMessage
                 );
             }
@@ -225,8 +227,8 @@ namespace logicpos
 
                 if (sendDocumentResult == null || sendDocumentResult.ReturnCode != "0")
                 {
-                    dialogResponse = Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(700, 440), MessageType.Error, ButtonsType.YesNo, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error"),
-                        string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_in_at_webservice"), sendDocumentResult.ReturnCode, sendDocumentResult.ReturnMessage)
+                    dialogResponse = Utils.ShowMessageBox(pSourceWindow, DialogFlags.Modal, new Size(700, 440), MessageType.Error, ButtonsType.YesNo, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"),
+                        string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_error_in_at_webservice"), sendDocumentResult.ReturnCode, sendDocumentResult.ReturnMessage)
                     );
                     /* IN009083 - returns true when WS call fails and user opts to do not retry */
                     if (ResponseType.No.Equals(dialogResponse))
@@ -326,14 +328,14 @@ namespace logicpos
                 switch (ex.Message)
                 {
                     case "ERROR_MISSING_SERIE":
-                        errorMessage = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document_missing_series"));
+                        errorMessage = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document_missing_series"));
                         break;
                     case "ERROR_COMMIT_FINANCE_DOCUMENT_PAYMENT":
                     default:
                         errorMessage = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document"), ex.Exception.Message);
                         break;
                 }
-                Utils.ShowMessageTouch(
+                Utils.ShowMessageBox(
                   pSourceWindow,
                   DialogFlags.Modal,
                   _sizeDefaultWindowSize,
@@ -417,26 +419,26 @@ namespace logicpos
 
                 }
 
-                Utils.ShowMessageTouch(
+                Utils.ShowMessageBox(
                   pSourceWindow,
                   DialogFlags.Modal,
                   _sizeDefaultWindowSize,
                   MessageType.Info,
                   ButtonsType.Close,
-                  CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_information"),
-                  string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_saftpt_exported_successfully"), result)
+                  CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_information"),
+                  string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_saftpt_exported_successfully"), result)
                 );
             }
             catch (Exception ex)
             {
-                Utils.ShowMessageTouch(
+                Utils.ShowMessageBox(
                   pSourceWindow,
                   DialogFlags.Modal,
                   _sizeDefaultWindowSize,
                   MessageType.Error,
                   ButtonsType.Close,
-                  CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error"),
-                  CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_saftpt_exported_error")
+                  CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"),
+                  CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_saftpt_exported_error")
                 );
                 _logger.Error(ex.Message, ex);
             }
@@ -452,75 +454,65 @@ namespace logicpos
             return PrintFinanceDocument(pSourceWindow, null, pDocumentFinanceMaster);
         }
 
-        public static bool PrintFinanceDocument(Window pSourceWindow, sys_configurationprinters pPrinter, fin_documentfinancemaster pDocumentFinanceMaster)
+        public static bool PrintFinanceDocument(
+            Window sourceWindow,
+            sys_configurationprinters pPrinter,
+            fin_documentfinancemaster financeMaster)
         {
             bool result = false;
             bool openDrawer = false;
-            PosDocumentFinancePrintDialog.PrintDialogResponse response;
+            PosDocumentFinancePrintDialog.PrintDialogResponse printDialogResponse;
 
-            //Delete generated files
-            try
-            {
+            DeleteGeneratedFiles();
 
-                string rootFolderPath = @"temp";
-                string filesToDelete = @"*qrcode*";
-                string[] fileList = System.IO.Directory.GetFiles(rootFolderPath, filesToDelete);
-                foreach (string file in fileList)
-                {
-                    System.Diagnostics.Debug.WriteLine(file + "will be deleted");
-                    System.IO.File.Delete(file);
-                }
-            }
-            catch (Exception ex)
+            if (LicenceManagement.IsLicensed == false)
             {
-                _logger.Error(ex.Message, ex);
-            }
-
-            if (!LicenceManagement.IsLicensed || !LicenceManagement.CanPrint)
-            {
-                Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(pSourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_printing_function_disabled"));
+                Utils.ShowMessageBoxUnlicensedError(
+                    sourceWindow,
+                    CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, ResourceNames.PRINTING_DISABLED_MESSAGE));
                 return false;
             }
+
             //TK016249 - Impressoras - Diferenciação entre Tipos
             //Deteta janela de origem de forma a escolher qual impressora usar - TicketList -> ThermalPrinter | PosDocumentFinanceDialog -> Printer
             sys_configurationprinters printer;
-            sys_configurationprinters printerDoc;
+            sys_configurationprinters financeMasterPrinter;
             if (PrintingSettings.ThermalPrinter.UsingThermalPrinter)
             {
                 //Both printer can be the same, if not Defined in DocumentType
                 //Printer for Drawer and Document, if not defined in DocumentType
                 printer = (pPrinter != null) ? pPrinter : TerminalSettings.LoggedTerminal.ThermalPrinter;
-                printerDoc = (pDocumentFinanceMaster.DocumentType.Printer != null) ? pDocumentFinanceMaster.DocumentType.Printer : printer;
+                financeMasterPrinter = (financeMaster.DocumentType.Printer != null) ? financeMaster.DocumentType.Printer : printer;
             }
             else
             {
                 //Both printer can be the same, if not Defined in DocumentType
                 //Printer for Drawer and Document, if not defined in DocumentType
                 printer = (pPrinter != null) ? pPrinter : TerminalSettings.LoggedTerminal.Printer;
-                printerDoc = (pDocumentFinanceMaster.DocumentType.Printer != null) ? pDocumentFinanceMaster.DocumentType.Printer : printer;
+                financeMasterPrinter = (financeMaster.DocumentType.Printer != null) ? financeMaster.DocumentType.Printer : printer;
             }
 
             try
             {
                 //Overload Management
-                if (printerDoc == null)
+                if (financeMasterPrinter == null)
                 {
                     //Notification : Show Message TouchTerminalWithoutAssociatedPrinter and Store user input, to Show Next Time(Yes) or Not (No)
-                    if (printerDoc == null)
+                    if (financeMasterPrinter == null)
                     {
-                        Utils.ShowMessageTouchTerminalWithoutAssociatedPrinter(pSourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, pDocumentFinanceMaster.DocumentType.ResourceString));
+                        Utils.ShowMessageTouchTerminalWithoutAssociatedPrinter(sourceWindow, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, financeMaster.DocumentType.ResourceString));
                     }
                     else
                     {
-                        response = PosDocumentFinancePrintDialog.GetDocumentFinancePrintProperties(pSourceWindow, pDocumentFinanceMaster);
+                        printDialogResponse = PosDocumentFinancePrintDialog.GetDocumentFinancePrintProperties(sourceWindow, financeMaster);
                         //Print with default DocumentFinanceYearSerieTerminal Template
-                        if (response.Response == ResponseType.Ok) result = PrintingUtils.PrintFinanceDocument(pDocumentFinanceMaster);
+                        if (printDialogResponse.Response == ResponseType.Ok) result = PrintingUtils.PrintFinanceDocument(financeMaster);
                     }
                 }
                 else
                 {
                     bool validFiles = true;
-                    string extraMessage = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_protected_files_invalid_files_detected_print_document_ignored"), pDocumentFinanceMaster.DocumentNumber);
+                    string extraMessage = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_error_protected_files_invalid_files_detected_print_document_ignored"), financeMaster.DocumentNumber);
 
                     //Printer Drawer : Set openDrawer
                     switch (PrintingUtils.GetPrinterToken(printer.PrinterType.Token))
@@ -534,7 +526,7 @@ namespace logicpos
                     }
 
                     //Printer Document : Set Valid Files
-                    switch (PrintingUtils.GetPrinterToken(printerDoc.PrinterType.Token))
+                    switch (PrintingUtils.GetPrinterToken(financeMasterPrinter.PrinterType.Token))
                     {
                         //ThermalPrinter : Ticket Files
                         case "THERMAL_PRINTER_WINDOWS":
@@ -558,28 +550,34 @@ namespace logicpos
                     if (!validFiles) return false;
 
                     //Call Print Document : Receives ResponseType.Ok without user Confirmation, if Document was never Printer
-                    response = PosDocumentFinancePrintDialog.GetDocumentFinancePrintProperties(pSourceWindow, pDocumentFinanceMaster);
+                    printDialogResponse = PosDocumentFinancePrintDialog.GetDocumentFinancePrintProperties(sourceWindow, financeMaster);
 
                     //Print with Parameters Printer and Template
-                    if (response.Response == ResponseType.Ok)
+                    if (printDialogResponse.Response == ResponseType.Ok)
                     {
-                        //Print Document use Printer Document
-                        result = PrintingUtils.PrintFinanceDocument(printerDoc, pDocumentFinanceMaster, response.CopyNames, response.SecondCopy, response.Motive);
+                        var financeMasterPrinterDto = MappingUtils.GetPrinterDto(financeMasterPrinter);
+
+                        result = PrintingUtils.PrintFinanceDocument(
+                            financeMasterPrinterDto,
+                            financeMaster,
+                            printDialogResponse.CopyNames,
+                            printDialogResponse.SecondCopy,
+                            printDialogResponse.Motive);
 
 
 
                         //OpenDoor use Printer Drawer
-                        if (openDrawer && pDocumentFinanceMaster.DocumentType.PrintOpenDrawer && !response.SecondCopy)
+                        if (openDrawer && financeMaster.DocumentType.PrintOpenDrawer && !printDialogResponse.SecondCopy)
                         {
                             var resultOpenDoor = PrintingUtils.OpenDoor(TerminalSettings.LoggedTerminal.Printer);
                             if (!resultOpenDoor)
                             {
-                                Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_information"), string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "open_cash_draw_permissions")));
+                                Utils.ShowMessageTouch(sourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_information"), string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "open_cash_draw_permissions")));
                             }
                             else
                             {
                                 XPOHelper.Audit("CASHDRAWER_OUT", string.Format(
-                                 CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_cashdrawer_out"),
+                                 CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_cashdrawer_out"),
                                  TerminalSettings.LoggedTerminal.Designation,
                                  "Button Open Door"));
                             }
@@ -592,10 +590,23 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                Utils.ShowMessageTouchErrorPrintingTicket(pSourceWindow, printer, ex);
+                var printerDto = MappingUtils.GetPrinterDto(financeMasterPrinter);
+                Utils.ShowMessageTouchErrorPrintingTicket(sourceWindow, printerDto, ex);
             }
 
             return result;
+        }
+
+        private static void DeleteGeneratedFiles()
+        {
+            string rootFolderPath = @"temp";
+            string filesToDelete = @"*qrcode*";
+            string[] fileList = System.IO.Directory.GetFiles(rootFolderPath, filesToDelete);
+            foreach (string file in fileList)
+            {
+                System.Diagnostics.Debug.WriteLine(file + "will be deleted");
+                System.IO.File.Delete(file);
+            }
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -606,69 +617,71 @@ namespace logicpos
             return PrintFinanceDocumentPayment(pSourceWindow, null, pDocumentFinancePayment);
         }
 
-        public static bool PrintFinanceDocumentPayment(Window pSourceWindow, sys_configurationprinters pPrinter, fin_documentfinancepayment pDocumentFinancePayment)
+        public static bool PrintFinanceDocumentPayment(
+            Window pSourceWindow,
+            PrinterDto printer,
+            fin_documentfinancepayment pDocumentFinancePayment)
         {
             bool result = false;
 
-            if (!LicenceManagement.IsLicensed || !LicenceManagement.CanPrint)
+            if (LicenceManagement.IsLicensed == false)
             {
-                Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(pSourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_printing_function_disabled"));
+                Utils.ShowMessageBoxUnlicensedError(pSourceWindow, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, ResourceNames.PRINTING_DISABLED_MESSAGE));
                 return false;
             }
 
-            sys_configurationprinters printer = (pPrinter != null)
-              ? pPrinter :
-              TerminalSettings.LoggedTerminal.Printer;
-
             try
             {
-                //Notification : Show Message TouchTerminalWithoutAssociatedPrinter and Store user input, to Show Next Time(Yes) or Not (No)
                 if (printer == null)
                 {
-                    Utils.ShowMessageTouchTerminalWithoutAssociatedPrinter(pSourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_documentfinance_type_title_rc"));
-                }
-                else
-                {
-                    //ProtectedFiles Protection
-                    bool validFiles = true;
-                    string extraMessage = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_protected_files_invalid_files_detected_print_document_ignored"), pDocumentFinancePayment.PaymentRefNo);
-                    switch (PrintingUtils.GetPrinterToken(printer.PrinterType.Token))
-                    {
-                        //ThermalPrinter : Ticket Files
-                        case "THERMAL_PRINTER_WINDOWS":
-                        case "THERMAL_PRINTER_SOCKET":
-                            break;
-                        //FastReport : Report Files
-                        case "GENERIC_PRINTER_WINDOWS":
-                        case "REPORT_EXPORT_PDF":
-                            //validFiles = (IsValidProtectedFile(SharedUtils.OSSlash(@"Resources/Reports/UserReports/ReportDocumentFinancePayment.frx"), extraMessage));
-                            break;
-                        case "VIRTUAL_SCREEN":
-                            break;
-                    }
-                    //ProtectedFiles Protection
-                    if (!validFiles) return false;
-                    //Recibos com impressão em impressora térmica
-                    if (TerminalSettings.HasLoggedTerminal)
-                    {
-                        ResponseType responseType = Utils.ShowMessageTouch(pSourceWindow, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.YesNo, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_edit_DialogConfigurationPrintersType_tab1_label"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_printer_choose_printer"));
+                    Utils.ShowMessageTouchTerminalWithoutAssociatedPrinter(
+                        pSourceWindow,
+                        CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_documentfinance_type_title_rc"));
 
-                        if (responseType == ResponseType.Yes)
-                        {
-                            //Call Print Document thermal
-                            result = PrintingUtils.PrintFinanceDocumentPayment(TerminalSettings.LoggedTerminal.ThermalPrinter, pDocumentFinancePayment);
-                        }
-                        else
-                        {
-                            result = PrintingUtils.PrintFinanceDocumentPayment(printer, pDocumentFinancePayment);
-                        }
+                    return false;
+                }
+
+                //ProtectedFiles Protection
+                bool validFiles = true;
+                string extraMessage = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_error_protected_files_invalid_files_detected_print_document_ignored"), pDocumentFinancePayment.PaymentRefNo);
+                switch (PrintingUtils.GetPrinterToken(printer.Token))
+                {
+                    //ThermalPrinter : Ticket Files
+                    case "THERMAL_PRINTER_WINDOWS":
+                    case "THERMAL_PRINTER_SOCKET":
+                        break;
+                    //FastReport : Report Files
+                    case "GENERIC_PRINTER_WINDOWS":
+                    case "REPORT_EXPORT_PDF":
+                        //validFiles = (IsValidProtectedFile(SharedUtils.OSSlash(@"Resources/Reports/UserReports/ReportDocumentFinancePayment.frx"), extraMessage));
+                        break;
+                    case "VIRTUAL_SCREEN":
+                        break;
+                }
+                //ProtectedFiles Protection
+                if (!validFiles) return false;
+                //Recibos com impressão em impressora térmica
+                if (TerminalSettings.HasLoggedTerminal)
+                {
+                    ResponseType responseType = Utils.ShowMessageTouch(pSourceWindow, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.YesNo, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_edit_DialogConfigurationPrintersType_tab1_label"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_printer_choose_printer"));
+
+                    if (responseType == ResponseType.Yes)
+                    {
+                        var printerDto = TerminalSettings.ThermalPrinter.GetLoggedTerminalPrinterDto();
+
+                        result = PrintingUtils.PrintFinanceDocumentPayment(printerDto, pDocumentFinancePayment);
                     }
                     else
                     {
-                        //Call Print Document A4
                         result = PrintingUtils.PrintFinanceDocumentPayment(printer, pDocumentFinancePayment);
                     }
                 }
+                else
+                {
+                    //Call Print Document A4
+                    result = PrintingUtils.PrintFinanceDocumentPayment(printer, pDocumentFinancePayment);
+                }
+
             }
             catch (Exception ex)
             {
@@ -687,7 +700,7 @@ namespace logicpos
 
             if (!LicenceManagement.IsLicensed || !LicenceManagement.CanPrint)
             {
-                Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(pSourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_printing_function_disabled"));
+                Utils.ShowMessageBoxUnlicensedError(pSourceWindow, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_printing_function_disabled"));
             }
             else
             {
@@ -700,16 +713,16 @@ namespace logicpos
                         switch (pTicketType)
                         {
                             case TicketType.TableOrder:
-                                ticketTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_documentticket_type_title_tt");
+                                ticketTitle = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_documentticket_type_title_tt");
                                 break;
                             case TicketType.ArticleOrder:
-                                ticketTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_documentticket_type_title_ar");
+                                ticketTitle = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_documentticket_type_title_ar");
                                 break;
                             case TicketType.WorkSession:
-                                ticketTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_documentticket_type_title_ws");
+                                ticketTitle = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_documentticket_type_title_ws");
                                 break;
                             case TicketType.CashDrawer:
-                                ticketTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_documentticket_type_title_cs");
+                                ticketTitle = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_documentticket_type_title_cs");
                                 break;
                             default:
                                 break;
@@ -746,7 +759,8 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                Utils.ShowMessageTouchErrorPrintingTicket(pSourceWindow, pPrinter, ex);
+                var printerDto = MappingUtils.GetPrinterDto(pPrinter);
+                Utils.ShowMessageTouchErrorPrintingTicket(pSourceWindow, printerDto, ex);
             }
 
             return result;
@@ -846,9 +860,9 @@ namespace logicpos
 
             if (!result)
             {
-                string message = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_protected_files_invalid_files_detected"), pFilePath);
+                string message = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_error_protected_files_invalid_files_detected"), pFilePath);
                 if (pExtraMessage != string.Empty) message = string.Format("{1}{0}{0}{2}", Environment.NewLine, message, pExtraMessage);
-                Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(800, 400), MessageType.Error, ButtonsType.Close, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error"), message);
+                Utils.ShowMessageBox(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(800, 400), MessageType.Error, ButtonsType.Close, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"), message);
             }
 
             return result;

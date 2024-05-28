@@ -8,7 +8,7 @@ namespace LogicPOS.Printing.Templates
 {
     public class ThermalPrinterInternalDocumentTemplate : ThermalPrinterBaseInternalTemplate
     {
-        public ThermalPrinterInternalDocumentTemplate(PrinterReferenceDto printer)
+        public ThermalPrinterInternalDocumentTemplate(PrinterDto printer)
             : base(printer)
         {
             _ticketTitle = "DYNAMIC TITLE";

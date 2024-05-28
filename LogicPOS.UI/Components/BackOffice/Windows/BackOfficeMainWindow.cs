@@ -114,7 +114,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 if (File.Exists(lPathToUpdater))
                 {
-                    ResponseType responseType = logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new System.Drawing.Size(600, 400), MessageType.Question, ButtonsType.YesNo, string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_update_POS"), GeneralSettings.ServerVersion), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_pos_update"));
+                    ResponseType responseType = logicpos.Utils.ShowMessageBox(this, DialogFlags.Modal, new System.Drawing.Size(600, 400), MessageType.Question, ButtonsType.YesNo, string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_update_POS"), GeneralSettings.ServerVersion), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_pos_update"));
 
                     if (responseType == ResponseType.Yes)
                     {

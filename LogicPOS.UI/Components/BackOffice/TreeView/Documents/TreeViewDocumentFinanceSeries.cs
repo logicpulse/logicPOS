@@ -128,7 +128,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 }
                 else
                 {
-                    ResponseType responseType = logicpos.Utils.ShowMessageTouch(
+                    ResponseType responseType = logicpos.Utils.ShowMessageBox(
                         _sourceWindow,
                         DialogFlags.Modal,
                         new Size(600, 400),

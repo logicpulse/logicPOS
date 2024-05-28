@@ -13,7 +13,7 @@ namespace LogicPOS.Printing.Documents
         private readonly string _movementDescription = string.Empty;
 
         public ThermalPrinterInternalDocumentCashDrawer(
-            PrinterReferenceDto printer,
+            PrinterDto printer,
             string pTicketTitle,
             decimal pTotalAmountInCashDrawer)
             : this(
@@ -24,7 +24,7 @@ namespace LogicPOS.Printing.Documents
         { }
 
         public ThermalPrinterInternalDocumentCashDrawer(
-            PrinterReferenceDto printer,
+            PrinterDto printer,
             string pTicketTitle,
             decimal pTotalAmountInCashDrawer,
             decimal pMovementAmount)
@@ -37,7 +37,7 @@ namespace LogicPOS.Printing.Documents
         { }
 
         public ThermalPrinterInternalDocumentCashDrawer(
-            PrinterReferenceDto printer,
+            PrinterDto printer,
             string pTicketTitle,
             decimal pTotalAmountInCashDrawer,
             decimal pMovementAmount,

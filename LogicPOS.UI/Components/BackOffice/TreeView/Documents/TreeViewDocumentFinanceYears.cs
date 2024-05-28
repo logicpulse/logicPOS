@@ -72,7 +72,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 //If has Active FiscalYear, Show Warning Request to Close/Open
                 if (currentDocumentFinanceYear != null)
                 {
-                    ResponseType responseType = logicpos.Utils.ShowMessageTouch(
+                    ResponseType responseType = logicpos.Utils.ShowMessageBox(
                         GlobalApp.StartupWindow,
                         DialogFlags.Modal,
                         new Size(600, 400),
@@ -124,7 +124,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 treeViewDocumentFinanceSeries.ButtonCreateDocumentFinanceSeries.Sensitive = GeneralSettings.HasPermissionTo("BACKOFFICE_MAN_DOCUMENTFINANCESERIES_MANAGE_SERIES");
 
                 //Request Create Series for all Type of Finance Documents
-                ResponseType responseType = logicpos.Utils.ShowMessageTouch(
+                ResponseType responseType = logicpos.Utils.ShowMessageBox(
                     _sourceWindow,
                     DialogFlags.Modal,
                     new Size(600, 400),

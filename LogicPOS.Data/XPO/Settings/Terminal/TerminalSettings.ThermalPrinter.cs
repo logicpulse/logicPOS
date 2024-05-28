@@ -1,4 +1,5 @@
-﻿using LogicPOS.DTOs.Printing;
+﻿using LogicPOS.Data.XPO.Utility;
+using LogicPOS.DTOs.Printing;
 using LogicPOS.Settings;
 
 namespace LogicPOS.Data.XPO.Settings
@@ -49,15 +50,9 @@ namespace LogicPOS.Data.XPO.Settings
                 }
             }
 
-            public static PrinterReferenceDto GetLoggedTerminalPrinterReference()
+            public static PrinterDto GetLoggedTerminalPrinterDto()
             {
-                return new PrinterReferenceDto
-                {
-                    Id = LoggedTerminal.ThermalPrinter.Oid,
-                    Designation = LoggedTerminal.ThermalPrinter.Designation,
-                    NetworkName = LoggedTerminal.ThermalPrinter.NetworkName,
-                    Token = LoggedTerminal.ThermalPrinter.PrinterType.Token
-                };
+                return MappingUtils.GetPrinterDto(LoggedTerminal.ThermalPrinter);
             }
         }
     }

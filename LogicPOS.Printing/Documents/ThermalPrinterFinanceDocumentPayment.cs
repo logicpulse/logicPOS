@@ -24,7 +24,7 @@ namespace LogicPOS.Printing.Documents
         private readonly List<FRBODocumentFinancePaymentDocumentView> _documentFinancePaymentDocumentList;
 
         public ThermalPrinterFinanceDocumentPayment(
-            PrinterReferenceDto printer, 
+            PrinterDto printer, 
             fin_documentfinancepayment financePayment, 
             List<int> copyNames, 
             bool secondCopy)

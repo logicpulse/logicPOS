@@ -311,7 +311,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             if (PluginSettings.LicenceManager.ConnectToWS() == false)
             {
-                logicpos.Utils.ShowMessageTouch(
+                logicpos.Utils.ShowMessageBox(
                     this, 
                     DialogFlags.Modal, 
                     new System.Drawing.Size(600, 300), 
@@ -353,13 +353,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 if (!LicenseRouter.WriteByteArrayToFile(registredLicence, completeFilePath))
                 {
-                    logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new System.Drawing.Size(600, 300), MessageType.Error, ButtonsType.Close, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_license_ws_save_license_error"));
+                    logicpos.Utils.ShowMessageBox(this, DialogFlags.Modal, new System.Drawing.Size(600, 300), MessageType.Error, ButtonsType.Close, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_license_ws_save_license_error"));
                     return;
                 }
                 else
                 {
                     this.Destroy();
-                    logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new System.Drawing.Size(600, 300), MessageType.Info, ButtonsType.Close, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_information"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_license_aplication_registered"));
+                    logicpos.Utils.ShowMessageBox(this, DialogFlags.Modal, new System.Drawing.Size(600, 300), MessageType.Info, ButtonsType.Close, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_information"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_license_aplication_registered"));
                     this.Destroy();
                     Environment.Exit(0);
                 }
@@ -368,7 +368,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 _logger.Error(ex.Message, ex);
 
-                logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new System.Drawing.Size(600, 300), MessageType.Error, ButtonsType.Close, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_license_ws_connection_timeout"));
+                logicpos.Utils.ShowMessageBox(this, DialogFlags.Modal, new System.Drawing.Size(600, 300), MessageType.Error, ButtonsType.Close, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_license_ws_connection_timeout"));
 
                 //Keep Running
                 this.Run();

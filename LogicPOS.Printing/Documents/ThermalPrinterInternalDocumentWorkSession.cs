@@ -24,7 +24,7 @@ namespace LogicPOS.Printing.Documents
         private readonly SplitCurrentAccountMode _splitCurrentAccountMode;
 
         public ThermalPrinterInternalDocumentWorkSession(
-            PrinterReferenceDto printer, 
+            PrinterDto printer, 
             pos_worksessionperiod pWorkSessionPeriod, 
             SplitCurrentAccountMode pSplitCurrentAccountMode)
             : base(printer)
