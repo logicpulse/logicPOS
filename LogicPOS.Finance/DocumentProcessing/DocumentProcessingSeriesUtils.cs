@@ -2,6 +2,7 @@
 using DevExpress.Xpo;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
+using LogicPOS.Data.XPO.Settings;
 using LogicPOS.DTOs.Common;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
@@ -24,12 +25,12 @@ namespace LogicPOS.Finance.DocumentProcessing
         //Get DocumentFinanceYearSerieTerminal for Logged Terminal
         public static fin_documentfinanceyearserieterminal GetDocumentFinanceYearSerieTerminal(Guid pDocumentType)
         {
-            return GetDocumentFinanceYearSerieTerminal(XPOSettings.Session, pDocumentType, XPOSettings.LoggedTerminal.Oid);
+            return GetDocumentFinanceYearSerieTerminal(XPOSettings.Session, pDocumentType, TerminalSettings.LoggedTerminal.Oid);
         }
 
         public static fin_documentfinanceyearserieterminal GetDocumentFinanceYearSerieTerminal(Session pSession, Guid pDocumentType)
         {
-            return GetDocumentFinanceYearSerieTerminal(pSession, pDocumentType, XPOSettings.LoggedTerminal.Oid);
+            return GetDocumentFinanceYearSerieTerminal(pSession, pDocumentType, TerminalSettings.LoggedTerminal.Oid);
         }
 
         //Get DocumentFinanceYearSerieTerminal for Terminal

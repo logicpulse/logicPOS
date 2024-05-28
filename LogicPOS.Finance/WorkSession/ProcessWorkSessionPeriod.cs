@@ -3,6 +3,7 @@ using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
+using LogicPOS.Data.XPO.Settings;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -19,7 +20,7 @@ namespace LogicPOS.Finance.WorkSession
             string whereTerminal = string.Empty;
             if (pWorkSessionPeriodType == WorkSessionPeriodType.Terminal)
             {
-                whereTerminal = string.Format("Terminal = '{0}' AND ", XPOSettings.LoggedTerminal.Oid);
+                whereTerminal = string.Format("Terminal = '{0}' AND ", TerminalSettings.LoggedTerminal.Oid);
             }
 
             string sql = string.Format(@"SELECT Oid FROM pos_worksessionperiod WHERE {1}PeriodType = '{0}' AND SessionStatus = 0;", Convert.ToInt16(pWorkSessionPeriodType), whereTerminal);
@@ -48,7 +49,7 @@ namespace LogicPOS.Finance.WorkSession
             {
                 string periodType = (pWorkSessionPeriodType == WorkSessionPeriodType.Day) ? "Day" : "Terminal";
                 string description = (pDescription != string.Empty) ? string.Format(" - {0}", pDescription) : string.Empty;
-                pos_configurationplaceterminal terminal = XPOSettings.Session.GetObjectByKey<pos_configurationplaceterminal>(XPOSettings.LoggedTerminal.Oid);
+                pos_configurationplaceterminal terminal = XPOSettings.Session.GetObjectByKey<pos_configurationplaceterminal>(TerminalSettings.LoggedTerminal.Oid);
                 DateTime dateTime = XPOHelper.CurrentDateTimeAtomic();
 
                 pos_worksessionperiod workSessionPeriod = new pos_worksessionperiod(XPOSettings.Session)
@@ -399,12 +400,12 @@ namespace LogicPOS.Finance.WorkSession
         }
 
         /// <summary>
-        /// Get Last CASHDRAWER_OPEN/CASHDRAWER_CLOSE Value, Required WorkSessionPeriod, to Re-Print Sessions from Other Terminals, do not use XPOSettings.LoggedTerminal.Oid
+        /// Get Last CASHDRAWER_OPEN/CASHDRAWER_CLOSE Value, Required WorkSessionPeriod, to Re-Print Sessions from Other Terminals, do not use TerminalSettings.LoggedTerminal.Oid
         /// </summary>
         public static decimal GetSessionPeriodTerminalCashDrawerOpenOrCloseAmount(Session pSession, pos_worksessionperiod pWorkSessionPeriod, string pMoventTypeToken)
         {
             //If Has a Valid pWorkSessionPeriod get Terminal from it, else use logged Terminal
-            Guid whereTerminalGuid = (pWorkSessionPeriod != null) ? pWorkSessionPeriod.Terminal.Oid : XPOSettings.LoggedTerminal.Oid;
+            Guid whereTerminalGuid = (pWorkSessionPeriod != null) ? pWorkSessionPeriod.Terminal.Oid : TerminalSettings.LoggedTerminal.Oid;
 
             //Required, CASHDRAWER_OPEN always comes from WorkSessionPeriod, and CASHDRAWER_CLOSE comes from latest cash close record (DESC)
             string whereOpen = (pMoventTypeToken == "CASHDRAWER_OPEN") ? string.Format(" AND wspPeriod = '{0}'", pWorkSessionPeriod.Oid) : string.Empty;
@@ -569,7 +570,7 @@ namespace LogicPOS.Finance.WorkSession
 
         //public static decimal GetLastPaymentMethodTotal(WorkSessionPeriodType pWorkSessionPeriodType, WorkSessionPeriod pWorkSessionPeriod, ConfigurationPaymentMethod pPaymentMethod)
         //{
-        //  string sql = string.Format(@"SELECT Oid FROM pos_worksessionperiod WHERE SessionStatus = 1 AND PeriodType = {0} AND Terminal = '{1}' ORDER BY DateEnd DESC;", pWorkSessionPeriodType, XPOSettings.LoggedTerminal.Oid);
+        //  string sql = string.Format(@"SELECT Oid FROM pos_worksessionperiod WHERE SessionStatus = 1 AND PeriodType = {0} AND Terminal = '{1}' ORDER BY DateEnd DESC;", pWorkSessionPeriodType, TerminalSettings.LoggedTerminal.Oid);
         //  Guid workSessionPeriodOid = Utils.GetGuidFromQuery(sql);
         //  if (workSessionPeriodOid != Guid.Empty)
         //  {

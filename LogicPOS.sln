@@ -3,17 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "logicpos", "logicpos\logicpos.csproj", "{340331CF-94E0-49B0-8EBB-D4DF61A3DCCC}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "logicpos.financial", "logicpos.financial", "{3BEC1553-10A8-4ED7-9ED9-347A0D6C671F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogicPOS.UI", "LogicPOS.UI\LogicPOS.UI.csproj", "{340331CF-94E0-49B0-8EBB-D4DF61A3DCCC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogicPOS.Globalization", "LogicPOS.Globalization\LogicPOS.Globalization.csproj", "{B9E8D813-D694-4A7F-955E-CCC4B10F3774}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogicPOS.Shared", "LogicPOS.Shared\LogicPOS.Shared.csproj", "{FB74327C-1794-47EC-8F52-FD3F464F3258}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "logicpos.datalayer", "logicpos.datalayer\logicpos.datalayer.csproj", "{42AF3BE2-44B4-477D-8E45-55C64992B805}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "logicpos.financial.library", "logicpos.financial\logicpos.financial.library\logicpos.financial.library.csproj", "{7F643F3C-0F7B-451A-AA16-A9A25A56CCF3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogicPOS.Data", "LogicPOS.Data\LogicPOS.Data.csproj", "{42AF3BE2-44B4-477D-8E45-55C64992B805}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicPOS.Settings", "LogicPOS.Settings\LogicPOS.Settings.csproj", "{A4E7F0EA-8360-41F2-A625-517F6E943A29}"
 EndProject
@@ -166,36 +162,6 @@ Global
 		{42AF3BE2-44B4-477D-8E45-55C64992B805}.WinForms|Mixed Platforms.Build.0 = Release|Any CPU
 		{42AF3BE2-44B4-477D-8E45-55C64992B805}.WinForms|x86.ActiveCfg = Release|Any CPU
 		{42AF3BE2-44B4-477D-8E45-55C64992B805}.WinForms|x86.Build.0 = Release|Any CPU
-		{7F643F3C-0F7B-451A-AA16-A9A25A56CCF3}.Basic|Any CPU.ActiveCfg = Release|Any CPU
-		{7F643F3C-0F7B-451A-AA16-A9A25A56CCF3}.Basic|Any CPU.Build.0 = Release|Any CPU
-		{7F643F3C-0F7B-451A-AA16-A9A25A56CCF3}.Basic|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{7F643F3C-0F7B-451A-AA16-A9A25A56CCF3}.Basic|Mixed Platforms.Build.0 = Release|Any CPU
-		{7F643F3C-0F7B-451A-AA16-A9A25A56CCF3}.Basic|x86.ActiveCfg = Release|Any CPU
-		{7F643F3C-0F7B-451A-AA16-A9A25A56CCF3}.Basic|x86.Build.0 = Release|Any CPU
-		{7F643F3C-0F7B-451A-AA16-A9A25A56CCF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7F643F3C-0F7B-451A-AA16-A9A25A56CCF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7F643F3C-0F7B-451A-AA16-A9A25A56CCF3}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{7F643F3C-0F7B-451A-AA16-A9A25A56CCF3}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{7F643F3C-0F7B-451A-AA16-A9A25A56CCF3}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{7F643F3C-0F7B-451A-AA16-A9A25A56CCF3}.Debug|x86.Build.0 = Debug|Any CPU
-		{7F643F3C-0F7B-451A-AA16-A9A25A56CCF3}.Demo|Any CPU.ActiveCfg = Debug|Any CPU
-		{7F643F3C-0F7B-451A-AA16-A9A25A56CCF3}.Demo|Any CPU.Build.0 = Debug|Any CPU
-		{7F643F3C-0F7B-451A-AA16-A9A25A56CCF3}.Demo|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{7F643F3C-0F7B-451A-AA16-A9A25A56CCF3}.Demo|Mixed Platforms.Build.0 = Debug|Any CPU
-		{7F643F3C-0F7B-451A-AA16-A9A25A56CCF3}.Demo|x86.ActiveCfg = Debug|Any CPU
-		{7F643F3C-0F7B-451A-AA16-A9A25A56CCF3}.Demo|x86.Build.0 = Debug|Any CPU
-		{7F643F3C-0F7B-451A-AA16-A9A25A56CCF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7F643F3C-0F7B-451A-AA16-A9A25A56CCF3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7F643F3C-0F7B-451A-AA16-A9A25A56CCF3}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{7F643F3C-0F7B-451A-AA16-A9A25A56CCF3}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{7F643F3C-0F7B-451A-AA16-A9A25A56CCF3}.Release|x86.ActiveCfg = Release|Any CPU
-		{7F643F3C-0F7B-451A-AA16-A9A25A56CCF3}.Release|x86.Build.0 = Release|Any CPU
-		{7F643F3C-0F7B-451A-AA16-A9A25A56CCF3}.WinForms|Any CPU.ActiveCfg = Release|Any CPU
-		{7F643F3C-0F7B-451A-AA16-A9A25A56CCF3}.WinForms|Any CPU.Build.0 = Release|Any CPU
-		{7F643F3C-0F7B-451A-AA16-A9A25A56CCF3}.WinForms|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{7F643F3C-0F7B-451A-AA16-A9A25A56CCF3}.WinForms|Mixed Platforms.Build.0 = Release|Any CPU
-		{7F643F3C-0F7B-451A-AA16-A9A25A56CCF3}.WinForms|x86.ActiveCfg = Release|Any CPU
-		{7F643F3C-0F7B-451A-AA16-A9A25A56CCF3}.WinForms|x86.Build.0 = Release|Any CPU
 		{A4E7F0EA-8360-41F2-A625-517F6E943A29}.Basic|Any CPU.ActiveCfg = Debug|Any CPU
 		{A4E7F0EA-8360-41F2-A625-517F6E943A29}.Basic|Any CPU.Build.0 = Debug|Any CPU
 		{A4E7F0EA-8360-41F2-A625-517F6E943A29}.Basic|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -501,7 +467,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{7F643F3C-0F7B-451A-AA16-A9A25A56CCF3} = {3BEC1553-10A8-4ED7-9ED9-347A0D6C671F}
 		{1C688B96-9FCC-465A-9347-1F933C703E21} = {37768CD0-31B5-4547-8CA2-F69A2BC0BD99}
 		{E39A7986-4C2F-4EBE-A31B-59C766150EAC} = {37768CD0-31B5-4547-8CA2-F69A2BC0BD99}
 	EndGlobalSection

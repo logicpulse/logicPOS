@@ -74,9 +74,9 @@
     <Compile Include="Enums\TableFilterMode.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\logicpos.datalayer\logicpos.datalayer.csproj">
+    <ProjectReference Include="..\LogicPOS.Data\LogicPOS.Data.csproj">
       <Project>{42af3be2-44b4-477d-8e45-55c64992b805}</Project>
-      <Name>logicpos.datalayer</Name>
+      <Name>LogicPOS.Data</Name>
     </ProjectReference>
     <ProjectReference Include="..\LogicPOS.DTOs\LogicPOS.DTOs.csproj">
       <Project>{e23bdf58-f0a9-40ac-acce-57235fb7a7f1}</Project>

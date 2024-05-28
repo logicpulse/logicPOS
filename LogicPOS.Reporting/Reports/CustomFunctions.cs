@@ -1,5 +1,6 @@
 ﻿using FastReport.Utils;
 using logicpos.datalayer.Xpo;
+using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Globalization;
 using LogicPOS.Globalization.Resources.Localization;
 using LogicPOS.Settings;
