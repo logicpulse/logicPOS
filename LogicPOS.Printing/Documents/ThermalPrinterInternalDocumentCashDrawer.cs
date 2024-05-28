@@ -1,4 +1,4 @@
-﻿using logicpos.datalayer.DataLayer.Xpo;
+﻿using LogicPOS.DTOs.Printing;
 using LogicPOS.Globalization;
 using LogicPOS.Printing.Enums;
 using LogicPOS.Printing.Templates;
@@ -12,14 +12,37 @@ namespace LogicPOS.Printing.Documents
         private readonly decimal _movementAmount = 0.0m;
         private readonly string _movementDescription = string.Empty;
 
-        public ThermalPrinterInternalDocumentCashDrawer(sys_configurationprinters pPrinter, string pTicketTitle, decimal pTotalAmountInCashDrawer)
-            : this(pPrinter, pTicketTitle, pTotalAmountInCashDrawer, 0.0m) { }
+        public ThermalPrinterInternalDocumentCashDrawer(
+            PrinterReferenceDto printer,
+            string pTicketTitle,
+            decimal pTotalAmountInCashDrawer)
+            : this(
+                  printer,
+                  pTicketTitle,
+                  pTotalAmountInCashDrawer,
+                  0.0m)
+        { }
 
-        public ThermalPrinterInternalDocumentCashDrawer(sys_configurationprinters pPrinter, string pTicketTitle, decimal pTotalAmountInCashDrawer, decimal pMovementAmount)
-            : this(pPrinter, pTicketTitle, pTotalAmountInCashDrawer, pMovementAmount, string.Empty) { }
+        public ThermalPrinterInternalDocumentCashDrawer(
+            PrinterReferenceDto printer,
+            string pTicketTitle,
+            decimal pTotalAmountInCashDrawer,
+            decimal pMovementAmount)
+            : this(
+                  printer,
+                  pTicketTitle,
+                  pTotalAmountInCashDrawer,
+                  pMovementAmount,
+                  string.Empty)
+        { }
 
-        public ThermalPrinterInternalDocumentCashDrawer(sys_configurationprinters pPrinter, string pTicketTitle, decimal pTotalAmountInCashDrawer, decimal pMovementAmount, string pMovementDescription)
-            : base(pPrinter)
+        public ThermalPrinterInternalDocumentCashDrawer(
+            PrinterReferenceDto printer,
+            string pTicketTitle,
+            decimal pTotalAmountInCashDrawer,
+            decimal pMovementAmount,
+            string pMovementDescription)
+            : base(printer)
         {
             _ticketTitle = pTicketTitle;
             _totalAmountInCashDrawer = pTotalAmountInCashDrawer;
@@ -54,19 +77,19 @@ namespace LogicPOS.Printing.Documents
 
         private void PrintDocumentDetails()
         {
-            _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_total_cashdrawer"));
+            _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(Settings.CultureSettings.CurrentCultureName, "global_total_cashdrawer"));
             _genericThermalPrinter.WriteLine(LogicPOS.Utility.DataConversionUtils.DecimalToString(_totalAmountInCashDrawer), WriteLineTextMode.Big);
             _genericThermalPrinter.LineFeed();
 
             if (_movementAmount < 0.0m || _movementAmount > 0.0m)
             {
-                _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_movement_amount"));
+                _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(Settings.CultureSettings.CurrentCultureName, "global_movement_amount"));
                 _genericThermalPrinter.WriteLine(LogicPOS.Utility.DataConversionUtils.DecimalToString(_movementAmount), WriteLineTextMode.Big);
                 _genericThermalPrinter.LineFeed();
             }
 
             string description = (_movementDescription != string.Empty) ? _movementDescription : "________________________________";
-            _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_description"));
+            _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(Settings.CultureSettings.CurrentCultureName, "global_description"));
             _genericThermalPrinter.WriteLine(description);
         }
     }

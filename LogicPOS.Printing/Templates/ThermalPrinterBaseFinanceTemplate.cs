@@ -2,6 +2,7 @@
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.DTOs.Printing;
 using LogicPOS.Globalization;
 using LogicPOS.Printing.Common;
 using LogicPOS.Printing.Enums;
@@ -25,23 +26,34 @@ namespace LogicPOS.Printing.Templates
         protected string _copyName = string.Empty;
         protected int _ticketTablePaddingLeftLength = 2;
 
-        public ThermalPrinterBaseFinanceTemplate(sys_configurationprinters pPrinter, fin_documentfinancetype pDocumentType, List<int> pCopyNames)
-            : this(pPrinter, pDocumentType, pCopyNames, false)
+        public ThermalPrinterBaseFinanceTemplate(
+            PrinterReferenceDto printer, 
+            fin_documentfinancetype documentType, 
+            List<int> copyNames)
+            : this(
+                  printer, 
+                  documentType, 
+                  copyNames, 
+                  false)
         {
         }
 
-        public ThermalPrinterBaseFinanceTemplate(sys_configurationprinters pPrinter, fin_documentfinancetype pDocumentType, List<int> pCopyNames, bool pSecondCopy)
-            : base(pPrinter, PrintingSettings.ThermalPrinter.CompanyLogoLocation)
+        public ThermalPrinterBaseFinanceTemplate(
+            PrinterReferenceDto printer, 
+            fin_documentfinancetype documentType, 
+            List<int> copyNames, 
+            bool isSecondCopy)
+            : base(
+                  printer, 
+                  PrintingSettings.ThermalPrinter.CompanyLogoLocation)
         {
-            //Assign Parameter Properties
-            _documentType = pDocumentType;
-            _copyNames = pCopyNames;
-            _secondCopy = pSecondCopy;
+            _documentType = documentType;
+            _copyNames = copyNames;
+            _secondCopy = isSecondCopy;
 
-            //Generate CopyNamesArray (Original, Duplicate,...)
             if (_copyNames != null)
             {
-                _copyNamesArray = CustomReport.CopyNames(pCopyNames);
+                _copyNamesArray = CustomReport.CopyNames(copyNames);
             }
         }
 

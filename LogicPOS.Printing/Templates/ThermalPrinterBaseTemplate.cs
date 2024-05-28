@@ -1,6 +1,7 @@
 ﻿using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.DTOs.Printing;
 using LogicPOS.Globalization;
 using LogicPOS.Printing.Common;
 using LogicPOS.Printing.Enums;
@@ -39,17 +40,21 @@ namespace LogicPOS.Printing.Templates
             set { _ticketSubTitle = value; }
         }
 
-        public ThermalPrinterBaseTemplate(sys_configurationprinters pPrinter)
-            : this(pPrinter, PrintingSettings.ThermalPrinter.CompanyLogoLocation)
+        public ThermalPrinterBaseTemplate(PrinterReferenceDto printer)
+            : this(
+                  printer, 
+                  PrintingSettings.ThermalPrinter.CompanyLogoLocation)
         {
         }
 
-        public ThermalPrinterBaseTemplate(sys_configurationprinters pPrinter, string pCompanyLogo)
+        public ThermalPrinterBaseTemplate(
+            PrinterReferenceDto printer, 
+            string pCompanyLogo)
         {
             try
             {
                 //Init Properties
-                _genericThermalPrinter = new GenericThermalPrinter(pPrinter);
+                _genericThermalPrinter = new GenericThermalPrinter(printer);
                 _maxCharsPerLineNormal = _genericThermalPrinter.MaxCharsPerLineNormal;
                 _maxCharsPerLineNormalBold = _genericThermalPrinter.MaxCharsPerLineNormalBold;
                 _maxCharsPerLineSmall = _genericThermalPrinter.MaxCharsPerLineSmall;

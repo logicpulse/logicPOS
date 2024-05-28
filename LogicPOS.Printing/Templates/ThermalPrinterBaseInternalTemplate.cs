@@ -1,15 +1,16 @@
-﻿using logicpos.datalayer.DataLayer.Xpo;
-using System;
-using LogicPOS.Settings.Extensions;
+﻿using LogicPOS.DTOs.Printing;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using System;
 
 namespace LogicPOS.Printing.Templates
 {
     public abstract class ThermalPrinterBaseInternalTemplate : ThermalPrinterBaseTemplate
     {
-        public ThermalPrinterBaseInternalTemplate(sys_configurationprinters pPrinter)
-            : base(pPrinter, PrintingSettings.ThermalPrinter.CompanyLogoLocation)
+        public ThermalPrinterBaseInternalTemplate(PrinterReferenceDto printer)
+            : base(
+                  printer,
+                  PrintingSettings.ThermalPrinter.CompanyLogoLocation)
         {
         }
 
@@ -49,10 +50,10 @@ namespace LogicPOS.Printing.Templates
             _genericThermalPrinter.SetAlignCenter();
 
             //Extended Footer Text
-            _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_internal_document_footer1"));
-            _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_internal_document_footer2"));
+            _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_internal_document_footer1"));
+            _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_internal_document_footer2"));
             _genericThermalPrinter.LineFeed();
-            _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_internal_document_footer3"));
+            _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_internal_document_footer3"));
 
             //Reset to Left
             _genericThermalPrinter.SetAlignLeft();

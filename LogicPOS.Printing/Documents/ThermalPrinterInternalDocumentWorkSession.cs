@@ -3,6 +3,7 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using logicpos.shared.Enums.ThermalPrinter;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.DTOs.Printing;
 using LogicPOS.Finance.WorkSession;
 using LogicPOS.Globalization;
 using LogicPOS.Printing.Enums;
@@ -22,8 +23,11 @@ namespace LogicPOS.Printing.Documents
         private readonly pos_worksessionperiod _workSessionPeriod;
         private readonly SplitCurrentAccountMode _splitCurrentAccountMode;
 
-        public ThermalPrinterInternalDocumentWorkSession(sys_configurationprinters pPrinter, pos_worksessionperiod pWorkSessionPeriod, SplitCurrentAccountMode pSplitCurrentAccountMode)
-            : base(pPrinter)
+        public ThermalPrinterInternalDocumentWorkSession(
+            PrinterReferenceDto printer, 
+            pos_worksessionperiod pWorkSessionPeriod, 
+            SplitCurrentAccountMode pSplitCurrentAccountMode)
+            : base(printer)
         {
             _workSessionPeriod = pWorkSessionPeriod;
             _splitCurrentAccountMode = pSplitCurrentAccountMode;
@@ -94,8 +98,8 @@ namespace LogicPOS.Printing.Documents
 
         private void PrintDocumentDetails()
         {
-            //Call PrintWorkSessionMovement
-            PrintWorkSessionMovement(_genericThermalPrinter.Printer, _workSessionPeriod, _splitCurrentAccountMode);
+
+            PrintWorkSessionMovement(_workSessionPeriod, _splitCurrentAccountMode);
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -118,164 +122,164 @@ namespace LogicPOS.Printing.Documents
             }
         }
 
-        public bool PrintWorkSessionMovement(sys_configurationprinters pPrinter, pos_worksessionperiod pWorkSessionPeriod, SplitCurrentAccountMode pSplitCurrentAccountMode)
+        public bool PrintWorkSessionMovement(
+            pos_worksessionperiod pWorkSessionPeriod, 
+            SplitCurrentAccountMode pSplitCurrentAccountMode)
         {
             bool result = false;
 
-            if (pPrinter != null)
-            {
-                sys_configurationprinterstemplates template = (sys_configurationprinterstemplates)XPOHelper.GetXPGuidObject(typeof(sys_configurationprinterstemplates), PrintingSettings.WorkSessionMovementPrintingTemplateId);
-                string splitCurrentAccountFilter = string.Empty;
-                string fileTicket = template.FileTemplate;
+            sys_configurationprinterstemplates template = (sys_configurationprinterstemplates)XPOHelper.GetXPGuidObject(typeof(sys_configurationprinterstemplates), PrintingSettings.WorkSessionMovementPrintingTemplateId);
+            string splitCurrentAccountFilter = string.Empty;
+            string fileTicket = template.FileTemplate;
 
-                switch (pSplitCurrentAccountMode)
+            switch (pSplitCurrentAccountMode)
+            {
+                case SplitCurrentAccountMode.All:
+                    break;
+                case SplitCurrentAccountMode.NonCurrentAcount:
+                    //Diferent from DocumentType CC
+                    splitCurrentAccountFilter = string.Format("AND DocumentType <> '{0}'", DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput);
+                    break;
+                case SplitCurrentAccountMode.CurrentAcount:
+                    //Only DocumentType CC
+                    splitCurrentAccountFilter = string.Format("AND DocumentType = '{0}'", DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput);
+                    break;
+            }
+
+            try
+            {
+                //Shared Where for details and totals Queries
+                string sqlWhere = string.Empty;
+
+                if (pWorkSessionPeriod.PeriodType == WorkSessionPeriodType.Day)
                 {
-                    case SplitCurrentAccountMode.All:
-                        break;
-                    case SplitCurrentAccountMode.NonCurrentAcount:
-                        //Diferent from DocumentType CC
-                        splitCurrentAccountFilter = string.Format("AND DocumentType <> '{0}'", DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput);
-                        break;
-                    case SplitCurrentAccountMode.CurrentAcount:
-                        //Only DocumentType CC
-                        splitCurrentAccountFilter = string.Format("AND DocumentType = '{0}'", DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput);
-                        break;
+                    sqlWhere = string.Format("PeriodParent = '{0}'{1}", pWorkSessionPeriod.Oid, splitCurrentAccountFilter);
+                }
+                else
+                {
+                    sqlWhere = string.Format("Period = '{0}'{1}", pWorkSessionPeriod.Oid, splitCurrentAccountFilter);
                 }
 
-                try
-                {
-                    //Shared Where for details and totals Queries
-                    string sqlWhere = string.Empty;
+                //Shared for Both Modes
+                if (sqlWhere != string.Empty) sqlWhere = string.Format(" AND {0}", sqlWhere);
 
-                    if (pWorkSessionPeriod.PeriodType == WorkSessionPeriodType.Day)
-                    {
-                        sqlWhere = string.Format("PeriodParent = '{0}'{1}", pWorkSessionPeriod.Oid, splitCurrentAccountFilter);
-                    }
-                    else
-                    {
-                        sqlWhere = string.Format("Period = '{0}'{1}", pWorkSessionPeriod.Oid, splitCurrentAccountFilter);
-                    }
+                //Format to Display Vars
+                string dateCloseDisplay = (pWorkSessionPeriod.SessionStatus == WorkSessionPeriodStatus.Open) ? CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_in_progress") : pWorkSessionPeriod.DateEnd.ToString(CultureSettings.DateTimeFormat);
 
-                    //Shared for Both Modes
-                    if (sqlWhere != string.Empty) sqlWhere = string.Format(" AND {0}", sqlWhere);
+                //Get Session Period Details
+                Hashtable resultHashTable = ProcessWorkSessionPeriod.GetSessionPeriodSummaryDetails(pWorkSessionPeriod);
 
-                    //Format to Display Vars
-                    string dateCloseDisplay = (pWorkSessionPeriod.SessionStatus == WorkSessionPeriodStatus.Open) ? CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_in_progress") : pWorkSessionPeriod.DateEnd.ToString(CultureSettings.DateTimeFormat);
-
-                    //Get Session Period Details
-                    Hashtable resultHashTable = ProcessWorkSessionPeriod.GetSessionPeriodSummaryDetails(pWorkSessionPeriod);
-
-                    //Print Header Summary
-                    DataRow dataRow = null;
-                    DataTable dataTable = new DataTable();
-                    dataTable.Columns.Add(new DataColumn("Label", typeof(string)));
-                    dataTable.Columns.Add(new DataColumn("Value", typeof(string)));
-                    //Open DateTime
-                    dataRow = dataTable.NewRow();
-                    dataRow[0] = string.Format("{0}:", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_worksession_open_datetime"));
-                    dataRow[1] = pWorkSessionPeriod.DateStart.ToString(CultureSettings.DateTimeFormat);
-                    dataTable.Rows.Add(dataRow);
-                    //Close DataTime
-                    dataRow = dataTable.NewRow();
-                    dataRow[0] = string.Format("{0}:", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_worksession_close_datetime"));
-                    dataRow[1] = dateCloseDisplay;
-                    dataTable.Rows.Add(dataRow);
-                    //Open Total CashDrawer
-                    dataRow = dataTable.NewRow();
-                    dataRow[0] = string.Format("{0}:", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_worksession_open_total_cashdrawer"));
-                    dataRow[1] = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(
-                        (decimal)resultHashTable["totalMoneyInCashDrawerOnOpen"],
-                        XPOSettings.ConfigurationSystemCurrency.Acronym);
-                    dataTable.Rows.Add(dataRow);
-                    //Close Total CashDrawer
-                    dataRow = dataTable.NewRow();
-                    dataRow[0] = string.Format("{0}:", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_worksession_close_total_cashdrawer"));
-                    dataRow[1] = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(
-                        (decimal)resultHashTable["totalMoneyInCashDrawer"],
-                        XPOSettings.ConfigurationSystemCurrency.Acronym);
-                    dataTable.Rows.Add(dataRow);
-                    //Total Money In
-                    dataRow = dataTable.NewRow();
-                    dataRow[0] = string.Format("{0}:", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_worksession_total_money_in"));
-                    dataRow[1] = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(
-                        (decimal)resultHashTable["totalMoneyIn"],
-                        XPOSettings.ConfigurationSystemCurrency.Acronym);
-                    dataTable.Rows.Add(dataRow);
-                    //Total Money Out
-                    dataRow = dataTable.NewRow();
-                    dataRow[0] = string.Format("{0}:", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_worksession_total_money_out"));
-                    dataRow[1] = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(
-                        (decimal)resultHashTable["totalMoneyOut"],
-                        XPOSettings.ConfigurationSystemCurrency.Acronym);
-                    dataTable.Rows.Add(dataRow);
-                    //Configure Ticket Column Properties
-                    List<TicketColumn> columns = new List<TicketColumn>
+                //Print Header Summary
+                DataRow dataRow = null;
+                DataTable dataTable = new DataTable();
+                dataTable.Columns.Add(new DataColumn("Label", typeof(string)));
+                dataTable.Columns.Add(new DataColumn("Value", typeof(string)));
+                //Open DateTime
+                dataRow = dataTable.NewRow();
+                dataRow[0] = string.Format("{0}:", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_worksession_open_datetime"));
+                dataRow[1] = pWorkSessionPeriod.DateStart.ToString(CultureSettings.DateTimeFormat);
+                dataTable.Rows.Add(dataRow);
+                //Close DataTime
+                dataRow = dataTable.NewRow();
+                dataRow[0] = string.Format("{0}:", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_worksession_close_datetime"));
+                dataRow[1] = dateCloseDisplay;
+                dataTable.Rows.Add(dataRow);
+                //Open Total CashDrawer
+                dataRow = dataTable.NewRow();
+                dataRow[0] = string.Format("{0}:", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_worksession_open_total_cashdrawer"));
+                dataRow[1] = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(
+                    (decimal)resultHashTable["totalMoneyInCashDrawerOnOpen"],
+                    XPOSettings.ConfigurationSystemCurrency.Acronym);
+                dataTable.Rows.Add(dataRow);
+                //Close Total CashDrawer
+                dataRow = dataTable.NewRow();
+                dataRow[0] = string.Format("{0}:", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_worksession_close_total_cashdrawer"));
+                dataRow[1] = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(
+                    (decimal)resultHashTable["totalMoneyInCashDrawer"],
+                    XPOSettings.ConfigurationSystemCurrency.Acronym);
+                dataTable.Rows.Add(dataRow);
+                //Total Money In
+                dataRow = dataTable.NewRow();
+                dataRow[0] = string.Format("{0}:", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_worksession_total_money_in"));
+                dataRow[1] = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(
+                    (decimal)resultHashTable["totalMoneyIn"],
+                    XPOSettings.ConfigurationSystemCurrency.Acronym);
+                dataTable.Rows.Add(dataRow);
+                //Total Money Out
+                dataRow = dataTable.NewRow();
+                dataRow[0] = string.Format("{0}:", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_worksession_total_money_out"));
+                dataRow[1] = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(
+                    (decimal)resultHashTable["totalMoneyOut"],
+                    XPOSettings.ConfigurationSystemCurrency.Acronym);
+                dataTable.Rows.Add(dataRow);
+                //Configure Ticket Column Properties
+                List<TicketColumn> columns = new List<TicketColumn>
                     {
                         new TicketColumn("Label", "", Convert.ToInt16(_maxCharsPerLineNormal / 2) - 2, TicketColumnsAlignment.Right),
                         new TicketColumn("Value", "", Convert.ToInt16(_maxCharsPerLineNormal / 2) - 2, TicketColumnsAlignment.Left)
                     };
-                    TicketTable ticketTable = new TicketTable(dataTable, columns, _genericThermalPrinter.MaxCharsPerLineNormalBold);
-                    //Print Ticket Table
-                    ticketTable.Print(_genericThermalPrinter);
-                    //Line Feed
-                    _genericThermalPrinter.LineFeed();
+                TicketTable ticketTable = new TicketTable(dataTable, columns, _genericThermalPrinter.MaxCharsPerLineNormalBold);
+                //Print Ticket Table
+                ticketTable.Print(_genericThermalPrinter);
+                //Line Feed
+                _genericThermalPrinter.LineFeed();
 
-                    //Get Final Rendered DataTable Groups
-                    Dictionary<DataTableGroupPropertiesType, DataTableGroupProperties> dictGroupProperties = GenDataTableWorkSessionMovementResume(pWorkSessionPeriod.PeriodType, pSplitCurrentAccountMode, sqlWhere);
+                //Get Final Rendered DataTable Groups
+                Dictionary<DataTableGroupPropertiesType, DataTableGroupProperties> dictGroupProperties = GenDataTableWorkSessionMovementResume(pWorkSessionPeriod.PeriodType, pSplitCurrentAccountMode, sqlWhere);
 
-                    //Prepare Local vars for Group Loop
-                    XPSelectData xPSelectData = null;
-                    string designation = string.Empty;
-                    decimal quantity = 0.0m;
-                    decimal total = 0.0m;
-                    string unitMeasure = string.Empty;
-                    //Store Final Totals
-                    decimal summaryTotalQuantity = 0.0m;
-                    decimal summaryTotal = 0.0m;
-                    //Used to Custom Print Table Ticket Rows
-                    List<string> tableCustomPrint = new List<string>();
+                //Prepare Local vars for Group Loop
+                XPSelectData xPSelectData = null;
+                string designation = string.Empty;
+                decimal quantity = 0.0m;
+                decimal total = 0.0m;
+                string unitMeasure = string.Empty;
+                //Store Final Totals
+                decimal summaryTotalQuantity = 0.0m;
+                decimal summaryTotal = 0.0m;
+                //Used to Custom Print Table Ticket Rows
+                List<string> tableCustomPrint = new List<string>();
 
-                    //Start to process Group
-                    int groupPosition = -1;
-                    //Assign Position to Print Payment Group Split Title
-                    int groupPositionTitlePayments = (pWorkSessionPeriod.PeriodType == WorkSessionPeriodType.Day) ? 9 : 8;
-                    //If CurrentAccount Mode decrease 1, it dont have PaymentMethods
-                    if (pSplitCurrentAccountMode == SplitCurrentAccountMode.CurrentAcount) groupPositionTitlePayments--;
+                //Start to process Group
+                int groupPosition = -1;
+                //Assign Position to Print Payment Group Split Title
+                int groupPositionTitlePayments = (pWorkSessionPeriod.PeriodType == WorkSessionPeriodType.Day) ? 9 : 8;
+                //If CurrentAccount Mode decrease 1, it dont have PaymentMethods
+                if (pSplitCurrentAccountMode == SplitCurrentAccountMode.CurrentAcount) groupPositionTitlePayments--;
 
 
-                    foreach (KeyValuePair<DataTableGroupPropertiesType, DataTableGroupProperties> item in dictGroupProperties)
-                    //foreach (DataTableGroupProperties item in dictGroupProperties.Values)
+                foreach (KeyValuePair<DataTableGroupPropertiesType, DataTableGroupProperties> item in dictGroupProperties)
+                //foreach (DataTableGroupProperties item in dictGroupProperties.Values)
+                {
+                    if (item.Value.Enabled)
                     {
-                        if (item.Value.Enabled)
+                        //Increment Group Position
+                        groupPosition++;
+
+                        //Print Group Titles (FinanceDocuments|Payments)
+                        if (groupPosition == 0)
                         {
-                            //Increment Group Position
-                            groupPosition++;
+                            _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_worksession_resume_finance_documents"), WriteLineTextMode.Big);
+                            _genericThermalPrinter.LineFeed();
+                        }
+                        else if (groupPosition == groupPositionTitlePayments)
+                        {
+                            //When finish FinanceDocuemnts groups, print Last Row, the Summary Totals Row
+                            _genericThermalPrinter.WriteLine(tableCustomPrint[tableCustomPrint.Count - 1], WriteLineTextMode.DoubleHeight);
+                            _genericThermalPrinter.LineFeed();
 
-                            //Print Group Titles (FinanceDocuments|Payments)
-                            if (groupPosition == 0)
-                            {
-                                _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_worksession_resume_finance_documents"), WriteLineTextMode.Big);
-                                _genericThermalPrinter.LineFeed();
-                            }
-                            else if (groupPosition == groupPositionTitlePayments)
-                            {
-                                //When finish FinanceDocuemnts groups, print Last Row, the Summary Totals Row
-                                _genericThermalPrinter.WriteLine(tableCustomPrint[tableCustomPrint.Count - 1], WriteLineTextMode.DoubleHeight);
-                                _genericThermalPrinter.LineFeed();
+                            _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_worksession_resume_paymens_documents"), WriteLineTextMode.Big);
+                            _genericThermalPrinter.LineFeed();
+                        }
 
-                                _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_worksession_resume_paymens_documents"), WriteLineTextMode.Big);
-                                _genericThermalPrinter.LineFeed();
-                            }
+                        //Reset Totals
+                        summaryTotalQuantity = 0.0m;
+                        summaryTotal = 0.0m;
 
-                            //Reset Totals
-                            summaryTotalQuantity = 0.0m;
-                            summaryTotal = 0.0m;
+                        //Get Group Data from group Query
+                        xPSelectData = XPOHelper.GetSelectedDataFromQuery(item.Value.Sql);
 
-                            //Get Group Data from group Query
-                            xPSelectData = XPOHelper.GetSelectedDataFromQuery(item.Value.Sql);
-
-                            //Generate Columns
-                            columns = new List<TicketColumn>
+                        //Generate Columns
+                        columns = new List<TicketColumn>
                             {
                                 new TicketColumn("GroupTitle", item.Value.Title, 0, TicketColumnsAlignment.Left),
                                 new TicketColumn("Quantity", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_quantity_acronym"), 8, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"),
@@ -283,90 +287,89 @@ namespace LogicPOS.Printing.Documents
                                 new TicketColumn("Total", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_totalfinal_acronym"), 10, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}")
                             };
 
-                            //Init DataTable
-                            dataTable = new DataTable();
-                            dataTable.Columns.Add(new DataColumn("GroupDesignation", typeof(string)));
-                            dataTable.Columns.Add(new DataColumn("Quantity", typeof(decimal)));
-                            //dataTable.Columns.Add(new DataColumn("UnitMeasure", typeof(string)));
-                            dataTable.Columns.Add(new DataColumn("Total", typeof(decimal)));
+                        //Init DataTable
+                        dataTable = new DataTable();
+                        dataTable.Columns.Add(new DataColumn("GroupDesignation", typeof(string)));
+                        dataTable.Columns.Add(new DataColumn("Quantity", typeof(decimal)));
+                        //dataTable.Columns.Add(new DataColumn("UnitMeasure", typeof(string)));
+                        dataTable.Columns.Add(new DataColumn("Total", typeof(decimal)));
 
-                            //If Has data
-                            if (xPSelectData.Data.Length > 0)
+                        //If Has data
+                        if (xPSelectData.Data.Length > 0)
+                        {
+                            foreach (SelectStatementResultRow row in xPSelectData.Data)
                             {
-                                foreach (SelectStatementResultRow row in xPSelectData.Data)
+                                designation = Convert.ToString(row.Values[xPSelectData.GetFieldIndex("Designation")]);
+                                quantity = Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("Quantity")]);
+                                unitMeasure = Convert.ToString(row.Values[xPSelectData.GetFieldIndex("UnitMeasure")]);
+                                total = Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("Total")]);
+                                // Override Encrypted values
+                                if (PluginSettings.HasSoftwareVendorPlugin && item.Key.Equals(DataTableGroupPropertiesType.DocumentsUser) || item.Key.Equals(DataTableGroupPropertiesType.PaymentsUser))
                                 {
-                                    designation = Convert.ToString(row.Values[xPSelectData.GetFieldIndex("Designation")]);
-                                    quantity = Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("Quantity")]);
-                                    unitMeasure = Convert.ToString(row.Values[xPSelectData.GetFieldIndex("UnitMeasure")]);
-                                    total = Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("Total")]);
-                                    // Override Encrypted values
-                                    if (PluginSettings.HasSoftwareVendorPlugin && item.Key.Equals(DataTableGroupPropertiesType.DocumentsUser) || item.Key.Equals(DataTableGroupPropertiesType.PaymentsUser))
-                                    {
-                                        designation = PluginSettings.SoftwareVendor.Decrypt(designation);
-                                    }
-                                    //Sum Summary Totals
-                                    summaryTotalQuantity += quantity;
-                                    summaryTotal += total;
-                                    //_logger.Debug(string.Format("Designation: [{0}], quantity: [{1}], unitMeasure: [{2}], total: [{3}]", designation, quantity, unitMeasure, total));
-                                    //Create Row
-                                    dataRow = dataTable.NewRow();
-                                    dataRow[0] = designation;
-                                    dataRow[1] = quantity;
-                                    //dataRow[2] = unitMeasure;
-                                    dataRow[2] = total;
-                                    dataTable.Rows.Add(dataRow);
+                                    designation = PluginSettings.SoftwareVendor.Decrypt(designation);
                                 }
-                            }
-                            else
-                            {
+                                //Sum Summary Totals
+                                summaryTotalQuantity += quantity;
+                                summaryTotal += total;
+                                //_logger.Debug(string.Format("Designation: [{0}], quantity: [{1}], unitMeasure: [{2}], total: [{3}]", designation, quantity, unitMeasure, total));
                                 //Create Row
                                 dataRow = dataTable.NewRow();
-                                dataRow[0] = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_cashdrawer_without_movements");
-                                dataRow[1] = 0.0m;
-                                //dataRow[2] = string.Empty;//UnitMeasure
-                                dataRow[2] = 0.0m;
+                                dataRow[0] = designation;
+                                dataRow[1] = quantity;
+                                //dataRow[2] = unitMeasure;
+                                dataRow[2] = total;
                                 dataTable.Rows.Add(dataRow);
                             }
-
-                            //Add Final Summary Row
-                            dataRow = dataTable.NewRow();
-                            dataRow[0] = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_total");
-                            dataRow[1] = summaryTotalQuantity;
-                            //dataRow[2] = string.Empty;
-                            dataRow[2] = summaryTotal;
-                            dataTable.Rows.Add(dataRow);
-
-                            //Prepare TicketTable
-                            ticketTable = new TicketTable(dataTable, columns, _genericThermalPrinter.MaxCharsPerLineNormal);
-
-                            //Custom Print Loop, to Print all Table Rows, and Detect Rows to Print in DoubleHeight (Title and Total)
-                            tableCustomPrint = ticketTable.GetTable();
-                            WriteLineTextMode rowTextMode;
-
-                            //Dynamic Print All except Last One (Totals), Double Height in Titles
-                            for (int i = 0; i < tableCustomPrint.Count - 1; i++)
-                            {
-                                //Prepare TextMode Based on Row
-                                rowTextMode = (i == 0) ? WriteLineTextMode.DoubleHeight : WriteLineTextMode.Normal;
-                                //Print Row
-                                _genericThermalPrinter.WriteLine(tableCustomPrint[i], rowTextMode);
-                            }
-
-                            //Line Feed
-                            _genericThermalPrinter.LineFeed();
                         }
+                        else
+                        {
+                            //Create Row
+                            dataRow = dataTable.NewRow();
+                            dataRow[0] = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_cashdrawer_without_movements");
+                            dataRow[1] = 0.0m;
+                            //dataRow[2] = string.Empty;//UnitMeasure
+                            dataRow[2] = 0.0m;
+                            dataTable.Rows.Add(dataRow);
+                        }
+
+                        //Add Final Summary Row
+                        dataRow = dataTable.NewRow();
+                        dataRow[0] = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_total");
+                        dataRow[1] = summaryTotalQuantity;
+                        //dataRow[2] = string.Empty;
+                        dataRow[2] = summaryTotal;
+                        dataTable.Rows.Add(dataRow);
+
+                        //Prepare TicketTable
+                        ticketTable = new TicketTable(dataTable, columns, _genericThermalPrinter.MaxCharsPerLineNormal);
+
+                        //Custom Print Loop, to Print all Table Rows, and Detect Rows to Print in DoubleHeight (Title and Total)
+                        tableCustomPrint = ticketTable.GetTable();
+                        WriteLineTextMode rowTextMode;
+
+                        //Dynamic Print All except Last One (Totals), Double Height in Titles
+                        for (int i = 0; i < tableCustomPrint.Count - 1; i++)
+                        {
+                            //Prepare TextMode Based on Row
+                            rowTextMode = (i == 0) ? WriteLineTextMode.DoubleHeight : WriteLineTextMode.Normal;
+                            //Print Row
+                            _genericThermalPrinter.WriteLine(tableCustomPrint[i], rowTextMode);
+                        }
+
+                        //Line Feed
+                        _genericThermalPrinter.LineFeed();
                     }
-
-                    //When finish all groups, print Last Row, the Summary Totals Row, Ommited in Custom Print Loop
-                    _genericThermalPrinter.WriteLine(tableCustomPrint[tableCustomPrint.Count - 1], WriteLineTextMode.DoubleHeight);
-
-                    result = true;
                 }
-                catch (Exception ex)
-                {
-                    _logger.Error(ex.Message, ex);
-                    throw new Exception(ex.Message);
-                }
+
+                //When finish all groups, print Last Row, the Summary Totals Row, Ommited in Custom Print Loop
+                _genericThermalPrinter.WriteLine(tableCustomPrint[tableCustomPrint.Count - 1], WriteLineTextMode.DoubleHeight);
+
+                result = true;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex.Message, ex);
+                throw new Exception(ex.Message);
             }
 
             return result;

@@ -1,6 +1,7 @@
 ﻿using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.DTOs.Printing;
 using LogicPOS.Globalization;
 using LogicPOS.Printing.Enums;
 using LogicPOS.Printing.Templates;
@@ -27,13 +28,22 @@ namespace LogicPOS.Printing.Documents
         private readonly List<FRBODocumentFinanceDetail> _documentFinanceDetailList;
         private readonly List<FRBODocumentFinanceMasterTotalView> _documentFinanceMasterTotalList;
 
-        public ThermalPrinterFinanceDocumentMaster(sys_configurationprinters pPrinter, fin_documentfinancemaster pDocumentMaster, List<int> pCopyNames, bool pSecondCopy, string pMotive)
-            : base(pPrinter, pDocumentMaster.DocumentType, pCopyNames, pSecondCopy)
+        public ThermalPrinterFinanceDocumentMaster(
+            PrinterReferenceDto printer, 
+            fin_documentfinancemaster documentMaster, 
+            List<int> copyNames, 
+            bool isSecondCopy, 
+            string motive)
+            : base(
+                  printer, 
+                  documentMaster.DocumentType, 
+                  copyNames, 
+                  isSecondCopy)
         {
             try
             {
                 //Parameters
-                _documentMaster = pDocumentMaster;
+                _documentMaster = documentMaster;
 
                 //Init Fast Reports Business Objects (From FRBOHelper)
                 ResultFRBODocumentFinanceMaster fRBOHelperResponseProcessReportFinanceDocument = FRBOHelper.GetFRBOFinanceDocument(_documentMaster.Oid);
