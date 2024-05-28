@@ -569,7 +569,7 @@
         public const string GLOBAL_PRINTER_THERMAL_TOTAL_DEFAULT_CURRENCY = "global_printer_thermal_total_default_currency";
         public const string GLOBAL_PRINTER_TYPE = "global_printer_type";
         public const string GLOBAL_PRINTERS = "global_printers";
-        public const string GLOBAL_PRINTING_FUNCTION_DISABLED = "global_printing_function_disabled";
+        public const string PRINTING_DISABLED_MESSAGE = "global_printing_function_disabled";
         public const string GLOBAL_PRIVILEGE_ACTIVE = "global_privilege_active";
         public const string GLOBAL_PRIVILEGE_PROPERTY = "global_privilege_property";
         public const string GLOBAL_PROFILE = "global_profile";

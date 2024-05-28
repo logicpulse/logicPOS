@@ -628,7 +628,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 else
                 {
                     string message = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_invalid_code");
-                    logicpos.Utils.ShowMessageTouch(SourceWindow, DialogFlags.DestroyWithParent, new Size(400, 300), MessageType.Error, ButtonsType.Ok, "Código Inválido", message);
+                    logicpos.Utils.ShowMessageBox(SourceWindow, DialogFlags.DestroyWithParent, new Size(400, 300), MessageType.Error, ButtonsType.Ok, "Código Inválido", message);
                     return;
                 }
             }
@@ -637,14 +637,14 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         public void ArticleNotFound()
         {
             string message = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_invalid_code");
-            logicpos.Utils.ShowMessageTouch(SourceWindow, DialogFlags.DestroyWithParent, new Size(400, 300), MessageType.Error, ButtonsType.Ok, "Código Inválido", message);
+            logicpos.Utils.ShowMessageBox(SourceWindow, DialogFlags.DestroyWithParent, new Size(400, 300), MessageType.Error, ButtonsType.Ok, "Código Inválido", message);
             return;
         }
 
         public void WsNotFound()
         {
             string message = string.Format("O Web service não se encontra em funcionamento");
-            logicpos.Utils.ShowMessageTouch(SourceWindow, DialogFlags.DestroyWithParent, new Size(400, 300), MessageType.Error, ButtonsType.Ok, "Web Service não encontrado", message);
+            logicpos.Utils.ShowMessageBox(SourceWindow, DialogFlags.DestroyWithParent, new Size(400, 300), MessageType.Error, ButtonsType.Ok, "Web Service não encontrado", message);
             return;
         }
 
@@ -739,7 +739,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 {
                     //TODO: Implement VatExemptionReason in TicketList (Both Modes) 
                     //Guid vatExemptionReasonGuid = GetVatExemptionReason();
-                    logicpos.Utils.ShowMessageTouch(SourceWindow, DialogFlags.DestroyWithParent, new Size(400, 300), MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_vatrate_free_article_detected"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_article_without_vat_exception_reason_detected"));
+                    logicpos.Utils.ShowMessageBox(SourceWindow, DialogFlags.DestroyWithParent, new Size(400, 300), MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_vatrate_free_article_detected"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_article_without_vat_exception_reason_detected"));
                     return;
                 }
 
@@ -747,14 +747,14 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 if (parkingTicketResult.AlreadyExit)
                 {
                     string message = string.Format("Numero do ticket: {0}\n\n{1}\n\nData de Saida: {2}", parkingTicketResult.Ean, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_article_already_exited"), parkingTicketResult.DateExits);
-                    logicpos.Utils.ShowMessageTouch(SourceWindow, DialogFlags.DestroyWithParent, new Size(450, 350), MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_already_exited"), message);
+                    logicpos.Utils.ShowMessageBox(SourceWindow, DialogFlags.DestroyWithParent, new Size(450, 350), MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_already_exited"), message);
                     return;
                 }
                 //Check if ticket is already payed and show message
                 else if (parkingTicketResult.AlreadyPaid)
                 {
                     string message = string.Format("Numero do ticket: {0}\n\n{1}\nData de pagamento: {2}\n\nPode sair até: {3} ", parkingTicketResult.Ean, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_article_already_paid"), parkingTicketResult.DatePaid, parkingTicketResult.DateTolerance);
-                    logicpos.Utils.ShowMessageTouch(SourceWindow, DialogFlags.DestroyWithParent, new Size(450, 350), MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_already_paid"), message);
+                    logicpos.Utils.ShowMessageBox(SourceWindow, DialogFlags.DestroyWithParent, new Size(450, 350), MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_already_paid"), message);
                     return;
                 }
 
@@ -812,12 +812,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         if (parkingTicketResult.Ean.Length == 13)
                         {
                             message = string.Format(" Numero do ticket: {0}\n\n Data de Emissão: {1}\n Duração: {2} minuto(s)\n Descrição: {3}\n", parkingTicketResult.Ean, parkingTicketResult.Date, parkingTicketResult.Minutes, parkingTicketResult.Description);
-                            logicpos.Utils.ShowMessageTouch(SourceWindow, DialogFlags.DestroyWithParent, new Size(480, 350), MessageType.Info, ButtonsType.Ok, "Ticket Details", message);
+                            logicpos.Utils.ShowMessageBox(SourceWindow, DialogFlags.DestroyWithParent, new Size(480, 350), MessageType.Info, ButtonsType.Ok, "Ticket Details", message);
                         }
                         else
                         {
                             message = string.Format(" Numero do cartão: {0} \n", parkingTicketResult.Ean);
-                            logicpos.Utils.ShowMessageTouch(SourceWindow, DialogFlags.DestroyWithParent, new Size(480, 350), MessageType.Info, ButtonsType.Ok, "Ticket Details", message);
+                            logicpos.Utils.ShowMessageBox(SourceWindow, DialogFlags.DestroyWithParent, new Size(480, 350), MessageType.Info, ButtonsType.Ok, "Ticket Details", message);
                         }
 
                     }

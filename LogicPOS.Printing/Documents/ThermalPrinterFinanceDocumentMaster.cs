@@ -29,7 +29,7 @@ namespace LogicPOS.Printing.Documents
         private readonly List<FRBODocumentFinanceMasterTotalView> _documentFinanceMasterTotalList;
 
         public ThermalPrinterFinanceDocumentMaster(
-            PrinterReferenceDto printer, 
+            PrinterDto printer, 
             fin_documentfinancemaster documentMaster, 
             List<int> copyNames, 
             bool isSecondCopy, 

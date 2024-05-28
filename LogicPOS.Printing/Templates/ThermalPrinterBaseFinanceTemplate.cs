@@ -27,7 +27,7 @@ namespace LogicPOS.Printing.Templates
         protected int _ticketTablePaddingLeftLength = 2;
 
         public ThermalPrinterBaseFinanceTemplate(
-            PrinterReferenceDto printer, 
+            PrinterDto printer, 
             fin_documentfinancetype documentType, 
             List<int> copyNames)
             : this(
@@ -39,7 +39,7 @@ namespace LogicPOS.Printing.Templates
         }
 
         public ThermalPrinterBaseFinanceTemplate(
-            PrinterReferenceDto printer, 
+            PrinterDto printer, 
             fin_documentfinancetype documentType, 
             List<int> copyNames, 
             bool isSecondCopy)

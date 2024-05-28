@@ -788,7 +788,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                     else
                     {
-                        logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent, new Size(450, 350), MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_already_exited"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "article_type_without_price"));
+                        logicpos.Utils.ShowMessageBox(_sourceWindow, DialogFlags.DestroyWithParent, new Size(450, 350), MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_already_exited"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "article_type_without_price"));
                     }
 
                 }
@@ -931,7 +931,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                     else
                     {
-                        logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent, new Size(450, 350), MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_already_exited"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "article_type_without_price"));
+                        logicpos.Utils.ShowMessageBox(_sourceWindow, DialogFlags.DestroyWithParent, new Size(450, 350), MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_already_exited"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "article_type_without_price"));
                     }
 
                 }

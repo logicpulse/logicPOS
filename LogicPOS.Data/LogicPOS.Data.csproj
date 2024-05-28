@@ -59,6 +59,7 @@
     <Compile Include="Enums\DocumentType.cs" />
     <Compile Include="XPO\Settings\Terminal\TerminalSettings.cs" />
     <Compile Include="XPO\Settings\Terminal\TerminalSettings.ThermalPrinter.cs" />
+    <Compile Include="XPO\Utility\MappingUtils.cs" />
     <Compile Include="XPO\XPGuidObjectAttribute.cs" />
     <Compile Include="Enums\ArticleSerialNumberStatus.cs" />
     <Compile Include="Enums\OrderStatus.cs" />
@@ -138,7 +139,7 @@
     <Compile Include="XPO\XPGuidObject.cs" />
     <Compile Include="XPO\XPSelectData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="XPO\XPOHelper.cs" />
+    <Compile Include="XPO\Utility\XPOHelper.cs" />
     <Compile Include="XPO\Settings\XPOSettings.cs" />
   </ItemGroup>
   <ItemGroup>

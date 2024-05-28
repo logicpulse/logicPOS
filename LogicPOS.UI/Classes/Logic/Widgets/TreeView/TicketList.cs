@@ -44,7 +44,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             if (ListMode == TicketListMode.OrderMain)
             {
-                ResponseType responseType = logicpos.Utils.ShowMessageTouch(SourceWindow, DialogFlags.Modal, new System.Drawing.Size(400, 280), MessageType.Question, ButtonsType.YesNo, string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_warning"), GeneralSettings.ServerVersion), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message__pos_order_cancel"));
+                ResponseType responseType = logicpos.Utils.ShowMessageBox(SourceWindow, DialogFlags.Modal, new System.Drawing.Size(400, 280), MessageType.Question, ButtonsType.YesNo, string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_warning"), GeneralSettings.ServerVersion), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message__pos_order_cancel"));
 
                 if (responseType == ResponseType.Yes)
                 {

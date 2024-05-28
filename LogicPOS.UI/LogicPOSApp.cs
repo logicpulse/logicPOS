@@ -55,7 +55,7 @@ namespace logicpos
             catch (Exception ex)
             {
                 _logger.Error(ex.Message, ex);
-                Utils.ShowMessageTouch(
+                Utils.ShowMessageBox(
                     GlobalApp.StartupWindow,
                     DialogFlags.Modal,
                     new Size(500, 240),
@@ -154,7 +154,7 @@ namespace logicpos
                         /* IN009034 */
                         GlobalApp.DialogThreadNotify.WakeupMain();
 
-                        Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(900, 700), MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"), ex.Message);
+                        Utils.ShowMessageBox(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(900, 700), MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"), ex.Message);
                         Environment.Exit(0);
                     }
                 }
@@ -178,7 +178,7 @@ namespace logicpos
                     /* IN009034 */
                     GlobalApp.DialogThreadNotify.WakeupMain();
 
-                    Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(900, 700), MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"), ex.Message);
+                    Utils.ShowMessageBox(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(900, 700), MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"), ex.Message);
                     throw; // TO DO
                 }
 
@@ -193,7 +193,7 @@ namespace logicpos
                         GlobalApp.DialogThreadNotify.WakeupMain();
 
                         string endMessage = "Invalid database Schema! Fix database Schema and Try Again!";
-                        Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(500, 300), MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"), string.Format(endMessage, Environment.NewLine));
+                        Utils.ShowMessageBox(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(500, 300), MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"), string.Format(endMessage, Environment.NewLine));
                         Environment.Exit(0);
                     }
                 }
@@ -261,7 +261,7 @@ namespace logicpos
                     string endMessage = "Xpo Create Schema and Fixtures Done!{0}Please assign false to 'xpoCreateDatabaseAndSchema' and 'xpoCreateDatabaseObjectsWithFixtures' and run App again";
                     _logger.Debug(string.Format("void Init() :: xpoCreateDatabaseAndSchema: {0}", endMessage));
 
-                    Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(500, 300), MessageType.Info, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_information"), string.Format(endMessage, Environment.NewLine));
+                    Utils.ShowMessageBox(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(500, 300), MessageType.Info, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_information"), string.Format(endMessage, Environment.NewLine));
                     Environment.Exit(0);
                 }
 
@@ -412,7 +412,7 @@ namespace logicpos
                     GlobalApp.DialogThreadNotify.WakeupMain();
 
                     _logger.Debug(string.Format("void Init() :: Wrong key detected [{0}]. Use a valid LogicposFinantialLibrary with same key as SoftwareVendorPlugin", PluginSettings.SecretKey));
-                    Utils.ShowMessageTouch(
+                    Utils.ShowMessageBox(
                         GlobalApp.StartupWindow,
                         DialogFlags.Modal,
                         new Size(650, 380),
@@ -546,7 +546,7 @@ namespace logicpos
                 string message = string.Format(@"ProtectedFiles '{1}' re-created with {2} files found!{0}{0}Assign false to 'SettingsApp.ProtectedFilesRecreateCsv' and run app again.", Environment.NewLine, filePath, fileList.Count);
 
                 ExportProtectedFiles(fileList);
-                Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new System.Drawing.Size(600, 350), MessageType.Info, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_information"), message);
+                Utils.ShowMessageBox(GlobalApp.StartupWindow, DialogFlags.Modal, new System.Drawing.Size(600, 350), MessageType.Info, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_information"), message);
                 Environment.Exit(0);
             }
             //Dont check changed files if Developer, Uncomment to Enable
@@ -577,7 +577,7 @@ namespace logicpos
                     //If Not IgnoreProtection, show alert and exit
                     if (!POSSettings.ProtectedFilesIgnoreProtection)
                     {
-                        Utils.ShowMessageTouch(
+                        Utils.ShowMessageBox(
                             GlobalApp.StartupWindow,
                             DialogFlags.Modal,
                             new Size(800, 400),
@@ -686,7 +686,7 @@ namespace logicpos
 
         public static void Quit(Window pSourceWindow)
         {
-            ResponseType responseType = Utils.ShowMessageTouch(
+            ResponseType responseType = Utils.ShowMessageBox(
                 pSourceWindow,
                 DialogFlags.Modal,
                 new Size(400, 300),

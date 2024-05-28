@@ -1,4 +1,5 @@
 ﻿using logicpos.datalayer.DataLayer.Xpo;
+using LogicPOS.DTOs.Printing;
 using LogicPOS.Globalization;
 using LogicPOS.Printing.Templates;
 using LogicPOS.Printing.Tickets;
@@ -17,17 +18,24 @@ namespace LogicPOS.Printing.Documents
         private readonly fin_documentorderticket _orderTicket;
         private readonly bool _articlePrinterEnabled;
 
-        public ThermalPrinterInternalDocumentOrderRequest(sys_configurationprinters pPrinter, fin_documentorderticket pOrderTicket)
-            : this(pPrinter, pOrderTicket, false) { }
+        public ThermalPrinterInternalDocumentOrderRequest(
+            PrinterDto printer, 
+            fin_documentorderticket orderTicket)
+            : this(
+                  printer, 
+                  orderTicket, false) { }
 
-        public ThermalPrinterInternalDocumentOrderRequest(sys_configurationprinters pPrinter, fin_documentorderticket pOrderTicket, bool pEnableArticlePrinter)
-            : base(pPrinter)
+        public ThermalPrinterInternalDocumentOrderRequest(
+            PrinterDto printer, 
+            fin_documentorderticket orderTicket, 
+            bool articlePrinterEnabled)
+            : base(printer)
         {
             try
             {
                 //Parameters
-                _orderTicket = pOrderTicket;
-                _articlePrinterEnabled = pEnableArticlePrinter;
+                _orderTicket = orderTicket;
+                _articlePrinterEnabled = articlePrinterEnabled;
 
                 //Order Request #1/3
                 _ticketTitle = string.Format("{0}: #{1}"

@@ -171,7 +171,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 
             if (!result)
             {
-                ResponseType response = logicpos.Utils.ShowMessageTouch(GlobalApp.BackOfficeMainWindow, DialogFlags.DestroyWithParent | DialogFlags.Modal, new Size(500, 500), MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_dialog_validation_error"), string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_field_validation_error"), invalidFields));
+                ResponseType response = logicpos.Utils.ShowMessageBox(GlobalApp.BackOfficeMainWindow, DialogFlags.DestroyWithParent | DialogFlags.Modal, new Size(500, 500), MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_dialog_validation_error"), string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_field_validation_error"), invalidFields));
             };
 
             return result;
@@ -425,7 +425,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             catch (Exception ex)
             {
                 _logger.Error(ex.Message, ex);
-                logicpos.Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(600, 350), MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error"), ex.Message);
+                logicpos.Utils.ShowMessageBox(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(600, 350), MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error"), ex.Message);
                 result = false;
             }
 

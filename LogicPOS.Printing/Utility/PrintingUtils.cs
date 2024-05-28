@@ -4,6 +4,7 @@ using logicpos.datalayer.Xpo;
 using logicpos.shared.Enums;
 using logicpos.shared.Enums.ThermalPrinter;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO.Utility;
 using LogicPOS.DTOs.Printing;
 using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Globalization;
@@ -17,6 +18,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
+using System.Linq;
 using System.Xml;
 
 namespace LogicPOS.Printing.Utility
@@ -1224,7 +1226,7 @@ namespace LogicPOS.Printing.Utility
         }
 
         public static bool PrintFinanceDocument(
-            PrinterReferenceDto printer, 
+            PrinterDto printer, 
             fin_documentfinancemaster pDocumentFinanceMaster,
             List<int> pCopyNames, 
             bool pSecondCopy, 
@@ -1300,7 +1302,7 @@ namespace LogicPOS.Printing.Utility
             //Finish Payment with Print Job + Open Drawer (If Not TableConsult)
             fin_documentfinanceyearserieterminal xDocumentFinanceYearSerieTerminal = DocumentProcessingSeriesUtils.GetDocumentFinanceYearSerieTerminal(pSession, pDocumentFinanceMaster.DocumentType.Oid);
             
-            var printer = TerminalSettings.ThermalPrinter.GetLoggedTerminalPrinterReference();
+            var printer = TerminalSettings.ThermalPrinter.GetLoggedTerminalPrinterDto();
 
             PrintFinanceDocument(printer, pDocumentFinanceMaster, pCopyNames, pSecondCopy, pMotive);
 
@@ -1315,7 +1317,7 @@ namespace LogicPOS.Printing.Utility
         }
 
         public static bool PrintFinanceDocumentPayment(
-            PrinterReferenceDto printer, 
+            PrinterDto printer, 
             fin_documentfinancepayment pDocumentFinancePayment)
         {
             bool result = false;
@@ -1359,7 +1361,7 @@ namespace LogicPOS.Printing.Utility
         }
 
         public static bool PrintWorkSessionMovement(
-            PrinterReferenceDto printer, 
+            PrinterDto printer, 
             pos_worksessionperiod pWorkSessionPeriod)
         {
             bool result = false;
@@ -1397,27 +1399,31 @@ namespace LogicPOS.Printing.Utility
             return result;
         }
 
-        public static bool PrintArticleRequest(fin_documentorderticket pOrderTicket)
+        public static bool PrintArticleRequest(fin_documentorderticket orderTicket)
         {
             bool result;
 
-            //Initialize printerArticleQueue to Store Articles > Printer Queue
-            List<sys_configurationprinters> printerArticles = new List<sys_configurationprinters>();
-            foreach (fin_documentorderdetail item in pOrderTicket.OrderDetail)
+            List<PrinterDto> artilcesPrinters = new List<PrinterDto>();
+
+            foreach (fin_documentorderdetail item in orderTicket.OrderDetail)
             {
                 if (item.Article.Printer != null && item.Article.Printer.PrinterType.ThermalPrinter)
                 {
-                    //Add Printer
-                    if (!printerArticles.Contains(item.Article.Printer)) printerArticles.Add(item.Article.Printer);
+                    if(artilcesPrinters.Any(p => p.Id == item.Article.Printer.Oid))
+                    {
+                        continue;
+                    }
+                    var printerDto = MappingUtils.GetPrinterDto(item.Article.Printer);
+                    artilcesPrinters.Add(printerDto);
                 }
             }
 
             //Print Tickets for Article Printers
-            if (printerArticles.Count > 0)
+            if (artilcesPrinters.Count > 0)
             {
-                foreach (sys_configurationprinters item in printerArticles)
+                foreach (var item in artilcesPrinters)
                 {
-                    ThermalPrinterInternalDocumentOrderRequest thermalPrinterInternalDocumentOrderRequest = new ThermalPrinterInternalDocumentOrderRequest(item, pOrderTicket, true);
+                    ThermalPrinterInternalDocumentOrderRequest thermalPrinterInternalDocumentOrderRequest = new ThermalPrinterInternalDocumentOrderRequest(item, orderTicket, true);
                     thermalPrinterInternalDocumentOrderRequest.Print();
                 }
             }
@@ -1428,7 +1434,7 @@ namespace LogicPOS.Printing.Utility
 
         //Used for Money Movements and Open/Close Terminal/Day Sessions
         public static bool PrintCashDrawerOpenAndMoneyInOut(
-            PrinterReferenceDto printer, 
+            PrinterDto printer, 
             string pTicketTitle, 
             decimal pMovementAmount,
             decimal pTotalAmountInCashDrawer, 

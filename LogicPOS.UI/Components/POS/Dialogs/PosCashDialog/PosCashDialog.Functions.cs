@@ -46,7 +46,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     //PrintWorkSessionMovement Day
                     //PrintRouter.PrintWorkSessionMovement(TerminalSettings.LoggedTerminal.Printer, GlobalFramework.WorkSessionPeriodDay);
                     //PrintRouter.PrintWorkSessionMovement(TerminalSettings.LoggedTerminal.Printer, GlobalFramework.WorkSessionPeriodTerminal);
-                    ResponseType pResponse = logicpos.Utils.ShowMessageTouch(
+                    ResponseType pResponse = logicpos.Utils.ShowMessageBox(
                       this, DialogFlags.Modal, new Size(500, 350), MessageType.Question, ButtonsType.YesNo, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_button_label_print"),
                       CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_request_print_document_confirmation"));
 
@@ -85,7 +85,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     openOrderTables += string.Format("{0}{1}", currentOpenOrderTable.Designation, " ");
                 }
 
-                ResponseType dialogResponse = logicpos.Utils.ShowMessageTouch(
+                ResponseType dialogResponse = logicpos.Utils.ShowMessageBox(
                   this,
                   DialogFlags.Modal,
                   new Size(620, 300),
@@ -127,7 +127,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //int messageDialogResponse = messageDialog.Run();
                 //messageDialog.Destroy();
 
-                ResponseType responseType = logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new Size(600, 400), MessageType.Question, ButtonsType.YesNo, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_information"),
+                ResponseType responseType = logicpos.Utils.ShowMessageBox(this, DialogFlags.Modal, new Size(600, 400), MessageType.Question, ButtonsType.YesNo, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_information"),
                     string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_worksession_period_warning_open_terminals"), noOfTerminalOpenSessions, string.Format("{0}{1}", Environment.NewLine, openTerminals))
                 );
 
@@ -192,9 +192,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                              dialogCashDrawer.MovementDescription
                            );
 
-                            logicpos.Utils.ShowMessageTouch(dialogCashDrawer, DialogFlags.Modal, new Size(500, 280), MessageType.Info, ButtonsType.Close, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_information"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_cashdrawer_open_successfully"));
+                            logicpos.Utils.ShowMessageBox(dialogCashDrawer, DialogFlags.Modal, new Size(500, 280), MessageType.Info, ButtonsType.Close, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_information"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_cashdrawer_open_successfully"));
 
-                            var pResponse = logicpos.Utils.ShowMessageTouch(
+                            var pResponse = logicpos.Utils.ShowMessageBox(
                             this, DialogFlags.Modal, new Size(500, 350), MessageType.Question, ButtonsType.YesNo, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_button_label_print"),
                             CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_request_print_document_confirmation"));
 
@@ -392,7 +392,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                               dialogCashDrawer.MovementDescription
                             );
 
-                            var pResponse = logicpos.Utils.ShowMessageTouch(
+                            var pResponse = logicpos.Utils.ShowMessageBox(
                             this, DialogFlags.Modal, new Size(500, 350), MessageType.Question, ButtonsType.YesNo, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_button_label_print"),
                             CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_request_print_document_confirmation"));
 
@@ -448,7 +448,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             }
 
                             //ShowMessage
-                            logicpos.Utils.ShowMessageTouch(dialogCashDrawer, DialogFlags.Modal, new Size(500, 300), MessageType.Info, ButtonsType.Close, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_information"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_operation_successfully"));
+                            logicpos.Utils.ShowMessageBox(dialogCashDrawer, DialogFlags.Modal, new Size(500, 300), MessageType.Info, ButtonsType.Close, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_information"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_operation_successfully"));
                         }
                         else
                         {
@@ -495,7 +495,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             }
 
                             //ShowMessage
-                            logicpos.Utils.ShowMessageTouch(dialogCashDrawer, DialogFlags.Modal, new Size(500, 300), MessageType.Info, ButtonsType.Close, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_information"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_operation_successfully"));
+                            logicpos.Utils.ShowMessageBox(dialogCashDrawer, DialogFlags.Modal, new Size(500, 300), MessageType.Info, ButtonsType.Close, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_information"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_operation_successfully"));
                         }
                         else
                         {
@@ -598,7 +598,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 windowHeight = (workSessionPeriodTotalCount > 0) ? windowHeight + ((workSessionPeriodTotalCount + 2) * lineHeight) : windowHeight + lineHeight;
 
-                logicpos.Utils.ShowMessageTouch(
+                logicpos.Utils.ShowMessageBox(
                   pSourceWindow,
                   DialogFlags.Modal,
                   new Size(600, windowHeight),

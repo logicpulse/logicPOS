@@ -134,12 +134,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         Body,
                         AttachmentFileNames
                         );
-                    logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new Size(650, 380), MessageType.Info, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_information"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_mail_sent_successfully"));
+                    logicpos.Utils.ShowMessageBox(this, DialogFlags.Modal, new Size(650, 380), MessageType.Info, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_information"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_mail_sent_successfully"));
                 }
                 catch (Exception ex)
                 {
                     _logger.Error(ex.Message, ex);
-                    logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new Size(650, 380), MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"), ex.Message);
+                    logicpos.Utils.ShowMessageBox(this, DialogFlags.Modal, new Size(650, 380), MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"), ex.Message);
                     // Keep Running
                     this.Run();
                 }
