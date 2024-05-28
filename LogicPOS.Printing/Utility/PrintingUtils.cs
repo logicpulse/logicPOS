@@ -4,6 +4,7 @@ using logicpos.datalayer.Xpo;
 using logicpos.shared.Enums;
 using logicpos.shared.Enums.ThermalPrinter;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.DTOs.Printing;
 using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Globalization;
 using LogicPOS.Printing.Common;
@@ -1222,11 +1223,16 @@ namespace LogicPOS.Printing.Utility
             return result;
         }
 
-        public static bool PrintFinanceDocument(sys_configurationprinters pPrinter, fin_documentfinancemaster pDocumentFinanceMaster, List<int> pCopyNames, bool pSecondCopy, string pMotive)
+        public static bool PrintFinanceDocument(
+            PrinterReferenceDto printer, 
+            fin_documentfinancemaster pDocumentFinanceMaster,
+            List<int> pCopyNames, 
+            bool pSecondCopy, 
+            string pMotive)
         {
             bool result = false;
 
-            if (pPrinter != null)
+            if (printer != null)
             {
                 int printCopies = pCopyNames.Count;
                 //Get Hash4Chars from Hash
@@ -1234,27 +1240,33 @@ namespace LogicPOS.Printing.Utility
 
                 //Init Helper Vars
                 bool resultSystemPrint;
-                switch (GetPrinterToken(pPrinter.PrinterType.Token))
+                switch (GetPrinterToken(printer.Token))
                 {
                     //Impressora SINOCAN em ambiente Windows
                     case "THERMAL_PRINTER_WINDOWS":
                     //Impressora SINOCAN em ambiente Linux
                     //Impressora SINOCAN em ambiente WindowsLinux/Socket
                     case "THERMAL_PRINTER_SOCKET":
-                        ThermalPrinterFinanceDocumentMaster thermalPrinterFinanceDocument = new ThermalPrinterFinanceDocumentMaster(pPrinter, pDocumentFinanceMaster, pCopyNames, pSecondCopy, pMotive);
+                        ThermalPrinterFinanceDocumentMaster thermalPrinterFinanceDocument = new ThermalPrinterFinanceDocumentMaster(
+                            printer, 
+                            pDocumentFinanceMaster, 
+                            pCopyNames, 
+                            pSecondCopy, 
+                            pMotive);
+
                         thermalPrinterFinanceDocument.Print();
                         //Add to SystemPrint Audit
-                        resultSystemPrint = SystemPrintInsert(pDocumentFinanceMaster, pPrinter.Designation, printCopies, pCopyNames, pSecondCopy, pMotive);
+                        resultSystemPrint = SystemPrintInsert(pDocumentFinanceMaster, printer.Designation, printCopies, pCopyNames, pSecondCopy, pMotive);
                         break;
                     case "GENERIC_PRINTER_WINDOWS":
                         CustomReport.ProcessReportFinanceDocument(CustomReportDisplayMode.Print, pDocumentFinanceMaster.Oid, hash4Chars, pCopyNames, pSecondCopy, pMotive);
                         //Add to SystemPrint Audit
-                        resultSystemPrint = SystemPrintInsert(pDocumentFinanceMaster, pPrinter.Designation, printCopies, pCopyNames, pSecondCopy, pMotive);
+                        resultSystemPrint = SystemPrintInsert(pDocumentFinanceMaster, printer.Designation, printCopies, pCopyNames, pSecondCopy, pMotive);
                         break;
                     case "REPORT_EXPORT_PDF":
                         CustomReport.ProcessReportFinanceDocument(CustomReportDisplayMode.ExportPDF, pDocumentFinanceMaster.Oid, hash4Chars, pCopyNames, pSecondCopy, pMotive);
                         //Add to SystemPrint Audit : Developer : Use here Only to Test SystemPrintInsert
-                        resultSystemPrint = SystemPrintInsert(pDocumentFinanceMaster, pPrinter.Designation, printCopies, pCopyNames, pSecondCopy, pMotive);
+                        resultSystemPrint = SystemPrintInsert(pDocumentFinanceMaster, printer.Designation, printCopies, pCopyNames, pSecondCopy, pMotive);
                         break;
                 }
                 result = true;
@@ -1287,7 +1299,10 @@ namespace LogicPOS.Printing.Utility
 
             //Finish Payment with Print Job + Open Drawer (If Not TableConsult)
             fin_documentfinanceyearserieterminal xDocumentFinanceYearSerieTerminal = DocumentProcessingSeriesUtils.GetDocumentFinanceYearSerieTerminal(pSession, pDocumentFinanceMaster.DocumentType.Oid);
-            PrintFinanceDocument(TerminalSettings.LoggedTerminal.Printer, pDocumentFinanceMaster, pCopyNames, pSecondCopy, pMotive);
+            
+            var printer = TerminalSettings.ThermalPrinter.GetLoggedTerminalPrinterReference();
+
+            PrintFinanceDocument(printer, pDocumentFinanceMaster, pCopyNames, pSecondCopy, pMotive);
 
             //Open Door if Has Valid Payment
             if (pDocumentFinanceMaster.PaymentMethod != null)
@@ -1299,11 +1314,13 @@ namespace LogicPOS.Printing.Utility
             return result;
         }
 
-        public static bool PrintFinanceDocumentPayment(sys_configurationprinters pPrinter, fin_documentfinancepayment pDocumentFinancePayment)
+        public static bool PrintFinanceDocumentPayment(
+            PrinterReferenceDto printer, 
+            fin_documentfinancepayment pDocumentFinancePayment)
         {
             bool result = false;
 
-            if (pPrinter != null)
+            if (printer != null)
             {
                 //Initialize CopyNames List from PrintCopies
                 List<int> copyNames = CustomReport.CopyNames(pDocumentFinancePayment.DocumentType.PrintCopies);
@@ -1311,7 +1328,7 @@ namespace LogicPOS.Printing.Utility
 
                 //Init Helper Vars
                 bool resultSystemPrint;
-                switch (GetPrinterToken(pPrinter.PrinterType.Token))
+                switch (GetPrinterToken(printer.Token))
                 {
                     //Impressora SINOCAN em ambiente Windows
                     case "THERMAL_PRINTER_WINDOWS":
@@ -1319,20 +1336,20 @@ namespace LogicPOS.Printing.Utility
                     case "THERMAL_PRINTER_LINUX":
                     //Impressora SINOCAN em ambiente WindowsLinux/Socket
                     case "THERMAL_PRINTER_SOCKET":
-                        ThermalPrinterFinanceDocumentPayment thermalPrinterFinanceDocumentPayment = new ThermalPrinterFinanceDocumentPayment(pPrinter, pDocumentFinancePayment, copyNames, false);
+                        ThermalPrinterFinanceDocumentPayment thermalPrinterFinanceDocumentPayment = new ThermalPrinterFinanceDocumentPayment(printer, pDocumentFinancePayment, copyNames, false);
                         thermalPrinterFinanceDocumentPayment.Print();
                         //Add to SystemPrint Audit
-                        resultSystemPrint = SystemPrintInsert(pDocumentFinancePayment, pPrinter.Designation, printCopies, copyNames);
+                        resultSystemPrint = SystemPrintInsert(pDocumentFinancePayment, printer.Designation, printCopies, copyNames);
                         break;
                     case "GENERIC_PRINTER_WINDOWS":
                         CustomReport.ProcessReportFinanceDocumentPayment(CustomReportDisplayMode.Print, pDocumentFinancePayment.Oid, copyNames);
                         //Add to SystemPrint Audit
-                        resultSystemPrint = SystemPrintInsert(pDocumentFinancePayment, pPrinter.Designation, printCopies, copyNames);
+                        resultSystemPrint = SystemPrintInsert(pDocumentFinancePayment, printer.Designation, printCopies, copyNames);
                         break;
                     case "REPORT_EXPORT_PDF":
                         CustomReport.ProcessReportFinanceDocumentPayment(CustomReportDisplayMode.ExportPDF, pDocumentFinancePayment.Oid, copyNames);
                         //Add to SystemPrint Audit : Developer : Use here Only to Test SystemPrintInsert
-                        resultSystemPrint = SystemPrintInsert(pDocumentFinancePayment, pPrinter.Designation, printCopies, copyNames);
+                        resultSystemPrint = SystemPrintInsert(pDocumentFinancePayment, printer.Designation, printCopies, copyNames);
                         break;
                 }
                 result = true;
@@ -1341,14 +1358,16 @@ namespace LogicPOS.Printing.Utility
             return result;
         }
 
-        public static bool PrintWorkSessionMovement(sys_configurationprinters pPrinter, pos_worksessionperiod pWorkSessionPeriod)
+        public static bool PrintWorkSessionMovement(
+            PrinterReferenceDto printer, 
+            pos_worksessionperiod pWorkSessionPeriod)
         {
             bool result = false;
 
-            if (pPrinter != null)
+            if (printer != null)
             {
 
-                switch (GetPrinterToken(pPrinter.PrinterType.Token))
+                switch (GetPrinterToken(printer.Token))
                 {
                     //Impressora SINOCAN em ambiente Windows
                     case "THERMAL_PRINTER_WINDOWS":
@@ -1357,13 +1376,13 @@ namespace LogicPOS.Printing.Utility
                     //Impressora SINOCAN em ambiente WindowsLinux/Socket
                     case "THERMAL_PRINTER_SOCKET":
                         //NonCurrentAcount
-                        ThermalPrinterInternalDocumentWorkSession thermalPrinterInternalDocumentWorkSession = new ThermalPrinterInternalDocumentWorkSession(pPrinter, pWorkSessionPeriod, SplitCurrentAccountMode.NonCurrentAcount);
+                        ThermalPrinterInternalDocumentWorkSession thermalPrinterInternalDocumentWorkSession = new ThermalPrinterInternalDocumentWorkSession(printer, pWorkSessionPeriod, SplitCurrentAccountMode.NonCurrentAcount);
                         thermalPrinterInternalDocumentWorkSession.Print();
                         //CurrentAcount
                         //Use Config to print this
                         if (Convert.ToBoolean(LogicPOS.Settings.GeneralSettings.PreferenceParameters["USE_CC_DAILY_TICKET"]))
                         {
-                            thermalPrinterInternalDocumentWorkSession = new ThermalPrinterInternalDocumentWorkSession(pPrinter, pWorkSessionPeriod, SplitCurrentAccountMode.CurrentAcount);
+                            thermalPrinterInternalDocumentWorkSession = new ThermalPrinterInternalDocumentWorkSession(printer, pWorkSessionPeriod, SplitCurrentAccountMode.CurrentAcount);
                             thermalPrinterInternalDocumentWorkSession.Print();
                         }
                         break;
@@ -1408,13 +1427,18 @@ namespace LogicPOS.Printing.Utility
         }
 
         //Used for Money Movements and Open/Close Terminal/Day Sessions
-        public static bool PrintCashDrawerOpenAndMoneyInOut(sys_configurationprinters pPrinter, string pTicketTitle, decimal pMovementAmount, decimal pTotalAmountInCashDrawer, string pMovementDescription)
+        public static bool PrintCashDrawerOpenAndMoneyInOut(
+            PrinterReferenceDto printer, 
+            string pTicketTitle, 
+            decimal pMovementAmount,
+            decimal pTotalAmountInCashDrawer, 
+            string pMovementDescription)
         {
             bool result = false;
 
-            if (pPrinter != null)
+            if (printer != null)
             {
-                switch (GetPrinterToken(pPrinter.PrinterType.Token))
+                switch (GetPrinterToken(printer.Token))
                 {
                     //Impressora SINOCAN em ambiente Windows
                     case "THERMAL_PRINTER_WINDOWS":
@@ -1422,7 +1446,13 @@ namespace LogicPOS.Printing.Utility
                     case "THERMAL_PRINTER_LINUX":
                     //Impressora SINOCAN em ambiente WindowsLinux/Socket
                     case "THERMAL_PRINTER_SOCKET":
-                        ThermalPrinterInternalDocumentCashDrawer thermalPrinterInternalDocumentCashDrawer = new ThermalPrinterInternalDocumentCashDrawer(pPrinter, pTicketTitle, pTotalAmountInCashDrawer, pMovementAmount, pMovementDescription);
+                        ThermalPrinterInternalDocumentCashDrawer thermalPrinterInternalDocumentCashDrawer = new ThermalPrinterInternalDocumentCashDrawer(
+                            printer, 
+                            pTicketTitle, 
+                            pTotalAmountInCashDrawer, 
+                            pMovementAmount, 
+                            pMovementDescription);
+
                         thermalPrinterInternalDocumentCashDrawer.Print();
                         break;
                 }

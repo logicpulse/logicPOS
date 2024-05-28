@@ -1,6 +1,6 @@
 ﻿using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Xpo;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.DTOs.Printing;
 using LogicPOS.Printing.Enums;
 using LogicPOS.Settings;
 
@@ -12,30 +12,25 @@ namespace LogicPOS.Printing.Common
         private readonly string _line = string.Empty;
         private readonly char _lineChar = '-';
 
-        public sys_configurationprinters Printer { get; set; }
-
-        public string Designation => Printer.Designation;    
-        public string NetworkName => Printer.NetworkName;
-        public string Token => Printer.PrinterType.Token;
-        
+        public PrinterReferenceDto Printer { get; private set; }
 
         public int MaxCharsPerLineNormal { get; set; }
         public int MaxCharsPerLineNormalBold { get; set; }
         public int MaxCharsPerLineSmall { get; set; }
 
         public GenericThermalPrinter(
-            sys_configurationprinters printer)
+            PrinterReferenceDto printer)
             : this(
-                  printer, 
+                  printer,
                   PrintingSettings.ThermalPrinter.Encoding)
         {
         }
 
         public GenericThermalPrinter(
-            sys_configurationprinters printer, 
+            PrinterReferenceDto printer,
             string encoding)
             : this(
-                  printer, 
+                  printer,
                   encoding,
                   TerminalSettings.ThermalPrinter.MaxCharsPerLineNormal,
                   TerminalSettings.ThermalPrinter.MaxCharsPerLineNormalBold,
@@ -44,10 +39,10 @@ namespace LogicPOS.Printing.Common
         }
 
         public GenericThermalPrinter(
-            sys_configurationprinters printer, 
-            string encoding, 
-            int maxCharsPerLineNormal, 
-            int maxCharsPerLineNormalBold, 
+            PrinterReferenceDto printer,
+            string encoding,
+            int maxCharsPerLineNormal,
+            int maxCharsPerLineNormalBold,
             int maxCharsPerLineSmall)
             : base(encoding)
         {
@@ -61,13 +56,13 @@ namespace LogicPOS.Printing.Common
 
         public void PrintBuffer()
         {
-            switch (Token)
+            switch (Printer.Token)
             {
                 case "THERMAL_PRINTER_WINDOWS":
-                    Usb.Print.USBPrintWindows(Designation, GetByteArray());
+                    Usb.Print.USBPrintWindows(Printer.Designation, GetByteArray());
                     break;
                 case "THERMAL_PRINTER_SOCKET":
-                    Usb.Print.USBPrintWindows(NetworkName, GetByteArray());
+                    Usb.Print.USBPrintWindows(Printer.NetworkName, GetByteArray());
                     break;
             }
         }

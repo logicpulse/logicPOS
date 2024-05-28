@@ -81,6 +81,10 @@
       <Project>{42af3be2-44b4-477d-8e45-55c64992b805}</Project>
       <Name>LogicPOS.Data</Name>
     </ProjectReference>
+    <ProjectReference Include="..\LogicPOS.DTOs\LogicPOS.DTOs.csproj">
+      <Project>{e23bdf58-f0a9-40ac-acce-57235fb7a7f1}</Project>
+      <Name>LogicPOS.DTOs</Name>
+    </ProjectReference>
     <ProjectReference Include="..\LogicPOS.Finance\LogicPOS.Finance.csproj">
       <Project>{6f50bd8b-a054-424c-9247-3892efcc25b6}</Project>
       <Name>LogicPOS.Finance</Name>

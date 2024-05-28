@@ -1,5 +1,6 @@
 ﻿using System;
 using logicpos.datalayer.DataLayer.Xpo;
+using LogicPOS.DTOs.Printing;
 
 //Used this to SubClass ThermalPrinterBaseInternalTemplate
 
@@ -7,8 +8,8 @@ namespace LogicPOS.Printing.Templates
 {
     public class ThermalPrinterInternalDocumentTemplate : ThermalPrinterBaseInternalTemplate
     {
-        public ThermalPrinterInternalDocumentTemplate(sys_configurationprinters pPrinter)
-            : base(pPrinter)
+        public ThermalPrinterInternalDocumentTemplate(PrinterReferenceDto printer)
+            : base(printer)
         {
             _ticketTitle = "DYNAMIC TITLE";
         }

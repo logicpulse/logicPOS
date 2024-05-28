@@ -1,4 +1,5 @@
-﻿using LogicPOS.Settings;
+﻿using LogicPOS.DTOs.Printing;
+using LogicPOS.Settings;
 
 namespace LogicPOS.Data.XPO.Settings
 {
@@ -46,6 +47,17 @@ namespace LogicPOS.Data.XPO.Settings
                     var result = LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineSmall;
                     return result > 0 ? result : PrintingSettings.ThermalPrinter.MaxCharsPerLineSmall;
                 }
+            }
+
+            public static PrinterReferenceDto GetLoggedTerminalPrinterReference()
+            {
+                return new PrinterReferenceDto
+                {
+                    Id = LoggedTerminal.ThermalPrinter.Oid,
+                    Designation = LoggedTerminal.ThermalPrinter.Designation,
+                    NetworkName = LoggedTerminal.ThermalPrinter.NetworkName,
+                    Token = LoggedTerminal.ThermalPrinter.PrinterType.Token
+                };
             }
         }
     }

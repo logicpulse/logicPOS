@@ -1,6 +1,7 @@
 ﻿using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Xpo;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.DTOs.Printing;
 using LogicPOS.Globalization;
 using LogicPOS.Printing.Enums;
 using LogicPOS.Printing.Templates;
@@ -22,16 +23,24 @@ namespace LogicPOS.Printing.Documents
         private readonly List<FRBODocumentFinancePaymentView> _documentFinancePaymentList;
         private readonly List<FRBODocumentFinancePaymentDocumentView> _documentFinancePaymentDocumentList;
 
-        public ThermalPrinterFinanceDocumentPayment(sys_configurationprinters pPrinter, fin_documentfinancepayment pDocumentFinancePayment, List<int> pCopyNames, bool pSecondCopy)
-            : base(pPrinter, pDocumentFinancePayment.DocumentType, pCopyNames, pSecondCopy)
+        public ThermalPrinterFinanceDocumentPayment(
+            PrinterReferenceDto printer, 
+            fin_documentfinancepayment financePayment, 
+            List<int> copyNames, 
+            bool secondCopy)
+            : base(
+                  printer, 
+                  financePayment.DocumentType, 
+                  copyNames, 
+                  secondCopy)
         {
             try
             {
                 //Parameters
-                _documentFinancePayment = pDocumentFinancePayment;
+                _documentFinancePayment = financePayment;
 
                 //Init Fast Reports Business Objects (From FRBOHelper)
-                ResultFRBODocumentFinancePayment fRBOHelperResponseProcessReportFinancePayment = FRBOHelper.GetFRBOFinancePayment(pDocumentFinancePayment.Oid);
+                ResultFRBODocumentFinancePayment fRBOHelperResponseProcessReportFinancePayment = FRBOHelper.GetFRBOFinancePayment(financePayment.Oid);
                 //Get FRBOs Lists 
                 _documentFinancePaymentList = fRBOHelperResponseProcessReportFinancePayment.DocumentFinancePayment.List;
                 _documentFinancePaymentDocumentList = fRBOHelperResponseProcessReportFinancePayment.DocumentFinancePayment.List[0].DocumentFinancePaymentDocument;

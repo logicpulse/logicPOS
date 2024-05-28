@@ -15,7 +15,7 @@ namespace LogicPOS.Printing.Documents
         /* IN008024 */
         //private string _appOperationModeToken = LogicPOS.Settings.GeneralSettings.Settings["appOperationModeToken"];
         private readonly fin_documentorderticket _orderTicket;
-        private readonly bool _enableArticlePrinter;
+        private readonly bool _articlePrinterEnabled;
 
         public ThermalPrinterInternalDocumentOrderRequest(sys_configurationprinters pPrinter, fin_documentorderticket pOrderTicket)
             : this(pPrinter, pOrderTicket, false) { }
@@ -27,7 +27,7 @@ namespace LogicPOS.Printing.Documents
             {
                 //Parameters
                 _orderTicket = pOrderTicket;
-                _enableArticlePrinter = pEnableArticlePrinter;
+                _articlePrinterEnabled = pEnableArticlePrinter;
 
                 //Order Request #1/3
                 _ticketTitle = string.Format("{0}: #{1}"
@@ -91,7 +91,7 @@ namespace LogicPOS.Printing.Documents
             foreach (fin_documentorderdetail item in _orderTicket.OrderDetail)
             {
                 //Add All Rows if Normal Mode without explicit ArticlePrinter defined, or print Printer Articles for explicit defined ArticlePrinter 
-                if (!_enableArticlePrinter || _genericThermalPrinter.Printer == item.Article.Printer)
+                if (_articlePrinterEnabled == false || _genericThermalPrinter.Printer.Id == item.Article.Printer.Oid)
                 {
                     //Add Rows to main Ticket
                     dataRow = ticketTable.NewRow();
