@@ -507,7 +507,8 @@ namespace logicpos
                     {
                         printDialogResponse = PosDocumentFinancePrintDialog.GetDocumentFinancePrintProperties(sourceWindow, financeMaster);
                         //Print with default DocumentFinanceYearSerieTerminal Template
-                        if (printDialogResponse.Response == ResponseType.Ok) result = PrintingUtils.PrintFinanceDocument(financeMaster);
+                        var financeMasterDto = MappingUtils.GetPrintDocumentMasterDto(financeMaster);
+                        if (printDialogResponse.Response == ResponseType.Ok) result = PrintingUtils.PrintFinanceDocument(financeMasterDto);
                     }
                 }
                 else
@@ -557,10 +558,11 @@ namespace logicpos
                     if (printDialogResponse.Response == ResponseType.Ok)
                     {
                         var financeMasterPrinterDto = MappingUtils.GetPrinterDto(financeMasterPrinter);
+                        var financeMasterDto = MappingUtils.GetPrintDocumentMasterDto(financeMaster);
 
                         result = PrintingUtils.PrintFinanceDocument(
                             financeMasterPrinterDto,
-                            financeMaster,
+                            financeMasterDto,
                             printDialogResponse.CopyNames,
                             printDialogResponse.SecondCopy,
                             printDialogResponse.Motive);
@@ -659,28 +661,31 @@ namespace logicpos
                     case "VIRTUAL_SCREEN":
                         break;
                 }
+                var DocumentFinancePaymentDto = MappingUtils.GetPrintingFinancePaymentDto(pDocumentFinancePayment);
                 //ProtectedFiles Protection
                 if (!validFiles) return false;
                 //Recibos com impressão em impressora térmica
                 if (TerminalSettings.HasLoggedTerminal)
                 {
+                   
+                    
                     ResponseType responseType = Utils.ShowMessageTouch(pSourceWindow, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.YesNo, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_edit_DialogConfigurationPrintersType_tab1_label"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_printer_choose_printer"));
 
                     if (responseType == ResponseType.Yes)
                     {
                         var printerDto = LoggedTerminalSettings.GetPrinterDto();
-
-                        result = PrintingUtils.PrintFinanceDocumentPayment(printerDto, pDocumentFinancePayment);
+                        
+                        result = PrintingUtils.PrintFinanceDocumentPayment(printerDto, DocumentFinancePaymentDto);
                     }
                     else
                     {
-                        result = PrintingUtils.PrintFinanceDocumentPayment(printer, pDocumentFinancePayment);
+                        result = PrintingUtils.PrintFinanceDocumentPayment(printer, DocumentFinancePaymentDto);
                     }
                 }
                 else
                 {
                     //Call Print Document A4
-                    result = PrintingUtils.PrintFinanceDocumentPayment(printer, pDocumentFinancePayment);
+                    result = PrintingUtils.PrintFinanceDocumentPayment(printer, DocumentFinancePaymentDto);
                 }
 
             }

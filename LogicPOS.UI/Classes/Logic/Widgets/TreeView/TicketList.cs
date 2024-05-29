@@ -13,6 +13,7 @@ using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
 using logicpos.shared.Enums;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO.Settings.Terminal;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Extensions;
@@ -343,6 +344,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 // Impressoras - Diferenciação entre Tipos [TK:016249]
                 PrintingSettings.ThermalPrinter.UsingThermalPrinter = true;
                 if (TerminalSettings.HasLoggedTerminal &&
+                    LoggedTerminalSettings.HasPrinter &&
                     TerminalSettings.LoggedTerminal.ThermalPrinter.PrinterType.ThermalPrinter &&
                     orderTicket.OrderDetail.Count != 0)
                 {
