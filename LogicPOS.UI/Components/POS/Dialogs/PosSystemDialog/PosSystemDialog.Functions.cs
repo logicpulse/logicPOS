@@ -18,7 +18,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             if (TerminalSettings.LoggedTerminal.Printer != null)
             {
-                var resultOpenDoor = PrintingUtils.OpenDoor(TerminalSettings.LoggedTerminal.Printer);
+                var resultOpenDoor = PrintingUtils.OpenDoor();
                 if (!resultOpenDoor)
                 {
                     logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_information"), string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "open_cash_draw_permissions")));

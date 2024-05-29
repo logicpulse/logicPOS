@@ -52,11 +52,11 @@ namespace LogicPOS.Settings
         public static Dictionary<string, Guid> PendentPaidParkingTickets { get; set; } = new Dictionary<string, Guid>();
         public static Dictionary<string, Guid> PendentPaidParkingCards { get; set; } = new Dictionary<string, Guid>();
         public static bool UsePosPDFViewer => Convert.ToBoolean(PreferenceParameters["USE_POS_PDF_VIEWER"]);
-        public static bool HasPermissionTo(string pToken)
+        public static bool LoggedUserHasPermissionTo(string permissionToken)
         {
-            if (LoggedUserPermissions != null && LoggedUserPermissions.ContainsKey(pToken))
+            if (LoggedUserPermissions != null && LoggedUserPermissions.ContainsKey(permissionToken))
             {
-                return LoggedUserPermissions[pToken];
+                return LoggedUserPermissions[permissionToken];
             }
 
             return false;

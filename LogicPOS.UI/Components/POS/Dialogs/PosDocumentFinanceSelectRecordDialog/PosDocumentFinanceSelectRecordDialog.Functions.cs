@@ -58,7 +58,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private string _selectRecordWindowTitle;
         private string _afterFilterTitle = null;
         //Permissions
-        private readonly bool permissionFinanceDocumentCancelDocument = GeneralSettings.HasPermissionTo("FINANCE_DOCUMENT_CANCEL_DOCUMENT");
+        private readonly bool permissionFinanceDocumentCancelDocument = GeneralSettings.LoggedUserHasPermissionTo("FINANCE_DOCUMENT_CANCEL_DOCUMENT");
         //Require reference to use in TransientFor inside the TreeModelForEachTask_ActionPrintDocuments
         private PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewDocumentFinanceMaster> _dialogFinanceDocumentsResponse;
         //Used to Store Button that Call dialogFinanceMaster, usefull for ex to get buttonToken :)
@@ -109,7 +109,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //FinanceMaster: Click Event
-        
+
         private void touchButtonPosToolbarFinanceDocuments_Clicked(object sender, EventArgs e)
         {
             _dialogFinanceMasterCallerButton = (sender as TouchButtonIconWithText);
@@ -2150,8 +2150,8 @@ WHERE
                     //Single Record Mode - Default - USED HERE ONLY TO TEST Both Dialogs Modes (Default and CheckBox)
                     if (dialog.GenericTreeViewMode == GenericTreeViewMode.Default)
                     {
-                        var printer = MappingUtils.GetPrinterDto(_printerChoosed);
-                        FrameworkCalls.PrintFinanceDocumentPayment(this, printer, documentFinancePayment);
+                        var printerDto = MappingUtils.GetPrinterDto(_printerChoosed);
+                        FrameworkCalls.PrintFinanceDocumentPayment(this, printerDto, documentFinancePayment);
                     }
                     //Multi Record Mode - CheckBox - ACTIVE MODE
                     else if (dialog.GenericTreeViewMode == GenericTreeViewMode.CheckBox)
@@ -2400,8 +2400,8 @@ WHERE
                 if (itemChecked)
                 {
                     fin_documentfinancepayment documentFinancePayment = (fin_documentfinancepayment)XPOHelper.GetXPGuidObject(typeof(fin_documentfinancepayment), itemGuid);
-                    var PrinterChoosed = MappingUtils.GetPrinterDto(_printerChoosed);
-                    FrameworkCalls.PrintFinanceDocumentPayment(this, PrinterChoosed, documentFinancePayment);
+                    var printerDto = MappingUtils.GetPrinterDto(_printerChoosed);
+                    FrameworkCalls.PrintFinanceDocumentPayment(this, printerDto, documentFinancePayment);
                 }
             }
             catch (Exception ex)

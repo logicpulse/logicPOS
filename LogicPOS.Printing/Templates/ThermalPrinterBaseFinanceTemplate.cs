@@ -325,7 +325,7 @@ namespace LogicPOS.Printing.Templates
             _genericThermalPrinter.SetAlignCenter();
 
             _genericThermalPrinter.SetBarcodeWidth(4);
-            _genericThermalPrinter.PrintBarcode(ThermalPrinter.BarcodeType.qrcode, myData);
+            _genericThermalPrinter.PrintBarcode(BarcodeType.qrcode, myData);
             _genericThermalPrinter.SetBarcodeWidth(2);
             _genericThermalPrinter.LineFeed();
             _genericThermalPrinter.LineFeed();

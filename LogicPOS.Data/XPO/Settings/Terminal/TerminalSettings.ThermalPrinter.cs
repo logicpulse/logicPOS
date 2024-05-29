@@ -1,6 +1,4 @@
-﻿using LogicPOS.Data.XPO.Utility;
-using LogicPOS.DTOs.Printing;
-using LogicPOS.Settings;
+﻿using LogicPOS.Settings;
 
 namespace LogicPOS.Data.XPO.Settings
 {
@@ -12,9 +10,9 @@ namespace LogicPOS.Data.XPO.Settings
             {
                 get
                 {
-                    if(HasLoggedTerminal == false)
+                    if (HasLoggedTerminal == false)
                     {
-                       return PrintingSettings.ThermalPrinter.MaxCharsPerLineNormal;
+                        return PrintingSettings.ThermalPrinter.MaxCharsPerLineNormal;
                     }
 
                     var result = LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineNormal;
@@ -26,7 +24,7 @@ namespace LogicPOS.Data.XPO.Settings
             {
                 get
                 {
-                    if(HasLoggedTerminal == false)
+                    if (HasLoggedTerminal == false)
                     {
                         return PrintingSettings.ThermalPrinter.MaxCharsPerLineNormalBold;
                     }
@@ -40,7 +38,7 @@ namespace LogicPOS.Data.XPO.Settings
             {
                 get
                 {
-                    if(HasLoggedTerminal == false)
+                    if (HasLoggedTerminal == false)
                     {
                         return PrintingSettings.ThermalPrinter.MaxCharsPerLineSmall;
                     }
@@ -48,11 +46,6 @@ namespace LogicPOS.Data.XPO.Settings
                     var result = LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineSmall;
                     return result > 0 ? result : PrintingSettings.ThermalPrinter.MaxCharsPerLineSmall;
                 }
-            }
-
-            public static PrinterDto GetLoggedTerminalPrinterDto()
-            {
-                return MappingUtils.GetPrinterDto(LoggedTerminal.ThermalPrinter);
             }
         }
     }

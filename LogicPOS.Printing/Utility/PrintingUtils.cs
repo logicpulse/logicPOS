@@ -4,12 +4,14 @@ using logicpos.datalayer.Xpo;
 using logicpos.shared.Enums;
 using logicpos.shared.Enums.ThermalPrinter;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO.Settings.Terminal;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.DTOs.Printing;
 using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Globalization;
 using LogicPOS.Printing.Common;
 using LogicPOS.Printing.Documents;
+using LogicPOS.Printing.Enums;
 using LogicPOS.Reporting;
 using LogicPOS.Settings;
 using LogicPOS.Utility;
@@ -26,9 +28,14 @@ namespace LogicPOS.Printing.Utility
 
     public static class PrintingUtils
     {
-        public static BitmapData GetBitmapData(string bmpFileName)
+        public static BitmapData GetBitmapData(string fileName)
         {
-            using (var bitmap = (Bitmap)Image.FromFile(bmpFileName))
+            return GetBitmapData((Bitmap)Image.FromFile(fileName));
+        }
+
+        public static BitmapData GetBitmapData(Bitmap bitMap)
+        {
+            using (var bitmap = bitMap)
             {
                 var threshold = 127;
                 var index = 0;
@@ -55,36 +62,10 @@ namespace LogicPOS.Printing.Utility
             }
         }
 
-        public static BitmapData GetBitmapData(Bitmap bmpFileName)
-        {
-            using (var bitmap = bmpFileName)
-            {
-                var threshold = 127;
-                var index = 0;
-                var dimensions = bitmap.Width * bitmap.Height;
-                var dots = new BitArray(dimensions);
-
-                for (var y = 0; y < bitmap.Height; y++)
-                {
-                    for (var x = 0; x < bitmap.Width; x++)
-                    {
-                        var color = bitmap.GetPixel(x, y);
-                        var luminance = (int)(color.R * 0.3 + color.G * 0.59 + color.B * 0.11);
-                        dots[index] = (luminance < threshold);
-                        index++;
-                    }
-                }
-
-                return new BitmapData()
-                {
-                    Dots = dots,
-                    Height = bitmap.Height,
-                    Width = bitmap.Width
-                };
-            }
-        }
-
-        public static List<PrintObject> CalculatePrintCoordinates(List<PrintObject> printObjects, int PrintCharWidth, int PrintLineHeight)
+        public static List<PrintObject> CalculatePrintCoordinates(
+            List<PrintObject> printObjects, 
+            int PrintCharWidth, 
+            int PrintLineHeight)
         {
             for (int i = 0; i < printObjects.Count; i++)
             {
@@ -100,12 +81,26 @@ namespace LogicPOS.Printing.Utility
             return printObjects;
         }
 
-        public static void PreparePrintDocument(ref ThermalPrinter printer, List<PrintObject> printObjects, int PrintCharWidth, int PrintLineHeight)
+        public static void PreparePrintDocument(
+            ref ThermalPrinter printer, 
+            List<PrintObject> printObjects, 
+            int PrintCharWidth, 
+            int PrintLineHeight)
         {
-            PreparePrintDocument(ref printer, printObjects, PrintCharWidth, PrintLineHeight, "");
+            PreparePrintDocument(
+                ref printer, 
+                printObjects, 
+                PrintCharWidth, 
+                PrintLineHeight,
+                string.Empty);
         }
 
-        public static void PreparePrintDocument(ref ThermalPrinter printer, List<PrintObject> printObjects, int PrintCharWidth, int PrintLineHeight, string barcodeValue)
+        public static void PreparePrintDocument(
+            ref ThermalPrinter printer, 
+            List<PrintObject> printObjects, 
+            int PrintCharWidth, 
+            int PrintLineHeight, 
+            string barcodeValue)
         {
             if (printObjects.Count == 0)
                 return;
@@ -144,26 +139,26 @@ namespace LogicPOS.Printing.Utility
                             if (lastFontSize == "11")
                             {
                                 //printer.WriteLine_Bold(printText);
-                                printer.WriteLine(printText, (byte)ThermalPrinter.PrintingStyle.Bold);
+                                printer.WriteLine(printText, (byte)PrintingStyle.Bold);
                             }
                             else
                             {
-                                printer.WriteLine(printText, (byte)ThermalPrinter.PrintingStyle.Bold
+                                printer.WriteLine(printText, (byte)PrintingStyle.Bold
                                     //+ (byte)ThermalPrinter.PrintingStyle.DoubleHeight
-                                    + (byte)ThermalPrinter.PrintingStyle.DoubleWidth);
+                                    + (byte)PrintingStyle.DoubleWidth);
                             }
                         }
                         else if (lastFontStyle == "Underline" || lastFontStyle == "Sublinhado")
                         {
                             if (lastFontSize == "11")
                             {
-                                printer.WriteLine(printText, (byte)ThermalPrinter.PrintingStyle.Underline);
+                                printer.WriteLine(printText, (byte)PrintingStyle.Underline);
                             }
                             else
                             {
-                                printer.WriteLine(printText, (byte)ThermalPrinter.PrintingStyle.Underline
+                                printer.WriteLine(printText, (byte)PrintingStyle.Underline
                                     //+ (byte)ThermalPrinter.PrintingStyle.DoubleHeight
-                                    + (byte)ThermalPrinter.PrintingStyle.DoubleWidth);
+                                    + (byte)PrintingStyle.DoubleWidth);
                             }
                         }
                         else
@@ -176,7 +171,7 @@ namespace LogicPOS.Printing.Utility
                             {
                                 printer.WriteLine(printText,
                                     //(byte)ThermalPrinter.PrintingStyle.DoubleHeight
-                                    +(byte)ThermalPrinter.PrintingStyle.DoubleWidth);
+                                    +(byte)PrintingStyle.DoubleWidth);
                             }
 
                         }
@@ -198,26 +193,26 @@ namespace LogicPOS.Printing.Utility
                                 if (lastFontSize == "11")
                                 {
                                     //printer.WriteLine_Bold(printText);
-                                    printer.WriteLine(printText, (byte)ThermalPrinter.PrintingStyle.Bold);
+                                    printer.WriteLine(printText, (byte)PrintingStyle.Bold);
                                 }
                                 else
                                 {
-                                    printer.WriteLine(printText, (byte)ThermalPrinter.PrintingStyle.Bold
+                                    printer.WriteLine(printText, (byte)PrintingStyle.Bold
                                         //+ (byte)ThermalPrinter.PrintingStyle.DoubleHeight
-                                        + (byte)ThermalPrinter.PrintingStyle.DoubleWidth);
+                                        + (byte)PrintingStyle.DoubleWidth);
                                 }
                             }
                             else if (lastFontStyle == "Underline" || lastFontStyle == "Sublinhado")
                             {
                                 if (lastFontSize == "11")
                                 {
-                                    printer.WriteLine(printText, (byte)ThermalPrinter.PrintingStyle.Underline);
+                                    printer.WriteLine(printText, (byte)PrintingStyle.Underline);
                                 }
                                 else
                                 {
-                                    printer.WriteLine(printText, (byte)ThermalPrinter.PrintingStyle.Underline
+                                    printer.WriteLine(printText, (byte)PrintingStyle.Underline
                                         //+ (byte)ThermalPrinter.PrintingStyle.DoubleHeight
-                                        + (byte)ThermalPrinter.PrintingStyle.DoubleWidth);
+                                        + (byte)PrintingStyle.DoubleWidth);
                                 }
                             }
                             else
@@ -230,7 +225,7 @@ namespace LogicPOS.Printing.Utility
                                 {
                                     printer.WriteLine(printText,
                                         //(byte)ThermalPrinter.PrintingStyle.DoubleHeight
-                                        +(byte)ThermalPrinter.PrintingStyle.DoubleWidth);
+                                        +(byte)PrintingStyle.DoubleWidth);
                                 }
 
                             }
@@ -339,26 +334,26 @@ namespace LogicPOS.Printing.Utility
                             if (lastFontSize == "11")
                             {
                                 //printer.WriteLine_Bold(printText);
-                                printer.WriteLine(printText, (byte)ThermalPrinter.PrintingStyle.Bold);
+                                printer.WriteLine(printText, (byte)PrintingStyle.Bold);
                             }
                             else
                             {
-                                printer.WriteLine(printText, (byte)ThermalPrinter.PrintingStyle.Bold
+                                printer.WriteLine(printText, (byte)PrintingStyle.Bold
                                     //+ (byte)ThermalPrinter.PrintingStyle.DoubleHeight
-                                    + (byte)ThermalPrinter.PrintingStyle.DoubleWidth);
+                                    + (byte)PrintingStyle.DoubleWidth);
                             }
                         }
                         else if (lastFontStyle == "Underline" || lastFontStyle == "Sublinhado")
                         {
                             if (lastFontSize == "11")
                             {
-                                printer.WriteLine(printText, (byte)ThermalPrinter.PrintingStyle.Underline);
+                                printer.WriteLine(printText, (byte)PrintingStyle.Underline);
                             }
                             else
                             {
-                                printer.WriteLine(printText, (byte)ThermalPrinter.PrintingStyle.Underline
+                                printer.WriteLine(printText, (byte)PrintingStyle.Underline
                                     //+ (byte)ThermalPrinter.PrintingStyle.DoubleHeight
-                                    + (byte)ThermalPrinter.PrintingStyle.DoubleWidth);
+                                    + (byte)PrintingStyle.DoubleWidth);
                             }
                         }
                         else
@@ -371,7 +366,7 @@ namespace LogicPOS.Printing.Utility
                             {
                                 printer.WriteLine(printText,
                                     //(byte)ThermalPrinter.PrintingStyle.DoubleHeight
-                                    +(byte)ThermalPrinter.PrintingStyle.DoubleWidth);
+                                    +(byte)PrintingStyle.DoubleWidth);
                             }
 
                         }
@@ -393,26 +388,26 @@ namespace LogicPOS.Printing.Utility
                                 if (lastFontSize == "11")
                                 {
                                     //printer.WriteLine_Bold(printText);
-                                    printer.WriteLine(printText, (byte)ThermalPrinter.PrintingStyle.Bold);
+                                    printer.WriteLine(printText, (byte)PrintingStyle.Bold);
                                 }
                                 else
                                 {
-                                    printer.WriteLine(printText, (byte)ThermalPrinter.PrintingStyle.Bold
+                                    printer.WriteLine(printText, (byte)PrintingStyle.Bold
                                         //+ (byte)ThermalPrinter.PrintingStyle.DoubleHeight
-                                        + (byte)ThermalPrinter.PrintingStyle.DoubleWidth);
+                                        + (byte)PrintingStyle.DoubleWidth);
                                 }
                             }
                             else if (lastFontStyle == "Underline" || lastFontStyle == "Sublinhado")
                             {
                                 if (lastFontSize == "11")
                                 {
-                                    printer.WriteLine(printText, (byte)ThermalPrinter.PrintingStyle.Underline);
+                                    printer.WriteLine(printText, (byte)PrintingStyle.Underline);
                                 }
                                 else
                                 {
-                                    printer.WriteLine(printText, (byte)ThermalPrinter.PrintingStyle.Underline
+                                    printer.WriteLine(printText, (byte)PrintingStyle.Underline
                                         //+ (byte)ThermalPrinter.PrintingStyle.DoubleHeight
-                                        + (byte)ThermalPrinter.PrintingStyle.DoubleWidth);
+                                        + (byte)PrintingStyle.DoubleWidth);
                                 }
                             }
                             else
@@ -425,7 +420,7 @@ namespace LogicPOS.Printing.Utility
                                 {
                                     printer.WriteLine(printText,
                                         //(byte)ThermalPrinter.PrintingStyle.DoubleHeight
-                                        +(byte)ThermalPrinter.PrintingStyle.DoubleWidth);
+                                        +(byte)PrintingStyle.DoubleWidth);
                                 }
 
                             }
@@ -439,47 +434,47 @@ namespace LogicPOS.Printing.Utility
                     {
                         case "UPC-A":
                         case "upc_a":
-                            printer.PrintBarcode(ThermalPrinter.BarcodeType.upc_a, barcodeValue);
+                            printer.PrintBarcode(BarcodeType.upc_a, barcodeValue);
                             break;
                         case "UPC-E":
                         case "upc_e":
-                            printer.PrintBarcode(ThermalPrinter.BarcodeType.upc_e, barcodeValue);
+                            printer.PrintBarcode(BarcodeType.upc_e, barcodeValue);
                             break;
                         case "EAN13":
                         case "ean13":
-                            printer.PrintBarcode(ThermalPrinter.BarcodeType.ean13, barcodeValue);
+                            printer.PrintBarcode(BarcodeType.ean13, barcodeValue);
                             break;
                         case "EAN8":
                         case "ean8":
-                            printer.PrintBarcode(ThermalPrinter.BarcodeType.ean8, barcodeValue);
+                            printer.PrintBarcode(BarcodeType.ean8, barcodeValue);
                             break;
                         case "CODE 39":
                         case "code39":
-                            printer.PrintBarcode(ThermalPrinter.BarcodeType.code39, barcodeValue);
+                            printer.PrintBarcode(BarcodeType.code39, barcodeValue);
                             break;
                         case "I25":
                         case "i25":
-                            printer.PrintBarcode(ThermalPrinter.BarcodeType.i25, barcodeValue);
+                            printer.PrintBarcode(BarcodeType.i25, barcodeValue);
                             break;
                         case "CODEBAR":
                         case "codebar":
-                            printer.PrintBarcode(ThermalPrinter.BarcodeType.codebar, barcodeValue);
+                            printer.PrintBarcode(BarcodeType.codebar, barcodeValue);
                             break;
                         case "CODE 93":
                         case "code93":
-                            printer.PrintBarcode(ThermalPrinter.BarcodeType.code93, barcodeValue);
+                            printer.PrintBarcode(BarcodeType.code93, barcodeValue);
                             break;
                         case "CODE 128":
                         case "code128":
-                            printer.PrintBarcode(ThermalPrinter.BarcodeType.code128, barcodeValue);
+                            printer.PrintBarcode(BarcodeType.code128, barcodeValue);
                             break;
                         case "CODE 11":
                         case "code11":
-                            printer.PrintBarcode(ThermalPrinter.BarcodeType.code11, barcodeValue);
+                            printer.PrintBarcode(BarcodeType.code11, barcodeValue);
                             break;
                         case "MSI":
                         case "msi":
-                            printer.PrintBarcode(ThermalPrinter.BarcodeType.msi, barcodeValue);
+                            printer.PrintBarcode(BarcodeType.msi, barcodeValue);
                             break;
                     }
 
@@ -494,26 +489,26 @@ namespace LogicPOS.Printing.Utility
                 if (lastFontSize == "11")
                 {
                     //printer.WriteLine_Bold(printText);
-                    printer.WriteLine(printText, (byte)ThermalPrinter.PrintingStyle.Bold);
+                    printer.WriteLine(printText, (byte)PrintingStyle.Bold);
                 }
                 else
                 {
-                    printer.WriteLine(printText, (byte)ThermalPrinter.PrintingStyle.Bold
+                    printer.WriteLine(printText, (byte)PrintingStyle.Bold
                         //+ (byte)ThermalPrinter.PrintingStyle.DoubleHeight
-                        + (byte)ThermalPrinter.PrintingStyle.DoubleWidth);
+                        + (byte)PrintingStyle.DoubleWidth);
                 }
             }
             else if (lastFontStyle == "Underline" || lastFontStyle == "Sublinhado")
             {
                 if (lastFontSize == "11")
                 {
-                    printer.WriteLine(printText, (byte)ThermalPrinter.PrintingStyle.Underline);
+                    printer.WriteLine(printText, (byte)PrintingStyle.Underline);
                 }
                 else
                 {
-                    printer.WriteLine(printText, (byte)ThermalPrinter.PrintingStyle.Underline
+                    printer.WriteLine(printText, (byte)PrintingStyle.Underline
                         //+ (byte)ThermalPrinter.PrintingStyle.DoubleHeight
-                        + (byte)ThermalPrinter.PrintingStyle.DoubleWidth);
+                        + (byte)PrintingStyle.DoubleWidth);
                 }
             }
             else
@@ -526,7 +521,7 @@ namespace LogicPOS.Printing.Utility
                 {
                     printer.WriteLine(printText,
                         //(byte)ThermalPrinter.PrintingStyle.DoubleHeight
-                        +(byte)ThermalPrinter.PrintingStyle.DoubleWidth);
+                        +(byte)PrintingStyle.DoubleWidth);
                 }
 
             }
@@ -538,7 +533,12 @@ namespace LogicPOS.Printing.Utility
 
         }
 
-        public static PrintObject applyTextProperties(PrintObject Texto, DataRow[] drTemp, PrintObject prt, int maxLenght, int dataCount)
+        public static PrintObject ApplyTextProperties(
+            PrintObject Texto, 
+            DataRow[] drTemp, 
+            PrintObject prt, 
+            int maxLenght, 
+            int dataCount)
         {
             try
             {
@@ -582,7 +582,15 @@ namespace LogicPOS.Printing.Utility
             return Texto;
         }
 
-        public static PrintObject applyTextPropertiesLoop(PrintObject Texto, PrintObject prt, int maxLenght, int dataCount, string text, int valueToAddPosY, bool needToHaveMaxLenght, bool addPosY)
+        public static PrintObject ApplyTextPropertiesLoop(
+            PrintObject Texto, 
+            PrintObject prt, 
+            int maxLenght, 
+            int dataCount, 
+            string text, 
+            int valueToAddPosY, 
+            bool needToHaveMaxLenght, 
+            bool addPosY)
         {
 
             if (addPosY)
@@ -634,7 +642,11 @@ namespace LogicPOS.Printing.Utility
             return Texto;
         }
 
-        public static List<PrintObject> GetObjectsFromTemplate(PrintObject prt, XmlDocument appconfigdoc, DataTable dataLoop, DataTable dataStatic)
+        public static List<PrintObject> GetObjectsFromTemplate(
+            PrintObject prt, 
+            XmlDocument appconfigdoc, 
+            DataTable dataLoop, 
+            DataTable dataStatic)
         {
             List<PrintObject> printObjects = new List<PrintObject>();
             int dataCount = dataLoop.Rows.Count - 1;
@@ -662,12 +674,12 @@ namespace LogicPOS.Printing.Utility
                         {
                             continue;
                         }
-                        switch ((ThermalPrinter.OptionsToText)Enum.Parse(typeof(ThermalPrinter.OptionsToText), Texto.Type.ToString()))
+                        switch ((OptionsToText)Enum.Parse(typeof(OptionsToText), Texto.Type.ToString()))
                         {
-                            case ThermalPrinter.OptionsToText.Contribuinte:
-                                Texto = applyTextProperties(Texto, dataStatic.Select("token = 'COMPANY_FISCALNUMBER'"), prt, 48, dataCount);
+                            case OptionsToText.Contribuinte:
+                                Texto = ApplyTextProperties(Texto, dataStatic.Select("token = 'COMPANY_FISCALNUMBER'"), prt, 48, dataCount);
                                 break;
-                            case ThermalPrinter.OptionsToText.Contribuinte_Cliente:
+                            case OptionsToText.Contribuinte_Cliente:
                                 try
                                 {
                                     //Detect if is FinalConsumer with FiscalNumber 999999990 and Hide it
@@ -675,11 +687,11 @@ namespace LogicPOS.Printing.Utility
                                     //{
                                     //    dataLoop.Rows[0]["ContribuinteCliente"] = SettingsApp.FinanceFinalConsumerFiscalNumberDisplay;
                                     //}
-                                    Texto = applyTextPropertiesLoop(Texto, prt, 48, dataCount, dataLoop.Rows[0]["ContribuinteCliente"].ToString(), 0, false, true);
+                                    Texto = ApplyTextPropertiesLoop(Texto, prt, 48, dataCount, dataLoop.Rows[0]["ContribuinteCliente"].ToString(), 0, false, true);
                                 }
                                 catch
                                 {
-                                    Texto = applyTextPropertiesLoop(Texto, prt, 48, dataCount, "-", 0, false, true);
+                                    Texto = ApplyTextPropertiesLoop(Texto, prt, 48, dataCount, "-", 0, false, true);
                                 }
                                 //Texto = applyTextProperties(Texto, dataStatic.Select("token = 'ContribuinteCliente'"), prt, 48, dataCount);
                                 //if (Texto.Text.Equals("999999990"))
@@ -687,15 +699,15 @@ namespace LogicPOS.Printing.Utility
                                 //    Texto.Text = "-";
                                 //}
                                 break;
-                            case ThermalPrinter.OptionsToText.Desconto:
-                                Texto = applyTextPropertiesLoop(Texto, prt, 6, dataCount, dataLoop.Rows[0]["DescontoProduto"].ToString(), 0, true, false);
+                            case OptionsToText.Desconto:
+                                Texto = ApplyTextPropertiesLoop(Texto, prt, 6, dataCount, dataLoop.Rows[0]["DescontoProduto"].ToString(), 0, true, false);
 
                                 for (int i = 1; i < dataLoop.Rows.Count; i++)
                                 {
                                     PrintObject TextoDup = new PrintObject(1);
                                     TextoDup.loadTextXML(dev, dataCount);
 
-                                    TextoDup = applyTextPropertiesLoop(TextoDup, prt, 6, dataCount, dataLoop.Rows[i]["DescontoProduto"].ToString(), i, true, false);
+                                    TextoDup = ApplyTextPropertiesLoop(TextoDup, prt, 6, dataCount, dataLoop.Rows[i]["DescontoProduto"].ToString(), i, true, false);
 
                                     if (!TextoDup.Text.Equals(string.Empty))
                                     {
@@ -704,15 +716,15 @@ namespace LogicPOS.Printing.Utility
                                 }
 
                                 break;
-                            case ThermalPrinter.OptionsToText.IVA_Produto:
-                                Texto = applyTextPropertiesLoop(Texto, prt, 5, dataCount, dataLoop.Rows[0]["IVAProduto"].ToString(), 0, true, false);
+                            case OptionsToText.IVA_Produto:
+                                Texto = ApplyTextPropertiesLoop(Texto, prt, 5, dataCount, dataLoop.Rows[0]["IVAProduto"].ToString(), 0, true, false);
 
                                 for (int i = 1; i < dataLoop.Rows.Count; i++)
                                 {
                                     PrintObject TextoDup = new PrintObject(1);
                                     TextoDup.loadTextXML(dev, dataCount);
 
-                                    TextoDup = applyTextPropertiesLoop(TextoDup, prt, 5, dataCount, dataLoop.Rows[i]["IVAProduto"].ToString(), i, true, false);
+                                    TextoDup = ApplyTextPropertiesLoop(TextoDup, prt, 5, dataCount, dataLoop.Rows[i]["IVAProduto"].ToString(), i, true, false);
 
                                     if (!TextoDup.Text.Equals(string.Empty))
                                     {
@@ -720,15 +732,15 @@ namespace LogicPOS.Printing.Utility
                                     }
                                 }
                                 break;
-                            case ThermalPrinter.OptionsToText.Nome_Produto:
-                                Texto = applyTextPropertiesLoop(Texto, prt, 20, dataCount, dataLoop.Rows[0]["NomeProduto"].ToString(), 0, false, false);
+                            case OptionsToText.Nome_Produto:
+                                Texto = ApplyTextPropertiesLoop(Texto, prt, 20, dataCount, dataLoop.Rows[0]["NomeProduto"].ToString(), 0, false, false);
 
                                 for (int i = 1; i < dataLoop.Rows.Count; i++)
                                 {
                                     PrintObject TextoDup = new PrintObject(1);
                                     TextoDup.loadTextXML(dev, dataCount);
 
-                                    TextoDup = applyTextPropertiesLoop(TextoDup, prt, 20, dataCount, dataLoop.Rows[i]["NomeProduto"].ToString(), i, false, false);
+                                    TextoDup = ApplyTextPropertiesLoop(TextoDup, prt, 20, dataCount, dataLoop.Rows[i]["NomeProduto"].ToString(), i, false, false);
 
                                     if (!TextoDup.Text.Equals(string.Empty))
                                     {
@@ -736,15 +748,15 @@ namespace LogicPOS.Printing.Utility
                                     }
                                 }
                                 break;
-                            case ThermalPrinter.OptionsToText.Preco_Unidade:
-                                Texto = applyTextPropertiesLoop(Texto, prt, 6, dataCount, dataLoop.Rows[0]["PrecoProduto"].ToString(), 0, true, false);
+                            case OptionsToText.Preco_Unidade:
+                                Texto = ApplyTextPropertiesLoop(Texto, prt, 6, dataCount, dataLoop.Rows[0]["PrecoProduto"].ToString(), 0, true, false);
 
                                 for (int i = 1; i < dataLoop.Rows.Count; i++)
                                 {
                                     PrintObject TextoDup = new PrintObject(1);
                                     TextoDup.loadTextXML(dev, dataCount);
 
-                                    TextoDup = applyTextPropertiesLoop(TextoDup, prt, 6, dataCount, dataLoop.Rows[i]["PrecoProduto"].ToString(), i, true, false);
+                                    TextoDup = ApplyTextPropertiesLoop(TextoDup, prt, 6, dataCount, dataLoop.Rows[i]["PrecoProduto"].ToString(), i, true, false);
 
                                     if (!TextoDup.Text.Equals(string.Empty))
                                     {
@@ -752,15 +764,15 @@ namespace LogicPOS.Printing.Utility
                                     }
                                 }
                                 break;
-                            case ThermalPrinter.OptionsToText.Quantidade:
-                                Texto = applyTextPropertiesLoop(Texto, prt, 6, dataCount, dataLoop.Rows[0]["QuantidadeProduto"].ToString(), 0, true, false);
+                            case OptionsToText.Quantidade:
+                                Texto = ApplyTextPropertiesLoop(Texto, prt, 6, dataCount, dataLoop.Rows[0]["QuantidadeProduto"].ToString(), 0, true, false);
 
                                 for (int i = 1; i < dataLoop.Rows.Count; i++)
                                 {
                                     PrintObject TextoDup = new PrintObject(1);
                                     TextoDup.loadTextXML(dev, dataCount);
 
-                                    TextoDup = applyTextPropertiesLoop(TextoDup, prt, 6, dataCount, dataLoop.Rows[i]["QuantidadeProduto"].ToString(), i, true, false);
+                                    TextoDup = ApplyTextPropertiesLoop(TextoDup, prt, 6, dataCount, dataLoop.Rows[i]["QuantidadeProduto"].ToString(), i, true, false);
 
                                     if (!TextoDup.Text.Equals(string.Empty))
                                     {
@@ -768,67 +780,67 @@ namespace LogicPOS.Printing.Utility
                                     }
                                 }
                                 break;
-                            case ThermalPrinter.OptionsToText.Morada:
-                                Texto = applyTextProperties(Texto, dataStatic.Select("token = 'COMPANY_ADDRESS'"), prt, 48, dataCount);
+                            case OptionsToText.Morada:
+                                Texto = ApplyTextProperties(Texto, dataStatic.Select("token = 'COMPANY_ADDRESS'"), prt, 48, dataCount);
                                 break;
-                            case ThermalPrinter.OptionsToText.Nome_Cliente:
+                            case OptionsToText.Nome_Cliente:
                                 try
                                 {
-                                    Texto = applyTextPropertiesLoop(Texto, prt, 48, dataCount, dataLoop.Rows[0]["NomeCliente"].ToString(), 0, false, true);
+                                    Texto = ApplyTextPropertiesLoop(Texto, prt, 48, dataCount, dataLoop.Rows[0]["NomeCliente"].ToString(), 0, false, true);
                                 }
                                 catch
                                 {
-                                    Texto = applyTextPropertiesLoop(Texto, prt, 48, dataCount, "-", 0, false, true);
+                                    Texto = ApplyTextPropertiesLoop(Texto, prt, 48, dataCount, "-", 0, false, true);
                                 }
                                 //Texto = applyTextProperties(Texto, dataStatic.Select("token = 'NomeCliente'"), prt, 48, dataCount);
                                 break;
-                            case ThermalPrinter.OptionsToText.Nome_Empresa:
-                                Texto = applyTextProperties(Texto, dataStatic.Select("token = 'COMPANY_NAME'"), prt, 48, dataCount);
+                            case OptionsToText.Nome_Empresa:
+                                Texto = ApplyTextProperties(Texto, dataStatic.Select("token = 'COMPANY_NAME'"), prt, 48, dataCount);
                                 break;
-                            case ThermalPrinter.OptionsToText.Numero_Documento:
+                            case OptionsToText.Numero_Documento:
                                 try
                                 {
-                                    Texto = applyTextPropertiesLoop(Texto, prt, 48, dataCount, dataLoop.Rows[0]["NumeroDocumento"].ToString(), 0, false, true);
+                                    Texto = ApplyTextPropertiesLoop(Texto, prt, 48, dataCount, dataLoop.Rows[0]["NumeroDocumento"].ToString(), 0, false, true);
                                 }
                                 catch
                                 {
-                                    Texto = applyTextPropertiesLoop(Texto, prt, 48, dataCount, "-", 0, false, true);
+                                    Texto = ApplyTextPropertiesLoop(Texto, prt, 48, dataCount, "-", 0, false, true);
                                 }
                                 //Texto = applyTextProperties(Texto, dataStatic.Select("token = 'NumeroDocumento'"), prt, 48, dataCount);
                                 break;
-                            case ThermalPrinter.OptionsToText.Telefone:
-                                Texto = applyTextProperties(Texto, dataStatic.Select("token = 'COMPANY_TELEPHONE'"), prt, 48, dataCount);
+                            case OptionsToText.Telefone:
+                                Texto = ApplyTextProperties(Texto, dataStatic.Select("token = 'COMPANY_TELEPHONE'"), prt, 48, dataCount);
                                 break;
-                            case ThermalPrinter.OptionsToText.Tipo_Pagamento:
+                            case OptionsToText.Tipo_Pagamento:
                                 try
                                 {
-                                    Texto = applyTextPropertiesLoop(Texto, prt, 48, dataCount, dataLoop.Rows[0]["TipoPagamento"].ToString(), 0, false, true);
+                                    Texto = ApplyTextPropertiesLoop(Texto, prt, 48, dataCount, dataLoop.Rows[0]["TipoPagamento"].ToString(), 0, false, true);
                                 }
                                 catch
                                 {
-                                    Texto = applyTextPropertiesLoop(Texto, prt, 48, dataCount, "-", 0, false, true);
+                                    Texto = ApplyTextPropertiesLoop(Texto, prt, 48, dataCount, "-", 0, false, true);
                                 }
                                 //Texto = applyTextProperties(Texto, dataStatic.Select("token = 'TipoPagamento'"), prt, 48, dataCount);
                                 break;
-                            case ThermalPrinter.OptionsToText.Total_do_IVA:
+                            case OptionsToText.Total_do_IVA:
                                 try
                                 {
-                                    Texto = applyTextPropertiesLoop(Texto, prt, 6, dataCount, dataLoop.Rows[0]["TotalIVA"].ToString(), 0, false, true);
+                                    Texto = ApplyTextPropertiesLoop(Texto, prt, 6, dataCount, dataLoop.Rows[0]["TotalIVA"].ToString(), 0, false, true);
                                 }
                                 catch
                                 {
-                                    Texto = applyTextPropertiesLoop(Texto, prt, 6, dataCount, "-", 0, false, true);
+                                    Texto = ApplyTextPropertiesLoop(Texto, prt, 6, dataCount, "-", 0, false, true);
                                 }
                                 //Texto = applyTextProperties(Texto, dataStatic.Select("token = 'TotalIVA'"), prt, 6, dataCount);
                                 break;
-                            case ThermalPrinter.OptionsToText.Total_Final:
+                            case OptionsToText.Total_Final:
                                 try
                                 {
-                                    Texto = applyTextPropertiesLoop(Texto, prt, 10, dataCount, dataLoop.Rows[0]["TotalFinal"].ToString(), 0, true, true);
+                                    Texto = ApplyTextPropertiesLoop(Texto, prt, 10, dataCount, dataLoop.Rows[0]["TotalFinal"].ToString(), 0, true, true);
                                 }
                                 catch
                                 {
-                                    Texto = applyTextPropertiesLoop(Texto, prt, 10, dataCount, "-", 0, false, true);
+                                    Texto = ApplyTextPropertiesLoop(Texto, prt, 10, dataCount, "-", 0, false, true);
                                 }
                                 //Texto = applyTextProperties(Texto, dataStatic.Select("token = 'TotalFinal'"), prt, 10, dataCount);
                                 //while (Texto.Text.Length < 10)
@@ -836,14 +848,14 @@ namespace LogicPOS.Printing.Utility
                                 //    Texto.Text = " " + Texto.Text;
                                 //}
                                 break;
-                            case ThermalPrinter.OptionsToText.Total_Quantidade:
+                            case OptionsToText.Total_Quantidade:
                                 try
                                 {
-                                    Texto = applyTextPropertiesLoop(Texto, prt, 10, dataCount, dataLoop.Rows[0]["TotalQuantidade"].ToString(), 0, true, true);
+                                    Texto = ApplyTextPropertiesLoop(Texto, prt, 10, dataCount, dataLoop.Rows[0]["TotalQuantidade"].ToString(), 0, true, true);
                                 }
                                 catch
                                 {
-                                    Texto = applyTextPropertiesLoop(Texto, prt, 10, dataCount, "-", 0, false, true);
+                                    Texto = ApplyTextPropertiesLoop(Texto, prt, 10, dataCount, "-", 0, false, true);
                                 }
                                 //Texto = applyTextProperties(Texto, dataStatic.Select("token = 'TotalQuantidade'"), prt, 10, dataCount);
                                 //while (Texto.Text.Length < 10)
@@ -851,15 +863,15 @@ namespace LogicPOS.Printing.Utility
                                 //    Texto.Text = " " + Texto.Text;
                                 //}
                                 break;
-                            case ThermalPrinter.OptionsToText.Total_Produto:
-                                Texto = applyTextPropertiesLoop(Texto, prt, 7, dataCount, dataLoop.Rows[0]["TotalProdutoComIVA"].ToString(), 0, true, false);
+                            case OptionsToText.Total_Produto:
+                                Texto = ApplyTextPropertiesLoop(Texto, prt, 7, dataCount, dataLoop.Rows[0]["TotalProdutoComIVA"].ToString(), 0, true, false);
 
                                 for (int i = 1; i < dataLoop.Rows.Count; i++)
                                 {
                                     PrintObject TextoDup = new PrintObject(1);
                                     TextoDup.loadTextXML(dev, dataCount);
 
-                                    TextoDup = applyTextPropertiesLoop(TextoDup, prt, 7, dataCount, dataLoop.Rows[i]["TotalProdutoComIVA"].ToString(), i, true, false);
+                                    TextoDup = ApplyTextPropertiesLoop(TextoDup, prt, 7, dataCount, dataLoop.Rows[i]["TotalProdutoComIVA"].ToString(), i, true, false);
 
                                     if (!TextoDup.Text.Equals(string.Empty))
                                     {
@@ -867,25 +879,25 @@ namespace LogicPOS.Printing.Utility
                                     }
                                 }
                                 break;
-                            case ThermalPrinter.OptionsToText.Total_Sem_IVA:
+                            case OptionsToText.Total_Sem_IVA:
                                 try
                                 {
-                                    Texto = applyTextPropertiesLoop(Texto, prt, 12, dataCount, dataLoop.Rows[0]["TotalFinalSemIva"].ToString(), 0, false, true);
+                                    Texto = ApplyTextPropertiesLoop(Texto, prt, 12, dataCount, dataLoop.Rows[0]["TotalFinalSemIva"].ToString(), 0, false, true);
                                 }
                                 catch
                                 {
-                                    Texto = applyTextPropertiesLoop(Texto, prt, 12, dataCount, "-", 0, false, true);
+                                    Texto = ApplyTextPropertiesLoop(Texto, prt, 12, dataCount, "-", 0, false, true);
                                 }
                                 //Texto = applyTextProperties(Texto, dataStatic.Select("token = 'TotalFinalSemIva'"), prt, 12, dataCount);
                                 break;
-                            case ThermalPrinter.OptionsToText.Taxa_IVA:
+                            case OptionsToText.Taxa_IVA:
                                 try
                                 {
-                                    Texto = applyTextPropertiesLoop(Texto, prt, 13, dataCount, dataLoop.Rows[0]["IVATotalProdutos"].ToString(), 0, true, true);
+                                    Texto = ApplyTextPropertiesLoop(Texto, prt, 13, dataCount, dataLoop.Rows[0]["IVATotalProdutos"].ToString(), 0, true, true);
                                 }
                                 catch
                                 {
-                                    Texto = applyTextPropertiesLoop(Texto, prt, 13, dataCount, "-", 0, false, true);
+                                    Texto = ApplyTextPropertiesLoop(Texto, prt, 13, dataCount, "-", 0, false, true);
                                 }
                                 //Texto = applyTextProperties(Texto, dataStatic.Select("token = 'IVATotalProdutos'"), prt, 13, dataCount);
                                 //while (Texto.Text.Length < 4)
@@ -893,40 +905,40 @@ namespace LogicPOS.Printing.Utility
                                 //    Texto.Text = " " + Texto.Text;
                                 //}
                                 break;
-                            case ThermalPrinter.OptionsToText.Num_Mesa:
+                            case OptionsToText.Num_Mesa:
                                 try
                                 {
-                                    Texto = applyTextPropertiesLoop(Texto, prt, 13, dataCount, dataLoop.Rows[0]["NumMesa"].ToString(), 0, false, true);
+                                    Texto = ApplyTextPropertiesLoop(Texto, prt, 13, dataCount, dataLoop.Rows[0]["NumMesa"].ToString(), 0, false, true);
                                 }
                                 catch
                                 {
-                                    Texto = applyTextPropertiesLoop(Texto, prt, 13, dataCount, "-", 0, false, true);
+                                    Texto = ApplyTextPropertiesLoop(Texto, prt, 13, dataCount, "-", 0, false, true);
                                 }
                                 //Texto = applyTextProperties(Texto, dataStatic.Select("token = 'NumMesa'"), prt, 13, dataCount);
                                 break;
-                            case ThermalPrinter.OptionsToText.Num_Func:
+                            case OptionsToText.Num_Func:
                                 try
                                 {
-                                    Texto = applyTextPropertiesLoop(Texto, prt, 13, dataCount, dataLoop.Rows[0]["NumFunc"].ToString(), 0, false, true);
+                                    Texto = ApplyTextPropertiesLoop(Texto, prt, 13, dataCount, dataLoop.Rows[0]["NumFunc"].ToString(), 0, false, true);
                                 }
                                 catch
                                 {
-                                    Texto = applyTextPropertiesLoop(Texto, prt, 13, dataCount, "-", 0, false, true);
+                                    Texto = ApplyTextPropertiesLoop(Texto, prt, 13, dataCount, "-", 0, false, true);
                                 }
                                 //Texto = applyTextProperties(Texto, dataStatic.Select("token = 'NumFunc'"), prt, 13, dataCount);
                                 break;
-                            case ThermalPrinter.OptionsToText.Nome_Func:
+                            case OptionsToText.Nome_Func:
                                 try
                                 {
-                                    Texto = applyTextPropertiesLoop(Texto, prt, 13, dataCount, dataLoop.Rows[0]["NomeFunc"].ToString(), 0, false, true);
+                                    Texto = ApplyTextPropertiesLoop(Texto, prt, 13, dataCount, dataLoop.Rows[0]["NomeFunc"].ToString(), 0, false, true);
                                 }
                                 catch
                                 {
-                                    Texto = applyTextPropertiesLoop(Texto, prt, 13, dataCount, "-", 0, false, true);
+                                    Texto = ApplyTextPropertiesLoop(Texto, prt, 13, dataCount, "-", 0, false, true);
                                 }
                                 break;
                             //Recibo/Payments
-                            case ThermalPrinter.OptionsToText.Total_Extenso:
+                            case OptionsToText.Total_Extenso:
                                 try
                                 {
                                     //Partir linha
@@ -949,32 +961,32 @@ namespace LogicPOS.Printing.Utility
                                         totalExtenso = totalExtensoSource;
                                     }
 
-                                    Texto = applyTextPropertiesLoop(Texto, prt, 300, dataCount, totalExtenso, 0, false, true);
+                                    Texto = ApplyTextPropertiesLoop(Texto, prt, 300, dataCount, totalExtenso, 0, false, true);
                                 }
                                 catch
                                 {
-                                    Texto = applyTextPropertiesLoop(Texto, prt, 300, dataCount, "-", 0, false, true);
+                                    Texto = ApplyTextPropertiesLoop(Texto, prt, 300, dataCount, "-", 0, false, true);
                                 }
                                 break;
-                            case ThermalPrinter.OptionsToText.Numero_Documento_Recibo:
+                            case OptionsToText.Numero_Documento_Recibo:
                                 try
                                 {
-                                    Texto = applyTextPropertiesLoop(Texto, prt, 48, dataCount, dataLoop.Rows[0]["NumeroDocumentoRecibo"].ToString(), 0, false, true);
+                                    Texto = ApplyTextPropertiesLoop(Texto, prt, 48, dataCount, dataLoop.Rows[0]["NumeroDocumentoRecibo"].ToString(), 0, false, true);
                                 }
                                 catch
                                 {
-                                    Texto = applyTextPropertiesLoop(Texto, prt, 48, dataCount, "-", 0, false, true);
+                                    Texto = ApplyTextPropertiesLoop(Texto, prt, 48, dataCount, "-", 0, false, true);
                                 }
                                 break;
-                            case ThermalPrinter.OptionsToText.Numero_Documento_Fiscal:
-                                Texto = applyTextPropertiesLoop(Texto, prt, 25, dataCount, dataLoop.Rows[0]["NumeroDocumentoFiscal"].ToString(), 0, false, false);
+                            case OptionsToText.Numero_Documento_Fiscal:
+                                Texto = ApplyTextPropertiesLoop(Texto, prt, 25, dataCount, dataLoop.Rows[0]["NumeroDocumentoFiscal"].ToString(), 0, false, false);
 
                                 for (int i = 1; i < dataLoop.Rows.Count; i++)
                                 {
                                     PrintObject TextoDup = new PrintObject(1);
                                     TextoDup.loadTextXML(dev, dataCount);
 
-                                    TextoDup = applyTextPropertiesLoop(TextoDup, prt, 25, dataCount, dataLoop.Rows[i]["NumeroDocumentoFiscal"].ToString(), i, false, false);
+                                    TextoDup = ApplyTextPropertiesLoop(TextoDup, prt, 25, dataCount, dataLoop.Rows[i]["NumeroDocumentoFiscal"].ToString(), i, false, false);
 
                                     if (!TextoDup.Text.Equals(string.Empty))
                                     {
@@ -982,15 +994,15 @@ namespace LogicPOS.Printing.Utility
                                     }
                                 }
                                 break;
-                            case ThermalPrinter.OptionsToText.Total_Documento_Fiscal:
-                                Texto = applyTextPropertiesLoop(Texto, prt, 10, dataCount, dataLoop.Rows[0]["TotalDocumentoFiscal"].ToString(), 0, true, false);
+                            case OptionsToText.Total_Documento_Fiscal:
+                                Texto = ApplyTextPropertiesLoop(Texto, prt, 10, dataCount, dataLoop.Rows[0]["TotalDocumentoFiscal"].ToString(), 0, true, false);
 
                                 for (int i = 1; i < dataLoop.Rows.Count; i++)
                                 {
                                     PrintObject TextoDup = new PrintObject(1);
                                     TextoDup.loadTextXML(dev, dataCount);
 
-                                    TextoDup = applyTextPropertiesLoop(TextoDup, prt, 10, dataCount, dataLoop.Rows[i]["TotalDocumentoFiscal"].ToString(), i, true, false);
+                                    TextoDup = ApplyTextPropertiesLoop(TextoDup, prt, 10, dataCount, dataLoop.Rows[i]["TotalDocumentoFiscal"].ToString(), i, true, false);
 
                                     if (!TextoDup.Text.Equals(string.Empty))
                                     {
@@ -998,15 +1010,15 @@ namespace LogicPOS.Printing.Utility
                                     }
                                 }
                                 break;
-                            case ThermalPrinter.OptionsToText.Total_Liquidado:
-                                Texto = applyTextPropertiesLoop(Texto, prt, 10, dataCount, Convert.ToDecimal(dataLoop.Rows[0]["TotalLiquidado"]).ToString("F"), 0, true, false);
+                            case OptionsToText.Total_Liquidado:
+                                Texto = ApplyTextPropertiesLoop(Texto, prt, 10, dataCount, Convert.ToDecimal(dataLoop.Rows[0]["TotalLiquidado"]).ToString("F"), 0, true, false);
 
                                 for (int i = 1; i < dataLoop.Rows.Count; i++)
                                 {
                                     PrintObject TextoDup = new PrintObject(1);
                                     TextoDup.loadTextXML(dev, dataCount);
 
-                                    TextoDup = applyTextPropertiesLoop(TextoDup, prt, 10, dataCount, Convert.ToDecimal(dataLoop.Rows[i]["TotalLiquidado"]).ToString("F"), i, true, false);
+                                    TextoDup = ApplyTextPropertiesLoop(TextoDup, prt, 10, dataCount, Convert.ToDecimal(dataLoop.Rows[i]["TotalLiquidado"]).ToString("F"), i, true, false);
 
                                     if (!TextoDup.Text.Equals(string.Empty))
                                     {
@@ -1014,8 +1026,8 @@ namespace LogicPOS.Printing.Utility
                                     }
                                 }
                                 break;
-                            case ThermalPrinter.OptionsToText.Total_Divida:
-                                Texto = applyTextPropertiesLoop(Texto, prt, 10, dataCount, Convert.ToDecimal(dataLoop.Rows[0]["TotalDivida"]).ToString("F"), 0, true, false);
+                            case OptionsToText.Total_Divida:
+                                Texto = ApplyTextPropertiesLoop(Texto, prt, 10, dataCount, Convert.ToDecimal(dataLoop.Rows[0]["TotalDivida"]).ToString("F"), 0, true, false);
 
                                 for (int i = 1; i < dataLoop.Rows.Count; i++)
                                 {
@@ -1031,7 +1043,7 @@ namespace LogicPOS.Printing.Utility
                                         totalDivida = (TotalFinal - TotalLiquidado).ToString("F");
                                     };
 
-                                    TextoDup = applyTextPropertiesLoop(TextoDup, prt, 10, dataCount, totalDivida, i, true, false);
+                                    TextoDup = ApplyTextPropertiesLoop(TextoDup, prt, 10, dataCount, totalDivida, i, true, false);
 
                                     if (!TextoDup.Text.Equals(string.Empty))
                                     {
@@ -1040,83 +1052,83 @@ namespace LogicPOS.Printing.Utility
                                 }
                                 break;
                             //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-                            case ThermalPrinter.OptionsToText.Titulo:
-                                Texto = applyTextProperties(Texto, dataStatic.Select("token = 'TICKET_TITLE'"), prt, 48, dataCount);
+                            case OptionsToText.Titulo:
+                                Texto = ApplyTextProperties(Texto, dataStatic.Select("token = 'TICKET_TITLE'"), prt, 48, dataCount);
                                 break;
-                            case ThermalPrinter.OptionsToText.Total_Dinheiro_Caixa:
-                                Texto = applyTextProperties(Texto, dataStatic.Select("token = 'CASHDRAWER_MOVEMENT_AMOUNT'"), prt, 48, dataCount);
+                            case OptionsToText.Total_Dinheiro_Caixa:
+                                Texto = ApplyTextProperties(Texto, dataStatic.Select("token = 'CASHDRAWER_MOVEMENT_AMOUNT'"), prt, 48, dataCount);
                                 break;
-                            case ThermalPrinter.OptionsToText.Email:
-                                Texto = applyTextProperties(Texto, dataStatic.Select("token = 'COMPANY_EMAIL'"), prt, 48, dataCount);
+                            case OptionsToText.Email:
+                                Texto = ApplyTextProperties(Texto, dataStatic.Select("token = 'COMPANY_EMAIL'"), prt, 48, dataCount);
                                 break;
-                            case ThermalPrinter.OptionsToText.Data_Abertura:
-                                Texto = applyTextProperties(Texto, dataStatic.Select("token = 'SESSION_OPEN_DATETIME'"), prt, 20, dataCount);
+                            case OptionsToText.Data_Abertura:
+                                Texto = ApplyTextProperties(Texto, dataStatic.Select("token = 'SESSION_OPEN_DATETIME'"), prt, 20, dataCount);
                                 break;
-                            case ThermalPrinter.OptionsToText.Data_Fecho:
-                                Texto = applyTextProperties(Texto, dataStatic.Select("token = 'SESSION_CLOSE_DATETIME'"), prt, 20, dataCount);
+                            case OptionsToText.Data_Fecho:
+                                Texto = ApplyTextProperties(Texto, dataStatic.Select("token = 'SESSION_CLOSE_DATETIME'"), prt, 20, dataCount);
                                 break;
-                            case ThermalPrinter.OptionsToText.Total_Abertura:
-                                Texto = applyTextProperties(Texto, dataStatic.Select("token = 'SESSION_OPEN_TOTAL_CASHDRAWER'"), prt, 20, dataCount);
+                            case OptionsToText.Total_Abertura:
+                                Texto = ApplyTextProperties(Texto, dataStatic.Select("token = 'SESSION_OPEN_TOTAL_CASHDRAWER'"), prt, 20, dataCount);
                                 break;
-                            case ThermalPrinter.OptionsToText.Total_Fecho:
-                                Texto = applyTextProperties(Texto, dataStatic.Select("token = 'SESSION_CLOSE_TOTAL_CASHDRAWER'"), prt, 20, dataCount);
+                            case OptionsToText.Total_Fecho:
+                                Texto = ApplyTextProperties(Texto, dataStatic.Select("token = 'SESSION_CLOSE_TOTAL_CASHDRAWER'"), prt, 20, dataCount);
                                 break;
-                            case ThermalPrinter.OptionsToText.Total_Entradas:
-                                Texto = applyTextProperties(Texto, dataStatic.Select("token = 'SESSION_TOTAL_MONEY_IN'"), prt, 20, dataCount);
+                            case OptionsToText.Total_Entradas:
+                                Texto = ApplyTextProperties(Texto, dataStatic.Select("token = 'SESSION_TOTAL_MONEY_IN'"), prt, 20, dataCount);
                                 break;
-                            case ThermalPrinter.OptionsToText.Total_Saidas:
-                                Texto = applyTextProperties(Texto, dataStatic.Select("token = 'SESSION_TOTAL_MONEY_OUT'"), prt, 20, dataCount);
+                            case OptionsToText.Total_Saidas:
+                                Texto = ApplyTextProperties(Texto, dataStatic.Select("token = 'SESSION_TOTAL_MONEY_OUT'"), prt, 20, dataCount);
                                 break;
-                            case ThermalPrinter.OptionsToText.Utilizador_Autenticado:
-                                Texto = applyTextProperties(Texto, dataStatic.Select("token = 'TERMINAL_USERNAME'"), prt, 12, dataCount);
+                            case OptionsToText.Utilizador_Autenticado:
+                                Texto = ApplyTextProperties(Texto, dataStatic.Select("token = 'TERMINAL_USERNAME'"), prt, 12, dataCount);
                                 break;
-                            case ThermalPrinter.OptionsToText.Terminal_Autenticado:
-                                Texto = applyTextProperties(Texto, dataStatic.Select("token = 'TERMINAL_NAME'"), prt, 12, dataCount);
+                            case OptionsToText.Terminal_Autenticado:
+                                Texto = ApplyTextProperties(Texto, dataStatic.Select("token = 'TERMINAL_NAME'"), prt, 12, dataCount);
                                 break;
-                            case ThermalPrinter.OptionsToText.Numerario:
-                                Texto = applyTextProperties(Texto, dataStatic.Select("token = 'SESSION_MOVEMENT_MONEY_IN_OUT'"), prt, 48, dataCount);
+                            case OptionsToText.Numerario:
+                                Texto = ApplyTextProperties(Texto, dataStatic.Select("token = 'SESSION_MOVEMENT_MONEY_IN_OUT'"), prt, 48, dataCount);
                                 break;
-                            case ThermalPrinter.OptionsToText.TextoLivre1:
-                                Texto = applyTextProperties(Texto, dataStatic.Select("token = 'TICKET_FREE_TEXT1'"), prt, 48, dataCount);
+                            case OptionsToText.TextoLivre1:
+                                Texto = ApplyTextProperties(Texto, dataStatic.Select("token = 'TICKET_FREE_TEXT1'"), prt, 48, dataCount);
                                 break;
-                            case ThermalPrinter.OptionsToText.TextoLivre2:
-                                Texto = applyTextProperties(Texto, dataStatic.Select("token = 'TICKET_FREE_TEXT2'"), prt, 48, dataCount);
+                            case OptionsToText.TextoLivre2:
+                                Texto = ApplyTextProperties(Texto, dataStatic.Select("token = 'TICKET_FREE_TEXT2'"), prt, 48, dataCount);
                                 break;
-                            case ThermalPrinter.OptionsToText.TextoLivre3:
-                                Texto = applyTextProperties(Texto, dataStatic.Select("token = 'TICKET_FREE_TEXT3'"), prt, 48, dataCount);
+                            case OptionsToText.TextoLivre3:
+                                Texto = ApplyTextProperties(Texto, dataStatic.Select("token = 'TICKET_FREE_TEXT3'"), prt, 48, dataCount);
                                 break;
-                            case ThermalPrinter.OptionsToText.Movimento_Descricao:
-                                Texto = applyTextProperties(Texto, dataStatic.Select("token = 'CASHDRAWER_MOVEMENT_DESCRIPTION'"), prt, 48, dataCount);
+                            case OptionsToText.Movimento_Descricao:
+                                Texto = ApplyTextProperties(Texto, dataStatic.Select("token = 'CASHDRAWER_MOVEMENT_DESCRIPTION'"), prt, 48, dataCount);
                                 break;
-                            case ThermalPrinter.OptionsToText.SubTitulo:
-                                Texto = applyTextProperties(Texto, dataStatic.Select("token = 'TICKET_SUB_TITLE'"), prt, 48, dataCount);
+                            case OptionsToText.SubTitulo:
+                                Texto = ApplyTextProperties(Texto, dataStatic.Select("token = 'TICKET_SUB_TITLE'"), prt, 48, dataCount);
                                 break;
-                            case ThermalPrinter.OptionsToText.Footer_Line1:
-                                Texto = applyTextProperties(Texto, dataStatic.Select("token = 'FOOTER_LINE1'"), prt, 48, dataCount);
+                            case OptionsToText.Footer_Line1:
+                                Texto = ApplyTextProperties(Texto, dataStatic.Select("token = 'FOOTER_LINE1'"), prt, 48, dataCount);
                                 break;
-                            case ThermalPrinter.OptionsToText.Footer_Line2:
-                                Texto = applyTextProperties(Texto, dataStatic.Select("token = 'FOOTER_LINE2'"), prt, 48, dataCount);
+                            case OptionsToText.Footer_Line2:
+                                Texto = ApplyTextProperties(Texto, dataStatic.Select("token = 'FOOTER_LINE2'"), prt, 48, dataCount);
                                 break;
-                            case ThermalPrinter.OptionsToText.Footer_Line3:
-                                Texto = applyTextProperties(Texto, dataStatic.Select("token = 'FOOTER_LINE3'"), prt, 48, dataCount);
+                            case OptionsToText.Footer_Line3:
+                                Texto = ApplyTextProperties(Texto, dataStatic.Select("token = 'FOOTER_LINE3'"), prt, 48, dataCount);
                                 break;
-                            case ThermalPrinter.OptionsToText.Footer_Line4:
-                                Texto = applyTextProperties(Texto, dataStatic.Select("token = 'FOOTER_LINE4'"), prt, 48, dataCount);
+                            case OptionsToText.Footer_Line4:
+                                Texto = ApplyTextProperties(Texto, dataStatic.Select("token = 'FOOTER_LINE4'"), prt, 48, dataCount);
                                 break;
-                            case ThermalPrinter.OptionsToText.Footer_Line5:
-                                Texto = applyTextProperties(Texto, dataStatic.Select("token = 'FOOTER_LINE5'"), prt, 48, dataCount);
+                            case OptionsToText.Footer_Line5:
+                                Texto = ApplyTextProperties(Texto, dataStatic.Select("token = 'FOOTER_LINE5'"), prt, 48, dataCount);
                                 break;
-                            case ThermalPrinter.OptionsToText.Footer_Line6:
-                                Texto = applyTextProperties(Texto, dataStatic.Select("token = 'FOOTER_LINE6'"), prt, 48, dataCount);
+                            case OptionsToText.Footer_Line6:
+                                Texto = ApplyTextProperties(Texto, dataStatic.Select("token = 'FOOTER_LINE6'"), prt, 48, dataCount);
                                 break;
-                            case ThermalPrinter.OptionsToText.Footer_Line7:
-                                Texto = applyTextProperties(Texto, dataStatic.Select("token = 'FOOTER_LINE7'"), prt, 48, dataCount);
+                            case OptionsToText.Footer_Line7:
+                                Texto = ApplyTextProperties(Texto, dataStatic.Select("token = 'FOOTER_LINE7'"), prt, 48, dataCount);
                                 break;
-                            case ThermalPrinter.OptionsToText.Footer_Line8:
-                                Texto = applyTextProperties(Texto, dataStatic.Select("token = 'FOOTER_LINE8'"), prt, 48, dataCount);
+                            case OptionsToText.Footer_Line8:
+                                Texto = ApplyTextProperties(Texto, dataStatic.Select("token = 'FOOTER_LINE8'"), prt, 48, dataCount);
                                 break;
-                            case ThermalPrinter.OptionsToText.Titulo_Copia:
-                                Texto = applyTextProperties(Texto, dataStatic.Select("token = 'TICKET_COPY_TITLE'"), prt, 48, dataCount);
+                            case OptionsToText.Titulo_Copia:
+                                Texto = ApplyTextProperties(Texto, dataStatic.Select("token = 'TICKET_COPY_TITLE'"), prt, 48, dataCount);
                                 break;
                             default:
                                 if (Texto.PosY > prt.FirstProductPosition)
@@ -1138,31 +1150,60 @@ namespace LogicPOS.Printing.Utility
             return printObjects;
         }
 
-        //Get Printer Token 
-        public static string GetPrinterToken(string pPrinterToken)
+
+        public static string GetPrinterToken(string printerToken)
         {
-            string result = pPrinterToken;
-
-            //Check if Developer Enabled PDF Printer
-            if (PrintingSettings.PrintPDFEnabled)
-            {
-                result = "REPORT_EXPORT_PDF";
-            }
-
-            return result;
+            return PrintingSettings.PrintPDFEnabled ? "REPORT_EXPORT_PDF" : printerToken;
         }
 
-        private static bool SystemPrintInsert(fin_documentfinancemaster pDocumentFinanceMaster, string pPrinterDesignation, int pPrintCopies, List<int> pCopyNames, bool pSecondPrint, string pPrintMotive)
+        private static bool SystemPrintInsert(
+            fin_documentfinancemaster pDocumentFinanceMaster, 
+            string pPrinterDesignation, 
+            int pPrintCopies, 
+            List<int> pCopyNames, 
+            bool pSecondPrint, 
+            string pPrintMotive)
         {
-            return SystemPrintInsert(pDocumentFinanceMaster, null, pPrinterDesignation, pPrintCopies, pCopyNames, pSecondPrint, pPrintMotive, XPOSettings.LoggedUser, TerminalSettings.LoggedTerminal);
+            return SystemPrintInsert(
+                pDocumentFinanceMaster, 
+                null, 
+                pPrinterDesignation, 
+                pPrintCopies, 
+                pCopyNames, 
+                pSecondPrint, 
+                pPrintMotive, 
+                XPOSettings.LoggedUser, 
+                TerminalSettings.LoggedTerminal);
         }
 
-        private static bool SystemPrintInsert(fin_documentfinancepayment pDocumentFinancePayment, string pPrinterDesignation, int pPrintCopies, List<int> pCopyNames)
+        private static bool SystemPrintInsert(
+            fin_documentfinancepayment pDocumentFinancePayment, 
+            string pPrinterDesignation, 
+            int pPrintCopies, 
+            List<int> pCopyNames)
         {
-            return SystemPrintInsert(null, pDocumentFinancePayment, pPrinterDesignation, pPrintCopies, pCopyNames, false, string.Empty, XPOSettings.LoggedUser, TerminalSettings.LoggedTerminal);
+            return SystemPrintInsert(
+                null, 
+                pDocumentFinancePayment, 
+                pPrinterDesignation, 
+                pPrintCopies, 
+                pCopyNames, 
+                false, 
+                string.Empty, 
+                XPOSettings.LoggedUser, 
+                TerminalSettings.LoggedTerminal);
         }
 
-        private static bool SystemPrintInsert(fin_documentfinancemaster pDocumentFinanceMaster, fin_documentfinancepayment pDocumentFinancePayment, string pPrinterDesignation, int pPrintCopies, List<int> pCopyNames, bool pSecondPrint, string pPrintMotive, sys_userdetail pUserDetail, pos_configurationplaceterminal pConfigurationPlaceTerminal)
+        private static bool SystemPrintInsert(
+            fin_documentfinancemaster financeMaster, 
+            fin_documentfinancepayment financePayment, 
+            string printerDesignation, 
+            int printCopies, 
+            List<int> copyNames, 
+            bool isSecondPrint, 
+            string printMotive, 
+            sys_userdetail pUserDetail, 
+            pos_configurationplaceterminal pConfigurationPlaceTerminal)
         {
             bool result = false;
 
@@ -1175,36 +1216,36 @@ namespace LogicPOS.Printing.Utility
                 pos_configurationplaceterminal configurationPlaceTerminal = (pos_configurationplaceterminal)XPOHelper.GetXPGuidObject(uowSession, typeof(pos_configurationplaceterminal), pConfigurationPlaceTerminal.Oid);
 
                 //Convert CopyNames List to Comma Delimited String
-                string copyNamesCommaDelimited = CustomReport.CopyNamesCommaDelimited(pCopyNames);
+                string copyNamesCommaDelimited = CustomReport.CopyNamesCommaDelimited(copyNames);
 
                 //SystemPrint
                 sys_systemprint systemPrint = new sys_systemprint(uowSession)
                 {
                     Date = XPOHelper.CurrentDateTimeAtomic(),
                     Designation = designation,
-                    PrintCopies = pPrintCopies,
+                    PrintCopies = printCopies,
                     CopyNames = copyNamesCommaDelimited,
-                    SecondPrint = pSecondPrint,
+                    SecondPrint = isSecondPrint,
                     UserDetail = userDetail,
                     Terminal = configurationPlaceTerminal
                 };
-                if (pPrintMotive != string.Empty) systemPrint.PrintMotive = pPrintMotive;
+                if (printMotive != string.Empty) systemPrint.PrintMotive = printMotive;
 
                 //Mode: DocumentFinanceMaster
-                if (pDocumentFinanceMaster != null)
+                if (financeMaster != null)
                 {
-                    fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)XPOHelper.GetXPGuidObject(uowSession, typeof(fin_documentfinancemaster), pDocumentFinanceMaster.Oid);
+                    fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)XPOHelper.GetXPGuidObject(uowSession, typeof(fin_documentfinancemaster), financeMaster.Oid);
                     systemPrint.DocumentMaster = documentFinanceMaster;
-                    designation = string.Format("{0} {1} : {2}", CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_printed"), documentFinanceMaster.DocumentType.Designation, documentFinanceMaster.DocumentNumber);
+                    designation = string.Format("{0} {1} : {2}", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_printed"), documentFinanceMaster.DocumentType.Designation, documentFinanceMaster.DocumentNumber);
                     //Update DocumentFinanceMaster
                     if (!documentFinanceMaster.Printed) documentFinanceMaster.Printed = true;
                 }
                 //Mode: DocumentFinancePayment
-                if (pDocumentFinancePayment != null)
+                if (financePayment != null)
                 {
-                    fin_documentfinancepayment documentFinancePayment = (fin_documentfinancepayment)XPOHelper.GetXPGuidObject(uowSession, typeof(fin_documentfinancepayment), pDocumentFinancePayment.Oid);
+                    fin_documentfinancepayment documentFinancePayment = (fin_documentfinancepayment)XPOHelper.GetXPGuidObject(uowSession, typeof(fin_documentfinancepayment), financePayment.Oid);
                     systemPrint.DocumentPayment = documentFinancePayment;
-                    designation = string.Format("{0} {1} : {2}", CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_printed"), documentFinancePayment.DocumentType.Designation, documentFinancePayment.PaymentRefNo);
+                    designation = string.Format("{0} {1} : {2}", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_printed"), documentFinancePayment.DocumentType.Designation, documentFinancePayment.PaymentRefNo);
                 }
                 systemPrint.Designation = designation;
 
@@ -1302,15 +1343,15 @@ namespace LogicPOS.Printing.Utility
 
             //Finish Payment with Print Job + Open Drawer (If Not TableConsult)
             fin_documentfinanceyearserieterminal xDocumentFinanceYearSerieTerminal = DocumentProcessingSeriesUtils.GetDocumentFinanceYearSerieTerminal(pSession, pDocumentFinanceMaster.DocumentType.Oid);
-            
-            var printer = TerminalSettings.ThermalPrinter.GetLoggedTerminalPrinterDto();
+
+            var printer = LoggedTerminalSettings.GetPrinterDto();
 
             PrintFinanceDocument(printer, pDocumentFinanceMaster, pCopyNames, pSecondCopy, pMotive);
 
             //Open Door if Has Valid Payment
             if (pDocumentFinanceMaster.PaymentMethod != null)
             {
-                OpenDoor(TerminalSettings.LoggedTerminal.ThermalPrinter);
+                OpenDoor();
             }
             result = true;
 
@@ -1383,7 +1424,7 @@ namespace LogicPOS.Printing.Utility
                         thermalPrinterInternalDocumentWorkSession.Print();
                         //CurrentAcount
                         //Use Config to print this
-                        if (Convert.ToBoolean(LogicPOS.Settings.GeneralSettings.PreferenceParameters["USE_CC_DAILY_TICKET"]))
+                        if (Convert.ToBoolean(GeneralSettings.PreferenceParameters["USE_CC_DAILY_TICKET"]))
                         {
                             thermalPrinterInternalDocumentWorkSession = new ThermalPrinterInternalDocumentWorkSession(printer, pWorkSessionPeriod, SplitCurrentAccountMode.CurrentAcount);
                             thermalPrinterInternalDocumentWorkSession.Print();
@@ -1400,31 +1441,31 @@ namespace LogicPOS.Printing.Utility
             return result;
         }
 
-        public static bool PrintArticleRequest(fin_documentorderticket orderTicket)
+        public static bool PrintArticleRequest(PrintOrderTicketDto orderTicketDto)
         {
             bool result;
 
-            List<PrinterDto> artilcesPrinters = new List<PrinterDto>();
+            List<PrinterDto> articlesPrinters = new List<PrinterDto>();
 
-            foreach (fin_documentorderdetail item in orderTicket.OrderDetail)
+            foreach (var orderDetailDto in orderTicketDto.OrderDetails)
             {
-                if (item.Article.Printer != null && item.Article.Printer.PrinterType.ThermalPrinter)
+                if (orderDetailDto.ArticlePrinter.Id != Guid.Empty && orderDetailDto.ArticlePrinter.IsThermal)
                 {
-                    if(artilcesPrinters.Any(p => p.Id == item.Article.Printer.Oid))
+                    if(articlesPrinters.Any(p => p.Id == orderDetailDto.ArticlePrinter.Id))
                     {
                         continue;
                     }
-                    var printerDto = MappingUtils.GetPrinterDto(item.Article.Printer);
-                    artilcesPrinters.Add(printerDto);
+
+                    articlesPrinters.Add(orderDetailDto.ArticlePrinter);
                 }
             }
 
             //Print Tickets for Article Printers
-            if (artilcesPrinters.Count > 0)
+            if (articlesPrinters.Count > 0)
             {
-                foreach (var item in artilcesPrinters)
+                foreach (var item in articlesPrinters)
                 {
-                    ThermalPrinterInternalDocumentOrderRequest thermalPrinterInternalDocumentOrderRequest = new ThermalPrinterInternalDocumentOrderRequest(item, orderTicket, true);
+                    ThermalPrinterInternalDocumentOrderRequest thermalPrinterInternalDocumentOrderRequest = new ThermalPrinterInternalDocumentOrderRequest(item, orderTicketDto, true);
                     thermalPrinterInternalDocumentOrderRequest.Print();
                 }
             }
@@ -1468,23 +1509,24 @@ namespace LogicPOS.Printing.Utility
             return result;
         }
 
-        public static bool OpenDoor(sys_configurationprinters pPrinter)
+        public static bool OpenDoor()
         {
             bool result = false;
+
             if (TerminalSettings.HasLoggedTerminal)
             {
-                bool hasPermission = GeneralSettings.HasPermissionTo("HARDWARE_DRAWER_OPEN");
-                int m = TerminalSettings.LoggedTerminal.ThermalPrinter.ThermalOpenDrawerValueM;
-                int t1 = TerminalSettings.LoggedTerminal.ThermalPrinter.ThermalOpenDrawerValueT1;
-                int t2 = TerminalSettings.LoggedTerminal.ThermalPrinter.ThermalOpenDrawerValueT2;
+                bool hasPermission = GeneralSettings.LoggedUserHasPermissionTo("HARDWARE_DRAWER_OPEN");
+                ThermalPrinterOpenDrawerValues openDrawerValues = LoggedTerminalSettings.GetThermalPrinterOpenDrawerValues();
+
                 PrintObject printObjectSINOCAN = new PrintObject(0);
-                if (TerminalSettings.HasLoggedTerminal && hasPermission)
+
+                if (hasPermission)
                 {
                     switch (TerminalSettings.LoggedTerminal.ThermalPrinter.PrinterType.Token)
                     {
                         //Impressora SINOCAN em ambiente Windows
                         case "THERMAL_PRINTER_WINDOWS":
-                            printObjectSINOCAN.OpenDoor(TerminalSettings.LoggedTerminal.ThermalPrinter.PrinterType.Token, TerminalSettings.LoggedTerminal.ThermalPrinter.Designation, m, t1, t2);
+                            printObjectSINOCAN.OpenDoor(TerminalSettings.LoggedTerminal.ThermalPrinter.PrinterType.Token, TerminalSettings.LoggedTerminal.ThermalPrinter.Designation, openDrawerValues);
                             break;
                         //Impressora SINOCAN em ambiente Linux
                         case "THERMAL_PRINTER_SOCKET":
@@ -1494,9 +1536,9 @@ namespace LogicPOS.Printing.Utility
                             //int t2 = Convert.ToInt32(LogicPOS.Settings.GeneralSettings.Settings["DoorValueT2"]);
                             // Open Drawer
                             //TK016249 - Impressoras - Diferenciação entre Tipos
-                            printObjectSINOCAN.OpenDoor(TerminalSettings.LoggedTerminal.ThermalPrinter.PrinterType.Token, TerminalSettings.LoggedTerminal.ThermalPrinter.NetworkName, m, t1, t2);
+                            printObjectSINOCAN.OpenDoor(TerminalSettings.LoggedTerminal.ThermalPrinter.PrinterType.Token, TerminalSettings.LoggedTerminal.ThermalPrinter.NetworkName, openDrawerValues);
                             //Audit
-                            XPOHelper.Audit("CASHDRAWER_OPEN", CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_cashdrawer_open"));
+                            XPOHelper.Audit("CASHDRAWER_OPEN", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_cashdrawer_open"));
 
                             break;
                     }

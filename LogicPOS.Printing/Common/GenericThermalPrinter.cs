@@ -1,5 +1,4 @@
-﻿using logicpos.datalayer.DataLayer.Xpo;
-using LogicPOS.Data.XPO.Settings;
+﻿using LogicPOS.Data.XPO.Settings;
 using LogicPOS.DTOs.Printing;
 using LogicPOS.Printing.Enums;
 using LogicPOS.Settings;
@@ -100,7 +99,7 @@ namespace LogicPOS.Printing.Common
         }
 
         //Override base method
-        public new void WriteLine(string pLine, ThermalPrinter.PrintingStyle pPrintingStyle)
+        public new void WriteLine(string pLine, PrintingStyle pPrintingStyle)
         {
             if (!string.IsNullOrEmpty(pLine))
             {

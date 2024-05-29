@@ -1217,8 +1217,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     if (_buttonKeyIncrease != null && !_buttonKeyIncrease.Sensitive) _buttonKeyIncrease.Sensitive = true;
                     if (_buttonKeyDecrease != null && !_buttonKeyDecrease.Sensitive) _buttonKeyDecrease.Sensitive = true;
                     //Only Enabled in TicketListMode.Ticket
-                    if (_buttonKeyDelete != null && _listStoreModelSelectedIndex > -1) _buttonKeyDelete.Sensitive = GeneralSettings.HasPermissionTo("TICKETLIST_DELETE");
-                    if (_buttonKeyChangePrice != null && !_buttonKeyChangePrice.Sensitive) _buttonKeyChangePrice.Sensitive = GeneralSettings.HasPermissionTo("TICKETLIST_CHANGE_PRICE");
+                    if (_buttonKeyDelete != null && _listStoreModelSelectedIndex > -1) _buttonKeyDelete.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("TICKETLIST_DELETE");
+                    if (_buttonKeyChangePrice != null && !_buttonKeyChangePrice.Sensitive) _buttonKeyChangePrice.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("TICKETLIST_CHANGE_PRICE");
                     if (_buttonKeyChangeQuantity != null && !_buttonKeyChangeQuantity.Sensitive) _buttonKeyChangeQuantity.Sensitive = true;
                     if (_buttonKeyWeight != null) _buttonKeyWeight.Sensitive = (GlobalApp.WeighingBalance != null && GlobalApp.WeighingBalance.IsPortOpen() && _currentDetailArticle.UseWeighingBalance);
                     //if (_buttonKeyGifts != null && !_buttonKeyGifts.Sensitive) _buttonKeyGifts.Sensitive = (_articleBag.Count > 1);
@@ -1231,7 +1231,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     //Always Disabled in Orders
                     //_buttonKeyDelete.Sensitive = false;
                     //Enabled Again
-                    if (_buttonKeyDelete != null && _listStoreModelSelectedIndex > -1) _buttonKeyDelete.Sensitive = GeneralSettings.HasPermissionTo("TICKETLIST_DELETE");
+                    if (_buttonKeyDelete != null && _listStoreModelSelectedIndex > -1) _buttonKeyDelete.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("TICKETLIST_DELETE");
                     if (_buttonKeyChangePrice != null && _buttonKeyChangePrice.Sensitive) _buttonKeyChangePrice.Sensitive = false;
                     if (_buttonKeyChangeQuantity != null && _buttonKeyChangeQuantity.Sensitive) _buttonKeyChangeQuantity.Sensitive = false;
                     if (_buttonKeyWeight != null && _buttonKeyWeight.Sensitive) _buttonKeyWeight.Sensitive = false;
@@ -1281,12 +1281,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 //if (_toolbarApplicationClose != null) _toolbarApplicationClose.Sensitive = true;
 
                 //TODO: PRIVILEGIOS
-                if (_toolbarBackOffice != null /*&& !_toolbarBackOffice.Sensitive*/) _toolbarBackOffice.Sensitive = GeneralSettings.HasPermissionTo("BACKOFFICE_ACCESS");
-                if (_toolbarReports != null /*&& !_toolbarReports.Sensitive*/) _toolbarReports.Sensitive = GeneralSettings.HasPermissionTo("REPORT_ACCESS");
-                if (_toolbarShowSystemDialog != null && !_toolbarShowSystemDialog.Sensitive) _toolbarShowSystemDialog.Sensitive = GeneralSettings.HasPermissionTo("SYSTEM_ACCESS");
+                if (_toolbarBackOffice != null /*&& !_toolbarBackOffice.Sensitive*/) _toolbarBackOffice.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("BACKOFFICE_ACCESS");
+                if (_toolbarReports != null /*&& !_toolbarReports.Sensitive*/) _toolbarReports.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("REPORT_ACCESS");
+                if (_toolbarShowSystemDialog != null && !_toolbarShowSystemDialog.Sensitive) _toolbarShowSystemDialog.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("SYSTEM_ACCESS");
                 if (_toolbarLogoutUser != null && !_toolbarLogoutUser.Sensitive) _toolbarLogoutUser.Sensitive = true;
                 if (_toolbarShowChangeUserDialog != null && !_toolbarShowChangeUserDialog.Sensitive) _toolbarShowChangeUserDialog.Sensitive = true;
-                if (_toolbarCashDrawer != null /*&& !_toolbarCashDrawer.Sensitive*/) _toolbarCashDrawer.Sensitive = (GeneralSettings.HasPermissionTo("WORKSESSION_ALL"));
+                if (_toolbarCashDrawer != null /*&& !_toolbarCashDrawer.Sensitive*/) _toolbarCashDrawer.Sensitive = (GeneralSettings.LoggedUserHasPermissionTo("WORKSESSION_ALL"));
                 if (_toolbarFinanceDocuments != null && !_toolbarFinanceDocuments.Sensitive) _toolbarFinanceDocuments.Sensitive = true;
                 //With Valid Open WorkSessionPeriodTerminal
                 if (XPOSettings.WorkSessionPeriodTerminal != null && XPOSettings.WorkSessionPeriodTerminal.SessionStatus == WorkSessionPeriodStatus.Open)

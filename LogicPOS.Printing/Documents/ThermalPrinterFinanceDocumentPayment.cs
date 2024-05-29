@@ -101,7 +101,7 @@ namespace LogicPOS.Printing.Documents
                     new TicketColumn("DocumentNumber", CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_document_number_acronym"), 0, TicketColumnsAlignment.Left),
                     new TicketColumn("DocumentTotal", CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_document_total"), 10, TicketColumnsAlignment.Right, typeof(decimal), "{0:00.00}"),
                     new TicketColumn("TotalPayed", CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_total_payed_acronym"), 10, TicketColumnsAlignment.Right, typeof(decimal), "{0:00.00}"),
-                    new TicketColumn("Payed", "L", 1, TicketColumnsAlignment.Right, typeof(bool))
+                    new TicketColumn("Payed", "L", 1, TicketColumnsAlignment.Right)
                 };
                 //Prepare Table with Padding
                 DataTable dataTable = TicketTable.InitDataTableFromTicketColumns(columns);

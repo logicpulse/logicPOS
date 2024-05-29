@@ -345,7 +345,7 @@ namespace logicpos
                 int responsePinPad = dialogPinPad.Run();
                 if (responsePinPad == (int)ResponseType.Ok)
                 {
-                    var resultOpenDoor = PrintingUtils.OpenDoor(TerminalSettings.LoggedTerminal.Printer);
+                    var resultOpenDoor = PrintingUtils.OpenDoor();
                     if (!resultOpenDoor)
                     {
                         Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_information"), string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "open_cash_draw_permissions")));

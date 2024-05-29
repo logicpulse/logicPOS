@@ -79,7 +79,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Check if Has an Active Year Open before apply Permissions
             fin_documentfinanceyears currentDocumentFinanceYear = DocumentProcessingSeriesUtils.GetCurrentDocumentFinanceYear();
             //Apply Permissions 
-            ButtonCreateDocumentFinanceSeries.Sensitive = (currentDocumentFinanceYear != null && GeneralSettings.HasPermissionTo("BACKOFFICE_MAN_DOCUMENTFINANCESERIES_MANAGE_SERIES"));
+            ButtonCreateDocumentFinanceSeries.Sensitive = (currentDocumentFinanceYear != null && GeneralSettings.LoggedUserHasPermissionTo("BACKOFFICE_MAN_DOCUMENTFINANCESERIES_MANAGE_SERIES"));
             //Event
             ButtonCreateDocumentFinanceSeries.Clicked += buttonCreateDocumentFinanceSeries_Clicked;
             //Add to Extra Slot

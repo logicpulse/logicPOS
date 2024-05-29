@@ -115,10 +115,10 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             //Assign CRUD permissions to private members, Overriding Defaults
             if (GeneralSettings.LoggedUserPermissions != null)
             {
-                _allowRecordDelete = GeneralSettings.HasPermissionTo(tokenAllowDelete);
-                _allowRecordInsert = GeneralSettings.HasPermissionTo(tokenAllowInsert);
-                _allowRecordUpdate = GeneralSettings.HasPermissionTo(tokenAllowUpdate);
-                _allowRecordView = GeneralSettings.HasPermissionTo(tokenAllowView);
+                _allowRecordDelete = GeneralSettings.LoggedUserHasPermissionTo(tokenAllowDelete);
+                _allowRecordInsert = GeneralSettings.LoggedUserHasPermissionTo(tokenAllowInsert);
+                _allowRecordUpdate = GeneralSettings.LoggedUserHasPermissionTo(tokenAllowUpdate);
+                _allowRecordView = GeneralSettings.LoggedUserHasPermissionTo(tokenAllowView);
             }
 
             //Update Navigator Permissions

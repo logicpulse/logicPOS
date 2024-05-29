@@ -1,4 +1,5 @@
-﻿using LogicPOS.Printing.Utility;
+﻿using LogicPOS.DTOs.Printing;
+using LogicPOS.Printing.Utility;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -345,11 +346,14 @@ namespace LogicPOS.Printing.Common
             return xmlDoc;
         }
 
-        public void OpenDoor(string pDriver, string pPrinterName, int m, int t1, int t2)
+        public void OpenDoor(
+            string pDriver, 
+            string pPrinterName, 
+            ThermalPrinterOpenDrawerValues openDrawerValues)
         {
             bool defaultValue = false;
 
-            if (m == 0 && t1 == 0 && t2 == 0)
+            if (openDrawerValues.IsDefault)
             {
                 defaultValue = true;
             }
@@ -358,7 +362,7 @@ namespace LogicPOS.Printing.Common
 
             printer.WakeUp();
 
-            printer.GeneratePulse(m, t1, t2);
+            printer.GeneratePulse(openDrawerValues.M, openDrawerValues.T1, openDrawerValues.T2);
 
             switch (pDriver)
             {

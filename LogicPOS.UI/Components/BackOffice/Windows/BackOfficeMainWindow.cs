@@ -74,7 +74,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //Hide/Show Current Active Content based on user privileges
                 string currentNodePrivilegesToken = string.Format(_privilegesBackOfficeMenuOperation, Accordion.CurrentChildButtonContent.Name.ToUpper());
-                _nodeContent.Sensitive = GeneralSettings.HasPermissionTo(currentNodePrivilegesToken);
+                _nodeContent.Sensitive = GeneralSettings.LoggedUserHasPermissionTo(currentNodePrivilegesToken);
             }
         }
 

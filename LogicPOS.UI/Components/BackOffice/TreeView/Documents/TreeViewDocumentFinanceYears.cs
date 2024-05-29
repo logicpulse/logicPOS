@@ -121,7 +121,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 treeViewDocumentFinanceSeries.Refresh();
                 if (treeViewDocumentFinanceYearSerieTerminal != null) treeViewDocumentFinanceYearSerieTerminal.Refresh();
                 //Apply Permissions ButtonCreateDocumentFinanceSeries
-                treeViewDocumentFinanceSeries.ButtonCreateDocumentFinanceSeries.Sensitive = GeneralSettings.HasPermissionTo("BACKOFFICE_MAN_DOCUMENTFINANCESERIES_MANAGE_SERIES");
+                treeViewDocumentFinanceSeries.ButtonCreateDocumentFinanceSeries.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("BACKOFFICE_MAN_DOCUMENTFINANCESERIES_MANAGE_SERIES");
 
                 //Request Create Series for all Type of Finance Documents
                 ResponseType responseType = logicpos.Utils.ShowMessageBox(

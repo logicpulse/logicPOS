@@ -7,6 +7,7 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.Xpo;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO.Settings.Terminal;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.DTOs.Common;
 using LogicPOS.DTOs.Printing;
@@ -569,7 +570,7 @@ namespace logicpos
                         //OpenDoor use Printer Drawer
                         if (openDrawer && financeMaster.DocumentType.PrintOpenDrawer && !printDialogResponse.SecondCopy)
                         {
-                            var resultOpenDoor = PrintingUtils.OpenDoor(TerminalSettings.LoggedTerminal.Printer);
+                            var resultOpenDoor = PrintingUtils.OpenDoor();
                             if (!resultOpenDoor)
                             {
                                 Utils.ShowMessageTouch(sourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_information"), string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "open_cash_draw_permissions")));
@@ -667,7 +668,7 @@ namespace logicpos
 
                     if (responseType == ResponseType.Yes)
                     {
-                        var printerDto = TerminalSettings.ThermalPrinter.GetLoggedTerminalPrinterDto();
+                        var printerDto = LoggedTerminalSettings.GetPrinterDto();
 
                         result = PrintingUtils.PrintFinanceDocumentPayment(printerDto, pDocumentFinancePayment);
                     }
@@ -745,7 +746,7 @@ namespace logicpos
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //PrintTableTicket
 
-        public static bool PrintOrderRequest(Window pSourceWindow, sys_configurationprinters pPrinter, OrderMain pDocumentOrderMain, fin_documentorderticket pOrderTicket)
+        public static bool PrintOrderRequest(Window pSourceWindow, sys_configurationprinters pPrinter, OrderMain pDocumentOrderMain, fin_documentorderticket orderTicket)
         {
             bool result = false;
 
@@ -754,7 +755,8 @@ namespace logicpos
                 if (SharedPrintTicket(pSourceWindow, pPrinter, TicketType.TableOrder))
                 {
                     var printer=MappingUtils.GetPrinterDto(pPrinter);
-                    ThermalPrinterInternalDocumentOrderRequest thermalPrinterInternalDocumentOrderRequest = new ThermalPrinterInternalDocumentOrderRequest(printer, pOrderTicket);
+                    var orderTicketDto = MappingUtils.GetPrintOrderTicketDto(orderTicket);
+                    ThermalPrinterInternalDocumentOrderRequest thermalPrinterInternalDocumentOrderRequest = new ThermalPrinterInternalDocumentOrderRequest(printer, orderTicketDto);
                     thermalPrinterInternalDocumentOrderRequest.Print();
                 }
             }
@@ -770,7 +772,7 @@ namespace logicpos
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //PrintArticleRequest
 
-        public static bool PrintArticleRequest(Window pSourceWindow, fin_documentorderticket pOrderTicket)
+        public static bool PrintArticleRequest(Window pSourceWindow, fin_documentorderticket orderTicket)
         {
             bool result = false;
 
@@ -779,7 +781,8 @@ namespace logicpos
                 //Removed: Printer is always NULL, is defined in Ticket Article
                 //if (SharedPrintTicket(pSourceWindow, null, TicketType.ArticleOrder))
                 //{
-                result = PrintingUtils.PrintArticleRequest(pOrderTicket);
+                var orderTicketDto = MappingUtils.GetPrintOrderTicketDto(orderTicket);
+                result = PrintingUtils.PrintArticleRequest(orderTicketDto);
                 //}
             }
             catch (Exception ex)

@@ -1,56 +1,61 @@
-﻿using System;
+﻿using LogicPOS.Printing.Enums;
+using System;
 
 namespace LogicPOS.Printing.Tickets
 {
     public class TicketColumn
     {
         public string Name { get; set; }
-        private string _title;
-        public string Title
-        {
-            get { return _title; }
-            set { _title = value; }
-        }
-
+        public string Title { get; set; }
         public int Width { get; set; }
-        private TicketColumnsAlignment _align;
-        public TicketColumnsAlignment Align
-        {
-            get { return _align; }
-            set { _align = value; }
-        }
-
+        public TicketColumnsAlignment Align { get; set; }
         public Type DataType { get; set; }
-        private string _format;
-        public string Format
-        {
-            get { return _format; }
-            set { _format = value; }
-        }
-
-        public TicketColumn(string pName, string pText, int pWidth)
-            : this(pName, pText, pWidth, TicketColumnsAlignment.Left, typeof(string), "")
-        {
-        }
-
-        public TicketColumn(string pName, string pText, int pWidth, TicketColumnsAlignment pAlign)
-            : this(pName, pText, pWidth, pAlign, typeof(string), string.Empty)
-        {
-        }
-
-        public TicketColumn(string pName, string pText, int pWidth, TicketColumnsAlignment pAlign, Type pDateType)
-            : this(pName, pText, pWidth, pAlign, typeof(string), "")
+        public string Format { get; set; }
+    
+        public TicketColumn(
+            string name, 
+            string text, 
+            int width)
+            : this(
+                  name, 
+                  text, 
+                  width, 
+                  TicketColumnsAlignment.Left, 
+                  typeof(string), 
+                  "")
         {
         }
 
-        public TicketColumn(string pName, string pText, int pWidth, TicketColumnsAlignment pAlign, Type pDateType, string pFormat)
+        public TicketColumn(
+            string name, 
+            string text, 
+            int width, 
+            TicketColumnsAlignment align)
+            : this(
+                  name, 
+                  text, 
+                  width, 
+                  align, 
+                  typeof(string), 
+                  string.Empty)
         {
-            Name = pName;
-            _title = pText;
-            Width = pWidth;
-            _align = pAlign;
-            DataType = pDateType;
-            _format = pFormat;
+        }
+
+
+        public TicketColumn(
+            string name, 
+            string text, 
+            int width, 
+            TicketColumnsAlignment align, 
+            Type dataType, 
+            string format)
+        {
+            Name = name;
+            Title = text;
+            Width = width;
+            Align = align;
+            DataType = dataType;
+            Format = format;
         }
     }
 }

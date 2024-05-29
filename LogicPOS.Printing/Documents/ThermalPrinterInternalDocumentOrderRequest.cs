@@ -1,6 +1,6 @@
-﻿using logicpos.datalayer.DataLayer.Xpo;
-using LogicPOS.DTOs.Printing;
+﻿using LogicPOS.DTOs.Printing;
 using LogicPOS.Globalization;
+using LogicPOS.Printing.Enums;
 using LogicPOS.Printing.Templates;
 using LogicPOS.Printing.Tickets;
 using LogicPOS.Settings;
@@ -12,22 +12,20 @@ namespace LogicPOS.Printing.Documents
 {
     public class ThermalPrinterInternalDocumentOrderRequest : ThermalPrinterBaseInternalTemplate
     {
-        //Private Members
-        /* IN008024 */
-        //private string _appOperationModeToken = LogicPOS.Settings.GeneralSettings.Settings["appOperationModeToken"];
-        private readonly fin_documentorderticket _orderTicket;
+        private readonly PrintOrderTicketDto _orderTicket;
         private readonly bool _articlePrinterEnabled;
 
         public ThermalPrinterInternalDocumentOrderRequest(
-            PrinterDto printer, 
-            fin_documentorderticket orderTicket)
+            PrinterDto printer,
+            PrintOrderTicketDto orderTicket)
             : this(
-                  printer, 
-                  orderTicket, false) { }
+                  printer,
+                  orderTicket, false)
+        { }
 
         public ThermalPrinterInternalDocumentOrderRequest(
-            PrinterDto printer, 
-            fin_documentorderticket orderTicket, 
+            PrinterDto printer,
+            PrintOrderTicketDto orderTicket,
             bool articlePrinterEnabled)
             : base(printer)
         {
@@ -46,8 +44,8 @@ namespace LogicPOS.Printing.Documents
                 //Table|Order #2|Name/Zone
                 _ticketSubTitle = string.Format("{0}: #{1}/{2}"
                     , CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, string.Format("global_table_appmode_{0}", AppOperationModeSettings.CustomAppOperationMode.AppOperationTheme).ToLower()) /* IN008024 */
-                    , _orderTicket.OrderMain.PlaceTable.Designation
-                    , _orderTicket.OrderMain.PlaceTable.Place.Designation
+                    , _orderTicket.TableDesignation
+                    , _orderTicket.PlaceDesignation
                 );
             }
             catch (Exception ex)
@@ -96,10 +94,10 @@ namespace LogicPOS.Printing.Documents
 
             //Print Items
             DataRow dataRow;
-            foreach (fin_documentorderdetail item in _orderTicket.OrderDetail)
+            foreach (var item in _orderTicket.OrderDetails)
             {
                 //Add All Rows if Normal Mode without explicit ArticlePrinter defined, or print Printer Articles for explicit defined ArticlePrinter 
-                if (_articlePrinterEnabled == false || _genericThermalPrinter.Printer.Id == item.Article.Printer.Oid)
+                if (_articlePrinterEnabled == false || _genericThermalPrinter.Printer.Id == item.ArticlePrinter.Id)
                 {
                     //Add Rows to main Ticket
                     dataRow = ticketTable.NewRow();

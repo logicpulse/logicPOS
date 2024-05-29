@@ -53,7 +53,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _touchButtonPosToolbarWorkSessionPeriods = new TouchButtonIconWithText("touchButtonPosToolbarWorkSessionPeriods_Green", _colorBaseDialogDefaultButtonBackground, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_button_label_select_worksession_period"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileIconListWorksessionPeriods, sizeIcon, buttonWidth, buttonHeight);
             _touchButtonPosToolbarMerchandiseEntry = new TouchButtonIconWithText("touchButtonPosToolbarMerchandiseEntry_Green", _colorBaseDialogDefaultButtonBackground, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_button_label_select_merchandise_entry"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileIconListMerchandiseEntry, sizeIcon, buttonWidth, buttonHeight);
             //Permission
-            _touchButtonPosToolbarMerchandiseEntry.Sensitive = GeneralSettings.HasPermissionTo("STOCK_MERCHANDISE_ENTRY_ACCESS");
+            _touchButtonPosToolbarMerchandiseEntry.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("STOCK_MERCHANDISE_ENTRY_ACCESS");
 
             //Table
             Table table = new Table(1, 1, true);

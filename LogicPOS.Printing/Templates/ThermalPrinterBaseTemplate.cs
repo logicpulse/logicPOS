@@ -1,5 +1,4 @@
-﻿using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Xpo;
+﻿using logicpos.datalayer.Xpo;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.DTOs.Printing;
 using LogicPOS.Globalization;
@@ -42,13 +41,13 @@ namespace LogicPOS.Printing.Templates
 
         public ThermalPrinterBaseTemplate(PrinterDto printer)
             : this(
-                  printer, 
+                  printer,
                   PrintingSettings.ThermalPrinter.CompanyLogoLocation)
         {
         }
 
         public ThermalPrinterBaseTemplate(
-            PrinterDto printer, 
+            PrinterDto printer,
             string pCompanyLogo)
         {
             try

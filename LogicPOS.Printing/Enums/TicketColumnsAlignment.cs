@@ -1,6 +1,5 @@
-﻿namespace LogicPOS.Printing.Tickets
+﻿namespace LogicPOS.Printing.Enums
 {
-    //Ticket Properties
     public enum TicketColumnsAlignment
     {
         Left,

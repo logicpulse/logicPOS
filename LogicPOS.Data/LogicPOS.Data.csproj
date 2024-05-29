@@ -57,6 +57,7 @@
     <Compile Include="Entities\Documents\VIEW_ViewDocumentFinancePaymentTotals.cs" />
     <Compile Include="Entities\System\SYS_SystemNotificationDocumentMaster.cs" />
     <Compile Include="Enums\DocumentType.cs" />
+    <Compile Include="XPO\Settings\Terminal\LoggedTerminalSettings.cs" />
     <Compile Include="XPO\Settings\Terminal\TerminalSettings.cs" />
     <Compile Include="XPO\Settings\Terminal\TerminalSettings.ThermalPrinter.cs" />
     <Compile Include="XPO\Utility\MappingUtils.cs" />
