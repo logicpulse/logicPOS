@@ -42,5 +42,40 @@ namespace LogicPOS.Data.XPO.Utility
 
             return ticketDto;
         }
+
+        public static PrintingDocumentTypeDto GetPrintingDocumentTypeDto(fin_documentfinancetype documentType)
+        {
+            return new PrintingDocumentTypeDto
+            {
+                Id = documentType.Oid,
+                IsSaftDocumentTypePayments = documentType.SaftDocumentType == logicpos.datalayer.Enums.SaftDocumentType.Payments,
+                PrintCopies = documentType.PrintCopies
+            };
+        }
+
+        public static PrintingFinancePaymentDto GetPrintingFinancePaymentDto(fin_documentfinancepayment financePayment)
+        {
+            return new PrintingFinancePaymentDto
+            {
+                Id = financePayment.Oid,
+                DocumentType = GetPrintingDocumentTypeDto(financePayment.DocumentType),
+                ExchangeRate = financePayment.ExchangeRate,
+                ExtendedValue = financePayment.ExtendedValue
+            };
+        }
+
+        public static PrintDocumentMasterDto GetPrintDocumentMasterDto(fin_documentfinancemaster documentMaster)
+        {
+            return new PrintDocumentMasterDto
+            {
+                Id = documentMaster.Oid,
+                ATDocQRCode = documentMaster.ATDocQRCode,
+                Hash = documentMaster.Hash,
+                TableDesignation = documentMaster.SourceOrderMain.PlaceTable.Designation,
+                PlaceDesignation = documentMaster.SourceOrderMain.PlaceTable.Place.Designation,
+                DocumentType = GetPrintingDocumentTypeDto(documentMaster.DocumentType),
+                HasValidPaymentMethod = (documentMaster.PaymentMethod != null)
+            };
+        }
     }
 }

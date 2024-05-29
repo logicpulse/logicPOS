@@ -18,14 +18,14 @@ namespace LogicPOS.Printing.Documents
     public class ThermalPrinterFinanceDocumentPayment : ThermalPrinterBaseFinanceTemplate
     {
         //Parameters Properties
-        private readonly fin_documentfinancepayment _documentFinancePayment = null;
+        private readonly PrintingFinancePaymentDto _documentFinancePayment = null;
         //Business Objects
         private readonly List<FRBODocumentFinancePaymentView> _documentFinancePaymentList;
         private readonly List<FRBODocumentFinancePaymentDocumentView> _documentFinancePaymentDocumentList;
 
         public ThermalPrinterFinanceDocumentPayment(
             PrinterDto printer, 
-            fin_documentfinancepayment financePayment, 
+            PrintingFinancePaymentDto financePayment, 
             List<int> copyNames, 
             bool secondCopy)
             : base(
@@ -40,7 +40,7 @@ namespace LogicPOS.Printing.Documents
                 _documentFinancePayment = financePayment;
 
                 //Init Fast Reports Business Objects (From FRBOHelper)
-                ResultFRBODocumentFinancePayment fRBOHelperResponseProcessReportFinancePayment = FRBOHelper.GetFRBOFinancePayment(financePayment.Oid);
+                ResultFRBODocumentFinancePayment fRBOHelperResponseProcessReportFinancePayment = FRBOHelper.GetFRBOFinancePayment(financePayment.Id);
                 //Get FRBOs Lists 
                 _documentFinancePaymentList = fRBOHelperResponseProcessReportFinancePayment.DocumentFinancePayment.List;
                 _documentFinancePaymentDocumentList = fRBOHelperResponseProcessReportFinancePayment.DocumentFinancePayment.List[0].DocumentFinancePaymentDocument;

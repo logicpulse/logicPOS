@@ -22,7 +22,7 @@ namespace LogicPOS.Printing.Documents
     public class ThermalPrinterFinanceDocumentMaster : ThermalPrinterBaseFinanceTemplate
     {
         //Parameters Properties
-        private readonly fin_documentfinancemaster _documentMaster;
+        private readonly PrintDocumentMasterDto _documentMaster;
         //Business Objects
         private readonly List<FRBODocumentFinanceMasterView> _documentFinanceMasterList;
         private readonly List<FRBODocumentFinanceDetail> _documentFinanceDetailList;
@@ -30,7 +30,7 @@ namespace LogicPOS.Printing.Documents
 
         public ThermalPrinterFinanceDocumentMaster(
             PrinterDto printer, 
-            fin_documentfinancemaster documentMaster, 
+            PrintDocumentMasterDto documentMaster, 
             List<int> copyNames, 
             bool isSecondCopy, 
             string motive)
@@ -46,7 +46,7 @@ namespace LogicPOS.Printing.Documents
                 _documentMaster = documentMaster;
 
                 //Init Fast Reports Business Objects (From FRBOHelper)
-                ResultFRBODocumentFinanceMaster fRBOHelperResponseProcessReportFinanceDocument = FRBOHelper.GetFRBOFinanceDocument(_documentMaster.Oid);
+                ResultFRBODocumentFinanceMaster fRBOHelperResponseProcessReportFinanceDocument = FRBOHelper.GetFRBOFinanceDocument(_documentMaster.Id);
                 //Get FRBOs Lists 
                 _documentFinanceMasterList = fRBOHelperResponseProcessReportFinanceDocument.DocumentFinanceMaster.List;
                 _documentFinanceDetailList = fRBOHelperResponseProcessReportFinanceDocument.DocumentFinanceMaster.List[0].DocumentFinanceDetail;
@@ -147,13 +147,13 @@ namespace LogicPOS.Printing.Documents
             //string appOperationModeToken = LogicPOS.Settings.GeneralSettings.Settings["appOperationModeToken"].ToLower();
 
             //ConferenceDocument : Show Table if in ConferenceDocument and in default AppMode
-            if (_documentType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeConferenceDocument && AppOperationModeSettings.IsDefaultTheme)
+            if (_documentType.Id == DocumentSettings.XpoOidDocumentFinanceTypeConferenceDocument && AppOperationModeSettings.IsDefaultTheme)
             {
                 //Table|Order #2|Name/Zone
                 string tableZone = string.Format("{0} : #{1}/{2}"
                     , CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, string.Format("global_table_appmode_{0}", AppOperationModeSettings.CustomAppOperationMode.AppOperationTheme.ToLower())) /* IN008024 */
-                    , _documentMaster.SourceOrderMain.PlaceTable.Designation
-                    , _documentMaster.SourceOrderMain.PlaceTable.Place.Designation
+                    , _documentMaster.TableDesignation
+                    , _documentMaster.PlaceDesignation
                 );
                 _genericThermalPrinter.WriteLine(tableZone);
                 _genericThermalPrinter.LineFeed();

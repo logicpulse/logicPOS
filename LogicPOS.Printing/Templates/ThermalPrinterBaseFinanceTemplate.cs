@@ -18,7 +18,7 @@ namespace LogicPOS.Printing.Templates
 {
     public abstract class ThermalPrinterBaseFinanceTemplate : ThermalPrinterBaseTemplate
     {
-        protected fin_documentfinancetype _documentType;
+        protected PrintingDocumentTypeDto _documentType;
         protected List<int> _copyNames;
         protected string[] _copyNamesArray;
         protected bool _secondCopy;
@@ -28,7 +28,7 @@ namespace LogicPOS.Printing.Templates
 
         public ThermalPrinterBaseFinanceTemplate(
             PrinterDto printer, 
-            fin_documentfinancetype documentType, 
+            PrintingDocumentTypeDto documentType, 
             List<int> copyNames)
             : this(
                   printer, 
@@ -40,7 +40,7 @@ namespace LogicPOS.Printing.Templates
 
         public ThermalPrinterBaseFinanceTemplate(
             PrinterDto printer, 
-            fin_documentfinancetype documentType, 
+            PrintingDocumentTypeDto documentType, 
             List<int> copyNames, 
             bool isSecondCopy)
             : base(
@@ -377,7 +377,7 @@ namespace LogicPOS.Printing.Templates
             if (CultureSettings.PortugalCountryId.Equals(XPOSettings.ConfigurationSystemCountry.Oid))
             {
                 //All Finance Documents use Processed, else Payments that use Emmited 
-                string prefix = (_documentType.SaftDocumentType == SaftDocumentType.Payments)
+                string prefix = (_documentType.IsSaftDocumentTypePayments)
                     ? CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_report_overlay_software_certification_emitted")
                     : CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_report_overlay_software_certification_processed")
                 ;

@@ -1157,7 +1157,7 @@ namespace LogicPOS.Printing.Utility
         }
 
         private static bool SystemPrintInsert(
-            fin_documentfinancemaster pDocumentFinanceMaster, 
+            PrintDocumentMasterDto pDocumentFinanceMaster, 
             string pPrinterDesignation, 
             int pPrintCopies, 
             List<int> pCopyNames, 
@@ -1177,7 +1177,7 @@ namespace LogicPOS.Printing.Utility
         }
 
         private static bool SystemPrintInsert(
-            fin_documentfinancepayment pDocumentFinancePayment, 
+            PrintingFinancePaymentDto pDocumentFinancePayment, 
             string pPrinterDesignation, 
             int pPrintCopies, 
             List<int> pCopyNames)
@@ -1195,8 +1195,8 @@ namespace LogicPOS.Printing.Utility
         }
 
         private static bool SystemPrintInsert(
-            fin_documentfinancemaster financeMaster, 
-            fin_documentfinancepayment financePayment, 
+            PrintDocumentMasterDto financeMaster, 
+            PrintingFinancePaymentDto financePayment, 
             string printerDesignation, 
             int printCopies, 
             List<int> copyNames, 
@@ -1234,7 +1234,7 @@ namespace LogicPOS.Printing.Utility
                 //Mode: DocumentFinanceMaster
                 if (financeMaster != null)
                 {
-                    fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)XPOHelper.GetXPGuidObject(uowSession, typeof(fin_documentfinancemaster), financeMaster.Oid);
+                    fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)XPOHelper.GetXPGuidObject(uowSession, typeof(fin_documentfinancemaster), financeMaster.Id);
                     systemPrint.DocumentMaster = documentFinanceMaster;
                     designation = string.Format("{0} {1} : {2}", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_printed"), documentFinanceMaster.DocumentType.Designation, documentFinanceMaster.DocumentNumber);
                     //Update DocumentFinanceMaster
@@ -1243,7 +1243,7 @@ namespace LogicPOS.Printing.Utility
                 //Mode: DocumentFinancePayment
                 if (financePayment != null)
                 {
-                    fin_documentfinancepayment documentFinancePayment = (fin_documentfinancepayment)XPOHelper.GetXPGuidObject(uowSession, typeof(fin_documentfinancepayment), financePayment.Oid);
+                    fin_documentfinancepayment documentFinancePayment = (fin_documentfinancepayment)XPOHelper.GetXPGuidObject(uowSession, typeof(fin_documentfinancepayment), financePayment.Id);
                     systemPrint.DocumentPayment = documentFinancePayment;
                     designation = string.Format("{0} {1} : {2}", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_printed"), documentFinancePayment.DocumentType.Designation, documentFinancePayment.PaymentRefNo);
                 }
@@ -1268,7 +1268,7 @@ namespace LogicPOS.Printing.Utility
 
         public static bool PrintFinanceDocument(
             PrinterDto printer, 
-            fin_documentfinancemaster pDocumentFinanceMaster,
+            PrintDocumentMasterDto pDocumentFinanceMaster,
             List<int> pCopyNames, 
             bool pSecondCopy, 
             string pMotive)
@@ -1303,12 +1303,12 @@ namespace LogicPOS.Printing.Utility
                         resultSystemPrint = SystemPrintInsert(pDocumentFinanceMaster, printer.Designation, printCopies, pCopyNames, pSecondCopy, pMotive);
                         break;
                     case "GENERIC_PRINTER_WINDOWS":
-                        CustomReport.ProcessReportFinanceDocument(CustomReportDisplayMode.Print, pDocumentFinanceMaster.Oid, hash4Chars, pCopyNames, pSecondCopy, pMotive);
+                        CustomReport.ProcessReportFinanceDocument(CustomReportDisplayMode.Print, pDocumentFinanceMaster.Id, hash4Chars, pCopyNames, pSecondCopy, pMotive);
                         //Add to SystemPrint Audit
                         resultSystemPrint = SystemPrintInsert(pDocumentFinanceMaster, printer.Designation, printCopies, pCopyNames, pSecondCopy, pMotive);
                         break;
                     case "REPORT_EXPORT_PDF":
-                        CustomReport.ProcessReportFinanceDocument(CustomReportDisplayMode.ExportPDF, pDocumentFinanceMaster.Oid, hash4Chars, pCopyNames, pSecondCopy, pMotive);
+                        CustomReport.ProcessReportFinanceDocument(CustomReportDisplayMode.ExportPDF, pDocumentFinanceMaster.Id, hash4Chars, pCopyNames, pSecondCopy, pMotive);
                         //Add to SystemPrint Audit : Developer : Use here Only to Test SystemPrintInsert
                         resultSystemPrint = SystemPrintInsert(pDocumentFinanceMaster, printer.Designation, printCopies, pCopyNames, pSecondCopy, pMotive);
                         break;
@@ -1321,12 +1321,14 @@ namespace LogicPOS.Printing.Utility
         }
 
         //Quick function to get Printer and Template and Send to Base PrintFinanceDocument, and Open Drawer if Has a Valid Payment Method
-        public static bool PrintFinanceDocument(fin_documentfinancemaster pDocumentFinanceMaster)
+        public static bool PrintFinanceDocument(PrintDocumentMasterDto pDocumentFinanceMaster)
         {
             return PrintFinanceDocument(XPOSettings.Session, pDocumentFinanceMaster);
         }
 
-        public static bool PrintFinanceDocument(Session pSession, fin_documentfinancemaster pDocumentFinanceMaster)
+        public static bool PrintFinanceDocument(
+            Session pSession, 
+            PrintDocumentMasterDto pDocumentFinanceMaster)
         {
             List<int> printCopies = new List<int>();
             for (int i = 0; i < pDocumentFinanceMaster.DocumentType.PrintCopies; i++)
@@ -1337,19 +1339,33 @@ namespace LogicPOS.Printing.Utility
             return PrintFinanceDocument(pSession, pDocumentFinanceMaster, printCopies, false, string.Empty);
         }
 
-        public static bool PrintFinanceDocument(Session pSession, fin_documentfinancemaster pDocumentFinanceMaster, List<int> pCopyNames, bool pSecondCopy, string pMotive)
+        public static bool PrintFinanceDocument(
+            Session pSession, 
+            PrintDocumentMasterDto pDocumentFinanceMaster, 
+            List<int> pCopyNames, 
+            bool pSecondCopy, 
+            string pMotive)
         {
             bool result;
 
             //Finish Payment with Print Job + Open Drawer (If Not TableConsult)
-            fin_documentfinanceyearserieterminal xDocumentFinanceYearSerieTerminal = DocumentProcessingSeriesUtils.GetDocumentFinanceYearSerieTerminal(pSession, pDocumentFinanceMaster.DocumentType.Oid);
+            fin_documentfinanceyearserieterminal xDocumentFinanceYearSerieTerminal = 
+                DocumentProcessingSeriesUtils.
+                GetDocumentFinanceYearSerieTerminal(
+                    pSession, 
+                    pDocumentFinanceMaster.DocumentType.Id);
 
             var printer = LoggedTerminalSettings.GetPrinterDto();
 
-            PrintFinanceDocument(printer, pDocumentFinanceMaster, pCopyNames, pSecondCopy, pMotive);
+            PrintFinanceDocument(
+                printer, 
+                pDocumentFinanceMaster, 
+                pCopyNames, 
+                pSecondCopy, 
+                pMotive);
 
-            //Open Door if Has Valid Payment
-            if (pDocumentFinanceMaster.PaymentMethod != null)
+
+            if (pDocumentFinanceMaster.HasValidPaymentMethod)
             {
                 OpenDoor();
             }
@@ -1360,7 +1376,7 @@ namespace LogicPOS.Printing.Utility
 
         public static bool PrintFinanceDocumentPayment(
             PrinterDto printer, 
-            fin_documentfinancepayment pDocumentFinancePayment)
+            PrintingFinancePaymentDto pDocumentFinancePayment)
         {
             bool result = false;
 
@@ -1386,12 +1402,12 @@ namespace LogicPOS.Printing.Utility
                         resultSystemPrint = SystemPrintInsert(pDocumentFinancePayment, printer.Designation, printCopies, copyNames);
                         break;
                     case "GENERIC_PRINTER_WINDOWS":
-                        CustomReport.ProcessReportFinanceDocumentPayment(CustomReportDisplayMode.Print, pDocumentFinancePayment.Oid, copyNames);
+                        CustomReport.ProcessReportFinanceDocumentPayment(CustomReportDisplayMode.Print, pDocumentFinancePayment.Id, copyNames);
                         //Add to SystemPrint Audit
                         resultSystemPrint = SystemPrintInsert(pDocumentFinancePayment, printer.Designation, printCopies, copyNames);
                         break;
                     case "REPORT_EXPORT_PDF":
-                        CustomReport.ProcessReportFinanceDocumentPayment(CustomReportDisplayMode.ExportPDF, pDocumentFinancePayment.Oid, copyNames);
+                        CustomReport.ProcessReportFinanceDocumentPayment(CustomReportDisplayMode.ExportPDF, pDocumentFinancePayment.Id, copyNames);
                         //Add to SystemPrint Audit : Developer : Use here Only to Test SystemPrintInsert
                         resultSystemPrint = SystemPrintInsert(pDocumentFinancePayment, printer.Designation, printCopies, copyNames);
                         break;
