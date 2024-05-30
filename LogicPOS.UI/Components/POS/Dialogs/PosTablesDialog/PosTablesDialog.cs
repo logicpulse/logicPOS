@@ -7,7 +7,6 @@ using logicpos.datalayer.Enums;
 using logicpos.shared.Enums;
 using System;
 using System.Drawing;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Shared;

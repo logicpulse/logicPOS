@@ -5,11 +5,10 @@ using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Enums.Dialogs;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
-using logicpos.datalayer.Xpo;
 using LogicPOS.Settings;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO.Utility;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -110,7 +109,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Assign CurrentId to TablePad.CurrentId, to Know last Clicked Button Id
             _tablePadUsers.SelectedButtonOid = button.CurrentButtonOid;
             //To be Used in Dialog Result
-            UserDetail = (sys_userdetail)XPOHelper.GetXPGuidObject(typeof(sys_userdetail), button.CurrentButtonOid);
+            UserDetail = XPOHelper.GetEntityById<sys_userdetail>(button.CurrentButtonOid);
 
             if (UserDetail.PasswordReset)
             {

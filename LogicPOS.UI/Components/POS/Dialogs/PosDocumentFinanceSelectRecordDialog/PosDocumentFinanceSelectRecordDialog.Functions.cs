@@ -10,8 +10,8 @@ using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
-using logicpos.datalayer.Xpo;
 using logicpos.shared.Enums;
+using LogicPOS.Data.XPO;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Finance.DocumentProcessing;
@@ -1028,7 +1028,7 @@ WHERE
 
                 if (itemChecked)
                 {
-                    fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)XPOHelper.GetXPGuidObject(typeof(fin_documentfinancemaster), itemGuid);
+                    fin_documentfinancemaster documentFinanceMaster = XPOHelper.GetEntityById<fin_documentfinancemaster>(itemGuid);
                     //Required to use _dialogFinanceDocumentsResponse to Fix TransientFor, ALT+TAB
                     FrameworkCalls.PrintFinanceDocument(_dialogFinanceDocumentsResponse, _printerChoosed, documentFinanceMaster);
                 }
@@ -1299,7 +1299,7 @@ WHERE
             Dictionary<fin_documentfinancemaster, string> documents = new Dictionary<fin_documentfinancemaster, string>();
             List<string> attachmentFileNames = new List<string>();
             // Get Customer from first Document
-            erp_customer customer = (erp_customer)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(erp_customer), pDocuments[0].EntityOid);
+            erp_customer customer = XPOHelper.GetEntityById<erp_customer>(pDocuments[0].EntityOid);
             string customerEmail = (customer.Email != null) ? customer.Email : string.Empty;
             string documentList = string.Empty;
 
@@ -1380,7 +1380,7 @@ WHERE
             Dictionary<fin_documentfinancepayment, string> documents = new Dictionary<fin_documentfinancepayment, string>();
             List<string> attachmentFileNames = new List<string>();
             // Get Customer from first Document
-            erp_customer customer = (erp_customer)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(erp_customer), pDocuments[0].EntityOid);
+            erp_customer customer = XPOHelper.GetEntityById<erp_customer>(pDocuments[0].EntityOid);
             string customerEmail = (customer.Email != null) ? customer.Email : string.Empty;
             string mailBody = string.Empty;
 
@@ -1820,7 +1820,7 @@ WHERE
                 if (itemChecked)
                 {
                     //Add to FinanceMasterDocuments
-                    _listSelectFinanceMasterDocuments.Add((fin_documentfinancemaster)XPOHelper.GetXPGuidObject(typeof(fin_documentfinancemaster), itemGuid));
+                    _listSelectFinanceMasterDocuments.Add(XPOHelper.GetEntityById<fin_documentfinancemaster>(itemGuid));
                 }
             }
             catch (Exception ex)
@@ -1928,10 +1928,11 @@ WHERE
 
                 if (itemChecked)
                 {
-                    pos_worksessionperiod workSessionPeriodParent = (pos_worksessionperiod)XPOHelper.GetXPGuidObject(typeof(pos_worksessionperiod), itemGuid);
+                    pos_worksessionperiod workSessionPeriodParent = XPOHelper.GetEntityById<pos_worksessionperiod>(itemGuid);
                     pos_worksessionperiod workSessionPeriodChild;
                     //Print Parent Session : PrintWorkSessionMovement
-                    FrameworkCalls.PrintWorkSessionMovement(this, TerminalSettings.LoggedTerminal.ThermalPrinter, workSessionPeriodParent);
+                    var workSessionParentDto = MappingUtils.GetPrintWorkSessionDto(workSessionPeriodParent);
+                    FrameworkCalls.PrintWorkSessionMovement(this, TerminalSettings.LoggedTerminal.ThermalPrinter, workSessionParentDto);
 
                     //Get Child Sessions
                     string sql = string.Format(@"SELECT Oid FROM pos_worksessionperiod WHERE Parent = '{0}' ORDER BY DateStart;", workSessionPeriodParent.Oid);
@@ -1939,9 +1940,10 @@ WHERE
                     foreach (DevExpress.Xpo.DB.SelectStatementResultRow row in xPSelectData.Data)
                     {
                         //Print Child Sessions
-                        workSessionPeriodChild = (pos_worksessionperiod)XPOHelper.GetXPGuidObject(typeof(pos_worksessionperiod), new Guid(row.Values[xPSelectData.GetFieldIndex("Oid")].ToString()));
+                        workSessionPeriodChild = XPOHelper.GetEntityById<pos_worksessionperiod>(new Guid(row.Values[xPSelectData.GetFieldIndex("Oid")].ToString()));
                         //PrintWorkSessionMovement
-                        FrameworkCalls.PrintWorkSessionMovement(this, TerminalSettings.LoggedTerminal.ThermalPrinter, workSessionPeriodChild);
+                        var workSessionChildDto = MappingUtils.GetPrintWorkSessionDto(workSessionPeriodChild);
+                        FrameworkCalls.PrintWorkSessionMovement(this, TerminalSettings.LoggedTerminal.ThermalPrinter, workSessionChildDto);
                     }
                 }
             }
@@ -2357,7 +2359,7 @@ WHERE
                 if (itemChecked)
                 {
                     //Add to FinancePaymentDocuments
-                    _listSelectFinancePaymentDocuments.Add((fin_documentfinancepayment)XPOHelper.GetXPGuidObject(typeof(fin_documentfinancepayment), itemGuid));
+                    _listSelectFinancePaymentDocuments.Add(XPOHelper.GetEntityById<fin_documentfinancepayment>(itemGuid));
                 }
             }
             catch (Exception ex)
@@ -2399,7 +2401,7 @@ WHERE
 
                 if (itemChecked)
                 {
-                    fin_documentfinancepayment documentFinancePayment = (fin_documentfinancepayment)XPOHelper.GetXPGuidObject(typeof(fin_documentfinancepayment), itemGuid);
+                    fin_documentfinancepayment documentFinancePayment = XPOHelper.GetEntityById<fin_documentfinancepayment>(itemGuid);
                     var printerDto = MappingUtils.GetPrinterDto(_printerChoosed);
                     FrameworkCalls.PrintFinanceDocumentPayment(this, printerDto, documentFinancePayment);
                 }

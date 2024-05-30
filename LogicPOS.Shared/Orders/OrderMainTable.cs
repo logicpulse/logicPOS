@@ -1,6 +1,6 @@
 ﻿using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
-using logicpos.datalayer.Xpo;
+using LogicPOS.Data.XPO.Utility;
 using System;
 
 namespace LogicPOS.Shared.Orders
@@ -44,7 +44,7 @@ namespace LogicPOS.Shared.Orders
             _oid = pTableOid;
             try
             {
-                pos_configurationplacetable table = (pos_configurationplacetable)XPOHelper.GetXPGuidObject(typeof(pos_configurationplacetable), pTableOid);
+                pos_configurationplacetable table = XPOHelper.GetEntityById<pos_configurationplacetable>(pTableOid);
 
                 //If table is null, select Table with code 10
                 if (table == null)

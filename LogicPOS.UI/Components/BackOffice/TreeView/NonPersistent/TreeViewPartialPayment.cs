@@ -3,9 +3,8 @@ using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
-using logicpos.datalayer.Xpo;
+using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Globalization;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Shared;
 using LogicPOS.Shared.Article;
 using LogicPOS.Shared.Orders;
@@ -116,10 +115,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             {
                 //Pagamentos parciais - Escolher valor a pagar por artigo [TK:019295]
                 decimal remainQuantity = item.Value.Quantity;
-                article = (fin_article)XPOHelper.GetXPGuidObject(typeof(fin_article), item.Key.ArticleId);
+                article = XPOHelper.GetEntityById<fin_article>(item.Key.ArticleId);
                 if (article.Type.HavePrice)
                 {
-                    configurationPlace = (pos_configurationplace)XPOHelper.GetXPGuidObject(typeof(pos_configurationplace), item.Value.PlaceOid);
+                    configurationPlace = XPOHelper.GetEntityById<pos_configurationplace>(item.Value.PlaceOid);
 
                     for (int i = 0; i < item.Value.Quantity; i++)
                     {

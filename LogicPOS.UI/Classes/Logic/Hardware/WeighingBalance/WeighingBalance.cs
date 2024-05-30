@@ -1,10 +1,8 @@
 ﻿using Gtk;
 using logicpos.App;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Xpo;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Globalization;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;

@@ -1,11 +1,11 @@
 ﻿using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
-using logicpos.datalayer.Xpo;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO.Utility;
 using System;
 using System.Collections.Generic;
 
-namespace logicpos.datalayer.DataLayer.Xpo
+namespace LogicPOS.Data.XPO
 {
     public class XPSelectData
     {

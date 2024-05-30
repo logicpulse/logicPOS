@@ -1,5 +1,4 @@
 ﻿using Gtk;
-using logicpos.datalayer.Xpo;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Globalization;
 using LogicPOS.Printing.Utility;

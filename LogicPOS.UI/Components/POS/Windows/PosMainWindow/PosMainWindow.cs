@@ -6,17 +6,16 @@ using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Logic.Others;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
 using System;
 using System.Collections;
 using System.Drawing;
 using Image = Gtk.Image;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.UI;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO.Utility;
 
 namespace logicpos
 {

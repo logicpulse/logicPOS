@@ -8,9 +8,9 @@ using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Globalization;
 using LogicPOS.Modules.StockManagement;
 using LogicPOS.Settings;
@@ -335,7 +335,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if (!articleOid.Equals(Guid.Empty))
                 {
                     //Get Object from dialog else Mixing Sessions, Both belong to diferente Sessions
-                    fin_article newArticle = (fin_article)XPOHelper.GetXPGuidObject(typeof(fin_article), articleOid);
+                    fin_article newArticle = XPOHelper.GetEntityById<fin_article>(articleOid);
 
                     if (isArticleCode)
                     {

@@ -3,7 +3,6 @@ using Gtk;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
-using logicpos.datalayer.Xpo;
 using logicpos.shared.Enums;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Finance.DocumentProcessing;

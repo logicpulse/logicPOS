@@ -9,7 +9,6 @@ using logicpos.datalayer.DataLayer.Xpo;
 using System;
 using System.Data;
 using System.Drawing;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 

@@ -5,13 +5,12 @@ using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
-using logicpos.datalayer.Xpo;
 using System;
 using System.Collections.Generic;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO.Utility;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {
@@ -394,7 +393,6 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         public override void GetDataRow()
         {
             _dataSourceRow = XPOHelper.GetXPGuidObject(
-              XPOSettings.Session,
               _dataSource.ObjectType,
               new Guid(Convert.ToString(_treeView.Model.GetValue(_treeIter, _modelFirstCustomFieldIndex)))
             );

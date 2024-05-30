@@ -1,6 +1,6 @@
 ﻿using DevExpress.Xpo;
 using logicpos.datalayer.Enums;
-using logicpos.datalayer.Xpo;
+using LogicPOS.Data.XPO.Utility;
 using System;
 
 namespace logicpos.datalayer.DataLayer.Xpo

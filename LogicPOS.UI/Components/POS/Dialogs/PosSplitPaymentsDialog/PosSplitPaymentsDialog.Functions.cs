@@ -3,8 +3,8 @@ using logicpos.App;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
-using logicpos.datalayer.Xpo;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Globalization;
 using LogicPOS.Shared;
@@ -103,9 +103,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         if (debug) _logger.Debug(string.Format("\t[{0}],[{1}],[{2}]", item.Key.Designation, item.Value.Quantity, item.Value.TotalFinal));
                     }
 
-                    erp_customer customer = (erp_customer)XPOHelper.GetXPGuidObject(typeof(erp_customer), processFinanceDocumentParameter.Customer);
-                    fin_configurationpaymentmethod paymentMethod = (fin_configurationpaymentmethod)XPOHelper.GetXPGuidObject(typeof(fin_configurationpaymentmethod), processFinanceDocumentParameter.PaymentMethod);
-                    cfg_configurationcurrency currency = (cfg_configurationcurrency)XPOHelper.GetXPGuidObject(typeof(cfg_configurationcurrency), processFinanceDocumentParameter.Currency);
+                    erp_customer customer = XPOHelper.GetEntityById<erp_customer>(processFinanceDocumentParameter.Customer);
+                    fin_configurationpaymentmethod paymentMethod = XPOHelper.GetEntityById<fin_configurationpaymentmethod>(processFinanceDocumentParameter.PaymentMethod);
+                    cfg_configurationcurrency currency = XPOHelper.GetEntityById<cfg_configurationcurrency>(processFinanceDocumentParameter.Currency);
                     // Compose labelPaymentDetails
                     string totalFinal = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(processFinanceDocumentParameter.ArticleBag.TotalFinal, currency.Acronym);
                     string totalDelivery = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(processFinanceDocumentParameter.TotalDelivery, currency.Acronym);
@@ -268,7 +268,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     // Only change ArticleBag
                     if (item.ProcessFinanceDocumentParameter != null)
                     {
-                        fin_configurationpaymentmethod paymentMethod = (fin_configurationpaymentmethod)XPOHelper.GetXPGuidObject(typeof(fin_configurationpaymentmethod), item.ProcessFinanceDocumentParameter.PaymentMethod);
+                        fin_configurationpaymentmethod paymentMethod = XPOHelper.GetEntityById<fin_configurationpaymentmethod>(item.ProcessFinanceDocumentParameter.PaymentMethod);
                         decimal totalDelivery = (paymentMethod.Token.Equals("MONEY"))
                             ? item.ProcessFinanceDocumentParameter.TotalDelivery
                             : item.ArticleBag.TotalFinal;
@@ -323,7 +323,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         //Update Display
                         if (item.DocumentFinanceMaster != null)
                         {
-                            fin_configurationpaymentmethod paymentMethod = (fin_configurationpaymentmethod)XPOHelper.GetXPGuidObject(typeof(fin_configurationpaymentmethod), item.ProcessFinanceDocumentParameter.PaymentMethod);
+                            fin_configurationpaymentmethod paymentMethod = XPOHelper.GetEntityById<fin_configurationpaymentmethod>(item.ProcessFinanceDocumentParameter.PaymentMethod);
                             if (GlobalApp.UsbDisplay != null) GlobalApp.UsbDisplay.ShowPayment(paymentMethod.Designation, item.ProcessFinanceDocumentParameter.TotalDelivery, item.ProcessFinanceDocumentParameter.TotalChange);
                         }
                     }

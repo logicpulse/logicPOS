@@ -1,4 +1,4 @@
-﻿using logicpos.datalayer.Xpo;
+﻿using LogicPOS.Data.XPO.Utility;
 using System;
 
 namespace logicpos.Classes.Formatters

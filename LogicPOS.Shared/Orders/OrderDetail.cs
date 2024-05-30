@@ -1,6 +1,6 @@
 ﻿using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Xpo;
 using logicpos.shared.Enums;
+using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Shared.Article;
 using Newtonsoft.Json;
 using System;
@@ -39,7 +39,7 @@ namespace LogicPOS.Shared.Orders
 
         public void Insert(Guid pArticleId, decimal pQuantity, TaxSellType pTaxSellType)
         {
-            fin_article article = (fin_article)XPOHelper.GetXPGuidObject(typeof(fin_article), pArticleId);
+            fin_article article = XPOHelper.GetEntityById<fin_article>(pArticleId);
             PriceProperties priceProperties = ArticleUtils.GetArticlePrice(article, pTaxSellType);
             priceProperties.Quantity = pQuantity;
             Insert(article.Oid, article.Designation, priceProperties);

@@ -4,7 +4,6 @@ using logicpos.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using System;
 using System.Diagnostics;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric

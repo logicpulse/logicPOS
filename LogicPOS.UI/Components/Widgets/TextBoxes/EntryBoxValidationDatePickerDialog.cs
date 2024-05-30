@@ -2,10 +2,9 @@
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using System;
 using logicpos.Classes.Enums.Keyboard;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
-using logicpos.datalayer.Xpo;
 using LogicPOS.UI;
+using LogicPOS.Data.XPO.Utility;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {

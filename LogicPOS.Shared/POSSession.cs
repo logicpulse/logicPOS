@@ -1,15 +1,12 @@
 ﻿using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
-using logicpos.datalayer.Xpo;
-using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Globalization;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Shared.Orders;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using static logicpos.datalayer.Xpo.XPOHelper;
 
 namespace LogicPOS.Shared
 {
@@ -78,9 +75,9 @@ namespace LogicPOS.Shared
 
         public void DeleteLoggedUsers()
         {
-            foreach (Guid item in CurrentSession.LoggedUsers.Keys)
+            foreach (Guid id in CurrentSession.LoggedUsers.Keys)
             {
-                sys_userdetail user = (sys_userdetail)XPOHelper.GetXPGuidObject(typeof(sys_userdetail), item);
+                sys_userdetail user = XPOHelper.GetEntityById<sys_userdetail>(id);
                 XPOHelper.Audit("USER_loggerOUT", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_used_forced_loggerout"), user.Name));
             }
             CurrentSession.LoggedUsers.Clear();
@@ -193,7 +190,7 @@ namespace LogicPOS.Shared
             {
                 OrderMain orderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];
 
-                pos_configurationplacetable xConfigurationPlaceTable = (pos_configurationplacetable)GetXPGuidObject(XPOSettings.Session, typeof(pos_configurationplacetable), orderMain.Table.Oid);
+                pos_configurationplacetable xConfigurationPlaceTable = XPOHelper.GetEntityById<pos_configurationplacetable>(orderMain.Table.Oid);
 
                 if (xConfigurationPlaceTable != null)
                 {

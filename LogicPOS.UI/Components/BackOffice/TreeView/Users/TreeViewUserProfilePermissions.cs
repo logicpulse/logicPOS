@@ -6,13 +6,12 @@ using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Xpo;
 using System;
 using System.Collections.Generic;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO.Utility;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -226,7 +225,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         private void UpdateState(string pOid, bool pNewValue)
         {
             //UserProfile _currentXPObject = (UserProfile)_dataSource.Lookup(new Guid("" + TreeView.Model.GetValue(_treeIter, _modelFirstCustomFieldIndex)));
-            sys_userprofile _currentXPObject = (sys_userprofile)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(sys_userprofile), new Guid("" + TreeView.Model.GetValue(_treeIter, _modelFirstCustomFieldIndex)));
+            sys_userprofile _currentXPObject = XPOHelper.GetEntityById<sys_userprofile>(new Guid("" + TreeView.Model.GetValue(_treeIter, _modelFirstCustomFieldIndex)));
             bool needToInsert = true;
             for (int i = 0; i < _xpCollectionUserPermissionItem.Count; i++)
             {
@@ -249,7 +248,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                                     //((UserPermissionProfile)_xpCollection3[j]).Disabled = !pNewValue;
                                     //((UserPermissionProfile)_xpCollectionUserPermissionProfile[j]).Delete();
                                     //Mario Fix: Get Fresh Object else Gives Object Deleted Stress
-                                    tmpUserPermissionProfile = (sys_userpermissionprofile)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(sys_userpermissionprofile), tmpUserPermissionProfile.Oid);
+                                    tmpUserPermissionProfile = XPOHelper.GetEntityById<sys_userpermissionprofile>(tmpUserPermissionProfile.Oid);
                                     tmpUserPermissionProfile.Delete();
                                     _xpCollectionUserPermissionProfile.Reload();
                                 }
@@ -262,7 +261,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                             tmpUserPermissionProfileUpdate.Reload();
                             tmpUserPermissionProfileUpdate.UserProfile = _currentXPObject;
                             //Mario Fix: Get Fresh Object else Gives Object Deleted Stress
-                            tmpUserPermissionItem = (sys_userpermissionitem)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(sys_userpermissionitem), tmpUserPermissionItem.Oid);
+                            tmpUserPermissionItem = XPOHelper.GetEntityById<sys_userpermissionitem>(tmpUserPermissionItem.Oid);
                             tmpUserPermissionProfileUpdate.PermissionItem = tmpUserPermissionItem;
                             tmpUserPermissionProfileUpdate.Granted = !pNewValue;
                             tmpUserPermissionProfileUpdate.Save();
@@ -292,7 +291,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             _listStoreModelPermissionItem.Clear();
 
             //UserProfile _currentXPObject = (UserProfile)_dataSource.Lookup(new Guid("" + TreeView.Model.GetValue(_treeIter, _modelFirstCustomFieldIndex)));
-            sys_userprofile _currentXPObject = (sys_userprofile)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(sys_userprofile), new Guid("" + TreeView.Model.GetValue(_treeIter, _modelFirstCustomFieldIndex)));
+            sys_userprofile _currentXPObject = XPOHelper.GetEntityById<sys_userprofile>(new Guid("" + TreeView.Model.GetValue(_treeIter, _modelFirstCustomFieldIndex)));
 
             for (int i = 0; i < _xpCollectionUserPermissionItem.Count; i++)
             {

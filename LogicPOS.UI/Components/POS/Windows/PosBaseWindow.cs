@@ -4,7 +4,6 @@ using logicpos.Extensions;
 using System;
 using System.Drawing;
 using System.IO;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 

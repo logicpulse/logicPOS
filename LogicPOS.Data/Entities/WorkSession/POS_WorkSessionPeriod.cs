@@ -5,12 +5,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
 {
     public enum WorkSessionPeriodType
     {
-        Day, Terminal
+        Day, 
+        Terminal
     }
 
     public enum WorkSessionPeriodStatus
     {
-        Open, Close
+        Open, 
+        Close
     }
 
     [DeferredDeletion(false)]

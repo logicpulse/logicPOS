@@ -4,9 +4,10 @@ using Gtk;
 using logicpos.App;
 using logicpos.Classes.DataLayer;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Xpo;
+using LogicPOS.Data.Services;
+using LogicPOS.Data.XPO;
 using LogicPOS.Data.XPO.Settings;
-using LogicPOS.Finance.WorkSession;
+using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Globalization;
 using LogicPOS.Printing.Utility;
 using System;
@@ -34,7 +35,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 }
 
                 //Stop WorkSession Period Day
-                bool result = ProcessWorkSessionPeriod.SessionPeriodClose(XPOSettings.WorkSessionPeriodDay);
+                bool result = WorkSessionProcessor.SessionPeriodClose(XPOSettings.WorkSessionPeriodDay);
                 if (result)
                 {
                     _touchButtonStartStopWorkSessionPeriodDay.LabelText = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_worksession_open_day");
@@ -52,7 +53,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                     if (pResponse == ResponseType.Yes)
                     {
-                        FrameworkCalls.PrintWorkSessionMovement(this, TerminalSettings.LoggedTerminal.ThermalPrinter, XPOSettings.WorkSessionPeriodTerminal);
+                        var workSessionDto = MappingUtils.GetPrintWorkSessionDto(XPOSettings.WorkSessionPeriodDay);
+                        FrameworkCalls.PrintWorkSessionMovement(this, TerminalSettings.LoggedTerminal.ThermalPrinter, workSessionDto);
                     }
                     //FrameworkCalls.PrintWorkSessionMovement(this, TerminalSettings.LoggedTerminal.ThermalPrinter, GlobalFramework.WorkSessionPeriodDay);
                 }
@@ -60,7 +62,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Start WorkSessionPeriodDay
             else
             {
-                bool result = ProcessWorkSessionPeriod.SessionPeriodOpen(WorkSessionPeriodType.Day);
+                bool result = WorkSessionProcessor.SessionPeriodOpen(WorkSessionPeriodType.Day);
                 if (result)
                 {
                     _touchButtonStartStopWorkSessionPeriodDay.LabelText = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_worksession_close_day");
@@ -72,7 +74,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private bool CanCloseWorkSessionPeriodDay()
         {
             //Check if has Working Open Orders/Tables
-            XPSelectData xPSelectDataTables = ProcessWorkSessionPeriod.GetOpenOrderTables();
+            XPSelectData xPSelectDataTables = WorkSessionProcessor.GetOpenOrderTables();
             int noOfOpenOrderTables = xPSelectDataTables.Data.Length;
             if (noOfOpenOrderTables > 0)
             {
@@ -100,7 +102,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
 
             //Check if has Working Terminal Sessions
-            XPSelectData xPSelectDataTerminals = ProcessWorkSessionPeriod.GetSessionPeriodOpenTerminalSessions();
+            XPSelectData xPSelectDataTerminals = WorkSessionProcessor.GetSessionPeriodOpenTerminalSessions();
             int noOfTerminalOpenSessions = xPSelectDataTerminals.Data.Length;
             if (noOfTerminalOpenSessions > 0)
             {
@@ -155,7 +157,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             GlobalApp.PosMainWindow.UpdateWorkSessionUI();
 
 
-            //ProcessWorkSessionPeriod.GetSessionPeriodMovementTotalDebug(GlobalFramework.WorkSessionPeriodTerminal, true );
+            //WorkSessionProcessor.GetSessionPeriodMovementTotalDebug(GlobalFramework.WorkSessionPeriodTerminal, true );
             PosCashDrawerDialog dialogCashDrawer = new PosCashDrawerDialog(this, DialogFlags.DestroyWithParent);
 
             int response = dialogCashDrawer.Run();
@@ -170,7 +172,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 {
                     case "CASHDRAWER_OPEN":
                         //Start Terminal Period
-                        result = ProcessWorkSessionPeriod.SessionPeriodOpen(WorkSessionPeriodType.Terminal, dialogCashDrawer.MovementDescription);
+                        result = WorkSessionProcessor.SessionPeriodOpen(WorkSessionPeriodType.Terminal, dialogCashDrawer.MovementDescription);
 
                         if (result)
                         {
@@ -178,11 +180,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             GlobalApp.PosMainWindow.UpdateWorkSessionUI();
                             GlobalApp.PosMainWindow.TicketList.UpdateOrderStatusBar();
 
-                            //Here we already have GlobalFramework.WorkSessionPeriodTerminal, assigned on ProcessWorkSessionPeriod.SessionPeriodStart
+                            //Here we already have GlobalFramework.WorkSessionPeriodTerminal, assigned on WorkSessionProcessor.SessionPeriodStart
                             //Get Fresh XPO Objects, Prevent Deleted Object Bug
                             workSessionPeriodTerminal = XPOSettings.Session.GetObjectByKey<pos_worksessionperiod>(XPOSettings.WorkSessionPeriodTerminal.Oid);
 
-                            result = ProcessWorkSessionMovement.PersistWorkSessionMovement(
+                            result = WorkSessionProcessor.PersistWorkSessionMovement(
                              workSessionPeriodTerminal,
                              originalMovType,
                              XPOSettings.LoggedUser,
@@ -235,7 +237,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 moneyInOutLabel = "ticket_title_worksession_money_out";
                                 moneyInOutLabelAudit = "audit_message_cashdrawer_out";
                                 audit = "CASHDRAWER_OUT";
-                                dialogCashDrawer.MovementType = (pos_worksessionmovementtype)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(pos_worksessionmovementtype), Guid.Parse("069564cb-074a-4c91-931e-554454b1ab7e"));
+                                dialogCashDrawer.MovementType = XPOHelper.GetEntityById<pos_worksessionmovementtype>(Guid.Parse("069564cb-074a-4c91-931e-554454b1ab7e"));
                             }
                             else
                             {
@@ -244,7 +246,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 moneyInOutLabel = "ticket_title_worksession_money_in";
                                 moneyInOutLabelAudit = "audit_message_cashdrawer_in";
                                 audit = "CASHDRAWER_IN";
-                                dialogCashDrawer.MovementType = (pos_worksessionmovementtype)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(pos_worksessionmovementtype), Guid.Parse("2ef29ce6-314c-4f40-897f-e31802dbeef3"));
+                                dialogCashDrawer.MovementType = XPOHelper.GetEntityById<pos_worksessionmovementtype>(Guid.Parse("2ef29ce6-314c-4f40-897f-e31802dbeef3"));
                             }
                             //Total = IN
                             dialogCashDrawer.TotalAmountInCashDrawer = dialogCashDrawer.MovementAmountMoney;
@@ -253,7 +255,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                             workSessionPeriodTerminal = XPOSettings.Session.GetObjectByKey<pos_worksessionperiod>(XPOSettings.WorkSessionPeriodTerminal.Oid);
 
-                            var resultProcess = ProcessWorkSessionMovement.PersistWorkSessionMovement(
+                            var resultProcess = WorkSessionProcessor.PersistWorkSessionMovement(
                               workSessionPeriodTerminal,
                               dialogCashDrawer.MovementType,
                               XPOSettings.LoggedUser,
@@ -311,7 +313,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 moneyInOutLabel = "ticket_title_worksession_money_out";
                                 moneyInOutLabelAudit = "audit_message_cashdrawer_out";
                                 audit = "CASHDRAWER_OUT";
-                                dialogCashDrawer.MovementType = (pos_worksessionmovementtype)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(pos_worksessionmovementtype), Guid.Parse("069564cb-074a-4c91-931e-554454b1ab7e"));
+                                dialogCashDrawer.MovementType = XPOHelper.GetEntityById<pos_worksessionmovementtype>(Guid.Parse("069564cb-074a-4c91-931e-554454b1ab7e"));
                             }
                             else
                             {
@@ -320,7 +322,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 moneyInOutLabel = "ticket_title_worksession_money_in";
                                 moneyInOutLabelAudit = "audit_message_cashdrawer_in";
                                 audit = "CASHDRAWER_IN";
-                                dialogCashDrawer.MovementType = (pos_worksessionmovementtype)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(pos_worksessionmovementtype), Guid.Parse("2ef29ce6-314c-4f40-897f-e31802dbeef3"));
+                                dialogCashDrawer.MovementType = XPOHelper.GetEntityById<pos_worksessionmovementtype>(Guid.Parse("2ef29ce6-314c-4f40-897f-e31802dbeef3"));
 
                             }
 
@@ -331,7 +333,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                             workSessionPeriodTerminal = XPOSettings.Session.GetObjectByKey<pos_worksessionperiod>(XPOSettings.WorkSessionPeriodTerminal.Oid);
 
-                            var resultProcess = ProcessWorkSessionMovement.PersistWorkSessionMovement(
+                            var resultProcess = WorkSessionProcessor.PersistWorkSessionMovement(
                               workSessionPeriodTerminal,
                               dialogCashDrawer.MovementType,
                               XPOSettings.LoggedUser,
@@ -367,7 +369,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         //workSessionPeriodTerminal = XPOSettings.Session.GetObjectByKey<pos_worksessionperiod>(GlobalFramework.WorkSessionPeriodTerminal.Oid);
 
                         //Stop Terminal Period
-                        result = ProcessWorkSessionPeriod.SessionPeriodClose(workSessionPeriodTerminal);
+                        result = WorkSessionProcessor.SessionPeriodClose(workSessionPeriodTerminal);
 
                         if (result)
                         {
@@ -382,7 +384,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
 
                             //Add CASHDRAWER_CLOSE Movement to Day Period
-                            result = ProcessWorkSessionMovement.PersistWorkSessionMovement(
+                            result = WorkSessionProcessor.PersistWorkSessionMovement(
                               workSessionPeriodTerminal,
                               originalMovType,
                               XPOSettings.LoggedUser,
@@ -404,7 +406,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             if (pResponse == ResponseType.Yes)
                             {
                                 //PrintWorkSessionMovement
-                                FrameworkCalls.PrintWorkSessionMovement(dialogCashDrawer, TerminalSettings.LoggedTerminal.ThermalPrinter, workSessionPeriodTerminal);
+                                var workSessionDto = MappingUtils.GetPrintWorkSessionDto(workSessionPeriodTerminal);
+                                FrameworkCalls.PrintWorkSessionMovement(dialogCashDrawer, TerminalSettings.LoggedTerminal.ThermalPrinter, workSessionDto);
                             }
 
                             //GlobalFramework.WorkSessionPeriodTerminal = null;
@@ -417,7 +420,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                         workSessionPeriodTerminal = XPOSettings.Session.GetObjectByKey<pos_worksessionperiod>(XPOSettings.WorkSessionPeriodTerminal.Oid);
 
-                        result = ProcessWorkSessionMovement.PersistWorkSessionMovement(
+                        result = WorkSessionProcessor.PersistWorkSessionMovement(
                           workSessionPeriodTerminal,
                           dialogCashDrawer.MovementType,
                           XPOSettings.LoggedUser,
@@ -464,7 +467,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         workSessionPeriodTerminal = XPOSettings.Session.GetObjectByKey<pos_worksessionperiod>(XPOSettings.WorkSessionPeriodTerminal.Oid);
 
                         //In Period Terminal
-                        result = ProcessWorkSessionMovement.PersistWorkSessionMovement(
+                        result = WorkSessionProcessor.PersistWorkSessionMovement(
                           workSessionPeriodTerminal,
                           dialogCashDrawer.MovementType,
                           XPOSettings.LoggedUser,
@@ -514,9 +517,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             dialogCashDrawer.Destroy();
 
             //TODO: Remove Comments
-            //_logger.Debug(string.Format("ProcessWorkSessionPeriod: [{0}]", ProcessWorkSessionPeriod.GetSessionPeriodCashDrawerOpenOrCloseAmount(GlobalFramework.WorkSessionPeriodDay)));
-            //if (GlobalFramework.WorkSessionPeriodDay != null) ProcessWorkSessionPeriod.GetSessionPeriodMovementTotalDebug(GlobalFramework.WorkSessionPeriodDay, true);
-            //if (GlobalFramework.WorkSessionPeriodTerminal != null) ProcessWorkSessionPeriod.GetSessionPeriodMovementTotalDebug(GlobalFramework.WorkSessionPeriodTerminal, true);
+            //_logger.Debug(string.Format("WorkSessionProcessor: [{0}]", WorkSessionProcessor.GetSessionPeriodCashDrawerOpenOrCloseAmount(GlobalFramework.WorkSessionPeriodDay)));
+            //if (GlobalFramework.WorkSessionPeriodDay != null) WorkSessionProcessor.GetSessionPeriodMovementTotalDebug(GlobalFramework.WorkSessionPeriodDay, true);
+            //if (GlobalFramework.WorkSessionPeriodTerminal != null) WorkSessionProcessor.GetSessionPeriodMovementTotalDebug(GlobalFramework.WorkSessionPeriodTerminal, true);
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -572,7 +575,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             int windowHeight = 300;
             pWorkSessionPeriod.DateEnd = DateTime.Now;
             //Get Session Period Details
-            Hashtable resultHashTable = ProcessWorkSessionPeriod.GetSessionPeriodSummaryDetails(pWorkSessionPeriod);
+            Hashtable resultHashTable = WorkSessionProcessor.GetSessionPeriodSummaryDetails(pWorkSessionPeriod.Oid);
             //Get Total Money in CashDrawer On Open/Close
             string totalMoneyInCashDrawerOnOpen = string.Format("{0}: {1}", CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_total_cashdrawer_on_open"), LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency((decimal)resultHashTable["totalMoneyInCashDrawerOnOpen"], XPOSettings.ConfigurationSystemCurrency.Acronym));
             string totalMoneyInCashDrawer = string.Format("{0}: {1}", CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_total_cashdrawer"), LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency((decimal)resultHashTable["totalMoneyInCashDrawer"], XPOSettings.ConfigurationSystemCurrency.Acronym));
@@ -585,7 +588,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Get Payments Totals
             try
             {
-                XPCollection workSessionPeriodTotal = ProcessWorkSessionPeriod.GetSessionPeriodTotal(pWorkSessionPeriod);
+                XPCollection workSessionPeriodTotal = WorkSessionProcessor.GetSessionPeriodTotal(pWorkSessionPeriod);
                 if (workSessionPeriodTotal.Count > 0)
                 {
                     messageTotalSummary += string.Format("{0}{1}{0}", Environment.NewLine, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_total_by_type_of_payment"));

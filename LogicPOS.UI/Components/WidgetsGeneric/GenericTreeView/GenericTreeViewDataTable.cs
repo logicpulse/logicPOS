@@ -6,7 +6,6 @@ using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric

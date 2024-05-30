@@ -3,10 +3,9 @@ using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using System;
 using System.Drawing;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
-using logicpos.datalayer.Xpo;
 using LogicPOS.Settings;
+using LogicPOS.Data.XPO.Utility;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {

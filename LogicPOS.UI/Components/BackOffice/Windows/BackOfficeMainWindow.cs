@@ -8,9 +8,8 @@ using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Xpo;
+using LogicPOS.Data.Services;
 using LogicPOS.Data.XPO.Settings;
-using LogicPOS.Finance.WorkSession;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using System;
@@ -215,11 +214,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 //START WORK SESSION AND DAY FOR BACKOFFICE MODE
                 if (GeneralSettings.AppUseBackOfficeMode)
                 {
-                    bool openDay = ProcessWorkSessionPeriod.SessionPeriodOpen(WorkSessionPeriodType.Day, "");
+                    bool openDay = WorkSessionProcessor.SessionPeriodOpen(WorkSessionPeriodType.Day, "");
                     if (openDay)
                     {
-                        pos_worksessionperiod workSessionPeriodDay = ProcessWorkSessionPeriod.GetSessionPeriod(WorkSessionPeriodType.Day);
-                        XPOSettings.WorkSessionPeriodTerminal = ProcessWorkSessionPeriod.GetSessionPeriod(WorkSessionPeriodType.Day);
+                        pos_worksessionperiod workSessionPeriodDay = WorkSessionProcessor.GetSessionPeriod(WorkSessionPeriodType.Day);
+                        XPOSettings.WorkSessionPeriodTerminal = WorkSessionProcessor.GetSessionPeriod(WorkSessionPeriodType.Day);
                         XPOSettings.WorkSessionPeriodTerminal.SessionStatus = WorkSessionPeriodStatus.Open;
                     }
                 }

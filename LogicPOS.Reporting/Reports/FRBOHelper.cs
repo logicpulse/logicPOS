@@ -1,6 +1,6 @@
 ﻿using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Xpo;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Globalization;
 using LogicPOS.Reporting.BOs.Documents;
 using LogicPOS.Settings;
@@ -54,13 +54,13 @@ namespace LogicPOS.Reporting.BOs
         /// <summary>
         /// Generate Fast Report Business Objects for ProcessReportFinanceDocument
         /// </summary>
-        public static ResultFRBODocumentFinanceMaster GetFRBOFinanceDocument(Guid pDocumentFinanceMasterOid)
+        public static ResultFRBODocumentFinanceMaster GetFRBOFinanceDocument(Guid financeMasterId)
         {
             ResultFRBODocumentFinanceMaster result = new ResultFRBODocumentFinanceMaster();
 
             try
             {
-                fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(fin_documentfinancemaster), pDocumentFinanceMasterOid);
+                fin_documentfinancemaster documentFinanceMaster = XPOHelper.GetEntityById<fin_documentfinancemaster>(financeMasterId);
 
                 bool retificationDocuments = (
                      documentFinanceMaster.DocumentType.Oid == CustomDocumentSettings.CreditNoteDocumentTypeId
@@ -196,7 +196,7 @@ namespace LogicPOS.Reporting.BOs
 
             try
             {
-                fin_documentfinancepayment documentFinancePayment = (fin_documentfinancepayment)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(fin_documentfinancepayment), pDocumentFinancePaymentOid);
+                fin_documentfinancepayment documentFinancePayment = XPOHelper.GetEntityById<fin_documentfinancepayment>(pDocumentFinancePaymentOid);
 
                 string sqlFilter = string.Format("fpaOid = '{0}'", pDocumentFinancePaymentOid.ToString());
 

@@ -8,7 +8,6 @@ using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.Widgets.Entrys;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Xpo;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.DTOs.Common;
 using LogicPOS.Finance.DocumentProcessing;

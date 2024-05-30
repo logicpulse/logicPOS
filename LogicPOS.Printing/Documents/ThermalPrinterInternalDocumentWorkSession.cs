@@ -1,10 +1,9 @@
 ﻿using DevExpress.Xpo.DB;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Xpo;
-using logicpos.shared.Enums.ThermalPrinter;
+using LogicPOS.Data.Services;
+using LogicPOS.Data.XPO;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO.Utility;
 using LogicPOS.DTOs.Printing;
-using LogicPOS.Finance.WorkSession;
 using LogicPOS.Globalization;
 using LogicPOS.Printing.Enums;
 using LogicPOS.Printing.Templates;
@@ -20,28 +19,43 @@ namespace LogicPOS.Printing.Documents
 {
     public class ThermalPrinterInternalDocumentWorkSession : ThermalPrinterBaseInternalTemplate
     {
-        private readonly pos_worksessionperiod _workSessionPeriod;
+        private readonly PrintWorkSessionDto _workSessionPeriod;
         private readonly SplitCurrentAccountMode _splitCurrentAccountMode;
 
         public ThermalPrinterInternalDocumentWorkSession(
-            PrinterDto printer, 
-            pos_worksessionperiod pWorkSessionPeriod, 
+            PrintingPrinterDto printer,
+            PrintWorkSessionDto workSession,
             SplitCurrentAccountMode pSplitCurrentAccountMode)
             : base(printer)
         {
-            _workSessionPeriod = pWorkSessionPeriod;
+            _workSessionPeriod = workSession;
             _splitCurrentAccountMode = pSplitCurrentAccountMode;
 
             //Define TicketTitle for Day
-            if (_workSessionPeriod.PeriodType == WorkSessionPeriodType.Day)
+            if (_workSessionPeriod.PeriodTypeIsDay)
             {
-                _ticketTitle = (pWorkSessionPeriod.SessionStatus == WorkSessionPeriodStatus.Open) ? CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "ticket_title_worksession_day_resume") : CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "ticket_title_worksession_day_close");
+                if (workSession.SessionStatusIsOpen)
+                {
+                    _ticketTitle = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "ticket_title_worksession_day_resume");
+                }
+                else
+                {
+                    _ticketTitle = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "ticket_title_worksession_day_close");
+                }
             }
             //Define TicketTitle/TicketSubTitle for Terminal
             else
             {
-                _ticketTitle = (pWorkSessionPeriod.SessionStatus == WorkSessionPeriodStatus.Open) ? CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "ticket_title_worksession_terminal_resume") : CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "ticket_title_worksession_terminal_close");
-                _ticketSubTitle = (pWorkSessionPeriod.PeriodType == WorkSessionPeriodType.Terminal) ? _workSessionPeriod.Terminal.Designation : string.Empty;
+                if (workSession.SessionStatusIsOpen)
+                {
+                    _ticketTitle = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "ticket_title_worksession_terminal_resume");
+                }
+                else
+                {
+                    _ticketTitle = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "ticket_title_worksession_terminal_close");
+                }
+
+                _ticketSubTitle = workSession.PeriodTypeIsTerminal ? _workSessionPeriod.TerminalDesignation : string.Empty;
             }
 
             //Add Extra text to TicketSubTitle
@@ -123,14 +137,13 @@ namespace LogicPOS.Printing.Documents
         }
 
         public bool PrintWorkSessionMovement(
-            pos_worksessionperiod pWorkSessionPeriod, 
+            PrintWorkSessionDto workSession,
             SplitCurrentAccountMode pSplitCurrentAccountMode)
         {
             bool result = false;
 
-            sys_configurationprinterstemplates template = (sys_configurationprinterstemplates)XPOHelper.GetXPGuidObject(typeof(sys_configurationprinterstemplates), PrintingSettings.WorkSessionMovementPrintingTemplateId);
             string splitCurrentAccountFilter = string.Empty;
-            string fileTicket = template.FileTemplate;
+            string fileTicket = XPOHelper.WorkSession.GetWorkSessionMovementPrintingFileTemplate();
 
             switch (pSplitCurrentAccountMode)
             {
@@ -151,23 +164,23 @@ namespace LogicPOS.Printing.Documents
                 //Shared Where for details and totals Queries
                 string sqlWhere = string.Empty;
 
-                if (pWorkSessionPeriod.PeriodType == WorkSessionPeriodType.Day)
+                if (workSession.PeriodTypeIsDay)
                 {
-                    sqlWhere = string.Format("PeriodParent = '{0}'{1}", pWorkSessionPeriod.Oid, splitCurrentAccountFilter);
+                    sqlWhere = string.Format("PeriodParent = '{0}'{1}", workSession.Id, splitCurrentAccountFilter);
                 }
                 else
                 {
-                    sqlWhere = string.Format("Period = '{0}'{1}", pWorkSessionPeriod.Oid, splitCurrentAccountFilter);
+                    sqlWhere = string.Format("Period = '{0}'{1}", workSession.Id, splitCurrentAccountFilter);
                 }
 
                 //Shared for Both Modes
                 if (sqlWhere != string.Empty) sqlWhere = string.Format(" AND {0}", sqlWhere);
 
                 //Format to Display Vars
-                string dateCloseDisplay = (pWorkSessionPeriod.SessionStatus == WorkSessionPeriodStatus.Open) ? CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_in_progress") : pWorkSessionPeriod.DateEnd.ToString(CultureSettings.DateTimeFormat);
+                string dateCloseDisplay = (workSession.SessionStatusIsOpen) ? CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_in_progress") : workSession.StartDate.ToString(CultureSettings.DateTimeFormat);
 
                 //Get Session Period Details
-                Hashtable resultHashTable = ProcessWorkSessionPeriod.GetSessionPeriodSummaryDetails(pWorkSessionPeriod);
+                Hashtable resultHashTable = WorkSessionProcessor.GetSessionPeriodSummaryDetails(workSession.Id);
 
                 //Print Header Summary
                 DataRow dataRow = null;
@@ -177,7 +190,7 @@ namespace LogicPOS.Printing.Documents
                 //Open DateTime
                 dataRow = dataTable.NewRow();
                 dataRow[0] = string.Format("{0}:", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_worksession_open_datetime"));
-                dataRow[1] = pWorkSessionPeriod.DateStart.ToString(CultureSettings.DateTimeFormat);
+                dataRow[1] = workSession.StartDate.ToString(CultureSettings.DateTimeFormat);
                 dataTable.Rows.Add(dataRow);
                 //Close DataTime
                 dataRow = dataTable.NewRow();
@@ -225,7 +238,7 @@ namespace LogicPOS.Printing.Documents
                 _genericThermalPrinter.LineFeed();
 
                 //Get Final Rendered DataTable Groups
-                Dictionary<DataTableGroupPropertiesType, DataTableGroupProperties> dictGroupProperties = GenDataTableWorkSessionMovementResume(pWorkSessionPeriod.PeriodType, pSplitCurrentAccountMode, sqlWhere);
+                Dictionary<DataTableGroupPropertiesType, DataTableGroupProperties> dictGroupProperties = GenDataTableWorkSessionMovementResume(workSession.PeriodType, pSplitCurrentAccountMode, sqlWhere);
 
                 //Prepare Local vars for Group Loop
                 XPSelectData xPSelectData = null;
@@ -242,7 +255,7 @@ namespace LogicPOS.Printing.Documents
                 //Start to process Group
                 int groupPosition = -1;
                 //Assign Position to Print Payment Group Split Title
-                int groupPositionTitlePayments = (pWorkSessionPeriod.PeriodType == WorkSessionPeriodType.Day) ? 9 : 8;
+                int groupPositionTitlePayments = (workSession.PeriodTypeIsDay) ? 9 : 8;
                 //If CurrentAccount Mode decrease 1, it dont have PaymentMethods
                 if (pSplitCurrentAccountMode == SplitCurrentAccountMode.CurrentAcount) groupPositionTitlePayments--;
 
@@ -375,11 +388,14 @@ namespace LogicPOS.Printing.Documents
             return result;
         }
 
-        private static Dictionary<DataTableGroupPropertiesType, DataTableGroupProperties> GenDataTableWorkSessionMovementResume(WorkSessionPeriodType pPeriodType, SplitCurrentAccountMode pSplitCurrentAccountMode, string pSqlWhere)
+        private static Dictionary<DataTableGroupPropertiesType, DataTableGroupProperties> GenDataTableWorkSessionMovementResume(
+            string periodType,
+            SplitCurrentAccountMode pSplitCurrentAccountMode,
+            string pSqlWhere)
         {
             //Parameters
             string sqlWhere = pSqlWhere;
-            bool enabledGroupTerminal = (pPeriodType == WorkSessionPeriodType.Day); ;
+            bool enabledGroupTerminal = (periodType == "Day"); ;
             bool enabledGroupPaymentMethod = (pSplitCurrentAccountMode != SplitCurrentAccountMode.CurrentAcount); ; ;
             bool enabledGroupSubFamily = true;
 

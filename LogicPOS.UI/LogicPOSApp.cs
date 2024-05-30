@@ -8,9 +8,9 @@ using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Logic.Hardware;
 using logicpos.Classes.Logic.Others;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Xpo;
+using LogicPOS.Data.Services;
 using LogicPOS.Data.XPO.Settings;
-using LogicPOS.Finance.WorkSession;
+using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Globalization;
 using LogicPOS.Reporting;
 using LogicPOS.Settings;
@@ -305,8 +305,8 @@ namespace logicpos
                 POSSession.CurrentSession = POSSession.GetSessionFromFile(appSessionFile);
 
                 //Try to Get open Session Day/Terminal for this Terminal
-                XPOSettings.WorkSessionPeriodDay = ProcessWorkSessionPeriod.GetSessionPeriod(WorkSessionPeriodType.Day);
-                XPOSettings.WorkSessionPeriodTerminal = ProcessWorkSessionPeriod.GetSessionPeriod(WorkSessionPeriodType.Terminal);
+                XPOSettings.WorkSessionPeriodDay = WorkSessionProcessor.GetSessionPeriod(WorkSessionPeriodType.Day);
+                XPOSettings.WorkSessionPeriodTerminal = WorkSessionProcessor.GetSessionPeriod(WorkSessionPeriodType.Terminal);
 
                 //Use Detected ScreenSize
                 string appScreenSize = string.IsNullOrEmpty(GeneralSettings.Settings["appScreenSize"])

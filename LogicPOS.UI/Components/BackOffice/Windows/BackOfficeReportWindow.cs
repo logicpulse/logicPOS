@@ -1,7 +1,6 @@
 ﻿using logicpos.App;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using LogicPOS.Globalization;
-using LogicPOS.Settings.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {

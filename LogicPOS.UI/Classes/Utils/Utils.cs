@@ -16,9 +16,9 @@ using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Logic.Others;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
-using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO.Utility;
 using LogicPOS.DTOs.Printing;
 using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Globalization;
@@ -178,7 +178,7 @@ namespace logicpos
 
         internal static ResponseType ShowMessageTouchErrorPrintingTicket(
             Gtk.Window pSourceWindow, 
-            PrinterDto printer, 
+            PrintingPrinterDto printer, 
             Exception pEx)
         {
             //Protection when Printer is Null, ex printing Ticket Articles (Printer is Assign in Article)
@@ -2184,8 +2184,8 @@ namespace logicpos
         {
             bool customerExists = false;
             erp_customer result;
-            erp_customer finalConsumerEntity = (erp_customer)XPOHelper.GetXPGuidObject(typeof(erp_customer), InvoiceSettings.FinalConsumerId);
-            fin_configurationpricetype configurationPriceType = (fin_configurationpricetype)XPOHelper.GetXPGuidObject(typeof(fin_configurationpricetype), XPOSettings.XpoOidConfigurationPriceTypeDefault);
+            erp_customer finalConsumerEntity = XPOHelper.GetEntityById<erp_customer>(InvoiceSettings.FinalConsumerId);
+            fin_configurationpricetype configurationPriceType = XPOHelper.GetEntityById<fin_configurationpricetype>(XPOSettings.XpoOidConfigurationPriceTypeDefault);
 
             SortingCollection sortCollection = new SortingCollection
             {
@@ -2240,7 +2240,7 @@ namespace logicpos
             {
                 changed = false;
                 //Require to get a Fresh Object
-                result = (erp_customer)XPOHelper.GetXPGuidObject(typeof(erp_customer), pCustomer.Oid);
+                result = XPOHelper.GetEntityById<erp_customer>(pCustomer.Oid);
 
                 if (result != finalConsumerEntity)
                 {

@@ -10,9 +10,9 @@ using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
 using logicpos.datalayer.DataLayer.Xpo.Documents;
-using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Utility;
@@ -539,7 +539,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     {
                         if (serialNumber.Oid != Guid.Empty && !serialNumber.Disabled)
                         {
-                            XPGuidObject dataSourceRowSerialNumber = XPOHelper.GetXPGuidObject(typeof(fin_articleserialnumber), serialNumber.Oid);
+                            XPGuidObject dataSourceRowSerialNumber = XPOHelper.GetEntityById<fin_articleserialnumber>(serialNumber.Oid);
                             if (dataSourceRowSerialNumber != null)
                             {
                                 PopulateSerialNumberArticleEntrys(dataSourceRowSerialNumber);
@@ -831,7 +831,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 if (!articleOid.Equals(Guid.Empty))
                 {
                     //Get Object from dialog else Mixing Sessions, Both belong to diferente Sessions
-                    fin_article newArticle = (fin_article)XPOHelper.GetXPGuidObject(typeof(fin_article), articleOid);
+                    fin_article newArticle = XPOHelper.GetEntityById<fin_article>(articleOid);
 
                     if (isArticleCode)
                     {

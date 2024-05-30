@@ -7,7 +7,7 @@ namespace LogicPOS.Data.XPO.Settings.Terminal
     {
         public static bool HasPrinter => TerminalSettings.LoggedTerminal.Printer != null;
 
-        public static PrinterDto GetPrinterDto()
+        public static PrintingPrinterDto GetPrinterDto()
         {
             return MappingUtils.GetPrinterDto(TerminalSettings.LoggedTerminal.ThermalPrinter);
         }

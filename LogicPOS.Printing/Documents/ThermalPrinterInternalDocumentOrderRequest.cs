@@ -16,7 +16,7 @@ namespace LogicPOS.Printing.Documents
         private readonly bool _articlePrinterEnabled;
 
         public ThermalPrinterInternalDocumentOrderRequest(
-            PrinterDto printer,
+            PrintingPrinterDto printer,
             PrintOrderTicketDto orderTicket)
             : this(
                   printer,
@@ -24,7 +24,7 @@ namespace LogicPOS.Printing.Documents
         { }
 
         public ThermalPrinterInternalDocumentOrderRequest(
-            PrinterDto printer,
+            PrintingPrinterDto printer,
             PrintOrderTicketDto orderTicket,
             bool articlePrinterEnabled)
             : base(printer)

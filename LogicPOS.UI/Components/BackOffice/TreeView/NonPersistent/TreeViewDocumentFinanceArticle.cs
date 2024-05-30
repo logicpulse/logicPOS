@@ -5,9 +5,8 @@ using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
-using logicpos.datalayer.Xpo;
+using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Globalization;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Shared;
 using LogicPOS.Shared.Article;
 using LogicPOS.Shared.Orders;
@@ -152,9 +151,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     foreach (var item in articleBag)
                     {
                         //Get XPGuidObjects to Assign to Columns
-                        article = (fin_article)XPOHelper.GetXPGuidObject(typeof(fin_article), item.Key.ArticleId);
-                        configurationVatRate = (fin_configurationvatrate)XPOHelper.GetXPGuidObject(typeof(fin_configurationvatrate),
-                          XPOHelper.GetGuidFromQuery(string.Format(@"SELECT Oid FROM fin_configurationvatrate WHERE (Disabled IS NULL OR Disabled  <> 1) AND Value = '{0}';", item.Key.Vat))
+                        article = (fin_article)XPOHelper.GetEntityById<fin_article>(item.Key.ArticleId);
+                        configurationVatRate = 
+                            XPOHelper.GetEntityById<fin_configurationvatrate>(
+                                XPOHelper.GetGuidFromQuery($@"SELECT Oid FROM fin_configurationvatrate WHERE (Disabled IS NULL OR Disabled  <> 1) AND Value = '{item.Key.Vat}';")
                         );
                         //WIP: configurationUnitMeasure = (ConfigurationUnitMeasure)XPOHelper.GetXPGuidObjectFromSession(typeof(ConfigurationUnitMeasure), 
                         //  FrameworkUtils.GetGuidFromQuery(string.Format(@"SELECT Oid FROM cfg_configurationunitmeasure WHERE (Disabled IS NULL OR Disabled  <> 1) AND Acronym = '{0}';", item.Value.UnitMeasure))

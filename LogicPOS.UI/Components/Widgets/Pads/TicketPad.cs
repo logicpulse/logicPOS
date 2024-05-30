@@ -1,6 +1,5 @@
 ﻿using Gtk;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.Classes.Logic.Others;
 using logicpos.Extensions;
 using LogicPOS.Settings;
 using System;

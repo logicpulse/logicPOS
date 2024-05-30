@@ -8,8 +8,8 @@ using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Xpo;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
@@ -318,7 +318,7 @@ namespace logicpos.Classes.DataLayer
                         systemBackupGuid = XPOHelper.GetGuidFromQuery(sql);
                         if (systemBackupGuid != Guid.Empty)
                         {
-                            systemBackup = (sys_systembackup)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(sys_systembackup), systemBackupGuid);
+                            systemBackup = XPOHelper.GetEntityById<sys_systembackup>(systemBackupGuid);
                             currentFileName = systemBackup.FileName;
                             currentFileNamePacked = systemBackup.FileNamePacked;
                             currentFilePath = systemBackup.FilePath;
@@ -343,9 +343,9 @@ namespace logicpos.Classes.DataLayer
                             if (systemBackupGuid != Guid.Empty)
                             {
                                 //ReFresh UserDetail from Repository
-                                currentUserDetail = (currentUserDetail != null) ? (sys_userdetail)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(sys_userdetail), currentUserDetail.Oid) : null;
+                                currentUserDetail = (currentUserDetail != null) ? XPOHelper.GetEntityById<sys_userdetail>(currentUserDetail.Oid) : null;
                                 //Get Current Restored systemBackup Object
-                                systemBackup = (sys_systembackup)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(sys_systembackup), systemBackupGuid);
+                                systemBackup = XPOHelper.GetEntityById<sys_systembackup>(systemBackupGuid);
                                 systemBackup.FileName = currentFileName;
                                 systemBackup.FileNamePacked = currentFileNamePacked;
                                 systemBackup.FilePath = currentFilePath;

@@ -1,5 +1,5 @@
-﻿using logicpos.datalayer.Xpo;
-using LogicPOS.Data.XPO.Settings;
+﻿using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO.Utility;
 using LogicPOS.DTOs.Printing;
 using LogicPOS.Globalization;
 using LogicPOS.Printing.Common;
@@ -39,7 +39,7 @@ namespace LogicPOS.Printing.Templates
             set { _ticketSubTitle = value; }
         }
 
-        public ThermalPrinterBaseTemplate(PrinterDto printer)
+        public ThermalPrinterBaseTemplate(PrintingPrinterDto printer)
             : this(
                   printer,
                   PrintingSettings.ThermalPrinter.CompanyLogoLocation)
@@ -47,7 +47,7 @@ namespace LogicPOS.Printing.Templates
         }
 
         public ThermalPrinterBaseTemplate(
-            PrinterDto printer,
+            PrintingPrinterDto printer,
             string pCompanyLogo)
         {
             try

@@ -3,7 +3,6 @@ using Gtk;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
-using LogicPOS.Settings.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {

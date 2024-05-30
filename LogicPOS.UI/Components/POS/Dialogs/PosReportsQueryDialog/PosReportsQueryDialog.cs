@@ -10,12 +10,11 @@ using logicpos.datalayer.DataLayer.Xpo.Articles;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
-using logicpos.datalayer.Xpo;
 using LogicPOS.Settings;
 using LogicPOS.Shared.CustomDocument;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO.Utility;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {

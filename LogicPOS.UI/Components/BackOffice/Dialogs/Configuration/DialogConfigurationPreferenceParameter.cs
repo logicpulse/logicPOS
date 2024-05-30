@@ -6,11 +6,9 @@ using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
-using logicpos.datalayer.Xpo;
 using LogicPOS.Globalization;
 using System;
 using System.Configuration;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Utility;
 using LogicPOS.Data.XPO.Settings;
 

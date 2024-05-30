@@ -2,7 +2,6 @@
 using LogicPOS.Settings;
 using System;
 using System.IO;
-using LogicPOS.Settings.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
 {

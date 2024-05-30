@@ -1,7 +1,4 @@
-﻿using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Enums;
-using logicpos.datalayer.Xpo;
-using LogicPOS.Data.XPO.Settings;
+﻿using LogicPOS.Data.XPO.Settings;
 using LogicPOS.DTOs.Printing;
 using LogicPOS.Globalization;
 using LogicPOS.Printing.Common;
@@ -27,7 +24,7 @@ namespace LogicPOS.Printing.Templates
         protected int _ticketTablePaddingLeftLength = 2;
 
         public ThermalPrinterBaseFinanceTemplate(
-            PrinterDto printer, 
+            PrintingPrinterDto printer, 
             PrintingDocumentTypeDto documentType, 
             List<int> copyNames)
             : this(
@@ -39,7 +36,7 @@ namespace LogicPOS.Printing.Templates
         }
 
         public ThermalPrinterBaseFinanceTemplate(
-            PrinterDto printer, 
+            PrintingPrinterDto printer, 
             PrintingDocumentTypeDto documentType, 
             List<int> copyNames, 
             bool isSecondCopy)

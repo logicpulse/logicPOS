@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\LogicPOS.Data\LogicPOS.Data.csproj" />
     <ProjectReference Include="..\LogicPOS.Globalization\LogicPOS.Globalization.csproj" />
     <ProjectReference Include="..\LogicPOS.Modules\LogicPOS.Modules.csproj" />

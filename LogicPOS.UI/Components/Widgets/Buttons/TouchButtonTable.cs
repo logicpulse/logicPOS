@@ -4,10 +4,9 @@ using logicpos.datalayer.Enums;
 using logicpos.Extensions;
 using System;
 using System.Drawing;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
-using logicpos.datalayer.Xpo;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO.Utility;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
 {
@@ -95,7 +94,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
         public void ChangeTableStatus(Guid pTableOid, TableStatus pTableStatus)
         {
             //Get Target Table
-            pos_configurationplacetable xTable = (pos_configurationplacetable)XPOHelper.GetXPGuidObject(typeof(pos_configurationplacetable), pTableOid);
+            pos_configurationplacetable xTable = XPOHelper.GetEntityById<pos_configurationplacetable>(pTableOid);
             //_logger.Debug(string.Format("1 pTableStatus: [{0}] [{1}]", xTable.Designation, pTableStatus));
 
             if (pTableStatus == TableStatus.Reserved)

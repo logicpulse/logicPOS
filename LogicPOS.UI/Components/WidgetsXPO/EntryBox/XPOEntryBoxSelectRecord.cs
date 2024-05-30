@@ -12,8 +12,8 @@ using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
-using logicpos.datalayer.Xpo;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Utility;
@@ -372,7 +372,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             if (!articleOid.Equals(Guid.Empty))
             {
                 //Get Object from dialog else Mixing Sessions, Both belong to diferente Sessions
-                _value = (T1)XPOHelper.GetXPGuidObject(typeof(T1), articleOid);
+                _value = XPOHelper.GetEntityById<T1>(articleOid);
                 propertyInfo = typeof(T1).GetProperty(_fieldDisplayValue);
 
                 fin_article value = null;
@@ -469,7 +469,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             if (!articleOid.Equals(Guid.Empty))
             {
                 //Get Object from dialog else Mixing Sessions, Both belong to diferente Sessions
-                _value = (T1)XPOHelper.GetXPGuidObject(typeof(T1), articleOid);
+                _value = XPOHelper.GetEntityById<T1>(articleOid);
                 propertyInfo = typeof(T1).GetProperty(_fieldDisplayValue);
 
                 object value;
@@ -569,7 +569,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             _previousValue = _value;
             object value = null;
             //Get Object from dialog else Mixing Sessions, Both belong to diferente Sessions
-            _value = (T1)XPOHelper.GetXPGuidObject(typeof(T1), dialog.GenericTreeView.DataSourceRow.Oid);
+            _value = XPOHelper.GetEntityById<T1>(dialog.GenericTreeView.DataSourceRow.Oid);
             propertyInfo = typeof(T1).GetProperty(_fieldDisplayValue);
 
             if (typeof(T2) == typeof(TreeViewArticleSerialNumber))
@@ -579,7 +579,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
 
             if (typeof(T2) == typeof(TreeViewArticleWarehouse))
             {
-                _value = (T1)XPOHelper.GetXPGuidObject(typeof(T1), (dialog.GenericTreeView.DataSourceRow as fin_articlewarehouse).Oid);
+                _value = XPOHelper.GetEntityById<T1>((dialog.GenericTreeView.DataSourceRow as fin_articlewarehouse).Oid);
                 propertyInfo = typeof(T1).GetProperty(_fieldDisplayValue);
                 if (propertyInfo == null) { propertyInfo = typeof(T1).GetProperty("Warehouse"); }
             }
@@ -614,10 +614,10 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             }
             if (typeof(T2) == typeof(TreeViewArticleWarehouse))
             {
-                var articleWarehouse = (fin_articlewarehouse)XPOHelper.GetXPGuidObject(typeof(fin_articlewarehouse), (dialog.GenericTreeView.DataSourceRow as fin_articlewarehouse).Oid);
-                if ((articleWarehouse as fin_articlewarehouse).ArticleSerialNumber != null)
+                var articleWarehouse = XPOHelper.GetEntityById<fin_articlewarehouse>((dialog.GenericTreeView.DataSourceRow as fin_articlewarehouse).Oid);
+                if (articleWarehouse.ArticleSerialNumber != null)
                 {
-                    pEntry.Text = (articleWarehouse as fin_articlewarehouse).ArticleSerialNumber.SerialNumber;
+                    pEntry.Text = articleWarehouse.ArticleSerialNumber.SerialNumber;
                 }
                 if (string.IsNullOrEmpty(pEntry.Text)) pEntry.Text = "";
             }

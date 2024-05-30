@@ -6,9 +6,9 @@ namespace LogicPOS.Data.XPO.Utility
 {
     public static class MappingUtils
     {
-        public static PrinterDto GetPrinterDto(sys_configurationprinters printer)
+        public static PrintingPrinterDto GetPrinterDto(sys_configurationprinters printer)
         {
-            return new PrinterDto
+            return new PrintingPrinterDto
             {
                 Id = printer.Oid,
                 Designation = printer.Designation,
@@ -75,6 +75,18 @@ namespace LogicPOS.Data.XPO.Utility
                 PlaceDesignation = documentMaster.SourceOrderMain.PlaceTable.Place.Designation,
                 DocumentType = GetPrintingDocumentTypeDto(documentMaster.DocumentType),
                 HasValidPaymentMethod = (documentMaster.PaymentMethod != null)
+            };
+        }
+
+        public static PrintWorkSessionDto GetPrintWorkSessionDto(pos_worksessionperiod workSessionPeriod)
+        {
+            return new PrintWorkSessionDto
+            {
+                Id = workSessionPeriod.Oid,
+                PeriodType = workSessionPeriod.PeriodType.ToString(),
+                SessionStatus = workSessionPeriod.SessionStatus.ToString(),
+                TerminalDesignation = workSessionPeriod.Terminal.Designation,
+                StartDate = workSessionPeriod.DateStart
             };
         }
     }

@@ -1,6 +1,6 @@
 ﻿using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Xpo;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO.Utility;
 using LogicPOS.DTOs.Printing;
 using LogicPOS.Globalization;
 using LogicPOS.Printing.Enums;
@@ -29,7 +29,7 @@ namespace LogicPOS.Printing.Documents
         private readonly List<FRBODocumentFinanceMasterTotalView> _documentFinanceMasterTotalList;
 
         public ThermalPrinterFinanceDocumentMaster(
-            PrinterDto printer, 
+            PrintingPrinterDto printer, 
             PrintDocumentMasterDto documentMaster, 
             List<int> copyNames, 
             bool isSecondCopy, 
@@ -363,11 +363,7 @@ namespace LogicPOS.Printing.Documents
                 /* IN009055 - related to IN005976 for Mozambique deployment */
                 if (CultureSettings.MozambiqueCountryId.Equals(XPOSettings.ConfigurationSystemCountry.Oid))
                 {
-                    cfg_configurationcurrency defaultCurrencyForExchangeRate =
-                        (cfg_configurationcurrency)XPOHelper.GetXPGuidObject(
-                            XPOSettings.Session,
-                            typeof(cfg_configurationcurrency),
-                            CultureSettings.USDCurrencyId);
+                    cfg_configurationcurrency defaultCurrencyForExchangeRate = XPOHelper.GetEntityById<cfg_configurationcurrency>(CultureSettings.USDCurrencyId);
 
                     dataRow = dataTable.NewRow();
                     dataRow[0] = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_printer_thermal_total_default_currency"), defaultCurrencyForExchangeRate.Acronym);

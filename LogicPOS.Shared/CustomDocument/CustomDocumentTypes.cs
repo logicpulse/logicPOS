@@ -1,6 +1,5 @@
 ﻿using LogicPOS.Globalization;
 using LogicPOS.Settings;
-using LogicPOS.Settings.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;

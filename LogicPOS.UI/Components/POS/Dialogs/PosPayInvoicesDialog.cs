@@ -10,12 +10,11 @@ using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.datalayer.DataLayer.Xpo;
 using System;
 using System.Drawing;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
-using logicpos.datalayer.Xpo;
 using LogicPOS.Settings;
 using LogicPOS.UI;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO.Utility;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -86,7 +85,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private void InitUI()
         {
             //Initial Values
-            fin_configurationpaymentmethod initialValueConfigurationPaymentMethod = (fin_configurationpaymentmethod)XPOHelper.GetXPGuidObject(typeof(fin_configurationpaymentmethod), POSSettings.XpoOidConfigurationPaymentMethodDefaultInvoicePaymentMethod);
+            fin_configurationpaymentmethod initialValueConfigurationPaymentMethod = XPOHelper.GetEntityById<fin_configurationpaymentmethod>(POSSettings.XpoOidConfigurationPaymentMethodDefaultInvoicePaymentMethod);
             cfg_configurationcurrency intialValueConfigurationCurrency = XPOSettings.ConfigurationSystemCurrency;
             string initialPaymentDate = XPOHelper.CurrentDateTimeAtomic().ToString(CultureSettings.DateTimeFormat);
 

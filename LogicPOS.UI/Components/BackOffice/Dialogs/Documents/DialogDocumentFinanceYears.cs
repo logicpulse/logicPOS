@@ -3,7 +3,6 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
 using logicpos.Classes.Enums.Dialogs;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice

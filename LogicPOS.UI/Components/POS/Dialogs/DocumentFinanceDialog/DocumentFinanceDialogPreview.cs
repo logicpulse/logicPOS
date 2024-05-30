@@ -5,7 +5,6 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.Extensions;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Shared.Article;
 using System;
 using System.Collections.Generic;

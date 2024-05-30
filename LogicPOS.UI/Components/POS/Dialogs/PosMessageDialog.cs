@@ -4,7 +4,6 @@ using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Extensions;
 using System;
 using System.IO;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 

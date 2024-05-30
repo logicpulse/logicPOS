@@ -3,12 +3,10 @@ using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
-using logicpos.datalayer.Xpo;
 using logicpos.shared.Enums;
+using LogicPOS.Data.Services;
 using LogicPOS.Data.XPO.Settings;
-using LogicPOS.Finance.DocumentProcessing;
-using LogicPOS.Finance.Utility;
-using LogicPOS.Finance.WorkSession;
+using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Globalization;
 using LogicPOS.Modules;
 using LogicPOS.Modules.StockManagement;
@@ -22,7 +20,6 @@ using LogicPOS.Shared.Orders;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace LogicPOS.Finance.DocumentProcessing
@@ -1426,7 +1423,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                 }
 
                 //Persist DocumentFinance Movement
-                ProcessWorkSessionMovement.PersistWorkSessionMovement(
+                WorkSessionProcessor.PersistWorkSessionMovement(
                     pSession,
                     workSessionPeriod,
                     (pos_worksessionmovementtype)XPOHelper.GetXPGuidObjectFromField(pSession, typeof(pos_worksessionmovementtype), "Token", "FINANCE_DOCUMENT"),
@@ -1444,7 +1441,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                 if (pPaymentMethod != null && pPaymentMethod.Token == "MONEY")
                 {
                     //Process CASHDRAWER_IN Movement (Delivery)
-                    ProcessWorkSessionMovement.PersistWorkSessionMovement(
+                    WorkSessionProcessor.PersistWorkSessionMovement(
                         pSession,
                         workSessionPeriod,
                         (pos_worksessionmovementtype)XPOHelper.GetXPGuidObjectFromField(pSession, typeof(pos_worksessionmovementtype), "Token", "CASHDRAWER_IN"),
@@ -1460,7 +1457,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                     //Process CASHDRAWER_OUT Movement (Charge)
                     if (pParameters != null)
                     {
-                        if (pParameters.TotalChange > 0) ProcessWorkSessionMovement.PersistWorkSessionMovement(
+                        if (pParameters.TotalChange > 0) WorkSessionProcessor.PersistWorkSessionMovement(
                             pSession,
                             workSessionPeriod,
                             (pos_worksessionmovementtype)XPOHelper.GetXPGuidObjectFromField(pSession, typeof(pos_worksessionmovementtype), "Token", "CASHDRAWER_OUT"),

@@ -5,9 +5,9 @@ using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Xpo;
 using logicpos.shared.Enums;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Settings;
 using LogicPOS.Shared.Article;
@@ -180,7 +180,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                     //Update DataTable Rows
                     foreach (DataRow item in TreeViewArticles.DataSource.Rows)
                     {
-                        article = (fin_article)XPOHelper.GetXPGuidObject(typeof(fin_article), new Guid(item.ItemArray[item.Table.Columns["Oid"].Ordinal].ToString()));
+                        article = XPOHelper.GetEntityById<fin_article>(new Guid(item.ItemArray[item.Table.Columns["Oid"].Ordinal].ToString()));
 
                         //Calc PriceProperties
                         PriceProperties priceProperties = PriceProperties.GetPriceProperties(

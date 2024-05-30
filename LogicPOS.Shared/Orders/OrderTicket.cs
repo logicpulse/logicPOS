@@ -1,5 +1,5 @@
 ﻿using logicpos.datalayer.Enums;
-using logicpos.datalayer.Xpo;
+using LogicPOS.Data.XPO.Utility;
 using Newtonsoft.Json;
 using System;
 

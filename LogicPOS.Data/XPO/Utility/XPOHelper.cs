@@ -16,9 +16,9 @@ using System.Security;
 using System.Text;
 using static LogicPOS.Utility.DataConversionUtils;
 
-namespace logicpos.datalayer.Xpo
+namespace LogicPOS.Data.XPO.Utility
 {
-    public static class XPOHelper
+    public static partial class XPOHelper
     {
         public static uint GetNextTableFieldID(string pTable, string pField, bool pEndsWithZero = true)
         {
@@ -52,7 +52,7 @@ namespace logicpos.datalayer.Xpo
         public static XPGuidObject GetXPGuidObjectFromCriteria(Session pSession, Type pXPGuidObjectType, string pCriteriaFilter)
         {
             CriteriaOperator criteria = CriteriaOperator.Parse(pCriteriaFilter);
-            XPGuidObject result = (XPOSettings.Session.FindObject(pXPGuidObjectType, criteria) as XPGuidObject);
+            XPGuidObject result = XPOSettings.Session.FindObject(pXPGuidObjectType, criteria) as XPGuidObject;
             return result;
         }
 
@@ -142,7 +142,7 @@ namespace logicpos.datalayer.Xpo
         public static int GetNextTableFieldInt(string pTable, string pField, string pFilter)
         {
             int result = -1;
-            string filter = (pFilter != string.Empty) ? string.Format(" WHERE {0}", pFilter) : string.Empty;
+            string filter = pFilter != string.Empty ? string.Format(" WHERE {0}", pFilter) : string.Empty;
 
             string sql = string.Format("SELECT MAX({0}) FROM {1}{2};", pField, pTable, filter);
             var resultInt = XPOSettings.Session.ExecuteScalar(sql);
@@ -155,7 +155,7 @@ namespace logicpos.datalayer.Xpo
                 }
                 else if (resultInt.GetType() == typeof(int))
                 {
-                    result = (int)((int)resultInt + 1);
+                    result = (int)resultInt + 1;
                 }
                 return result;
             }
@@ -207,7 +207,7 @@ namespace logicpos.datalayer.Xpo
             Guid guid = GetGuidFromQuery(pSession, executeSql);
             if (guid != Guid.Empty)
             {
-                return (XPGuidObject)GetXPGuidObject(pSession, pType, guid);
+                return GetXPGuidObject(pSession, pType, guid);
             }
             else
             {
@@ -218,6 +218,19 @@ namespace logicpos.datalayer.Xpo
         public static XPGuidObject GetXPGuidObject(Type pXPGuidObjectType, Guid pOid)
         {
             return GetXPGuidObject(XPOSettings.Session, pXPGuidObjectType, pOid);
+        }
+
+        public static TEntity GetEntityById<TEntity>(
+            Guid id,
+            Session session = null) where TEntity : class
+        {
+            if (session == null)
+            {
+                session = XPOSettings.Session;
+            }
+
+            XPClassInfo entityClassInfo = session.GetClassInfo(typeof(TEntity));
+            return session.GetObjectByKey(entityClassInfo, id) as TEntity;
         }
 
         public static XPGuidObject GetXPGuidObject(Session pSession, Type pXPGuidObjectType, Guid pOid)
@@ -277,14 +290,14 @@ namespace logicpos.datalayer.Xpo
         {
             DateTime tmpData = Convert.ToDateTime(pValue);
             string result = "" + tmpData.ToString("" + CultureSettings.DateTimeFormatCombinedDateTime);
-            return (result);
+            return result;
         }
 
         public static string DateToString(object pValue)
         {
             DateTime tmpData = Convert.ToDateTime(pValue);
             string result = "" + tmpData.ToString("" + CultureSettings.DateTimeFormatDocumentDate);
-            return (result);
+            return result;
         }
 
         public static string DateTimeToString(DateTime pValue)
@@ -365,9 +378,9 @@ namespace logicpos.datalayer.Xpo
             {
                 if (startDateTime.DayOfWeek != DayOfWeek.Saturday && startDateTime.DayOfWeek != DayOfWeek.Sunday)
                 {
-                    string isHoliday = (IsHoliday(startDateTime)) ? "Holiday" : string.Empty;
+                    string isHoliday = IsHoliday(startDateTime) ? "Holiday" : string.Empty;
 
-                    if ((pWithHoydays && !IsHoliday(startDateTime)) || !pWithHoydays)
+                    if (pWithHoydays && !IsHoliday(startDateTime) || !pWithHoydays)
                     {
                         result.Add(startDateTime);
                     }
@@ -390,9 +403,9 @@ namespace logicpos.datalayer.Xpo
 
                 if (result.DayOfWeek != DayOfWeek.Saturday && result.DayOfWeek != DayOfWeek.Sunday)
                 {
-                    isHoliday = (IsHoliday(result)) ? "<Holiday>" : string.Empty;
+                    isHoliday = IsHoliday(result) ? "<Holiday>" : string.Empty;
 
-                    if ((pWithHoydays && !IsHoliday(result)) || !pWithHoydays)
+                    if (pWithHoydays && !IsHoliday(result) || !pWithHoydays)
                     {
                         i++;
                     }
@@ -602,7 +615,7 @@ namespace logicpos.datalayer.Xpo
                 foreach (fin_documentfinancetype item in xpcDocumentFinanceType)
                 {
                     i++;
-                    filter += (string.Format("DocumentType = '{0}'{1}", item.Oid, (i < xpcDocumentFinanceType.Count) ? " OR " : string.Empty));
+                    filter += string.Format("DocumentType = '{0}'{1}", item.Oid, i < xpcDocumentFinanceType.Count ? " OR " : string.Empty);
                 }
                 filter = string.Format("({0})", filter);
             }
@@ -624,7 +637,7 @@ namespace logicpos.datalayer.Xpo
 
 
             //Get Date Back DaysBackToFilter (Without WeekEnds and Holidays)
-            int warnDaysBefore = (systemNotificationType.WarnDaysBefore > 0) ? systemNotificationType.WarnDaysBefore : 0;
+            int warnDaysBefore = systemNotificationType.WarnDaysBefore > 0 ? systemNotificationType.WarnDaysBefore : 0;
             int daysBackToFilter = pDaysBackToFilter - warnDaysBefore;
             DateTime dateFilterFrom = GetDateTimeBackUtilDays(CurrentDateTimeAtomicMidnight(), daysBackToFilter, true);
 
@@ -731,12 +744,12 @@ namespace logicpos.datalayer.Xpo
             if (!guidAuditType.Equals(Guid.Empty))
             {
                 //Fresh User and Terminal, to prevent Object Delection Problem
-                sys_userdetail xpoUserDetail = (pLoggedUser != null) ? (sys_userdetail)GetXPGuidObject(typeof(sys_userdetail), pLoggedUser.Oid) : null;
+                sys_userdetail xpoUserDetail = pLoggedUser != null ? (sys_userdetail)GetXPGuidObject(typeof(sys_userdetail), pLoggedUser.Oid) : null;
                 pos_configurationplaceterminal xpoTerminal = (pos_configurationplaceterminal)GetXPGuidObject(typeof(pos_configurationplaceterminal), pLoggedTerminal.Oid);
                 //get AuditType Object
                 sys_systemaudittype xpoAuditType = (sys_systemaudittype)GetXPGuidObject(typeof(sys_systemaudittype), guidAuditType);
-                string description = (pDescription != string.Empty) ? pDescription
-                  : (xpoAuditType.ResourceString != null && CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, xpoAuditType.ResourceString) != null)
+                string description = pDescription != string.Empty ? pDescription
+                  : xpoAuditType.ResourceString != null && CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, xpoAuditType.ResourceString) != null
                   ? CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, xpoAuditType.ResourceString) : xpoAuditType.Designation;
 
                 sys_systemaudit systemAudit = new sys_systemaudit(pSession)
@@ -756,7 +769,7 @@ namespace logicpos.datalayer.Xpo
             else
             {
                 string exceptionMessage = string.Format("Invalid AuditType: [{0}]", pAuditTypeToken);
-                throw (new Exception(exceptionMessage));
+                throw new Exception(exceptionMessage);
             }
 
             return result;
@@ -781,7 +794,7 @@ namespace logicpos.datalayer.Xpo
             //_logger.Debug(string.Format("sql: [{0}]", sql));
             var partialPayedItems = pSession.ExecuteScalar(sql);
 
-            return (partialPayedItems != null && Convert.ToDecimal(partialPayedItems) > 0)
+            return partialPayedItems != null && Convert.ToDecimal(partialPayedItems) > 0
               ? Convert.ToDecimal(partialPayedItems)
               : result;
         }
@@ -801,7 +814,7 @@ namespace logicpos.datalayer.Xpo
             bool result = false;
 
             var entity = GetFinalConsumerEntity();
-            result = (entity != null && pFiscalNumber == entity.FiscalNumber);
+            result = entity != null && pFiscalNumber == entity.FiscalNumber;
 
             return result;
         }
@@ -929,7 +942,7 @@ namespace logicpos.datalayer.Xpo
             decimal netTotal = 0.0m;
             decimal grossTotal = 0.0m;
             //Prepare Node Name
-            string nodeName = (pDocumentMaster.DocumentType.Credit) ? "CreditAmount" : "DebitAmount";
+            string nodeName = pDocumentMaster.DocumentType.Credit ? "CreditAmount" : "DebitAmount";
 
 
             //Init Locals Vars
@@ -960,14 +973,14 @@ namespace logicpos.datalayer.Xpo
                     , pDocumentMaster.Oid
                 );
 
-                DataTable dtResult = XPOHelper.GetDataTableFromQuery(sql);
+                DataTable dtResult = GetDataTableFromQuery(sql);
 
                 //Init StringBuilder
                 StringBuilder sb = new StringBuilder();
 
                 foreach (DataRow item in dtResult.Rows)
                 {
-                    string taxExemptionReason = (!string.IsNullOrEmpty(item["VatExemptionReasonAcronym"].ToString()))
+                    string taxExemptionReason = !string.IsNullOrEmpty(item["VatExemptionReasonAcronym"].ToString())
                         ? string.Format("{0}      <ns2:TaxExemptionReason>{1}</ns2:TaxExemptionReason>", Environment.NewLine, item["VatExemptionReasonAcronym"])
                         : string.Empty
                     ;
@@ -982,10 +995,10 @@ namespace logicpos.datalayer.Xpo
     </Line>
 "
                         , nodeName
-                        , LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(item["TotalNet"]))
+                        , DecimalToString(Convert.ToDecimal(item["TotalNet"]))
                         , item["TaxType"]
                         , item["TaxCountryRegion"]
-                        , LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(item["Vat"]))
+                        , DecimalToString(Convert.ToDecimal(item["Vat"]))
                         , taxExemptionReason
                     ));
 
@@ -1002,16 +1015,16 @@ namespace logicpos.datalayer.Xpo
       <ns2:NetTotal>{1}</ns2:NetTotal>
       <ns2:GrossTotal>{2}</ns2:GrossTotal>
     </DocumentTotals>"
-                    , LogicPOS.Utility.DataConversionUtils.DecimalToString(taxPayable)
-                    , LogicPOS.Utility.DataConversionUtils.DecimalToString(netTotal)
-                    , LogicPOS.Utility.DataConversionUtils.DecimalToString(grossTotal)
+                    , DecimalToString(taxPayable)
+                    , DecimalToString(netTotal)
+                    , DecimalToString(grossTotal)
                 ));
 
                 result = sb.ToString();
             }
             catch (Exception ex)
             {
-                throw (ex);
+                throw ex;
             }
 
             return result;
@@ -1040,14 +1053,14 @@ namespace logicpos.datalayer.Xpo
                     , pDocumentMaster.Oid
                 );
 
-                DataTable dtResult = XPOHelper.GetDataTableFromQuery(sql);
+                DataTable dtResult = GetDataTableFromQuery(sql);
 
                 //Init StringBuilder
                 StringBuilder sb = new StringBuilder();
 
                 foreach (DataRow item in dtResult.Rows)
                 {
-                    string orderReferences = (!string.IsNullOrEmpty(item["OrderReferences"].ToString()))
+                    string orderReferences = !string.IsNullOrEmpty(item["OrderReferences"].ToString())
                         ? string.Format(@"{0}      <OrderReferences>
         <OriginatingON>{1}</OriginatingON>
       </OrderReferences>", Environment.NewLine, item["OrderReferences"])
@@ -1063,9 +1076,9 @@ namespace logicpos.datalayer.Xpo
 "
                         , orderReferences
                         , SecurityElement.Escape(item["ProductDescription"].ToString())
-                        , LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(item["Quantity"]))
+                        , DecimalToString(Convert.ToDecimal(item["Quantity"]))
                         , item["UnitOfMeasure"]
-                        , LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(item["UnitPrice"]))
+                        , DecimalToString(Convert.ToDecimal(item["UnitPrice"]))
                     ));
                 }
 
@@ -1073,7 +1086,7 @@ namespace logicpos.datalayer.Xpo
             }
             catch (Exception ex)
             {
-                throw (ex);
+                throw ex;
             }
 
             return result;

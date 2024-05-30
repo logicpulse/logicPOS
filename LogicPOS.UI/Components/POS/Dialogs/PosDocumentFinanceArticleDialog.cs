@@ -17,8 +17,6 @@ using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.Keyboard;
 using DevExpress.Xpo;
 using System.Collections;
-using logicpos.datalayer.Xpo;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Shared.CustomDocument;

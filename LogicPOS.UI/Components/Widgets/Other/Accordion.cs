@@ -1,9 +1,9 @@
 ﻿using Gtk;
 using logicpos.App;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Settings;
 using System;
 using System.Collections.Generic;
@@ -284,7 +284,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             string currentNodePrivilegesToken;
 
             //Required to Reload Object before Get New Permissions
-            XPOSettings.LoggedUser = (sys_userdetail)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(sys_userdetail), XPOSettings.LoggedUser.Oid);
+            XPOSettings.LoggedUser = XPOHelper.GetEntityById<sys_userdetail>(XPOSettings.LoggedUser.Oid);
             //Update Session Privileges
             GeneralSettings.LoggedUserPermissions = XPOHelper.GetUserPermissions(XPOSettings.LoggedUser);
 

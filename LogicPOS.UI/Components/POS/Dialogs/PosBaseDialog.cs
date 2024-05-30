@@ -5,7 +5,6 @@ using logicpos.Extensions;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 

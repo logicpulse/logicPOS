@@ -1,10 +1,10 @@
 ﻿using Gtk;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
+using LogicPOS.Data.Services;
 using LogicPOS.Data.XPO.Settings;
-using LogicPOS.Finance.WorkSession;
+using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Globalization;
 using System;
 using System.Drawing;
@@ -23,12 +23,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 decimal cashLastMovementTypeAmount;
                 if (MovementType.Token == "CASHDRAWER_OPEN")
                 {
-                    cashLastMovementTypeAmount = ProcessWorkSessionPeriod.GetSessionPeriodCashDrawerOpenOrCloseAmount("CASHDRAWER_CLOSE");
+                    cashLastMovementTypeAmount = WorkSessionProcessor.GetSessionPeriodCashDrawerOpenOrCloseAmount("CASHDRAWER_CLOSE");
                 }
                 else if (MovementType.Token == "CASHDRAWER_CLOSE")
                 {
                     //Alteração no funcionamento do Inicio/fecho Sessão [IN:014330]
-                    cashLastMovementTypeAmount = ProcessWorkSessionPeriod.GetSessionPeriodCashDrawerOpenOrCloseAmount("CASHDRAWER_OPEN");
+                    cashLastMovementTypeAmount = WorkSessionProcessor.GetSessionPeriodCashDrawerOpenOrCloseAmount("CASHDRAWER_OPEN");
                     //Keep Running            
                     //if (!IsCashDrawerAmountValid(cashLastMovementTypeAmount))
                     //{
@@ -63,7 +63,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 //PrintWorkSessionMovement
                 //PrintRouter.PrintWorkSessionMovement(TerminalSettings.LoggedTerminal.Printer, GlobalFramework.WorkSessionPeriodTerminal);
-                FrameworkCalls.PrintWorkSessionMovement(this, TerminalSettings.LoggedTerminal.ThermalPrinter, XPOSettings.WorkSessionPeriodTerminal);
+                var workSessionDto = MappingUtils.GetPrintWorkSessionDto(XPOSettings.WorkSessionPeriodTerminal);
+                FrameworkCalls.PrintWorkSessionMovement(this, TerminalSettings.LoggedTerminal.ThermalPrinter,workSessionDto);
 
                 //PrintTicket.PrintWorkSessionMovement(TerminalSettings.LoggedTerminal.Printer, GlobalFramework.WorkSessionPeriodDay);
                 //PrintTicket.PrintWorkSessionMovement(TerminalSettings.LoggedTerminal.Printer, GlobalFramework.WorkSessionPeriodTerminal);
@@ -135,7 +136,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
 
             //Assign _selectedMovementType
-            MovementType = (pos_worksessionmovementtype)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(pos_worksessionmovementtype), pButton.CurrentButtonOid);
+            MovementType = XPOHelper.GetEntityById<pos_worksessionmovementtype>(pButton.CurrentButtonOid);
 
             //Detect Cash open
             if (MovementType.Token == "CASHDRAWER_OPEN")

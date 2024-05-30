@@ -1,8 +1,6 @@
 ﻿using DevExpress.Xpo;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Xpo;
 using logicpos.shared.Enums;
-using logicpos.shared.Enums.ThermalPrinter;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Settings.Terminal;
 using LogicPOS.Data.XPO.Utility;
@@ -1208,18 +1206,18 @@ namespace LogicPOS.Printing.Utility
             bool result = false;
 
             //Start UnitOfWork
-            using (UnitOfWork uowSession = new UnitOfWork())
+            using (UnitOfWork unitOfWork = new UnitOfWork())
             {
                 string designation = string.Empty;
                 //Get Objects into Current UOW Session
-                sys_userdetail userDetail = (sys_userdetail)XPOHelper.GetXPGuidObject(uowSession, typeof(sys_userdetail), pUserDetail.Oid);
-                pos_configurationplaceterminal configurationPlaceTerminal = (pos_configurationplaceterminal)XPOHelper.GetXPGuidObject(uowSession, typeof(pos_configurationplaceterminal), pConfigurationPlaceTerminal.Oid);
+                sys_userdetail userDetail = XPOHelper.GetEntityById<sys_userdetail>(pUserDetail.Oid, unitOfWork);
+                pos_configurationplaceterminal configurationPlaceTerminal = XPOHelper.GetEntityById<pos_configurationplaceterminal>(pConfigurationPlaceTerminal.Oid, unitOfWork);
 
                 //Convert CopyNames List to Comma Delimited String
                 string copyNamesCommaDelimited = CustomReport.CopyNamesCommaDelimited(copyNames);
 
                 //SystemPrint
-                sys_systemprint systemPrint = new sys_systemprint(uowSession)
+                sys_systemprint systemPrint = new sys_systemprint(unitOfWork)
                 {
                     Date = XPOHelper.CurrentDateTimeAtomic(),
                     Designation = designation,
@@ -1234,7 +1232,7 @@ namespace LogicPOS.Printing.Utility
                 //Mode: DocumentFinanceMaster
                 if (financeMaster != null)
                 {
-                    fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)XPOHelper.GetXPGuidObject(uowSession, typeof(fin_documentfinancemaster), financeMaster.Id);
+                    fin_documentfinancemaster documentFinanceMaster = XPOHelper.GetEntityById<fin_documentfinancemaster>(financeMaster.Id, unitOfWork);
                     systemPrint.DocumentMaster = documentFinanceMaster;
                     designation = string.Format("{0} {1} : {2}", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_printed"), documentFinanceMaster.DocumentType.Designation, documentFinanceMaster.DocumentNumber);
                     //Update DocumentFinanceMaster
@@ -1243,7 +1241,7 @@ namespace LogicPOS.Printing.Utility
                 //Mode: DocumentFinancePayment
                 if (financePayment != null)
                 {
-                    fin_documentfinancepayment documentFinancePayment = (fin_documentfinancepayment)XPOHelper.GetXPGuidObject(uowSession, typeof(fin_documentfinancepayment), financePayment.Id);
+                    fin_documentfinancepayment documentFinancePayment = XPOHelper.GetEntityById<fin_documentfinancepayment>(financePayment.Id, unitOfWork);
                     systemPrint.DocumentPayment = documentFinancePayment;
                     designation = string.Format("{0} {1} : {2}", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_printed"), documentFinancePayment.DocumentType.Designation, documentFinancePayment.PaymentRefNo);
                 }
@@ -1252,14 +1250,14 @@ namespace LogicPOS.Printing.Utility
                 try
                 {
                     //Commit UOW Changes : Before get current OrderMain
-                    uowSession.CommitChanges();
+                    unitOfWork.CommitChanges();
                     //Audit
                     XPOHelper.Audit("SYSTEM_PRINT_FINANCE_DOCUMENT", designation);
                     result = true;
                 }
                 catch (Exception ex)
                 {
-                    uowSession.RollbackTransaction();
+                    unitOfWork.RollbackTransaction();
                 }
             }
 
@@ -1267,7 +1265,7 @@ namespace LogicPOS.Printing.Utility
         }
 
         public static bool PrintFinanceDocument(
-            PrinterDto printer, 
+            PrintingPrinterDto printer, 
             PrintDocumentMasterDto pDocumentFinanceMaster,
             List<int> pCopyNames, 
             bool pSecondCopy, 
@@ -1375,7 +1373,7 @@ namespace LogicPOS.Printing.Utility
         }
 
         public static bool PrintFinanceDocumentPayment(
-            PrinterDto printer, 
+            PrintingPrinterDto printer, 
             PrintingFinancePaymentDto pDocumentFinancePayment)
         {
             bool result = false;
@@ -1419,8 +1417,8 @@ namespace LogicPOS.Printing.Utility
         }
 
         public static bool PrintWorkSessionMovement(
-            PrinterDto printer, 
-            pos_worksessionperiod pWorkSessionPeriod)
+            PrintingPrinterDto printer, 
+            PrintWorkSessionDto pWorkSessionPeriod)
         {
             bool result = false;
 
@@ -1461,7 +1459,7 @@ namespace LogicPOS.Printing.Utility
         {
             bool result;
 
-            List<PrinterDto> articlesPrinters = new List<PrinterDto>();
+            List<PrintingPrinterDto> articlesPrinters = new List<PrintingPrinterDto>();
 
             foreach (var orderDetailDto in orderTicketDto.OrderDetails)
             {
@@ -1492,7 +1490,7 @@ namespace LogicPOS.Printing.Utility
 
         //Used for Money Movements and Open/Close Terminal/Day Sessions
         public static bool PrintCashDrawerOpenAndMoneyInOut(
-            PrinterDto printer, 
+            PrintingPrinterDto printer, 
             string pTicketTitle, 
             decimal pMovementAmount,
             decimal pTotalAmountInCashDrawer, 

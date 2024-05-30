@@ -1,6 +1,4 @@
-﻿using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Xpo;
-using LogicPOS.Data.XPO.Settings;
+﻿using LogicPOS.Data.XPO.Settings;
 using LogicPOS.DTOs.Printing;
 using LogicPOS.Globalization;
 using LogicPOS.Printing.Enums;
@@ -24,14 +22,14 @@ namespace LogicPOS.Printing.Documents
         private readonly List<FRBODocumentFinancePaymentDocumentView> _documentFinancePaymentDocumentList;
 
         public ThermalPrinterFinanceDocumentPayment(
-            PrinterDto printer, 
-            PrintingFinancePaymentDto financePayment, 
-            List<int> copyNames, 
+            PrintingPrinterDto printer,
+            PrintingFinancePaymentDto financePayment,
+            List<int> copyNames,
             bool secondCopy)
             : base(
-                  printer, 
-                  financePayment.DocumentType, 
-                  copyNames, 
+                  printer,
+                  financePayment.DocumentType,
+                  copyNames,
                   secondCopy)
         {
             try

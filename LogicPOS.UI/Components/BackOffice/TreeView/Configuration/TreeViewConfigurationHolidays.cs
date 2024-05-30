@@ -7,8 +7,6 @@ using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using System;
 using System.Collections.Generic;
 using logicpos.Classes.Enums.GenericTreeView;
-using logicpos.datalayer.Xpo;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using LogicPOS.Data.XPO.Settings;
 

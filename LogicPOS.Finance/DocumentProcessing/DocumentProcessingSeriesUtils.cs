@@ -1,8 +1,8 @@
 ﻿using DevExpress.Data.Filtering;
 using DevExpress.Xpo;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Xpo;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO.Utility;
 using LogicPOS.DTOs.Common;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;

@@ -6,7 +6,6 @@ using logicpos.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets

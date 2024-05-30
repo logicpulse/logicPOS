@@ -7,13 +7,12 @@ using System.IO;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using System.Collections.Generic;
 using logicpos.Extensions;
-using logicpos.datalayer.Xpo;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Utility;
 using LogicPOS.UI;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO.Utility;
 
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice

@@ -4,12 +4,11 @@ using logicpos.Classes.Enums.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.DataLayer.Xpo;
 using System;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
-using logicpos.datalayer.Xpo;
 using LogicPOS.Shared;
 using LogicPOS.Settings;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO.Utility;
 
 namespace logicpos
 {
@@ -71,7 +70,7 @@ namespace logicpos
             {
                 if (TablePadUser.SelectedButtonOid != null)
                 {
-                    _selectedUserDetail = (XPOHelper.GetXPGuidObject(typeof(sys_userdetail), TablePadUser.SelectedButtonOid) as sys_userdetail);
+                    _selectedUserDetail = XPOHelper.GetEntityById<sys_userdetail>(TablePadUser.SelectedButtonOid);
                     if (_selectedUserDetail != null)
                     {
                         //Change NumberPadPinMode Mode

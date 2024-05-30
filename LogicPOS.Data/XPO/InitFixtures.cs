@@ -1,8 +1,7 @@
-﻿using System;
-using DevExpress.Xpo;
+﻿using DevExpress.Xpo;
 using logicpos.datalayer.Enums;
-using logicpos.datalayer.Xpo;
 using LogicPOS.Data.XPO.Settings;
+using System;
 
 namespace logicpos.datalayer.DataLayer.Xpo
 {
@@ -433,7 +432,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             if (xpcConfigurationPrintersType.Count == 0)
             {
                 var configurationPrintersType1 = new sys_configurationprinterstype(_session) { Ord = 10, Code = 10, Designation = "Impressora SINOCAN em ambiente Windows", Token = "THERMAL_PRINTER_WINDOWS" }; configurationPrintersType1.Save();
-               
+
                 var configurationPrinters1 = new sys_configurationprinters(_session) { Ord = 10, Code = 10, Designation = "Impressora teste Windows", PrinterType = configurationPrintersType1 }; configurationPrinters1.Save();
             }
 

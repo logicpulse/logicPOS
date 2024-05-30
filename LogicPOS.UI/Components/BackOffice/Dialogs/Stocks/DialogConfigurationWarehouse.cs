@@ -6,15 +6,14 @@ using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Documents;
-using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
 using LogicPOS.Settings;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO.Utility;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
 {
@@ -116,7 +115,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
                 {
                     foreach (var location in _Warehouse.WarehouseLocation)
                     {
-                        XPGuidObject getLocationFromWarehouse = XPOHelper.GetXPGuidObject(typeof(fin_warehouselocation), location.Oid);
+                        XPGuidObject getLocationFromWarehouse = XPOHelper.GetEntityById<fin_warehouselocation>(location.Oid);
                         PopulateWarehouseLocationEntrys(getLocationFromWarehouse);
                     }
                 }

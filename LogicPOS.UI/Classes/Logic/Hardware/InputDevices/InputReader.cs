@@ -1,6 +1,5 @@
 ﻿using Gtk;
 using logicpos.Classes.Enums.Hardware;
-using logicpos.datalayer.Xpo;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Utility;
 using System;

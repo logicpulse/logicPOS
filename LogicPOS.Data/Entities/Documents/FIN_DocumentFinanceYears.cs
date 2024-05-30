@@ -1,9 +1,8 @@
 ﻿using DevExpress.Xpo;
 using LogicPOS.Settings;
 using System;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
-using logicpos.datalayer.Xpo;
+using LogicPOS.Data.XPO.Utility;
 
 namespace logicpos.datalayer.DataLayer.Xpo
 {

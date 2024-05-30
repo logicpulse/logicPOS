@@ -47,13 +47,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Enums\BarcodeType.cs" />
+    <Compile Include="Enums\DataTableGroupPropertiesType.cs" />
     <Compile Include="Enums\OptionsToText.cs" />
     <Compile Include="Common\PrintingControlSignals.cs" />
     <Compile Include="Common\BitmapData.cs" />
     <Compile Include="Enums\PrintingStyle.cs" />
     <Compile Include="Common\PrintObject.cs" />
     <Compile Include="Common\ThermalPrinter.cs" />
+    <Compile Include="Enums\SplitCurrentAccountMode.cs" />
     <Compile Include="Enums\TicketColumnsAlignment.cs" />
+    <Compile Include="Enums\WorkSessionMovementResumeQueryMode.cs" />
     <Compile Include="Enums\WriteLineTextMode.cs" />
     <Compile Include="Common\GenericThermalPrinter.cs" />
     <Compile Include="Tickets\TicketColumn.cs" />

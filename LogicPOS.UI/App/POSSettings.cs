@@ -1,7 +1,6 @@
 ﻿using LogicPOS.Settings;
 using System;
 using System.Collections.Generic;
-using LogicPOS.Settings.Extensions;
 
 namespace logicpos.App
 {

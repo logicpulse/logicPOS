@@ -3,7 +3,6 @@ using LogicPOS.Settings;
 using System;
 using System.IO;
 using System.Reflection;
-using LogicPOS.Settings.Extensions;
 
 namespace LogicPOS.Shared.Article
 {

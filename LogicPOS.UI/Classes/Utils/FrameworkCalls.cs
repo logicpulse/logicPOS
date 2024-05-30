@@ -5,7 +5,6 @@ using logicpos.Classes.Enums.Tickets;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
-using logicpos.datalayer.Xpo;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Settings.Terminal;
 using LogicPOS.Data.XPO.Utility;
@@ -622,7 +621,7 @@ namespace logicpos
 
         public static bool PrintFinanceDocumentPayment(
             Window pSourceWindow,
-            PrinterDto printer,
+            PrintingPrinterDto printer,
             fin_documentfinancepayment pDocumentFinancePayment)
         {
             bool result = false;
@@ -801,10 +800,13 @@ namespace logicpos
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //PrintWorkSessionMovement
 
-        public static bool PrintWorkSessionMovement(Window pSourceWindow, sys_configurationprinters pPrinter, pos_worksessionperiod pWorkSessionPeriod)
+        public static bool PrintWorkSessionMovement(
+            Window pSourceWindow, 
+            sys_configurationprinters pPrinter, 
+            PrintWorkSessionDto pWorkSessionPeriod)
         {
             bool result = false;
-            sys_configurationprinterstemplates template = (sys_configurationprinterstemplates)XPOHelper.GetXPGuidObject(typeof(sys_configurationprinterstemplates), PrintingSettings.WorkSessionMovementPrintingTemplateId);
+            sys_configurationprinterstemplates template = XPOHelper.GetEntityById<sys_configurationprinterstemplates>(PrintingSettings.WorkSessionMovementPrintingTemplateId);
 
             try
             {
@@ -830,7 +832,7 @@ namespace logicpos
         public static bool PrintCashDrawerOpenAndMoneyInOut(Window pSourceWindow, sys_configurationprinters pPrinter, string pTicketTitle, decimal pMovementAmount, decimal pTotalAmountInCashDrawer, string pMovementDescription)
         {   var printer = MappingUtils.GetPrinterDto(pPrinter);
             bool result = false;
-            sys_configurationprinterstemplates template = (sys_configurationprinterstemplates)XPOHelper.GetXPGuidObject(typeof(sys_configurationprinterstemplates), PrintingSettings.CashDrawerMoneyMovementPrintingTemplateId);
+            sys_configurationprinterstemplates template = XPOHelper.GetEntityById<sys_configurationprinterstemplates>(PrintingSettings.CashDrawerMoneyMovementPrintingTemplateId);
 
             try
             {

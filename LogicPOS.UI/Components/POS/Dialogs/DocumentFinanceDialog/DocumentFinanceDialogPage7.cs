@@ -2,9 +2,9 @@
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
-using logicpos.datalayer.Xpo;
 using logicpos.shared.Enums;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Finance.Dtos;
 using LogicPOS.Settings;

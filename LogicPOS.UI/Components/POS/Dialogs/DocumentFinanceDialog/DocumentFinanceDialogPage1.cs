@@ -7,8 +7,8 @@ using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Xpo;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
@@ -92,10 +92,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             Guid initialConfigurationPaymentConditionGuid = POSSettings.XpoOidConfigurationPaymentConditionDefaultInvoicePaymentCondition;
             Guid initialConfigurationPaymentMethodGuid = POSSettings.XpoOidConfigurationPaymentMethodDefaultInvoicePaymentMethod;
             Guid initialConfigurationCurrencyGuid = XPOSettings.ConfigurationSystemCurrency.Oid;
-            _defaultValueDocumentFinanceType = (fin_documentfinancetype)XPOHelper.GetXPGuidObject(_session, typeof(fin_documentfinancetype), initialDocumentFinanceTypeGuid);
-            _defaultValueConfigurationPaymentCondition = (fin_configurationpaymentcondition)XPOHelper.GetXPGuidObject(_session, typeof(fin_configurationpaymentcondition), initialConfigurationPaymentConditionGuid);
-            _defaultValueConfigurationPaymentMethod = (fin_configurationpaymentmethod)XPOHelper.GetXPGuidObject(_session, typeof(fin_configurationpaymentmethod), initialConfigurationPaymentMethodGuid);
-            _defaultValueConfigurationCurrency = (cfg_configurationcurrency)XPOHelper.GetXPGuidObject(_session, typeof(cfg_configurationcurrency), initialConfigurationCurrencyGuid);
+            _defaultValueDocumentFinanceType = XPOHelper.GetEntityById<fin_documentfinancetype>(initialDocumentFinanceTypeGuid, _session);
+            _defaultValueConfigurationPaymentCondition = XPOHelper.GetEntityById<fin_configurationpaymentcondition>(initialConfigurationPaymentConditionGuid, _session);
+            _defaultValueConfigurationPaymentMethod = XPOHelper.GetEntityById<fin_configurationpaymentmethod>(initialConfigurationPaymentMethodGuid, _session);
+            _defaultValueConfigurationCurrency = XPOHelper.GetEntityById<cfg_configurationcurrency>(initialConfigurationCurrencyGuid, _session);
 
             //DocumentFinanceType
             string documentFinanceTypeExtraCriteria = GetDocumentFinanceTypeExtraCriteria();

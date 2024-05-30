@@ -1,6 +1,6 @@
 ﻿using System;
 using DevExpress.Xpo;
-using logicpos.datalayer.Xpo;
+using LogicPOS.Data.XPO.Utility;
 
 namespace logicpos.datalayer.DataLayer.Xpo
 {

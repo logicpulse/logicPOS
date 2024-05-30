@@ -5,7 +5,6 @@ using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Extensions;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Shared.Article;
 using System;
 using System.Collections.Generic;

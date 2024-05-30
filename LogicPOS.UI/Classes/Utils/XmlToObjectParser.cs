@@ -7,7 +7,6 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 
 //ThirdParty Lib - Adapted to LogicPos

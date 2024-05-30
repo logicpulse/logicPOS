@@ -8,9 +8,10 @@ using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
+using LogicPOS.Data.XPO;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
@@ -383,10 +384,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     _labelDeliveryValue.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalDelivery, XPOSettings.ConfigurationSystemCurrency.Acronym);
                     _labelChangeValue.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalChange, XPOSettings.ConfigurationSystemCurrency.Acronym);
                     // Selects
-                    Customer = (erp_customer)XPOHelper.GetXPGuidObject(typeof(erp_customer), ProcessFinanceDocumentParameter.Customer);
+                    Customer = XPOHelper.GetEntityById<erp_customer>(ProcessFinanceDocumentParameter.Customer);
                     Country = Customer.Country;
                     // PaymentMethod
-                    PaymentMethod = (fin_configurationpaymentmethod)XPOHelper.GetXPGuidObject(typeof(fin_configurationpaymentmethod), ProcessFinanceDocumentParameter.PaymentMethod);
+                    PaymentMethod = XPOHelper.GetEntityById<fin_configurationpaymentmethod>(ProcessFinanceDocumentParameter.PaymentMethod);
                     // Restore Selected Payment Method, require to associate button reference to selectedPaymentMethodButton
                     if (!string.IsNullOrEmpty(pSelectedPaymentMethodButtonName))
                     {

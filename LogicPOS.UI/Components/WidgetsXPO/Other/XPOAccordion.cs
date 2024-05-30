@@ -1,12 +1,11 @@
 ﻿using DevExpress.Xpo.DB;
 using Gtk;
 using logicpos.Classes.Gui.Gtk.Widgets;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Xpo;
 using LogicPOS.Globalization.Resources.Localization;
 using System.Collections.Generic;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
+using LogicPOS.Data.XPO.Utility;
+using LogicPOS.Data.XPO;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
 {

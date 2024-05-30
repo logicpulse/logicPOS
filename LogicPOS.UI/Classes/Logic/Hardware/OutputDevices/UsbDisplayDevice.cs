@@ -1,6 +1,5 @@
 ﻿using LibUsbDotNet;
 using LibUsbDotNet.Main;
-using logicpos.datalayer.Xpo;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Globalization;
 using LogicPOS.Shared.Orders;

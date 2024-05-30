@@ -1,8 +1,8 @@
 ﻿using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Xpo;
+using LogicPOS.Data.XPO;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Printing.Common;
 using LogicPOS.Printing.Enums;
 using LogicPOS.Utility;

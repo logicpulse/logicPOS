@@ -5,10 +5,12 @@ using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
+using LogicPOS.Data.Enums;
+using LogicPOS.Data.Services;
+using LogicPOS.Data.XPO;
 using LogicPOS.Data.XPO.Settings;
-using LogicPOS.Finance.WorkSession;
+using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using System;
@@ -55,14 +57,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 {
                     //Alteração no funcionamento do Inicio/fecho Sessão [IN:014330]
                     //Get From MoneyInCashDrawer, Includes CASHDRAWER_START and Money Movements
-                    TotalAmountInCashDrawer = ProcessWorkSessionPeriod.GetSessionPeriodMovementTotal(XPOSettings.WorkSessionPeriodTerminal, MovementTypeTotal.MoneyInCashDrawer);
+                    TotalAmountInCashDrawer = WorkSessionProcessor.GetSessionPeriodMovementTotal(XPOSettings.WorkSessionPeriodTerminal, MovementTypeTotal.MoneyInCashDrawer);
                     if (TotalAmountInCashDrawer < 0) TotalAmountInCashDrawer = TotalAmountInCashDrawer * (-1);
                 }
                 //Dont have Open Terminal Session YET, use from last Closed CashDrawer
                 else
                 {
                     //Default Last Closed Cash Value
-                    TotalAmountInCashDrawer = ProcessWorkSessionPeriod.GetSessionPeriodCashDrawerOpenOrCloseAmount("CASHDRAWER_CLOSE");
+                    TotalAmountInCashDrawer = WorkSessionProcessor.GetSessionPeriodCashDrawerOpenOrCloseAmount("CASHDRAWER_CLOSE");
                     if (TotalAmountInCashDrawer < 0) TotalAmountInCashDrawer = TotalAmountInCashDrawer * (-1);
                 }
 
@@ -135,7 +137,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //Initial Dialog Values
                 _selectedCashDrawerButton = buttonBag[initialButtonToken];
                 _selectedCashDrawerButton.ModifyBg(StateType.Normal, _colorBaseDialogDefaultButtonBackground.Lighten(0.50f).ToGdkColor());
-                MovementType = (pos_worksessionmovementtype)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(pos_worksessionmovementtype), _selectedCashDrawerButton.CurrentButtonOid);
+                MovementType = XPOHelper.GetEntityById<pos_worksessionmovementtype>(_selectedCashDrawerButton.CurrentButtonOid);
                 MovementType.Token = initialButtonToken;
 
                 //EntryAmountMoney

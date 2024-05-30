@@ -1,13 +1,12 @@
 ﻿using DevExpress.Xpo;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
-using logicpos.datalayer.Xpo;
 using logicpos.shared.Enums;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Shared.Article;
 using Newtonsoft.Json;
 using System;
@@ -107,7 +106,7 @@ namespace LogicPOS.Shared.Orders
             TaxSellType taxSellType = (AppOperationModeSettings.AppMode == AppOperationMode.Retail || configurationPlace.MovementType.VatDirectSelling) ? TaxSellType.TakeAway : TaxSellType.Normal;
 
             //Open Table on First Finish OrderTicket
-            pos_configurationplacetable xTable = (pos_configurationplacetable)XPOHelper.GetXPGuidObject(_sessionXpo, typeof(pos_configurationplacetable), Table.Oid);
+            pos_configurationplacetable xTable = XPOHelper.GetEntityById<pos_configurationplacetable>(Table.Oid, _sessionXpo);
             //Proteção para mesas vazias, escolhe a primeira
             if (xTable == null)
             {
@@ -149,7 +148,7 @@ namespace LogicPOS.Shared.Orders
             //Update
             else
             {
-                xOrderMain = (fin_documentordermain)XPOHelper.GetXPGuidObject(_sessionXpo, typeof(fin_documentordermain), _persistentOid);
+                xOrderMain = XPOHelper.GetEntityById<fin_documentordermain>(_persistentOid, _sessionXpo);
                 if (xOrderMain.PlaceTable != xTable) xOrderMain.PlaceTable = xTable;
                 //Force Changes in Record, else UpdatedAt dont Update
                 xOrderMain.UpdatedAt = XPOHelper.CurrentDateTimeAtomic();
@@ -206,7 +205,7 @@ namespace LogicPOS.Shared.Orders
             {
                 //Use Order in print tickets etc
                 itemOrd++;
-                xArticle = (fin_article)XPOHelper.GetXPGuidObject(_sessionXpo, typeof(fin_article), line.ArticleOid);
+                xArticle = XPOHelper.GetEntityById<fin_article>(line.ArticleOid, _sessionXpo);
                 //Get PriceTax from TaxSellType
                 decimal priceTax = (taxSellType == TaxSellType.Normal) ? xArticle.VatOnTable.Value : xArticle.VatDirectSelling.Value;
                 //Edit/cancel orders lindote 10/07/2020
@@ -263,7 +262,7 @@ namespace LogicPOS.Shared.Orders
                 }
                 else
                 {
-                    xOrderDetailLine = (fin_documentorderdetail)XPOHelper.GetXPGuidObject(_sessionXpo, typeof(fin_documentorderdetail), orderDetailOid);
+                    xOrderDetailLine = XPOHelper.GetEntityById<fin_documentorderdetail>(orderDetailOid, _sessionXpo);
 
                     if (xOrderDetailLine.Token2 != "decreased" && !pTicketDrecrease)
                     {
@@ -413,7 +412,7 @@ namespace LogicPOS.Shared.Orders
                 GlobalTotalFinal = articleBag.TotalFinal;
                 GlobalTotalQuantity = articleBag.TotalQuantity;
                 //Persist Final TotalOpen
-                pos_configurationplacetable currentTable = (pos_configurationplacetable)XPOHelper.GetXPGuidObject(typeof(pos_configurationplacetable), Table.Oid);
+                pos_configurationplacetable currentTable = XPOHelper.GetEntityById<pos_configurationplacetable>(Table.Oid);
 
                 if (currentTable != null)
                 {
@@ -685,7 +684,7 @@ namespace LogicPOS.Shared.Orders
             _logger.Debug("OrderMain.CheckForDuplicatedArticleInArticleBag(Session session)");
 
             Session _sessionXpo = session;
-            fin_documentordermain xOrderMain = (fin_documentordermain)XPOHelper.GetXPGuidObject(_sessionXpo, typeof(fin_documentordermain), _persistentOid);
+            fin_documentordermain xOrderMain = XPOHelper.GetEntityById<fin_documentordermain>(_persistentOid, _sessionXpo);
 
             //Get current Working Order from SessionApp
             OrderMain currentOrderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];

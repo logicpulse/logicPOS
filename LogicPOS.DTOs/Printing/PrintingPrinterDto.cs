@@ -2,7 +2,7 @@
 
 namespace LogicPOS.DTOs.Printing
 {
-    public class PrinterDto
+    public class PrintingPrinterDto
     {
         public Guid Id { get; set; }
         public string Designation { get; set; }

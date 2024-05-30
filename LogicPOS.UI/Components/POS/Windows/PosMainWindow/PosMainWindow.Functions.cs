@@ -8,9 +8,9 @@ using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
-using logicpos.datalayer.Xpo;
+using LogicPOS.Data.Services;
 using LogicPOS.Data.XPO.Settings;
-using LogicPOS.Finance.WorkSession;
+using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Globalization;
 using LogicPOS.Printing.Utility;
 using LogicPOS.Settings;
@@ -196,7 +196,7 @@ namespace logicpos
                     //Already logged
                     if (POSSession.CurrentSession.LoggedUsers.ContainsKey(dialogChangeUser.UserDetail.Oid))
                     {
-                        XPOSettings.LoggedUser = (sys_userdetail)XPOHelper.GetXPGuidObject(typeof(sys_userdetail), dialogChangeUser.UserDetail.Oid);
+                        XPOSettings.LoggedUser = XPOHelper.GetEntityById<sys_userdetail>(dialogChangeUser.UserDetail.Oid);
                         GeneralSettings.LoggedUserPermissions = XPOHelper.GetUserPermissions();
                         TicketList.UpdateTicketListButtons();
                         XPOHelper.Audit("USER_CHANGE", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_user_change"), XPOSettings.LoggedUser.Name));
@@ -214,7 +214,7 @@ namespace logicpos
                             {
                                 POSSession.CurrentSession.LoggedUsers.Add(dialogChangeUser.UserDetail.Oid, XPOHelper.CurrentDateTimeAtomic());
                                 POSSession.CurrentSession.Save();
-                                XPOSettings.LoggedUser = (sys_userdetail)XPOHelper.GetXPGuidObject(typeof(sys_userdetail), dialogChangeUser.UserDetail.Oid);
+                                XPOSettings.LoggedUser = XPOHelper.GetEntityById<sys_userdetail>(dialogChangeUser.UserDetail.Oid);
                                 GeneralSettings.LoggedUserPermissions = XPOHelper.GetUserPermissions();
                                 TicketList.UpdateTicketListButtons();
                                 XPOHelper.Audit("USER_loggerIN", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_user_loggerin"), XPOSettings.LoggedUser.Name));
@@ -544,7 +544,7 @@ namespace logicpos
                 if (XPOSettings.WorkSessionPeriodTerminal == null
                   || (XPOSettings.WorkSessionPeriodTerminal != null && XPOSettings.WorkSessionPeriodTerminal.SessionStatus == WorkSessionPeriodStatus.Close))
                 {
-                    pos_worksessionperiod workSessionPeriodDay = ProcessWorkSessionPeriod.GetSessionPeriod(WorkSessionPeriodType.Day);
+                    pos_worksessionperiod workSessionPeriodDay = WorkSessionProcessor.GetSessionPeriod(WorkSessionPeriodType.Day);
 
                     if (workSessionPeriodDay == null)
                     {

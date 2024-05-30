@@ -1,9 +1,9 @@
 ﻿using FastReport;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
-using logicpos.datalayer.Xpo;
 using logicpos.shared.Enums;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Globalization;
 using LogicPOS.Reporting.BOs;
 using LogicPOS.Reporting.BOs.Articles;
@@ -603,10 +603,9 @@ namespace LogicPOS.Reporting
                 {
                     //if (LogicPOS.Settings.CultureSettings.CurrentCulture.Name.Equals("pt-MZ")){
                     cfg_configurationcurrency defaultCurrencyForExchangeRate =
-                        (cfg_configurationcurrency)XPOHelper.GetXPGuidObject(
-                            XPOSettings.Session,
-                            typeof(cfg_configurationcurrency),
-                            CultureSettings.USDCurrencyId);
+                            XPOHelper.GetEntityById<cfg_configurationcurrency> (
+                                CultureSettings.USDCurrencyId,
+                                XPOSettings.Session);
 
                     customReport.SetParameterValue("DefaultCurrencyForExchangeRateAcronym", defaultCurrencyForExchangeRate.Acronym);
                     customReport.SetParameterValue("DefaultCurrencyForExchangeRateTotal", defaultCurrencyForExchangeRate.ExchangeRate);
@@ -1373,7 +1372,7 @@ namespace LogicPOS.Reporting
                             {
                                 if (!string.IsNullOrEmpty(customerBalance.EntityOid))
                                 {
-                                    customer = (erp_customer)XPOHelper.GetXPGuidObject(typeof(erp_customer), new Guid(customerBalance.EntityOid));
+                                    customer = XPOHelper.GetEntityById<erp_customer>(new Guid(customerBalance.EntityOid));
                                     summary.EntityName = customer.Name;
                                     summary.EntityFiscalNumber = customer.FiscalNumber;
                                 }
@@ -2118,13 +2117,9 @@ namespace LogicPOS.Reporting
 
                     if (generatePdfDocuments)
                     {
-                        erp_customer customer = (erp_customer)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(erp_customer), documentFinancePayment.EntityOid);
+                        erp_customer customer = XPOHelper.GetEntityById<erp_customer>(documentFinancePayment.EntityOid);
                         string entityName = (customer != null && !string.IsNullOrEmpty(customer.Name)) ? string.Format("_{0}", customer.Name.ToLower().Replace(' ', '_')) : string.Empty;
-                        string reportFilename = string.Format("{0}/{1}{2}.pdf",
-                            PathsSettings.Paths["documents"],
-                            documentFinancePayment.PaymentRefNo.Replace('/', '-').Replace(' ', '_'),
-                            entityName
-                        );
+                        string reportFilename = $"{PathsSettings.Paths["documents"]}/{documentFinancePayment.PaymentRefNo.Replace('/', '-').Replace(' ', '_')}{entityName}.pdf";
 
                         if (!File.Exists(reportFilename))
                         {

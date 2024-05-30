@@ -2,9 +2,10 @@
 using DevExpress.Xpo.DB;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
-using logicpos.datalayer.Xpo;
 using logicpos.shared.Enums;
+using LogicPOS.Data.XPO;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Shared.Orders;
@@ -356,10 +357,10 @@ namespace LogicPOS.Shared.Article
             string articleDesignation = string.Empty;
 
             //Start UnitOfWork
-            using (UnitOfWork uowSession = new UnitOfWork())
+            using (UnitOfWork unitOfWork = new UnitOfWork())
             {
                 OrderMain orderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];
-                fin_documentordermain xDocumentOrderMain = (fin_documentordermain)XPOHelper.GetXPGuidObject(uowSession, typeof(fin_documentordermain), orderMain.PersistentOid);
+                fin_documentordermain xDocumentOrderMain = XPOHelper.GetEntityById<fin_documentordermain>(orderMain.PersistentOid,unitOfWork);
 
                 if (xDocumentOrderMain != null && xDocumentOrderMain.OrderTicket != null)
                 {
@@ -438,7 +439,7 @@ namespace LogicPOS.Shared.Article
                         {
                             //Before Delete OrderMain, we must UnAssign DocumentMaster SourceOrderMain else we have a CONSTRAINT ERROR on FK_DocumentFinanceMaster_SourceOrderMain trying to delete used OrderMain
                             string sql = string.Format(@"UPDATE fin_documentfinancemaster SET SourceOrderMain = NULL WHERE SourceOrderMain = '{0}';", deleteOrderMain.Oid);
-                            uowSession.ExecuteScalar(sql);
+                            unitOfWork.ExecuteScalar(sql);
                             //Open Table
                             deleteOrderMain.PlaceTable.TableStatus = TableStatus.Free;
                             //Audit
@@ -452,7 +453,7 @@ namespace LogicPOS.Shared.Article
                 try
                 {
                     //Commit UOW Changes
-                    uowSession.CommitChanges();
+                    unitOfWork.CommitChanges();
                     //Update OrderMain UpdatedAt, Required to Sync Terminals
                     orderMain.UpdatedAt = XPOHelper.CurrentDateTimeAtomic();
 
@@ -462,12 +463,12 @@ namespace LogicPOS.Shared.Article
 
                     //SEARCH#001
                     //Require to Remove PartialPayed Items Quantity
-                    return resultRemainQuantity - XPOHelper.GetPartialPaymentPayedItems(uowSession, xDocumentOrderMain.Oid, pKey.ArticleId);
+                    return resultRemainQuantity - XPOHelper.GetPartialPaymentPayedItems(unitOfWork, xDocumentOrderMain.Oid, pKey.ArticleId);
                 }
                 catch (Exception ex)
                 {
                     _logger.Error(ex.Message, ex);
-                    uowSession.RollbackTransaction();
+                    unitOfWork.RollbackTransaction();
                     return -1;
                 }
             }

@@ -11,7 +11,6 @@ using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
 using logicpos.datalayer.DataLayer.Xpo.Documents;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Globalization;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles

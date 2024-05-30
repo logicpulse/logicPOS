@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace LogicPOS.DTOs.Printing
+﻿namespace LogicPOS.DTOs.Printing
 {
     public class PrintOrderDetailDto
     {
@@ -8,6 +6,6 @@ namespace LogicPOS.DTOs.Printing
         public decimal Quantity { get; set; }
         public string UnitMeasure { get; set; }
 
-        public PrinterDto ArticlePrinter { get; set; }
+        public PrintingPrinterDto ArticlePrinter { get; set; }
     }
 }

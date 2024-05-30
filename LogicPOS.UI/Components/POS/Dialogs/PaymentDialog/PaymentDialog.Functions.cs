@@ -10,9 +10,9 @@ using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
-using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Finance.Utility;
 using LogicPOS.Globalization;
@@ -452,7 +452,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             if (response == (int)ResponseType.Ok)
             {
                 //Get Object from dialog else Mixing Sessions, Both belong to diferente Sessions
-                Country = (cfg_configurationcountry)XPOHelper.GetXPGuidObject(typeof(cfg_configurationcountry), dialog.GenericTreeView.DataSourceRow.Oid);
+                Country = XPOHelper.GetEntityById<cfg_configurationcountry>(dialog.GenericTreeView.DataSourceRow.Oid);
                 entryValidation.Text = Country.Designation;
                 Validate();
             }
@@ -469,7 +469,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             //Enable Sender
             SelectedPaymentMethodButton = (TouchButtonBase)pSender;
-            PaymentMethod = (fin_configurationpaymentmethod)XPOHelper.GetXPGuidObject(typeof(fin_configurationpaymentmethod), SelectedPaymentMethodButton.CurrentButtonOid);
+            PaymentMethod = XPOHelper.GetEntityById<fin_configurationpaymentmethod>(SelectedPaymentMethodButton.CurrentButtonOid);
             //_logger.Debug(string.Format("AssignPaymentMethod: ButtonName: [{0}], PaymentMethodToken: [{1}]", _selectedPaymentMethodButton.Name, _selectedPaymentMethod.Token));
 
             if (PaymentMethod.Token == "MONEY")
@@ -588,7 +588,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 if (customerGuid != Guid.Empty)
                 {
-                    Customer = (erp_customer)XPOHelper.GetXPGuidObject(typeof(erp_customer), customerGuid);
+                    Customer = XPOHelper.GetEntityById<erp_customer>(customerGuid);
                 }
                 else
                 {
@@ -776,7 +776,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //Used To Disable FiscalNumber Edits and to Get Customer
                 string sql = string.Format("SELECT Oid FROM erp_customer WHERE FiscalNumber = '{0}' AND (Hidden IS NULL OR Hidden = 0);", fiscalNumberFilterValue);
                 Guid customerGuid = XPOHelper.GetGuidFromQuery(sql);
-                erp_customer customer = (customerGuid != Guid.Empty) ? (erp_customer)XPOHelper.GetXPGuidObject(typeof(erp_customer), customerGuid) : null;
+                erp_customer customer = (customerGuid != Guid.Empty) ? XPOHelper.GetEntityById<erp_customer>(customerGuid) : null;
 
                 //Required Minimal Fields Edit : SingularEntity
                 if (isFinalConsumerEntity)

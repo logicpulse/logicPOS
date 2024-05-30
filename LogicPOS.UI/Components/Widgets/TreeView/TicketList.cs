@@ -6,14 +6,13 @@ using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Logic.Others;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
-using logicpos.datalayer.Xpo;
 using logicpos.Extensions;
 using logicpos.shared.Enums;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Shared;
 using LogicPOS.Shared.Article;
 using LogicPOS.Shared.Orders;
@@ -543,7 +542,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         if (_currentDetailArticle != null)
                         {
                             newLine = new OrderDetailLine(_currentDetailArticle.Oid, _currentDetailArticle.Designation,
-                                ArticleUtils.GetArticlePrice((fin_article)XPOHelper.GetXPGuidObject(typeof(fin_article), _currentDetailArticle.Oid),
+                                ArticleUtils.GetArticlePrice(XPOHelper.GetEntityById<fin_article>(_currentDetailArticle.Oid),
                                 (AppOperationModeSettings.AppMode == AppOperationMode.Retail) ? TaxSellType.TakeAway : TaxSellType.Normal));
 
                             newLine.Properties.PriceNet = Convert.ToDecimal((string)ListStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price));
@@ -579,7 +578,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                                 {
 
                                     newLine = new OrderDetailLine(_currentDetailArticle.Oid, _currentDetailArticle.Designation,
-                                        ArticleUtils.GetArticlePrice((fin_article)XPOHelper.GetXPGuidObject(typeof(fin_article), _currentDetailArticle.Oid),
+                                        ArticleUtils.GetArticlePrice(XPOHelper.GetEntityById<fin_article>(_currentDetailArticle.Oid),
                                         (AppOperationModeSettings.AppMode == AppOperationMode.Retail) ? TaxSellType.TakeAway : TaxSellType.Normal));
 
                                     newLine.Properties.PriceNet = Convert.ToDecimal((string)ListStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price));
@@ -671,7 +670,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             try
             {
                 //Get Article
-                fin_article article = (fin_article)XPOHelper.GetXPGuidObject(typeof(fin_article), pArticleOid);
+                fin_article article = XPOHelper.GetEntityById<fin_article>(pArticleOid);
 
                 //Force Refresh Cache 
                 article.Reload();
@@ -1462,7 +1461,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         private decimal GetArticleDefaultQuantity(Guid pArticleOid)
         {
             //Get Article
-            fin_article article = (fin_article)XPOHelper.GetXPGuidObject(typeof(fin_article), pArticleOid);
+            fin_article article = XPOHelper.GetEntityById<fin_article>(pArticleOid);
             //Get Default Article Quantity
             decimal defaultQuantity;
             if (article.DefaultQuantity > 0) { defaultQuantity = article.DefaultQuantity; } else { defaultQuantity = 1.00m; };

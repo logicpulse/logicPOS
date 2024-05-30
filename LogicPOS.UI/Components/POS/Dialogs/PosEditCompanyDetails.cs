@@ -9,8 +9,8 @@ using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Xpo;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Finance.Utility;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
@@ -96,8 +96,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
 
             //Init Inital Values
-            cfg_configurationcountry intialValueConfigurationCountry = (cfg_configurationcountry)XPOHelper.GetXPGuidObject(typeof(cfg_configurationcountry), systemCountry);
-            cfg_configurationcurrency intialValueConfigurationCurrency = (cfg_configurationcurrency)XPOHelper.GetXPGuidObject(typeof(cfg_configurationcurrency), systemCurrency);
+            cfg_configurationcountry intialValueConfigurationCountry = XPOHelper.GetEntityById<cfg_configurationcountry>(systemCountry);
+            cfg_configurationcurrency intialValueConfigurationCurrency = XPOHelper.GetEntityById<cfg_configurationcurrency>(systemCurrency);
 
             try
             {
