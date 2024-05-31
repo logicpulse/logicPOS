@@ -1,5 +1,4 @@
 ﻿using FastReport.Utils;
-using log4net;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Globalization;
@@ -45,14 +44,14 @@ namespace LogicPOS.Reporting
 
             //Obtain MethodInfo for our functions
             Type customFuncType = typeof(CustomFunctions);
-            MethodInfo funcRes = customFuncType.GetMethod("Res", new Type[] { typeof(string) });
-            MethodInfo funcGetParam = customFuncType.GetMethod("GetParam", new Type[] { typeof(string) });
-            MethodInfo funcPref = customFuncType.GetMethod("Pref", new Type[] { typeof(string) });
-            MethodInfo funcVar = customFuncType.GetMethod("Var", new Type[] { typeof(string) });
-            MethodInfo funcLog = customFuncType.GetMethod("Log", new Type[] { typeof(string) });
-            MethodInfo funcDebug = customFuncType.GetMethod("Debug", new Type[] { typeof(object) });
-            MethodInfo funcExtendedValue = customFuncType.GetMethod("ExtendedValue", new Type[] { typeof(decimal), typeof(string) });
-            
+            MethodInfo funcRes = customFuncType.GetMethod(nameof(Res), new Type[] { typeof(string) });
+            MethodInfo funcGetParam = customFuncType.GetMethod(nameof(GetParam), new Type[] { typeof(string) });
+            MethodInfo funcPref = customFuncType.GetMethod(nameof(Pref), new Type[] { typeof(string) });
+            MethodInfo funcVar = customFuncType.GetMethod(nameof(Var), new Type[] { typeof(string) });
+            MethodInfo funcLog = customFuncType.GetMethod(nameof(Log), new Type[] { typeof(string) });
+            MethodInfo funcDebug = customFuncType.GetMethod(nameof(Debug), new Type[] { typeof(object) });
+            MethodInfo funcExtendedValue = customFuncType.GetMethod(nameof(ExtendedValue), new Type[] { typeof(decimal), typeof(string) });
+
             //Register simple function
             RegisteredObjects.AddFunction(funcRes, "Custom");
             RegisteredObjects.AddFunction(funcGetParam, "Custom");
