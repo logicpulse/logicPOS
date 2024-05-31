@@ -178,12 +178,14 @@ namespace LogicPOS.Printing.Documents
                 //Colum
                 if (CultureSettings.CountryIdIsPortugal(XPOSettings.ConfigurationSystemCountry.Oid))
                 {
-                    columns.Add(new TicketColumn("VatRate", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "IVA") + "%", 6, TicketColumnsAlignment.Right, typeof(decimal), "{0:00.00}"));
+                    //columns.Add(new TicketColumn("VatRate", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "IVA") + "%", 6, TicketColumnsAlignment.Right, typeof(decimal), "{0:00.00}"));
+                    columns.Add(new TicketColumn("VatRate", "IVA" + "%", 6, TicketColumnsAlignment.Right, typeof(decimal), "{0:00.00}")); // Tchialo and Luciano 
                 }
                 else
                 {
                     columns.Add(new TicketColumn("VatRate", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_vat_rate") + "%", 6, TicketColumnsAlignment.Right, typeof(decimal), "{0:00.00}"));
                 }
+
                 columns.Add(new TicketColumn("Quantity", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_quantity_acronym"), 8, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"));
                 columns.Add(new TicketColumn("UnitMeasure", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_unit_measure_acronym"), 3, TicketColumnsAlignment.Right));
                 if (CultureSettings.CountryIdIsPortugal(XPOSettings.ConfigurationSystemCountry.Oid))
