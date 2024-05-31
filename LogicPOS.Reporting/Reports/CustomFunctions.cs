@@ -1,4 +1,5 @@
 ﻿using FastReport.Utils;
+using log4net;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Globalization;
@@ -41,6 +42,7 @@ namespace LogicPOS.Reporting
         {
             //Add Funct
             RegisteredObjects.AddFunctionCategory("Custom", "Custom Functions");
+
             //Obtain MethodInfo for our functions
             Type customFuncType = typeof(CustomFunctions);
             MethodInfo funcRes = customFuncType.GetMethod("Res", new Type[] { typeof(string) });
@@ -50,7 +52,7 @@ namespace LogicPOS.Reporting
             MethodInfo funcLog = customFuncType.GetMethod("Log", new Type[] { typeof(string) });
             MethodInfo funcDebug = customFuncType.GetMethod("Debug", new Type[] { typeof(object) });
             MethodInfo funcExtendedValue = customFuncType.GetMethod("ExtendedValue", new Type[] { typeof(decimal), typeof(string) });
-
+            
             //Register simple function
             RegisteredObjects.AddFunction(funcRes, "Custom");
             RegisteredObjects.AddFunction(funcGetParam, "Custom");
@@ -229,6 +231,44 @@ namespace LogicPOS.Reporting
             catch (Exception ex)
             {
                 _logger.Error(ex.Message, ex);
+                return "ERROR";
+            }
+        }
+
+        /// <summary>
+        /// Get Preference Parameter String from Token
+        /// </summary>
+        /// <param name="Token"></param>
+        /// <returns>Preference Parameter String</returns>
+        public static string Pref(string pToken)
+        {
+            try
+            {
+                string result = (GeneralSettings.PreferenceParameters.ContainsKey(pToken.ToUpper()))
+                  ? GeneralSettings.PreferenceParameters[pToken.ToUpper()]
+                  : string.Format("UNDEFINED [{0}]", pToken);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return "ERROR";
+            }
+        }
+
+        /// <summary>
+        /// Convert Decimal to ExtendedValue
+        /// </summary>
+        /// <param name="Value"></param>
+        public static string ExtendedValue(decimal pValue, string pAcronym)
+        {
+            try
+            {
+                NumberToWordsUtility extendValue = new NumberToWordsUtility();
+                return extendValue.GetExtendedValue(pValue, pAcronym);
+            }
+            catch (Exception ex)
+            {
                 return "ERROR";
             }
         }
