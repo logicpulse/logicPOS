@@ -31,16 +31,28 @@ namespace LogicPOS.Data.XPO.Utility
 
             foreach (var detail in ticket.OrderDetail)
             {
-                ticketDto.OrderDetails.Add(new PrintOrderDetailDto
-                {
-                    Designation = detail.Designation,
-                    Quantity = detail.Quantity,
-                    UnitMeasure = detail.UnitMeasure,
-                    ArticlePrinter = GetPrinterDto(detail.Article.Printer)
-                });
+                var orderDetailDto = GetPrintOrderDetailDto(detail);
+                ticketDto.OrderDetails.Add(orderDetailDto);
             }
 
             return ticketDto;
+        }
+
+        public static PrintOrderDetailDto GetPrintOrderDetailDto(fin_documentorderdetail detail)
+        {
+            var orderDetailDto =  new PrintOrderDetailDto
+            {
+                Designation = detail.Designation,
+                Quantity = detail.Quantity,
+                UnitMeasure = detail.UnitMeasure
+            };
+
+            if(detail.Article != null && detail.Article.Printer != null)
+            {
+                orderDetailDto.ArticlePrinter = GetPrinterDto(detail.Article.Printer);
+            }
+
+            return orderDetailDto;
         }
 
         public static PrintingDocumentTypeDto GetPrintingDocumentTypeDto(fin_documentfinancetype documentType)

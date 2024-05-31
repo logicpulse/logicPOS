@@ -1463,7 +1463,10 @@ namespace LogicPOS.Printing.Utility
 
             foreach (var orderDetailDto in orderTicketDto.OrderDetails)
             {
-                if (orderDetailDto.ArticlePrinter.Id != Guid.Empty && orderDetailDto.ArticlePrinter.IsThermal)
+                if (
+                    orderDetailDto.ArticlePrinter != null &&
+                    orderDetailDto.ArticlePrinter.Id != Guid.Empty && 
+                    orderDetailDto.ArticlePrinter.IsThermal)
                 {
                     if(articlesPrinters.Any(p => p.Id == orderDetailDto.ArticlePrinter.Id))
                     {

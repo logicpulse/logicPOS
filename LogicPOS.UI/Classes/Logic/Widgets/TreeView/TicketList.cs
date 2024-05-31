@@ -343,7 +343,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 // Impressoras - Diferenciação entre Tipos [TK:016249]
                 PrintingSettings.ThermalPrinter.UsingThermalPrinter = true;
                 if (TerminalSettings.HasLoggedTerminal &&
-                    LoggedTerminalSettings.HasPrinter &&
+                    LoggedTerminalSettings.HasThermalPrinter &&
                     TerminalSettings.LoggedTerminal.ThermalPrinter.PrinterType.ThermalPrinter &&
                     orderTicket.OrderDetail.Count != 0)
                 {
