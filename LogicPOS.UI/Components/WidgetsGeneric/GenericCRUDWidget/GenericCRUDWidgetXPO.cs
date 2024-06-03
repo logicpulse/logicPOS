@@ -1,6 +1,6 @@
 ﻿using Gtk;
 using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
-using logicpos.datalayer.DataLayer.Xpo;
+using LogicPOS.Domain.Entities;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -8,23 +8,23 @@ using System.Reflection;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {
-    internal class GenericCRUDWidgetXPO : GenericCRUDWidget<XPGuidObject>
+    internal class GenericCRUDWidgetXPO : GenericCRUDWidget<Entity>
     {
         private bool _hasXPGuidObjectValue;
 
-        public GenericCRUDWidgetXPO(Widget pWidget, XPGuidObject pDataSourceRow, string pFieldName, string pValidationRule = "", bool pRequired = false)
+        public GenericCRUDWidgetXPO(Widget pWidget, Entity pDataSourceRow, string pFieldName, string pValidationRule = "", bool pRequired = false)
             : base(pWidget, pDataSourceRow, pFieldName, pValidationRule, pRequired)
         {
             InitObject(pWidget, null, pDataSourceRow, pFieldName, pValidationRule, pRequired);
         }
 
-        public GenericCRUDWidgetXPO(BOWidgetBox pBOWidgetBox, XPGuidObject pDataSourceRow, string pFieldName, string pValidationRule = "", bool pRequired = false)
+        public GenericCRUDWidgetXPO(BOWidgetBox pBOWidgetBox, Entity pDataSourceRow, string pFieldName, string pValidationRule = "", bool pRequired = false)
             : base(pBOWidgetBox.WidgetComponent, pBOWidgetBox.LabelComponent, pDataSourceRow, pFieldName, pValidationRule, pRequired)
         {
             InitObject(pBOWidgetBox.WidgetComponent, pBOWidgetBox.LabelComponent, pDataSourceRow, pFieldName, pValidationRule, pRequired);
         }
 
-        public GenericCRUDWidgetXPO(Widget pWidget, Label pLabel, XPGuidObject pDataSourceRow, string pFieldName, string pValidationRule = "", bool pRequired = false)
+        public GenericCRUDWidgetXPO(Widget pWidget, Label pLabel, Entity pDataSourceRow, string pFieldName, string pValidationRule = "", bool pRequired = false)
             : base(pWidget, pLabel, pDataSourceRow, pFieldName, pValidationRule, pRequired)
         {
             InitObject(pWidget, pLabel, pDataSourceRow, pFieldName, pValidationRule, pRequired);
@@ -47,7 +47,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             }
         }
 
-        public override void SetMembersProperties(XPGuidObject pDataSourceRow)
+        public override void SetMembersProperties(Entity pDataSourceRow)
         {
             //Reflection Source
             Type sourceType = _dataSourceRow.GetType();

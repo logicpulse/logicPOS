@@ -5,12 +5,12 @@ using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
-using logicpos.datalayer.DataLayer.Xpo;
 using System;
 using System.Data;
 using System.Drawing;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using LogicPOS.Domain.Entities;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -41,7 +41,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
           DialogFlags pDialogFlags,
           string pWindowsTitle,
           Size pSize,
-          XPGuidObject pDefaultValue,
+          Entity pDefaultValue,
           CriteriaOperator pXpoCriteria,
           GenericTreeViewMode pGenericTreeViewMode,
           ActionAreaButtons pActionAreaButtons

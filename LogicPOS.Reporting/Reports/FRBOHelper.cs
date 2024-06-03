@@ -1,5 +1,4 @@
-﻿using logicpos.datalayer.DataLayer.Xpo;
-using LogicPOS.Data.XPO.Settings;
+﻿using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Globalization;
@@ -207,17 +206,17 @@ namespace LogicPOS.Reporting.BOs
 
                 //Decrypt Values
                 if (!string.IsNullOrEmpty(gcDocumentFinancePayment.List[0].EntityName))
-                    gcDocumentFinancePayment.List[0].EntityName = XPGuidObject.DecryptIfNeeded(gcDocumentFinancePayment.List[0].EntityName).ToString();
+                    gcDocumentFinancePayment.List[0].EntityName = Entity.DecryptIfNeeded(gcDocumentFinancePayment.List[0].EntityName).ToString();
                 if (!string.IsNullOrEmpty(gcDocumentFinancePayment.List[0].EntityAddress))
-                    gcDocumentFinancePayment.List[0].EntityAddress = XPGuidObject.DecryptIfNeeded(gcDocumentFinancePayment.List[0].EntityAddress).ToString();
+                    gcDocumentFinancePayment.List[0].EntityAddress = Entity.DecryptIfNeeded(gcDocumentFinancePayment.List[0].EntityAddress).ToString();
                 if (!string.IsNullOrEmpty(gcDocumentFinancePayment.List[0].EntityZipCode))
-                    gcDocumentFinancePayment.List[0].EntityZipCode = XPGuidObject.DecryptIfNeeded(gcDocumentFinancePayment.List[0].EntityZipCode).ToString();
+                    gcDocumentFinancePayment.List[0].EntityZipCode = Entity.DecryptIfNeeded(gcDocumentFinancePayment.List[0].EntityZipCode).ToString();
                 if (!string.IsNullOrEmpty(gcDocumentFinancePayment.List[0].EntityCity))
-                    gcDocumentFinancePayment.List[0].EntityCity = XPGuidObject.DecryptIfNeeded(gcDocumentFinancePayment.List[0].EntityCity).ToString();
+                    gcDocumentFinancePayment.List[0].EntityCity = Entity.DecryptIfNeeded(gcDocumentFinancePayment.List[0].EntityCity).ToString();
                 if (!string.IsNullOrEmpty(gcDocumentFinancePayment.List[0].EntityLocality))
-                    gcDocumentFinancePayment.List[0].EntityLocality = XPGuidObject.DecryptIfNeeded(gcDocumentFinancePayment.List[0].EntityLocality).ToString();
+                    gcDocumentFinancePayment.List[0].EntityLocality = Entity.DecryptIfNeeded(gcDocumentFinancePayment.List[0].EntityLocality).ToString();
                 if (!string.IsNullOrEmpty(gcDocumentFinancePayment.List[0].EntityFiscalNumber))
-                    gcDocumentFinancePayment.List[0].EntityFiscalNumber = XPGuidObject.DecryptIfNeeded(gcDocumentFinancePayment.List[0].EntityFiscalNumber).ToString();
+                    gcDocumentFinancePayment.List[0].EntityFiscalNumber = Entity.DecryptIfNeeded(gcDocumentFinancePayment.List[0].EntityFiscalNumber).ToString();
 
                 //If FinalConsumer - Clean Output Data
                 if (gcDocumentFinancePayment.List[0].EntityFiscalNumber == SaftSettings.FinanceFinalConsumerFiscalNumber)

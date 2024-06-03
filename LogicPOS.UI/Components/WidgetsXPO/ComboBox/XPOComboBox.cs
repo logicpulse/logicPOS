@@ -1,12 +1,12 @@
 ﻿using DevExpress.Data.Filtering;
 using DevExpress.Xpo;
 using Gtk;
-using logicpos.datalayer.DataLayer.Xpo;
 using System;
 using System.Collections.Generic;
 using LogicPOS.Globalization;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
+using LogicPOS.Domain.Entities;
 
 //TODO : Implement Required Outside CrudWidgetList :  Add Required and Use SettingsApp.RegexGuid to Validate
 
@@ -27,29 +27,29 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
         private Dictionary<Guid, TreeIter> _treeInterDictionary;
         private ListStore _comboBoxListStore;
 
-        public XPGuidObject Value { get; set; }
+        public Entity Value { get; set; }
 
         [Obsolete]
-        public XPOComboBox(Session pXpoSession, Type pXPGuidObjectType, XPGuidObject pCurrentValue, string pFieldLabel, CriteriaOperator pCriteria)
+        public XPOComboBox(Session pXpoSession, Type pXPGuidObjectType, Entity pCurrentValue, string pFieldLabel, CriteriaOperator pCriteria)
         {
             InitComboBox(pXpoSession, pXPGuidObjectType, pCurrentValue, pFieldLabel, pCriteria);
         }
 
         [Obsolete]
-        public XPOComboBox(Session pXpoSession, Type pXPGuidObjectType, XPGuidObject pCurrentValue, string pFieldLabel, CriteriaOperator pCriteria, SortProperty[] pSortProperty = null)
+        public XPOComboBox(Session pXpoSession, Type pXPGuidObjectType, Entity pCurrentValue, string pFieldLabel, CriteriaOperator pCriteria, SortProperty[] pSortProperty = null)
         {
             InitComboBox(pXpoSession, pXPGuidObjectType, pCurrentValue, pFieldLabel, pCriteria, pSortProperty);
         }
 
         //IN:009261 Overload for default value selected
         [Obsolete]
-        public XPOComboBox(Session pXpoSession, Type pXPGuidObjectType, XPGuidObject pCurrentValue, string pFieldLabel, CriteriaOperator pCriteria, SortProperty[] pSortProperty = null, int active = 0, XPCollection pXPCollection = null)
+        public XPOComboBox(Session pXpoSession, Type pXPGuidObjectType, Entity pCurrentValue, string pFieldLabel, CriteriaOperator pCriteria, SortProperty[] pSortProperty = null, int active = 0, XPCollection pXPCollection = null)
         {
             InitComboBox(pXpoSession, pXPGuidObjectType, pCurrentValue, pFieldLabel, pCriteria, pSortProperty, active, pXPCollection);
         }
 
         [Obsolete]
-        public void InitComboBox(Session pXpoSession, Type pXPGuidObjectType, XPGuidObject pCurrentValue, string pFieldLabel, CriteriaOperator pCriteria, SortProperty[] pSortProperty = null, int active = 0, XPCollection pXPCollection = null)
+        public void InitComboBox(Session pXpoSession, Type pXPGuidObjectType, Entity pCurrentValue, string pFieldLabel, CriteriaOperator pCriteria, SortProperty[] pSortProperty = null, int active = 0, XPCollection pXPCollection = null)
         {
             //Required to Force Combo to be same Height has Entrys
             HeightRequest = 23;
@@ -95,13 +95,13 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             CreateModel(xpCollection, null, pSortProperty);
         }
 
-        public void UpdateModel(CriteriaOperator pCriteria, XPGuidObject pCurrentValue, SortProperty pSortProperty = null)
+        public void UpdateModel(CriteriaOperator pCriteria, Entity pCurrentValue, SortProperty pSortProperty = null)
         {
             XPCollection xpCollection = new XPCollection(_xpoSession, _xpoObjectType, pCriteria);
             CreateModel(xpCollection, pCurrentValue, pSortProperty);
         }
 
-        public void CreateModel(XPCollection pXpCollection, XPGuidObject pCurrentValue, SortProperty pSortProperty = null)
+        public void CreateModel(XPCollection pXpCollection, Entity pCurrentValue, SortProperty pSortProperty = null)
         {
             //Local Variables
             TreeIter tempItemIter;
@@ -120,7 +120,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             _treeInterDictionary = new Dictionary<Guid, TreeIter>();
 
             //Init ListStore Model
-            _comboBoxListStore = new ListStore(typeof(string), typeof(XPGuidObject));
+            _comboBoxListStore = new ListStore(typeof(string), typeof(Entity));
 
             //Aways Default to Null Value - Undefined, even if Collection is Empty
             tempItemIter = _comboBoxListStore.AppendValues(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "widget_combobox_undefined"), null);
@@ -132,7 +132,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             if (_XpCollection.Count > 0)
             {
                 //Create Model
-                foreach (XPGuidObject item in _XpCollection)
+                foreach (Entity item in _XpCollection)
                 {
                     //Console.WriteLine("fieldLabel: {0}, fieldValue: {1} fieldValue.Oid: {2}", _fieldLabel, item.GetMemberValue(_fieldLabel), item.Oid);
                     tempItemIter = _comboBoxListStore.AppendValues(item.GetMemberValue(_fieldLabel), item);
@@ -161,7 +161,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
 
             if (combo.GetActiveIter(out iter))
             {
-                Value = (XPGuidObject)combo.Model.GetValue(iter, 1);
+                Value = (Entity)combo.Model.GetValue(iter, 1);
             };
         }
     }

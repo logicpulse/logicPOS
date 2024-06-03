@@ -76,7 +76,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 //Get SeletedData from WorkSessionMovementType Buttons
                 string executeSql = @"SELECT Oid, Token, ResourceString, ButtonIcon, Disabled FROM pos_worksessionmovementtype WHERE (Token LIKE 'CASHDRAWER_%') AND (Disabled IS NULL or Disabled  <> 1) ORDER BY Ord;";
-                XPSelectData xPSelectData = XPOHelper.GetSelectedDataFromQuery(executeSql);
+                SQLSelectResultData xPSelectData = XPOHelper.GetSelectedDataFromQuery(executeSql);
                 //Init Dictionary
                 string buttonBagKey;
                 bool buttonDisabled;

@@ -5,7 +5,6 @@ using logicpos.App;
 using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
-using logicpos.datalayer.DataLayer.Xpo;
 using System;
 using System.Collections.Generic;
 using LogicPOS.Globalization;
@@ -23,7 +22,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             : this(pSourceWindow, null, null, null, GenericTreeViewMode.Default, GenericTreeViewNavigatorMode.Default) { }
 
         //XpoMode
-        public TreeViewArticleWarehouse(Window pSourceWindow, XPGuidObject pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.CheckBox, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default)
+        public TreeViewArticleWarehouse(Window pSourceWindow, Entity pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.CheckBox, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default)
         {
             //Init Vars
             Type xpoGuidObjectType = typeof(fin_articlewarehouse);

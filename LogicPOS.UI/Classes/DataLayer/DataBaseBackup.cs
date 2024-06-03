@@ -7,7 +7,6 @@ using logicpos.Classes.Enums;
 using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
-using logicpos.datalayer.DataLayer.Xpo;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
@@ -525,8 +524,8 @@ namespace logicpos.Classes.DataLayer
             {
                 CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("DataBaseType = '{0}' && FileName IS NOT NULL", DatabaseSettings.DatabaseType));
 
-                PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewSystemBackup>
-                  dialogSystemBackup = new PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewSystemBackup>(
+                PosSelectRecordDialog<XPCollection, Entity, TreeViewSystemBackup>
+                  dialogSystemBackup = new PosSelectRecordDialog<XPCollection, Entity, TreeViewSystemBackup>(
                     pSourceWindow,
                     DialogFlags.DestroyWithParent,
                     CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_select_backup_filename"),

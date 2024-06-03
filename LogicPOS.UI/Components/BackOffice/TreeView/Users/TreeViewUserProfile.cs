@@ -3,7 +3,6 @@ using DevExpress.Xpo;
 using Gtk;
 using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
-using logicpos.datalayer.DataLayer.Xpo;
 using System;
 using System.Collections.Generic;
 using LogicPOS.Globalization;
@@ -23,7 +22,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
         //XpoMode
         [Obsolete]
-        public TreeViewUserProfile(Window pSourceWindow, XPGuidObject defaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default)
+        public TreeViewUserProfile(Window pSourceWindow, Entity defaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default)
         {
             Type xpoGuidObjectType = typeof(sys_userprofile);
             //Override Default Value with Parameter Default Value, this way we can have diferent Default Values for GenericTreeView

@@ -5,7 +5,6 @@ using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
-using logicpos.datalayer.DataLayer.Xpo;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Enums;
@@ -335,7 +334,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                             {
                                 item.SetMemberValue(null);
                             }
-                            else if (dynamicWiget.Value.GetType().BaseType == typeof(XPGuidObject) && item.FieldType == typeof(Guid))
+                            else if (dynamicWiget.Value.GetType().BaseType == typeof(Entity) && item.FieldType == typeof(Guid))
                             {
                                 modified = Modified(item.GetMemberValue(), dynamicWiget.Value.Oid, item.FieldType);
                                 if (modified)
@@ -363,7 +362,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                             {
                                 item.SetMemberValue(null);
                             }
-                            else if (dynamicWiget.Value.GetType().BaseType == typeof(XPGuidObject) && item.FieldType == typeof(Guid))
+                            else if (dynamicWiget.Value.GetType().BaseType == typeof(Entity) && item.FieldType == typeof(Guid))
                             {
                                 modified = Modified(item.GetMemberValue(), dynamicWiget.Value.Oid, item.FieldType);
                                 if (modified)

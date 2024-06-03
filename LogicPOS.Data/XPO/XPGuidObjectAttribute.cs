@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace logicpos.datalayer.DataLayer
+namespace LogicPOS.Data.XPO
 {
     //Declare FRBOAttribute Class
     //a custom attribute FRBOAttribute to be assigned to a class and its members

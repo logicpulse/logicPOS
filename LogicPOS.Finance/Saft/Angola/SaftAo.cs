@@ -1,6 +1,5 @@
 ﻿
 using DevExpress.Xpo.DB;
-using logicpos.datalayer.DataLayer.Xpo;
 using LogicPOS.Data.XPO;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
@@ -293,7 +292,7 @@ namespace LogicPOS.Finance.Saft
                 //Used to Add Default Customer if not in Query, Required to Always have a Default Customer for ex to Documents that Donta Have a Customer (NULL), like Conference Documents, etc
                 MasterFiles_Customer_DefaultCustomer();
 
-                XPSelectData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
+                SQLSelectResultData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
                 foreach (SelectStatementResultRow row in xPSelectData.Data)
                 {
                     //<Customer>
@@ -307,20 +306,20 @@ namespace LogicPOS.Finance.Saft
                         WriteElement("CustomerID", _defaultCustomer.CodeInternal);
                     }
                     WriteElement("AccountID", row.Values[xPSelectData.GetFieldIndex("AccountID")], CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "saft_value_unknown"));
-                    WriteElement("CustomerTaxID", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("CustomerTaxID")]), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "saft_value_unknown"));
-                    WriteElement("CompanyName", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("CompanyName")]), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "saft_value_unknown"));
+                    WriteElement("CustomerTaxID", Entity.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("CustomerTaxID")]), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "saft_value_unknown"));
+                    WriteElement("CompanyName", Entity.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("CompanyName")]), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "saft_value_unknown"));
                     //<BillingAddress>
                     _xmlWriter.WriteStartElement("BillingAddress");
-                    WriteElement("AddressDetail", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("AddressDetail")]), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "saft_value_unknown"));
-                    WriteElement("City", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("City")]), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "saft_value_unknown"));
-                    WriteElement("PostalCode", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("PostalCode")]), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "saft_value_unknown"));
+                    WriteElement("AddressDetail", Entity.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("AddressDetail")]), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "saft_value_unknown"));
+                    WriteElement("City", Entity.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("City")]), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "saft_value_unknown"));
+                    WriteElement("PostalCode", Entity.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("PostalCode")]), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "saft_value_unknown"));
                     WriteElement("Country", row.Values[xPSelectData.GetFieldIndex("Country")], CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "saft_value_unknown"));
                     _xmlWriter.WriteEndElement();
                     //</BillingAddress>
-                    WriteElement("Telephone", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("Telephone")]));
-                    WriteElement("Fax", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("Fax")]));
-                    WriteElement("Email", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("Email")]));
-                    WriteElement("Website", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("Website")]));
+                    WriteElement("Telephone", Entity.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("Telephone")]));
+                    WriteElement("Fax", Entity.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("Fax")]));
+                    WriteElement("Email", Entity.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("Email")]));
+                    WriteElement("Website", Entity.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("Website")]));
                     WriteElement("SelfBillingIndicator", 0);
                     //</Customer>
                     _xmlWriter.WriteEndElement();
@@ -416,7 +415,7 @@ namespace LogicPOS.Finance.Saft
                 );
                 //_logger.Debug(string.Format("sql: [{0}]", sql));
 
-                XPSelectData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
+                SQLSelectResultData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
                 foreach (SelectStatementResultRow row in xPSelectData.Data)
                 {
                     //<Product>
@@ -477,7 +476,7 @@ namespace LogicPOS.Finance.Saft
                 );
                 //_logger.Debug(string.Format("sql: [{0}]", sql));
 
-                XPSelectData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
+                SQLSelectResultData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
                 foreach (SelectStatementResultRow row in xPSelectData.Data)
                 {
                     //<TaxTableEntry>
@@ -862,7 +861,7 @@ namespace LogicPOS.Finance.Saft
                 string documentType = string.Empty;
                 bool wayBill = false;
 
-                XPSelectData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
+                SQLSelectResultData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
                 foreach (SelectStatementResultRow row in xPSelectData.Data)
                 {
                     //<Invoice|StockMovement|WorkDocument>
@@ -1045,7 +1044,7 @@ namespace LogicPOS.Finance.Saft
         }
 
         //Helper to Output ShiptTo and ShipFrom Details, Shared for Invoice|StockMovement SaftDocumentType
-        private static void SourceDocuments_DocumentType_Childs_ShipDetails(XPSelectData pXPSelectData, SelectStatementResultRow pRow)
+        private static void SourceDocuments_DocumentType_Childs_ShipDetails(SQLSelectResultData pXPSelectData, SelectStatementResultRow pRow)
         {
             //<ShipTo>
             _xmlWriter.WriteStartElement("ShipTo");
@@ -1170,7 +1169,7 @@ namespace LogicPOS.Finance.Saft
                 decimal lineGrossTotal = 0.0m;
 
                 Guid guidDocumentDetail = new Guid();
-                XPSelectData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
+                SQLSelectResultData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
                 if (xPSelectData.Data.Length > 0)
                     foreach (SelectStatementResultRow row in xPSelectData.Data)
                     {
@@ -1295,7 +1294,7 @@ namespace LogicPOS.Finance.Saft
                     );
                     //_logger.Debug(string.Format("sql: [{0}]", sql));
 
-                    XPSelectData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
+                    SQLSelectResultData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
                     foreach (SelectStatementResultRow row in xPSelectData.Data)
                     {
                         //<OrderReferences>
@@ -1350,7 +1349,7 @@ namespace LogicPOS.Finance.Saft
                     );
                     //_logger.Debug(string.Format("sql: [{0}]", sql));
 
-                    XPSelectData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
+                    SQLSelectResultData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
                     foreach (SelectStatementResultRow row in xPSelectData.Data)
                     {
                         //<References>
@@ -1551,7 +1550,7 @@ namespace LogicPOS.Finance.Saft
                 decimal currencyAmount;
                 decimal exchangeRate;
 
-                XPSelectData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
+                SQLSelectResultData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
                 foreach (SelectStatementResultRow row in xPSelectData.Data)
                 {
                     //<Payment>
@@ -1689,7 +1688,7 @@ namespace LogicPOS.Finance.Saft
                 decimal percentage = 0.0m;
                 decimal lineCreditAmount = 0.0m;
 
-                XPSelectData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
+                SQLSelectResultData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
                 if (xPSelectData.Data.Length > 0)
                     foreach (SelectStatementResultRow row in xPSelectData.Data)
                     {

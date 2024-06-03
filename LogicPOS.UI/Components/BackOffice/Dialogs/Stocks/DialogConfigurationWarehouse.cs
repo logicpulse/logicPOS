@@ -4,7 +4,6 @@ using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
-using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.Extensions;
 using LogicPOS.Settings;
 using System;
@@ -26,7 +25,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
         private readonly string iconAddRecord = string.Format("{0}{1}", PathsSettings.ImagesFolderLocation, @"Icons/icon_pos_nav_new.png");
         private readonly string iconClearRecord = string.Format("{0}{1}", PathsSettings.ImagesFolderLocation, @"Icons/Windows/icon_window_delete_record.png");
 
-        public DialogConfigurationWarehouse(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
+        public DialogConfigurationWarehouse(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, Entity pXPGuidObject)
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
             this.Title = logicpos.Utils.GetWindowTitle(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_warehouse"));
@@ -115,7 +114,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
                 {
                     foreach (var location in _Warehouse.WarehouseLocation)
                     {
-                        XPGuidObject getLocationFromWarehouse = XPOHelper.GetEntityById<fin_warehouselocation>(location.Oid);
+                        Entity getLocationFromWarehouse = XPOHelper.GetEntityById<fin_warehouselocation>(location.Oid);
                         PopulateWarehouseLocationEntrys(getLocationFromWarehouse);
                     }
                 }
@@ -136,7 +135,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
             }
         }
 
-        private void PopulateWarehouseLocationEntrys(XPGuidObject pDataSourceRow)
+        private void PopulateWarehouseLocationEntrys(Entity pDataSourceRow)
         {
             try
             {

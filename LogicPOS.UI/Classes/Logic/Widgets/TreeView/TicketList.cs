@@ -7,7 +7,6 @@ using logicpos.Classes.Enums.TicketList;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.Extensions;
 using logicpos.shared.Enums;
 using LogicPOS.Data.XPO.Settings;
@@ -665,8 +664,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             Guid result = new Guid();
 
             CriteriaOperator criteria = CriteriaOperator.Parse("(Disabled = 0 OR Disabled IS NULL)");
-            PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewConfigurationVatExceptionReason>
-              dialog = new PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewConfigurationVatExceptionReason>(
+            PosSelectRecordDialog<XPCollection, Entity, TreeViewConfigurationVatExceptionReason>
+              dialog = new PosSelectRecordDialog<XPCollection, Entity, TreeViewConfigurationVatExceptionReason>(
                 SourceWindow,
                 DialogFlags.DestroyWithParent,
                     CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_vat_exemption_reason"),

@@ -1,12 +1,12 @@
 ﻿using Gtk;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.GenericTreeView;
-using logicpos.datalayer.DataLayer.Xpo;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using LogicPOS.Globalization;
+using LogicPOS.Domain.Entities;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {
@@ -126,7 +126,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         columnValues[i] = ColumnPropertyGetQuery(_columnProperties[i].Query, dataRow.ItemArray[i]);
                     }
                     //If detect XPGuidObject Value Type (Value is a XPObject, Child Object), Get Value from its Chield Field (Related Table)
-                    else if (dataRow.ItemArray[i] != null && dataRow.ItemArray[i].GetType().BaseType == typeof(XPGuidObject))
+                    else if (dataRow.ItemArray[i] != null && dataRow.ItemArray[i].GetType().BaseType == typeof(Entity))
                     {
                         columnValues[i] = GetXPGuidObjectChildValue(dataRow.ItemArray[i], fieldName, _columnProperties[i].ChildName);
                     }
@@ -180,7 +180,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                 fieldValue = pDataSourceRow[fieldName];
 
                 //XPGuidObject - If detect XPGuidObject Type, Extract value from its Chield, ex ArticleFamily[Field].Article[Chield].Designation[FieldName]
-                if (fieldValue != null && fieldValue.GetType().BaseType == typeof(XPGuidObject))
+                if (fieldValue != null && fieldValue.GetType().BaseType == typeof(Entity))
                 {
                     fieldValue = GetXPGuidObjectChildValue(fieldValue, fieldName, _columnProperties[pColumnIndex].ChildName);
                 }
@@ -267,11 +267,11 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             //_dataSourceRow.Delete();
 
             //Prevent full delete because abcent 
-            if((pDataSourceRow as XPGuidObject) != null)
+            if((pDataSourceRow as Entity) != null)
             {
-                (pDataSourceRow as XPGuidObject).DeletedAt = DateTime.Now;
-                (pDataSourceRow as XPGuidObject).Disabled = true;
-                (pDataSourceRow as XPGuidObject).Save();
+                (pDataSourceRow as Entity).DeletedAt = DateTime.Now;
+                (pDataSourceRow as Entity).Disabled = true;
+                (pDataSourceRow as Entity).Save();
             }
 
             _dataSourceRow = null;

@@ -1,7 +1,6 @@
 ﻿using DevExpress.Data.Filtering;
 using DevExpress.Xpo;
 using Gtk;
-using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.Classes.Formatters;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using System;
@@ -24,7 +23,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
         //XpoMode
         [Obsolete]
-        public TreeViewArticle(Window pSourceWindow, XPGuidObject pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default)
+        public TreeViewArticle(Window pSourceWindow, Entity pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default)
         {
             //Init Vars
             Type xpoGuidObjectType = typeof(fin_article);

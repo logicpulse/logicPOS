@@ -4,7 +4,6 @@ using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
-using logicpos.datalayer.DataLayer.Xpo;
 using LogicPOS.Globalization;
 using System;
 using System.Configuration;
@@ -20,7 +19,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         private readonly int _windowWidth = 500;
         private readonly int _windowHeightForTextComponent = 331;
         private int _windowHeight = 0;
-        private readonly XPGuidObject _XPGuidObject;
+        private readonly Entity _XPGuidObject;
         public static void SaveSettings(string fieldName)
         {
             try
@@ -38,7 +37,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
 
         }
-        public DialogConfigurationPreferenceParameter(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
+        public DialogConfigurationPreferenceParameter(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, Entity pXPGuidObject)
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
             _XPGuidObject = pXPGuidObject;

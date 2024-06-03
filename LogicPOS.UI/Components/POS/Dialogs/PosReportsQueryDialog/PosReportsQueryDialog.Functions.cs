@@ -3,7 +3,6 @@ using Gtk;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
-using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.shared.Enums;
 using System;
 using System.Collections.Generic;
@@ -13,6 +12,7 @@ using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
+using LogicPOS.Domain.Entities;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -69,7 +69,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             if (_selectionBoxs.ContainsKey(widget.Name))
             {
                 dynamic dynamicSelectedObject = _selectionBoxs[widget.Name];
-                XPGuidObject dynamicSelectedXPOObject = dynamicSelectedObject.Value;
+                Entity dynamicSelectedXPOObject = dynamicSelectedObject.Value;
                 if (debug) _logger.Debug(string.Format("Selected Type Key: [{0}] Value: [{1}]", widget.Name, dynamicSelectedXPOObject.Oid));
             }
         }
@@ -194,7 +194,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             string filterDateField = (_fieldsModeComponents[_reportsQueryDialogMode].ContainsKey(typeof(DateTime).Name)) 
                 ? _fieldsModeComponents[_reportsQueryDialogMode][typeof(DateTime).Name]
                 : "UNDEFINED_DATE_FIELD";
-            XPGuidObject dynamicSelectedXPOObject;
+            Entity dynamicSelectedXPOObject;
             // Store Result Object
             List<string> result = new List<string>();
 
@@ -313,7 +313,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         // Generic Method to Generate XPOEntryBoxSelectRecordValidation
         private XPOEntryBoxSelectRecordValidation<T1, T2> SelectionBoxFactory<T1, T2>(string labelText, string fieldDisplayValue = "Designation", string extraFilter = "")
-            where T1 : XPGuidObject, new()
+            where T1 : Entity, new()
             where T2 : GenericTreeViewXPO, new()
         {
             XPOEntryBoxSelectRecordValidation<T1, T2> resultObject;

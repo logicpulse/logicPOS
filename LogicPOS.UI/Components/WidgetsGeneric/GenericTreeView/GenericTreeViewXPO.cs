@@ -3,7 +3,6 @@ using Gtk;
 using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.GenericTreeView;
-using logicpos.datalayer.DataLayer.Xpo;
 using System;
 using System.Collections.Generic;
 using LogicPOS.Globalization;
@@ -15,7 +14,7 @@ using LogicPOS.Domain.Enums;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {
-    internal class GenericTreeViewXPO : GenericTreeView<XPCollection, XPGuidObject>
+    internal class GenericTreeViewXPO : GenericTreeView<XPCollection, Entity>
     {
         public Type XPObjectType { get; set; }
         //Protected Records
@@ -41,7 +40,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         //Object Initializer
         public override void InitObject(
           Window pSourceWindow,
-          XPGuidObject pXpoDefaultValue,
+          Entity pXpoDefaultValue,
           GenericTreeViewMode pGenericTreeViewMode,
           GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode,
           List<GenericTreeViewColumnProperty> pColumnProperties,
@@ -194,7 +193,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 
             //Loop Records
             int rowIndex = -1;
-            foreach (XPGuidObject dataRow in (_XpCollection as XPCollection))
+            foreach (Entity dataRow in (_XpCollection as XPCollection))
             {
                 // Increment RownIndex
                 rowIndex++;
@@ -256,7 +255,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                                     // Decrypt Before use Format
                                     if (_columnProperties[i].DecryptValue)
                                     {
-                                        columnValues[i] = XPGuidObject.DecryptIfNeeded(columnValues[i]);
+                                        columnValues[i] = Entity.DecryptIfNeeded(columnValues[i]);
                                     }
                                     //Format String using Column FormatProvider              
                                     if (_columnProperties[i].FormatProvider != null && Convert.ToString(columnValues[i]) != string.Empty)
@@ -275,7 +274,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                                 // Decrypt Before use Format
                                 if (_columnProperties[i].DecryptValue)
                                 {
-                                    columnValues[i] = XPGuidObject.DecryptIfNeeded(columnValues[i]);
+                                    columnValues[i] = Entity.DecryptIfNeeded(columnValues[i]);
                                 }
                                 //Format String using Column FormatProvider              
                                 if (_columnProperties[i].FormatProvider != null && Convert.ToString(columnValues[i]) != string.Empty)
@@ -287,7 +286,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 
                         //If detect XPGuidObject Value Type (Value is a XPObject, Child Object), Get Value from its Chield Field (Related Table)
                         else if (dataRow.GetMemberValue(_columnProperties[i].Name) != null &&
-                          dataRow.GetMemberValue(_columnProperties[i].Name).GetType().BaseType == typeof(XPGuidObject))
+                          dataRow.GetMemberValue(_columnProperties[i].Name).GetType().BaseType == typeof(Entity))
                         {
                             var value = GetXPGuidObjectChildValue(dataRow.GetMemberValue(_columnProperties[i].Name), fieldName, _columnProperties[i].ChildName);
                             if (value != null)
@@ -348,7 +347,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                                     }
                                     if (_columnProperties[i].DecryptValue)
                                     {
-                                        columnValues[i] = XPGuidObject.DecryptIfNeeded(columnValues[i]);
+                                        columnValues[i] = Entity.DecryptIfNeeded(columnValues[i]);
                                     }
                                 }
                             }
@@ -405,14 +404,14 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         /// <param name="DataSourceRow"></param>
         /// <param name="ColumnName"></param>
         /// <returns>Column Value</returns>
-        public override object DataSourceRowGetColumnValue(XPGuidObject pDataSourceRow, int pColumnIndex, string pFieldName = "")
+        public override object DataSourceRowGetColumnValue(Entity pDataSourceRow, int pColumnIndex, string pFieldName = "")
         {
             string fieldName = pFieldName;
             object fieldValue = null;
 
             //XPGuidObject - If detect XPGuidObject Type, Extract value from its Chield, ex ArticleFamily[Field].Article[Chield].Designation[FieldName]
             if (pDataSourceRow.GetMemberValue(_columnProperties[pColumnIndex].Name) != null
-              && pDataSourceRow.GetMemberValue(_columnProperties[pColumnIndex].Name).GetType().BaseType == typeof(XPGuidObject))
+              && pDataSourceRow.GetMemberValue(_columnProperties[pColumnIndex].Name).GetType().BaseType == typeof(Entity))
             {
                 fieldValue = GetXPGuidObjectChildValue(pDataSourceRow.GetMemberValue(_columnProperties[pColumnIndex].Name), fieldName, _columnProperties[pColumnIndex].ChildName);
             }
@@ -445,9 +444,9 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             return fieldValue;
         }
 
-        public override XPGuidObject DataSourceRowGetNewRecord()
+        public override Entity DataSourceRowGetNewRecord()
         {
-            XPGuidObject newXPGuidObject = (XPGuidObject)Activator.CreateInstance(XPObjectType);
+            Entity newXPGuidObject = (Entity)Activator.CreateInstance(XPObjectType);
 
             foreach (GenericTreeViewColumnProperty column in _columnProperties)
             {
@@ -455,10 +454,10 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                 if (column.InitialValue != null)
                 {
                     //If is a XPGuidObject
-                    if (column.InitialValue.GetType().BaseType == typeof(XPGuidObject))
+                    if (column.InitialValue.GetType().BaseType == typeof(Entity))
                     {
                         //Get Fresh Object else "object belongs to a different session"
-                        var xInitialValue = XPOHelper.GetXPGuidObject(newXPGuidObject.Session, column.InitialValue.GetType(), (column.InitialValue as XPGuidObject).Oid);
+                        var xInitialValue = XPOHelper.GetXPGuidObject(newXPGuidObject.Session, column.InitialValue.GetType(), (column.InitialValue as Entity).Oid);
                         newXPGuidObject.SetMemberValue(column.Name, xInitialValue);
                     }
                     //Default Values
@@ -477,12 +476,12 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             //_dataSource.Remove(pDataSourceRow);
             //FIX for dataSource.Remove(pDataSourceRow), it wont work!!!!, now we use Session.Delete to ByPass this Problem
             //(pDataSourceRow as XPGuidObject).Session.Delete(pDataSourceRow);
-            if ((pDataSourceRow as XPGuidObject) != null)
+            if ((pDataSourceRow as Entity) != null)
             {
-                (pDataSourceRow as XPGuidObject).DeletedAt = DateTime.Now;
-                (pDataSourceRow as XPGuidObject).DeletedBy = XPOSettings.LoggedUser;
-                (pDataSourceRow as XPGuidObject).Disabled = true;
-                (pDataSourceRow as XPGuidObject).Save();
+                (pDataSourceRow as Entity).DeletedAt = DateTime.Now;
+                (pDataSourceRow as Entity).DeletedBy = XPOSettings.LoggedUser;
+                (pDataSourceRow as Entity).Disabled = true;
+                (pDataSourceRow as Entity).Save();
             }
             //Assign to Null to prevent UPDATE OR DELETE in a Deleted Object
             _dataSourceRow = null;
@@ -499,7 +498,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             try
             {
                 //Require Reload: Else We have The XPO "Deleted Object" Problem
-                (pDataObject as XPGuidObject).Reload();
+                (pDataObject as Entity).Reload();
 
                 result = base.ShowDialog<T>(pDataObject, pDialogMode);
             }

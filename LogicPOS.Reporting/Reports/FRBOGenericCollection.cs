@@ -1,7 +1,7 @@
 ﻿using DevExpress.Xpo.DB;
-using logicpos.datalayer.DataLayer.Xpo;
 using LogicPOS.Data.XPO;
 using LogicPOS.Data.XPO.Utility;
+using LogicPOS.Domain.Entities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -67,7 +67,7 @@ namespace LogicPOS.Reporting.BOs
 
                 //Temporary GenericTypeObject to Add to Collection
                 T genericTypeObject;
-                XPSelectData xPSelectData;
+                SQLSelectResultData xPSelectData;
 
                 xPSelectData = XPOHelper.GetSelectedDataFromQuery(sqlQuery);
 
@@ -149,7 +149,7 @@ namespace LogicPOS.Reporting.BOs
                                 fieldValue = new Guid(rowData.Values[fieldIndex].ToString());
                             }
                             // Check id is a Subclass of XPGuidObject and Get its value
-                            else if (propertyInfo.PropertyType.IsSubclassOf(typeof(XPGuidObject)))
+                            else if (propertyInfo.PropertyType.IsSubclassOf(typeof(Entity)))
                             {
                                 // Protection to prevent assign string value to Guid/unique identifier
                                 if (fieldValue != null && string.IsNullOrEmpty(fieldValue.ToString()))

@@ -2,7 +2,6 @@
 using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
 using DevExpress.Xpo.Metadata;
-using logicpos.datalayer.DataLayer.Xpo;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Enums;
@@ -45,15 +44,15 @@ namespace LogicPOS.Data.XPO.Utility
             return result;
         }
 
-        public static XPGuidObject GetXPGuidObjectFromCriteria(Type pXPGuidObjectType, string pCriteriaFilter)
+        public static Entity GetXPGuidObjectFromCriteria(Type pXPGuidObjectType, string pCriteriaFilter)
         {
             return GetXPGuidObjectFromCriteria(XPOSettings.Session, pXPGuidObjectType, pCriteriaFilter);
         }
 
-        public static XPGuidObject GetXPGuidObjectFromCriteria(Session pSession, Type pXPGuidObjectType, string pCriteriaFilter)
+        public static Entity GetXPGuidObjectFromCriteria(Session pSession, Type pXPGuidObjectType, string pCriteriaFilter)
         {
             CriteriaOperator criteria = CriteriaOperator.Parse(pCriteriaFilter);
-            XPGuidObject result = XPOSettings.Session.FindObject(pXPGuidObjectType, criteria) as XPGuidObject;
+            Entity result = XPOSettings.Session.FindObject(pXPGuidObjectType, criteria) as Entity;
             return result;
         }
 
@@ -64,15 +63,15 @@ namespace LogicPOS.Data.XPO.Utility
             return result;
         }
 
-        public static XPSelectData GetSelectedDataFromQuery(string pSql)
+        public static SQLSelectResultData GetSelectedDataFromQuery(string pSql)
         {
             return GetSelectedDataFromQuery(XPOSettings.Session, pSql);
         }
 
-        public static XPSelectData GetSelectedDataFromQuery(Session pSession, string pSql)
+        public static SQLSelectResultData GetSelectedDataFromQuery(Session pSession, string pSql)
         {
             SelectedData xpoSelectedData = pSession.ExecuteQueryWithMetadata(pSql);
-            XPSelectData xPSelectData = new XPSelectData(xpoSelectedData);
+            SQLSelectResultData xPSelectData = new SQLSelectResultData(xpoSelectedData);
             return xPSelectData;
         }
 
@@ -84,7 +83,7 @@ namespace LogicPOS.Data.XPO.Utility
         public static DataTable GetDataTableFromQuery(Session pSession, string pSql)
         {
             //Get SelectedData
-            XPSelectData xPSelectData = GetSelectedDataFromQuery(pSession, pSql);
+            SQLSelectResultData xPSelectData = GetSelectedDataFromQuery(pSession, pSql);
             //Init DataTable
             DataTable resultDataTable = new DataTable();
 
@@ -197,12 +196,12 @@ namespace LogicPOS.Data.XPO.Utility
             }
         }
 
-        public static XPGuidObject GetXPGuidObjectFromField(Type pType, string pSearchField, string pSearchValue)
+        public static Entity GetXPGuidObjectFromField(Type pType, string pSearchField, string pSearchValue)
         {
             return GetXPGuidObjectFromField(XPOSettings.Session, pType, pSearchField, pSearchValue);
         }
 
-        public static XPGuidObject GetXPGuidObjectFromField(Session pSession, Type pType, string pSearchField, string pSearchValue)
+        public static Entity GetXPGuidObjectFromField(Session pSession, Type pType, string pSearchField, string pSearchValue)
         {
             string executeSql = string.Format(@"SELECT Oid FROM {0} WHERE (Disabled IS NULL OR Disabled  <> 1) AND {1} = '{2}';", pType.Name, pSearchField, pSearchValue);
             Guid guid = GetGuidFromQuery(pSession, executeSql);
@@ -216,7 +215,7 @@ namespace LogicPOS.Data.XPO.Utility
             }
         }
 
-        public static XPGuidObject GetXPGuidObject(Type pXPGuidObjectType, Guid pOid)
+        public static Entity GetXPGuidObject(Type pXPGuidObjectType, Guid pOid)
         {
             return GetXPGuidObject(XPOSettings.Session, pXPGuidObjectType, pOid);
         }
@@ -234,11 +233,11 @@ namespace LogicPOS.Data.XPO.Utility
             return session.GetObjectByKey(entityClassInfo, id) as TEntity;
         }
 
-        public static XPGuidObject GetXPGuidObject(Session pSession, Type pXPGuidObjectType, Guid pOid)
+        public static Entity GetXPGuidObject(Session pSession, Type pXPGuidObjectType, Guid pOid)
         {
             XPClassInfo classInfo = pSession.GetClassInfo(pXPGuidObjectType);
             dynamic resultObject = pSession.GetObjectByKey(classInfo, pOid);
-            XPGuidObject result = (XPGuidObject)resultObject;
+            Entity result = (Entity)resultObject;
             return result;
         }
 

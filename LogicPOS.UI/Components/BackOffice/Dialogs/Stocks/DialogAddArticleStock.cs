@@ -10,7 +10,6 @@ using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
-using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.Extensions;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
@@ -84,7 +83,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             get { return _entryBoxNotes.EntryValidation.Text; }
         }
 
-        public DialogAddArticleStock(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pDialogFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
+        public DialogAddArticleStock(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pDialogFlags, DialogMode pDialogMode, Entity pXPGuidObject)
             : base(pSourceWindow, pTreeView, DialogFlags.Modal, pDialogMode, pXPGuidObject)
         {
             //Init Local Vars

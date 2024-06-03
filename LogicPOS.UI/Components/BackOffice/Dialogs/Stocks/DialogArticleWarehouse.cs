@@ -2,7 +2,6 @@
 using DevExpress.Xpo;
 using Gtk;
 using logicpos.App;
-using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
@@ -28,7 +27,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
         public TouchButtonIconWithText ButtonInsert { get; set; }
         protected GenericTreeViewNavigator<fin_article, TreeViewArticle> _navigator;
 
-        public DialogArticleWarehouse(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pDialogFlags, DialogMode dialogMode, XPGuidObject pXPGuidObject)
+        public DialogArticleWarehouse(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pDialogFlags, DialogMode dialogMode, Entity pXPGuidObject)
             : base(pSourceWindow, pTreeView, pDialogFlags, dialogMode, pXPGuidObject)
         {
             this.Title = logicpos.Utils.GetWindowTitle(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_warehose_management"));

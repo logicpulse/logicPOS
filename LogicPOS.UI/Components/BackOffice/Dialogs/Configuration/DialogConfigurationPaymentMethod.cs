@@ -1,16 +1,16 @@
 ﻿using Gtk;
 using logicpos.App;
-using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Enums.Dialogs;
 using LogicPOS.Globalization;
+using LogicPOS.Domain.Entities;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
     internal class DialogConfigurationPaymentMethod : BOBaseDialog
     {
-        public DialogConfigurationPaymentMethod(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
+        public DialogConfigurationPaymentMethod(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, Entity pXPGuidObject)
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
             this.Title = logicpos.Utils.GetWindowTitle(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_edit_configurationpaymentmethod"));

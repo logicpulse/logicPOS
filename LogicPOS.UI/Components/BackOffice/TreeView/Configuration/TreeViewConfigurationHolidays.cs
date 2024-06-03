@@ -2,7 +2,6 @@
 using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
 using Gtk;
-using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using System;
 using System.Collections.Generic;
@@ -24,7 +23,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
         //XpoMode
         [Obsolete]
-        public TreeViewConfigurationHolidays(Window pSourceWindow, XPGuidObject pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default)
+        public TreeViewConfigurationHolidays(Window pSourceWindow, Entity pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default)
         {
             //Init Vars
             Type xpoGuidObjectType = typeof(cfg_configurationholidays);

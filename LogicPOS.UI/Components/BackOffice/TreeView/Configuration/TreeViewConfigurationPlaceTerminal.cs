@@ -3,7 +3,6 @@ using DevExpress.Xpo;
 using Gtk;
 using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
-using logicpos.datalayer.DataLayer.Xpo;
 using System;
 using System.Collections.Generic;
 using LogicPOS.Globalization;
@@ -23,7 +22,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
         //XpoMode
         [Obsolete]
-        public TreeViewConfigurationPlaceTerminal(Window pSourceWindow, XPGuidObject pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default)
+        public TreeViewConfigurationPlaceTerminal(Window pSourceWindow, Entity pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default)
         {
             //Init Vars
             Type xpoGuidObjectType = typeof(pos_configurationplaceterminal);

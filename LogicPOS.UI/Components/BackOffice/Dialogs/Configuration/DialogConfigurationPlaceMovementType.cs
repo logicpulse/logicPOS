@@ -3,7 +3,7 @@ using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
-using logicpos.datalayer.DataLayer.Xpo;
+using LogicPOS.Domain.Entities;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 
@@ -11,7 +11,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
     internal class DialogConfigurationPlaceMovementType : BOBaseDialog
     {
-        public DialogConfigurationPlaceMovementType(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
+        public DialogConfigurationPlaceMovementType(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, Entity pXPGuidObject)
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
             /* IN009039 */

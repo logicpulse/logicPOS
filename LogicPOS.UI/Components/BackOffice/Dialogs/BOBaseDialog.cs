@@ -4,7 +4,6 @@ using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
-using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.Extensions;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
@@ -44,8 +43,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         //VBox
         protected int _boxSpacing = 5;
         //Public Properties, to have access to/from TreeView EventHandlers
-        protected XPGuidObject _dataSourceRow;
-        public XPGuidObject DataSourceRow
+        protected Entity _dataSourceRow;
+        public Entity DataSourceRow
         {
             get { return _dataSourceRow; }
             set { _dataSourceRow = value; }
@@ -72,7 +71,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             set { _buttonCancel = value; }
         }
 
-        public BOBaseDialog(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pDataSourceRow)
+        public BOBaseDialog(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, Entity pDataSourceRow)
             : base("", pSourceWindow, pFlags)
         {
             //Parameters
@@ -181,7 +180,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             //Notes
             EntryMultiline entryMultiline = new EntryMultiline();
-            entryMultiline.Value.Text = (DataSourceRow as XPGuidObject).Notes;
+            entryMultiline.Value.Text = (DataSourceRow as Entity).Notes;
             //Remove ShadowType and Border
             //entryMultiline.ScrolledWindow.ShadowType = ShadowType.None;
             entryMultiline.ScrolledWindow.BorderWidth = 0;

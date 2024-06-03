@@ -10,7 +10,6 @@ using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
-using logicpos.datalayer.DataLayer.Xpo;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
@@ -31,7 +30,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
     //Genertic Types T1:XPGuidObject Childs (Ex Customer), T2:GenericTreeView Childs (ex TreeViewConfigurationCountry)
     internal class XPOEntryBoxSelectRecord<T1, T2> : EntryBoxBase
         //Generic Type T1 Constrained to XPGuidObject BaseClass or XPGuidObject SubClass Objects (New)
-        where T1 : XPGuidObject, new()
+        where T1 : Entity, new()
         //Generic Type T2 Constrained to GenericTreeView BaseClass or GenericTreeView SubClass Objects (New)
         where T2 : GenericTreeViewXPO, new()
     {
@@ -523,8 +522,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                 //Call Custom Event
                 OnOpenPopup();
 
-                PosSelectRecordDialog<XPCollection, XPGuidObject, T2>
-                  dialog = new PosSelectRecordDialog<XPCollection, XPGuidObject, T2>(
+                PosSelectRecordDialog<XPCollection, Entity, T2>
+                  dialog = new PosSelectRecordDialog<XPCollection, Entity, T2>(
                     _sourceWindow,
                     DialogFlags.DestroyWithParent,
                     CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_select_record"),
@@ -562,7 +561,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
         /// </summary>
         /// <param name="pEntry"></param>
         /// <param name="dialog"></param>
-        private void SelectRecord(Entry pEntry, PosSelectRecordDialog<XPCollection, XPGuidObject, T2> dialog)
+        private void SelectRecord(Entry pEntry, PosSelectRecordDialog<XPCollection, Entity, T2> dialog)
         {
             PropertyInfo propertyInfo;
             //Store previousValue before update _value, to keep it
@@ -632,7 +631,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
         /// <param name="pEntry"></param>
         /// <param name="dialog"></param>
         /// <returns></returns>
-        public int PopuDialogMore(Entry pEntry, PosSelectRecordDialog<XPCollection, XPGuidObject, T2> dialog)
+        public int PopuDialogMore(Entry pEntry, PosSelectRecordDialog<XPCollection, Entity, T2> dialog)
         {
             DialogResponseType response = (DialogResponseType)dialog.Run();
 

@@ -14,7 +14,6 @@ using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Logic.Others;
-using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.Extensions;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
@@ -1107,7 +1106,7 @@ namespace logicpos
         }
 
 
-        public static string OpenNewSerialNumberCompositePopUpWindow(Window pSourceWindow, XPGuidObject pXPGuidObject, out List<fin_articleserialnumber> pSelectedCollection, string pSerialNumber = "", List<fin_articleserialnumber> pSelectedCollectionToFill = null)
+        public static string OpenNewSerialNumberCompositePopUpWindow(Window pSourceWindow, Entity pXPGuidObject, out List<fin_articleserialnumber> pSelectedCollection, string pSerialNumber = "", List<fin_articleserialnumber> pSelectedCollectionToFill = null)
         {
             try
             {

@@ -75,7 +75,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private bool CanCloseWorkSessionPeriodDay()
         {
             //Check if has Working Open Orders/Tables
-            XPSelectData xPSelectDataTables = WorkSessionProcessor.GetOpenOrderTables();
+            SQLSelectResultData xPSelectDataTables = WorkSessionProcessor.GetOpenOrderTables();
             int noOfOpenOrderTables = xPSelectDataTables.Data.Length;
             if (noOfOpenOrderTables > 0)
             {
@@ -103,7 +103,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
 
             //Check if has Working Terminal Sessions
-            XPSelectData xPSelectDataTerminals = WorkSessionProcessor.GetSessionPeriodOpenTerminalSessions();
+            SQLSelectResultData xPSelectDataTerminals = WorkSessionProcessor.GetSessionPeriodOpenTerminalSessions();
             int noOfTerminalOpenSessions = xPSelectDataTerminals.Data.Length;
             if (noOfTerminalOpenSessions > 0)
             {

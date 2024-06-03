@@ -241,7 +241,7 @@ namespace LogicPOS.Printing.Documents
                 Dictionary<DataTableGroupPropertiesType, DataTableGroupProperties> dictGroupProperties = GenDataTableWorkSessionMovementResume(workSession.PeriodType, pSplitCurrentAccountMode, sqlWhere);
 
                 //Prepare Local vars for Group Loop
-                XPSelectData xPSelectData = null;
+                SQLSelectResultData xPSelectData = null;
                 string designation = string.Empty;
                 decimal quantity = 0.0m;
                 decimal total = 0.0m;

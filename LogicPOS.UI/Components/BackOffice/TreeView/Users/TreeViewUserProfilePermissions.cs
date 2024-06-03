@@ -5,7 +5,6 @@ using logicpos.App;
 using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
-using logicpos.datalayer.DataLayer.Xpo;
 using System;
 using System.Collections.Generic;
 using LogicPOS.Globalization;
@@ -124,7 +123,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             AddColumns();
 
             //Navigator
-            Navigator = new GenericTreeViewNavigator<XPCollection, XPGuidObject>(_sourceWindow, this, _navigatorMode);
+            Navigator = new GenericTreeViewNavigator<XPCollection, Entity>(_sourceWindow, this, _navigatorMode);
 
             //TODO:THEME
             //if (GlobalApp.ScreenSize.Width >= 800)

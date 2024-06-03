@@ -2,7 +2,6 @@
 using Gtk;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
-using logicpos.datalayer.DataLayer.Xpo;
 using LogicPOS.Domain.Entities;
 using System;
 using System.ComponentModel;
@@ -11,7 +10,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
 {
     internal class XPOEntryBoxSelectRecordValidation<T1, T2> : XPOEntryBoxSelectRecord<T1, T2>
         //Generic Type T1 Constrained to XPGuidObject BaseClass or XPGuidObject SubClass Objects (New)
-        where T1 : XPGuidObject, new()
+        where T1 : Entity, new()
         //Generic Type T2 Constrained to GenericTreeViewXPO BaseClass or GenericTreeViewXPO SubClass Objects (New)
         where T2 : GenericTreeViewXPO, new()
     {

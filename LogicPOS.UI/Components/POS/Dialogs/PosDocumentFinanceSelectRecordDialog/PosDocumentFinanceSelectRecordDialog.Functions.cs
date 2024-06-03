@@ -8,7 +8,6 @@ using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Enums.Reports;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.shared.Enums;
 using LogicPOS.Data.XPO;
 using LogicPOS.Data.XPO.Settings;
@@ -61,7 +60,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         //Permissions
         private readonly bool permissionFinanceDocumentCancelDocument = GeneralSettings.LoggedUserHasPermissionTo("FINANCE_DOCUMENT_CANCEL_DOCUMENT");
         //Require reference to use in TransientFor inside the TreeModelForEachTask_ActionPrintDocuments
-        private PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewDocumentFinanceMaster> _dialogFinanceDocumentsResponse;
+        private PosSelectRecordDialog<XPCollection, Entity, TreeViewDocumentFinanceMaster> _dialogFinanceDocumentsResponse;
         //Used to Store Button that Call dialogFinanceMaster, usefull for ex to get buttonToken :)
         private TouchButtonIconWithText _dialogFinanceMasterCallerButton;
 
@@ -70,7 +69,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         //UI
         //Reference for dialogDocumentFinanceMaster 
-        private PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewDocumentFinanceMaster> _dialogDocumentFinanceMaster;
+        private PosSelectRecordDialog<XPCollection, Entity, TreeViewDocumentFinanceMaster> _dialogDocumentFinanceMaster;
 
         //Shared/Common for all Modes
 
@@ -444,7 +443,7 @@ WHERE
             actionAreaButtons.Add(_actionAreaButtonClose);
             //Reset totalDialogFinanceMasterDocuments
             TotalDialogFinanceMasterDocuments = 0;
-            _dialogDocumentFinanceMaster = new PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewDocumentFinanceMaster>(
+            _dialogDocumentFinanceMaster = new PosSelectRecordDialog<XPCollection, Entity, TreeViewDocumentFinanceMaster>(
                 this,
                 DialogFlags.DestroyWithParent,
                 _selectRecordWindowTitle,
@@ -675,7 +674,7 @@ WHERE
         private void dialogFinanceMasterDocuments_Response(object o, ResponseArgs args)
         {
             //Get Sender Reference : require for use Transient
-            _dialogFinanceDocumentsResponse = (PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewDocumentFinanceMaster>)o;
+            _dialogFinanceDocumentsResponse = (PosSelectRecordDialog<XPCollection, Entity, TreeViewDocumentFinanceMaster>)o;
 
             fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)_dialogFinanceDocumentsResponse.GenericTreeView.DataSourceRow;
 
@@ -1052,12 +1051,12 @@ WHERE
         /// <returns></returns>
 
         private fin_documentfinancemaster PayCurrentAcountDocuments(
-          PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewDocumentFinanceMaster> pSourceWindow,
+          PosSelectRecordDialog<XPCollection, Entity, TreeViewDocumentFinanceMaster> pSourceWindow,
           List<fin_documentfinancemaster> pFinanceDocuments
         )
         {
             //Local Vars
-            PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewDocumentFinanceMaster> parentDialog = (PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewDocumentFinanceMaster>)pSourceWindow;
+            PosSelectRecordDialog<XPCollection, Entity, TreeViewDocumentFinanceMaster> parentDialog = (PosSelectRecordDialog<XPCollection, Entity, TreeViewDocumentFinanceMaster>)pSourceWindow;
             fin_documentfinancemaster resultDocument = null;
 
             try
@@ -1146,7 +1145,7 @@ WHERE
         //FinanceMaster: Call PayInvoicesDialog
 
         private fin_documentfinancepayment CallPayInvoicesDialog(
-          PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewDocumentFinanceMaster> pSourceWindow,
+          PosSelectRecordDialog<XPCollection, Entity, TreeViewDocumentFinanceMaster> pSourceWindow,
           decimal pPaymentAmount
         )
         {
@@ -1190,7 +1189,7 @@ WHERE
         /// <param name="FinanceDocuments"></param>
         /// <returns>Payment Document from PersistFinanceDocumentPayment Method</returns>
         private fin_documentfinancepayment PayInvoices(
-            PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewDocumentFinanceMaster> pSourceWindow,
+            PosSelectRecordDialog<XPCollection, Entity, TreeViewDocumentFinanceMaster> pSourceWindow,
             List<fin_documentfinancemaster> pFinanceDocuments,
             Guid pCustomer,
             Guid pPaymentMethod,
@@ -1293,7 +1292,7 @@ WHERE
         /// </summary>
         /// <param name="Documents"></param>
         private ResponseType CallSendEmailFinanceMasterDocuments(
-            PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewDocumentFinanceMaster> pSourceWindow,
+            PosSelectRecordDialog<XPCollection, Entity, TreeViewDocumentFinanceMaster> pSourceWindow,
             List<fin_documentfinancemaster> pDocuments
         )
         {
@@ -1374,7 +1373,7 @@ WHERE
         /// </summary>
         /// <param name="Documents"></param>
         private void CallSendEmailFinancePaymentDocuments(
-            PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewDocumentFinancePayment> pSourceWindow,
+            PosSelectRecordDialog<XPCollection, Entity, TreeViewDocumentFinancePayment> pSourceWindow,
             List<fin_documentfinancepayment> pDocuments
         )
         {
@@ -1432,7 +1431,7 @@ WHERE
         /// <param name="FinanceDocuments"></param>
         /// <returns></returns>
         private void CallCloneFinanceMasterDocuments(
-            PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewDocumentFinanceMaster> pSourceWindow,
+            PosSelectRecordDialog<XPCollection, Entity, TreeViewDocumentFinanceMaster> pSourceWindow,
             List<fin_documentfinancemaster> pFinanceDocuments
         )
         {
@@ -1751,7 +1750,7 @@ WHERE
                 /* IN009083 */
                 {//Check if Document have dependent non Cancelled Child FinanceDocuments
                     string sqlFinanceMaster = string.Format("SELECT DocumentNumber FROM fin_documentfinancemaster WHERE DocumentParent = '{0}' AND DocumentStatusStatus <> 'A' ORDER BY CreatedAt;", pDocumentFinanceMaster.Oid);
-                    XPSelectData xPSelectDataFinanceMaster = XPOHelper.GetSelectedDataFromQuery(sqlFinanceMaster);
+                    SQLSelectResultData xPSelectDataFinanceMaster = XPOHelper.GetSelectedDataFromQuery(sqlFinanceMaster);
 
                     /* IN009083 - if found one simple dependent, returns */
                     if (xPSelectDataFinanceMaster.Data.Length > 0)
@@ -1763,7 +1762,7 @@ WHERE
                 /* IN009083 */
                 {//Check if Document have dependent non Cancelled Payments
                     string sqlFinancePayment = string.Format("SELECT fmaDocumentNumber AS DocumentNumber FROM view_documentfinancepayment WHERE fmaOid = '{0}' AND fpaPaymentStatus <> 'A' ORDER BY fmaCreatedAt;", pDocumentFinanceMaster.Oid);
-                    XPSelectData xPSelectDataFinancePayment = XPOHelper.GetSelectedDataFromQuery(sqlFinancePayment);
+                    SQLSelectResultData xPSelectDataFinancePayment = XPOHelper.GetSelectedDataFromQuery(sqlFinancePayment);
 
                     /* IN009083 - has payments */
                     if (xPSelectDataFinancePayment.Data.Length > 0)
@@ -1852,8 +1851,8 @@ WHERE
             //Define Criteria
             CriteriaOperator criteriaOperator = CriteriaOperator.Parse("PeriodType = 0 AND SessionStatus = 1");
 
-            PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewWorkSessionPeriod>
-              dialogWorkSessionPeriods = new PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewWorkSessionPeriod>(
+            PosSelectRecordDialog<XPCollection, Entity, TreeViewWorkSessionPeriod>
+              dialogWorkSessionPeriods = new PosSelectRecordDialog<XPCollection, Entity, TreeViewWorkSessionPeriod>(
                 this,
                 DialogFlags.DestroyWithParent,
                 CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_select_worksession_period_day"),
@@ -1892,8 +1891,8 @@ WHERE
 
         private void dialogWorkSessionPeriods_Response(object o, ResponseArgs args)
         {
-            PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewWorkSessionPeriod>
-              dialog = (PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewWorkSessionPeriod>)o;
+            PosSelectRecordDialog<XPCollection, Entity, TreeViewWorkSessionPeriod>
+              dialog = (PosSelectRecordDialog<XPCollection, Entity, TreeViewWorkSessionPeriod>)o;
 
             if (args.ResponseId != ResponseType.Close)
             {
@@ -1937,7 +1936,7 @@ WHERE
 
                     //Get Child Sessions
                     string sql = string.Format(@"SELECT Oid FROM pos_worksessionperiod WHERE Parent = '{0}' ORDER BY DateStart;", workSessionPeriodParent.Oid);
-                    XPSelectData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
+                    SQLSelectResultData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
                     foreach (DevExpress.Xpo.DB.SelectStatementResultRow row in xPSelectData.Data)
                     {
                         //Print Child Sessions
@@ -1958,7 +1957,7 @@ WHERE
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //FinanceMaster: Uncheck FinanceMasterDocuments
 
-        private void UnCheckAll_FinanceMasterDocuments(PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewDocumentFinanceMaster> pDialog, bool pRefreshTree)
+        private void UnCheckAll_FinanceMasterDocuments(PosSelectRecordDialog<XPCollection, Entity, TreeViewDocumentFinanceMaster> pDialog, bool pRefreshTree)
         {
             //UnCheck all Marked CheckBoxs
             pDialog.GenericTreeView.UnCheckAll();
@@ -2055,8 +2054,8 @@ WHERE
             string showResults = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_show_results"), sqlCountResultTopResults, countResult);
             _selectRecordWindowTitle = string.Format("{0} :: {1}", windowTitleDefault, showResults);
 
-            PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewDocumentFinancePayment>
-              dialogPayments = new PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewDocumentFinancePayment>(
+            PosSelectRecordDialog<XPCollection, Entity, TreeViewDocumentFinancePayment>
+              dialogPayments = new PosSelectRecordDialog<XPCollection, Entity, TreeViewDocumentFinancePayment>(
                 this,
                 DialogFlags.DestroyWithParent,
                 _selectRecordWindowTitle,
@@ -2135,8 +2134,8 @@ WHERE
 
         private void dialogFinancePaymentDocuments_Response(object o, ResponseArgs args)
         {
-            PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewDocumentFinancePayment>
-              dialog = (PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewDocumentFinancePayment>)o;
+            PosSelectRecordDialog<XPCollection, Entity, TreeViewDocumentFinancePayment>
+              dialog = (PosSelectRecordDialog<XPCollection, Entity, TreeViewDocumentFinancePayment>)o;
 
             fin_documentfinancepayment documentFinancePayment = (fin_documentfinancepayment)dialog.GenericTreeView.DataSourceRow;
 
@@ -2373,7 +2372,7 @@ WHERE
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Payments : UncheckAll FinancePaymentDocuments
 
-        private void UnCheckAll_FinancePaymentDocuments(PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewDocumentFinancePayment> pDialog, bool pRefreshTree)
+        private void UnCheckAll_FinancePaymentDocuments(PosSelectRecordDialog<XPCollection, Entity, TreeViewDocumentFinancePayment> pDialog, bool pRefreshTree)
         {
             //UnCheck all Marked CheckBoxs
             pDialog.GenericTreeView.UnCheckAll();

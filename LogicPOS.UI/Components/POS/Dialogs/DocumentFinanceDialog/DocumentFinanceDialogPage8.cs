@@ -7,7 +7,6 @@ using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
-using logicpos.datalayer.DataLayer.Xpo;
 using System;
 using LogicPOS.Globalization;
 using LogicPOS.Data.XPO.Utility;
@@ -106,8 +105,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //_entryBoxCountryValidation.EntryValidation.Text = xCustomer.Country.Designation;
 
             //Using Labels ;)
-            GenericCRUDWidget<XPGuidObject> crudWidgetClientName = new GenericCRUDWidgetXPO(_entryBoxClient, _entryBoxClient.Label, ValueCustomer, "Name", LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true);
-            GenericCRUDWidget<XPGuidObject> crudWidgetClientCountry = new GenericCRUDWidgetXPO(_entryBoxSelectCountry, _entryBoxSelectCountry.Label, ValueCustomer, "Country", LogicPOS.Utility.RegexUtils.RegexGuid, true);
+            GenericCRUDWidget<Entity> crudWidgetClientName = new GenericCRUDWidgetXPO(_entryBoxClient, _entryBoxClient.Label, ValueCustomer, "Name", LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true);
+            GenericCRUDWidget<Entity> crudWidgetClientCountry = new GenericCRUDWidgetXPO(_entryBoxSelectCountry, _entryBoxSelectCountry.Label, ValueCustomer, "Country", LogicPOS.Utility.RegexUtils.RegexGuid, true);
             _crudWidgetList.Add(crudWidgetClientName);
             _crudWidgetList.Add(crudWidgetClientCountry);
 

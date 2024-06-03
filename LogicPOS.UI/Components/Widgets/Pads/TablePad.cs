@@ -2,7 +2,6 @@
 using Gtk;
 using logicpos.App;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.datalayer.DataLayer.Xpo;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -171,7 +170,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     // Inject nonPropertyFields that are outside of attributes Scope and are required to exists to be decrypted
                     string[] nonPropertyFields = { "label" };
                     // Unencrypt selectStatementResultData encrypted properties
-                    selectStatementResultData = XPGuidObject.DecryptSelectStatementResults(typeof(sys_userdetail), selectStatementResultMeta, selectStatementResultData, nonPropertyFields);
+                    selectStatementResultData = Entity.DecryptSelectStatementResults(typeof(sys_userdetail), selectStatementResultMeta, selectStatementResultData, nonPropertyFields);
                 }
 
                 //Create a FieldIndex to Get Values From FieldNames

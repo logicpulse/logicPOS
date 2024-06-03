@@ -549,7 +549,7 @@ namespace LogicPOS.Shared.Article
                         ;"
                         , orderMain.PersistentOid
                     );
-                    XPSelectData selectedDataOrders = XPOHelper.GetSelectedDataFromQuery(sqlOrders);
+                    SQLSelectResultData selectedDataOrders = XPOHelper.GetSelectedDataFromQuery(sqlOrders);
 
                     //Process Tickets and Add to ArticleBag
                     if (selectedDataOrders.Data.Length > 0)
@@ -619,7 +619,7 @@ namespace LogicPOS.Shared.Article
                         , orderMain.PersistentOid
                     );
 
-                    XPSelectData selectedDataDocuments = XPOHelper.GetSelectedDataFromQuery(sqlDocuments);
+                    SQLSelectResultData selectedDataDocuments = XPOHelper.GetSelectedDataFromQuery(sqlDocuments);
                     if (selectedDataDocuments.Data.Length > 0)
                     {
                         foreach (SelectStatementResultRow row in selectedDataDocuments.Data)

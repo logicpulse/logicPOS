@@ -37,8 +37,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             }
 
             //Get XPSelectData for Parent and Child
-            XPSelectData xPSelectDataParent = XPOHelper.GetSelectedDataFromQuery(sqlTableParent);
-            XPSelectData xPSelectDataChild;
+            SQLSelectResultData xPSelectDataParent = XPOHelper.GetSelectedDataFromQuery(sqlTableParent);
+            SQLSelectResultData xPSelectDataChild;
             Dictionary<string, AccordionNode> _accordionChilds = new Dictionary<string, AccordionNode>();
 
             //Start Render Accordion Parent Nodes

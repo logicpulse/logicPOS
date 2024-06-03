@@ -1,14 +1,14 @@
 ﻿using DevExpress.Xpo;
 using Gtk;
 using logicpos.App;
-using logicpos.datalayer.DataLayer.Xpo;
 using System;
 using System.Diagnostics;
 using LogicPOS.Globalization;
+using LogicPOS.Domain.Entities;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {
-    internal class GenericCRUDWidgetListXPO : GenericCRUDWidgetList<XPGuidObject>
+    internal class GenericCRUDWidgetListXPO : GenericCRUDWidgetList<Entity>
     {
         private readonly Session _session;
 

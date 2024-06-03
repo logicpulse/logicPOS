@@ -7,7 +7,6 @@ using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
-using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.Extensions;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
@@ -69,7 +68,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
         private readonly ICollection<XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>> _entryCompositeLinesCollection;
 
-        public DialogArticle(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pDialogFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
+        public DialogArticle(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pDialogFlags, DialogMode pDialogMode, Entity pXPGuidObject)
             : base(pSourceWindow, pTreeView, pDialogFlags, pDialogMode, pXPGuidObject)
         {
             this.Title = logicpos.Utils.GetWindowTitle(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_edit_article"));
@@ -538,7 +537,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     {
                         if (serialNumber.Oid != Guid.Empty && !serialNumber.Disabled)
                         {
-                            XPGuidObject dataSourceRowSerialNumber = XPOHelper.GetEntityById<fin_articleserialnumber>(serialNumber.Oid);
+                            Entity dataSourceRowSerialNumber = XPOHelper.GetEntityById<fin_articleserialnumber>(serialNumber.Oid);
                             if (dataSourceRowSerialNumber != null)
                             {
                                 PopulateSerialNumberArticleEntrys(dataSourceRowSerialNumber);
@@ -1426,7 +1425,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Unique articles
         //Populate entrys on page load
-        private void PopulateSerialNumberArticleEntrys(XPGuidObject pDataSourceRow)
+        private void PopulateSerialNumberArticleEntrys(Entity pDataSourceRow)
         {
             try
             {
@@ -1435,7 +1434,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 {
                     pDataSourceRow = new fin_articleserialnumber(_dataSourceRow.Session);
                 }
-                XPGuidObject pWareHouseDataSourceRow = new fin_warehouse(_dataSourceRow.Session);
+                Entity pWareHouseDataSourceRow = new fin_warehouse(_dataSourceRow.Session);
                 if (pDataSourceRow != null && (pDataSourceRow as fin_articleserialnumber).ArticleWarehouse.Warehouse != null)
                 {
                     pWareHouseDataSourceRow = (pDataSourceRow as fin_articleserialnumber).ArticleWarehouse.Warehouse;

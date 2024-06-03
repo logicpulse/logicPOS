@@ -4,7 +4,6 @@ using Gtk;
 using logicpos.App;
 using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.BackOffice;
-using logicpos.datalayer.DataLayer.Xpo;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Settings.Terminal;
 using LogicPOS.Data.XPO.Utility;
@@ -104,8 +103,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             if (countTickets != null && Convert.ToInt16(countTickets) > 1)
             {
                 CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("OrderMain = '{0}'", currentOrderMain.PersistentOid));
-                PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewDocumentOrderTicket>
-                  dialog = new PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewDocumentOrderTicket>(
+                PosSelectRecordDialog<XPCollection, Entity, TreeViewDocumentOrderTicket>
+                  dialog = new PosSelectRecordDialog<XPCollection, Entity, TreeViewDocumentOrderTicket>(
                     this.SourceWindow,
                     DialogFlags.DestroyWithParent,
                     CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_select_ticket"),

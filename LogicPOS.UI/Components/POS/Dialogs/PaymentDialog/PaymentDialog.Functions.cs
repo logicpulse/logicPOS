@@ -8,7 +8,6 @@ using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.Extensions;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
@@ -436,8 +435,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             ;
 
             //CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("OrderMain = '{0}'", currentOrderMain.PersistentOid));
-            PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewConfigurationCountry>
-              dialog = new PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewConfigurationCountry>(
+            PosSelectRecordDialog<XPCollection, Entity, TreeViewConfigurationCountry>
+              dialog = new PosSelectRecordDialog<XPCollection, Entity, TreeViewConfigurationCountry>(
                 this.SourceWindow,
                 DialogFlags.DestroyWithParent,
                 CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_select_country"),

@@ -4,11 +4,12 @@ using DevExpress.Xpo.DB;
 using Gtk;
 using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
-using logicpos.datalayer.DataLayer.Xpo;
 using System;
 using System.Collections.Generic;
 using LogicPOS.Globalization;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO;
+using LogicPOS.Domain.Entities;
 
 //Note
 //1) To disable navigator butons ex INS,DEL, use privileges
@@ -26,12 +27,12 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
         //XpoMode
         [Obsolete]
-        public TreeViewTemplate(Window pSourceWindow, XPGuidObject pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default)
+        public TreeViewTemplate(Window pSourceWindow, Entity pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default)
         {
             //Init Vars
-            Type xpoGuidObjectType = typeof(Template);
+            Type xpoGuidObjectType = typeof(TemplateEntity);
             //Override Default Value with Parameter Default Value, this way we can have diferent Default Values for GenericTreeView
-            Template defaultValue = (pDefaultValue != null) ? pDefaultValue as Template : null;
+            TemplateEntity defaultValue = (pDefaultValue != null) ? pDefaultValue as TemplateEntity : null;
             //Override Default DialogType with Parameter Dialog Type, this way we can have diferent DialogTypes for GenericTreeView
             Type typeDialogClass = (pDialogType != null) ? pDialogType : null;
 

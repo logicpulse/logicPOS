@@ -159,7 +159,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //Payment Buttons
                 //Get Custom Select Data
                 string executeSql = @"SELECT Oid, Token, ResourceString FROM fin_configurationpaymentmethod ORDER BY Ord;";
-                XPSelectData xPSelectData = XPOHelper.GetSelectedDataFromQuery(executeSql);
+                SQLSelectResultData xPSelectData = XPOHelper.GetSelectedDataFromQuery(executeSql);
                 //Get Required XpObjects from Selected Data
                 fin_configurationpaymentmethod xpoMoney = (fin_configurationpaymentmethod)xPSelectData.GetXPGuidObjectFromField(typeof(fin_configurationpaymentmethod), "Token", "MONEY");
                 fin_configurationpaymentmethod xpoCheck = (fin_configurationpaymentmethod)xPSelectData.GetXPGuidObjectFromField(typeof(fin_configurationpaymentmethod), "Token", "BANK_CHECK");

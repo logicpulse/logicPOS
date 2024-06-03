@@ -4,7 +4,7 @@ using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Enums;
 using System;
 
-namespace logicpos.datalayer.DataLayer.Xpo
+namespace LogicPOS.Data.XPO
 {
     public static class InitFixtures
     {

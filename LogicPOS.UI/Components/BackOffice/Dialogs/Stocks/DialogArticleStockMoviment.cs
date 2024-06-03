@@ -7,7 +7,6 @@ using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
-using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.Extensions;
 using System;
 using System.Drawing;
@@ -27,7 +26,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
         private EntryBoxValidation _entryBoxPrice1;
         private EntryBoxValidation _entryBoxQuantity;
         private EntryBoxValidationDatePickerDialog _entryBoxDocumentDateIn;
-        private readonly XPGuidObject _xPGuidObject;
+        private readonly Entity _xPGuidObject;
         private readonly Window _sourceWindow;
         private byte[] AttachedFile;
 
@@ -42,7 +41,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
         public EntryBoxValidation EntryBoxSerialNumber1 { get; set; }
 
 
-        public DialogArticleStockMoviment(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pDialogFlags, XPGuidObject pXPGuidObject)
+        public DialogArticleStockMoviment(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pDialogFlags, Entity pXPGuidObject)
             : base(pSourceWindow, pTreeView, pDialogFlags, DialogMode.Update, pXPGuidObject)
         {
             _sourceWindow = pSourceWindow;
