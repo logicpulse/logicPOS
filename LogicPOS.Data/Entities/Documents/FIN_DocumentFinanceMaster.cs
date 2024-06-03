@@ -1,7 +1,8 @@
 ﻿using DevExpress.Xpo;
+using logicpos.datalayer.DataLayer.Xpo;
 using System;
 
-namespace logicpos.datalayer.DataLayer.Xpo
+namespace LogicPOS.Domain.Entities
 {
     //Todo : Change File to Work with Encrypted Attributed
     // 1. change string fEntityCountry; > to [Size(50)] / EntityCountry varchar(50) DEFAULT NULL (All Dbs)
@@ -555,21 +556,21 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_documentordermain SourceOrderMain
         {
             get { return fSourceOrderMain; }
-            set { SetPropertyValue<fin_documentordermain>("SourceOrderMain", ref fSourceOrderMain, value); }
+            set { SetPropertyValue("SourceOrderMain", ref fSourceOrderMain, value); }
         }
 
         private fin_documentfinancemaster fDocumentParent;
         public fin_documentfinancemaster DocumentParent
         {
             get { return fDocumentParent; }
-            set { SetPropertyValue<fin_documentfinancemaster>("DocumentParent", ref fDocumentParent, value); }
+            set { SetPropertyValue("DocumentParent", ref fDocumentParent, value); }
         }
 
         private fin_documentfinancemaster fDocumentChild;
         public fin_documentfinancemaster DocumentChild
         {
             get { return fDocumentChild; }
-            set { SetPropertyValue<fin_documentfinancemaster>("DocumentChild", ref fDocumentChild, value); }
+            set { SetPropertyValue("DocumentChild", ref fDocumentChild, value); }
         }
 
         //WayBill Code
@@ -605,7 +606,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public sys_systemauditat ATValidAuditResult
         {
             get { return fATValidAuditResult; }
-            set { SetPropertyValue<sys_systemauditat>("ATValidAuditResult", ref fATValidAuditResult, value); }
+            set { SetPropertyValue("ATValidAuditResult", ref fATValidAuditResult, value); }
         }
 
         private bool fATResendDocument;
@@ -642,7 +643,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_documentfinancetype DocumentType
         {
             get { return fDocumentType; }
-            set { SetPropertyValue<fin_documentfinancetype>("DocumentType", ref fDocumentType, value); }
+            set { SetPropertyValue("DocumentType", ref fDocumentType, value); }
         }
 
         //DocumentFinanceSeries One <> Many DocumentFinanceMaster
@@ -651,7 +652,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_documentfinanceseries DocumentSerie
         {
             get { return fDocumentSerie; }
-            set { SetPropertyValue<fin_documentfinanceseries>("DocumentSerie", ref fDocumentSerie, value); }
+            set { SetPropertyValue("DocumentSerie", ref fDocumentSerie, value); }
         }
 
         //ConfigurationPaymentMethod One <> Many DocumentFinanceMaster
@@ -660,7 +661,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_configurationpaymentmethod PaymentMethod
         {
             get { return fPaymentMethod; }
-            set { SetPropertyValue<fin_configurationpaymentmethod>("PaymentMethod", ref fPaymentMethod, value); }
+            set { SetPropertyValue("PaymentMethod", ref fPaymentMethod, value); }
         }
 
         //ConfigurationPaymentCondition One <> Many DocumentFinanceMaster
@@ -669,7 +670,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_configurationpaymentcondition PaymentCondition
         {
             get { return fPaymentCondition; }
-            set { SetPropertyValue<fin_configurationpaymentcondition>("PaymentCondition", ref fPaymentCondition, value); }
+            set { SetPropertyValue("PaymentCondition", ref fPaymentCondition, value); }
         }
 
         //ConfigurationCurrency One <> Many DocumentFinanceMaster
@@ -678,7 +679,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public cfg_configurationcurrency Currency
         {
             get { return fCurrency; }
-            set { SetPropertyValue<cfg_configurationcurrency>("Currency", ref fCurrency, value); }
+            set { SetPropertyValue("Currency", ref fCurrency, value); }
         }
 
         //DocumentFinanceMasterPayment Many <> Many DocumentFinanceMaster
@@ -731,15 +732,15 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
             try
             {
-                string documentNumber = this.DocumentNumber;
+                string documentNumber = DocumentNumber;
                 string[] split = documentNumber.Split('/');
                 int number = Convert.ToInt16(split[1]) + 1;
-                this.DocumentNumber = string.Format("{0}/{1}", split[0], number);
-                this.Save();
+                DocumentNumber = string.Format("{0}/{1}", split[0], number);
+                Save();
             }
             catch (Exception ex)
             {
-                throw (ex);
+                throw ex;
             }
 
             return result;

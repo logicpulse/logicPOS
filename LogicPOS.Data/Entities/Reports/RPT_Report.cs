@@ -1,13 +1,10 @@
 ﻿using DevExpress.Xpo;
+using logicpos.datalayer.DataLayer.Xpo;
 using LogicPOS.Data.XPO.Utility;
-using System;
+using LogicPOS.Domain.Enums;
 
-namespace logicpos.datalayer.DataLayer.Xpo
+namespace LogicPOS.Domain.Entities
 {
-    public enum ReportAuthorType
-    {
-        Undefined, System, User
-    }
 
     [DeferredDeletion(false)]
     public class rpt_report : XPGuidObject
@@ -25,7 +22,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public uint Ord
         {
             get { return fOrd; }
-            set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
+            set { SetPropertyValue("Ord", ref fOrd, value); }
         }
 
         private uint fCode;
@@ -33,7 +30,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public uint Code
         {
             get { return fCode; }
-            set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
+            set { SetPropertyValue("Code", ref fCode, value); }
         }
 
         private string fDesignation;
@@ -78,7 +75,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public ReportAuthorType AuthorType
         {
             get { return fAuthorType; }
-            set { SetPropertyValue<ReportAuthorType>("AuthorType", ref fAuthorType, value); }
+            set { SetPropertyValue("AuthorType", ref fAuthorType, value); }
         }
 
         //ReportType One <> Many Report
@@ -87,7 +84,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public rpt_reporttype ReportType
         {
             get { return fReportType; }
-            set { SetPropertyValue<rpt_reporttype>("ReportType", ref fReportType, value); }
+            set { SetPropertyValue("ReportType", ref fReportType, value); }
         }
     }
 }

@@ -5,11 +5,11 @@ using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
-using logicpos.datalayer.DataLayer.Xpo;
 using System;
 using LogicPOS.Globalization;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
+using LogicPOS.Domain.Entities;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 {

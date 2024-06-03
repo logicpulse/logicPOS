@@ -1,6 +1,7 @@
 ﻿using DevExpress.Xpo;
+using logicpos.datalayer.DataLayer.Xpo;
 
-namespace logicpos.datalayer.DataLayer.Xpo
+namespace LogicPOS.Domain.Entities
 {
     public enum FinanceMasterTotalType
     {
@@ -38,7 +39,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public FinanceMasterTotalType TotalType
         {
             get { return fTotalType; }
-            set { SetPropertyValue<FinanceMasterTotalType>("TotalType", ref fTotalType, value); }
+            set { SetPropertyValue("TotalType", ref fTotalType, value); }
         }
 
         //DocumentFinanceMaster One <> Many DocumentFinanceMasterTotal
@@ -47,7 +48,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_documentfinancemaster DocumentMaster
         {
             get { return fDocumentMaster; }
-            set { SetPropertyValue<fin_documentfinancemaster>("DocumentMaster", ref fDocumentMaster, value); }
+            set { SetPropertyValue("DocumentMaster", ref fDocumentMaster, value); }
         }
     }
 }

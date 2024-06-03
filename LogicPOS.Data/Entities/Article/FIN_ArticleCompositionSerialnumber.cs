@@ -1,7 +1,9 @@
 ﻿using DevExpress.Xpo;
+using logicpos.datalayer.DataLayer.Xpo;
+
 
 ////Artigos Compostos [IN:016522]
-namespace logicpos.datalayer.DataLayer.Xpo.Articles
+namespace LogicPOS.Domain.Entities
 {
     [DeferredDeletion(false)]
     public class fin_articlecompositionserialnumber : XPGuidObject
@@ -16,14 +18,14 @@ namespace logicpos.datalayer.DataLayer.Xpo.Articles
         public fin_articleserialnumber ArticleSerialNumber
         {
             get { return fArticleSerialNumber; }
-            set { SetPropertyValue<fin_articleserialnumber>("ArticleSerialNumber", ref fArticleSerialNumber, value); }
+            set { SetPropertyValue("ArticleSerialNumber", ref fArticleSerialNumber, value); }
         }
 
         private fin_articleserialnumber fArticleSerialNumberhild;
         public fin_articleserialnumber ArticleSerialNumberChild
         {
             get { return fArticleSerialNumberhild; }
-            set { SetPropertyValue<fin_articleserialnumber>("ArticleSerialNumberChild", ref fArticleSerialNumberhild, value); }
+            set { SetPropertyValue("ArticleSerialNumberChild", ref fArticleSerialNumberhild, value); }
         }
     }
 }

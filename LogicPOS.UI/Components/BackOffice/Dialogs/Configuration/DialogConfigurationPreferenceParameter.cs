@@ -5,12 +5,13 @@ using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Enums;
 using LogicPOS.Globalization;
 using System;
 using System.Configuration;
 using LogicPOS.Utility;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Domain.Entities;
+using LogicPOS.Domain.Enums;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {

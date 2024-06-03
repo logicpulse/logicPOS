@@ -1,6 +1,7 @@
 ﻿using logicpos.datalayer.DataLayer.Xpo;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
+using LogicPOS.Domain.Entities;
 using LogicPOS.Globalization;
 using LogicPOS.Reporting.BOs.Documents;
 using LogicPOS.Settings;

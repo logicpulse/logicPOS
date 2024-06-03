@@ -1,6 +1,7 @@
 ﻿using DevExpress.Xpo;
+using logicpos.datalayer.DataLayer.Xpo;
 
-namespace logicpos.datalayer.DataLayer.Xpo
+namespace LogicPOS.Domain.Entities
 {
     [DeferredDeletion(false)]
     public class viewdocumentfinancepaymenttotals : XPGuidObject

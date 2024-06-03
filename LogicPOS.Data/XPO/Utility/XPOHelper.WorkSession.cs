@@ -1,4 +1,4 @@
-﻿using logicpos.datalayer.DataLayer.Xpo;
+﻿using LogicPOS.Domain.Entities;
 using LogicPOS.Settings;
 
 namespace LogicPOS.Data.XPO.Utility

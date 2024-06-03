@@ -1,9 +1,9 @@
 ﻿using DevExpress.Xpo;
-using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.shared.Enums;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Settings.Terminal;
 using LogicPOS.Data.XPO.Utility;
+using LogicPOS.Domain.Entities;
 using LogicPOS.DTOs.Printing;
 using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Globalization;

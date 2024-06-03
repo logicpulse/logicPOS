@@ -1,7 +1,8 @@
 ﻿using System;
 using DevExpress.Xpo;
+using logicpos.datalayer.DataLayer.Xpo;
 
-namespace logicpos.datalayer.DataLayer.Xpo
+namespace LogicPOS.Domain.Entities
 {
     [DeferredDeletion(false)]
     public class sys_systemnotification : XPGuidObject
@@ -13,7 +14,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public uint Ord
         {
             get { return fOrd; }
-            set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
+            set { SetPropertyValue("Ord", ref fOrd, value); }
         }
 
         private string fMessage;
@@ -42,28 +43,28 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public sys_userdetail UserTarget
         {
             get { return fUserTarget; }
-            set { SetPropertyValue<sys_userdetail>("UserTarget", ref fUserTarget, value); }
+            set { SetPropertyValue("UserTarget", ref fUserTarget, value); }
         }
 
         private pos_configurationplaceterminal fTerminalTarget;
         public pos_configurationplaceterminal TerminalTarget
         {
             get { return fTerminalTarget; }
-            set { SetPropertyValue<pos_configurationplaceterminal>("TerminalTarget", ref fTerminalTarget, value); }
+            set { SetPropertyValue("TerminalTarget", ref fTerminalTarget, value); }
         }
 
         private sys_userdetail fUserLastRead;
         public sys_userdetail UserLastRead
         {
             get { return fUserLastRead; }
-            set { SetPropertyValue<sys_userdetail>("UserLastRead", ref fUserLastRead, value); }
+            set { SetPropertyValue("UserLastRead", ref fUserLastRead, value); }
         }
 
         private pos_configurationplaceterminal fTerminalLastRead;
         public pos_configurationplaceterminal TerminalLastRead
         {
             get { return fTerminalLastRead; }
-            set { SetPropertyValue<pos_configurationplaceterminal>("TerminalLastRead", ref fTerminalLastRead, value); }
+            set { SetPropertyValue("TerminalLastRead", ref fTerminalLastRead, value); }
         }
 
         //SystemNotificationType One <> Many SystemNotification
@@ -72,24 +73,24 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public sys_systemnotificationtype NotificationType
         {
             get { return fNotificationType; }
-            set { SetPropertyValue<sys_systemnotificationtype>("NotificationType", ref fNotificationType, value); }
+            set { SetPropertyValue("NotificationType", ref fNotificationType, value); }
         }
 
-////SystemNotification Many <> Many DocumentFinanceMaster
-//[Association(@"SystemNotificationReferencesDocumentFinanceMaster", typeof(fin_documentfinancemaster))]
-//public XPCollection<fin_documentfinancemaster> DocumentMaster
-//{
-//    get { return GetCollection<fin_documentfinancemaster>("DocumentMaster"); }
-//}
+        ////SystemNotification Many <> Many DocumentFinanceMaster
+        //[Association(@"SystemNotificationReferencesDocumentFinanceMaster", typeof(fin_documentfinancemaster))]
+        //public XPCollection<fin_documentfinancemaster> DocumentMaster
+        //{
+        //    get { return GetCollection<fin_documentfinancemaster>("DocumentMaster"); }
+        //}
 
-////SystemNotification One <> Many DocumentFinanceMaster
-//sys_systemnotification fNotification;
-//[Association(@"SystemNotificationReferencesDocumentFinanceMaster")]
-//public sys_systemnotification Notification
-//{
-//    get { return fNotification; }
-//    set { SetPropertyValue<sys_systemnotification>("Notification", ref fNotification, value); }
-//}
+        ////SystemNotification One <> Many DocumentFinanceMaster
+        //sys_systemnotification fNotification;
+        //[Association(@"SystemNotificationReferencesDocumentFinanceMaster")]
+        //public sys_systemnotification Notification
+        //{
+        //    get { return fNotification; }
+        //    set { SetPropertyValue<sys_systemnotification>("Notification", ref fNotification, value); }
+        //}
 
         //SystemNotification One <> Many DocumentFinanceMaster
         [Association(@"SystemNotificationReferenceDocumentFinanceMaster", typeof(sys_systemnotificationdocumentmaster))]

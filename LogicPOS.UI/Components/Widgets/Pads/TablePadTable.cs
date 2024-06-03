@@ -1,5 +1,5 @@
 ﻿using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.datalayer.Enums;
+using LogicPOS.Domain.Enums;
 using System;
 using System.Drawing;
 

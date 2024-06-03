@@ -1,10 +1,11 @@
 using DevExpress.Xpo;
+using logicpos.datalayer.DataLayer.Xpo;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
 using System;
 
-namespace logicpos.datalayer.DataLayer.Xpo
+namespace LogicPOS.Domain.Entities
 {
     [DeferredDeletion(false)]
     public class pos_configurationplacemovementtype : XPGuidObject
@@ -16,7 +17,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         {
             Ord = XPOHelper.GetNextTableFieldID(nameof(pos_configurationplacemovementtype), "Ord");
             Code = XPOHelper.GetNextTableFieldID(nameof(pos_configurationplacemovementtype), "Code");
-    
+
             if (AppOperationModeSettings.AppMode == AppOperationMode.Retail)
             {
                 VatDirectSelling = true;
@@ -27,7 +28,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public uint Ord
         {
             get { return fOrd; }
-            set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
+            set { SetPropertyValue("Ord", ref fOrd, value); }
         }
 
         private uint fCode;
@@ -35,7 +36,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public uint Code
         {
             get { return fCode; }
-            set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
+            set { SetPropertyValue("Code", ref fCode, value); }
         }
 
         private string fDesignation;

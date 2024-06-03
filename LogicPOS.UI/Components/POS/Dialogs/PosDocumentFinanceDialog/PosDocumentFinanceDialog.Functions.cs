@@ -1,10 +1,10 @@
 ﻿using DevExpress.Xpo.DB.Exceptions;
 using Gtk;
 using logicpos.Classes.Enums.Dialogs;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Enums;
 using logicpos.shared.Enums;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Domain.Entities;
+using LogicPOS.Domain.Enums;
 using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;

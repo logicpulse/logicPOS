@@ -20,6 +20,7 @@ using Color = System.Drawing.Color;
 using LogicPOS.Globalization;
 using LogicPOS.Shared.CustomDocument;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Domain.Entities;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {

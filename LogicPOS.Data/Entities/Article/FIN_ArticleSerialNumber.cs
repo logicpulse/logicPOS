@@ -1,7 +1,9 @@
 ﻿using DevExpress.Xpo;
+using logicpos.datalayer.DataLayer.Xpo;
+
 
 ////Artigos Compostos [IN:016522]
-namespace logicpos.datalayer.DataLayer.Xpo.Articles
+namespace LogicPOS.Domain.Entities
 {
     [DeferredDeletion(false)]
     public class fin_articleserialnumber : XPGuidObject
@@ -15,7 +17,7 @@ namespace logicpos.datalayer.DataLayer.Xpo.Articles
         public fin_article Article
         {
             get { return fArticle; }
-            set { SetPropertyValue<fin_article>("Article", ref fArticle, value); }
+            set { SetPropertyValue("Article", ref fArticle, value); }
         }
 
         //fin_warehouse fWarehouse;
@@ -38,21 +40,21 @@ namespace logicpos.datalayer.DataLayer.Xpo.Articles
         public fin_articlewarehouse ArticleWarehouse
         {
             get { return fArticleWarehouse; }
-            set { SetPropertyValue<fin_articlewarehouse>("ArticleWarehouse", ref fArticleWarehouse, value); }
+            set { SetPropertyValue("ArticleWarehouse", ref fArticleWarehouse, value); }
         }
 
         private fin_articlestock fStockMovimentIn;
         public fin_articlestock StockMovimentIn
         {
             get { return fStockMovimentIn; }
-            set { SetPropertyValue<fin_articlestock>("StockMovimentIn", ref fStockMovimentIn, value); }
+            set { SetPropertyValue("StockMovimentIn", ref fStockMovimentIn, value); }
         }
 
         private fin_articlestock fStockMovimentOut;
         public fin_articlestock StockMovimentOut
         {
             get { return fStockMovimentOut; }
-            set { SetPropertyValue<fin_articlestock>("StockMovimentOut", ref fStockMovimentOut, value); }
+            set { SetPropertyValue("StockMovimentOut", ref fStockMovimentOut, value); }
         }
 
         private string fSerialNumber;

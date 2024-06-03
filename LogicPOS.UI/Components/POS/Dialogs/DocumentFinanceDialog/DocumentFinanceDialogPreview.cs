@@ -1,8 +1,8 @@
 ﻿using Gtk;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.Extensions;
+using LogicPOS.Domain.Entities;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Shared.Article;

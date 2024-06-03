@@ -1,7 +1,7 @@
 ﻿using Gtk;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.datalayer.Enums;
 using logicpos.shared.Enums;
+using LogicPOS.Domain.Enums;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using System;

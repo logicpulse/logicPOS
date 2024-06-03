@@ -1,7 +1,7 @@
-﻿using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.shared.Enums;
+﻿using logicpos.shared.Enums;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
+using LogicPOS.Domain.Entities;
 using LogicPOS.Shared.Article;
 using System;
 using System.Collections.Generic;

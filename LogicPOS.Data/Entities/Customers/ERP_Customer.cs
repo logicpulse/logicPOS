@@ -1,9 +1,11 @@
 using DevExpress.Xpo;
+using logicpos.datalayer.DataLayer;
+using logicpos.datalayer.DataLayer.Xpo;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using System;
 
-namespace logicpos.datalayer.DataLayer.Xpo
+namespace LogicPOS.Domain.Entities
 {
     [DeferredDeletion(false)]
     public class erp_customer : XPGuidObject
@@ -25,7 +27,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
             Ord = XPOHelper.GetNextTableFieldID(nameof(erp_customer), "Ord");
             Code = XPOHelper.GetNextTableFieldID(nameof(erp_customer), "Code");
-            Country = this.Session.GetObjectByKey<cfg_configurationcountry>(XPOSettings.ConfigurationSystemCountry.Oid);
+            Country = Session.GetObjectByKey<cfg_configurationcountry>(XPOSettings.ConfigurationSystemCountry.Oid);
         }
 
         protected override void OnNewRecordSaving()
@@ -38,7 +40,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public uint Ord
         {
             get { return fOrd; }
-            set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
+            set { SetPropertyValue("Ord", ref fOrd, value); }
         }
 
         private uint fCode;
@@ -46,7 +48,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public uint Code
         {
             get { return fCode; }
-            set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
+            set { SetPropertyValue("Code", ref fCode, value); }
         }
 
         private string fCodeInternal;
@@ -250,7 +252,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public erp_customertype CustomerType
         {
             get { return fCustomerType; }
-            set { SetPropertyValue<erp_customertype>("CustomerType", ref fCustomerType, value); }
+            set { SetPropertyValue("CustomerType", ref fCustomerType, value); }
         }
 
         //CustomerDiscountGroup One <> Many Customer
@@ -259,7 +261,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public erp_customerdiscountgroup DiscountGroup
         {
             get { return fDiscountGroup; }
-            set { SetPropertyValue<erp_customerdiscountgroup>("DiscountGroup", ref fDiscountGroup, value); }
+            set { SetPropertyValue("DiscountGroup", ref fDiscountGroup, value); }
         }
 
         //ConfigurationPriceType One <> Many Customer
@@ -268,7 +270,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_configurationpricetype PriceType
         {
             get { return fPriceType; }
-            set { SetPropertyValue<fin_configurationpricetype>("PriceType", ref fPriceType, value); }
+            set { SetPropertyValue("PriceType", ref fPriceType, value); }
         }
 
         //ConfigurationCountry One <> Many Customer
@@ -277,7 +279,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public cfg_configurationcountry Country
         {
             get { return fCountry; }
-            set { SetPropertyValue<cfg_configurationcountry>("Country", ref fCountry, value); }
+            set { SetPropertyValue("Country", ref fCountry, value); }
         }
     }
 }

@@ -11,6 +11,7 @@ using logicpos.datalayer.DataLayer.Xpo;
 using System;
 using LogicPOS.Globalization;
 using LogicPOS.Data.XPO.Utility;
+using LogicPOS.Domain.Entities;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 {

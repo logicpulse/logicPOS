@@ -1,8 +1,9 @@
 using DevExpress.Xpo;
+using logicpos.datalayer.DataLayer.Xpo;
 using LogicPOS.Data.XPO.Utility;
 using System;
 
-namespace logicpos.datalayer.DataLayer.Xpo
+namespace LogicPOS.Domain.Entities
 {
     public enum OrderPrintMode
     {
@@ -25,7 +26,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public uint Ord
         {
             get { return fOrd; }
-            set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
+            set { SetPropertyValue("Ord", ref fOrd, value); }
         }
 
         private uint fCode;
@@ -33,7 +34,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public uint Code
         {
             get { return fCode; }
-            set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
+            set { SetPropertyValue("Code", ref fCode, value); }
         }
 
         private string fDesignation;
@@ -70,7 +71,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public OrderPrintMode OrderPrintMode
         {
             get { return fOrderPrintMode; }
-            set { SetPropertyValue<OrderPrintMode>("OrderPrintMode", ref fOrderPrintMode, value); }
+            set { SetPropertyValue("OrderPrintMode", ref fOrderPrintMode, value); }
         }
 
         //ConfigurationPlace One <> Many ConfigurationPlaceTerminal
@@ -93,7 +94,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_configurationpricetype PriceType
         {
             get { return fPriceType; }
-            set { SetPropertyValue<fin_configurationpricetype>("PriceType", ref fPriceType, value); }
+            set { SetPropertyValue("PriceType", ref fPriceType, value); }
         }
 
         //ConfigurationPlaceMovementType One <> Many ConfigurationPlace
@@ -102,7 +103,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public pos_configurationplacemovementtype MovementType
         {
             get { return fMovementType; }
-            set { SetPropertyValue<pos_configurationplacemovementtype>("MovementType", ref fMovementType, value); }
+            set { SetPropertyValue("MovementType", ref fMovementType, value); }
         }
     }
 }

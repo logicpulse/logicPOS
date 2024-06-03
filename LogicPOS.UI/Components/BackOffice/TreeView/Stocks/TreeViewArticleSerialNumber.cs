@@ -5,11 +5,11 @@ using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Formatters;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.DataLayer.Xpo.Articles;
 using System;
 using System.Collections.Generic;
 using LogicPOS.Globalization;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Domain.Entities;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {

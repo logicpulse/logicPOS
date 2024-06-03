@@ -1,8 +1,9 @@
 ﻿using System;
 using DevExpress.Xpo;
+using logicpos.datalayer.DataLayer.Xpo;
 using LogicPOS.Data.XPO.Utility;
 
-namespace logicpos.datalayer.DataLayer.Xpo
+namespace LogicPOS.Domain.Entities
 {
     [DeferredDeletion(false)]
     public class fin_documentfinanceyearserieterminal : XPGuidObject
@@ -20,14 +21,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public uint Ord
         {
             get { return fOrd; }
-            set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
+            set { SetPropertyValue("Ord", ref fOrd, value); }
         }
 
         private uint fCode;
         public uint Code
         {
             get { return fCode; }
-            set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
+            set { SetPropertyValue("Code", ref fCode, value); }
         }
 
         private string fDesignation;
@@ -44,7 +45,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_documentfinanceyears FiscalYear
         {
             get { return fFiscalYear; }
-            set { SetPropertyValue<fin_documentfinanceyears>("FiscalYear", ref fFiscalYear, value); }
+            set { SetPropertyValue("FiscalYear", ref fFiscalYear, value); }
         }
 
         //DocumentFinanceType One <> Many DocumentFinanceYearSerieTerminal
@@ -53,7 +54,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_documentfinancetype DocumentType
         {
             get { return fDocumentType; }
-            set { SetPropertyValue<fin_documentfinancetype>("DocumentType", ref fDocumentType, value); }
+            set { SetPropertyValue("DocumentType", ref fDocumentType, value); }
         }
 
 
@@ -63,7 +64,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_documentfinanceseries Serie
         {
             get { return fDocumentSerie; }
-            set { SetPropertyValue<fin_documentfinanceseries>("Serie", ref fDocumentSerie, value); }
+            set { SetPropertyValue("Serie", ref fDocumentSerie, value); }
         }
 
 
@@ -73,7 +74,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public pos_configurationplaceterminal Terminal
         {
             get { return fTerminal; }
-            set { SetPropertyValue<pos_configurationplaceterminal>("Terminal", ref fTerminal, value); }
+            set { SetPropertyValue("Terminal", ref fTerminal, value); }
         }
 
 
@@ -83,7 +84,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public sys_configurationprinters Printer
         {
             get { return fPrinter; }
-            set { SetPropertyValue<sys_configurationprinters>("Printer", ref fPrinter, value); }
+            set { SetPropertyValue("Printer", ref fPrinter, value); }
         }
 
 
@@ -93,7 +94,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public sys_configurationprinterstemplates Template
         {
             get { return fTemplate; }
-            set { SetPropertyValue<sys_configurationprinterstemplates>("Template", ref fTemplate, value); }
+            set { SetPropertyValue("Template", ref fTemplate, value); }
         }
     }
 }

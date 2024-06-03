@@ -8,6 +8,7 @@ using logicpos.datalayer.DataLayer.Xpo;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Settings.Terminal;
 using LogicPOS.Data.XPO.Utility;
+using LogicPOS.Domain.Entities;
 using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Globalization;
 using LogicPOS.Printing.Documents;

@@ -1,8 +1,8 @@
 ﻿using System;
 using DevExpress.Xpo;
-using logicpos.datalayer.DataLayer.Xpo.Articles;
+using logicpos.datalayer.DataLayer.Xpo;
 
-namespace logicpos.datalayer.DataLayer.Xpo
+namespace LogicPOS.Domain.Entities
 {
     [DeferredDeletion(false)]
     public class fin_articlestock : XPGuidObject
@@ -14,7 +14,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public uint Ord
         {
             get { return fOrd; }
-            set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
+            set { SetPropertyValue("Ord", ref fOrd, value); }
         }
 
         private DateTime fDate;
@@ -28,7 +28,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public erp_customer Customer
         {
             get { return fCustomer; }
-            set { SetPropertyValue<erp_customer>("Customer", ref fCustomer, value); }
+            set { SetPropertyValue("Customer", ref fCustomer, value); }
         }
 
         private string fDocumentNumber;
@@ -45,14 +45,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_articleserialnumber ArticleSerialNumber
         {
             get { return fArticleSerialNumber; }
-            set { SetPropertyValue<fin_articleserialnumber>("ArticleSerialNumber", ref fArticleSerialNumber, value); }
+            set { SetPropertyValue("ArticleSerialNumber", ref fArticleSerialNumber, value); }
         }
 
         private fin_article fArticle;
         public fin_article Article
         {
             get { return fArticle; }
-            set { SetPropertyValue<fin_article>("Article", ref fArticle, value); }
+            set { SetPropertyValue("Article", ref fArticle, value); }
         }
 
         private decimal fQuantity;
@@ -73,21 +73,21 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public byte[] AttachedFile
         {
             get { return fAttachedFile; }
-            set { SetPropertyValue<byte[]>("AttachedFile", ref fAttachedFile, value); }
+            set { SetPropertyValue("AttachedFile", ref fAttachedFile, value); }
         }
 
         private fin_documentfinancemaster fDocumentMaster;
         public fin_documentfinancemaster DocumentMaster
         {
             get { return fDocumentMaster; }
-            set { SetPropertyValue<fin_documentfinancemaster>("DocumentMaster", ref fDocumentMaster, value); }
+            set { SetPropertyValue("DocumentMaster", ref fDocumentMaster, value); }
         }
 
         private fin_documentfinancedetail fDocumentDetail;
         public fin_documentfinancedetail DocumentDetail
         {
             get { return fDocumentDetail; }
-            set { SetPropertyValue<fin_documentfinancedetail>("DocumentDetail", ref fDocumentDetail, value); }
+            set { SetPropertyValue("DocumentDetail", ref fDocumentDetail, value); }
         }
     }
 }

@@ -1,7 +1,8 @@
 ﻿using System;
 using DevExpress.Xpo;
+using logicpos.datalayer.DataLayer.Xpo;
 
-namespace logicpos.datalayer.DataLayer.Xpo
+namespace LogicPOS.Domain.Entities
 {
     [DeferredDeletion(false)]
     public class sys_systemprint : XPGuidObject
@@ -59,14 +60,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public sys_userdetail UserDetail
         {
             get { return fUserDetail; }
-            set { SetPropertyValue<sys_userdetail>("UserDetail", ref fUserDetail, value); }
+            set { SetPropertyValue("UserDetail", ref fUserDetail, value); }
         }
 
         private pos_configurationplaceterminal fTerminal;
         public pos_configurationplaceterminal Terminal
         {
             get { return fTerminal; }
-            set { SetPropertyValue<pos_configurationplaceterminal>("Terminal", ref fTerminal, value); }
+            set { SetPropertyValue("Terminal", ref fTerminal, value); }
         }
 
         //DocumentFinanceMaster One <> Many SystemPrint
@@ -75,7 +76,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_documentfinancemaster DocumentMaster
         {
             get { return fDocumentMaster; }
-            set { SetPropertyValue<fin_documentfinancemaster>("DocumentMaster", ref fDocumentMaster, value); }
+            set { SetPropertyValue("DocumentMaster", ref fDocumentMaster, value); }
         }
 
         //DocumentFinancePayment One <> Many SystemPrint
@@ -84,7 +85,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_documentfinancepayment DocumentPayment
         {
             get { return fDocumentPayment; }
-            set { SetPropertyValue<fin_documentfinancepayment>("DocumentPayment", ref fDocumentPayment, value); }
+            set { SetPropertyValue("DocumentPayment", ref fDocumentPayment, value); }
         }
     }
 }

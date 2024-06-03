@@ -2,7 +2,7 @@
 using Gtk;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
-using logicpos.datalayer.DataLayer.Xpo;
+using LogicPOS.Domain.Entities;
 using LogicPOS.Globalization;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs

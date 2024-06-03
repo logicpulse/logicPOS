@@ -1,7 +1,8 @@
 ﻿using System;
 using DevExpress.Xpo;
+using logicpos.datalayer.DataLayer.Xpo;
 
-namespace logicpos.datalayer.DataLayer.Xpo
+namespace LogicPOS.Domain.Entities
 {
     [DeferredDeletion(false)]
     public class fin_documentfinancedetailorderreference : XPGuidObject
@@ -13,14 +14,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public uint Ord
         {
             get { return fOrd; }
-            set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
+            set { SetPropertyValue("Ord", ref fOrd, value); }
         }
 
         private fin_documentfinancemaster fDocumentMaster;
         public fin_documentfinancemaster DocumentMaster
         {
             get { return fDocumentMaster; }
-            set { SetPropertyValue<fin_documentfinancemaster>("DocumentMaster", ref fDocumentMaster, value); }
+            set { SetPropertyValue("DocumentMaster", ref fDocumentMaster, value); }
         }
 
         private string fOriginatingON;
@@ -44,7 +45,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_documentfinancedetail DocumentDetail
         {
             get { return fDocumentDetail; }
-            set { SetPropertyValue<fin_documentfinancedetail>("DocumentDetail", ref fDocumentDetail, value); }
+            set { SetPropertyValue("DocumentDetail", ref fDocumentDetail, value); }
         }
     }
 }

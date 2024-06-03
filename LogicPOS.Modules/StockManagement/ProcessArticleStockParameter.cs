@@ -1,6 +1,4 @@
-﻿using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.DataLayer.Xpo.Articles;
-using logicpos.datalayer.DataLayer.Xpo.Documents;
+﻿using LogicPOS.Domain.Entities;
 using System;
 using System.Collections.Generic;
 

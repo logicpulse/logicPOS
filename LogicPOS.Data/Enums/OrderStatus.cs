@@ -1,4 +1,4 @@
-﻿namespace logicpos.datalayer.Enums
+﻿namespace LogicPOS.Domain.Enums
 {
     public enum OrderStatus
     {

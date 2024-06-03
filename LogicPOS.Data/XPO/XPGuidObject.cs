@@ -2,6 +2,7 @@
 using DevExpress.Xpo.DB;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
+using LogicPOS.Domain.Entities;
 using LogicPOS.Settings;
 using System;
 using System.Collections.Generic;

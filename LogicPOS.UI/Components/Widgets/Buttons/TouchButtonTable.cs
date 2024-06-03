@@ -1,12 +1,12 @@
 ﻿using Gtk;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Enums;
 using logicpos.Extensions;
 using System;
 using System.Drawing;
 using LogicPOS.Globalization;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
+using LogicPOS.Domain.Entities;
+using LogicPOS.Domain.Enums;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
 {

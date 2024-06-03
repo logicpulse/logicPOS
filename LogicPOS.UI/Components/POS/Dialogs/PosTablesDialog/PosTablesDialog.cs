@@ -3,13 +3,13 @@ using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Logic.Others;
-using logicpos.datalayer.Enums;
 using logicpos.shared.Enums;
 using System;
 using System.Drawing;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Shared;
+using LogicPOS.Domain.Enums;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {

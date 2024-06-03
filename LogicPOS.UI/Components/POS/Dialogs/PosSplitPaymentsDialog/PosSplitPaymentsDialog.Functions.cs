@@ -1,10 +1,10 @@
 ﻿using Gtk;
 using logicpos.App;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Enums;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
+using LogicPOS.Domain.Entities;
+using LogicPOS.Domain.Enums;
 using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Globalization;
 using LogicPOS.Shared;

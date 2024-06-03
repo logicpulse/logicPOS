@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using LogicPOS.Globalization;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Domain.Entities;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {

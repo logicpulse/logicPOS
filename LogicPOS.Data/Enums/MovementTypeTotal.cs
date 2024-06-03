@@ -1,18 +1,18 @@
-﻿namespace LogicPOS.Data.Enums
+﻿namespace LogicPOS.Domain.Enums
 {
     public enum MovementTypeTotal
     {
-        None, 
-        All, 
+        None,
+        All,
         AllNonMoney,
-        Money, 
-        BankCheck, 
-        CashMachine, 
-        Credit, 
-        Visa, 
+        Money,
+        BankCheck,
+        CashMachine,
+        Credit,
+        Visa,
         CurrentAccount,
-        MoneyInCashDrawer, 
-        MoneyIn, 
+        MoneyInCashDrawer,
+        MoneyIn,
         MoneyOut
     }
 }

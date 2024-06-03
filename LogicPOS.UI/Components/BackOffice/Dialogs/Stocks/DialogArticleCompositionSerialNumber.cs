@@ -9,9 +9,10 @@ using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.DataLayer.Xpo.Articles;
 using logicpos.Extensions;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Domain.Entities;
+using LogicPOS.Domain.Enums;
 using LogicPOS.Globalization;
 using LogicPOS.Modules;
 using LogicPOS.Settings;
@@ -362,7 +363,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 
                 //Devolver artigo original
                 sucess = ModulesSettings.StockManagementModule.Add(_dataSourceRow.Session,
-                    datalayer.Enums.ProcessArticleStockMode.In,
+                    ProcessArticleStockMode.In,
                     own_customer,
                     0,
                     DateTime.Now,
@@ -377,7 +378,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 
                 //Criar movimento de saida do artigo novo
                 sucess = ModulesSettings.StockManagementModule.Add(_dataSourceRow.Session,
-                    datalayer.Enums.ProcessArticleStockMode.Out,
+                    ProcessArticleStockMode.Out,
                     stockMovimentOut.DocumentDetail,
                     own_customer,
                     0,
@@ -418,7 +419,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 
                 //Criar movimento de saida do artigo 
                 sucess = ModulesSettings.StockManagementModule.Add(_dataSourceRow.Session,
-                    datalayer.Enums.ProcessArticleStockMode.Out,
+                    ProcessArticleStockMode.Out,
                     documentDetail,
                     own_customer,
                     0,

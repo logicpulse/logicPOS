@@ -1,8 +1,9 @@
 ﻿using System;
 using DevExpress.Xpo;
-using logicpos.datalayer.Enums;
+using logicpos.datalayer.DataLayer.Xpo;
+using LogicPOS.Domain.Enums;
 
-namespace logicpos.datalayer.DataLayer.Xpo
+namespace LogicPOS.Domain.Entities
 {
     [DeferredDeletion(false)]
     public class fin_documentfinancedetail : XPGuidObject
@@ -14,7 +15,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public uint Ord
         {
             get { return fOrd; }
-            set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
+            set { SetPropertyValue("Ord", ref fOrd, value); }
         }
 
         private string fCode;
@@ -116,7 +117,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public PriceType PriceType
         {
             get { return fPriceType; }
-            set { SetPropertyValue<PriceType>("PriceType", ref fPriceType, value); }
+            set { SetPropertyValue("PriceType", ref fPriceType, value); }
         }
 
         //Final Calculated Priced, Usefull to Clone Document ex From SourceDocuments in New Document Window
@@ -169,7 +170,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_documentfinancemaster DocumentMaster
         {
             get { return fDocumentMaster; }
-            set { SetPropertyValue<fin_documentfinancemaster>("DocumentMaster", ref fDocumentMaster, value); }
+            set { SetPropertyValue("DocumentMaster", ref fDocumentMaster, value); }
         }
 
         //Article One <> Many DocumentOrderDetail
@@ -178,7 +179,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_article Article
         {
             get { return fArticle; }
-            set { SetPropertyValue<fin_article>("Article", ref fArticle, value); }
+            set { SetPropertyValue("Article", ref fArticle, value); }
         }
 
         //ConfigurationVatRate One <> Many DocumentOrderDetail
@@ -187,7 +188,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_configurationvatrate VatRate
         {
             get { return fVatRate; }
-            set { SetPropertyValue<fin_configurationvatrate>("VatRate", ref fVatRate, value); }
+            set { SetPropertyValue("VatRate", ref fVatRate, value); }
         }
 
         //ConfigurationVatExemptionReason One <> Many DocumentOrderDetail
@@ -196,7 +197,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_configurationvatexemptionreason VatExemptionReason
         {
             get { return fVatExemptionReason; }
-            set { SetPropertyValue<fin_configurationvatexemptionreason>("VatExemptionReason", ref fVatExemptionReason, value); }
+            set { SetPropertyValue("VatExemptionReason", ref fVatExemptionReason, value); }
         }
 
         //DocumentFinanceDetail One <> Many DocumentFinanceDetailReferencesDocumentFinanceDetailOrderReference

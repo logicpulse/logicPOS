@@ -1,9 +1,9 @@
 ﻿using Gtk;
 using logicpos.App;
-using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.Extensions;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
+using LogicPOS.Domain.Entities;
 using LogicPOS.Settings;
 using System;
 using System.Collections.Generic;

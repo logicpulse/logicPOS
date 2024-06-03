@@ -1,7 +1,8 @@
 ﻿using System;
 using DevExpress.Xpo;
+using logicpos.datalayer.DataLayer.Xpo;
 
-namespace logicpos.datalayer.DataLayer.Xpo
+namespace LogicPOS.Domain.Entities
 {
     [DeferredDeletion(false)]
     public class fin_documentfinancemasterpayment : XPGuidObject
@@ -13,7 +14,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public uint Ord
         {
             get { return fOrd; }
-            set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
+            set { SetPropertyValue("Ord", ref fOrd, value); }
         }
 
         private decimal fCreditAmount;
@@ -36,7 +37,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_documentfinancemaster DocumentFinanceMaster
         {
             get { return fDocumentFinanceMaster; }
-            set { SetPropertyValue<fin_documentfinancemaster>("DocumentFinanceMaster", ref fDocumentFinanceMaster, value); }
+            set { SetPropertyValue("DocumentFinanceMaster", ref fDocumentFinanceMaster, value); }
         }
 
         //DocumentFinanceMasterPayment Many <> Many DocumentFinancePayment
@@ -45,7 +46,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_documentfinancepayment DocumentFinancePayment
         {
             get { return fDocumentFinancePayment; }
-            set { SetPropertyValue<fin_documentfinancepayment>("DocumentFinancePayment", ref fDocumentFinancePayment, value); }
+            set { SetPropertyValue("DocumentFinancePayment", ref fDocumentFinancePayment, value); }
         }
 
         //DocumentFinanceMasterPayment Many <> Many DocumentFinanceMaster
@@ -54,7 +55,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_documentfinancemaster DocumentFinanceMasterCreditNote
         {
             get { return fDocumentFinanceMasterCreditNote; }
-            set { SetPropertyValue<fin_documentfinancemaster>("DocumentFinanceMasterCreditNote", ref fDocumentFinanceMasterCreditNote, value); }
+            set { SetPropertyValue("DocumentFinanceMasterCreditNote", ref fDocumentFinanceMasterCreditNote, value); }
         }
     }
 }

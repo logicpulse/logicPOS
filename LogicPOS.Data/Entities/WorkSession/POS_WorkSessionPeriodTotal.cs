@@ -1,7 +1,8 @@
 ﻿using System;
 using DevExpress.Xpo;
+using logicpos.datalayer.DataLayer.Xpo;
 
-namespace logicpos.datalayer.DataLayer.Xpo
+namespace LogicPOS.Domain.Entities
 {
     [DeferredDeletion(false)]
     public class pos_worksessionperiodtotal : XPGuidObject
@@ -13,14 +14,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public uint Ord
         {
             get { return fOrd; }
-            set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
+            set { SetPropertyValue("Ord", ref fOrd, value); }
         }
 
         private fin_configurationpaymentmethod fPaymentMethod;
         public fin_configurationpaymentmethod PaymentMethod
         {
             get { return fPaymentMethod; }
-            set { SetPropertyValue<fin_configurationpaymentmethod>("PaymentMethod", ref fPaymentMethod, value); }
+            set { SetPropertyValue("PaymentMethod", ref fPaymentMethod, value); }
         }
 
         private decimal fTotal;
@@ -36,7 +37,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public pos_worksessionperiod Period
         {
             get { return fPeriod; }
-            set { SetPropertyValue<pos_worksessionperiod>("Period", ref fPeriod, value); }
+            set { SetPropertyValue("Period", ref fPeriod, value); }
         }
     }
 }

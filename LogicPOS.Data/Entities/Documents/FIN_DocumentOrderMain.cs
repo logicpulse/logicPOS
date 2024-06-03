@@ -1,8 +1,9 @@
 ﻿using DevExpress.Xpo;
-using logicpos.datalayer.Enums;
+using logicpos.datalayer.DataLayer.Xpo;
+using LogicPOS.Domain.Enums;
 using System;
 
-namespace logicpos.datalayer.DataLayer.Xpo
+namespace LogicPOS.Domain.Entities
 {
     [DeferredDeletion(false)]
     public class fin_documentordermain : XPGuidObject
@@ -21,7 +22,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public OrderStatus OrderStatus
         {
             get { return fOrderStatus; }
-            set { SetPropertyValue<OrderStatus>("OrderStatus", ref fOrderStatus, value); }
+            set { SetPropertyValue("OrderStatus", ref fOrderStatus, value); }
         }
 
         //DocumentOrderMain One <> Many DocumentOrderTicket
@@ -37,7 +38,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public pos_configurationplacetable PlaceTable
         {
             get { return fPlaceTable; }
-            set { SetPropertyValue<pos_configurationplacetable>("PlaceTable", ref fPlaceTable, value); }
+            set { SetPropertyValue("PlaceTable", ref fPlaceTable, value); }
         }
     }
 }

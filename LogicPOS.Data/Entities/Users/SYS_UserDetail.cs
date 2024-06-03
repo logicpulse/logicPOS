@@ -1,11 +1,13 @@
 using DevExpress.Xpo;
+using logicpos.datalayer.DataLayer;
+using logicpos.datalayer.DataLayer.Xpo;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Settings;
 using LogicPOS.Utility;
 using System;
 
-namespace logicpos.datalayer.DataLayer.Xpo
+namespace LogicPOS.Domain.Entities
 {
     [DeferredDeletion(false)]
     public class sys_userdetail : XPGuidObject
@@ -40,7 +42,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public uint Ord
         {
             get { return _Ord; }
-            set { SetPropertyValue<UInt32>("Ord", ref _Ord, value); }
+            set { SetPropertyValue("Ord", ref _Ord, value); }
         }
 
         private uint fCode;
@@ -48,7 +50,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public uint Code
         {
             get { return fCode; }
-            set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
+            set { SetPropertyValue("Code", ref fCode, value); }
         }
 
         private string fCodeInternal;
@@ -248,7 +250,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public sys_userprofile Profile
         {
             get { return fProfile; }
-            set { SetPropertyValue<sys_userprofile>("Profile", ref fProfile, value); }
+            set { SetPropertyValue("Profile", ref fProfile, value); }
         }
 
         //CommissionGroup One <> Many User
@@ -257,7 +259,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public pos_usercommissiongroup CommissionGroup
         {
             get { return fCommissionGroup; }
-            set { SetPropertyValue<pos_usercommissiongroup>("CommissionGroup", ref fCommissionGroup, value); }
+            set { SetPropertyValue("CommissionGroup", ref fCommissionGroup, value); }
         }
     }
 }

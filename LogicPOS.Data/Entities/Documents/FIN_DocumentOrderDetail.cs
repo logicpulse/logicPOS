@@ -1,8 +1,9 @@
 ﻿using DevExpress.Xpo;
+using logicpos.datalayer.DataLayer.Xpo;
 using LogicPOS.Data.XPO.Utility;
 using System;
 
-namespace logicpos.datalayer.DataLayer.Xpo
+namespace LogicPOS.Domain.Entities
 {
     [DeferredDeletion(false)]
     public class fin_documentorderdetail : XPGuidObject
@@ -20,7 +21,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public uint Ord
         {
             get { return fOrd; }
-            set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
+            set { SetPropertyValue("Ord", ref fOrd, value); }
         }
 
         private string fCode;
@@ -138,7 +139,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_documentorderticket OrderTicket
         {
             get { return fOrderTicket; }
-            set { SetPropertyValue<fin_documentorderticket>("OrderTicket", ref fOrderTicket, value); }
+            set { SetPropertyValue("OrderTicket", ref fOrderTicket, value); }
         }
 
         //Article One <> Many DocumentOrderDetail
@@ -147,7 +148,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_article Article
         {
             get { return fArticle; }
-            set { SetPropertyValue<fin_article>("Article", ref fArticle, value); }
+            set { SetPropertyValue("Article", ref fArticle, value); }
         }
     }
 }

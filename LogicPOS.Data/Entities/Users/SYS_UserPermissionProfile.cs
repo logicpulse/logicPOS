@@ -1,6 +1,7 @@
 ﻿using DevExpress.Xpo;
+using logicpos.datalayer.DataLayer.Xpo;
 
-namespace logicpos.datalayer.DataLayer.Xpo
+namespace LogicPOS.Domain.Entities
 {
     [DeferredDeletion(false)]
     public class sys_userpermissionprofile : XPGuidObject
@@ -13,7 +14,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         {
             get
             {
-                return (_granted);
+                return _granted;
             }
             set
             {
@@ -27,7 +28,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public sys_userprofile UserProfile
         {
             get { return fUserProfile; }
-            set { SetPropertyValue<sys_userprofile>("UserProfile", ref fUserProfile, value); }
+            set { SetPropertyValue("UserProfile", ref fUserProfile, value); }
         }
 
         //UserPermissionProfile One <> Many UserPermissionItem 
@@ -36,7 +37,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public sys_userpermissionitem PermissionItem
         {
             get { return fPermissionItem; }
-            set { SetPropertyValue<sys_userpermissionitem>("PermissionItem", ref fPermissionItem, value); }
+            set { SetPropertyValue("PermissionItem", ref fPermissionItem, value); }
         }
     }
 }

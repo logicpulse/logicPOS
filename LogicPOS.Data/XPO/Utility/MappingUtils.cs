@@ -1,4 +1,5 @@
-﻿using logicpos.datalayer.DataLayer.Xpo;
+﻿using LogicPOS.Domain.Entities;
+using LogicPOS.Domain.Enums;
 using LogicPOS.DTOs.Printing;
 using System.Collections.Generic;
 
@@ -60,7 +61,7 @@ namespace LogicPOS.Data.XPO.Utility
             return new PrintingDocumentTypeDto
             {
                 Id = documentType.Oid,
-                IsSaftDocumentTypePayments = documentType.SaftDocumentType == logicpos.datalayer.Enums.SaftDocumentType.Payments,
+                IsSaftDocumentTypePayments = documentType.SaftDocumentType == SaftDocumentType.Payments,
                 PrintCopies = documentType.PrintCopies
             };
         }

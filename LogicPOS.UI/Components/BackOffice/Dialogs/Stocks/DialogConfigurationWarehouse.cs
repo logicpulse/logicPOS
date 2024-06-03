@@ -5,7 +5,6 @@ using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.DataLayer.Xpo.Documents;
 using logicpos.Extensions;
 using LogicPOS.Settings;
 using System;
@@ -14,6 +13,7 @@ using System.Drawing;
 using LogicPOS.Globalization;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
+using LogicPOS.Domain.Entities;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
 {

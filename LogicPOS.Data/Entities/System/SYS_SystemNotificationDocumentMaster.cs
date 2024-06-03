@@ -1,6 +1,7 @@
 ﻿using DevExpress.Xpo;
+using logicpos.datalayer.DataLayer.Xpo;
 
-namespace logicpos.datalayer.DataLayer.Xpo
+namespace LogicPOS.Domain.Entities
 {
     [DeferredDeletion(false)]
     public class sys_systemnotificationdocumentmaster : XPGuidObject
@@ -14,7 +15,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public sys_systemnotification Notification
         {
             get { return fNotification; }
-            set { SetPropertyValue<sys_systemnotification>("Notification", ref fNotification, value); }
+            set { SetPropertyValue("Notification", ref fNotification, value); }
         }
 
         //DocumentFinanceMaster One <> Many SystemNotification
@@ -23,7 +24,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_documentfinancemaster DocumentMaster
         {
             get { return fDocumentMaster; }
-            set { SetPropertyValue<fin_documentfinancemaster>("DocumentMaster", ref fDocumentMaster, value); }
+            set { SetPropertyValue("DocumentMaster", ref fDocumentMaster, value); }
         }
     }
 }

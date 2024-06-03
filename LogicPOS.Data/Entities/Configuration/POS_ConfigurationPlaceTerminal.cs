@@ -1,9 +1,10 @@
 using DevExpress.Xpo;
+using logicpos.datalayer.DataLayer.Xpo;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using System;
 
-namespace logicpos.datalayer.DataLayer.Xpo
+namespace LogicPOS.Domain.Entities
 {
     [DeferredDeletion(false)]
     public class pos_configurationplaceterminal : XPGuidObject
@@ -15,8 +16,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
         {
             Ord = XPOHelper.GetNextTableFieldID(nameof(pos_configurationplaceterminal), "Ord");
             Code = XPOHelper.GetNextTableFieldID(nameof(pos_configurationplaceterminal), "Code");
-            TemplateTicket = this.Session.GetObjectByKey<sys_configurationprinterstemplates>(XPOSettings.XpoOidConfigurationPrintersTemplateTicket);
-            TemplateTablesConsult = this.Session.GetObjectByKey<sys_configurationprinterstemplates>(XPOSettings.XpoOidConfigurationPrintersTemplateTableConsult);
+            TemplateTicket = Session.GetObjectByKey<sys_configurationprinterstemplates>(XPOSettings.XpoOidConfigurationPrintersTemplateTicket);
+            TemplateTablesConsult = Session.GetObjectByKey<sys_configurationprinterstemplates>(XPOSettings.XpoOidConfigurationPrintersTemplateTableConsult);
             InputReaderTimerInterval = 200;
         }
 
@@ -24,7 +25,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public uint Ord
         {
             get { return fOrd; }
-            set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
+            set { SetPropertyValue("Ord", ref fOrd, value); }
         }
 
         private uint fCode;
@@ -32,7 +33,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public uint Code
         {
             get { return fCode; }
-            set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
+            set { SetPropertyValue("Code", ref fCode, value); }
         }
 
         private string fDesignation;
@@ -55,7 +56,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public uint InputReaderTimerInterval
         {
             get { return fInputReaderTimerInterval; }
-            set { SetPropertyValue<UInt32>("InputReaderTimerInterval", ref fInputReaderTimerInterval, value); }
+            set { SetPropertyValue("InputReaderTimerInterval", ref fInputReaderTimerInterval, value); }
         }
 
         //ConfigurationPlace One <> Many ConfigurationPlaceTerminal
@@ -64,7 +65,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public pos_configurationplace Place
         {
             get { return fPlace; }
-            set { SetPropertyValue<pos_configurationplace>("Place", ref fPlace, value); }
+            set { SetPropertyValue("Place", ref fPlace, value); }
         }
 
         //ConfigurationPrinters One <> Many ConfigurationPlaceTerminal
@@ -73,7 +74,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public sys_configurationprinters Printer
         {
             get { return fPrinter; }
-            set { SetPropertyValue<sys_configurationprinters>("Printer", ref fPrinter, value); }
+            set { SetPropertyValue("Printer", ref fPrinter, value); }
         }
 
         //ConfigurationPrinters One <> Many ConfigurationPlaceTerminal
@@ -82,7 +83,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public sys_configurationprinters ThermalPrinter
         {
             get { return fThermalPrinter; }
-            set { SetPropertyValue<sys_configurationprinters>("ThermalPrinter", ref fThermalPrinter, value); }
+            set { SetPropertyValue("ThermalPrinter", ref fThermalPrinter, value); }
         }
 
         //BarcodeReader One <> Many ConfigurationPlaceTerminal
@@ -91,7 +92,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public sys_configurationinputreader BarcodeReader
         {
             get { return fBarcodeReader; }
-            set { SetPropertyValue<sys_configurationinputreader>("BarcodeReader", ref fBarcodeReader, value); }
+            set { SetPropertyValue("BarcodeReader", ref fBarcodeReader, value); }
         }
 
         //ConfigurationInputReader One <> Many ConfigurationPlaceTerminal
@@ -100,7 +101,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public sys_configurationinputreader CardReader
         {
             get { return fCardReader; }
-            set { SetPropertyValue<sys_configurationinputreader>("CardReader", ref fCardReader, value); }
+            set { SetPropertyValue("CardReader", ref fCardReader, value); }
         }
 
         //ConfigurationPoleDisplay One <> Many ConfigurationPlaceTerminal
@@ -109,7 +110,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public sys_configurationpoledisplay PoleDisplay
         {
             get { return fPoleDisplay; }
-            set { SetPropertyValue<sys_configurationpoledisplay>("PoleDisplay", ref fPoleDisplay, value); }
+            set { SetPropertyValue("PoleDisplay", ref fPoleDisplay, value); }
         }
 
         //ConfigurationWeighingMachine One <> Many ConfigurationPlaceTerminal
@@ -118,7 +119,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public sys_configurationweighingmachine WeighingMachine
         {
             get { return fWeighingMachine; }
-            set { SetPropertyValue<sys_configurationweighingmachine>("WeighingMachine", ref fWeighingMachine, value); }
+            set { SetPropertyValue("WeighingMachine", ref fWeighingMachine, value); }
         }
 
         //ConfigurationPlaceTerminal One <> Many DocumentFinanceYearSerieTerminal
@@ -134,7 +135,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public sys_configurationprinterstemplates TemplateTicket
         {
             get { return fTemplateTicket; }
-            set { SetPropertyValue<sys_configurationprinterstemplates>("TemplateTicket", ref fTemplateTicket, value); }
+            set { SetPropertyValue("TemplateTicket", ref fTemplateTicket, value); }
         }
 
         //ConfigurationPrintersTemplates One <> Many ConfigurationPlaceTerminal
@@ -143,7 +144,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public sys_configurationprinterstemplates TemplateTablesConsult
         {
             get { return fTemplateTablesConsult; }
-            set { SetPropertyValue<sys_configurationprinterstemplates>("TemplateTablesConsult", ref fTemplateTablesConsult, value); }
+            set { SetPropertyValue("TemplateTablesConsult", ref fTemplateTablesConsult, value); }
         }
     }
 }

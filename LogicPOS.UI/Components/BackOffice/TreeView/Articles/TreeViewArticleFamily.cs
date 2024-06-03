@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using logicpos.Classes.Enums.GenericTreeView;
 using LogicPOS.Globalization;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Domain.Entities;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {

@@ -1,13 +1,11 @@
 ﻿using DevExpress.Data.Filtering;
 using Gtk;
-using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
-using logicpos.datalayer.Enums;
 using logicpos.shared.Enums;
 using System;
 using System.Collections.Generic;
@@ -22,6 +20,8 @@ using LogicPOS.Settings;
 using LogicPOS.Shared.CustomDocument;
 using LogicPOS.Shared.Article;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Domain.Entities;
+using LogicPOS.Domain.Enums;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {

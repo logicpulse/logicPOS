@@ -1,8 +1,9 @@
 ﻿using System;
 using DevExpress.Xpo;
-using logicpos.datalayer.Enums;
+using logicpos.datalayer.DataLayer.Xpo;
+using LogicPOS.Domain.Enums;
 
-namespace logicpos.datalayer.DataLayer.Xpo
+namespace LogicPOS.Domain.Entities
 {
     [DeferredDeletion(false)]
     public class fin_documentorderticket : XPGuidObject
@@ -28,7 +29,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public PriceType PriceType
         {
             get { return fPriceType; }
-            set { SetPropertyValue<PriceType>("PriceType", ref fPriceType, value); }
+            set { SetPropertyValue("PriceType", ref fPriceType, value); }
         }
 
         private decimal fDiscount;
@@ -51,7 +52,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_documentordermain OrderMain
         {
             get { return fOrderMain; }
-            set { SetPropertyValue<fin_documentordermain>("OrderMain", ref fOrderMain, value); }
+            set { SetPropertyValue("OrderMain", ref fOrderMain, value); }
         }
 
         //ConfigurationPlaceTable One <> Many DocumentOrderTicket
@@ -60,7 +61,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public pos_configurationplacetable PlaceTable
         {
             get { return fPlaceTable; }
-            set { SetPropertyValue<pos_configurationplacetable>("PlaceTable", ref fPlaceTable, value); }
+            set { SetPropertyValue("PlaceTable", ref fPlaceTable, value); }
         }
     }
 }

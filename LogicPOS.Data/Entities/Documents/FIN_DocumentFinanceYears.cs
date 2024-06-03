@@ -3,8 +3,9 @@ using LogicPOS.Settings;
 using System;
 using LogicPOS.Globalization;
 using LogicPOS.Data.XPO.Utility;
+using logicpos.datalayer.DataLayer.Xpo;
 
-namespace logicpos.datalayer.DataLayer.Xpo
+namespace LogicPOS.Domain.Entities
 {
     [DeferredDeletion(false)]
     public class fin_documentfinanceyears : XPGuidObject
@@ -18,15 +19,15 @@ namespace logicpos.datalayer.DataLayer.Xpo
             Code = XPOHelper.GetNextTableFieldID(nameof(fin_documentfinanceyears), "Code");
             int currentYear = XPOHelper.CurrentDateTimeAtomic().Year;
             FiscalYear = currentYear;
-            Acronym = string.Format("{0}{1}{2}", FiscalYear, "A", Code/10);
-            Designation = string.Format("{0} {1} {2}{3}", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_fiscal_year"), FiscalYear, "A", Code/10);
+            Acronym = string.Format("{0}{1}{2}", FiscalYear, "A", Code / 10);
+            Designation = string.Format("{0} {1} {2}{3}", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_fiscal_year"), FiscalYear, "A", Code / 10);
         }
 
         private uint fOrd;
         public uint Ord
         {
             get { return fOrd; }
-            set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
+            set { SetPropertyValue("Ord", ref fOrd, value); }
         }
 
         private uint fCode;
@@ -34,7 +35,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public uint Code
         {
             get { return fCode; }
-            set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
+            set { SetPropertyValue("Code", ref fCode, value); }
         }
 
         private string fDesignation;

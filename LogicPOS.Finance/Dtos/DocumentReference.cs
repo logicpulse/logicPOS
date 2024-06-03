@@ -1,4 +1,4 @@
-﻿using logicpos.datalayer.DataLayer.Xpo;
+﻿using LogicPOS.Domain.Entities;
 
 namespace LogicPOS.Finance.Dtos
 {

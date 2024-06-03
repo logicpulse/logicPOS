@@ -1,8 +1,7 @@
 ﻿using DevExpress.Xpo;
-using logicpos.datalayer.DataLayer.Xpo.Articles;
-using logicpos.datalayer.DataLayer.Xpo.Documents;
+using logicpos.datalayer.DataLayer.Xpo;
 
-namespace logicpos.datalayer.DataLayer.Xpo
+namespace LogicPOS.Domain.Entities
 {
     [DeferredDeletion(false)]
     public class fin_articlewarehouse : XPGuidObject
@@ -15,7 +14,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_article Article
         {
             get { return fArticle; }
-            set { SetPropertyValue<fin_article>("Article", ref fArticle, value); }
+            set { SetPropertyValue("Article", ref fArticle, value); }
         }
 
         private fin_warehouse fWarehouse;
@@ -23,7 +22,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_warehouse Warehouse
         {
             get { return fWarehouse; }
-            set { SetPropertyValue<fin_warehouse>("Warehouse", ref fWarehouse, value); }
+            set { SetPropertyValue("Warehouse", ref fWarehouse, value); }
         }
 
         private fin_warehouselocation fLocation;
@@ -31,14 +30,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_warehouselocation Location
         {
             get { return fLocation; }
-            set { SetPropertyValue<fin_warehouselocation>("Location", ref fLocation, value); }
+            set { SetPropertyValue("Location", ref fLocation, value); }
         }
 
         private fin_articleserialnumber fArticleSerialNumber;
         public fin_articleserialnumber ArticleSerialNumber
         {
             get { return fArticleSerialNumber; }
-            set { SetPropertyValue<fin_articleserialnumber>("ArticleSerialNumber", ref fArticleSerialNumber, value); }
+            set { SetPropertyValue("ArticleSerialNumber", ref fArticleSerialNumber, value); }
         }
 
         private decimal fQuantity;

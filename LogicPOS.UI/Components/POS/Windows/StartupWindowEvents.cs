@@ -2,13 +2,13 @@
 using logicpos.App;
 using logicpos.Classes.Enums.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.datalayer.DataLayer.Xpo;
 using System;
 using LogicPOS.Globalization;
 using LogicPOS.Shared;
 using LogicPOS.Settings;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
+using LogicPOS.Domain.Entities;
 
 namespace logicpos
 {

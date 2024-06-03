@@ -1,12 +1,12 @@
 ﻿using DevExpress.Data.Filtering;
 using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Enums;
 using logicpos.shared.Enums;
 using LogicPOS.Data.Services;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
+using LogicPOS.Domain.Entities;
+using LogicPOS.Domain.Enums;
 using LogicPOS.Globalization;
 using LogicPOS.Modules;
 using LogicPOS.Modules.StockManagement;

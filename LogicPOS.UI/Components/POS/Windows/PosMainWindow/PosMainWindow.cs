@@ -5,7 +5,6 @@ using logicpos.App;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Logic.Others;
-using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.Extensions;
 using System;
 using System.Collections;
@@ -16,6 +15,7 @@ using LogicPOS.Settings;
 using LogicPOS.UI;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
+using LogicPOS.Domain.Entities;
 
 namespace logicpos
 {

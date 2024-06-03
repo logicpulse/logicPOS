@@ -1,7 +1,9 @@
 ﻿using DevExpress.Xpo;
+using logicpos.datalayer.DataLayer.Xpo;
+
 
 ////Artigos Compostos [IN:016522]
-namespace logicpos.datalayer.DataLayer.Xpo.Articles
+namespace LogicPOS.Domain.Entities
 {
     [DeferredDeletion(false)]
     public class fin_articlecomposition : XPGuidObject
@@ -22,14 +24,14 @@ namespace logicpos.datalayer.DataLayer.Xpo.Articles
         public fin_article Article
         {
             get { return fArticle; }
-            set { SetPropertyValue<fin_article>("Article", ref fArticle, value); }
+            set { SetPropertyValue("Article", ref fArticle, value); }
         }
 
         private fin_article fArticleChild;
         public fin_article ArticleChild
         {
             get { return fArticleChild; }
-            set { SetPropertyValue<fin_article>("ArticleChild", ref fArticleChild, value); }
+            set { SetPropertyValue("ArticleChild", ref fArticleChild, value); }
         }
 
         //Guid fArticleChild;

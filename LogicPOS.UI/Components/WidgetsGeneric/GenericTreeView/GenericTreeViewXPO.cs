@@ -4,13 +4,14 @@ using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.DataLayer.Xpo.Articles;
 using System;
 using System.Collections.Generic;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
+using LogicPOS.Domain.Entities;
+using LogicPOS.Domain.Enums;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {
@@ -333,7 +334,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                                 //Enum
                                 else if (dataRow.GetType() == typeof(fin_articleserialnumber) && _columnProperties[i].Name == "Status")
                                 {
-                                    columnValues[i] = Convert.ToString(Enum.GetName(typeof(datalayer.Enums.ArticleSerialNumberStatus), Convert.ToInt32(dataRow.GetMemberValue(_columnProperties[i].Name))));
+                                    columnValues[i] = Convert.ToString(Enum.GetName(typeof(ArticleSerialNumberStatus), Convert.ToInt32(dataRow.GetMemberValue(_columnProperties[i].Name))));
                                 }
 
                                 //Other Fields

@@ -5,6 +5,7 @@ using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.datalayer.DataLayer.Xpo;
+using LogicPOS.Domain.Entities;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using System;

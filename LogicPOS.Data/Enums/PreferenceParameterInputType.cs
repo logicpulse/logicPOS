@@ -1,4 +1,4 @@
-﻿namespace logicpos.datalayer.Enums
+﻿namespace LogicPOS.Domain.Enums
 {
     // Used in DialogConfigurationPreferenceParameter and in cfg_configurationpreferenceparameter to define Component Type
     public enum PreferenceParameterInputType

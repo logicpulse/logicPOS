@@ -1,5 +1,5 @@
 ﻿using Gtk;
-using logicpos.datalayer.DataLayer.Xpo;
+using LogicPOS.Domain.Entities;
 using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Shared.Article;
 using System.Drawing;

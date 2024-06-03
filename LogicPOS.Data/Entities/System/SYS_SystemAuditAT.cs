@@ -1,8 +1,9 @@
 using System;
 using DevExpress.Xpo;
-using logicpos.datalayer.Enums;
+using logicpos.datalayer.DataLayer.Xpo;
+using LogicPOS.Domain.Enums;
 
-namespace logicpos.datalayer.DataLayer.Xpo
+namespace LogicPOS.Domain.Entities
 {
     [DeferredDeletion(false)]
     public class sys_systemauditat : XPGuidObject
@@ -21,7 +22,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public SystemAuditATWSType Type
         {
             get { return fType; }
-            set { SetPropertyValue<SystemAuditATWSType>("Type", ref fType, value); }
+            set { SetPropertyValue("Type", ref fType, value); }
         }
 
         private string fPostData;
@@ -75,7 +76,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_documentfinancemaster DocumentMaster
         {
             get { return fDocumentMaster; }
-            set { SetPropertyValue<fin_documentfinancemaster>("DocumentMaster", ref fDocumentMaster, value); }
+            set { SetPropertyValue("DocumentMaster", ref fDocumentMaster, value); }
         }
     }
 }

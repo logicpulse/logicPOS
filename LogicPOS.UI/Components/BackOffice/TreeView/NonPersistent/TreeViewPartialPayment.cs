@@ -1,9 +1,9 @@
 ﻿using Gtk;
 using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Enums;
 using LogicPOS.Data.XPO.Utility;
+using LogicPOS.Domain.Entities;
+using LogicPOS.Domain.Enums;
 using LogicPOS.Globalization;
 using LogicPOS.Shared;
 using LogicPOS.Shared.Article;

@@ -8,13 +8,13 @@ using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.DataLayer.Xpo.Articles;
 using logicpos.Extensions;
 using System;
 using System.Drawing;
 using System.IO;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using LogicPOS.Domain.Entities;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 {

@@ -1,7 +1,8 @@
 ﻿using System;
 using DevExpress.Xpo;
+using logicpos.datalayer.DataLayer.Xpo;
 
-namespace logicpos.datalayer.DataLayer.Xpo
+namespace LogicPOS.Domain.Entities
 {
     [DeferredDeletion(false)]
     public class fin_documentfinancecommission : XPGuidObject
@@ -13,7 +14,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public uint Ord
         {
             get { return fOrd; }
-            set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
+            set { SetPropertyValue("Ord", ref fOrd, value); }
         }
 
         private DateTime fDate;
@@ -41,35 +42,35 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public pos_usercommissiongroup CommissionGroup
         {
             get { return fCommissionGroup; }
-            set { SetPropertyValue<pos_usercommissiongroup>("CommissionGroup", ref fCommissionGroup, value); }
+            set { SetPropertyValue("CommissionGroup", ref fCommissionGroup, value); }
         }
 
         private fin_documentfinancemaster fFinanceMaster;
         public fin_documentfinancemaster FinanceMaster
         {
             get { return fFinanceMaster; }
-            set { SetPropertyValue<fin_documentfinancemaster>("FinanceMaster", ref fFinanceMaster, value); }
+            set { SetPropertyValue("FinanceMaster", ref fFinanceMaster, value); }
         }
 
         private fin_documentfinancedetail fFinanceDetail;
         public fin_documentfinancedetail FinanceDetail
         {
             get { return fFinanceDetail; }
-            set { SetPropertyValue<fin_documentfinancedetail>("FinanceDetail", ref fFinanceDetail, value); }
+            set { SetPropertyValue("FinanceDetail", ref fFinanceDetail, value); }
         }
 
         private sys_userdetail fUserDetail;
         public sys_userdetail UserDetail
         {
             get { return fUserDetail; }
-            set { SetPropertyValue<sys_userdetail>("UserDetail", ref fUserDetail, value); }
+            set { SetPropertyValue("UserDetail", ref fUserDetail, value); }
         }
 
         private pos_configurationplaceterminal fTerminal;
         public pos_configurationplaceterminal Terminal
         {
             get { return fTerminal; }
-            set { SetPropertyValue<pos_configurationplaceterminal>("Terminal", ref fTerminal, value); }
+            set { SetPropertyValue("Terminal", ref fTerminal, value); }
         }
     }
 }

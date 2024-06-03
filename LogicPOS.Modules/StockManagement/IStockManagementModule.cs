@@ -1,8 +1,6 @@
 ﻿using DevExpress.Xpo;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.DataLayer.Xpo.Articles;
-using logicpos.datalayer.DataLayer.Xpo.Documents;
-using logicpos.datalayer.Enums;
+using LogicPOS.Domain.Entities;
+using LogicPOS.Domain.Enums;
 using LogicPOS.Plugin.Abstractions;
 using System;
 using System.Collections.Generic;

@@ -1,8 +1,9 @@
 ﻿using System;
 using DevExpress.Xpo;
+using logicpos.datalayer.DataLayer.Xpo;
 using LogicPOS.Settings.Enums;
 
-namespace logicpos.datalayer.DataLayer.Xpo
+namespace LogicPOS.Domain.Entities
 {
     [DeferredDeletion(false)]
     public class sys_systembackup : XPGuidObject
@@ -14,14 +15,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public DatabaseType DataBaseType
         {
             get { return fDataBaseType; }
-            set { SetPropertyValue<DatabaseType>("DataBaseType", ref fDataBaseType, value); }
+            set { SetPropertyValue("DataBaseType", ref fDataBaseType, value); }
         }
 
         private uint fVersion;
         public uint Version
         {
             get { return fVersion; }
-            set { SetPropertyValue<UInt32>("Version", ref fVersion, value); }
+            set { SetPropertyValue("Version", ref fVersion, value); }
         }
 
         private string fFileName;
@@ -59,14 +60,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public sys_userdetail User
         {
             get { return fUser; }
-            set { SetPropertyValue<sys_userdetail>("User", ref fUser, value); }
+            set { SetPropertyValue("User", ref fUser, value); }
         }
 
         private pos_configurationplaceterminal fTerminal;
         public pos_configurationplaceterminal Terminal
         {
             get { return fTerminal; }
-            set { SetPropertyValue<pos_configurationplaceterminal>("Terminal", ref fTerminal, value); }
+            set { SetPropertyValue("Terminal", ref fTerminal, value); }
         }
     }
 }

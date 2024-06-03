@@ -1,5 +1,5 @@
 ﻿using DevExpress.Xpo;
-using logicpos.datalayer.DataLayer.Xpo;
+using LogicPOS.Domain.Entities;
 using System;
 
 namespace LogicPOS.Data.XPO.Settings

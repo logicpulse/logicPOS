@@ -1,9 +1,9 @@
-﻿using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Enums;
-using LogicPOS.Settings.Enums;
+﻿using LogicPOS.Settings.Enums;
 using LogicPOS.Settings;
 using logicpos.shared.Enums;
 using LogicPOS.Shared.Orders;
+using LogicPOS.Domain.Entities;
+using LogicPOS.Domain.Enums;
 
 namespace LogicPOS.Shared.Article
 {

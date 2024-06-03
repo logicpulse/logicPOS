@@ -1,11 +1,11 @@
 ﻿using Gtk;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.datalayer.DataLayer.Xpo;
 using System;
 using System.Drawing;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Domain.Entities;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {

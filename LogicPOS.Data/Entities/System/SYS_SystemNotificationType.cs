@@ -1,7 +1,8 @@
 ﻿using System;
 using DevExpress.Xpo;
+using logicpos.datalayer.DataLayer.Xpo;
 
-namespace logicpos.datalayer.DataLayer.Xpo
+namespace LogicPOS.Domain.Entities
 {
     [DeferredDeletion(false)]
     public class sys_systemnotificationtype : XPGuidObject
@@ -13,7 +14,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public uint Ord
         {
             get { return fOrd; }
-            set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
+            set { SetPropertyValue("Ord", ref fOrd, value); }
         }
 
         private uint fCode;
@@ -21,7 +22,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public uint Code
         {
             get { return fCode; }
-            set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
+            set { SetPropertyValue("Code", ref fCode, value); }
         }
 
         private string fDesignation;
@@ -52,14 +53,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public sys_userdetail UserTarget
         {
             get { return fUserTarget; }
-            set { SetPropertyValue<sys_userdetail>("UserTarget", ref fUserTarget, value); }
+            set { SetPropertyValue("UserTarget", ref fUserTarget, value); }
         }
 
         private pos_configurationplaceterminal fTerminalTarget;
         public pos_configurationplaceterminal TerminalTarget
         {
             get { return fTerminalTarget; }
-            set { SetPropertyValue<pos_configurationplaceterminal>("TerminalTarget", ref fTerminalTarget, value); }
+            set { SetPropertyValue("TerminalTarget", ref fTerminalTarget, value); }
         }
 
         //SystemNotificationType One <> Many SystemNotification

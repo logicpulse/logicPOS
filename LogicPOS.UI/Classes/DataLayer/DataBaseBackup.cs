@@ -10,6 +10,7 @@ using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.datalayer.DataLayer.Xpo;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
+using LogicPOS.Domain.Entities;
 using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;

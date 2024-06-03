@@ -1,9 +1,10 @@
 ﻿using DevExpress.Xpo;
-using logicpos.datalayer.Enums;
+using logicpos.datalayer.DataLayer.Xpo;
 using LogicPOS.Data.XPO.Utility;
+using LogicPOS.Domain.Enums;
 using System;
 
-namespace logicpos.datalayer.DataLayer.Xpo
+namespace LogicPOS.Domain.Entities
 {
     [DeferredDeletion(false)]
     public class fin_documentfinancetype : XPGuidObject
@@ -21,7 +22,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public uint Ord
         {
             get { return fOrd; }
-            set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
+            set { SetPropertyValue("Ord", ref fOrd, value); }
         }
 
         private uint fCode;
@@ -29,7 +30,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public uint Code
         {
             get { return fCode; }
-            set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
+            set { SetPropertyValue("Code", ref fCode, value); }
         }
 
         private string fDesignation;
@@ -148,14 +149,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public SaftDocumentType SaftDocumentType
         {
             get { return fSaftDocumentType; }
-            set { SetPropertyValue<SaftDocumentType>("SaftDocumentType", ref fSaftDocumentType, value); }
+            set { SetPropertyValue("SaftDocumentType", ref fSaftDocumentType, value); }
         }
 
         private ProcessArticleStockMode fStockMode;
         public ProcessArticleStockMode StockMode
         {
             get { return fStockMode; }
-            set { SetPropertyValue<ProcessArticleStockMode>("StockMode", ref fStockMode, value); }
+            set { SetPropertyValue("StockMode", ref fStockMode, value); }
         }
 
         //DocumentFinanceType One <> Many ConfigurationPlaceTerminal
@@ -164,7 +165,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public sys_configurationprinters Printer
         {
             get { return fPrinter; }
-            set { SetPropertyValue<sys_configurationprinters>("Printer", ref fPrinter, value); }
+            set { SetPropertyValue("Printer", ref fPrinter, value); }
         }
 
         //DocumentFinanceType One <> Many ConfigurationPrintersTemplates
@@ -173,7 +174,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public sys_configurationprinterstemplates Template
         {
             get { return fTemplate; }
-            set { SetPropertyValue<sys_configurationprinterstemplates>("Template", ref fTemplate, value); }
+            set { SetPropertyValue("Template", ref fTemplate, value); }
         }
 
         //DocumentFinanceType One <> Many DocumentFinanceMaster

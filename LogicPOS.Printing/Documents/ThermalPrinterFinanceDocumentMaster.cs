@@ -1,6 +1,6 @@
-﻿using logicpos.datalayer.DataLayer.Xpo;
-using LogicPOS.Data.XPO.Settings;
+﻿using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
+using LogicPOS.Domain.Entities;
 using LogicPOS.DTOs.Printing;
 using LogicPOS.Globalization;
 using LogicPOS.Printing.Enums;

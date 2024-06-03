@@ -1,7 +1,8 @@
 ﻿using System;
 using DevExpress.Xpo;
+using logicpos.datalayer.DataLayer.Xpo;
 
-namespace logicpos.datalayer.DataLayer.Xpo
+namespace LogicPOS.Domain.Entities
 {
     [DeferredDeletion(false)]
     public class fin_documentfinancepayment : XPGuidObject
@@ -253,7 +254,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_documentfinancetype DocumentType
         {
             get { return fDocumentType; }
-            set { SetPropertyValue<fin_documentfinancetype>("DocumentType", ref fDocumentType, value); }
+            set { SetPropertyValue("DocumentType", ref fDocumentType, value); }
         }
 
         //DocumentFinanceSeries One <> Many DocumentFinancePayment
@@ -262,7 +263,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_documentfinanceseries DocumentSerie
         {
             get { return fDocumentSerie; }
-            set { SetPropertyValue<fin_documentfinanceseries>("DocumentSerie", ref fDocumentSerie, value); }
+            set { SetPropertyValue("DocumentSerie", ref fDocumentSerie, value); }
         }
 
         //ConfigurationPaymentMethod One <> Many DocumentFinancePayment
@@ -271,7 +272,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_configurationpaymentmethod PaymentMethod
         {
             get { return fPaymentMethod; }
-            set { SetPropertyValue<fin_configurationpaymentmethod>("PaymentMethod", ref fPaymentMethod, value); }
+            set { SetPropertyValue("PaymentMethod", ref fPaymentMethod, value); }
         }
 
         //ConfigurationCurrency One <> Many DocumentFinancePayment
@@ -280,7 +281,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public cfg_configurationcurrency Currency
         {
             get { return fCurrency; }
-            set { SetPropertyValue<cfg_configurationcurrency>("Currency", ref fCurrency, value); }
+            set { SetPropertyValue("Currency", ref fCurrency, value); }
         }
 
         //DocumentFinanceMasterPayment Many <> Many DocumentFinancePayment

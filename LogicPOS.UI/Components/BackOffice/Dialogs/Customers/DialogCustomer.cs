@@ -9,6 +9,7 @@ using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.datalayer.DataLayer.Xpo;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Domain.Entities;
 using LogicPOS.Finance.Utility;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;

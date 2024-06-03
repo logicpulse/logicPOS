@@ -1,11 +1,11 @@
 ﻿using DevExpress.Data.Filtering;
 using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
-using logicpos.datalayer.DataLayer.Xpo;
-using LogicPOS.Data.Enums;
 using LogicPOS.Data.XPO;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
+using LogicPOS.Domain.Entities;
+using LogicPOS.Domain.Enums;
 using System;
 using System.Collections;
 using System.Collections.Generic;

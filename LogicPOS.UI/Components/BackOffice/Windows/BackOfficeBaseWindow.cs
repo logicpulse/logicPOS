@@ -1,7 +1,6 @@
 ﻿using Gtk;
 using logicpos.App;
 using logicpos.Classes.Gui.Gtk.Widgets;
-using logicpos.datalayer.DataLayer.Xpo;
 using System;
 using System.IO;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
@@ -13,6 +12,7 @@ using LogicPOS.Utility;
 using LogicPOS.UI;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
+using LogicPOS.Domain.Entities;
 
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice

@@ -11,6 +11,7 @@ using logicpos.datalayer.DataLayer.Xpo;
 using LogicPOS.Data.Services;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
+using LogicPOS.Domain.Enums;
 using LogicPOS.Globalization;
 using LogicPOS.Reporting;
 using LogicPOS.Settings;

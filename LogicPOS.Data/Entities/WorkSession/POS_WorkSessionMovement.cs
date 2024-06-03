@@ -1,7 +1,8 @@
 ﻿using System;
 using DevExpress.Xpo;
+using logicpos.datalayer.DataLayer.Xpo;
 
-namespace logicpos.datalayer.DataLayer.Xpo
+namespace LogicPOS.Domain.Entities
 {
     [DeferredDeletion(false)]
     public class pos_worksessionmovement : XPGuidObject
@@ -13,7 +14,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public uint Ord
         {
             get { return fOrd; }
-            set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
+            set { SetPropertyValue("Ord", ref fOrd, value); }
         }
 
         private DateTime fDate;
@@ -42,42 +43,42 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public sys_userdetail UserDetail
         {
             get { return fUserDetail; }
-            set { SetPropertyValue<sys_userdetail>("UserDetail", ref fUserDetail, value); }
+            set { SetPropertyValue("UserDetail", ref fUserDetail, value); }
         }
 
         private pos_configurationplaceterminal fTerminal;
         public pos_configurationplaceterminal Terminal
         {
             get { return fTerminal; }
-            set { SetPropertyValue<pos_configurationplaceterminal>("Terminal", ref fTerminal, value); }
+            set { SetPropertyValue("Terminal", ref fTerminal, value); }
         }
 
         private fin_documentfinancemaster fDocumentFinanceMaster;
         public fin_documentfinancemaster DocumentFinanceMaster
         {
             get { return fDocumentFinanceMaster; }
-            set { SetPropertyValue<fin_documentfinancemaster>("DocumentFinanceMaster", ref fDocumentFinanceMaster, value); }
+            set { SetPropertyValue("DocumentFinanceMaster", ref fDocumentFinanceMaster, value); }
         }
 
         private fin_documentfinancepayment fDocumentFinancePayment;
         public fin_documentfinancepayment DocumentFinancePayment
         {
             get { return fDocumentFinancePayment; }
-            set { SetPropertyValue<fin_documentfinancepayment>("DocumentFinancePayment", ref fDocumentFinancePayment, value); }
+            set { SetPropertyValue("DocumentFinancePayment", ref fDocumentFinancePayment, value); }
         }
 
         private fin_documentfinancetype fDocumentFinanceType;
         public fin_documentfinancetype DocumentFinanceType
         {
             get { return fDocumentFinanceType; }
-            set { SetPropertyValue<fin_documentfinancetype>("DocumentFinanceType", ref fDocumentFinanceType, value); }
+            set { SetPropertyValue("DocumentFinanceType", ref fDocumentFinanceType, value); }
         }
 
         private fin_configurationpaymentmethod fPaymentMethod;
         public fin_configurationpaymentmethod PaymentMethod
         {
             get { return fPaymentMethod; }
-            set { SetPropertyValue<fin_configurationpaymentmethod>("PaymentMethod", ref fPaymentMethod, value); }
+            set { SetPropertyValue("PaymentMethod", ref fPaymentMethod, value); }
         }
 
         //WorkSessionPeriod One <> Many WorkSessionMovement
@@ -86,7 +87,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public pos_worksessionperiod WorkSessionPeriod
         {
             get { return fWorkSessionPeriod; }
-            set { SetPropertyValue<pos_worksessionperiod>("WorkSessionPeriod", ref fWorkSessionPeriod, value); }
+            set { SetPropertyValue("WorkSessionPeriod", ref fWorkSessionPeriod, value); }
         }
 
         //WorkSessionMovementType One <> Many WorkSessionMovement
@@ -95,7 +96,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public pos_worksessionmovementtype WorkSessionMovementType
         {
             get { return fWorkSessionMovementType; }
-            set { SetPropertyValue<pos_worksessionmovementtype>("WorkSessionMovementType", ref fWorkSessionMovementType, value); }
+            set { SetPropertyValue("WorkSessionMovementType", ref fWorkSessionMovementType, value); }
         }
     }
 }

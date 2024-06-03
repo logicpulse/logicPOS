@@ -1,10 +1,10 @@
 ﻿using Gtk;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.Extensions;
 using LogicPOS.Data.Services;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
+using LogicPOS.Domain.Entities;
 using LogicPOS.Globalization;
 using System;
 using System.Drawing;

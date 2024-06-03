@@ -1,7 +1,7 @@
 ﻿using Gtk;
 using logicpos.App;
-using logicpos.datalayer.DataLayer.Xpo;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Domain.Entities;
 using LogicPOS.Globalization;
 using LogicPOS.Utility;
 using System;

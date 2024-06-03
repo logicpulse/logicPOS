@@ -1,9 +1,10 @@
 using DevExpress.Xpo;
-using logicpos.datalayer.Enums;
+using logicpos.datalayer.DataLayer.Xpo;
 using LogicPOS.Data.XPO.Utility;
+using LogicPOS.Domain.Enums;
 using System;
 
-namespace logicpos.datalayer.DataLayer.Xpo
+namespace LogicPOS.Domain.Entities
 {
     [DeferredDeletion(false)]
     public class pos_configurationplacetable : XPGuidObject
@@ -21,7 +22,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public uint Ord
         {
             get { return fOrd; }
-            set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
+            set { SetPropertyValue("Ord", ref fOrd, value); }
         }
 
         private uint fCode;
@@ -29,7 +30,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public uint Code
         {
             get { return fCode; }
-            set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
+            set { SetPropertyValue("Code", ref fCode, value); }
         }
 
         private string fDesignation;
@@ -59,7 +60,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public TableStatus TableStatus
         {
             get { return fTableStatus; }
-            set { SetPropertyValue<TableStatus>("TableStatus", ref fTableStatus, value); }
+            set { SetPropertyValue("TableStatus", ref fTableStatus, value); }
         }
 
         private decimal fTotalOpen;
@@ -89,7 +90,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public pos_configurationplace Place
         {
             get { return fPlace; }
-            set { SetPropertyValue<pos_configurationplace>("Place", ref fPlace, value); }
+            set { SetPropertyValue("Place", ref fPlace, value); }
         }
 
         //ConfigurationPlaceTable One <> Many DocumentOrderMain

@@ -1,6 +1,6 @@
 ﻿using DevExpress.Xpo;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Enums;
+using LogicPOS.Domain.Entities;
+using LogicPOS.Domain.Enums;
 using System;
 
 namespace LogicPOS.Shared.Article

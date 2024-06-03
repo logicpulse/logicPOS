@@ -1,8 +1,9 @@
 ﻿using DevExpress.Xpo;
+using logicpos.datalayer.DataLayer.Xpo;
 using LogicPOS.Data.XPO.Utility;
 using System;
 
-namespace logicpos.datalayer.DataLayer.Xpo
+namespace LogicPOS.Domain.Entities
 {
     [DeferredDeletion(false)]
     public class fin_documentfinanceseries : XPGuidObject
@@ -20,7 +21,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public uint Ord
         {
             get { return fOrd; }
-            set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
+            set { SetPropertyValue("Ord", ref fOrd, value); }
         }
 
         private uint fCode;
@@ -28,7 +29,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public uint Code
         {
             get { return fCode; }
-            set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
+            set { SetPropertyValue("Code", ref fCode, value); }
         }
 
         private string fDesignation;
@@ -74,7 +75,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_documentfinancetype DocumentType
         {
             get { return fDocumentType; }
-            set { SetPropertyValue<fin_documentfinancetype>("DocumentType", ref fDocumentType, value); }
+            set { SetPropertyValue("DocumentType", ref fDocumentType, value); }
         }
 
         //DocumentFinanceType One <> Many DocumentFinanceSeries
@@ -83,7 +84,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_documentfinanceyears FiscalYear
         {
             get { return fFiscalYear; }
-            set { SetPropertyValue<fin_documentfinanceyears>("FiscalYear", ref fFiscalYear, value); }
+            set { SetPropertyValue("FiscalYear", ref fFiscalYear, value); }
         }
 
         //DocumentFinanceSeries One <> Many DocumentFinanceYearSerieTerminal

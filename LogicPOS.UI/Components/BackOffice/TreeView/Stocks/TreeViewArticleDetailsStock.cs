@@ -7,6 +7,8 @@ using logicpos.Classes.Formatters;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.datalayer.DataLayer.Xpo;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Domain.Entities;
+using LogicPOS.Domain.Enums;
 using LogicPOS.Globalization;
 using LogicPOS.Modules.StockManagement;
 using System;
@@ -185,12 +187,12 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         if ((_dataSourceRow as fin_article).Accounting > getArticleStock)
                         {
                             decimal quantity = (_dataSourceRow as fin_article).Accounting - getArticleStock;
-                            ProcessArticleStock.Add(datalayer.Enums.ProcessArticleStockMode.In, own_customer, 1, DateTime.Now, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_internal_document_footer1"), (_dataSourceRow as fin_article), quantity, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_internal_document_footer1"));
+                            ProcessArticleStock.Add(ProcessArticleStockMode.In, own_customer, 1, DateTime.Now, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_internal_document_footer1"), (_dataSourceRow as fin_article), quantity, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_internal_document_footer1"));
                         }
                         else
                         {
                             decimal quantity = getArticleStock - (_dataSourceRow as fin_article).Accounting;
-                            ProcessArticleStock.Add(datalayer.Enums.ProcessArticleStockMode.Out, own_customer, 1, DateTime.Now, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_internal_document_footer1"), (_dataSourceRow as fin_article), quantity, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_internal_document_footer1"));
+                            ProcessArticleStock.Add(ProcessArticleStockMode.Out, own_customer, 1, DateTime.Now, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_internal_document_footer1"), (_dataSourceRow as fin_article), quantity, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_internal_document_footer1"));
                         }
                     }
                     xpoCollection.Reload();
@@ -200,7 +202,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //New article
             catch
             {
-                ProcessArticleStock.Add(datalayer.Enums.ProcessArticleStockMode.In, null, 1, DateTime.Now, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_internal_document_footer1"), (_dataSourceRow as fin_article), (_dataSourceRow as fin_article).Accounting, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_internal_document_footer1"));
+                ProcessArticleStock.Add(ProcessArticleStockMode.In, null, 1, DateTime.Now, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_internal_document_footer1"), (_dataSourceRow as fin_article), (_dataSourceRow as fin_article).Accounting, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_internal_document_footer1"));
                 xpoCollection.Reload();
                 this.Refresh();
             }

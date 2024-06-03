@@ -2,10 +2,10 @@
 using logicpos.App;
 using logicpos.Classes.Enums.TicketList;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Enums;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
+using LogicPOS.Domain.Entities;
+using LogicPOS.Domain.Enums;
 using LogicPOS.Shared;
 using LogicPOS.Shared.Orders;
 using System;

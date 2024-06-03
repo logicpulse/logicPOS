@@ -1,11 +1,11 @@
 ﻿using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Enums;
 using logicpos.shared.Enums;
 using LogicPOS.Data.XPO;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
+using LogicPOS.Domain.Entities;
+using LogicPOS.Domain.Enums;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Shared.Orders;

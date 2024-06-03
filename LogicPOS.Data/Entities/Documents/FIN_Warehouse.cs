@@ -1,7 +1,7 @@
 ﻿using DevExpress.Xpo;
-using logicpos.datalayer.DataLayer.Xpo.Documents;
+using logicpos.datalayer.DataLayer.Xpo;
 
-namespace logicpos.datalayer.DataLayer.Xpo
+namespace LogicPOS.Domain.Entities
 {
     [DeferredDeletion(false)]
     public class fin_warehouse : XPGuidObject
@@ -46,7 +46,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         {
             get { return GetCollection<fin_warehouselocation>("WarehouseLocation"); }
         }
-   
+
         [Association(@"ArticleWarehouseReferencesWareHouse", typeof(fin_articlewarehouse))]
         public XPCollection<fin_articlewarehouse> ArticleWarehouse
         {

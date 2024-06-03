@@ -1,4 +1,4 @@
-﻿using logicpos.datalayer.Enums;
+﻿using LogicPOS.Domain.Enums;
 using System;
 
 namespace logicpos.Classes.Logic.Others

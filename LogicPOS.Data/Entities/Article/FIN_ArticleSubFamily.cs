@@ -1,8 +1,9 @@
 using DevExpress.Xpo;
+using logicpos.datalayer.DataLayer.Xpo;
 using LogicPOS.Data.XPO.Utility;
 using System;
 
-namespace logicpos.datalayer.DataLayer.Xpo
+namespace LogicPOS.Domain.Entities
 {
     [DeferredDeletion(false)]
     public class fin_articlesubfamily : XPGuidObject
@@ -20,7 +21,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public uint Ord
         {
             get { return fOrd; }
-            set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
+            set { SetPropertyValue("Ord", ref fOrd, value); }
         }
 
         private uint fCode;
@@ -28,7 +29,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public uint Code
         {
             get { return fCode; }
-            set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
+            set { SetPropertyValue("Code", ref fCode, value); }
         }
 
         private string fDesignation;
@@ -82,7 +83,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_articlefamily Family
         {
             get { return fFamily; }
-            set { SetPropertyValue<fin_articlefamily>("Family", ref fFamily, value); }
+            set { SetPropertyValue("Family", ref fFamily, value); }
         }
 
         //UserCommissionGroup One <> Many SubFamily
@@ -91,7 +92,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public pos_usercommissiongroup CommissionGroup
         {
             get { return fCommissionGroup; }
-            set { SetPropertyValue<pos_usercommissiongroup>("CommissionGroup", ref fCommissionGroup, value); }
+            set { SetPropertyValue("CommissionGroup", ref fCommissionGroup, value); }
         }
 
         //CustomerDiscountGroup One <> Many SubFamily
@@ -100,7 +101,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public erp_customerdiscountgroup DiscountGroup
         {
             get { return fDiscountGroup; }
-            set { SetPropertyValue<erp_customerdiscountgroup>("DiscountGroup", ref fDiscountGroup, value); }
+            set { SetPropertyValue("DiscountGroup", ref fDiscountGroup, value); }
         }
 
         //ConfigurationVatRate One <> Many SubFamily
@@ -109,7 +110,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_configurationvatrate VatOnTable
         {
             get { return fVatOnTable; }
-            set { SetPropertyValue<fin_configurationvatrate>("VatOnTable", ref fVatOnTable, value); }
+            set { SetPropertyValue("VatOnTable", ref fVatOnTable, value); }
         }
 
         //ConfigurationVatRate One <> Many SubFamily
@@ -118,7 +119,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_configurationvatrate VatDirectSelling
         {
             get { return fVatDirectSelling; }
-            set { SetPropertyValue<fin_configurationvatrate>("VatDirectSelling", ref fVatDirectSelling, value); }
+            set { SetPropertyValue("VatDirectSelling", ref fVatDirectSelling, value); }
         }
 
         //ConfigurationPrinters One <> Many SubFamily
@@ -127,7 +128,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public sys_configurationprinters Printer
         {
             get { return fPrinter; }
-            set { SetPropertyValue<sys_configurationprinters>("Printer", ref fPrinter, value); }
+            set { SetPropertyValue("Printer", ref fPrinter, value); }
         }
 
         //One ConfigurationPrintersTemplates <> Many SubFamily
@@ -136,7 +137,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public sys_configurationprinterstemplates Template
         {
             get { return fTemplate; }
-            set { SetPropertyValue<sys_configurationprinterstemplates>("Template", ref fTemplate, value); }
+            set { SetPropertyValue("Template", ref fTemplate, value); }
         }
     }
 }

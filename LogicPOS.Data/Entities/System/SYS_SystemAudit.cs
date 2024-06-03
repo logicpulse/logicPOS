@@ -1,7 +1,8 @@
 ﻿using System;
 using DevExpress.Xpo;
+using logicpos.datalayer.DataLayer.Xpo;
 
-namespace logicpos.datalayer.DataLayer.Xpo
+namespace LogicPOS.Domain.Entities
 {
     [DeferredDeletion(false)]
     public class sys_systemaudit : XPGuidObject
@@ -28,14 +29,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public sys_userdetail UserDetail
         {
             get { return fUserDetail; }
-            set { SetPropertyValue<sys_userdetail>("UserDetail", ref fUserDetail, value); }
+            set { SetPropertyValue("UserDetail", ref fUserDetail, value); }
         }
 
         private pos_configurationplaceterminal fTerminal;
         public pos_configurationplaceterminal Terminal
         {
             get { return fTerminal; }
-            set { SetPropertyValue<pos_configurationplaceterminal>("Terminal", ref fTerminal, value); }
+            set { SetPropertyValue("Terminal", ref fTerminal, value); }
         }
 
         //SystemAuditType One <> Many SystemAudit
@@ -44,7 +45,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public sys_systemaudittype AuditType
         {
             get { return fAuditType; }
-            set { SetPropertyValue<sys_systemaudittype>("AuditType", ref fAuditType, value); }
+            set { SetPropertyValue("AuditType", ref fAuditType, value); }
         }
     }
 }

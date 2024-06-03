@@ -1,19 +1,10 @@
 ﻿using System;
 using DevExpress.Xpo;
+using logicpos.datalayer.DataLayer.Xpo;
+using LogicPOS.Domain.Enums;
 
-namespace logicpos.datalayer.DataLayer.Xpo
+namespace LogicPOS.Domain.Entities
 {
-    public enum WorkSessionPeriodType
-    {
-        Day, 
-        Terminal
-    }
-
-    public enum WorkSessionPeriodStatus
-    {
-        Open, 
-        Close
-    }
 
     [DeferredDeletion(false)]
     public class pos_worksessionperiod : XPGuidObject
@@ -25,14 +16,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public WorkSessionPeriodType PeriodType
         {
             get { return fPeriodType; }
-            set { SetPropertyValue<WorkSessionPeriodType>("PeriodType", ref fPeriodType, value); }
+            set { SetPropertyValue("PeriodType", ref fPeriodType, value); }
         }
 
         private WorkSessionPeriodStatus fSessionStatus;
         public WorkSessionPeriodStatus SessionStatus
         {
             get { return fSessionStatus; }
-            set { SetPropertyValue<WorkSessionPeriodStatus>("SessionStatus", ref fSessionStatus, value); }
+            set { SetPropertyValue("SessionStatus", ref fSessionStatus, value); }
         }
 
         private string fDesignation;
@@ -61,7 +52,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public pos_configurationplaceterminal Terminal
         {
             get { return fTerminal; }
-            set { SetPropertyValue<pos_configurationplaceterminal>("Terminal", ref fTerminal, value); }
+            set { SetPropertyValue("Terminal", ref fTerminal, value); }
         }
 
         //RECURSIVE RelationShip : WorkSessionPeriod One (Type Day) <> Many WorkSessionPeriod (Type Terminal)
@@ -77,7 +68,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public pos_worksessionperiod Parent
         {
             get { return fParent; }
-            set { SetPropertyValue<pos_worksessionperiod>("Parent", ref fParent, value); }
+            set { SetPropertyValue("Parent", ref fParent, value); }
         }
 
         //WorkSessionPeriod One <> Many WorkSessionMovement

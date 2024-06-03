@@ -1,11 +1,12 @@
 using DevExpress.Xpo;
-using logicpos.datalayer.DataLayer.Xpo.Articles;
+using logicpos.datalayer.DataLayer.Xpo;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
 using System;
-namespace logicpos.datalayer.DataLayer.Xpo
+
+namespace LogicPOS.Domain.Entities
 {
     [DeferredDeletion(false)]
     public class fin_article : XPGuidObject
@@ -16,8 +17,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
         protected override void OnAfterConstruction()
         {
             Ord = XPOHelper.GetNextTableFieldID(nameof(fin_article), "Ord");
-            Type = this.Session.GetObjectByKey<fin_articletype>(XPOSettings.XpoOidArticleDefaultType);
-            Class = this.Session.GetObjectByKey<fin_articleclass>(XPOSettings.XpoOidArticleDefaultClass);
+            Type = Session.GetObjectByKey<fin_articletype>(XPOSettings.XpoOidArticleDefaultType);
+            Class = Session.GetObjectByKey<fin_articleclass>(XPOSettings.XpoOidArticleDefaultClass);
 
             if (AppOperationModeSettings.AppMode == AppOperationMode.Default)
             {
@@ -28,19 +29,19 @@ namespace logicpos.datalayer.DataLayer.Xpo
             else
             {
                 VatOnTable = null;
-                VatDirectSelling = this.Session.GetObjectByKey<fin_configurationvatrate>(XPOSettings.XpoOidArticleDefaultVatDirectSelling);
+                VatDirectSelling = Session.GetObjectByKey<fin_configurationvatrate>(XPOSettings.XpoOidArticleDefaultVatDirectSelling);
             }
 
-            UnitMeasure = this.Session.GetObjectByKey<cfg_configurationunitmeasure>(XPOSettings.XpoOidArticleDefaultUnitMeasure);
-            UnitSize = this.Session.GetObjectByKey<cfg_configurationunitsize>(XPOSettings.XpoOidArticleDefaultUnitSize);
-            Template = this.Session.GetObjectByKey<sys_configurationprinterstemplates>(XPOSettings.XpoOidArticleDefaultTemplate);
+            UnitMeasure = Session.GetObjectByKey<cfg_configurationunitmeasure>(XPOSettings.XpoOidArticleDefaultUnitMeasure);
+            UnitSize = Session.GetObjectByKey<cfg_configurationunitsize>(XPOSettings.XpoOidArticleDefaultUnitSize);
+            Template = Session.GetObjectByKey<sys_configurationprinterstemplates>(XPOSettings.XpoOidArticleDefaultTemplate);
         }
 
         private uint fOrd;
         public uint Ord
         {
             get { return fOrd; }
-            set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
+            set { SetPropertyValue("Ord", ref fOrd, value); }
         }
 
         private string fCode;
@@ -362,7 +363,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_articlefamily Family
         {
             get { return fFamily; }
-            set { SetPropertyValue<fin_articlefamily>("Family", ref fFamily, value); }
+            set { SetPropertyValue("Family", ref fFamily, value); }
         }
 
         //SubFamily One <> Many Article
@@ -371,7 +372,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_articlesubfamily SubFamily
         {
             get { return fSubFamily; }
-            set { SetPropertyValue<fin_articlesubfamily>("SubFamily", ref fSubFamily, value); }
+            set { SetPropertyValue("SubFamily", ref fSubFamily, value); }
         }
 
         //ArticleType One <> Many Article
@@ -380,7 +381,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_articletype Type
         {
             get { return fType; }
-            set { SetPropertyValue<fin_articletype>("Type", ref fType, value); }
+            set { SetPropertyValue("Type", ref fType, value); }
         }
 
         //ArticleClass One <> Many Article
@@ -389,7 +390,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_articleclass Class
         {
             get { return fClass; }
-            set { SetPropertyValue<fin_articleclass>("Class", ref fClass, value); }
+            set { SetPropertyValue("Class", ref fClass, value); }
         }
 
         //configurationUnitMeasure One <> Many Article
@@ -398,7 +399,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public cfg_configurationunitmeasure UnitMeasure
         {
             get { return fUnitMeasure; }
-            set { SetPropertyValue<cfg_configurationunitmeasure>("UnitMeasure", ref fUnitMeasure, value); }
+            set { SetPropertyValue("UnitMeasure", ref fUnitMeasure, value); }
         }
 
         //ConfigurationUnitSize One <> Many Article
@@ -407,7 +408,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public cfg_configurationunitsize UnitSize
         {
             get { return fUnitSize; }
-            set { SetPropertyValue<cfg_configurationunitsize>("UnitSize", ref fUnitSize, value); }
+            set { SetPropertyValue("UnitSize", ref fUnitSize, value); }
         }
 
         //UserCommissionGroup One <> Many Article
@@ -416,7 +417,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public pos_usercommissiongroup CommissionGroup
         {
             get { return fCommissionGroup; }
-            set { SetPropertyValue<pos_usercommissiongroup>("CommissionGroup", ref fCommissionGroup, value); }
+            set { SetPropertyValue("CommissionGroup", ref fCommissionGroup, value); }
         }
 
         //CustomerDiscountGroup One <> Many Article
@@ -425,7 +426,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public erp_customerdiscountgroup DiscountGroup
         {
             get { return fDiscountGroup; }
-            set { SetPropertyValue<erp_customerdiscountgroup>("DiscountGroup", ref fDiscountGroup, value); }
+            set { SetPropertyValue("DiscountGroup", ref fDiscountGroup, value); }
         }
 
         //ConfigurationVatRate One <> Many Article
@@ -434,7 +435,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_configurationvatrate VatOnTable
         {
             get { return fVatOnTable; }
-            set { SetPropertyValue<fin_configurationvatrate>("VatTOnTable", ref fVatOnTable, value); }
+            set { SetPropertyValue("VatTOnTable", ref fVatOnTable, value); }
         }
 
         //ConfigurationVatRate One <> Many Article
@@ -443,7 +444,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_configurationvatrate VatDirectSelling
         {
             get { return fVatDirectSelling; }
-            set { SetPropertyValue<fin_configurationvatrate>("VatDirectSelling", ref fVatDirectSelling, value); }
+            set { SetPropertyValue("VatDirectSelling", ref fVatDirectSelling, value); }
         }
 
         //ConfigurationVatExemptionReason One <> Many Article
@@ -452,7 +453,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_configurationvatexemptionreason VatExemptionReason
         {
             get { return fVatExemptionReason; }
-            set { SetPropertyValue<fin_configurationvatexemptionreason>("VatExemptionReason", ref fVatExemptionReason, value); }
+            set { SetPropertyValue("VatExemptionReason", ref fVatExemptionReason, value); }
         }
 
         //ConfigurationDevice One <> Many Article
@@ -461,7 +462,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public sys_configurationprinters Printer
         {
             get { return fPrinter; }
-            set { SetPropertyValue<sys_configurationprinters>("Printer", ref fPrinter, value); }
+            set { SetPropertyValue("Printer", ref fPrinter, value); }
         }
 
         //DocumentFinanceType One <> Many ConfigurationPrintersTemplates
@@ -470,7 +471,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public sys_configurationprinterstemplates Template
         {
             get { return fTemplate; }
-            set { SetPropertyValue<sys_configurationprinterstemplates>("Template", ref fTemplate, value); }
+            set { SetPropertyValue("Template", ref fTemplate, value); }
         }
 
         private sys_configurationprinterstemplates fTemplateBarCode;
@@ -478,7 +479,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public sys_configurationprinterstemplates TemplateBarCode
         {
             get { return fTemplateBarCode; }
-            set { SetPropertyValue<sys_configurationprinterstemplates>("TemplateBarCode", ref fTemplateBarCode, value); }
+            set { SetPropertyValue("TemplateBarCode", ref fTemplateBarCode, value); }
         }
     }
 }
