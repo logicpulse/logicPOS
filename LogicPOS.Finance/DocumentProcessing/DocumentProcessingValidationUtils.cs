@@ -70,28 +70,28 @@ namespace LogicPOS.Finance.DocumentProcessing
             {
                 //Get XPGuidObjects from Parameters
                 fin_documentfinancetype documentType = (pParameters.DocumentType != null && pParameters.DocumentType != Guid.Empty)
-                    ? (fin_documentfinancetype)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(fin_documentfinancetype), pParameters.DocumentType)
+                    ? (fin_documentfinancetype)XPOUtility.GetXPGuidObject(XPOSettings.Session, typeof(fin_documentfinancetype), pParameters.DocumentType)
                     : null;
                 erp_customer customer = (pParameters.Customer != null && pParameters.Customer != Guid.Empty)
-                    ? (erp_customer)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(erp_customer), pParameters.Customer)
+                    ? (erp_customer)XPOUtility.GetXPGuidObject(XPOSettings.Session, typeof(erp_customer), pParameters.Customer)
                     : null;
                 fin_documentfinancemaster documentParent = (pParameters.DocumentParent != null && pParameters.DocumentParent != Guid.Empty)
-                    ? (fin_documentfinancemaster)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(fin_documentfinancemaster), pParameters.DocumentParent)
+                    ? (fin_documentfinancemaster)XPOUtility.GetXPGuidObject(XPOSettings.Session, typeof(fin_documentfinancemaster), pParameters.DocumentParent)
                     : null;
                 erp_customer customerParentDocument = (documentParent != null && documentParent.EntityOid != Guid.Empty)
-                    ? (erp_customer)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(erp_customer), documentParent.EntityOid)
+                    ? (erp_customer)XPOUtility.GetXPGuidObject(XPOSettings.Session, typeof(erp_customer), documentParent.EntityOid)
                     : null;
                 cfg_configurationcurrency configurationCurrency = (pParameters.Currency != null && pParameters.Currency != Guid.Empty)
-                    ? (cfg_configurationcurrency)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(cfg_configurationcurrency), pParameters.Currency)
+                    ? (cfg_configurationcurrency)XPOUtility.GetXPGuidObject(XPOSettings.Session, typeof(cfg_configurationcurrency), pParameters.Currency)
                     : null;
                 cfg_configurationcountry countryShipTo = (pParameters.ShipTo != null && pParameters.ShipTo.CountryGuid != Guid.Empty)
-                    ? (cfg_configurationcountry)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(cfg_configurationcountry), pParameters.ShipTo.CountryGuid)
+                    ? (cfg_configurationcountry)XPOUtility.GetXPGuidObject(XPOSettings.Session, typeof(cfg_configurationcountry), pParameters.ShipTo.CountryGuid)
                     : null;
                 cfg_configurationcountry countryShipFrom = (pParameters.ShipFrom != null && pParameters.ShipFrom.CountryGuid != Guid.Empty)
-                    ? (cfg_configurationcountry)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(cfg_configurationcountry), pParameters.ShipFrom.CountryGuid)
+                    ? (cfg_configurationcountry)XPOUtility.GetXPGuidObject(XPOSettings.Session, typeof(cfg_configurationcountry), pParameters.ShipFrom.CountryGuid)
                     : null;
                 fin_configurationpaymentmethod configurationPaymentMethod = (pParameters.PaymentMethod != null && pParameters.PaymentMethod != Guid.Empty)
-                    ? (fin_configurationpaymentmethod)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(fin_configurationpaymentmethod), pParameters.PaymentMethod)
+                    ? (fin_configurationpaymentmethod)XPOUtility.GetXPGuidObject(XPOSettings.Session, typeof(fin_configurationpaymentmethod), pParameters.PaymentMethod)
                     : null;
                 //Helper Variables
                 if (customer != null) _countryCode2 = customer.Country.Code2;
@@ -645,13 +645,13 @@ namespace LogicPOS.Finance.DocumentProcessing
             {
                 //Get XPGuidObjects from Parameters
                 erp_customer customer = (pCustomer != null && pCustomer != Guid.Empty)
-                    ? (erp_customer)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(erp_customer), pCustomer)
+                    ? (erp_customer)XPOUtility.GetXPGuidObject(XPOSettings.Session, typeof(erp_customer), pCustomer)
                     : null;
                 fin_configurationpaymentmethod paymentMethod = (pPaymentMethod != null && pPaymentMethod != Guid.Empty)
-                    ? (fin_configurationpaymentmethod)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(fin_configurationpaymentmethod), pPaymentMethod)
+                    ? (fin_configurationpaymentmethod)XPOUtility.GetXPGuidObject(XPOSettings.Session, typeof(fin_configurationpaymentmethod), pPaymentMethod)
                     : null;
                 cfg_configurationcurrency currency = (pConfigurationCurrency != null && pConfigurationCurrency != Guid.Empty)
-                    ? (cfg_configurationcurrency)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(cfg_configurationcurrency), pConfigurationCurrency)
+                    ? (cfg_configurationcurrency)XPOUtility.GetXPGuidObject(XPOSettings.Session, typeof(cfg_configurationcurrency), pConfigurationCurrency)
                     : null;
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

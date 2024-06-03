@@ -360,7 +360,7 @@ namespace LogicPOS.Shared.Article
             using (UnitOfWork unitOfWork = new UnitOfWork())
             {
                 OrderMain orderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];
-                fin_documentordermain xDocumentOrderMain = XPOHelper.GetEntityById<fin_documentordermain>(orderMain.PersistentOid,unitOfWork);
+                fin_documentordermain xDocumentOrderMain = XPOUtility.GetEntityById<fin_documentordermain>(orderMain.PersistentOid,unitOfWork);
 
                 if (xDocumentOrderMain != null && xDocumentOrderMain.OrderTicket != null)
                 {
@@ -401,7 +401,7 @@ namespace LogicPOS.Shared.Article
                 //_logger.Debug(string.Format("Delete(): sql [{0}]", string.Format(sql, where)));
 
                 //Audit
-                XPOHelper.Audit("ORDER_ARTICLE_REMOVED", string.Format(
+                XPOUtility.Audit("ORDER_ARTICLE_REMOVED", string.Format(
                         CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_order_article_removed"),
                         articleDesignation,
                         1,
@@ -413,7 +413,7 @@ namespace LogicPOS.Shared.Article
                 if (isDone)
                 {
                     //Update xDocumentOrderMain UpdatedAt, Required for RealTime Update
-                    xDocumentOrderMain.UpdatedAt = XPOHelper.CurrentDateTimeAtomic();
+                    xDocumentOrderMain.UpdatedAt = XPOUtility.CurrentDateTimeAtomic();
 
                     //Remove Quantity
                     resultRemainQuantity -= pRemoveQuantity;
@@ -443,7 +443,7 @@ namespace LogicPOS.Shared.Article
                             //Open Table
                             deleteOrderMain.PlaceTable.TableStatus = TableStatus.Free;
                             //Audit
-                            XPOHelper.Audit("TABLE_OPEN", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_table_open"), deleteOrderMain.PlaceTable.Designation));
+                            XPOUtility.Audit("TABLE_OPEN", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_table_open"), deleteOrderMain.PlaceTable.Designation));
                             //Delete OrderMain
                             deleteOrderMain.Delete();
                         };
@@ -455,7 +455,7 @@ namespace LogicPOS.Shared.Article
                     //Commit UOW Changes
                     unitOfWork.CommitChanges();
                     //Update OrderMain UpdatedAt, Required to Sync Terminals
-                    orderMain.UpdatedAt = XPOHelper.CurrentDateTimeAtomic();
+                    orderMain.UpdatedAt = XPOUtility.CurrentDateTimeAtomic();
 
                     //Update ArticleBag Price Properties
                     this[pKey].Quantity = resultRemainQuantity;
@@ -463,7 +463,7 @@ namespace LogicPOS.Shared.Article
 
                     //SEARCH#001
                     //Require to Remove PartialPayed Items Quantity
-                    return resultRemainQuantity - XPOHelper.GetPartialPaymentPayedItems(unitOfWork, xDocumentOrderMain.Oid, pKey.ArticleId);
+                    return resultRemainQuantity - XPOUtility.GetPartialPaymentPayedItems(unitOfWork, xDocumentOrderMain.Oid, pKey.ArticleId);
                 }
                 catch (Exception ex)
                 {
@@ -549,7 +549,7 @@ namespace LogicPOS.Shared.Article
                         ;"
                         , orderMain.PersistentOid
                     );
-                    SQLSelectResultData selectedDataOrders = XPOHelper.GetSelectedDataFromQuery(sqlOrders);
+                    SQLSelectResultData selectedDataOrders = XPOUtility.GetSelectedDataFromQuery(sqlOrders);
 
                     //Process Tickets and Add to ArticleBag
                     if (selectedDataOrders.DataRows.Length > 0)
@@ -619,7 +619,7 @@ namespace LogicPOS.Shared.Article
                         , orderMain.PersistentOid
                     );
 
-                    SQLSelectResultData selectedDataDocuments = XPOHelper.GetSelectedDataFromQuery(sqlDocuments);
+                    SQLSelectResultData selectedDataDocuments = XPOUtility.GetSelectedDataFromQuery(sqlDocuments);
                     if (selectedDataDocuments.DataRows.Length > 0)
                     {
                         foreach (SelectStatementResultRow row in selectedDataDocuments.DataRows)

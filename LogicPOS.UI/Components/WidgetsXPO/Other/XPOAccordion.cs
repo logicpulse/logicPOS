@@ -37,7 +37,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             }
 
             //Get XPSelectData for Parent and Child
-            SQLSelectResultData xPSelectDataParent = XPOHelper.GetSelectedDataFromQuery(sqlTableParent);
+            SQLSelectResultData xPSelectDataParent = XPOUtility.GetSelectedDataFromQuery(sqlTableParent);
             SQLSelectResultData xPSelectDataChild;
             Dictionary<string, AccordionNode> _accordionChilds = new Dictionary<string, AccordionNode>();
 
@@ -57,7 +57,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                 }
 
                 //Get Child Data
-                xPSelectDataChild = XPOHelper.GetSelectedDataFromQuery(string.Format(sqlTableChild, parentId));
+                xPSelectDataChild = XPOUtility.GetSelectedDataFromQuery(string.Format(sqlTableChild, parentId));
                 //Init Childs        
                 _accordionChilds = new Dictionary<string, AccordionNode>();
 

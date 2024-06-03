@@ -14,9 +14,9 @@ namespace LogicPOS.Domain.Entities
 
         protected override void OnAfterConstruction()
         {
-            Ord = XPOHelper.GetNextTableFieldID(nameof(fin_documentfinanceyears), "Ord");
-            Code = XPOHelper.GetNextTableFieldID(nameof(fin_documentfinanceyears), "Code");
-            int currentYear = XPOHelper.CurrentDateTimeAtomic().Year;
+            Ord = XPOUtility.GetNextTableFieldID(nameof(fin_documentfinanceyears), "Ord");
+            Code = XPOUtility.GetNextTableFieldID(nameof(fin_documentfinanceyears), "Code");
+            int currentYear = XPOUtility.CurrentDateTimeAtomic().Year;
             FiscalYear = currentYear;
             Acronym = string.Format("{0}{1}{2}", FiscalYear, "A", Code / 10);
             Designation = string.Format("{0} {1} {2}{3}", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_fiscal_year"), FiscalYear, "A", Code / 10);

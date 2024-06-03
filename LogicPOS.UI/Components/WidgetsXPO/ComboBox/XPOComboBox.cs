@@ -114,7 +114,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             if (pSortProperty != null) _XpCollection.Sorting.Add(pSortProperty);
 
             //Add Default Sorting Order, if Not Assigned by Parameter
-            if (_XpCollection.Sorting.Count == 0) _XpCollection.Sorting = XPOHelper.GetXPCollectionDefaultSortingCollection();
+            if (_XpCollection.Sorting.Count == 0) _XpCollection.Sorting = XPOUtility.GetXPCollectionDefaultSortingCollection();
 
             //Store TreeIters in Dictionary
             _treeInterDictionary = new Dictionary<Guid, TreeIter>();

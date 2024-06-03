@@ -1124,7 +1124,7 @@ namespace LogicPOS.Printing.Utility
             bool pSecondPrint,
             string pPrintMotive)
         {
-            return XPOHelper.InsertSystemPrint(
+            return XPOUtility.InsertSystemPrint(
                 pDocumentFinanceMaster,
                 null,
                 pPrinterDesignation,
@@ -1142,7 +1142,7 @@ namespace LogicPOS.Printing.Utility
             int pPrintCopies,
             List<int> pCopyNames)
         {
-            return XPOHelper.InsertSystemPrint(
+            return XPOUtility.InsertSystemPrint(
                 null,
                 pDocumentFinancePayment,
                 pPrinterDesignation,
@@ -1440,7 +1440,7 @@ namespace LogicPOS.Printing.Utility
                             //TK016249 - Impressoras - Diferenciação entre Tipos
                             printObjectSINOCAN.OpenDoor(TerminalSettings.LoggedTerminal.ThermalPrinter.PrinterType.Token, TerminalSettings.LoggedTerminal.ThermalPrinter.NetworkName, openDrawerValues);
                             //Audit
-                            XPOHelper.Audit("CASHDRAWER_OPEN", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_cashdrawer_open"));
+                            XPOUtility.Audit("CASHDRAWER_OPEN", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_cashdrawer_open"));
 
                             break;
                     }

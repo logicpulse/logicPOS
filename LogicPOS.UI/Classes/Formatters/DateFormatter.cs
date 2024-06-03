@@ -10,7 +10,7 @@ namespace logicpos.Classes.Formatters
 
         public string Format(string format, object arg, IFormatProvider formatProvider)
         {
-            return XPOHelper.DateToString(arg).ToString();
+            return XPOUtility.DateToString(arg).ToString();
         }
 
         public object GetFormat(Type formatType)

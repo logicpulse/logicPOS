@@ -284,9 +284,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             string currentNodePrivilegesToken;
 
             //Required to Reload Object before Get New Permissions
-            XPOSettings.LoggedUser = XPOHelper.GetEntityById<sys_userdetail>(XPOSettings.LoggedUser.Oid);
+            XPOSettings.LoggedUser = XPOUtility.GetEntityById<sys_userdetail>(XPOSettings.LoggedUser.Oid);
             //Update Session Privileges
-            GeneralSettings.LoggedUserPermissions = XPOHelper.GetUserPermissions(XPOSettings.LoggedUser);
+            GeneralSettings.LoggedUserPermissions = XPOUtility.GetUserPermissions(XPOSettings.LoggedUser);
 
             //Update Backoffice Menu
             if (_accordionDefinition != null && _accordionDefinition.Count > 0)

@@ -115,10 +115,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             {
                 //Pagamentos parciais - Escolher valor a pagar por artigo [TK:019295]
                 decimal remainQuantity = item.Value.Quantity;
-                article = XPOHelper.GetEntityById<fin_article>(item.Key.ArticleId);
+                article = XPOUtility.GetEntityById<fin_article>(item.Key.ArticleId);
                 if (article.Type.HavePrice)
                 {
-                    configurationPlace = XPOHelper.GetEntityById<pos_configurationplace>(item.Value.PlaceOid);
+                    configurationPlace = XPOUtility.GetEntityById<pos_configurationplace>(item.Value.PlaceOid);
 
                     for (int i = 0; i < item.Value.Quantity; i++)
                     {

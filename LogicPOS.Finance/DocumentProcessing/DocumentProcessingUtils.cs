@@ -65,7 +65,7 @@ namespace LogicPOS.Finance.DocumentProcessing
                 //string dateTimeFormatCombinedDateTime = (LogicPOS.Settings.PluginSettings.HasPlugin) ? LogicPOS.Settings.PluginSettings.PluginSoftwareVendor.GetDateTimeFormatCombinedDateTime() : null;//SettingsApp.DateTimeFormatCombinedDateTime;
 
                 //If has DocumentDateTime from Parameters use it, else use Current Atomic DateTime : This is Optional, Now DocumentDateTime is assigned on Parameter Constructor
-                DateTime documentDateTime = (pParameters.DocumentDateTime != DateTime.MinValue) ? pParameters.DocumentDateTime : XPOHelper.CurrentDateTimeAtomic();
+                DateTime documentDateTime = (pParameters.DocumentDateTime != DateTime.MinValue) ? pParameters.DocumentDateTime : XPOUtility.CurrentDateTimeAtomic();
                 //Init Local Vars
                 OrderMain orderMain = null;
 
@@ -73,9 +73,9 @@ namespace LogicPOS.Finance.DocumentProcessing
                 using (UnitOfWork uowSession = new UnitOfWork())
                 {
                     //Get Objects, To Prevent XPO Stress of Deleted Objects inside UOW
-                    //WorkSessionPeriod workSessionPeriod = (WorkSessionPeriod)XPOHelper.GetXPGuidObjectFromSession(uowSession, typeof(WorkSessionPeriod), GlobalFramework.WorkSessionPeriodTerminal.Oid);
-                    sys_userdetail userDetail = (sys_userdetail)XPOHelper.GetXPGuidObject(uowSession, typeof(sys_userdetail), pLoggedUser);
-                    pos_configurationplaceterminal terminal = (pos_configurationplaceterminal)XPOHelper.GetXPGuidObject(uowSession, typeof(pos_configurationplaceterminal), pTerminal);
+                    //WorkSessionPeriod workSessionPeriod = (WorkSessionPeriod)XPOUtility.GetXPGuidObjectFromSession(uowSession, typeof(WorkSessionPeriod), GlobalFramework.WorkSessionPeriodTerminal.Oid);
+                    sys_userdetail userDetail = (sys_userdetail)XPOUtility.GetXPGuidObject(uowSession, typeof(sys_userdetail), pLoggedUser);
+                    pos_configurationplaceterminal terminal = (pos_configurationplaceterminal)XPOUtility.GetXPGuidObject(uowSession, typeof(pos_configurationplaceterminal), pTerminal);
 
                     //Prepare Modes
                     fin_documentordermain documentOrderMain = null;
@@ -193,13 +193,13 @@ namespace LogicPOS.Finance.DocumentProcessing
                         if (
                             (
                                 // documentFinanceMaster.DocumentType.Oid != SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice && /* IN009076 - FS is not saving customer data */
-                                customer.Oid != XPOHelper.GetFinalConsumerEntity().Oid
+                                customer.Oid != XPOUtility.GetFinalConsumerEntity().Oid
                             )
                             ||
                             //Or If not in Portugal AND (! FinalConsumer (in Invoices for ex))
                             (
                                 CultureSettings.PortugalCountryId != XPOSettings.ConfigurationSystemCountry.Oid &&
-                                customer.Oid != XPOHelper.GetFinalConsumerEntity().Oid
+                                customer.Oid != XPOUtility.GetFinalConsumerEntity().Oid
                             )
                             //Required Oids for Equallity Check
                             //Commented to save details if is a Hidden Customer, Diferent from FinalConsumerEntity
@@ -220,7 +220,7 @@ namespace LogicPOS.Finance.DocumentProcessing
                             //}
                         }
                         //Persist Name if is has a FinalConsumer NIF and Name (Hidden Customer)
-                        else if (XPOHelper.IsFinalConsumerEntity(customer.FiscalNumber) && customer.Name != string.Empty)
+                        else if (XPOUtility.IsFinalConsumerEntity(customer.FiscalNumber) && customer.Name != string.Empty)
                         {
                             documentFinanceMaster.EntityName = PluginSettings.SoftwareVendor.Encrypt(customer.Name); /* IN009075 */
                         }
@@ -365,7 +365,7 @@ namespace LogicPOS.Finance.DocumentProcessing
                             //Get VatRate formated for filter, in sql server gives error without this it filters 23,0000 and not 23.0000 resulting in null vatRate
                             string filterVat = LogicPOS.Utility.DataConversionUtils.DecimalToString(item.Key.Vat);
                             string executeSql = string.Format(@"SELECT Oid FROM fin_configurationvatrate WHERE Value = '{0}';", filterVat);
-                            vatRateOid = XPOHelper.GetGuidFromQuery(executeSql);
+                            vatRateOid = XPOUtility.GetGuidFromQuery(executeSql);
                             vatRate = (fin_configurationvatrate)uowSession.GetObjectByKey(typeof(fin_configurationvatrate), vatRateOid);
 
                             //If Type dont Have Price it Creates an Empty Details document, always use HavePrice, Only Type : Informative Created by Muga dont use HavePrice
@@ -483,7 +483,7 @@ namespace LogicPOS.Finance.DocumentProcessing
                                 //Add to PendentPayedParkingTickets
                                 //if (item.Key.ArticleOid.Equals(SettingsApp.XpoOidArticleParkingTicket))
                                 //Get Original Designation from Fresh Object
-                                fin_article articleForDesignation = (fin_article)XPOHelper.GetXPGuidObject(uowSession, typeof(fin_article), item.Key.ArticleId);
+                                fin_article articleForDesignation = (fin_article)XPOUtility.GetXPGuidObject(uowSession, typeof(fin_article), item.Key.ArticleId);
                                 // Extract Ean from Designation 
                                 string ticketEan = item.Key.Designation
                                     .Replace($"{articleForDesignation.Designation} [", string.Empty)
@@ -647,17 +647,17 @@ namespace LogicPOS.Finance.DocumentProcessing
 
                                 //Change Table Status to Free
                                 pos_configurationplacetable placeTable;
-                                placeTable = (pos_configurationplacetable)XPOHelper.GetXPGuidObject(uowSession, typeof(pos_configurationplacetable), orderMain.Table.Oid);
+                                placeTable = (pos_configurationplacetable)XPOUtility.GetXPGuidObject(uowSession, typeof(pos_configurationplacetable), orderMain.Table.Oid);
                                 if (placeTable != null)
                                 {
                                     placeTable.TableStatus = TableStatus.Free;
-                                    XPOHelper.Audit("TABLE_OPEN", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_table_open"), placeTable.Designation));
+                                    XPOUtility.Audit("TABLE_OPEN", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_table_open"), placeTable.Designation));
                                     placeTable.DateTableClosed = documentDateTime;
                                     placeTable.TotalOpen = 0;
                                     //Required to Reload Objects after has been changed in Another Session(uowSession)
-                                    if (documentOrderMain != null) documentOrderMain = (fin_documentordermain)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(fin_documentordermain), orderMain.PersistentOid);
+                                    if (documentOrderMain != null) documentOrderMain = (fin_documentordermain)XPOUtility.GetXPGuidObject(XPOSettings.Session, typeof(fin_documentordermain), orderMain.PersistentOid);
                                     if (documentOrderMain != null) documentOrderMain.Reload();
-                                    placeTable = (pos_configurationplacetable)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(pos_configurationplacetable), orderMain.Table.Oid);
+                                    placeTable = (pos_configurationplacetable)XPOUtility.GetXPGuidObject(XPOSettings.Session, typeof(pos_configurationplacetable), orderMain.Table.Oid);
                                     placeTable.Reload();
                                 }
                                 //Clean Session if Commited without problems
@@ -711,7 +711,7 @@ namespace LogicPOS.Finance.DocumentProcessing
                             }
 
                         //Audit
-                        XPOHelper.Audit("FINANCE_DOCUMENT_CREATED", string.Format("{0} {1}: {2}", documentFinanceMaster.DocumentType.Designation, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_document_created"), documentFinanceMaster.DocumentNumber));
+                        XPOUtility.Audit("FINANCE_DOCUMENT_CREATED", string.Format("{0} {1}: {2}", documentFinanceMaster.DocumentType.Designation, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_document_created"), documentFinanceMaster.DocumentNumber));
 
                         //Process Stock
                         try
@@ -994,7 +994,7 @@ namespace LogicPOS.Finance.DocumentProcessing
             string sql = string.Empty;
             string extended = string.Empty;
             //CurrentDateTime
-            DateTime currentDateTime = XPOHelper.CurrentDateTimeAtomic();
+            DateTime currentDateTime = XPOUtility.CurrentDateTimeAtomic();
             //XpoObjects
             fin_documentfinancemaster documentMaster = null;
             fin_documentfinancepayment documentFinancePayment = null;
@@ -1044,8 +1044,8 @@ namespace LogicPOS.Finance.DocumentProcessing
                     if (debug) _logger.Debug(string.Format("documentNumber: [{0}]", documentNumber));
 
                     //Get Fresh UOW Objects
-                    erp_customer customer = (erp_customer)XPOHelper.GetXPGuidObject(uowSession, typeof(erp_customer), pCustomer);
-                    fin_configurationpaymentmethod paymentMethod = (fin_configurationpaymentmethod)XPOHelper.GetXPGuidObject(uowSession, typeof(fin_configurationpaymentmethod), pPaymentMethod);
+                    erp_customer customer = (erp_customer)XPOUtility.GetXPGuidObject(uowSession, typeof(erp_customer), pCustomer);
+                    fin_configurationpaymentmethod paymentMethod = (fin_configurationpaymentmethod)XPOUtility.GetXPGuidObject(uowSession, typeof(fin_configurationpaymentmethod), pPaymentMethod);
 
                     //Initialize Payment/Recibo (Many(Invoices&CreditNotes) 2 One(Payment))
                     if (pInvoices.Count > 0)
@@ -1111,7 +1111,7 @@ namespace LogicPOS.Finance.DocumentProcessing
                         //if (Math.Round(totalCredit, decimalRoundTo) > Math.Round(item.TotalFinal, decimalRoundTo))
                         //{
                         //Get Fresh Object in UOW
-                        documentMaster = (fin_documentfinancemaster)XPOHelper.GetXPGuidObject(uowSession, typeof(fin_documentfinancemaster), item.Oid);
+                        documentMaster = (fin_documentfinancemaster)XPOUtility.GetXPGuidObject(uowSession, typeof(fin_documentfinancemaster), item.Oid);
                         //Persist DocumentFinanceMaster Payment 
                         documentMaster.Payed = true;
                         documentMaster.PayedDate = currentDateTime;
@@ -1237,7 +1237,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                             if (debug) _logger.Debug(string.Format("[{0}] PayRemain: [{1}], PayInCurrent: [{2}], RemainToPay: [{3}], Credit: [{4}], totalPayed: [{5}], PartialPayed: [{6}], FullPayed: [{7}]", item.DocumentNumber, documentTotalPayRemain, totalToPayInCurrentInvoice, (documentTotalPayRemain - totalToPayInCurrentInvoice), totalCredit, totalPayed, documentPartialPayed, documentFullPayed));
 
                             //Always Get Fresh Object in UOW, used to Assign to Full and Partial Payments, need to be Outside FullPayed
-                            documentMaster = (fin_documentfinancemaster)XPOHelper.GetXPGuidObject(uowSession, typeof(fin_documentfinancemaster), item.Oid);
+                            documentMaster = (fin_documentfinancemaster)XPOUtility.GetXPGuidObject(uowSession, typeof(fin_documentfinancemaster), item.Oid);
 
                             //Persist DocumentFinanceMaster Payment if FullPayed
                             if (documentFullPayed)
@@ -1252,7 +1252,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                                 //Send with UOW Objects
                                 if (item.DocumentParent != null)
                                 {
-                                    documentParent = (fin_documentfinancemaster)XPOHelper.GetXPGuidObject(uowSession, typeof(fin_documentfinancemaster), item.DocumentParent.Oid);
+                                    documentParent = (fin_documentfinancemaster)XPOUtility.GetXPGuidObject(uowSession, typeof(fin_documentfinancemaster), item.DocumentParent.Oid);
                                     ChangePayedInvoiceRelatedDocumentsStatus(uowSession, documentParent, statusReason, documentMaster.DocumentStatusDate, userDetail);
                                 }
                             }
@@ -1384,12 +1384,12 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
             try
             {
                 //Get Period WorkSessionPeriodTerminal, UserDetail and Terminal
-                pos_worksessionperiod workSessionPeriod = (pos_worksessionperiod)XPOHelper.GetXPGuidObject(pSession, typeof(pos_worksessionperiod), XPOSettings.WorkSessionPeriodTerminal.Oid);
-                sys_userdetail userDetail = (sys_userdetail)XPOHelper.GetXPGuidObject(pSession, typeof(sys_userdetail), XPOSettings.LoggedUser.Oid);
-                pos_configurationplaceterminal configurationPlaceTerminal = (pos_configurationplaceterminal)XPOHelper.GetXPGuidObject(pSession, typeof(pos_configurationplaceterminal), TerminalSettings.LoggedTerminal.Oid);
+                pos_worksessionperiod workSessionPeriod = (pos_worksessionperiod)XPOUtility.GetXPGuidObject(pSession, typeof(pos_worksessionperiod), XPOSettings.WorkSessionPeriodTerminal.Oid);
+                sys_userdetail userDetail = (sys_userdetail)XPOUtility.GetXPGuidObject(pSession, typeof(sys_userdetail), XPOSettings.LoggedUser.Oid);
+                pos_configurationplaceterminal configurationPlaceTerminal = (pos_configurationplaceterminal)XPOUtility.GetXPGuidObject(pSession, typeof(pos_configurationplaceterminal), TerminalSettings.LoggedTerminal.Oid);
 
                 //Variables to diferent Document Types : DocumentFinanceMaster or DocumentFinancePayment
-                DateTime documentDate = XPOHelper.CurrentDateTimeAtomic();
+                DateTime documentDate = XPOUtility.CurrentDateTimeAtomic();
                 decimal movementAmount = 0m;
                 string movementDescriptionDocument = string.Empty;
                 string movementDescriptionTotalDelivery = string.Empty;
@@ -1426,7 +1426,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                 WorkSessionProcessor.PersistWorkSessionMovement(
                     pSession,
                     workSessionPeriod,
-                    (pos_worksessionmovementtype)XPOHelper.GetXPGuidObjectFromField(pSession, typeof(pos_worksessionmovementtype), "Token", "FINANCE_DOCUMENT"),
+                    (pos_worksessionmovementtype)XPOUtility.GetXPGuidObjectFromField(pSession, typeof(pos_worksessionmovementtype), "Token", "FINANCE_DOCUMENT"),
                     pDocumentFinanceMaster,
                     pDocumentFinancePayment,
                     userDetail,
@@ -1444,7 +1444,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                     WorkSessionProcessor.PersistWorkSessionMovement(
                         pSession,
                         workSessionPeriod,
-                        (pos_worksessionmovementtype)XPOHelper.GetXPGuidObjectFromField(pSession, typeof(pos_worksessionmovementtype), "Token", "CASHDRAWER_IN"),
+                        (pos_worksessionmovementtype)XPOUtility.GetXPGuidObjectFromField(pSession, typeof(pos_worksessionmovementtype), "Token", "CASHDRAWER_IN"),
                         pDocumentFinanceMaster,
                         pDocumentFinancePayment,
                         userDetail,
@@ -1460,7 +1460,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                         if (pParameters.TotalChange > 0) WorkSessionProcessor.PersistWorkSessionMovement(
                             pSession,
                             workSessionPeriod,
-                            (pos_worksessionmovementtype)XPOHelper.GetXPGuidObjectFromField(pSession, typeof(pos_worksessionmovementtype), "Token", "CASHDRAWER_OUT"),
+                            (pos_worksessionmovementtype)XPOUtility.GetXPGuidObjectFromField(pSession, typeof(pos_worksessionmovementtype), "Token", "CASHDRAWER_OUT"),
                             pDocumentFinanceMaster,
                             pDocumentFinancePayment,
                             userDetail,
@@ -1546,7 +1546,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                 //Check if CommissionGroup has Commission
                 if (commissionGroup != null && commissionGroup.Commission > 0 && commissionGroup == pUserDetail.CommissionGroup)
                 {
-                    pos_configurationplaceterminal configurationPlaceTerminal = (pos_configurationplaceterminal)XPOHelper.GetXPGuidObject(pSession, typeof(pos_configurationplaceterminal), TerminalSettings.LoggedTerminal.Oid);
+                    pos_configurationplaceterminal configurationPlaceTerminal = (pos_configurationplaceterminal)XPOUtility.GetXPGuidObject(pSession, typeof(pos_configurationplaceterminal), TerminalSettings.LoggedTerminal.Oid);
                     decimal totalCommission = (pDocumentFinanceDetail.TotalNet * pUserDetail.CommissionGroup.Commission) / 100;
 
                     fin_documentfinancecommission documentFinanceCommission = new fin_documentfinancecommission(pSession)
@@ -1753,7 +1753,7 @@ SELECT
             {
                 new SortProperty("Ord", SortingDirection.Ascending)
             };
-            XPCollection xpcDocumentFinanceType = XPOHelper.GetXPCollectionFromCriteria(XPOSettings.Session, typeof(fin_documentfinancetype), criteriaOperator, sortingCollection);
+            XPCollection xpcDocumentFinanceType = XPOUtility.GetXPCollectionFromCriteria(XPOSettings.Session, typeof(fin_documentfinancetype), criteriaOperator, sortingCollection);
 
             try
             {
@@ -2350,7 +2350,7 @@ SELECT
                 if (
                     pTotalFinal > GeneralSettings.GetRequiredCustomerDetailsAboveValue(XPOSettings.ConfigurationSystemCountry.Oid) &&
                     (
-                        XPOHelper.IsFinalConsumerEntity(pFiscalNumber) ||
+                        XPOUtility.IsFinalConsumerEntity(pFiscalNumber) ||
                         (
                             string.IsNullOrEmpty(pName) ||
                             string.IsNullOrEmpty(pAddress) ||

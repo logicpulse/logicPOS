@@ -162,22 +162,8 @@ namespace LogicPOS.Printing.Documents
             try
             {
                 List<TicketColumn> columns = new List<TicketColumn>();
-                //columns.Add(new TicketColumn("Article", CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_article_acronym, 0, TicketColumnsAlign.Right, typeof(string), "{0:0.00}"));
-                /* IN009211 block - begin 
-                 * 
-                 * We opt for "(%)" symbol to be added to value itself because of column title lenght limit, and for this, we changed from Decimal to String here.
-                 * The conversion will be done when printing the DataRow for VatRate and Discount fields (LogicPOS.Utility.DataConversionUtils.DecimalToString(pFinanceDetail.Vat)).
-                 */
-                //Colum
-                if (CultureSettings.CountryIdIsPortugal(XPOSettings.ConfigurationSystemCountry.Oid))
-                {
-                    //columns.Add(new TicketColumn("VatRate", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "IVA") + "%", 6, TicketColumnsAlignment.Right, typeof(decimal), "{0:00.00}"));
-                    columns.Add(new TicketColumn("VatRate", "IVA" + "%", 6, TicketColumnsAlignment.Right, typeof(decimal), "{0:00.00}")); // Tchialo and Luciano 
-                }
-                else
-                {
-                    columns.Add(new TicketColumn("VatRate", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_vat_rate") + "%", 6, TicketColumnsAlignment.Right, typeof(decimal), "{0:00.00}"));
-                }
+
+                columns.Add(new TicketColumn("VatRate", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_vat_rate") + "%", 6, TicketColumnsAlignment.Right, typeof(decimal), "{0:00.00}"));
 
                 columns.Add(new TicketColumn("Quantity", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_quantity_acronym"), 8, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"));
                 columns.Add(new TicketColumn("UnitMeasure", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_unit_measure_acronym"), 3, TicketColumnsAlignment.Right));
@@ -361,7 +347,7 @@ namespace LogicPOS.Printing.Documents
                 /* IN009055 - related to IN005976 for Mozambique deployment */
                 if (CultureSettings.MozambiqueCountryId.Equals(XPOSettings.ConfigurationSystemCountry.Oid))
                 {
-                    CurrenyDto defaultCurrencyForExchangeRate = XPOHelper.GetUsdCurrencyDto();
+                    CurrenyDto defaultCurrencyForExchangeRate = XPOUtility.GetUsdCurrencyDto();
 
                     dataRow = dataTable.NewRow();
                     dataRow[0] = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_printer_thermal_total_default_currency"), defaultCurrencyForExchangeRate.Acronym);
@@ -462,7 +448,7 @@ namespace LogicPOS.Printing.Documents
                     _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_documentfinance_waybill_local_load"), WriteLineTextMode.Bold);
                     _genericThermalPrinter.WriteLine(string.Format("{0} {1}", _documentFinanceMasterList[0].ShipFromAddressDetail, _documentFinanceMasterList[0].ShipFromCity));
                     _genericThermalPrinter.WriteLine(string.Format("{0} {1} [{2}]", _documentFinanceMasterList[0].ShipFromPostalCode, _documentFinanceMasterList[0].ShipFromRegion, _documentFinanceMasterList[0].ShipFromCountry));
-                    _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_from_delivery_date_report"), XPOHelper.DateTimeToString(_documentFinanceMasterList[0].ShipFromDeliveryDate));
+                    _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_from_delivery_date_report"), XPOUtility.DateTimeToString(_documentFinanceMasterList[0].ShipFromDeliveryDate));
                     _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_from_delivery_id_report"), _documentFinanceMasterList[0].ShipFromDeliveryID);
                     _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_from_warehouse_id_report"), _documentFinanceMasterList[0].ShipFromWarehouseID);
                     _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_from_location_id_report"), _documentFinanceMasterList[0].ShipFromLocationID);
@@ -474,7 +460,7 @@ namespace LogicPOS.Printing.Documents
                     _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_documentfinance_waybill_local_download"), WriteLineTextMode.Bold);
                     _genericThermalPrinter.WriteLine(string.Format("{0} {1}", _documentFinanceMasterList[0].ShipToAddressDetail, _documentFinanceMasterList[0].ShipToCity));
                     _genericThermalPrinter.WriteLine(string.Format("{0} {1} [{2}]", _documentFinanceMasterList[0].ShipToPostalCode, _documentFinanceMasterList[0].ShipToRegion, _documentFinanceMasterList[0].ShipToCountry));
-                    _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_to_delivery_date_report"), XPOHelper.DateTimeToString(_documentFinanceMasterList[0].ShipToDeliveryDate));
+                    _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_to_delivery_date_report"), XPOUtility.DateTimeToString(_documentFinanceMasterList[0].ShipToDeliveryDate));
                     _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_to_delivery_id_report"), _documentFinanceMasterList[0].ShipToDeliveryID);
                     _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_to_warehouse_id_report"), _documentFinanceMasterList[0].ShipToWarehouseID);
                     _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_to_location_id_report"), _documentFinanceMasterList[0].ShipToLocationID);

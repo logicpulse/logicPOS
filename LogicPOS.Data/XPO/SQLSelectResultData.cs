@@ -93,7 +93,7 @@ namespace LogicPOS.Data.XPO
                 "Oid", 
                 searchValue).ToString());
 
-            return XPOHelper.GetXPGuidObject(
+            return XPOUtility.GetXPGuidObject(
                 session, 
                 type, 
                 id);

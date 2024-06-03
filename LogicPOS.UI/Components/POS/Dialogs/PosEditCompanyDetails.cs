@@ -96,8 +96,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
 
             //Init Inital Values
-            cfg_configurationcountry intialValueConfigurationCountry = XPOHelper.GetEntityById<cfg_configurationcountry>(systemCountry);
-            cfg_configurationcurrency intialValueConfigurationCurrency = XPOHelper.GetEntityById<cfg_configurationcurrency>(systemCurrency);
+            cfg_configurationcountry intialValueConfigurationCountry = XPOUtility.GetEntityById<cfg_configurationcountry>(systemCountry);
+            cfg_configurationcurrency intialValueConfigurationCurrency = XPOUtility.GetEntityById<cfg_configurationcurrency>(systemCurrency);
 
             try
             {
@@ -313,23 +313,23 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                     //entryBoxSelect: COMPANY_COUNTRY
                     //Assign and Save Country and Country Code 2 From entryBoxSelectCustomerCountry
-                    cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCountry = (XPOHelper.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY")) as cfg_configurationpreferenceparameter);
+                    cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCountry = (XPOUtility.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY")) as cfg_configurationpreferenceparameter);
                     configurationPreferenceParameterCompanyCountry.Value = _entryBoxSelectSystemCountry.Value.Designation;
                     configurationPreferenceParameterCompanyCountry.Save();
                     //entryBoxSelect: COMPANY_COUNTRY_CODE2
-                    cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCountryCode2 = (XPOHelper.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY_CODE2")) as cfg_configurationpreferenceparameter);
+                    cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCountryCode2 = (XPOUtility.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY_CODE2")) as cfg_configurationpreferenceparameter);
                     configurationPreferenceParameterCompanyCountryCode2.Value = _entryBoxSelectSystemCountry.Value.Code2;
                     configurationPreferenceParameterCompanyCountryCode2.Save();
                     //entryBoxSelect: SYSTEM_CURRENCY
-                    cfg_configurationpreferenceparameter configurationPreferenceParameterSystemCurrency = (XPOHelper.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "SYSTEM_CURRENCY")) as cfg_configurationpreferenceparameter);
+                    cfg_configurationpreferenceparameter configurationPreferenceParameterSystemCurrency = (XPOUtility.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "SYSTEM_CURRENCY")) as cfg_configurationpreferenceparameter);
                     configurationPreferenceParameterSystemCurrency.Value = _entryBoxSelectSystemCurrency.Value.Acronym;
                     configurationPreferenceParameterSystemCurrency.Save();
                     //entryBoxSelect: COMPANY_COUNTRY_OID
-                    cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCountryOid = (XPOHelper.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY_OID")) as cfg_configurationpreferenceparameter);
+                    cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCountryOid = (XPOUtility.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY_OID")) as cfg_configurationpreferenceparameter);
                     configurationPreferenceParameterCompanyCountryOid.Value = _entryBoxSelectSystemCountry.Value.Oid.ToString();
                     configurationPreferenceParameterCompanyCountryOid.Save();
                     //entryBoxSelect: SYSTEM_CURRENCY_OID
-                    cfg_configurationpreferenceparameter configurationPreferenceParameterSystemCurrencyOid = (XPOHelper.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "SYSTEM_CURRENCY_OID")) as cfg_configurationpreferenceparameter);
+                    cfg_configurationpreferenceparameter configurationPreferenceParameterSystemCurrencyOid = (XPOUtility.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "SYSTEM_CURRENCY_OID")) as cfg_configurationpreferenceparameter);
                     configurationPreferenceParameterSystemCurrencyOid.Value = _entryBoxSelectSystemCurrency.Value.Oid.ToString();
                     configurationPreferenceParameterSystemCurrencyOid.Save();
 

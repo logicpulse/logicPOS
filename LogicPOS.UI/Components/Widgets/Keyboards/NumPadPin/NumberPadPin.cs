@@ -276,9 +276,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                             //Commit Changes
                             pUserDetail.AccessPin = CryptographyUtils.GenerateSaltedString(_passwordNew);
                             pUserDetail.PasswordReset = false;
-                            pUserDetail.PasswordResetDate = XPOHelper.CurrentDateTimeAtomic();
+                            pUserDetail.PasswordResetDate = XPOUtility.CurrentDateTimeAtomic();
                             pUserDetail.Save();
-                            XPOHelper.Audit("USER_CHANGE_PASSWORD", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_user_change_password"), pUserDetail.Name));
+                            XPOUtility.Audit("USER_CHANGE_PASSWORD", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_user_change_password"), pUserDetail.Name));
                             ResponseType responseType = logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_change_password"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "pos_pinpad_message_password_changed"));
                             //Start Application
                             ProcessLogin(pUserDetail);
@@ -354,7 +354,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 }
                 else
                 {
-                    XPOHelper.Audit("USER_loggerIN_ERROR", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_user_loggerin_error"), pUserDetail.Name));
+                    XPOUtility.Audit("USER_loggerIN_ERROR", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_user_loggerin_error"), pUserDetail.Name));
                     EntryPin.ModifyText(StateType.Normal, Color.Red.ToGdkColor());
                     EntryPin.Text = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "status_message_pin_error");
                     EntryPin.Visibility = true;
@@ -417,17 +417,17 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         private void ProcessLogin(sys_userdetail pUserDetail)
         {
             XPOSettings.LoggedUser = pUserDetail;
-            GeneralSettings.LoggedUserPermissions = XPOHelper.GetUserPermissions();
-            XPOHelper.Audit("USER_loggerIN", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_user_loggerin"), pUserDetail.Name));
+            GeneralSettings.LoggedUserPermissions = XPOUtility.GetUserPermissions();
+            XPOUtility.Audit("USER_loggerIN", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_user_loggerin"), pUserDetail.Name));
 
             //SessionApp Add LoggedUser
             if (!POSSession.CurrentSession.LoggedUsers.ContainsKey(XPOSettings.LoggedUser.Oid))
             {
-                POSSession.CurrentSession.LoggedUsers.Add(pUserDetail.Oid, XPOHelper.CurrentDateTimeAtomic());
+                POSSession.CurrentSession.LoggedUsers.Add(pUserDetail.Oid, XPOUtility.CurrentDateTimeAtomic());
             }
             else
             {
-                POSSession.CurrentSession.LoggedUsers[XPOSettings.LoggedUser.Oid] = XPOHelper.CurrentDateTimeAtomic();
+                POSSession.CurrentSession.LoggedUsers[XPOSettings.LoggedUser.Oid] = XPOUtility.CurrentDateTimeAtomic();
             }
             POSSession.CurrentSession.Save();
 

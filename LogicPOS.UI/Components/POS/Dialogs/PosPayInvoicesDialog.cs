@@ -85,9 +85,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private void InitUI()
         {
             //Initial Values
-            fin_configurationpaymentmethod initialValueConfigurationPaymentMethod = XPOHelper.GetEntityById<fin_configurationpaymentmethod>(POSSettings.XpoOidConfigurationPaymentMethodDefaultInvoicePaymentMethod);
+            fin_configurationpaymentmethod initialValueConfigurationPaymentMethod = XPOUtility.GetEntityById<fin_configurationpaymentmethod>(POSSettings.XpoOidConfigurationPaymentMethodDefaultInvoicePaymentMethod);
             cfg_configurationcurrency intialValueConfigurationCurrency = XPOSettings.ConfigurationSystemCurrency;
-            string initialPaymentDate = XPOHelper.CurrentDateTimeAtomic().ToString(CultureSettings.DateTimeFormat);
+            string initialPaymentDate = XPOUtility.CurrentDateTimeAtomic().ToString(CultureSettings.DateTimeFormat);
 
             /* IN009142
             * 

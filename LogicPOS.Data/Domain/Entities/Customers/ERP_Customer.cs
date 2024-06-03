@@ -23,15 +23,15 @@ namespace LogicPOS.Domain.Entities
             // Init EncryptedAttributes - Load Encrypted Attributes Fields if Exist - Required for New Records to have InitEncryptedAttributes else it Triggers Exception on Save
             InitEncryptedAttributes<erp_customer>();
 
-            Ord = XPOHelper.GetNextTableFieldID(nameof(erp_customer), "Ord");
-            Code = XPOHelper.GetNextTableFieldID(nameof(erp_customer), "Code");
+            Ord = XPOUtility.GetNextTableFieldID(nameof(erp_customer), "Ord");
+            Code = XPOUtility.GetNextTableFieldID(nameof(erp_customer), "Code");
             Country = Session.GetObjectByKey<cfg_configurationcountry>(XPOSettings.ConfigurationSystemCountry.Oid);
         }
 
         protected override void OnNewRecordSaving()
         {
             //Required for SAF-T
-            CodeInternal = XPOHelper.GuidToStringId(Oid.ToString());
+            CodeInternal = XPOUtility.GuidToStringId(Oid.ToString());
         }
 
         private uint fOrd;

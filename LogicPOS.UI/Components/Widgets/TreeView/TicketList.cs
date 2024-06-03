@@ -542,7 +542,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         if (_currentDetailArticle != null)
                         {
                             newLine = new OrderDetailLine(_currentDetailArticle.Oid, _currentDetailArticle.Designation,
-                                ArticleUtils.GetArticlePrice(XPOHelper.GetEntityById<fin_article>(_currentDetailArticle.Oid),
+                                ArticleUtils.GetArticlePrice(XPOUtility.GetEntityById<fin_article>(_currentDetailArticle.Oid),
                                 (AppOperationModeSettings.AppMode == AppOperationMode.Retail) ? TaxSellType.TakeAway : TaxSellType.Normal));
 
                             newLine.Properties.PriceNet = Convert.ToDecimal((string)ListStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price));
@@ -578,7 +578,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                                 {
 
                                     newLine = new OrderDetailLine(_currentDetailArticle.Oid, _currentDetailArticle.Designation,
-                                        ArticleUtils.GetArticlePrice(XPOHelper.GetEntityById<fin_article>(_currentDetailArticle.Oid),
+                                        ArticleUtils.GetArticlePrice(XPOUtility.GetEntityById<fin_article>(_currentDetailArticle.Oid),
                                         (AppOperationModeSettings.AppMode == AppOperationMode.Retail) ? TaxSellType.TakeAway : TaxSellType.Normal));
 
                                     newLine.Properties.PriceNet = Convert.ToDecimal((string)ListStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price));
@@ -610,7 +610,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             //public static XPGuidObject GetXPGuidObjectFromCriteria(Session pSession, Type pXPGuidObjectType, string pCriteriaFilter)
             string sql = string.Format("SELECT Oid FROM fin_article WHERE BarCode = '{0}';", pArticleEAN);
-            Guid articleGuid = XPOHelper.GetGuidFromQuery(sql);
+            Guid articleGuid = XPOUtility.GetGuidFromQuery(sql);
 
             if (articleGuid != Guid.Empty)
             {
@@ -619,7 +619,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             else
             {
                 sql = string.Format("SELECT Oid FROM fin_article WHERE Code = '{0}';", pArticleEAN);
-                articleGuid = XPOHelper.GetGuidFromQuery(sql);
+                articleGuid = XPOUtility.GetGuidFromQuery(sql);
                 if (articleGuid != Guid.Empty)
                 {
                     InsertOrUpdate(articleGuid);
@@ -670,7 +670,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             try
             {
                 //Get Article
-                fin_article article = XPOHelper.GetEntityById<fin_article>(pArticleOid);
+                fin_article article = XPOUtility.GetEntityById<fin_article>(pArticleOid);
 
                 //Force Refresh Cache 
                 article.Reload();
@@ -1461,7 +1461,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         private decimal GetArticleDefaultQuantity(Guid pArticleOid)
         {
             //Get Article
-            fin_article article = XPOHelper.GetEntityById<fin_article>(pArticleOid);
+            fin_article article = XPOUtility.GetEntityById<fin_article>(pArticleOid);
             //Get Default Article Quantity
             decimal defaultQuantity;
             if (article.DefaultQuantity > 0) { defaultQuantity = article.DefaultQuantity; } else { defaultQuantity = 1.00m; };

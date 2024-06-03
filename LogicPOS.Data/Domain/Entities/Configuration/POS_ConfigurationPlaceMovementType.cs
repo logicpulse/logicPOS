@@ -14,8 +14,8 @@ namespace LogicPOS.Domain.Entities
 
         protected override void OnAfterConstruction()
         {
-            Ord = XPOHelper.GetNextTableFieldID(nameof(pos_configurationplacemovementtype), "Ord");
-            Code = XPOHelper.GetNextTableFieldID(nameof(pos_configurationplacemovementtype), "Code");
+            Ord = XPOUtility.GetNextTableFieldID(nameof(pos_configurationplacemovementtype), "Ord");
+            Code = XPOUtility.GetNextTableFieldID(nameof(pos_configurationplacemovementtype), "Code");
 
             if (AppOperationModeSettings.AppMode == AppOperationMode.Retail)
             {

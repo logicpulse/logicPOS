@@ -24,17 +24,17 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         public event EventHandler ClosePopup;
 
         public EntryBoxValidationDatePickerDialog(Window pSourceWindow, string pLabelText, string pRule, bool pRequired)
-            :this(pSourceWindow, pLabelText, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_date"), XPOHelper.CurrentDateTimeAtomic(), pRule, pRequired)
+            :this(pSourceWindow, pLabelText, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_date"), XPOUtility.CurrentDateTimeAtomic(), pRule, pRequired)
         {
         }
 
         public EntryBoxValidationDatePickerDialog(Window pSourceWindow, string pLabelText, string pWindowTitle, string pRule, bool pRequired)
-            :this(pSourceWindow, pLabelText, pWindowTitle, XPOHelper.CurrentDateTimeAtomic(), pRule, pRequired)
+            :this(pSourceWindow, pLabelText, pWindowTitle, XPOUtility.CurrentDateTimeAtomic(), pRule, pRequired)
         {
         }
 
         public EntryBoxValidationDatePickerDialog(Window pSourceWindow, string pLabelText, string pWindowTitle, string pRule, bool pRequired, string pDateFormat)
-            :this(pSourceWindow, pLabelText, pWindowTitle, XPOHelper.CurrentDateTimeAtomic(), pRule, pRequired, pDateFormat)
+            :this(pSourceWindow, pLabelText, pWindowTitle, XPOUtility.CurrentDateTimeAtomic(), pRule, pRequired, pDateFormat)
         {
         }
 
@@ -101,7 +101,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 ResponseType response = (ResponseType)dialog.Run();
                 if (response == ResponseType.Ok)
                 {
-                    DateTime now = XPOHelper.CurrentDateTimeAtomic();
+                    DateTime now = XPOUtility.CurrentDateTimeAtomic();
                     //Get Date from Calendar Widget
                     DateTime date = dialog.Calendar.Date;
                     //Transform Date to DateTime, Date + Current Hour

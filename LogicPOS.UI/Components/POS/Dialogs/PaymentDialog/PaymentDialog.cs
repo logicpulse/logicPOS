@@ -159,7 +159,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //Payment Buttons
                 //Get Custom Select Data
                 string executeSql = @"SELECT Oid, Token, ResourceString FROM fin_configurationpaymentmethod ORDER BY Ord;";
-                SQLSelectResultData xPSelectData = XPOHelper.GetSelectedDataFromQuery(executeSql);
+                SQLSelectResultData xPSelectData = XPOUtility.GetSelectedDataFromQuery(executeSql);
                 //Get Required XpObjects from Selected Data
                 fin_configurationpaymentmethod xpoMoney = (fin_configurationpaymentmethod)xPSelectData.GetXPGuidObjectFromField(typeof(fin_configurationpaymentmethod), "Token", "MONEY");
                 fin_configurationpaymentmethod xpoCheck = (fin_configurationpaymentmethod)xPSelectData.GetXPGuidObjectFromField(typeof(fin_configurationpaymentmethod), "Token", "BANK_CHECK");
@@ -384,10 +384,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     _labelDeliveryValue.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalDelivery, XPOSettings.ConfigurationSystemCurrency.Acronym);
                     _labelChangeValue.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalChange, XPOSettings.ConfigurationSystemCurrency.Acronym);
                     // Selects
-                    Customer = XPOHelper.GetEntityById<erp_customer>(ProcessFinanceDocumentParameter.Customer);
+                    Customer = XPOUtility.GetEntityById<erp_customer>(ProcessFinanceDocumentParameter.Customer);
                     Country = Customer.Country;
                     // PaymentMethod
-                    PaymentMethod = XPOHelper.GetEntityById<fin_configurationpaymentmethod>(ProcessFinanceDocumentParameter.PaymentMethod);
+                    PaymentMethod = XPOUtility.GetEntityById<fin_configurationpaymentmethod>(ProcessFinanceDocumentParameter.PaymentMethod);
                     // Restore Selected Payment Method, require to associate button reference to selectedPaymentMethodButton
                     if (!string.IsNullOrEmpty(pSelectedPaymentMethodButtonName))
                     {

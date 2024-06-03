@@ -70,7 +70,7 @@ namespace logicpos
             {
                 if (TablePadUser.SelectedButtonOid != null)
                 {
-                    _selectedUserDetail = XPOHelper.GetEntityById<sys_userdetail>(TablePadUser.SelectedButtonOid);
+                    _selectedUserDetail = XPOUtility.GetEntityById<sys_userdetail>(TablePadUser.SelectedButtonOid);
                     if (_selectedUserDetail != null)
                     {
                         //Change NumberPadPinMode Mode
@@ -108,7 +108,7 @@ namespace logicpos
             {
                 POSSession.CurrentSession.LoggedUsers.Remove(pUserDetail.Oid);
                 POSSession.CurrentSession.Save();
-               XPOHelper.Audit("USER_loggerOUT", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_user_loggerout"), pUserDetail.Name));
+               XPOUtility.Audit("USER_loggerOUT", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_user_loggerout"), pUserDetail.Name));
                 //Only Reset LoggedUser if equal to pUser
                 if (XPOSettings.LoggedUser.Equals(pUserDetail))
                 {

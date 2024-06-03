@@ -70,7 +70,7 @@ namespace LogicPOS.Shared.Orders
             _persistentOid = new Guid();
             OrderStatus = OrderStatus.Null;
             Table = new OrderMainTable(pOrderMainOid, pTableOid);
-            DateStart = XPOHelper.CurrentDateTimeAtomic();
+            DateStart = XPOUtility.CurrentDateTimeAtomic();
             OrderTickets = new Dictionary<int, OrderTicket>();
         }
 
@@ -106,27 +106,27 @@ namespace LogicPOS.Shared.Orders
             TaxSellType taxSellType = (AppOperationModeSettings.AppMode == AppOperationMode.Retail || configurationPlace.MovementType.VatDirectSelling) ? TaxSellType.TakeAway : TaxSellType.Normal;
 
             //Open Table on First Finish OrderTicket
-            pos_configurationplacetable xTable = XPOHelper.GetEntityById<pos_configurationplacetable>(Table.Oid, _sessionXpo);
+            pos_configurationplacetable xTable = XPOUtility.GetEntityById<pos_configurationplacetable>(Table.Oid, _sessionXpo);
             //Proteção para mesas vazias, escolhe a primeira
             if (xTable == null)
             {
                 //Order #1 by default
                 //TicketPad - Modo Retalho - Mesa/ordem por defeito [IN:016529]
-                xTable = ((pos_configurationplacetable)XPOHelper.GetXPGuidObjectFromCriteria(typeof(pos_configurationplacetable), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Code = '{0}')", "10")) as pos_configurationplacetable);
+                xTable = ((pos_configurationplacetable)XPOUtility.GetXPGuidObjectFromCriteria(typeof(pos_configurationplacetable), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Code = '{0}')", "10")) as pos_configurationplacetable);
             }
             xTable.Reload();
             if (xTable.TableStatus != TableStatus.Open)
             {
                 xTable.TableStatus = TableStatus.Open;
-                XPOHelper.Audit("TABLE_OPEN", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_table_open"), xTable.Designation));
-                xTable.DateTableOpen = XPOHelper.CurrentDateTimeAtomic();
+                XPOUtility.Audit("TABLE_OPEN", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_table_open"), xTable.Designation));
+                xTable.DateTableOpen = XPOUtility.CurrentDateTimeAtomic();
                 if (!isInUOW) xTable.Save();
             }
 
             //Get Current _persistentOid and _from Database
             _persistentOid = GetOpenTableFieldValueGuid(Table.Oid, "Oid");
             OrderStatus = (OrderStatus)GetOpenTableFieldValue(Table.Oid, "OrderStatus");
-            UpdatedAt = XPOHelper.CurrentDateTimeAtomic();
+            UpdatedAt = XPOUtility.CurrentDateTimeAtomic();
             //Insert
             if (_persistentOid == Guid.Empty)
             {
@@ -137,7 +137,7 @@ namespace LogicPOS.Shared.Orders
                     DateStart = currentDateTime,//currentOrderMain.DateStart,
                     OrderStatus = OrderStatus.Open,
                     PlaceTable = xTable,
-                    UpdatedAt = XPOHelper.CurrentDateTimeAtomic()
+                    UpdatedAt = XPOUtility.CurrentDateTimeAtomic()
                 };
                 if (!isInUOW) xOrderMain.Save();
                 //After Save, Get Oid
@@ -148,10 +148,10 @@ namespace LogicPOS.Shared.Orders
             //Update
             else
             {
-                xOrderMain = XPOHelper.GetEntityById<fin_documentordermain>(_persistentOid, _sessionXpo);
+                xOrderMain = XPOUtility.GetEntityById<fin_documentordermain>(_persistentOid, _sessionXpo);
                 if (xOrderMain.PlaceTable != xTable) xOrderMain.PlaceTable = xTable;
                 //Force Changes in Record, else UpdatedAt dont Update
-                xOrderMain.UpdatedAt = XPOHelper.CurrentDateTimeAtomic();
+                xOrderMain.UpdatedAt = XPOUtility.CurrentDateTimeAtomic();
                 //TODO: Check if User was Automatically Updated
                 //if (xOrderMain.UpdatedBy != XPOSettings.LoggedUser) xOrderMain.UpdatedBy = XPOSettings.LoggedUser;
                 if (!isInUOW) xOrderMain.Save();
@@ -164,11 +164,11 @@ namespace LogicPOS.Shared.Orders
             //_logger.Debug(string.Format("sql: [{0}]", sql));
             string sql = string.Format(@"SELECT Oid FROM fin_documentorderticket WHERE OrderMain = '{0}' AND TicketId = '{1}';", currentOrderMain.PersistentOid, currentOrderMain.CurrentTicketId);
             //_logger.Debug(string.Format("sql: [{0}]", sql));
-            Guid orderTicketOid = XPOHelper.GetGuidFromQuery(sql);
+            Guid orderTicketOid = XPOUtility.GetGuidFromQuery(sql);
             //Result
             fin_documentorderticket xOrderTicket = (fin_documentorderticket)XPOSettings.Session.GetObjectByKey(typeof(fin_documentorderticket), orderTicketOid);
 
-            //xOrderTicket = (fin_documentorderticket)XPOHelper.GetXPGuidObject(_sessionXpo, typeof(fin_documentorderticket), currentOrderMain._persistentOid);
+            //xOrderTicket = (fin_documentorderticket)XPOUtility.GetXPGuidObject(_sessionXpo, typeof(fin_documentorderticket), currentOrderMain._persistentOid);
             if (xOrderTicket != null)
             {
                 xOrderTicket.TicketId = currentOrderMain.CurrentTicketId;
@@ -177,7 +177,7 @@ namespace LogicPOS.Shared.Orders
                 xOrderTicket.Discount = xTable.Discount;
                 xOrderTicket.OrderMain = xOrderMain;
                 xOrderTicket.PlaceTable = xTable;
-                xOrderTicket.UpdatedAt = XPOHelper.CurrentDateTimeAtomic();
+                xOrderTicket.UpdatedAt = XPOUtility.CurrentDateTimeAtomic();
                 if (!isInUOW) xOrderTicket.Save();
             }
 
@@ -205,20 +205,20 @@ namespace LogicPOS.Shared.Orders
             {
                 //Use Order in print tickets etc
                 itemOrd++;
-                xArticle = XPOHelper.GetEntityById<fin_article>(line.ArticleOid, _sessionXpo);
+                xArticle = XPOUtility.GetEntityById<fin_article>(line.ArticleOid, _sessionXpo);
                 //Get PriceTax from TaxSellType
                 decimal priceTax = (taxSellType == TaxSellType.Normal) ? xArticle.VatOnTable.Value : xArticle.VatDirectSelling.Value;
                 //Edit/cancel orders lindote 10/07/2020
                 //Get order ticket Oid from DB
                 string sql3 = string.Format(@"SELECT Oid FROM fin_documentorderticket WHERE OrderMain = '{0}' AND TicketId = '{1}';", currentOrderMain.PersistentOid, currentOrderMain.CurrentTicketId);
-                orderTicketOid = XPOHelper.GetGuidFromQuery(sql3);
+                orderTicketOid = XPOUtility.GetGuidFromQuery(sql3);
 
                 //Get order detail Oid from DB
                 string sql4 = string.Format(@"SELECT Oid FROM fin_documentorderdetail WHERE OrderTicket = '{0}' AND Article = '{1}' AND Price = '{2}'  AND TotalDiscount = '{3}'  AND Vat = '{4}';",
                              orderTicketOid, line.ArticleOid, line.Properties.PriceNet.ToString().Replace(",", "."),
                                                               line.Properties.TotalDiscount.ToString().Replace(",", "."),
                                                               line.Properties.Vat.ToString().Replace(",", "."));
-                Guid orderDetailOid = XPOHelper.GetGuidFromQuery(sql4);
+                Guid orderDetailOid = XPOUtility.GetGuidFromQuery(sql4);
 
                 string pToken2 = "";
                 if (pTicketDrecrease)
@@ -262,7 +262,7 @@ namespace LogicPOS.Shared.Orders
                 }
                 else
                 {
-                    xOrderDetailLine = XPOHelper.GetEntityById<fin_documentorderdetail>(orderDetailOid, _sessionXpo);
+                    xOrderDetailLine = XPOUtility.GetEntityById<fin_documentorderdetail>(orderDetailOid, _sessionXpo);
 
                     if (xOrderDetailLine.Token2 != "decreased" && !pTicketDrecrease)
                     {
@@ -412,7 +412,7 @@ namespace LogicPOS.Shared.Orders
                 GlobalTotalFinal = articleBag.TotalFinal;
                 GlobalTotalQuantity = articleBag.TotalQuantity;
                 //Persist Final TotalOpen
-                pos_configurationplacetable currentTable = XPOHelper.GetEntityById<pos_configurationplacetable>(Table.Oid);
+                pos_configurationplacetable currentTable = XPOUtility.GetEntityById<pos_configurationplacetable>(Table.Oid);
 
                 if (currentTable != null)
                 {
@@ -475,8 +475,8 @@ namespace LogicPOS.Shared.Orders
 
             try
             {
-              XPSelectData sdTotalViewOrders = XPOHelper.GetSelectedDataFromQuery(sqlTotalViewOrders);
-              XPSelectData sdTotalViewDocumentFinance = XPOHelper.GetSelectedDataFromQuery(sqlTotalViewDocumentFinance);
+              XPSelectData sdTotalViewOrders = XPOUtility.GetSelectedDataFromQuery(sqlTotalViewOrders);
+              XPSelectData sdTotalViewDocumentFinance = XPOUtility.GetSelectedDataFromQuery(sqlTotalViewDocumentFinance);
 
               if (sdTotalViewOrders.Data.Length > 0 && sdTotalViewDocumentFinance.Data.Length > 0)
               {
@@ -507,7 +507,7 @@ namespace LogicPOS.Shared.Orders
               _globalTotalTickets = (totalTickets != null) ? Convert.ToInt32(totalTickets) : 0;
 
               //Persist Final TotalOpen 
-              ConfigurationPlaceTable currentTable = (ConfigurationPlaceTable)XPOHelper.GetXPGuidObjectFromSession(typeof(ConfigurationPlaceTable), _table.Oid);
+              ConfigurationPlaceTable currentTable = (ConfigurationPlaceTable)XPOUtility.GetXPGuidObjectFromSession(typeof(ConfigurationPlaceTable), _table.Oid);
               currentTable.TotalOpen = _globalTotalFinal;
               currentTable.Save();
             }
@@ -588,7 +588,7 @@ namespace LogicPOS.Shared.Orders
               }
 
               //Persist Final TotalOpen 
-              ConfigurationPlaceTable currentTable = (ConfigurationPlaceTable)XPOHelper.GetXPGuidObjectFromSession(typeof(ConfigurationPlaceTable), _table.Oid);
+              ConfigurationPlaceTable currentTable = (ConfigurationPlaceTable)XPOUtility.GetXPGuidObjectFromSession(typeof(ConfigurationPlaceTable), _table.Oid);
               currentTable.TotalOpen = _globalTotalFinal;
               currentTable.Save();
 
@@ -684,7 +684,7 @@ namespace LogicPOS.Shared.Orders
             _logger.Debug("OrderMain.CheckForDuplicatedArticleInArticleBag(Session session)");
 
             Session _sessionXpo = session;
-            fin_documentordermain xOrderMain = XPOHelper.GetEntityById<fin_documentordermain>(_persistentOid, _sessionXpo);
+            fin_documentordermain xOrderMain = XPOUtility.GetEntityById<fin_documentordermain>(_persistentOid, _sessionXpo);
 
             //Get current Working Order from SessionApp
             OrderMain currentOrderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];

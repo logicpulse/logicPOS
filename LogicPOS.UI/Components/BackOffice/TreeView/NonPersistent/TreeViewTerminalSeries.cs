@@ -66,7 +66,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 ORDER BY 
                     Ord;
             ";
-            DataTable resultDataTable = XPOHelper.GetDataTableFromQuery(sql);
+            DataTable resultDataTable = XPOUtility.GetDataTableFromQuery(sql);
 
             return resultDataTable;
         }

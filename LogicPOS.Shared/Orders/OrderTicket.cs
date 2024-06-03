@@ -23,7 +23,7 @@ namespace LogicPOS.Shared.Orders
             //Reference to Parent OrderMain
             OrderMain = pOrderMain;
             PriceType = pPriceType;
-            DateStart = XPOHelper.CurrentDateTimeAtomic();
+            DateStart = XPOUtility.CurrentDateTimeAtomic();
             OrderDetails = new OrderDetail(this);
         }
     }

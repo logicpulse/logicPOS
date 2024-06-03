@@ -75,7 +75,7 @@ namespace LogicPOS.Printing.Tickets
         private void Load(string pSql)
         {
             //Get SelectedData
-            SQLSelectResultData xPSelectData = XPOHelper.GetSelectedDataFromQuery(_session, pSql);
+            SQLSelectResultData xPSelectData = XPOUtility.GetSelectedDataFromQuery(_session, pSql);
             //Add Columns
             string fieldName;
             string fieldType;

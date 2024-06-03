@@ -431,7 +431,7 @@ namespace LogicPOS.Finance.Services
             }
 
             //Get Lines Content
-            string sbContentLinesAndDocumentTotals = XPOHelper.GetDocumentContentLinesAndDocumentTotals(_documentMaster);
+            string sbContentLinesAndDocumentTotals = XPOUtility.GetDocumentContentLinesAndDocumentTotals(_documentMaster);
 
             //Init StringBuilder
             StringBuilder sb = new StringBuilder();
@@ -509,7 +509,7 @@ namespace LogicPOS.Finance.Services
             if (_increaseDocumentNumber) _documentMaster.IncreaseDocumentNumber();
 
             //Get Lines Content
-            string sbContentLines = XPOHelper.GetDocumentWayBillContentLines(_documentMaster);
+            string sbContentLines = XPOUtility.GetDocumentWayBillContentLines(_documentMaster);
 
             StringBuilder sb = new StringBuilder();
             //Soap Envelope

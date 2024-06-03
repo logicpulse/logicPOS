@@ -103,7 +103,7 @@ namespace logicpos.Classes.DataLayer
                     FileName = Path.GetRandomFileName(),
                     FileNamePacked = Path.GetRandomFileName(),
                     DataBaseType = DatabaseSettings.DatabaseType,
-                    Version = XPOHelper.GetNextTableFieldID("sys_systembackup", "Version", false),
+                    Version = XPOUtility.GetNextTableFieldID("sys_systembackup", "Version", false),
                     Terminal = (pos_configurationplaceterminal)SessionXpoForBackupPurposes.GetObjectByKey(typeof(pos_configurationplaceterminal), TerminalSettings.LoggedTerminal.Oid)
                 };
                 systemBackup.Save();
@@ -185,7 +185,7 @@ namespace logicpos.Classes.DataLayer
                         //catch (Exception ex) { _logger.Error(ex.Message, ex); }
 
                         //Post Backup
-                        XPOHelper.Audit("DATABASE_BACKUP", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_database_backup"),
+                        XPOUtility.Audit("DATABASE_BACKUP", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_database_backup"),
                              (fullFileNamePacked != string.Empty) ? fullFileNamePacked : systemBackup.FileNamePacked
                          ));
 
@@ -315,10 +315,10 @@ namespace logicpos.Classes.DataLayer
                     {
                         //Get properties from SystemBackup Object before Restore, to Assign Properties after Restore (FilePath,FileHash,User,Terminal)
                         sql = string.Format("SELECT Oid FROM sys_systembackup WHERE fileNamePacked = '{0}';", Path.GetFileName(fileNamePacked));
-                        systemBackupGuid = XPOHelper.GetGuidFromQuery(sql);
+                        systemBackupGuid = XPOUtility.GetGuidFromQuery(sql);
                         if (systemBackupGuid != Guid.Empty)
                         {
-                            systemBackup = XPOHelper.GetEntityById<sys_systembackup>(systemBackupGuid);
+                            systemBackup = XPOUtility.GetEntityById<sys_systembackup>(systemBackupGuid);
                             currentFileName = systemBackup.FileName;
                             currentFileNamePacked = systemBackup.FileNamePacked;
                             currentFilePath = systemBackup.FilePath;
@@ -330,7 +330,7 @@ namespace logicpos.Classes.DataLayer
                         if (Restore(pSourceWindow, fileName, fileNamePacked, systemBackup))
                         {
                             //Audit DATABASE_RESTORE
-                            XPOHelper.Audit("DATABASE_RESTORE", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_database_restore"), fileNamePacked));
+                            XPOUtility.Audit("DATABASE_RESTORE", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_database_restore"), fileNamePacked));
                             //Required to DropIdentity before get currentDocumentFinanceYear Object, else it exists in old non restored Session
                             XPOSettings.Session.DropIdentityMap();
                             //Get Current Active FinanceYear
@@ -343,9 +343,9 @@ namespace logicpos.Classes.DataLayer
                             if (systemBackupGuid != Guid.Empty)
                             {
                                 //ReFresh UserDetail from Repository
-                                currentUserDetail = (currentUserDetail != null) ? XPOHelper.GetEntityById<sys_userdetail>(currentUserDetail.Oid) : null;
+                                currentUserDetail = (currentUserDetail != null) ? XPOUtility.GetEntityById<sys_userdetail>(currentUserDetail.Oid) : null;
                                 //Get Current Restored systemBackup Object
-                                systemBackup = XPOHelper.GetEntityById<sys_systembackup>(systemBackupGuid);
+                                systemBackup = XPOUtility.GetEntityById<sys_systembackup>(systemBackupGuid);
                                 systemBackup.FileName = currentFileName;
                                 systemBackup.FileNamePacked = currentFileNamePacked;
                                 systemBackup.FilePath = currentFilePath;
@@ -361,7 +361,7 @@ namespace logicpos.Classes.DataLayer
                             }
 
                             //Audit
-                            XPOHelper.Audit("APP_CLOSE");
+                            XPOUtility.Audit("APP_CLOSE");
                             //Call QuitWithoutConfirmation without Audit
                             LogicPOSApp.QuitWithoutConfirmation(false);
 
@@ -451,7 +451,7 @@ namespace logicpos.Classes.DataLayer
             string fileDataBaseBackup = POSSettings.FileFormatDataBaseBackup;
             string dateTimeFileFormat = CultureSettings.FileFormatDateTime;
             //Local Vars
-            string dateTime = XPOHelper.CurrentDateTimeAtomic().ToString(dateTimeFileFormat);
+            string dateTime = XPOUtility.CurrentDateTimeAtomic().ToString(dateTimeFileFormat);
 
             //Override Default pathBackups
             /* ERR201810#15 - Database backup issues */

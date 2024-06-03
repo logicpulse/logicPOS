@@ -111,8 +111,8 @@ namespace logicpos
             //CustomReport.ProcessReportFinanceDocumentPayment(CustomReportDisplayMode.Design, 4, documentFinancePaymentOid);
 
             //Test Printer
-            //ConfigurationPrintersTemplates configurationPrintersTemplates = (ConfigurationPrintersTemplates)XPOHelper.GetXPGuidObjectFromSession(typeof(ConfigurationPrintersTemplates), new Guid("5409255A-3741-411C-B05B-056CBD470226"));
-            //DocumentFinancePayment documentFinancePayment = (DocumentFinancePayment)XPOHelper.GetXPGuidObjectFromSession(typeof(DocumentFinancePayment), new Guid("88F082CE-DA52-48B5-A31D-32BFA87F119D"));
+            //ConfigurationPrintersTemplates configurationPrintersTemplates = (ConfigurationPrintersTemplates)XPOUtility.GetXPGuidObjectFromSession(typeof(ConfigurationPrintersTemplates), new Guid("5409255A-3741-411C-B05B-056CBD470226"));
+            //DocumentFinancePayment documentFinancePayment = (DocumentFinancePayment)XPOUtility.GetXPGuidObjectFromSession(typeof(DocumentFinancePayment), new Guid("88F082CE-DA52-48B5-A31D-32BFA87F119D"));
             //FrameworkCalls.PrintFinanceDocumentPayment(this, TerminalSettings.LoggedTerminal.Printer, configurationPrintersTemplates, documentFinancePayment);
 
             //Test WorkSession
@@ -196,10 +196,10 @@ namespace logicpos
                     //Already logged
                     if (POSSession.CurrentSession.LoggedUsers.ContainsKey(dialogChangeUser.UserDetail.Oid))
                     {
-                        XPOSettings.LoggedUser = XPOHelper.GetEntityById<sys_userdetail>(dialogChangeUser.UserDetail.Oid);
-                        GeneralSettings.LoggedUserPermissions = XPOHelper.GetUserPermissions();
+                        XPOSettings.LoggedUser = XPOUtility.GetEntityById<sys_userdetail>(dialogChangeUser.UserDetail.Oid);
+                        GeneralSettings.LoggedUserPermissions = XPOUtility.GetUserPermissions();
                         TicketList.UpdateTicketListButtons();
-                        XPOHelper.Audit("USER_CHANGE", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_user_change"), XPOSettings.LoggedUser.Name));
+                        XPOUtility.Audit("USER_CHANGE", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_user_change"), XPOSettings.LoggedUser.Name));
                         terminalInfo = string.Format("{0} : {1}", TerminalSettings.LoggedTerminal.Designation, XPOSettings.LoggedUser.Name);
                         if (LabelTerminalInfo.Text != terminalInfo) LabelTerminalInfo.Text = terminalInfo;
                     }
@@ -212,12 +212,12 @@ namespace logicpos
                         {
                             if (!POSSession.CurrentSession.LoggedUsers.ContainsKey(dialogChangeUser.UserDetail.Oid))
                             {
-                                POSSession.CurrentSession.LoggedUsers.Add(dialogChangeUser.UserDetail.Oid, XPOHelper.CurrentDateTimeAtomic());
+                                POSSession.CurrentSession.LoggedUsers.Add(dialogChangeUser.UserDetail.Oid, XPOUtility.CurrentDateTimeAtomic());
                                 POSSession.CurrentSession.Save();
-                                XPOSettings.LoggedUser = XPOHelper.GetEntityById<sys_userdetail>(dialogChangeUser.UserDetail.Oid);
-                                GeneralSettings.LoggedUserPermissions = XPOHelper.GetUserPermissions();
+                                XPOSettings.LoggedUser = XPOUtility.GetEntityById<sys_userdetail>(dialogChangeUser.UserDetail.Oid);
+                                GeneralSettings.LoggedUserPermissions = XPOUtility.GetUserPermissions();
                                 TicketList.UpdateTicketListButtons();
-                                XPOHelper.Audit("USER_loggerIN", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_user_loggerin"), XPOSettings.LoggedUser.Name));
+                                XPOUtility.Audit("USER_loggerIN", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_user_loggerin"), XPOSettings.LoggedUser.Name));
                                 terminalInfo = string.Format("{0} : {1}", TerminalSettings.LoggedTerminal.Designation, XPOSettings.LoggedUser.Name);
                                 if (LabelTerminalInfo.Text != terminalInfo) LabelTerminalInfo.Text = terminalInfo;
                                 //After First time Login ShowNotifications
@@ -353,7 +353,7 @@ namespace logicpos
                     else
                     {
                         //Audit
-                        XPOHelper.Audit("CASHDRAWER_OUT", string.Format(
+                        XPOUtility.Audit("CASHDRAWER_OUT", string.Format(
                              CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_cashdrawer_out"),
                              TerminalSettings.LoggedTerminal.Designation,
                              "Button Open Door"));
@@ -532,7 +532,7 @@ namespace logicpos
         {
             if (GlobalApp.PosMainWindow.Visible)
             {
-                _labelClock.Text = XPOHelper.CurrentDateTime(_clockFormat);
+                _labelClock.Text = XPOUtility.CurrentDateTime(_clockFormat);
 
                 //Call Current OrderMain Update Status
                 if (POSSession.CurrentSession.CurrentOrderMainId != Guid.Empty && POSSession.CurrentSession.OrderMains.ContainsKey(POSSession.CurrentSession.CurrentOrderMainId))
@@ -542,12 +542,18 @@ namespace logicpos
 
                 //Update UI Button and Get WorkSessionPeriodDay if is Opened by Other Terminal
                 if (XPOSettings.WorkSessionPeriodTerminal == null
-                  || (XPOSettings.WorkSessionPeriodTerminal != null && XPOSettings.WorkSessionPeriodTerminal.SessionStatus == WorkSessionPeriodStatus.Close))
+                  || (XPOSettings.WorkSessionPeriodTerminal != null && 
+                  XPOSettings.WorkSessionPeriodTerminal.SessionStatus == WorkSessionPeriodStatus.Close))
                 {
                     pos_worksessionperiod workSessionPeriodDay = WorkSessionProcessor.GetSessionPeriod(WorkSessionPeriodType.Day);
 
                     if (workSessionPeriodDay == null)
                     {
+                        if(XPOSettings.WorkSessionPeriodDay != null)
+                        {
+                            XPOUtility.WorkSession.SaveCurrentWorkSessionPeriodDayDto();
+                        }
+
                         XPOSettings.WorkSessionPeriodDay = null;
                         UpdateWorkSessionUI();
                     }

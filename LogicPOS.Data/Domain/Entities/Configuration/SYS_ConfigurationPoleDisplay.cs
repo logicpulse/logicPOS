@@ -12,8 +12,8 @@ namespace LogicPOS.Domain.Entities
 
         protected override void OnAfterConstruction()
         {
-            Ord = XPOHelper.GetNextTableFieldID(nameof(sys_configurationpoledisplay), "Ord");
-            Code = XPOHelper.GetNextTableFieldID(nameof(sys_configurationpoledisplay), "Code");
+            Ord = XPOUtility.GetNextTableFieldID(nameof(sys_configurationpoledisplay), "Ord");
+            Code = XPOUtility.GetNextTableFieldID(nameof(sys_configurationpoledisplay), "Code");
             VID = "0x0000";
             PID = "0x0000";
             EndPoint = "Ep01";

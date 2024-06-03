@@ -109,7 +109,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Assign CurrentId to TablePad.CurrentId, to Know last Clicked Button Id
             _tablePadUsers.SelectedButtonOid = button.CurrentButtonOid;
             //To be Used in Dialog Result
-            UserDetail = XPOHelper.GetEntityById<sys_userdetail>(button.CurrentButtonOid);
+            UserDetail = XPOUtility.GetEntityById<sys_userdetail>(button.CurrentButtonOid);
 
             if (UserDetail.PasswordReset)
             {

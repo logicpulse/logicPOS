@@ -1028,7 +1028,7 @@ WHERE
 
                 if (itemChecked)
                 {
-                    fin_documentfinancemaster documentFinanceMaster = XPOHelper.GetEntityById<fin_documentfinancemaster>(itemGuid);
+                    fin_documentfinancemaster documentFinanceMaster = XPOUtility.GetEntityById<fin_documentfinancemaster>(itemGuid);
                     //Required to use _dialogFinanceDocumentsResponse to Fix TransientFor, ALT+TAB
                     FrameworkCalls.PrintFinanceDocument(_dialogFinanceDocumentsResponse, _printerChoosed, documentFinanceMaster);
                 }
@@ -1299,7 +1299,7 @@ WHERE
             Dictionary<fin_documentfinancemaster, string> documents = new Dictionary<fin_documentfinancemaster, string>();
             List<string> attachmentFileNames = new List<string>();
             // Get Customer from first Document
-            erp_customer customer = XPOHelper.GetEntityById<erp_customer>(pDocuments[0].EntityOid);
+            erp_customer customer = XPOUtility.GetEntityById<erp_customer>(pDocuments[0].EntityOid);
             string customerEmail = (customer.Email != null) ? customer.Email : string.Empty;
             string documentList = string.Empty;
 
@@ -1380,7 +1380,7 @@ WHERE
             Dictionary<fin_documentfinancepayment, string> documents = new Dictionary<fin_documentfinancepayment, string>();
             List<string> attachmentFileNames = new List<string>();
             // Get Customer from first Document
-            erp_customer customer = XPOHelper.GetEntityById<erp_customer>(pDocuments[0].EntityOid);
+            erp_customer customer = XPOUtility.GetEntityById<erp_customer>(pDocuments[0].EntityOid);
             string customerEmail = (customer.Email != null) ? customer.Email : string.Empty;
             string mailBody = string.Empty;
 
@@ -1566,7 +1566,7 @@ WHERE
                         if (dialogResponse.ResponseType == ResponseType.Ok)
                         {
                             //_logger.Debug(string.Format("DocumentNumber:[{0}], DocumentStatusStatus:[{1}], reason:[{2}]", document.DocumentNumber, document.DocumentStatusStatus, dialogResponse.InputText));
-                            currentDateTime = XPOHelper.CurrentDateTimeAtomic();
+                            currentDateTime = XPOUtility.CurrentDateTimeAtomic();
                             documentMaster.DocumentStatusStatus = "A";
                             documentMaster.DocumentStatusDate = currentDateTime.ToString(CultureSettings.DateTimeFormatCombinedDateTime);
                             documentMaster.DocumentStatusReason = dialogResponse.Text;
@@ -1668,7 +1668,7 @@ WHERE
                             documentMaster.Save();
 
                             //Audit
-                            XPOHelper.Audit("FINANCE_DOCUMENT_CANCELLED", string.Format("{0} {1}: {2}", documentMaster.DocumentType.Designation, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_document_cancelled"), documentMaster.DocumentNumber));
+                            XPOUtility.Audit("FINANCE_DOCUMENT_CANCELLED", string.Format("{0} {1}: {2}", documentMaster.DocumentType.Designation, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_document_cancelled"), documentMaster.DocumentNumber));
                         }
                         else
                         {
@@ -1705,8 +1705,8 @@ WHERE
             _logger.Debug("bool PosDocumentFinanceSelectRecordDialog.CanCancelFinanceMasterDocument(fin_documentfinancemaster pDocumentFinanceMaster)");
 
             bool isCancellable = false;
-            DateTime currentDateDay = XPOHelper.CurrentDateTimeAtomicMidnight();
-            DateTime documentDateDay = XPOHelper.DateTimeToMidnightDate(pDocumentFinanceMaster.Date);
+            DateTime currentDateDay = XPOUtility.CurrentDateTimeAtomicMidnight();
+            DateTime documentDateDay = XPOUtility.DateTimeToMidnightDate(pDocumentFinanceMaster.Date);
 
             //Moçambique - Pedidos da reunião 13/10/2020 [IN:014327]
             //Pode cancelar documentos de origem do tipo fatura ou fatura simplificada
@@ -1750,7 +1750,7 @@ WHERE
                 /* IN009083 */
                 {//Check if Document have dependent non Cancelled Child FinanceDocuments
                     string sqlFinanceMaster = string.Format("SELECT DocumentNumber FROM fin_documentfinancemaster WHERE DocumentParent = '{0}' AND DocumentStatusStatus <> 'A' ORDER BY CreatedAt;", pDocumentFinanceMaster.Oid);
-                    SQLSelectResultData xPSelectDataFinanceMaster = XPOHelper.GetSelectedDataFromQuery(sqlFinanceMaster);
+                    SQLSelectResultData xPSelectDataFinanceMaster = XPOUtility.GetSelectedDataFromQuery(sqlFinanceMaster);
 
                     /* IN009083 - if found one simple dependent, returns */
                     if (xPSelectDataFinanceMaster.DataRows.Length > 0)
@@ -1762,7 +1762,7 @@ WHERE
                 /* IN009083 */
                 {//Check if Document have dependent non Cancelled Payments
                     string sqlFinancePayment = string.Format("SELECT fmaDocumentNumber AS DocumentNumber FROM view_documentfinancepayment WHERE fmaOid = '{0}' AND fpaPaymentStatus <> 'A' ORDER BY fmaCreatedAt;", pDocumentFinanceMaster.Oid);
-                    SQLSelectResultData xPSelectDataFinancePayment = XPOHelper.GetSelectedDataFromQuery(sqlFinancePayment);
+                    SQLSelectResultData xPSelectDataFinancePayment = XPOUtility.GetSelectedDataFromQuery(sqlFinancePayment);
 
                     /* IN009083 - has payments */
                     if (xPSelectDataFinancePayment.DataRows.Length > 0)
@@ -1820,7 +1820,7 @@ WHERE
                 if (itemChecked)
                 {
                     //Add to FinanceMasterDocuments
-                    _listSelectFinanceMasterDocuments.Add(XPOHelper.GetEntityById<fin_documentfinancemaster>(itemGuid));
+                    _listSelectFinanceMasterDocuments.Add(XPOUtility.GetEntityById<fin_documentfinancemaster>(itemGuid));
                 }
             }
             catch (Exception ex)
@@ -1928,7 +1928,7 @@ WHERE
 
                 if (itemChecked)
                 {
-                    pos_worksessionperiod workSessionPeriodParent = XPOHelper.GetEntityById<pos_worksessionperiod>(itemGuid);
+                    pos_worksessionperiod workSessionPeriodParent = XPOUtility.GetEntityById<pos_worksessionperiod>(itemGuid);
                     pos_worksessionperiod workSessionPeriodChild;
                     //Print Parent Session : PrintWorkSessionMovement
                     var workSessionParentDto = MappingUtils.GetPrintWorkSessionDto(workSessionPeriodParent);
@@ -1936,11 +1936,11 @@ WHERE
 
                     //Get Child Sessions
                     string sql = string.Format(@"SELECT Oid FROM pos_worksessionperiod WHERE Parent = '{0}' ORDER BY DateStart;", workSessionPeriodParent.Oid);
-                    SQLSelectResultData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
+                    SQLSelectResultData xPSelectData = XPOUtility.GetSelectedDataFromQuery(sql);
                     foreach (DevExpress.Xpo.DB.SelectStatementResultRow row in xPSelectData.DataRows)
                     {
                         //Print Child Sessions
-                        workSessionPeriodChild = XPOHelper.GetEntityById<pos_worksessionperiod>(new Guid(row.Values[xPSelectData.GetFieldIndexFromName("Oid")].ToString()));
+                        workSessionPeriodChild = XPOUtility.GetEntityById<pos_worksessionperiod>(new Guid(row.Values[xPSelectData.GetFieldIndexFromName("Oid")].ToString()));
                         //PrintWorkSessionMovement
                         var workSessionChildDto = MappingUtils.GetPrintWorkSessionDto(workSessionPeriodChild);
                         FrameworkCalls.PrintWorkSessionMovement(this, TerminalSettings.LoggedTerminal.ThermalPrinter, workSessionChildDto);
@@ -2359,7 +2359,7 @@ WHERE
                 if (itemChecked)
                 {
                     //Add to FinancePaymentDocuments
-                    _listSelectFinancePaymentDocuments.Add(XPOHelper.GetEntityById<fin_documentfinancepayment>(itemGuid));
+                    _listSelectFinancePaymentDocuments.Add(XPOUtility.GetEntityById<fin_documentfinancepayment>(itemGuid));
                 }
             }
             catch (Exception ex)
@@ -2401,7 +2401,7 @@ WHERE
 
                 if (itemChecked)
                 {
-                    fin_documentfinancepayment documentFinancePayment = XPOHelper.GetEntityById<fin_documentfinancepayment>(itemGuid);
+                    fin_documentfinancepayment documentFinancePayment = XPOUtility.GetEntityById<fin_documentfinancepayment>(itemGuid);
                     var printerDto = MappingUtils.GetPrinterDto(_printerChoosed);
                     FrameworkCalls.PrintFinanceDocumentPayment(this, printerDto, documentFinancePayment);
                 }
@@ -2438,7 +2438,7 @@ WHERE
                         if (dialogResponse.ResponseType == ResponseType.Ok)
                         {
                             //_logger.Debug(string.Format("PaymentRefNo:[{0}], DocumentStatusStatus:[{1}], reason:[{2}]", document.PaymentRefNo, document.PaymentStatus, dialogResponse.InputText));
-                            currentDateTime = XPOHelper.CurrentDateTimeAtomic();
+                            currentDateTime = XPOUtility.CurrentDateTimeAtomic();
                             document.PaymentStatus = "A";
                             document.PaymentStatusDate = currentDateTime.ToString(CultureSettings.DateTimeFormatCombinedDateTime);
                             document.Reason = dialogResponse.Text;
@@ -2446,7 +2446,7 @@ WHERE
                             document.Save();
 
                             //Audit
-                            XPOHelper.Audit("FINANCE_DOCUMENT_CANCELLED", string.Format("{0} {1}: {2}", document.DocumentType.Designation, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_document_cancelled"), document.PaymentRefNo));
+                            XPOUtility.Audit("FINANCE_DOCUMENT_CANCELLED", string.Format("{0} {1}: {2}", document.DocumentType.Designation, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_document_cancelled"), document.PaymentRefNo));
 
                             //Removed Payed BIT to all DocumentPayment Documents (FT and NC)
                             foreach (fin_documentfinancemasterpayment documentPayment in document.DocumentPayment)

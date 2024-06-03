@@ -290,7 +290,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 UpdateCustomerAddressAndFiscalNumberRequireFields();
 
                 //Extra Protection to only use FinanceFinalConsumerFiscalNumber on FS and FT else is Invalid
-                bool isFinalConsumerEntity = XPOHelper.IsFinalConsumerEntity(EntryBoxSelectCustomerFiscalNumber.EntryValidation.Text);
+                bool isFinalConsumerEntity = XPOUtility.IsFinalConsumerEntity(EntryBoxSelectCustomerFiscalNumber.EntryValidation.Text);
                 if (
                     isFinalConsumerEntity &&
                     (
@@ -410,13 +410,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
                 if (pFieldValue != string.Empty)
                 {
-                    customerGuid = XPOHelper.GetGuidFromQuery(sql);
+                    customerGuid = XPOUtility.GetGuidFromQuery(sql);
                 }
 
                 //Assign pagePad.Customer Reference
                 if (customerGuid != Guid.Empty)
                 {
-                    _pagePad.Customer = XPOHelper.GetEntityById<erp_customer>(customerGuid);
+                    _pagePad.Customer = XPOUtility.GetEntityById<erp_customer>(customerGuid);
                 }
                 else
                 {
@@ -664,8 +664,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                     fiscalNumberFilterValue = LogicPOS.Settings.PluginSettings.SoftwareVendor.Encrypt(EntryBoxSelectCustomerFiscalNumber.EntryValidation.Text);
                 }
                 string sql = string.Format("SELECT Oid FROM erp_customer WHERE FiscalNumber = '{0}' AND (Hidden IS NULL OR Hidden = 0);", fiscalNumberFilterValue);
-                Guid customerGuid = XPOHelper.GetGuidFromQuery(sql);
-                erp_customer customer = (customerGuid != Guid.Empty) ? XPOHelper.GetEntityById<erp_customer>(customerGuid) : null;
+                Guid customerGuid = XPOUtility.GetGuidFromQuery(sql);
+                erp_customer customer = (customerGuid != Guid.Empty) ? XPOUtility.GetEntityById<erp_customer>(customerGuid) : null;
 
                 if (_pagePad1.EntryBoxSelectDocumentFinanceType.Value != null)
                 {

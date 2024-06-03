@@ -60,7 +60,7 @@ namespace LogicPOS.Reporting.BOs
 
             try
             {
-                fin_documentfinancemaster documentFinanceMaster = XPOHelper.GetEntityById<fin_documentfinancemaster>(financeMasterId);
+                fin_documentfinancemaster documentFinanceMaster = XPOUtility.GetEntityById<fin_documentfinancemaster>(financeMasterId);
 
                 bool retificationDocuments = (
                      documentFinanceMaster.DocumentType.Oid == CustomDocumentSettings.CreditNoteDocumentTypeId
@@ -92,7 +92,7 @@ namespace LogicPOS.Reporting.BOs
                     /* IN009230 - now, only when Final Customer we have data cleaned */
                     //if (SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice.Equals(new Guid(documentFinanceMasterView.DocumentType)) 
                     //    || FrameworkUtils.GetFinalConsumerEntity().Oid.ToString() == documentFinanceMasterView.EntityOid) //Added
-                    if (XPOHelper.GetFinalConsumerEntity().Oid.ToString() == documentFinanceMasterView.EntityOid) //Added
+                    if (XPOUtility.GetFinalConsumerEntity().Oid.ToString() == documentFinanceMasterView.EntityOid) //Added
                     {
                         documentFinanceMasterView.EntityName = string.Empty;
                         documentFinanceMasterView.EntityAddress = string.Empty;
@@ -196,7 +196,7 @@ namespace LogicPOS.Reporting.BOs
 
             try
             {
-                fin_documentfinancepayment documentFinancePayment = XPOHelper.GetEntityById<fin_documentfinancepayment>(pDocumentFinancePaymentOid);
+                fin_documentfinancepayment documentFinancePayment = XPOUtility.GetEntityById<fin_documentfinancepayment>(pDocumentFinancePaymentOid);
 
                 string sqlFilter = string.Format("fpaOid = '{0}'", pDocumentFinancePaymentOid.ToString());
 

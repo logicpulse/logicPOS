@@ -23,8 +23,8 @@ namespace LogicPOS.Domain.Entities
             // Init EncryptedAttributes - Load Encrypted Attributes Fields if Exist - Required for New Records to have InitEncryptedAttributes else it Triggers Exception on Save
             InitEncryptedAttributes<sys_userdetail>();
 
-            Ord = XPOHelper.GetNextTableFieldID(nameof(sys_userdetail), "Ord");
-            Code = XPOHelper.GetNextTableFieldID(nameof(sys_userdetail), "Code");
+            Ord = XPOUtility.GetNextTableFieldID(nameof(sys_userdetail), "Ord");
+            Code = XPOUtility.GetNextTableFieldID(nameof(sys_userdetail), "Code");
             //Required for New Users
             AccessPin = CryptographyUtils.GenerateSaltedString(XPOSettings.DefaultValueUserDetailAccessPin);
             PasswordReset = true;
@@ -34,7 +34,7 @@ namespace LogicPOS.Domain.Entities
         protected override void OnNewRecordSaving()
         {
             //Required for SAF-T
-            CodeInternal = XPOHelper.GuidToStringId(Oid.ToString());
+            CodeInternal = XPOUtility.GuidToStringId(Oid.ToString());
         }
 
         private uint _Ord;

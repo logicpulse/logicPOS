@@ -73,7 +73,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             {
                 try
                 {
-                    pXpoCollection.Sorting = XPOHelper.GetXPCollectionDefaultSortingCollection();
+                    pXpoCollection.Sorting = XPOUtility.GetXPCollectionDefaultSortingCollection();
                 }
                 catch (Exception ex)
                 {
@@ -392,7 +392,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         /// <returns></returns>
         public override void GetDataRow()
         {
-            _dataSourceRow = XPOHelper.GetXPGuidObject(
+            _dataSourceRow = XPOUtility.GetXPGuidObject(
               _dataSource.ObjectType,
               new Guid(Convert.ToString(_treeView.Model.GetValue(_treeIter, _modelFirstCustomFieldIndex)))
             );
@@ -457,7 +457,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                     if (column.InitialValue.GetType().BaseType == typeof(Entity))
                     {
                         //Get Fresh Object else "object belongs to a different session"
-                        var xInitialValue = XPOHelper.GetXPGuidObject(newXPGuidObject.Session, column.InitialValue.GetType(), (column.InitialValue as Entity).Oid);
+                        var xInitialValue = XPOUtility.GetXPGuidObject(newXPGuidObject.Session, column.InitialValue.GetType(), (column.InitialValue as Entity).Oid);
                         newXPGuidObject.SetMemberValue(column.Name, xInitialValue);
                     }
                     //Default Values

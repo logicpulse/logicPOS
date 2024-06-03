@@ -44,12 +44,12 @@ namespace LogicPOS.Shared.Orders
             _oid = pTableOid;
             try
             {
-                pos_configurationplacetable table = XPOHelper.GetEntityById<pos_configurationplacetable>(pTableOid);
+                pos_configurationplacetable table = XPOUtility.GetEntityById<pos_configurationplacetable>(pTableOid);
 
                 //If table is null, select Table with code 10
                 if (table == null)
                 {
-                    table = (pos_configurationplacetable)XPOHelper.GetXPGuidObjectFromCriteria(typeof(pos_configurationplacetable), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Code = '{0}')", "10")) as pos_configurationplacetable;
+                    table = (pos_configurationplacetable)XPOUtility.GetXPGuidObjectFromCriteria(typeof(pos_configurationplacetable), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Code = '{0}')", "10")) as pos_configurationplacetable;
                 }
                 Name = table.Designation;
                 //Enum is not Zero Indexed

@@ -450,7 +450,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             try
             {
-                _initialDocumentDate = (documentDate != null) ? Convert.ToDateTime(documentDate) : XPOHelper.CurrentDateTimeAtomic();
+                _initialDocumentDate = (documentDate != null) ? Convert.ToDateTime(documentDate) : XPOUtility.CurrentDateTimeAtomic();
             }
             catch (Exception ex)
             {
@@ -511,7 +511,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if (!articleOid.Equals(Guid.Empty))
                 {
                     //Get Object from dialog else Mixing Sessions, Both belong to diferente Sessions
-                    fin_article newArticle = XPOHelper.GetEntityById<fin_article>(articleOid);
+                    fin_article newArticle = XPOUtility.GetEntityById<fin_article>(articleOid);
 
                     if (isArticleCode)
                     {

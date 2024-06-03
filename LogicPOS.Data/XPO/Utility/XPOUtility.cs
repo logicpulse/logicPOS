@@ -20,7 +20,7 @@ using static LogicPOS.Utility.DataConversionUtils;
 
 namespace LogicPOS.Data.XPO.Utility
 {
-    public static partial class XPOHelper
+    public static partial class XPOUtility
     {
         public static uint GetNextTableFieldID(string pTable, string pField, bool pEndsWithZero = true)
         {

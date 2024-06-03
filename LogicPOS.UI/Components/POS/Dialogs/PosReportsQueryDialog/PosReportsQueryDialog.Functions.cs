@@ -148,7 +148,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     
                      countQuerySql = string.Format("SELECT COUNT(*) AS Count FROM {0} WHERE {1};", _databaseSourceObject, FilterValue);
 
-                    DataTable dataTable = XPOHelper.GetDataTableFromQuery(countQuerySql);
+                    DataTable dataTable = XPOUtility.GetDataTableFromQuery(countQuerySql);
                     count = Convert.ToInt32(Convert.ToDecimal(dataTable.Rows[0].ItemArray[0]));
                 }
                 catch (Exception ex)
@@ -323,7 +323,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //{
             //    _logger.Debug("BREAK");
             //}
-            T1 defaultValue = XPOHelper.GetEntityById<T1>(XPOSettings.XpoOidUndefinedRecord);
+            T1 defaultValue = XPOUtility.GetEntityById<T1>(XPOSettings.XpoOidUndefinedRecord);
             CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("((Disabled IS NULL OR Disabled  <> 1) OR (Oid = '{0}') OR (Oid = '{1}')) {2}", XPOSettings.XpoOidUndefinedRecord, XPOSettings.XpoOidUserRecord, extraFilter));
             resultObject = new XPOEntryBoxSelectRecordValidation<T1, T2>(this, labelText, fieldDisplayValue, "Oid", (defaultValue as T1), criteriaOperator, LogicPOS.Utility.RegexUtils.RegexGuid, true);
             resultObject.Name = typeof(T1).Name;

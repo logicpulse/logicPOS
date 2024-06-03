@@ -85,7 +85,7 @@ namespace LogicPOS.Reporting
                 { "APP_COMPANY", PluginSettings.AppCompanyName },
                 { "APP_NAME", pAppName },
                 { "APP_VERSION", GeneralSettings.ProductVersion },
-                { "DATE", XPOHelper.CurrentDateTimeAtomic().ToString(CultureSettings.DateFormat) }
+                { "DATE", XPOUtility.CurrentDateTimeAtomic().ToString(CultureSettings.DateFormat) }
             };
             if (XPOSettings.ConfigurationSystemCurrency != null)
             {

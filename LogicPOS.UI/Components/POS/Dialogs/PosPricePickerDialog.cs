@@ -74,7 +74,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) OR (Oid <> '{0}')", XPOSettings.XpoOidUndefinedRecord));
                 XPCollection xpcConfigurationPriceType = new XPCollection(XPOSettings.Session, typeof(fin_configurationpricetype), criteriaOperator);
 
-                xpcConfigurationPriceType.Sorting = XPOHelper.GetXPCollectionDefaultSortingCollection();
+                xpcConfigurationPriceType.Sorting = XPOUtility.GetXPCollectionDefaultSortingCollection();
                 //Define Max 5 Rows : 5 Prices
                 int priceTypeCount = (xpcConfigurationPriceType.Count > 5) ? 5 : xpcConfigurationPriceType.Count;
 

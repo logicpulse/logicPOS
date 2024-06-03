@@ -354,7 +354,7 @@ namespace logicpos
         public static string ExportSaft(Window pSourceWindow, ExportSaftPtMode pExportSaftPtMode)
         {
             string result = string.Empty;
-            DateTime dateCurrent = XPOHelper.CurrentDateTimeAtomic();
+            DateTime dateCurrent = XPOUtility.CurrentDateTimeAtomic();
             DateTime dateStart, dateEnd;
 
             switch (pExportSaftPtMode)
@@ -578,7 +578,7 @@ namespace logicpos
                             }
                             else
                             {
-                                XPOHelper.Audit("CASHDRAWER_OUT", string.Format(
+                                XPOUtility.Audit("CASHDRAWER_OUT", string.Format(
                                  CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_cashdrawer_out"),
                                  TerminalSettings.LoggedTerminal.Designation,
                                  "Button Open Door"));
@@ -806,7 +806,7 @@ namespace logicpos
             PrintWorkSessionDto pWorkSessionPeriod)
         {
             bool result = false;
-            sys_configurationprinterstemplates template = XPOHelper.GetEntityById<sys_configurationprinterstemplates>(PrintingSettings.WorkSessionMovementPrintingTemplateId);
+            sys_configurationprinterstemplates template = XPOUtility.GetEntityById<sys_configurationprinterstemplates>(PrintingSettings.WorkSessionMovementPrintingTemplateId);
 
             try
             {
@@ -832,7 +832,7 @@ namespace logicpos
         public static bool PrintCashDrawerOpenAndMoneyInOut(Window pSourceWindow, sys_configurationprinters pPrinter, string pTicketTitle, decimal pMovementAmount, decimal pTotalAmountInCashDrawer, string pMovementDescription)
         {   var printer = MappingUtils.GetPrinterDto(pPrinter);
             bool result = false;
-            sys_configurationprinterstemplates template = XPOHelper.GetEntityById<sys_configurationprinterstemplates>(PrintingSettings.CashDrawerMoneyMovementPrintingTemplateId);
+            sys_configurationprinterstemplates template = XPOUtility.GetEntityById<sys_configurationprinterstemplates>(PrintingSettings.CashDrawerMoneyMovementPrintingTemplateId);
 
             try
             {

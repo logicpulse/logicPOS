@@ -86,7 +86,7 @@ namespace LogicPOS.Finance.DocumentProcessing
         public DocumentProcessingParameters(Guid pDocumentType, ArticleBag pArticleBag)
         {
             //Init Default Values
-            DocumentDateTime = XPOHelper.CurrentDateTimeAtomic();
+            DocumentDateTime = XPOUtility.CurrentDateTimeAtomic();
             SourceMode = PersistFinanceDocumentSourceMode.CurrentOrderMain;
             TotalDelivery = 0.0m;
             TotalChange = 0.0m;

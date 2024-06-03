@@ -282,7 +282,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) OR (Oid <> '{0}')", XPOSettings.XpoOidUndefinedRecord));
                 XPCollection xpcConfigurationPriceType = new XPCollection(DataSourceRow.Session, typeof(fin_configurationpricetype), criteriaOperator);
 
-                xpcConfigurationPriceType.Sorting = XPOHelper.GetXPCollectionDefaultSortingCollection();
+                xpcConfigurationPriceType.Sorting = XPOUtility.GetXPCollectionDefaultSortingCollection();
                 //Define Max 5 Rows : 5 Prices
                 int priceTypeCount = (xpcConfigurationPriceType.Count > 5) ? 5 : xpcConfigurationPriceType.Count;
 
@@ -537,7 +537,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     {
                         if (serialNumber.Oid != Guid.Empty && !serialNumber.Disabled)
                         {
-                            Entity dataSourceRowSerialNumber = XPOHelper.GetEntityById<fin_articleserialnumber>(serialNumber.Oid);
+                            Entity dataSourceRowSerialNumber = XPOUtility.GetEntityById<fin_articleserialnumber>(serialNumber.Oid);
                             if (dataSourceRowSerialNumber != null)
                             {
                                 PopulateSerialNumberArticleEntrys(dataSourceRowSerialNumber);
@@ -625,9 +625,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 //if (_xpoComboBoxVatDirectSelling.Value == null)
                 //{
                 //    CriteriaOperator criteria = CriteriaOperator.Parse("");
-                //    _xpoComboBoxVatOnTable.UpdateModel(criteria, XPOHelper.GetXPGuidObject(typeof(fin_configurationvatrate), NormalVat));
+                //    _xpoComboBoxVatOnTable.UpdateModel(criteria, XPOUtility.GetXPGuidObject(typeof(fin_configurationvatrate), NormalVat));
                 //}
-                //if (_xpoComboBoxVatOnTable.Value == null) _xpoComboBoxVatOnTable.Value = XPOHelper.GetXPGuidObject(typeof(fin_configurationvatrate), NormalVat);
+                //if (_xpoComboBoxVatOnTable.Value == null) _xpoComboBoxVatOnTable.Value = XPOUtility.GetXPGuidObject(typeof(fin_configurationvatrate), NormalVat);
 
 
                 //Taxas de Iva por defeito na inserção de novos artigos
@@ -829,7 +829,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 if (!articleOid.Equals(Guid.Empty))
                 {
                     //Get Object from dialog else Mixing Sessions, Both belong to diferente Sessions
-                    fin_article newArticle = XPOHelper.GetEntityById<fin_article>(articleOid);
+                    fin_article newArticle = XPOUtility.GetEntityById<fin_article>(articleOid);
 
                     if (isArticleCode)
                     {

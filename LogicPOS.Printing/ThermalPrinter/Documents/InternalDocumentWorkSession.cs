@@ -143,7 +143,7 @@ namespace LogicPOS.Printing.Documents
             bool result = false;
 
             string splitCurrentAccountFilter = string.Empty;
-            string fileTicket = XPOHelper.WorkSession.GetWorkSessionMovementPrintingFileTemplate();
+            string fileTicket = XPOUtility.WorkSession.GetWorkSessionMovementPrintingFileTemplate();
 
             switch (pSplitCurrentAccountMode)
             {
@@ -289,7 +289,7 @@ namespace LogicPOS.Printing.Documents
                         summaryTotal = 0.0m;
 
                         //Get Group Data from group Query
-                        xPSelectData = XPOHelper.GetSelectedDataFromQuery(item.Value.Sql);
+                        xPSelectData = XPOUtility.GetSelectedDataFromQuery(item.Value.Sql);
 
                         //Generate Columns
                         columns = new List<TicketColumn>

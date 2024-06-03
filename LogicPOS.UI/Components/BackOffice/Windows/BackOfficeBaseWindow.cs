@@ -174,7 +174,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             _labelTerminalInfo.SetAlignment(0.5F, 0.5F);
 
             //Clock
-            _labelClock = new Label(XPOHelper.CurrentDateTime(_clockFormat));
+            _labelClock = new Label(XPOUtility.CurrentDateTime(_clockFormat));
             _labelClock.ModifyFont(fontDescriptionStatusBar);
             _labelClock.ModifyFg(StateType.Normal, colorBackOfficeStatusBarFont.ToGdkColor());
             _labelClock.SetAlignment(1.0F, 0.5F);
@@ -426,7 +426,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
         private bool UpdateClock()
         {
-            _labelClock.Text = XPOHelper.CurrentDateTime(_clockFormat);
+            _labelClock.Text = XPOUtility.CurrentDateTime(_clockFormat);
             // returning true means that the timeout routine should be invoked
             // again after the timeout period expires. Returning false would
             // terminate the timeout.

@@ -36,9 +36,9 @@ namespace LogicPOS.Finance.DocumentProcessing
         //Get DocumentFinanceYearSerieTerminal for Terminal
         public static fin_documentfinanceyearserieterminal GetDocumentFinanceYearSerieTerminal(Session pSession, Guid pDocumentType, Guid pLoggedTerminal)
         {
-            DateTime currentDateTime = XPOHelper.CurrentDateTimeAtomic();
+            DateTime currentDateTime = XPOUtility.CurrentDateTimeAtomic();
             fin_documentfinanceyearserieterminal documentFinanceYearSerieTerminal = null;
-            fin_documentfinancetype documentFinanceType = (fin_documentfinancetype)XPOHelper.GetXPGuidObject(pSession, typeof(fin_documentfinancetype), pDocumentType);
+            fin_documentfinancetype documentFinanceType = (fin_documentfinancetype)XPOUtility.GetXPGuidObject(pSession, typeof(fin_documentfinancetype), pDocumentType);
 
             //If DocumentTypeInvoiceWayBill Replace/Override Helper Document Type InvoiceWayBill with InvoiceWay to get Invoice Serie, 
             //this way we have Invoice Serie but DocumentMaster keeps DocumentFinanceType has DocumentFinanceTypeInvoiceWayBill
@@ -124,7 +124,7 @@ namespace LogicPOS.Finance.DocumentProcessing
                 try
                 {
                     //Get Object in UOW Session
-                    fin_documentfinanceyears documentFinanceYears = (fin_documentfinanceyears)XPOHelper.GetXPGuidObject(uowSession, typeof(fin_documentfinanceyears), pDocumentFinanceYears.Oid);
+                    fin_documentfinanceyears documentFinanceYears = (fin_documentfinanceyears)XPOUtility.GetXPGuidObject(uowSession, typeof(fin_documentfinanceyears), pDocumentFinanceYears.Oid);
 
                     //Protection, used when user Restore DB without DocumentFinanceYears Created
                     if (documentFinanceYears != null)
@@ -192,7 +192,7 @@ namespace LogicPOS.Finance.DocumentProcessing
                 try
                 {
                     //Get Object in UOW Session
-                    fin_documentfinanceyears documentFinanceYears = (fin_documentfinanceyears)XPOHelper.GetXPGuidObject(uowSession, typeof(fin_documentfinanceyears), pDocumentFinanceYears.Oid);
+                    fin_documentfinanceyears documentFinanceYears = (fin_documentfinanceyears)XPOUtility.GetXPGuidObject(uowSession, typeof(fin_documentfinanceyears), pDocumentFinanceYears.Oid);
 
                     //Initialize DocumentFinanceType Collection : Criteria/XPCollection/Model : Use Default Filter
                     CriteriaOperator criteria = CriteriaOperator.Parse("(Disabled = 0 OR Disabled IS NULL)");
@@ -237,7 +237,7 @@ namespace LogicPOS.Finance.DocumentProcessing
                         pos_configurationplaceterminal configurationPlaceTerminal = (pos_configurationplaceterminal)uowSession.GetObjectByKey(typeof(pos_configurationplaceterminal), new Guid(terminal["Oid"].ToString()));
 
                         //Create DocumentFinanceSeries Acronym From Date
-                        DateTime now = XPOHelper.CurrentDateTimeAtomic();
+                        DateTime now = XPOUtility.CurrentDateTimeAtomic();
                         string acronymPrefix;
                         //AcronymPrefix ex FT[QN3T1U401]2016S001, works with Random and AcronymLastSerie modes
                         if (DocumentSettings.DocumentFinanceSeriesGenerationFactoryUseRandomAcronymPrefix)
@@ -332,7 +332,7 @@ namespace LogicPOS.Finance.DocumentProcessing
                         {
                             //Audit FINANCE_SERIES_CREATED
                             acronymAudit = string.Format("{0}{1}{2}{3}", "xx", item.Key, 0.ToString("00"), pAcronym);
-                            XPOHelper.Audit("FINANCE_SERIES_CREATED", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_finance_series_created"), acronymAudit, item.Value, XPOSettings.LoggedUser.Name));
+                            XPOUtility.Audit("FINANCE_SERIES_CREATED", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_finance_series_created"), acronymAudit, item.Value, XPOSettings.LoggedUser.Name));
                         }
                     }
                 }

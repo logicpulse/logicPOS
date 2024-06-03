@@ -1,17 +1,19 @@
 ﻿using DevExpress.Xpo;
 using LogicPOS.Domain.Entities;
+using LogicPOS.DTOs.Printing;
 using System;
 
 namespace LogicPOS.Data.XPO.Settings
 {
     public static class XPOSettings
     {
-        public static sys_userdetail LoggedUser { get; set; }
         public static Session Session { get; set; }
 
+        public static sys_userdetail LoggedUser { get; set; }
         public static cfg_configurationcountry ConfigurationSystemCountry { get; set; } = null;
         public static cfg_configurationcurrency ConfigurationSystemCurrency { get; set; } = null;
 
+        public static PrintWorkSessionDto LastWorkSessionPeriodDto { get; set; }
         public static pos_worksessionperiod WorkSessionPeriodDay { get; set; }
         public static pos_worksessionperiod WorkSessionPeriodTerminal { get; set; }
 

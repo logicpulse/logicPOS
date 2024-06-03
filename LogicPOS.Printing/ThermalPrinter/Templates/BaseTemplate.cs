@@ -232,7 +232,7 @@ namespace LogicPOS.Printing.Templates
                 _genericThermalPrinter.WriteLine(string.Format("{1}: {2}{0}{3}: {4} {5}"
                     , Environment.NewLine
                     , CustomFunctions.Res("global_printed_on_date")
-                    , XPOHelper.CurrentDateTimeAtomic().ToString(CultureSettings.DateTimeFormat)
+                    , XPOUtility.CurrentDateTimeAtomic().ToString(CultureSettings.DateTimeFormat)
                     , _customVars["APP_COMPANY"]
                     , _customVars["APP_NAME"]
                     , _customVars["APP_VERSION"]

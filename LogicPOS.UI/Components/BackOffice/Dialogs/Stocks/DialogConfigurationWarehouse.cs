@@ -114,7 +114,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
                 {
                     foreach (var location in _Warehouse.WarehouseLocation)
                     {
-                        Entity getLocationFromWarehouse = XPOHelper.GetEntityById<fin_warehouselocation>(location.Oid);
+                        Entity getLocationFromWarehouse = XPOUtility.GetEntityById<fin_warehouselocation>(location.Oid);
                         PopulateWarehouseLocationEntrys(getLocationFromWarehouse);
                     }
                 }

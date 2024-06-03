@@ -32,7 +32,7 @@ namespace LogicPOS.Shared
         {
             JsonFileLocation = jsonFileLocation;
             CurrentOrderMainId = Guid.Empty;
-            SessionStartDate = XPOHelper.CurrentDateTimeAtomic();
+            SessionStartDate = XPOUtility.CurrentDateTimeAtomic();
             LoggedUsers = new Dictionary<Guid, DateTime>();
             OrderMains = new Dictionary<Guid, OrderMain>();
         }
@@ -63,7 +63,7 @@ namespace LogicPOS.Shared
                 return;
             }
 
-            SessionUpdatedAt = XPOHelper.CurrentDateTimeAtomic();
+            SessionUpdatedAt = XPOUtility.CurrentDateTimeAtomic();
             WriteToFile();
         }
 
@@ -77,8 +77,8 @@ namespace LogicPOS.Shared
         {
             foreach (Guid id in CurrentSession.LoggedUsers.Keys)
             {
-                sys_userdetail user = XPOHelper.GetEntityById<sys_userdetail>(id);
-                XPOHelper.Audit("USER_loggerOUT", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_used_forced_loggerout"), user.Name));
+                sys_userdetail user = XPOUtility.GetEntityById<sys_userdetail>(id);
+                XPOUtility.Audit("USER_loggerOUT", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_used_forced_loggerout"), user.Name));
             }
             CurrentSession.LoggedUsers.Clear();
         }
@@ -190,7 +190,7 @@ namespace LogicPOS.Shared
             {
                 OrderMain orderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];
 
-                pos_configurationplacetable xConfigurationPlaceTable = XPOHelper.GetEntityById<pos_configurationplacetable>(orderMain.Table.Oid);
+                pos_configurationplacetable xConfigurationPlaceTable = XPOUtility.GetEntityById<pos_configurationplacetable>(orderMain.Table.Oid);
 
                 if (xConfigurationPlaceTable != null)
                 {

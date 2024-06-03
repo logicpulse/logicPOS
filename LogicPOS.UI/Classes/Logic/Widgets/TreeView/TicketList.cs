@@ -74,24 +74,24 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
                                 //Change Table Status to Free
                                 pos_configurationplacetable placeTable;
-                                placeTable = XPOHelper.GetEntityById<pos_configurationplacetable>( orderMain.Table.Oid);
+                                placeTable = XPOUtility.GetEntityById<pos_configurationplacetable>( orderMain.Table.Oid);
                                 documentOrderMain = (fin_documentordermain)uowSession.GetObjectByKey(typeof(fin_documentordermain), orderMain.PersistentOid);
 
                                 placeTable.TableStatus = TableStatus.Free;
-                               XPOHelper.Audit("TABLE_OPEN", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_table_open"), placeTable.Designation));
+                               XPOUtility.Audit("TABLE_OPEN", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_table_open"), placeTable.Designation));
                                 placeTable.DateTableClosed = DateTime.Now;
                                 placeTable.TotalOpen = 0;
                                 placeTable.Save();
                                 //Required to Reload Objects after has been changed in Another Session(uowSession)
                                 if (documentOrderMain != null)
                                 {
-                                    documentOrderMain = XPOHelper.GetEntityById<fin_documentordermain>(orderMain.PersistentOid);
+                                    documentOrderMain = XPOUtility.GetEntityById<fin_documentordermain>(orderMain.PersistentOid);
                                     documentOrderMain.OrderStatus = OrderStatus.Close;
                                     documentOrderMain.Save();
                                 }
 
                                 if (documentOrderMain != null) documentOrderMain.Reload();
-                                //aceTable = (pos_configurationplacetable)XPOHelper.GetXPGuidObject(XPOSettings.Session, typeof(pos_configurationplacetable), orderMain.Table.Oid);
+                                //aceTable = (pos_configurationplacetable)XPOUtility.GetXPGuidObject(XPOSettings.Session, typeof(pos_configurationplacetable), orderMain.Table.Oid);
                                 //placeTable.Reload();
                                 ArticleBag.TicketOrderToArticleBag(orderMain).Clear();
                                 //Clean Session if Commited without problems
@@ -523,8 +523,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 if (response == ResponseType.Ok)
                 {
                     OrderMain currentOrderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];
-                    pos_configurationplacetable xOldTable = XPOHelper.GetEntityById<pos_configurationplacetable>(currentOrderMain.Table.Oid);
-                    pos_configurationplacetable xNewTable = XPOHelper.GetEntityById<pos_configurationplacetable>(dialog.CurrentTableOid);
+                    pos_configurationplacetable xOldTable = XPOUtility.GetEntityById<pos_configurationplacetable>(currentOrderMain.Table.Oid);
+                    pos_configurationplacetable xNewTable = XPOUtility.GetEntityById<pos_configurationplacetable>(dialog.CurrentTableOid);
                     //Require to Prevent A first chance exception of type 'DevExpress.Xpo.DB.Exceptions.LockingException' occurred in DevExpress.Xpo.v13.2.dll when it is Changed in Diferent Session ex UnitOfWork
                     //TODO: Confirm working with Reload Commented
                     //xOldTable.Reload();
@@ -542,20 +542,20 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         //Put Old table Status to Free
                         xOldTable.TableStatus = TableStatus.Free;
                         xOldTable.Save();
-                       XPOHelper.Audit("TABLE_OPEN", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_table_open"), xOldTable.Designation));
+                       XPOUtility.Audit("TABLE_OPEN", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_table_open"), xOldTable.Designation));
 
                         //Put New table Status to Open
                         xNewTable.TableStatus = TableStatus.Open;
                         xNewTable.Save();
-                       XPOHelper.Audit("TABLE_CLOSE", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_table_close"), xNewTable.Designation));
+                       XPOUtility.Audit("TABLE_CLOSE", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_table_close"), xNewTable.Designation));
 
                         //Change DocumentOrderMain table, If OpenOrder Exists in That table
                         Guid documentOrderMainOid = currentOrderMain.GetOpenTableFieldValueGuid(xOldTable.Oid, "Oid");
-                        fin_documentordermain xDocumentOrderMain = XPOHelper.GetEntityById<fin_documentordermain>(documentOrderMainOid);
+                        fin_documentordermain xDocumentOrderMain = XPOUtility.GetEntityById<fin_documentordermain>(documentOrderMainOid);
                         if (xDocumentOrderMain != null)
                         {
                             xDocumentOrderMain.PlaceTable = xNewTable;
-                            xDocumentOrderMain.UpdatedAt = XPOHelper.CurrentDateTimeAtomic();
+                            xDocumentOrderMain.UpdatedAt = XPOUtility.CurrentDateTimeAtomic();
                             xDocumentOrderMain.Save();
                         }
                         //Assign Session Data

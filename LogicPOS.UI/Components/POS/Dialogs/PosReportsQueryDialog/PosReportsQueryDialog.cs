@@ -80,7 +80,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _databaseSourceObject = pDatabaseSourceObject;
             //pastMonths=0 to Work in Curent Month Range, pastMonths=1 Works in Past Month, pastMonths=2 Two months Ago etc
             int pastMonths = 0;
-            DateTime workingDate = XPOHelper.CurrentDateTimeAtomic().AddMonths(-pastMonths);
+            DateTime workingDate = XPOUtility.CurrentDateTimeAtomic().AddMonths(-pastMonths);
 
             /* IN005974 */
             //DateTime firstDayOfYear = new DateTime(workingDate.Year, 1, 1);

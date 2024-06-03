@@ -13,8 +13,8 @@ namespace LogicPOS.Domain.Entities
 
         protected override void OnAfterConstruction()
         {
-            Ord = XPOHelper.GetNextTableFieldID(nameof(pos_configurationplaceterminal), "Ord");
-            Code = XPOHelper.GetNextTableFieldID(nameof(pos_configurationplaceterminal), "Code");
+            Ord = XPOUtility.GetNextTableFieldID(nameof(pos_configurationplaceterminal), "Ord");
+            Code = XPOUtility.GetNextTableFieldID(nameof(pos_configurationplaceterminal), "Code");
             TemplateTicket = Session.GetObjectByKey<sys_configurationprinterstemplates>(XPOSettings.XpoOidConfigurationPrintersTemplateTicket);
             TemplateTablesConsult = Session.GetObjectByKey<sys_configurationprinterstemplates>(XPOSettings.XpoOidConfigurationPrintersTemplateTableConsult);
             InputReaderTimerInterval = 200;

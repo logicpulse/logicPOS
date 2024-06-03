@@ -49,7 +49,7 @@ namespace LogicPOS.Finance.Saft
             int pastMonths = 0;
 
             //TODO: Move to Filter Date Dialog
-            DateTime workingDate = XPOHelper.CurrentDateTimeAtomic().AddMonths(-pastMonths);
+            DateTime workingDate = XPOUtility.CurrentDateTimeAtomic().AddMonths(-pastMonths);
             DateTime firstDayOfMonth = new DateTime(workingDate.Year, workingDate.Month, 1);
             DateTime lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
             DateTime dateTimeStart = firstDayOfMonth;
@@ -64,12 +64,12 @@ namespace LogicPOS.Finance.Saft
             _documentDateStart = pDateTimeStart;
             _documentDateEnd = pDateTimeEnd;
 
-            _currentDate = XPOHelper.CurrentDateTimeAtomic();
+            _currentDate = XPOUtility.CurrentDateTimeAtomic();
 
             //Settings
             string fileSaftPT = CultureSettings.FileFormatSaftPT;
             string dateTimeFileFormat = CultureSettings.FileFormatDateTime;
-            string dateTime = XPOHelper.CurrentDateTimeAtomic().ToString(dateTimeFileFormat);
+            string dateTime = XPOUtility.CurrentDateTimeAtomic().ToString(dateTimeFileFormat);
             string fileName = PathsSettings.Paths["saftpt"] + string.Format(fileSaftPT, SaftSettings.SaftVersionPrefix, SaftSettings.SaftVersion, dateTime).ToLower();
             if (PathsUtils.HasWritePermissionOnPath(PathsSettings.Paths["saftpt"].ToString()))
             {
@@ -110,7 +110,7 @@ namespace LogicPOS.Finance.Saft
                 }
 
                 //Audit
-                XPOHelper.Audit("EXPORT_SAF-T", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_export_saft"), fileName, _documentDateStart.ToString(CultureSettings.DateFormat), _documentDateEnd.ToString(CultureSettings.DateFormat)));
+                XPOUtility.Audit("EXPORT_SAF-T", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_export_saft"), fileName, _documentDateStart.ToString(CultureSettings.DateFormat), _documentDateEnd.ToString(CultureSettings.DateFormat)));
 
                 return fileName;
             }
@@ -314,7 +314,7 @@ namespace LogicPOS.Finance.Saft
                 //Used to Add Default Customer if not in Query, Required to Always have a Default Customer for ex to Documents that Donta Have a Customer (NULL), like Conference Documents, etc
                 MasterFiles_Customer_DefaultCustomer();
 
-                SQLSelectResultData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
+                SQLSelectResultData xPSelectData = XPOUtility.GetSelectedDataFromQuery(sql);
                 foreach (SelectStatementResultRow row in xPSelectData.DataRows)
                 {
                     //<Customer>
@@ -437,7 +437,7 @@ namespace LogicPOS.Finance.Saft
                 );
                 //_logger.Debug(string.Format("sql: [{0}]", sql));
 
-                SQLSelectResultData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
+                SQLSelectResultData xPSelectData = XPOUtility.GetSelectedDataFromQuery(sql);
                 foreach (SelectStatementResultRow row in xPSelectData.DataRows)
                 {
                     if (row.Values[1] != null)
@@ -501,7 +501,7 @@ namespace LogicPOS.Finance.Saft
                 );
                 //_logger.Debug(string.Format("sql: [{0}]", sql));
 
-                SQLSelectResultData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
+                SQLSelectResultData xPSelectData = XPOUtility.GetSelectedDataFromQuery(sql);
                 foreach (SelectStatementResultRow row in xPSelectData.DataRows)
                 {
                     //<TaxTableEntry>
@@ -893,7 +893,7 @@ namespace LogicPOS.Finance.Saft
                 string documentType = string.Empty;
                 bool wayBill = false;
 
-                SQLSelectResultData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
+                SQLSelectResultData xPSelectData = XPOUtility.GetSelectedDataFromQuery(sql);
                 foreach (SelectStatementResultRow row in xPSelectData.DataRows)
                 {
                     //Protected Documents with total amount and discount zero 
@@ -1087,7 +1087,7 @@ namespace LogicPOS.Finance.Saft
             //<ShipTo>
             _xmlWriter.WriteStartElement("ShipTo");
             WriteElement("DeliveryID", pRow.Values[pXPSelectData.GetFieldIndexFromName("ShipToDeliveryID")]);
-            WriteElement("DeliveryDate", XPOHelper.DateToString(pRow.Values[pXPSelectData.GetFieldIndexFromName("ShipToDeliveryDate")]));
+            WriteElement("DeliveryDate", XPOUtility.DateToString(pRow.Values[pXPSelectData.GetFieldIndexFromName("ShipToDeliveryDate")]));
             WriteElement("WarehouseID", pRow.Values[pXPSelectData.GetFieldIndexFromName("ShipToWarehouseID")]);
             WriteElement("LocationID", pRow.Values[pXPSelectData.GetFieldIndexFromName("ShipToLocationID")]);
             //<Address>
@@ -1107,7 +1107,7 @@ namespace LogicPOS.Finance.Saft
             //<ShipFrom>
             _xmlWriter.WriteStartElement("ShipFrom");
             WriteElement("DeliveryID", pRow.Values[pXPSelectData.GetFieldIndexFromName("ShipFromDeliveryID")]);
-            WriteElement("DeliveryDate", XPOHelper.DateToString(pRow.Values[pXPSelectData.GetFieldIndexFromName("ShipFromDeliveryDate")]));
+            WriteElement("DeliveryDate", XPOUtility.DateToString(pRow.Values[pXPSelectData.GetFieldIndexFromName("ShipFromDeliveryDate")]));
             WriteElement("WarehouseID", pRow.Values[pXPSelectData.GetFieldIndexFromName("ShipFromWarehouseID")]);
             WriteElement("LocationID", pRow.Values[pXPSelectData.GetFieldIndexFromName("ShipFromLocationID")]);
             //<Address>
@@ -1127,9 +1127,9 @@ namespace LogicPOS.Finance.Saft
             //Export if not Null else gives wrong values ex "0001-01-01T00:00:00" | Always Null, Its not persisted yet, but has stub code here to work when its not null
             if (pRow.Values[pXPSelectData.GetFieldIndexFromName("MovementEndTime")] != null)
             {
-                WriteElement("MovementEndTime", XPOHelper.DateTimeToCombinedDateTimeString(pRow.Values[pXPSelectData.GetFieldIndexFromName("MovementEndTime")]));
+                WriteElement("MovementEndTime", XPOUtility.DateTimeToCombinedDateTimeString(pRow.Values[pXPSelectData.GetFieldIndexFromName("MovementEndTime")]));
             }
-            WriteElement("MovementStartTime", XPOHelper.DateTimeToCombinedDateTimeString(pRow.Values[pXPSelectData.GetFieldIndexFromName("MovementStartTime")]));
+            WriteElement("MovementStartTime", XPOUtility.DateTimeToCombinedDateTimeString(pRow.Values[pXPSelectData.GetFieldIndexFromName("MovementStartTime")]));
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -1199,7 +1199,7 @@ namespace LogicPOS.Finance.Saft
                 decimal lineGrossTotal = 0.0m;
 
                 Guid guidDocumentDetail = new Guid();
-                SQLSelectResultData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
+                SQLSelectResultData xPSelectData = XPOUtility.GetSelectedDataFromQuery(sql);
                 if (xPSelectData.DataRows.Length > 0)
                     foreach (SelectStatementResultRow row in xPSelectData.DataRows)
                     {
@@ -1347,7 +1347,7 @@ namespace LogicPOS.Finance.Saft
                     );
                     //_logger.Debug(string.Format("sql: [{0}]", sql));
 
-                    SQLSelectResultData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
+                    SQLSelectResultData xPSelectData = XPOUtility.GetSelectedDataFromQuery(sql);
                     foreach (SelectStatementResultRow row in xPSelectData.DataRows)
                     {
                         //<OrderReferences>
@@ -1402,7 +1402,7 @@ namespace LogicPOS.Finance.Saft
                     );
                     //_logger.Debug(string.Format("sql: [{0}]", sql));
 
-                    SQLSelectResultData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
+                    SQLSelectResultData xPSelectData = XPOUtility.GetSelectedDataFromQuery(sql);
                     foreach (SelectStatementResultRow row in xPSelectData.DataRows)
                     {
                         //<References>
@@ -1603,7 +1603,7 @@ namespace LogicPOS.Finance.Saft
                 decimal currencyAmount;
                 decimal exchangeRate;
 
-                SQLSelectResultData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
+                SQLSelectResultData xPSelectData = XPOUtility.GetSelectedDataFromQuery(sql);
                 foreach (SelectStatementResultRow row in xPSelectData.DataRows)
                 {
                     //<Payment>
@@ -1735,7 +1735,7 @@ namespace LogicPOS.Finance.Saft
                 decimal percentage = 0.0m;
                 decimal lineCreditAmount = 0.0m;
 
-                SQLSelectResultData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
+                SQLSelectResultData xPSelectData = XPOUtility.GetSelectedDataFromQuery(sql);
                 if (xPSelectData.DataRows.Length > 0)
                     foreach (SelectStatementResultRow row in xPSelectData.DataRows)
                     {

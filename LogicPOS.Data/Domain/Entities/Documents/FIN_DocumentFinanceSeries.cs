@@ -12,8 +12,8 @@ namespace LogicPOS.Domain.Entities
 
         protected override void OnAfterConstruction()
         {
-            Ord = XPOHelper.GetNextTableFieldID("fin_documentfinanceseries", "Ord");
-            Code = XPOHelper.GetNextTableFieldID("fin_documentfinanceseries", "Code");
+            Ord = XPOUtility.GetNextTableFieldID("fin_documentfinanceseries", "Ord");
+            Code = XPOUtility.GetNextTableFieldID("fin_documentfinanceseries", "Code");
         }
 
         private uint fOrd;

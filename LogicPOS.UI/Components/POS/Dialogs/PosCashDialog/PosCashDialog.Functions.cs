@@ -9,6 +9,7 @@ using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Enums;
+using LogicPOS.DTOs.Printing;
 using LogicPOS.Globalization;
 using LogicPOS.Printing.Utility;
 using System;
@@ -54,7 +55,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                     if (pResponse == ResponseType.Yes)
                     {
-                        var workSessionDto = MappingUtils.GetPrintWorkSessionDto(XPOSettings.WorkSessionPeriodDay);
+                        var workSessionDto = XPOUtility.WorkSession.GetCurrentWorkSessionPeriodDayDto();
                         FrameworkCalls.PrintWorkSessionMovement(this, TerminalSettings.LoggedTerminal.ThermalPrinter, workSessionDto);
                     }
                     //FrameworkCalls.PrintWorkSessionMovement(this, TerminalSettings.LoggedTerminal.ThermalPrinter, GlobalFramework.WorkSessionPeriodDay);
@@ -190,7 +191,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                              originalMovType,
                              XPOSettings.LoggedUser,
                              TerminalSettings.LoggedTerminal,
-                             XPOHelper.CurrentDateTimeAtomic(),
+                             XPOUtility.CurrentDateTimeAtomic(),
                              dialogCashDrawer.TotalAmountInCashDrawer,
                              dialogCashDrawer.MovementDescription
                            );
@@ -238,7 +239,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 moneyInOutLabel = "ticket_title_worksession_money_out";
                                 moneyInOutLabelAudit = "audit_message_cashdrawer_out";
                                 audit = "CASHDRAWER_OUT";
-                                dialogCashDrawer.MovementType = XPOHelper.GetEntityById<pos_worksessionmovementtype>(Guid.Parse("069564cb-074a-4c91-931e-554454b1ab7e"));
+                                dialogCashDrawer.MovementType = XPOUtility.GetEntityById<pos_worksessionmovementtype>(Guid.Parse("069564cb-074a-4c91-931e-554454b1ab7e"));
                             }
                             else
                             {
@@ -247,7 +248,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 moneyInOutLabel = "ticket_title_worksession_money_in";
                                 moneyInOutLabelAudit = "audit_message_cashdrawer_in";
                                 audit = "CASHDRAWER_IN";
-                                dialogCashDrawer.MovementType = XPOHelper.GetEntityById<pos_worksessionmovementtype>(Guid.Parse("2ef29ce6-314c-4f40-897f-e31802dbeef3"));
+                                dialogCashDrawer.MovementType = XPOUtility.GetEntityById<pos_worksessionmovementtype>(Guid.Parse("2ef29ce6-314c-4f40-897f-e31802dbeef3"));
                             }
                             //Total = IN
                             dialogCashDrawer.TotalAmountInCashDrawer = dialogCashDrawer.MovementAmountMoney;
@@ -261,7 +262,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                               dialogCashDrawer.MovementType,
                               XPOSettings.LoggedUser,
                               TerminalSettings.LoggedTerminal,
-                              XPOHelper.CurrentDateTimeAtomic(),
+                              XPOUtility.CurrentDateTimeAtomic(),
                               (addRemoveMoney * addedMoney),
                               dialogCashDrawer.MovementDescription
                             );
@@ -281,7 +282,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 else
                                 {
                                     //Audit
-                                    XPOHelper.Audit(audit, string.Format(
+                                    XPOUtility.Audit(audit, string.Format(
                                          CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, moneyInOutLabelAudit),
                                          LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(addedMoney, XPOSettings.ConfigurationSystemCurrency.Acronym),
                                          dialogCashDrawer.MovementDescription)
@@ -314,7 +315,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 moneyInOutLabel = "ticket_title_worksession_money_out";
                                 moneyInOutLabelAudit = "audit_message_cashdrawer_out";
                                 audit = "CASHDRAWER_OUT";
-                                dialogCashDrawer.MovementType = XPOHelper.GetEntityById<pos_worksessionmovementtype>(Guid.Parse("069564cb-074a-4c91-931e-554454b1ab7e"));
+                                dialogCashDrawer.MovementType = XPOUtility.GetEntityById<pos_worksessionmovementtype>(Guid.Parse("069564cb-074a-4c91-931e-554454b1ab7e"));
                             }
                             else
                             {
@@ -323,7 +324,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 moneyInOutLabel = "ticket_title_worksession_money_in";
                                 moneyInOutLabelAudit = "audit_message_cashdrawer_in";
                                 audit = "CASHDRAWER_IN";
-                                dialogCashDrawer.MovementType = XPOHelper.GetEntityById<pos_worksessionmovementtype>(Guid.Parse("2ef29ce6-314c-4f40-897f-e31802dbeef3"));
+                                dialogCashDrawer.MovementType = XPOUtility.GetEntityById<pos_worksessionmovementtype>(Guid.Parse("2ef29ce6-314c-4f40-897f-e31802dbeef3"));
 
                             }
 
@@ -339,7 +340,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                               dialogCashDrawer.MovementType,
                               XPOSettings.LoggedUser,
                               TerminalSettings.LoggedTerminal,
-                              XPOHelper.CurrentDateTimeAtomic(),
+                              XPOUtility.CurrentDateTimeAtomic(),
                               (addRemoveMoney * addedMoney),
                               dialogCashDrawer.MovementDescription
                             );
@@ -359,7 +360,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 else
                                 {
                                     //Audit
-                                    XPOHelper.Audit(audit, string.Format(
+                                    XPOUtility.Audit(audit, string.Format(
                                          CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, moneyInOutLabelAudit),
                                          LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(addedMoney, XPOSettings.ConfigurationSystemCurrency.Acronym),
                                          dialogCashDrawer.MovementDescription)
@@ -390,7 +391,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                               originalMovType,
                               XPOSettings.LoggedUser,
                               TerminalSettings.LoggedTerminal,
-                              XPOHelper.CurrentDateTimeAtomic(),
+                              XPOUtility.CurrentDateTimeAtomic(),
                               dialogCashDrawer.MovementAmountMoney,
                               dialogCashDrawer.MovementDescription
                             );
@@ -426,7 +427,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                           dialogCashDrawer.MovementType,
                           XPOSettings.LoggedUser,
                           TerminalSettings.LoggedTerminal,
-                          XPOHelper.CurrentDateTimeAtomic(),
+                          XPOUtility.CurrentDateTimeAtomic(),
                           dialogCashDrawer.MovementAmountMoney,
                           dialogCashDrawer.MovementDescription
                         );
@@ -444,7 +445,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             else
                             {
                                 //Audit
-                                XPOHelper.Audit("CASHDRAWER_IN", string.Format(
+                                XPOUtility.Audit("CASHDRAWER_IN", string.Format(
                                      CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_cashdrawer_in"),
                                      LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(dialogCashDrawer.MovementAmountMoney, XPOSettings.ConfigurationSystemCurrency.Acronym),
                                      dialogCashDrawer.MovementDescription)
@@ -473,7 +474,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                           dialogCashDrawer.MovementType,
                           XPOSettings.LoggedUser,
                           TerminalSettings.LoggedTerminal,
-                          XPOHelper.CurrentDateTimeAtomic(),
+                          XPOUtility.CurrentDateTimeAtomic(),
                           -dialogCashDrawer.MovementAmountMoney,
                           dialogCashDrawer.MovementDescription
                         );
@@ -491,7 +492,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             else
                             {
                                 //Audit
-                                XPOHelper.Audit("CASHDRAWER_OUT", string.Format(
+                                XPOUtility.Audit("CASHDRAWER_OUT", string.Format(
                                      CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_cashdrawer_out"),
                                      LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(dialogCashDrawer.MovementAmountMoney, XPOSettings.ConfigurationSystemCurrency.Acronym),
                                      dialogCashDrawer.MovementDescription)

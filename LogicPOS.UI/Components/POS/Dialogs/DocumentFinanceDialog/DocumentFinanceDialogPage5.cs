@@ -94,10 +94,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //ShipFromDeliveryDate
             EntryBoxShipFromDeliveryDate = new EntryBoxValidationDatePickerDialog(_sourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_ship_from_delivery_date"), _pagePad.DateTimeFormat, _pagePad.InitalDateTime, KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexDateTime, true, _pagePad.DateTimeFormat);
             EntryBoxShipFromDeliveryDate.EntryValidation.Sensitive = true;
-            EntryBoxShipFromDeliveryDate.EntryValidation.Text = XPOHelper.DateTimeToString(XPOHelper.CurrentDateTimeAtomic()).ToString();
+            EntryBoxShipFromDeliveryDate.EntryValidation.Text = XPOUtility.DateTimeToString(XPOUtility.CurrentDateTimeAtomic()).ToString();
             EntryBoxShipFromDeliveryDate.EntryValidation.Validate();
             //Assign Min Date to Validation
-            EntryBoxShipFromDeliveryDate.DateTimeMin = XPOHelper.CurrentDateTimeAtomic();
+            EntryBoxShipFromDeliveryDate.DateTimeMin = XPOUtility.CurrentDateTimeAtomic();
             EntryBoxShipFromDeliveryDate.EntryValidation.Changed += _entryBoxShipFromDeliveryDate_ClosePopup;
             EntryBoxShipFromDeliveryDate.ClosePopup += _entryBoxShipFromDeliveryDate_ClosePopup;
 

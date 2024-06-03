@@ -28,7 +28,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             Session = XPOSettings.Session;
             //Init Other
             DateTimeFormat = LogicPOS.Settings.CultureSettings.DateTimeFormat;
-            InitalDateTime = XPOHelper.CurrentDateTimeAtomic();
+            InitalDateTime = XPOUtility.CurrentDateTimeAtomic();
         }
     }
 }

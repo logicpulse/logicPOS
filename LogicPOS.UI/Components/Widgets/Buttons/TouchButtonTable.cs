@@ -94,7 +94,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
         public void ChangeTableStatus(Guid pTableOid, TableStatus pTableStatus)
         {
             //Get Target Table
-            pos_configurationplacetable xTable = XPOHelper.GetEntityById<pos_configurationplacetable>(pTableOid);
+            pos_configurationplacetable xTable = XPOUtility.GetEntityById<pos_configurationplacetable>(pTableOid);
             //_logger.Debug(string.Format("1 pTableStatus: [{0}] [{1}]", xTable.Designation, pTableStatus));
 
             if (pTableStatus == TableStatus.Reserved)
@@ -103,7 +103,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
                 _eventBoxTotalOrStatus.VisibleWindow = true;
                 SetBackgroundColor(_colorPosTablePadTableTableStatusReservedButtonBackground, _eventBoxTotalOrStatus);
                 xTable.TableStatus = TableStatus.Reserved;
-               XPOHelper.Audit("TABLE_RESERVED", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_table_reserved"), xTable.Designation));
+               XPOUtility.Audit("TABLE_RESERVED", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_table_reserved"), xTable.Designation));
             }
             else
             {
@@ -111,7 +111,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
                 _eventBoxTotalOrStatus.VisibleWindow = false;
                 SetBackgroundColor(_buttonColor, _eventBoxTotalOrStatus);
                 xTable.TableStatus = TableStatus.Free;
-               XPOHelper.Audit("TABLE_UNRESERVED", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_table_unreserved"), xTable.Designation));
+               XPOUtility.Audit("TABLE_UNRESERVED", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_table_unreserved"), xTable.Designation));
             }
             //_logger.Debug(string.Format("1 pTableStatus: [{0}] [{1}]", xTable.Designation, pTableStatus));
             //Update Status State  

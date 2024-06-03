@@ -69,7 +69,7 @@ namespace LogicPOS.Reporting.BOs
                 T genericTypeObject;
                 SQLSelectResultData xPSelectData;
 
-                xPSelectData = XPOHelper.GetSelectedDataFromQuery(sqlQuery);
+                xPSelectData = XPOUtility.GetSelectedDataFromQuery(sqlQuery);
 
                 PropertyInfo propertyInfo;
                 //Fields Props
@@ -158,7 +158,7 @@ namespace LogicPOS.Reporting.BOs
                                 }
                                 else
                                 {
-                                    fieldValue = XPOHelper.GetXPGuidObjectFromCriteria(propertyInfo.PropertyType, string.Format("Oid = '{0}'", fieldValue));
+                                    fieldValue = XPOUtility.GetXPGuidObjectFromCriteria(propertyInfo.PropertyType, string.Format("Oid = '{0}'", fieldValue));
                                 }
                                 // Debug purpose helper
                                 //if(propertyInfo.PropertyType == typeof(sys_userdetail) || propertyInfo.PropertyType == typeof(pos_configurationplaceterminal))

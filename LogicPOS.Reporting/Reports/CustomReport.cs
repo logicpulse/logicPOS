@@ -233,7 +233,7 @@ namespace LogicPOS.Reporting
                     else
                     {
                         string dateTimeFileFormat = CultureSettings.FileFormatDateTime;
-                        string dateTime = XPOHelper.CurrentDateTimeAtomic().ToString(dateTimeFileFormat);
+                        string dateTime = XPOUtility.CurrentDateTimeAtomic().ToString(dateTimeFileFormat);
                         string reportName = (this.ReportInfo.Name != string.Empty) ? string.Format("_{0}", this.ReportInfo.Name) : string.Empty;
 
 
@@ -602,7 +602,7 @@ namespace LogicPOS.Reporting
                 {
                     //if (LogicPOS.Settings.CultureSettings.CurrentCulture.Name.Equals("pt-MZ")){
                     cfg_configurationcurrency defaultCurrencyForExchangeRate =
-                            XPOHelper.GetEntityById<cfg_configurationcurrency> (
+                            XPOUtility.GetEntityById<cfg_configurationcurrency> (
                                 CultureSettings.USDCurrencyId,
                                 XPOSettings.Session);
 
@@ -1371,7 +1371,7 @@ namespace LogicPOS.Reporting
                             {
                                 if (!string.IsNullOrEmpty(customerBalance.EntityOid))
                                 {
-                                    customer = XPOHelper.GetEntityById<erp_customer>(new Guid(customerBalance.EntityOid));
+                                    customer = XPOUtility.GetEntityById<erp_customer>(new Guid(customerBalance.EntityOid));
                                     summary.EntityName = customer.Name;
                                     summary.EntityFiscalNumber = customer.FiscalNumber;
                                 }
@@ -2096,7 +2096,7 @@ namespace LogicPOS.Reporting
 
                     if (generatePdfDocuments)
                     {
-                        erp_customer customer = XPOHelper.GetEntityById<erp_customer>(documentFinancePayment.EntityOid);
+                        erp_customer customer = XPOUtility.GetEntityById<erp_customer>(documentFinancePayment.EntityOid);
                         string entityName = (customer != null && !string.IsNullOrEmpty(customer.Name)) ? string.Format("_{0}", customer.Name.ToLower().Replace(' ', '_')) : string.Empty;
                         string reportFilename = $"{PathsSettings.Paths["documents"]}/{documentFinancePayment.PaymentRefNo.Replace('/', '-').Replace(' ', '_')}{entityName}.pdf";
 

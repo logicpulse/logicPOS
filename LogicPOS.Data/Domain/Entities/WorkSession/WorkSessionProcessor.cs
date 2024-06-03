@@ -23,7 +23,7 @@ namespace LogicPOS.Data.Services
             }
 
             string sql = string.Format(@"SELECT Oid FROM pos_worksessionperiod WHERE {1}PeriodType = '{0}' AND SessionStatus = 0;", Convert.ToInt16(pWorkSessionPeriodType), whereTerminal);
-            Guid workSessionPeriodOid = XPOHelper.GetGuidFromQuery(sql);
+            Guid workSessionPeriodOid = XPOUtility.GetGuidFromQuery(sql);
             if (workSessionPeriodOid != Guid.Empty)
             {
                 pos_worksessionperiod resultWorkSessionPeriod = XPOSettings.Session.GetObjectByKey<pos_worksessionperiod>(workSessionPeriodOid);
@@ -47,7 +47,7 @@ namespace LogicPOS.Data.Services
             string periodType = (pWorkSessionPeriodType == WorkSessionPeriodType.Day) ? "Day" : "Terminal";
             string description = (pDescription != string.Empty) ? string.Format(" - {0}", pDescription) : string.Empty;
             pos_configurationplaceterminal terminal = XPOSettings.Session.GetObjectByKey<pos_configurationplaceterminal>(TerminalSettings.LoggedTerminal.Oid);
-            DateTime dateTime = XPOHelper.CurrentDateTimeAtomic();
+            DateTime dateTime = XPOUtility.CurrentDateTimeAtomic();
 
             pos_worksessionperiod workSessionPeriod = new pos_worksessionperiod(XPOSettings.Session)
             {
@@ -91,7 +91,7 @@ namespace LogicPOS.Data.Services
             if (resultPersistTotals)
             {
                 pos_worksessionperiod workSessionPeriod = XPOSettings.Session.GetObjectByKey<pos_worksessionperiod>(pWorkSessionPeriod.Oid);
-                DateTime dateTime = XPOHelper.CurrentDateTimeAtomic();
+                DateTime dateTime = XPOUtility.CurrentDateTimeAtomic();
                 workSessionPeriod.DateEnd = dateTime;
                 workSessionPeriod.SessionStatus = WorkSessionPeriodStatus.Close;
                 workSessionPeriod.Save();
@@ -155,7 +155,7 @@ namespace LogicPOS.Data.Services
                   , pWorkSessionPeriod.Oid
                 );
 
-                SQLSelectResultData xPSelectData = XPOHelper.GetSelectedDataFromQuery(uowSession, sql);
+                SQLSelectResultData xPSelectData = XPOUtility.GetSelectedDataFromQuery(uowSession, sql);
                 foreach (SelectStatementResultRow row in xPSelectData.DataRows)
                 {
                     paymentMethodOrd = Convert.ToUInt16(row.Values[xPSelectData.GetFieldIndexFromName("Ord")]);
@@ -187,7 +187,7 @@ namespace LogicPOS.Data.Services
                     {
                         //Get XPObjects
                         workSessionPeriod = uowSession.GetObjectByKey<pos_worksessionperiod>(pWorkSessionPeriod.Oid);
-                        configurationPaymentMethod = (fin_configurationpaymentmethod)XPOHelper.GetXPGuidObjectFromField(uowSession, typeof(fin_configurationpaymentmethod), "Token", paymentMethodToken);
+                        configurationPaymentMethod = (fin_configurationpaymentmethod)XPOUtility.GetXPGuidObjectFromField(uowSession, typeof(fin_configurationpaymentmethod), "Token", paymentMethodToken);
 
                         //Persist WorkSessionPeriodTotal
                         workSessionPeriodTotal = new pos_worksessionperiodtotal(uowSession)
@@ -222,7 +222,7 @@ namespace LogicPOS.Data.Services
         {
             //string sql = string.Format(@"SELECT Count(*) as Count FROM pos_worksessionperiod WHERE Parent = '{0}' AND SessionStatus = 0;", GlobalFramework.WorkSessionPeriodDay.Oid.ToString());
             string sql = string.Format(@"SELECT Oid, Designation, DateStart, Terminal FROM pos_worksessionperiod WHERE PeriodType = 1 AND Parent = '{0}' AND SessionStatus = 0;", XPOSettings.WorkSessionPeriodDay.Oid.ToString());
-            SQLSelectResultData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
+            SQLSelectResultData xPSelectData = XPOUtility.GetSelectedDataFromQuery(sql);
             return xPSelectData;
         }
 
@@ -232,7 +232,7 @@ namespace LogicPOS.Data.Services
         public static SQLSelectResultData GetOpenOrderTables()
         {
             string sql = string.Format(@"SELECT PlaceTable FROM fin_documentordermain WHERE OrderStatus = 1;");
-            SQLSelectResultData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
+            SQLSelectResultData xPSelectData = XPOUtility.GetSelectedDataFromQuery(sql);
             return xPSelectData;
         }
 
@@ -479,7 +479,7 @@ namespace LogicPOS.Data.Services
 
         public static Hashtable GetSessionPeriodSummaryDetails(Guid workSessionId)
         {
-            var workSession = XPOHelper.GetEntityById<pos_worksessionperiod>(workSessionId);
+            var workSession = XPOUtility.GetEntityById<pos_worksessionperiod>(workSessionId);
 
             //Get Total Money and TotalMoney Out (NonPayments)
             decimal totalMoneyIn = GetSessionPeriodMovementTotal(workSession, MovementTypeTotal.MoneyIn);

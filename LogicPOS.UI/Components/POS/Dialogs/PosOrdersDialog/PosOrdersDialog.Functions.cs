@@ -128,7 +128,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 sql = string.Format(@"SELECT Oid FROM fin_documentorderticket WHERE OrderMain = '{0}';", currentOrderMain.PersistentOid);
                 //_logger.Debug(string.Format("sql: [{0}]", sql));
-                orderTicketOid = XPOHelper.GetGuidFromQuery(sql);
+                orderTicketOid = XPOUtility.GetGuidFromQuery(sql);
             }
 
             if (orderTicketOid != new Guid())

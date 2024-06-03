@@ -13,8 +13,8 @@ namespace LogicPOS.Domain.Entities
 
         protected override void OnAfterConstruction()
         {
-            Ord = XPOHelper.GetNextTableFieldID(nameof(pos_configurationplacetable), "Ord");
-            Code = XPOHelper.GetNextTableFieldID(nameof(pos_configurationplacetable), "Code");
+            Ord = XPOUtility.GetNextTableFieldID(nameof(pos_configurationplacetable), "Ord");
+            Code = XPOUtility.GetNextTableFieldID(nameof(pos_configurationplacetable), "Code");
         }
 
         private uint fOrd;

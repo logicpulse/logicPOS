@@ -126,7 +126,7 @@ namespace LogicPOS.Domain.Entities
             }
 
             //Global Updates
-            UpdatedAt = XPOHelper.CurrentDateTimeAtomic();
+            UpdatedAt = XPOUtility.CurrentDateTimeAtomic();
             if (XPOSettings.LoggedUser != null)
             {
                 UpdatedBy = Session.GetObjectByKey<sys_userdetail>(XPOSettings.LoggedUser.Oid);
@@ -139,7 +139,7 @@ namespace LogicPOS.Domain.Entities
             if (_isNewRecord)
             {
                 //Global Updates
-                CreatedAt = XPOHelper.CurrentDateTimeAtomic();
+                CreatedAt = XPOUtility.CurrentDateTimeAtomic();
                 if (XPOSettings.LoggedUser != null)
                 {
                     CreatedBy = Session.GetObjectByKey<sys_userdetail>(XPOSettings.LoggedUser.Oid);
@@ -165,7 +165,7 @@ namespace LogicPOS.Domain.Entities
             base.AfterConstruction();
 
             Disabled = false;
-            DateTime dateTime = XPOHelper.CurrentDateTimeAtomic();
+            DateTime dateTime = XPOUtility.CurrentDateTimeAtomic();
             CreatedAt = dateTime;
             UpdatedAt = dateTime;
 

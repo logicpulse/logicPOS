@@ -76,7 +76,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 //Get SeletedData from WorkSessionMovementType Buttons
                 string executeSql = @"SELECT Oid, Token, ResourceString, ButtonIcon, Disabled FROM pos_worksessionmovementtype WHERE (Token LIKE 'CASHDRAWER_%') AND (Disabled IS NULL or Disabled  <> 1) ORDER BY Ord;";
-                SQLSelectResultData xPSelectData = XPOHelper.GetSelectedDataFromQuery(executeSql);
+                SQLSelectResultData xPSelectData = XPOUtility.GetSelectedDataFromQuery(executeSql);
                 //Init Dictionary
                 string buttonBagKey;
                 bool buttonDisabled;
@@ -137,7 +137,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //Initial Dialog Values
                 _selectedCashDrawerButton = buttonBag[initialButtonToken];
                 _selectedCashDrawerButton.ModifyBg(StateType.Normal, _colorBaseDialogDefaultButtonBackground.Lighten(0.50f).ToGdkColor());
-                MovementType = XPOHelper.GetEntityById<pos_worksessionmovementtype>(_selectedCashDrawerButton.CurrentButtonOid);
+                MovementType = XPOUtility.GetEntityById<pos_worksessionmovementtype>(_selectedCashDrawerButton.CurrentButtonOid);
                 MovementType.Token = initialButtonToken;
 
                 //EntryAmountMoney

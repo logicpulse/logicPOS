@@ -1416,7 +1416,7 @@ namespace logicpos
         //    try
         //    {
         //      //Get TerminalID from Database
-        //      terminalXpo = (ConfigurationPlaceTerminal)XPOHelper.GetXPGuidObjectFromSession(typeof(ConfigurationPlaceTerminal), terminalIdGuid);
+        //      terminalXpo = (ConfigurationPlaceTerminal)XPOUtility.GetXPGuidObjectFromSession(typeof(ConfigurationPlaceTerminal), terminalIdGuid);
         //    }
         //    catch (Exception ex)
         //    {
@@ -1430,9 +1430,9 @@ namespace logicpos
         //    //Persist Terminal in DB
         //    terminalXpo = new ConfigurationPlaceTerminal(XPOSettings.Session)
         //    {
-        //      Ord = XPOHelper.GetNextTableFieldID("pos_configurationplaceterminal", "Ord"),
-        //      Code = XPOHelper.GetNextTableFieldID("pos_configurationplaceterminal", "Code"),
-        //      Designation = "Terminal #" + XPOHelper.GetNextTableFieldID("pos_configurationplaceterminal", "Code")
+        //      Ord = XPOUtility.GetNextTableFieldID("pos_configurationplaceterminal", "Ord"),
+        //      Code = XPOUtility.GetNextTableFieldID("pos_configurationplaceterminal", "Code"),
+        //      Designation = "Terminal #" + XPOUtility.GetNextTableFieldID("pos_configurationplaceterminal", "Code")
         //      //Fqdn = GetFQDN()
         //    };
         //    terminalXpo.Save();
@@ -1468,7 +1468,7 @@ namespace logicpos
                 {
                     //Try TerminalID from Database
                     _logger.Debug("pos_configurationplaceterminal GetTerminal() :: Try TerminalID from Database");
-                    configurationPlaceTerminal = (pos_configurationplaceterminal)XPOHelper.GetXPGuidObjectFromField(typeof(pos_configurationplaceterminal), "HardwareId", LicenseSettings.LicenseHardwareId);
+                    configurationPlaceTerminal = (pos_configurationplaceterminal)XPOUtility.GetXPGuidObjectFromField(typeof(pos_configurationplaceterminal), "HardwareId", LicenseSettings.LicenseHardwareId);
                 }
                 catch (Exception ex)
                 {
@@ -1483,9 +1483,9 @@ namespace logicpos
                         //Persist Terminal in DB
                         configurationPlaceTerminal = new pos_configurationplaceterminal(XPOSettings.Session)
                         {
-                            Ord = XPOHelper.GetNextTableFieldID("pos_configurationplaceterminal", "Ord"),
-                            Code = XPOHelper.GetNextTableFieldID("pos_configurationplaceterminal", "Code"),
-                            Designation = "Terminal #" + XPOHelper.GetNextTableFieldID("pos_configurationplaceterminal", "Code"),
+                            Ord = XPOUtility.GetNextTableFieldID("pos_configurationplaceterminal", "Ord"),
+                            Code = XPOUtility.GetNextTableFieldID("pos_configurationplaceterminal", "Code"),
+                            Designation = "Terminal #" + XPOUtility.GetNextTableFieldID("pos_configurationplaceterminal", "Code"),
                             HardwareId = LicenseSettings.LicenseHardwareId
                             //Fqdn = GetFQDN()
                         };
@@ -1522,7 +1522,7 @@ namespace logicpos
                 SortProperty[] sortProperty = new SortProperty[2];
                 sortProperty[0] = new SortProperty("CreatedAt", SortingDirection.Ascending);
                 XPCollection xpcWorkingSessionPeriod = new XPCollection(pSession, typeof(pos_worksessionperiod), criteriaOperator, sortProperty);
-                DateTime dateTime = XPOHelper.CurrentDateTimeAtomic();
+                DateTime dateTime = XPOUtility.CurrentDateTimeAtomic();
                 if (xpcWorkingSessionPeriod.Count > 0)
                 {
                     foreach (pos_worksessionperiod item in xpcWorkingSessionPeriod)
@@ -1734,8 +1734,8 @@ namespace logicpos
                 {
                     /* IN006001 - get date for filtering notifications that were created 'n' days before Today */
                     //Get Date Back DaysBackToFilter (Without WeekEnds and Holidays)
-                    DateTime dateFilter = XPOHelper.GetDateTimeBackUtilDays(
-                        XPOHelper.CurrentDateTimeAtomicMidnight(),
+                    DateTime dateFilter = XPOUtility.GetDateTimeBackUtilDays(
+                        XPOUtility.CurrentDateTimeAtomicMidnight(),
                         NotificationSettings.XpoOidSystemNotificationDaysBackWhenFiltering,
                         true);
                     criteriaOperator = CriteriaOperator.And(criteriaOperator, CriteriaOperator.Parse(string.Format("[CreatedAt] > '{0} 23:59:59'", dateFilter.ToString(CultureSettings.DateFormat))));
@@ -1789,7 +1789,7 @@ namespace logicpos
                         //Always OK
                         if (response == ResponseType.Ok)
                         {
-                            item.DateRead = XPOHelper.CurrentDateTimeAtomic();
+                            item.DateRead = XPOUtility.CurrentDateTimeAtomic();
                             item.Readed = true;
                             item.UserLastRead = XPOSettings.LoggedUser;
                             item.TerminalLastRead = TerminalSettings.LoggedTerminal;
@@ -2183,8 +2183,8 @@ namespace logicpos
         {
             bool customerExists = false;
             erp_customer result;
-            erp_customer finalConsumerEntity = XPOHelper.GetEntityById<erp_customer>(InvoiceSettings.FinalConsumerId);
-            fin_configurationpricetype configurationPriceType = XPOHelper.GetEntityById<fin_configurationpricetype>(XPOSettings.XpoOidConfigurationPriceTypeDefault);
+            erp_customer finalConsumerEntity = XPOUtility.GetEntityById<erp_customer>(InvoiceSettings.FinalConsumerId);
+            fin_configurationpricetype configurationPriceType = XPOUtility.GetEntityById<fin_configurationpricetype>(XPOSettings.XpoOidConfigurationPriceTypeDefault);
 
             SortingCollection sortCollection = new SortingCollection
             {
@@ -2210,8 +2210,8 @@ namespace logicpos
                 if (string.IsNullOrEmpty(pName)) pName = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "saft_value_unknown");
                 result = new erp_customer(XPOSettings.Session)
                 {
-                    Ord = (pFiscalNumber != string.Empty) ? XPOHelper.GetNextTableFieldID("erp_customer", "Ord") : 0,
-                    Code = (pFiscalNumber != string.Empty) ? XPOHelper.GetNextTableFieldID("erp_customer", "Code") : 0,
+                    Ord = (pFiscalNumber != string.Empty) ? XPOUtility.GetNextTableFieldID("erp_customer", "Ord") : 0,
+                    Code = (pFiscalNumber != string.Empty) ? XPOUtility.GetNextTableFieldID("erp_customer", "Code") : 0,
                     Name = pName,
                     Address = pAddress,
                     Locality = pLocality,
@@ -2239,7 +2239,7 @@ namespace logicpos
             {
                 changed = false;
                 //Require to get a Fresh Object
-                result = XPOHelper.GetEntityById<erp_customer>(pCustomer.Oid);
+                result = XPOUtility.GetEntityById<erp_customer>(pCustomer.Oid);
 
                 if (result != finalConsumerEntity)
                 {
