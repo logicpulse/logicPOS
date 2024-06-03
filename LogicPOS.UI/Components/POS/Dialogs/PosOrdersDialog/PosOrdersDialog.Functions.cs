@@ -137,7 +137,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //POS front-end - Consulta Mesa + Impressão Ticket's + Gerar PDF em modo Thermal Printer [IN009344]
                 var ThermalPrinter = LoggedTerminalSettings.GetPrinterDto();
                 var orderTicketDto = MappingUtils.GetPrintOrderTicketDto(orderTicket);
-                ThermalPrinterInternalDocumentOrderRequest thermalPrinterInternalDocumentOrderRequest = new ThermalPrinterInternalDocumentOrderRequest(ThermalPrinter, orderTicketDto);
+                InternalDocumentOrderRequest thermalPrinterInternalDocumentOrderRequest = new InternalDocumentOrderRequest(ThermalPrinter, orderTicketDto);
                 thermalPrinterInternalDocumentOrderRequest.Print();
             }
         }

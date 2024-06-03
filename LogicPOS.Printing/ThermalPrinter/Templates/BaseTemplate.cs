@@ -12,7 +12,7 @@ using System.IO;
 
 namespace LogicPOS.Printing.Templates
 {
-    public abstract class ThermalPrinterBaseTemplate
+    public abstract class BaseTemplate
     {
         //Log4Net
         protected static log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -39,14 +39,14 @@ namespace LogicPOS.Printing.Templates
             set { _ticketSubTitle = value; }
         }
 
-        public ThermalPrinterBaseTemplate(PrintingPrinterDto printer)
+        public BaseTemplate(PrintingPrinterDto printer)
             : this(
                   printer,
                   PrintingSettings.ThermalPrinter.CompanyLogoLocation)
         {
         }
 
-        public ThermalPrinterBaseTemplate(
+        public BaseTemplate(
             PrintingPrinterDto printer,
             string pCompanyLogo)
         {

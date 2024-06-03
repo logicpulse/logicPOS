@@ -1,5 +1,6 @@
 ﻿using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Enums;
+using LogicPOS.DTOs.Common;
 using LogicPOS.DTOs.Printing;
 using System.Collections.Generic;
 
@@ -102,5 +103,17 @@ namespace LogicPOS.Data.XPO.Utility
                 StartDate = workSessionPeriod.DateStart
             };
         }
+
+        public static CurrenyDto GetCurrencyDto(cfg_configurationcurrency currency)
+        {
+            return new CurrenyDto
+            {
+                Id = currency.Oid,
+                Acronym = currency.Acronym,
+                ExchangeRate = currency.ExchangeRate
+            };
+        }
+
+
     }
 }

@@ -17,12 +17,12 @@ using System.Data;
 
 namespace LogicPOS.Printing.Documents
 {
-    public class ThermalPrinterInternalDocumentWorkSession : ThermalPrinterBaseInternalTemplate
+    public class InternalDocumentWorkSession : BaseInternalTemplate
     {
         private readonly PrintWorkSessionDto _workSessionPeriod;
         private readonly SplitCurrentAccountMode _splitCurrentAccountMode;
 
-        public ThermalPrinterInternalDocumentWorkSession(
+        public InternalDocumentWorkSession(
             PrintingPrinterDto printer,
             PrintWorkSessionDto workSession,
             SplitCurrentAccountMode pSplitCurrentAccountMode)

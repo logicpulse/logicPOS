@@ -13,7 +13,7 @@ using System.Data;
 
 namespace LogicPOS.Printing.Documents
 {
-    public class ThermalPrinterFinanceDocumentPayment : ThermalPrinterBaseFinanceTemplate
+    public class FinanceDocumentPayment : BaseFinanceTemplate
     {
         //Parameters Properties
         private readonly PrintingFinancePaymentDto _documentFinancePayment = null;
@@ -21,7 +21,7 @@ namespace LogicPOS.Printing.Documents
         private readonly List<FRBODocumentFinancePaymentView> _documentFinancePaymentList;
         private readonly List<FRBODocumentFinancePaymentDocumentView> _documentFinancePaymentDocumentList;
 
-        public ThermalPrinterFinanceDocumentPayment(
+        public FinanceDocumentPayment(
             PrintingPrinterDto printer,
             PrintingFinancePaymentDto financePayment,
             List<int> copyNames,

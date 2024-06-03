@@ -5,6 +5,8 @@ using DevExpress.Xpo.Metadata;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Enums;
+using LogicPOS.DTOs.Common;
+using LogicPOS.DTOs.Printing;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
@@ -1087,6 +1089,83 @@ namespace LogicPOS.Data.XPO.Utility
             catch (Exception ex)
             {
                 throw ex;
+            }
+
+            return result;
+        }
+
+        public static CurrenyDto GetUsdCurrencyDto()
+        {
+            var curreny = GetEntityById<cfg_configurationcurrency>(CultureSettings.USDCurrencyId);
+            return MappingUtils.GetCurrencyDto(curreny);
+        }
+
+        public static bool InsertSystemPrint(
+            PrintDocumentMasterDto financeMasterDto,
+            PrintingFinancePaymentDto financePaymentDto,
+            string printerDesignation,
+            int printCopies,
+            List<int> copyNames,
+            bool isSecondPrint,
+            string printMotive,
+            Guid userDetailsId,
+            Guid terminalId)
+        {
+            bool result = false;
+
+            using (UnitOfWork unitOfWork = new UnitOfWork())
+            {
+                string designation = string.Empty;
+
+                //Get Objects into Current UOW Session
+                var userDetails = GetEntityById<sys_userdetail>(userDetailsId, unitOfWork);
+                var terminal = GetEntityById<pos_configurationplaceterminal>(terminalId, unitOfWork);
+
+                string copyNamesCommaDelimited = string.Join(",", copyNames);
+
+                sys_systemprint systemPrint = new sys_systemprint(unitOfWork)
+                {
+                    Date = CurrentDateTimeAtomic(),
+                    Designation = designation,
+                    PrintCopies = printCopies,
+                    CopyNames = copyNamesCommaDelimited,
+                    SecondPrint = isSecondPrint,
+                    UserDetail = userDetails,
+                    Terminal = terminal
+                };
+                if (printMotive != string.Empty) systemPrint.PrintMotive = printMotive;
+
+                //Mode: DocumentFinanceMaster
+                if (financeMasterDto != null)
+                {
+                    var financeMaster = GetEntityById<fin_documentfinancemaster>(financeMasterDto.Id, unitOfWork);
+                    systemPrint.DocumentMaster = financeMaster;
+                    designation = $"{CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, ResourceNames.GLOBAL_PRINTED)} {financeMaster.DocumentType.Designation} : {financeMaster.DocumentNumber}";
+
+                    financeMaster.Printed = true;
+                }
+
+                //Mode: DocumentFinancePayment
+                if (financePaymentDto != null)
+                {
+                    fin_documentfinancepayment documentFinancePayment = GetEntityById<fin_documentfinancepayment>(financePaymentDto.Id, unitOfWork);
+                    systemPrint.DocumentPayment = documentFinancePayment;
+                    designation = string.Format("{0} {1} : {2}", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, ResourceNames.GLOBAL_PRINTED), documentFinancePayment.DocumentType.Designation, documentFinancePayment.PaymentRefNo);
+                }
+                systemPrint.Designation = designation;
+
+                try
+                {
+                    //Commit UOW Changes : Before get current OrderMain
+                    unitOfWork.CommitChanges();
+                    //Audit
+                    Audit("SYSTEM_PRINT_FINANCE_DOCUMENT", designation);
+                    result = true;
+                }
+                catch (Exception ex)
+                {
+                    unitOfWork.RollbackTransaction();
+                }
             }
 
             return result;

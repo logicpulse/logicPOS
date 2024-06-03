@@ -5,9 +5,9 @@ using LogicPOS.DTOs.Printing;
 
 namespace LogicPOS.Printing.Templates
 {
-    public class ThermalPrinterInternalDocumentTemplate : ThermalPrinterBaseInternalTemplate
+    public class InternalDocumentTemplate : BaseInternalTemplate
     {
-        public ThermalPrinterInternalDocumentTemplate(PrintingPrinterDto printer)
+        public InternalDocumentTemplate(PrintingPrinterDto printer)
             : base(printer)
         {
             _ticketTitle = "DYNAMIC TITLE";

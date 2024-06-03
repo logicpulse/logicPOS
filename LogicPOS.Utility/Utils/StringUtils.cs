@@ -155,20 +155,5 @@ namespace LogicPOS.Utility
             return reader.ReadToEnd();
         }
 
-        public static string StringListToCommaDelimitedString<T>(List<T> pList, char pSeparator)
-        {
-            string result = string.Empty;
-
-            int i = 0;
-            foreach (var item in pList)
-            {
-                i++;
-                result += item.ToString();
-                if (i < pList.Count) result += pSeparator.ToString();
-            }
-
-            return result;
-        }
-
     }
 }

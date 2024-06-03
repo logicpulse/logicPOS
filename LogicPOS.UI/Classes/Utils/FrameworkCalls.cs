@@ -760,7 +760,7 @@ namespace logicpos
                 {
                     var printer=MappingUtils.GetPrinterDto(pPrinter);
                     var orderTicketDto = MappingUtils.GetPrintOrderTicketDto(orderTicket);
-                    ThermalPrinterInternalDocumentOrderRequest thermalPrinterInternalDocumentOrderRequest = new ThermalPrinterInternalDocumentOrderRequest(printer, orderTicketDto);
+                    InternalDocumentOrderRequest thermalPrinterInternalDocumentOrderRequest = new InternalDocumentOrderRequest(printer, orderTicketDto);
                     thermalPrinterInternalDocumentOrderRequest.Print();
                 }
             }

@@ -286,7 +286,11 @@ namespace LogicPOS.Printing.Common
 
             ThermalPrinter printer = new ThermalPrinter("PC860");
 
-            PrintingUtils.PreparePrintDocument(ref printer, printobjectsCalculate, coluneSize, LineSize);
+            PrintingUtils.PreparePrintDocument(
+                printer, 
+                printobjectsCalculate, 
+                coluneSize, 
+                LineSize);
 
             switch (pDriver)
             {

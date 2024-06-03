@@ -3,9 +3,7 @@ using logicpos.shared.Enums;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Settings.Terminal;
 using LogicPOS.Data.XPO.Utility;
-using LogicPOS.Domain.Entities;
 using LogicPOS.DTOs.Printing;
-using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Globalization;
 using LogicPOS.Printing.Common;
 using LogicPOS.Printing.Documents;
@@ -14,10 +12,8 @@ using LogicPOS.Reporting;
 using LogicPOS.Settings;
 using LogicPOS.Utility;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Xml;
 
@@ -26,43 +22,9 @@ namespace LogicPOS.Printing.Utility
 
     public static class PrintingUtils
     {
-        public static BitmapData GetBitmapData(string fileName)
-        {
-            return GetBitmapData((Bitmap)Image.FromFile(fileName));
-        }
-
-        public static BitmapData GetBitmapData(Bitmap bitMap)
-        {
-            using (var bitmap = bitMap)
-            {
-                var threshold = 127;
-                var index = 0;
-                var dimensions = bitmap.Width * bitmap.Height;
-                var dots = new BitArray(dimensions);
-
-                for (var y = 0; y < bitmap.Height; y++)
-                {
-                    for (var x = 0; x < bitmap.Width; x++)
-                    {
-                        var color = bitmap.GetPixel(x, y);
-                        var luminance = (int)(color.R * 0.3 + color.G * 0.59 + color.B * 0.11);
-                        dots[index] = (luminance < threshold);
-                        index++;
-                    }
-                }
-
-                return new BitmapData()
-                {
-                    Dots = dots,
-                    Height = bitmap.Height,
-                    Width = bitmap.Width
-                };
-            }
-        }
-
         public static List<PrintObject> CalculatePrintCoordinates(
-            List<PrintObject> printObjects, 
-            int PrintCharWidth, 
+            List<PrintObject> printObjects,
+            int PrintCharWidth,
             int PrintLineHeight)
         {
             for (int i = 0; i < printObjects.Count; i++)
@@ -80,24 +42,24 @@ namespace LogicPOS.Printing.Utility
         }
 
         public static void PreparePrintDocument(
-            ref ThermalPrinter printer, 
-            List<PrintObject> printObjects, 
-            int PrintCharWidth, 
+            ThermalPrinter printer,
+            List<PrintObject> printObjects,
+            int PrintCharWidth,
             int PrintLineHeight)
         {
             PreparePrintDocument(
-                ref printer, 
-                printObjects, 
-                PrintCharWidth, 
+                printer,
+                printObjects,
+                PrintCharWidth,
                 PrintLineHeight,
                 string.Empty);
         }
 
         public static void PreparePrintDocument(
-            ref ThermalPrinter printer, 
-            List<PrintObject> printObjects, 
-            int PrintCharWidth, 
-            int PrintLineHeight, 
+            ThermalPrinter printer,
+            List<PrintObject> printObjects,
+            int PrintCharWidth,
+            int PrintLineHeight,
             string barcodeValue)
         {
             if (printObjects.Count == 0)
@@ -532,10 +494,10 @@ namespace LogicPOS.Printing.Utility
         }
 
         public static PrintObject ApplyTextProperties(
-            PrintObject Texto, 
-            DataRow[] drTemp, 
-            PrintObject prt, 
-            int maxLenght, 
+            PrintObject Texto,
+            DataRow[] drTemp,
+            PrintObject prt,
+            int maxLenght,
             int dataCount)
         {
             try
@@ -581,13 +543,13 @@ namespace LogicPOS.Printing.Utility
         }
 
         public static PrintObject ApplyTextPropertiesLoop(
-            PrintObject Texto, 
-            PrintObject prt, 
-            int maxLenght, 
-            int dataCount, 
-            string text, 
-            int valueToAddPosY, 
-            bool needToHaveMaxLenght, 
+            PrintObject Texto,
+            PrintObject prt,
+            int maxLenght,
+            int dataCount,
+            string text,
+            int valueToAddPosY,
+            bool needToHaveMaxLenght,
             bool addPosY)
         {
 
@@ -641,9 +603,9 @@ namespace LogicPOS.Printing.Utility
         }
 
         public static List<PrintObject> GetObjectsFromTemplate(
-            PrintObject prt, 
-            XmlDocument appconfigdoc, 
-            DataTable dataLoop, 
+            PrintObject prt,
+            XmlDocument appconfigdoc,
+            DataTable dataLoop,
             DataTable dataStatic)
         {
             List<PrintObject> printObjects = new List<PrintObject>();
@@ -1155,120 +1117,48 @@ namespace LogicPOS.Printing.Utility
         }
 
         private static bool SystemPrintInsert(
-            PrintDocumentMasterDto pDocumentFinanceMaster, 
-            string pPrinterDesignation, 
-            int pPrintCopies, 
-            List<int> pCopyNames, 
-            bool pSecondPrint, 
+            PrintDocumentMasterDto pDocumentFinanceMaster,
+            string pPrinterDesignation,
+            int pPrintCopies,
+            List<int> pCopyNames,
+            bool pSecondPrint,
             string pPrintMotive)
         {
-            return SystemPrintInsert(
-                pDocumentFinanceMaster, 
-                null, 
-                pPrinterDesignation, 
-                pPrintCopies, 
-                pCopyNames, 
-                pSecondPrint, 
-                pPrintMotive, 
-                XPOSettings.LoggedUser, 
-                TerminalSettings.LoggedTerminal);
+            return XPOHelper.InsertSystemPrint(
+                pDocumentFinanceMaster,
+                null,
+                pPrinterDesignation,
+                pPrintCopies,
+                pCopyNames,
+                pSecondPrint,
+                pPrintMotive,
+                XPOSettings.LoggedUser.Oid,
+                TerminalSettings.LoggedTerminal.Oid);
         }
 
         private static bool SystemPrintInsert(
-            PrintingFinancePaymentDto pDocumentFinancePayment, 
-            string pPrinterDesignation, 
-            int pPrintCopies, 
+            PrintingFinancePaymentDto pDocumentFinancePayment,
+            string pPrinterDesignation,
+            int pPrintCopies,
             List<int> pCopyNames)
         {
-            return SystemPrintInsert(
-                null, 
-                pDocumentFinancePayment, 
-                pPrinterDesignation, 
-                pPrintCopies, 
-                pCopyNames, 
-                false, 
-                string.Empty, 
-                XPOSettings.LoggedUser, 
-                TerminalSettings.LoggedTerminal);
-        }
-
-        private static bool SystemPrintInsert(
-            PrintDocumentMasterDto financeMaster, 
-            PrintingFinancePaymentDto financePayment, 
-            string printerDesignation, 
-            int printCopies, 
-            List<int> copyNames, 
-            bool isSecondPrint, 
-            string printMotive, 
-            sys_userdetail pUserDetail, 
-            pos_configurationplaceterminal pConfigurationPlaceTerminal)
-        {
-            bool result = false;
-
-            //Start UnitOfWork
-            using (UnitOfWork unitOfWork = new UnitOfWork())
-            {
-                string designation = string.Empty;
-                //Get Objects into Current UOW Session
-                sys_userdetail userDetail = XPOHelper.GetEntityById<sys_userdetail>(pUserDetail.Oid, unitOfWork);
-                pos_configurationplaceterminal configurationPlaceTerminal = XPOHelper.GetEntityById<pos_configurationplaceterminal>(pConfigurationPlaceTerminal.Oid, unitOfWork);
-
-                //Convert CopyNames List to Comma Delimited String
-                string copyNamesCommaDelimited = CustomReport.CopyNamesCommaDelimited(copyNames);
-
-                //SystemPrint
-                sys_systemprint systemPrint = new sys_systemprint(unitOfWork)
-                {
-                    Date = XPOHelper.CurrentDateTimeAtomic(),
-                    Designation = designation,
-                    PrintCopies = printCopies,
-                    CopyNames = copyNamesCommaDelimited,
-                    SecondPrint = isSecondPrint,
-                    UserDetail = userDetail,
-                    Terminal = configurationPlaceTerminal
-                };
-                if (printMotive != string.Empty) systemPrint.PrintMotive = printMotive;
-
-                //Mode: DocumentFinanceMaster
-                if (financeMaster != null)
-                {
-                    fin_documentfinancemaster documentFinanceMaster = XPOHelper.GetEntityById<fin_documentfinancemaster>(financeMaster.Id, unitOfWork);
-                    systemPrint.DocumentMaster = documentFinanceMaster;
-                    designation = string.Format("{0} {1} : {2}", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_printed"), documentFinanceMaster.DocumentType.Designation, documentFinanceMaster.DocumentNumber);
-                    //Update DocumentFinanceMaster
-                    if (!documentFinanceMaster.Printed) documentFinanceMaster.Printed = true;
-                }
-                //Mode: DocumentFinancePayment
-                if (financePayment != null)
-                {
-                    fin_documentfinancepayment documentFinancePayment = XPOHelper.GetEntityById<fin_documentfinancepayment>(financePayment.Id, unitOfWork);
-                    systemPrint.DocumentPayment = documentFinancePayment;
-                    designation = string.Format("{0} {1} : {2}", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_printed"), documentFinancePayment.DocumentType.Designation, documentFinancePayment.PaymentRefNo);
-                }
-                systemPrint.Designation = designation;
-
-                try
-                {
-                    //Commit UOW Changes : Before get current OrderMain
-                    unitOfWork.CommitChanges();
-                    //Audit
-                    XPOHelper.Audit("SYSTEM_PRINT_FINANCE_DOCUMENT", designation);
-                    result = true;
-                }
-                catch (Exception ex)
-                {
-                    unitOfWork.RollbackTransaction();
-                }
-            }
-
-            return result;
+            return XPOHelper.InsertSystemPrint(
+                null,
+                pDocumentFinancePayment,
+                pPrinterDesignation,
+                pPrintCopies,
+                pCopyNames,
+                false,
+                string.Empty,
+                XPOSettings.LoggedUser.Oid,
+                TerminalSettings.LoggedTerminal.Oid);
         }
 
         public static bool PrintFinanceDocument(
-            PrintingPrinterDto printer, 
+            PrintingPrinterDto printer,
             PrintDocumentMasterDto pDocumentFinanceMaster,
-            List<int> pCopyNames, 
-            bool pSecondCopy, 
+            List<int> pCopyNames,
+            bool pSecondCopy,
             string pMotive)
         {
             bool result = false;
@@ -1283,17 +1173,17 @@ namespace LogicPOS.Printing.Utility
                 bool resultSystemPrint;
                 switch (GetPrinterToken(printer.Token))
                 {
-                    
+
                     //Impressora SINOCAN em ambiente Windows
                     case "THERMAL_PRINTER_WINDOWS":
                     //Impressora SINOCAN em ambiente Linux
                     //Impressora SINOCAN em ambiente WindowsLinux/Socket
                     case "THERMAL_PRINTER_SOCKET":
-                        ThermalPrinterFinanceDocumentMaster thermalPrinterFinanceDocument = new ThermalPrinterFinanceDocumentMaster(
-                            printer, 
-                            pDocumentFinanceMaster, 
-                            pCopyNames, 
-                            pSecondCopy, 
+                        FinanceDocumentMaster thermalPrinterFinanceDocument = new FinanceDocumentMaster(
+                            printer,
+                            pDocumentFinanceMaster,
+                            pCopyNames,
+                            pSecondCopy,
                             pMotive);
 
                         thermalPrinterFinanceDocument.Print();
@@ -1318,52 +1208,53 @@ namespace LogicPOS.Printing.Utility
             return result;
         }
 
-        //Quick function to get Printer and Template and Send to Base PrintFinanceDocument, and Open Drawer if Has a Valid Payment Method
         public static bool PrintFinanceDocument(PrintDocumentMasterDto pDocumentFinanceMaster)
         {
             return PrintFinanceDocument(XPOSettings.Session, pDocumentFinanceMaster);
         }
 
         public static bool PrintFinanceDocument(
-            Session pSession, 
-            PrintDocumentMasterDto pDocumentFinanceMaster)
+            Session session,
+            PrintDocumentMasterDto financeMaster)
         {
             List<int> printCopies = new List<int>();
-            for (int i = 0; i < pDocumentFinanceMaster.DocumentType.PrintCopies; i++)
+            for (int i = 0; i < financeMaster.DocumentType.PrintCopies; i++)
             {
                 printCopies.Add(i);
             }
 
-            return PrintFinanceDocument(pSession, pDocumentFinanceMaster, printCopies, false, string.Empty);
+            return PrintFinanceDocument(
+                session,
+                financeMaster,
+                printCopies,
+                false,
+                string.Empty);
         }
 
         public static bool PrintFinanceDocument(
-            Session pSession, 
-            PrintDocumentMasterDto pDocumentFinanceMaster, 
-            List<int> pCopyNames, 
-            bool pSecondCopy, 
+            Session pSession,
+            PrintDocumentMasterDto financeMaster,
+            List<int> pCopyNames,
+            bool pSecondCopy,
             string pMotive)
         {
             bool result;
 
-            //Finish Payment with Print Job + Open Drawer (If Not TableConsult)
-            fin_documentfinanceyearserieterminal xDocumentFinanceYearSerieTerminal = 
-                DocumentProcessingSeriesUtils.
-                GetDocumentFinanceYearSerieTerminal(
-                    pSession, 
-                    pDocumentFinanceMaster.DocumentType.Id);
+            //Commented By Tchialo: Appearently this is not used
+            //DocumentProcessingSeriesUtils.GetDocumentFinanceYearSerieTerminal(
+            //    pSession,
+            //    financeMaster.DocumentType.Id);
 
             var printer = LoggedTerminalSettings.GetPrinterDto();
 
             PrintFinanceDocument(
-                printer, 
-                pDocumentFinanceMaster, 
-                pCopyNames, 
-                pSecondCopy, 
+                printer,
+                financeMaster,
+                pCopyNames,
+                pSecondCopy,
                 pMotive);
 
-
-            if (pDocumentFinanceMaster.HasValidPaymentMethod)
+            if (financeMaster.HasValidPaymentMethod)
             {
                 OpenDoor();
             }
@@ -1373,7 +1264,7 @@ namespace LogicPOS.Printing.Utility
         }
 
         public static bool PrintFinanceDocumentPayment(
-            PrintingPrinterDto printer, 
+            PrintingPrinterDto printer,
             PrintingFinancePaymentDto pDocumentFinancePayment)
         {
             bool result = false;
@@ -1390,11 +1281,9 @@ namespace LogicPOS.Printing.Utility
                 {
                     //Impressora SINOCAN em ambiente Windows
                     case "THERMAL_PRINTER_WINDOWS":
-                    //Impressora SINOCAN em ambiente Linux
-                    case "THERMAL_PRINTER_LINUX":
                     //Impressora SINOCAN em ambiente WindowsLinux/Socket
                     case "THERMAL_PRINTER_SOCKET":
-                        ThermalPrinterFinanceDocumentPayment thermalPrinterFinanceDocumentPayment = new ThermalPrinterFinanceDocumentPayment(printer, pDocumentFinancePayment, copyNames, false);
+                        FinanceDocumentPayment thermalPrinterFinanceDocumentPayment = new FinanceDocumentPayment(printer, pDocumentFinancePayment, copyNames, false);
                         thermalPrinterFinanceDocumentPayment.Print();
                         //Add to SystemPrint Audit
                         resultSystemPrint = SystemPrintInsert(pDocumentFinancePayment, printer.Designation, printCopies, copyNames);
@@ -1417,7 +1306,7 @@ namespace LogicPOS.Printing.Utility
         }
 
         public static bool PrintWorkSessionMovement(
-            PrintingPrinterDto printer, 
+            PrintingPrinterDto printer,
             PrintWorkSessionDto pWorkSessionPeriod)
         {
             bool result = false;
@@ -1434,13 +1323,13 @@ namespace LogicPOS.Printing.Utility
                     //Impressora SINOCAN em ambiente WindowsLinux/Socket
                     case "THERMAL_PRINTER_SOCKET":
                         //NonCurrentAcount
-                        ThermalPrinterInternalDocumentWorkSession thermalPrinterInternalDocumentWorkSession = new ThermalPrinterInternalDocumentWorkSession(printer, pWorkSessionPeriod, SplitCurrentAccountMode.NonCurrentAcount);
+                        InternalDocumentWorkSession thermalPrinterInternalDocumentWorkSession = new InternalDocumentWorkSession(printer, pWorkSessionPeriod, SplitCurrentAccountMode.NonCurrentAcount);
                         thermalPrinterInternalDocumentWorkSession.Print();
                         //CurrentAcount
                         //Use Config to print this
                         if (Convert.ToBoolean(GeneralSettings.PreferenceParameters["USE_CC_DAILY_TICKET"]))
                         {
-                            thermalPrinterInternalDocumentWorkSession = new ThermalPrinterInternalDocumentWorkSession(printer, pWorkSessionPeriod, SplitCurrentAccountMode.CurrentAcount);
+                            thermalPrinterInternalDocumentWorkSession = new InternalDocumentWorkSession(printer, pWorkSessionPeriod, SplitCurrentAccountMode.CurrentAcount);
                             thermalPrinterInternalDocumentWorkSession.Print();
                         }
                         break;
@@ -1465,10 +1354,10 @@ namespace LogicPOS.Printing.Utility
             {
                 if (
                     orderDetailDto.ArticlePrinter != null &&
-                    orderDetailDto.ArticlePrinter.Id != Guid.Empty && 
+                    orderDetailDto.ArticlePrinter.Id != Guid.Empty &&
                     orderDetailDto.ArticlePrinter.IsThermal)
                 {
-                    if(articlesPrinters.Any(p => p.Id == orderDetailDto.ArticlePrinter.Id))
+                    if (articlesPrinters.Any(p => p.Id == orderDetailDto.ArticlePrinter.Id))
                     {
                         continue;
                     }
@@ -1482,7 +1371,7 @@ namespace LogicPOS.Printing.Utility
             {
                 foreach (var item in articlesPrinters)
                 {
-                    ThermalPrinterInternalDocumentOrderRequest thermalPrinterInternalDocumentOrderRequest = new ThermalPrinterInternalDocumentOrderRequest(item, orderTicketDto, true);
+                    InternalDocumentOrderRequest thermalPrinterInternalDocumentOrderRequest = new InternalDocumentOrderRequest(item, orderTicketDto, true);
                     thermalPrinterInternalDocumentOrderRequest.Print();
                 }
             }
@@ -1493,10 +1382,10 @@ namespace LogicPOS.Printing.Utility
 
         //Used for Money Movements and Open/Close Terminal/Day Sessions
         public static bool PrintCashDrawerOpenAndMoneyInOut(
-            PrintingPrinterDto printer, 
-            string pTicketTitle, 
+            PrintingPrinterDto printer,
+            string pTicketTitle,
             decimal pMovementAmount,
-            decimal pTotalAmountInCashDrawer, 
+            decimal pTotalAmountInCashDrawer,
             string pMovementDescription)
         {
             bool result = false;
@@ -1505,20 +1394,16 @@ namespace LogicPOS.Printing.Utility
             {
                 switch (GetPrinterToken(printer.Token))
                 {
-                    //Impressora SINOCAN em ambiente Windows
                     case "THERMAL_PRINTER_WINDOWS":
-                    //Impressora SINOCAN em ambiente Linux
-                    case "THERMAL_PRINTER_LINUX":
-                    //Impressora SINOCAN em ambiente WindowsLinux/Socket
                     case "THERMAL_PRINTER_SOCKET":
-                        ThermalPrinterInternalDocumentCashDrawer thermalPrinterInternalDocumentCashDrawer = new ThermalPrinterInternalDocumentCashDrawer(
-                            printer, 
-                            pTicketTitle, 
-                            pTotalAmountInCashDrawer, 
-                            pMovementAmount, 
+                        InternalDocumentCashDrawer internalDocumentCashDrawer = new InternalDocumentCashDrawer(
+                            printer,
+                            pTicketTitle,
+                            pTotalAmountInCashDrawer,
+                            pMovementAmount,
                             pMovementDescription);
 
-                        thermalPrinterInternalDocumentCashDrawer.Print();
+                        internalDocumentCashDrawer.Print();
                         break;
                 }
                 result = true;

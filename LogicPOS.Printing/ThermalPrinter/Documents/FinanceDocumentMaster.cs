@@ -1,6 +1,6 @@
 ﻿using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
-using LogicPOS.Domain.Entities;
+using LogicPOS.DTOs.Common;
 using LogicPOS.DTOs.Printing;
 using LogicPOS.Globalization;
 using LogicPOS.Printing.Enums;
@@ -19,7 +19,7 @@ using System.IO;
 
 namespace LogicPOS.Printing.Documents
 {
-    public class ThermalPrinterFinanceDocumentMaster : ThermalPrinterBaseFinanceTemplate
+    public class FinanceDocumentMaster : BaseFinanceTemplate
     {
         //Parameters Properties
         private readonly PrintDocumentMasterDto _documentMaster;
@@ -28,35 +28,28 @@ namespace LogicPOS.Printing.Documents
         private readonly List<FRBODocumentFinanceDetail> _documentFinanceDetailList;
         private readonly List<FRBODocumentFinanceMasterTotalView> _documentFinanceMasterTotalList;
 
-        public ThermalPrinterFinanceDocumentMaster(
-            PrintingPrinterDto printer, 
-            PrintDocumentMasterDto documentMaster, 
-            List<int> copyNames, 
-            bool isSecondCopy, 
+        public FinanceDocumentMaster(
+            PrintingPrinterDto printer,
+            PrintDocumentMasterDto documentMaster,
+            List<int> copyNames,
+            bool isSecondCopy,
             string motive)
             : base(
-                  printer, 
-                  documentMaster.DocumentType, 
-                  copyNames, 
+                  printer,
+                  documentMaster.DocumentType,
+                  copyNames,
                   isSecondCopy)
         {
-            try
-            {
-                //Parameters
-                _documentMaster = documentMaster;
 
-                //Init Fast Reports Business Objects (From FRBOHelper)
-                ResultFRBODocumentFinanceMaster fRBOHelperResponseProcessReportFinanceDocument = FRBOHelper.GetFRBOFinanceDocument(_documentMaster.Id);
-                //Get FRBOs Lists 
-                _documentFinanceMasterList = fRBOHelperResponseProcessReportFinanceDocument.DocumentFinanceMaster.List;
-                _documentFinanceDetailList = fRBOHelperResponseProcessReportFinanceDocument.DocumentFinanceMaster.List[0].DocumentFinanceDetail;
-                _documentFinanceMasterTotalList = fRBOHelperResponseProcessReportFinanceDocument.DocumentFinanceMaster.List[0].DocumentFinanceMasterTotal; ;
-            }
-            catch (Exception ex)
-            {
-                _logger.Debug("ThermalPrinterFinanceDocumentMaster(sys_configurationprinters pPrinter, fin_documentfinancemaster pDocumentMaster, List<int> pCopyNames, bool pSecondCopy, string pMotive) :: " + ex.Message, ex);
-                throw ex;
-            }
+            _documentMaster = documentMaster;
+
+            //Init Fast Reports Business Objects (From FRBOHelper)
+            ResultFRBODocumentFinanceMaster fRBOHelperResponseProcessReportFinanceDocument = FRBOHelper.GetFRBOFinanceDocument(_documentMaster.Id);
+            //Get FRBOs Lists 
+            _documentFinanceMasterList = fRBOHelperResponseProcessReportFinanceDocument.DocumentFinanceMaster.List;
+            _documentFinanceDetailList = fRBOHelperResponseProcessReportFinanceDocument.DocumentFinanceMaster.List[0].DocumentFinanceDetail;
+            _documentFinanceMasterTotalList = fRBOHelperResponseProcessReportFinanceDocument.DocumentFinanceMaster.List[0].DocumentFinanceMasterTotal; ;
+
         }
 
         //Override Parent Template
@@ -228,7 +221,10 @@ namespace LogicPOS.Printing.Documents
         }
 
         //Detail Row Block
-        public void PrintDocumentDetail(TicketTable pTicketTable, FRBODocumentFinanceDetail pFinanceDetail, string pPaddingLeftFormat)
+        public void PrintDocumentDetail(
+            TicketTable pTicketTable,
+            FRBODocumentFinanceDetail pFinanceDetail,
+            string pPaddingLeftFormat)
         {
             try
             {
@@ -306,7 +302,7 @@ namespace LogicPOS.Printing.Documents
                 {
                     dataRow = dataTable.NewRow();
                     dataRow[0] = string.Format("{0} (%)", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_documentfinance_discount_customer")); /* IN009211 */
-                    dataRow[1] = LogicPOS.Utility.DataConversionUtils.DecimalToString(_documentFinanceMasterList[0].Discount);
+                    dataRow[1] = DataConversionUtils.DecimalToString(_documentFinanceMasterList[0].Discount);
                     dataTable.Rows.Add(dataRow);
                 }
                 //Add Row : TotalDiscount
@@ -314,7 +310,7 @@ namespace LogicPOS.Printing.Documents
                 {
                     dataRow = dataTable.NewRow();
                     dataRow[0] = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_documentfinance_total_discount"); /* IN009211 */
-                    dataRow[1] = LogicPOS.Utility.DataConversionUtils.DecimalToString(_documentFinanceMasterList[0].TotalDiscount * _documentFinanceMasterList[0].ExchangeRate);
+                    dataRow[1] = DataConversionUtils.DecimalToString(_documentFinanceMasterList[0].TotalDiscount * _documentFinanceMasterList[0].ExchangeRate);
                     dataTable.Rows.Add(dataRow);
                 }
 
@@ -326,17 +322,17 @@ namespace LogicPOS.Printing.Documents
                 dataRow = dataTable.NewRow();
                 dataRow[0] = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_totalnet"); /* IN009211 */
                 //dataRow[1] = LogicPOS.Utility.DataConversionUtils.DecimalToString(_documentFinanceMasterList[0].TotalGross * _documentFinanceMasterList[0].ExchangeRate);
-                dataRow[1] = LogicPOS.Utility.DataConversionUtils.DecimalToString(_documentFinanceMasterList[0].TotalNet * _documentFinanceMasterList[0].ExchangeRate);
+                dataRow[1] = DataConversionUtils.DecimalToString(_documentFinanceMasterList[0].TotalNet * _documentFinanceMasterList[0].ExchangeRate);
                 dataTable.Rows.Add(dataRow);
                 //Add Row : TotalTax
                 dataRow = dataTable.NewRow();
                 dataRow[0] = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_documentfinance_totaltax"); /* IN009211 */
-                dataRow[1] = LogicPOS.Utility.DataConversionUtils.DecimalToString(_documentFinanceMasterList[0].TotalTax * _documentFinanceMasterList[0].ExchangeRate);
+                dataRow[1] = DataConversionUtils.DecimalToString(_documentFinanceMasterList[0].TotalTax * _documentFinanceMasterList[0].ExchangeRate);
                 dataTable.Rows.Add(dataRow);
                 //Add Row : TotalFinal
                 dataRow = dataTable.NewRow();
                 dataRow[0] = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_documentfinance_totalfinal");
-                dataRow[1] = LogicPOS.Utility.DataConversionUtils.DecimalToString(_documentFinanceMasterList[0].TotalFinal * _documentFinanceMasterList[0].ExchangeRate);
+                dataRow[1] = DataConversionUtils.DecimalToString(_documentFinanceMasterList[0].TotalFinal * _documentFinanceMasterList[0].ExchangeRate);
                 dataTable.Rows.Add(dataRow);
 
                 //If Simplified Invoice, Payment Method MONEY and has Total Change, add it
@@ -353,23 +349,23 @@ namespace LogicPOS.Printing.Documents
                     //TotalDelivery
                     dataRow = dataTable.NewRow();
                     dataRow[0] = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_total_deliver");
-                    dataRow[1] = LogicPOS.Utility.DataConversionUtils.DecimalToString(_documentFinanceMasterList[0].TotalDelivery * _documentFinanceMasterList[0].ExchangeRate);
+                    dataRow[1] = DataConversionUtils.DecimalToString(_documentFinanceMasterList[0].TotalDelivery * _documentFinanceMasterList[0].ExchangeRate);
                     dataTable.Rows.Add(dataRow);
                     //TotalChange
                     dataRow = dataTable.NewRow();
                     dataRow[0] = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_total_change");
-                    dataRow[1] = LogicPOS.Utility.DataConversionUtils.DecimalToString(_documentFinanceMasterList[0].TotalChange * _documentFinanceMasterList[0].ExchangeRate);
+                    dataRow[1] = DataConversionUtils.DecimalToString(_documentFinanceMasterList[0].TotalChange * _documentFinanceMasterList[0].ExchangeRate);
                     dataTable.Rows.Add(dataRow);
                 }
 
                 /* IN009055 - related to IN005976 for Mozambique deployment */
                 if (CultureSettings.MozambiqueCountryId.Equals(XPOSettings.ConfigurationSystemCountry.Oid))
                 {
-                    cfg_configurationcurrency defaultCurrencyForExchangeRate = XPOHelper.GetEntityById<cfg_configurationcurrency>(CultureSettings.USDCurrencyId);
+                    CurrenyDto defaultCurrencyForExchangeRate = XPOHelper.GetUsdCurrencyDto();
 
                     dataRow = dataTable.NewRow();
                     dataRow[0] = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_printer_thermal_total_default_currency"), defaultCurrencyForExchangeRate.Acronym);
-                    dataRow[1] = LogicPOS.Utility.DataConversionUtils.DecimalToString(_documentFinanceMasterList[0].TotalFinal * defaultCurrencyForExchangeRate.ExchangeRate);/* TO DO : IN009055 - this causes total equals 0,00 when low product price */
+                    dataRow[1] = DataConversionUtils.DecimalToString(_documentFinanceMasterList[0].TotalFinal * defaultCurrencyForExchangeRate.ExchangeRate);/* TO DO : IN009055 - this causes total equals 0,00 when low product price */
                     dataTable.Rows.Add(dataRow);
                 }
 
@@ -425,9 +421,9 @@ namespace LogicPOS.Printing.Documents
                 {
                     dataRow = dataTable.NewRow();
                     dataRow[0] = item.Designation;
-                    dataRow[1] = string.Format("{0}%", LogicPOS.Utility.DataConversionUtils.DecimalToString(item.Value));
-                    dataRow[2] = LogicPOS.Utility.DataConversionUtils.DecimalToString(_documentFinanceMasterList[0].ExchangeRate * item.TotalBase);
-                    dataRow[3] = LogicPOS.Utility.DataConversionUtils.DecimalToString(_documentFinanceMasterList[0].ExchangeRate * item.Total);
+                    dataRow[1] = string.Format("{0}%", DataConversionUtils.DecimalToString(item.Value));
+                    dataRow[2] = DataConversionUtils.DecimalToString(_documentFinanceMasterList[0].ExchangeRate * item.TotalBase);
+                    dataRow[3] = DataConversionUtils.DecimalToString(_documentFinanceMasterList[0].ExchangeRate * item.Total);
                     dataTable.Rows.Add(dataRow);
                 }
 

@@ -10,12 +10,12 @@ using System.Data;
 
 namespace LogicPOS.Printing.Documents
 {
-    public class ThermalPrinterInternalDocumentOrderRequest : ThermalPrinterBaseInternalTemplate
+    public class InternalDocumentOrderRequest : BaseInternalTemplate
     {
         private readonly PrintOrderTicketDto _orderTicket;
         private readonly bool _articlePrinterEnabled;
 
-        public ThermalPrinterInternalDocumentOrderRequest(
+        public InternalDocumentOrderRequest(
             PrintingPrinterDto printer,
             PrintOrderTicketDto orderTicket)
             : this(
@@ -23,7 +23,7 @@ namespace LogicPOS.Printing.Documents
                   orderTicket, false)
         { }
 
-        public ThermalPrinterInternalDocumentOrderRequest(
+        public InternalDocumentOrderRequest(
             PrintingPrinterDto printer,
             PrintOrderTicketDto orderTicket,
             bool articlePrinterEnabled)

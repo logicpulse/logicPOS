@@ -5,9 +5,9 @@ using System;
 
 namespace LogicPOS.Printing.Templates
 {
-    public abstract class ThermalPrinterBaseInternalTemplate : ThermalPrinterBaseTemplate
+    public abstract class BaseInternalTemplate : BaseTemplate
     {
-        public ThermalPrinterBaseInternalTemplate(PrintingPrinterDto printer)
+        public BaseInternalTemplate(PrintingPrinterDto printer)
             : base(
                   printer,
                   PrintingSettings.ThermalPrinter.CompanyLogoLocation)

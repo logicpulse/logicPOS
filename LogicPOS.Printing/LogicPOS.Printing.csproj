@@ -60,15 +60,15 @@
     <Compile Include="Enums\WriteLineTextMode.cs" />
     <Compile Include="Common\GenericThermalPrinter.cs" />
     <Compile Include="Tickets\TicketColumn.cs" />
-    <Compile Include="Templates\ThermalPrinterInternalDocumentTemplate.cs" />
-    <Compile Include="Templates\ThermalPrinterBaseFinanceTemplate.cs" />
-    <Compile Include="Templates\ThermalPrinterBaseInternalTemplate.cs" />
-    <Compile Include="Templates\ThermalPrinterBaseTemplate.cs" />
-    <Compile Include="Documents\ThermalPrinterFinanceDocumentMaster.cs" />
-    <Compile Include="Documents\ThermalPrinterFinanceDocumentPayment.cs" />
-    <Compile Include="Documents\ThermalPrinterInternalDocumentCashDrawer.cs" />
-    <Compile Include="Documents\ThermalPrinterInternalDocumentOrderRequest.cs" />
-    <Compile Include="Documents\ThermalPrinterInternalDocumentWorkSession.cs" />
+    <Compile Include="ThermalPrinter\Templates\InternalDocumentTemplate.cs" />
+    <Compile Include="ThermalPrinter\Templates\BaseFinanceTemplate.cs" />
+    <Compile Include="ThermalPrinter\Templates\BaseInternalTemplate.cs" />
+    <Compile Include="ThermalPrinter\Templates\BaseTemplate.cs" />
+    <Compile Include="ThermalPrinter\Documents\FinanceDocumentMaster.cs" />
+    <Compile Include="ThermalPrinter\Documents\FinanceDocumentPayment.cs" />
+    <Compile Include="ThermalPrinter\Documents\InternalDocumentCashDrawer.cs" />
+    <Compile Include="ThermalPrinter\Documents\InternalDocumentOrderRequest.cs" />
+    <Compile Include="ThermalPrinter\Documents\InternalDocumentWorkSession.cs" />
     <Compile Include="Tickets\TicketTable.cs">
       <SubType>Component</SubType>
     </Compile>

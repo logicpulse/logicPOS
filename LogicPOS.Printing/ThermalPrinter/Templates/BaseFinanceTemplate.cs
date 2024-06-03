@@ -13,7 +13,7 @@ using System.Text;
 
 namespace LogicPOS.Printing.Templates
 {
-    public abstract class ThermalPrinterBaseFinanceTemplate : ThermalPrinterBaseTemplate
+    public abstract class BaseFinanceTemplate : BaseTemplate
     {
         protected PrintingDocumentTypeDto _documentType;
         protected List<int> _copyNames;
@@ -23,7 +23,7 @@ namespace LogicPOS.Printing.Templates
         protected string _copyName = string.Empty;
         protected int _ticketTablePaddingLeftLength = 2;
 
-        public ThermalPrinterBaseFinanceTemplate(
+        public BaseFinanceTemplate(
             PrintingPrinterDto printer, 
             PrintingDocumentTypeDto documentType, 
             List<int> copyNames)
@@ -35,7 +35,7 @@ namespace LogicPOS.Printing.Templates
         {
         }
 
-        public ThermalPrinterBaseFinanceTemplate(
+        public BaseFinanceTemplate(
             PrintingPrinterDto printer, 
             PrintingDocumentTypeDto documentType, 
             List<int> copyNames, 

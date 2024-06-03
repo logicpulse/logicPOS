@@ -6,13 +6,13 @@ using System;
 
 namespace LogicPOS.Printing.Documents
 {
-    public class ThermalPrinterInternalDocumentCashDrawer : ThermalPrinterBaseInternalTemplate
+    public class InternalDocumentCashDrawer : BaseInternalTemplate
     {
         private readonly decimal _totalAmountInCashDrawer = 0.0m;
         private readonly decimal _movementAmount = 0.0m;
         private readonly string _movementDescription = string.Empty;
 
-        public ThermalPrinterInternalDocumentCashDrawer(
+        public InternalDocumentCashDrawer(
             PrintingPrinterDto printer,
             string pTicketTitle,
             decimal pTotalAmountInCashDrawer)
@@ -23,7 +23,7 @@ namespace LogicPOS.Printing.Documents
                   0.0m)
         { }
 
-        public ThermalPrinterInternalDocumentCashDrawer(
+        public InternalDocumentCashDrawer(
             PrintingPrinterDto printer,
             string pTicketTitle,
             decimal pTotalAmountInCashDrawer,
@@ -36,7 +36,7 @@ namespace LogicPOS.Printing.Documents
                   string.Empty)
         { }
 
-        public ThermalPrinterInternalDocumentCashDrawer(
+        public InternalDocumentCashDrawer(
             PrintingPrinterDto printer,
             string pTicketTitle,
             decimal pTotalAmountInCashDrawer,

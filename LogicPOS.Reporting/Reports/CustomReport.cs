@@ -1921,26 +1921,6 @@ namespace LogicPOS.Reporting
             return result;
         }
 
-        //Get CopyNames Delimted String from Generic List
-        public static string CopyNamesCommaDelimited(List<int> pCopyNames)
-        {
-            string result = string.Empty;
-
-            try
-            {
-                if (pCopyNames.Count > 0)
-                {
-                    result = StringUtils.StringListToCommaDelimitedString<int>(pCopyNames, ',');
-                }
-            }
-            catch (Exception ex)
-            {
-
-                _logger.Error(ex.Message, ex);
-            }
-
-            return result;
-        }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 

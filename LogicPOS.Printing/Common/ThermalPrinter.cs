@@ -785,7 +785,7 @@ namespace LogicPOS.Printing.Common
             {
                 bmpFilename = Path.GetDirectoryName(bmpFilename) + "\\" + Path.GetFileNameWithoutExtension(bmpFilename) + "_temp" + ".bmp";
             }
-            var data = PrintingUtils.GetBitmapData(bmpFilename);
+            var data = BitmapData.GetBitmapData(bmpFilename);
             var dots = data.Dots;
             var width = BitConverter.GetBytes(data.Width);
 
@@ -858,7 +858,7 @@ namespace LogicPOS.Printing.Common
         public void PrintImage(Bitmap myBitmap)
         {
 
-            var data = PrintingUtils.GetBitmapData(myBitmap);
+            var data = BitmapData.GetBitmapData(myBitmap);
             var dots = data.Dots;
             var width = BitConverter.GetBytes(data.Width);
 
