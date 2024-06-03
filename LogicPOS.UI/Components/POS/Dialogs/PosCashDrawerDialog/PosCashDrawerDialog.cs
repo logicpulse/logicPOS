@@ -86,24 +86,24 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 bool buttonOkSensitive;
 
                 //Generate Buttons
-                foreach (SelectStatementResultRow row in xPSelectData.Data)
+                foreach (SelectStatementResultRow row in xPSelectData.DataRows)
                 {
-                    buttonBagKey = row.Values[xPSelectData.GetFieldIndex("Token")].ToString();
-                    buttonDisabled = Convert.ToBoolean(row.Values[xPSelectData.GetFieldIndex("Disabled")]);
+                    buttonBagKey = row.Values[xPSelectData.GetFieldIndexFromName("Token")].ToString();
+                    buttonDisabled = Convert.ToBoolean(row.Values[xPSelectData.GetFieldIndexFromName("Disabled")]);
 
                     touchButtonIconWithText = new TouchButtonIconWithText(
                       string.Format("touchButton{0}_Green", buttonBagKey),
                       Color.Transparent/*_colorBaseDialogDefaultButtonBackground*/,
-                      CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, row.Values[xPSelectData.GetFieldIndex("ResourceString")].ToString()),
+                      CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, row.Values[xPSelectData.GetFieldIndexFromName("ResourceString")].ToString()),
                       _fontBaseDialogButton,
                       _colorBaseDialogDefaultButtonFont,
-                     string.Format("{0}{1}", PathsSettings.ImagesFolderLocation, row.Values[xPSelectData.GetFieldIndex("ButtonIcon")].ToString()),
+                     string.Format("{0}{1}", PathsSettings.ImagesFolderLocation, row.Values[xPSelectData.GetFieldIndexFromName("ButtonIcon")].ToString()),
                       _sizeBaseDialogDefaultButtonIcon,
                       _sizeBaseDialogDefaultButton.Width,
                       _sizeBaseDialogDefaultButton.Height
                      )
                     {
-                        CurrentButtonOid = new Guid(row.Values[xPSelectData.GetFieldIndex("Oid")].ToString()),
+                        CurrentButtonOid = new Guid(row.Values[xPSelectData.GetFieldIndexFromName("Oid")].ToString()),
                         Sensitive = !buttonDisabled
                     };
                     //Add to Dictionary

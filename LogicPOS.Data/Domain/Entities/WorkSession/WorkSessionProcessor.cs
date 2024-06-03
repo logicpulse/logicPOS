@@ -156,10 +156,10 @@ namespace LogicPOS.Data.Services
                 );
 
                 SQLSelectResultData xPSelectData = XPOHelper.GetSelectedDataFromQuery(uowSession, sql);
-                foreach (SelectStatementResultRow row in xPSelectData.Data)
+                foreach (SelectStatementResultRow row in xPSelectData.DataRows)
                 {
-                    paymentMethodOrd = Convert.ToUInt16(row.Values[xPSelectData.GetFieldIndex("Ord")]);
-                    paymentMethodToken = row.Values[xPSelectData.GetFieldIndex("Token")].ToString();
+                    paymentMethodOrd = Convert.ToUInt16(row.Values[xPSelectData.GetFieldIndexFromName("Ord")]);
+                    paymentMethodToken = row.Values[xPSelectData.GetFieldIndexFromName("Token")].ToString();
 
                     switch (paymentMethodToken)
                     {

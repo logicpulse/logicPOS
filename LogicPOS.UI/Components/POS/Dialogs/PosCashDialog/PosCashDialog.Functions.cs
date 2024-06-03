@@ -76,14 +76,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             //Check if has Working Open Orders/Tables
             SQLSelectResultData xPSelectDataTables = WorkSessionProcessor.GetOpenOrderTables();
-            int noOfOpenOrderTables = xPSelectDataTables.Data.Length;
+            int noOfOpenOrderTables = xPSelectDataTables.DataRows.Length;
             if (noOfOpenOrderTables > 0)
             {
                 string openOrderTables = string.Empty;
                 pos_configurationplacetable currentOpenOrderTable;
-                foreach (SelectStatementResultRow row in xPSelectDataTables.Data)
+                foreach (SelectStatementResultRow row in xPSelectDataTables.DataRows)
                 {
-                    Guid tableOid = new Guid(row.Values[xPSelectDataTables.GetFieldIndex("PlaceTable")].ToString());
+                    Guid tableOid = new Guid(row.Values[xPSelectDataTables.GetFieldIndexFromName("PlaceTable")].ToString());
                     currentOpenOrderTable = XPOSettings.Session.GetObjectByKey<pos_configurationplacetable>(tableOid);
                     openOrderTables += string.Format("{0}{1}", currentOpenOrderTable.Designation, " ");
                 }
@@ -104,16 +104,16 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             //Check if has Working Terminal Sessions
             SQLSelectResultData xPSelectDataTerminals = WorkSessionProcessor.GetSessionPeriodOpenTerminalSessions();
-            int noOfTerminalOpenSessions = xPSelectDataTerminals.Data.Length;
+            int noOfTerminalOpenSessions = xPSelectDataTerminals.DataRows.Length;
             if (noOfTerminalOpenSessions > 0)
             {
                 string openTerminals = string.Empty;
                 pos_configurationplaceterminal currentOpenSessionTerminal;
-                foreach (SelectStatementResultRow row in xPSelectDataTerminals.Data)
+                foreach (SelectStatementResultRow row in xPSelectDataTerminals.DataRows)
                 {
-                    Guid terminalOid = new Guid(row.Values[xPSelectDataTerminals.GetFieldIndex("Terminal")].ToString());
+                    Guid terminalOid = new Guid(row.Values[xPSelectDataTerminals.GetFieldIndexFromName("Terminal")].ToString());
                     currentOpenSessionTerminal = XPOSettings.Session.GetObjectByKey<pos_configurationplaceterminal>(terminalOid);
-                    openTerminals += string.Format("{0}{1} - {2}", Environment.NewLine, currentOpenSessionTerminal.Designation, row.Values[xPSelectDataTerminals.GetFieldIndex("Designation")].ToString());
+                    openTerminals += string.Format("{0}{1} - {2}", Environment.NewLine, currentOpenSessionTerminal.Designation, row.Values[xPSelectDataTerminals.GetFieldIndexFromName("Designation")].ToString());
                 }
 
                 ////Check if Has Opened Terminal Connections before Close Day

@@ -81,7 +81,7 @@ namespace LogicPOS.Printing.Tickets
             string fieldType;
             string fieldValue;
 
-            foreach (SelectStatementResultRow column in xPSelectData.Meta)
+            foreach (SelectStatementResultRow column in xPSelectData.MetaDataRows)
             {
                 fieldName = column.Values[0].ToString();
                 fieldType = column.Values[2].ToString();
@@ -89,25 +89,25 @@ namespace LogicPOS.Printing.Tickets
             }
 
             //Add Rows
-            foreach (SelectStatementResultRow rowData in xPSelectData.Data)
+            foreach (SelectStatementResultRow rowData in xPSelectData.DataRows)
             {
                 //Init a new DataRow
-                object[] dataRow = new string[xPSelectData.Meta.Length];
+                object[] dataRow = new string[xPSelectData.MetaDataRows.Length];
 
-                foreach (SelectStatementResultRow rowMeta in xPSelectData.Meta)
+                foreach (SelectStatementResultRow rowMeta in xPSelectData.MetaDataRows)
                 {
                     fieldName = rowMeta.Values[0].ToString();
                     fieldType = rowMeta.Values[2].ToString();
                     //Check if is Not Null
-                    if (rowData.Values[xPSelectData.GetFieldIndex(fieldName)] != null)
+                    if (rowData.Values[xPSelectData.GetFieldIndexFromName(fieldName)] != null)
                     {
-                        fieldValue = DataConversionUtils.FormatDataTableFieldFromType(rowData.Values[xPSelectData.GetFieldIndex(fieldName)].ToString(), fieldType);
+                        fieldValue = DataConversionUtils.FormatDataTableFieldFromType(rowData.Values[xPSelectData.GetFieldIndexFromName(fieldName)].ToString(), fieldType);
                     }
                     else
                     {
                         fieldValue = string.Empty;
                     }
-                    dataRow[xPSelectData.GetFieldIndex(fieldName)] = fieldValue;
+                    dataRow[xPSelectData.GetFieldIndexFromName(fieldName)] = fieldValue;
                 }
                 this.Rows.Add(dataRow);
             }

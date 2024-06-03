@@ -92,7 +92,7 @@ namespace LogicPOS.Data.XPO.Utility
             string fieldType;
             string fieldValue;
 
-            foreach (SelectStatementResultRow row in xPSelectData.Meta)
+            foreach (SelectStatementResultRow row in xPSelectData.MetaDataRows)
             {
                 fieldName = row.Values[0].ToString();
                 fieldType = row.Values[2].ToString();
@@ -100,27 +100,27 @@ namespace LogicPOS.Data.XPO.Utility
             }
 
             //Add Rows
-            foreach (SelectStatementResultRow rowData in xPSelectData.Data)
+            foreach (SelectStatementResultRow rowData in xPSelectData.DataRows)
             {
                 //Init a new DataRow
-                string[] dataRow = new string[xPSelectData.Meta.Length];
+                string[] dataRow = new string[xPSelectData.MetaDataRows.Length];
 
-                foreach (SelectStatementResultRow rowMeta in xPSelectData.Meta)
+                foreach (SelectStatementResultRow rowMeta in xPSelectData.MetaDataRows)
                 {
                     fieldName = rowMeta.Values[0].ToString();
                     fieldType = rowMeta.Values[2].ToString();
                     //Check if is Not Null
-                    if (rowData.Values[xPSelectData.GetFieldIndex(fieldName)] != null)
+                    if (rowData.Values[xPSelectData.GetFieldIndexFromName(fieldName)] != null)
                     {
                         fieldValue = FormatDataTableFieldFromType(
-                            rowData.Values[xPSelectData.GetFieldIndex(fieldName)].ToString(),
+                            rowData.Values[xPSelectData.GetFieldIndexFromName(fieldName)].ToString(),
                             fieldType);
                     }
                     else
                     {
                         fieldValue = string.Empty;
                     }
-                    dataRow[xPSelectData.GetFieldIndex(fieldName)] = fieldValue;
+                    dataRow[xPSelectData.GetFieldIndexFromName(fieldName)] = fieldValue;
                 }
                 //resultDataTable.Rows.Add(rowData.Values[xPSelectData.GetFieldIndex(fieldName)].ToString());
                 resultDataTable.Rows.Add(dataRow);

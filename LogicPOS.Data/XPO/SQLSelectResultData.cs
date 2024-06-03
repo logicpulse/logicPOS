@@ -9,64 +9,59 @@ namespace LogicPOS.Data.XPO
 {
     public class SQLSelectResultData
     {
-        //Log4Net
-        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-        //Private Members
         private readonly Dictionary<string, int> _fieldIndex;
 
-        public SelectStatementResultRow[] Meta { get; set; }
+        public SelectStatementResultRow[] MetaDataRows { get; set; }
 
-        public SelectStatementResultRow[] Data { get; set; }
+        public SelectStatementResultRow[] DataRows {  get; set; }
+
+        private string GetFieldNameFromRow(SelectStatementResultRow row)
+        {
+            return row.Values[0].ToString();
+        }
+
+        private bool RowNameIs(SelectStatementResultRow row, string name)
+        {
+            return GetFieldNameFromRow(row).ToUpper() == name.ToUpper();
+        }
 
         public SQLSelectResultData(SelectedData selectedData)
         {
-            Meta = selectedData.ResultSet[0].Rows;
-            Data = selectedData.ResultSet[1].Rows;
+            MetaDataRows = selectedData.ResultSet[0].Rows;
+            DataRows = selectedData.ResultSet[1].Rows;
 
             int i = 0;
             _fieldIndex = new Dictionary<string, int>();
-            foreach (SelectStatementResultRow field in Meta)
+            foreach (SelectStatementResultRow field in MetaDataRows)
             {
                 _fieldIndex.Add(field.Values[0].ToString(), i++);
             }
         }
 
-        //Create a FieldIndex to Get Values From FieldNames
-        public int GetFieldIndex(string pFieldName)
+        public int GetFieldIndexFromName(string fieldName)
         {
-            try
-            {
-                return _fieldIndex[pFieldName];
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(string.Format("FieldName: [{0}] : {1}", pFieldName, ex.Message), ex);
-                return -1;
-            }
+            return _fieldIndex[fieldName];
         }
 
-        public object GetValueFromField(string pSearchField, string pReturnField, string pSearchValue)
+        public object GetValueFromField(
+            string searchField, 
+            string returnField, 
+            string searchValue)
         {
-            bool debug = false;
-
-            //Find Key
-            foreach (SelectStatementResultRow rowFieldNames in Meta)
+            foreach (SelectStatementResultRow metaDataRow in MetaDataRows)
             {
-                if (pSearchField.ToUpper() == rowFieldNames.Values[0].ToString().ToUpper())
+                if (RowNameIs(metaDataRow,searchField))
                 {
-                    if (debug) _logger.Debug(string.Format("GetValueFromField(): FindKey : [{0}]==[{1}]", pSearchField.ToUpper(), rowFieldNames.Values[0].ToString().ToUpper()));
-
-                    //Find First Value
-                    foreach (SelectStatementResultRow rowData in Data)
+                  
+                    foreach (SelectStatementResultRow datRow in DataRows)
                     {
-                        // Get Field, require to check if Null
-                        var field = rowData.Values[GetFieldIndex(rowFieldNames.Values[0].ToString())];
+                        var fieldName = GetFieldNameFromRow(metaDataRow);
+                        var field = datRow.Values[GetFieldIndexFromName(fieldName)];
 
-                        if (field != null && pSearchValue.ToUpper() == field.ToString().ToUpper())
+                        if (field != null && searchValue.ToUpper() == field.ToString().ToUpper())
                         {
-                            if (debug) _logger.Debug(string.Format("GetValueFromField(): FindValue : [{0}]==[{1}]", pSearchValue.ToUpper(), rowData.Values[GetFieldIndex(rowFieldNames.Values[0].ToString())].ToString().ToUpper()));
-                            return rowData.Values[GetFieldIndex(pReturnField)];
+                          
+                            return datRow.Values[GetFieldIndexFromName(returnField)];
                         }
                     }
                 }
@@ -75,14 +70,33 @@ namespace LogicPOS.Data.XPO
             return null;
         }
 
-        public object GetXPGuidObjectFromField(Type pType, string pSearchField, string pSearchValue)
+        public object GetXPGuidObjectFromField(
+            Type type, 
+            string searchField, 
+            string searchValue)
         {
-            return GetXPGuidObjectFromField(XPOSettings.Session, pType, pSearchField, pSearchValue);
+            return GetXPGuidObjectFromField(
+                XPOSettings.Session, 
+                type, 
+                searchField, 
+                searchValue);
         }
 
-        public object GetXPGuidObjectFromField(Session pSession, Type pType, string pSearchField, string pSearchValue)
+        private object GetXPGuidObjectFromField(
+            Session session, 
+            Type type, 
+            string searchField, 
+            string searchValue)
         {
-            return XPOHelper.GetXPGuidObject(pSession, pType, new Guid(GetValueFromField(pSearchField, "Oid", pSearchValue).ToString()));
+            Guid id = new Guid(GetValueFromField(
+                searchField, 
+                "Oid", 
+                searchValue).ToString());
+
+            return XPOHelper.GetXPGuidObject(
+                session, 
+                type, 
+                id);
         }
     }
 }

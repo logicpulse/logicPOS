@@ -80,7 +80,7 @@ namespace LogicPOS.Reporting.BOs
                 int fieldIndex;
 
                 int i = 0;
-                foreach (SelectStatementResultRow rowData in xPSelectData.Data)
+                foreach (SelectStatementResultRow rowData in xPSelectData.DataRows)
                 {
                     i++;
                     //If sqlLimit Defined and is Greater Break Loop
@@ -90,12 +90,12 @@ namespace LogicPOS.Reporting.BOs
                     //Cannot create an instance of the variable type 'T' because it does not have the new() constraint
                     //Require Constrain new()
                     genericTypeObject = new T();
-                    foreach (SelectStatementResultRow rowMeta in xPSelectData.Meta)
+                    foreach (SelectStatementResultRow rowMeta in xPSelectData.MetaDataRows)
                     {
                         fieldName = rowMeta.Values[0].ToString();
                         fieldTypeDB = rowMeta.Values[1].ToString(); ;
                         fieldType = rowMeta.Values[2].ToString(); ;
-                        fieldIndex = xPSelectData.GetFieldIndex(fieldName);
+                        fieldIndex = xPSelectData.GetFieldIndexFromName(fieldName);
 
                         //Convert DB Types, Else working on Diferent DBs occur Conversion Exceptions
                         switch (fieldType)

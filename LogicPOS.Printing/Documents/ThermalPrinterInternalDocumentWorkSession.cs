@@ -308,14 +308,14 @@ namespace LogicPOS.Printing.Documents
                         dataTable.Columns.Add(new DataColumn("Total", typeof(decimal)));
 
                         //If Has data
-                        if (xPSelectData.Data.Length > 0)
+                        if (xPSelectData.DataRows.Length > 0)
                         {
-                            foreach (SelectStatementResultRow row in xPSelectData.Data)
+                            foreach (SelectStatementResultRow row in xPSelectData.DataRows)
                             {
-                                designation = Convert.ToString(row.Values[xPSelectData.GetFieldIndex("Designation")]);
-                                quantity = Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("Quantity")]);
-                                unitMeasure = Convert.ToString(row.Values[xPSelectData.GetFieldIndex("UnitMeasure")]);
-                                total = Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("Total")]);
+                                designation = Convert.ToString(row.Values[xPSelectData.GetFieldIndexFromName("Designation")]);
+                                quantity = Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndexFromName("Quantity")]);
+                                unitMeasure = Convert.ToString(row.Values[xPSelectData.GetFieldIndexFromName("UnitMeasure")]);
+                                total = Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndexFromName("Total")]);
                                 // Override Encrypted values
                                 if (PluginSettings.HasSoftwareVendorPlugin && item.Key.Equals(DataTableGroupPropertiesType.DocumentsUser) || item.Key.Equals(DataTableGroupPropertiesType.PaymentsUser))
                                 {

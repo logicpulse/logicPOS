@@ -1753,9 +1753,9 @@ WHERE
                     SQLSelectResultData xPSelectDataFinanceMaster = XPOHelper.GetSelectedDataFromQuery(sqlFinanceMaster);
 
                     /* IN009083 - if found one simple dependent, returns */
-                    if (xPSelectDataFinanceMaster.Data.Length > 0)
+                    if (xPSelectDataFinanceMaster.DataRows.Length > 0)
                     {
-                        _logger.Debug("CanCancelFinanceMasterDocument() :: linked documents found: " + xPSelectDataFinanceMaster.Data.Length);
+                        _logger.Debug("CanCancelFinanceMasterDocument() :: linked documents found: " + xPSelectDataFinanceMaster.DataRows.Length);
                         return false;
                     }
                 }
@@ -1765,9 +1765,9 @@ WHERE
                     SQLSelectResultData xPSelectDataFinancePayment = XPOHelper.GetSelectedDataFromQuery(sqlFinancePayment);
 
                     /* IN009083 - has payments */
-                    if (xPSelectDataFinancePayment.Data.Length > 0)
+                    if (xPSelectDataFinancePayment.DataRows.Length > 0)
                     {
-                        _logger.Debug("CanCancelFinanceMasterDocument() :: document has payments: " + xPSelectDataFinancePayment.Data.Length);
+                        _logger.Debug("CanCancelFinanceMasterDocument() :: document has payments: " + xPSelectDataFinancePayment.DataRows.Length);
                         return false;
                     }
                 }
@@ -1937,10 +1937,10 @@ WHERE
                     //Get Child Sessions
                     string sql = string.Format(@"SELECT Oid FROM pos_worksessionperiod WHERE Parent = '{0}' ORDER BY DateStart;", workSessionPeriodParent.Oid);
                     SQLSelectResultData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
-                    foreach (DevExpress.Xpo.DB.SelectStatementResultRow row in xPSelectData.Data)
+                    foreach (DevExpress.Xpo.DB.SelectStatementResultRow row in xPSelectData.DataRows)
                     {
                         //Print Child Sessions
-                        workSessionPeriodChild = XPOHelper.GetEntityById<pos_worksessionperiod>(new Guid(row.Values[xPSelectData.GetFieldIndex("Oid")].ToString()));
+                        workSessionPeriodChild = XPOHelper.GetEntityById<pos_worksessionperiod>(new Guid(row.Values[xPSelectData.GetFieldIndexFromName("Oid")].ToString()));
                         //PrintWorkSessionMovement
                         var workSessionChildDto = MappingUtils.GetPrintWorkSessionDto(workSessionPeriodChild);
                         FrameworkCalls.PrintWorkSessionMovement(this, TerminalSettings.LoggedTerminal.ThermalPrinter, workSessionChildDto);

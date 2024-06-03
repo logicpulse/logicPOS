@@ -293,33 +293,33 @@ namespace LogicPOS.Finance.Saft
                 MasterFiles_Customer_DefaultCustomer();
 
                 SQLSelectResultData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
-                foreach (SelectStatementResultRow row in xPSelectData.Data)
+                foreach (SelectStatementResultRow row in xPSelectData.DataRows)
                 {
                     //<Customer>
                     _xmlWriter.WriteStartElement("Customer");
-                    if (row.Values[xPSelectData.GetFieldIndex("CustomerID")] != null)
+                    if (row.Values[xPSelectData.GetFieldIndexFromName("CustomerID")] != null)
                     {
-                        WriteElement("CustomerID", row.Values[xPSelectData.GetFieldIndex("CustomerID")]);
+                        WriteElement("CustomerID", row.Values[xPSelectData.GetFieldIndexFromName("CustomerID")]);
                     }
                     else
                     {
                         WriteElement("CustomerID", _defaultCustomer.CodeInternal);
                     }
-                    WriteElement("AccountID", row.Values[xPSelectData.GetFieldIndex("AccountID")], CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "saft_value_unknown"));
-                    WriteElement("CustomerTaxID", Entity.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("CustomerTaxID")]), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "saft_value_unknown"));
-                    WriteElement("CompanyName", Entity.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("CompanyName")]), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "saft_value_unknown"));
+                    WriteElement("AccountID", row.Values[xPSelectData.GetFieldIndexFromName("AccountID")], CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "saft_value_unknown"));
+                    WriteElement("CustomerTaxID", Entity.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndexFromName("CustomerTaxID")]), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "saft_value_unknown"));
+                    WriteElement("CompanyName", Entity.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndexFromName("CompanyName")]), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "saft_value_unknown"));
                     //<BillingAddress>
                     _xmlWriter.WriteStartElement("BillingAddress");
-                    WriteElement("AddressDetail", Entity.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("AddressDetail")]), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "saft_value_unknown"));
-                    WriteElement("City", Entity.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("City")]), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "saft_value_unknown"));
-                    WriteElement("PostalCode", Entity.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("PostalCode")]), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "saft_value_unknown"));
-                    WriteElement("Country", row.Values[xPSelectData.GetFieldIndex("Country")], CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "saft_value_unknown"));
+                    WriteElement("AddressDetail", Entity.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndexFromName("AddressDetail")]), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "saft_value_unknown"));
+                    WriteElement("City", Entity.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndexFromName("City")]), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "saft_value_unknown"));
+                    WriteElement("PostalCode", Entity.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndexFromName("PostalCode")]), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "saft_value_unknown"));
+                    WriteElement("Country", row.Values[xPSelectData.GetFieldIndexFromName("Country")], CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "saft_value_unknown"));
                     _xmlWriter.WriteEndElement();
                     //</BillingAddress>
-                    WriteElement("Telephone", Entity.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("Telephone")]));
-                    WriteElement("Fax", Entity.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("Fax")]));
-                    WriteElement("Email", Entity.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("Email")]));
-                    WriteElement("Website", Entity.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("Website")]));
+                    WriteElement("Telephone", Entity.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndexFromName("Telephone")]));
+                    WriteElement("Fax", Entity.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndexFromName("Fax")]));
+                    WriteElement("Email", Entity.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndexFromName("Email")]));
+                    WriteElement("Website", Entity.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndexFromName("Website")]));
                     WriteElement("SelfBillingIndicator", 0);
                     //</Customer>
                     _xmlWriter.WriteEndElement();
@@ -416,18 +416,18 @@ namespace LogicPOS.Finance.Saft
                 //_logger.Debug(string.Format("sql: [{0}]", sql));
 
                 SQLSelectResultData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
-                foreach (SelectStatementResultRow row in xPSelectData.Data)
+                foreach (SelectStatementResultRow row in xPSelectData.DataRows)
                 {
                     //<Product>
                     _xmlWriter.WriteStartElement("Product");
-                    WriteElement("ProductType", row.Values[xPSelectData.GetFieldIndex("ProductType")]);
-                    WriteElement("ProductCode", row.Values[xPSelectData.GetFieldIndex("ProductCode")].ToString());
+                    WriteElement("ProductType", row.Values[xPSelectData.GetFieldIndexFromName("ProductType")]);
+                    WriteElement("ProductCode", row.Values[xPSelectData.GetFieldIndexFromName("ProductCode")].ToString());
                     //Utilizado o descritivo da tabela “Familias”.
-                    WriteElement("ProductGroup", row.Values[xPSelectData.GetFieldIndex("ProductGroup")]);
-                    WriteElement("ProductDescription", row.Values[xPSelectData.GetFieldIndex("ProductDescription")]);
+                    WriteElement("ProductGroup", row.Values[xPSelectData.GetFieldIndexFromName("ProductGroup")]);
+                    WriteElement("ProductDescription", row.Values[xPSelectData.GetFieldIndexFromName("ProductDescription")]);
                     //Código EAN. Deve ser utilizado o código EAN (código de barras) do produto. Quando este não existir, preencher com o valor do campo “Identificador do Produto” 
-                    string productNumberCodeField = (row.Values[xPSelectData.GetFieldIndex("ProductNumberCode")] != null) ? "ProductNumberCode" : "ProductCode";
-                    WriteElement("ProductNumberCode", row.Values[xPSelectData.GetFieldIndex(productNumberCodeField)]);
+                    string productNumberCodeField = (row.Values[xPSelectData.GetFieldIndexFromName("ProductNumberCode")] != null) ? "ProductNumberCode" : "ProductCode";
+                    WriteElement("ProductNumberCode", row.Values[xPSelectData.GetFieldIndexFromName(productNumberCodeField)]);
                     //</Product>
                     _xmlWriter.WriteEndElement();
                 }
@@ -477,15 +477,15 @@ namespace LogicPOS.Finance.Saft
                 //_logger.Debug(string.Format("sql: [{0}]", sql));
 
                 SQLSelectResultData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
-                foreach (SelectStatementResultRow row in xPSelectData.Data)
+                foreach (SelectStatementResultRow row in xPSelectData.DataRows)
                 {
                     //<TaxTableEntry>
                     _xmlWriter.WriteStartElement("TaxTableEntry");
-                    WriteElement("TaxType", row.Values[xPSelectData.GetFieldIndex("TaxType")]);
+                    WriteElement("TaxType", row.Values[xPSelectData.GetFieldIndexFromName("TaxType")]);
                     //WriteElement("TaxCountryRegion", row.Values[xPSelectData.GetFieldIndex("TaxCountryRegion")]);
-                    WriteElement("TaxCode", row.Values[xPSelectData.GetFieldIndex("TaxCode")]);
-                    WriteElement("Description", row.Values[xPSelectData.GetFieldIndex("Description")]);
-                    WriteElement("TaxPercentage", Convert.ToInt32(row.Values[xPSelectData.GetFieldIndex("TaxPercentage")]));
+                    WriteElement("TaxCode", row.Values[xPSelectData.GetFieldIndexFromName("TaxCode")]);
+                    WriteElement("Description", row.Values[xPSelectData.GetFieldIndexFromName("Description")]);
+                    WriteElement("TaxPercentage", Convert.ToInt32(row.Values[xPSelectData.GetFieldIndexFromName("TaxPercentage")]));
                     _xmlWriter.WriteEndElement();
                     //</TaxTableEntry>
                 }
@@ -862,31 +862,31 @@ namespace LogicPOS.Finance.Saft
                 bool wayBill = false;
 
                 SQLSelectResultData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
-                foreach (SelectStatementResultRow row in xPSelectData.Data)
+                foreach (SelectStatementResultRow row in xPSelectData.DataRows)
                 {
                     //<Invoice|StockMovement|WorkDocument>
                     _xmlWriter.WriteStartElement(pDocumentNodeNameChild);
-                    WriteElement(pDocumentNodeNameChildNo, row.Values[xPSelectData.GetFieldIndex("DocumentNo")]);
+                    WriteElement(pDocumentNodeNameChildNo, row.Values[xPSelectData.GetFieldIndexFromName("DocumentNo")]);
                     //WriteElement("ATCUD", row.Values[xPSelectData.GetFieldIndex("ATCUD")]);
                     //<DocumentStatus>
                     _xmlWriter.WriteStartElement("DocumentStatus");
-                    WriteElement(string.Format("{0}Status", pDocumentNodeKeyWord), row.Values[xPSelectData.GetFieldIndex("DocumentStatusStatus")]);
-                    WriteElement(string.Format("{0}StatusDate", pDocumentNodeKeyWord), row.Values[xPSelectData.GetFieldIndex("DocumentStatusDate")]);
-                    WriteElement("Reason", row.Values[xPSelectData.GetFieldIndex("DocumentStatusReason")]);
-                    WriteElement("SourceID", row.Values[xPSelectData.GetFieldIndex("SourceIDStatus")].ToString());
-                    WriteElement("SourceBilling", row.Values[xPSelectData.GetFieldIndex("SourceBilling")]);
+                    WriteElement(string.Format("{0}Status", pDocumentNodeKeyWord), row.Values[xPSelectData.GetFieldIndexFromName("DocumentStatusStatus")]);
+                    WriteElement(string.Format("{0}StatusDate", pDocumentNodeKeyWord), row.Values[xPSelectData.GetFieldIndexFromName("DocumentStatusDate")]);
+                    WriteElement("Reason", row.Values[xPSelectData.GetFieldIndexFromName("DocumentStatusReason")]);
+                    WriteElement("SourceID", row.Values[xPSelectData.GetFieldIndexFromName("SourceIDStatus")].ToString());
+                    WriteElement("SourceBilling", row.Values[xPSelectData.GetFieldIndexFromName("SourceBilling")]);
                     _xmlWriter.WriteEndElement();
                     //</DocumentStatus>
-                    WriteElement("Hash", row.Values[xPSelectData.GetFieldIndex("Hash")]);
-                    WriteElement("HashControl", row.Values[xPSelectData.GetFieldIndex("HashControl")]);
-                    WriteElement("Period", Convert.ToDateTime(row.Values[xPSelectData.GetFieldIndex("SystemEntryDate")]).Month);
-                    WriteElement(string.Format("{0}Date", pDocumentNodeKeyWord), row.Values[xPSelectData.GetFieldIndex("DocumentDate")]);
+                    WriteElement("Hash", row.Values[xPSelectData.GetFieldIndexFromName("Hash")]);
+                    WriteElement("HashControl", row.Values[xPSelectData.GetFieldIndexFromName("HashControl")]);
+                    WriteElement("Period", Convert.ToDateTime(row.Values[xPSelectData.GetFieldIndexFromName("SystemEntryDate")]).Month);
+                    WriteElement(string.Format("{0}Date", pDocumentNodeKeyWord), row.Values[xPSelectData.GetFieldIndexFromName("DocumentDate")]);
                     //Required to Replace WorkType OR and FP with DC
-                    documentType = row.Values[xPSelectData.GetFieldIndex("DocumentType")].ToString();
+                    documentType = row.Values[xPSelectData.GetFieldIndexFromName("DocumentType")].ToString();
                     //Replace DocumentType if Detect a ConferenceDocument (OR|FP|DC)
                     if (documentType == "OR" || documentType == "FP") documentType = "DC";
                     //Detect if DocumentType is WayBill
-                    wayBill = Convert.ToBoolean(row.Values[xPSelectData.GetFieldIndex("WayBill")]);
+                    wayBill = Convert.ToBoolean(row.Values[xPSelectData.GetFieldIndexFromName("WayBill")]);
 
                     //Write Element
                     WriteElement(string.Format("{0}Type", pDocumentNodeKeyWord), documentType);
@@ -898,19 +898,19 @@ namespace LogicPOS.Finance.Saft
                             {
                                 //<SpecialRegimes>
                                 _xmlWriter.WriteStartElement("SpecialRegimes");
-                                WriteElement("SelfBillingIndicator", row.Values[xPSelectData.GetFieldIndex("SelfBillingIndicator")]);
-                                WriteElement("CashVATSchemeIndicator", row.Values[xPSelectData.GetFieldIndex("CashVatSchemeIndicator")]);
-                                WriteElement("ThirdPartiesBillingIndicator", row.Values[xPSelectData.GetFieldIndex("ThirdPartiesBillingIndicator")]);
+                                WriteElement("SelfBillingIndicator", row.Values[xPSelectData.GetFieldIndexFromName("SelfBillingIndicator")]);
+                                WriteElement("CashVATSchemeIndicator", row.Values[xPSelectData.GetFieldIndexFromName("CashVatSchemeIndicator")]);
+                                WriteElement("ThirdPartiesBillingIndicator", row.Values[xPSelectData.GetFieldIndexFromName("ThirdPartiesBillingIndicator")]);
                                 _xmlWriter.WriteEndElement();
                                 //</SpecialRegimes> 
 
-                                WriteElement("SourceID", row.Values[xPSelectData.GetFieldIndex("SourceIDCreator")].ToString());
-                                WriteElement("EACCode", row.Values[xPSelectData.GetFieldIndex("EACCode")]);
-                                WriteElement("SystemEntryDate", row.Values[xPSelectData.GetFieldIndex("SystemEntryDate")]);
+                                WriteElement("SourceID", row.Values[xPSelectData.GetFieldIndexFromName("SourceIDCreator")].ToString());
+                                WriteElement("EACCode", row.Values[xPSelectData.GetFieldIndexFromName("EACCode")]);
+                                WriteElement("SystemEntryDate", row.Values[xPSelectData.GetFieldIndexFromName("SystemEntryDate")]);
                                 //WriteElement("TransactionID", row.Values[xPSelectData.GetFieldIndex("TransactionID")]);
-                                if (row.Values[xPSelectData.GetFieldIndex("CustomerID")] != null)
+                                if (row.Values[xPSelectData.GetFieldIndexFromName("CustomerID")] != null)
                                 {
-                                    WriteElement("CustomerID", row.Values[xPSelectData.GetFieldIndex("CustomerID")]);
+                                    WriteElement("CustomerID", row.Values[xPSelectData.GetFieldIndexFromName("CustomerID")]);
                                 }
                                 else
                                 {
@@ -929,17 +929,17 @@ namespace LogicPOS.Finance.Saft
                         case SaftDocumentType.MovementOfGoods:
                             try
                             {
-                                WriteElement("SystemEntryDate", row.Values[xPSelectData.GetFieldIndex("SystemEntryDate")]);
-                                WriteElement("TransactionID", row.Values[xPSelectData.GetFieldIndex("TransactionID")]);
-                                WriteElement("CustomerID", row.Values[xPSelectData.GetFieldIndex("CustomerID")].ToString());
-                                WriteElement("SourceID", row.Values[xPSelectData.GetFieldIndex("SourceIDCreator")].ToString());
-                                WriteElement("EACCode", row.Values[xPSelectData.GetFieldIndex("EACCode")]);
+                                WriteElement("SystemEntryDate", row.Values[xPSelectData.GetFieldIndexFromName("SystemEntryDate")]);
+                                WriteElement("TransactionID", row.Values[xPSelectData.GetFieldIndexFromName("TransactionID")]);
+                                WriteElement("CustomerID", row.Values[xPSelectData.GetFieldIndexFromName("CustomerID")].ToString());
+                                WriteElement("SourceID", row.Values[xPSelectData.GetFieldIndexFromName("SourceIDCreator")].ToString());
+                                WriteElement("EACCode", row.Values[xPSelectData.GetFieldIndexFromName("EACCode")]);
 
                                 //Allways Call ShipDetails Helper to Output ShipTo|ShipFrom Details
                                 SourceDocuments_DocumentType_Childs_ShipDetails(xPSelectData, row);
 
                                 //4.2.3.19: Used only in MovementOfGoods: Código de identificação atribuído pela AT ao documento, nos termos do Decreto - Lei n.º 147/2003, de 11 de julho.
-                                WriteElement("ATDocCodeID", row.Values[xPSelectData.GetFieldIndex("ATDocCodeID")]);
+                                WriteElement("ATDocCodeID", row.Values[xPSelectData.GetFieldIndexFromName("ATDocCodeID")]);
                             }
                             catch (Exception ex)
                             {
@@ -950,12 +950,12 @@ namespace LogicPOS.Finance.Saft
                         case SaftDocumentType.WorkingDocuments:
                             try
                             {
-                                WriteElement("SourceID", row.Values[xPSelectData.GetFieldIndex("SourceIDCreator")].ToString());
-                                WriteElement("EACCode", row.Values[xPSelectData.GetFieldIndex("EACCode")]);
-                                WriteElement("SystemEntryDate", row.Values[xPSelectData.GetFieldIndex("SystemEntryDate")]);
-                                if (row.Values[xPSelectData.GetFieldIndex("CustomerID")] != null)
+                                WriteElement("SourceID", row.Values[xPSelectData.GetFieldIndexFromName("SourceIDCreator")].ToString());
+                                WriteElement("EACCode", row.Values[xPSelectData.GetFieldIndexFromName("EACCode")]);
+                                WriteElement("SystemEntryDate", row.Values[xPSelectData.GetFieldIndexFromName("SystemEntryDate")]);
+                                if (row.Values[xPSelectData.GetFieldIndexFromName("CustomerID")] != null)
                                 {
-                                    WriteElement("CustomerID", row.Values[xPSelectData.GetFieldIndex("CustomerID")]);
+                                    WriteElement("CustomerID", row.Values[xPSelectData.GetFieldIndexFromName("CustomerID")]);
                                 }
                                 else
                                 {
@@ -970,7 +970,7 @@ namespace LogicPOS.Finance.Saft
                     }
 
                     //<Line>
-                    guidDocumentMaster = new Guid(row.Values[xPSelectData.GetFieldIndex("Oid")].ToString());
+                    guidDocumentMaster = new Guid(row.Values[xPSelectData.GetFieldIndexFromName("Oid")].ToString());
                     TotalLinesResult totalLineResult = SourceDocuments_Lines(pSaftDocumentType, guidDocumentMaster);
                     //</Line>
 
@@ -992,15 +992,15 @@ namespace LogicPOS.Finance.Saft
                     WriteElement("GrossTotal", LogicPOS.Utility.DataConversionUtils.DecimalToString(totalLineResult.GrossTotal, _decimalFormatTotals));
 
                     //Currency
-                    if (_defaultCurrency.Acronym != row.Values[xPSelectData.GetFieldIndex("CurrencyCode")].ToString())
+                    if (_defaultCurrency.Acronym != row.Values[xPSelectData.GetFieldIndexFromName("CurrencyCode")].ToString())
                     {
                         //Calculate Totals
-                        documentExchangeRate = Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("ExchangeRate")]);
+                        documentExchangeRate = Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndexFromName("ExchangeRate")]);
                         currencyCurrencyAmount = totalLineResult.GrossTotal * documentExchangeRate;
                         currencyExchangeRate = totalLineResult.GrossTotal / currencyCurrencyAmount;
                         //<Currency>
                         _xmlWriter.WriteStartElement("Currency");
-                        WriteElement("CurrencyCode", row.Values[xPSelectData.GetFieldIndex("CurrencyCode")].ToString());
+                        WriteElement("CurrencyCode", row.Values[xPSelectData.GetFieldIndexFromName("CurrencyCode")].ToString());
                         WriteElement("CurrencyAmount", LogicPOS.Utility.DataConversionUtils.DecimalToString(currencyCurrencyAmount, _decimalFormat));
                         //In SAT-F Example we have 2 examples one with decimals 0.00 and other with 0.00000000000 opted to use divide value without conversion
                         WriteElement("ExchangeRate", LogicPOS.Utility.DataConversionUtils.DecimalToString(currencyExchangeRate, _decimalFormat));
@@ -1014,16 +1014,16 @@ namespace LogicPOS.Finance.Saft
                     {
                         case SaftDocumentType.SalesInvoices:
                             //Get decimal to check if Greater than Zero
-                            decimal paymentAmount = Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("PaymentAmount")]);
+                            decimal paymentAmount = Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndexFromName("PaymentAmount")]);
                             //Only Export if Greater Than Zero (SAF-T Recomendation)
                             if (paymentAmount > 0.0m)
                             {
                                 //<Payment>
                                 _xmlWriter.WriteStartElement("Payment");
                                 //Default : OU : OtherPayments /Outros Pagamentos
-                                WriteElement("PaymentMechanism", row.Values[xPSelectData.GetFieldIndex("PaymentMechanism")], "OU");
+                                WriteElement("PaymentMechanism", row.Values[xPSelectData.GetFieldIndexFromName("PaymentMechanism")], "OU");
                                 WriteElement("PaymentAmount", LogicPOS.Utility.DataConversionUtils.DecimalToString(paymentAmount, _decimalFormat));
-                                WriteElement("PaymentDate", row.Values[xPSelectData.GetFieldIndex("DocumentDate")]);
+                                WriteElement("PaymentDate", row.Values[xPSelectData.GetFieldIndexFromName("DocumentDate")]);
                                 _xmlWriter.WriteEndElement();
                                 //</Payment>
                             }
@@ -1048,18 +1048,18 @@ namespace LogicPOS.Finance.Saft
         {
             //<ShipTo>
             _xmlWriter.WriteStartElement("ShipTo");
-            WriteElement("DeliveryID", pRow.Values[pXPSelectData.GetFieldIndex("ShipToDeliveryID")]);
-            WriteElement("DeliveryDate", XPOHelper.DateToString(pRow.Values[pXPSelectData.GetFieldIndex("ShipToDeliveryDate")]));
-            WriteElement("WarehouseID", pRow.Values[pXPSelectData.GetFieldIndex("ShipToWarehouseID")]);
-            WriteElement("LocationID", pRow.Values[pXPSelectData.GetFieldIndex("ShipToLocationID")]);
+            WriteElement("DeliveryID", pRow.Values[pXPSelectData.GetFieldIndexFromName("ShipToDeliveryID")]);
+            WriteElement("DeliveryDate", XPOHelper.DateToString(pRow.Values[pXPSelectData.GetFieldIndexFromName("ShipToDeliveryDate")]));
+            WriteElement("WarehouseID", pRow.Values[pXPSelectData.GetFieldIndexFromName("ShipToWarehouseID")]);
+            WriteElement("LocationID", pRow.Values[pXPSelectData.GetFieldIndexFromName("ShipToLocationID")]);
             //<Address>
             _xmlWriter.WriteStartElement("Address");
-            WriteElement("BuildingNumber", pRow.Values[pXPSelectData.GetFieldIndex("ShipToBuildingNumber")]);
-            WriteElement("StreetName", pRow.Values[pXPSelectData.GetFieldIndex("ShipToStreetName")]);
-            WriteElement("AddressDetail", pRow.Values[pXPSelectData.GetFieldIndex("ShipToAddressDetail")]);
-            WriteElement("City", pRow.Values[pXPSelectData.GetFieldIndex("ShipToCity")]);
-            WriteElement("PostalCode", pRow.Values[pXPSelectData.GetFieldIndex("ShipToPostalCode")]);
-            WriteElement("Country", pRow.Values[pXPSelectData.GetFieldIndex("ShipToCountry")]);
+            WriteElement("BuildingNumber", pRow.Values[pXPSelectData.GetFieldIndexFromName("ShipToBuildingNumber")]);
+            WriteElement("StreetName", pRow.Values[pXPSelectData.GetFieldIndexFromName("ShipToStreetName")]);
+            WriteElement("AddressDetail", pRow.Values[pXPSelectData.GetFieldIndexFromName("ShipToAddressDetail")]);
+            WriteElement("City", pRow.Values[pXPSelectData.GetFieldIndexFromName("ShipToCity")]);
+            WriteElement("PostalCode", pRow.Values[pXPSelectData.GetFieldIndexFromName("ShipToPostalCode")]);
+            WriteElement("Country", pRow.Values[pXPSelectData.GetFieldIndexFromName("ShipToCountry")]);
             _xmlWriter.WriteEndElement();
             //</Address>
             _xmlWriter.WriteEndElement();
@@ -1067,29 +1067,29 @@ namespace LogicPOS.Finance.Saft
 
             //<ShipFrom>
             _xmlWriter.WriteStartElement("ShipFrom");
-            WriteElement("DeliveryID", pRow.Values[pXPSelectData.GetFieldIndex("ShipFromDeliveryID")]);
-            WriteElement("DeliveryDate", XPOHelper.DateToString(pRow.Values[pXPSelectData.GetFieldIndex("ShipFromDeliveryDate")]));
-            WriteElement("WarehouseID", pRow.Values[pXPSelectData.GetFieldIndex("ShipFromWarehouseID")]);
-            WriteElement("LocationID", pRow.Values[pXPSelectData.GetFieldIndex("ShipFromLocationID")]);
+            WriteElement("DeliveryID", pRow.Values[pXPSelectData.GetFieldIndexFromName("ShipFromDeliveryID")]);
+            WriteElement("DeliveryDate", XPOHelper.DateToString(pRow.Values[pXPSelectData.GetFieldIndexFromName("ShipFromDeliveryDate")]));
+            WriteElement("WarehouseID", pRow.Values[pXPSelectData.GetFieldIndexFromName("ShipFromWarehouseID")]);
+            WriteElement("LocationID", pRow.Values[pXPSelectData.GetFieldIndexFromName("ShipFromLocationID")]);
             //<Address>
             _xmlWriter.WriteStartElement("Address");
-            WriteElement("BuildingNumber", pRow.Values[pXPSelectData.GetFieldIndex("ShipFromBuildingNumber")]);
-            WriteElement("StreetName", pRow.Values[pXPSelectData.GetFieldIndex("ShipFromStreetName")]);
-            WriteElement("AddressDetail", pRow.Values[pXPSelectData.GetFieldIndex("ShipFromAddressDetail")]);
-            WriteElement("City", pRow.Values[pXPSelectData.GetFieldIndex("ShipFromCity")]);
-            WriteElement("PostalCode", pRow.Values[pXPSelectData.GetFieldIndex("ShipFromPostalCode")]);
-            WriteElement("Country", pRow.Values[pXPSelectData.GetFieldIndex("ShipFromCountry")]);
+            WriteElement("BuildingNumber", pRow.Values[pXPSelectData.GetFieldIndexFromName("ShipFromBuildingNumber")]);
+            WriteElement("StreetName", pRow.Values[pXPSelectData.GetFieldIndexFromName("ShipFromStreetName")]);
+            WriteElement("AddressDetail", pRow.Values[pXPSelectData.GetFieldIndexFromName("ShipFromAddressDetail")]);
+            WriteElement("City", pRow.Values[pXPSelectData.GetFieldIndexFromName("ShipFromCity")]);
+            WriteElement("PostalCode", pRow.Values[pXPSelectData.GetFieldIndexFromName("ShipFromPostalCode")]);
+            WriteElement("Country", pRow.Values[pXPSelectData.GetFieldIndexFromName("ShipFromCountry")]);
             _xmlWriter.WriteEndElement();
             //</Address>
             _xmlWriter.WriteEndElement();
             //</ShipFrom>
 
             //Export if not Null else gives wrong values ex "0001-01-01T00:00:00" | Always Null, Its not persisted yet, but has stub code here to work when its not null
-            if (pRow.Values[pXPSelectData.GetFieldIndex("MovementEndTime")] != null)
+            if (pRow.Values[pXPSelectData.GetFieldIndexFromName("MovementEndTime")] != null)
             {
-                WriteElement("MovementEndTime", XPOHelper.DateTimeToCombinedDateTimeString(pRow.Values[pXPSelectData.GetFieldIndex("MovementEndTime")]));
+                WriteElement("MovementEndTime", XPOHelper.DateTimeToCombinedDateTimeString(pRow.Values[pXPSelectData.GetFieldIndexFromName("MovementEndTime")]));
             }
-            WriteElement("MovementStartTime", XPOHelper.DateTimeToCombinedDateTimeString(pRow.Values[pXPSelectData.GetFieldIndex("MovementStartTime")]));
+            WriteElement("MovementStartTime", XPOHelper.DateTimeToCombinedDateTimeString(pRow.Values[pXPSelectData.GetFieldIndexFromName("MovementStartTime")]));
         }
 
         private static TotalLinesResult SourceDocuments_Lines(SaftDocumentType pSaftDocumentType, Guid pDocumentMaster)
@@ -1170,20 +1170,20 @@ namespace LogicPOS.Finance.Saft
 
                 Guid guidDocumentDetail = new Guid();
                 SQLSelectResultData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
-                if (xPSelectData.Data.Length > 0)
-                    foreach (SelectStatementResultRow row in xPSelectData.Data)
+                if (xPSelectData.DataRows.Length > 0)
+                    foreach (SelectStatementResultRow row in xPSelectData.DataRows)
                     {
-                        nodeNameCreditOrDebitAmount = (Convert.ToInt16(row.Values[xPSelectData.GetFieldIndex("Credit")]) == 1) ? "CreditAmount" : "DebitAmount";
+                        nodeNameCreditOrDebitAmount = (Convert.ToInt16(row.Values[xPSelectData.GetFieldIndexFromName("Credit")]) == 1) ? "CreditAmount" : "DebitAmount";
 
-                        linePriceWithDiscount = Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("PriceWithDiscount")]);
-                        globalDocumentDiscount = Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("GlobalDiscount")]); ;
+                        linePriceWithDiscount = Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndexFromName("PriceWithDiscount")]);
+                        globalDocumentDiscount = Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndexFromName("GlobalDiscount")]); ;
                         //Remove Global Discount, this way UnitPrice dont have discounts (Line and Global) and dont have Taxs
                         lineUnitPrice = linePriceWithDiscount - ((linePriceWithDiscount * globalDocumentDiscount) / 100);
-                        lineQuantity = Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("Quantity")]);
+                        lineQuantity = Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndexFromName("Quantity")]);
                         lineCreditOrDebit = lineUnitPrice * lineQuantity;
 
-                        lineTaxPayable = Math.Round(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("TaxPayable")]), CultureSettings.DecimalRoundTo);
-                        lineNetTotal = Math.Round(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("NetTotal")]), CultureSettings.DecimalRoundTo);
+                        lineTaxPayable = Math.Round(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndexFromName("TaxPayable")]), CultureSettings.DecimalRoundTo);
+                        lineNetTotal = Math.Round(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndexFromName("NetTotal")]), CultureSettings.DecimalRoundTo);
                         lineGrossTotal = Math.Round((lineTaxPayable + lineNetTotal), CultureSettings.DecimalRoundTo);
                         totalLineResult.TaxPayable += lineTaxPayable;
                         totalLineResult.NetTotal += lineNetTotal;
@@ -1192,23 +1192,23 @@ namespace LogicPOS.Finance.Saft
                         //<Line>
                         _xmlWriter.WriteStartElement("Line");
 
-                        WriteElement("LineNumber", row.Values[xPSelectData.GetFieldIndex("LineNumber")]);
+                        WriteElement("LineNumber", row.Values[xPSelectData.GetFieldIndexFromName("LineNumber")]);
                         switch (pSaftDocumentType)
                         {
                             case SaftDocumentType.SalesInvoices:
                             case SaftDocumentType.MovementOfGoods:
                             case SaftDocumentType.WorkingDocuments:
                                 //<OrderReferences>
-                                guidDocumentDetail = new Guid(row.Values[xPSelectData.GetFieldIndex("Oid")].ToString());
+                                guidDocumentDetail = new Guid(row.Values[xPSelectData.GetFieldIndexFromName("Oid")].ToString());
                                 SourceDocuments_Lines_OrderReferences(guidDocumentDetail);
                                 //</OrderReferences>
                                 break;
                         }
 
-                        WriteElement("ProductCode", row.Values[xPSelectData.GetFieldIndex("ProductCode")].ToString());
-                        WriteElement("ProductDescription", row.Values[xPSelectData.GetFieldIndex("ProductDescription")]);
+                        WriteElement("ProductCode", row.Values[xPSelectData.GetFieldIndexFromName("ProductCode")].ToString());
+                        WriteElement("ProductDescription", row.Values[xPSelectData.GetFieldIndexFromName("ProductDescription")]);
                         WriteElement("Quantity", LogicPOS.Utility.DataConversionUtils.DecimalToString(lineQuantity, _decimalFormat));
-                        WriteElement("UnitOfMeasure", row.Values[xPSelectData.GetFieldIndex("UnitOfMeasure")]);
+                        WriteElement("UnitOfMeasure", row.Values[xPSelectData.GetFieldIndexFromName("UnitOfMeasure")]);
                         WriteElement("UnitPrice", LogicPOS.Utility.DataConversionUtils.DecimalToString(lineUnitPrice, _decimalFormat));
 
                         switch (pSaftDocumentType)
@@ -1216,7 +1216,7 @@ namespace LogicPOS.Finance.Saft
                             case SaftDocumentType.SalesInvoices:
                             case SaftDocumentType.WorkingDocuments:
                                 //<TaxPointDate>
-                                WriteElement("TaxPointDate", row.Values[xPSelectData.GetFieldIndex("TaxPointDate")]);
+                                WriteElement("TaxPointDate", row.Values[xPSelectData.GetFieldIndexFromName("TaxPointDate")]);
                                 //<//TaxPointDate>
                                 break;
                         }
@@ -1230,23 +1230,23 @@ namespace LogicPOS.Finance.Saft
                                 break;
                         }
 
-                        WriteElement("Description", row.Values[xPSelectData.GetFieldIndex("ProductDescription")]);
+                        WriteElement("Description", row.Values[xPSelectData.GetFieldIndexFromName("ProductDescription")]);
                         //CreditAmount|DebitAmount
                         WriteElement(nodeNameCreditOrDebitAmount, LogicPOS.Utility.DataConversionUtils.DecimalToString(lineCreditOrDebit, _decimalFormat));
 
                         //<Tax>
                         _xmlWriter.WriteStartElement("Tax");
-                        WriteElement("TaxType", row.Values[xPSelectData.GetFieldIndex("TaxType")]);
-                        WriteElement("TaxCountryRegion", row.Values[xPSelectData.GetFieldIndex("TaxCountryRegion")]);
-                        WriteElement("TaxCode", row.Values[xPSelectData.GetFieldIndex("TaxCode")]);
-                        WriteElement("TaxPercentage", Convert.ToInt32(row.Values[xPSelectData.GetFieldIndex("TaxPercentage")]));
+                        WriteElement("TaxType", row.Values[xPSelectData.GetFieldIndexFromName("TaxType")]);
+                        WriteElement("TaxCountryRegion", row.Values[xPSelectData.GetFieldIndexFromName("TaxCountryRegion")]);
+                        WriteElement("TaxCode", row.Values[xPSelectData.GetFieldIndexFromName("TaxCode")]);
+                        WriteElement("TaxPercentage", Convert.ToInt32(row.Values[xPSelectData.GetFieldIndexFromName("TaxPercentage")]));
                         _xmlWriter.WriteEndElement();
                         //</Tax>
 
-                        WriteElement("TaxExemptionReason", row.Values[xPSelectData.GetFieldIndex("TaxExemptionReason")]);
-                        WriteElement("TaxExemptionCode", row.Values[xPSelectData.GetFieldIndex("TaxExemptionCode")]);
-                        if (Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("SettlementAmount")]) > 0.0m)
-                            WriteElement("SettlementAmount", LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("SettlementAmount")]), _decimalFormat));
+                        WriteElement("TaxExemptionReason", row.Values[xPSelectData.GetFieldIndexFromName("TaxExemptionReason")]);
+                        WriteElement("TaxExemptionCode", row.Values[xPSelectData.GetFieldIndexFromName("TaxExemptionCode")]);
+                        if (Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndexFromName("SettlementAmount")]) > 0.0m)
+                            WriteElement("SettlementAmount", LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndexFromName("SettlementAmount")]), _decimalFormat));
 
                         _xmlWriter.WriteEndElement();
                         //</Line>
@@ -1295,12 +1295,12 @@ namespace LogicPOS.Finance.Saft
                     //_logger.Debug(string.Format("sql: [{0}]", sql));
 
                     SQLSelectResultData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
-                    foreach (SelectStatementResultRow row in xPSelectData.Data)
+                    foreach (SelectStatementResultRow row in xPSelectData.DataRows)
                     {
                         //<OrderReferences>
                         _xmlWriter.WriteStartElement("OrderReferences");
-                        WriteElement("OriginatingON", row.Values[xPSelectData.GetFieldIndex("OriginatingON")]);
-                        WriteElement("OrderDate", Convert.ToDateTime(row.Values[xPSelectData.GetFieldIndex("OrderDate")]).ToString(_dateTimeFormatDocumentDate));
+                        WriteElement("OriginatingON", row.Values[xPSelectData.GetFieldIndexFromName("OriginatingON")]);
+                        WriteElement("OrderDate", Convert.ToDateTime(row.Values[xPSelectData.GetFieldIndexFromName("OrderDate")]).ToString(_dateTimeFormatDocumentDate));
                         _xmlWriter.WriteEndElement();
                         //</OrderReferences>
                     }
@@ -1350,12 +1350,12 @@ namespace LogicPOS.Finance.Saft
                     //_logger.Debug(string.Format("sql: [{0}]", sql));
 
                     SQLSelectResultData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
-                    foreach (SelectStatementResultRow row in xPSelectData.Data)
+                    foreach (SelectStatementResultRow row in xPSelectData.DataRows)
                     {
                         //<References>
                         _xmlWriter.WriteStartElement("References");
-                        WriteElement("Reference", row.Values[xPSelectData.GetFieldIndex("Reference")]);
-                        WriteElement("Reason", row.Values[xPSelectData.GetFieldIndex("Reason")]);
+                        WriteElement("Reference", row.Values[xPSelectData.GetFieldIndexFromName("Reference")]);
+                        WriteElement("Reason", row.Values[xPSelectData.GetFieldIndexFromName("Reason")]);
                         _xmlWriter.WriteEndElement();
                         //</References>
                     }
@@ -1551,43 +1551,43 @@ namespace LogicPOS.Finance.Saft
                 decimal exchangeRate;
 
                 SQLSelectResultData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
-                foreach (SelectStatementResultRow row in xPSelectData.Data)
+                foreach (SelectStatementResultRow row in xPSelectData.DataRows)
                 {
                     //<Payment>
                     _xmlWriter.WriteStartElement("Payment");
-                    WriteElement("PaymentRefNo", row.Values[xPSelectData.GetFieldIndex("PaymentRefNo")]);
+                    WriteElement("PaymentRefNo", row.Values[xPSelectData.GetFieldIndexFromName("PaymentRefNo")]);
                     //WriteElement("ATCUD", row.Values[xPSelectData.GetFieldIndex("ATCUD")]);
-                    WriteElement("Period", Convert.ToDateTime(row.Values[xPSelectData.GetFieldIndex("SystemEntryDate")]).Month);
-                    WriteElement("TransactionID", row.Values[xPSelectData.GetFieldIndex("TransactionID")]);
-                    WriteElement("TransactionDate", row.Values[xPSelectData.GetFieldIndex("TransactionDate")]);
-                    WriteElement("PaymentType", row.Values[xPSelectData.GetFieldIndex("PaymentType")]);
+                    WriteElement("Period", Convert.ToDateTime(row.Values[xPSelectData.GetFieldIndexFromName("SystemEntryDate")]).Month);
+                    WriteElement("TransactionID", row.Values[xPSelectData.GetFieldIndexFromName("TransactionID")]);
+                    WriteElement("TransactionDate", row.Values[xPSelectData.GetFieldIndexFromName("TransactionDate")]);
+                    WriteElement("PaymentType", row.Values[xPSelectData.GetFieldIndexFromName("PaymentType")]);
 
-                    WriteElement("Description", row.Values[xPSelectData.GetFieldIndex("Description")]);
+                    WriteElement("Description", row.Values[xPSelectData.GetFieldIndexFromName("Description")]);
                     //Max Lenght 200 cut
                     //string description = row.Values[xPSelectData.GetFieldIndex("Description")].ToString().Substring(0, 200);
                     //WriteElement("Description", description);
                     //<DocumentStatus>
                     _xmlWriter.WriteStartElement("DocumentStatus");
-                    WriteElement("PaymentStatus", row.Values[xPSelectData.GetFieldIndex("PaymentStatus")]);
-                    WriteElement("PaymentStatusDate", row.Values[xPSelectData.GetFieldIndex("PaymentStatusDate")]);
-                    WriteElement("Reason", row.Values[xPSelectData.GetFieldIndex("Reason")]);
-                    WriteElement("SourceID", row.Values[xPSelectData.GetFieldIndex("SourceID")]);
-                    WriteElement("SourcePayment", row.Values[xPSelectData.GetFieldIndex("SourcePayment")]);
+                    WriteElement("PaymentStatus", row.Values[xPSelectData.GetFieldIndexFromName("PaymentStatus")]);
+                    WriteElement("PaymentStatusDate", row.Values[xPSelectData.GetFieldIndexFromName("PaymentStatusDate")]);
+                    WriteElement("Reason", row.Values[xPSelectData.GetFieldIndexFromName("Reason")]);
+                    WriteElement("SourceID", row.Values[xPSelectData.GetFieldIndexFromName("SourceID")]);
+                    WriteElement("SourcePayment", row.Values[xPSelectData.GetFieldIndexFromName("SourcePayment")]);
                     _xmlWriter.WriteEndElement();
                     //</DocumentStatus>
                     //<PaymentMethod>
                     _xmlWriter.WriteStartElement("PaymentMethod");
-                    WriteElement("PaymentMechanism", row.Values[xPSelectData.GetFieldIndex("PaymentMechanism")]);
-                    WriteElement("PaymentAmount", LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("PaymentAmount")]), _decimalFormat));
-                    WriteElement("PaymentDate", row.Values[xPSelectData.GetFieldIndex("PaymentDate")]);
+                    WriteElement("PaymentMechanism", row.Values[xPSelectData.GetFieldIndexFromName("PaymentMechanism")]);
+                    WriteElement("PaymentAmount", LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndexFromName("PaymentAmount")]), _decimalFormat));
+                    WriteElement("PaymentDate", row.Values[xPSelectData.GetFieldIndexFromName("PaymentDate")]);
                     _xmlWriter.WriteEndElement();
                     //</PaymentMethod>
-                    WriteElement("SourceID", row.Values[xPSelectData.GetFieldIndex("SourceID")]);
-                    WriteElement("SystemEntryDate", row.Values[xPSelectData.GetFieldIndex("SystemEntryDate")]);
-                    WriteElement("CustomerID", row.Values[xPSelectData.GetFieldIndex("CustomerID")]);
+                    WriteElement("SourceID", row.Values[xPSelectData.GetFieldIndexFromName("SourceID")]);
+                    WriteElement("SystemEntryDate", row.Values[xPSelectData.GetFieldIndexFromName("SystemEntryDate")]);
+                    WriteElement("CustomerID", row.Values[xPSelectData.GetFieldIndexFromName("CustomerID")]);
 
                     //<Line>
-                    guidFinanceDocumentPayment = new Guid(row.Values[xPSelectData.GetFieldIndex("Oid")].ToString());
+                    guidFinanceDocumentPayment = new Guid(row.Values[xPSelectData.GetFieldIndexFromName("Oid")].ToString());
                     TotalLinesResult totalLineResult = SourceDocuments_Payments_Lines(guidFinanceDocumentPayment);
                     //</Line>
 
@@ -1602,13 +1602,13 @@ namespace LogicPOS.Finance.Saft
                     //Note: 4.4.4.17 in 130823_Portaria_no_274_2013.pdf is Outside DocumentTotals, but gives error on validation, moved 4.4.4.17 to DocumentTotals to be valid in validation, may be a error in 130823_Portaria_no_274_2013.pdf
 
                     //Currency
-                    if (_defaultCurrency.Acronym != row.Values[xPSelectData.GetFieldIndex("CurrencyCode")].ToString())
+                    if (_defaultCurrency.Acronym != row.Values[xPSelectData.GetFieldIndexFromName("CurrencyCode")].ToString())
                     {
-                        currencyAmount = Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("CurrencyAmount")]);
+                        currencyAmount = Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndexFromName("CurrencyAmount")]);
                         exchangeRate = totalLineResult.GrossTotal / currencyAmount;
                         //<Currency>
                         _xmlWriter.WriteStartElement("Currency");
-                        WriteElement("CurrencyCode", row.Values[xPSelectData.GetFieldIndex("CurrencyCode")].ToString());
+                        WriteElement("CurrencyCode", row.Values[xPSelectData.GetFieldIndexFromName("CurrencyCode")].ToString());
                         WriteElement("CurrencyAmount", LogicPOS.Utility.DataConversionUtils.DecimalToString(currencyAmount, _decimalFormat));
                         //In SAT-F Example we have 2 examples one with decimals 0.00 and other with 0.00000000000 opted to use divide value without conversion
                         WriteElement("ExchangeRate", LogicPOS.Utility.DataConversionUtils.DecimalToString(exchangeRate, _decimalFormat));
@@ -1689,21 +1689,21 @@ namespace LogicPOS.Finance.Saft
                 decimal lineCreditAmount = 0.0m;
 
                 SQLSelectResultData xPSelectData = XPOHelper.GetSelectedDataFromQuery(sql);
-                if (xPSelectData.Data.Length > 0)
-                    foreach (SelectStatementResultRow row in xPSelectData.Data)
+                if (xPSelectData.DataRows.Length > 0)
+                    foreach (SelectStatementResultRow row in xPSelectData.DataRows)
                     {
-                        isCredit = (Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("CreditAmount")]) > 0);
+                        isCredit = (Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndexFromName("CreditAmount")]) > 0);
                         nodeNameCreditOrDebitAmount = (isCredit) ? "CreditAmount" : "DebitAmount";
 
-                        lineTaxPayable = Math.Round(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("TaxPayable")]), CultureSettings.DecimalRoundTo);
-                        lineNetTotal = Math.Round(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("NetTotal")]), CultureSettings.DecimalRoundTo);
-                        lineGrossTotal = Math.Round(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("GrossTotal")]), CultureSettings.DecimalRoundTo);
+                        lineTaxPayable = Math.Round(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndexFromName("TaxPayable")]), CultureSettings.DecimalRoundTo);
+                        lineNetTotal = Math.Round(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndexFromName("NetTotal")]), CultureSettings.DecimalRoundTo);
+                        lineGrossTotal = Math.Round(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndexFromName("GrossTotal")]), CultureSettings.DecimalRoundTo);
 
                         //Only add to Total if is Credit
                         if (isCredit)
                         {
                             //Helper percentage
-                            lineCreditAmount = Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("CreditAmount")]);
+                            lineCreditAmount = Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndexFromName("CreditAmount")]);
                             percentage = lineCreditAmount * 100 / lineGrossTotal;
                             //Sum Document totalDocument Percentage
                             totalLineResult.TaxPayable += (lineTaxPayable * percentage) / 100;
@@ -1713,16 +1713,16 @@ namespace LogicPOS.Finance.Saft
 
                         //<Line>
                         _xmlWriter.WriteStartElement("Line");
-                        WriteElement("LineNumber", row.Values[xPSelectData.GetFieldIndex("LineNumber")]);
+                        WriteElement("LineNumber", row.Values[xPSelectData.GetFieldIndexFromName("LineNumber")]);
                         //<SourceDocumentID>
                         _xmlWriter.WriteStartElement("SourceDocumentID");
-                        WriteElement("OriginatingON", row.Values[xPSelectData.GetFieldIndex("OriginatingON")]);
-                        WriteElement("InvoiceDate", row.Values[xPSelectData.GetFieldIndex("InvoiceDate")]);
-                        WriteElement("Description", row.Values[xPSelectData.GetFieldIndex("Description")]);
+                        WriteElement("OriginatingON", row.Values[xPSelectData.GetFieldIndexFromName("OriginatingON")]);
+                        WriteElement("InvoiceDate", row.Values[xPSelectData.GetFieldIndexFromName("InvoiceDate")]);
+                        WriteElement("Description", row.Values[xPSelectData.GetFieldIndexFromName("Description")]);
                         _xmlWriter.WriteEndElement();
                         //</Line>
                         //CreditAmount|DebitAmount
-                        WriteElement(nodeNameCreditOrDebitAmount, LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex(nodeNameCreditOrDebitAmount)]), _decimalFormat));
+                        WriteElement(nodeNameCreditOrDebitAmount, LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndexFromName(nodeNameCreditOrDebitAmount)]), _decimalFormat));
 
                         //TODO : Nos recibos do sistema de IVA de Caixa, deve ser indicada uma linha por cada taxa de IVA diferente, que conste da fatura respetiva.
                         //<Tax>

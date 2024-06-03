@@ -552,9 +552,9 @@ namespace LogicPOS.Shared.Article
                     SQLSelectResultData selectedDataOrders = XPOHelper.GetSelectedDataFromQuery(sqlOrders);
 
                     //Process Tickets and Add to ArticleBag
-                    if (selectedDataOrders.Data.Length > 0)
+                    if (selectedDataOrders.DataRows.Length > 0)
                     {
-                        foreach (SelectStatementResultRow row in selectedDataOrders.Data)
+                        foreach (SelectStatementResultRow row in selectedDataOrders.DataRows)
                         {
                             //Proteção para artigos do tipo "Sem Preço" [IN:013329]
                             //First check if article have price
@@ -562,34 +562,34 @@ namespace LogicPOS.Shared.Article
                             //{
                             //Generate Key/Props
                             articleBagKey = new ArticleBagKey(
-                                new Guid(row.Values[selectedDataOrders.GetFieldIndex("Article")].ToString()),                                   //ticketLine.Article.Oid
-                                Convert.ToString(row.Values[selectedDataOrders.GetFieldIndex("Designation")]),                                  //ticketLine.Designation
-                                Convert.ToDecimal(row.Values[selectedDataOrders.GetFieldIndex("Price")]),                                       //ticketLine.Price
-                                Convert.ToDecimal(row.Values[selectedDataOrders.GetFieldIndex("Discount")]),                                    //ticketLine.Discount
-                                Convert.ToDecimal(row.Values[selectedDataOrders.GetFieldIndex("Vat")])                                          //ticketLine.Vat
+                                new Guid(row.Values[selectedDataOrders.GetFieldIndexFromName("Article")].ToString()),                                   //ticketLine.Article.Oid
+                                Convert.ToString(row.Values[selectedDataOrders.GetFieldIndexFromName("Designation")]),                                  //ticketLine.Designation
+                                Convert.ToDecimal(row.Values[selectedDataOrders.GetFieldIndexFromName("Price")]),                                       //ticketLine.Price
+                                Convert.ToDecimal(row.Values[selectedDataOrders.GetFieldIndexFromName("Discount")]),                                    //ticketLine.Discount
+                                Convert.ToDecimal(row.Values[selectedDataOrders.GetFieldIndexFromName("Vat")])                                          //ticketLine.Vat
                             );
 
                             articleBagProps = new ArticleBagProperties(
-                                new Guid(row.Values[selectedDataOrders.GetFieldIndex("ConfigurationPlace")].ToString()),                        //ticket.PlaceTable.Place.Oid
-                                new Guid(row.Values[selectedDataOrders.GetFieldIndex("ConfigurationPlaceTable")].ToString()),                   //ticket.PlaceTable.Oid
-                                (PriceType)Enum.Parse(typeof(PriceType), row.Values[selectedDataOrders.GetFieldIndex("PriceType")].ToString()), //ticket.PriceType
-                                Convert.ToString(row.Values[selectedDataOrders.GetFieldIndex("Code")]),                                         //ticketLine.Code
-                                Convert.ToDecimal(row.Values[selectedDataOrders.GetFieldIndex("Quantity")]),                                    //ticketLine.Quantity
-                                Convert.ToString(row.Values[selectedDataOrders.GetFieldIndex("UnitMeasure")])                                   //ticketLine.UnitMeasure
+                                new Guid(row.Values[selectedDataOrders.GetFieldIndexFromName("ConfigurationPlace")].ToString()),                        //ticket.PlaceTable.Place.Oid
+                                new Guid(row.Values[selectedDataOrders.GetFieldIndexFromName("ConfigurationPlaceTable")].ToString()),                   //ticket.PlaceTable.Oid
+                                (PriceType)Enum.Parse(typeof(PriceType), row.Values[selectedDataOrders.GetFieldIndexFromName("PriceType")].ToString()), //ticket.PriceType
+                                Convert.ToString(row.Values[selectedDataOrders.GetFieldIndexFromName("Code")]),                                         //ticketLine.Code
+                                Convert.ToDecimal(row.Values[selectedDataOrders.GetFieldIndexFromName("Quantity")]),                                    //ticketLine.Quantity
+                                Convert.ToString(row.Values[selectedDataOrders.GetFieldIndexFromName("UnitMeasure")])                                   //ticketLine.UnitMeasure
                             );
 
                             //Detect and Assign VatExemptionReason
-                            if (row.Values[selectedDataOrders.GetFieldIndex("VatExemptionReason")] != null
-                                && Convert.ToString(row.Values[selectedDataOrders.GetFieldIndex("VatExemptionReason")]) != Guid.Empty.ToString()
+                            if (row.Values[selectedDataOrders.GetFieldIndexFromName("VatExemptionReason")] != null
+                                && Convert.ToString(row.Values[selectedDataOrders.GetFieldIndexFromName("VatExemptionReason")]) != Guid.Empty.ToString()
                             )
                             {
                                 //Add VatException Reason to Key
-                                articleBagKey.VatExemptionReasonOid = new Guid(Convert.ToString(row.Values[selectedDataOrders.GetFieldIndex("VatExemptionReason")]));
+                                articleBagKey.VatExemptionReasonOid = new Guid(Convert.ToString(row.Values[selectedDataOrders.GetFieldIndexFromName("VatExemptionReason")]));
                             }
 
                             //Tokens
-                            articleBagProps.Token1 = Convert.ToString(row.Values[selectedDataOrders.GetFieldIndex("Token1")]); //ticketLine.Token1
-                            articleBagProps.Token2 = Convert.ToString(row.Values[selectedDataOrders.GetFieldIndex("Token2")]); //ticketLine.Token2
+                            articleBagProps.Token1 = Convert.ToString(row.Values[selectedDataOrders.GetFieldIndexFromName("Token1")]); //ticketLine.Token1
+                            articleBagProps.Token2 = Convert.ToString(row.Values[selectedDataOrders.GetFieldIndexFromName("Token2")]); //ticketLine.Token2
 
                             //articleBagProps.SerialNumber = Convert.ToString(row.Values[selectedDataOrders.GetFieldIndex("SerialNumber")]); //SerialNumber
 
@@ -620,38 +620,38 @@ namespace LogicPOS.Shared.Article
                     );
 
                     SQLSelectResultData selectedDataDocuments = XPOHelper.GetSelectedDataFromQuery(sqlDocuments);
-                    if (selectedDataDocuments.Data.Length > 0)
+                    if (selectedDataDocuments.DataRows.Length > 0)
                     {
-                        foreach (SelectStatementResultRow row in selectedDataDocuments.Data)
+                        foreach (SelectStatementResultRow row in selectedDataDocuments.DataRows)
                         {
                             // If Not ConferenceDocument or TableConsult
                             //Proteção para artigos do tipo "Sem Preço" [IN:013329]
                             //First check if article have price
                             //&& (Convert.ToDecimal(row.Values[selectedDataDocuments.GetFieldIndex("Price")]) > 0.0m)
-                            if (row.Values[selectedDataDocuments.GetFieldIndex("DocumentType")].ToString() != DocumentSettings.XpoOidDocumentFinanceTypeConferenceDocument.ToString()
-                                && row.Values[selectedDataDocuments.GetFieldIndex("Price")] != null)
+                            if (row.Values[selectedDataDocuments.GetFieldIndexFromName("DocumentType")].ToString() != DocumentSettings.XpoOidDocumentFinanceTypeConferenceDocument.ToString()
+                                && row.Values[selectedDataDocuments.GetFieldIndexFromName("Price")] != null)
                             {
 
                                 //Generate Key/Props
                                 articleBagKey = new ArticleBagKey(
-                                    new Guid(row.Values[selectedDataDocuments.GetFieldIndex("Article")].ToString()),
-                                    Convert.ToString(row.Values[selectedDataDocuments.GetFieldIndex("Designation")]),
-                                    Convert.ToDecimal(row.Values[selectedDataDocuments.GetFieldIndex("Price")]),
-                                    Convert.ToDecimal(row.Values[selectedDataDocuments.GetFieldIndex("Discount")]),
-                                    Convert.ToDecimal(row.Values[selectedDataDocuments.GetFieldIndex("Vat")])
+                                    new Guid(row.Values[selectedDataDocuments.GetFieldIndexFromName("Article")].ToString()),
+                                    Convert.ToString(row.Values[selectedDataDocuments.GetFieldIndexFromName("Designation")]),
+                                    Convert.ToDecimal(row.Values[selectedDataDocuments.GetFieldIndexFromName("Price")]),
+                                    Convert.ToDecimal(row.Values[selectedDataDocuments.GetFieldIndexFromName("Discount")]),
+                                    Convert.ToDecimal(row.Values[selectedDataDocuments.GetFieldIndexFromName("Vat")])
                                 );
                                 //Detect and Assign VatExemptionReason
-                                if (row.Values[selectedDataDocuments.GetFieldIndex("VatExemptionReason")] != null
-                                    && Convert.ToString(row.Values[selectedDataDocuments.GetFieldIndex("VatExemptionReason")]) != Guid.Empty.ToString()
+                                if (row.Values[selectedDataDocuments.GetFieldIndexFromName("VatExemptionReason")] != null
+                                    && Convert.ToString(row.Values[selectedDataDocuments.GetFieldIndexFromName("VatExemptionReason")]) != Guid.Empty.ToString()
                                 )
                                 {
                                     //Add VatException Reason to Key
-                                    articleBagKey.VatExemptionReasonOid = new Guid(Convert.ToString(row.Values[selectedDataDocuments.GetFieldIndex("VatExemptionReason")]));
+                                    articleBagKey.VatExemptionReasonOid = new Guid(Convert.ToString(row.Values[selectedDataDocuments.GetFieldIndexFromName("VatExemptionReason")]));
                                 }
                                 if (articleBag.ContainsKey(articleBagKey))
                                 {
                                     //Remove PartialPayed Item Quantity from ArticleBag
-                                    articleBag.Remove(articleBagKey, Convert.ToDecimal(row.Values[selectedDataDocuments.GetFieldIndex("Quantity")]));
+                                    articleBag.Remove(articleBagKey, Convert.ToDecimal(row.Values[selectedDataDocuments.GetFieldIndexFromName("Quantity")]));
                                 }
                                 else
                                 {
@@ -662,7 +662,7 @@ namespace LogicPOS.Shared.Article
                                         if (article.Key.ArticleId == articleBagKey.ArticleId)
                                         {
                                             //Remove PartialPayed Item Quantity from ArticleBag
-                                            articleBag.Remove(article.Key, Convert.ToDecimal(row.Values[selectedDataDocuments.GetFieldIndex("Quantity")]));
+                                            articleBag.Remove(article.Key, Convert.ToDecimal(row.Values[selectedDataDocuments.GetFieldIndexFromName("Quantity")]));
                                         }
                                     }
                                     if (debug) log.Debug(string.Format("articleBagKey: [{0}]", articleBagKey));
