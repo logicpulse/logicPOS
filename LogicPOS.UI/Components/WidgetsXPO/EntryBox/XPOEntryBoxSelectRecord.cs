@@ -275,7 +275,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             if (value != null)
             {
                 string sortProp = "Designation";
-                if (value.ClassInfo.ToString() == "logicpos.datalayer.DataLayer.Xpo.erp_customer")
+                if (value.GetType() == typeof(erp_customer))
                 {
                     sortProp = "Name";
                 }
@@ -307,7 +307,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                 {
                     foreach (dynamic item in dropdownTextCollection)
                     {
-                        if (value.ClassInfo.ToString() == "logicpos.datalayer.DataLayer.Xpo.erp_customer")
+                        if (value.GetType() == typeof(erp_customer))
                         {
                             store.AppendValues(item.Name);
                         }
