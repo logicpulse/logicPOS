@@ -4,7 +4,6 @@ using LogicPOS.Globalization;
 using LogicPOS.Printing.Common;
 using LogicPOS.Printing.Enums;
 using LogicPOS.Printing.Tickets;
-using LogicPOS.Reporting;
 using LogicPOS.Settings;
 using System;
 using System.Collections.Generic;
@@ -24,33 +23,33 @@ namespace LogicPOS.Printing.Templates
         protected int _ticketTablePaddingLeftLength = 2;
 
         public BaseFinanceTemplate(
-            PrintingPrinterDto printer, 
-            PrintingDocumentTypeDto documentType, 
+            PrintingPrinterDto printer,
+            PrintingDocumentTypeDto documentType,
             List<int> copyNames)
             : this(
-                  printer, 
-                  documentType, 
-                  copyNames, 
+                  printer,
+                  documentType,
+                  copyNames,
                   false)
         {
         }
 
         public BaseFinanceTemplate(
-            PrintingPrinterDto printer, 
-            PrintingDocumentTypeDto documentType, 
-            List<int> copyNames, 
+            PrintingPrinterDto printer,
+            PrintingDocumentTypeDto documentType,
+            List<int> copiesNumbers,
             bool isSecondCopy)
             : base(
-                  printer, 
+                  printer,
                   PrintingSettings.ThermalPrinter.CompanyLogoLocation)
         {
             _documentType = documentType;
-            _copyNames = copyNames;
+            _copyNames = copiesNumbers;
             _secondCopy = isSecondCopy;
 
             if (_copyNames != null)
             {
-                _copyNamesArray = CustomReport.CopyNames(copyNames);
+                _copyNamesArray = LogicPOS.Utility.PrintingUtils.GetDocumentsCopiesNamesByNumbers(copiesNumbers);
             }
         }
 

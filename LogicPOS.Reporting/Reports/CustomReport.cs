@@ -50,7 +50,7 @@ namespace LogicPOS.Reporting
         public CustomReport() { }
         public CustomReport(string pReportFileName, string pTemplateBase, int pPrintCopies) : this(pReportFileName, pTemplateBase, null, pPrintCopies) { }
         public CustomReport(string pReportFileName, string pTemplateBase, List<int> pCopyNames) : this(pReportFileName, pTemplateBase, pCopyNames, 1) { }
-        public CustomReport(string pReportFileName, string pTemplateBase, List<int> pCopyNames, int pPrintCopies)
+        public CustomReport(string pReportFileName, string pTemplateBase, List<int> copiesNumbers, int pPrintCopies)
         {
             //Assign Parameters
             _reportFileName = pReportFileName;
@@ -132,9 +132,9 @@ namespace LogicPOS.Reporting
             //this.ReportInfo.Author = string.Format("{0} {1}", LogicPOS.Settings.GeneralSettings.Settings["appName"], FrameworkUtils.ProductVersion);
 
             //PrintSettings CopyNames
-            if (pCopyNames != null)
+            if (copiesNumbers != null)
             {
-                string[] copyNamesArray = CopyNames(pCopyNames);
+                string[] copyNamesArray = PrintingUtils.GetDocumentsCopiesNamesByNumbers(copiesNumbers);
                 this.PrintSettings.CopyNames = copyNamesArray;
             }
 
@@ -1899,22 +1899,11 @@ namespace LogicPOS.Reporting
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //CopyNames
 
-        //Get CopyNames String Array from integer List ex pCopyNames[1] = result[1] = Duplicate
-        public static string[] CopyNames(List<int> pCopyNames)
-        {
-            string[] result = new string[pCopyNames.Count];
-            for (int i = 0; i < pCopyNames.Count; i++)
-            {
-                result[i] = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, string.Format("global_print_copy_title{0}", pCopyNames[i] + 1));
-            }
-            return result;
-        }
-
         //Get CopyNames Int List from PrintCopies ex pPrintCopies = 2 | result[0] = Original, result[1] = Duplicate
-        public static List<int> CopyNames(int pPrintCopies)
+        public static List<int> CopyNames(int printCopies)
         {
             List<int> result = new List<int>();
-            for (int i = 0; i < pPrintCopies; i++)
+            for (int i = 0; i < printCopies; i++)
             {
                 result.Add(i);
             }

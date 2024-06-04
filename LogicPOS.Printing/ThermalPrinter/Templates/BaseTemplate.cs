@@ -4,7 +4,6 @@ using LogicPOS.DTOs.Printing;
 using LogicPOS.Globalization;
 using LogicPOS.Printing.Common;
 using LogicPOS.Printing.Enums;
-using LogicPOS.Reporting;
 using LogicPOS.Settings;
 using System;
 using System.Collections.Generic;
@@ -231,7 +230,7 @@ namespace LogicPOS.Printing.Templates
                 //Printed On | Company|App|Version
                 _genericThermalPrinter.WriteLine(string.Format("{1}: {2}{0}{3}: {4} {5}"
                     , Environment.NewLine
-                    , CustomFunctions.Res("global_printed_on_date")
+                    , LogicPOS.Utility.ResourcesUtility.GetResourceByName("global_printed_on_date")
                     , XPOUtility.CurrentDateTimeAtomic().ToString(CultureSettings.DateTimeFormat)
                     , _customVars["APP_COMPANY"]
                     , _customVars["APP_NAME"]

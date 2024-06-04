@@ -1,14 +1,11 @@
 ﻿using FastReport.Utils;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
-using LogicPOS.Globalization;
-using LogicPOS.Globalization.Resources.Localization;
 using LogicPOS.Settings;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Resources;
 
 namespace LogicPOS.Reporting
 {
@@ -16,22 +13,12 @@ namespace LogicPOS.Reporting
     {
         //Log4Net
         private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private static ResourceManager _resourceManager;
-        private static bool _lowerCaseResource;
+        private static bool _useLowerCaseResources = true;
 
-        //Using Base Project Resources
-        public static void Register(string pAppName)
-        {
-            Register(pAppName, Resx.ResourceManager, true);
-        }
 
         //Using Outside Project Resources: Extended for JoanaReports
-        public static void Register(string pAppName, ResourceManager pResourceManager, bool pLowerCaseResource)
+        public static void Register(string pAppName)
         {
-            //Parameters
-            _resourceManager = pResourceManager;
-            _lowerCaseResource = pLowerCaseResource;
-            //Register Methods
             RegisterFunctions();
             RegisterSystemVars(pAppName);
             RegisterCustomVars(pAppName);
@@ -39,12 +26,13 @@ namespace LogicPOS.Reporting
 
         private static void RegisterFunctions()
         {
-            //Add Funct
             RegisteredObjects.AddFunctionCategory("Custom", "Custom Functions");
 
-            //Obtain MethodInfo for our functions
             Type customFuncType = typeof(CustomFunctions);
-            MethodInfo funcRes = customFuncType.GetMethod(nameof(Res), new Type[] { typeof(string) });
+
+            var getResourceMethodName = nameof(Utility.ResourcesUtility.GetResourceByName);
+            MethodInfo getResourceFunction = typeof(Utility.ResourcesUtility).GetMethod(getResourceMethodName, new Type[] { typeof(string) });
+
             MethodInfo funcGetParam = customFuncType.GetMethod(nameof(GetParam), new Type[] { typeof(string) });
             MethodInfo funcPref = customFuncType.GetMethod(nameof(Pref), new Type[] { typeof(string) });
             MethodInfo funcVar = customFuncType.GetMethod(nameof(Var), new Type[] { typeof(string) });
@@ -53,7 +41,7 @@ namespace LogicPOS.Reporting
             MethodInfo funcExtendedValue = customFuncType.GetMethod(nameof(ExtendedValue), new Type[] { typeof(decimal), typeof(string) });
 
             //Register simple function
-            RegisteredObjects.AddFunction(funcRes, "Custom");
+            RegisteredObjects.AddFunction(getResourceFunction, "Custom");
             RegisteredObjects.AddFunction(funcGetParam, "Custom");
             RegisteredObjects.AddFunction(funcPref, "Custom");
             RegisteredObjects.AddFunction(funcVar, "Custom");
@@ -141,69 +129,16 @@ namespace LogicPOS.Reporting
             PrintingSettings.FastReportCustomVars = customVars;
         }
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Custom Functions
-
-        /// <summary>
-        /// Get Resource String from Resources
-        /// </summary>
-        /// <param name="ResourceName"></param>
-        /// <returns>Resource String</returns>
-        public static string GetParam(string pKey)
+        public static string GetParam(string key)
         {
             try
             {
-                string result = string.Format("UNDEFINED [{0}]", pKey);
-                if (PrintingSettings.FastReportCustomVars.ContainsKey(pKey.ToUpper()))
+                string result = $"Key not found [{key}]";
+
+                if (PrintingSettings.FastReportCustomVars.ContainsKey(key.ToUpper()))
                 {
-                    result = PrintingSettings.FastReportCustomVars[pKey.ToUpper()];
+                    result = PrintingSettings.FastReportCustomVars[key.ToUpper()];
                 }
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-                return "ERROR";
-            }
-        }
-
-        /// <summary>
-        /// Get Resource String from Resources
-        /// </summary>
-        /// <param name="ResourceName"></param>
-        /// <returns>Resource String</returns>
-        public static string Res(string pResourceName)
-        {
-            try
-            {
-                string resourceName = pResourceName;
-
-                //Override to Lower (Default)
-                if (_lowerCaseResource) resourceName = pResourceName.ToLower();
-
-                string result = (_resourceManager.GetString(resourceName) != null)
-                  ? _resourceManager.GetString(resourceName)
-                  : string.Format("UNDEFINED [{0}]", resourceName);
-                if (resourceName == "global_documentfinance_type_title_fs")
-                {
-                    result = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_documentfinance_type_title_fs");
-                }
-
-                //_logger.Debug(string.Format("Message: [{0}]", resourceName));
-
-                // Override default values - Non Default Country Replaceables
-                /* IN005993 */
-                /*if (!SettingsApp.ConfigurationSystemCountry.Equals(SettingsApp.XpoOidConfigurationCountryPortugal))
-                    if (resourceName.Equals("global_documentfinance_type_report_invoice_footer_at"))
-                    {
-                        if (LogicPOS.Settings.CultureSettings.CurrentCulture.Name.Equals("pt-PT"))
-                            result = result.Replace(" - Alinea f) do n.5 do art. 36 do CIVA", string.Empty);
-                        else if (LogicPOS.Settings.CultureSettings.CurrentCulture.Name.Equals("fr-FR"))
-                            result = result.Replace(" - Alinea f) n.5 de l´art. 36 du Code de la IVA", string.Empty);
-                        else 
-                            result = result.Replace(" - paragraph f) n.5 of art. 36 of the Vat Code", string.Empty);
-                    }*/
-
                 return result;
             }
             catch (Exception ex)
@@ -307,60 +242,5 @@ namespace LogicPOS.Reporting
                 return "ERROR";
             }
         }
-
-        //Replaced by Vars
-        /// <summary>
-        /// Get Licence Data from Token
-        /// Version,Date,Name,Company,Nif,Address,Email,Telephone,HardwareId
-        /// </summary>
-        /// <param name="Token"></param>
-        /// <returns>Licence Value</returns>
-        //public static string Licence(string pToken)
-        //{
-        //  string result;
-
-        //  try
-        //  {
-        //    switch (pToken.ToLower())
-        //    {
-        //      case "version":
-        //        result = GlobalFramework.LicenceVersion;
-        //        break;
-        //      case "date":
-        //        result = GlobalFramework.LicenceDate;
-        //        break;
-        //      case "name":
-        //        result = GlobalFramework.LicenceName;
-        //        break;
-        //      case "company":
-        //        result = SharedFramework.LicenseCompany;
-        //        break;
-        //      case "nif":
-        //        result = GlobalFramework.LicenceNif;
-        //        break;
-        //      case "address":
-        //        result = GlobalFramework.LicenceAddress;
-        //        break;
-        //      case "email":
-        //        result = GlobalFramework.LicenceEmail;
-        //        break;
-        //      case "telephone":
-        //        result = GlobalFramework.LicenceTelephone;
-        //        break;
-        //      case "hardwareid":
-        //        result = SharedFramework.LicenseHardwareId;
-        //        break;
-        //      default:
-        //        result = "UNDEFINED LICENCE DATA";
-        //        break;
-        //    }
-        //    return result;
-        //  }
-        //  catch (Exception ex)
-        //  {
-        //    _logger.Error(ex.Message, ex);
-        //    return "ERROR";
-        //  }
-        //} 
     }
 }

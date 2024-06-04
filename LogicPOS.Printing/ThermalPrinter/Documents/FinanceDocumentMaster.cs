@@ -21,9 +21,9 @@ namespace LogicPOS.Printing.Documents
 {
     public class FinanceDocumentMaster : BaseFinanceTemplate
     {
-        //Parameters Properties
+
         private readonly PrintDocumentMasterDto _documentMaster;
-        //Business Objects
+
         private readonly List<FRBODocumentFinanceMasterView> _documentFinanceMasterList;
         private readonly List<FRBODocumentFinanceDetail> _documentFinanceDetailList;
         private readonly List<FRBODocumentFinanceMasterTotalView> _documentFinanceMasterTotalList;
