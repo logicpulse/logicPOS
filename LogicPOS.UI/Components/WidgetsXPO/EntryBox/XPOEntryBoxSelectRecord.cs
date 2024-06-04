@@ -414,7 +414,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             {
                 foreach (dynamic item in dropdownTextCollection)
                 {
-                    if (_value.ClassInfo.ToString() == "logicpos.datalayer.DataLayer.Xpo.erp_customer")
+                    if (_value.GetType() == typeof(erp_customer))
                     {
                         if (item.Name == pEntry.Text)
                         {
