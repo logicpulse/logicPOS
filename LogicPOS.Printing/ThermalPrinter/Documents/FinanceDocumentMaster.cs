@@ -2,6 +2,7 @@
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.DTOs.Common;
 using LogicPOS.DTOs.Printing;
+using LogicPOS.DTOs.Reporting;
 using LogicPOS.Globalization;
 using LogicPOS.Printing.Enums;
 using LogicPOS.Printing.Templates;
@@ -24,9 +25,9 @@ namespace LogicPOS.Printing.Documents
 
         private readonly PrintDocumentMasterDto _documentMaster;
 
-        private readonly List<FinanceMasterViewReport> _financeMasters;
-        private readonly List<FinanceDetailReport> _documentFinanceDetailList;
-        private readonly List<FinanceMasterTotalViewReport> _documentFinanceMasterTotalList;
+        private readonly List<FinanceMasterViewReportDto> _financeMasters;
+        private readonly List<FinanceDetailReport> _financeDetailsList;
+        private readonly List<FinanceMasterTotalViewReport> _financeMasterTotalList;
 
         public FinanceDocumentMaster(
             PrintingPrinterDto printer,
@@ -44,11 +45,11 @@ namespace LogicPOS.Printing.Documents
             _documentMaster = documentMaster;
 
             //Init Fast Reports Business Objects (From FRBOHelper)
-            ReportList<FinanceMasterViewReport> financeMasters = ReportHelper.GetFRBOFinanceDocument(_documentMaster.Id);
+            ReportList<FinanceMasterViewReportDto> financeMasters = ReportHelper.GetFinanceMasterViewReports(_documentMaster.Id);
             //Get FRBOs Lists 
             _financeMasters = financeMasters.List;
-            _documentFinanceDetailList = financeMasters.List[0].DocumentFinanceDetail;
-            _documentFinanceMasterTotalList = financeMasters.List[0].DocumentFinanceMasterTotal; ;
+            _financeDetailsList = financeMasters.List[0].DocumentFinanceDetail;
+            _financeMasterTotalList = financeMasters.List[0].DocumentFinanceMasterTotal; ;
 
         }
 
@@ -189,7 +190,7 @@ namespace LogicPOS.Printing.Documents
                 ticketTable.Print(_genericThermalPrinter, paddingLeftFormat);
 
                 //Print Items
-                foreach (FinanceDetailReport item in _documentFinanceDetailList)
+                foreach (FinanceDetailReport item in _financeDetailsList)
                 {
                     //Recreate/Reset Table for Item Details Loop
                     ticketTable = new TicketTable(dataTable, columns, _maxCharsPerLineNormal - _ticketTablePaddingLeftLength);
@@ -403,7 +404,7 @@ namespace LogicPOS.Printing.Documents
                 dataTable.Columns.Add(dcTaxBase);
                 dataTable.Columns.Add(dcTotal);
 
-                foreach (FinanceMasterTotalViewReport item in _documentFinanceMasterTotalList)
+                foreach (FinanceMasterTotalViewReport item in _financeMasterTotalList)
                 {
                     dataRow = dataTable.NewRow();
                     dataRow[0] = item.Designation;

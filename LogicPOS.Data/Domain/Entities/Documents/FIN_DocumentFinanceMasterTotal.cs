@@ -1,12 +1,9 @@
 ﻿using DevExpress.Xpo;
+using LogicPOS.Domain.Enums;
+
 
 namespace LogicPOS.Domain.Entities
 {
-    public enum FinanceMasterTotalType
-    {
-        Tax, Discount
-    }
-
     [DeferredDeletion(false)]
     public class fin_documentfinancemastertotal : Entity
     {

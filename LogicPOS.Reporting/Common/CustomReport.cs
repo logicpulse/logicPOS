@@ -590,7 +590,7 @@ namespace LogicPOS.Reporting.Common
                 //customReport.SetParameterValue("Invoice Noº", 280);
 
                 //Get Result Objects from FRBOHelper
-                ReportList<FinanceMasterViewReport> financeMasters = ReportHelper.GetFRBOFinanceDocument(pDocumentFinanceMasterOid);
+                ReportList<FinanceMasterViewReport> financeMasters = ReportHelper.GetFinanceMasterViewReports(pDocumentFinanceMasterOid);
                 //Get Generic Collections From FRBOHelper Results
                 ReportList<FinanceMasterViewReport> gcDocumentFinanceMaster = financeMasters;
                 //Prepare and Enable DataSources

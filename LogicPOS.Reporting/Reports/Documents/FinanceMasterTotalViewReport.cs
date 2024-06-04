@@ -1,4 +1,4 @@
-﻿using LogicPOS.Domain.Entities;
+﻿using LogicPOS.Domain.Enums;
 using LogicPOS.Reporting.Common;
 
 namespace LogicPOS.Reporting.Reports.Documents

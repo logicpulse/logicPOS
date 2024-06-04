@@ -60,6 +60,7 @@
     <Compile Include="Domain\Entities\WorkSession\WorkSessionPeriodStatus.cs" />
     <Compile Include="Domain\Entities\WorkSession\WorkSessionPeriodType.cs" />
     <Compile Include="Domain\Enums\DocumentType.cs" />
+    <Compile Include="Domain\Enums\FinanceMasterTotalType.cs" />
     <Compile Include="Domain\Enums\MovementTypeTotal.cs" />
     <Compile Include="XPO\Settings\Terminal\LoggedTerminalSettings.cs" />
     <Compile Include="XPO\Settings\Terminal\TerminalSettings.cs" />

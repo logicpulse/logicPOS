@@ -18,7 +18,7 @@ namespace LogicPOS.Reporting.Common
         /// <summary>
         /// Generate Fast Report Business Objects for ProcessReportFinanceDocument
         /// </summary>
-        public static ReportList<FinanceMasterViewReport> GetFRBOFinanceDocument(Guid financeMasterId)
+        public static ReportList<FinanceMasterViewReport> GetFinanceMasterViewReports(Guid financeMasterId)
         {
             ReportList<FinanceMasterViewReport> result = new ReportList<FinanceMasterViewReport>();
 
