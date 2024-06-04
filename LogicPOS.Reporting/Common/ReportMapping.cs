@@ -92,10 +92,56 @@ namespace LogicPOS.Reporting.Common
                 CurrencyCode = report.CurrencyCode,
                 CurrencyDesignation = report.CurrencyDesignation,
                 CurrencyAcronym = report.CurrencyAcronym,
-                ATDocQRCode = report.ATDocQRCode
+                ATDocQRCode = report.ATDocQRCode,
             };
 
+            dto.DocumentFinanceDetail=report.DocumentFinanceDetail.ConvertAll(
+                detail => GetFinanceDetailReportDto(detail)
+                );
+            dto.DocumentFinanceMasterTotal = report.DocumentFinanceMasterTotal.ConvertAll(
+                total => GetFinanceMasterTotalViewReportDto(total)
+                );
+
             return dto;
+        }
+
+        public static FinanceDetailReportDto GetFinanceDetailReportDto(FinanceDetailReport DetailReport)
+        {
+            var FinanceDatailReportDto = new FinanceDetailReportDto
+            {
+                Code = DetailReport.Code,
+                Designation = DetailReport.Designation,
+                Discount = DetailReport.Discount,
+                Notes = DetailReport.Notes,
+                Price = DetailReport.Price,
+                Quantity = DetailReport.Quantity,
+                TotalFinal = DetailReport.TotalFinal,
+                TotalGross = DetailReport.TotalGross,
+                TotalNet = DetailReport.TotalNet,
+                UnitMeasure = DetailReport.UnitMeasure,
+                Vat = DetailReport.Vat,
+                VatExemptionReasonDesignation = DetailReport.VatExemptionReasonDesignation,
+            };
+            return FinanceDatailReportDto;
+        }
+
+        public static FinanceMasterTotalViewReportDto GetFinanceMasterTotalViewReportDto(FinanceMasterTotalViewReport TotalViewReport)
+        {
+            var TotalViewReportDto = new FinanceMasterTotalViewReportDto
+            {
+                Oid = TotalViewReport.Oid,
+                Designation = TotalViewReport.Designation,
+                DocumentMaster = TotalViewReport.DocumentMaster,
+                TaxCode = TotalViewReport.TaxCode,
+                TaxCountryRegion = TotalViewReport.TaxCountryRegion,
+                Total = TotalViewReport.Total,
+                TotalBase = TotalViewReport.TotalBase,
+                TotalType = (int)TotalViewReport.TotalType,
+                Value = TotalViewReport.Value,
+
+            };
+
+            return TotalViewReportDto;
         }
 
     }

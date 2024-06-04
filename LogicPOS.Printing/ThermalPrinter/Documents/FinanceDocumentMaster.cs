@@ -26,8 +26,8 @@ namespace LogicPOS.Printing.Documents
         private readonly PrintDocumentMasterDto _documentMaster;
 
         private readonly List<FinanceMasterViewReportDto> _financeMasters;
-        private readonly List<FinanceDetailReport> _financeDetailsList;
-        private readonly List<FinanceMasterTotalViewReport> _financeMasterTotalList;
+        private readonly List<FinanceDetailReportDto> _financeDetailsList;
+        private readonly List<FinanceMasterTotalViewReportDto> _financeMasterTotalList;
 
         public FinanceDocumentMaster(
             PrintingPrinterDto printer,
@@ -190,8 +190,9 @@ namespace LogicPOS.Printing.Documents
                 ticketTable.Print(_genericThermalPrinter, paddingLeftFormat);
 
                 //Print Items
-                foreach (FinanceDetailReport item in _financeDetailsList)
+                foreach (FinanceDetailReportDto item in _financeDetailsList)
                 {
+                    
                     //Recreate/Reset Table for Item Details Loop
                     ticketTable = new TicketTable(dataTable, columns, _maxCharsPerLineNormal - _ticketTablePaddingLeftLength);
                     PrintDocumentDetail(ticketTable, item, paddingLeftFormat);
@@ -210,7 +211,7 @@ namespace LogicPOS.Printing.Documents
         //Detail Row Block
         public void PrintDocumentDetail(
             TicketTable pTicketTable,
-            FinanceDetailReport pFinanceDetail,
+            FinanceDetailReportDto pFinanceDetail,
             string pPaddingLeftFormat)
         {
             try
@@ -404,7 +405,7 @@ namespace LogicPOS.Printing.Documents
                 dataTable.Columns.Add(dcTaxBase);
                 dataTable.Columns.Add(dcTotal);
 
-                foreach (FinanceMasterTotalViewReport item in _financeMasterTotalList)
+                foreach (FinanceMasterTotalViewReportDto item in _financeMasterTotalList)
                 {
                     dataRow = dataTable.NewRow();
                     dataRow[0] = item.Designation;
