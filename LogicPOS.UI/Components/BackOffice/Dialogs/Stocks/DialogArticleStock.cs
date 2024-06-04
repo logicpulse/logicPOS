@@ -12,7 +12,7 @@ using logicpos.Extensions;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Globalization;
-using LogicPOS.Reporting;
+using LogicPOS.Reporting.Common;
 using LogicPOS.Settings;
 using System;
 using System.Collections.Generic;

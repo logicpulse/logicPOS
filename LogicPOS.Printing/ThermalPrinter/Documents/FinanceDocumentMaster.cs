@@ -6,8 +6,8 @@ using LogicPOS.Globalization;
 using LogicPOS.Printing.Enums;
 using LogicPOS.Printing.Templates;
 using LogicPOS.Printing.Tickets;
-using LogicPOS.Reporting.BOs;
-using LogicPOS.Reporting.BOs.Documents;
+using LogicPOS.Reporting.Common;
+using LogicPOS.Reporting.Reports.Documents;
 using LogicPOS.Settings;
 using LogicPOS.Utility;
 using SkiaSharp;
@@ -24,9 +24,9 @@ namespace LogicPOS.Printing.Documents
 
         private readonly PrintDocumentMasterDto _documentMaster;
 
-        private readonly List<FRBODocumentFinanceMasterView> _documentFinanceMasterList;
-        private readonly List<FRBODocumentFinanceDetail> _documentFinanceDetailList;
-        private readonly List<FRBODocumentFinanceMasterTotalView> _documentFinanceMasterTotalList;
+        private readonly List<FinanceMasterViewReport> _financeMasters;
+        private readonly List<FinanceDetailReport> _documentFinanceDetailList;
+        private readonly List<FinanceMasterTotalViewReport> _documentFinanceMasterTotalList;
 
         public FinanceDocumentMaster(
             PrintingPrinterDto printer,
@@ -44,11 +44,11 @@ namespace LogicPOS.Printing.Documents
             _documentMaster = documentMaster;
 
             //Init Fast Reports Business Objects (From FRBOHelper)
-            ResultFRBODocumentFinanceMaster fRBOHelperResponseProcessReportFinanceDocument = FRBOHelper.GetFRBOFinanceDocument(_documentMaster.Id);
+            ReportList<FinanceMasterViewReport> financeMasters = ReportHelper.GetFRBOFinanceDocument(_documentMaster.Id);
             //Get FRBOs Lists 
-            _documentFinanceMasterList = fRBOHelperResponseProcessReportFinanceDocument.DocumentFinanceMaster.List;
-            _documentFinanceDetailList = fRBOHelperResponseProcessReportFinanceDocument.DocumentFinanceMaster.List[0].DocumentFinanceDetail;
-            _documentFinanceMasterTotalList = fRBOHelperResponseProcessReportFinanceDocument.DocumentFinanceMaster.List[0].DocumentFinanceMasterTotal; ;
+            _financeMasters = financeMasters.List;
+            _documentFinanceDetailList = financeMasters.List[0].DocumentFinanceDetail;
+            _documentFinanceMasterTotalList = financeMasters.List[0].DocumentFinanceMasterTotal; ;
 
         }
 
@@ -58,19 +58,19 @@ namespace LogicPOS.Printing.Documents
             try
             {
                 //Call base PrintDocumentMaster();
-                PrintDocumentMaster(_documentFinanceMasterList[0].DocumentTypeResourceString, _documentFinanceMasterList[0].DocumentNumber, _documentFinanceMasterList[0].DocumentDate);
+                PrintDocumentMaster(_financeMasters[0].DocumentTypeResourceString, _financeMasters[0].DocumentNumber, _financeMasters[0].DocumentDate);
 
                 //Call 
                 PrintDocumentMasterDocumentType();
 
                 //Call base PrintCustomer();
                 PrintCustomer(
-                    _documentFinanceMasterList[0].EntityName,
-                    _documentFinanceMasterList[0].EntityAddress,
-                    _documentFinanceMasterList[0].EntityZipCode,
-                    _documentFinanceMasterList[0].EntityCity,
-                    _documentFinanceMasterList[0].EntityCountry,
-                    _documentFinanceMasterList[0].EntityFiscalNumber
+                    _financeMasters[0].EntityName,
+                    _financeMasters[0].EntityAddress,
+                    _financeMasters[0].EntityZipCode,
+                    _financeMasters[0].EntityCity,
+                    _financeMasters[0].EntityCountry,
+                    _financeMasters[0].EntityFiscalNumber
                 );
 
                 PrintDocumentDetails();
@@ -79,11 +79,11 @@ namespace LogicPOS.Printing.Documents
                 PrintDocumenWayBillDetails();
 
                 //Call base PrintDocumentPaymentDetails();
-                PrintDocumentPaymentDetails(string.Empty, _documentFinanceMasterList[0].PaymentMethodDesignation, _documentFinanceMasterList[0].CurrencyAcronym); /* IN009055 */
+                PrintDocumentPaymentDetails(string.Empty, _financeMasters[0].PaymentMethodDesignation, _financeMasters[0].CurrencyAcronym); /* IN009055 */
 
                 //Call base PrintNotes();
                 //IN009279 Wont print notes on ticket mode 
-                if (_documentFinanceMasterList[0].Notes != null && !GeneralSettings.AppUseParkingTicketModule) PrintNotes(_documentFinanceMasterList[0].Notes.ToString());
+                if (_financeMasters[0].Notes != null && !GeneralSettings.AppUseParkingTicketModule) PrintNotes(_financeMasters[0].Notes.ToString());
 
                 //Only Print if is in Portugal ex "Os artigos faturados...."
                 //Call base PrintDocumentTypeFooterString();
@@ -91,7 +91,7 @@ namespace LogicPOS.Printing.Documents
                 {
                     if (CultureSettings.CountryIdIsPortugal(XPOSettings.ConfigurationSystemCountry.Oid) || CultureSettings.CountryIdIsAngola(XPOSettings.ConfigurationSystemCountry.Oid))
                     {
-                        PrintDocumentTypeFooterString(_documentFinanceMasterList[0].DocumentTypeResourceStringReport);
+                        PrintDocumentTypeFooterString(_financeMasters[0].DocumentTypeResourceStringReport);
                         //ATCUD Documentos - Criação do QRCode e ATCUD IN016508
                         //Print QRCode
                         if (Convert.ToBoolean(GeneralSettings.PreferenceParameters["PRINT_QRCODE"]) && !string.IsNullOrEmpty(_documentMaster.ATDocQRCode))
@@ -189,7 +189,7 @@ namespace LogicPOS.Printing.Documents
                 ticketTable.Print(_genericThermalPrinter, paddingLeftFormat);
 
                 //Print Items
-                foreach (FRBODocumentFinanceDetail item in _documentFinanceDetailList)
+                foreach (FinanceDetailReport item in _documentFinanceDetailList)
                 {
                     //Recreate/Reset Table for Item Details Loop
                     ticketTable = new TicketTable(dataTable, columns, _maxCharsPerLineNormal - _ticketTablePaddingLeftLength);
@@ -209,7 +209,7 @@ namespace LogicPOS.Printing.Documents
         //Detail Row Block
         public void PrintDocumentDetail(
             TicketTable pTicketTable,
-            FRBODocumentFinanceDetail pFinanceDetail,
+            FinanceDetailReport pFinanceDetail,
             string pPaddingLeftFormat)
         {
             try
@@ -254,7 +254,7 @@ namespace LogicPOS.Printing.Documents
                 decimal amountDueBeforeTax = (pFinanceDetail.TotalGross - amountItemDiscount);
                 decimal totalItemTax = amountDueBeforeTax * pFinanceDetail.Vat / 100;
                 decimal amountDueAfterTax = amountDueBeforeTax + totalItemTax;
-                dataRow[5] = _documentFinanceMasterList[0].ExchangeRate * amountDueAfterTax;
+                dataRow[5] = _financeMasters[0].ExchangeRate * amountDueAfterTax;
                 /* IN009211 block - end */
 
                 //Add DataRow to Table, Ready for Print
@@ -284,19 +284,19 @@ namespace LogicPOS.Printing.Documents
                 dataTable.Columns.Add(new DataColumn("Value", typeof(string)));
 
                 //Add Row : Discount
-                if (_documentFinanceMasterList[0].Discount > 0.0m)
+                if (_financeMasters[0].Discount > 0.0m)
                 {
                     dataRow = dataTable.NewRow();
                     dataRow[0] = string.Format("{0} (%)", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_documentfinance_discount_customer")); /* IN009211 */
-                    dataRow[1] = DataConversionUtils.DecimalToString(_documentFinanceMasterList[0].Discount);
+                    dataRow[1] = DataConversionUtils.DecimalToString(_financeMasters[0].Discount);
                     dataTable.Rows.Add(dataRow);
                 }
                 //Add Row : TotalDiscount
-                if (_documentFinanceMasterList[0].TotalDiscount > 0.0m)
+                if (_financeMasters[0].TotalDiscount > 0.0m)
                 {
                     dataRow = dataTable.NewRow();
                     dataRow[0] = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_documentfinance_total_discount"); /* IN009211 */
-                    dataRow[1] = DataConversionUtils.DecimalToString(_documentFinanceMasterList[0].TotalDiscount * _documentFinanceMasterList[0].ExchangeRate);
+                    dataRow[1] = DataConversionUtils.DecimalToString(_financeMasters[0].TotalDiscount * _financeMasters[0].ExchangeRate);
                     dataTable.Rows.Add(dataRow);
                 }
 
@@ -308,23 +308,23 @@ namespace LogicPOS.Printing.Documents
                 dataRow = dataTable.NewRow();
                 dataRow[0] = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_totalnet"); /* IN009211 */
                 //dataRow[1] = LogicPOS.Utility.DataConversionUtils.DecimalToString(_documentFinanceMasterList[0].TotalGross * _documentFinanceMasterList[0].ExchangeRate);
-                dataRow[1] = DataConversionUtils.DecimalToString(_documentFinanceMasterList[0].TotalNet * _documentFinanceMasterList[0].ExchangeRate);
+                dataRow[1] = DataConversionUtils.DecimalToString(_financeMasters[0].TotalNet * _financeMasters[0].ExchangeRate);
                 dataTable.Rows.Add(dataRow);
                 //Add Row : TotalTax
                 dataRow = dataTable.NewRow();
                 dataRow[0] = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_documentfinance_totaltax"); /* IN009211 */
-                dataRow[1] = DataConversionUtils.DecimalToString(_documentFinanceMasterList[0].TotalTax * _documentFinanceMasterList[0].ExchangeRate);
+                dataRow[1] = DataConversionUtils.DecimalToString(_financeMasters[0].TotalTax * _financeMasters[0].ExchangeRate);
                 dataTable.Rows.Add(dataRow);
                 //Add Row : TotalFinal
                 dataRow = dataTable.NewRow();
                 dataRow[0] = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_documentfinance_totalfinal");
-                dataRow[1] = DataConversionUtils.DecimalToString(_documentFinanceMasterList[0].TotalFinal * _documentFinanceMasterList[0].ExchangeRate);
+                dataRow[1] = DataConversionUtils.DecimalToString(_financeMasters[0].TotalFinal * _financeMasters[0].ExchangeRate);
                 dataTable.Rows.Add(dataRow);
 
                 //If Simplified Invoice, Payment Method MONEY and has Total Change, add it
-                if (new Guid(_documentFinanceMasterList[0].DocumentType) == DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice
-                    && _documentFinanceMasterList[0].PaymentMethodToken == "MONEY"
-                    && _documentFinanceMasterList[0].TotalChange > 0
+                if (new Guid(_financeMasters[0].DocumentType) == DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice
+                    && _financeMasters[0].PaymentMethodToken == "MONEY"
+                    && _financeMasters[0].TotalChange > 0
                     )
                 {
                     //Blank Row, to separate from Main Totals
@@ -335,12 +335,12 @@ namespace LogicPOS.Printing.Documents
                     //TotalDelivery
                     dataRow = dataTable.NewRow();
                     dataRow[0] = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_total_deliver");
-                    dataRow[1] = DataConversionUtils.DecimalToString(_documentFinanceMasterList[0].TotalDelivery * _documentFinanceMasterList[0].ExchangeRate);
+                    dataRow[1] = DataConversionUtils.DecimalToString(_financeMasters[0].TotalDelivery * _financeMasters[0].ExchangeRate);
                     dataTable.Rows.Add(dataRow);
                     //TotalChange
                     dataRow = dataTable.NewRow();
                     dataRow[0] = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_total_change");
-                    dataRow[1] = DataConversionUtils.DecimalToString(_documentFinanceMasterList[0].TotalChange * _documentFinanceMasterList[0].ExchangeRate);
+                    dataRow[1] = DataConversionUtils.DecimalToString(_financeMasters[0].TotalChange * _financeMasters[0].ExchangeRate);
                     dataTable.Rows.Add(dataRow);
                 }
 
@@ -351,7 +351,7 @@ namespace LogicPOS.Printing.Documents
 
                     dataRow = dataTable.NewRow();
                     dataRow[0] = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_printer_thermal_total_default_currency"), defaultCurrencyForExchangeRate.Acronym);
-                    dataRow[1] = DataConversionUtils.DecimalToString(_documentFinanceMasterList[0].TotalFinal * defaultCurrencyForExchangeRate.ExchangeRate);/* TO DO : IN009055 - this causes total equals 0,00 when low product price */
+                    dataRow[1] = DataConversionUtils.DecimalToString(_financeMasters[0].TotalFinal * defaultCurrencyForExchangeRate.ExchangeRate);/* TO DO : IN009055 - this causes total equals 0,00 when low product price */
                     dataTable.Rows.Add(dataRow);
                 }
 
@@ -403,13 +403,13 @@ namespace LogicPOS.Printing.Documents
                 dataTable.Columns.Add(dcTaxBase);
                 dataTable.Columns.Add(dcTotal);
 
-                foreach (FRBODocumentFinanceMasterTotalView item in _documentFinanceMasterTotalList)
+                foreach (FinanceMasterTotalViewReport item in _documentFinanceMasterTotalList)
                 {
                     dataRow = dataTable.NewRow();
                     dataRow[0] = item.Designation;
                     dataRow[1] = string.Format("{0}%", DataConversionUtils.DecimalToString(item.Value));
-                    dataRow[2] = DataConversionUtils.DecimalToString(_documentFinanceMasterList[0].ExchangeRate * item.TotalBase);
-                    dataRow[3] = DataConversionUtils.DecimalToString(_documentFinanceMasterList[0].ExchangeRate * item.Total);
+                    dataRow[2] = DataConversionUtils.DecimalToString(_financeMasters[0].ExchangeRate * item.TotalBase);
+                    dataRow[3] = DataConversionUtils.DecimalToString(_financeMasters[0].ExchangeRate * item.Total);
                     dataTable.Rows.Add(dataRow);
                 }
 
@@ -442,41 +442,41 @@ namespace LogicPOS.Printing.Documents
             try
             {
                 //If Simplified Invoice, Payment Method MONEY and has Total Change, add it
-                if (_documentFinanceMasterList[0].DocumentTypeWayBill)
+                if (_financeMasters[0].DocumentTypeWayBill)
                 {
                     //WayBill Local Load
                     _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_documentfinance_waybill_local_load"), WriteLineTextMode.Bold);
-                    _genericThermalPrinter.WriteLine(string.Format("{0} {1}", _documentFinanceMasterList[0].ShipFromAddressDetail, _documentFinanceMasterList[0].ShipFromCity));
-                    _genericThermalPrinter.WriteLine(string.Format("{0} {1} [{2}]", _documentFinanceMasterList[0].ShipFromPostalCode, _documentFinanceMasterList[0].ShipFromRegion, _documentFinanceMasterList[0].ShipFromCountry));
-                    _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_from_delivery_date_report"), XPOUtility.DateTimeToString(_documentFinanceMasterList[0].ShipFromDeliveryDate));
-                    _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_from_delivery_id_report"), _documentFinanceMasterList[0].ShipFromDeliveryID);
-                    _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_from_warehouse_id_report"), _documentFinanceMasterList[0].ShipFromWarehouseID);
-                    _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_from_location_id_report"), _documentFinanceMasterList[0].ShipFromLocationID);
+                    _genericThermalPrinter.WriteLine(string.Format("{0} {1}", _financeMasters[0].ShipFromAddressDetail, _financeMasters[0].ShipFromCity));
+                    _genericThermalPrinter.WriteLine(string.Format("{0} {1} [{2}]", _financeMasters[0].ShipFromPostalCode, _financeMasters[0].ShipFromRegion, _financeMasters[0].ShipFromCountry));
+                    _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_from_delivery_date_report"), XPOUtility.DateTimeToString(_financeMasters[0].ShipFromDeliveryDate));
+                    _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_from_delivery_id_report"), _financeMasters[0].ShipFromDeliveryID);
+                    _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_from_warehouse_id_report"), _financeMasters[0].ShipFromWarehouseID);
+                    _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_from_location_id_report"), _financeMasters[0].ShipFromLocationID);
 
                     //Separate with Blank Line
                     _genericThermalPrinter.LineFeed();
 
                     //WayBill Local Download
                     _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_documentfinance_waybill_local_download"), WriteLineTextMode.Bold);
-                    _genericThermalPrinter.WriteLine(string.Format("{0} {1}", _documentFinanceMasterList[0].ShipToAddressDetail, _documentFinanceMasterList[0].ShipToCity));
-                    _genericThermalPrinter.WriteLine(string.Format("{0} {1} [{2}]", _documentFinanceMasterList[0].ShipToPostalCode, _documentFinanceMasterList[0].ShipToRegion, _documentFinanceMasterList[0].ShipToCountry));
-                    _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_to_delivery_date_report"), XPOUtility.DateTimeToString(_documentFinanceMasterList[0].ShipToDeliveryDate));
-                    _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_to_delivery_id_report"), _documentFinanceMasterList[0].ShipToDeliveryID);
-                    _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_to_warehouse_id_report"), _documentFinanceMasterList[0].ShipToWarehouseID);
-                    _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_to_location_id_report"), _documentFinanceMasterList[0].ShipToLocationID);
+                    _genericThermalPrinter.WriteLine(string.Format("{0} {1}", _financeMasters[0].ShipToAddressDetail, _financeMasters[0].ShipToCity));
+                    _genericThermalPrinter.WriteLine(string.Format("{0} {1} [{2}]", _financeMasters[0].ShipToPostalCode, _financeMasters[0].ShipToRegion, _financeMasters[0].ShipToCountry));
+                    _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_to_delivery_date_report"), XPOUtility.DateTimeToString(_financeMasters[0].ShipToDeliveryDate));
+                    _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_to_delivery_id_report"), _financeMasters[0].ShipToDeliveryID);
+                    _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_to_warehouse_id_report"), _financeMasters[0].ShipToWarehouseID);
+                    _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ship_to_location_id_report"), _financeMasters[0].ShipToLocationID);
 
                     //Line Feed
                     _genericThermalPrinter.LineFeed();
 
                     //ATDocCodeID
-                    if (!string.IsNullOrEmpty(_documentFinanceMasterList[0].ATDocCodeID))
+                    if (!string.IsNullOrEmpty(_financeMasters[0].ATDocCodeID))
                     {
                         //Set Align Center
                         _genericThermalPrinter.SetAlignCenter();
 
                         //WayBill Local Load
                         _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_at_atdoccodeid"), WriteLineTextMode.Bold);
-                        _genericThermalPrinter.WriteLine(_documentFinanceMasterList[0].ATDocCodeID, WriteLineTextMode.DoubleHeight);
+                        _genericThermalPrinter.WriteLine(_financeMasters[0].ATDocCodeID, WriteLineTextMode.DoubleHeight);
 
                         //Reset Align 
                         _genericThermalPrinter.SetAlignLeft();

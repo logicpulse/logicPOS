@@ -11,7 +11,7 @@ using LogicPOS.Domain.Enums;
 using LogicPOS.Globalization;
 using LogicPOS.Modules;
 using LogicPOS.Modules.StockManagement;
-using LogicPOS.Reporting;
+using LogicPOS.Reporting.Common;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

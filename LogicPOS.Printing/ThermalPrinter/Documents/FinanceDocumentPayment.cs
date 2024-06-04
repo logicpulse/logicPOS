@@ -4,8 +4,8 @@ using LogicPOS.Globalization;
 using LogicPOS.Printing.Enums;
 using LogicPOS.Printing.Templates;
 using LogicPOS.Printing.Tickets;
-using LogicPOS.Reporting.BOs;
-using LogicPOS.Reporting.BOs.Documents;
+using LogicPOS.Reporting.Common;
+using LogicPOS.Reporting.Reports.Documents;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -18,8 +18,8 @@ namespace LogicPOS.Printing.Documents
         //Parameters Properties
         private readonly PrintingFinancePaymentDto _documentFinancePayment = null;
         //Business Objects
-        private readonly List<FRBODocumentFinancePaymentView> _documentFinancePaymentList;
-        private readonly List<FRBODocumentFinancePaymentDocumentView> _documentFinancePaymentDocumentList;
+        private readonly List<FinancePaymentViewReport> _documentFinancePaymentList;
+        private readonly List<FinancePaymentDocumentViewReport> _documentFinancePaymentDocumentList;
 
         public FinanceDocumentPayment(
             PrintingPrinterDto printer,
@@ -38,10 +38,10 @@ namespace LogicPOS.Printing.Documents
                 _documentFinancePayment = financePayment;
 
                 //Init Fast Reports Business Objects (From FRBOHelper)
-                ResultFRBODocumentFinancePayment fRBOHelperResponseProcessReportFinancePayment = FRBOHelper.GetFRBOFinancePayment(financePayment.Id);
+                ReportList<FinancePaymentViewReport> financePayments = ReportHelper.GetFRBOFinancePayment(financePayment.Id);
                 //Get FRBOs Lists 
-                _documentFinancePaymentList = fRBOHelperResponseProcessReportFinancePayment.DocumentFinancePayment.List;
-                _documentFinancePaymentDocumentList = fRBOHelperResponseProcessReportFinancePayment.DocumentFinancePayment.List[0].DocumentFinancePaymentDocument;
+                _documentFinancePaymentList = financePayments.List;
+                _documentFinancePaymentDocumentList = financePayments.List[0].DocumentFinancePaymentDocument;
             }
             catch (Exception ex)
             {
@@ -108,7 +108,7 @@ namespace LogicPOS.Printing.Documents
                 //Print Table Headers
                 ticketTable.Print(_genericThermalPrinter, paddingLeftFormat);
 
-                foreach (FRBODocumentFinancePaymentDocumentView item in _documentFinancePaymentDocumentList)
+                foreach (FinancePaymentDocumentViewReport item in _documentFinancePaymentDocumentList)
                 {
                     //Recreate/Reset Table for Item Details Loop
                     ticketTable = new TicketTable(dataTable, columns, _maxCharsPerLineNormal - _ticketTablePaddingLeftLength);
@@ -125,7 +125,7 @@ namespace LogicPOS.Printing.Documents
         }
 
         //Detail Row Block
-        public void PrintDocumentDetail(TicketTable pTicketTable, FRBODocumentFinancePaymentDocumentView pFinancePaymentDocument, string pPaddingLeftFormat)
+        public void PrintDocumentDetail(TicketTable pTicketTable, FinancePaymentDocumentViewReport pFinancePaymentDocument, string pPaddingLeftFormat)
         {
             try
             {

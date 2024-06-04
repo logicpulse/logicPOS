@@ -56,40 +56,39 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Reports\Articles\FRBOArticle.cs" />
-    <Compile Include="Reports\Articles\FRBOArticleFamily.cs" />
-    <Compile Include="Reports\Articles\FRBOArticleSerialNumber.cs" />
-    <Compile Include="Reports\Articles\FRBOArticleStockMovementView.cs" />
-    <Compile Include="Reports\Articles\FRBOArticleStockSupplierView.cs" />
-    <Compile Include="Reports\Articles\FRBOArticleStockView.cs" />
-    <Compile Include="Reports\Articles\FRBOArticleStockWareHouseView.cs" />
-    <Compile Include="Reports\Articles\FRBOArticleSubFamily.cs" />
-    <Compile Include="Reports\Customers\FRBOCustomer.cs" />
-    <Compile Include="Reports\Customers\FRBOCustomerType.cs" />
-    <Compile Include="Reports\CustomFunctions.cs" />
-    <Compile Include="Reports\CustomReport.cs">
+    <Compile Include="Reports\Articles\ArticleReport.cs" />
+    <Compile Include="Reports\Articles\ArticleFamilyReport.cs" />
+    <Compile Include="Reports\Articles\ArticleSerialNumberReport.cs" />
+    <Compile Include="Reports\Articles\ArticleStockMovementViewReport.cs" />
+    <Compile Include="Reports\Articles\ArticleStockSupplierViewReport.cs" />
+    <Compile Include="Reports\Articles\ArticleStockViewReport.cs" />
+    <Compile Include="Reports\Articles\ArticleStockWareHouseViewReport.cs" />
+    <Compile Include="Reports\Articles\ArticleSubFamilyReport.cs" />
+    <Compile Include="Reports\Customers\CustomerReport.cs" />
+    <Compile Include="Reports\Customers\CustomerTypeReport.cs" />
+    <Compile Include="Common\CustomFunctions.cs" />
+    <Compile Include="Common\CustomReport.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Reports\Documents\FRBODocumentFinanceCurrentAccount.cs" />
-    <Compile Include="Reports\Documents\FRBODocumentFinanceCustomerBalanceDetails.cs" />
-    <Compile Include="Reports\Documents\FRBODocumentFinanceCustomerBalanceSummary.cs" />
-    <Compile Include="Reports\Documents\FRBODocumentFinanceDetail.cs" />
-    <Compile Include="Reports\Documents\FRBODocumentFinanceMaster.cs" />
-    <Compile Include="Reports\Documents\FRBODocumentFinanceMasterDetailGroupView.cs" />
-    <Compile Include="Reports\Documents\FRBODocumentFinanceMasterDetailView.cs" />
-    <Compile Include="Reports\Documents\FRBODocumentFinanceMasterTotalView.cs" />
-    <Compile Include="Reports\Documents\FRBODocumentFinanceMasterView.cs" />
-    <Compile Include="Reports\Documents\FRBODocumentFinancePaymentDocumentView.cs" />
-    <Compile Include="Reports\Documents\FRBODocumentFinancePaymentView.cs" />
-    <Compile Include="Reports\Documents\FRBODocumentFinanceVatSalesByClassSummary.cs" />
-    <Compile Include="Reports\Documents\FRBODocumentFinanceVatSalesSummary.cs" />
-    <Compile Include="Reports\FRBOAttribute.cs" />
-    <Compile Include="Reports\FRBOBaseObject.cs" />
-    <Compile Include="Reports\FRBOGenericCollection.cs" />
-    <Compile Include="Reports\FRBOHelper.cs" />
-    <Compile Include="Reports\FRBOTemplate.cs" />
-    <Compile Include="Reports\System\FRBOSystemAuditView.cs" />
-    <Compile Include="Reports\Users\FRBOUserCommission.cs" />
+    <Compile Include="Reports\Documents\CurrentAccountReport.cs" />
+    <Compile Include="Reports\Documents\CustomerBalanceDetailsReport.cs" />
+    <Compile Include="Reports\Documents\CustomerBalanceSummaryReport.cs" />
+    <Compile Include="Reports\Documents\FinanceDetailReport.cs" />
+    <Compile Include="Reports\Documents\FinanceMasterReport.cs" />
+    <Compile Include="Reports\Documents\FinanceMasterDetailGroupViewReport.cs" />
+    <Compile Include="Reports\Documents\FinanceMasterDetailViewReport.cs" />
+    <Compile Include="Reports\Documents\FinanceMasterTotalViewReport.cs" />
+    <Compile Include="Reports\Documents\FinanceMasterViewReport.cs" />
+    <Compile Include="Reports\Documents\FinancePaymentDocumentViewReport.cs" />
+    <Compile Include="Reports\Documents\FinancePaymentViewReport.cs" />
+    <Compile Include="Reports\Documents\VatSalesByClassSummaryReport.cs" />
+    <Compile Include="Reports\Documents\VatSalesSummaryReport.cs" />
+    <Compile Include="Common\ReportAttribute.cs" />
+    <Compile Include="Common\ReportBase.cs" />
+    <Compile Include="Common\ReportList.cs" />
+    <Compile Include="Common\ReportHelper.cs" />
+    <Compile Include="Reports\System\SystemAuditViewReport.cs" />
+    <Compile Include="Reports\Users\UserCommissionReport.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LogicPOS.Data\LogicPOS.Data.csproj">

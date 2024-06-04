@@ -8,7 +8,7 @@ using LogicPOS.Globalization;
 using LogicPOS.Printing.Common;
 using LogicPOS.Printing.Documents;
 using LogicPOS.Printing.Enums;
-using LogicPOS.Reporting;
+using LogicPOS.Reporting.Common;
 using LogicPOS.Settings;
 using LogicPOS.Utility;
 using System;

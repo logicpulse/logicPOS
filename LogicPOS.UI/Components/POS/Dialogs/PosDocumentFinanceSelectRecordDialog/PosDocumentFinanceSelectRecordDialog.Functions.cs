@@ -18,7 +18,7 @@ using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Globalization;
 using LogicPOS.Modules;
 using LogicPOS.Modules.StockManagement;
-using LogicPOS.Reporting;
+using LogicPOS.Reporting.Common;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Shared.Article;

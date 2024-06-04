@@ -13,7 +13,7 @@ using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Enums;
 using LogicPOS.Globalization;
-using LogicPOS.Reporting;
+using LogicPOS.Reporting.Common;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
 using LogicPOS.Shared;
