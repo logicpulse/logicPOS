@@ -32,7 +32,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FastReport.Mono">
+    <Reference Include="FastReport.Mono, Version=2024.2.9.0, Culture=neutral, PublicKeyToken=db7e5ce63278458c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\fastreport\FastReport.Mono.dll</HintPath>
     </Reference>
     <Reference Include="Patagames.Pdf">

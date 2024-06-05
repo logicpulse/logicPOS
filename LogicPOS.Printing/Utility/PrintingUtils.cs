@@ -1156,49 +1156,58 @@ namespace LogicPOS.Printing.Utility
 
         public static bool PrintFinanceDocument(
             PrintingPrinterDto printer,
-            PrintDocumentMasterDto pDocumentFinanceMaster,
-            List<int> pCopyNames,
-            bool pSecondCopy,
-            string pMotive)
+            PrintDocumentMasterDto financeMasterDto,
+            List<int> copyNumbers,
+            bool secondCopy,
+            string motive)
         {
             bool result = false;
 
             if (printer != null)
             {
-                int printCopies = pCopyNames.Count;
+                int printCopies = copyNumbers.Count;
                 //Get Hash4Chars from Hash
-                string hash4Chars = CryptographyUtils.GetDocumentHash4Chars(pDocumentFinanceMaster.Hash);
+                string hash4Chars = CryptographyUtils.GetDocumentHash4Chars(financeMasterDto.Hash);
 
                 //Init Helper Vars
                 bool resultSystemPrint;
                 switch (GetPrinterToken(printer.Token))
                 {
 
-                    //Impressora SINOCAN em ambiente Windows
                     case "THERMAL_PRINTER_WINDOWS":
-                    //Impressora SINOCAN em ambiente Linux
-                    //Impressora SINOCAN em ambiente WindowsLinux/Socket
                     case "THERMAL_PRINTER_SOCKET":
+
+                        var financeMasterViewReports = ReportHelper.GetFinanceMasterViewReports(financeMasterDto.Id).List;
+                        var financeMasterViewReportsDtos = financeMasterViewReports.ConvertAll(view => ReportMapping.GetFinanceMasterViewReportDto(view));
+
                         FinanceDocumentMaster thermalPrinterFinanceDocument = new FinanceDocumentMaster(
                             printer,
-                            pDocumentFinanceMaster,
-                            pCopyNames,
-                            pSecondCopy,
-                            pMotive);
+                            financeMasterDto,
+                            copyNumbers,
+                            secondCopy,
+                            motive,
+                            financeMasterViewReportsDtos);
 
                         thermalPrinterFinanceDocument.Print();
                         //Add to SystemPrint Audit
-                        resultSystemPrint = SystemPrintInsert(pDocumentFinanceMaster, printer.Designation, printCopies, pCopyNames, pSecondCopy, pMotive);
+                        resultSystemPrint = SystemPrintInsert(financeMasterDto, printer.Designation, printCopies, copyNumbers, secondCopy, motive);
                         break;
                     case "GENERIC_PRINTER_WINDOWS":
-                        CustomReport.ProcessReportFinanceDocument(CustomReportDisplayMode.Print, pDocumentFinanceMaster.Id, hash4Chars, pCopyNames, pSecondCopy, pMotive);
+                        CustomReport.ProcessReportFinanceDocument(
+                            CustomReportDisplayMode.Print, 
+                            financeMasterDto.Id, 
+                            hash4Chars, 
+                            copyNumbers, 
+                            secondCopy, 
+                            motive);
+
                         //Add to SystemPrint Audit
-                        resultSystemPrint = SystemPrintInsert(pDocumentFinanceMaster, printer.Designation, printCopies, pCopyNames, pSecondCopy, pMotive);
+                        resultSystemPrint = SystemPrintInsert(financeMasterDto, printer.Designation, printCopies, copyNumbers, secondCopy, motive);
                         break;
                     case "REPORT_EXPORT_PDF":
-                        CustomReport.ProcessReportFinanceDocument(CustomReportDisplayMode.ExportPDF, pDocumentFinanceMaster.Id, hash4Chars, pCopyNames, pSecondCopy, pMotive);
+                        CustomReport.ProcessReportFinanceDocument(CustomReportDisplayMode.ExportPDF, financeMasterDto.Id, hash4Chars, copyNumbers, secondCopy, motive);
                         //Add to SystemPrint Audit : Developer : Use here Only to Test SystemPrintInsert
-                        resultSystemPrint = SystemPrintInsert(pDocumentFinanceMaster, printer.Designation, printCopies, pCopyNames, pSecondCopy, pMotive);
+                        resultSystemPrint = SystemPrintInsert(financeMasterDto, printer.Designation, printCopies, copyNumbers, secondCopy, motive);
                         break;
                 }
                 result = true;
@@ -1208,7 +1217,8 @@ namespace LogicPOS.Printing.Utility
             return result;
         }
 
-        public static bool PrintFinanceDocument(PrintDocumentMasterDto pDocumentFinanceMaster)
+        public static bool PrintFinanceDocument(
+            PrintDocumentMasterDto pDocumentFinanceMaster)
         {
             return PrintFinanceDocument(XPOSettings.Session, pDocumentFinanceMaster);
         }
@@ -1279,13 +1289,22 @@ namespace LogicPOS.Printing.Utility
                 bool resultSystemPrint;
                 switch (GetPrinterToken(printer.Token))
                 {
-                    //Impressora SINOCAN em ambiente Windows
                     case "THERMAL_PRINTER_WINDOWS":
-                    //Impressora SINOCAN em ambiente WindowsLinux/Socket
                     case "THERMAL_PRINTER_SOCKET":
-                        FinanceDocumentPayment thermalPrinterFinanceDocumentPayment = new FinanceDocumentPayment(printer, pDocumentFinancePayment, copyNames, false);
+
+                        var financePaymentViewReports = ReportHelper.GetFinancePaymentViewReports(pDocumentFinancePayment.Id).List;
+                        var financePaymentViewReportsDtos = financePaymentViewReports.ConvertAll(view => ReportMapping.GetFinancePaymentViewReportDto(view));
+
+                        FinanceDocumentPayment thermalPrinterFinanceDocumentPayment = 
+                            new FinanceDocumentPayment(
+                                printer, 
+                                pDocumentFinancePayment, 
+                                copyNames, 
+                                false,
+                                financePaymentViewReportsDtos
+                                );
+
                         thermalPrinterFinanceDocumentPayment.Print();
-                        //Add to SystemPrint Audit
                         resultSystemPrint = SystemPrintInsert(pDocumentFinancePayment, printer.Designation, printCopies, copyNames);
                         break;
                     case "GENERIC_PRINTER_WINDOWS":

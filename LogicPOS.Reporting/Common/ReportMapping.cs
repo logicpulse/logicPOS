@@ -146,5 +146,67 @@ namespace LogicPOS.Reporting.Common
             return TotalViewReportDto;
         }
 
+        public static FinancePaymentDocumentViewReportDto GetFinancePaymentDocumentViewReportDto(
+            FinancePaymentDocumentViewReport report)
+        {
+            var dto = new FinancePaymentDocumentViewReportDto
+            {
+                Oid = report.Oid,
+                DocumentTypeDesignation = report.DocumentTypeDesignation,
+                DocumentNumber = report.DocumentNumber,
+                DocumentDate = report.DocumentDate,
+                DocumentTotal = report.DocumentTotal,
+                TotalTax = report.TotalTax,
+                CreditAmount = report.CreditAmount,
+                DebitAmount = report.DebitAmount,
+                Payed = report.Payed,
+            };
+
+            return dto;
+        }
+
+        public static FinancePaymentViewReportDto GetFinancePaymentViewReportDto(
+            FinancePaymentViewReport report)
+        {
+            var dto = new FinancePaymentViewReportDto
+            {
+                Oid = report.Oid,
+                DocumentTypeDesignation = report.DocumentTypeDesignation,
+                DocumentTypeResourceString = report.DocumentTypeResourceString,
+                DocumentTypeResourceStringReport = report.DocumentTypeResourceStringReport,
+                PaymentRefNo = report.PaymentRefNo,
+                PaymentStatus = report.PaymentStatus,
+                PaymentAmount = report.PaymentAmount,
+                TaxPayable = report.TaxPayable,
+                PaymentDate = report.PaymentDate,
+                DocumentDate = report.DocumentDate,
+                ExtendedValue = report.ExtendedValue,
+                EntityCode = report.EntityCode,
+                EntityName = report.EntityName,
+                EntityAddress = report.EntityAddress,
+                EntityZipCode = report.EntityZipCode,
+                EntityCity = report.EntityCity,
+                EntityLocality = report.EntityLocality,
+                EntityCountry = report.EntityCountry,
+                EntityFiscalNumber = report.EntityFiscalNumber,
+                MethodCode = report.MethodCode,
+                PaymentMethodDesignation = report.PaymentMethodDesignation,
+                CurrencyDesignation = report.CurrencyDesignation,
+                CurrencyAcronym = report.CurrencyAcronym,
+                CurrencySymbol = report.CurrencySymbol,
+                ExchangeRate = report.ExchangeRate,
+                Notes = report.Notes,
+
+            };
+
+            dto.DocumentFinancePaymentDocument = 
+                 report
+                    .DocumentFinancePaymentDocument
+                    .ConvertAll(
+                        detail => GetFinancePaymentDocumentViewReportDto(detail));
+
+            return dto;
+        }
+
     }
 }

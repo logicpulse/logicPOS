@@ -511,38 +511,36 @@ namespace LogicPOS.Reporting.Common
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //ProcessReportFinanceDocument - All FinanceMasterDocuments - Except Payments
 
-        public static string ProcessReportFinanceDocument(CustomReportDisplayMode pViewMode, Guid pDocumentFinanceMasterOid, string pHash4Chars, List<int> pCopyNames, string pDestinationFileName = "")
+        public static string ProcessReportFinanceDocument(
+            CustomReportDisplayMode viewMode,
+            Guid financeMasterId,
+            string hash4Chars,
+            List<int> copyNumbers,
+            string destFilName = "")
         {
-            return ProcessReportFinanceDocument(pViewMode, pDocumentFinanceMasterOid, pHash4Chars, pCopyNames, false, string.Empty, pDestinationFileName);
+            return ProcessReportFinanceDocument(
+                viewMode,
+                financeMasterId,
+                hash4Chars,
+                copyNumbers,
+                false,
+                string.Empty,
+                destFilName);
         }
 
-        public static string ProcessReportFinanceDocument(CustomReportDisplayMode pViewMode, Guid pDocumentFinanceMasterOid, string pHash4Chars, List<int> pCopyNames, bool pSecondCopy, string pMotive, string pDestinationFileName = "")
+        public static string ProcessReportFinanceDocument(
+            CustomReportDisplayMode viewMode,
+            Guid financeMasterId,
+            string hash4Chars,
+            List<int> copyNumbers,
+            bool secondCopy,
+            string motive,
+            string destFileName = "")
         {
             try
             {
-                //TODO: Move This to CustomReport SubClasses ex Filename, Params, DataSources etc
 
-                //Get DocumentFinanceMaster
-                fin_documentfinancemaster documentMaster = (fin_documentfinancemaster)XPOSettings.Session.GetObjectByKey(typeof(fin_documentfinancemaster), pDocumentFinanceMasterOid);
-
-
-                /// <summary>
-                ///     This change refers to "ENH201810#04".
-                /// </summary>
-                /// <remarks>
-                ///     <para>DESCRIPTION: This code change covers MZ and AO invoice layout enhancement, based on "CurrentCulture" settings.</para>
-                ///     <para>ISSUE: all prices greater than million were being cut on invoice.</para>
-				///     <para>CAUSE: there was no proper locale based invoice files.</para>
-                ///     <para>SOLUTION: It was created a file for each of those specific locale settings, based on original files. 
-                ///     For example: based on "ReportDocumentFinance.frx" it was created "ReportDocumentFinance_pt-MZ.frx".
-                ///     </para>
-                /// </remarks>
-                /// <example>
-                ///     "Preço" value: 35 000 000,00
-                ///     Shows the value:  000 000,00
-                /// </example>
-                // Build Final Filename Report
-                //string sql = "SELECT value FROM cfg_configurationpreferenceparameter where token = 'CULTURE';";                
+                fin_documentfinancemaster documentMaster = (fin_documentfinancemaster)XPOSettings.Session.GetObjectByKey(typeof(fin_documentfinancemaster), financeMasterId);
 
                 string currentCulture = ConfigurationManager.AppSettings["cultureFinancialRules"];
                 try
@@ -575,11 +573,11 @@ namespace LogicPOS.Reporting.Common
                 {
                     fileName = fileName.Replace(".frx", "_QRCode.frx");
                 }
-                string fileUserReportDocumentFinance = string.Format("{0}{1}\\{2}", PathsSettings.Paths["reports"], "UserReports", fileName);
+                string fileUserReportDocumentFinance = $"{PathsSettings.Paths["reports"]}{"UserReports"}\\{fileName}";
 
-                CustomReport customReport = new CustomReport(fileUserReportDocumentFinance, FILENAME_TEMPLATE_BASE, pCopyNames);
+                CustomReport customReport = new CustomReport(fileUserReportDocumentFinance, FILENAME_TEMPLATE_BASE, copyNumbers);
                 customReport.DoublePass = documentMaster.DocumentDetail.Count > 15;
-                customReport.Hash4Chars = pHash4Chars;
+                customReport.Hash4Chars = hash4Chars;
                 customReport.SetParameterValue("Report_FileName_loggero", GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
                 customReport.SetParameterValue("Report_FileName_loggero_Small", GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
                 //ATCUD Documentos - Criação do QRCode e ATCUD IN016508
@@ -590,7 +588,7 @@ namespace LogicPOS.Reporting.Common
                 //customReport.SetParameterValue("Invoice Noº", 280);
 
                 //Get Result Objects from FRBOHelper
-                ReportList<FinanceMasterViewReport> financeMasters = ReportHelper.GetFinanceMasterViewReports(pDocumentFinanceMasterOid);
+                ReportList<FinanceMasterViewReport> financeMasters = ReportHelper.GetFinanceMasterViewReports(financeMasterId);
                 //Get Generic Collections From FRBOHelper Results
                 ReportList<FinanceMasterViewReport> gcDocumentFinanceMaster = financeMasters;
                 //Prepare and Enable DataSources
@@ -645,13 +643,13 @@ namespace LogicPOS.Reporting.Common
                 //};
 
                 //Assign Second Copy Reference
-                _secondCopy = pSecondCopy;
+                _secondCopy = secondCopy;
 
                 int n = customReport.Pages.Count;
 
                 //Add ReportInfo.Name, to be used for Ex in Pdf Filenames, OS etc
                 customReport.ReportInfo.Name = gcDocumentFinanceMaster.List[0].DocumentNumber;
-                string result = customReport.Process(pViewMode, pDestinationFileName);
+                string result = customReport.Process(viewMode, destFileName);
                 customReport.Dispose();
 
                 return result;
@@ -699,7 +697,7 @@ namespace LogicPOS.Reporting.Common
                 CustomReport customReport = new CustomReport(fileUserReportDocumentFinancePayment, FILENAME_TEMPLATE_BASE, pCopyNames);
 
                 //Get Result Objects from FRBOHelper
-                ReportList<FinancePaymentViewReport> financePayments = ReportHelper.GetFRBOFinancePayment(pDocumentFinancePaymentOid);
+                ReportList<FinancePaymentViewReport> financePayments = ReportHelper.GetFinancePaymentViewReports(pDocumentFinancePaymentOid);
                 //Get Generic Collections From FRBOHelper Results
                 ReportList<FinancePaymentViewReport> gcDocumentFinancePayment = financePayments;
 
@@ -1289,47 +1287,40 @@ namespace LogicPOS.Reporting.Common
         /// <param name="filterHumanReadable"></param>
         public static void ProcessReportCompanyBilling(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)
         {
-            try
+            string reportFile = GetReportFilePath("ReportDocumentFinanceCompanyBilling.frx");
+            CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
+            //Report Parameters
+            customReport.SetParameterValue("Report Title", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "report_company_billing"));
+            customReport.SetParameterValue("Report_FileName_loggero", GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
+            customReport.SetParameterValue("Report_FileName_loggero_Small", GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
+
+            if (!string.IsNullOrEmpty(filterHumanReadable))
             {
-                string reportFile = GetReportFilePath("ReportDocumentFinanceCompanyBilling.frx");
-                CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
-                //Report Parameters
-                customReport.SetParameterValue("Report Title", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "report_company_billing"));
-                customReport.SetParameterValue("Report_FileName_loggero", GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
-                customReport.SetParameterValue("Report_FileName_loggero_Small", GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
-
-                if (!string.IsNullOrEmpty(filterHumanReadable))
-                {
-                    customReport.SetParameterValue("Report Filter", filterHumanReadable);
-                }
-
-                //Prepare and Declare FRBOGenericCollections
-                ReportList<CustomerBalanceDetailsReport> gcCustomerBalanceDetails = new ReportList<CustomerBalanceDetailsReport>(filter);
-
-                /* Decrypt phase */
-                if (PluginSettings.HasSoftwareVendorPlugin)
-                {
-                    foreach (var item in gcCustomerBalanceDetails)
-                    {
-                        if (item.EntityName != null) item.EntityName = PluginSettings.SoftwareVendor.Decrypt(item.EntityName);
-                        if (item.EntityFiscalNumber != null) item.EntityFiscalNumber = PluginSettings.SoftwareVendor.Decrypt(item.EntityFiscalNumber);
-                    }
-                }
-
-                /* Enabling data sources */
-                customReport.RegisterData(gcCustomerBalanceDetails, "CustomerBalanceDetails");
-                if (customReport.GetDataSource("CustomerBalanceDetails") != null)
-                {
-                    customReport.GetDataSource("CustomerBalanceDetails").Enabled = true;
-                }
-
-                customReport.Process(pViewMode);
-                customReport.Dispose();
+                customReport.SetParameterValue("Report Filter", filterHumanReadable);
             }
-            catch (Exception ex)
+
+            //Prepare and Declare FRBOGenericCollections
+            ReportList<CustomerBalanceDetailsReport> gcCustomerBalanceDetails = new ReportList<CustomerBalanceDetailsReport>(filter);
+
+            /* Decrypt phase */
+            if (PluginSettings.HasSoftwareVendorPlugin)
             {
-                _logger.Error("void ProcessReportCompanyBilling(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable) :: Company Billing report: " + ex.Message, ex);
+                foreach (var item in gcCustomerBalanceDetails)
+                {
+                    if (item.EntityName != null) item.EntityName = PluginSettings.SoftwareVendor.Decrypt(item.EntityName);
+                    if (item.EntityFiscalNumber != null) item.EntityFiscalNumber = PluginSettings.SoftwareVendor.Decrypt(item.EntityFiscalNumber);
+                }
             }
+
+            /* Enabling data sources */
+            customReport.RegisterData(gcCustomerBalanceDetails, "CustomerBalanceDetails");
+            if (customReport.GetDataSource("CustomerBalanceDetails") != null)
+            {
+                customReport.GetDataSource("CustomerBalanceDetails").Enabled = true;
+            }
+
+            customReport.Process(pViewMode);
+            customReport.Dispose();
         }
 
         /// <summary>
@@ -1341,64 +1332,59 @@ namespace LogicPOS.Reporting.Common
         /// <param name="filterHumanReadable"></param>
         public static void ProcessReportCustomerBalanceSummary(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)
         {
-            try
+            string reportFile = GetReportFilePath("ReportDocumentFinanceCustomerBalanceSummary.frx");
+            CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
+            //Report Parameters
+            customReport.SetParameterValue("Report Title", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "report_customer_balance_summary"));
+            customReport.SetParameterValue("Report_FileName_loggero", GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
+            customReport.SetParameterValue("Report_FileName_loggero_Small", GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
+
+            if (!string.IsNullOrEmpty(filterHumanReadable)) customReport.SetParameterValue("Report Filter", filterHumanReadable);
+
+            ReportList<CustomerBalanceSummaryReport> gcCustomerBalanceSummary = new ReportList<CustomerBalanceSummaryReport>(filter);
+            ReportList<CustomerBalanceDetailsReport> gcCustomerBalanceDetails = new ReportList<CustomerBalanceDetailsReport>(filter.Replace("CustomerSinceDate", "Date"));
+
+            // Decrypt Phase
+            if (PluginSettings.HasSoftwareVendorPlugin)
             {
-                string reportFile = GetReportFilePath("ReportDocumentFinanceCustomerBalanceSummary.frx");
-                CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
-                //Report Parameters
-                customReport.SetParameterValue("Report Title", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "report_customer_balance_summary"));
-                customReport.SetParameterValue("Report_FileName_loggero", GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
-                customReport.SetParameterValue("Report_FileName_loggero_Small", GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
-
-                if (!string.IsNullOrEmpty(filterHumanReadable)) customReport.SetParameterValue("Report Filter", filterHumanReadable);
-
-                ReportList<CustomerBalanceSummaryReport> gcCustomerBalanceSummary = new ReportList<CustomerBalanceSummaryReport>(filter);
-                ReportList<CustomerBalanceDetailsReport> gcCustomerBalanceDetails = new ReportList<CustomerBalanceDetailsReport>(filter.Replace("CustomerSinceDate", "Date"));
-
-                // Decrypt Phase
-                if (PluginSettings.HasSoftwareVendorPlugin)
+                foreach (var customerBalance in gcCustomerBalanceDetails)
                 {
-                    foreach (var customerBalance in gcCustomerBalanceDetails)
-                    {
-                        erp_customer customer = null;
-                        if (customerBalance.EntityName != null) customerBalance.EntityName = PluginSettings.SoftwareVendor.Decrypt(customerBalance.EntityName);
-                        if (customerBalance.EntityFiscalNumber != null) customerBalance.EntityFiscalNumber = PluginSettings.SoftwareVendor.Decrypt(customerBalance.EntityFiscalNumber);
+                    erp_customer customer = null;
+                    if (customerBalance.EntityName != null) customerBalance.EntityName = PluginSettings.SoftwareVendor.Decrypt(customerBalance.EntityName);
+                    if (customerBalance.EntityFiscalNumber != null) customerBalance.EntityFiscalNumber = PluginSettings.SoftwareVendor.Decrypt(customerBalance.EntityFiscalNumber);
 
-                        foreach (var summary in gcCustomerBalanceSummary)
+                    foreach (var summary in gcCustomerBalanceSummary)
+                    {
+                        if (summary.Oid != null && summary.Oid.Equals(customerBalance.EntityOid))
                         {
-                            if (summary.Oid != null && summary.Oid.Equals(customerBalance.EntityOid))
+                            if (!string.IsNullOrEmpty(customerBalance.EntityOid))
                             {
-                                if (!string.IsNullOrEmpty(customerBalance.EntityOid))
-                                {
-                                    customer = XPOUtility.GetEntityById<erp_customer>(new Guid(customerBalance.EntityOid));
-                                    summary.EntityName = customer.Name;
-                                    summary.EntityFiscalNumber = customer.FiscalNumber;
-                                }
-                                else
-                                {
-                                    summary.EntityName = "No data";
-                                    summary.EntityFiscalNumber = "No data";
-                                }
+                                customer = XPOUtility.GetEntityById<erp_customer>(new Guid(customerBalance.EntityOid));
+                                summary.EntityName = customer.Name;
+                                summary.EntityFiscalNumber = customer.FiscalNumber;
+                            }
+                            else
+                            {
+                                summary.EntityName = "No data";
+                                summary.EntityFiscalNumber = "No data";
                             }
                         }
                     }
                 }
-
-                //Prepare and Enable DataSources
-                customReport.RegisterData(gcCustomerBalanceSummary, "CustomerBalanceSummary");
-                if (customReport.GetDataSource("CustomerBalanceSummary") != null)
-                {
-                    customReport.GetDataSource("CustomerBalanceSummary").Enabled = true;
-                }
-
-                //customReport.ReportInfo.Name = FILL THIS WITH REPORT NAME;
-                customReport.Process(pViewMode);
-                customReport.Dispose();
             }
-            catch (Exception ex)
+
+
+
+            //Prepare and Enable DataSources
+            customReport.RegisterData(gcCustomerBalanceSummary, "CustomerBalanceSummary");
+            if (customReport.GetDataSource("CustomerBalanceSummary") != null)
             {
-                _logger.Error(ex.Message, ex);
+                customReport.GetDataSource("CustomerBalanceSummary").Enabled = true;
             }
+
+            //customReport.ReportInfo.Name = FILL THIS WITH REPORT NAME;
+            customReport.Process(pViewMode);
+            customReport.Dispose();
         }
 
         public static void ProcessReportUserCommission(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)

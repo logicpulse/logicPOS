@@ -149,15 +149,15 @@ namespace LogicPOS.Reporting.Common
             return result;
         }
 
-        public static ReportList<FinancePaymentViewReport> GetFRBOFinancePayment(Guid pDocumentFinancePaymentOid)
+        public static ReportList<FinancePaymentViewReport> GetFinancePaymentViewReports(Guid financePaymentId)
         {
             ReportList<FinancePaymentViewReport> result = new ReportList<FinancePaymentViewReport>();
 
             try
             {
-                fin_documentfinancepayment documentFinancePayment = XPOUtility.GetEntityById<fin_documentfinancepayment>(pDocumentFinancePaymentOid);
+                fin_documentfinancepayment documentFinancePayment = XPOUtility.GetEntityById<fin_documentfinancepayment>(financePaymentId);
 
-                string sqlFilter = string.Format("fpaOid = '{0}'", pDocumentFinancePaymentOid.ToString());
+                string sqlFilter = string.Format("fpaOid = '{0}'", financePaymentId.ToString());
 
                 //Prepare and Declare FRBOGenericCollections
                 ReportList<FinancePaymentViewReport> gcDocumentFinancePayment = new ReportList<FinancePaymentViewReport>(sqlFilter);

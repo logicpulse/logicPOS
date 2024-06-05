@@ -18,7 +18,6 @@ namespace LogicPOS.Printing.Templates
         protected List<int> _copyNames;
         protected string[] _copyNamesArray;
         protected bool _secondCopy;
-        //Used in Child Documents
         protected string _copyName = string.Empty;
         protected int _ticketTablePaddingLeftLength = 2;
 
