@@ -8,7 +8,6 @@ using LogicPOS.Printing.Enums;
 using LogicPOS.Printing.Templates;
 using LogicPOS.Printing.Tickets;
 using LogicPOS.Reporting.Common;
-using LogicPOS.Reporting.Reports.Documents;
 using LogicPOS.Settings;
 using LogicPOS.Utility;
 using SkiaSharp;
@@ -44,13 +43,15 @@ namespace LogicPOS.Printing.Documents
 
             _documentMaster = documentMaster;
 
-            //Init Fast Reports Business Objects (From FRBOHelper)
-            ReportList<FinanceMasterViewReportDto> financeMasters = ReportHelper.GetFinanceMasterViewReports(_documentMaster.Id);
-            //Get FRBOs Lists 
-            _financeMasters = financeMasters.List;
-            _financeDetailsList = financeMasters.List[0].DocumentFinanceDetail;
-            _financeMasterTotalList = financeMasters.List[0].DocumentFinanceMasterTotal; ;
 
+            var financeMasters = ReportHelper.GetFinanceMasterViewReports(
+                _documentMaster.Id)
+                    .List.ConvertAll(
+                            view => ReportMapping.GetFinanceMasterViewReportDto(view));
+
+            _financeMasters = financeMasters;
+            _financeDetailsList = financeMasters[0].DocumentFinanceDetail;
+            _financeMasterTotalList = financeMasters[0].DocumentFinanceMasterTotal; ;
         }
 
         //Override Parent Template
@@ -192,7 +193,7 @@ namespace LogicPOS.Printing.Documents
                 //Print Items
                 foreach (FinanceDetailReportDto item in _financeDetailsList)
                 {
-                    
+
                     //Recreate/Reset Table for Item Details Loop
                     ticketTable = new TicketTable(dataTable, columns, _maxCharsPerLineNormal - _ticketTablePaddingLeftLength);
                     PrintDocumentDetail(ticketTable, item, paddingLeftFormat);

@@ -105,39 +105,41 @@ namespace LogicPOS.Reporting.Common
             return dto;
         }
 
-        public static FinanceDetailReportDto GetFinanceDetailReportDto(FinanceDetailReport DetailReport)
+        public static FinanceDetailReportDto GetFinanceDetailReportDto(
+            FinanceDetailReport financeDetailReport)
         {
             var FinanceDatailReportDto = new FinanceDetailReportDto
             {
-                Code = DetailReport.Code,
-                Designation = DetailReport.Designation,
-                Discount = DetailReport.Discount,
-                Notes = DetailReport.Notes,
-                Price = DetailReport.Price,
-                Quantity = DetailReport.Quantity,
-                TotalFinal = DetailReport.TotalFinal,
-                TotalGross = DetailReport.TotalGross,
-                TotalNet = DetailReport.TotalNet,
-                UnitMeasure = DetailReport.UnitMeasure,
-                Vat = DetailReport.Vat,
-                VatExemptionReasonDesignation = DetailReport.VatExemptionReasonDesignation,
+                Code = financeDetailReport.Code,
+                Designation = financeDetailReport.Designation,
+                Discount = financeDetailReport.Discount,
+                Notes = financeDetailReport.Notes,
+                Price = financeDetailReport.Price,
+                Quantity = financeDetailReport.Quantity,
+                TotalFinal = financeDetailReport.TotalFinal,
+                TotalGross = financeDetailReport.TotalGross,
+                TotalNet = financeDetailReport.TotalNet,
+                UnitMeasure = financeDetailReport.UnitMeasure,
+                Vat = financeDetailReport.Vat,
+                VatExemptionReasonDesignation = financeDetailReport.VatExemptionReasonDesignation,
             };
             return FinanceDatailReportDto;
         }
 
-        public static FinanceMasterTotalViewReportDto GetFinanceMasterTotalViewReportDto(FinanceMasterTotalViewReport TotalViewReport)
+        public static FinanceMasterTotalViewReportDto GetFinanceMasterTotalViewReportDto(
+            FinanceMasterTotalViewReport financeMasterTotalViewReport)
         {
             var TotalViewReportDto = new FinanceMasterTotalViewReportDto
             {
-                Oid = TotalViewReport.Oid,
-                Designation = TotalViewReport.Designation,
-                DocumentMaster = TotalViewReport.DocumentMaster,
-                TaxCode = TotalViewReport.TaxCode,
-                TaxCountryRegion = TotalViewReport.TaxCountryRegion,
-                Total = TotalViewReport.Total,
-                TotalBase = TotalViewReport.TotalBase,
-                TotalType = (int)TotalViewReport.TotalType,
-                Value = TotalViewReport.Value,
+                Oid = financeMasterTotalViewReport.Oid,
+                Designation = financeMasterTotalViewReport.Designation,
+                DocumentMaster = financeMasterTotalViewReport.DocumentMaster,
+                TaxCode = financeMasterTotalViewReport.TaxCode,
+                TaxCountryRegion = financeMasterTotalViewReport.TaxCountryRegion,
+                Total = financeMasterTotalViewReport.Total,
+                TotalBase = financeMasterTotalViewReport.TotalBase,
+                TotalType = (int)financeMasterTotalViewReport.TotalType,
+                Value = financeMasterTotalViewReport.Value,
 
             };
 
