@@ -37,7 +37,7 @@ WHERE
 namespace LogicPOS.Reporting.Reports.Documents
 {
     [Report(Entity = "view_documentfinancepayment", Limit = 1)]
-    public class FinancePaymentViewReport : ReportBase
+    public class FinancePaymentViewReport : ReportData
     {
         [Report(Field = "fpaOid")]
         override public string Oid { get; set; }                                        //fpaOid AS Oid,  

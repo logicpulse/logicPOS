@@ -282,7 +282,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     //Modify Result
                     result.Response = ResponseType.Ok;
                     //Initialize CopyNames List from PrintCopies
-                    result.CopyNames = CustomReport.CopyNames(pDocumentFinanceMaster.DocumentType.PrintCopies);
+                    result.CopyNames = LogicPOS.Reporting.Common.FastReport.CopyNames(pDocumentFinanceMaster.DocumentType.PrintCopies);
                 }
             }
             catch (Exception ex)

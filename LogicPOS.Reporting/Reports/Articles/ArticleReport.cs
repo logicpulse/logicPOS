@@ -3,7 +3,7 @@
 namespace LogicPOS.Reporting.Reports.Articles
 {
     [Report(Entity = "fin_article")]
-    public class ArticleReport : ReportBase
+    public class ArticleReport : ReportData
     {
         public uint Ord { get; set; }
         public string Code { get; set; }

@@ -13,7 +13,7 @@ using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Enums;
 using LogicPOS.Globalization;
-using LogicPOS.Reporting.Common;
+using LogicPOS.Reporting.Utility;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
 using LogicPOS.Shared;
@@ -359,7 +359,7 @@ namespace logicpos
             }
 
             //Init FastReports Custom Functions and Custom Vars
-            CustomFunctions.Register(POSSettings.AppName);
+            ReportingUtils.Register(POSSettings.AppName);
 
             //Hardware : Init Display
             if (TerminalSettings.LoggedTerminal.PoleDisplay != null)

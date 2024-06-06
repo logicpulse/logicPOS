@@ -5,13 +5,10 @@ using logicpos.Classes.Enums.Reports;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.shared.Enums;
-using LogicPOS.Data.XPO.Settings;
-using LogicPOS.Domain.Entities;
 using LogicPOS.Globalization;
-using LogicPOS.Reporting.Common;
+using LogicPOS.Reporting.Reports.CustomerBalanceSummary;
 using LogicPOS.Settings;
 using LogicPOS.Shared.CustomDocument;
-using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 
@@ -87,7 +84,7 @@ OR
 
             return result;
         }
-        
+
         public Type SenderType { get; set; }
 
         public void PrintReportRouter(object sender, EventArgs e)
@@ -319,7 +316,7 @@ OR
                 switch (reportToken)
                 {
                     case ReportsTypeToken.REPORT_SALES_PER_FINANCE_DOCUMENT:
-                        CustomReport.ProcessReportDocumentMasterList(displayMode
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentMasterList(displayMode
                             , CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, reportToken.ToString().ToLower())
                             , "[DocumentFinanceMaster.DocumentType.Ord]"
                             , "([DocumentFinanceMaster.DocumentType.Code]) [DocumentFinanceMaster.DocumentType.Designation]",/* IN009066 */
@@ -328,7 +325,7 @@ OR
                             );
                         break;
                     case ReportsTypeToken.REPORT_SALES_PER_DATE:
-                        CustomReport.ProcessReportDocumentMasterList(displayMode
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentMasterList(displayMode
                             , CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, reportToken.ToString().ToLower())
                             , "[DocumentFinanceMaster.DocumentDate]"
                             , "[DocumentFinanceMaster.DocumentDate]",
@@ -338,7 +335,7 @@ OR
                         this._windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "report_sales_per_date");
                         break;
                     case ReportsTypeToken.REPORT_SALES_PER_USER:
-                        CustomReport.ProcessReportDocumentMasterList(displayMode
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentMasterList(displayMode
                             , CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, reportToken.ToString().ToLower())
                             , "[DocumentFinanceMaster.CreatedBy.Ord]"
                             , "([DocumentFinanceMaster.CreatedBy.Code]) [DocumentFinanceMaster.CreatedBy.Name]",/* IN009066 */
@@ -347,7 +344,7 @@ OR
                             );
                         break;
                     case ReportsTypeToken.REPORT_SALES_PER_TERMINAL:
-                        CustomReport.ProcessReportDocumentMasterList(displayMode
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentMasterList(displayMode
                             , CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, reportToken.ToString().ToLower())
                             , "[DocumentFinanceMaster.CreatedWhere.Ord]"
                             , "([DocumentFinanceMaster.CreatedWhere.Code]) [DocumentFinanceMaster.CreatedWhere.Designation]",/* IN009066 */
@@ -356,7 +353,7 @@ OR
                             );
                         break;
                     case ReportsTypeToken.REPORT_SALES_PER_CUSTOMER:
-                        CustomReport.ProcessReportDocumentMasterList(displayMode
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentMasterList(displayMode
                             , CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, reportToken.ToString().ToLower())
                             , "[DocumentFinanceMaster.EntityFiscalNumber]"
                             , "[DocumentFinanceMaster.EntityFiscalNumber] / [DocumentFinanceMaster.EntityName]",/* IN009066 */
@@ -365,7 +362,7 @@ OR
                             );
                         break;
                     case ReportsTypeToken.REPORT_SALES_PER_PAYMENT_METHOD:
-                        CustomReport.ProcessReportDocumentMasterList(displayMode
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentMasterList(displayMode
                             , CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, reportToken.ToString().ToLower())
                             , "[DocumentFinanceMaster.PaymentMethod.Ord]"
                             , "([DocumentFinanceMaster.PaymentMethod.Code]) [DocumentFinanceMaster.PaymentMethod.Designation]",/* IN009066 - Duplicate of REPORT_SALES_PER_PAYMENT_CONDITION */
@@ -378,7 +375,7 @@ OR
                             );
                         break;
                     case ReportsTypeToken.REPORT_SALES_PER_PAYMENT_CONDITION:
-                        CustomReport.ProcessReportDocumentMasterList(displayMode
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentMasterList(displayMode
                             , CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, reportToken.ToString().ToLower())
                             , "[DocumentFinanceMaster.PaymentCondition.Ord]"
                             , "([DocumentFinanceMaster.PaymentCondition.Code]) [DocumentFinanceMaster.PaymentCondition.Designation]",/* IN009066 */
@@ -391,7 +388,7 @@ OR
                             );
                         break;
                     case ReportsTypeToken.REPORT_SALES_PER_CURRENCY:
-                        CustomReport.ProcessReportDocumentMasterList(displayMode
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentMasterList(displayMode
                             , CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, reportToken.ToString().ToLower())
                             , "[DocumentFinanceMaster.Currency.Ord]"
                             , "([DocumentFinanceMaster.Currency.Code]) [DocumentFinanceMaster.Currency.Designation]",/* IN009066 */
@@ -404,7 +401,7 @@ OR
                             );
                         break;
                     case ReportsTypeToken.REPORT_SALES_PER_COUNTRY:
-                        CustomReport.ProcessReportDocumentMasterList(displayMode
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentMasterList(displayMode
                             , CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, reportToken.ToString().ToLower())
                             , "[DocumentFinanceMaster.EntityCountry]"
                             , "[DocumentFinanceMaster.EntityCountry]",
@@ -417,7 +414,7 @@ OR
                     // Detail
 
                     case ReportsTypeToken.REPORT_SALES_DETAIL_PER_FINANCE_DOCUMENT:
-                        CustomReport.ProcessReportDocumentDetail(displayMode
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentDetail(displayMode
                             , reportToken.ToString().ToLower()
                             , "[DocumentFinanceDetail.DocumentTypeOrd]"
                             , "([DocumentFinanceDetail.DocumentTypeCode]) [DocumentFinanceDetail.DocumentTypeDesignation]",/* IN009066 */
@@ -426,7 +423,7 @@ OR
                             );
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_PER_DATE:
-                        CustomReport.ProcessReportDocumentDetail(displayMode
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentDetail(displayMode
                             , reportToken.ToString().ToLower()
                             , "[DocumentFinanceDetail.DocumentDate]"
                             , "[DocumentFinanceDetail.DocumentDate]",
@@ -435,7 +432,7 @@ OR
                             );
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_PER_USER:
-                        CustomReport.ProcessReportDocumentDetail(displayMode
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentDetail(displayMode
                             , reportToken.ToString().ToLower()
                             , "[DocumentFinanceDetail.UserDetailOrd]"
                             , "([DocumentFinanceDetail.UserDetailCode]) [DocumentFinanceDetail.UserDetailName]",/* IN009066 */
@@ -444,7 +441,7 @@ OR
                             );
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_PER_TERMINAL:
-                        CustomReport.ProcessReportDocumentDetail(displayMode
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentDetail(displayMode
                             , reportToken.ToString().ToLower()
                             , "[DocumentFinanceDetail.TerminalOrd]"
                             , "([DocumentFinanceDetail.TerminalCode]) [DocumentFinanceDetail.TerminalDesignation]",/* IN009066 */
@@ -453,7 +450,7 @@ OR
                             );
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_PER_CUSTOMER:
-                        CustomReport.ProcessReportDocumentDetail(displayMode
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentDetail(displayMode
                             , reportToken.ToString().ToLower()
                             , "[DocumentFinanceDetail.EntityFiscalNumber]"
                             , "[DocumentFinanceDetail.EntityFiscalNumber] / [DocumentFinanceDetail.EntityName]",/* IN009066 */
@@ -462,7 +459,7 @@ OR
                             );
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_PER_PAYMENT_METHOD:
-                        CustomReport.ProcessReportDocumentDetail(displayMode
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentDetail(displayMode
                             , reportToken.ToString().ToLower()
                             , "[DocumentFinanceDetail.PaymentMethodOrd]"
                             , "([DocumentFinanceDetail.PaymentMethodCode]) [DocumentFinanceDetail.PaymentMethodDesignation]",/* IN009066 */
@@ -474,7 +471,7 @@ OR
                             );
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_PER_PAYMENT_CONDITION:
-                        CustomReport.ProcessReportDocumentDetail(displayMode
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentDetail(displayMode
                             , reportToken.ToString().ToLower()
                             , "[DocumentFinanceDetail.PaymentConditionOrd]"
                             /* IN009066 - Faturas Simplificadas and Notas de Crédito were not in this report, because they have no Payment Condition. Now the issue is fixed */
@@ -486,7 +483,7 @@ OR
                             );
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_PER_CURRENCY:
-                        CustomReport.ProcessReportDocumentDetail(displayMode
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentDetail(displayMode
                             , reportToken.ToString().ToLower()
                             , "[DocumentFinanceDetail.CurrencyOrd]"
                             , "([DocumentFinanceDetail.CurrencyCode]) [DocumentFinanceDetail.CurrencyDesignation]",/* IN009066 */
@@ -495,7 +492,7 @@ OR
                             );
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_PER_COUNTRY:
-                        CustomReport.ProcessReportDocumentDetail(displayMode
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentDetail(displayMode
                             , reportToken.ToString().ToLower()
                             , "[DocumentFinanceDetail.CountryOrd]"
                             , "([DocumentFinanceDetail.EntityCountryCode2]) [DocumentFinanceDetail.CountryDesignation]",/* IN009066 */
@@ -504,7 +501,7 @@ OR
                             );
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_PER_FAMILY:
-                        CustomReport.ProcessReportDocumentDetail(displayMode
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentDetail(displayMode
                             , reportToken.ToString().ToLower()
                             , "[DocumentFinanceDetail.ArticleFamilyOrd]"
                             , "([DocumentFinanceDetail.ArticleFamilyCode]) [DocumentFinanceDetail.ArticleFamilyDesignation]",/* IN009066 */
@@ -513,7 +510,7 @@ OR
                             );
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_PER_FAMILY_AND_SUBFAMILY:
-                        CustomReport.ProcessReportDocumentDetail(displayMode
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentDetail(displayMode
                             , reportToken.ToString().ToLower()
                             , "[DocumentFinanceDetail.ArticleSubFamilyOrd]"
                             , "([DocumentFinanceDetail.ArticleFamilyCode]) [DocumentFinanceDetail.ArticleFamilyDesignation] / ([DocumentFinanceDetail.ArticleSubFamilyCode]) [DocumentFinanceDetail.ArticleSubFamilyDesignation]",/* IN009066 */
@@ -522,7 +519,7 @@ OR
                             );
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_PER_PLACE:
-                        CustomReport.ProcessReportDocumentDetail(displayMode
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentDetail(displayMode
                             , reportToken.ToString().ToLower()
                             , "[DocumentFinanceDetail.PlaceOrd]"
                             , "([DocumentFinanceDetail.PlaceCode]) [DocumentFinanceDetail.PlaceDesignation]",/* IN009066 */
@@ -535,7 +532,7 @@ OR
                             );
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_PER_PLACE_TABLE:
-                        CustomReport.ProcessReportDocumentDetail(displayMode
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentDetail(displayMode
                             , reportToken.ToString().ToLower()
                             , "[DocumentFinanceDetail.PlaceTableOrd]"
                             , "([DocumentFinanceDetail.PlaceCode]) [DocumentFinanceDetail.PlaceDesignation] / ([DocumentFinanceDetail.PlaceTableCode]) [DocumentFinanceDetail.PlaceTableDesignation]",/* IN009066 */
@@ -552,7 +549,7 @@ OR
                     // Detail/Group
 
                     case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_FINANCE_DOCUMENT:
-                        CustomReport.ProcessReportDocumentDetail(displayMode
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentDetail(displayMode
                             , reportToken.ToString().ToLower()
                             , "ftOid, ftDocumentTypeOrd, ftDocumentTypeCode, ftDocumentTypeDesignation"
                             , "ftOid AS GroupOid, ftDocumentTypeOrd AS GroupOrd, ftDocumentTypeCode AS GroupCode, ftDocumentTypeDesignation AS GroupDesignation"
@@ -564,7 +561,7 @@ OR
                         );
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_DATE:
-                        CustomReport.ProcessReportDocumentDetail(displayMode
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentDetail(displayMode
                             , reportToken.ToString().ToLower()
                             , "fmDocumentDate"
                             , "fmDocumentDate AS GroupOid, fmDocumentDate AS GroupOrd, fmDocumentDate AS GroupCode, fmDocumentDate AS GroupDesignation"
@@ -576,7 +573,7 @@ OR
                         );
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_USER:
-                        CustomReport.ProcessReportDocumentDetail(displayMode
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentDetail(displayMode
                             , reportToken.ToString().ToLower()
                             , "udUserDetail, udUserDetailOrd, udUserDetailCode, udUserDetailName"
                             , "udUserDetail AS GroupOid, udUserDetailOrd AS GroupOrd, udUserDetailCode AS GroupCode, udUserDetailName AS GroupDesignation"
@@ -589,7 +586,7 @@ OR
                         );
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_TERMINAL:
-                        CustomReport.ProcessReportDocumentDetail(displayMode
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentDetail(displayMode
                             , reportToken.ToString().ToLower()
                             , "trTerminal, trTerminalOrd, trTerminalCode, trTerminalDesignation"
                             , "trTerminal AS GroupOid, trTerminalOrd AS GroupOrd, trTerminalCode AS GroupCode, trTerminalDesignation AS GroupDesignation"
@@ -601,7 +598,7 @@ OR
                         );
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_CUSTOMER:
-                        CustomReport.ProcessReportDocumentDetail(displayMode
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentDetail(displayMode
                             , reportToken.ToString().ToLower()
                             , "fmEntity, cuEntityOrd, cuEntityCode, fmEntityName"
                             , "fmEntity AS GroupOid, cuEntityOrd AS GroupOrd, cuEntityCode AS GroupCode, fmEntityName AS GroupDesignation"
@@ -613,7 +610,7 @@ OR
                         );
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_PAYMENT_METHOD:
-                        CustomReport.ProcessReportDocumentDetail(displayMode
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentDetail(displayMode
                             , reportToken.ToString().ToLower()
                             , "fmPaymentMethod, pmPaymentMethodOrd, pmPaymentMethodCode, pmPaymentMethodDesignation"
                             , "fmPaymentMethod AS GroupOid, pmPaymentMethodOrd AS GroupOrd, pmPaymentMethodCode AS GroupCode, pmPaymentMethodDesignation AS GroupDesignation"
@@ -627,7 +624,7 @@ OR
                         );
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_PAYMENT_CONDITION:
-                        CustomReport.ProcessReportDocumentDetail(displayMode
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentDetail(displayMode
                             , reportToken.ToString().ToLower()
                             , "fmPaymentCondition, pcPaymentConditionOrd, pcPaymentConditionCode, pcPaymentConditionDesignation"
                             , "fmPaymentCondition AS GroupOid, pcPaymentConditionOrd AS GroupOrd, pcPaymentConditionCode AS GroupCode, pcPaymentConditionDesignation AS GroupDesignation"
@@ -641,7 +638,7 @@ OR
                         );
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_CURRENCY:
-                        CustomReport.ProcessReportDocumentDetail(displayMode
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentDetail(displayMode
                             , reportToken.ToString().ToLower()
                             , "fmCurrency, crCurrencyOrd, crCurrencyCode, crCurrencyDesignation"
                             , "fmCurrency AS GroupOid, crCurrencyOrd AS GroupOrd, crCurrencyCode AS GroupCode, crCurrencyDesignation AS GroupDesignation"
@@ -653,7 +650,7 @@ OR
                         );
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_COUNTRY:
-                        CustomReport.ProcessReportDocumentDetail(displayMode
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentDetail(displayMode
                             , reportToken.ToString().ToLower()
                             , "ccCountry, ccCountryOrd, ccCountryCode, ccCountryDesignation"
                             , "ccCountry AS GroupOid, ccCountryOrd AS GroupOrd, ccCountryCode AS GroupCode, ccCountryDesignation AS GroupDesignation"
@@ -665,7 +662,7 @@ OR
                         );
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_FAMILY:
-                        CustomReport.ProcessReportDocumentDetail(displayMode
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentDetail(displayMode
                             , reportToken.ToString().ToLower()
                             , "afFamily, afFamilyOrd, afFamilyCode, afFamilyDesignation"
                             , "afFamily AS GroupOid, afFamilyOrd AS GroupOrd, afFamilyCode AS GroupCode, afFamilyDesignation AS GroupDesignation"
@@ -677,7 +674,7 @@ OR
                         );
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_FAMILY_AND_SUBFAMILY:
-                        CustomReport.ProcessReportDocumentDetail(displayMode
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentDetail(displayMode
                             , reportToken.ToString().ToLower()
                             , "sfSubFamily, sfSubFamilyOrd, sfSubFamilyCode, sfSubFamilyDesignation"
                             , "sfSubFamily AS GroupOid, sfSubFamilyOrd AS GroupOrd, sfSubFamilyCode AS GroupCode, sfSubFamilyDesignation AS GroupDesignation"
@@ -689,7 +686,7 @@ OR
                         );
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_PLACE:
-                        CustomReport.ProcessReportDocumentDetail(displayMode
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentDetail(displayMode
                             , reportToken.ToString().ToLower()
                             , "cpPlace, cpPlaceOrd, cpPlaceCode, cpPlaceDesignation"
                             , "cpPlace AS GroupOid, cpPlaceOrd AS GroupOrd, cpPlaceCode AS GroupCode, cpPlaceDesignation AS GroupDesignation"
@@ -703,7 +700,7 @@ OR
                         );
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_PLACE_TABLE:
-                        CustomReport.ProcessReportDocumentDetail(displayMode
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentDetail(displayMode
                             , reportToken.ToString().ToLower()
                             , "dmPlaceTable, ctPlaceTableOrd, ctPlaceTableCode, ctPlaceTableDesignation"
                             , "dmPlaceTable AS GroupOid, ctPlaceTableOrd AS GroupOrd, ctPlaceTableCode AS GroupCode, ctPlaceTableDesignation AS GroupDesignation"
@@ -718,7 +715,7 @@ OR
                         break;
 
                     case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_VAT:
-                        CustomReport.ProcessReportDocumentDetail(displayMode
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentDetail(displayMode
                      , reportToken.ToString().ToLower()
                      , "[DocumentFinanceDetail.ArticleVat]"
                      , "[DocumentFinanceDetail.ArticleVat]",
@@ -755,52 +752,59 @@ OR
                     // Auxiliar Tables
                     case ReportsTypeToken.REPORT_LIST_FAMILY_SUBFAMILY_ARTICLES:
                         // Where it is Called?
-                        CustomReport.ProcessReportArticle(CustomReportDisplayMode.ExportPDF);
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportArticle(CustomReportDisplayMode.ExportPDF);
                         break;
                     case ReportsTypeToken.REPORT_LIST_CUSTOMERS:
-                        CustomReport.ProcessReportCustomer(CustomReportDisplayMode.ExportPDF);
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportCustomer(CustomReportDisplayMode.ExportPDF);
                         break;
 
                     // Other Reports
                     case ReportsTypeToken.REPORT_LIST_AUDIT_TABLE:
-                        CustomReport.ProcessReportSystemAudit(displayMode, reportFilter, reportFilterHumanReadable);
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportSystemAudit(displayMode, reportFilter, reportFilterHumanReadable);
                         break;
                     case ReportsTypeToken.REPORT_LIST_CURRENT_ACCOUNT:
-                        CustomReport.ProcessReportDocumentFinanceCurrentAccount(displayMode, reportFilter, reportFilterHumanReadable);
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentFinanceCurrentAccount(displayMode, reportFilter, reportFilterHumanReadable);
                         break;
                     /* IN008018 */
                     case ReportsTypeToken.REPORT_CUSTOMER_BALANCE_DETAILS:
-                        CustomReport.ProcessReportCustomerBalanceDetails(displayMode, reportFilter, reportFilterHumanReadable);
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportCustomerBalanceDetails(displayMode, reportFilter, reportFilterHumanReadable);
                         break;
-                    /* IN009010 */
+
+
                     case ReportsTypeToken.REPORT_CUSTOMER_BALANCE_SUMMARY:
-                        CustomReport.ProcessReportCustomerBalanceSummary(displayMode, reportFilter, reportFilterHumanReadable);
+
+                        PresentCostumerBalanceSummaryReport(
+                            reportFilter,
+                            reportFilterHumanReadable,
+                            displayMode);
+
                         break;
-                    /* IN009204 */
+
+
                     case ReportsTypeToken.REPORT_COMPANY_BILLING:
-                        CustomReport.ProcessReportCompanyBilling(displayMode, reportFilter, reportFilterHumanReadable);
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportCompanyBilling(displayMode, reportFilter, reportFilterHumanReadable);
                         break;
                     case ReportsTypeToken.REPORT_LIST_USER_COMMISSION:
-                        CustomReport.ProcessReportUserCommission(displayMode, reportFilter, reportFilterHumanReadable);
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportUserCommission(displayMode, reportFilter, reportFilterHumanReadable);
                         break;
                     // Stock Reports
                     case ReportsTypeToken.REPORT_LIST_STOCK_MOVEMENTS:
-                        CustomReport.ProcessReportArticleStockMovement(displayMode, reportFilter, reportFilterHumanReadable);
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportArticleStockMovement(displayMode, reportFilter, reportFilterHumanReadable);
                         break;
                     case ReportsTypeToken.REPORT_LIST_STOCK_WAREHOUSE:
-                        CustomReport.ProcessReportArticleStockWarehouse(displayMode, reportFilter, reportFilterHumanReadable);
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportArticleStockWarehouse(displayMode, reportFilter, reportFilterHumanReadable);
                         break;
                     case ReportsTypeToken.REPORT_LIST_STOCK_ARTICLE:
-                        CustomReport.ProcessReportArticleStock(displayMode, reportFilter, reportFilterHumanReadable);
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportArticleStock(displayMode, reportFilter, reportFilterHumanReadable);
                         break;
                     case ReportsTypeToken.REPORT_LIST_STOCK_SUPPLIER:
-                        CustomReport.ProcessReportArticleStockSupplier(displayMode, reportFilter, reportFilterHumanReadable);
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportArticleStockSupplier(displayMode, reportFilter, reportFilterHumanReadable);
                         break;
                     case ReportsTypeToken.REPORT_SALES_PER_VAT:
-                        CustomReport.ProcessReportVatSalesResumed(displayMode, reportFilter, reportFilterHumanReadable);
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportVatSalesResumed(displayMode, reportFilter, reportFilterHumanReadable);
                         break;
                     case ReportsTypeToken.REPORT_SALES_PER_VAT_BY_ARTICLE_CLASS:
-                        CustomReport.ProcessReportVatSalesByClassResumed(displayMode, reportFilter, reportFilterHumanReadable);
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportVatSalesByClassResumed(displayMode, reportFilter, reportFilterHumanReadable);
                         break;
                     // ABove are not Implemented Yet
                     case ReportsTypeToken.REPORT_TOTAL_PER_FAMILY:
@@ -850,6 +854,16 @@ OR
                         break;
                 }
             }
+        }
+
+        private static void PresentCostumerBalanceSummaryReport(string reportFilter, string reportFilterHumanReadable, CustomReportDisplayMode displayMode)
+        {
+            var customerBalanceSummaryReport = new CustomerBalanceSummaryReport(
+                                        displayMode,
+                                        reportFilter,
+                                        reportFilterHumanReadable);
+
+            customerBalanceSummaryReport.Present();
         }
     }
 }

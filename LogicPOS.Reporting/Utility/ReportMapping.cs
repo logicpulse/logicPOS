@@ -1,7 +1,7 @@
 ﻿using LogicPOS.DTOs.Reporting;
 using LogicPOS.Reporting.Reports.Documents;
 
-namespace LogicPOS.Reporting.Common
+namespace LogicPOS.Reporting.Utility
 {
     public static class ReportMapping
     {
@@ -95,7 +95,7 @@ namespace LogicPOS.Reporting.Common
                 ATDocQRCode = report.ATDocQRCode,
             };
 
-            dto.DocumentFinanceDetail=report.DocumentFinanceDetail.ConvertAll(
+            dto.DocumentFinanceDetail = report.DocumentFinanceDetail.ConvertAll(
                 detail => GetFinanceDetailReportDto(detail)
                 );
             dto.DocumentFinanceMasterTotal = report.DocumentFinanceMasterTotal.ConvertAll(
@@ -199,7 +199,7 @@ namespace LogicPOS.Reporting.Common
 
             };
 
-            dto.DocumentFinancePaymentDocument = 
+            dto.DocumentFinancePaymentDocument =
                  report
                     .DocumentFinancePaymentDocument
                     .ConvertAll(

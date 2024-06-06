@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace LogicPOS.Reporting.Reports.Documents
 {
     [Report(Entity = "view_documentfinance"/*, Limit = 1*/)]
-    public class FinanceMasterViewReport : ReportBase
+    public class FinanceMasterViewReport : ReportData
     {
         //DocumentFinanceType
         [Report(Field = "ftOid")]                                                         //ftOid AS DocumentType

@@ -9,6 +9,7 @@ using LogicPOS.Printing.Common;
 using LogicPOS.Printing.Documents;
 using LogicPOS.Printing.Enums;
 using LogicPOS.Reporting.Common;
+using LogicPOS.Reporting.Utility;
 using LogicPOS.Settings;
 using LogicPOS.Utility;
 using System;
@@ -1193,7 +1194,7 @@ namespace LogicPOS.Printing.Utility
                         resultSystemPrint = SystemPrintInsert(financeMasterDto, printer.Designation, printCopies, copyNumbers, secondCopy, motive);
                         break;
                     case "GENERIC_PRINTER_WINDOWS":
-                        CustomReport.ProcessReportFinanceDocument(
+                        Reporting.Common.FastReport.ProcessReportFinanceDocument(
                             CustomReportDisplayMode.Print, 
                             financeMasterDto.Id, 
                             hash4Chars, 
@@ -1205,7 +1206,7 @@ namespace LogicPOS.Printing.Utility
                         resultSystemPrint = SystemPrintInsert(financeMasterDto, printer.Designation, printCopies, copyNumbers, secondCopy, motive);
                         break;
                     case "REPORT_EXPORT_PDF":
-                        CustomReport.ProcessReportFinanceDocument(CustomReportDisplayMode.ExportPDF, financeMasterDto.Id, hash4Chars, copyNumbers, secondCopy, motive);
+                        Reporting.Common.FastReport.ProcessReportFinanceDocument(CustomReportDisplayMode.ExportPDF, financeMasterDto.Id, hash4Chars, copyNumbers, secondCopy, motive);
                         //Add to SystemPrint Audit : Developer : Use here Only to Test SystemPrintInsert
                         resultSystemPrint = SystemPrintInsert(financeMasterDto, printer.Designation, printCopies, copyNumbers, secondCopy, motive);
                         break;
@@ -1282,7 +1283,7 @@ namespace LogicPOS.Printing.Utility
             if (printer != null)
             {
                 //Initialize CopyNames List from PrintCopies
-                List<int> copyNames = CustomReport.CopyNames(pDocumentFinancePayment.DocumentType.PrintCopies);
+                List<int> copyNames = Reporting.Common.FastReport.CopyNames(pDocumentFinancePayment.DocumentType.PrintCopies);
                 int printCopies = copyNames.Count;
 
                 //Init Helper Vars
@@ -1308,12 +1309,12 @@ namespace LogicPOS.Printing.Utility
                         resultSystemPrint = SystemPrintInsert(pDocumentFinancePayment, printer.Designation, printCopies, copyNames);
                         break;
                     case "GENERIC_PRINTER_WINDOWS":
-                        CustomReport.ProcessReportFinanceDocumentPayment(CustomReportDisplayMode.Print, pDocumentFinancePayment.Id, copyNames);
+                        Reporting.Common.FastReport.ProcessReportFinanceDocumentPayment(CustomReportDisplayMode.Print, pDocumentFinancePayment.Id, copyNames);
                         //Add to SystemPrint Audit
                         resultSystemPrint = SystemPrintInsert(pDocumentFinancePayment, printer.Designation, printCopies, copyNames);
                         break;
                     case "REPORT_EXPORT_PDF":
-                        CustomReport.ProcessReportFinanceDocumentPayment(CustomReportDisplayMode.ExportPDF, pDocumentFinancePayment.Id, copyNames);
+                        Reporting.Common.FastReport.ProcessReportFinanceDocumentPayment(CustomReportDisplayMode.ExportPDF, pDocumentFinancePayment.Id, copyNames);
                         //Add to SystemPrint Audit : Developer : Use here Only to Test SystemPrintInsert
                         resultSystemPrint = SystemPrintInsert(pDocumentFinancePayment, printer.Designation, printCopies, copyNames);
                         break;

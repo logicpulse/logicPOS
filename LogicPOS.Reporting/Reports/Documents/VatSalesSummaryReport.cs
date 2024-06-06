@@ -38,7 +38,7 @@ using LogicPOS.Reporting.Common;
 namespace LogicPOS.Reporting.Reports.Documents
 {
     [Report(Entity = "view_documentfinance")]
-    internal class VatSalesSummaryReport : ReportBase
+    internal class VatSalesSummaryReport : ReportData
     {
         [Report(Field = "fdVat")]
         //Primary Oid (Required)

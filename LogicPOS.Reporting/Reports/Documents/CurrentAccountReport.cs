@@ -29,7 +29,7 @@ using System;
 namespace LogicPOS.Reporting.Reports.Documents
 {
     [Report(Entity = "view_documentfinancecurrentaccount")]
-    internal class CurrentAccountReport : ReportBase
+    internal class CurrentAccountReport : ReportData
     {
         [Report(Field = "DocumentTypeOid")]
         //Primary Oid (Required)

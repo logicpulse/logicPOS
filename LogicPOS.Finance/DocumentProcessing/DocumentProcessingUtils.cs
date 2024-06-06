@@ -743,7 +743,7 @@ namespace LogicPOS.Finance.DocumentProcessing
                         // If is Thermal Print doc don't create PDF + Lindote(06/02/2020)
                         if (!PrintingSettings.ThermalPrinter.UsingThermalPrinter)
                         {
-                            CustomReport.GenerateDocumentFinanceMasterPDFIfNotExists(documentFinanceMaster);
+                            Reporting.Common.FastReport.GenerateDocumentFinanceMasterPDFIfNotExists(documentFinanceMaster);
                         }
 
                     }
@@ -1318,7 +1318,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                     uowSession.CommitChanges();
 
                     // Call Generate GenerateDocument
-                    CustomReport.GenerateDocumentFinancePaymentPDFIfNotExists(documentFinancePayment);
+                    Reporting.Common.FastReport.GenerateDocumentFinancePaymentPDFIfNotExists(documentFinancePayment);
                 }
                 catch (Exception ex)
                 {

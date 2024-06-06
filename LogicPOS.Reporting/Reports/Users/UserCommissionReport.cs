@@ -40,7 +40,7 @@ namespace LogicPOS.Reporting.Reports.Users
     [Report(Entity = "view_usercommission",
         Group = "DateDay,UserOid,UserOrd,UserCode,UserName,ArticleOid,Code,Designation,UnitMeasure,Price,Vat,Discount,CommissionValue",
         Order = "DateDay,UserName,Designation")]
-    internal class UserCommissionReport : ReportBase
+    internal class UserCommissionReport : ReportData
     {
         [Report(Field = "UserOid")]
         //Primary Oid (Required)

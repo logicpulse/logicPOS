@@ -4,7 +4,7 @@ using System;
 namespace LogicPOS.Reporting.Reports.Articles
 {
     [Report(Entity = "view_articlestocksupplier")]
-    public class ArticleStockSupplierViewReport : ReportBase
+    public class ArticleStockSupplierViewReport : ReportData
     {
 
         [Report(Field = "stmOid")]

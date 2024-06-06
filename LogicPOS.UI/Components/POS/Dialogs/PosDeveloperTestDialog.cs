@@ -211,7 +211,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             Guid guidOid = new Guid("099EF525-FCEC-48D8-9EE8-FA0F34A34ED4");
             fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)XPOSettings.Session.GetObjectByKey(typeof(fin_documentfinancemaster), guidOid);
-            string fileName = CustomReport.DocumentMasterCreatePDF(documentFinanceMaster);
+            string fileName = LogicPOS.Reporting.Common.FastReport.DocumentMasterCreatePDF(documentFinanceMaster);
             _logger.Debug(string.Format("fileName: [{0}]", fileName));
         }
 

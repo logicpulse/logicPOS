@@ -6,7 +6,7 @@ namespace LogicPOS.Reporting.Reports.Documents
 {
     //Now Entity is Required to be defined, since implementation of Table Prefix
     [Report(Entity = "fin_documentfinancemaster")]
-    public class FinanceMasterReport : ReportBase
+    public class FinanceMasterReport : ReportData
     {
         public DateTime Date { get; set; }
         public string DocumentNumber { get; set; }

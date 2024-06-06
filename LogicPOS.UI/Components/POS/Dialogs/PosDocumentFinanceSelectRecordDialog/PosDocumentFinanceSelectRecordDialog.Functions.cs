@@ -1254,7 +1254,7 @@ WHERE
                     }
                     else
                     {
-                        documents.Add(CustomReport.GenerateDocumentFinanceMasterPDFIfNotExists(document));
+                        documents.Add(LogicPOS.Reporting.Common.FastReport.GenerateDocumentFinanceMasterPDFIfNotExists(document));
                     }
                 }
 
@@ -1308,7 +1308,7 @@ WHERE
                 // Call GenerateDocument and add it to List
                 foreach (fin_documentfinancemaster document in pDocuments)
                 {
-                    documents.Add(document, CustomReport.GenerateDocumentFinanceMasterPDFIfNotExists(document));
+                    documents.Add(document, LogicPOS.Reporting.Common.FastReport.GenerateDocumentFinanceMasterPDFIfNotExists(document));
                 }
 
                 foreach (var item in documents)
@@ -1389,7 +1389,7 @@ WHERE
                 // Call GenerateDocument and add it to List
                 foreach (fin_documentfinancepayment document in pDocuments)
                 {
-                    documents.Add(document, CustomReport.GenerateDocumentFinancePaymentPDFIfNotExists(document));
+                    documents.Add(document, LogicPOS.Reporting.Common.FastReport.GenerateDocumentFinancePaymentPDFIfNotExists(document));
                 }
 
                 foreach (var item in documents)
@@ -2508,7 +2508,7 @@ WHERE
                     {
                         logicpos.Utils.ShowMessageBoxUnlicensedError(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_printing_function_disabled"));
                     }
-                    else documents.Add(CustomReport.GenerateDocumentFinancePaymentPDFIfNotExists(document));
+                    else documents.Add(LogicPOS.Reporting.Common.FastReport.GenerateDocumentFinancePaymentPDFIfNotExists(document));
                 }
 
                 foreach (var item in documents)

@@ -11,7 +11,7 @@ FROM
 namespace LogicPOS.Reporting.Reports.System
 {
     [Report(Entity = "view_systemaudit")]
-    internal class SystemAuditViewReport : ReportBase
+    internal class SystemAuditViewReport : ReportData
     {
         // SystemAudit
         [Report(Field = "sauOid")]

@@ -9,7 +9,7 @@ using System.Reflection;
 
 namespace LogicPOS.Reporting.Common
 {
-    public class ReportList<T> : IEnumerable<T> where T : ReportBase, new()
+    public class ReportList<T> : IEnumerable<T> where T : ReportData, new()
     {
         //Log4Net
         private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);

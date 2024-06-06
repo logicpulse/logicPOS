@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace LogicPOS.Reporting.Reports.Customers
 {
     [Report(Entity = "erp_customertype")]
-    public class CustomerTypeReport : ReportBase
+    public class CustomerTypeReport : ReportData
     {
         public uint Ord { get; set; }
         public uint Code { get; set; }

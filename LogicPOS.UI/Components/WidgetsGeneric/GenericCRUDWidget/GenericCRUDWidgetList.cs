@@ -491,7 +491,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                                 }
                                 if (barCodeLabelList.Count > 0)
                                 {
-                                    CustomReport.ProcessReportBarcodeLabel(shared.Enums.CustomReportDisplayMode.Print, null, "", false, barCodeLabelList);
+                                    LogicPOS.Reporting.Common.FastReport.ProcessReportBarcodeLabel(shared.Enums.CustomReportDisplayMode.Print, null, "", false, barCodeLabelList);
                                 }
                             }
                             return;

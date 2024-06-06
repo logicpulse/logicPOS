@@ -4,7 +4,7 @@ namespace LogicPOS.Reporting.Reports.Documents
 {
     //Now Entity is Required to be defined, since implementation of Table Prefix
     [Report(Entity = "fin_documentfinancedetail")]
-    public class FinanceDetailReport : ReportBase
+    public class FinanceDetailReport : ReportData
     {
         public string Code { get; set; }
         public string Designation { get; set; }

@@ -5,10 +5,12 @@ using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Globalization;
 using LogicPOS.Reporting.Reports.Articles;
+using LogicPOS.Reporting.Reports.CustomerBalanceSummary;
 using LogicPOS.Reporting.Reports.Customers;
 using LogicPOS.Reporting.Reports.Documents;
 using LogicPOS.Reporting.Reports.System;
 using LogicPOS.Reporting.Reports.Users;
+using LogicPOS.Reporting.Utility;
 using LogicPOS.Settings;
 using LogicPOS.Shared.CustomDocument;
 using LogicPOS.Utility;
@@ -21,146 +23,162 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 
 namespace LogicPOS.Reporting.Common
 {
-    public class CustomReport : Report
+    public class FastReport : Report
     {
-        //Log4Net
-        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private const string FILENAME_TEMPLATE_BASE = "TemplateBase.frx";
-        private const string FILENAME_TEMPLATE_BASE_SIMPLE = "TemplateBaseSimple.frx";
-        private readonly bool _debug = false;
-        // Use this to force ReleaseMode and force use Embedded Reports Resources
-        private readonly bool _forceReleaseMode = false;
-
-        //Constructor Parameters
-        private readonly string _reportFileName = string.Empty;
-        //Other
-        private bool _addCodeData = true;
-        //Other Static
+        protected const string LOGICPOS_EXECUTABLE = "logicpos.exe";
+        public const string FILENAME_TEMPLATE_BASE = "TemplateBase.frx";
+        public const string FILENAME_TEMPLATE_BASE_SIMPLE = "TemplateBaseSimple.frx";
         private static bool _secondCopy;
-
+        private readonly bool _debug = false;
+        private readonly bool _forceReleaseMode = false;
+        private string _reportFileName = string.Empty;
+        private bool _addCodeDataToReport = true;
         public string Hash4Chars { get; set; } = string.Empty;
+        private bool IsInDebugMode => Debugger.IsAttached == false || _forceReleaseMode;
+        private List<string> _temporaryReports { get; set; }
+        private bool HasTemporaryReports => _temporaryReports != null && _temporaryReports.Count > 0;
 
-        //FastReports Required Parameterless Constructor Else NULL Exception Occurs
-        public CustomReport() { }
-        public CustomReport(string pReportFileName, string pTemplateBase, int pPrintCopies) : this(pReportFileName, pTemplateBase, null, pPrintCopies) { }
-        public CustomReport(string pReportFileName, string pTemplateBase, List<int> pCopyNames) : this(pReportFileName, pTemplateBase, pCopyNames, 1) { }
-        public CustomReport(string pReportFileName, string pTemplateBase, List<int> copiesNumbers, int pPrintCopies)
+        //FastReports Require Parameterless Constructor
+        public FastReport() { }
+
+        public FastReport(
+            string reportFileLocation,
+            string templateBase,
+            int numberOfCopies) :
+            this(
+                reportFileLocation: reportFileLocation,
+                templateBase: templateBase,
+                copiesNumbers: null,
+                numberOfCopies: numberOfCopies)
+        { }
+
+        public FastReport(
+            string reportFileLocation,
+            string templateBase,
+            List<int> copyNumbers) :
+            this(
+                reportFileLocation: reportFileLocation,
+                templateBase,
+                copiesNumbers: copyNumbers,
+                numberOfCopies: 1)
+        { }
+
+        public FastReport(
+            string reportFileLocation,
+            string templateBase,
+            List<int> copiesNumbers,
+            int numberOfCopies)
         {
-            //Assign Parameters
-            _reportFileName = pReportFileName;
+            _reportFileName = reportFileLocation;
 
-            if (_debug) _logger.Debug("CustomReports: begin:" + _reportFileName);
 
-            // If not in Debug mode use Stream reports from PluginSoftwareVendor else use local file location, usefulll to Develop Reports
-            // This Workis without deleting temporary files equired for prevuiew and design loop
-            List<string> tempReports = new List<string>();
-            if ((!Debugger.IsAttached || _forceReleaseMode) && !string.IsNullOrEmpty(pTemplateBase))
+            if (IsInDebugMode && string.IsNullOrEmpty(templateBase) == false)
             {
-                // Get Protected temporary Reports
-                tempReports = PluginSettings.SoftwareVendor.GetReportFileName(PluginSettings.SecretKey, _reportFileName, pTemplateBase);
-                // Override Default Reports FileName
-                _reportFileName = tempReports[0];
-
+                UseTemporaryReports(templateBase);
             }
 
-            //First Load File report
-            if (File.Exists(_reportFileName))
-            {
-                if (_debug) _logger.Debug("CustomReports: loading :" + _reportFileName);
+            TryLoadReportFile();
 
-                // Load Report File
-                Load(_reportFileName);
+            RegisterReportEvents();
 
-                // Delete temporary reports after Load
-                for (int i = 0; i < tempReports.Count; i++)
-                {
-                    if (File.Exists(tempReports[i]))
-                    {
-                        File.Delete(tempReports[i]);
-                    }
-                }
-            }
+            AddReferencedAssemblies();
 
-            //Add NonUser Overlay, Like Certification, Licence etc, one first Page
-            StartReport += delegate { if (_addCodeData) AddCodeData(); };
+            AddCopyNames(copiesNumbers);
 
-            //WIP EnvironmentSettings: Put This to Work
-            //EnvironmentSettings environmentSettings = new EnvironmentSettings();
-            //environmentSettings.ReportSettings.ShowProgress = false;
-            //environmentSettings.UIStyle = UIStyle.Office2007Black;
+            PrintSettings.Copies = numberOfCopies;
+            AddReportVariables();
 
-            //WIP Styles: Put This to Work
-            //<Style Name="NEW STYLE" Border.Lines="All" Fill.Color="DarkGray" TextFill.Color="Maroon" Font="Arial, 9.75pt, style=Bold"/>
-            //Style style = new Style() {Name = "NEW STYLE"};
-            //style.Border.Lines =  BorderLines.All;
-            //this.Styles.Add(style);
-
-            //Working but Commented
-            //Load Script from External File
-            //StreamReader streamReader = new StreamReader(@"Resources\Reports\Scripts\ReportDocumentFinance.cs");
-            //string scriptText = streamReader.ReadToEnd();
-            //streamReader.Close();
-            //this.ScriptText = scriptText;
-
-            //Add Assemblies
-            string[] referencedAssemblies = ReferencedAssemblies;
-            //Add logicPos reference to use methods, only if wotk in logicpos mode vs lax/web mode
-            string filenameLogicPos = "logicpos.exe";
-            if (File.Exists(filenameLogicPos))
-            {
-                Array.Resize(ref referencedAssemblies, ReferencedAssemblies.Length + 1);
-                referencedAssemblies[referencedAssemblies.Length - 1] = "logicpos.exe";
-            }
-            ReferencedAssemblies = referencedAssemblies;
-
-            if (_debug)
-            {
-                for (int i = 0; i < referencedAssemblies.Length; i++)
-                {
-                    _logger.Debug("CustomReports: Load:" + referencedAssemblies[i]);
-                }
-                _logger.Debug("CustomReports: Environment.CurrentDirectory:" + Environment.CurrentDirectory);
-            }
-
-            //ReportInfo Author
-            //this.ReportInfo.Author = string.Format("{0} {1}", LogicPOS.Settings.GeneralSettings.Settings["appName"], FrameworkUtils.ProductVersion);
-
-            //PrintSettings CopyNames
-            if (copiesNumbers != null)
-            {
-                string[] copyNamesArray = PrintingUtils.GetDocumentsCopiesNamesByNumbers(copiesNumbers);
-                PrintSettings.CopyNames = copyNamesArray;
-            }
-
-            //Number Of Copies to Print
-            PrintSettings.Copies = pPrintCopies;
-
-            //Parameters Specific to Report
-            //this.SetParameterValue("Report Title", "Parameter Report Title");
-            //this.SetParameterValue("Report SubTitle", "Parameter Report SubTitle");
-
-            //SystemVariables
-            object[] systemVariables = Dictionary.SystemVariables.ToArray();
-            //Add SystemVars
-            FastReport.Data.SystemVariable systemVariable;
-            foreach (var item in PrintingSettings.FastReportSystemVars)
-            {
-                systemVariable = new FastReport.Data.SystemVariable();
-                systemVariable.Name = item.Key;
-                systemVariable.AsString = item.Value;
-                Dictionary.SystemVariables.Add(systemVariable);
-            }
-
-            //Custom Vars that was not Assigned on Startup
             if (XPOSettings.LoggedUser != null)
             {
                 PrintingSettings.FastReportCustomVars["Session_loggerged_User"] = XPOSettings.LoggedUser.Name;
             }
+        }
+
+        private void AddReportVariables()
+        {
+            foreach (var item in PrintingSettings.FastReportSystemVars)
+            {
+                var systemVariable = new global::FastReport.Data.SystemVariable
+                {
+                    Name = item.Key,
+                    AsString = item.Value
+                };
+
+                Dictionary.SystemVariables.Add(systemVariable);
+            }
+        }
+
+        private void AddCopyNames(List<int> copiesNumbers)
+        {
+            if (copiesNumbers != null)
+            {
+                string[] copiesNames = PrintingUtils.GetDocumentsCopiesNamesByNumbers(copiesNumbers);
+                PrintSettings.CopyNames = copiesNames;
+            }
+        }
+
+        private void UseTemporaryReports(string templateBase)
+        {
+            _temporaryReports = PluginSettings.SoftwareVendor.GetReportFileName(
+                    PluginSettings.SecretKey,
+                    _reportFileName,
+                    templateBase);
+
+            _reportFileName = _temporaryReports.First();
+        }
+
+        private void TryLoadReportFile()
+        {
+            if (File.Exists(_reportFileName))
+            {
+                Load(_reportFileName);
+
+                if (HasTemporaryReports)
+                {
+                    DeleteTemporaryReports();
+                }
+            }
+        }
+
+        private void DeleteTemporaryReports()
+        {
+
+            for (int i = 0; i < _temporaryReports.Count; i++)
+            {
+                if (File.Exists(_temporaryReports[i]))
+                {
+                    File.Delete(_temporaryReports[i]);
+                }
+            }
+        }
+
+        private void RegisterReportEvents()
+        {
+            StartReport += delegate
+            {
+                if (_addCodeDataToReport)
+                {
+                    AddCodeDataToReport();
+                }
+            };
+        }
+
+        private void AddReferencedAssemblies()
+        {
+            string[] referencedAssemblies = ReferencedAssemblies;
+
+            if (File.Exists(LOGICPOS_EXECUTABLE))
+            {
+                Array.Resize(ref referencedAssemblies, ReferencedAssemblies.Length + 1);
+                referencedAssemblies[referencedAssemblies.Length - 1] = LOGICPOS_EXECUTABLE;
+            }
+            ReferencedAssemblies = referencedAssemblies;
         }
 
         public string Process(CustomReportDisplayMode pViewMode, string pDestinationFileName = "")
@@ -255,7 +273,7 @@ namespace LogicPOS.Reporting.Common
 
                     //TK016206 Reports - Exportação para Xls/pdf
 
-                    var exportXlsx = new FastReport.Export.OoXML.Excel2007Export();
+                    var exportXlsx = new global::FastReport.Export.OoXML.Excel2007Export();
                     //if (exportXlsx.ShowDialog())
                     //{
                     Export(exportXlsx, fileNameExport);
@@ -268,15 +286,10 @@ namespace LogicPOS.Reporting.Common
                     //TK016249 - Impressoras - Diferenciação entre Tipos
                     if (pViewMode == CustomReportDisplayMode.ExportPDFSilent || pViewMode == CustomReportDisplayMode.ExportPDF || !PrintingSettings.ThermalPrinter.UsingThermalPrinter)
                     {
-                        FastReport.Export.Pdf.PDFExport export = new FastReport.Export.Pdf.PDFExport();
-                        try
-                        {
-                            Export(export, fileName);
-                        }
-                        catch (Exception ex)
-                        {
-                            _logger.Error("string Process(CustomReportDisplayMode pViewMode, string pDestinationFileName) :: fileName [ " + fileName + " ]: " + ex.Message, ex);
-                        }
+                        global::FastReport.Export.Pdf.PDFExport export = new global::FastReport.Export.Pdf.PDFExport();
+
+                        Export(export, fileName);
+
                     }
                     //Show Printer Dialog on Windows
                     //Impressão A4 abria Janela de impressão Fast Report [IN:009341]
@@ -348,10 +361,7 @@ namespace LogicPOS.Reporting.Common
             return result;
         }
 
-        /// <summary>
-        /// Add/Overlay Application Data Over Report
-        /// </summary>
-        public void AddCodeData()
+        public void AddCodeDataToReport()
         {
             PageFooterBand pageFooterBand = (PageFooterBand)FindObject("PageFooter1");
             // create title text
@@ -505,7 +515,7 @@ namespace LogicPOS.Reporting.Common
             textObjectOverlaySoftwareCertification.Font = new Font("Arial", 8, FontStyle.Bold);
 
             //Assign _addCodeData to true to prevent repeat add CodeData
-            _addCodeData = false;
+            _addCodeDataToReport = false;
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -537,128 +547,121 @@ namespace LogicPOS.Reporting.Common
             string motive,
             string destFileName = "")
         {
+
+            fin_documentfinancemaster documentMaster = (fin_documentfinancemaster)XPOSettings.Session.GetObjectByKey(typeof(fin_documentfinancemaster), financeMasterId);
+
+            string currentCulture = ConfigurationManager.AppSettings["cultureFinancialRules"];
             try
             {
-
-                fin_documentfinancemaster documentMaster = (fin_documentfinancemaster)XPOSettings.Session.GetObjectByKey(typeof(fin_documentfinancemaster), financeMasterId);
-
-                string currentCulture = ConfigurationManager.AppSettings["cultureFinancialRules"];
-                try
+                if (CultureInfo.CurrentUICulture.Name != currentCulture)
                 {
-                    if (CultureInfo.CurrentUICulture.Name != currentCulture)
-                    {
-                        //CultureInfo.CurrentUICulture = LogicPOS.Settings.CultureSettings.CurrentCulture = new System.Globalization.CultureInfo(currentCulture);
-                    }
-                }
-                catch
-                {
-                    currentCulture = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
                     //CultureInfo.CurrentUICulture = LogicPOS.Settings.CultureSettings.CurrentCulture = new System.Globalization.CultureInfo(currentCulture);
                 }
-
-                if (string.IsNullOrEmpty(currentCulture))
-                {
-                    currentCulture = ConfigurationManager.AppSettings["cultureFinancialRules"];
-                }
-                _logger.Debug("Current Culture: " + currentCulture);
-                if (currentCulture != "pt-AO" && currentCulture != "pt-PT" && currentCulture != "pt-BR" && currentCulture != "pt-MZ")
-                {
-                    currentCulture = "pt-MZ";
-                }
-
-                //string currentCulture = LogicPOS.Settings.CultureSettings.CurrentCulture.Name;
-                string fileName = documentMaster.DocumentType.WayBill ? "ReportDocumentFinanceWayBill_" + currentCulture + ".frx" : "ReportDocumentFinance_" + currentCulture + ".frx";
-                //ATCUD Documentos - Criação do QRCode e ATCUD IN016508
-                if (Convert.ToBoolean(GeneralSettings.PreferenceParameters["PRINT_QRCODE"]) && XPOSettings.ConfigurationSystemCountry.Oid.Equals(CultureSettings.PortugalCountryId) && !string.IsNullOrEmpty(documentMaster.ATDocQRCode))
-                {
-                    fileName = fileName.Replace(".frx", "_QRCode.frx");
-                }
-                string fileUserReportDocumentFinance = $"{PathsSettings.Paths["reports"]}{"UserReports"}\\{fileName}";
-
-                CustomReport customReport = new CustomReport(fileUserReportDocumentFinance, FILENAME_TEMPLATE_BASE, copyNumbers);
-                customReport.DoublePass = documentMaster.DocumentDetail.Count > 15;
-                customReport.Hash4Chars = hash4Chars;
-                customReport.SetParameterValue("Report_FileName_loggero", GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
-                customReport.SetParameterValue("Report_FileName_loggero_Small", GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
-                //ATCUD Documentos - Criação do QRCode e ATCUD IN016508
-                customReport.SetParameterValue("ATDocQRCodeVisible", GeneralSettings.PreferenceParameters["PRINT_QRCODE"].ToString());
-                customReport.SetParameterValue("ATDocQRCode", documentMaster.ATDocQRCode);
-
-                //Report Parameters
-                //customReport.SetParameterValue("Invoice Noº", 280);
-
-                //Get Result Objects from FRBOHelper
-                ReportList<FinanceMasterViewReport> financeMasters = ReportHelper.GetFinanceMasterViewReports(financeMasterId);
-                //Get Generic Collections From FRBOHelper Results
-                ReportList<FinanceMasterViewReport> gcDocumentFinanceMaster = financeMasters;
-                //Prepare and Enable DataSources
-                customReport.RegisterData(gcDocumentFinanceMaster, "DocumentFinanceMaster");
-
-                /* IN005976 for Mozambique deployment */
-                if (XPOSettings.ConfigurationSystemCountry.Oid.Equals(CultureSettings.MozambiqueCountryId) || ConfigurationManager.AppSettings["cultureFinancialRules"] == "fr-CF")
-                {
-                    //if (LogicPOS.Settings.CultureSettings.CurrentCulture.Name.Equals("pt-MZ")){
-                    cfg_configurationcurrency defaultCurrencyForExchangeRate =
-                            XPOUtility.GetEntityById<cfg_configurationcurrency>(
-                                CultureSettings.USDCurrencyId,
-                                XPOSettings.Session);
-
-                    customReport.SetParameterValue("DefaultCurrencyForExchangeRateAcronym", defaultCurrencyForExchangeRate.Acronym);
-                    customReport.SetParameterValue("DefaultCurrencyForExchangeRateTotal", defaultCurrencyForExchangeRate.ExchangeRate);
-                    //}
-                }
-
-                if (customReport.GetDataSource("DocumentFinanceMaster") != null) customReport.GetDataSource("DocumentFinanceMaster").Enabled = true;
-                if (customReport.GetDataSource("DocumentFinanceMaster.DocumentFinanceDetail") != null) customReport.GetDataSource("DocumentFinanceMaster.DocumentFinanceDetail").Enabled = true;
-                if (customReport.GetDataSource("DocumentFinanceMaster.DocumentFinanceMasterTotal") != null) customReport.GetDataSource("DocumentFinanceMaster.DocumentFinanceMasterTotal").Enabled = true;
-
-
-                if (XPOSettings.ConfigurationSystemCountry.Oid.Equals(CultureSettings.AngolaCountryId))
-                {
-                    if (documentMaster.DocumentParent != null && documentMaster.DocumentType.Oid.ToString() == DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment.ToString())
-                    {
-                        documentMaster.Notes += string.Format(
-                            CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_source_document") + ": " + documentMaster.DocumentParent.DocumentNumber);
-                        customReport.SetParameterValue("DocumentFinanceMaster.Notes", documentMaster.Notes);
-                    }
-                }
-
-                //Scripts - Dont Delete this Comment, may be usefull if we remove Script from Report File
-                //Print X Records per Data Band
-                //FastReport.DataBand dataBand = (DataBand) customReport.FindObject("Data1");
-                //int dataBandRec = 1;
-                ////Used to Break Page on X Recs, Usefull to leave open space for Report Summary
-                //int dataBandMaxRecs = 30;
-                //dataBand.AfterPrint += delegate {
-                //  Console.WriteLine(string.Format("dataBandRec.RowNo:[{0}], dataBandMaxRecs:[{1}], , dataBand.RowNo[{2}], report.Pages.Count[{3}]", dataBandRec, dataBandMaxRecs, dataBand.RowNo, report.Pages.Count));
-                //  if (dataBandRec == dataBandMaxRecs) { 
-                //    dataBandRec = 1;  
-                //    dataBand.StartNewPage = true; 
-                //  } 
-                //  else 
-                //  { 
-                //    dataBandRec++;
-                //    dataBand.StartNewPage = false; 
-                //  };
-                //};
-
-                //Assign Second Copy Reference
-                _secondCopy = secondCopy;
-
-                int n = customReport.Pages.Count;
-
-                //Add ReportInfo.Name, to be used for Ex in Pdf Filenames, OS etc
-                customReport.ReportInfo.Name = gcDocumentFinanceMaster.List[0].DocumentNumber;
-                string result = customReport.Process(viewMode, destFileName);
-                customReport.Dispose();
-
-                return result;
             }
-            catch (Exception ex)
+            catch
             {
-                _logger.Error(ex.Message, ex);
-                throw new Exception(ex.Message);
+                currentCulture = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
+                //CultureInfo.CurrentUICulture = LogicPOS.Settings.CultureSettings.CurrentCulture = new System.Globalization.CultureInfo(currentCulture);
             }
+
+            if (string.IsNullOrEmpty(currentCulture))
+            {
+                currentCulture = ConfigurationManager.AppSettings["cultureFinancialRules"];
+            }
+
+            if (currentCulture != "pt-AO" && currentCulture != "pt-PT" && currentCulture != "pt-BR" && currentCulture != "pt-MZ")
+            {
+                currentCulture = "pt-MZ";
+            }
+
+            //string currentCulture = LogicPOS.Settings.CultureSettings.CurrentCulture.Name;
+            string fileName = documentMaster.DocumentType.WayBill ? "ReportDocumentFinanceWayBill_" + currentCulture + ".frx" : "ReportDocumentFinance_" + currentCulture + ".frx";
+            //ATCUD Documentos - Criação do QRCode e ATCUD IN016508
+            if (Convert.ToBoolean(GeneralSettings.PreferenceParameters["PRINT_QRCODE"]) && XPOSettings.ConfigurationSystemCountry.Oid.Equals(CultureSettings.PortugalCountryId) && !string.IsNullOrEmpty(documentMaster.ATDocQRCode))
+            {
+                fileName = fileName.Replace(".frx", "_QRCode.frx");
+            }
+            string fileUserReportDocumentFinance = $"{PathsSettings.Paths["reports"]}{"UserReports"}\\{fileName}";
+
+            FastReport customReport = new FastReport(fileUserReportDocumentFinance, FILENAME_TEMPLATE_BASE, copyNumbers);
+            customReport.DoublePass = documentMaster.DocumentDetail.Count > 15;
+            customReport.Hash4Chars = hash4Chars;
+            customReport.SetParameterValue("Report_FileName_loggero", GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
+            customReport.SetParameterValue("Report_FileName_loggero_Small", GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
+            //ATCUD Documentos - Criação do QRCode e ATCUD IN016508
+            customReport.SetParameterValue("ATDocQRCodeVisible", GeneralSettings.PreferenceParameters["PRINT_QRCODE"].ToString());
+            customReport.SetParameterValue("ATDocQRCode", documentMaster.ATDocQRCode);
+
+            //Report Parameters
+            //customReport.SetParameterValue("Invoice Noº", 280);
+
+            //Get Result Objects from FRBOHelper
+            ReportList<FinanceMasterViewReport> financeMasters = ReportHelper.GetFinanceMasterViewReports(financeMasterId);
+            //Get Generic Collections From FRBOHelper Results
+            ReportList<FinanceMasterViewReport> gcDocumentFinanceMaster = financeMasters;
+            //Prepare and Enable DataSources
+            customReport.RegisterData(gcDocumentFinanceMaster, "DocumentFinanceMaster");
+
+            /* IN005976 for Mozambique deployment */
+            if (XPOSettings.ConfigurationSystemCountry.Oid.Equals(CultureSettings.MozambiqueCountryId) || ConfigurationManager.AppSettings["cultureFinancialRules"] == "fr-CF")
+            {
+                //if (LogicPOS.Settings.CultureSettings.CurrentCulture.Name.Equals("pt-MZ")){
+                cfg_configurationcurrency defaultCurrencyForExchangeRate =
+                        XPOUtility.GetEntityById<cfg_configurationcurrency>(
+                            CultureSettings.USDCurrencyId,
+                            XPOSettings.Session);
+
+                customReport.SetParameterValue("DefaultCurrencyForExchangeRateAcronym", defaultCurrencyForExchangeRate.Acronym);
+                customReport.SetParameterValue("DefaultCurrencyForExchangeRateTotal", defaultCurrencyForExchangeRate.ExchangeRate);
+                //}
+            }
+
+            if (customReport.GetDataSource("DocumentFinanceMaster") != null) customReport.GetDataSource("DocumentFinanceMaster").Enabled = true;
+            if (customReport.GetDataSource("DocumentFinanceMaster.DocumentFinanceDetail") != null) customReport.GetDataSource("DocumentFinanceMaster.DocumentFinanceDetail").Enabled = true;
+            if (customReport.GetDataSource("DocumentFinanceMaster.DocumentFinanceMasterTotal") != null) customReport.GetDataSource("DocumentFinanceMaster.DocumentFinanceMasterTotal").Enabled = true;
+
+
+            if (XPOSettings.ConfigurationSystemCountry.Oid.Equals(CultureSettings.AngolaCountryId))
+            {
+                if (documentMaster.DocumentParent != null && documentMaster.DocumentType.Oid.ToString() == DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment.ToString())
+                {
+                    documentMaster.Notes += string.Format(
+                        CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_source_document") + ": " + documentMaster.DocumentParent.DocumentNumber);
+                    customReport.SetParameterValue("DocumentFinanceMaster.Notes", documentMaster.Notes);
+                }
+            }
+
+            //Scripts - Dont Delete this Comment, may be usefull if we remove Script from Report File
+            //Print X Records per Data Band
+            //FastReport.DataBand dataBand = (DataBand) customReport.FindObject("Data1");
+            //int dataBandRec = 1;
+            ////Used to Break Page on X Recs, Usefull to leave open space for Report Summary
+            //int dataBandMaxRecs = 30;
+            //dataBand.AfterPrint += delegate {
+            //  Console.WriteLine(string.Format("dataBandRec.RowNo:[{0}], dataBandMaxRecs:[{1}], , dataBand.RowNo[{2}], report.Pages.Count[{3}]", dataBandRec, dataBandMaxRecs, dataBand.RowNo, report.Pages.Count));
+            //  if (dataBandRec == dataBandMaxRecs) { 
+            //    dataBandRec = 1;  
+            //    dataBand.StartNewPage = true; 
+            //  } 
+            //  else 
+            //  { 
+            //    dataBandRec++;
+            //    dataBand.StartNewPage = false; 
+            //  };
+            //};
+
+            //Assign Second Copy Reference
+            _secondCopy = secondCopy;
+
+            int n = customReport.Pages.Count;
+
+            //Add ReportInfo.Name, to be used for Ex in Pdf Filenames, OS etc
+            customReport.ReportInfo.Name = gcDocumentFinanceMaster.List[0].DocumentNumber;
+            string result = customReport.Process(viewMode, destFileName);
+            customReport.Dispose();
+
+            return result;
+
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -691,8 +694,8 @@ namespace LogicPOS.Reporting.Common
 
             string fileFrxFromCulture = string.Format("ReportDocumentFinancePayment_" + currentCulture + ".frx");
             string fileUserReportDocumentFinancePayment = string.Format("{0}{1}\\{2}", PathsSettings.Paths["reports"], "UserReports", fileFrxFromCulture);
-            _logger.Debug("Current Culture: " + currentCulture);
-            CustomReport customReport = new CustomReport(fileUserReportDocumentFinancePayment, FILENAME_TEMPLATE_BASE, pCopyNames);
+
+            FastReport customReport = new FastReport(fileUserReportDocumentFinancePayment, FILENAME_TEMPLATE_BASE, pCopyNames);
 
             //Get Result Objects from FRBOHelper
             ReportList<FinancePaymentViewReport> financePayments = ReportHelper.GetFinancePaymentViewReports(pDocumentFinancePaymentOid);
@@ -720,8 +723,8 @@ namespace LogicPOS.Reporting.Common
         public static void ProcessReportArticle(CustomReportDisplayMode pViewMode)
         {
 
-            string reportFile = GetReportFilePath("ReportArticleList.frx");
-            CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
+            string reportFile = ReportingUtils.GetReportFilePath("ReportArticleList.frx");
+            FastReport customReport = new FastReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
             //Report Parameters
             customReport.SetParameterValue("Report Title", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "report_list_family_subfamily_articles"));
             customReport.SetParameterValue("Report_FileName_loggero", GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
@@ -764,8 +767,8 @@ namespace LogicPOS.Reporting.Common
         // report_label_list_customers : Relatório - Clientes
         public static void ProcessReportCustomer(CustomReportDisplayMode pViewMode)
         {
-            string reportFile = GetReportFilePath("ReportCustomerList.frx");
-            CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
+            string reportFile = ReportingUtils.GetReportFilePath("ReportCustomerList.frx");
+            FastReport customReport = new FastReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
             //Report Parameters
             customReport.SetParameterValue("Report Title", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "report_list_customers"));
             customReport.SetParameterValue("Report_FileName_loggero", GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
@@ -821,8 +824,8 @@ namespace LogicPOS.Reporting.Common
 
         public static void ProcessReportArticleStockMovement(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)
         {
-            string reportFile = GetReportFilePath("ReportArticleStockMovementList.frx");
-            CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
+            string reportFile = ReportingUtils.GetReportFilePath("ReportArticleStockMovementList.frx");
+            FastReport customReport = new FastReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
             //Report Parameters
             customReport.SetParameterValue("Report Title", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "report_list_stock_movements"));
             customReport.SetParameterValue("Report_FileName_loggero", GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
@@ -843,8 +846,8 @@ namespace LogicPOS.Reporting.Common
 
         public static void ProcessReportArticleStockWarehouse(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)
         {
-            string reportFile = GetReportFilePath("ReportArticleStockWarehouseList.frx");
-            CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
+            string reportFile = ReportingUtils.GetReportFilePath("ReportArticleStockWarehouseList.frx");
+            FastReport customReport = new FastReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
             //Report Parameters
             customReport.SetParameterValue("Report Title", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "report_list_stock_warehouse"));
             customReport.SetParameterValue("Report_FileName_loggero", GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
@@ -865,8 +868,8 @@ namespace LogicPOS.Reporting.Common
 
         public static void ProcessReportArticleStock(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)
         {
-            string reportFile = GetReportFilePath("ReportArticleStockList.frx");
-            CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
+            string reportFile = ReportingUtils.GetReportFilePath("ReportArticleStockList.frx");
+            FastReport customReport = new FastReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
             //Report Parameters
             customReport.SetParameterValue("Report Title", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "report_list_stock_article"));
             customReport.SetParameterValue("Report_FileName_loggero", GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
@@ -907,8 +910,8 @@ namespace LogicPOS.Reporting.Common
         public static void ProcessReportArticleStockSupplier(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)
         {
 
-            string reportFile = GetReportFilePath("ReportArticleStockSupplierList.frx");
-            CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
+            string reportFile = ReportingUtils.GetReportFilePath("ReportArticleStockSupplierList.frx");
+            FastReport customReport = new FastReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
             //Report Parameters
             customReport.SetParameterValue("Report Title", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "report_list_stock_supplier"));
             customReport.SetParameterValue("Report_FileName_loggero", GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
@@ -953,8 +956,8 @@ namespace LogicPOS.Reporting.Common
 
         public static void ProcessReportVatSalesResumed(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)
         {
-            string reportFile = GetReportFilePath("ReportDocumentFinanceVatSalesSummary.frx");
-            CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
+            string reportFile = ReportingUtils.GetReportFilePath("ReportDocumentFinanceVatSalesSummary.frx");
+            FastReport customReport = new FastReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
             //Report Parameters
             customReport.SetParameterValue("Report Title", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "report_sales_per_vat"));
             customReport.SetParameterValue("Report_FileName_loggero", GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
@@ -996,8 +999,8 @@ namespace LogicPOS.Reporting.Common
 
         public static void ProcessReportVatSalesByClassResumed(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)
         {
-            string reportFile = GetReportFilePath("ReportDocumentFinanceVatSalesByClassSummary.frx");
-            CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
+            string reportFile = ReportingUtils.GetReportFilePath("ReportDocumentFinanceVatSalesByClassSummary.frx");
+            FastReport customReport = new FastReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
             //Report Parameters
             customReport.SetParameterValue("Report Title", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "report_sales_per_vat_by_article_class"));
             customReport.SetParameterValue("Report_FileName_loggero", GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
@@ -1041,8 +1044,8 @@ namespace LogicPOS.Reporting.Common
 
         public static void ProcessReportSystemAudit(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)
         {
-            string reportFile = GetReportFilePath("ReportSystemAuditList.frx");
-            CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
+            string reportFile = ReportingUtils.GetReportFilePath("ReportSystemAuditList.frx");
+            FastReport customReport = new FastReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
             //Report Parameters
             customReport.SetParameterValue("Report Title", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "report_list_audit_table"));
             customReport.SetParameterValue("Report_FileName_loggero", GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
@@ -1080,8 +1083,8 @@ namespace LogicPOS.Reporting.Common
         /// <param name="filterHumanReadable"></param>
         public static void ProcessReportDocumentFinanceCurrentAccount(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)
         {
-            string reportFile = GetReportFilePath("ReportDocumentFinanceCurrentAccount.frx");
-            CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
+            string reportFile = ReportingUtils.GetReportFilePath("ReportDocumentFinanceCurrentAccount.frx");
+            FastReport customReport = new FastReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
             //Report Parameters
             customReport.SetParameterValue("Report Title", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "report_list_current_account"));
             customReport.SetParameterValue("Report_FileName_loggero", GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
@@ -1120,8 +1123,8 @@ namespace LogicPOS.Reporting.Common
         /// <param name="filterHumanReadable"></param>
         public static void ProcessReportCustomerBalanceDetails(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)
         {
-            string reportFile = GetReportFilePath("ReportDocumentFinanceCustomerBalanceDetails.frx");
-            CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
+            string reportFile = ReportingUtils.GetReportFilePath("ReportDocumentFinanceCustomerBalanceDetails.frx");
+            FastReport customReport = new FastReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
             //Report Parameters
             customReport.SetParameterValue("Report Title", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "report_customer_balance_details"));
             customReport.SetParameterValue("Report_FileName_loggero", GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
@@ -1131,7 +1134,7 @@ namespace LogicPOS.Reporting.Common
 
             //Prepare and Declare FRBOGenericCollections
             ReportList<CustomerBalanceDetailsReport> gcCustomerBalanceDetails = new ReportList<CustomerBalanceDetailsReport>(filter);
-            ReportList<CustomerBalanceSummaryReport> gcCustomerBalanceSummary = new ReportList<CustomerBalanceSummaryReport>();
+            ReportList<CustomerBalanceSummaryReportData> gcCustomerBalanceSummary = new ReportList<CustomerBalanceSummaryReportData>();
             erp_customer customer = null;
             List<erp_customer> customersList = new List<erp_customer>();
             bool printTotalBalance = true;
@@ -1161,7 +1164,7 @@ namespace LogicPOS.Reporting.Common
                 }
             }
             if (customersList.Count > 1) printTotalBalance = false;
-            ReportList<CustomerBalanceSummaryReport> gcCustomerBalanceSummaryTotal = new ReportList<CustomerBalanceSummaryReport>(string.Format("(EntityOid = '{0}')", customer.Oid));
+            ReportList<CustomerBalanceSummaryReportData> gcCustomerBalanceSummaryTotal = new ReportList<CustomerBalanceSummaryReportData>(string.Format("(EntityOid = '{0}')", customer.Oid));
             customReport.SetParameterValue("PrintTotalBalance", printTotalBalance);
             customReport.SetParameterValue("TotalCreditFinal", gcCustomerBalanceSummaryTotal.List[0].TotalCredit);
             customReport.SetParameterValue("TotalDebitFinal", gcCustomerBalanceSummaryTotal.List[0].TotalDebit);
@@ -1184,8 +1187,8 @@ namespace LogicPOS.Reporting.Common
         /// <param name="filterHumanReadable"></param>
         public static void ProcessReportCompanyBilling(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)
         {
-            string reportFile = GetReportFilePath("ReportDocumentFinanceCompanyBilling.frx");
-            CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
+            string reportFile = ReportingUtils.GetReportFilePath("ReportDocumentFinanceCompanyBilling.frx");
+            FastReport customReport = new FastReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
             //Report Parameters
             customReport.SetParameterValue("Report Title", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "report_company_billing"));
             customReport.SetParameterValue("Report_FileName_loggero", GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
@@ -1220,74 +1223,10 @@ namespace LogicPOS.Reporting.Common
             customReport.Dispose();
         }
 
-        /// <summary>
-        /// This method calls the report flow for Customer Balance Summary.
-        /// Pleasee see #IN009010# for further details.
-        /// </summary>
-        /// <param name="pViewMode"></param>
-        /// <param name="filter"></param>
-        /// <param name="filterHumanReadable"></param>
-        public static void ProcessReportCustomerBalanceSummary(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)
-        {
-            string reportFile = GetReportFilePath("ReportDocumentFinanceCustomerBalanceSummary.frx");
-            CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
-            //Report Parameters
-            customReport.SetParameterValue("Report Title", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "report_customer_balance_summary"));
-            customReport.SetParameterValue("Report_FileName_loggero", GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
-            customReport.SetParameterValue("Report_FileName_loggero_Small", GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
-
-            if (!string.IsNullOrEmpty(filterHumanReadable)) customReport.SetParameterValue("Report Filter", filterHumanReadable);
-
-            ReportList<CustomerBalanceSummaryReport> gcCustomerBalanceSummary = new ReportList<CustomerBalanceSummaryReport>(filter);
-            ReportList<CustomerBalanceDetailsReport> gcCustomerBalanceDetails = new ReportList<CustomerBalanceDetailsReport>(filter.Replace("CustomerSinceDate", "Date"));
-
-            // Decrypt Phase
-            if (PluginSettings.HasSoftwareVendorPlugin)
-            {
-                foreach (var customerBalance in gcCustomerBalanceDetails)
-                {
-                    erp_customer customer = null;
-                    if (customerBalance.EntityName != null) customerBalance.EntityName = PluginSettings.SoftwareVendor.Decrypt(customerBalance.EntityName);
-                    if (customerBalance.EntityFiscalNumber != null) customerBalance.EntityFiscalNumber = PluginSettings.SoftwareVendor.Decrypt(customerBalance.EntityFiscalNumber);
-
-                    foreach (var summary in gcCustomerBalanceSummary)
-                    {
-                        if (summary.Oid != null && summary.Oid.Equals(customerBalance.EntityOid))
-                        {
-                            if (!string.IsNullOrEmpty(customerBalance.EntityOid))
-                            {
-                                customer = XPOUtility.GetEntityById<erp_customer>(new Guid(customerBalance.EntityOid));
-                                summary.EntityName = customer.Name;
-                                summary.EntityFiscalNumber = customer.FiscalNumber;
-                            }
-                            else
-                            {
-                                summary.EntityName = "No data";
-                                summary.EntityFiscalNumber = "No data";
-                            }
-                        }
-                    }
-                }
-            }
-
-
-
-            //Prepare and Enable DataSources
-            customReport.RegisterData(gcCustomerBalanceSummary, "CustomerBalanceSummary");
-            if (customReport.GetDataSource("CustomerBalanceSummary") != null)
-            {
-                customReport.GetDataSource("CustomerBalanceSummary").Enabled = true;
-            }
-
-            //customReport.ReportInfo.Name = FILL THIS WITH REPORT NAME;
-            customReport.Process(pViewMode);
-            customReport.Dispose();
-        }
-
         public static void ProcessReportUserCommission(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)
         {
-            string reportFile = GetReportFilePath("ReportUserCommission.frx");
-            CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
+            string reportFile = ReportingUtils.GetReportFilePath("ReportUserCommission.frx");
+            FastReport customReport = new FastReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
             //Report Parameters
             customReport.SetParameterValue("Report Title", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "report_list_user_commission"));
             customReport.SetParameterValue("Report_FileName_loggero", GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
@@ -1325,8 +1264,8 @@ namespace LogicPOS.Reporting.Common
 
         public static void ProcessReportDocumentMasterList(CustomReportDisplayMode pViewMode, string reportTitle, string groupCondition, string groupTitle, string filter, string filterHumanReadable)
         {
-            string reportFile = GetReportFilePath("ReportDocumentFinanceMasterList.frx");
-            CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
+            string reportFile = ReportingUtils.GetReportFilePath("ReportDocumentFinanceMasterList.frx");
+            FastReport customReport = new FastReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
             //Report Parameters
             customReport.SetParameterValue("Report Title", reportTitle);
             customReport.SetParameterValue("Report_FileName_loggero", GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
@@ -1343,7 +1282,7 @@ namespace LogicPOS.Reporting.Common
             }
             else
             {
-                _logger.Error("Error cant find Report Objects");
+                throw new Exception("Error cant find Report Objects");
             }
 
             //Prepare and Declare FRBOGenericCollections
@@ -1421,10 +1360,10 @@ namespace LogicPOS.Reporting.Common
         public static void ProcessReportDocumentDetail(CustomReportDisplayMode pViewMode, string resourceString, string groupField, string groupSelectFields, string groupCondition, string groupTitle, string filter, string filterHumanReadable, bool grouped, bool decryptGroupField = false)
         {
             string reportFile = grouped
-                ? GetReportFilePath("ReportDocumentFinanceDetailGroupList.frx")
-                : GetReportFilePath("ReportDocumentFinanceDetailList.frx")
+                ? ReportingUtils.GetReportFilePath("ReportDocumentFinanceDetailGroupList.frx")
+                : ReportingUtils.GetReportFilePath("ReportDocumentFinanceDetailList.frx")
             ;
-            CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
+            FastReport customReport = new FastReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
 
             // Add PostFix to Report Title 
             Tuple<string, string> tuppleResourceString = GetResourceString(resourceString);
@@ -1454,7 +1393,7 @@ namespace LogicPOS.Reporting.Common
             }
             else
             {
-                _logger.Error("Error cant find Report Objects");
+                throw new Exception("Error cant find Report Objects");
             }
 
             //Prepare and Declare FRBOGenericCollections for non grouped and gouped reports
@@ -1651,8 +1590,8 @@ namespace LogicPOS.Reporting.Common
         public static void ProcessReportBarcodeLabel(CustomReportDisplayMode pViewMode, fin_articleserialnumber pArticleSerialNumber, string pFooter, bool pBigSize, List<fin_articleserialnumber> pListArticleSerialNumber = null)
         {
             string reportFile = !pBigSize
-                   ? GetReportFilePath("BarCodeTemplate_100x50.frx")
-                   : GetReportFilePath("BarCodeTemplate_40x30.frx")
+                   ? ReportingUtils.GetReportFilePath("BarCodeTemplate_100x50.frx")
+                   : ReportingUtils.GetReportFilePath("BarCodeTemplate_40x30.frx")
                ;
 
             //Get template from selected article
@@ -1664,7 +1603,7 @@ namespace LogicPOS.Reporting.Common
             {
                 reportFile = pListArticleSerialNumber[0].Article.TemplateBarCode.FileTemplate.ToString();
             }
-            CustomReport customReport = new CustomReport(reportFile, "", 1);
+            FastReport customReport = new FastReport(reportFile, "", 1);
             if (string.IsNullOrEmpty(pFooter)) pFooter = GeneralSettings.PreferenceParameters["COMPANY_WEBSITE"];
 
             //Report Parameters
@@ -1701,7 +1640,7 @@ namespace LogicPOS.Reporting.Common
 
             dataBand.BeforePrint += delegate
             {
-                var barcodeObject = dataBand.Objects[0] as FastReport.Barcode.BarcodeObject;
+                var barcodeObject = dataBand.Objects[0] as global::FastReport.Barcode.BarcodeObject;
                 barcodeObject.Text = (dataBand.DataSource.CurrentRow as ArticleSerialNumberReport).SerialNumber;
                 barcodeObject.AutoSize = false;
             };
@@ -1753,21 +1692,6 @@ namespace LogicPOS.Reporting.Common
             return result;
         }
 
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-        private static string GetReportFilePath(string fileName)
-        {
-            string result = string.Format("{0}{1}\\{2}", PathsSettings.Paths["reports"], "UserReports", fileName);
-            if (!File.Exists(result))
-            {
-                // Force Exception, Report must Exist else its hard to find errors, dont catch exception
-                throw new Exception(string.Format("Error required File Not Found: [{0}]", fileName));
-            }
-
-            return result;
-        }
-
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         // Shared method to get Common ResourceString for all 3 types of Financial Reports
 
@@ -1807,7 +1731,7 @@ namespace LogicPOS.Reporting.Common
             else
             {
                 resourceString = string.Format("Error: Can't find resourceString:[{0}]", resourceString);
-                _logger.Error(resourceString);
+                throw new Exception(resourceString);
             }
 
             return new Tuple<string, string>(resourceString, resourceStringPostfix);
@@ -1859,14 +1783,9 @@ namespace LogicPOS.Reporting.Common
             if (!string.IsNullOrEmpty(GeneralSettings.Settings["generatePdfDocuments"]))
             {
                 bool generatePdfDocuments = false;
-                try
-                {
-                    generatePdfDocuments = Convert.ToBoolean(GeneralSettings.Settings["generatePdfDocuments"]);
-                }
-                catch (Exception ex)
-                {
-                    _logger.Error(ex.Message, ex);
-                }
+
+                generatePdfDocuments = Convert.ToBoolean(GeneralSettings.Settings["generatePdfDocuments"]);
+
 
                 if (generatePdfDocuments)
                 {
@@ -1904,14 +1823,9 @@ namespace LogicPOS.Reporting.Common
             if (!string.IsNullOrEmpty(GeneralSettings.Settings["generatePdfDocuments"]))
             {
                 bool generatePdfDocuments = false;
-                try
-                {
-                    generatePdfDocuments = Convert.ToBoolean(GeneralSettings.Settings["generatePdfDocuments"]);
-                }
-                catch (Exception ex)
-                {
-                    _logger.Error(ex.Message, ex);
-                }
+
+                generatePdfDocuments = Convert.ToBoolean(GeneralSettings.Settings["generatePdfDocuments"]);
+
 
                 if (generatePdfDocuments)
                 {

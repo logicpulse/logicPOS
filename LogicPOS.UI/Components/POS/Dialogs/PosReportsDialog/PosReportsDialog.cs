@@ -142,7 +142,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             }
 
                             // Get common resource for all 3 types of Financial Reports
-                            Tuple<string, string> tuppleResourceString = CustomReport.GetResourceString(report.ResourceString);
+                            Tuple<string, string> tuppleResourceString = LogicPOS.Reporting.Common.FastReport.GetResourceString(report.ResourceString);
                             buttonLabelString = tuppleResourceString.Item1;
                             buttoLabelPostfix = tuppleResourceString.Item2;
 

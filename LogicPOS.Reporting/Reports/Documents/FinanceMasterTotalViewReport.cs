@@ -4,7 +4,7 @@ using LogicPOS.Reporting.Common;
 namespace LogicPOS.Reporting.Reports.Documents
 {
     [Report(Entity = "view_documentfinancemastertotal")]
-    public class FinanceMasterTotalViewReport : ReportBase
+    public class FinanceMasterTotalViewReport : ReportData
     {
         [Report(Field = "fmtOid", Hide = true)]
         override public string Oid { get; set; }                //fmtOid AS Oid,  

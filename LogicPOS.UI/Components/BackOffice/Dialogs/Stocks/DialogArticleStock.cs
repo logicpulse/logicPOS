@@ -285,7 +285,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 var selecteRow = _treeViewXPO_StockMov.DataSourceRow as fin_articlestock;
                 if (selecteRow != null && selecteRow.DocumentMaster != null)
                 {
-                    var fileToOpen = CustomReport.GenerateDocumentFinanceMasterPDFIfNotExists(selecteRow.DocumentMaster);
+                    var fileToOpen = LogicPOS.Reporting.Common.FastReport.GenerateDocumentFinanceMasterPDFIfNotExists(selecteRow.DocumentMaster);
 
                     if (File.Exists(fileToOpen))
                     {
@@ -348,11 +348,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 var selectedRow = _treeViewXPO_ArticleHistory.DataSourceRow as fin_articleserialnumber;
                 if (_listArticleserialnumbers.Count > 1)
                 {
-                    CustomReport.ProcessReportBarcodeLabel(shared.Enums.CustomReportDisplayMode.Print, selectedRow, "", true, _listArticleserialnumbers);
+                    LogicPOS.Reporting.Common.FastReport.ProcessReportBarcodeLabel(shared.Enums.CustomReportDisplayMode.Print, selectedRow, "", true, _listArticleserialnumbers);
                 }
                 else
                 {
-                    CustomReport.ProcessReportBarcodeLabel(shared.Enums.CustomReportDisplayMode.Print, selectedRow, "", true);
+                    LogicPOS.Reporting.Common.FastReport.ProcessReportBarcodeLabel(shared.Enums.CustomReportDisplayMode.Print, selectedRow, "", true);
                 }
                 _treeViewXPO_ArticleHistory.Refresh();
                 _listArticleserialnumbers.Clear();
@@ -745,7 +745,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 var selecteRow = _treeViewXPO_ArticleHistory.DataSourceRow as fin_articleserialnumber;
                 if (selecteRow.StockMovimentOut != null && selecteRow.StockMovimentOut.DocumentMaster != null)
                 {
-                    var fileToOpen = CustomReport.GenerateDocumentFinanceMasterPDFIfNotExists(selecteRow.StockMovimentOut.DocumentMaster);
+                    var fileToOpen = LogicPOS.Reporting.Common.FastReport.GenerateDocumentFinanceMasterPDFIfNotExists(selecteRow.StockMovimentOut.DocumentMaster);
 
                     if (File.Exists(fileToOpen))
                     {

@@ -3,7 +3,7 @@
 namespace LogicPOS.Reporting.Reports.Customers
 {
     [Report(Entity = "erp_customer")]
-    public class CustomerReport : ReportBase
+    public class CustomerReport : ReportData
     {
         public uint Ord { get; set; }
         public uint Code { get; set; }

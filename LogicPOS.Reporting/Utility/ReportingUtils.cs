@@ -5,11 +5,12 @@ using LogicPOS.Settings;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 
-namespace LogicPOS.Reporting.Common
+namespace LogicPOS.Reporting.Utility
 {
-    public static class CustomFunctions
+    public static class ReportingUtils
     {
         //Log4Net
         private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
@@ -28,7 +29,7 @@ namespace LogicPOS.Reporting.Common
         {
             RegisteredObjects.AddFunctionCategory("Custom", "Custom Functions");
 
-            Type customFuncType = typeof(CustomFunctions);
+            Type customFuncType = typeof(ReportingUtils);
 
             var getResourceMethodName = nameof(ResourcesUtility.GetResourceByName);
             MethodInfo getResourceFunction = typeof(ResourcesUtility).GetMethod(getResourceMethodName, new Type[] { typeof(string) });
@@ -241,6 +242,18 @@ namespace LogicPOS.Reporting.Common
                 _logger.Error(ex.Message, ex);
                 return "ERROR";
             }
+        }
+
+        public static string GetReportFilePath(string reportFileName)
+        {
+            string fileLocation = $"{PathsSettings.Paths["reports"]}{"UserReports"}\\{reportFileName}";
+
+            if (!File.Exists(fileLocation))
+            {
+                throw new FileNotFoundException($"Report File Not Found: {fileLocation}");
+            }
+
+            return fileLocation;
         }
     }
 }

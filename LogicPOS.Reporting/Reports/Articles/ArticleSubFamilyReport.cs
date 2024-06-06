@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace LogicPOS.Reporting.Reports.Articles
 {
     [Report(Entity = "fin_articlesubfamily")]
-    public class ArticleSubFamilyReport : ReportBase
+    public class ArticleSubFamilyReport : ReportData
     {
         public uint Ord { get; set; }
         public uint Code { get; set; }

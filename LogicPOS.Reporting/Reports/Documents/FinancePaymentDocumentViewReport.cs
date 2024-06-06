@@ -44,7 +44,7 @@ using LogicPOS.Reporting.Common;
 namespace LogicPOS.Reporting.Reports.Documents
 {
     [Report(Entity = "view_documentfinancepayment")]
-    public class FinancePaymentDocumentViewReport : ReportBase
+    public class FinancePaymentDocumentViewReport : ReportData
     {
         [Report(Field = "fpaOid", Hide = true)]
         override public string Oid { get; set; }                                        //fpaOid AS Oid,  

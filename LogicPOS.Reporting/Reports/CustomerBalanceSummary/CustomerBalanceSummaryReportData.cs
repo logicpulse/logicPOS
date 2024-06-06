@@ -16,11 +16,11 @@ VIEW
 using LogicPOS.Reporting.Common;
 using System;
 
-namespace LogicPOS.Reporting.Reports.Documents
+namespace LogicPOS.Reporting.Reports.CustomerBalanceSummary
 {
     /* IN008018 and IN009010 */
     [Report(Entity = "view_documentfinancecustomerbalancesummary")]
-    internal class CustomerBalanceSummaryReport : ReportBase
+    internal class CustomerBalanceSummaryReportData : ReportData
     {
         [Report(Field = "EntityOid")]
         //Primary Oid (Required)
