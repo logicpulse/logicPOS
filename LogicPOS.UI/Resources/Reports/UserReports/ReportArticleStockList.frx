@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<inherited BaseReport="TemplateBaseSimple.frx" ScriptLanguage="CSharp" ReferencedAssemblies="System.dll&#13;&#10;System.Drawing.dll&#13;&#10;System.Windows.Forms.dll&#13;&#10;System.Data.dll&#13;&#10;System.Xml.dll&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe" ReportInfo.Name="FT FT001012016S01/1" ReportInfo.Author="logicPos v1.0.0.0" ReportInfo.Created="12/31/2014 10:16:52" ReportInfo.Modified="04/07/2021 16:20:21" ReportInfo.CreatorVersion="2019.4.4.0" PrintSettings.CopyNames="Original">
+<inherited BaseReport="TemplateBaseSimple.frx" ScriptLanguage="CSharp" ReferencedAssemblies="netstandard.dll&#13;&#10;System.dll&#13;&#10;System.Drawing.dll&#13;&#10;System.Windows.Forms.dll&#13;&#10;System.Data.dll&#13;&#10;System.Xml.dll&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe" ReportInfo.Name="FT FT001012016S01/1" ReportInfo.Author="logicPos v1.0.0.0" ReportInfo.Created="12/31/2014 10:16:52" ReportInfo.Modified="04/07/2021 16:20:21" ReportInfo.CreatorVersion="2019.4.4.0" PrintSettings.CopyNames="Original">
   <Styles>
     <Style Name="EvenRow" Border.Lines="Bottom" Border.TopLine.Color="Gainsboro" Border.BottomLine.Color="Gainsboro" Fill.Color="WhiteSmoke" Font="Arial, 10pt" ApplyBorder="false" ApplyTextFill="false" ApplyFont="false"/>
     <Style Name="BoxBorder" Border.Lines="All" Border.Color="Silver" Fill="Glass" Fill.Color="WhiteSmoke" Fill.Blend="0.2" Fill.Hatch="true" Font="Arial, 15.75pt" ApplyBorder="false" ApplyFill="false" ApplyTextFill="false" ApplyFont="false"/>
@@ -71,18 +71,18 @@
           </Highlight>
         </TextObject>
         <DataHeaderBand Name="DataHeader1" Top="99.07" Width="718.2" Height="28.35" Border.Lines="Top">
-          <TextObject Name="Text26" Top="9.45" Width="85.05" Height="18.9" Text="[Res(&quot;global_article_code&quot;)]" HorzAlign="Right" VertAlign="Bottom" Style="DataFontBold"/>
-          <TextObject Name="Text27" Left="633.15" Top="9.45" Width="85.05" Height="18.9" Text="[Res(&quot;global_total_stock&quot;)]" HorzAlign="Right" VertAlign="Bottom" Style="DataFontBold"/>
-          <TextObject Name="Text30" Left="85.05" Top="9.45" Width="217.35" Height="18.9" Text="[Res(&quot;global_designation&quot;)]" VertAlign="Bottom" Style="DataFontBold"/>
-          <TextObject Name="Text32" Left="529.2" Top="9.45" Width="94.5" Height="18.9" Text="[Res(&quot;global_minimum_stock&quot;)]" VertAlign="Bottom" Style="DataFontBold"/>
-          <TextObject Name="Text34" Left="311.85" Top="9.45" Width="198.45" Height="18.9" Text="[Res(&quot;global_article_subfamily&quot;)]" VertAlign="Bottom" Style="DataFontBold"/>
+          <TextObject Name="Text26" Top="9.45" Width="85.05" Height="18.9" Text="[GetResourceByName(&quot;global_article_code&quot;)]" HorzAlign="Right" VertAlign="Bottom" Style="DataFontBold"/>
+          <TextObject Name="Text27" Left="633.15" Top="9.45" Width="85.05" Height="18.9" Text="[GetResourceByName(&quot;global_total_stock&quot;)]" HorzAlign="Right" VertAlign="Bottom" Style="DataFontBold"/>
+          <TextObject Name="Text30" Left="85.05" Top="9.45" Width="217.35" Height="18.9" Text="[GetResourceByName(&quot;global_designation&quot;)]" VertAlign="Bottom" Style="DataFontBold"/>
+          <TextObject Name="Text32" Left="529.2" Top="9.45" Width="94.5" Height="18.9" Text="[GetResourceByName(&quot;global_minimum_stock&quot;)]" VertAlign="Bottom" Style="DataFontBold"/>
+          <TextObject Name="Text34" Left="311.85" Top="9.45" Width="198.45" Height="18.9" Text="[GetResourceByName(&quot;global_article_subfamily&quot;)]" VertAlign="Bottom" Style="DataFontBold"/>
         </DataHeaderBand>
         <Sort>
           <Sort Expression="[ArticleStock.ArticleFamilyOrd]"/>
         </Sort>
       </DataBand>
       <GroupFooterBand Name="GroupFooter1" Top="150.89" Width="718.2" Height="18.9">
-        <TextObject Name="Text29" Width="718.2" Height="18.9" Text="[Res(&quot;global_record_count&quot;)] : [DataSum]&#13;&#10;" HorzAlign="Right" VertAlign="Center" Wysiwyg="true" Style="DataFontBold"/>
+        <TextObject Name="Text29" Width="718.2" Height="18.9" Text="[GetResourceByName(&quot;global_record_count&quot;)] : [DataSum]&#13;&#10;" HorzAlign="Right" VertAlign="Center" Wysiwyg="true" Style="DataFontBold"/>
       </GroupFooterBand>
     </GroupHeaderBand>
     <inherited Name="PageFooter1" Top="172.08">

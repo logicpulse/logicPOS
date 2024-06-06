@@ -23,26 +23,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
     {
         public static CustomReportDisplayMode exportType;
 
-        // Test Document Report
-        private void TestDocumentReport()
-        {
-            Guid docOid = new Guid("6d44b0a8-6450-4245-b4ee-a6e971f4bcec");
-            fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)XPOSettings.Session.GetObjectByKey(typeof(fin_documentfinancemaster), docOid);
-            if (documentFinanceMaster != null)
-            {
-                //Generate Default CopyNames from DocumentType
-                List<int> copyNames = CustomReport.CopyNames(documentFinanceMaster.DocumentType.PrintCopies);
-                string hash4Chars = CryptographyUtils.GetDocumentHash4Chars(documentFinanceMaster.Hash);
-                string destinationFileName = "";
-                string result = CustomReport.ProcessReportFinanceDocument(CustomReportDisplayMode.Design, documentFinanceMaster.Oid, hash4Chars, copyNames, destinationFileName);
-                _logger.Debug(string.Format("Result: [{0}]", result));
-            }
-            else
-            {
-                _logger.Debug(string.Format("Null Document Found for documentType: [{0}]", nameof(fin_documentfinancemaster), docOid.ToString()));
-            }
-        }
-
         private void buttonReportUnderConstruction_Clicked(object sender, EventArgs e)
         {
             logicpos.Utils.ShowMessageUnderConstruction();
@@ -107,7 +87,9 @@ OR
 
             return result;
         }
-        public Type senderType;
+        
+        public Type SenderType { get; set; }
+
         public void PrintReportRouter(object sender, EventArgs e)
         {
 
@@ -119,9 +101,9 @@ OR
 
             dynamic button;
 
-            senderType = sender.GetType();
+            SenderType = sender.GetType();
 
-            if (senderType.Name == "AccordionChildButton")
+            if (SenderType.Name == "AccordionChildButton")
             {
                 button = (sender as AccordionChildButton);
             }
@@ -134,53 +116,53 @@ OR
             //_logger.Debug(String.Format("Button.Name: [{0}], Button.label: [{1}]", button.Name, button.Label));
 
             // Get Token From buttonName
-            ReportsTypeToken token = (ReportsTypeToken)Enum.Parse(typeof(ReportsTypeToken), button.Name, true);
-            _logger.Debug("void PrintReportRouter(object sender, EventArgs e) :: ReportsTypeToken: " + token.ToString());
+            ReportsTypeToken reportToken = (ReportsTypeToken)Enum.Parse(typeof(ReportsTypeToken), button.Name, true);
+            _logger.Debug("void PrintReportRouter(object sender, EventArgs e) :: ReportsTypeToken: " + reportToken.ToString());
             //TK016249 - Impressoras - Diferenciação entre Tipos
             PrintingSettings.ThermalPrinter.UsingThermalPrinter = true;
             // Prepare ReportsQueryDialogMode
             //Titulo nas janelas de filtro de relatório [IN:014328]
             ReportsQueryDialogMode reportsQueryDialogMode = ReportsQueryDialogMode.UNDEFINED;
             // Catch REPORT_SALES_DETAIL_* and REPORT_SALES_DETAIL_GROUP_* use same View
-            if (token.ToString().StartsWith("REPORT_SALES_DETAIL_"))
+            if (reportToken.ToString().StartsWith("REPORT_SALES_DETAIL_"))
             {
-                if (token.ToString() == "REPORT_SALES_DETAIL_PER_FINANCE_DOCUMENT")
+                if (reportToken.ToString() == "REPORT_SALES_DETAIL_PER_FINANCE_DOCUMENT")
                 {
                     this._windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "report_sales_per_finance_document") + CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "report_sales_detail_postfix");
                 }
-                else if (token.ToString() == "REPORT_SALES_DETAIL_PER_DATE")
+                else if (reportToken.ToString() == "REPORT_SALES_DETAIL_PER_DATE")
                 {
                     this._windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "report_sales_per_date") + CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "report_sales_detail_postfix");
                 }
-                else if (token.ToString() == "REPORT_SALES_DETAIL_PER_USER")
+                else if (reportToken.ToString() == "REPORT_SALES_DETAIL_PER_USER")
                 {
                     this._windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "report_sales_per_user") + CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "report_sales_detail_postfix");
                 }
-                else if (token.ToString() == "REPORT_SALES_DETAIL_PER_TERMINAL")
+                else if (reportToken.ToString() == "REPORT_SALES_DETAIL_PER_TERMINAL")
                 {
                     this._windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "report_sales_per_terminal") + CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "report_sales_detail_postfix");
                 }
-                else if (token.ToString() == "REPORT_SALES_DETAIL_PER_CUSTOMER")
+                else if (reportToken.ToString() == "REPORT_SALES_DETAIL_PER_CUSTOMER")
                 {
                     this._windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "report_sales_per_customer") + CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "report_sales_detail_postfix");
                 }
-                else if (token.ToString() == "REPORT_SALES_DETAIL_PER_PAYMENT_METHOD")
+                else if (reportToken.ToString() == "REPORT_SALES_DETAIL_PER_PAYMENT_METHOD")
                 {
                     this._windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "report_sales_per_payment_method") + CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "report_sales_detail_postfix");
                 }
-                else if (token.ToString() == "REPORT_SALES_DETAIL_PER_PAYMENT_CONDITION")
+                else if (reportToken.ToString() == "REPORT_SALES_DETAIL_PER_PAYMENT_CONDITION")
                 {
                     this._windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "report_sales_per_payment_condition") + CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "report_sales_detail_postfix");
                 }
-                else if (token.ToString() == "REPORT_SALES_DETAIL_PER_CURRENCY")
+                else if (reportToken.ToString() == "REPORT_SALES_DETAIL_PER_CURRENCY")
                 {
                     this._windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "report_sales_per_currency") + CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "report_sales_detail_postfix");
                 }
-                else if (token.ToString() == "REPORT_SALES_DETAIL_PER_COUNTRY")
+                else if (reportToken.ToString() == "REPORT_SALES_DETAIL_PER_COUNTRY")
                 {
                     this._windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "report_sales_per_country") + CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "report_sales_detail_postfix");
                 }
-                else if (token.ToString() == "REPORT_SALES_DETAIL_GROUP_PER_VAT" || token.ToString() == "REPORT_SALES_PER_VAT")
+                else if (reportToken.ToString() == "REPORT_SALES_DETAIL_GROUP_PER_VAT" || reportToken.ToString() == "REPORT_SALES_PER_VAT")
                 {
                     this._windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "report_sales_per_vat");
                     reportsQueryDialogMode = ReportsQueryDialogMode.FINANCIAL_DETAIL_VAT;
@@ -191,49 +173,49 @@ OR
                 if (reportsQueryDialogMode == ReportsQueryDialogMode.UNDEFINED) reportsQueryDialogMode = ReportsQueryDialogMode.FINANCIAL_DETAIL;
                 databaseSourceObject = "view_documentfinance";
             }
-            else if (token.ToString() == "REPORT_SALES_PER_VAT" || token.ToString() == "REPORT_SALES_PER_VAT_BY_ARTICLE_CLASS")
+            else if (reportToken.ToString() == "REPORT_SALES_PER_VAT" || reportToken.ToString() == "REPORT_SALES_PER_VAT_BY_ARTICLE_CLASS")
             {
                 this._windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "report_sales_per_vat");
                 reportsQueryDialogMode = ReportsQueryDialogMode.FINANCIAL_DETAIL_VAT;
                 databaseSourceObject = "view_documentfinance";
             }
 
-            else if (token.ToString().StartsWith("REPORT_SALES_"))
+            else if (reportToken.ToString().StartsWith("REPORT_SALES_"))
             {
-                if (token.ToString() == "REPORT_SALES_PER_FINANCE_DOCUMENT")
+                if (reportToken.ToString() == "REPORT_SALES_PER_FINANCE_DOCUMENT")
                 {
                     this._windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "report_sales_per_finance_document");
                 }
-                else if (token.ToString() == "REPORT_SALES_PER_DATE")
+                else if (reportToken.ToString() == "REPORT_SALES_PER_DATE")
                 {
                     this._windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "report_sales_per_date");
                 }
 
-                else if (token.ToString() == "REPORT_SALES_PER_USER")
+                else if (reportToken.ToString() == "REPORT_SALES_PER_USER")
                 {
                     this._windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "report_sales_per_user");
                 }
-                else if (token.ToString() == "REPORT_SALES_PER_TERMINAL")
+                else if (reportToken.ToString() == "REPORT_SALES_PER_TERMINAL")
                 {
                     this._windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "report_sales_per_terminal");
                 }
-                else if (token.ToString() == "REPORT_SALES_PER_CUSTOMER")
+                else if (reportToken.ToString() == "REPORT_SALES_PER_CUSTOMER")
                 {
                     this._windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "report_sales_per_customer");
                 }
-                else if (token.ToString() == "REPORT_SALES_PER_PAYMENT_METHOD")
+                else if (reportToken.ToString() == "REPORT_SALES_PER_PAYMENT_METHOD")
                 {
                     this._windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "report_sales_per_payment_method");
                 }
-                else if (token.ToString() == "REPORT_SALES_PER_PAYMENT_CONDITION")
+                else if (reportToken.ToString() == "REPORT_SALES_PER_PAYMENT_CONDITION")
                 {
                     this._windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "report_sales_per_payment_condition");
                 }
-                else if (token.ToString() == "REPORT_SALES_PER_CURRENCY")
+                else if (reportToken.ToString() == "REPORT_SALES_PER_CURRENCY")
                 {
                     this._windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "report_sales_per_currency");
                 }
-                else if (token.ToString() == "REPORT_SALES_PER_COUNTRY")
+                else if (reportToken.ToString() == "REPORT_SALES_PER_COUNTRY")
                 {
                     this._windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "report_sales_per_country");
                 }
@@ -242,65 +224,65 @@ OR
                 reportsQueryDialogMode = ReportsQueryDialogMode.FINANCIAL;
                 databaseSourceObject = "fin_documentfinancemaster";
             }
-            else if (token.ToString().Equals("REPORT_LIST_AUDIT_TABLE"))
+            else if (reportToken.ToString().Equals("REPORT_LIST_AUDIT_TABLE"))
             {
                 this._windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "report_list_audit_table");
                 reportsQueryDialogMode = ReportsQueryDialogMode.SYSTEM_AUDIT;
                 databaseSourceObject = "view_systemaudit";
             }
-            else if (token.ToString().Equals("REPORT_LIST_CURRENT_ACCOUNT"))
+            else if (reportToken.ToString().Equals("REPORT_LIST_CURRENT_ACCOUNT"))
             {
                 this._windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "report_customer_balance_details");
                 reportsQueryDialogMode = ReportsQueryDialogMode.CURRENT_ACCOUNT;
                 databaseSourceObject = "view_documentfinancecurrentaccount";
             }
             /* IN008018 */
-            else if (token.ToString().Equals("REPORT_CUSTOMER_BALANCE_DETAILS"))
+            else if (reportToken.ToString().Equals("REPORT_CUSTOMER_BALANCE_DETAILS"))
             {
                 this._windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "report_customer_balance_summary");
                 reportsQueryDialogMode = ReportsQueryDialogMode.CUSTOMER_BALANCE_DETAILS;
                 databaseSourceObject = "view_documentfinancecustomerbalancedetails";
             }
             /* IN009010 */
-            else if (token.ToString().Equals("REPORT_CUSTOMER_BALANCE_SUMMARY"))
+            else if (reportToken.ToString().Equals("REPORT_CUSTOMER_BALANCE_SUMMARY"))
             {
                 this._windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "report_customer_balance_details");
                 reportsQueryDialogMode = ReportsQueryDialogMode.CUSTOMER_BALANCE_SUMMARY;
                 databaseSourceObject = "view_documentfinancecustomerbalancesummary";
             }
             /* IN009204 - based on CUSTOMER_BALANCE_DETAILS report */
-            else if (token.ToString().Equals("REPORT_COMPANY_BILLING"))
+            else if (reportToken.ToString().Equals("REPORT_COMPANY_BILLING"))
             {
                 this._windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "report_company_billing");
                 reportsQueryDialogMode = ReportsQueryDialogMode.COMPANY_BILLING;
                 databaseSourceObject = "view_documentfinancecustomerbalancedetails";
             }
-            else if (token.ToString().Equals("REPORT_LIST_USER_COMMISSION"))
+            else if (reportToken.ToString().Equals("REPORT_LIST_USER_COMMISSION"))
             {
                 this._windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "report_list_user_commission");
                 reportsQueryDialogMode = ReportsQueryDialogMode.USER_COMMISSION;
                 databaseSourceObject = "view_usercommission";
             }
             //Stock Reports
-            else if (token.ToString().Equals("REPORT_LIST_STOCK_MOVEMENTS"))
+            else if (reportToken.ToString().Equals("REPORT_LIST_STOCK_MOVEMENTS"))
             {
                 this._windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "report_list_stock_movements");
                 reportsQueryDialogMode = ReportsQueryDialogMode.ARTICLE_STOCK_MOVEMENTS;
                 databaseSourceObject = "view_articlestockmovement";
             }
-            else if (token.ToString().Equals("REPORT_LIST_STOCK_WAREHOUSE"))
+            else if (reportToken.ToString().Equals("REPORT_LIST_STOCK_WAREHOUSE"))
             {
                 this._windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "report_list_stock_warehouse");
                 reportsQueryDialogMode = ReportsQueryDialogMode.FILTER_ARTICLE_WAREHOUSE;
                 databaseSourceObject = "view_articlestockwarehouse";
             }
-            else if (token.ToString().Equals("REPORT_LIST_STOCK_ARTICLE"))
+            else if (reportToken.ToString().Equals("REPORT_LIST_STOCK_ARTICLE"))
             {
                 this._windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "report_list_stock_article");
                 reportsQueryDialogMode = ReportsQueryDialogMode.FILTER_ARTICLE_STOCK;
                 databaseSourceObject = "view_articlestock";
             }
-            else if (token.ToString().Equals("REPORT_LIST_STOCK_SUPPLIER"))
+            else if (reportToken.ToString().Equals("REPORT_LIST_STOCK_SUPPLIER"))
             {
                 this._windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "report_list_stock_supplier");
                 reportsQueryDialogMode = ReportsQueryDialogMode.FILTER_ARTICLE_STOCK_SUPPLIER;
@@ -334,11 +316,11 @@ OR
                 //    : CustomReportDisplayMode.ExportPDF;
                 // Now we have two types of export according the Button response
                 CustomReportDisplayMode displayMode = exportType;
-                switch (token)
+                switch (reportToken)
                 {
                     case ReportsTypeToken.REPORT_SALES_PER_FINANCE_DOCUMENT:
                         CustomReport.ProcessReportDocumentMasterList(displayMode
-                            , CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, token.ToString().ToLower())
+                            , CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, reportToken.ToString().ToLower())
                             , "[DocumentFinanceMaster.DocumentType.Ord]"
                             , "([DocumentFinanceMaster.DocumentType.Code]) [DocumentFinanceMaster.DocumentType.Designation]",/* IN009066 */
                             reportFilter,
@@ -347,7 +329,7 @@ OR
                         break;
                     case ReportsTypeToken.REPORT_SALES_PER_DATE:
                         CustomReport.ProcessReportDocumentMasterList(displayMode
-                            , CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, token.ToString().ToLower())
+                            , CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, reportToken.ToString().ToLower())
                             , "[DocumentFinanceMaster.DocumentDate]"
                             , "[DocumentFinanceMaster.DocumentDate]",
                             reportFilter,
@@ -357,7 +339,7 @@ OR
                         break;
                     case ReportsTypeToken.REPORT_SALES_PER_USER:
                         CustomReport.ProcessReportDocumentMasterList(displayMode
-                            , CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, token.ToString().ToLower())
+                            , CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, reportToken.ToString().ToLower())
                             , "[DocumentFinanceMaster.CreatedBy.Ord]"
                             , "([DocumentFinanceMaster.CreatedBy.Code]) [DocumentFinanceMaster.CreatedBy.Name]",/* IN009066 */
                             reportFilter,
@@ -366,7 +348,7 @@ OR
                         break;
                     case ReportsTypeToken.REPORT_SALES_PER_TERMINAL:
                         CustomReport.ProcessReportDocumentMasterList(displayMode
-                            , CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, token.ToString().ToLower())
+                            , CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, reportToken.ToString().ToLower())
                             , "[DocumentFinanceMaster.CreatedWhere.Ord]"
                             , "([DocumentFinanceMaster.CreatedWhere.Code]) [DocumentFinanceMaster.CreatedWhere.Designation]",/* IN009066 */
                             reportFilter,
@@ -375,7 +357,7 @@ OR
                         break;
                     case ReportsTypeToken.REPORT_SALES_PER_CUSTOMER:
                         CustomReport.ProcessReportDocumentMasterList(displayMode
-                            , CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, token.ToString().ToLower())
+                            , CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, reportToken.ToString().ToLower())
                             , "[DocumentFinanceMaster.EntityFiscalNumber]"
                             , "[DocumentFinanceMaster.EntityFiscalNumber] / [DocumentFinanceMaster.EntityName]",/* IN009066 */
                             reportFilter,
@@ -384,7 +366,7 @@ OR
                         break;
                     case ReportsTypeToken.REPORT_SALES_PER_PAYMENT_METHOD:
                         CustomReport.ProcessReportDocumentMasterList(displayMode
-                            , CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, token.ToString().ToLower())
+                            , CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, reportToken.ToString().ToLower())
                             , "[DocumentFinanceMaster.PaymentMethod.Ord]"
                             , "([DocumentFinanceMaster.PaymentMethod.Code]) [DocumentFinanceMaster.PaymentMethod.Designation]",/* IN009066 - Duplicate of REPORT_SALES_PER_PAYMENT_CONDITION */
                             /* IN009066 - Faturas and Notas de Crédito were not in this report, because they have no Payment Method. Now the issue is fixed */
@@ -397,7 +379,7 @@ OR
                         break;
                     case ReportsTypeToken.REPORT_SALES_PER_PAYMENT_CONDITION:
                         CustomReport.ProcessReportDocumentMasterList(displayMode
-                            , CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, token.ToString().ToLower())
+                            , CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, reportToken.ToString().ToLower())
                             , "[DocumentFinanceMaster.PaymentCondition.Ord]"
                             , "([DocumentFinanceMaster.PaymentCondition.Code]) [DocumentFinanceMaster.PaymentCondition.Designation]",/* IN009066 */
                             /* IN009066 - Faturas Simplificadas and Notas de Crédito were not in this report, because they have no Payment Condition. Now the issue is fixed */
@@ -410,7 +392,7 @@ OR
                         break;
                     case ReportsTypeToken.REPORT_SALES_PER_CURRENCY:
                         CustomReport.ProcessReportDocumentMasterList(displayMode
-                            , CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, token.ToString().ToLower())
+                            , CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, reportToken.ToString().ToLower())
                             , "[DocumentFinanceMaster.Currency.Ord]"
                             , "([DocumentFinanceMaster.Currency.Code]) [DocumentFinanceMaster.Currency.Designation]",/* IN009066 */
                             /* IN009066 - Faturas Simplificadas and Notas de Crédito were not in this report, because they have no Payment Condition. Now the issue is fixed */
@@ -423,7 +405,7 @@ OR
                         break;
                     case ReportsTypeToken.REPORT_SALES_PER_COUNTRY:
                         CustomReport.ProcessReportDocumentMasterList(displayMode
-                            , CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, token.ToString().ToLower())
+                            , CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, reportToken.ToString().ToLower())
                             , "[DocumentFinanceMaster.EntityCountry]"
                             , "[DocumentFinanceMaster.EntityCountry]",
                             reportFilter,
@@ -436,7 +418,7 @@ OR
 
                     case ReportsTypeToken.REPORT_SALES_DETAIL_PER_FINANCE_DOCUMENT:
                         CustomReport.ProcessReportDocumentDetail(displayMode
-                            , token.ToString().ToLower()
+                            , reportToken.ToString().ToLower()
                             , "[DocumentFinanceDetail.DocumentTypeOrd]"
                             , "([DocumentFinanceDetail.DocumentTypeCode]) [DocumentFinanceDetail.DocumentTypeDesignation]",/* IN009066 */
                             reportFilter,
@@ -445,7 +427,7 @@ OR
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_PER_DATE:
                         CustomReport.ProcessReportDocumentDetail(displayMode
-                            , token.ToString().ToLower()
+                            , reportToken.ToString().ToLower()
                             , "[DocumentFinanceDetail.DocumentDate]"
                             , "[DocumentFinanceDetail.DocumentDate]",
                             reportFilter,
@@ -454,7 +436,7 @@ OR
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_PER_USER:
                         CustomReport.ProcessReportDocumentDetail(displayMode
-                            , token.ToString().ToLower()
+                            , reportToken.ToString().ToLower()
                             , "[DocumentFinanceDetail.UserDetailOrd]"
                             , "([DocumentFinanceDetail.UserDetailCode]) [DocumentFinanceDetail.UserDetailName]",/* IN009066 */
                             reportFilter,
@@ -463,7 +445,7 @@ OR
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_PER_TERMINAL:
                         CustomReport.ProcessReportDocumentDetail(displayMode
-                            , token.ToString().ToLower()
+                            , reportToken.ToString().ToLower()
                             , "[DocumentFinanceDetail.TerminalOrd]"
                             , "([DocumentFinanceDetail.TerminalCode]) [DocumentFinanceDetail.TerminalDesignation]",/* IN009066 */
                             reportFilter,
@@ -472,7 +454,7 @@ OR
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_PER_CUSTOMER:
                         CustomReport.ProcessReportDocumentDetail(displayMode
-                            , token.ToString().ToLower()
+                            , reportToken.ToString().ToLower()
                             , "[DocumentFinanceDetail.EntityFiscalNumber]"
                             , "[DocumentFinanceDetail.EntityFiscalNumber] / [DocumentFinanceDetail.EntityName]",/* IN009066 */
                             reportFilter,
@@ -481,7 +463,7 @@ OR
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_PER_PAYMENT_METHOD:
                         CustomReport.ProcessReportDocumentDetail(displayMode
-                            , token.ToString().ToLower()
+                            , reportToken.ToString().ToLower()
                             , "[DocumentFinanceDetail.PaymentMethodOrd]"
                             , "([DocumentFinanceDetail.PaymentMethodCode]) [DocumentFinanceDetail.PaymentMethodDesignation]",/* IN009066 */
                             /* IN009066 - Faturas and Notas de Crédito were not in this report, because they have no Payment Method. Now the issue is fixed */
@@ -493,7 +475,7 @@ OR
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_PER_PAYMENT_CONDITION:
                         CustomReport.ProcessReportDocumentDetail(displayMode
-                            , token.ToString().ToLower()
+                            , reportToken.ToString().ToLower()
                             , "[DocumentFinanceDetail.PaymentConditionOrd]"
                             /* IN009066 - Faturas Simplificadas and Notas de Crédito were not in this report, because they have no Payment Condition. Now the issue is fixed */
                             , "([DocumentFinanceDetail.PaymentConditionCode]) [DocumentFinanceDetail.PaymentConditionDesignation]",
@@ -505,7 +487,7 @@ OR
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_PER_CURRENCY:
                         CustomReport.ProcessReportDocumentDetail(displayMode
-                            , token.ToString().ToLower()
+                            , reportToken.ToString().ToLower()
                             , "[DocumentFinanceDetail.CurrencyOrd]"
                             , "([DocumentFinanceDetail.CurrencyCode]) [DocumentFinanceDetail.CurrencyDesignation]",/* IN009066 */
                             reportFilter,
@@ -514,7 +496,7 @@ OR
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_PER_COUNTRY:
                         CustomReport.ProcessReportDocumentDetail(displayMode
-                            , token.ToString().ToLower()
+                            , reportToken.ToString().ToLower()
                             , "[DocumentFinanceDetail.CountryOrd]"
                             , "([DocumentFinanceDetail.EntityCountryCode2]) [DocumentFinanceDetail.CountryDesignation]",/* IN009066 */
                             reportFilter,
@@ -523,7 +505,7 @@ OR
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_PER_FAMILY:
                         CustomReport.ProcessReportDocumentDetail(displayMode
-                            , token.ToString().ToLower()
+                            , reportToken.ToString().ToLower()
                             , "[DocumentFinanceDetail.ArticleFamilyOrd]"
                             , "([DocumentFinanceDetail.ArticleFamilyCode]) [DocumentFinanceDetail.ArticleFamilyDesignation]",/* IN009066 */
                             reportFilter,
@@ -532,7 +514,7 @@ OR
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_PER_FAMILY_AND_SUBFAMILY:
                         CustomReport.ProcessReportDocumentDetail(displayMode
-                            , token.ToString().ToLower()
+                            , reportToken.ToString().ToLower()
                             , "[DocumentFinanceDetail.ArticleSubFamilyOrd]"
                             , "([DocumentFinanceDetail.ArticleFamilyCode]) [DocumentFinanceDetail.ArticleFamilyDesignation] / ([DocumentFinanceDetail.ArticleSubFamilyCode]) [DocumentFinanceDetail.ArticleSubFamilyDesignation]",/* IN009066 */
                             reportFilter,
@@ -541,7 +523,7 @@ OR
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_PER_PLACE:
                         CustomReport.ProcessReportDocumentDetail(displayMode
-                            , token.ToString().ToLower()
+                            , reportToken.ToString().ToLower()
                             , "[DocumentFinanceDetail.PlaceOrd]"
                             , "([DocumentFinanceDetail.PlaceCode]) [DocumentFinanceDetail.PlaceDesignation]",/* IN009066 */
                             /* IN009066 - Faturas, Faturas Simplificadas and Notas de Crédito were not in this report, because they have no Payment Condition. Now the issue is fixed */
@@ -554,7 +536,7 @@ OR
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_PER_PLACE_TABLE:
                         CustomReport.ProcessReportDocumentDetail(displayMode
-                            , token.ToString().ToLower()
+                            , reportToken.ToString().ToLower()
                             , "[DocumentFinanceDetail.PlaceTableOrd]"
                             , "([DocumentFinanceDetail.PlaceCode]) [DocumentFinanceDetail.PlaceDesignation] / ([DocumentFinanceDetail.PlaceTableCode]) [DocumentFinanceDetail.PlaceTableDesignation]",/* IN009066 */
                             /* IN009066 - Faturas, Faturas Simplificadas and Notas de Crédito were not in this report, because they have no Payment Condition. Now the issue is fixed */
@@ -571,7 +553,7 @@ OR
 
                     case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_FINANCE_DOCUMENT:
                         CustomReport.ProcessReportDocumentDetail(displayMode
-                            , token.ToString().ToLower()
+                            , reportToken.ToString().ToLower()
                             , "ftOid, ftDocumentTypeOrd, ftDocumentTypeCode, ftDocumentTypeDesignation"
                             , "ftOid AS GroupOid, ftDocumentTypeOrd AS GroupOrd, ftDocumentTypeCode AS GroupCode, ftDocumentTypeDesignation AS GroupDesignation"
                             , "[DocumentFinanceDetail.GroupOid]"
@@ -583,7 +565,7 @@ OR
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_DATE:
                         CustomReport.ProcessReportDocumentDetail(displayMode
-                            , token.ToString().ToLower()
+                            , reportToken.ToString().ToLower()
                             , "fmDocumentDate"
                             , "fmDocumentDate AS GroupOid, fmDocumentDate AS GroupOrd, fmDocumentDate AS GroupCode, fmDocumentDate AS GroupDesignation"
                             , "[DocumentFinanceDetail.GroupOid]"
@@ -595,7 +577,7 @@ OR
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_USER:
                         CustomReport.ProcessReportDocumentDetail(displayMode
-                            , token.ToString().ToLower()
+                            , reportToken.ToString().ToLower()
                             , "udUserDetail, udUserDetailOrd, udUserDetailCode, udUserDetailName"
                             , "udUserDetail AS GroupOid, udUserDetailOrd AS GroupOrd, udUserDetailCode AS GroupCode, udUserDetailName AS GroupDesignation"
                             , "[DocumentFinanceDetail.GroupOid]"
@@ -608,7 +590,7 @@ OR
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_TERMINAL:
                         CustomReport.ProcessReportDocumentDetail(displayMode
-                            , token.ToString().ToLower()
+                            , reportToken.ToString().ToLower()
                             , "trTerminal, trTerminalOrd, trTerminalCode, trTerminalDesignation"
                             , "trTerminal AS GroupOid, trTerminalOrd AS GroupOrd, trTerminalCode AS GroupCode, trTerminalDesignation AS GroupDesignation"
                             , "[DocumentFinanceDetail.GroupOid]"
@@ -620,7 +602,7 @@ OR
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_CUSTOMER:
                         CustomReport.ProcessReportDocumentDetail(displayMode
-                            , token.ToString().ToLower()
+                            , reportToken.ToString().ToLower()
                             , "fmEntity, cuEntityOrd, cuEntityCode, fmEntityName"
                             , "fmEntity AS GroupOid, cuEntityOrd AS GroupOrd, cuEntityCode AS GroupCode, fmEntityName AS GroupDesignation"
                             , "[DocumentFinanceDetail.GroupOid]"
@@ -632,7 +614,7 @@ OR
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_PAYMENT_METHOD:
                         CustomReport.ProcessReportDocumentDetail(displayMode
-                            , token.ToString().ToLower()
+                            , reportToken.ToString().ToLower()
                             , "fmPaymentMethod, pmPaymentMethodOrd, pmPaymentMethodCode, pmPaymentMethodDesignation"
                             , "fmPaymentMethod AS GroupOid, pmPaymentMethodOrd AS GroupOrd, pmPaymentMethodCode AS GroupCode, pmPaymentMethodDesignation AS GroupDesignation"
                             , "[DocumentFinanceDetail.GroupOid]"
@@ -646,7 +628,7 @@ OR
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_PAYMENT_CONDITION:
                         CustomReport.ProcessReportDocumentDetail(displayMode
-                            , token.ToString().ToLower()
+                            , reportToken.ToString().ToLower()
                             , "fmPaymentCondition, pcPaymentConditionOrd, pcPaymentConditionCode, pcPaymentConditionDesignation"
                             , "fmPaymentCondition AS GroupOid, pcPaymentConditionOrd AS GroupOrd, pcPaymentConditionCode AS GroupCode, pcPaymentConditionDesignation AS GroupDesignation"
                             , "[DocumentFinanceDetail.GroupOid]"
@@ -660,7 +642,7 @@ OR
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_CURRENCY:
                         CustomReport.ProcessReportDocumentDetail(displayMode
-                            , token.ToString().ToLower()
+                            , reportToken.ToString().ToLower()
                             , "fmCurrency, crCurrencyOrd, crCurrencyCode, crCurrencyDesignation"
                             , "fmCurrency AS GroupOid, crCurrencyOrd AS GroupOrd, crCurrencyCode AS GroupCode, crCurrencyDesignation AS GroupDesignation"
                             , "[DocumentFinanceDetail.GroupOid]"
@@ -672,7 +654,7 @@ OR
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_COUNTRY:
                         CustomReport.ProcessReportDocumentDetail(displayMode
-                            , token.ToString().ToLower()
+                            , reportToken.ToString().ToLower()
                             , "ccCountry, ccCountryOrd, ccCountryCode, ccCountryDesignation"
                             , "ccCountry AS GroupOid, ccCountryOrd AS GroupOrd, ccCountryCode AS GroupCode, ccCountryDesignation AS GroupDesignation"
                             , "[DocumentFinanceDetail.GroupOid]"
@@ -684,7 +666,7 @@ OR
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_FAMILY:
                         CustomReport.ProcessReportDocumentDetail(displayMode
-                            , token.ToString().ToLower()
+                            , reportToken.ToString().ToLower()
                             , "afFamily, afFamilyOrd, afFamilyCode, afFamilyDesignation"
                             , "afFamily AS GroupOid, afFamilyOrd AS GroupOrd, afFamilyCode AS GroupCode, afFamilyDesignation AS GroupDesignation"
                             , "[DocumentFinanceDetail.GroupOid]"
@@ -696,7 +678,7 @@ OR
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_FAMILY_AND_SUBFAMILY:
                         CustomReport.ProcessReportDocumentDetail(displayMode
-                            , token.ToString().ToLower()
+                            , reportToken.ToString().ToLower()
                             , "sfSubFamily, sfSubFamilyOrd, sfSubFamilyCode, sfSubFamilyDesignation"
                             , "sfSubFamily AS GroupOid, sfSubFamilyOrd AS GroupOrd, sfSubFamilyCode AS GroupCode, sfSubFamilyDesignation AS GroupDesignation"
                             , "[DocumentFinanceDetail.GroupOid]"
@@ -708,7 +690,7 @@ OR
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_PLACE:
                         CustomReport.ProcessReportDocumentDetail(displayMode
-                            , token.ToString().ToLower()
+                            , reportToken.ToString().ToLower()
                             , "cpPlace, cpPlaceOrd, cpPlaceCode, cpPlaceDesignation"
                             , "cpPlace AS GroupOid, cpPlaceOrd AS GroupOrd, cpPlaceCode AS GroupCode, cpPlaceDesignation AS GroupDesignation"
                             , "[DocumentFinanceDetail.GroupOid]"
@@ -722,7 +704,7 @@ OR
                         break;
                     case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_PLACE_TABLE:
                         CustomReport.ProcessReportDocumentDetail(displayMode
-                            , token.ToString().ToLower()
+                            , reportToken.ToString().ToLower()
                             , "dmPlaceTable, ctPlaceTableOrd, ctPlaceTableCode, ctPlaceTableDesignation"
                             , "dmPlaceTable AS GroupOid, ctPlaceTableOrd AS GroupOrd, ctPlaceTableCode AS GroupCode, ctPlaceTableDesignation AS GroupDesignation"
                             , "[DocumentFinanceDetail.GroupOid]"
@@ -737,7 +719,7 @@ OR
 
                     case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_VAT:
                         CustomReport.ProcessReportDocumentDetail(displayMode
-                     , token.ToString().ToLower()
+                     , reportToken.ToString().ToLower()
                      , "[DocumentFinanceDetail.ArticleVat]"
                      , "[DocumentFinanceDetail.ArticleVat]",
                      reportFilter,
@@ -864,7 +846,7 @@ OR
                     case ReportsTypeToken.REPORT_LIST_CLOSE_WORKSESSION:
                         break;
                     default:
-                        _logger.Error(string.Format("Undetected Token: [{0}]", token));
+                        _logger.Error(string.Format("Undetected Token: [{0}]", reportToken));
                         break;
                 }
             }

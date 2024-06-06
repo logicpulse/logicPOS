@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<inherited BaseReport="TemplateBaseSimple.frx" ScriptLanguage="CSharp" ReferencedAssemblies="System.dll&#13;&#10;System.Drawing.dll&#13;&#10;System.Windows.Forms.dll&#13;&#10;System.Data.dll&#13;&#10;System.Xml.dll&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe" ReportInfo.Name="FT FT001012016S01/1" ReportInfo.Author="logicPos v1.0.0.0" ReportInfo.Created="12/31/2014 10:16:52" ReportInfo.Modified="04/07/2021 14:54:13" ReportInfo.CreatorVersion="2019.4.4.0" PrintSettings.CopyNames="Original">
+<inherited BaseReport="TemplateBaseSimple.frx" ScriptLanguage="CSharp" ReferencedAssemblies="netstandard.dll&#13;&#10;System.dll&#13;&#10;System.Drawing.dll&#13;&#10;System.Windows.Forms.dll&#13;&#10;System.Data.dll&#13;&#10;System.Xml.dll&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe" ReportInfo.Name="FT FT001012016S01/1" ReportInfo.Author="logicPos v1.0.0.0" ReportInfo.Created="12/31/2014 10:16:52" ReportInfo.Modified="04/07/2021 14:54:13" ReportInfo.CreatorVersion="2019.4.4.0" PrintSettings.CopyNames="Original">
   <Styles>
     <Style Name="EvenRow" Border.Lines="Bottom" Border.TopLine.Color="Gainsboro" Border.BottomLine.Color="Gainsboro" Fill.Color="WhiteSmoke" Font="Arial, 10pt" ApplyBorder="false" ApplyTextFill="false" ApplyFont="false"/>
     <Style Name="BoxBorder" Border.Lines="All" Border.Color="Silver" Fill="Glass" Fill.Color="WhiteSmoke" Fill.Blend="0.2" Fill.Hatch="true" Font="Arial, 15.75pt" ApplyBorder="false" ApplyFill="false" ApplyTextFill="false" ApplyFont="false"/>
@@ -62,20 +62,20 @@
         <TextObject Name="Text37" Left="302.4" Width="107.26" Height="18.9" CanGrow="true" Text="[ArticleStockSupplier.ArticleStockSerialNumber]" Format="Number" Format.UseLocale="true" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter" Style="DataFont"/>
         <TextObject Name="Text39" Left="415.8" Width="154.51" Height="18.9" CanGrow="true" Text="[ArticleStockSupplier.ArticleStockDocumentNumber]" Format="Number" Format.UseLocale="true" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter" Style="DataFont"/>
         <DataHeaderBand Name="DataHeader1" Top="91.37" Width="718.2" Height="28.35" Border.Lines="Top">
-          <TextObject Name="Text26" Left="66.15" Top="9.45" Width="66.15" Height="18.9" Text="[Res(&quot;global_article_code&quot;)]" HorzAlign="Right" VertAlign="Bottom" Style="DataFontBold"/>
-          <TextObject Name="Text27" Left="652.05" Top="9.45" Width="66.15" Height="18.9" Text="[Res(&quot;global_quantity_acronym&quot;)]" HorzAlign="Right" VertAlign="Bottom" Style="DataFontBold"/>
-          <TextObject Name="Text30" Left="132.3" Top="9.45" Width="163.96" Height="18.9" Text="[Res(&quot;global_designation&quot;)]" VertAlign="Bottom" Style="DataFontBold"/>
-          <TextObject Name="Text33" Top="9.45" Width="66.15" Height="18.9" Text="[Res(&quot;global_date&quot;)]" VertAlign="Bottom" Style="DataFontBold"/>
-          <TextObject Name="Text35" Left="557.55" Top="9.45" Width="85.05" Height="18.9" Text="[Res(&quot;global_purchase_price&quot;)]" HorzAlign="Right" VertAlign="Bottom" Style="DataFontBold"/>
-          <TextObject Name="Text36" Left="302.4" Top="9.45" Width="107.26" Height="18.9" Text="[Res(&quot;global_serialnumber&quot;)]" VertAlign="Bottom" Style="DataFontBold"/>
-          <TextObject Name="Text38" Left="415.8" Top="9.45" Width="154.51" Height="18.9" Text="[Res(&quot;global_document_number&quot;)]" VertAlign="Bottom" Style="DataFontBold"/>
+          <TextObject Name="Text26" Left="66.15" Top="9.45" Width="66.15" Height="18.9" Text="[GetResourceByName(&quot;global_article_code&quot;)]" HorzAlign="Right" VertAlign="Bottom" Style="DataFontBold"/>
+          <TextObject Name="Text27" Left="652.05" Top="9.45" Width="66.15" Height="18.9" Text="[GetResourceByName(&quot;global_quantity_acronym&quot;)]" HorzAlign="Right" VertAlign="Bottom" Style="DataFontBold"/>
+          <TextObject Name="Text30" Left="132.3" Top="9.45" Width="163.96" Height="18.9" Text="[GetResourceByName(&quot;global_designation&quot;)]" VertAlign="Bottom" Style="DataFontBold"/>
+          <TextObject Name="Text33" Top="9.45" Width="66.15" Height="18.9" Text="[GetResourceByName(&quot;global_date&quot;)]" VertAlign="Bottom" Style="DataFontBold"/>
+          <TextObject Name="Text35" Left="557.55" Top="9.45" Width="85.05" Height="18.9" Text="[GetResourceByName(&quot;global_purchase_price&quot;)]" HorzAlign="Right" VertAlign="Bottom" Style="DataFontBold"/>
+          <TextObject Name="Text36" Left="302.4" Top="9.45" Width="107.26" Height="18.9" Text="[GetResourceByName(&quot;global_serialnumber&quot;)]" VertAlign="Bottom" Style="DataFontBold"/>
+          <TextObject Name="Text38" Left="415.8" Top="9.45" Width="154.51" Height="18.9" Text="[GetResourceByName(&quot;global_document_number&quot;)]" VertAlign="Bottom" Style="DataFontBold"/>
         </DataHeaderBand>
         <Sort>
           <Sort Expression="[ArticleStockSupplier.ArticleStockCostumerName]"/>
         </Sort>
       </DataBand>
       <GroupFooterBand Name="GroupFooter1" Top="145.48" Width="718.2" Height="18.9">
-        <TextObject Name="Text29" Width="718.2" Height="18.9" Text="[Res(&quot;global_record_count&quot;)] : [DataSum]&#13;&#10;" HorzAlign="Right" VertAlign="Center" Wysiwyg="true" Style="DataFontBold"/>
+        <TextObject Name="Text29" Width="718.2" Height="18.9" Text="[GetResourceByName(&quot;global_record_count&quot;)] : [DataSum]&#13;&#10;" HorzAlign="Right" VertAlign="Center" Wysiwyg="true" Style="DataFontBold"/>
       </GroupFooterBand>
     </GroupHeaderBand>
     <inherited Name="PageFooter1" Top="166.67">

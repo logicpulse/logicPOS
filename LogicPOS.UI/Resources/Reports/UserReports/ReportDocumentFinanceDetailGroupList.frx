@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<inherited BaseReport="TemplateBaseSimple.frx" ScriptLanguage="CSharp" ReferencedAssemblies="System.dll&#13;&#10;System.Drawing.dll&#13;&#10;System.Windows.Forms.dll&#13;&#10;System.Data.dll&#13;&#10;System.Xml.dll&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe" ReportInfo.Name="FT FT001012016S01/1" ReportInfo.Author="logicPos v1.0.0.0" ReportInfo.Created="12/31/2014 10:16:52" ReportInfo.Modified="08/24/2018 16:40:40" ReportInfo.CreatorVersion="2014.1.8.0" PrintSettings.CopyNames="Original">
+<inherited BaseReport="TemplateBaseSimple.frx" ScriptLanguage="CSharp" ReferencedAssemblies="netstandard.dll&#13;&#10;System.dll&#13;&#10;System.Drawing.dll&#13;&#10;System.Windows.Forms.dll&#13;&#10;System.Data.dll&#13;&#10;System.Xml.dll&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe" ReportInfo.Name="FT FT001012016S01/1" ReportInfo.Author="logicPos v1.0.0.0" ReportInfo.Created="12/31/2014 10:16:52" ReportInfo.Modified="08/24/2018 16:40:40" ReportInfo.CreatorVersion="2014.1.8.0" PrintSettings.CopyNames="Original">
   <Dictionary>
-    <BusinessObjectDataSource Name="DocumentFinanceDetail" ReferenceName="DocumentFinanceDetail" DataType="logicpos.financial.library.Classes.Reports.BOs.FRBOGenericCollection`1[[logicpos.financial.library.Classes.Reports.BOs.Documents.FRBODocumentFinanceMasterDetailGroupView, LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Enabled="true">
+    <BusinessObjectDataSource Name="DocumentFinanceDetail" ReferenceName="DocumentFinanceDetail" Enabled="true">
       <Column Name="ArticleCode" DataType="System.String"/>
       <Column Name="ArticleDesignation" DataType="System.String"/>
       <Column Name="ArticleQuantity" DataType="System.Decimal"/>
@@ -52,12 +52,12 @@
         <TextObject Name="Text41" Left="472.5" Width="75.6" Height="18.9" Text="[FormatNumber([DocumentFinanceDetail.ArticleTotalNet],2)]" HorzAlign="Right" VertAlign="Center" />
         <TextObject Name="Text42" Left="557.55" Width="75.6" Height="18.9" Text="[FormatNumber([DocumentFinanceDetail.ArticleTotalTax],2)]" HorzAlign="Right" VertAlign="Center" Style="DataFont"/>
         <DataHeaderBand Name="DataHeader1" Top="94.8" Width="718.2" Height="28.35" Border.Lines="Top" KeepWithData="true">
-          <TextObject Name="TextColumnDesignationHeader" Left="85.05" Top="9.45" Width="292.95" Height="18.9" Text="[Res(&quot;global_designation&quot;)]" VertAlign="Bottom" Style="DataFontBold"/>
-          <TextObject Name="Text34" Left="642.6" Top="9.45" Width="75.6" Height="18.9" Text="[Res(&quot;global_totalfinal_acronym&quot;)]" HorzAlign="Right" VertAlign="Bottom" Style="DataFontBold"/>
-          <TextObject Name="TextColumnCodeHeader" Top="9.45" Width="75.6" Height="18.9" Text="[Res(&quot;global_article_code&quot;)]" HorzAlign="Right" VertAlign="Bottom" Style="DataFontBold"/>
-          <TextObject Name="Text44" Left="387.45" Top="9.45" Width="75.6" Height="18.9" Text="[Res(&quot;global_quantity_acronym&quot;)]" HorzAlign="Right" VertAlign="Bottom" Style="DataFontBold"/>
-          <TextObject Name="Text46" Left="472.5" Top="9.45" Width="75.6" Height="18.9" Text="[Res(&quot;global_totalnet_acronym&quot;)]" HorzAlign="Right" VertAlign="Bottom" Style="DataFontBold"/>
-          <TextObject Name="Text47" Left="557.55" Top="9.45" Width="75.6" Height="18.9" Text="[Res(&quot;global_total_tax_acronym&quot;)]" HorzAlign="Right" VertAlign="Bottom" Style="DataFontBold"/>
+          <TextObject Name="TextColumnDesignationHeader" Left="85.05" Top="9.45" Width="292.95" Height="18.9" Text="[GetResourceByName(&quot;global_designation&quot;)]" VertAlign="Bottom" Style="DataFontBold"/>
+          <TextObject Name="Text34" Left="642.6" Top="9.45" Width="75.6" Height="18.9" Text="[GetResourceByName(&quot;global_totalfinal_acronym&quot;)]" HorzAlign="Right" VertAlign="Bottom" Style="DataFontBold"/>
+          <TextObject Name="TextColumnCodeHeader" Top="9.45" Width="75.6" Height="18.9" Text="[GetResourceByName(&quot;global_article_code&quot;)]" HorzAlign="Right" VertAlign="Bottom" Style="DataFontBold"/>
+          <TextObject Name="Text44" Left="387.45" Top="9.45" Width="75.6" Height="18.9" Text="[GetResourceByName(&quot;global_quantity_acronym&quot;)]" HorzAlign="Right" VertAlign="Bottom" Style="DataFontBold"/>
+          <TextObject Name="Text46" Left="472.5" Top="9.45" Width="75.6" Height="18.9" Text="[GetResourceByName(&quot;global_totalnet_acronym&quot;)]" HorzAlign="Right" VertAlign="Bottom" Style="DataFontBold"/>
+          <TextObject Name="Text47" Left="557.55" Top="9.45" Width="75.6" Height="18.9" Text="[GetResourceByName(&quot;global_total_tax_acronym&quot;)]" HorzAlign="Right" VertAlign="Bottom" Style="DataFontBold"/>
         </DataHeaderBand>
         <Sort>
           <Sort Expression="[DocumentFinanceDetail.ArticleCode]"/>

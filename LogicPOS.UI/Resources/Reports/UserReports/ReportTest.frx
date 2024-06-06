@@ -37,7 +37,7 @@
       <inherited Name="Text5"/>
       <TextObject Name="Text18" ZOrder="1" Left="340.2" Width="75.6" Height="18.9" Text="[Pref(&quot;Company_Civil_Registration&quot;)]" TextFill.Color="Red"/>
       <TextObject Name="Text15" ZOrder="2" Left="264.6" Width="75.6" Height="18.9" Text="[Var(&quot;CUSTOM_var_1&quot;)]" TextFill.Color="Green"/>
-      <TextObject Name="Text19" ZOrder="3" Left="113.4" Width="75.6" Height="18.9" Text="[Res(&quot;GLOBAL_price&quot;)]" TextFill.Color="DarkCyan"/>
+      <TextObject Name="Text19" ZOrder="3" Left="113.4" Width="75.6" Height="18.9" Text="[GetResourceByName(&quot;GLOBAL_price&quot;)]" TextFill.Color="DarkCyan"/>
       <TextObject Name="Text10" ZOrder="4" Left="415.8" Width="75.6" Height="18.9" Text="[Log([ArticleFamily.Code])]" TextFill.Color="DarkViolet"/>
       <TextObject Name="Text20" ZOrder="5" Left="491.4" Width="75.6" Height="18.9" Text="[Debug(&quot;FRDEBUG&quot;)]" TextFill.Color="DarkOrange"/>
       <TextObject Name="Text22" ZOrder="6" Left="567" Width="75.6" Height="18.9" Text="[Report Title]" TextFill.Color="Tomato"/>

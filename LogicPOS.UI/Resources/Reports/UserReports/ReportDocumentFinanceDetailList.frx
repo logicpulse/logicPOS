@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<inherited BaseReport="TemplateBaseSimple.frx" ScriptLanguage="CSharp" ReferencedAssemblies="System.dll&#13;&#10;System.Drawing.dll&#13;&#10;System.Windows.Forms.dll&#13;&#10;System.Data.dll&#13;&#10;System.Xml.dll&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe" ReportInfo.Name="FT FT001012016S01/1" ReportInfo.Author="logicPos v1.0.0.0" ReportInfo.Created="12/31/2014 10:16:52" ReportInfo.Modified="05/30/2019 17:43:03" ReportInfo.CreatorVersion="2018.1.4.0" PrintSettings.Copies="1" PrintSettings.CopyNames="Original">
+<inherited BaseReport="TemplateBaseSimple.frx" ScriptLanguage="CSharp" ReferencedAssemblies="netstandard.dll&#13;&#10;System.dll&#13;&#10;System.Drawing.dll&#13;&#10;System.Windows.Forms.dll&#13;&#10;System.Data.dll&#13;&#10;System.Xml.dll&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe" ReportInfo.Name="FT FT001012016S01/1" ReportInfo.Author="logicPos v1.0.0.0" ReportInfo.Created="12/31/2014 10:16:52" ReportInfo.Modified="05/30/2019 17:43:03" ReportInfo.CreatorVersion="2018.1.4.0" PrintSettings.Copies="1" PrintSettings.CopyNames="Original">
   <Styles>
     <Style Name="EvenRow" Border.Lines="Bottom" Border.TopLine.Color="Gainsboro" Border.BottomLine.Color="Gainsboro" Fill.Color="WhiteSmoke" ApplyBorder="false" ApplyTextFill="false" ApplyFont="false"/>
     <Style Name="BoxBorder" Border.Lines="All" Border.Color="Silver" Fill="Glass" Fill.Color="WhiteSmoke" Fill.Blend="0.2" Fill.Hatch="true" Font="Arial, 15.75pt" ApplyBorder="false" ApplyFill="false" ApplyTextFill="false" ApplyFont="false"/>
@@ -12,7 +12,7 @@
     <Style Name="BackgroundColor2" Fill.Color="Gainsboro" ApplyBorder="false" ApplyTextFill="false" ApplyFont="false"/>
   </Styles>
   <Dictionary>
-    <BusinessObjectDataSource Name="DocumentFinanceDetail" ReferenceName="DocumentFinanceDetail" DataType="logicpos.financial.library.Classes.Reports.BOs.FRBOGenericCollection`1[[logicpos.financial.library.Classes.Reports.BOs.Documents.FRBODocumentFinanceMasterDetailView, LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Enabled="true">
+    <BusinessObjectDataSource Name="DocumentFinanceDetail" ReferenceName="DocumentFinanceDetail"  Enabled="true">
       <Column Name="ArticleFamily" DataType="System.String"/>
       <Column Name="ArticleFamilyCode" DataType="System.UInt32"/>
       <Column Name="ArticleFamilyDesignation" DataType="System.String"/>
@@ -181,14 +181,14 @@
         <TextObject Name="Text42" Left="567" Top="4" Width="75.6" Height="18.9" Text="[FormatNumber([DocumentFinanceDetail.ArticleTotalTax],2)]" HorzAlign="Right" Style="DataFont"/>
         <TextObject Name="Text57" Left="94.5" Top="4.16" Width="94.5" Height="18.9" CanGrow="true" Text="[DocumentFinanceDetail.DocumentNumber]" Format="Custom" Format.Format="yyyy/MM/dd hh:mm" Font="Arial, 8pt" Style="DataFont"/>
         <DataHeaderBand Name="DataHeader1" Top="91.27" Width="718.2" Height="28.35" Border.Lines="Top" KeepWithData="true">
-          <TextObject Name="TextColumnDateHeader" Top="9.45" Width="94.5" Height="18.9" Text="[Res(&quot;global_date&quot;)]" HorzAlign="Center" VertAlign="Bottom" Style="DataFontBold" Border.Lines="Bottom" Border.Color="Silver" Fill.Color="WhiteSmoke"/>
-          <TextObject Name="TextColumnDesignationHeader" Left="236.25" Top="9.45" Width="179.55" Height="18.9" Text="[Res(&quot;global_designation&quot;)]" HorzAlign="Center" VertAlign="Bottom" Style="DataFontBold" Border.Lines="Bottom" Border.Color="Silver" Fill.Color="WhiteSmoke"/>
-          <TextObject Name="Text34" Left="642.6" Top="9.45" Width="75.6" Height="18.9" Text="[Res(&quot;global_totalfinal_acronym&quot;)]" HorzAlign="Center" VertAlign="Bottom" Style="DataFontBold" Border.Lines="Bottom" Border.Color="Silver" Fill.Color="WhiteSmoke"/>
-          <TextObject Name="TextColumnCodeHeader" Left="189" Top="9.45" Width="47.25" Height="18.9" Text="[Res(&quot;global_article_code&quot;)]" HorzAlign="Center" VertAlign="Bottom" Style="DataFontBold" Border.Lines="Bottom" Border.Color="Silver" Fill.Color="WhiteSmoke"/>
-          <TextObject Name="Text44" Left="415.8" Top="9.45" Width="75.6" Height="18.9" Text="[Res(&quot;global_quantity&quot;)]" HorzAlign="Center" VertAlign="Bottom" Style="DataFontBold" Border.Lines="Bottom" Border.Color="Silver" Fill.Color="WhiteSmoke"/>
-          <TextObject Name="Text46" Left="491.4" Top="9.45" Width="75.6" Height="18.9" Text="[Res(&quot;global_total_payed_acronym&quot;)]" HorzAlign="Center" VertAlign="Bottom" Style="DataFontBold" Border.Lines="Bottom" Border.Color="Silver" Fill.Color="WhiteSmoke"/>
-          <TextObject Name="Text47" Left="567" Top="9.45" Width="75.6" Height="18.9" Text="[Res(&quot;global_total_tax_acronym&quot;)]" HorzAlign="Center" VertAlign="Bottom" Style="DataFontBold" Border.Lines="Bottom" Border.Color="Silver" Fill.Color="WhiteSmoke"/>
-          <TextObject Name="Text56" Left="94.5" Top="9.45" Width="94.5" Height="18.9" Text="[Res(&quot;global_document_number_acronym&quot;)]" HorzAlign="Left" VertAlign="Bottom" Style="DataFontBold" Border.Lines="Bottom" Border.Color="Silver" Fill.Color="WhiteSmoke"/>
+          <TextObject Name="TextColumnDateHeader" Top="9.45" Width="94.5" Height="18.9" Text="[GetResourceByName(&quot;global_date&quot;)]" HorzAlign="Center" VertAlign="Bottom" Style="DataFontBold" Border.Lines="Bottom" Border.Color="Silver" Fill.Color="WhiteSmoke"/>
+          <TextObject Name="TextColumnDesignationHeader" Left="236.25" Top="9.45" Width="179.55" Height="18.9" Text="[GetResourceByName(&quot;global_designation&quot;)]" HorzAlign="Center" VertAlign="Bottom" Style="DataFontBold" Border.Lines="Bottom" Border.Color="Silver" Fill.Color="WhiteSmoke"/>
+          <TextObject Name="Text34" Left="642.6" Top="9.45" Width="75.6" Height="18.9" Text="[GetResourceByName(&quot;global_totalfinal_acronym&quot;)]" HorzAlign="Center" VertAlign="Bottom" Style="DataFontBold" Border.Lines="Bottom" Border.Color="Silver" Fill.Color="WhiteSmoke"/>
+          <TextObject Name="TextColumnCodeHeader" Left="189" Top="9.45" Width="47.25" Height="18.9" Text="[GetResourceByName(&quot;global_article_code&quot;)]" HorzAlign="Center" VertAlign="Bottom" Style="DataFontBold" Border.Lines="Bottom" Border.Color="Silver" Fill.Color="WhiteSmoke"/>
+          <TextObject Name="Text44" Left="415.8" Top="9.45" Width="75.6" Height="18.9" Text="[GetResourceByName(&quot;global_quantity&quot;)]" HorzAlign="Center" VertAlign="Bottom" Style="DataFontBold" Border.Lines="Bottom" Border.Color="Silver" Fill.Color="WhiteSmoke"/>
+          <TextObject Name="Text46" Left="491.4" Top="9.45" Width="75.6" Height="18.9" Text="[GetResourceByName(&quot;global_total_payed_acronym&quot;)]" HorzAlign="Center" VertAlign="Bottom" Style="DataFontBold" Border.Lines="Bottom" Border.Color="Silver" Fill.Color="WhiteSmoke"/>
+          <TextObject Name="Text47" Left="567" Top="9.45" Width="75.6" Height="18.9" Text="[GetResourceByName(&quot;global_total_tax_acronym&quot;)]" HorzAlign="Center" VertAlign="Bottom" Style="DataFontBold" Border.Lines="Bottom" Border.Color="Silver" Fill.Color="WhiteSmoke"/>
+          <TextObject Name="Text56" Left="94.5" Top="9.45" Width="94.5" Height="18.9" Text="[GetResourceByName(&quot;global_document_number_acronym&quot;)]" HorzAlign="Left" VertAlign="Bottom" Style="DataFontBold" Border.Lines="Bottom" Border.Color="Silver" Fill.Color="WhiteSmoke"/>
         </DataHeaderBand>
         <Sort>
           <Sort Expression="[DocumentFinanceDetail.Date]"/>
@@ -200,9 +200,9 @@
         <TextObject Name="Text48" Left="567" Top="18.9" Width="75.6" Height="18.9" Text="[FormatNumber([GroupTotalArticleTotalTax],2)]" HorzAlign="Right" VertAlign="Center" Style="DataFontBold"/>
         <TextObject Name="Text49" Left="491.4" Top="18.9" Width="75.6" Height="18.9" Text="[FormatNumber([GroupTotalArticleTotalNet],2)]" HorzAlign="Right" VertAlign="Center" Style="DataFontBold"/>
         <TextObject Name="Text51" Left="415.8" Top="18.9" Width="75.6" Height="18.9" Text="[FormatNumber([GroupTotalArticleQuantity],2)] [DocumentFinanceDetail.ArticleUnitMeasure]" HorzAlign="Right" VertAlign="Center" Style="DataFontBold"/>
-        <TextObject Name="RegisterCount" Top="18.9" Width="141.75" Height="18.9" Text="[Res(&quot;global_record_count&quot;)]" VertAlign="Center" Style="DataFontBold"/>
+        <TextObject Name="RegisterCount" Top="18.9" Width="141.75" Height="18.9" Text="[GetResourceByName(&quot;global_record_count&quot;)]" VertAlign="Center" Style="DataFontBold"/>
         <TextObject Name="Text58" Left="141.75" Top="18.9" Width="47.25" Height="18.9" Text="[RecordCount]" VertAlign="Center" Font="Arial, 8pt" Style="DataFont"/>
-        <TextObject Name="Text59" Left="236.25" Top="18.9" Width="179.55" Height="18.9" Text="[Res(&quot;report_label_totals_sub&quot;)]" HorzAlign="Right" VertAlign="Center" Style="DataFontBold"/>
+        <TextObject Name="Text59" Left="236.25" Top="18.9" Width="179.55" Height="18.9" Text="[GetResourceByName(&quot;report_label_totals_sub&quot;)]" HorzAlign="Right" VertAlign="Center" Style="DataFontBold"/>
       </GroupFooterBand>
     </GroupHeaderBand>
     <ReportSummaryBand Name="ReportSummary1" ZOrder="-1" Top="211.37" Width="718.2" Height="47.25">
@@ -210,7 +210,7 @@
       <TextObject Name="Text53" Left="567" Top="18.9" Width="75.6" Height="18.9" Text="[FormatNumber([ReportTotalArticleTotalTax],2)]" HorzAlign="Right" VertAlign="Center" Style="DataFontBold"/>
       <TextObject Name="Text54" Left="491.4" Top="18.9" Width="75.6" Height="18.9" Text="[FormatNumber([ReportTotalArticleTotalNet],2)]" HorzAlign="Right" VertAlign="Center" Style="DataFontBold"/>
       <TextObject Name="Text55" Left="415.8" Top="18.9" Width="75.6" Height="18.9" Text="[FormatNumber([ReportTotalArticleQuantity],2)] [DocumentFinanceDetail.ArticleUnitMeasure]" HorzAlign="Right" VertAlign="Center" Style="DataFontBold"/>
-      <TextObject Name="Text2" Left="236.25" Top="18.9" Width="179.55" Height="18.9" Text="[Res(&quot;report_label_totals&quot;)]" HorzAlign="Right" VertAlign="Center" Style="DataFontBold"/>
+      <TextObject Name="Text2" Left="236.25" Top="18.9" Width="179.55" Height="18.9" Text="[GetResourceByName(&quot;report_label_totals&quot;)]" HorzAlign="Right" VertAlign="Center" Style="DataFontBold"/>
     </ReportSummaryBand>
     <inherited Name="PageFooter1" Top="260.86" Height="56.7">
       <inherited Name="TextFooter1"/>

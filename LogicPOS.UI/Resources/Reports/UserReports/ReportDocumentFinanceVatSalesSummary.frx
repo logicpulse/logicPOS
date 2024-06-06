@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<inherited BaseReport="TemplateBaseSimple.frx" ScriptLanguage="CSharp" ReferencedAssemblies="System.dll&#13;&#10;System.Drawing.dll&#13;&#10;System.Windows.Forms.dll&#13;&#10;System.Data.dll&#13;&#10;System.Xml.dll&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe" ReportInfo.Name="FT FT001012016S01/1" ReportInfo.Author="logicPos v1.0.0.0" ReportInfo.Created="12/31/2014 10:16:52" ReportInfo.Modified="08/25/2021 16:20:17" ReportInfo.CreatorVersion="2019.4.4.0" PrintSettings.CopyNames="Original">
+<inherited BaseReport="TemplateBaseSimple.frx" ScriptLanguage="CSharp" ReferencedAssemblies="netstandard.dll&#13;&#10;System.dll&#13;&#10;System.Drawing.dll&#13;&#10;System.Windows.Forms.dll&#13;&#10;System.Data.dll&#13;&#10;System.Xml.dll&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe" ReportInfo.Name="FT FT001012016S01/1" ReportInfo.Author="logicPos v1.0.0.0" ReportInfo.Created="12/31/2014 10:16:52" ReportInfo.Modified="08/25/2021 16:20:17" ReportInfo.CreatorVersion="2019.4.4.0" PrintSettings.CopyNames="Original">
   <Styles>
     <Style Name="EvenRow" Border.Lines="Bottom" Border.TopLine.Color="Gainsboro" Border.BottomLine.Color="Gainsboro" Fill.Color="WhiteSmoke" Font="Arial, 10pt" ApplyBorder="false" ApplyTextFill="false" ApplyFont="false"/>
     <Style Name="BoxBorder" Border.Lines="All" Border.Color="Silver" Fill="Glass" Fill.Color="WhiteSmoke" Fill.Blend="0.2" Fill.Hatch="true" Font="Arial, 15.75pt" ApplyBorder="false" ApplyFill="false" ApplyTextFill="false" ApplyFont="false"/>
@@ -37,24 +37,24 @@
       <TextObject Name="TextReportFilter" ZOrder="2" Left="207.9" Top="28.35" Width="510.3" Height="18.9" Text="[Report Filter]" HorzAlign="Right" Font="Arial, 7pt" Wysiwyg="true"/>
     </inherited>
     <GroupHeaderBand Name="GroupHeader1" ZOrder="0" Top="51" Width="718.2" Height="37.8" Condition="[DocumentFinanceVatSalesSummary.Oid]">
-      <TextObject Name="TextGroupHeader1" Top="9.45" Width="718.2" Height="22.68" Text="[Res(&quot;global_vat_rate_tax_type&quot;)] : [DocumentFinanceVatSalesSummary.Vat] %" VertAlign="Center" Font="Arial, 12pt, style=Bold"/>
+      <TextObject Name="TextGroupHeader1" Top="9.45" Width="718.2" Height="22.68" Text="[GetResourceByName(&quot;global_vat_rate_tax_type&quot;)] : [DocumentFinanceVatSalesSummary.Vat] %" VertAlign="Center" Font="Arial, 12pt, style=Bold"/>
       <DataBand Name="Data2" Top="132.6" Width="718.2" Height="21.19" CanGrow="true" EvenStyle="EvenRow" DataSource="DocumentFinanceVatSalesSummary">
         <TextObject Name="Text31" Left="207.9" Width="163.96" Height="18.9" CanGrow="true" Text="[DocumentFinanceVatSalesSummary.TotalNet] [Currency]" Format="Number" Format.UseLocale="true" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
         <TextObject Name="Text32" Left="378" Width="163.96" Height="18.9" CanGrow="true" Text="[DocumentFinanceVatSalesSummary.TotalTax] [Currency]" Format="Number" Format.UseLocale="true" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
         <TextObject Name="Text35" Left="548.1" Width="163.96" Height="18.9" CanGrow="true" Text="[DocumentFinanceVatSalesSummary.TotalFinal] [Currency]" Format="Number" Format.UseLocale="true" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
         <TextObject Name="Text37" Left="9.45" Width="163.96" Height="18.9" CanGrow="true" Text="[DocumentFinanceVatSalesSummary.DocumentTypeDesignation]" Format="Number" Format.UseLocale="true" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
         <DataHeaderBand Name="DataHeader1" Top="90.8" Width="718.2" Height="39.8" Border.Lines="Top">
-          <TextObject Name="Text30" Left="207.9" Top="9.45" Width="163.96" Height="18.9" Text="[Res(&quot;global_totalnet&quot;)]" VertAlign="Bottom" Font="Arial, 9.75pt, style=Bold"/>
-          <TextObject Name="Text33" Left="378" Top="9.45" Width="163.96" Height="18.9" Text="[Res(&quot;global_documentfinance_totaltax&quot;)]" VertAlign="Bottom" Font="Arial, 9.75pt, style=Bold"/>
-          <TextObject Name="Text34" Left="548.1" Top="9.45" Width="163.96" Height="18.9" Text="[Res(&quot;global_total_final&quot;)]" VertAlign="Bottom" Font="Arial, 9.75pt, style=Bold"/>
-          <TextObject Name="Text36" Left="9.45" Top="9.45" Width="163.96" Height="18.9" Text="[Res(&quot;global_documentfinanceseries_documenttype&quot;)]" VertAlign="Bottom" Font="Arial, 9.75pt, style=Bold"/>
+          <TextObject Name="Text30" Left="207.9" Top="9.45" Width="163.96" Height="18.9" Text="[GetResourceByName(&quot;global_totalnet&quot;)]" VertAlign="Bottom" Font="Arial, 9.75pt, style=Bold"/>
+          <TextObject Name="Text33" Left="378" Top="9.45" Width="163.96" Height="18.9" Text="[GetResourceByName(&quot;global_documentfinance_totaltax&quot;)]" VertAlign="Bottom" Font="Arial, 9.75pt, style=Bold"/>
+          <TextObject Name="Text34" Left="548.1" Top="9.45" Width="163.96" Height="18.9" Text="[GetResourceByName(&quot;global_total_final&quot;)]" VertAlign="Bottom" Font="Arial, 9.75pt, style=Bold"/>
+          <TextObject Name="Text36" Left="9.45" Top="9.45" Width="163.96" Height="18.9" Text="[GetResourceByName(&quot;global_documentfinanceseries_documenttype&quot;)]" VertAlign="Bottom" Font="Arial, 9.75pt, style=Bold"/>
         </DataHeaderBand>
         <Sort>
           <Sort Expression="[DocumentFinanceVatSalesSummary.Oid]"/>
         </Sort>
       </DataBand>
       <GroupFooterBand Name="GroupFooter1" Top="155.79" Width="718.2" Height="56.7" Border.Lines="Bottom">
-        <TextObject Name="Text55" Left="9.45" Top="18.9" Width="163.96" Height="18.9" Text="[Res(&quot;report_label_totals&quot;)]" VertAlign="Bottom" Font="Arial, 10pt, style=Bold"/>
+        <TextObject Name="Text55" Left="9.45" Top="18.9" Width="163.96" Height="18.9" Text="[GetResourceByName(&quot;report_label_totals&quot;)]" VertAlign="Bottom" Font="Arial, 10pt, style=Bold"/>
         <TextObject Name="Text542" Left="207.9" Top="18.9" Width="160.65" Height="18.9" Text="[FormatNumber([GroupTotalNet],2)] [Currency]" VertAlign="Center" Style="DataFontBold"/>
         <TextObject Name="Text532" Left="378" Top="18.9" Width="160.65" Height="18.9" Text="[FormatNumber([GroupTotalTax],2)] [Currency]" VertAlign="Center" Style="DataFontBold"/>
         <TextObject Name="Text522" Left="548.1" Top="18.9" Width="160.65" Height="18.9" Text="[FormatNumber([GroupTotalfinal],2)] [Currency]" VertAlign="Center" Style="DataFontBold"/>
