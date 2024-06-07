@@ -723,7 +723,7 @@ namespace LogicPOS.Reporting.Common
         public static void ProcessReportArticle(CustomReportDisplayMode pViewMode)
         {
 
-            string reportFile = ReportingUtils.GetReportFilePath("ReportArticleList.frx");
+            string reportFile = FastReportUtils.GetReportFilePath("ReportArticleList.frx");
             FastReport customReport = new FastReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
             //Report Parameters
             customReport.SetParameterValue("Report Title", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "report_list_family_subfamily_articles"));
@@ -767,7 +767,7 @@ namespace LogicPOS.Reporting.Common
         // report_label_list_customers : Relatório - Clientes
         public static void ProcessReportCustomer(CustomReportDisplayMode pViewMode)
         {
-            string reportFile = ReportingUtils.GetReportFilePath("ReportCustomerList.frx");
+            string reportFile = FastReportUtils.GetReportFilePath("ReportCustomerList.frx");
             FastReport customReport = new FastReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
             //Report Parameters
             customReport.SetParameterValue("Report Title", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "report_list_customers"));
@@ -824,7 +824,7 @@ namespace LogicPOS.Reporting.Common
 
         public static void ProcessReportArticleStockMovement(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)
         {
-            string reportFile = ReportingUtils.GetReportFilePath("ReportArticleStockMovementList.frx");
+            string reportFile = FastReportUtils.GetReportFilePath("ReportArticleStockMovementList.frx");
             FastReport customReport = new FastReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
             //Report Parameters
             customReport.SetParameterValue("Report Title", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "report_list_stock_movements"));
@@ -846,7 +846,7 @@ namespace LogicPOS.Reporting.Common
 
         public static void ProcessReportArticleStockWarehouse(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)
         {
-            string reportFile = ReportingUtils.GetReportFilePath("ReportArticleStockWarehouseList.frx");
+            string reportFile = FastReportUtils.GetReportFilePath("ReportArticleStockWarehouseList.frx");
             FastReport customReport = new FastReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
             //Report Parameters
             customReport.SetParameterValue("Report Title", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "report_list_stock_warehouse"));
@@ -868,7 +868,7 @@ namespace LogicPOS.Reporting.Common
 
         public static void ProcessReportArticleStock(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)
         {
-            string reportFile = ReportingUtils.GetReportFilePath("ReportArticleStockList.frx");
+            string reportFile = FastReportUtils.GetReportFilePath("ReportArticleStockList.frx");
             FastReport customReport = new FastReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
             //Report Parameters
             customReport.SetParameterValue("Report Title", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "report_list_stock_article"));
@@ -910,7 +910,7 @@ namespace LogicPOS.Reporting.Common
         public static void ProcessReportArticleStockSupplier(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)
         {
 
-            string reportFile = ReportingUtils.GetReportFilePath("ReportArticleStockSupplierList.frx");
+            string reportFile = FastReportUtils.GetReportFilePath("ReportArticleStockSupplierList.frx");
             FastReport customReport = new FastReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
             //Report Parameters
             customReport.SetParameterValue("Report Title", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "report_list_stock_supplier"));
@@ -956,7 +956,7 @@ namespace LogicPOS.Reporting.Common
 
         public static void ProcessReportVatSalesResumed(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)
         {
-            string reportFile = ReportingUtils.GetReportFilePath("ReportDocumentFinanceVatSalesSummary.frx");
+            string reportFile = FastReportUtils.GetReportFilePath("ReportDocumentFinanceVatSalesSummary.frx");
             FastReport customReport = new FastReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
             //Report Parameters
             customReport.SetParameterValue("Report Title", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "report_sales_per_vat"));
@@ -999,7 +999,7 @@ namespace LogicPOS.Reporting.Common
 
         public static void ProcessReportVatSalesByClassResumed(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)
         {
-            string reportFile = ReportingUtils.GetReportFilePath("ReportDocumentFinanceVatSalesByClassSummary.frx");
+            string reportFile = FastReportUtils.GetReportFilePath("ReportDocumentFinanceVatSalesByClassSummary.frx");
             FastReport customReport = new FastReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
             //Report Parameters
             customReport.SetParameterValue("Report Title", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "report_sales_per_vat_by_article_class"));
@@ -1044,7 +1044,7 @@ namespace LogicPOS.Reporting.Common
 
         public static void ProcessReportSystemAudit(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)
         {
-            string reportFile = ReportingUtils.GetReportFilePath("ReportSystemAuditList.frx");
+            string reportFile = FastReportUtils.GetReportFilePath("ReportSystemAuditList.frx");
             FastReport customReport = new FastReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
             //Report Parameters
             customReport.SetParameterValue("Report Title", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "report_list_audit_table"));
@@ -1083,7 +1083,7 @@ namespace LogicPOS.Reporting.Common
         /// <param name="filterHumanReadable"></param>
         public static void ProcessReportDocumentFinanceCurrentAccount(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)
         {
-            string reportFile = ReportingUtils.GetReportFilePath("ReportDocumentFinanceCurrentAccount.frx");
+            string reportFile = FastReportUtils.GetReportFilePath("ReportDocumentFinanceCurrentAccount.frx");
             FastReport customReport = new FastReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
             //Report Parameters
             customReport.SetParameterValue("Report Title", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "report_list_current_account"));
@@ -1123,7 +1123,7 @@ namespace LogicPOS.Reporting.Common
         /// <param name="filterHumanReadable"></param>
         public static void ProcessReportCustomerBalanceDetails(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)
         {
-            string reportFile = ReportingUtils.GetReportFilePath("ReportDocumentFinanceCustomerBalanceDetails.frx");
+            string reportFile = FastReportUtils.GetReportFilePath("ReportDocumentFinanceCustomerBalanceDetails.frx");
             FastReport customReport = new FastReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
             //Report Parameters
             customReport.SetParameterValue("Report Title", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "report_customer_balance_details"));
@@ -1187,7 +1187,7 @@ namespace LogicPOS.Reporting.Common
         /// <param name="filterHumanReadable"></param>
         public static void ProcessReportCompanyBilling(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)
         {
-            string reportFile = ReportingUtils.GetReportFilePath("ReportDocumentFinanceCompanyBilling.frx");
+            string reportFile = FastReportUtils.GetReportFilePath("ReportDocumentFinanceCompanyBilling.frx");
             FastReport customReport = new FastReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
             //Report Parameters
             customReport.SetParameterValue("Report Title", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "report_company_billing"));
@@ -1225,7 +1225,7 @@ namespace LogicPOS.Reporting.Common
 
         public static void ProcessReportUserCommission(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)
         {
-            string reportFile = ReportingUtils.GetReportFilePath("ReportUserCommission.frx");
+            string reportFile = FastReportUtils.GetReportFilePath("ReportUserCommission.frx");
             FastReport customReport = new FastReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
             //Report Parameters
             customReport.SetParameterValue("Report Title", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "report_list_user_commission"));
@@ -1264,7 +1264,7 @@ namespace LogicPOS.Reporting.Common
 
         public static void ProcessReportDocumentMasterList(CustomReportDisplayMode pViewMode, string reportTitle, string groupCondition, string groupTitle, string filter, string filterHumanReadable)
         {
-            string reportFile = ReportingUtils.GetReportFilePath("ReportDocumentFinanceMasterList.frx");
+            string reportFile = FastReportUtils.GetReportFilePath("ReportDocumentFinanceMasterList.frx");
             FastReport customReport = new FastReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
             //Report Parameters
             customReport.SetParameterValue("Report Title", reportTitle);
@@ -1360,8 +1360,8 @@ namespace LogicPOS.Reporting.Common
         public static void ProcessReportDocumentDetail(CustomReportDisplayMode pViewMode, string resourceString, string groupField, string groupSelectFields, string groupCondition, string groupTitle, string filter, string filterHumanReadable, bool grouped, bool decryptGroupField = false)
         {
             string reportFile = grouped
-                ? ReportingUtils.GetReportFilePath("ReportDocumentFinanceDetailGroupList.frx")
-                : ReportingUtils.GetReportFilePath("ReportDocumentFinanceDetailList.frx")
+                ? FastReportUtils.GetReportFilePath("ReportDocumentFinanceDetailGroupList.frx")
+                : FastReportUtils.GetReportFilePath("ReportDocumentFinanceDetailList.frx")
             ;
             FastReport customReport = new FastReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
 
@@ -1590,8 +1590,8 @@ namespace LogicPOS.Reporting.Common
         public static void ProcessReportBarcodeLabel(CustomReportDisplayMode pViewMode, fin_articleserialnumber pArticleSerialNumber, string pFooter, bool pBigSize, List<fin_articleserialnumber> pListArticleSerialNumber = null)
         {
             string reportFile = !pBigSize
-                   ? ReportingUtils.GetReportFilePath("BarCodeTemplate_100x50.frx")
-                   : ReportingUtils.GetReportFilePath("BarCodeTemplate_40x30.frx")
+                   ? FastReportUtils.GetReportFilePath("BarCodeTemplate_100x50.frx")
+                   : FastReportUtils.GetReportFilePath("BarCodeTemplate_40x30.frx")
                ;
 
             //Get template from selected article

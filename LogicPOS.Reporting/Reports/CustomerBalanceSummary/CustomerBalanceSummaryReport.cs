@@ -24,7 +24,7 @@ namespace LogicPOS.Reporting.Reports.CustomerBalanceSummary
         {
             _viewMode = viewMode;
 
-            string reportFileLocation = ReportingUtils.GetReportFilePath(REPORT_FILENAME);
+            string reportFileLocation = FastReportUtils.GetReportFilePath(REPORT_FILENAME);
 
             _report = new Common.FastReport(
                 reportFileLocation,

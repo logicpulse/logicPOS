@@ -10,45 +10,27 @@ using System.Reflection;
 
 namespace LogicPOS.Reporting.Utility
 {
-    public static class ReportingUtils
+    public static class FastReportUtils
     {
-        //Log4Net
-        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private static bool _useLowerCaseResources = true;
-
-
-        //Using Outside Project Resources: Extended for JoanaReports
-        public static void Register(string pAppName)
+        public static void InitializeFastReports(string appName)
         {
-            RegisterFunctions();
-            RegisterSystemVars(pAppName);
-            RegisterCustomVars(pAppName);
+            RegisterCustomFunctions();
+            RegisterSystemVars(appName);
+            RegisterCustomVars(appName);
         }
 
-        private static void RegisterFunctions()
+        private static void RegisterCustomFunctions()
         {
             RegisteredObjects.AddFunctionCategory("Custom", "Custom Functions");
 
-            Type customFuncType = typeof(ReportingUtils);
+            Type customFunctions = typeof(FastReportCustomFunctions);
+            
+            var functions = customFunctions.GetMethods(BindingFlags.Public | BindingFlags.Static);
 
-            var getResourceMethodName = nameof(ResourcesUtility.GetResourceByName);
-            MethodInfo getResourceFunction = typeof(ResourcesUtility).GetMethod(getResourceMethodName, new Type[] { typeof(string) });
-
-            MethodInfo funcGetParam = customFuncType.GetMethod(nameof(GetParam), new Type[] { typeof(string) });
-            MethodInfo funcPref = customFuncType.GetMethod(nameof(Pref), new Type[] { typeof(string) });
-            MethodInfo funcVar = customFuncType.GetMethod(nameof(Var), new Type[] { typeof(string) });
-            MethodInfo funcLog = customFuncType.GetMethod(nameof(Log), new Type[] { typeof(string) });
-            MethodInfo funcDebug = customFuncType.GetMethod(nameof(Debug), new Type[] { typeof(object) });
-            MethodInfo funcExtendedValue = customFuncType.GetMethod(nameof(ExtendedValue), new Type[] { typeof(decimal), typeof(string) });
-
-            //Register simple function
-            RegisteredObjects.AddFunction(getResourceFunction, "Custom");
-            RegisteredObjects.AddFunction(funcGetParam, "Custom");
-            RegisteredObjects.AddFunction(funcPref, "Custom");
-            RegisteredObjects.AddFunction(funcVar, "Custom");
-            RegisteredObjects.AddFunction(funcLog, "Custom");
-            RegisteredObjects.AddFunction(funcDebug, "Custom");
-            RegisteredObjects.AddFunction(funcExtendedValue, "Custom");
+            foreach (var function in functions)
+            {
+                RegisteredObjects.AddFunction(function,"Custom");
+            }
         }
 
         private static void RegisterSystemVars(string pAppName)
@@ -63,9 +45,6 @@ namespace LogicPOS.Reporting.Utility
             }
         }
 
-        /// <summary>
-        /// Register Custom Variables to Use With Func Var and Assign it to GlobalFramework.FastReportCustomVars
-        /// </summary>
         public static void RegisterCustomVars(string pAppName)
         {
             Dictionary<string, string> customVars = new Dictionary<string, string>
@@ -128,120 +107,6 @@ namespace LogicPOS.Reporting.Utility
             }
 
             PrintingSettings.FastReportCustomVars = customVars;
-        }
-
-        public static string GetParam(string key)
-        {
-            try
-            {
-                string result = $"Key not found [{key}]";
-
-                if (PrintingSettings.FastReportCustomVars.ContainsKey(key.ToUpper()))
-                {
-                    result = PrintingSettings.FastReportCustomVars[key.ToUpper()];
-                }
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-                return "ERROR";
-            }
-        }
-
-        /// <summary>
-        /// Get Custom Var
-        /// </summary>
-        /// <param name="Token"></param>
-        /// <returns>Custom Var String</returns>
-        public static string Var(string pToken)
-        {
-            try
-            {
-                string result = PrintingSettings.FastReportCustomVars.ContainsKey(pToken.ToUpper())
-                  ? PrintingSettings.FastReportCustomVars[pToken.ToUpper()]
-                  : string.Format("UNDEFINED [{0}]", pToken);
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-                return "ERROR";
-            }
-        }
-
-        /// <summary>
-        /// Get Preference Parameter String from Token
-        /// </summary>
-        /// <param name="Token"></param>
-        /// <returns>Preference Parameter String</returns>
-        public static string Pref(string pToken)
-        {
-            try
-            {
-                string result = GeneralSettings.PreferenceParameters.ContainsKey(pToken.ToUpper())
-                  ? GeneralSettings.PreferenceParameters[pToken.ToUpper()]
-                  : string.Format("UNDEFINED [{0}]", pToken);
-
-                return result;
-            }
-            catch (Exception ex)
-            {
-                return "ERROR";
-            }
-        }
-
-        /// <summary>
-        /// Convert Decimal to ExtendedValue
-        /// </summary>
-        /// <param name="Value"></param>
-        public static string ExtendedValue(decimal pValue, string pAcronym)
-        {
-            try
-            {
-                NumberToWordsUtility extendValue = new NumberToWordsUtility();
-                return extendValue.GetExtendedValue(pValue, pAcronym);
-            }
-            catch (Exception ex)
-            {
-                return "ERROR";
-            }
-        }
-
-        /// <summary>
-        /// Send to Log
-        /// </summary>
-        /// <param name="Output"></param>
-        public static string Log(string pOutput)
-        {
-            try
-            {
-                _logger.Debug(string.Format("FastReport: [{0}]", pOutput));
-                return "LOG";
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-                return "ERROR";
-            }
-        }
-
-        /// <summary>
-        /// SendObject to Debug
-        /// </summary>
-        /// <param name="Object"></param>
-        public static string Debug(object pObject)
-        {
-            try
-            {
-                _logger.Debug(string.Format("FastReport: Debug Object Type [{0}]", pObject.GetType()));
-                return "DEBUG";
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-                return "ERROR";
-            }
         }
 
         public static string GetReportFilePath(string reportFileName)

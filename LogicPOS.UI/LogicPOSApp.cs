@@ -359,7 +359,7 @@ namespace logicpos
             }
 
             //Init FastReports Custom Functions and Custom Vars
-            ReportingUtils.Register(POSSettings.AppName);
+            FastReportUtils.InitializeFastReports(POSSettings.AppName);
 
             //Hardware : Init Display
             if (TerminalSettings.LoggedTerminal.PoleDisplay != null)
