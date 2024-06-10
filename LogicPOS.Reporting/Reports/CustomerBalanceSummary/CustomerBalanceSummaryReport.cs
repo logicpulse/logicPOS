@@ -15,6 +15,8 @@ namespace LogicPOS.Reporting.Reports.CustomerBalanceSummary
         private const string REPORT_FILENAME = "ReportDocumentFinanceCustomerBalanceSummary.frx";
         private readonly Common.FastReport _report;
         private readonly CustomReportDisplayMode _viewMode;
+        private readonly string _filter;
+        private readonly string _readableFilter;
 
         public CustomerBalanceSummaryReport(
             CustomReportDisplayMode viewMode,
@@ -24,36 +26,35 @@ namespace LogicPOS.Reporting.Reports.CustomerBalanceSummary
         {
             _viewMode = viewMode;
 
-            string reportFileLocation = FastReportUtils.GetReportFilePath(REPORT_FILENAME);
+            _report =   new Common.FastReport(
+                reportFileName: REPORT_FILENAME,
+                templateBase: Common.FastReport.FILENAME_TEMPLATE_BASE_SIMPLE,
+                numberOfCopies: 1);
 
-            _report = new Common.FastReport(
-                reportFileLocation,
-                Common.FastReport.FILENAME_TEMPLATE_BASE_SIMPLE,
-                1);
+            _filter = filter;
+            _readableFilter = readableFilter;
 
+            Initialize();
+        }
+
+        public void Initialize()
+        {
+            SetParametersValues();
+            PrepareDataSources();
+        }
+
+        private void SetParametersValues()
+        {
             _report.SetParameterValue("Report Title", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "report_customer_balance_summary"));
             _report.SetParameterValue("Report_FileName_loggero", GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
             _report.SetParameterValue("Report_FileName_loggero_Small", GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
 
-            if (!string.IsNullOrEmpty(readableFilter)) _report.SetParameterValue("Report Filter", readableFilter);
-
-            ReportList<CustomerBalanceSummaryReportData> gcCustomerBalanceSummary = new ReportList<CustomerBalanceSummaryReportData>(filter);
-            ReportList<CustomerBalanceDetailsReport> gcCustomerBalanceDetails = new ReportList<CustomerBalanceDetailsReport>(filter.Replace("CustomerSinceDate", "Date"));
-
-            // Decrypt Phase
-            if (PluginSettings.HasSoftwareVendorPlugin)
-            {
-                Decrypt(gcCustomerBalanceSummary, gcCustomerBalanceDetails);
-            }
-
-            PrepareDataSources(gcCustomerBalanceSummary);
-
-           
+            if (!string.IsNullOrEmpty(_readableFilter)) _report.SetParameterValue("Report Filter", _readableFilter);
         }
 
         private static void Decrypt(
             ReportList<CustomerBalanceSummaryReportData> gcCustomerBalanceSummary, 
-            ReportList<CustomerBalanceDetailsReport> gcCustomerBalanceDetails)
+            ReportList<CustomerBalanceDetailsReportData> gcCustomerBalanceDetails)
         {
             foreach (var customerBalance in gcCustomerBalanceDetails)
             {
@@ -81,9 +82,19 @@ namespace LogicPOS.Reporting.Reports.CustomerBalanceSummary
             }
         }
 
-        private void PrepareDataSources(ReportList<CustomerBalanceSummaryReportData> reportData)
+        private void PrepareDataSources()
         {
-            _report.RegisterData(reportData, "CustomerBalanceSummary");
+            ReportList<CustomerBalanceSummaryReportData> gcCustomerBalanceSummary = new ReportList<CustomerBalanceSummaryReportData>(_filter);
+            ReportList<CustomerBalanceDetailsReportData> gcCustomerBalanceDetails = new ReportList<CustomerBalanceDetailsReportData>(_filter.Replace("CustomerSinceDate", "Date"));
+
+            // Decrypt Phase
+            if (PluginSettings.HasSoftwareVendorPlugin)
+            {
+                Decrypt(gcCustomerBalanceSummary, gcCustomerBalanceDetails);
+            }
+
+            _report.RegisterData(gcCustomerBalanceSummary, "CustomerBalanceSummary");
+
             if (_report.GetDataSource("CustomerBalanceSummary") != null)
             {
                 _report.GetDataSource("CustomerBalanceSummary").Enabled = true;

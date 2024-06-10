@@ -1,10 +1,12 @@
-﻿using LogicPOS.Data.XPO.Settings;
+﻿using FastReport.Format;
+using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.DTOs.Printing;
 using LogicPOS.Globalization;
 using LogicPOS.Printing.Common;
 using LogicPOS.Printing.Enums;
 using LogicPOS.Settings;
+using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -230,7 +232,7 @@ namespace LogicPOS.Printing.Templates
                 //Printed On | Company|App|Version
                 _genericThermalPrinter.WriteLine(string.Format("{1}: {2}{0}{3}: {4} {5}"
                     , Environment.NewLine
-                    , LogicPOS.Utility.ResourcesUtility.GetResourceByName("global_printed_on_date")
+                    , GeneralUtils.GetResourceByName("global_printed_on_date")
                     , XPOUtility.CurrentDateTimeAtomic().ToString(CultureSettings.DateTimeFormat)
                     , _customVars["APP_COMPANY"]
                     , _customVars["APP_NAME"]

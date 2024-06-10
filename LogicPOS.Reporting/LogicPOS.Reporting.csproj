@@ -56,7 +56,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Reports\CompanyBilling\CompanyBillingReport.cs" />
     <Compile Include="Reports\CustomerBalanceSummary\CustomerBalanceSummaryReport.cs" />
+    <Compile Include="Reports\SalesByDate\SalesByDateReport.cs" />
+    <Compile Include="Reports\SalesByFinanceDocument\SalesByFinanceDocumentReport.cs" />
     <Compile Include="Utility\FastReportCustomFunctions.cs" />
     <Compile Include="Utility\ReportMapping.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -75,10 +78,10 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Reports\Documents\CurrentAccountReport.cs" />
-    <Compile Include="Reports\Documents\CustomerBalanceDetailsReport.cs" />
+    <Compile Include="Reports\Documents\CustomerBalanceDetailsReportData.cs" />
     <Compile Include="Reports\CustomerBalanceSummary\CustomerBalanceSummaryReportData.cs" />
     <Compile Include="Reports\Documents\FinanceDetailReport.cs" />
-    <Compile Include="Reports\Documents\FinanceMasterReport.cs" />
+    <Compile Include="Reports\Documents\FinanceMasterReportData.cs" />
     <Compile Include="Reports\Documents\FinanceMasterDetailGroupViewReport.cs" />
     <Compile Include="Reports\Documents\FinanceMasterDetailViewReport.cs" />
     <Compile Include="Reports\Documents\FinanceMasterTotalViewReport.cs" />
@@ -135,6 +138,9 @@
     <PackageReference Include="log4net">
       <Version>2.0.17</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Reports\FinanceMaster\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

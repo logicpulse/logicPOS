@@ -6,9 +6,11 @@ using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.shared.Enums;
 using LogicPOS.Globalization;
+using LogicPOS.Reporting.Reports;
 using LogicPOS.Reporting.Reports.CustomerBalanceSummary;
 using LogicPOS.Settings;
 using LogicPOS.Shared.CustomDocument;
+using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 
@@ -316,24 +318,24 @@ OR
                 switch (reportToken)
                 {
                     case ReportsTypeToken.REPORT_SALES_PER_FINANCE_DOCUMENT:
-                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentMasterList(displayMode
-                            , CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, reportToken.ToString().ToLower())
-                            , "[DocumentFinanceMaster.DocumentType.Ord]"
-                            , "([DocumentFinanceMaster.DocumentType.Code]) [DocumentFinanceMaster.DocumentType.Designation]",/* IN009066 */
-                            reportFilter,
-                            reportFilterHumanReadable
-                            );
+
+                        PresentSalesByFinanceDocumentReport(
+                            reportFilter, 
+                            reportFilterHumanReadable, 
+                            displayMode);
+
                         break;
+
                     case ReportsTypeToken.REPORT_SALES_PER_DATE:
-                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentMasterList(displayMode
-                            , CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, reportToken.ToString().ToLower())
-                            , "[DocumentFinanceMaster.DocumentDate]"
-                            , "[DocumentFinanceMaster.DocumentDate]",
-                            reportFilter,
-                            reportFilterHumanReadable
-                            );
-                        this._windowTitle = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "report_sales_per_date");
+                       
+                        PresentSalesByDateReport(
+                            reportFilter, 
+                            reportFilterHumanReadable, 
+                            displayMode);
+
+                        this._windowTitle = GeneralUtils.GetResourceByName("report_sales_per_date");
                         break;
+
                     case ReportsTypeToken.REPORT_SALES_PER_USER:
                         LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentMasterList(displayMode
                             , CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, reportToken.ToString().ToLower())
@@ -782,7 +784,12 @@ OR
 
 
                     case ReportsTypeToken.REPORT_COMPANY_BILLING:
-                        LogicPOS.Reporting.Common.FastReport.ProcessReportCompanyBilling(displayMode, reportFilter, reportFilterHumanReadable);
+
+                        PresentCompanyBillingReport(
+                            reportFilter, 
+                            reportFilterHumanReadable, 
+                            displayMode);
+
                         break;
                     case ReportsTypeToken.REPORT_LIST_USER_COMMISSION:
                         LogicPOS.Reporting.Common.FastReport.ProcessReportUserCommission(displayMode, reportFilter, reportFilterHumanReadable);
@@ -806,7 +813,8 @@ OR
                     case ReportsTypeToken.REPORT_SALES_PER_VAT_BY_ARTICLE_CLASS:
                         LogicPOS.Reporting.Common.FastReport.ProcessReportVatSalesByClassResumed(displayMode, reportFilter, reportFilterHumanReadable);
                         break;
-                    // ABove are not Implemented Yet
+
+                    // Reports Not Implemented
                     case ReportsTypeToken.REPORT_TOTAL_PER_FAMILY:
                         break;
                     case ReportsTypeToken.REPORT_TOP_CLOSE_EMPLOYEES:
@@ -856,12 +864,47 @@ OR
             }
         }
 
-        private static void PresentCostumerBalanceSummaryReport(string reportFilter, string reportFilterHumanReadable, CustomReportDisplayMode displayMode)
+        private void PresentSalesByDateReport(
+            string reportFilter, 
+            string reportFilterHumanReadable, 
+            CustomReportDisplayMode displayMode)
+        {
+            var report = new SalesByDateReport(
+                displayMode, 
+                reportFilter, 
+                reportFilterHumanReadable);
+
+            report.Present();
+        }
+
+        private static void PresentSalesByFinanceDocumentReport(string reportFilter, string reportFilterHumanReadable, CustomReportDisplayMode displayMode)
+        {
+            var report = new SalesByFinanceDocumentReport(
+                displayMode, 
+                reportFilter, 
+                reportFilterHumanReadable);
+            report.Present();
+        }
+
+        private static void PresentCompanyBillingReport(string reportFilter, string reportFilterHumanReadable, CustomReportDisplayMode displayMode)
+        {
+            var companBillingReport = new CompanyBillingReport(
+                displayMode,
+                reportFilter,
+                reportFilterHumanReadable);
+
+            companBillingReport.Present();
+        }
+
+        private static void PresentCostumerBalanceSummaryReport(
+            string reportFilter, 
+            string reportFilterHumanReadable, 
+            CustomReportDisplayMode displayMode)
         {
             var customerBalanceSummaryReport = new CustomerBalanceSummaryReport(
-                                        displayMode,
-                                        reportFilter,
-                                        reportFilterHumanReadable);
+                displayMode,
+                reportFilter,
+                reportFilterHumanReadable);
 
             customerBalanceSummaryReport.Present();
         }

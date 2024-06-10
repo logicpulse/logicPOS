@@ -72,7 +72,7 @@ using System;
 namespace LogicPOS.Reporting.Reports.Documents
 {
     [Report(Entity = "view_documentfinancecustomerbalancedetails")]
-    internal class CustomerBalanceDetailsReport : ReportData
+    internal class CustomerBalanceDetailsReportData : ReportData
     {
         [Report(Field = "DocumentTypeOid")]
         //Primary Oid (Required)

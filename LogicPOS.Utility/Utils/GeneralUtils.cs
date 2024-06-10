@@ -267,5 +267,12 @@ namespace LogicPOS.Utility
             return listResult;
         }
 
+        public static string GetResourceByName(string resourceName)
+        {
+            return CultureResources.GetResourceByLanguage(
+                CultureSettings.CurrentCultureName,
+                resourceName);
+        }
+
     }
 }
