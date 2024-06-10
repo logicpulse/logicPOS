@@ -1,35 +1,36 @@
 ﻿using FastReport;
+using logicpos.shared.Enums;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Globalization;
 using LogicPOS.Reporting.Common;
 using LogicPOS.Reporting.Reports.Documents;
 using LogicPOS.Settings;
 using LogicPOS.Shared.CustomDocument;
-using logicpos.shared.Enums;
 using LogicPOS.Utility;
 using System;
-using LogicPOS.Reporting.Reports.Customers;
 
 namespace LogicPOS.Reporting.Reports
 {
-    public class SalesByDateReport
+    public abstract class SalesReport
     {
         private const string REPORT_FILENAME = "ReportDocumentFinanceMasterList.frx";
-        private readonly Common.FastReport _report;
-        private readonly CustomReportDisplayMode _viewMode;
-        private readonly string _filter;
+        protected readonly Common.FastReport _report;
         private readonly string _readableFilter;
-        private readonly string _groupTitle = "[DocumentFinanceMaster.DocumentDate]";
-        private readonly string _groupCondition = "[DocumentFinanceMaster.DocumentDate]";
+        private readonly string _groupTitle;
+        private readonly string _groupCondition;
+        private readonly string _reportToken;
+        private readonly string _filter;
+        protected readonly CustomReportDisplayMode _viewMode;
 
-        public SalesByDateReport(
-            CustomReportDisplayMode viewMode,
+        public SalesReport(
             string filter,
-            string readableFilter
+            string readableFilter,
+            string groupTitle,
+            string groupCondition,
+            string reportToken,
+            CustomReportDisplayMode viewMode
             )
         {
-            _viewMode = viewMode;
-
             _report = new Common.FastReport(
                 reportFileName: REPORT_FILENAME,
                 templateBase: Common.FastReport.FILENAME_TEMPLATE_BASE_SIMPLE,
@@ -37,8 +38,10 @@ namespace LogicPOS.Reporting.Reports
 
             _filter = filter;
             _readableFilter = readableFilter;
-
-            Initialize();
+            _groupTitle = groupTitle;
+            _groupCondition = groupCondition;
+            _reportToken = reportToken.ToLower();
+            _viewMode = viewMode;
         }
 
         public void Initialize()
@@ -47,10 +50,15 @@ namespace LogicPOS.Reporting.Reports
             PrepareDataSources();
         }
 
+        private static void Decrypt(FinanceMasterReportData item)
+        {
+            item.EntityName = PluginSettings.SoftwareVendor.Decrypt(item.EntityName);
+            item.EntityFiscalNumber = PluginSettings.SoftwareVendor.Decrypt(item.EntityFiscalNumber);
+        }
+
         private void SetParametersValues()
         {
-            var reportToken = "REPORT_SALES_PER_DATE".ToLower();
-            var reportTitle = GeneralUtils.GetResourceByName(reportToken);
+            var reportTitle = GeneralUtils.GetResourceByName(_reportToken);
             _report.SetParameterValue("Report Title", reportTitle);
             _report.SetParameterValue("Report_FileName_loggero", GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
             _report.SetParameterValue("Report_FileName_loggero_Small", GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
@@ -59,6 +67,7 @@ namespace LogicPOS.Reporting.Reports
             {
                 _report.SetParameterValue("Report Filter", _readableFilter);
             }
+
 
             GroupHeaderBand groupHeaderBand = (GroupHeaderBand)_report.FindObject("GroupHeader1");
             TextObject groupHeaderBandText = (TextObject)_report.FindObject("TextGroupHeader1");
@@ -73,13 +82,7 @@ namespace LogicPOS.Reporting.Reports
             }
         }
 
-        private static void Decrypt(FinanceMasterReportData item)
-        {
-            item.EntityName = PluginSettings.SoftwareVendor.Decrypt(item.EntityName);
-            item.EntityFiscalNumber = PluginSettings.SoftwareVendor.Decrypt(item.EntityFiscalNumber);
-        }
-
-        private void PrepareDataSources()
+        protected virtual void PrepareDataSources()
         {
             ReportList<FinanceMasterReportData> financeMasterReportDataList = new ReportList<FinanceMasterReportData>(_filter);
 
@@ -88,7 +91,7 @@ namespace LogicPOS.Reporting.Reports
             {
                 if (PluginSettings.HasSoftwareVendorPlugin)
                 {
-                   Decrypt(item);
+                    Decrypt(item);
                 }
 
                 if (CustomDocumentSettings.CreditNoteDocumentTypeId.Equals(item.DocumentType.Oid))
@@ -134,10 +137,11 @@ namespace LogicPOS.Reporting.Reports
             if (_report.GetDataSource("DocumentFinanceMaster") != null) _report.GetDataSource("DocumentFinanceMaster").Enabled = true;
         }
 
-        public void Present()
+        public virtual void Present()
         {
             _report.Process(_viewMode);
             _report.Dispose();
         }
+
     }
 }

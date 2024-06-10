@@ -20,7 +20,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
     internal partial class PosReportsDialog
     {
-        public static CustomReportDisplayMode exportType;
+        public static CustomReportDisplayMode reportType;
 
         private void buttonReportUnderConstruction_Clicked(object sender, EventArgs e)
         {
@@ -306,15 +306,10 @@ OR
                 }
             }
 
-            // Proceed if we have a Filter != null (ResponseType.Ok), ex can be a string.Empty
-            //if (reportFilter != null || !financialViewMode)
-            if (reportFilter != null/* || reportsQueryDialogMode != ReportsQueryDialogMode.UNDEFINED*/)
+
+            if (reportFilter != null)
             {
-                //CustomReportDisplayMode displayMode = (Debugger.IsAttached)
-                //    ? CustomReportDisplayMode.Design
-                //    : CustomReportDisplayMode.ExportPDF;
-                // Now we have two types of export according the Button response
-                CustomReportDisplayMode displayMode = exportType;
+                CustomReportDisplayMode displayMode = reportType;
                 switch (reportToken)
                 {
                     case ReportsTypeToken.REPORT_SALES_PER_FINANCE_DOCUMENT:
@@ -337,79 +332,66 @@ OR
                         break;
 
                     case ReportsTypeToken.REPORT_SALES_PER_USER:
-                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentMasterList(displayMode
-                            , CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, reportToken.ToString().ToLower())
-                            , "[DocumentFinanceMaster.CreatedBy.Ord]"
-                            , "([DocumentFinanceMaster.CreatedBy.Code]) [DocumentFinanceMaster.CreatedBy.Name]",/* IN009066 */
-                            reportFilter,
-                            reportFilterHumanReadable
-                            );
+                       
+                        PresentSalesByDateReport(
+                            reportFilter, 
+                            reportFilterHumanReadable, 
+                            displayMode);
+
                         break;
+
                     case ReportsTypeToken.REPORT_SALES_PER_TERMINAL:
-                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentMasterList(displayMode
-                            , CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, reportToken.ToString().ToLower())
-                            , "[DocumentFinanceMaster.CreatedWhere.Ord]"
-                            , "([DocumentFinanceMaster.CreatedWhere.Code]) [DocumentFinanceMaster.CreatedWhere.Designation]",/* IN009066 */
-                            reportFilter,
-                            reportFilterHumanReadable
-                            );
+                       
+                        PresentSalesByTerminalReport(
+                            reportFilter, 
+                            reportFilterHumanReadable, 
+                            displayMode);
+
                         break;
+
                     case ReportsTypeToken.REPORT_SALES_PER_CUSTOMER:
-                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentMasterList(displayMode
-                            , CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, reportToken.ToString().ToLower())
-                            , "[DocumentFinanceMaster.EntityFiscalNumber]"
-                            , "[DocumentFinanceMaster.EntityFiscalNumber] / [DocumentFinanceMaster.EntityName]",/* IN009066 */
-                            reportFilter,
-                            reportFilterHumanReadable
-                            );
+                        
+                        PresentSalesByCustomerReport(
+                            reportFilter, 
+                            reportFilterHumanReadable, 
+                            displayMode);
+
                         break;
+
                     case ReportsTypeToken.REPORT_SALES_PER_PAYMENT_METHOD:
-                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentMasterList(displayMode
-                            , CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, reportToken.ToString().ToLower())
-                            , "[DocumentFinanceMaster.PaymentMethod.Ord]"
-                            , "([DocumentFinanceMaster.PaymentMethod.Code]) [DocumentFinanceMaster.PaymentMethod.Designation]",/* IN009066 - Duplicate of REPORT_SALES_PER_PAYMENT_CONDITION */
-                            /* IN009066 - Faturas and Notas de Crédito were not in this report, because they have no Payment Method. Now the issue is fixed */
-                            // Required to Exclude Documents without PaymentMethod else Errors Occur
-                            reportFilter,
-                            //(string.IsNullOrEmpty(reportFilter)) ? "PaymentMethod IS NOT NULL" : string.Format("{0} AND PaymentMethod IS NOT NULL", reportFilter),
-                            /* IN009066 - end */
-                            reportFilterHumanReadable
-                            );
+
+                        PresentSalesByPaymentMethodReport(
+                            reportFilter, 
+                            reportFilterHumanReadable, 
+                            displayMode);
+
                         break;
+
                     case ReportsTypeToken.REPORT_SALES_PER_PAYMENT_CONDITION:
-                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentMasterList(displayMode
-                            , CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, reportToken.ToString().ToLower())
-                            , "[DocumentFinanceMaster.PaymentCondition.Ord]"
-                            , "([DocumentFinanceMaster.PaymentCondition.Code]) [DocumentFinanceMaster.PaymentCondition.Designation]",/* IN009066 */
-                            /* IN009066 - Faturas Simplificadas and Notas de Crédito were not in this report, because they have no Payment Condition. Now the issue is fixed */
-                            // Required to Exclude Documents without PaymentCondition else Errors Occur
-                            reportFilter,
-                            //(string.IsNullOrEmpty(reportFilter)) ? "PaymentCondition IS NOT NULL" : string.Format("{0} AND PaymentCondition IS NOT NULL", reportFilter),
-                            /* IN009066 - end */
-                            reportFilterHumanReadable
-                            );
+                        
+                        PresentSalesByPaymentConditionReport(
+                            reportFilter, 
+                            reportFilterHumanReadable, 
+                            displayMode);
+
                         break;
+
                     case ReportsTypeToken.REPORT_SALES_PER_CURRENCY:
-                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentMasterList(displayMode
-                            , CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, reportToken.ToString().ToLower())
-                            , "[DocumentFinanceMaster.Currency.Ord]"
-                            , "([DocumentFinanceMaster.Currency.Code]) [DocumentFinanceMaster.Currency.Designation]",/* IN009066 */
-                            /* IN009066 - Faturas Simplificadas and Notas de Crédito were not in this report, because they have no Payment Condition. Now the issue is fixed */
-                            reportFilter,
-                            // Required to Exclude Documents without PaymentCondition else Errors Occur
-                            //(string.IsNullOrEmpty(reportFilter)) ? "PaymentCondition IS NOT NULL" : string.Format("{0} AND PaymentCondition IS NOT NULL", reportFilter),
-                            /* IN009066 - end */
-                            reportFilterHumanReadable
-                            );
+                        
+                        PresentSalesByCurrencyReport(
+                            reportFilter, 
+                            reportFilterHumanReadable, 
+                            displayMode);
+
                         break;
+
                     case ReportsTypeToken.REPORT_SALES_PER_COUNTRY:
-                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentMasterList(displayMode
-                            , CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, reportToken.ToString().ToLower())
-                            , "[DocumentFinanceMaster.EntityCountry]"
-                            , "[DocumentFinanceMaster.EntityCountry]",
-                            reportFilter,
-                            reportFilterHumanReadable
-                            );
+
+                        PresentSalesByCountryReport(
+                            reportFilter, 
+                            reportFilterHumanReadable, 
+                            displayMode);
+
                         break;
 
                     //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -791,6 +773,7 @@ OR
                             displayMode);
 
                         break;
+
                     case ReportsTypeToken.REPORT_LIST_USER_COMMISSION:
                         LogicPOS.Reporting.Common.FastReport.ProcessReportUserCommission(displayMode, reportFilter, reportFilterHumanReadable);
                         break;
@@ -814,54 +797,88 @@ OR
                         LogicPOS.Reporting.Common.FastReport.ProcessReportVatSalesByClassResumed(displayMode, reportFilter, reportFilterHumanReadable);
                         break;
 
-                    // Reports Not Implemented
-                    case ReportsTypeToken.REPORT_TOTAL_PER_FAMILY:
-                        break;
-                    case ReportsTypeToken.REPORT_TOP_CLOSE_EMPLOYEES:
-                        break;
-                    case ReportsTypeToken.REPORT_OCCUPATION_AVERAGE:
-                        break;
-                    case ReportsTypeToken.REPORT_ZONE_TOTAL:
-                        break;
-                    case ReportsTypeToken.REPORT_CLOSE_PEAK_HOUR:
-                        break;
-                    case ReportsTypeToken.REPORT_TOP_OFFERS:
-                        break;
-                    case ReportsTypeToken.REPORT_TOP_EMPLOYEE_RECORDS:
-                        break;
-                    case ReportsTypeToken.REPORT_RECORD_PEAK_HOUR:
-                        break;
-                    case ReportsTypeToken.REPORT_EMPLOYEE_MOVENTS:
-                        break;
-                    case ReportsTypeToken.REPORT_ACOUNT_BALANCE:
-                        break;
-                    case ReportsTypeToken.REPORT_WITHHOLDING_TAX:
-                        break;
-                    case ReportsTypeToken.REPORT_BALANCE_SHEET:
-                        break;
-                    case ReportsTypeToken.REPORT_SERVICE_HOURS:
-                        break;
-                    case ReportsTypeToken.REPORT_COURIER_DELIVER:
-                        break;
-                    case ReportsTypeToken.REPORT_CANCELED_ARTICLES_PER_EMPLOYEE:
-                        break;
-                    case ReportsTypeToken.REPORT_LIST_INVENTORY:
-                        break;
-                    case ReportsTypeToken.REPORT_DISCOUNTS_PER_USER:
-                        break;
-                    case ReportsTypeToken.REPORT_LIST_CONSUMPTION_PER_USER:
-                        break;
-                    case ReportsTypeToken.REPORT_CASH_TOTAL:
-                        break;
-                    case ReportsTypeToken.REPORT_LIST_WORKSESSION:
-                        break;
-                    case ReportsTypeToken.REPORT_LIST_CLOSE_WORKSESSION:
-                        break;
                     default:
-                        _logger.Error(string.Format("Undetected Token: [{0}]", reportToken));
-                        break;
+                        throw new NotImplementedException("Report not implemented: " + reportToken.ToString());
                 }
             }
+        }
+
+        private void PresentSalesByCountryReport(
+            string reportFilter, 
+            string reportFilterHumanReadable, 
+            CustomReportDisplayMode displayMode)
+        {
+            var report = new SalesByCountryReport(
+                displayMode, 
+                reportFilter, 
+                reportFilterHumanReadable);
+
+            report.Present();
+        }
+
+        private void PresentSalesByCurrencyReport(
+            string reportFilter, 
+            string reportFilterHumanReadable, 
+            CustomReportDisplayMode displayMode)
+        {
+            var report = new SalesByCurrencyReport(
+                displayMode, 
+                reportFilter, 
+                reportFilterHumanReadable);
+
+            report.Present();
+        }
+
+        private void PresentSalesByPaymentConditionReport(
+            string reportFilter, 
+            string reportFilterHumanReadable, 
+            CustomReportDisplayMode displayMode)
+        {
+            var report = new SalesByPaymentConditionReport(
+                displayMode, 
+                reportFilter, 
+                reportFilterHumanReadable);
+
+            report.Present();
+        }
+
+        private void PresentSalesByPaymentMethodReport(
+            string reportFilter, 
+            string reportFilterHumanReadable, 
+            CustomReportDisplayMode displayMode)
+        {
+            var report = new SalesByPaymentMethodReport(
+                displayMode, 
+                reportFilter, 
+                reportFilterHumanReadable);
+
+            report.Present();
+        }
+
+        private void PresentSalesByCustomerReport(
+            string reportFilter, 
+            string reportFilterHumanReadable, 
+            CustomReportDisplayMode displayMode)
+        {
+            var report = new SalesByCustomerReport(
+                displayMode, 
+                reportFilter, 
+                reportFilterHumanReadable);
+
+            report.Present();
+        }
+
+        private void PresentSalesByTerminalReport(
+            string reportFilter, 
+            string reportFilterHumanReadable, 
+            CustomReportDisplayMode displayMode)
+        {
+            var report = new SalesByTerminalReport(
+                displayMode, 
+                reportFilter, 
+                reportFilterHumanReadable);
+
+            report.Present();
         }
 
         private void PresentSalesByDateReport(
@@ -873,11 +890,13 @@ OR
                 displayMode, 
                 reportFilter, 
                 reportFilterHumanReadable);
-
             report.Present();
         }
 
-        private static void PresentSalesByFinanceDocumentReport(string reportFilter, string reportFilterHumanReadable, CustomReportDisplayMode displayMode)
+        private void PresentSalesByFinanceDocumentReport(
+            string reportFilter, 
+            string reportFilterHumanReadable, 
+            CustomReportDisplayMode displayMode)
         {
             var report = new SalesByFinanceDocumentReport(
                 displayMode, 
@@ -886,7 +905,10 @@ OR
             report.Present();
         }
 
-        private static void PresentCompanyBillingReport(string reportFilter, string reportFilterHumanReadable, CustomReportDisplayMode displayMode)
+        private void PresentCompanyBillingReport(
+            string reportFilter, 
+            string reportFilterHumanReadable, 
+            CustomReportDisplayMode displayMode)
         {
             var companBillingReport = new CompanyBillingReport(
                 displayMode,
@@ -896,7 +918,7 @@ OR
             companBillingReport.Present();
         }
 
-        private static void PresentCostumerBalanceSummaryReport(
+        private void PresentCostumerBalanceSummaryReport(
             string reportFilter, 
             string reportFilterHumanReadable, 
             CustomReportDisplayMode displayMode)

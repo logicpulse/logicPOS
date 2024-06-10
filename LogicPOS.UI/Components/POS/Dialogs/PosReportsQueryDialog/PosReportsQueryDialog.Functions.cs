@@ -94,7 +94,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             // Call Validate
             Validate();
-            PosReportsDialog.exportType = CustomReportDisplayMode.ExportXls;
+            PosReportsDialog.reportType = CustomReportDisplayMode.ExportXls;
             
             List<string> result = GetComposedFilter();
             if (result.Count == 2)
@@ -111,7 +111,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             // Call Validate
             Validate();
-            PosReportsDialog.exportType = CustomReportDisplayMode.ExportPDF;
+            PosReportsDialog.reportType = CustomReportDisplayMode.ExportPDF;
             
             List<string> result = GetComposedFilter();
             if (result.Count == 2)
@@ -136,7 +136,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 string countQuerySql = string.Empty;
                 if(pResponse == ResponseType.Ok)
                 {
-                    PosReportsDialog.exportType = CustomReportDisplayMode.ExportPDF;
+                    PosReportsDialog.reportType = CustomReportDisplayMode.ExportPDF;
                 }
 
                 try

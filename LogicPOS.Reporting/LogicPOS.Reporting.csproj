@@ -58,8 +58,16 @@
   <ItemGroup>
     <Compile Include="Reports\CompanyBilling\CompanyBillingReport.cs" />
     <Compile Include="Reports\CustomerBalanceSummary\CustomerBalanceSummaryReport.cs" />
-    <Compile Include="Reports\SalesByDate\SalesByDateReport.cs" />
-    <Compile Include="Reports\SalesByFinanceDocument\SalesByFinanceDocumentReport.cs" />
+    <Compile Include="Reports\Sales\Common\SalesReport.cs" />
+    <Compile Include="Reports\Sales\SaleByPaymentCondition\SalesByPaymentConditionReport.cs" />
+    <Compile Include="Reports\Sales\SalesByCostumer\SalesByCustomerReport.cs" />
+    <Compile Include="Reports\Sales\SalesByCountry\SalesByCountryReport.cs" />
+    <Compile Include="Reports\Sales\SalesByCurrency\SalesByCurrencyReport.cs" />
+    <Compile Include="Reports\Sales\SalesByDate\SalesByDateReport.cs" />
+    <Compile Include="Reports\Sales\SalesByFinanceDocument\SalesByFinanceDocumentReport.cs" />
+    <Compile Include="Reports\Sales\SalesByPaymentMethod\SalesByPaymentMethodReport.cs" />
+    <Compile Include="Reports\Sales\SalesByTerminal\SalesByTerminalReport.cs" />
+    <Compile Include="Reports\Sales\SalesByUser\SalesByUserReport.cs" />
     <Compile Include="Utility\FastReportCustomFunctions.cs" />
     <Compile Include="Utility\ReportMapping.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -139,8 +147,6 @@
       <Version>2.0.17</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Reports\FinanceMaster\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
