@@ -15,7 +15,7 @@ namespace LogicPOS.Reporting.Reports.Documents
     //[FormatNumber([DocumentFinanceDetail.ArticleTotalFinal],2)]
 
     [Report(Entity = "view_documentfinance")]
-    public class FinanceMasterDetailGroupViewReport : ReportData
+    public class FinanceMasterDetailGroupViewReportData : ReportData
     {
         // Group
         public string GroupOid { get; set; }

@@ -114,7 +114,7 @@ namespace LogicPOS.Reporting.Reports
                     /* Case FS */
                     if (item.PaymentCondition == null)
                     {
-                        item.PaymentCondition = (fin_configurationpaymentcondition)uowSession.GetObjectByKey(typeof(fin_configurationpaymentcondition), InvoiceSettings.XpoOidConfigurationPaymentMethodInstantPayment); /* Sets "Pronto Pagamento" to FS */
+                        item.PaymentCondition = (fin_configurationpaymentcondition)uowSession.GetObjectByKey(typeof(fin_configurationpaymentcondition), InvoiceSettings.InstantPaymentMethodId); /* Sets "Pronto Pagamento" to FS */
                     }
                     /* Case FT */
                     if (item.PaymentMethod == null)

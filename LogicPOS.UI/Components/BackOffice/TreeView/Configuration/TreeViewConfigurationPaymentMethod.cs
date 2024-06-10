@@ -68,7 +68,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             );
 
             //Protected Records
-            ProtectedRecords.Add(InvoiceSettings.XpoOidConfigurationPaymentMethodInstantPayment);
+            ProtectedRecords.Add(InvoiceSettings.InstantPaymentMethodId);
         }
     }
 }

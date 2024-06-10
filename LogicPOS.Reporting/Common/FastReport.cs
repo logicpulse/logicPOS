@@ -1251,7 +1251,7 @@ namespace LogicPOS.Reporting.Common
                     /* Case FS */
                     if (item.PaymentCondition == null)
                     {
-                        item.PaymentCondition = (fin_configurationpaymentcondition)uowSession.GetObjectByKey(typeof(fin_configurationpaymentcondition), InvoiceSettings.XpoOidConfigurationPaymentMethodInstantPayment); /* Sets "Pronto Pagamento" to FS */
+                        item.PaymentCondition = (fin_configurationpaymentcondition)uowSession.GetObjectByKey(typeof(fin_configurationpaymentcondition), InvoiceSettings.InstantPaymentMethodId); /* Sets "Pronto Pagamento" to FS */
                     }
                     /* Case FT */
                     if (item.PaymentMethod == null)
@@ -1280,13 +1280,38 @@ namespace LogicPOS.Reporting.Common
         }
 
         // Used in Detail
-        public static void ProcessReportDocumentDetail(CustomReportDisplayMode pViewMode, string resourceString, string groupCondition, string groupTitle, string filter, string filterHumanReadable)
+        public static void ProcessReportDocumentDetail(
+            CustomReportDisplayMode pViewMode, 
+            string resourceString, 
+            string groupCondition, 
+            string groupTitle, 
+            string filter, 
+            string filterHumanReadable)
         {
-            ProcessReportDocumentDetail(pViewMode, resourceString, null, null, groupCondition, groupTitle, filter, filterHumanReadable, false);
+            ProcessReportDocumentDetail(
+                pViewMode, 
+                resourceString, 
+                null, 
+                null, 
+                groupCondition, 
+                groupTitle, 
+                filter, 
+                filterHumanReadable, 
+                false);
         }
 
         // Used in Detail/Group
-        public static void ProcessReportDocumentDetail(CustomReportDisplayMode pViewMode, string resourceString, string groupField, string groupSelectFields, string groupCondition, string groupTitle, string filter, string filterHumanReadable, bool grouped, bool decryptGroupField = false)
+        public static void ProcessReportDocumentDetail(
+            CustomReportDisplayMode pViewMode, 
+            string resourceString, 
+            string groupField, 
+            string groupSelectFields, 
+            string groupCondition, 
+            string groupTitle, 
+            string filter, 
+            string filterHumanReadable, 
+            bool grouped, 
+            bool decryptGroupField = false)
         {
             string reportFile = grouped
                 ? FastReportUtils.GetReportFilePath("ReportDocumentFinanceDetailGroupList.frx")
@@ -1329,11 +1354,11 @@ namespace LogicPOS.Reporting.Common
             if (!grouped)
             {
                 // Using view_documentfinance
-                ReportList<FinanceMasterDetailViewReport> gcDocumentFinanceMasterDetail = new ReportList<FinanceMasterDetailViewReport>(filter);
+                ReportList<FinanceMasterDetailViewReportData> gcDocumentFinanceMasterDetail = new ReportList<FinanceMasterDetailViewReportData>(filter);
                 /* IN009085 - FastReport throws error when there is no register */
                 if (gcDocumentFinanceMasterDetail.List.Count == 0)
                 {
-                    gcDocumentFinanceMasterDetail = new ReportList<FinanceMasterDetailViewReport>();
+                    gcDocumentFinanceMasterDetail = new ReportList<FinanceMasterDetailViewReportData>();
                 }
                 // Decrypt Phase
                 if (PluginSettings.HasSoftwareVendorPlugin)
@@ -1375,7 +1400,7 @@ namespace LogicPOS.Reporting.Common
                             if (item.PaymentCondition == null)
                             {
                                 /* Sets "Pronto Pagamento" to FS */
-                                fin_configurationpaymentcondition paymentCondition = (fin_configurationpaymentcondition)uowSession.GetObjectByKey(typeof(fin_configurationpaymentcondition), InvoiceSettings.XpoOidConfigurationPaymentMethodInstantPayment);
+                                fin_configurationpaymentcondition paymentCondition = (fin_configurationpaymentcondition)uowSession.GetObjectByKey(typeof(fin_configurationpaymentcondition), InvoiceSettings.InstantPaymentMethodId);
                                 item.PaymentCondition = paymentCondition.Designation;
                             }
                             /* Case FT */
@@ -1426,7 +1451,7 @@ namespace LogicPOS.Reporting.Common
                 string queryFields = string.Format("{0}, fdArticle AS ArticleOid, fdCode AS ArticleCode, fdDesignation AS ArticleDesignation, AVG((fdPrice - ((fdPrice * fdDiscount) / 100))) AS ArticlePriceWithDiscount, SUM(fdQuantity) AS ArticleQuantity, fdUnitMeasure AS ArticleUnitMeasure, SUM(fdTotalDiscount) AS ArticleTotalDiscount, SUM(fdTotalNet) AS ArticleTotalNet, SUM(fdTotalTax) AS ArticleTotalTax, SUM(fdTotalFinal) AS ArticleTotalFinal,COUNT(*) AS GroupCount", groupSelectFields);
 
                 // Using view_documentfinancesellgroup
-                ReportList<FinanceMasterDetailGroupViewReport> gcDocumentFinanceMasterDetail = new ReportList<FinanceMasterDetailGroupViewReport>(filter, queryGroupFields, string.Empty, queryFields);
+                ReportList<FinanceMasterDetailGroupViewReportData> gcDocumentFinanceMasterDetail = new ReportList<FinanceMasterDetailGroupViewReportData>(filter, queryGroupFields, string.Empty, queryFields);
 
                 // Decrypt Phase
                 if (PluginSettings.HasSoftwareVendorPlugin) /* IN009072 */

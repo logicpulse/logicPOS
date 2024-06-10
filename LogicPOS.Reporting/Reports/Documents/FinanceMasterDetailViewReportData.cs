@@ -5,7 +5,7 @@ namespace LogicPOS.Reporting.Reports.Documents
     // Extended FRBODocumentFinanceMasterView, Must redeclare [FRBO(Entity = "view_documentfinance")] we disable Inherited in FRBOAttribute
 
     [Report(Entity = "view_documentfinance")]
-    public class FinanceMasterDetailViewReport : FinanceMasterViewReport
+    public class FinanceMasterDetailViewReportData : FinanceMasterViewReport
     {
         //ArticleFamily
         [Report(Field = "afFamily")]                                                      //af.Oid AS afFamily,
