@@ -1,10 +1,10 @@
-﻿using LogicPOS.Reporting.Common;
+﻿using LogicPOS.Reporting.Data.Common;
 using System.Collections.Generic;
 
-namespace LogicPOS.Reporting.Reports.Articles
+namespace LogicPOS.Reporting.Reports.Data
 {
-    [Report(Entity = "fin_articlefamily")]
-    public class ArticleFamilyReport : ReportData
+    [ReportData(Entity = "fin_articlefamily")]
+    public class ArticleFamilyReportData : ReportData
     {
         public uint Ord { get; set; }
         public uint Code { get; set; }
@@ -14,7 +14,7 @@ namespace LogicPOS.Reporting.Reports.Articles
         public string ButtonImage { get; set; }
         public string ButtonIcon { get; set; }
         // Related Objects
-        public List<ArticleSubFamilyReport> ArticleSubFamily { get; set; }
+        public List<ArticleSubFamilyReportData> ArticleSubFamily { get; set; }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Static

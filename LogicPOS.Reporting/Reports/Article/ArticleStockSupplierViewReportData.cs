@@ -1,99 +1,99 @@
-﻿using LogicPOS.Reporting.Common;
+﻿using LogicPOS.Reporting.Data.Common;
 using System;
 
-namespace LogicPOS.Reporting.Reports.Articles
+namespace LogicPOS.Reporting.Reports.Data
 {
-    [Report(Entity = "view_articlestocksupplier")]
-    public class ArticleStockSupplierViewReport : ReportData
+    [ReportData(Entity = "view_articlestocksupplier")]
+    public class ArticleStockSupplierViewReportData : ReportData
     {
 
-        [Report(Field = "stmOid")]
+        [ReportData(Field = "stmOid")]
         //Primary Oid (Required) Stock Moviment
         override public string Oid { get; set; }                            //stmOid AS Oid,  
 
         // ArticleFamily
-        [Report(Field = "afaOid")]
+        [ReportData(Field = "afaOid")]
         public string ArticleFamily { get; set; }                        //afaOid AS ArticleFamily,
 
-        [Report(Field = "afaOrd")]
+        [ReportData(Field = "afaOrd")]
         public uint ArticleFamilyOrd { get; set; }                          //afaOrd AS ArticleFamilyOrd,
 
-        [Report(Field = "afaCode")]
+        [ReportData(Field = "afaCode")]
         public uint ArticleFamilyCode { get; set; }                         //afaCode AS ArticleFamilyCode,
 
-        [Report(Field = "afaDesignation")]
+        [ReportData(Field = "afaDesignation")]
         public string ArticleFamilyDesignation { get; set; }                //afaDesignation AS ArticleFamilyDesignation,
 
         // ArticleSubFamily
-        [Report(Field = "asfOid")]
+        [ReportData(Field = "asfOid")]
         public string ArticleSubFamily { get; set; }                        //asfOid AS ArticleSubFamily,
 
-        [Report(Field = "asfOrd")]
+        [ReportData(Field = "asfOrd")]
         public uint ArticleSubFamilyOrd { get; set; }                       //asfOrd AS ArticleSubFamilyOrd,
 
-        [Report(Field = "asfCode")]
+        [ReportData(Field = "asfCode")]
         public uint ArticleSubFamilyCode { get; set; }                      //asfCode AS ArticleSubFamilyCode,
 
-        [Report(Field = "asfDesignation")]
+        [ReportData(Field = "asfDesignation")]
         public string ArticleSubFamilyDesignation { get; set; }             //asfDesignation AS ArticleSubFamilyDesignation,
 
         // Article
-        [Report(Field = "Article")]
+        [ReportData(Field = "Article")]
         public string Article { get; set; }                                 //artOid AS Article,
 
-        [Report(Field = "artOrd")]
+        [ReportData(Field = "artOrd")]
         public uint ArticleOrd { get; set; }                                //artOrd AS ArticleOrd,
 
-        [Report(Field = "artCode")]
+        [ReportData(Field = "artCode")]
         public string ArticleCode { get; set; }                             //artCode AS ArticleCode,
 
-        [Report(Field = "artCodeDealer")]
+        [ReportData(Field = "artCodeDealer")]
         public string ArticleCodeDealer { get; set; }                       //artCodeDealer AS ArticleCodeDealer,
 
-        [Report(Field = "artDesignation")]
+        [ReportData(Field = "artDesignation")]
         public string ArticleDesignation { get; set; }                      //artDesignation AS ArticleDesignation,
 
         // ConfigurationUnitMeasure
-        [Report(Field = "aumAcronym")]
+        [ReportData(Field = "aumAcronym")]
         public string ConfigurationUnitMeasureaumAcronym { get; set; }      //aumAcronym AS ConfigurationUnitMeasureaumAcronym
 
-        [Report(Field = "aumDesignation")]
+        [ReportData(Field = "aumDesignation")]
         public string ConfigurationUnitMeasureDesignation { get; set; }     //aumDesignation AS ConfigurationUnitMeasureDesignation,
 
         // ArticleStock
-        [Report(Field = "Date")]
+        [ReportData(Field = "Date")]
         public DateTime ArticleStockDate { get; set; }                      //stkDate AS ArticleStockDate,
 
-        [Report(Field = "stmDateDay")]
+        [ReportData(Field = "stmDateDay")]
         public string ArticleStockDateDay { get; set; }                     //stmDateDay AS ArticleStockDateDay,
 
-        [Report(Field = "EntityOid")]
+        [ReportData(Field = "EntityOid")]
         public string ArticleStockCostumer { get; set; }              //stmCostumer AS ArticleStockCostumer,
 
-        [Report(Field = "stmPrice")]
+        [ReportData(Field = "stmPrice")]
         public decimal ArticleStockPurchasedPrice { get; set; }             //stmPrice AS ArticleStockPurchasedPrice,
 
-        [Report(Field = "stmQtd")]
+        [ReportData(Field = "stmQtd")]
         public decimal ArticleStockQuantity { get; set; }                   //stmQtd AS ArticleStockQuantity,
 
         //Article Details
-        [Report(Field = "wrhDesignation")]
+        [ReportData(Field = "wrhDesignation")]
         public string ArticleStockWarehouse { get; set; }
 
-        [Report(Field = "whlDesignation")]
+        [ReportData(Field = "whlDesignation")]
         public string ArticleStockLocation { get; set; }
 
-        [Report(Field = "asnSerialNumber")]
+        [ReportData(Field = "asnSerialNumber")]
         public string ArticleStockSerialNumber { get; set; }
 
-        [Report(Field = "ctmName")]
+        [ReportData(Field = "ctmName")]
         public string ArticleStockCostumerName { get; set; }
 
         //Document
-        [Report(Field = "stmDocumentNumber")]
+        [ReportData(Field = "stmDocumentNumber")]
         public string ArticleStockDocumentNumber { get; set; }
 
-        [Report(Field = "Currency")]
+        [ReportData(Field = "Currency")]
         public string ArticleStockCurrency { get; set; }
 
 

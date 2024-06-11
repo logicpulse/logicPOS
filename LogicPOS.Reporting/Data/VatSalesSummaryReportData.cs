@@ -33,14 +33,50 @@ VIEW
         GROUP BY fdVat
 */
 
-using LogicPOS.Reporting.Common;
 
-namespace LogicPOS.Reporting.Reports.Documents
+/* 
+ * /* USED QUERY 
+SELECT        fdVat, SUM(fdTotalNet) AS TotalNet, SUM(fdTotalTax) AS TotalTax
+FROM            dbo.view_documentfinance
+WHERE  ((fmDocumentDate >= '2021-02-01 00:00:00' AND fmDocumentDate <= '2021-08-24 18:04:55') )
+AND fdVat IS NOT NULL
+GROUP BY fdVat
+;
+
+VIEW 
+		[dbo].[view_documentfinancecustomerbalancesummary] 
+	AS
+	    SELECT        fdVat AS VAT, SUM(fdTotalNet) AS TotalNet, SUM(fdTotalTax) AS TotalTax
+        FROM            dbo.view_documentfinance
+        GROUP BY fdVat
+*/
+
+
+/* 
+ * /* USED QUERY 
+SELECT        fdVat, SUM(fdTotalNet) AS TotalNet, SUM(fdTotalTax) AS TotalTax
+FROM            dbo.view_documentfinance
+WHERE  ((fmDocumentDate >= '2021-02-01 00:00:00' AND fmDocumentDate <= '2021-08-24 18:04:55') )
+AND fdVat IS NOT NULL
+GROUP BY fdVat
+;
+
+VIEW 
+		[dbo].[view_documentfinancecustomerbalancesummary] 
+	AS
+	    SELECT        fdVat AS VAT, SUM(fdTotalNet) AS TotalNet, SUM(fdTotalTax) AS TotalTax
+        FROM            dbo.view_documentfinance
+        GROUP BY fdVat
+*/
+
+using LogicPOS.Reporting.Data.Common;
+
+namespace LogicPOS.Reporting.Reports.Data
 {
-    [Report(Entity = "view_documentfinance")]
-    internal class VatSalesSummaryReport : ReportData
+    [ReportData(Entity = "view_documentfinance")]
+    internal class VatSalesSummaryReportData : ReportData
     {
-        [Report(Field = "fdVat")]
+        [ReportData(Field = "fdVat")]
         //Primary Oid (Required)
         override public string Oid { get; set; }
         public string DocumentTypeDesignation { get; set; }

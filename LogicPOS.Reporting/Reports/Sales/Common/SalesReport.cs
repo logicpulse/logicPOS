@@ -2,8 +2,8 @@
 using logicpos.shared.Enums;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Globalization;
-using LogicPOS.Reporting.Common;
-using LogicPOS.Reporting.Reports.Documents;
+using LogicPOS.Reporting.Data.Common;
+using LogicPOS.Reporting.Reports.Data;
 using LogicPOS.Settings;
 using LogicPOS.Shared.CustomDocument;
 using LogicPOS.Utility;

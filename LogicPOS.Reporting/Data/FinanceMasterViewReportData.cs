@@ -1,271 +1,271 @@
-﻿using LogicPOS.Reporting.Common;
+﻿using LogicPOS.Reporting.Data.Common;
 using System;
 using System.Collections.Generic;
 
-namespace LogicPOS.Reporting.Reports.Documents
+namespace LogicPOS.Reporting.Reports.Data
 {
-    [Report(Entity = "view_documentfinance"/*, Limit = 1*/)]
-    public class FinanceMasterViewReport : ReportData
+    [ReportData(Entity = "view_documentfinance"/*, Limit = 1*/)]
+    public class FinanceMasterViewReportData : ReportData
     {
         //DocumentFinanceType
-        [Report(Field = "ftOid")]                                                         //ftOid AS DocumentType
+        [ReportData(Field = "ftOid")]                                                         //ftOid AS DocumentType
         public string DocumentType { get; set; }
 
-        [Report(Field = "ftDocumentTypeOrd")]                                             //ftDocumentTypeOrd AS DocumentTypeOrd
+        [ReportData(Field = "ftDocumentTypeOrd")]                                             //ftDocumentTypeOrd AS DocumentTypeOrd
         public uint DocumentTypeOrd { get; set; }
 
-        [Report(Field = "ftDocumentTypeCode")]                                            //ftDocumentTypeCode AS DocumentTypeCode
+        [ReportData(Field = "ftDocumentTypeCode")]                                            //ftDocumentTypeCode AS DocumentTypeCode
         public uint DocumentTypeCode { get; set; }
 
-        [Report(Field = "ftDocumentTypeDesignation")]                                     //ftDocumentTypeDesignation AS DocumentTypeDesignation
+        [ReportData(Field = "ftDocumentTypeDesignation")]                                     //ftDocumentTypeDesignation AS DocumentTypeDesignation
         public string DocumentTypeDesignation { get; set; }
 
-        [Report(Field = "ftDocumentTypeAcronym")]                                         //ftDocumentTypeAcronym AS DocumentTypeAcronym
+        [ReportData(Field = "ftDocumentTypeAcronym")]                                         //ftDocumentTypeAcronym AS DocumentTypeAcronym
         public string DocumentTypeAcronym { get; set; }
 
-        [Report(Field = "ftDocumentTypeResourceString")]                                  //ftDocumentTypeResourceString AS DocumentTypeResourceString
+        [ReportData(Field = "ftDocumentTypeResourceString")]                                  //ftDocumentTypeResourceString AS DocumentTypeResourceString
         public string DocumentTypeResourceString { get; set; }
 
-        [Report(Field = "ftDocumentTypeResourceStringReport")]                            //ftDocumentTypeResourceStringReport AS DocumentTypeResourceStringReport
+        [ReportData(Field = "ftDocumentTypeResourceStringReport")]                            //ftDocumentTypeResourceStringReport AS DocumentTypeResourceStringReport
         public string DocumentTypeResourceStringReport { get; set; }
 
-        [Report(Field = "ftWayBill")]
+        [ReportData(Field = "ftWayBill")]
         public bool DocumentTypeWayBill { get; set; }                                //ftWayBill AS DocumentTypeWayBill,
 
         //DocumentFinanceMaster
-        [Report(Field = "fmOid")]
+        [ReportData(Field = "fmOid")]
         //Primary Oid (Required)
         override public string Oid { get; set; }                                        //fmOid AS Oid,  
 
-        [Report(Field = "fmDocumentNumber")]
+        [ReportData(Field = "fmDocumentNumber")]
         public string DocumentNumber { get; set; }                                      //fmDocumentNumber AS DocumentNumber,
 
-        [Report(Field = "fmDate")]
+        [ReportData(Field = "fmDate")]
         public DateTime Date { get; set; }                                              //fmDate AS Date,
 
-        [Report(Field = "fmDocumentDate")]
+        [ReportData(Field = "fmDocumentDate")]
         public string DocumentDate { get; set; }                                        //fmDocumentDate AS DocumentDate,
 
-        [Report(Field = "fmSystemEntryDate")]
+        [ReportData(Field = "fmSystemEntryDate")]
         public string SystemEntryDate { get; set; }                                     //fmSystemEntryDate AS SystemEntryDate,
 
-        [Report(Field = "fmDocumentCreatorUser")]
+        [ReportData(Field = "fmDocumentCreatorUser")]
         public string DocumentCreatorUser { get; set; }                                 //fmDocumentCreatorUser AS DocumentCreatorUser,
 
-        [Report(Field = "fmTotalNet")]
+        [ReportData(Field = "fmTotalNet")]
         public decimal TotalNet { get; set; }                                           //fmTotalNet AS TotalNet,
 
-        [Report(Field = "fmTotalGross")]
+        [ReportData(Field = "fmTotalGross")]
         public decimal TotalGross { get; set; }                                         //fmTotalGross AS TotalGross,
 
-        [Report(Field = "fmTotalDiscount")]
+        [ReportData(Field = "fmTotalDiscount")]
         public decimal TotalDiscount { get; set; }                                      //fmTotalDiscount AS TotalDiscount,
 
-        [Report(Field = "fmTotalTax")]
+        [ReportData(Field = "fmTotalTax")]
         public decimal TotalTax { get; set; }                                           //fmTotalTax AS TotalTax,
 
-        [Report(Field = "fmTotalFinal")]
+        [ReportData(Field = "fmTotalFinal")]
         public decimal TotalFinal { get; set; }                                         //fmTotalFinal AS TotalFinal,
 
-        [Report(Field = "fmTotalFinalRound")]
+        [ReportData(Field = "fmTotalFinalRound")]
         public decimal TotalFinalRound { get; set; }                                    //fmTotalFinalRound AS TotalFinalRound,
 
-        [Report(Field = "fmTotalDelivery")]
+        [ReportData(Field = "fmTotalDelivery")]
         public decimal TotalDelivery { get; set; }                                      //fmTotalDelivery AS TotalDelivery,
 
-        [Report(Field = "fmTotalChange")]
+        [ReportData(Field = "fmTotalChange")]
         public decimal TotalChange { get; set; }                                        //fmTotalChange AS TotalChange,
 
-        [Report(Field = "fmDiscount")]
+        [ReportData(Field = "fmDiscount")]
         public decimal Discount { get; set; }                                           //fmDiscount AS Discount,
 
-        [Report(Field = "fmDiscountFinancial")]
+        [ReportData(Field = "fmDiscountFinancial")]
         public decimal DiscountFinancial { get; set; }                                  //fmDiscountFinancial AS DiscountFinancial,
 
-        [Report(Field = "fmExchangeRate")]
+        [ReportData(Field = "fmExchangeRate")]
         public decimal ExchangeRate { get; set; }                                       //fmExchangeRate AS ExchangeRate,
 
-        [Report(Field = "fmEntity")]
+        [ReportData(Field = "fmEntity")]
         public string EntityOid { get; set; }                                           //fmEntity AS EntityOid,
 
-        [Report(Field = "cuEntityCode")]
+        [ReportData(Field = "cuEntityCode")]
         public uint EntityCode { get; set; }                                            //cuEntityCode AS EntityCode,
 
-        [Report(Field = "cuEntityHidden")]
+        [ReportData(Field = "cuEntityHidden")]
         public bool EntityHidden { get; set; }                                          //cuEntityHidden AS EntityHidden,
 
-        [Report(Field = "fmEntityInternalCode")]
+        [ReportData(Field = "fmEntityInternalCode")]
         public string EntityInternalCode { get; set; }                                  //fmEntityInternalCode AS EntityInternalCode,
 
-        [Report(Field = "fmEntityName")]
+        [ReportData(Field = "fmEntityName")]
         public string EntityName { get; set; }                                          //fmEntityName AS EntityName,
 
-        [Report(Field = "fmEntityAddress")]
+        [ReportData(Field = "fmEntityAddress")]
         public string EntityAddress { get; set; }                                       //fmEntityAddress AS EntityAddress,
 
-        [Report(Field = "fmEntityZipCode")]
+        [ReportData(Field = "fmEntityZipCode")]
         public string EntityZipCode { get; set; }                                       //fmEntityZipCode AS EntityZipCode,
 
-        [Report(Field = "fmEntityCity")]
+        [ReportData(Field = "fmEntityCity")]
         public string EntityCity { get; set; }                                          //fmEntityCity AS EntityCity,
 
-        [Report(Field = "fmEntityLocality")]
+        [ReportData(Field = "fmEntityLocality")]
         public string EntityLocality { get; set; }                                      //fmEntityLocality AS EntityCity,
 
-        [Report(Field = "fmEntityCountryCode2")]
+        [ReportData(Field = "fmEntityCountryCode2")]
         public string EntityCountryCode2 { get; set; }                                  //fmEntityCountry EntityCountryCode2,
 
-        [Report(Field = "ccCountryDesignation")]
+        [ReportData(Field = "ccCountryDesignation")]
         public string EntityCountry { get; set; }                                       //ccCountryDesignation AS EntityCountry,
 
-        [Report(Field = "fmEntityFiscalNumber")]
+        [ReportData(Field = "fmEntityFiscalNumber")]
         public string EntityFiscalNumber { get; set; }                                  //fmEntityFiscalNumber AS EntityFiscalNumber,
 
-        [Report(Field = "fmDocumentStatusStatus")]
+        [ReportData(Field = "fmDocumentStatusStatus")]
         public string DocumentStatusStatus { get; set; }                                //fmDocumentStatusStatus AS DocumentStatusStatus,
 
-        [Report(Field = "fmTransactionID")]
+        [ReportData(Field = "fmTransactionID")]
         public string TransactionID { get; set; }                                       //fmTransactionID as TransactionID,
 
-        [Report(Field = "fmShipToDeliveryID")]
+        [ReportData(Field = "fmShipToDeliveryID")]
         public string ShipToDeliveryID { get; set; }                                    //fmShipToDeliveryID as ShipToDeliveryID,
 
-        [Report(Field = "fmShipToDeliveryDate")]
+        [ReportData(Field = "fmShipToDeliveryDate")]
         public DateTime ShipToDeliveryDate { get; set; }                                //fmShipToDeliveryDate as ShipToDeliveryDate, 
 
-        [Report(Field = "fmShipToWarehouseID")]
+        [ReportData(Field = "fmShipToWarehouseID")]
         public string ShipToWarehouseID { get; set; }                                   //fmShipToWarehouseID as ShipToWarehouseID,
 
-        [Report(Field = "fmShipToLocationID")]
+        [ReportData(Field = "fmShipToLocationID")]
         public string ShipToLocationID { get; set; }                                    //fmShipToLocationID as ShipToLocationID,
 
-        [Report(Field = "fmShipToAddressDetail")]
+        [ReportData(Field = "fmShipToAddressDetail")]
         public string ShipToAddressDetail { get; set; }                                 //fmShipToAddressDetail as ShipToAddressDetail,
 
-        [Report(Field = "fmShipToCity")]
+        [ReportData(Field = "fmShipToCity")]
         public string ShipToCity { get; set; }                                          //fmShipToCity as ShipToCity,
 
-        [Report(Field = "fmShipToPostalCode")]
+        [ReportData(Field = "fmShipToPostalCode")]
         public string ShipToPostalCode { get; set; }                                    //fmShipToPostalCode as ShipToPostalCode,
 
-        [Report(Field = "fmShipToRegion")]
+        [ReportData(Field = "fmShipToRegion")]
         public string ShipToRegion { get; set; }                                        //fmShipToRegion as ShipToRegion,
 
-        [Report(Field = "fmShipToCountry")]
+        [ReportData(Field = "fmShipToCountry")]
         public string ShipToCountry { get; set; }                                       //fmShipToCountry as ShipToCountry,
 
-        [Report(Field = "fmShipFromDeliveryID")]
+        [ReportData(Field = "fmShipFromDeliveryID")]
         public string ShipFromDeliveryID { get; set; }                                  //fmShipFromDeliveryID as ShipFromDeliveryID,
 
-        [Report(Field = "fmShipFromDeliveryDate")]
+        [ReportData(Field = "fmShipFromDeliveryDate")]
         public DateTime ShipFromDeliveryDate { get; set; }                              //fmShipFromDeliveryDate as ShipFromDeliveryDate,
 
-        [Report(Field = "fmShipFromWarehouseID")]
+        [ReportData(Field = "fmShipFromWarehouseID")]
         public string ShipFromWarehouseID { get; set; }                                 //fmShipFromWarehouseID as ShipFromWarehouseID,
 
-        [Report(Field = "fmShipFromLocationID")]
+        [ReportData(Field = "fmShipFromLocationID")]
         public string ShipFromLocationID { get; set; }                                  //fmShipFromLocationID as ShipFromLocationID,
 
-        [Report(Field = "fmShipFromAddressDetail")]
+        [ReportData(Field = "fmShipFromAddressDetail")]
         public string ShipFromAddressDetail { get; set; }                               //fmShipFromAddressDetail as ShipFromAddressDetail,
 
-        [Report(Field = "fmShipFromCity")]
+        [ReportData(Field = "fmShipFromCity")]
         public string ShipFromCity { get; set; }                                        //fmShipFromCity as ShipFromCity,
 
-        [Report(Field = "fmShipFromPostalCode")]
+        [ReportData(Field = "fmShipFromPostalCode")]
         public string ShipFromPostalCode { get; set; }                                  //fmShipFromPostalCode as ShipFromPostalCode,
 
-        [Report(Field = "fmShipFromRegion")]
+        [ReportData(Field = "fmShipFromRegion")]
         public string ShipFromRegion { get; set; }                                      //fmShipFromRegion as ShipFromRegion,
 
-        [Report(Field = "fmShipFromCountry")]
+        [ReportData(Field = "fmShipFromCountry")]
         public string ShipFromCountry { get; set; }                                     //fmShipFromCountry as fmShipFromCountry,
 
-        [Report(Field = "fmMovementStartTime")]
+        [ReportData(Field = "fmMovementStartTime")]
         public DateTime MovementStartTime { get; set; }                                 //fmMovementStartTime AS MovementStartTime,
 
-        [Report(Field = "fmMovementEndTime")]
+        [ReportData(Field = "fmMovementEndTime")]
         public DateTime MovementEndTime { get; set; }                                   //fmMovementEndTime AS MovementEndTime,
 
-        [Report(Field = "fmATDocCodeID")]
+        [ReportData(Field = "fmATDocCodeID")]
         public string ATDocCodeID { get; set; }                                         //fmATDocCodeID AS ATDocCodeID,
 
-        [Report(Field = "fmPayed")]
+        [ReportData(Field = "fmPayed")]
         public bool Payed { get; set; }                                              //fmPayed AS Payed,
 
-        [Report(Field = "fmPayedDate")]
+        [ReportData(Field = "fmPayedDate")]
         public DateTime PayedDate { get; set; }                                         //fmPayedDate AS PayedDate
 
-        [Report(Field = "fmNotes")]
+        [ReportData(Field = "fmNotes")]
         public string Notes { get; set; }                                               //fmNotes AS Notes,
 
         //ConfigurationPaymentMethod
-        [Report(Field = "fmPaymentMethod")]                                               //fmPaymentMethod AS PaymentMethod
+        [ReportData(Field = "fmPaymentMethod")]                                               //fmPaymentMethod AS PaymentMethod
         public string PaymentMethod { get; set; }
 
-        [Report(Field = "pmPaymentMethodOrd")]                                            //pmPaymentMethodOrd AS PaymentMethodOrd
+        [ReportData(Field = "pmPaymentMethodOrd")]                                            //pmPaymentMethodOrd AS PaymentMethodOrd
         public uint PaymentMethodOrd { get; set; }
 
-        [Report(Field = "pmPaymentMethodCode")]
+        [ReportData(Field = "pmPaymentMethodCode")]
         public uint PaymentMethodCode { get; set; }                                     //pmPaymentMethodCode AS PaymentMethodCode,
 
-        [Report(Field = "pmPaymentMethodDesignation")]
+        [ReportData(Field = "pmPaymentMethodDesignation")]
         public string PaymentMethodDesignation { get; set; }                            //pmPaymentMethodDesignation AS PaymentMethodDesignation,
 
-        [Report(Field = "pmPaymentMethodToken")]
+        [ReportData(Field = "pmPaymentMethodToken")]
         public string PaymentMethodToken { get; set; }                                  //pmPaymentMethodToken AS PaymentMethodToken,
 
         //ConfigurationPaymentCondition
-        [Report(Field = "fmPaymentCondition")]                                            //fmPaymentCondition AS PaymentCondition
+        [ReportData(Field = "fmPaymentCondition")]                                            //fmPaymentCondition AS PaymentCondition
         public string PaymentCondition { get; set; }
 
-        [Report(Field = "pcPaymentConditionOrd")]                                         //pcPaymentConditionOrd AS PaymentConditionOrd
+        [ReportData(Field = "pcPaymentConditionOrd")]                                         //pcPaymentConditionOrd AS PaymentConditionOrd
         public uint PaymentConditionOrd { get; set; }
 
-        [Report(Field = "pcPaymentConditionCode")]
+        [ReportData(Field = "pcPaymentConditionCode")]
         public uint PaymentConditionCode { get; set; }                                  //pcPaymentConditionCode AS PaymentConditionCode,
 
-        [Report(Field = "pcPaymentConditionDesignation")]
+        [ReportData(Field = "pcPaymentConditionDesignation")]
         public string PaymentConditionDesignation { get; set; }                         //pcPaymentConditionDesignation AS PaymentConditionDesignation,
 
-        [Report(Field = "pcPaymentConditionAcronym")]
+        [ReportData(Field = "pcPaymentConditionAcronym")]
         public string PaymentConditionAcronym { get; set; }                             //pcPaymentConditionAcronym AS PaymentConditionAcronym
 
         //ConfigurationCurrency
-        [Report(Field = "ccCountry")]                                                     //ccCountry AS Country
+        [ReportData(Field = "ccCountry")]                                                     //ccCountry AS Country
         public string Country { get; set; }
 
-        [Report(Field = "ccCountryOrd")]                                                  //ccCountryOrd AS CountryOrd
+        [ReportData(Field = "ccCountryOrd")]                                                  //ccCountryOrd AS CountryOrd
         public uint CountryOrd { get; set; }
 
-        [Report(Field = "ccCountryCode")]
+        [ReportData(Field = "ccCountryCode")]
         public uint CountryCode { get; set; }                                           //ccCountryCode AS CountryCode
 
-        [Report(Field = "ccCountryDesignation")]
+        [ReportData(Field = "ccCountryDesignation")]
         public string CountryDesignation { get; set; }                                  //ccCountryDesignation AS CountryDesignation
 
         //ConfigurationCurrency
-        [Report(Field = "fmCurrency")]                                                    //fmCurrency AS Currency
+        [ReportData(Field = "fmCurrency")]                                                    //fmCurrency AS Currency
         public string Currency { get; set; }
 
-        [Report(Field = "crCurrencyOrd")]                                                 //crCurrencyOrd AS CurrencyOrd
+        [ReportData(Field = "crCurrencyOrd")]                                                 //crCurrencyOrd AS CurrencyOrd
         public uint CurrencyOrd { get; set; }
 
-        [Report(Field = "crCurrencyCode")]
+        [ReportData(Field = "crCurrencyCode")]
         public uint CurrencyCode { get; set; }                                          //crCurrencyCode AS CurrencyCode
 
-        [Report(Field = "crCurrencyDesignation")]
+        [ReportData(Field = "crCurrencyDesignation")]
         public string CurrencyDesignation { get; set; }                                 //crCurrencyDesignation AS CurrencyDesignation
 
-        [Report(Field = "crCurrencyAcronym")]
+        [ReportData(Field = "crCurrencyAcronym")]
         public string CurrencyAcronym { get; set; }                                     //crCurrencyAcronym AS CurrencyAcronym,
 
         //ATCUD Documentos - Criação do QRCode e ATCUD IN016508
-        [Report(Field = "fmATDocQRCode")]
+        [ReportData(Field = "fmATDocQRCode")]
         public string ATDocQRCode { get; set; }                                     //fmATDocQRCode AS ATDocQRCode,
 
         //Chield FRBOs Objects
-        public List<FinanceDetailReport> DocumentFinanceDetail { get; set; }
-        public List<FinanceMasterTotalViewReport> DocumentFinanceMasterTotal { get; set; }
+        public List<FinanceDetailReportData> DocumentFinanceDetail { get; set; }
+        public List<FinanceMasterTotalViewReportData> DocumentFinanceMasterTotal { get; set; }
     }
 }

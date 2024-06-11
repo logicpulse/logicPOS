@@ -1,4 +1,4 @@
-﻿using LogicPOS.Reporting.Common;
+﻿using LogicPOS.Reporting.Data.Common;
 using System;
 
 /* Report Fields
@@ -10,66 +10,66 @@ FROM
 
 namespace LogicPOS.Reporting.Reports.System
 {
-    [Report(Entity = "view_systemaudit")]
+    [ReportData(Entity = "view_systemaudit")]
     internal class SystemAuditViewReport : ReportData
     {
         // SystemAudit
-        [Report(Field = "sauOid")]
+        [ReportData(Field = "sauOid")]
         //Primary Oid (Required)
         override public string Oid { get; set; }                            //sauOid AS Oid,
 
-        [Report(Field = "sauDate")]
+        [ReportData(Field = "sauDate")]
         public DateTime SystemAuditDate { get; set; }                       //sauDate AS SystemAuditDate,
 
-        [Report(Field = "sauDateDay")]
+        [ReportData(Field = "sauDateDay")]
         public string SystemAuditDateDay { get; set; }                      //sauDateDay AS SystemAuditDate,
 
-        [Report(Field = "sauDescription")]
+        [ReportData(Field = "sauDescription")]
         public string SystemAuditDescription { get; set; }                  //sauDescription AS SystemAuditDateDay,
 
         // SystemAuditType
-        [Report(Field = "satOid")]
+        [ReportData(Field = "satOid")]
         public string SystemAuditType { get; set; }                         //satOid AS SystemAuditType,
 
-        [Report(Field = "satOrd")]
+        [ReportData(Field = "satOrd")]
         public uint SystemAuditTypeOrd { get; set; }                        //satOrd AS SystemAuditTypeOrd,
 
-        [Report(Field = "satCode")]
+        [ReportData(Field = "satCode")]
         public uint SystemAuditTypeCode { get; set; }                       //satCode AS SystemAuditTypeCode,
 
-        [Report(Field = "satToken")]
+        [ReportData(Field = "satToken")]
         public string SystemAuditTypeToken { get; set; }                    //satToken AS SystemAuditTypeToken,
 
-        [Report(Field = "satDesignation")]
+        [ReportData(Field = "satDesignation")]
         public string SystemAuditTypeDesignation { get; set; }              //satDesignation AS SystemAuditTypeDesignation,
 
-        [Report(Field = "satResourceString")]
+        [ReportData(Field = "satResourceString")]
         public string SystemAuditTypeResourceString { get; set; }           //satResourceString AS SystemAuditTypeResourceString,
 
         // UserDetail
-        [Report(Field = "usdOid")]
+        [ReportData(Field = "usdOid")]
         public string UserDetail { get; set; }                              //usdOid AS UserDetail,
 
-        [Report(Field = "usdOrd")]
+        [ReportData(Field = "usdOrd")]
         public uint UserDetailOrd { get; set; }                             //usdOrd AS UserDetailOrd,
 
-        [Report(Field = "usdCode")]
+        [ReportData(Field = "usdCode")]
         public uint UserDetailCode { get; set; }                            //usdCode AS UserDetailCode,
 
-        [Report(Field = "usdName")]
+        [ReportData(Field = "usdName")]
         public string UserDetailName { get; set; }                          //usdName AS UserDetailName,
 
         // ConfigurationPlaceTerminal
-        [Report(Field = "cptOid")]
+        [ReportData(Field = "cptOid")]
         public string ConfigurationPlaceTerminal { get; set; }              //cptOid AS ConfigurationPlaceTerminal,
 
-        [Report(Field = "cptOrd")]
+        [ReportData(Field = "cptOrd")]
         public uint ConfigurationPlaceTerminalOrd { get; set; }             //cptOrd AS ConfigurationPlaceTerminalOrd,
 
-        [Report(Field = "cptCode")]
+        [ReportData(Field = "cptCode")]
         public uint ConfigurationPlaceTerminalCode { get; set; }            //cptCode AS ConfigurationPlaceTerminalCode,
 
-        [Report(Field = "cptDesignation")]
+        [ReportData(Field = "cptDesignation")]
         public string ConfigurationPlaceTerminalDesignation { get; set; }   //cptDesignation AS ConfigurationPlaceTerminalDesignation
     }
 }

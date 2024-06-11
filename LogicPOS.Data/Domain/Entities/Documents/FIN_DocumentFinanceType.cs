@@ -1,7 +1,6 @@
 ﻿using DevExpress.Xpo;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Enums;
-using System;
 
 namespace LogicPOS.Domain.Entities
 {

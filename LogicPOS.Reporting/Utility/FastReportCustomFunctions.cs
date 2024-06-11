@@ -1,10 +1,7 @@
-﻿using LogicPOS.Data.XPO.Settings;
-using LogicPOS.Data.XPO.Utility;
-using LogicPOS.Globalization;
+﻿using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Utility;
 using System;
-using System.Collections.Generic;
 
 namespace LogicPOS.Reporting.Utility
 {

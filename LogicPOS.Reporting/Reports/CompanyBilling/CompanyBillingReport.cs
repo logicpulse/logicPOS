@@ -1,13 +1,8 @@
 ﻿using logicpos.shared.Enums;
-using LogicPOS.Data.XPO.Utility;
-using LogicPOS.Domain.Entities;
 using LogicPOS.Globalization;
-using LogicPOS.Reporting.Common;
-using LogicPOS.Reporting.Reports.CustomerBalanceSummary;
-using LogicPOS.Reporting.Reports.Customers;
-using LogicPOS.Reporting.Reports.Documents;
+using LogicPOS.Reporting.Data.Common;
+using LogicPOS.Reporting.Reports.Data;
 using LogicPOS.Settings;
-using System;
 
 namespace LogicPOS.Reporting.Reports
 {

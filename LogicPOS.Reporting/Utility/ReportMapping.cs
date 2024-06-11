@@ -1,12 +1,12 @@
 ﻿using LogicPOS.DTOs.Reporting;
-using LogicPOS.Reporting.Reports.Documents;
+using LogicPOS.Reporting.Reports.Data;
 
 namespace LogicPOS.Reporting.Utility
 {
     public static class ReportMapping
     {
         public static FinanceMasterViewReportDto GetFinanceMasterViewReportDto(
-            FinanceMasterViewReport report)
+            FinanceMasterViewReportData report)
         {
             var dto = new FinanceMasterViewReportDto
             {
@@ -106,7 +106,7 @@ namespace LogicPOS.Reporting.Utility
         }
 
         public static FinanceDetailReportDto GetFinanceDetailReportDto(
-            FinanceDetailReport financeDetailReport)
+            FinanceDetailReportData financeDetailReport)
         {
             var FinanceDatailReportDto = new FinanceDetailReportDto
             {
@@ -127,7 +127,7 @@ namespace LogicPOS.Reporting.Utility
         }
 
         public static FinanceMasterTotalViewReportDto GetFinanceMasterTotalViewReportDto(
-            FinanceMasterTotalViewReport financeMasterTotalViewReport)
+            FinanceMasterTotalViewReportData financeMasterTotalViewReport)
         {
             var TotalViewReportDto = new FinanceMasterTotalViewReportDto
             {
@@ -147,7 +147,7 @@ namespace LogicPOS.Reporting.Utility
         }
 
         public static FinancePaymentDocumentViewReportDto GetFinancePaymentDocumentViewReportDto(
-            FinancePaymentDocumentViewReport report)
+            FinancePaymentDocumentViewReportData report)
         {
             var dto = new FinancePaymentDocumentViewReportDto
             {
@@ -166,7 +166,7 @@ namespace LogicPOS.Reporting.Utility
         }
 
         public static FinancePaymentViewReportDto GetFinancePaymentViewReportDto(
-            FinancePaymentViewReport report)
+            FinancePaymentViewReportData report)
         {
             var dto = new FinancePaymentViewReportDto
             {

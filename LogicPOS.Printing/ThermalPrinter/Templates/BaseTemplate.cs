@@ -1,5 +1,4 @@
-﻿using FastReport.Format;
-using LogicPOS.Data.XPO.Settings;
+﻿using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.DTOs.Printing;
 using LogicPOS.Globalization;

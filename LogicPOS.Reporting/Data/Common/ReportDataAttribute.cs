@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LogicPOS.Reporting.Common
+namespace LogicPOS.Reporting.Data.Common
 {
     [AttributeUsage(
         AttributeTargets.Class |
@@ -8,7 +8,7 @@ namespace LogicPOS.Reporting.Common
         AllowMultiple = true,
         Inherited = false
         )]
-    public class ReportAttribute : Attribute
+    public class ReportDataAttribute : Attribute
     {
         public string Sql { get; set; }
 

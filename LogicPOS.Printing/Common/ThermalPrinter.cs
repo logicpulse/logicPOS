@@ -1,5 +1,4 @@
 using LogicPOS.Printing.Enums;
-using LogicPOS.Printing.Utility;
 using LogicPOS.Settings;
 using System;
 using System.Collections.Generic;

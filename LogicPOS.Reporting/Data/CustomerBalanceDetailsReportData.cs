@@ -66,15 +66,15 @@ VIEW [dbo].[view_documentfinancecustomerbalancedetails]  AS
 		fp.PaymentStatus <> 'A' AND (fp.Disabled = 0 OR fp.Disabled IS NULL)
 ;
 */
-using LogicPOS.Reporting.Common;
+using LogicPOS.Reporting.Data.Common;
 using System;
 
-namespace LogicPOS.Reporting.Reports.Documents
+namespace LogicPOS.Reporting.Reports.Data
 {
-    [Report(Entity = "view_documentfinancecustomerbalancedetails")]
+    [ReportData(Entity = "view_documentfinancecustomerbalancedetails")]
     internal class CustomerBalanceDetailsReportData : ReportData
     {
-        [Report(Field = "DocumentTypeOid")]
+        [ReportData(Field = "DocumentTypeOid")]
         //Primary Oid (Required)
         override public string Oid { get; set; }            //DocumentTypeOid AS Oid,
 
@@ -97,9 +97,9 @@ namespace LogicPOS.Reporting.Reports.Documents
         public int CreditDebit { get; set; }/* IN009206 */
         public string PaymentDocumentReference { get; set; }
         public decimal TotalTax { get; set; }/* IN009206 */
-        [Report(Hide = true)]
+        [ReportData(Hide = true)]
         public decimal Balance { get; set; }// SUM(Credit) - SUM(Debit) AS BALANCE
-        [Report(Hide = true)]
+        [ReportData(Hide = true)]
         public DateTime CustomerSinceDate { get; set; }// MIN([DocumentDate]) as CustomerSinceDate
     }
 }

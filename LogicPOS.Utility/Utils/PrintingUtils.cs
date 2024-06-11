@@ -1,5 +1,4 @@
-﻿using LogicPOS.Globalization;
-using LogicPOS.Settings;
+﻿using LogicPOS.Settings;
 using System.Collections.Generic;
 
 namespace LogicPOS.Utility

@@ -1,11 +1,11 @@
 ﻿using LogicPOS.Domain.Entities;
-using LogicPOS.Reporting.Common;
+using LogicPOS.Reporting.Data.Common;
 using System;
 
-namespace LogicPOS.Reporting.Reports.Documents
+namespace LogicPOS.Reporting.Reports.Data
 {
     //Now Entity is Required to be defined, since implementation of Table Prefix
-    [Report(Entity = "fin_documentfinancemaster")]
+    [ReportData(Entity = "fin_documentfinancemaster")]
     public class FinanceMasterReportData : ReportData
     {
         public DateTime Date { get; set; }

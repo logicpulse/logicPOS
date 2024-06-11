@@ -5,7 +5,6 @@ using logicpos.Classes.Enums.Reports;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.shared.Enums;
-using LogicPOS.Globalization;
 using LogicPOS.Reporting.Reports;
 using LogicPOS.Reporting.Reports.CustomerBalanceSummary;
 using LogicPOS.Settings;
@@ -709,13 +708,10 @@ OR
                         break;
                     */
 
-                    //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-                    // Other Non REPORT_SALES_* Reports
-
-                    // Auxiliar Tables
                     case ReportsTypeToken.REPORT_LIST_FAMILY_SUBFAMILY_ARTICLES:
-                        // Where it is Called?
-                        LogicPOS.Reporting.Common.FastReport.ProcessReportArticle(CustomReportDisplayMode.ExportPDF);
+
+                        new ArticlesByFamilyAndSubfamilyReport().Present();
+
                         break;
                     case ReportsTypeToken.REPORT_LIST_CUSTOMERS:
                         LogicPOS.Reporting.Common.FastReport.ProcessReportCustomer(CustomReportDisplayMode.ExportPDF);
@@ -725,12 +721,18 @@ OR
                     case ReportsTypeToken.REPORT_LIST_AUDIT_TABLE:
                         LogicPOS.Reporting.Common.FastReport.ProcessReportSystemAudit(displayMode, reportFilter, reportReadableFilter);
                         break;
+
                     case ReportsTypeToken.REPORT_LIST_CURRENT_ACCOUNT:
                         LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentFinanceCurrentAccount(displayMode, reportFilter, reportReadableFilter);
                         break;
-                    /* IN008018 */
+
+
                     case ReportsTypeToken.REPORT_CUSTOMER_BALANCE_DETAILS:
-                        LogicPOS.Reporting.Common.FastReport.ProcessReportCustomerBalanceDetails(displayMode, reportFilter, reportReadableFilter);
+                        
+                        PresentCustomerBalanceDetailsReport(
+                            reportFilter,
+                            reportReadableFilter,
+                            displayMode);
                         break;
 
 
@@ -769,6 +771,7 @@ OR
                     case ReportsTypeToken.REPORT_LIST_STOCK_SUPPLIER:
                         LogicPOS.Reporting.Common.FastReport.ProcessReportArticleStockSupplier(displayMode, reportFilter, reportReadableFilter);
                         break;
+
                     case ReportsTypeToken.REPORT_SALES_PER_VAT:
                         
                         PresentSalesByVatResumedReport(
@@ -777,14 +780,46 @@ OR
                             displayMode);
 
                         break;
+
                     case ReportsTypeToken.REPORT_SALES_PER_VAT_BY_ARTICLE_CLASS:
-                        LogicPOS.Reporting.Common.FastReport.ProcessReportVatSalesByClassResumed(displayMode, reportFilter, reportReadableFilter);
+
+                        PresentSalesByVatAndArticleClassResumedReport(
+                            reportFilter,
+                            reportReadableFilter,
+                            displayMode);
+
                         break;
 
                     default:
                         throw new NotImplementedException("Report not implemented: " + reportToken.ToString());
                 }
             }
+        }
+
+        private void PresentCustomerBalanceDetailsReport(
+            string reportFilter, 
+            string reportReadableFilter, 
+            CustomReportDisplayMode displayMode)
+        {
+            var report = new CustomerBalanceDetailsReport(
+                reportFilter, 
+                reportReadableFilter, 
+                displayMode);
+
+            report.Present();
+        }
+
+        private void PresentSalesByVatAndArticleClassResumedReport(
+            string reportFilter, 
+            string reportReadableFilter, 
+            CustomReportDisplayMode displayMode)
+        {
+            var report = new SalesByVatAndArticleClassResumedReport(
+               reportFilter,
+               reportReadableFilter,
+               displayMode);
+
+            report.Present();
         }
 
         private void PresentSalesByVatResumedReport(

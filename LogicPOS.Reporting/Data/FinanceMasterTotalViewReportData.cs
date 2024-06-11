@@ -1,36 +1,36 @@
 ﻿using LogicPOS.Domain.Enums;
-using LogicPOS.Reporting.Common;
+using LogicPOS.Reporting.Data.Common;
 
-namespace LogicPOS.Reporting.Reports.Documents
+namespace LogicPOS.Reporting.Reports.Data
 {
-    [Report(Entity = "view_documentfinancemastertotal")]
-    public class FinanceMasterTotalViewReport : ReportData
+    [ReportData(Entity = "view_documentfinancemastertotal")]
+    public class FinanceMasterTotalViewReportData : ReportData
     {
-        [Report(Field = "fmtOid", Hide = true)]
+        [ReportData(Field = "fmtOid", Hide = true)]
         override public string Oid { get; set; }                //fmtOid AS Oid,  
 
-        [Report(Field = "fmtDocumentMaster")]
+        [ReportData(Field = "fmtDocumentMaster")]
         public string DocumentMaster { get; set; }              //fmtDocumentMaster AS DocumentMaster,
 
-        [Report(Field = "cvrDesignation")]
+        [ReportData(Field = "cvrDesignation")]
         public string Designation { get; set; }                 //cvrDesignation AS Designation,
 
-        [Report(Field = "cvrTaxCode")]
+        [ReportData(Field = "cvrTaxCode")]
         public string TaxCode { get; set; }                     //cvrTaxCode AS TaxCode,
 
-        [Report(Field = "cvrTaxCountryRegion")]
+        [ReportData(Field = "cvrTaxCountryRegion")]
         public string TaxCountryRegion { get; set; }            //cvrTaxCountryRegion AS TaxCountryRegion,
 
-        [Report(Field = "fmtValue")]
+        [ReportData(Field = "fmtValue")]
         public decimal Value { get; set; }                      //fmtValue AS Value, 
 
-        [Report(Field = "fmtTotal")]
+        [ReportData(Field = "fmtTotal")]
         public decimal Total { get; set; }                      //fmtTotal AS Total,
 
-        [Report(Field = "fmtTotalBase")]
+        [ReportData(Field = "fmtTotalBase")]
         public decimal TotalBase { get; set; }                  //fmtTotalBase AS TotalBase,
 
-        [Report(Field = "fmtTotalType")]
+        [ReportData(Field = "fmtTotalType")]
         public FinanceMasterTotalType TotalType { get; set; }   //fmtTotalType AS TotalType
     }
 }

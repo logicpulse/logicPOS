@@ -1,10 +1,10 @@
-﻿using LogicPOS.Reporting.Common;
+﻿using LogicPOS.Reporting.Data.Common;
 
-namespace LogicPOS.Reporting.Reports.Documents
+namespace LogicPOS.Reporting.Reports.Data
 {
     //Now Entity is Required to be defined, since implementation of Table Prefix
-    [Report(Entity = "fin_documentfinancedetail")]
-    public class FinanceDetailReport : ReportData
+    [ReportData(Entity = "fin_documentfinancedetail")]
+    public class FinanceDetailReportData : ReportData
     {
         public string Code { get; set; }
         public string Designation { get; set; }
@@ -22,7 +22,7 @@ namespace LogicPOS.Reporting.Reports.Documents
         /* IN009206 block */
         //[FRBO(Field = "fdPriceWithDiscount")]   // AVG((fdPrice - ((fdPrice * fdDiscount) / 100))) AS ArticlePriceWithDiscount
         // fdPriceWithDiscount
-        [Report(Hide = true)]
+        [ReportData(Hide = true)]
         public decimal ArticlePriceWithDiscount
         {
             get
@@ -32,7 +32,7 @@ namespace LogicPOS.Reporting.Reports.Documents
             }
             set { }
         } // TotalGross - Discount
-        [Report(Hide = true)]
+        [ReportData(Hide = true)]
         public decimal ArticlePriceAfterTax
         {
             get
@@ -43,7 +43,7 @@ namespace LogicPOS.Reporting.Reports.Documents
             set { }
         }
         //Layout talões PT - Preço Unitário em vez de Preço sem IVA [IN:016509]
-        [Report(Hide = true)]
+        [ReportData(Hide = true)]
         public decimal UnitPrice
         {
             get

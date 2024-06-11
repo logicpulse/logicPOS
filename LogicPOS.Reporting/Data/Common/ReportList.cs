@@ -7,7 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace LogicPOS.Reporting.Common
+namespace LogicPOS.Reporting.Data.Common
 {
     public class ReportList<T> : IEnumerable<T> where T : ReportData, new()
     {
@@ -29,15 +29,15 @@ namespace LogicPOS.Reporting.Common
         public ReportList(string pFilter, string pGroup, string pOrder, string pFields, int pLimit, string pQuery)
         {
             //Assign Attributes Defined
-            _objectHasAttributes = typeof(T).GetCustomAttribute(typeof(ReportAttribute)) as ReportAttribute != null;
+            _objectHasAttributes = typeof(T).GetCustomAttribute(typeof(ReportDataAttribute)) as ReportDataAttribute != null;
 
             string sqlQuery = pQuery;
 
             //Attributes: Sql
             if (string.IsNullOrEmpty(sqlQuery))
             {
-                sqlQuery = _objectHasAttributes && (typeof(T).GetCustomAttribute(typeof(ReportAttribute)) as ReportAttribute).Sql != null
-                    ? (typeof(T).GetCustomAttribute(typeof(ReportAttribute)) as ReportAttribute).Sql
+                sqlQuery = _objectHasAttributes && (typeof(T).GetCustomAttribute(typeof(ReportDataAttribute)) as ReportDataAttribute).Sql != null
+                    ? (typeof(T).GetCustomAttribute(typeof(ReportDataAttribute)) as ReportDataAttribute).Sql
                     //If not SqlQuery Defined from Attributes, Create it From Reflection and FRBO Object Attributes
                     : GenQueryFromFRBOObject(pFilter, pGroup, pOrder, pFields);
             }
@@ -50,9 +50,9 @@ namespace LogicPOS.Reporting.Common
                 sqlLimit = pLimit;
             }
             //Limit: Get Order From LimitAttribute else Bypass it With 0
-            else if (_objectHasAttributes && (typeof(T).GetCustomAttribute(typeof(ReportAttribute)) as ReportAttribute).Limit > 0)
+            else if (_objectHasAttributes && (typeof(T).GetCustomAttribute(typeof(ReportDataAttribute)) as ReportDataAttribute).Limit > 0)
             {
-                sqlLimit = (typeof(T).GetCustomAttribute(typeof(ReportAttribute)) as ReportAttribute).Limit;
+                sqlLimit = (typeof(T).GetCustomAttribute(typeof(ReportDataAttribute)) as ReportDataAttribute).Limit;
             }
 
             try
@@ -235,10 +235,10 @@ namespace LogicPOS.Reporting.Common
                     foreach (var attribute in attributes)
                     {
                         //Check if is Working on a FRBO Attribute  
-                        if (attribute.GetType() == typeof(ReportAttribute))
+                        if (attribute.GetType() == typeof(ReportDataAttribute))
                         {
-                            attributeField = (attribute as ReportAttribute).Field != null ? Convert.ToString((attribute as ReportAttribute).Field) : null;
-                            attributeHide = (attribute as ReportAttribute).Hide == true;
+                            attributeField = (attribute as ReportDataAttribute).Field != null ? Convert.ToString((attribute as ReportDataAttribute).Field) : null;
+                            attributeHide = (attribute as ReportDataAttribute).Hide == true;
                         }
                     }
                     if (_debug) _logger.Debug(string.Format("Name: [{0}], PropertyType[{1}], attributeField[{2}], attributeHide[{3}]", pInfo.Name, pInfo.PropertyType, attributeField, attributeHide));
@@ -275,8 +275,8 @@ namespace LogicPOS.Reporting.Common
         public string GenQueryFromFRBOObject(string pFilter = "", string pGroup = "", string pOrder = "", string pQueryFields = "")
         {
             //SqlEntity: Get Entity Name from FRBO EntityAttribute or From ClassName Without FRBO
-            string sqlEntity = _objectHasAttributes && (typeof(T).GetCustomAttribute(typeof(ReportAttribute)) as ReportAttribute).Entity != null
-              ? (typeof(T).GetCustomAttribute(typeof(ReportAttribute)) as ReportAttribute).Entity
+            string sqlEntity = _objectHasAttributes && (typeof(T).GetCustomAttribute(typeof(ReportDataAttribute)) as ReportDataAttribute).Entity != null
+              ? (typeof(T).GetCustomAttribute(typeof(ReportDataAttribute)) as ReportDataAttribute).Entity
               : typeof(T).Name.ToString().Replace("FRBO", string.Empty);
 
             // Used to SQLServer Groups to pass Fields, with this we ignore generated reflectes GenQueryFieldsFromFRBOObject 
@@ -285,8 +285,8 @@ namespace LogicPOS.Reporting.Common
                 : pQueryFields;
 
             //Fields: Get Fields from FRBO FieldsAttribute or Generate it With GenQueryFieldsFromFRBOObject
-            string sqlFields = _objectHasAttributes && (typeof(T).GetCustomAttribute(typeof(ReportAttribute)) as ReportAttribute).Fields != null
-              ? (typeof(T).GetCustomAttribute(typeof(ReportAttribute)) as ReportAttribute).Fields
+            string sqlFields = _objectHasAttributes && (typeof(T).GetCustomAttribute(typeof(ReportDataAttribute)) as ReportDataAttribute).Fields != null
+              ? (typeof(T).GetCustomAttribute(typeof(ReportDataAttribute)) as ReportDataAttribute).Fields
               : queryFields;
 
             //Filter
@@ -298,9 +298,9 @@ namespace LogicPOS.Reporting.Common
                 sqlFilter = string.Format(" WHERE ({0})", pFilter);
             }
             //Filter: Get Filter From FilterAttribute else Bypass it With Empty String
-            else if (_objectHasAttributes && (typeof(T).GetCustomAttribute(typeof(ReportAttribute)) as ReportAttribute).Filter != null)
+            else if (_objectHasAttributes && (typeof(T).GetCustomAttribute(typeof(ReportDataAttribute)) as ReportDataAttribute).Filter != null)
             {
-                sqlFilter = string.Format(" WHERE ({0})", (typeof(T).GetCustomAttribute(typeof(ReportAttribute)) as ReportAttribute).Filter);
+                sqlFilter = string.Format(" WHERE ({0})", (typeof(T).GetCustomAttribute(typeof(ReportDataAttribute)) as ReportDataAttribute).Filter);
             }
 
             //Group
@@ -311,9 +311,9 @@ namespace LogicPOS.Reporting.Common
                 sqlGroup = string.Format(" GROUP BY {0}", pGroup);
             }
             //Group: Get Group From GroupAttribute else Bypass it With Empty String
-            else if (_objectHasAttributes && (typeof(T).GetCustomAttribute(typeof(ReportAttribute)) as ReportAttribute).Group != null)
+            else if (_objectHasAttributes && (typeof(T).GetCustomAttribute(typeof(ReportDataAttribute)) as ReportDataAttribute).Group != null)
             {
-                sqlGroup = string.Format(" GROUP BY {0}", (typeof(T).GetCustomAttribute(typeof(ReportAttribute)) as ReportAttribute).Group);
+                sqlGroup = string.Format(" GROUP BY {0}", (typeof(T).GetCustomAttribute(typeof(ReportDataAttribute)) as ReportDataAttribute).Group);
             }
 
             //Order
@@ -324,9 +324,9 @@ namespace LogicPOS.Reporting.Common
                 sqlOrder = string.Format(" ORDER BY {0}", pOrder);
             }
             //Order: Get Order From OrderAttribute else Bypass it With Empty String
-            else if (_objectHasAttributes && (typeof(T).GetCustomAttribute(typeof(ReportAttribute)) as ReportAttribute).Order != null)
+            else if (_objectHasAttributes && (typeof(T).GetCustomAttribute(typeof(ReportDataAttribute)) as ReportDataAttribute).Order != null)
             {
-                sqlOrder = string.Format(" ORDER BY {0}", (typeof(T).GetCustomAttribute(typeof(ReportAttribute)) as ReportAttribute).Order);
+                sqlOrder = string.Format(" ORDER BY {0}", (typeof(T).GetCustomAttribute(typeof(ReportDataAttribute)) as ReportDataAttribute).Order);
             }
 
             //Finally Generate SqlQuery        

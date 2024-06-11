@@ -23,15 +23,15 @@ FROM
 ;
 ;*/
 
-using LogicPOS.Reporting.Common;
+using LogicPOS.Reporting.Data.Common;
 using System;
 
-namespace LogicPOS.Reporting.Reports.Documents
+namespace LogicPOS.Reporting.Reports.Data
 {
-    [Report(Entity = "view_documentfinancecurrentaccount")]
-    internal class CurrentAccountReport : ReportData
+    [ReportData(Entity = "view_documentfinancecurrentaccount")]
+    internal class CurrentAccountReportData : ReportData
     {
-        [Report(Field = "DocumentTypeOid")]
+        [ReportData(Field = "DocumentTypeOid")]
         //Primary Oid (Required)
         override public string Oid { get; set; }            //DocumentTypeOid AS Oid,
 

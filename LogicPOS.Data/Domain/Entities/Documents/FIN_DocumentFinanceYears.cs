@@ -1,6 +1,5 @@
 ﻿using DevExpress.Xpo;
 using LogicPOS.Settings;
-using System;
 using LogicPOS.Globalization;
 using LogicPOS.Data.XPO.Utility;
 

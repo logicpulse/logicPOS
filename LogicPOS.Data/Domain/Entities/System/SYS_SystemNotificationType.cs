@@ -1,5 +1,4 @@
-﻿using System;
-using DevExpress.Xpo;
+﻿using DevExpress.Xpo;
 
 namespace LogicPOS.Domain.Entities
 {

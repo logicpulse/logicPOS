@@ -1,8 +1,8 @@
-﻿using LogicPOS.Reporting.Common;
+﻿using LogicPOS.Reporting.Data.Common;
 
 namespace LogicPOS.Reporting.Reports.Customers
 {
-    [Report(Entity = "erp_customer")]
+    [ReportData(Entity = "erp_customer")]
     public class CustomerReport : ReportData
     {
         public uint Ord { get; set; }

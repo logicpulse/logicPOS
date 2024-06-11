@@ -13,16 +13,16 @@ VIEW
 		GROUP BY
 			[EntityOid]
 */
-using LogicPOS.Reporting.Common;
+using LogicPOS.Reporting.Data.Common;
 using System;
 
 namespace LogicPOS.Reporting.Reports.CustomerBalanceSummary
 {
     /* IN008018 and IN009010 */
-    [Report(Entity = "view_documentfinancecustomerbalancesummary")]
+    [ReportData(Entity = "view_documentfinancecustomerbalancesummary")]
     internal class CustomerBalanceSummaryReportData : ReportData
     {
-        [Report(Field = "EntityOid")]
+        [ReportData(Field = "EntityOid")]
         //Primary Oid (Required)
         override public string Oid { get; set; }        //DocumentTypeOid AS Oid,
 
@@ -32,9 +32,9 @@ namespace LogicPOS.Reporting.Reports.CustomerBalanceSummary
         public decimal TotalDebit { get; set; }         // SUM([Debit]) AS TotalDebit
         public decimal Balance { get; set; }            // SUM(Credit) - SUM(Debit) AS BALANCE
 
-        [Report(Hide = true)]
+        [ReportData(Hide = true)]
         public string EntityName { get; set; }
-        [Report(Hide = true)]
+        [ReportData(Hide = true)]
         public string EntityFiscalNumber { get; set; }
     }
 }

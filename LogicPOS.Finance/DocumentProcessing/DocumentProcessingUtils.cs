@@ -10,7 +10,6 @@ using LogicPOS.Domain.Enums;
 using LogicPOS.Globalization;
 using LogicPOS.Modules;
 using LogicPOS.Modules.StockManagement;
-using LogicPOS.Reporting.Common;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
 using LogicPOS.Shared;

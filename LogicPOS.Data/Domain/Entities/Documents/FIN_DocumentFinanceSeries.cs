@@ -1,6 +1,5 @@
 ﻿using DevExpress.Xpo;
 using LogicPOS.Data.XPO.Utility;
-using System;
 
 namespace LogicPOS.Domain.Entities
 {

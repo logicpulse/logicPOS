@@ -1,6 +1,6 @@
-﻿using LogicPOS.Reporting.Common;
+﻿using LogicPOS.Reporting.Data.Common;
 
-namespace LogicPOS.Reporting.Reports.Documents
+namespace LogicPOS.Reporting.Reports.Data
 {
     // Note: Agregate Fields must have same name has in FRBODocumentFinanceMasterDetailView
     // This is a requirement for Shared Reports that use same Field Name
@@ -14,7 +14,7 @@ namespace LogicPOS.Reporting.Reports.Documents
     //[FormatNumber([DocumentFinanceDetail.ArticleTotalTax],2)]
     //[FormatNumber([DocumentFinanceDetail.ArticleTotalFinal],2)]
 
-    [Report(Entity = "view_documentfinance")]
+    [ReportData(Entity = "view_documentfinance")]
     public class FinanceMasterDetailGroupViewReportData : ReportData
     {
         // Group

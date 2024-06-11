@@ -1,10 +1,4 @@
-﻿using LogicPOS.Domain.Entities;
-using LogicPOS.Globalization;
-using LogicPOS.Reporting.Common;
-using LogicPOS.Reporting.Reports.Documents;
-using LogicPOS.Settings;
-using LogicPOS.Shared.CustomDocument;
-using logicpos.shared.Enums;
+﻿using logicpos.shared.Enums;
 
 namespace LogicPOS.Reporting.Reports
 {

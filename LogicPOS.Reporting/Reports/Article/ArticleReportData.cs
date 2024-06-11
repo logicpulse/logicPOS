@@ -1,9 +1,9 @@
-﻿using LogicPOS.Reporting.Common;
+﻿using LogicPOS.Reporting.Data.Common;
 
-namespace LogicPOS.Reporting.Reports.Articles
+namespace LogicPOS.Reporting.Reports.Data
 {
-    [Report(Entity = "fin_article")]
-    public class ArticleReport : ReportData
+    [ReportData(Entity = "fin_article")]
+    public class ArticleReportData : ReportData
     {
         public uint Ord { get; set; }
         public string Code { get; set; }

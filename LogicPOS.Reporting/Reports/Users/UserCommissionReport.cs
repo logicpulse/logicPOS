@@ -33,16 +33,16 @@ ORDER BY
 	DateDay, UserOrd, CommissionValue
 ;*/
 
-using LogicPOS.Reporting.Common;
+using LogicPOS.Reporting.Data.Common;
 
 namespace LogicPOS.Reporting.Reports.Users
 {
-    [Report(Entity = "view_usercommission",
+    [ReportData(Entity = "view_usercommission",
         Group = "DateDay,UserOid,UserOrd,UserCode,UserName,ArticleOid,Code,Designation,UnitMeasure,Price,Vat,Discount,CommissionValue",
         Order = "DateDay,UserName,Designation")]
     internal class UserCommissionReport : ReportData
     {
-        [Report(Field = "UserOid")]
+        [ReportData(Field = "UserOid")]
         //Primary Oid (Required)
         override public string Oid { get; set; }            //UserOid AS Oid,
 
@@ -58,15 +58,15 @@ namespace LogicPOS.Reporting.Reports.Users
         public decimal Vat { get; set; }
         public decimal Discount { get; set; }
 
-        [Report(Field = "SUM(Quantity)")]
+        [ReportData(Field = "SUM(Quantity)")]
         public decimal Quantity { get; set; }
 
-        [Report(Field = "Price * SUM(Quantity)")]
+        [ReportData(Field = "Price * SUM(Quantity)")]
         public decimal Total { get; set; }
 
         public decimal CommissionValue { get; set; }
 
-        [Report(Field = "SUM(TotalCommission)")]
+        [ReportData(Field = "SUM(TotalCommission)")]
         public decimal TotalCommission { get; set; }
     }
 }

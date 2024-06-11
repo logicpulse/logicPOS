@@ -2,7 +2,8 @@
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Globalization;
-using LogicPOS.Reporting.Reports.Documents;
+using LogicPOS.Reporting.Data.Common;
+using LogicPOS.Reporting.Reports.Data;
 using LogicPOS.Settings;
 using LogicPOS.Shared.CustomDocument;
 using System;
@@ -18,9 +19,9 @@ namespace LogicPOS.Reporting.Common
         /// <summary>
         /// Generate Fast Report Business Objects for ProcessReportFinanceDocument
         /// </summary>
-        public static ReportList<FinanceMasterViewReport> GetFinanceMasterViewReports(Guid financeMasterId)
+        public static ReportList<FinanceMasterViewReportData> GetFinanceMasterViewReports(Guid financeMasterId)
         {
-            ReportList<FinanceMasterViewReport> result = new ReportList<FinanceMasterViewReport>();
+            ReportList<FinanceMasterViewReportData> result = new ReportList<FinanceMasterViewReportData>();
 
             try
             {
@@ -38,11 +39,11 @@ namespace LogicPOS.Reporting.Common
                 string sqlFilter = string.Format("fmOid = '{0}'", documentFinanceMaster.Oid.ToString());
 
                 //Prepare and Declare FRBOGenericCollections : Limit 1, One Record (Document Master), else we get All Details to (View)
-                ReportList<FinanceMasterViewReport> gcDocumentFinanceMaster = new ReportList<FinanceMasterViewReport>(sqlFilter, 1);
-                ReportList<FinanceDetailReport> gcDocumentFinanceDetail;
-                ReportList<FinanceMasterTotalViewReport> gcDocumentFinanceMasterTotal;
+                ReportList<FinanceMasterViewReportData> gcDocumentFinanceMaster = new ReportList<FinanceMasterViewReportData>(sqlFilter, 1);
+                ReportList<FinanceDetailReportData> gcDocumentFinanceDetail;
+                ReportList<FinanceMasterTotalViewReportData> gcDocumentFinanceMasterTotal;
                 /* IN005986 - code refactoring */
-                FinanceMasterViewReport documentFinanceMasterView = gcDocumentFinanceMaster.List[0];
+                FinanceMasterViewReportData documentFinanceMasterView = gcDocumentFinanceMaster.List[0];
 
                 /* IN009075 - for decrypt phase */
                 bool customerDataHasBeenCleaned = false;
@@ -128,14 +129,14 @@ namespace LogicPOS.Reporting.Common
                 }
 
                 //Render Child Bussiness Objects
-                foreach (FinanceMasterViewReport documentMaster in gcDocumentFinanceMaster)
+                foreach (FinanceMasterViewReportData documentMaster in gcDocumentFinanceMaster)
                 {
                     //Get FinanceDetail 
-                    gcDocumentFinanceDetail = new ReportList<FinanceDetailReport>(string.Format("DocumentMaster = '{0}'", documentMaster.Oid), "Ord");
+                    gcDocumentFinanceDetail = new ReportList<FinanceDetailReportData>(string.Format("DocumentMaster = '{0}'", documentMaster.Oid), "Ord");
                     documentMaster.DocumentFinanceDetail = gcDocumentFinanceDetail.List;
 
                     //Get FinanceMasterTotals
-                    gcDocumentFinanceMasterTotal = new ReportList<FinanceMasterTotalViewReport>(string.Format("fmtDocumentMaster = '{0}'", documentMaster.Oid), "Value");
+                    gcDocumentFinanceMasterTotal = new ReportList<FinanceMasterTotalViewReportData>(string.Format("fmtDocumentMaster = '{0}'", documentMaster.Oid), "Value");
                     documentMaster.DocumentFinanceMasterTotal = gcDocumentFinanceMasterTotal.List;
                 }
 
@@ -149,9 +150,9 @@ namespace LogicPOS.Reporting.Common
             return result;
         }
 
-        public static ReportList<FinancePaymentViewReport> GetFinancePaymentViewReports(Guid financePaymentId)
+        public static ReportList<FinancePaymentViewReportData> GetFinancePaymentViewReports(Guid financePaymentId)
         {
-            ReportList<FinancePaymentViewReport> result = new ReportList<FinancePaymentViewReport>();
+            ReportList<FinancePaymentViewReportData> result = new ReportList<FinancePaymentViewReportData>();
 
             try
             {
@@ -160,8 +161,8 @@ namespace LogicPOS.Reporting.Common
                 string sqlFilter = string.Format("fpaOid = '{0}'", financePaymentId.ToString());
 
                 //Prepare and Declare FRBOGenericCollections
-                ReportList<FinancePaymentViewReport> gcDocumentFinancePayment = new ReportList<FinancePaymentViewReport>(sqlFilter);
-                ReportList<FinancePaymentDocumentViewReport> gcDocumentFinancePaymentDocument;
+                ReportList<FinancePaymentViewReportData> gcDocumentFinancePayment = new ReportList<FinancePaymentViewReportData>(sqlFilter);
+                ReportList<FinancePaymentDocumentViewReportData> gcDocumentFinancePaymentDocument;
 
                 //Decrypt Values
                 if (!string.IsNullOrEmpty(gcDocumentFinancePayment.List[0].EntityName))
@@ -189,10 +190,10 @@ namespace LogicPOS.Reporting.Common
                 }
 
                 //Render Child Bussiness Objects
-                foreach (FinancePaymentViewReport documentFinanceMasterPayment in gcDocumentFinancePayment)
+                foreach (FinancePaymentViewReportData documentFinanceMasterPayment in gcDocumentFinancePayment)
                 {
                     //Get FinanceDetail 
-                    gcDocumentFinancePaymentDocument = new ReportList<FinancePaymentDocumentViewReport>(string.Format("fpaOid = '{0}'", documentFinanceMasterPayment.Oid), "ftpCode, fmaDocumentNumber");
+                    gcDocumentFinancePaymentDocument = new ReportList<FinancePaymentDocumentViewReportData>(string.Format("fpaOid = '{0}'", documentFinanceMasterPayment.Oid), "ftpCode, fmaDocumentNumber");
                     documentFinanceMasterPayment.DocumentFinancePaymentDocument = gcDocumentFinancePaymentDocument.List;
                 }
 

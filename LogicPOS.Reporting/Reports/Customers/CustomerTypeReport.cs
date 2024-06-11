@@ -1,9 +1,9 @@
-﻿using LogicPOS.Reporting.Common;
+﻿using LogicPOS.Reporting.Data.Common;
 using System.Collections.Generic;
 
 namespace LogicPOS.Reporting.Reports.Customers
 {
-    [Report(Entity = "erp_customertype")]
+    [ReportData(Entity = "erp_customertype")]
     public class CustomerTypeReport : ReportData
     {
         public uint Ord { get; set; }

@@ -1,9 +1,9 @@
-﻿using LogicPOS.Reporting.Common;
+﻿using LogicPOS.Reporting.Data.Common;
 
-namespace LogicPOS.Reporting.Reports.Articles
+namespace LogicPOS.Reporting.Reports.Data
 {
-    [Report(Entity = "fin_articleserialnumber")]
-    public class ArticleSerialNumberReport : ReportData
+    [ReportData(Entity = "fin_articleserialnumber")]
+    public class ArticleSerialNumberReportData : ReportData
     {
         public string SerialNumber { get; set; }
         public string ArticleName { get; set; }

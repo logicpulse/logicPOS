@@ -1,4 +1,4 @@
-﻿using LogicPOS.Reporting.Common;
+﻿using LogicPOS.Reporting.Data.Common;
 using System.Collections.Generic;
 
 /* USED QUERY 
@@ -34,90 +34,90 @@ WHERE
 ;
 */
 
-namespace LogicPOS.Reporting.Reports.Documents
+namespace LogicPOS.Reporting.Reports.Data
 {
-    [Report(Entity = "view_documentfinancepayment", Limit = 1)]
-    public class FinancePaymentViewReport : ReportData
+    [ReportData(Entity = "view_documentfinancepayment", Limit = 1)]
+    public class FinancePaymentViewReportData : ReportData
     {
-        [Report(Field = "fpaOid")]
+        [ReportData(Field = "fpaOid")]
         override public string Oid { get; set; }                                        //fpaOid AS Oid,  
 
-        [Report(Field = "ftpDesignation")]
+        [ReportData(Field = "ftpDesignation")]
         public string DocumentTypeDesignation { get; set; }                             //ftpDesignation AS DocumentTypeDesignation,
 
-        [Report(Field = "ftpResourceString")]
+        [ReportData(Field = "ftpResourceString")]
         public string DocumentTypeResourceString { get; set; }                          //ftpResourceString AS DocumentTypeResourceString,
 
-        [Report(Field = "ftpResourceStringReport")]
+        [ReportData(Field = "ftpResourceStringReport")]
         public string DocumentTypeResourceStringReport { get; set; }                    //ftpResourceStringReport AS DocumentTypeResourceStringReport,  
 
-        [Report(Field = "fpaPaymentRefNo")]
+        [ReportData(Field = "fpaPaymentRefNo")]
         public string PaymentRefNo { get; set; }                                        //fpaPaymentRefNo AS PaymentRefNo,
 
-        [Report(Field = "fpaPaymentStatus")]
+        [ReportData(Field = "fpaPaymentStatus")]
         public string PaymentStatus { get; set; }                                       //fpaPaymentStatus AS PaymentStatus,
 
-        [Report(Field = "fpaPaymentAmount")]
+        [ReportData(Field = "fpaPaymentAmount")]
         public decimal PaymentAmount { get; set; }                                      //fpaPaymentAmount AS PaymentAmount,
                                                                                         //TK016319 - Certificação Angola - Alterações para teste da AGT
-        [Report(Field = "fpaTaxPayable")]
+        [ReportData(Field = "fpaTaxPayable")]
         public decimal TaxPayable { get; set; }                                         //fmaTotalTax AS TaxPayable,
 
-        [Report(Field = "fpaPaymentDate")]
+        [ReportData(Field = "fpaPaymentDate")]
         public string PaymentDate { get; set; }                                         //fpaPaymentDate AS PaymentDate,
 
-        [Report(Field = "fpaDocumentDate")]
+        [ReportData(Field = "fpaDocumentDate")]
         public string DocumentDate { get; set; }                                        //fpaDocumentDate AS DocumentDate,
 
-        [Report(Field = "fpaExtendedValue")]
+        [ReportData(Field = "fpaExtendedValue")]
         public string ExtendedValue { get; set; }                                       //fpaExtendedValue AS ExtendedValue,
 
-        [Report(Field = "cusCode")]
+        [ReportData(Field = "cusCode")]
         public uint EntityCode { get; set; }                                            //cusCode AS EntityCode, 
 
-        [Report(Field = "cusName")]
+        [ReportData(Field = "cusName")]
         public string EntityName { get; set; }                                          //cusName AS EntityName, 
 
-        [Report(Field = "cusAddress")]
+        [ReportData(Field = "cusAddress")]
         public string EntityAddress { get; set; }                                       //cusAddress AS EntityAddress, 
 
-        [Report(Field = "cusZipCode")]
+        [ReportData(Field = "cusZipCode")]
         public string EntityZipCode { get; set; }                                       //cusZipCode AS EntityZipCode, 
 
-        [Report(Field = "cusCity")]
+        [ReportData(Field = "cusCity")]
         public string EntityCity { get; set; }                                          //cusCity AS EntityCity,
 
-        [Report(Field = "cusLocality")]
+        [ReportData(Field = "cusLocality")]
         public string EntityLocality { get; set; }                                          //cusCity AS EntityCity, 
 
-        [Report(Field = "ccoDesignation")]
+        [ReportData(Field = "ccoDesignation")]
         public string EntityCountry { get; set; }                                       //ccoDesignation AS EntityCountry, 
 
-        [Report(Field = "cusFiscalNumber")]
+        [ReportData(Field = "cusFiscalNumber")]
         public string EntityFiscalNumber { get; set; }                                  //cusFiscalNumber as EntityFiscalNumber,
 
-        [Report(Field = "cpmCode")]
+        [ReportData(Field = "cpmCode")]
         public uint MethodCode { get; set; }                                            //cpmCode AS MethodCode,
 
-        [Report(Field = "cpmDesignation")]
+        [ReportData(Field = "cpmDesignation")]
         public string PaymentMethodDesignation { get; set; }                            //cpmDesignation as MethodDesignation,
 
-        [Report(Field = "curDesignation")]
+        [ReportData(Field = "curDesignation")]
         public string CurrencyDesignation { get; set; }                                 //curDesignation as CurrencyDesignation,
 
-        [Report(Field = "curAcronym")]
+        [ReportData(Field = "curAcronym")]
         public string CurrencyAcronym { get; set; }                                     //curAcronym as CurrencyAcronym,
 
-        [Report(Field = "curSymbol")]
+        [ReportData(Field = "curSymbol")]
         public string CurrencySymbol { get; set; }                                      //curSymbol as CurrencySymbol 
 
-        [Report(Field = "fpaExchangeRate")]
+        [ReportData(Field = "fpaExchangeRate")]
         public decimal ExchangeRate { get; set; }                                       //fpaExchangeRate AS ExchangeRate,
 
-        [Report(Field = "fpaNotes")]
+        [ReportData(Field = "fpaNotes")]
         public string Notes { get; set; }                                               //fpaNotes AS Notes
 
         //Chield FRBOs Objects
-        public List<FinancePaymentDocumentViewReport> DocumentFinancePaymentDocument { get; set; }
+        public List<FinancePaymentDocumentViewReportData> DocumentFinancePaymentDocument { get; set; }
     }
 }

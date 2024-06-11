@@ -1,18 +1,9 @@
-﻿using FastReport;
-using logicpos.shared.Enums;
-using LogicPOS.Domain.Entities;
-using LogicPOS.Globalization;
-using LogicPOS.Reporting.Common;
-using LogicPOS.Reporting.Reports.Documents;
-using LogicPOS.Settings;
-using LogicPOS.Shared.CustomDocument;
-using LogicPOS.Utility;
-using System;
+﻿using logicpos.shared.Enums;
 
 namespace LogicPOS.Reporting.Reports
 {
     public class SalesByFinanceDocumentReport : SalesReport
-    {  
+    {
         public SalesByFinanceDocumentReport(
             CustomReportDisplayMode viewMode,
             string filter,

@@ -3,7 +3,6 @@ using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
-using System;
 
 namespace LogicPOS.Domain.Entities
 {

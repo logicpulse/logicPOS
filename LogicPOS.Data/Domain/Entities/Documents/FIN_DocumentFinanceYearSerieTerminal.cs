@@ -1,5 +1,4 @@
-﻿using System;
-using DevExpress.Xpo;
+﻿using DevExpress.Xpo;
 using LogicPOS.Data.XPO.Utility;
 
 namespace LogicPOS.Domain.Entities
