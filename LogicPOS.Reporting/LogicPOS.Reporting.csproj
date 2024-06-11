@@ -82,6 +82,7 @@
     <Compile Include="Reports\Sales\SalesByTerminal\SalesByTerminalReport.cs" />
     <Compile Include="Reports\Sales\SalesByUser\SalesByUserDetailedReport.cs" />
     <Compile Include="Reports\Sales\SalesByUser\SalesByUserReport.cs" />
+    <Compile Include="Reports\Sales\SalesByVat\SalesByVatResumedReport.cs" />
     <Compile Include="Utility\FastReportCustomFunctions.cs" />
     <Compile Include="Utility\ReportMapping.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

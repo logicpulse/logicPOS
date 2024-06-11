@@ -770,7 +770,12 @@ OR
                         LogicPOS.Reporting.Common.FastReport.ProcessReportArticleStockSupplier(displayMode, reportFilter, reportReadableFilter);
                         break;
                     case ReportsTypeToken.REPORT_SALES_PER_VAT:
-                        LogicPOS.Reporting.Common.FastReport.ProcessReportVatSalesResumed(displayMode, reportFilter, reportReadableFilter);
+                        
+                        PresentSalesByVatResumedReport(
+                            reportFilter,
+                            reportReadableFilter,
+                            displayMode);
+
                         break;
                     case ReportsTypeToken.REPORT_SALES_PER_VAT_BY_ARTICLE_CLASS:
                         LogicPOS.Reporting.Common.FastReport.ProcessReportVatSalesByClassResumed(displayMode, reportFilter, reportReadableFilter);
@@ -780,6 +785,19 @@ OR
                         throw new NotImplementedException("Report not implemented: " + reportToken.ToString());
                 }
             }
+        }
+
+        private void PresentSalesByVatResumedReport(
+            string reportFilter, 
+            string reportReadableFilter, 
+            CustomReportDisplayMode displayMode)
+        {
+            var report = new SalesByVatResumedReport(
+               reportFilter,
+               reportReadableFilter,
+               displayMode);
+
+            report.Present();
         }
 
         private void PresentSalesByPlaceTableDetailedReport(

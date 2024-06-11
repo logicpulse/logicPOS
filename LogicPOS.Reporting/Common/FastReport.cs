@@ -925,6 +925,7 @@ namespace LogicPOS.Reporting.Common
         {
             string reportFile = FastReportUtils.GetReportFilePath("ReportDocumentFinanceVatSalesSummary.frx");
             FastReport customReport = new FastReport(reportFile, templateBase: FILENAME_TEMPLATE_BASE_SIMPLE, numberOfCopies: 1);
+           
             //Report Parameters
             customReport.SetParameterValue("Report Title", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "report_sales_per_vat"));
             customReport.SetParameterValue("Report_FileName_loggero", GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
