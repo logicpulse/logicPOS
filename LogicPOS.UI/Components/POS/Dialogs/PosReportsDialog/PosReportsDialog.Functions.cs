@@ -20,7 +20,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
     internal partial class PosReportsDialog
     {
-        public static CustomReportDisplayMode ReportType { get; set; }
+        public static CustomReportDisplayMode ReportDisplayMode { get; set; }
 
         private void buttonReportUnderConstruction_Clicked(object sender, EventArgs e)
         {
@@ -109,6 +109,7 @@ OR
             }
 
             ReportsTypeToken reportToken = GetReportTokenByName(button.Name);
+
 
             PrintingSettings.ThermalPrinter.UsingThermalPrinter = true;
 
@@ -305,7 +306,7 @@ OR
 
             if (reportFilter != null)
             {
-                CustomReportDisplayMode displayMode = ReportType;
+                CustomReportDisplayMode displayMode = ReportDisplayMode;
                 switch (reportToken)
                 {
                     case ReportsTypeToken.REPORT_SALES_PER_FINANCE_DOCUMENT:
@@ -490,30 +491,20 @@ OR
                         break;
 
                     case ReportsTypeToken.REPORT_SALES_DETAIL_PER_PLACE:
-                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentDetail(displayMode
-                            , reportToken.ToString().ToLower()
-                            , "[DocumentFinanceDetail.PlaceOrd]"
-                            , "([DocumentFinanceDetail.PlaceCode]) [DocumentFinanceDetail.PlaceDesignation]",/* IN009066 */
-                            /* IN009066 - Faturas, Faturas Simplificadas and Notas de Crédito were not in this report, because they have no Payment Condition. Now the issue is fixed */
+
+                        PresentSalesByPlaceDetailedReport(
                             reportFilter,
-                            // Required to Exclude Documents without Place
-                            //(string.IsNullOrEmpty(reportFilter)) ? "cpPlace IS NOT NULL" : string.Format("{0} AND cpPlace IS NOT NULL", reportFilter),
-                            /* IN009066 - end */
-                            reportReadableFilter
-                            );
+                            reportReadableFilter,
+                            displayMode);
                         break;
+
                     case ReportsTypeToken.REPORT_SALES_DETAIL_PER_PLACE_TABLE:
-                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentDetail(displayMode
-                            , reportToken.ToString().ToLower()
-                            , "[DocumentFinanceDetail.PlaceTableOrd]"
-                            , "([DocumentFinanceDetail.PlaceCode]) [DocumentFinanceDetail.PlaceDesignation] / ([DocumentFinanceDetail.PlaceTableCode]) [DocumentFinanceDetail.PlaceTableDesignation]",/* IN009066 */
-                            /* IN009066 - Faturas, Faturas Simplificadas and Notas de Crédito were not in this report, because they have no Payment Condition. Now the issue is fixed */
+                        
+                        PresentSalesByPlaceTableDetailedReport(
                             reportFilter,
-                            // Required to Exclude Documents without PlaceTable
-                            //(string.IsNullOrEmpty(reportFilter)) ? "dmPlaceTable IS NOT NULL" : string.Format("{0} AND dmPlaceTable IS NOT NULL", reportFilter),
-                            /* IN009066 - end */
-                            reportReadableFilter
-                            );
+                            reportReadableFilter,
+                            displayMode);
+
                         break;
 
                     //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -531,6 +522,7 @@ OR
                             , true
                         );
                         break;
+
                     case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_DATE:
                         LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentDetail(displayMode
                             , reportToken.ToString().ToLower()
@@ -788,6 +780,32 @@ OR
                         throw new NotImplementedException("Report not implemented: " + reportToken.ToString());
                 }
             }
+        }
+
+        private void PresentSalesByPlaceTableDetailedReport(
+            string reportFilter, 
+            string reportReadableFilter, 
+            CustomReportDisplayMode displayMode)
+        {
+            var report = new SalesByPlaceTableDetailedReport(
+                displayMode, 
+                reportFilter, 
+                reportReadableFilter);
+
+            report.Present();
+        }
+
+        private void PresentSalesByPlaceDetailedReport(
+            string reportFilter, 
+            string reportReadableFilter, 
+            CustomReportDisplayMode displayMode)
+        {
+            var report = new SalesByPlaceDetailedReport(
+                displayMode, 
+                reportFilter, 
+                reportReadableFilter);
+
+            report.Present();
         }
 
         private void PresentSalesByFamilyAndSubfamilyDetailedReport(

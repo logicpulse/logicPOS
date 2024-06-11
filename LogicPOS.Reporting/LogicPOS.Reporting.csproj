@@ -76,6 +76,8 @@
     <Compile Include="Reports\Sales\SalesByPaymentMethod\SalesByPaymentMethodDetailedReport.cs" />
     <Compile Include="Reports\Sales\SalesByPaymentMethod\SalesByPaymentMethodReport.cs" />
     <Compile Include="Reports\Sales\SalesByFamily\SalesByFamilyAndSubfamilyDetailedReport.cs" />
+    <Compile Include="Reports\Sales\SalesByPlace\SalesByPlaceDetailedReport.cs" />
+    <Compile Include="Reports\Sales\SalesByPlaceTable\SalesByPlaceTableDetailedReport.cs" />
     <Compile Include="Reports\Sales\SalesByTerminal\SalesByTerminalDetailedReport.cs" />
     <Compile Include="Reports\Sales\SalesByTerminal\SalesByTerminalReport.cs" />
     <Compile Include="Reports\Sales\SalesByUser\SalesByUserDetailedReport.cs" />
