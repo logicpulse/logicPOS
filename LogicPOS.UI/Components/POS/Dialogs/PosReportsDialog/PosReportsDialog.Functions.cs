@@ -597,28 +597,28 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                     case ReportsTypeToken.REPORT_LIST_STOCK_WAREHOUSE:
                         
-                        LogicPOS.Reporting.Common.FastReport.ProcessReportArticleStockWarehouse(
-                            displayMode, 
-                            reportFilter, 
-                            reportReadableFilter);
+                        PresentStockInWarehouseReport(
+                            reportFilter,
+                            reportReadableFilter,
+                            displayMode);
                         
                         break;
 
                     case ReportsTypeToken.REPORT_LIST_STOCK_ARTICLE:
                         
-                        LogicPOS.Reporting.Common.FastReport.ProcessReportArticleStock(
-                            displayMode, 
-                            reportFilter, 
-                            reportReadableFilter);
+                        PresentStockByArticleReport(
+                            reportFilter,
+                            reportReadableFilter,
+                            displayMode);
                         
                         break;
 
                     case ReportsTypeToken.REPORT_LIST_STOCK_SUPPLIER:
                         
-                        LogicPOS.Reporting.Common.FastReport.ProcessReportArticleStockSupplier(
-                            displayMode, 
-                            reportFilter, 
-                            reportReadableFilter);
+                        PresentStockBySupplierReport(
+                            reportFilter,
+                            reportReadableFilter,
+                            displayMode);
                         
                         break;
 
@@ -644,6 +644,47 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         throw new NotImplementedException("Report not implemented: " + reportToken.ToString());
                 }
             }
+        }
+
+        private void PresentStockByArticleReport(
+            string reportFilter, 
+            string reportReadableFilter, 
+            CustomReportDisplayMode displayMode)
+        {
+            var report = new StockByArticleReport(
+                reportFilter, 
+                reportReadableFilter, 
+                displayMode);
+
+            report.Present();
+        }
+
+
+        #region Report Presentation Methods
+        private void PresentStockBySupplierReport(
+            string reportFilter, 
+            string reportReadableFilter, 
+            CustomReportDisplayMode displayMode)
+        {
+            var report = new StockBySupplierReport(
+                reportFilter, 
+                reportReadableFilter, 
+                displayMode);
+
+            report.Present();
+        }
+
+        private void PresentStockInWarehouseReport(
+            string reportFilter, 
+            string reportReadableFilter, 
+            CustomReportDisplayMode displayMode)
+        {
+            var report = new StockInWarehouseReport(
+                reportFilter, 
+                reportReadableFilter, 
+                displayMode);
+
+            report.Present();
         }
 
         private void PresentCurrentAccountListReport(
@@ -919,14 +960,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             report.Present();
         }
 
-        private static ReportsTypeToken GetReportTokenByName(string name)
-        {
-            return (ReportsTypeToken)Enum.Parse(
-                typeof(ReportsTypeToken),
-                name,
-                true);
-        }
-
         private void PresentSalesByCountryReport(
             string reportFilter, 
             string reportFilterHumanReadable, 
@@ -1053,6 +1086,17 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 reportFilterHumanReadable);
 
             customerBalanceSummaryReport.Present();
+        }
+
+        #endregion
+
+
+        private static ReportsTypeToken GetReportTokenByName(string name)
+        {
+            return (ReportsTypeToken)Enum.Parse(
+                typeof(ReportsTypeToken),
+                name,
+                true);
         }
     }
 }

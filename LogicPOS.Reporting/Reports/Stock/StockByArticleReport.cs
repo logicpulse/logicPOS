@@ -1,23 +1,27 @@
-﻿using logicpos.shared.Enums;
+﻿using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Domain.Entities;
 using LogicPOS.Reporting.Data.Common;
 using LogicPOS.Reporting.Reports.Data;
 using LogicPOS.Settings;
+using logicpos.shared.Enums;
 using LogicPOS.Utility;
+using System.Collections.Generic;
+using System;
 
 namespace LogicPOS.Reporting.Reports
 {
-    public class StockMovementsListReport
+    public class StockByArticleReport
     {
-        private const string REPORT_FILENAME = "ReportArticleStockMovementList.frx";
+        private const string REPORT_FILENAME = "ReportArticleStockList.frx";
         protected readonly Common.FastReport _report;
         private readonly string _readableFilter;
         private readonly string _groupTitle;
         private readonly string _groupCondition;
         private readonly string _reportToken;
-        private readonly string _filter;
+        private string _filter;
         protected readonly CustomReportDisplayMode _viewMode;
 
-        public StockMovementsListReport(
+        public StockByArticleReport(
             string filter,
             string readableFilter,
             CustomReportDisplayMode viewMode
@@ -30,7 +34,7 @@ namespace LogicPOS.Reporting.Reports
 
             _filter = filter;
             _readableFilter = readableFilter;
-            _reportToken = "REPORT_LIST_STOCK_MOVEMENTS";
+            _reportToken = "REPORT_LIST_STOCK_ARTICLE";
             _viewMode = viewMode;
 
             Initialize();
@@ -57,14 +61,26 @@ namespace LogicPOS.Reporting.Reports
 
         private void PrepareDataSources()
         {
-            ReportDataList<StockMovementViewReportData> articleStockMovementViewReportDataList = new ReportDataList<StockMovementViewReportData>(_filter);
+            ReportDataList<ArticleStockViewReportData> gcArticleStock = new ReportDataList<ArticleStockViewReportData>(_filter);
 
-            _report.RegisterData(articleStockMovementViewReportDataList, "ArticleStockMovement");
+            ReportDataList<ArticleStockViewReportData> gcArticleStockNew = new ReportDataList<ArticleStockViewReportData>("Date <= '0001-01-01 00:00:00");
+            List<string> listArticles = new List<string>();
 
-            if (_report.GetDataSource("ArticleStockMovement") != null)
+            foreach (ArticleStockViewReportData line in gcArticleStock)
             {
-                _report.GetDataSource("ArticleStockMovement").Enabled = true;
+                string sqlCount = $"SELECT SUM(Quantity) as Result FROM fin_articlestock WHERE {_filter} AND Article = '{line.Article}' AND (Disabled = 0 OR Disabled is NULL)";
+                line.ArticleStockQuantity = Convert.ToDecimal(XPOSettings.Session.ExecuteScalar(sqlCount));
+                line.ArticleStockDateDay = _readableFilter;
+
+                if (!listArticles.Contains(line.Article.ToString()))
+                {
+                    listArticles.Add(line.Article.ToString());
+                    gcArticleStockNew.Add(line);
+                }
             }
+
+            _report.RegisterData(gcArticleStockNew, "ArticleStock");
+            if (_report.GetDataSource("ArticleStock") != null) _report.GetDataSource("ArticleStock").Enabled = true;
         }
 
         public void Present()

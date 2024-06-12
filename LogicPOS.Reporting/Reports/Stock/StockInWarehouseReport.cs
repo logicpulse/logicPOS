@@ -1,14 +1,14 @@
-﻿using logicpos.shared.Enums;
-using LogicPOS.Reporting.Data.Common;
+﻿using LogicPOS.Reporting.Data.Common;
 using LogicPOS.Reporting.Reports.Data;
 using LogicPOS.Settings;
+using logicpos.shared.Enums;
 using LogicPOS.Utility;
 
 namespace LogicPOS.Reporting.Reports
 {
-    public class StockMovementsListReport
+    public class StockInWarehouseReport
     {
-        private const string REPORT_FILENAME = "ReportArticleStockMovementList.frx";
+        private const string REPORT_FILENAME = "ReportArticleStockWarehouseList.frx";
         protected readonly Common.FastReport _report;
         private readonly string _readableFilter;
         private readonly string _groupTitle;
@@ -17,7 +17,7 @@ namespace LogicPOS.Reporting.Reports
         private readonly string _filter;
         protected readonly CustomReportDisplayMode _viewMode;
 
-        public StockMovementsListReport(
+        public StockInWarehouseReport(
             string filter,
             string readableFilter,
             CustomReportDisplayMode viewMode
@@ -30,7 +30,7 @@ namespace LogicPOS.Reporting.Reports
 
             _filter = filter;
             _readableFilter = readableFilter;
-            _reportToken = "REPORT_LIST_STOCK_MOVEMENTS";
+            _reportToken = "REPORT_LIST_STOCK_WAREHOUSE";
             _viewMode = viewMode;
 
             Initialize();
@@ -57,14 +57,10 @@ namespace LogicPOS.Reporting.Reports
 
         private void PrepareDataSources()
         {
-            ReportDataList<StockMovementViewReportData> articleStockMovementViewReportDataList = new ReportDataList<StockMovementViewReportData>(_filter);
+            ReportDataList<StockWareHouseViewReportData> _stockWareHouseViewReportData = new ReportDataList<StockWareHouseViewReportData>(_filter);
 
-            _report.RegisterData(articleStockMovementViewReportDataList, "ArticleStockMovement");
-
-            if (_report.GetDataSource("ArticleStockMovement") != null)
-            {
-                _report.GetDataSource("ArticleStockMovement").Enabled = true;
-            }
+            _report.RegisterData(_stockWareHouseViewReportData, "ArticleStockWarehouse");
+            if (_report.GetDataSource("ArticleStockWarehouse") != null) _report.GetDataSource("ArticleStockWarehouse").Enabled = true;
         }
 
         public void Present()

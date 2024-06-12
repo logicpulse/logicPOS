@@ -90,22 +90,25 @@
     <Compile Include="Reports\Sales\SalesByVat\SalesByVatGroupDetailedReport.cs" />
     <Compile Include="Reports\Sales\SalesByVat\SalesByVatAndArticleClassResumedReport.cs" />
     <Compile Include="Reports\Sales\SalesByVat\SalesByVatResumedReport.cs" />
+    <Compile Include="Reports\Stock\StockByArticleReport.cs" />
+    <Compile Include="Reports\Stock\StockBySupplierReport.cs" />
     <Compile Include="Reports\Stock\StockMovementsListReport.cs" />
+    <Compile Include="Reports\Stock\StockInWarehouseReport.cs" />
     <Compile Include="Reports\User\UsersCommissionsListReport.cs" />
     <Compile Include="Common\FastReportCustomFunctions.cs" />
-    <Compile Include="Utility\ReportDataMapping.cs" />
+    <Compile Include="Data\ReportDataMapping.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\Article\Common\ArticleReportData.cs" />
     <Compile Include="Reports\Article\Common\ArticleFamilyReportData.cs" />
     <Compile Include="Reports\Article\Common\ArticleSerialNumberReportData.cs" />
-    <Compile Include="Reports\Stock\Common\ArticleStockMovementViewReportData.cs" />
+    <Compile Include="Reports\Stock\Common\StockMovementViewReportData.cs" />
     <Compile Include="Reports\Stock\Common\ArticleStockSupplierViewReportData.cs" />
     <Compile Include="Reports\Stock\Common\ArticleStockViewReportData.cs" />
-    <Compile Include="Reports\Stock\Common\ArticleStockWareHouseViewReportData.cs" />
+    <Compile Include="Reports\Stock\Common\StockWareHouseViewReportData.cs" />
     <Compile Include="Reports\Article\Common\ArticleSubFamilyReportData.cs" />
     <Compile Include="Reports\Customer\Common\CustomerReportData.cs" />
     <Compile Include="Reports\Customer\Common\CustomerTypeReportData.cs" />
-    <Compile Include="Utility\FastReportUtils.cs" />
+    <Compile Include="Common\FastReportUtils.cs" />
     <Compile Include="Common\FastReport.cs">
       <SubType>Component</SubType>
     </Compile>

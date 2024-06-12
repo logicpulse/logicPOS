@@ -14,7 +14,7 @@ ORDER BY
 namespace LogicPOS.Reporting.Reports.Data
 {
     [ReportData(Entity = "view_articlestockwarehouse")]
-    public class ArticleStockWareHouseViewReportData : ReportData
+    public class StockWareHouseViewReportData : ReportData
     {
         // ArticleFamily
         [ReportData(Field = "afaOid")]
