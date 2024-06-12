@@ -294,8 +294,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 if (
                     isFinalConsumerEntity &&
                     (
-                        _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid != InvoiceSettings.XpoOidDocumentFinanceTypeInvoice &&
-                        _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid != DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice
+                        _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid != InvoiceSettings.InvoiceId &&
+                        _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid != DocumentSettings.SimplifiedInvoiceId
                     )
                    )
                 {
@@ -352,8 +352,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             string filterBase = "(Disabled IS NULL OR Disabled  <> 1) AND (Hidden IS NULL OR Hidden = 0)";
             string filterExtra =
                 (
-                    _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid != InvoiceSettings.XpoOidDocumentFinanceTypeInvoice &&
-                    _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid != DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice
+                    _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid != InvoiceSettings.InvoiceId &&
+                    _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid != DocumentSettings.SimplifiedInvoiceId
                 ) ? string.Format("AND (Oid <> '{0}')", InvoiceSettings.FinalConsumerId) : string.Empty;
             EntryBoxSelectCustomerName.CriteriaOperator = CriteriaOperator.Parse(string.Format("{0} AND (Country = '{1}') {2}", filterBase, EntryBoxSelectCustomerCountry.Value.Oid, filterExtra));
             EntryBoxSelectCustomerFiscalNumber.CriteriaOperator = CriteriaOperator.Parse(string.Format("{0 } AND (Country = '{1}') AND (FiscalNumber IS NOT NULL AND FiscalNumber <> '') {2}", filterBase, EntryBoxSelectCustomerCountry.Value.Oid, filterExtra));
@@ -669,8 +669,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
                 if (_pagePad1.EntryBoxSelectDocumentFinanceType.Value != null)
                 {
-                    isInvoice = (_pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid == InvoiceSettings.XpoOidDocumentFinanceTypeInvoice);
-                    isSimplifiedInvoice = (_pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice);
+                    isInvoice = (_pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid == InvoiceSettings.InvoiceId);
+                    isSimplifiedInvoice = (_pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.SimplifiedInvoiceId);
                     isConferenceDocument = (_pagePad1.EntryBoxSelectSourceDocumentFinance.Value != null && _pagePad1.EntryBoxSelectSourceDocumentFinance.Value.DocumentType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeConferenceDocument);
                     isWayBill = _pagePad1.EntryBoxSelectDocumentFinanceType.Value.WayBill;
                 }
@@ -680,7 +680,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
                 if (_pagePad1.EntryBoxSelectSourceDocumentFinance.Value != null && CultureSettings.MozambiqueCountryId.Equals(XPOSettings.ConfigurationSystemCountry.Oid)
                     && _pagePad1.EntryBoxSelectSourceDocumentFinance.Value != null
-                    && (_pagePad1.EntryBoxSelectSourceDocumentFinance.Value.DocumentType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice || _pagePad1.EntryBoxSelectSourceDocumentFinance.Value.DocumentType.Oid == InvoiceSettings.XpoOidDocumentFinanceTypeInvoice))
+                    && (_pagePad1.EntryBoxSelectSourceDocumentFinance.Value.DocumentType.Oid == DocumentSettings.SimplifiedInvoiceId || _pagePad1.EntryBoxSelectSourceDocumentFinance.Value.DocumentType.Oid == InvoiceSettings.InvoiceId))
                 {
 
                     _posDocumentFinanceDialog.ButtonClearCustomer.Sensitive = true;

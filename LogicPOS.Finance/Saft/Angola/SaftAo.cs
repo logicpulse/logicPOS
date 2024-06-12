@@ -1275,7 +1275,7 @@ namespace LogicPOS.Finance.Saft
 
             //Protection to skip Export <OrderReferences> when Document Type is CreditNote
             fin_documentfinancedetail documentFinanceDetail = (fin_documentfinancedetail)XPOSettings.Session.GetObjectByKey(typeof(fin_documentfinancedetail), pDocumentMasterDetail);
-            if (documentFinanceDetail.DocumentMaster.DocumentType.Oid != CustomDocumentSettings.CreditNoteDocumentTypeId)
+            if (documentFinanceDetail.DocumentMaster.DocumentType.Oid != CustomDocumentSettings.CreditNoteId)
             {
                 try
                 {
@@ -1330,7 +1330,7 @@ namespace LogicPOS.Finance.Saft
 
             //Protection to skip Export <References> when Document Type is NOT CreditNote
             fin_documentfinancedetail documentFinanceDetail = (fin_documentfinancedetail)XPOSettings.Session.GetObjectByKey(typeof(fin_documentfinancedetail), pDocumentMasterDetail);
-            if (documentFinanceDetail.DocumentMaster.DocumentType.Oid == CustomDocumentSettings.CreditNoteDocumentTypeId)
+            if (documentFinanceDetail.DocumentMaster.DocumentType.Oid == CustomDocumentSettings.CreditNoteId)
             {
                 try
                 {

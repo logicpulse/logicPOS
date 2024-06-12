@@ -154,16 +154,16 @@ namespace LogicPOS.Finance.DocumentProcessing
                         {
                             //Source Document Document Status: SourceDocument was Invoiced|InvoiceAndPayment|SimplifiedInvoice > change SourceDocument Status to F (Invoiced/Faturado)
                             if (
-                                documentFinanceType.Oid == InvoiceSettings.XpoOidDocumentFinanceTypeInvoice ||
-                                documentFinanceType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment ||
-                                documentFinanceType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice
+                                documentFinanceType.Oid == InvoiceSettings.InvoiceId ||
+                                documentFinanceType.Oid == DocumentSettings.InvoiceAndPaymentId ||
+                                documentFinanceType.Oid == DocumentSettings.SimplifiedInvoiceId
                             )
                             {
                                 documentFinanceMasterParentDocument.DocumentStatusStatus = "F";
                             }
 
                             //Detected in Certification : Credit Notes dont Change Status Details like other Documents
-                            if (documentFinanceType.Oid != CustomDocumentSettings.CreditNoteDocumentTypeId)
+                            if (documentFinanceType.Oid != CustomDocumentSettings.CreditNoteId)
                             {
                                 //Assign Date and User for all Other
                                 documentFinanceMasterParentDocument.DocumentStatusDate = documentDateTime.ToString(CultureSettings.DateTimeFormatCombinedDateTime);
@@ -279,11 +279,11 @@ namespace LogicPOS.Finance.DocumentProcessing
 
                     //Assign Document Status for FT | FS | FR | DC | NC | CC | WorkingDocuments, else Ignore DocumentStatusStatus
                     if (
-                        documentFinanceType.Oid == InvoiceSettings.XpoOidDocumentFinanceTypeInvoice ||
+                        documentFinanceType.Oid == InvoiceSettings.InvoiceId ||
                         documentFinanceType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeInvoiceWayBill ||
-                        documentFinanceType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice ||
-                        documentFinanceType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment ||
-                        documentFinanceType.Oid == CustomDocumentSettings.CreditNoteDocumentTypeId ||
+                        documentFinanceType.Oid == DocumentSettings.SimplifiedInvoiceId ||
+                        documentFinanceType.Oid == DocumentSettings.InvoiceAndPaymentId ||
+                        documentFinanceType.Oid == CustomDocumentSettings.CreditNoteId ||
                         documentFinanceType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeBudget ||
                         documentFinanceType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeProformaInvoice ||
                         documentFinanceType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput ||
@@ -1005,7 +1005,7 @@ namespace LogicPOS.Finance.DocumentProcessing
                 try
                 {
                     //Get DocumentType
-                    fin_documentfinancetype documentFinanceType = (fin_documentfinancetype)uowSession.GetObjectByKey(typeof(fin_documentfinancetype), DocumentSettings.XpoOidDocumentFinanceTypePayment);
+                    fin_documentfinancetype documentFinanceType = (fin_documentfinancetype)uowSession.GetObjectByKey(typeof(fin_documentfinancetype), DocumentSettings.PaymentDocumentTypeId);
                     if (documentFinanceType == null)
                     {
                         throw new Exception("ERROR_MISSING_DOCUMENT_TYPE");
@@ -1017,7 +1017,7 @@ namespace LogicPOS.Finance.DocumentProcessing
                     fin_documentfinanceseries documentFinanceSerie = null;
                     fin_documentfinanceyearserieterminal documentFinanceYearSerieTerminal = null;
                     //Get Document Serie for current Terminal
-                    documentFinanceYearSerieTerminal = DocumentProcessingSeriesUtils.GetDocumentFinanceYearSerieTerminal(uowSession, DocumentSettings.XpoOidDocumentFinanceTypePayment);
+                    documentFinanceYearSerieTerminal = DocumentProcessingSeriesUtils.GetDocumentFinanceYearSerieTerminal(uowSession, DocumentSettings.PaymentDocumentTypeId);
                     if (documentFinanceYearSerieTerminal != null)
                     {
                         documentFinanceSerie = documentFinanceYearSerieTerminal.Serie;
@@ -1155,13 +1155,13 @@ SELECT
             '{DocumentSettings.XpoOidDocumentFinanceTypeBudget}', 
             '{DocumentSettings.XpoOidDocumentFinanceTypeConferenceDocument}', 
             '{DocumentSettings.XpoOidDocumentFinanceTypeConsignmentGuide}', 
-            '{CustomDocumentSettings.CreditNoteDocumentTypeId}', 
+            '{CustomDocumentSettings.CreditNoteId}', 
             '{CustomDocumentSettings.DeliveryNoteDocumentTypeId}', 
-            '{DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment}', 
+            '{DocumentSettings.InvoiceAndPaymentId}', 
             '{DocumentSettings.XpoOidDocumentFinanceTypeOwnAssetsDriveGuide}', 
             '{DocumentSettings.XpoOidDocumentFinanceTypeProformaInvoice}', 
             '{DocumentSettings.XpoOidDocumentFinanceTypeReturnGuide}', 
-            '{DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice}', 
+            '{DocumentSettings.SimplifiedInvoiceId}', 
             '{CustomDocumentSettings.TransportDocumentTypeId}'
         ) THEN NULL 
 		ELSE (
@@ -1785,10 +1785,10 @@ SELECT
                 //Invoice,SimplifiedInvoice,InvoiceAndPayment
                 if (
                     //SaftDocumentType = 1
-                    pDocumentFinanceType == InvoiceSettings.XpoOidDocumentFinanceTypeInvoice ||
+                    pDocumentFinanceType == InvoiceSettings.InvoiceId ||
                     //pDocumentFinanceType == SettingsApp.XpoOidDocumentFinanceTypeInvoiceWayBill ||
-                    pDocumentFinanceType == DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice ||
-                    pDocumentFinanceType == DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment ||
+                    pDocumentFinanceType == DocumentSettings.SimplifiedInvoiceId ||
+                    pDocumentFinanceType == DocumentSettings.InvoiceAndPaymentId ||
                     //SaftDocumentType = 0
                     pDocumentFinanceType == DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput
                 )
@@ -1799,9 +1799,9 @@ SELECT
                     {
                         result = new Guid[] {
                         //SaftDocumentType = 2
-                        InvoiceSettings.XpoOidDocumentFinanceTypeInvoice,
-                        DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice,
-                        DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment,
+                        InvoiceSettings.InvoiceId,
+                        DocumentSettings.SimplifiedInvoiceId,
+                        DocumentSettings.InvoiceAndPaymentId,
                         CustomDocumentSettings.DeliveryNoteDocumentTypeId,
                         DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput,
                         CustomDocumentSettings.TransportDocumentTypeId,
@@ -1810,7 +1810,7 @@ SELECT
                         DocumentSettings.XpoOidDocumentFinanceTypeReturnGuide,
                         //SaftDocumentType = 3 
                         DocumentSettings.XpoOidDocumentFinanceTypeConferenceDocument,
-                        DocumentSettings.XpoOidDocumentFinanceTypeConsignationInvoice,
+                        DocumentSettings.ConsignationInvoiceId,
                         //SaftDocumentType = 0 
                         DocumentSettings.XpoOidDocumentFinanceTypeBudget,
                         DocumentSettings.XpoOidDocumentFinanceTypeProformaInvoice };
@@ -1826,7 +1826,7 @@ SELECT
                         DocumentSettings.XpoOidDocumentFinanceTypeReturnGuide,
                         //SaftDocumentType = 3 
                         DocumentSettings.XpoOidDocumentFinanceTypeConferenceDocument,
-                        DocumentSettings.XpoOidDocumentFinanceTypeConsignationInvoice,
+                        DocumentSettings.ConsignationInvoiceId,
                         //SaftDocumentType = 0 
                         DocumentSettings.XpoOidDocumentFinanceTypeBudget,
                         DocumentSettings.XpoOidDocumentFinanceTypeProformaInvoice };
@@ -1835,15 +1835,15 @@ SELECT
                 }
                 //CreditNote
                 else if (
-                    pDocumentFinanceType == CustomDocumentSettings.CreditNoteDocumentTypeId
+                    pDocumentFinanceType == CustomDocumentSettings.CreditNoteId
                 )
                 {
                     result = new Guid[] { 
                         //SaftDocumentType = 1
-                        InvoiceSettings.XpoOidDocumentFinanceTypeInvoice,
+                        InvoiceSettings.InvoiceId,
                         DocumentSettings.XpoOidDocumentFinanceTypeInvoiceWayBill,
-                        DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice,
-                        DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment
+                        DocumentSettings.SimplifiedInvoiceId,
+                        DocumentSettings.InvoiceAndPaymentId
                     };
                 }
                 //MovementOfGoods,WorkingDocuments
@@ -1856,14 +1856,14 @@ SELECT
                     pDocumentFinanceType == DocumentSettings.XpoOidDocumentFinanceTypeReturnGuide ||
                     //SaftDocumentType = 3
                     pDocumentFinanceType == DocumentSettings.XpoOidDocumentFinanceTypeConferenceDocument ||
-                    pDocumentFinanceType == DocumentSettings.XpoOidDocumentFinanceTypeConsignationInvoice
+                    pDocumentFinanceType == DocumentSettings.ConsignationInvoiceId
                 )
                 {
                     result = new Guid[] { 
                         //SaftDocumentType = 1
-                        InvoiceSettings.XpoOidDocumentFinanceTypeInvoice,
-                        DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice,
-                        DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment,
+                        InvoiceSettings.InvoiceId,
+                        DocumentSettings.SimplifiedInvoiceId,
+                        DocumentSettings.InvoiceAndPaymentId,
                         //SaftDocumentType = 3 
                         DocumentSettings.XpoOidDocumentFinanceTypeConferenceDocument,
                         //SettingsApp.XpoOidDocumentFinanceTypeConsignationInvoice,
@@ -1879,9 +1879,9 @@ SELECT
                     )
                 { /* #TODO check this list and all others here */
                     result = new Guid[] {
-                        InvoiceSettings.XpoOidDocumentFinanceTypeInvoice,
-                        DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice,
-                        DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment,
+                        InvoiceSettings.InvoiceId,
+                        DocumentSettings.SimplifiedInvoiceId,
+                        DocumentSettings.InvoiceAndPaymentId,
                         DocumentSettings.XpoOidDocumentFinanceTypeConferenceDocument,
                         DocumentSettings.XpoOidDocumentFinanceTypeProformaInvoice
                     };
@@ -1894,7 +1894,7 @@ SELECT
                     result = new Guid[] { 
                         //SaftDocumentType = 3
                         DocumentSettings.XpoOidDocumentFinanceTypeConferenceDocument,
-                        DocumentSettings.XpoOidDocumentFinanceTypeConsignationInvoice,
+                        DocumentSettings.ConsignationInvoiceId,
                         DocumentSettings.XpoOidDocumentFinanceTypeBudget,
                         DocumentSettings.XpoOidDocumentFinanceTypeProformaInvoice
                     };
@@ -2027,7 +2027,7 @@ SELECT
                         resultParentDocument = XPOSettings.Session.ExecuteScalar(sql);
                         totalParentDocument = (resultParentDocument != null) ? Convert.ToDecimal(resultParentDocument) : 0.0m;
 
-                        sql = string.Format("SELECT SUM(fdQuantity) AS Total FROM view_documentfinance WHERE ftOid = '{0}' AND fmDocumentParent = '{1}' AND fdArticle = '{2}';", CustomDocumentSettings.CreditNoteDocumentTypeId, pDocumentParent.Oid, item.Key.ArticleId);
+                        sql = string.Format("SELECT SUM(fdQuantity) AS Total FROM view_documentfinance WHERE ftOid = '{0}' AND fmDocumentParent = '{1}' AND fdArticle = '{2}';", CustomDocumentSettings.CreditNoteId, pDocumentParent.Oid, item.Key.ArticleId);
                         resultAlreadyCredited = XPOSettings.Session.ExecuteScalar(sql);
                         totalAlreadyCredited = (resultAlreadyCredited != null) ? Convert.ToDecimal(resultAlreadyCredited) : 0.0m;
 
@@ -2084,9 +2084,9 @@ SELECT
 	                    CreatedAt
                     ;",
                     pCustomer,
-                    InvoiceSettings.XpoOidDocumentFinanceTypeInvoice,
-                    CustomDocumentSettings.CreditNoteDocumentTypeId,
-                    DocumentSettings.XpoOidDocumentFinanceTypeDebitNote
+                    InvoiceSettings.InvoiceId,
+                    CustomDocumentSettings.CreditNoteId,
+                    DocumentSettings.DebitNoteId
                 );
 
                 SelectedData selectedData = XPOSettings.Session.ExecuteQuery(sql);
@@ -2208,7 +2208,7 @@ SELECT
             {
                 result = string.Format(
                     "(Disabled IS NULL OR Disabled  <> 1) AND (DocumentType = '{0}' OR DocumentType = '{1}' OR DocumentType = '{2}') AND Payed = 0 AND DocumentStatusStatus <> 'A'"
-                    , InvoiceSettings.XpoOidDocumentFinanceTypeInvoice, CustomDocumentSettings.CreditNoteDocumentTypeId, DocumentSettings.XpoOidDocumentFinanceTypeDebitNote
+                    , InvoiceSettings.InvoiceId, CustomDocumentSettings.CreditNoteId, DocumentSettings.DebitNoteId
                 );
                 //Add Customer Filter if Defined
                 if (pCustomer != Guid.Empty)

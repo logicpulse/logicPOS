@@ -486,7 +486,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _vboxEntrys.WidthRequest = _windowSize.Width - 13;
 
             // CreditNote : Protect all components, only Quantity is Editable in CreditMode
-            if (_documentFinanceType.Oid == CustomDocumentSettings.CreditNoteDocumentTypeId)
+            if (_documentFinanceType.Oid == CustomDocumentSettings.CreditNoteId)
             {
                 //Article
                 _entryBoxSelectArticle.Entry.Sensitive = false;
@@ -1013,7 +1013,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private void ToggleVatExemptionReasonEditMode()
         {
             //Default Mode
-            if (_documentFinanceType.Oid != DocumentSettings.XpoOidDocumentFinanceTypeConsignationInvoice)
+            if (_documentFinanceType.Oid != DocumentSettings.ConsignationInvoiceId)
             {
                 if (_entryBoxSelectVatRate.Value != null && _entryBoxSelectVatRate.Value.Oid == InvoiceSettings.XpoOidConfigurationVatRateDutyFree)
                 {

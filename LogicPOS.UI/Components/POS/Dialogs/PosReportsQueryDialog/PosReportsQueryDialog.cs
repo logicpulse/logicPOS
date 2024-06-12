@@ -359,8 +359,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     {
                         string extraFilter = $@" AND (
 Oid = '{XPOSettings.XpoOidUndefinedRecord}' OR 
-Oid = '{InvoiceSettings.XpoOidDocumentFinanceTypeInvoice}' OR 
-Oid = '{CustomDocumentSettings.CreditNoteDocumentTypeId}'
+Oid = '{InvoiceSettings.InvoiceId}' OR 
+Oid = '{CustomDocumentSettings.CreditNoteId}'
 )".Replace(Environment.NewLine, string.Empty);
                         _entryBoxSelectDocumentFinanceType = SelectionBoxFactory<fin_documentfinancetype, TreeViewDocumentFinanceType>(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_documentfinanceseries_documenttype"), "Designation", extraFilter);
                         _selectionBoxs.Add(typeof(fin_documentfinancetype).Name, _entryBoxSelectDocumentFinanceType);
@@ -370,18 +370,18 @@ Oid = '{CustomDocumentSettings.CreditNoteDocumentTypeId}'
                     {
                         string extraFilter = $@" AND (
 Oid = '{XPOSettings.XpoOidUndefinedRecord}' OR 
-Oid = '{InvoiceSettings.XpoOidDocumentFinanceTypeInvoice}' OR 
-Oid = '{DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice}' OR 
-Oid = '{DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment}' OR 
+Oid = '{InvoiceSettings.InvoiceId}' OR 
+Oid = '{DocumentSettings.SimplifiedInvoiceId}' OR 
+Oid = '{DocumentSettings.InvoiceAndPaymentId}' OR 
 Oid = '{DocumentSettings.XpoOidDocumentFinanceTypeConsignmentGuide}' OR 
 Oid = '{DocumentSettings.XpoOidDocumentFinanceTypeProformaInvoice}' OR 
 Oid = '{CustomDocumentSettings.TransportDocumentTypeId}' OR 
 Oid = '{DocumentSettings.XpoOidDocumentFinanceTypeBudget}' OR 
 Oid = '{DocumentSettings.XpoOidDocumentFinanceTypeOwnAssetsDriveGuide}' OR 
-Oid = '{CustomDocumentSettings.CreditNoteDocumentTypeId}' OR 
+Oid = '{CustomDocumentSettings.CreditNoteId}' OR 
 Oid = '{DocumentSettings.XpoOidDocumentFinanceTypeReturnGuide}' OR 
 Oid = '{CustomDocumentSettings.DeliveryNoteDocumentTypeId}' OR 
-Oid = '{DocumentSettings.XpoOidDocumentFinanceTypeConsignationInvoice}'
+Oid = '{DocumentSettings.ConsignationInvoiceId}'
 )".Replace(Environment.NewLine, string.Empty);
                         _entryBoxSelectDocumentFinanceType = SelectionBoxFactory<fin_documentfinancetype, TreeViewDocumentFinanceType>(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_documentfinanceseries_documenttype"), "Designation", extraFilter);
                         _selectionBoxs.Add(typeof(fin_documentfinancetype).Name, _entryBoxSelectDocumentFinanceType);
@@ -392,11 +392,11 @@ Oid = '{DocumentSettings.XpoOidDocumentFinanceTypeConsignationInvoice}'
                         // Leave Indentation, this will be converted to inline
                         string extraFilter = $@" AND (
 Oid = '{XPOSettings.XpoOidUndefinedRecord}' OR 
-Oid = '{InvoiceSettings.XpoOidDocumentFinanceTypeInvoice}' OR 
-Oid = '{DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice}' OR 
-Oid = '{DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment}' OR 
-Oid = '{DocumentSettings.XpoOidDocumentFinanceTypeDebitNote}' OR
-Oid = '{DocumentSettings.XpoOidDocumentFinanceTypeConsignationInvoice}'
+Oid = '{InvoiceSettings.InvoiceId}' OR 
+Oid = '{DocumentSettings.SimplifiedInvoiceId}' OR 
+Oid = '{DocumentSettings.InvoiceAndPaymentId}' OR 
+Oid = '{DocumentSettings.DebitNoteId}' OR
+Oid = '{DocumentSettings.ConsignationInvoiceId}'
 )".Replace(Environment.NewLine, string.Empty);
                         _entryBoxSelectDocumentFinanceType = SelectionBoxFactory<fin_documentfinancetype, TreeViewDocumentFinanceType>(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_documentfinanceseries_documenttype"), "Designation", extraFilter);
                         _selectionBoxs.Add(typeof(fin_documentfinancetype).Name, _entryBoxSelectDocumentFinanceType);

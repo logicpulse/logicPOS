@@ -33,7 +33,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private PosSelectRecordDialog<DataTable, DataRow, TreeViewPartialPayment> _dialogPartialPayment;
         private decimal _totalPartialPaymentItems = 0;
         //Default DocumentType (FS)
-        private Guid _processDocumentType = DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice;
+        private Guid _processDocumentType = DocumentSettings.SimplifiedInvoiceId;
         //ResponseType (Above 10)
         private readonly ResponseType _responseTypeClearCustomer = (ResponseType)11;
         private readonly ResponseType _responseTypeFullPayment = (ResponseType)12;

@@ -115,22 +115,22 @@ namespace LogicPOS.Finance.DocumentProcessing
 
                 //P1
                 bool requiredPaymentCondition = (
-                    pParameters.DocumentType == InvoiceSettings.XpoOidDocumentFinanceTypeInvoice ||
-                    pParameters.DocumentType == DocumentSettings.XpoOidDocumentFinanceTypeConsignationInvoice ||
+                    pParameters.DocumentType == InvoiceSettings.InvoiceId ||
+                    pParameters.DocumentType == DocumentSettings.ConsignationInvoiceId ||
                     pParameters.DocumentType == DocumentSettings.XpoOidDocumentFinanceTypeBudget ||
                     pParameters.DocumentType == DocumentSettings.XpoOidDocumentFinanceTypeProformaInvoice
                 );
                 bool requiredPaymentMethod = (
-                    pParameters.DocumentType == DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice ||
-                    pParameters.DocumentType == DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment
+                    pParameters.DocumentType == DocumentSettings.SimplifiedInvoiceId ||
+                    pParameters.DocumentType == DocumentSettings.InvoiceAndPaymentId
                 );
-                bool requireParentDocument = (pParameters.DocumentType == CustomDocumentSettings.CreditNoteDocumentTypeId);
+                bool requireParentDocument = (pParameters.DocumentType == CustomDocumentSettings.CreditNoteId);
 
                 //P2
                 bool requireAllCustomerFields = (
                     //SimplifiedInvoice
                     (
-                        pParameters.DocumentType == DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice &&
+                        pParameters.DocumentType == DocumentSettings.SimplifiedInvoiceId &&
                         pParameters.ArticleBag.TotalFinal > financeRuleRequiredCustomerDetailsAboveValue &&
                         !customerIsSingularEntity
                     )
@@ -380,7 +380,7 @@ namespace LogicPOS.Finance.DocumentProcessing
                 // Moçambique - Pedidos da reunião 13/10/2020 + Faturas no Front-Office [IN:014327]
                 if (customer != null && customerParentDocument != null && customer != customerParentDocument && documentParent.DocumentType.Oid != DocumentSettings.XpoOidDocumentFinanceTypeConferenceDocument)
                 {
-                    if (!CultureSettings.MozambiqueCountryId.Equals(XPOSettings.ConfigurationSystemCountry.Oid) && (documentParent.DocumentType.Oid != InvoiceSettings.XpoOidDocumentFinanceTypeInvoice || documentParent.DocumentType.Oid != DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice))
+                    if (!CultureSettings.MozambiqueCountryId.Equals(XPOSettings.ConfigurationSystemCountry.Oid) && (documentParent.DocumentType.Oid != InvoiceSettings.InvoiceId || documentParent.DocumentType.Oid != DocumentSettings.SimplifiedInvoiceId))
                     {
                         ResultAdd(DocumentValidationErrorType.ERROR_RULE_PARENT_DOCUMENT_CUSTOMER_AND_CURRENT_DOCUMENT_CUSTOMER_INVALID);
                     }
@@ -434,7 +434,7 @@ namespace LogicPOS.Finance.DocumentProcessing
 
                 if (pParameters.PaymentCondition == Guid.Empty &&
                     (
-                        pParameters.DocumentType == InvoiceSettings.XpoOidDocumentFinanceTypeInvoice ||
+                        pParameters.DocumentType == InvoiceSettings.InvoiceId ||
                         pParameters.DocumentType == DocumentSettings.XpoOidDocumentFinanceTypeProformaInvoice ||
                         pParameters.DocumentType == DocumentSettings.XpoOidDocumentFinanceTypeBudget
                     )
@@ -448,8 +448,8 @@ namespace LogicPOS.Finance.DocumentProcessing
 
                 if (pParameters.PaymentMethod == Guid.Empty &&
                     (
-                        pParameters.DocumentType == DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice ||
-                        pParameters.DocumentType == DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment
+                        pParameters.DocumentType == DocumentSettings.SimplifiedInvoiceId ||
+                        pParameters.DocumentType == DocumentSettings.InvoiceAndPaymentId
                     )
                 )
                 {
@@ -459,7 +459,7 @@ namespace LogicPOS.Finance.DocumentProcessing
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
                 //SimplifiedInvoice
 
-                if (pParameters.DocumentType == DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice)
+                if (pParameters.DocumentType == DocumentSettings.SimplifiedInvoiceId)
                 {
                     //Check if SimplifiedInvoice is Service Total > MaxTotalServices
                     if (pParameters.ArticleBag.GetClassTotals("S") > financeRuleSimplifiedInvoiceMaxTotalServices)
@@ -492,7 +492,7 @@ namespace LogicPOS.Finance.DocumentProcessing
                 }
 
                 //ParentDocuments: Credit Note
-                if (pParameters.DocumentType == CustomDocumentSettings.CreditNoteDocumentTypeId)
+                if (pParameters.DocumentType == CustomDocumentSettings.CreditNoteId)
                 {
                     if (documentParent == null)
                     {
@@ -543,8 +543,8 @@ namespace LogicPOS.Finance.DocumentProcessing
 
                 if (documentType != null && customer != null && customer.Oid == InvoiceSettings.FinalConsumerId
                     && (
-                        documentType.Oid != InvoiceSettings.XpoOidDocumentFinanceTypeInvoice
-                        && documentType.Oid != DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice
+                        documentType.Oid != InvoiceSettings.InvoiceId
+                        && documentType.Oid != DocumentSettings.SimplifiedInvoiceId
                         && documentType.Oid != DocumentSettings.XpoOidDocumentFinanceTypeConferenceDocument
                         )
                     )
@@ -562,9 +562,9 @@ namespace LogicPOS.Finance.DocumentProcessing
                 if (documentType != null && customer != null
                     &&
                     (
-                        documentType.Oid == InvoiceSettings.XpoOidDocumentFinanceTypeInvoice ||
-                        documentType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment ||
-                        documentType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice
+                        documentType.Oid == InvoiceSettings.InvoiceId ||
+                        documentType.Oid == DocumentSettings.InvoiceAndPaymentId ||
+                        documentType.Oid == DocumentSettings.SimplifiedInvoiceId
                     )
                     &&
                     DocumentProcessingUtils.IsInValidFinanceDocumentCustomer(
@@ -679,7 +679,7 @@ namespace LogicPOS.Finance.DocumentProcessing
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
                 //Validate Invoice Documents
-                List<Guid> validCustomerPaymentInvoices = DocumentProcessingUtils.GetValidDocumentsForPayment(customer.Oid, InvoiceSettings.XpoOidDocumentFinanceTypeInvoice);
+                List<Guid> validCustomerPaymentInvoices = DocumentProcessingUtils.GetValidDocumentsForPayment(customer.Oid, InvoiceSettings.InvoiceId);
                 foreach (var item in pInvoices)
                 {
                     if (!validCustomerPaymentInvoices.Contains(item.Oid)
@@ -691,7 +691,7 @@ namespace LogicPOS.Finance.DocumentProcessing
                 }
 
                 //Validate Invoice Documents
-                List<Guid> validCustomerPaymentCreditNotes = DocumentProcessingUtils.GetValidDocumentsForPayment(customer.Oid, CustomDocumentSettings.CreditNoteDocumentTypeId);
+                List<Guid> validCustomerPaymentCreditNotes = DocumentProcessingUtils.GetValidDocumentsForPayment(customer.Oid, CustomDocumentSettings.CreditNoteId);
                 foreach (var item in pCreditNotes)
                 {
                     if (!validCustomerPaymentCreditNotes.Contains(item.Oid)
@@ -946,7 +946,7 @@ namespace LogicPOS.Finance.DocumentProcessing
                     //Rules Validation
 
                     //If is a ConsignationInvoice all Articles must have VatRateDutyFree Vat
-                    if (pDocumentType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeConsignationInvoice)
+                    if (pDocumentType.Oid == DocumentSettings.ConsignationInvoiceId)
                     {
                         if (item.Key.Vat != 0.0m)
                         {

@@ -317,7 +317,7 @@ namespace LogicPOS.Printing.Documents
                 dataTable.Rows.Add(dataRow);
 
                 //If Simplified Invoice, Payment Method MONEY and has Total Change, add it
-                if (new Guid(_financeMasterViewReportsDtos[0].DocumentType) == DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice
+                if (new Guid(_financeMasterViewReportsDtos[0].DocumentType) == DocumentSettings.SimplifiedInvoiceId
                     && _financeMasterViewReportsDtos[0].PaymentMethodToken == "MONEY"
                     && _financeMasterViewReportsDtos[0].TotalChange > 0
                     )

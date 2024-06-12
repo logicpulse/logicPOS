@@ -121,7 +121,7 @@ namespace LogicPOS.Reporting.Reports
                         item.EntityName = PluginSettings.SoftwareVendor.Decrypt(item.EntityName);
                         item.EntityFiscalNumber = PluginSettings.SoftwareVendor.Decrypt(item.EntityFiscalNumber);
 
-                        if (CustomDocumentSettings.CreditNoteDocumentTypeId.Equals(new Guid(item.DocumentType)))
+                        if (CustomDocumentSettings.CreditNoteId.Equals(new Guid(item.DocumentType)))
                         {
                             item.ArticleQuantity *= -1;
                             item.ArticleTotalFinal *= -1;
@@ -198,7 +198,7 @@ namespace LogicPOS.Reporting.Reports
                             item.GroupDesignation = PluginSettings.SoftwareVendor.Decrypt(item.GroupDesignation);
                         }
 
-                        if (CustomDocumentSettings.CreditNoteDocumentTypeId.Equals(new Guid(item.DocumentType)))
+                        if (CustomDocumentSettings.CreditNoteId.Equals(new Guid(item.DocumentType)))
                         {
                             item.ArticleQuantity *= -1;
                             item.ArticleTotalNet *= -1;

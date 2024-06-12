@@ -28,7 +28,7 @@ namespace LogicPOS.Shared.CustomDocument
             CultureResources.GetResourceByLanguage(
                 CultureSettings.CurrentCultureName,
                 "global_documentfinance_type_title_nc"),
-            CustomDocumentSettings.CreditNoteDocumentTypeId,
+            CustomDocumentSettings.CreditNoteId,
             Domain.Enums.DocumentType.Invoice,
             "NC",
             false,

@@ -44,7 +44,7 @@ namespace LogicPOS.Finance.DocumentProcessing
             //this way we have Invoice Serie but DocumentMaster keeps DocumentFinanceType has DocumentFinanceTypeInvoiceWayBill
             //Usefull for Future Documents WayBill distinct code, ex have WayBill, ex Re-Print Documents in WayBillMode etc
             Guid documentFinanceTypeSerieGuid = (documentFinanceType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeInvoiceWayBill)
-                ? InvoiceSettings.XpoOidDocumentFinanceTypeInvoice
+                ? InvoiceSettings.InvoiceId
                 : documentFinanceType.Oid
             ;
 

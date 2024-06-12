@@ -7,7 +7,6 @@ using LogicPOS.Globalization;
 using LogicPOS.Reporting.Data.Common;
 using LogicPOS.Reporting.Reports.Customers;
 using LogicPOS.Reporting.Reports.Data;
-using LogicPOS.Reporting.Reports.System;
 using LogicPOS.Reporting.Reports.Users;
 using LogicPOS.Reporting.Utility;
 using LogicPOS.Settings;
@@ -539,15 +538,14 @@ namespace LogicPOS.Reporting.Common
             }
 
             //string currentCulture = LogicPOS.Settings.CultureSettings.CurrentCulture.Name;
-            string fileName = documentMaster.DocumentType.WayBill ? "ReportDocumentFinanceWayBill_" + currentCulture + ".frx" : "ReportDocumentFinance_" + currentCulture + ".frx";
+            string reportFileName = documentMaster.DocumentType.WayBill ? "ReportDocumentFinanceWayBill_" + currentCulture + ".frx" : "ReportDocumentFinance_" + currentCulture + ".frx";
             //ATCUD Documentos - Criação do QRCode e ATCUD IN016508
             if (Convert.ToBoolean(GeneralSettings.PreferenceParameters["PRINT_QRCODE"]) && XPOSettings.ConfigurationSystemCountry.Oid.Equals(CultureSettings.PortugalCountryId) && !string.IsNullOrEmpty(documentMaster.ATDocQRCode))
             {
-                fileName = fileName.Replace(".frx", "_QRCode.frx");
+                reportFileName = reportFileName.Replace(".frx", "_QRCode.frx");
             }
-            string fileUserReportDocumentFinance = $"{PathsSettings.Paths["reports"]}{"UserReports"}\\{fileName}";
 
-            FastReport customReport = new FastReport(fileUserReportDocumentFinance, FILENAME_TEMPLATE_BASE, copyNumbers);
+            FastReport customReport = new FastReport(reportFileName, FILENAME_TEMPLATE_BASE, copyNumbers);
             customReport.DoublePass = documentMaster.DocumentDetail.Count > 15;
             customReport.Hash4Chars = hash4Chars;
             customReport.SetParameterValue("Report_FileName_loggero", GeneralSettings.PreferenceParameters["REPORT_FILENAME_loggerO"]);
@@ -587,7 +585,7 @@ namespace LogicPOS.Reporting.Common
 
             if (XPOSettings.ConfigurationSystemCountry.Oid.Equals(CultureSettings.AngolaCountryId))
             {
-                if (documentMaster.DocumentParent != null && documentMaster.DocumentType.Oid.ToString() == DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment.ToString())
+                if (documentMaster.DocumentParent != null && documentMaster.DocumentType.Oid.ToString() == DocumentSettings.InvoiceAndPaymentId.ToString())
                 {
                     documentMaster.Notes += string.Format(
                         CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_source_document") + ": " + documentMaster.DocumentParent.DocumentNumber);
@@ -697,14 +695,14 @@ namespace LogicPOS.Reporting.Common
 
             //Prepare and Declare FRBOGenericCollections
             //"Oid,Designation,ButtonLabel"
-            ReportList<CustomerTypeReport> gcCustomerType = new ReportList<CustomerTypeReport>();
-            ReportList<CustomerReport> gcCustomers;
+            ReportList<CustomerTypeReportData> gcCustomerType = new ReportList<CustomerTypeReportData>();
+            ReportList<CustomerReportData> gcCustomers;
 
             //Render Child Bussiness Objects
-            foreach (CustomerTypeReport customerType in gcCustomerType)
+            foreach (CustomerTypeReportData customerType in gcCustomerType)
             {
                 //Get Customer from current customerType
-                gcCustomers = new ReportList<CustomerReport>(string.Format("CustomerType = '{0}'", customerType.Oid), "Ord");
+                gcCustomers = new ReportList<CustomerReportData>(string.Format("CustomerType = '{0}'", customerType.Oid), "Ord");
                 customerType.Customer = gcCustomers.List;
 
                 if (gcCustomers != null && gcCustomers.List.Count > 0)
@@ -900,7 +898,7 @@ namespace LogicPOS.Reporting.Common
             //customReport.SetParameterValue("Factura No", 280);
 
             //Prepare and Declare FRBOGenericCollections
-            ReportList<SystemAuditViewReport> gcSystemAudit = new ReportList<SystemAuditViewReport>(filter, string.Empty, "SauDate");
+            ReportList<SystemAuditViewReportData> gcSystemAudit = new ReportList<SystemAuditViewReportData>(filter, string.Empty, "SauDate");
 
             // Decrypt Phase
             if (PluginSettings.HasSoftwareVendorPlugin)
@@ -998,7 +996,7 @@ namespace LogicPOS.Reporting.Common
 
         public static void ProcessReportDocumentDetail(
             CustomReportDisplayMode pViewMode,
-            string resourceString,
+            string reportToken,
             string groupCondition,
             string groupTitle,
             string filter,
@@ -1006,7 +1004,7 @@ namespace LogicPOS.Reporting.Common
         {
             ProcessReportDocumentDetail(
                 pViewMode,
-                resourceString,
+                reportToken,
                 null,
                 null,
                 groupCondition,
@@ -1019,7 +1017,7 @@ namespace LogicPOS.Reporting.Common
 
         public static void ProcessReportDocumentDetail(
             CustomReportDisplayMode pViewMode,
-            string resourceString,
+            string reportToken,
             string groupField,
             string groupSelectFields,
             string groupCondition,
@@ -1036,7 +1034,7 @@ namespace LogicPOS.Reporting.Common
             FastReport customReport = new FastReport(reportFile, templateBase: FILENAME_TEMPLATE_BASE_SIMPLE, numberOfCopies: 1);
 
             // Add PostFix to Report Title 
-            Tuple<string, string> tuppleResourceString = GetResourceString(resourceString);
+            Tuple<string, string> tuppleResourceString = GetResourceString(reportToken);
             string reportTitleString = tuppleResourceString.Item1;
             string reportTitleStringPostfix = tuppleResourceString.Item2;
 
@@ -1089,7 +1087,7 @@ namespace LogicPOS.Reporting.Common
                         /* IN009075 */
                         item.EntityFiscalNumber = PluginSettings.SoftwareVendor.Decrypt(item.EntityFiscalNumber);
                         /* IN009072 - this is used on reports to subtract the below values from totals when financial document is "NC" (see IN009066) */
-                        if (CustomDocumentSettings.CreditNoteDocumentTypeId.Equals(new Guid(item.DocumentType)))
+                        if (CustomDocumentSettings.CreditNoteId.Equals(new Guid(item.DocumentType)))
                         {
                             item.ArticleQuantity *= -1;
                             item.ArticleTotalFinal *= -1;
@@ -1184,7 +1182,7 @@ namespace LogicPOS.Reporting.Common
                         }
 
                         /* IN009072 - "NCs" must have their values subtracted from totals (see IN009066) */
-                        if (CustomDocumentSettings.CreditNoteDocumentTypeId.Equals(new Guid(item.DocumentType)))
+                        if (CustomDocumentSettings.CreditNoteId.Equals(new Guid(item.DocumentType)))
                         {
                             item.ArticleQuantity *= -1;
                             item.ArticleTotalNet *= -1;

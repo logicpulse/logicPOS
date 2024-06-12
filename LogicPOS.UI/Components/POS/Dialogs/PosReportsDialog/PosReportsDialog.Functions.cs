@@ -15,8 +15,6 @@ using System.Collections.Generic;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    // Use PrintRouter for financialDocuments ex PrintFinanceDocument
-
     internal partial class PosReportsDialog
     {
         public static CustomReportDisplayMode ReportDisplayMode { get; set; }
@@ -26,60 +24,64 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             logicpos.Utils.ShowMessageUnderConstruction();
         }
 
-        private List<string> GetReportsQueryDialogFilter(ReportsQueryDialogMode pReportsQueryDialogMode, string pDatabaseSourceObject)
+        private List<string> GetReportsQueryDialogFilter(
+            ReportsQueryDialogMode reportsQueryDialogMode, 
+            string databaseSourceObject)
         {
-            PosReportsQueryDialog dialog = new PosReportsQueryDialog(_sourceWindow, DialogFlags.DestroyWithParent, pReportsQueryDialogMode, pDatabaseSourceObject, _windowTitle);
-            ResponseType response = (ResponseType)dialog.Run();
+            PosReportsQueryDialog reportsQueryDialog = new PosReportsQueryDialog(
+                _sourceWindow, 
+                DialogFlags.DestroyWithParent, 
+                reportsQueryDialogMode, 
+                databaseSourceObject, 
+                _windowTitle);
+
+            ResponseType response = (ResponseType)reportsQueryDialog.Run();
             List<string> result = new List<string>();
+
             // Filter SellDocuments
             string filterField = string.Empty;
             string statusField = string.Empty;
             bool filterSellDocuments = false;
             string extraFilter = string.Empty;
+
             //Added Response for Export to excel, in this point both Ok and export to Excel are the same
             if (response == ResponseType.Ok || response == (ResponseType)DialogResponseType.ExportXls || response == (ResponseType)DialogResponseType.ExportPdf)
             {
                 // Filter SellDocuments
-                if (pReportsQueryDialogMode.Equals(ReportsQueryDialogMode.FINANCIAL))
+                if (reportsQueryDialogMode.Equals(ReportsQueryDialogMode.FINANCIAL))
                 {
                     filterSellDocuments = true;
                     filterField = "DocumentType";
                     statusField = "DocumentStatusStatus";
                 }
-                else if (pReportsQueryDialogMode.Equals(ReportsQueryDialogMode.FINANCIAL_DETAIL) || pReportsQueryDialogMode.Equals(ReportsQueryDialogMode.FINANCIAL_DETAIL_GROUP))
+                else if (reportsQueryDialogMode.Equals(ReportsQueryDialogMode.FINANCIAL_DETAIL) || reportsQueryDialogMode.Equals(ReportsQueryDialogMode.FINANCIAL_DETAIL_GROUP))
                 {
                     filterSellDocuments = true;
                     filterField = "ftOid";
                     statusField = "fmDocumentStatusStatus";
                 }
 
-                // Add extraFilter for SellDocuments
                 if (filterSellDocuments == true)
                 {
-                    /* IN009066 - FS and NC added to reports */
                     extraFilter = $@" AND ({statusField} <> 'A') AND (
-{filterField} = '{InvoiceSettings.XpoOidDocumentFinanceTypeInvoice}' OR 
-{filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice}' OR 
-{filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment}' OR 
-{filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeConsignationInvoice}' OR 
-{filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeDebitNote}' OR 
-{filterField} = '{CustomDocumentSettings.CreditNoteDocumentTypeId}' OR 
-{filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypePayment}' 
-OR 
-{filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput}'
-)".Replace(Environment.NewLine, string.Empty);
-                    /* IN009089 - # TO DO: above, we need to check with business this condition:  {filterField} = '{SettingsApp.XpoOidDocumentFinanceTypeCurrentAccountInput}' */
+                        {filterField} = '{InvoiceSettings.InvoiceId}' OR 
+                        {filterField} = '{DocumentSettings.SimplifiedInvoiceId}' OR 
+                        {filterField} = '{DocumentSettings.InvoiceAndPaymentId}' OR 
+                        {filterField} = '{DocumentSettings.ConsignationInvoiceId}' OR 
+                        {filterField} = '{DocumentSettings.DebitNoteId}' OR 
+                        {filterField} = '{CustomDocumentSettings.CreditNoteId}' OR 
+                        {filterField} = '{DocumentSettings.PaymentDocumentTypeId}' 
+                        OR 
+                        {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput}'
+                        )".Replace(Environment.NewLine, string.Empty);
                 }
 
-                // Assign Dialog FilterValue to Method Result Value
-                result.Add($"{dialog.FilterValue}{extraFilter}");
-                result.Add(dialog.FilterValueHumanReadble);
+                result.Add($"{reportsQueryDialog.FilterValue}{extraFilter}");
+                result.Add(reportsQueryDialog.FilterValueHumanReadble);
             }
             else
             {
-                // Destroy Dialog on Cancel
-                dialog.Destroy();
-                // Assign Result
+                reportsQueryDialog.Destroy();
                 result = null;
             }
 
@@ -677,13 +679,12 @@ OR
                         break;
 
                     case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_VAT:
-                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentDetail(displayMode
-                     , reportToken.ToString().ToLower()
-                     , "[DocumentFinanceDetail.ArticleVat]"
-                     , "[DocumentFinanceDetail.ArticleVat]",
-                     reportFilter,
-                     reportReadableFilter
-                     );
+
+                        PresentSalesByVatGroupDetailedReport(
+                            reportFilter,
+                            reportReadableFilter,
+                            displayMode);
+
                         break;
                     //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -713,13 +714,20 @@ OR
                         new ArticlesByFamilyAndSubfamilyReport().Present();
 
                         break;
+
                     case ReportsTypeToken.REPORT_LIST_CUSTOMERS:
-                        LogicPOS.Reporting.Common.FastReport.ProcessReportCustomer(CustomReportDisplayMode.ExportPDF);
+
+                        new CustomersListReport().Present();
+
                         break;
 
-                    // Other Reports
                     case ReportsTypeToken.REPORT_LIST_AUDIT_TABLE:
-                        LogicPOS.Reporting.Common.FastReport.ProcessReportSystemAudit(displayMode, reportFilter, reportReadableFilter);
+
+                        PresentSystemAuditListReport(
+                            reportFilter,
+                            reportReadableFilter,
+                            displayMode);
+
                         break;
 
                     case ReportsTypeToken.REPORT_LIST_CURRENT_ACCOUNT:
@@ -794,6 +802,32 @@ OR
                         throw new NotImplementedException("Report not implemented: " + reportToken.ToString());
                 }
             }
+        }
+
+        private void PresentSystemAuditListReport(
+            string reportFilter, 
+            string reportReadableFilter, 
+            CustomReportDisplayMode displayMode)
+        {
+            var report = new SystemAuditListReport(
+                reportFilter,
+                reportReadableFilter,
+                displayMode);
+
+            report.Present();
+        }
+
+        private void PresentSalesByVatGroupDetailedReport(
+            string reportFilter, 
+            string reportReadableFilter, 
+            CustomReportDisplayMode displayMode)
+        {
+            var report = new SalesByVatGroupDetailedReport(
+                displayMode, 
+                reportFilter, 
+                reportReadableFilter);
+
+            report.Present();
         }
 
         private void PresentCustomerBalanceDetailsReport(

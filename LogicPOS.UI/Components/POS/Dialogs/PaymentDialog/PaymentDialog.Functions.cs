@@ -103,8 +103,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         {
                             //Get Document Type to Emmit, based on Payment Mode
                             _processDocumentType = (PaymentMethod.Token == "CURRENT_ACCOUNT")
-                                ? InvoiceSettings.XpoOidDocumentFinanceTypeInvoice
-                                : DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice;
+                                ? InvoiceSettings.InvoiceId
+                                : DocumentSettings.SimplifiedInvoiceId;
 
                             ArticleBag processArticleBag;
 
@@ -121,7 +121,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             ResponseType responseTypeOverrideDefaultDocumentTypeSimplifiedInvoice = ResponseType.None;
                             //Get response for user confirmation to emmit Invoice-Payment before Extra Protections, we must have user respose before enter in "Extra Protections" above
                             if (
-                                    _processDocumentType != InvoiceSettings.XpoOidDocumentFinanceTypeInvoice &&
+                                    _processDocumentType != InvoiceSettings.InvoiceId &&
                                     (processArticleBag.TotalFinal > InvoiceSettings.GetSimplifiedInvoiceMaxItems(XPOSettings.ConfigurationSystemCountry.Oid) ||
                                     processArticleBag.GetClassTotals("S") > InvoiceSettings.GetSimplifiedInvoiceMaxItems(XPOSettings.ConfigurationSystemCountry.Oid))
                                 )
@@ -130,7 +130,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 //Override Back processDocumentType if Exceed FS Max Total
                                 if (responseTypeOverrideDefaultDocumentTypeSimplifiedInvoice == ResponseType.Yes)
                                 {
-                                    _processDocumentType = DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment;
+                                    _processDocumentType = DocumentSettings.InvoiceAndPaymentId;
                                 }
                             }
 
@@ -151,9 +151,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             //Check if TotalFinal is above 1000 and request fill all customer details
                             else if (
                                 (
-                                    _processDocumentType == InvoiceSettings.XpoOidDocumentFinanceTypeInvoice ||
-                                    _processDocumentType == DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment ||
-                                    _processDocumentType == DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice
+                                    _processDocumentType == InvoiceSettings.InvoiceId ||
+                                    _processDocumentType == DocumentSettings.InvoiceAndPaymentId ||
+                                    _processDocumentType == DocumentSettings.SimplifiedInvoiceId
                                 ) &&
                                 DocumentProcessingUtils.IsInValidFinanceDocumentCustomer(
                                     processArticleBag.TotalFinal,

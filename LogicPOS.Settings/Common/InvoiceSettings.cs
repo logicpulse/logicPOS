@@ -4,7 +4,7 @@ namespace LogicPOS.Settings
 {
     public static class InvoiceSettings
     {
-        public static Guid XpoOidDocumentFinanceTypeInvoice { get; set; } = new Guid("7af04618-74a6-42a3-aaba-454b7076f5a6");
+        public static Guid InvoiceId { get; set; } = new Guid("7af04618-74a6-42a3-aaba-454b7076f5a6");
 
         public static Guid FinalConsumerId { get; set; } = new Guid("0cf40622-578b-417d-b50f-e945fefb5d68");
         public static Guid XpoOidConfigurationVatRateDutyFree { get; set; } = new Guid("e74faad7-f5c9-4206-a662-f95820014195");

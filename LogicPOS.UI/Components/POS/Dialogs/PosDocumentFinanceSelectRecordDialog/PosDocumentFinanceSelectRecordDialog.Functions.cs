@@ -227,7 +227,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         payed = "0";
                     }
                     else { payed = "False"; }
-                    string criteriaOperatorString = string.Format("{0} (DocumentType = '{1}' OR DocumentType = '{2}' OR DocumentType = '{4}') AND DocumentStatusStatus <> 'A' AND Payed = '{3}'", criteriaOperatorShared, InvoiceSettings.XpoOidDocumentFinanceTypeInvoice, CustomDocumentSettings.CreditNoteDocumentTypeId, payed, DocumentSettings.XpoOidDocumentFinanceTypeInvoiceWayBill);
+                    string criteriaOperatorString = string.Format("{0} (DocumentType = '{1}' OR DocumentType = '{2}' OR DocumentType = '{4}') AND DocumentStatusStatus <> 'A' AND Payed = '{3}'", criteriaOperatorShared, InvoiceSettings.InvoiceId, CustomDocumentSettings.CreditNoteId, payed, DocumentSettings.XpoOidDocumentFinanceTypeInvoiceWayBill);
                     criteriaOperator = CriteriaOperator.Parse(criteriaOperatorString);
 
                     //string criteriaOperatorString2 = string.Format("{0} (DocumentType = '{1}' OR (DocumentType = '{2}' AND (DocFinMaster.DocumentParent NOT IN (SELECT DocFinMaster2.Oid FROM fin_documentfinancemaster DocFinMaster2 WHERE DocFinMaster2.Oid = DocFinMaster.DocumentParent AND Payed = 'False') OR DocFinMaster.DocumentParent IS NULL)) OR DocumentType = '{4}') AND DocumentStatusStatus <> 'A' AND Payed = '{3}'", criteriaOperatorShared, SettingsApp.XpoOidDocumentFinanceTypeInvoice, SettingsApp.XpoOidDocumentFinanceTypeCreditNote, payed, SettingsApp.XpoOidDocumentFinanceTypeInvoiceWayBill);
@@ -304,8 +304,8 @@ WHERE
                         //Mostrar notas de crédito apenas para para clientes com saldo positivo / Mostrar notas crédito de documentos que já tenham sido liquidados
                         var sqlbalanceTotal = string.Format("SELECT Balance FROM view_documentfinancecustomerbalancesummary WHERE (EntityOid = '{0}');", Convert.ToString(item.Values[1]));
                         var getCustomerBalance = XPOSettings.Session.ExecuteScalar(sqlbalanceTotal);
-                        if ((getCustomerBalance != null && (Convert.ToDecimal(getCustomerBalance) > 0) && Guid.Parse(Convert.ToString(item.Values[2])) == CustomDocumentSettings.CreditNoteDocumentTypeId) ||
-                            (Guid.Parse(Convert.ToString(item.Values[2])) != CustomDocumentSettings.CreditNoteDocumentTypeId) ||
+                        if ((getCustomerBalance != null && (Convert.ToDecimal(getCustomerBalance) > 0) && Guid.Parse(Convert.ToString(item.Values[2])) == CustomDocumentSettings.CreditNoteId) ||
+                            (Guid.Parse(Convert.ToString(item.Values[2])) != CustomDocumentSettings.CreditNoteId) ||
                             showCreditNote
                             )
                         {
@@ -949,13 +949,13 @@ WHERE
 
                         /* IN009066 - FS and NC added to reports */
                         extraFilter = $@" AND ({statusField} <> 'A') AND (
-			                    {filterField} = '{InvoiceSettings.XpoOidDocumentFinanceTypeInvoice}' OR 
-			                    {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice}' OR 
-			                    {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment}' OR 
-			                    {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeConsignationInvoice}' OR 
-			                    {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeDebitNote}' OR 
-			                    {filterField} = '{CustomDocumentSettings.CreditNoteDocumentTypeId}' OR 
-			                    {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypePayment}' 
+			                    {filterField} = '{InvoiceSettings.InvoiceId}' OR 
+			                    {filterField} = '{DocumentSettings.SimplifiedInvoiceId}' OR 
+			                    {filterField} = '{DocumentSettings.InvoiceAndPaymentId}' OR 
+			                    {filterField} = '{DocumentSettings.ConsignationInvoiceId}' OR 
+			                    {filterField} = '{DocumentSettings.DebitNoteId}' OR 
+			                    {filterField} = '{CustomDocumentSettings.CreditNoteId}' OR 
+			                    {filterField} = '{DocumentSettings.PaymentDocumentTypeId}' 
 			                    OR 
 			                    {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput}'
 			                    )".Replace(Environment.NewLine, string.Empty);
@@ -1104,7 +1104,7 @@ WHERE
                 {
                     //Prepare ProcessFinanceDocumentParameter
                     DocumentProcessingParameters processFinanceDocumentParameter = new DocumentProcessingParameters(
-                      DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice, dialog.ArticleBagFullPayment)
+                      DocumentSettings.SimplifiedInvoiceId, dialog.ArticleBagFullPayment)
                     {
                         SourceMode = PersistFinanceDocumentSourceMode.CurrentAcountDocuments,
                         FinanceDocuments = pFinanceDocuments,
@@ -1713,7 +1713,7 @@ WHERE
             {
 
                 isCancellable = true;
-                if ((pDocumentFinanceMaster.DocumentType.Oid != DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice && pDocumentFinanceMaster.DocumentType.Oid != InvoiceSettings.XpoOidDocumentFinanceTypeInvoice))
+                if ((pDocumentFinanceMaster.DocumentType.Oid != DocumentSettings.SimplifiedInvoiceId && pDocumentFinanceMaster.DocumentType.Oid != InvoiceSettings.InvoiceId))
                 {/* IN009083 - if invoice products are already in transport */
                     _logger.Debug("Moçambique : Document Type not Invoice or Simplified Invoice");
                     return false;
@@ -2273,13 +2273,13 @@ WHERE
 
                             /* IN009066 - FS and NC added to reports */
                             extraFilter = $@" AND ({statusField} <> 'A') AND (
-			                    {filterField} = '{InvoiceSettings.XpoOidDocumentFinanceTypeInvoice}' OR 
-			                    {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice}' OR 
-			                    {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment}' OR 
-			                    {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeConsignationInvoice}' OR 
-			                    {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeDebitNote}' OR 
-			                    {filterField} = '{CustomDocumentSettings.CreditNoteDocumentTypeId}' OR 
-			                    {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypePayment}' 
+			                    {filterField} = '{InvoiceSettings.InvoiceId}' OR 
+			                    {filterField} = '{DocumentSettings.SimplifiedInvoiceId}' OR 
+			                    {filterField} = '{DocumentSettings.InvoiceAndPaymentId}' OR 
+			                    {filterField} = '{DocumentSettings.ConsignationInvoiceId}' OR 
+			                    {filterField} = '{DocumentSettings.DebitNoteId}' OR 
+			                    {filterField} = '{CustomDocumentSettings.CreditNoteId}' OR 
+			                    {filterField} = '{DocumentSettings.PaymentDocumentTypeId}' 
 			                    OR 
 			                    {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput}'
 			                    )".Replace(Environment.NewLine, string.Empty);
@@ -2590,9 +2590,9 @@ WHERE
             bool result = true;
             // Valid DocumentTypes
             Guid[] validDocumentTypes = new Guid[] {
-                InvoiceSettings.XpoOidDocumentFinanceTypeInvoice,
-                DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice,
-                DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment,
+                InvoiceSettings.InvoiceId,
+                DocumentSettings.SimplifiedInvoiceId,
+                DocumentSettings.InvoiceAndPaymentId,
                 DocumentSettings.XpoOidDocumentFinanceTypeBudget,
                 DocumentSettings.XpoOidDocumentFinanceTypeProformaInvoice
             };

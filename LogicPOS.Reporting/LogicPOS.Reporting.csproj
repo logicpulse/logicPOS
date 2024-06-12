@@ -57,7 +57,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Reports\Article\ArticlesByFamilyAndSubfamily\ArticlesByFamilyAndSubfamilyReport.cs" />
+    <Compile Include="Reports\Auditing\SystemAuditListReport.cs" />
     <Compile Include="Reports\CompanyBilling\CompanyBillingReport.cs" />
+    <Compile Include="Reports\Customer\CustomersListReport.cs" />
     <Compile Include="Reports\Customer\CustomerBalanceDetails\CustomerBalanceDetailsReport.cs" />
     <Compile Include="Reports\Customer\CustomerBalanceSummary\CustomerBalanceSummaryReport.cs" />
     <Compile Include="Reports\Sales\Common\SalesDetailedReport.cs" />
@@ -84,21 +86,22 @@
     <Compile Include="Reports\Sales\SalesByTerminal\SalesByTerminalReport.cs" />
     <Compile Include="Reports\Sales\SalesByUser\SalesByUserDetailedReport.cs" />
     <Compile Include="Reports\Sales\SalesByUser\SalesByUserReport.cs" />
+    <Compile Include="Reports\Sales\SalesByVat\SalesByVatGroupDetailedReport.cs" />
     <Compile Include="Reports\Sales\SalesByVat\SalesByVatAndArticleClassResumedReport.cs" />
     <Compile Include="Reports\Sales\SalesByVat\SalesByVatResumedReport.cs" />
     <Compile Include="Utility\FastReportCustomFunctions.cs" />
     <Compile Include="Utility\ReportMapping.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Reports\Article\ArticleReportData.cs" />
-    <Compile Include="Reports\Article\ArticleFamilyReportData.cs" />
-    <Compile Include="Reports\Article\ArticleSerialNumberReportData.cs" />
-    <Compile Include="Reports\Article\ArticleStockMovementViewReport.cs" />
-    <Compile Include="Reports\Article\ArticleStockSupplierViewReportData.cs" />
-    <Compile Include="Reports\Article\ArticleStockViewReportData.cs" />
-    <Compile Include="Reports\Article\ArticleStockWareHouseViewReportData.cs" />
-    <Compile Include="Reports\Article\ArticleSubFamilyReportData.cs" />
-    <Compile Include="Reports\Customers\CustomerReport.cs" />
-    <Compile Include="Reports\Customers\CustomerTypeReport.cs" />
+    <Compile Include="Reports\Article\Common\ArticleReportData.cs" />
+    <Compile Include="Reports\Article\Common\ArticleFamilyReportData.cs" />
+    <Compile Include="Reports\Article\Common\ArticleSerialNumberReportData.cs" />
+    <Compile Include="Reports\Article\Common\ArticleStockMovementViewReport.cs" />
+    <Compile Include="Reports\Article\Common\ArticleStockSupplierViewReportData.cs" />
+    <Compile Include="Reports\Article\Common\ArticleStockViewReportData.cs" />
+    <Compile Include="Reports\Article\Common\ArticleStockWareHouseViewReportData.cs" />
+    <Compile Include="Reports\Article\Common\ArticleSubFamilyReportData.cs" />
+    <Compile Include="Reports\Customer\Common\CustomerReportData.cs" />
+    <Compile Include="Reports\Customer\Common\CustomerTypeReportData.cs" />
     <Compile Include="Utility\FastReportUtils.cs" />
     <Compile Include="Common\FastReport.cs">
       <SubType>Component</SubType>
@@ -120,7 +123,7 @@
     <Compile Include="Data\Common\ReportData.cs" />
     <Compile Include="Data\Common\ReportList.cs" />
     <Compile Include="Common\ReportHelper.cs" />
-    <Compile Include="Reports\System\SystemAuditViewReport.cs" />
+    <Compile Include="Reports\Auditing\SystemAuditViewReportData.cs" />
     <Compile Include="Reports\Users\UserCommissionReport.cs" />
   </ItemGroup>
   <ItemGroup>

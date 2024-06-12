@@ -28,7 +28,7 @@ namespace LogicPOS.Reporting.Common
                 fin_documentfinancemaster documentFinanceMaster = XPOUtility.GetEntityById<fin_documentfinancemaster>(financeMasterId);
 
                 bool retificationDocuments =
-                     documentFinanceMaster.DocumentType.Oid == CustomDocumentSettings.CreditNoteDocumentTypeId
+                     documentFinanceMaster.DocumentType.Oid == CustomDocumentSettings.CreditNoteId
                 ;
                 /* IN009173 */
                 bool isTransportDocument =

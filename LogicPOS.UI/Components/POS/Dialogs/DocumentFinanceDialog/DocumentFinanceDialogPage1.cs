@@ -88,7 +88,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             _intialValueConfigurationCountry = XPOSettings.ConfigurationSystemCountry;
 
             //Defaults
-            Guid initialDocumentFinanceTypeGuid = InvoiceSettings.XpoOidDocumentFinanceTypeInvoice;
+            Guid initialDocumentFinanceTypeGuid = InvoiceSettings.InvoiceId;
             Guid initialConfigurationPaymentConditionGuid = POSSettings.XpoOidConfigurationPaymentConditionDefaultInvoicePaymentCondition;
             Guid initialConfigurationPaymentMethodGuid = POSSettings.XpoOidConfigurationPaymentMethodDefaultInvoicePaymentMethod;
             Guid initialConfigurationCurrencyGuid = XPOSettings.ConfigurationSystemCurrency.Oid;
@@ -287,7 +287,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 string filterBaseCustomer = "(Disabled IS NULL OR Disabled  <> 1) AND (Hidden IS NULL OR Hidden = 0)";
 
                 //If Not SimplifiedInvoice
-                if (EntryBoxSelectDocumentFinanceType.Value.Oid != DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice && EntryBoxSelectDocumentFinanceType.Value.Oid != CustomDocumentSettings.CreditNoteDocumentTypeId)
+                if (EntryBoxSelectDocumentFinanceType.Value.Oid != DocumentSettings.SimplifiedInvoiceId && EntryBoxSelectDocumentFinanceType.Value.Oid != CustomDocumentSettings.CreditNoteId)
                 {
                     filterBaseCustomer = filterBaseCustomer + string.Format(" AND Oid <> '{0}'", InvoiceSettings.FinalConsumerId);
                     //If FinalConsumerEntity, Clean it
@@ -324,7 +324,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
                 //Detected SourceDocumentFinance:CreditNote
                 if (
-                    EntryBoxSelectDocumentFinanceType.Value.Oid == CustomDocumentSettings.CreditNoteDocumentTypeId
+                    EntryBoxSelectDocumentFinanceType.Value.Oid == CustomDocumentSettings.CreditNoteId
                 )
                 {
                     //Set Required EntryBoxSelectSourceDocumentFinance
@@ -374,7 +374,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
                 //Detected SourceDocumentFinance:WayBill
                 if (
-                    EntryBoxSelectDocumentFinanceType.Value.Oid == InvoiceSettings.XpoOidDocumentFinanceTypeInvoice ||
+                    EntryBoxSelectDocumentFinanceType.Value.Oid == InvoiceSettings.InvoiceId ||
                     EntryBoxSelectDocumentFinanceType.Value.Oid == CustomDocumentSettings.DeliveryNoteDocumentTypeId ||
                     EntryBoxSelectDocumentFinanceType.Value.Oid == CustomDocumentSettings.TransportDocumentTypeId ||
                     EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.XpoOidDocumentFinanceTypeOwnAssetsDriveGuide ||
@@ -525,8 +525,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput,
                 //SettingsApp.XpoOidDocumentFinanceTypeInvoiceAndPayment,
                 DocumentSettings.XpoOidDocumentFinanceTypeConferenceDocument,
-                DocumentSettings.XpoOidDocumentFinanceTypePayment,
-                DocumentSettings.XpoOidDocumentFinanceTypeDebitNote
+                DocumentSettings.PaymentDocumentTypeId,
+                DocumentSettings.DebitNoteId
             };
 
             for (int i = 0; i < excludedDocumentTypes.Length; i++)
@@ -610,7 +610,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 //If Working on a CreditNote Document(Target), we must Check Already Credited Items in Reference Table, to prevent to Add same items to TreeView 
                 /* IN009206 - Added GT and GR */
                 Guid oid = EntryBoxSelectDocumentFinanceType.Value.Oid;
-                if (CustomDocumentSettings.CreditNoteDocumentTypeId.Equals(oid)
+                if (CustomDocumentSettings.CreditNoteId.Equals(oid)
                     || CustomDocumentSettings.TransportDocumentTypeId.Equals(oid)
                     || CustomDocumentSettings.DeliveryNoteDocumentTypeId.Equals(oid))
                 {
@@ -808,8 +808,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             /* IN009206 - Added GT and GR */
             Guid oid = EntryBoxSelectDocumentFinanceType.Value.Oid;
             if (
-                !DocumentSettings.XpoOidDocumentFinanceTypeDebitNote.Equals(oid)
-                && !CustomDocumentSettings.CreditNoteDocumentTypeId.Equals(oid)
+                !DocumentSettings.DebitNoteId.Equals(oid)
+                && !CustomDocumentSettings.CreditNoteId.Equals(oid)
                 && !CustomDocumentSettings.TransportDocumentTypeId.Equals(oid)
                 && !CustomDocumentSettings.DeliveryNoteDocumentTypeId.Equals(oid)
             )
@@ -872,8 +872,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
             //ConfigurationPaymentCondition
             if (
-                EntryBoxSelectDocumentFinanceType.Value.Oid == InvoiceSettings.XpoOidDocumentFinanceTypeInvoice ||
-                EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.XpoOidDocumentFinanceTypeConsignationInvoice ||
+                EntryBoxSelectDocumentFinanceType.Value.Oid == InvoiceSettings.InvoiceId ||
+                EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.ConsignationInvoiceId ||
                 EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.XpoOidDocumentFinanceTypeBudget ||
                 EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.XpoOidDocumentFinanceTypeProformaInvoice ||
                 EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput
@@ -902,8 +902,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             }
             //ConfigurationPaymentMethod
             else if (
-                EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice ||
-                EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment
+                EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.SimplifiedInvoiceId ||
+                EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.InvoiceAndPaymentId
             )
             {
                 //Enable Widget

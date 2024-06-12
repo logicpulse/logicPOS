@@ -103,9 +103,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         {
             //If not a Invoice|InvoiceAndPayment|Simplified Invoice
             if (TreeViewArticles.DataSource.Rows.Count > 0
-                && _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid != InvoiceSettings.XpoOidDocumentFinanceTypeInvoice
-                && _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid != DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment
-                && _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid != DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice
+                && _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid != InvoiceSettings.InvoiceId
+                && _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid != DocumentSettings.InvoiceAndPaymentId
+                && _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid != DocumentSettings.SimplifiedInvoiceId
             )
             {
                 _validated = true;
@@ -131,7 +131,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             else if (
                 TreeViewArticles.DataSource.Rows.Count > 0 &&
                 (
-                    _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice
+                    _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.SimplifiedInvoiceId
                     && (
                         //Check Total Final and Total Services
                         ArticleBag.TotalFinal > InvoiceSettings.GetSimplifiedInvoiceMaxItems(XPOSettings.ConfigurationSystemCountry.Oid) ||

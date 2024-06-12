@@ -575,7 +575,7 @@ namespace LogicPOS.Data.XPO.Utility
                     //:::: Notification : ConsignationInvoiceDocumentsToInvoice ::::
                     //ProcessFinanceDocumentToInvoice to Create Notification in Spool for CurrentAccount Documents
                     //systemNotificationType = (SystemNotificationType)pSession.GetObjectByKey(typeof(SystemNotificationType), SettingsApp.XpoOidSystemNotificationTypeConsignationInvoiceDocumentsToInvoice);
-                    systemNotification = ProcessFinanceDocumentToInvoice(xpoSession, NotificationSettings.XpoOidSystemNotificationTypeConsignationInvoiceDocumentsToInvoice, DocumentSettings.XpoOidDocumentFinanceTypeConsignationInvoice, "(DocumentChild IS NULL)", defaultBackDaysForInvoice);
+                    systemNotification = ProcessFinanceDocumentToInvoice(xpoSession, NotificationSettings.XpoOidSystemNotificationTypeConsignationInvoiceDocumentsToInvoice, DocumentSettings.ConsignationInvoiceId, "(DocumentChild IS NULL)", defaultBackDaysForInvoice);
                     if (systemNotification != null)
                     {
                         systemNotification.Ord = ord; systemNotification.Save();

@@ -184,13 +184,13 @@ SELECT
             '{DocumentSettings.XpoOidDocumentFinanceTypeBudget}', 
             '{DocumentSettings.XpoOidDocumentFinanceTypeConferenceDocument}', 
             '{DocumentSettings.XpoOidDocumentFinanceTypeConsignmentGuide}', 
-            '{CustomDocumentSettings.CreditNoteDocumentTypeId}', 
+            '{CustomDocumentSettings.CreditNoteId}', 
             '{CustomDocumentSettings.DeliveryNoteDocumentTypeId}', 
-            '{DocumentSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment}', 
+            '{DocumentSettings.InvoiceAndPaymentId}', 
             '{DocumentSettings.XpoOidDocumentFinanceTypeOwnAssetsDriveGuide}', 
             '{DocumentSettings.XpoOidDocumentFinanceTypeProformaInvoice}', 
             '{DocumentSettings.XpoOidDocumentFinanceTypeReturnGuide}', 
-            '{DocumentSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice}', 
+            '{DocumentSettings.SimplifiedInvoiceId}', 
             '{CustomDocumentSettings.TransportDocumentTypeId}'
         ) THEN NULL 
 		ELSE (

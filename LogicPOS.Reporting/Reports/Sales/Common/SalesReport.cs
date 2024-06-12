@@ -94,7 +94,7 @@ namespace LogicPOS.Reporting.Reports
                     Decrypt(item);
                 }
 
-                if (CustomDocumentSettings.CreditNoteDocumentTypeId.Equals(item.DocumentType.Oid))
+                if (CustomDocumentSettings.CreditNoteId.Equals(item.DocumentType.Oid))
                 {
                     item.PaymentMethod = new fin_configurationpaymentmethod { Designation = item.DocumentType.Designation, Ord = 999, Code = 999 }; /* Setting to 999 to avoid NC being grouped with other Payment Method created */
                     item.PaymentCondition = new fin_configurationpaymentcondition { Designation = item.DocumentType.Designation, Ord = 999, Code = 999 }; /* Sets the same as above in order to keep the pattern */

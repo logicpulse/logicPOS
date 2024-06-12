@@ -106,7 +106,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             fin_documentfinancemaster sourceFinanceMaster = null;
             string referencesReason = string.Empty;
             if (
-                _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid == CustomDocumentSettings.CreditNoteDocumentTypeId
+                _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid == CustomDocumentSettings.CreditNoteId
                 && _pagePad1.EntryBoxSelectSourceDocumentFinance.Value != null
                 && _pagePad1.EntryBoxSelectSourceDocumentFinance.Value.Oid != new Guid()
             )
@@ -117,7 +117,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 referencesReason = _pagePad1.EntryBoxReason.EntryValidation.Text;
             };
 
-            if (_pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid == CustomDocumentSettings.CreditNoteDocumentTypeId)
+            if (_pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid == CustomDocumentSettings.CreditNoteId)
             {
 
                 List<DataRow> dataRows = new List<DataRow>();

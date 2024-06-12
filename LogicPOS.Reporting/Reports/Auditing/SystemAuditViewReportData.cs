@@ -8,10 +8,10 @@ FROM
 	view_systemaudit
 ;*/
 
-namespace LogicPOS.Reporting.Reports.System
+namespace LogicPOS.Reporting.Reports.Data
 {
     [ReportData(Entity = "view_systemaudit")]
-    internal class SystemAuditViewReport : ReportData
+    internal class SystemAuditViewReportData : ReportData
     {
         // SystemAudit
         [ReportData(Field = "sauOid")]
