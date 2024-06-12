@@ -3,7 +3,7 @@ using LogicPOS.Reporting.Reports.Data;
 
 namespace LogicPOS.Reporting.Utility
 {
-    public static class ReportMapping
+    public static class ReportDataMapping
     {
         public static FinanceMasterViewReportDto GetFinanceMasterViewReportDto(
             FinanceMasterViewReportData report)

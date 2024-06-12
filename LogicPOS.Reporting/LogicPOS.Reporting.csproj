@@ -59,6 +59,7 @@
     <Compile Include="Reports\Article\ArticlesByFamilyAndSubfamily\ArticlesByFamilyAndSubfamilyReport.cs" />
     <Compile Include="Reports\Auditing\SystemAuditListReport.cs" />
     <Compile Include="Reports\CompanyBilling\CompanyBillingReport.cs" />
+    <Compile Include="Reports\Customer\CurrentAccountListReport.cs" />
     <Compile Include="Reports\Customer\CustomersListReport.cs" />
     <Compile Include="Reports\Customer\CustomerBalanceDetails\CustomerBalanceDetailsReport.cs" />
     <Compile Include="Reports\Customer\CustomerBalanceSummary\CustomerBalanceSummaryReport.cs" />
@@ -89,16 +90,18 @@
     <Compile Include="Reports\Sales\SalesByVat\SalesByVatGroupDetailedReport.cs" />
     <Compile Include="Reports\Sales\SalesByVat\SalesByVatAndArticleClassResumedReport.cs" />
     <Compile Include="Reports\Sales\SalesByVat\SalesByVatResumedReport.cs" />
-    <Compile Include="Utility\FastReportCustomFunctions.cs" />
-    <Compile Include="Utility\ReportMapping.cs" />
+    <Compile Include="Reports\Stock\StockMovementsListReport.cs" />
+    <Compile Include="Reports\User\UsersCommissionsListReport.cs" />
+    <Compile Include="Common\FastReportCustomFunctions.cs" />
+    <Compile Include="Utility\ReportDataMapping.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\Article\Common\ArticleReportData.cs" />
     <Compile Include="Reports\Article\Common\ArticleFamilyReportData.cs" />
     <Compile Include="Reports\Article\Common\ArticleSerialNumberReportData.cs" />
-    <Compile Include="Reports\Article\Common\ArticleStockMovementViewReport.cs" />
-    <Compile Include="Reports\Article\Common\ArticleStockSupplierViewReportData.cs" />
-    <Compile Include="Reports\Article\Common\ArticleStockViewReportData.cs" />
-    <Compile Include="Reports\Article\Common\ArticleStockWareHouseViewReportData.cs" />
+    <Compile Include="Reports\Stock\Common\ArticleStockMovementViewReportData.cs" />
+    <Compile Include="Reports\Stock\Common\ArticleStockSupplierViewReportData.cs" />
+    <Compile Include="Reports\Stock\Common\ArticleStockViewReportData.cs" />
+    <Compile Include="Reports\Stock\Common\ArticleStockWareHouseViewReportData.cs" />
     <Compile Include="Reports\Article\Common\ArticleSubFamilyReportData.cs" />
     <Compile Include="Reports\Customer\Common\CustomerReportData.cs" />
     <Compile Include="Reports\Customer\Common\CustomerTypeReportData.cs" />
@@ -121,10 +124,10 @@
     <Compile Include="Data\VatSalesSummaryReportData.cs" />
     <Compile Include="Data\Common\ReportDataAttribute.cs" />
     <Compile Include="Data\Common\ReportData.cs" />
-    <Compile Include="Data\Common\ReportList.cs" />
-    <Compile Include="Common\ReportHelper.cs" />
+    <Compile Include="Data\Common\ReportDataList.cs" />
+    <Compile Include="Data\Common\ReportDataHelper.cs" />
     <Compile Include="Reports\Auditing\SystemAuditViewReportData.cs" />
-    <Compile Include="Reports\Users\UserCommissionReport.cs" />
+    <Compile Include="Reports\User\UserCommissionReportData.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LogicPOS.Data\LogicPOS.Data.csproj">

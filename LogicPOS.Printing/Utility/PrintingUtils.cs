@@ -1178,8 +1178,8 @@ namespace LogicPOS.Printing.Utility
                     case "THERMAL_PRINTER_WINDOWS":
                     case "THERMAL_PRINTER_SOCKET":
 
-                        var financeMasterViewReports = ReportHelper.GetFinanceMasterViewReports(financeMasterDto.Id).List;
-                        var financeMasterViewReportsDtos = financeMasterViewReports.ConvertAll(view => ReportMapping.GetFinanceMasterViewReportDto(view));
+                        var financeMasterViewReports = ReportDataHelper.GetFinanceMasterViewReportDataList(financeMasterDto.Id).List;
+                        var financeMasterViewReportsDtos = financeMasterViewReports.ConvertAll(view => ReportDataMapping.GetFinanceMasterViewReportDto(view));
 
                         FinanceDocumentMaster thermalPrinterFinanceDocument = new FinanceDocumentMaster(
                             printer,
@@ -1293,8 +1293,8 @@ namespace LogicPOS.Printing.Utility
                     case "THERMAL_PRINTER_WINDOWS":
                     case "THERMAL_PRINTER_SOCKET":
 
-                        var financePaymentViewReports = ReportHelper.GetFinancePaymentViewReports(pDocumentFinancePayment.Id).List;
-                        var financePaymentViewReportsDtos = financePaymentViewReports.ConvertAll(view => ReportMapping.GetFinancePaymentViewReportDto(view));
+                        var financePaymentViewReports = ReportDataHelper.GetFinancePaymentViewReportDataList(pDocumentFinancePayment.Id).List;
+                        var financePaymentViewReportsDtos = financePaymentViewReports.ConvertAll(view => ReportDataMapping.GetFinancePaymentViewReportDto(view));
 
                         FinanceDocumentPayment thermalPrinterFinanceDocumentPayment = 
                             new FinanceDocumentPayment(

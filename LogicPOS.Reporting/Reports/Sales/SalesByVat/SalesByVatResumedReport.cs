@@ -65,7 +65,7 @@ namespace LogicPOS.Reporting.Reports
                                 AND {0}
                                 GROUP BY cfOid, fdVat, ftDocumentTypeDesignation", _filter);
 
-            ReportList<VatSalesSummaryReportData> GCDocumentFinanceVatSalesSummary = new ReportList<VatSalesSummaryReportData>("", 0, query);
+            ReportDataList<VatSalesSummaryReportData> GCDocumentFinanceVatSalesSummary = new ReportDataList<VatSalesSummaryReportData>("", 0, query);
 
             foreach (var item in GCDocumentFinanceVatSalesSummary)
             {

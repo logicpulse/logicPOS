@@ -52,7 +52,7 @@ namespace LogicPOS.Reporting.Reports
         }
 
         private static void Decrypt(
-            ReportList<CustomerBalanceDetailsReportData> gcCustomerBalanceDetails)
+            ReportDataList<CustomerBalanceDetailsReportData> gcCustomerBalanceDetails)
         {
             foreach (var item in gcCustomerBalanceDetails)
             {
@@ -63,7 +63,7 @@ namespace LogicPOS.Reporting.Reports
 
         private void PrepareDataSources()
         {
-            ReportList<CustomerBalanceDetailsReportData> gcCustomerBalanceDetails = new ReportList<CustomerBalanceDetailsReportData>(_filter);
+            ReportDataList<CustomerBalanceDetailsReportData> gcCustomerBalanceDetails = new ReportDataList<CustomerBalanceDetailsReportData>(_filter);
 
             if (PluginSettings.HasSoftwareVendorPlugin)
             {

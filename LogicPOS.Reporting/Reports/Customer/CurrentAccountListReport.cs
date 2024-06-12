@@ -6,9 +6,9 @@ using LogicPOS.Utility;
 
 namespace LogicPOS.Reporting.Reports
 {
-    public class SystemAuditListReport
+    public class CurrentAccountListReport
     {
-        private const string REPORT_FILENAME = "ReportSystemAuditList.frx";
+        private const string REPORT_FILENAME = "ReportDocumentFinanceCurrentAccount.frx";
         protected readonly Common.FastReport _report;
         private readonly string _readableFilter;
         private readonly string _groupTitle;
@@ -17,7 +17,7 @@ namespace LogicPOS.Reporting.Reports
         private readonly string _filter;
         protected readonly CustomReportDisplayMode _viewMode;
 
-        public SystemAuditListReport(
+        public CurrentAccountListReport(
             string filter,
             string readableFilter,
             CustomReportDisplayMode viewMode
@@ -30,7 +30,7 @@ namespace LogicPOS.Reporting.Reports
 
             _filter = filter;
             _readableFilter = readableFilter;
-            _reportToken = "REPORT_LIST_AUDIT_TABLE";
+            _reportToken = "REPORT_LIST_CURRENT_ACCOUNT";
             _viewMode = viewMode;
 
             Initialize();
@@ -57,21 +57,20 @@ namespace LogicPOS.Reporting.Reports
 
         private void PrepareDataSources()
         {
-            ReportDataList<SystemAuditViewReportData> systemAuditViewReportDataList = new ReportDataList<SystemAuditViewReportData>(_filter, string.Empty, "SauDate");
+            ReportDataList<CurrentAccountReportData> currentAccountReportDataList = new ReportDataList<CurrentAccountReportData>(_filter);
 
             if (PluginSettings.HasSoftwareVendorPlugin)
             {
-                foreach (var item in systemAuditViewReportDataList)
+                foreach (var item in currentAccountReportDataList)
                 {
-                    if (item.UserDetailName != null)
-                    {
-                        item.UserDetailName = PluginSettings.SoftwareVendor.Decrypt(item.UserDetailName);
-                    }
+                    if (item.EntityName != null) item.EntityName = PluginSettings.SoftwareVendor.Decrypt(item.EntityName);
+                    if (item.EntityFiscalNumber != null) item.EntityFiscalNumber = PluginSettings.SoftwareVendor.Decrypt(item.EntityFiscalNumber);
                 }
             }
 
-            _report.RegisterData(systemAuditViewReportDataList, "SystemAudit");
-            if (_report.GetDataSource("SystemAudit") != null) _report.GetDataSource("SystemAudit").Enabled = true;
+            _report.RegisterData(currentAccountReportDataList, "CurrentAccount");
+            if (_report.GetDataSource("CurrentAccount") != null) _report.GetDataSource("CurrentAccount").Enabled = true;
+
         }
 
         public void Present()

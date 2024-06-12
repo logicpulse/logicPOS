@@ -84,7 +84,7 @@ namespace LogicPOS.Reporting.Reports
 
         protected virtual void PrepareDataSources()
         {
-            ReportList<FinanceMasterReportData> financeMasterReportDataList = new ReportList<FinanceMasterReportData>(_filter);
+            ReportDataList<FinanceMasterReportData> financeMasterReportDataList = new ReportDataList<FinanceMasterReportData>(_filter);
 
             DevExpress.Xpo.UnitOfWork uowSession = new DevExpress.Xpo.UnitOfWork();
             foreach (var item in financeMasterReportDataList)

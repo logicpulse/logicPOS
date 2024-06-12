@@ -62,8 +62,8 @@ namespace LogicPOS.Reporting.Reports
 
         private void PrepareDataSources()
         {
-            ReportList<CustomerBalanceDetailsReportData> customerBalanceDetailsReportDataList = new ReportList<CustomerBalanceDetailsReportData>(_filter);
-            ReportList<CustomerBalanceSummaryReportData> customerBalanceSummaryReportDataList = new ReportList<CustomerBalanceSummaryReportData>();
+            ReportDataList<CustomerBalanceDetailsReportData> customerBalanceDetailsReportDataList = new ReportDataList<CustomerBalanceDetailsReportData>(_filter);
+            ReportDataList<CustomerBalanceSummaryReportData> customerBalanceSummaryReportDataList = new ReportDataList<CustomerBalanceSummaryReportData>();
 
             erp_customer customer = null;
             List<erp_customer> customersList = new List<erp_customer>();
@@ -108,7 +108,7 @@ namespace LogicPOS.Reporting.Reports
 
             if (customersList.Count > 1) printTotalBalance = false;
 
-            ReportList<CustomerBalanceSummaryReportData> gcCustomerBalanceSummaryTotal = new ReportList<CustomerBalanceSummaryReportData>(string.Format("(EntityOid = '{0}')", customer.Oid));
+            ReportDataList<CustomerBalanceSummaryReportData> gcCustomerBalanceSummaryTotal = new ReportDataList<CustomerBalanceSummaryReportData>(string.Format("(EntityOid = '{0}')", customer.Oid));
             _report.SetParameterValue("PrintTotalBalance", printTotalBalance);
             _report.SetParameterValue("TotalCreditFinal", gcCustomerBalanceSummaryTotal.List[0].TotalCredit);
             _report.SetParameterValue("TotalDebitFinal", gcCustomerBalanceSummaryTotal.List[0].TotalDebit);

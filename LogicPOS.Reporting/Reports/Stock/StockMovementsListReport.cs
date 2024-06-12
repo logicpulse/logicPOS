@@ -6,9 +6,9 @@ using LogicPOS.Utility;
 
 namespace LogicPOS.Reporting.Reports
 {
-    public class SystemAuditListReport
+    public class StockMovementsListReport
     {
-        private const string REPORT_FILENAME = "ReportSystemAuditList.frx";
+        private const string REPORT_FILENAME = "ReportArticleStockMovementList.frx";
         protected readonly Common.FastReport _report;
         private readonly string _readableFilter;
         private readonly string _groupTitle;
@@ -17,7 +17,7 @@ namespace LogicPOS.Reporting.Reports
         private readonly string _filter;
         protected readonly CustomReportDisplayMode _viewMode;
 
-        public SystemAuditListReport(
+        public StockMovementsListReport(
             string filter,
             string readableFilter,
             CustomReportDisplayMode viewMode
@@ -30,7 +30,7 @@ namespace LogicPOS.Reporting.Reports
 
             _filter = filter;
             _readableFilter = readableFilter;
-            _reportToken = "REPORT_LIST_AUDIT_TABLE";
+            _reportToken = "REPORT_LIST_STOCK_MOVEMENTS";
             _viewMode = viewMode;
 
             Initialize();
@@ -57,21 +57,14 @@ namespace LogicPOS.Reporting.Reports
 
         private void PrepareDataSources()
         {
-            ReportDataList<SystemAuditViewReportData> systemAuditViewReportDataList = new ReportDataList<SystemAuditViewReportData>(_filter, string.Empty, "SauDate");
+            ReportDataList<ArticleStockMovementViewReportData> articleStockMovementViewReportDataList = new ReportDataList<ArticleStockMovementViewReportData>(_filter);
 
-            if (PluginSettings.HasSoftwareVendorPlugin)
+            _report.RegisterData(articleStockMovementViewReportDataList, "ArticleStockMovement");
+
+            if (_report.GetDataSource("ArticleStockMovement") != null)
             {
-                foreach (var item in systemAuditViewReportDataList)
-                {
-                    if (item.UserDetailName != null)
-                    {
-                        item.UserDetailName = PluginSettings.SoftwareVendor.Decrypt(item.UserDetailName);
-                    }
-                }
+                _report.GetDataSource("ArticleStockMovement").Enabled = true;
             }
-
-            _report.RegisterData(systemAuditViewReportDataList, "SystemAudit");
-            if (_report.GetDataSource("SystemAudit") != null) _report.GetDataSource("SystemAudit").Enabled = true;
         }
 
         public void Present()

@@ -508,176 +508,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                         break;
 
-                    //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-                    // Detail/Group
-
-                    case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_FINANCE_DOCUMENT:
-                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentDetail(displayMode
-                            , reportToken.ToString().ToLower()
-                            , "ftOid, ftDocumentTypeOrd, ftDocumentTypeCode, ftDocumentTypeDesignation"
-                            , "ftOid AS GroupOid, ftDocumentTypeOrd AS GroupOrd, ftDocumentTypeCode AS GroupCode, ftDocumentTypeDesignation AS GroupDesignation"
-                            , "[DocumentFinanceDetail.GroupOid]"
-                            , "([DocumentFinanceDetail.GroupCode]) [DocumentFinanceDetail.GroupDesignation]" /* IN009066 */
-                            , reportFilter
-                            , reportReadableFilter
-                            , true
-                        );
-                        break;
-
-                    case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_DATE:
-                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentDetail(displayMode
-                            , reportToken.ToString().ToLower()
-                            , "fmDocumentDate"
-                            , "fmDocumentDate AS GroupOid, fmDocumentDate AS GroupOrd, fmDocumentDate AS GroupCode, fmDocumentDate AS GroupDesignation"
-                            , "[DocumentFinanceDetail.GroupOid]"
-                            , "[DocumentFinanceDetail.GroupDesignation]"
-                            , reportFilter
-                            , reportReadableFilter
-                            , true
-                        );
-                        break;
-                    case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_USER:
-                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentDetail(displayMode
-                            , reportToken.ToString().ToLower()
-                            , "udUserDetail, udUserDetailOrd, udUserDetailCode, udUserDetailName"
-                            , "udUserDetail AS GroupOid, udUserDetailOrd AS GroupOrd, udUserDetailCode AS GroupCode, udUserDetailName AS GroupDesignation"
-                            , "[DocumentFinanceDetail.GroupOid]"
-                            , "([DocumentFinanceDetail.GroupCode]) [DocumentFinanceDetail.GroupDesignation]" /* IN009066 */
-                            , reportFilter
-                            , reportReadableFilter
-                            , true
-                            , true
-                        );
-                        break;
-                    case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_TERMINAL:
-                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentDetail(displayMode
-                            , reportToken.ToString().ToLower()
-                            , "trTerminal, trTerminalOrd, trTerminalCode, trTerminalDesignation"
-                            , "trTerminal AS GroupOid, trTerminalOrd AS GroupOrd, trTerminalCode AS GroupCode, trTerminalDesignation AS GroupDesignation"
-                            , "[DocumentFinanceDetail.GroupOid]"
-                            , "([DocumentFinanceDetail.GroupCode]) [DocumentFinanceDetail.GroupDesignation]" /* IN009066 */
-                            , reportFilter
-                            , reportReadableFilter
-                            , true
-                        );
-                        break;
-                    case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_CUSTOMER:
-                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentDetail(displayMode
-                            , reportToken.ToString().ToLower()
-                            , "fmEntity, cuEntityOrd, cuEntityCode, fmEntityName"
-                            , "fmEntity AS GroupOid, cuEntityOrd AS GroupOrd, cuEntityCode AS GroupCode, fmEntityName AS GroupDesignation"
-                            , "[DocumentFinanceDetail.GroupOid]"
-                            , "([DocumentFinanceDetail.GroupCode]) [DocumentFinanceDetail.GroupDesignation]" /* IN009066 */
-                            , reportFilter
-                            , reportReadableFilter
-                            , true
-                        );
-                        break;
-                    case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_PAYMENT_METHOD:
-                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentDetail(displayMode
-                            , reportToken.ToString().ToLower()
-                            , "fmPaymentMethod, pmPaymentMethodOrd, pmPaymentMethodCode, pmPaymentMethodDesignation"
-                            , "fmPaymentMethod AS GroupOid, pmPaymentMethodOrd AS GroupOrd, pmPaymentMethodCode AS GroupCode, pmPaymentMethodDesignation AS GroupDesignation"
-                            , "[DocumentFinanceDetail.GroupOid]"
-                            , "([DocumentFinanceDetail.GroupCode]) [DocumentFinanceDetail.GroupDesignation]" /* IN009066 */
-                            /* IN009066 - Faturas and Notas de Crédito were not in this report, because they have no Payment Method. Now the issue is fixed */
-                            , reportFilter
-                            //, (string.IsNullOrEmpty(reportFilter)) ? "fmPaymentMethod IS NOT NULL" : string.Format("{0} AND fmPaymentMethod IS NOT NULL", reportFilter)
-                            , reportReadableFilter
-                            , true
-                        );
-                        break;
-                    case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_PAYMENT_CONDITION:
-                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentDetail(displayMode
-                            , reportToken.ToString().ToLower()
-                            , "fmPaymentCondition, pcPaymentConditionOrd, pcPaymentConditionCode, pcPaymentConditionDesignation"
-                            , "fmPaymentCondition AS GroupOid, pcPaymentConditionOrd AS GroupOrd, pcPaymentConditionCode AS GroupCode, pcPaymentConditionDesignation AS GroupDesignation"
-                            , "[DocumentFinanceDetail.GroupOid]"
-                            , "([DocumentFinanceDetail.GroupCode]) [DocumentFinanceDetail.GroupDesignation]" /* IN009066 */
-                            /* IN009066 - Faturas Simplificadas and Notas de Crédito were not in this report, because they have no Payment Condition. Now the issue is fixed */
-                            , reportFilter
-                            //, (string.IsNullOrEmpty(reportFilter)) ? "fmPaymentCondition IS NOT NULL" : string.Format("{0} AND fmPaymentCondition IS NOT NULL", reportFilter)
-                            , reportReadableFilter
-                            , true
-                        );
-                        break;
-                    case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_CURRENCY:
-                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentDetail(displayMode
-                            , reportToken.ToString().ToLower()
-                            , "fmCurrency, crCurrencyOrd, crCurrencyCode, crCurrencyDesignation"
-                            , "fmCurrency AS GroupOid, crCurrencyOrd AS GroupOrd, crCurrencyCode AS GroupCode, crCurrencyDesignation AS GroupDesignation"
-                            , "[DocumentFinanceDetail.GroupOid]"
-                            , "([DocumentFinanceDetail.GroupCode]) [DocumentFinanceDetail.GroupDesignation]" /* IN009066 */
-                            , reportFilter
-                            , reportReadableFilter
-                            , true
-                        );
-                        break;
-                    case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_COUNTRY:
-                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentDetail(displayMode
-                            , reportToken.ToString().ToLower()
-                            , "ccCountry, ccCountryOrd, ccCountryCode, ccCountryDesignation"
-                            , "ccCountry AS GroupOid, ccCountryOrd AS GroupOrd, ccCountryCode AS GroupCode, ccCountryDesignation AS GroupDesignation"
-                            , "[DocumentFinanceDetail.GroupOid]"
-                            , "([DocumentFinanceDetail.GroupCode]) [DocumentFinanceDetail.GroupDesignation]" /* IN009066 */
-                            , reportFilter
-                            , reportReadableFilter
-                            , true
-                        );
-                        break;
-                    case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_FAMILY:
-                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentDetail(displayMode
-                            , reportToken.ToString().ToLower()
-                            , "afFamily, afFamilyOrd, afFamilyCode, afFamilyDesignation"
-                            , "afFamily AS GroupOid, afFamilyOrd AS GroupOrd, afFamilyCode AS GroupCode, afFamilyDesignation AS GroupDesignation"
-                            , "[DocumentFinanceDetail.GroupOid]"
-                            , "([DocumentFinanceDetail.GroupCode]) [DocumentFinanceDetail.GroupDesignation]" /* IN009066 */
-                            , reportFilter
-                            , reportReadableFilter
-                            , true
-                        );
-                        break;
-                    case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_FAMILY_AND_SUBFAMILY:
-                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentDetail(displayMode
-                            , reportToken.ToString().ToLower()
-                            , "sfSubFamily, sfSubFamilyOrd, sfSubFamilyCode, sfSubFamilyDesignation"
-                            , "sfSubFamily AS GroupOid, sfSubFamilyOrd AS GroupOrd, sfSubFamilyCode AS GroupCode, sfSubFamilyDesignation AS GroupDesignation"
-                            , "[DocumentFinanceDetail.GroupOid]"
-                            , "([DocumentFinanceDetail.GroupCode]) [DocumentFinanceDetail.GroupDesignation]" /* IN009066 */
-                            , reportFilter
-                            , reportReadableFilter
-                            , true
-                        );
-                        break;
-                    case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_PLACE:
-                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentDetail(displayMode
-                            , reportToken.ToString().ToLower()
-                            , "cpPlace, cpPlaceOrd, cpPlaceCode, cpPlaceDesignation"
-                            , "cpPlace AS GroupOid, cpPlaceOrd AS GroupOrd, cpPlaceCode AS GroupCode, cpPlaceDesignation AS GroupDesignation"
-                            , "[DocumentFinanceDetail.GroupOid]"
-                            , "([DocumentFinanceDetail.GroupCode]) [DocumentFinanceDetail.GroupDesignation]"
-                            /* IN009066 - Faturas, Faturas Simplificadas and Notas de Crédito were not in this report, because they have no Payment Condition. Now the issue is fixed */
-                            , reportFilter
-                            //, (string.IsNullOrEmpty(reportFilter)) ? "cpPlace IS NOT NULL" : string.Format("{0} AND cpPlace IS NOT NULL", reportFilter)
-                            , reportReadableFilter
-                            , true
-                        );
-                        break;
-                    case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_PLACE_TABLE:
-                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentDetail(displayMode
-                            , reportToken.ToString().ToLower()
-                            , "dmPlaceTable, ctPlaceTableOrd, ctPlaceTableCode, ctPlaceTableDesignation"
-                            , "dmPlaceTable AS GroupOid, ctPlaceTableOrd AS GroupOrd, ctPlaceTableCode AS GroupCode, ctPlaceTableDesignation AS GroupDesignation"
-                            , "[DocumentFinanceDetail.GroupOid]"
-                            , "([DocumentFinanceDetail.GroupCode]) [DocumentFinanceDetail.GroupDesignation]"
-                            /* IN009066 - Faturas, Faturas Simplificadas and Notas de Crédito were not in this report, because they have no Payment Condition. Now the issue is fixed */
-                            , reportFilter
-                            //, (string.IsNullOrEmpty(reportFilter)) ? "dmPlaceTable IS NOT NULL" : string.Format("{0} AND dmPlaceTable IS NOT NULL", reportFilter)
-                            , reportReadableFilter
-                            , true
-                        );
-                        break;
-
                     case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_VAT:
 
                         PresentSalesByVatGroupDetailedReport(
@@ -686,28 +516,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             displayMode);
 
                         break;
-                    //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-                    // Where it is Called?
-                    /*
-                    case ReportsTypeToken.REPORT_SALES_PER_FAMILY_AND_SUBFAMILY:
-                        CustomReport.ProcessReportDocumentDetail(displayMode
-                            , CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, token.ToString().ToLower())
-                            , "[DocumentFinanceDetail.ArticleFamilyCode]"
-                            , "[DocumentFinanceDetail.ArticleFamilyDesignation] ([DocumentFinanceDetail.ArticleFamilyCode])"
-                            , false
-                            );
-                        break;
-                    // Where it is Called?
-                    case ReportsTypeToken.REPORT_SALES_PER_ZONE_TABLE:
-                        CustomReport.ProcessReportDocumentDetail(displayMode
-                            , CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, token.ToString().ToLower())
-                            , "[DocumentFinanceDetail.ArticleFamilyCode]"
-                            , "[DocumentFinanceDetail.ArticleFamilyDesignation] ([DocumentFinanceDetail.ArticleFamilyCode])"
-                            , true
-                            );
-                        break;
-                    */
 
                     case ReportsTypeToken.REPORT_LIST_FAMILY_SUBFAMILY_ARTICLES:
 
@@ -731,7 +539,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         break;
 
                     case ReportsTypeToken.REPORT_LIST_CURRENT_ACCOUNT:
-                        LogicPOS.Reporting.Common.FastReport.ProcessReportDocumentFinanceCurrentAccount(displayMode, reportFilter, reportReadableFilter);
+
+                        PresentCurrentAccountListReport(
+                            reportFilter,
+                            reportReadableFilter,
+                            displayMode);
+
                         break;
 
 
@@ -764,20 +577,49 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         break;
 
                     case ReportsTypeToken.REPORT_LIST_USER_COMMISSION:
-                        LogicPOS.Reporting.Common.FastReport.ProcessReportUserCommission(displayMode, reportFilter, reportReadableFilter);
+
+                        PresentUsersCommissionsListReport(
+                            reportFilter,
+                            reportReadableFilter,
+                            displayMode);
+
                         break;
-                    // Stock Reports
+ 
+
                     case ReportsTypeToken.REPORT_LIST_STOCK_MOVEMENTS:
-                        LogicPOS.Reporting.Common.FastReport.ProcessReportArticleStockMovement(displayMode, reportFilter, reportReadableFilter);
+
+                        PresentStockMovementsListReport(
+                            reportFilter,
+                            reportReadableFilter,
+                            displayMode);
+
                         break;
+
                     case ReportsTypeToken.REPORT_LIST_STOCK_WAREHOUSE:
-                        LogicPOS.Reporting.Common.FastReport.ProcessReportArticleStockWarehouse(displayMode, reportFilter, reportReadableFilter);
+                        
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportArticleStockWarehouse(
+                            displayMode, 
+                            reportFilter, 
+                            reportReadableFilter);
+                        
                         break;
+
                     case ReportsTypeToken.REPORT_LIST_STOCK_ARTICLE:
-                        LogicPOS.Reporting.Common.FastReport.ProcessReportArticleStock(displayMode, reportFilter, reportReadableFilter);
+                        
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportArticleStock(
+                            displayMode, 
+                            reportFilter, 
+                            reportReadableFilter);
+                        
                         break;
+
                     case ReportsTypeToken.REPORT_LIST_STOCK_SUPPLIER:
-                        LogicPOS.Reporting.Common.FastReport.ProcessReportArticleStockSupplier(displayMode, reportFilter, reportReadableFilter);
+                        
+                        LogicPOS.Reporting.Common.FastReport.ProcessReportArticleStockSupplier(
+                            displayMode, 
+                            reportFilter, 
+                            reportReadableFilter);
+                        
                         break;
 
                     case ReportsTypeToken.REPORT_SALES_PER_VAT:
@@ -802,6 +644,45 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         throw new NotImplementedException("Report not implemented: " + reportToken.ToString());
                 }
             }
+        }
+
+        private void PresentCurrentAccountListReport(
+            string reportFilter, 
+            string reportReadableFilter, 
+            CustomReportDisplayMode displayMode)
+        {
+            var report = new CurrentAccountListReport(
+                reportFilter, 
+                reportReadableFilter, 
+                displayMode);
+
+            report.Present();
+        }
+
+        private void PresentStockMovementsListReport(
+            string reportFilter, 
+            string reportReadableFilter, 
+            CustomReportDisplayMode displayMode)
+        {
+            var report = new StockMovementsListReport(
+                reportFilter, 
+                reportReadableFilter, 
+                displayMode);
+
+            report.Present();
+        }
+
+        private void PresentUsersCommissionsListReport(
+            string reportFilter, 
+            string reportReadableFilter, 
+            CustomReportDisplayMode displayMode)
+        {
+            var report = new UsersCommissionsListReport(
+                reportFilter, 
+                reportReadableFilter, 
+                displayMode);
+
+            report.Present();
         }
 
         private void PresentSystemAuditListReport(

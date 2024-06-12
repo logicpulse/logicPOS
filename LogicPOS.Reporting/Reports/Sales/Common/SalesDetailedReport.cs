@@ -103,12 +103,12 @@ namespace LogicPOS.Reporting.Reports
         {
             if (!_isGrouped)
             {
-                ReportList<FinanceMasterDetailViewReportData> financeMasterDetailViewReportDataList =
-                    new ReportList<FinanceMasterDetailViewReportData>(_filter);
+                ReportDataList<FinanceMasterDetailViewReportData> financeMasterDetailViewReportDataList =
+                    new ReportDataList<FinanceMasterDetailViewReportData>(_filter);
 
                 if (financeMasterDetailViewReportDataList.List.Count == 0)
                 {
-                    financeMasterDetailViewReportDataList = new ReportList<FinanceMasterDetailViewReportData>();
+                    financeMasterDetailViewReportDataList = new ReportDataList<FinanceMasterDetailViewReportData>();
                 }
 
                 if (PluginSettings.HasSoftwareVendorPlugin)
@@ -184,8 +184,8 @@ namespace LogicPOS.Reporting.Reports
 
                 string queryFields = string.Format("{0}, fdArticle AS ArticleOid, fdCode AS ArticleCode, fdDesignation AS ArticleDesignation, AVG((fdPrice - ((fdPrice * fdDiscount) / 100))) AS ArticlePriceWithDiscount, SUM(fdQuantity) AS ArticleQuantity, fdUnitMeasure AS ArticleUnitMeasure, SUM(fdTotalDiscount) AS ArticleTotalDiscount, SUM(fdTotalNet) AS ArticleTotalNet, SUM(fdTotalTax) AS ArticleTotalTax, SUM(fdTotalFinal) AS ArticleTotalFinal,COUNT(*) AS GroupCount", _groupSelectFields);
 
-                ReportList<FinanceMasterDetailGroupViewReportData> gcDocumentFinanceMasterDetail = new
-                    ReportList<FinanceMasterDetailGroupViewReportData>(_filter, queryGroupFields, string.Empty, queryFields);
+                ReportDataList<FinanceMasterDetailGroupViewReportData> gcDocumentFinanceMasterDetail = new
+                    ReportDataList<FinanceMasterDetailGroupViewReportData>(_filter, queryGroupFields, string.Empty, queryFields);
 
 
                 if (PluginSettings.HasSoftwareVendorPlugin)

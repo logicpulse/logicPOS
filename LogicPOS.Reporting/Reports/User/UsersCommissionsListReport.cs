@@ -1,14 +1,16 @@
 ﻿using logicpos.shared.Enums;
 using LogicPOS.Reporting.Data.Common;
+using LogicPOS.Reporting.Reports.Customers;
 using LogicPOS.Reporting.Reports.Data;
+using LogicPOS.Reporting.Reports.Users;
 using LogicPOS.Settings;
 using LogicPOS.Utility;
 
 namespace LogicPOS.Reporting.Reports
 {
-    public class SystemAuditListReport
+    public class UsersCommissionsListReport
     {
-        private const string REPORT_FILENAME = "ReportSystemAuditList.frx";
+        private const string REPORT_FILENAME = "ReportUserCommission.frx";
         protected readonly Common.FastReport _report;
         private readonly string _readableFilter;
         private readonly string _groupTitle;
@@ -17,7 +19,7 @@ namespace LogicPOS.Reporting.Reports
         private readonly string _filter;
         protected readonly CustomReportDisplayMode _viewMode;
 
-        public SystemAuditListReport(
+        public UsersCommissionsListReport(
             string filter,
             string readableFilter,
             CustomReportDisplayMode viewMode
@@ -30,7 +32,7 @@ namespace LogicPOS.Reporting.Reports
 
             _filter = filter;
             _readableFilter = readableFilter;
-            _reportToken = "REPORT_LIST_AUDIT_TABLE";
+            _reportToken = "REPORT_LIST_USER_COMMISSION";
             _viewMode = viewMode;
 
             Initialize();
@@ -57,21 +59,21 @@ namespace LogicPOS.Reporting.Reports
 
         private void PrepareDataSources()
         {
-            ReportDataList<SystemAuditViewReportData> systemAuditViewReportDataList = new ReportDataList<SystemAuditViewReportData>(_filter, string.Empty, "SauDate");
+            ReportDataList<UserCommissionReportData> userCommissionReportDataList = new ReportDataList<UserCommissionReportData>(_filter);
 
-            if (PluginSettings.HasSoftwareVendorPlugin)
+            if (PluginSettings.HasSoftwareVendorPlugin && userCommissionReportDataList != null)
             {
-                foreach (var item in systemAuditViewReportDataList)
+                foreach (var item in userCommissionReportDataList)
                 {
-                    if (item.UserDetailName != null)
+                    if (item.UserName != null)
                     {
-                        item.UserDetailName = PluginSettings.SoftwareVendor.Decrypt(item.UserDetailName);
+                        item.UserName = PluginSettings.SoftwareVendor.Decrypt(item.UserName);
                     }
                 }
             }
 
-            _report.RegisterData(systemAuditViewReportDataList, "SystemAudit");
-            if (_report.GetDataSource("SystemAudit") != null) _report.GetDataSource("SystemAudit").Enabled = true;
+            _report.RegisterData(userCommissionReportDataList, "UserCommission");
+            if (_report.GetDataSource("UserCommission") != null) _report.GetDataSource("UserCommission").Enabled = true;
         }
 
         public void Present()

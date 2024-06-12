@@ -43,12 +43,12 @@ namespace LogicPOS.Reporting.Reports
 
         private void PrepareDataSources()
         {
-            ReportList<CustomerTypeReportData> customerTypeReportDataList = new ReportList<CustomerTypeReportData>();
-            ReportList<CustomerReportData> customerReportDataList;
+            ReportDataList<CustomerTypeReportData> customerTypeReportDataList = new ReportDataList<CustomerTypeReportData>();
+            ReportDataList<CustomerReportData> customerReportDataList;
 
             foreach (CustomerTypeReportData customerType in customerTypeReportDataList)
             {
-                customerReportDataList = new ReportList<CustomerReportData>(string.Format("CustomerType = '{0}'", customerType.Oid), "Ord");
+                customerReportDataList = new ReportDataList<CustomerReportData>(string.Format("CustomerType = '{0}'", customerType.Oid), "Ord");
                 customerType.Customer = customerReportDataList.List;
 
                 if (customerReportDataList != null && customerReportDataList.List.Count > 0)

@@ -9,7 +9,7 @@ using System.Reflection;
 
 namespace LogicPOS.Reporting.Data.Common
 {
-    public class ReportList<T> : IEnumerable<T> where T : ReportData, new()
+    public class ReportDataList<T> : IEnumerable<T> where T : ReportData, new()
     {
         //Log4Net
         private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
@@ -19,14 +19,14 @@ namespace LogicPOS.Reporting.Data.Common
         public List<T> List { get; private set; } = new List<T>();
 
         //Constructors
-        public ReportList() : this("", "", "", "", 0, "") { }
-        public ReportList(string pFilter) : this(pFilter, "", "", "", 0, "") { }
-        public ReportList(string pFilter, int pLimit, string pQuery) : this(pFilter, "", "", "", pLimit, pQuery) { }
-        public ReportList(string pFilter, int pLimit) : this(pFilter, "", "", "", pLimit, "") { }
-        public ReportList(string pFilter, string pOrder) : this(pFilter, "", pOrder, "", 0, "") { }
-        public ReportList(string pFilter, string pGroup, string pOrder) : this(pFilter, pGroup, pOrder, "", 0, "") { }
-        public ReportList(string pFilter, string pGroup, string pOrder, string pFields) : this(pFilter, pGroup, pOrder, pFields, 0, "") { }
-        public ReportList(string pFilter, string pGroup, string pOrder, string pFields, int pLimit, string pQuery)
+        public ReportDataList() : this("", "", "", "", 0, "") { }
+        public ReportDataList(string pFilter) : this(pFilter, "", "", "", 0, "") { }
+        public ReportDataList(string pFilter, int pLimit, string pQuery) : this(pFilter, "", "", "", pLimit, pQuery) { }
+        public ReportDataList(string pFilter, int pLimit) : this(pFilter, "", "", "", pLimit, "") { }
+        public ReportDataList(string pFilter, string pOrder) : this(pFilter, "", pOrder, "", 0, "") { }
+        public ReportDataList(string pFilter, string pGroup, string pOrder) : this(pFilter, pGroup, pOrder, "", 0, "") { }
+        public ReportDataList(string pFilter, string pGroup, string pOrder, string pFields) : this(pFilter, pGroup, pOrder, pFields, 0, "") { }
+        public ReportDataList(string pFilter, string pGroup, string pOrder, string pFields, int pLimit, string pQuery)
         {
             //Assign Attributes Defined
             _objectHasAttributes = typeof(T).GetCustomAttribute(typeof(ReportDataAttribute)) as ReportDataAttribute != null;

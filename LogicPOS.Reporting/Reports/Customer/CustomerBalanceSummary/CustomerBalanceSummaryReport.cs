@@ -52,8 +52,8 @@ namespace LogicPOS.Reporting.Reports.CustomerBalanceSummary
         }
 
         private static void Decrypt(
-            ReportList<CustomerBalanceSummaryReportData> gcCustomerBalanceSummary, 
-            ReportList<CustomerBalanceDetailsReportData> gcCustomerBalanceDetails)
+            ReportDataList<CustomerBalanceSummaryReportData> gcCustomerBalanceSummary, 
+            ReportDataList<CustomerBalanceDetailsReportData> gcCustomerBalanceDetails)
         {
             foreach (var customerBalance in gcCustomerBalanceDetails)
             {
@@ -83,8 +83,8 @@ namespace LogicPOS.Reporting.Reports.CustomerBalanceSummary
 
         private void PrepareDataSources()
         {
-            ReportList<CustomerBalanceSummaryReportData> gcCustomerBalanceSummary = new ReportList<CustomerBalanceSummaryReportData>(_filter);
-            ReportList<CustomerBalanceDetailsReportData> gcCustomerBalanceDetails = new ReportList<CustomerBalanceDetailsReportData>(_filter.Replace("CustomerSinceDate", "Date"));
+            ReportDataList<CustomerBalanceSummaryReportData> gcCustomerBalanceSummary = new ReportDataList<CustomerBalanceSummaryReportData>(_filter);
+            ReportDataList<CustomerBalanceDetailsReportData> gcCustomerBalanceDetails = new ReportDataList<CustomerBalanceDetailsReportData>(_filter.Replace("CustomerSinceDate", "Date"));
 
             // Decrypt Phase
             if (PluginSettings.HasSoftwareVendorPlugin)

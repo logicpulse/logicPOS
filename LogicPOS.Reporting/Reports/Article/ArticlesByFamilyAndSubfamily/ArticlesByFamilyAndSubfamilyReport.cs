@@ -49,18 +49,18 @@ namespace LogicPOS.Reporting.Reports
 
         private void PrepareDataSources()
         {
-            ReportList<ArticleFamilyReportData> aarticleFamilyReportDataList = new ReportList<ArticleFamilyReportData>();
-            ReportList<ArticleSubFamilyReportData> articleSubFamilyReportDataList;
-            ReportList<ArticleReportData> articleReportDataList;
+            ReportDataList<ArticleFamilyReportData> aarticleFamilyReportDataList = new ReportDataList<ArticleFamilyReportData>();
+            ReportDataList<ArticleSubFamilyReportData> articleSubFamilyReportDataList;
+            ReportDataList<ArticleReportData> articleReportDataList;
 
             foreach (ArticleFamilyReportData family in aarticleFamilyReportDataList)
             {
-                articleSubFamilyReportDataList = new ReportList<ArticleSubFamilyReportData>(string.Format("Family = '{0}'", family.Oid), "Ord");
+                articleSubFamilyReportDataList = new ReportDataList<ArticleSubFamilyReportData>(string.Format("Family = '{0}'", family.Oid), "Ord");
                 family.ArticleSubFamily = articleSubFamilyReportDataList.List;
 
                 foreach (ArticleSubFamilyReportData subFamily in family.ArticleSubFamily)
                 {
-                    articleReportDataList = new ReportList<ArticleReportData>(string.Format("SubFamily = '{0}'", subFamily.Oid), "Ord");
+                    articleReportDataList = new ReportDataList<ArticleReportData>(string.Format("SubFamily = '{0}'", subFamily.Oid), "Ord");
                     subFamily.Article = articleReportDataList.List;
                 }
             }
