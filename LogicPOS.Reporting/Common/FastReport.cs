@@ -38,9 +38,6 @@ namespace LogicPOS.Reporting.Common
         private string _reportFileLocation = string.Empty;
         private bool _addCodeDataToReport = true;
         public string Hash4Chars { get; set; } = string.Empty;
-        private bool IsInDebugMode => Debugger.IsAttached == false || _forceReleaseMode;
-        private List<string> _temporaryReports { get; set; }
-        private bool HasTemporaryReports => _temporaryReports != null && _temporaryReports.Count > 0;
 
         //FastReports Require Parameterless Constructor
         public FastReport() { }
@@ -52,12 +49,6 @@ namespace LogicPOS.Reporting.Common
             int numberOfCopies = 1)
         {
             _reportFileLocation = FastReportUtils.GetReportFilePath(reportFileName);
-
-
-            if (IsInDebugMode && string.IsNullOrEmpty(templateBase) == false)
-            {
-                UseTemporaryReports(templateBase);
-            }
 
             TryLoadReportFile();
 
@@ -99,41 +90,15 @@ namespace LogicPOS.Reporting.Common
             }
         }
 
-        private void UseTemporaryReports(string templateBase)
-        {
-            _temporaryReports = PluginSettings.SoftwareVendor.GetReportFileName(
-                    PluginSettings.SecretKey,
-                    _reportFileLocation,
-                    templateBase);
-
-            _reportFileLocation = _temporaryReports.First();
-        }
-
         private void TryLoadReportFile()
         {
-            if (File.Exists(_reportFileLocation))
+            if (File.Exists(_reportFileLocation) == false)
             {
-                Load(_reportFileLocation);
-
-                if (HasTemporaryReports)
-                {
-                    DeleteTemporaryReports();
-                }
+                throw new FileNotFoundException(string.Format("Report File Not Found: {0}", _reportFileLocation));
             }
+               
+            Load(_reportFileLocation);
         }
-
-        private void DeleteTemporaryReports()
-        {
-
-            for (int i = 0; i < _temporaryReports.Count; i++)
-            {
-                if (File.Exists(_temporaryReports[i]))
-                {
-                    File.Delete(_temporaryReports[i]);
-                }
-            }
-        }
-
         private void RegisterReportEvents()
         {
             StartReport += delegate

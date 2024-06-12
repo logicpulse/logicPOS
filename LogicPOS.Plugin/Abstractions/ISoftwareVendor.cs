@@ -87,10 +87,7 @@ namespace LogicPOS.Plugin.Abstractions
 
         bool BackupDatabase(string secretKey, string[] files, string fileDestination);
 
-      
         bool RestoreBackup(string secretKey, string fileName, string destinationPath, bool flattenFoldersOnExtract = false);
-
-        List<string> GetReportFileName(string secretKey, string filePath, string templateBase);
 
         void ValidateEmbeddedResources();
 
