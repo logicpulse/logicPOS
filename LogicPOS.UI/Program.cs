@@ -6,8 +6,10 @@ using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Globalization;
 using LogicPOS.Modules;
 using LogicPOS.Modules.StockManagement;
+using LogicPOS.Persistence.Services;
 using LogicPOS.Plugin.Abstractions;
 using LogicPOS.Settings;
+using LogicPOS.Utility;
 using System;
 using System.Configuration;
 using System.Diagnostics;
@@ -21,10 +23,6 @@ namespace logicpos
     internal class Program
     {
         private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-        private static readonly bool _forceShowPluginLicenceWithDebugger = false;
-
-        private static readonly SingleProgramInstance _singleProgramInstance = new SingleProgramInstance();
 
         private static Thread _loadingThread;
 
@@ -61,9 +59,7 @@ namespace logicpos
         [STAThread]
         public static void Main(string[] args)
         {
-            _logger.Debug($"Use configuration file: [{ConfigurationFile}]");
-
-            using (_singleProgramInstance)
+            using (var singleProgramInstance = new SingleProgramInstance())
             {
                 InitializeSettings();
 
@@ -78,13 +74,13 @@ namespace logicpos
                 KeepUIResponsive();
 
 
-                if (_singleProgramInstance.IsSingleInstance)
+                if (singleProgramInstance.IsSingleInstance)
                 {
                     StartApp();
                 }
                 else
                 {
-                    Utils.ShowMessageNonTouch(null, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_pos_instance_already_running"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_information"));
+                    Utils.ShowMessageNonTouch(null, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, GeneralUtils.GetResourceByName("dialog_message_pos_instance_already_running"), GeneralUtils.GetResourceByName("global_information"));
                     return;
                 }
             }
@@ -108,7 +104,7 @@ namespace logicpos
             ModulesSettings.StockManagementModule = (PluginSettings.PluginContainer.GetFirstPluginOfType<IStockManagementModule>());
 
             // Try to Get LicenceManager IntellilockPlugin if in Release 
-            if (!Debugger.IsAttached || _forceShowPluginLicenceWithDebugger)
+            if (!Debugger.IsAttached)
             {
                 PluginSettings.LicenceManager = (PluginSettings.PluginContainer.GetFirstPluginOfType<ILicenseManager>());
                 // Show Loaded Plugin
@@ -125,7 +121,7 @@ namespace logicpos
 
         private static void StartApp()
         {
-            if (PluginSettings.LicenceManager != null && (!Debugger.IsAttached || _forceShowPluginLicenceWithDebugger))
+            if (PluginSettings.LicenceManager != null && Debugger.IsAttached == false)
             {
                 _logger.Debug("void StartApp() :: Boot LogicPos after LicenceManager.IntellilockPlugin");
                 // Boot LogicPos after LicenceManager.IntellilockPlugin
@@ -133,7 +129,7 @@ namespace logicpos
             }
             else
             {
-                bool dbExists = Utils.checkIfDbExists();
+                bool dbExists = DatabaseService.DatabaseExists();
                 // Boot LogicPos without pass in LicenseRouter
                 _logger.Debug("void StartApp() :: Boot LogicPos without pass in LicenseRouter");
                 /* IN009005: creating a new thread for app start up */

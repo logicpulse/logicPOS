@@ -13,6 +13,7 @@ using LogicPOS.DTOs.Common;
 using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -46,10 +47,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
             {
-                new GenericTreeViewColumnProperty("FiscalYear") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_fiscal_year"), ChildName = "Designation", MinWidth = 160 },
-                new GenericTreeViewColumnProperty("DocumentType") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_documentfinanceseries_documenttype"), ChildName = "Designation", Expand = true },
-                new GenericTreeViewColumnProperty("Designation") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_designation"), Expand = true },
-                new GenericTreeViewColumnProperty("UpdatedAt") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
+                new GenericTreeViewColumnProperty("FiscalYear") { Title = GeneralUtils.GetResourceByName("global_fiscal_year"), ChildName = "Designation", MinWidth = 160 },
+                new GenericTreeViewColumnProperty("DocumentType") { Title = GeneralUtils.GetResourceByName("global_documentfinanceseries_documenttype"), ChildName = "Designation", Expand = true },
+                new GenericTreeViewColumnProperty("Designation") { Title = GeneralUtils.GetResourceByName("global_designation"), Expand = true },
+                new GenericTreeViewColumnProperty("UpdatedAt") { Title = GeneralUtils.GetResourceByName("global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
             };
 
             //Configure Criteria/XPCollection/Model : Use Default Filter
@@ -73,7 +74,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             );
 
             //Add Extra Button to Navigator
-            ButtonCreateDocumentFinanceSeries = Navigator.GetNewButton("touchButtonCreateDocumentFinanceSeries_DialogActionArea", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "pos_button_create_series"), @"Icons/icon_pos_nav_new.png");
+            ButtonCreateDocumentFinanceSeries = Navigator.GetNewButton("touchButtonCreateDocumentFinanceSeries_DialogActionArea", GeneralUtils.GetResourceByName("pos_button_create_series"), @"Icons/icon_pos_nav_new.png");
             //_buttonCreateDocumentFinanceSeries.WidthRequest = 110;
             //Check if Has an Active Year Open before apply Permissions
             fin_documentfinanceyears currentDocumentFinanceYear = DocumentProcessingSeriesUtils.GetCurrentDocumentFinanceYear();
@@ -133,8 +134,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         new Size(600, 400),
                         MessageType.Error,
                         ButtonsType.Close,
-                        CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_series_create_series"),
-                        CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_series_create_document_type_series_miss_year")
+                        GeneralUtils.GetResourceByName("window_title_series_create_series"),
+                        GeneralUtils.GetResourceByName("dialog_message_series_create_document_type_series_miss_year")
                     );
                     //Disable Button, Extra protection for deleted year outside App
                     ButtonCreateDocumentFinanceSeries.Sensitive = false;
@@ -198,8 +199,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                                 DialogFlags.Modal,
                                 MessageType.Question,
                                 ButtonsType.YesNo,
-                                CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_series_create_series"),
-                                CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_series_create_confirmation_text")
+                                GeneralUtils.GetResourceByName("window_title_series_create_series"),
+                                GeneralUtils.GetResourceByName("dialog_message_series_create_confirmation_text")
                             );
                         }
                         else
@@ -230,9 +231,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                                     DialogFlags.Modal,
                                     MessageType.Error,
                                     ButtonsType.Ok,
-                                    CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"),
+                                    GeneralUtils.GetResourceByName("global_error"),
                                     string.Format("{0}{1}{1}{2}",
-                                        string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_series_create_error"), resultAcronym.Text),
+                                        string.Format(GeneralUtils.GetResourceByName("dialog_message_series_create_error"), resultAcronym.Text),
                                         Environment.NewLine,
                                         frameworkCallsResult.Exception.InnerException.Message
                                     )
@@ -270,16 +271,16 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     pSourceWindow,
                     DialogFlags.Modal,
                     new System.Drawing.Size(800, 600),
-                    CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_series_create_series"),
+                    GeneralUtils.GetResourceByName("window_title_series_create_series"),
                     fileWindowIcon,
-                    CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_acronym"),
+                    GeneralUtils.GetResourceByName("global_acronym"),
                     pInitialValue,
                     LogicPOS.Utility.RegexUtils.RegexDocumentSeriesAcronym,
                     true
                     );
 
                 //Initialize EntryBoxValidationMultiLine
-                EntryBoxValidationMultiLine entryBoxValidationMultiLine = new EntryBoxValidationMultiLine(pSourceWindow, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_preview"));
+                EntryBoxValidationMultiLine entryBoxValidationMultiLine = new EntryBoxValidationMultiLine(pSourceWindow, GeneralUtils.GetResourceByName("global_preview"));
                 entryBoxValidationMultiLine.HeightRequest = 420;
                 entryBoxValidationMultiLine.EntryMultiline.TextView.WrapMode = WrapMode.Word;
                 entryBoxValidationMultiLine.EntryMultiline.TextView.Sensitive = false;

@@ -60,7 +60,7 @@ namespace LogicPOS.Reporting.Reports
 
                 foreach (ArticleSubFamilyReportData subFamily in family.ArticleSubFamily)
                 {
-                    articleReportDataList = new ReportDataList<ArticleReportData>(string.Format("SubFamily = '{0}'", subFamily.Oid), "Ord");
+                    articleReportDataList = new ReportDataList<ArticleReportData>($"SubFamily = '{subFamily.Oid}'", "Ord");
                     subFamily.Article = articleReportDataList.List;
                 }
             }

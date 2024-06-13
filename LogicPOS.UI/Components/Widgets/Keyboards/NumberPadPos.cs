@@ -3,6 +3,7 @@ using Gtk;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using LogicPOS.Utility;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -24,10 +25,10 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             Table.Homogeneous = false;
             Table.NColumns = 4;
 
-            TouchButtonIconWithText buttonKeySplitAccount = new TouchButtonIconWithText("buttonKeySplitAccount", colorRightButton, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_split_account"), fontRightButton, colorFont, icon1, sizeIcon, rightButtonWidth, buttonHeight);
-            TouchButtonIconWithText buttonKeyMessages = new TouchButtonIconWithText("buttonKeyMessages", colorRightButton, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_messages"), fontRightButton, colorFont, icon2, sizeIcon, rightButtonWidth, buttonHeight);
-            TouchButtonIconWithText buttonKeyGifts = new TouchButtonIconWithText("buttonKeyGifts", colorRightButton, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_gifts"), fontRightButton, colorFont, icon3, sizeIcon, rightButtonWidth, buttonHeight);
-            TouchButtonIconWithText buttonKeyWeight = new TouchButtonIconWithText("buttonKeyWeight", colorRightButton, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_weight"), fontRightButton, colorFont, icon4, sizeIcon, rightButtonWidth, buttonHeight);
+            TouchButtonIconWithText buttonKeySplitAccount = new TouchButtonIconWithText("buttonKeySplitAccount", colorRightButton, GeneralUtils.GetResourceByName("global_split_account"), fontRightButton, colorFont, icon1, sizeIcon, rightButtonWidth, buttonHeight);
+            TouchButtonIconWithText buttonKeyMessages = new TouchButtonIconWithText("buttonKeyMessages", colorRightButton, GeneralUtils.GetResourceByName("global_messages"), fontRightButton, colorFont, icon2, sizeIcon, rightButtonWidth, buttonHeight);
+            TouchButtonIconWithText buttonKeyGifts = new TouchButtonIconWithText("buttonKeyGifts", colorRightButton, GeneralUtils.GetResourceByName("global_gifts"), fontRightButton, colorFont, icon3, sizeIcon, rightButtonWidth, buttonHeight);
+            TouchButtonIconWithText buttonKeyWeight = new TouchButtonIconWithText("buttonKeyWeight", colorRightButton, GeneralUtils.GetResourceByName("global_weight"), fontRightButton, colorFont, icon4, sizeIcon, rightButtonWidth, buttonHeight);
             buttonKeyMessages.Sensitive = false;
             buttonKeyGifts.Sensitive = false;
 

@@ -1,5 +1,4 @@
-﻿using LogicPOS.Globalization;
-using LogicPOS.Settings;
+﻿using LogicPOS.Utility;
 using System;
 
 namespace logicpos.Classes.Formatters
@@ -9,7 +8,7 @@ namespace logicpos.Classes.Formatters
         public string Format(string format, object arg, IFormatProvider formatProvider)
         {
             decimal quantity = Convert.ToDecimal(arg);
-            return (quantity > 0) ? CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_stock_movement_in") : CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_stock_movement_out");
+            return (quantity > 0) ? GeneralUtils.GetResourceByName("global_stock_movement_in") : GeneralUtils.GetResourceByName("global_stock_movement_out");
         }
 
         public object GetFormat(Type formatType)

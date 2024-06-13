@@ -5,6 +5,7 @@ using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Extensions;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using LogicPOS.Utility;
 using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
@@ -190,11 +191,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 _label = new Label(pLabelText);
                 _label.ModifyFont(fontDescriptionLabel);
                 _label.SetAlignment(0, 2.5F);
-                _label2 = new Label(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_article_code") + "   ");
+                _label2 = new Label(GeneralUtils.GetResourceByName("global_article_code") + "   ");
                 _label2.ModifyFont(fontDescriptionLabel);
                 _label2.ModifyBg(StateType.Normal, validLabel.ToGdkColor());
                 _label2.SetAlignment(0, 0.5F);
-                _label3 = new Label("                                                         " + CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "pos_ticketlist_label_quantity"));
+                _label3 = new Label("                                                         " + GeneralUtils.GetResourceByName("pos_ticketlist_label_quantity"));
                 _label3.ModifyFont(fontDescriptionLabel);
                 _label3.ModifyBg(StateType.Normal, validLabel.ToGdkColor());
                 _label3.SetAlignment(0, 0.5F);

@@ -16,6 +16,7 @@ using LogicPOS.Settings.Enums;
 using LogicPOS.Shared;
 using LogicPOS.Shared.Article;
 using LogicPOS.Shared.Orders;
+using LogicPOS.Utility;
 using System;
 using System.Drawing;
 
@@ -260,7 +261,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 scrolledWindow.SetPolicy(PolicyType.Never, PolicyType.Always);
 
                 //Label LabelTotal
-                _labelLabelTotal = new Label(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_total_ticket"));
+                _labelLabelTotal = new Label(GeneralUtils.GetResourceByName("global_total_ticket"));
                 _labelLabelTotal.ModifyFont(labelLabelTotalFont);
                 _labelLabelTotal.ModifyFg(StateType.Normal, labelLabelTotalFontColor);
                 _labelLabelTotal.SetAlignment(labelLabelTotalAlignmentX, 0.0F);
@@ -325,12 +326,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             Pango.FontDescription fontDescTitle = pColumnTitleFontDesc;
             Pango.FontDescription fontDesc = pColumnDataFontDesc;
 
-            Label labelDesignation = new Label(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "pos_ticketlist_label_designation")) { Visible = true };
-            Label labelPrice = new Label(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "pos_ticketlist_label_price")) { Visible = true };
-            Label labelQuantity = new Label(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "pos_ticketlist_label_quantity")) { Visible = true };
-            Label labelDiscount = new Label(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "pos_ticketlist_label_discount")) { Visible = true };
-            Label labelVat = new Label(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "pos_ticketlist_label_vat")) { Visible = true };
-            Label labelTotal = new Label(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "pos_ticketlist_label_total")) { Visible = true };
+            Label labelDesignation = new Label(GeneralUtils.GetResourceByName("pos_ticketlist_label_designation")) { Visible = true };
+            Label labelPrice = new Label(GeneralUtils.GetResourceByName("pos_ticketlist_label_price")) { Visible = true };
+            Label labelQuantity = new Label(GeneralUtils.GetResourceByName("pos_ticketlist_label_quantity")) { Visible = true };
+            Label labelDiscount = new Label(GeneralUtils.GetResourceByName("pos_ticketlist_label_discount")) { Visible = true };
+            Label labelVat = new Label(GeneralUtils.GetResourceByName("pos_ticketlist_label_vat")) { Visible = true };
+            Label labelTotal = new Label(GeneralUtils.GetResourceByName("pos_ticketlist_label_total")) { Visible = true };
             labelDesignation.ModifyFont(fontDescTitle);
             labelPrice.ModifyFont(fontDescTitle);
             labelQuantity.ModifyFont(fontDescTitle);
@@ -626,7 +627,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 }
                 else
                 {
-                    string message = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_invalid_code");
+                    string message = GeneralUtils.GetResourceByName("global_invalid_code");
                     logicpos.Utils.ShowMessageBox(SourceWindow, DialogFlags.DestroyWithParent, new Size(400, 300), MessageType.Error, ButtonsType.Ok, "Código Inválido", message);
                     return;
                 }
@@ -635,7 +636,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         public void ArticleNotFound()
         {
-            string message = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_invalid_code");
+            string message = GeneralUtils.GetResourceByName("global_invalid_code");
             logicpos.Utils.ShowMessageBox(SourceWindow, DialogFlags.DestroyWithParent, new Size(400, 300), MessageType.Error, ButtonsType.Ok, "Código Inválido", message);
             return;
         }
@@ -738,22 +739,22 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 {
                     //TODO: Implement VatExemptionReason in TicketList (Both Modes) 
                     //Guid vatExemptionReasonGuid = GetVatExemptionReason();
-                    logicpos.Utils.ShowMessageBox(SourceWindow, DialogFlags.DestroyWithParent, new Size(400, 300), MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_vatrate_free_article_detected"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_article_without_vat_exception_reason_detected"));
+                    logicpos.Utils.ShowMessageBox(SourceWindow, DialogFlags.DestroyWithParent, new Size(400, 300), MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("window_title_dialog_vatrate_free_article_detected"), GeneralUtils.GetResourceByName("dialog_message_article_without_vat_exception_reason_detected"));
                     return;
                 }
 
                 //Check if ticket is exited and show message
                 if (parkingTicketResult.AlreadyExit)
                 {
-                    string message = string.Format("Numero do ticket: {0}\n\n{1}\n\nData de Saida: {2}", parkingTicketResult.Ean, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_article_already_exited"), parkingTicketResult.DateExits);
-                    logicpos.Utils.ShowMessageBox(SourceWindow, DialogFlags.DestroyWithParent, new Size(450, 350), MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_already_exited"), message);
+                    string message = string.Format("Numero do ticket: {0}\n\n{1}\n\nData de Saida: {2}", parkingTicketResult.Ean, GeneralUtils.GetResourceByName("dialog_message_article_already_exited"), parkingTicketResult.DateExits);
+                    logicpos.Utils.ShowMessageBox(SourceWindow, DialogFlags.DestroyWithParent, new Size(450, 350), MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("window_title_dialog_already_exited"), message);
                     return;
                 }
                 //Check if ticket is already payed and show message
                 else if (parkingTicketResult.AlreadyPaid)
                 {
-                    string message = string.Format("Numero do ticket: {0}\n\n{1}\nData de pagamento: {2}\n\nPode sair até: {3} ", parkingTicketResult.Ean, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_article_already_paid"), parkingTicketResult.DatePaid, parkingTicketResult.DateTolerance);
-                    logicpos.Utils.ShowMessageBox(SourceWindow, DialogFlags.DestroyWithParent, new Size(450, 350), MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_already_paid"), message);
+                    string message = string.Format("Numero do ticket: {0}\n\n{1}\nData de pagamento: {2}\n\nPode sair até: {3} ", parkingTicketResult.Ean, GeneralUtils.GetResourceByName("dialog_message_article_already_paid"), parkingTicketResult.DatePaid, parkingTicketResult.DateTolerance);
+                    logicpos.Utils.ShowMessageBox(SourceWindow, DialogFlags.DestroyWithParent, new Size(450, 350), MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("window_title_dialog_already_paid"), message);
                     return;
                 }
 
@@ -829,7 +830,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     }
                     else if (price <= 0.0m || article.PVPVariable == true)
                     {
-                        MoneyPadResult result = PosMoneyPadDialog.RequestDecimalValue(SourceWindow, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_moneypad_product_price"), price);
+                        MoneyPadResult result = PosMoneyPadDialog.RequestDecimalValue(SourceWindow, GeneralUtils.GetResourceByName("window_title_dialog_moneypad_product_price"), price);
                         if (result.Response == ResponseType.Cancel) return;
                         sourceMode = PricePropertiesSourceMode.FromTotalFinal;
                         price = result.Value;
@@ -1388,12 +1389,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
             if (ListMode == TicketListMode.Ticket)
             {
-                labelTotalFinal = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_total_ticket");
+                labelTotalFinal = GeneralUtils.GetResourceByName("global_total_ticket");
                 TotalFinal = CurrentOrderDetails.TotalFinal;
             }
             else
             {
-                labelTotalFinal = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_total_table_tickets");
+                labelTotalFinal = GeneralUtils.GetResourceByName("global_total_table_tickets");
                 //Toatal From ArticleBag and Not From OrderMain, This way we can check if ArticleBag is equal to OrderMain Totals, in Both Status Bars
                 TotalFinal = _articleBag.TotalFinal;
             }
@@ -1454,7 +1455,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             //If CashDrawer Close
             else
             {
-                SourceWindow.LabelCurrentTable.Text = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "status_message_open_cashdrawer");
+                SourceWindow.LabelCurrentTable.Text = GeneralUtils.GetResourceByName("status_message_open_cashdrawer");
             }
         }
 

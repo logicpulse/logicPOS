@@ -9,6 +9,7 @@ using System.Drawing;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Domain.Entities;
+using LogicPOS.Utility;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -56,9 +57,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //ActionArea Buttons
             _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);
             _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
-            ButtonClearCustomer = ActionAreaButton.FactoryGetDialogButtonType("touchButtonClearCustomer_DialogActionArea", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_button_label_payment_dialog_clear_client"), fileIconClearCustomer);
+            ButtonClearCustomer = ActionAreaButton.FactoryGetDialogButtonType("touchButtonClearCustomer_DialogActionArea", GeneralUtils.GetResourceByName("global_button_label_payment_dialog_clear_client"), fileIconClearCustomer);
 
-            _buttonPreview = ActionAreaButton.FactoryGetDialogButtonType("touchButtonPreview_DialogActionArea", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "widget_generictreeviewnavigator_preview"), fileActionPreview); /* IN009111 */
+            _buttonPreview = ActionAreaButton.FactoryGetDialogButtonType("touchButtonPreview_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_preview"), fileActionPreview); /* IN009111 */
             _buttonOk.Sensitive = false;
 
             //ActionArea
@@ -97,12 +98,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             string icon4 = PathsSettings.ImagesFolderLocation + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_4_waybill_to.png";
             string icon5 = PathsSettings.ImagesFolderLocation + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_5_waybill_from.png";
 
-            _pagePad1 = new DocumentFinanceDialogPage1(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_document_finance_page1"), icon1, null);
-            _pagePad2 = new DocumentFinanceDialogPage2(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_document_finance_page2"), icon2, null);
-            _pagePad3 = new DocumentFinanceDialogPage3(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_document_finance_page3"), icon3, null);
+            _pagePad1 = new DocumentFinanceDialogPage1(this, GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page1"), icon1, null);
+            _pagePad2 = new DocumentFinanceDialogPage2(this, GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page2"), icon2, null);
+            _pagePad3 = new DocumentFinanceDialogPage3(this, GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page3"), icon3, null);
             //Start in Invoice : Start Disabled
-            _pagePad4 = new DocumentFinanceDialogPage4(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_document_finance_page4"), icon4, null, false);
-            _pagePad5 = new DocumentFinanceDialogPage5(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_document_finance_page5"), icon5, null, false);
+            _pagePad4 = new DocumentFinanceDialogPage4(this, GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page4"), icon4, null, false);
+            _pagePad5 = new DocumentFinanceDialogPage5(this, GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page5"), icon5, null, false);
             //Assign Reference Here, After Construction
             //PagePad
             _pagePad1.PagePad2 = _pagePad2;
@@ -163,7 +164,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public string GetPageTitle(int pPageIndex)
         {
             string result = string.Format("{0} :: {1}",
-  CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_new_finance_document"),
+  GeneralUtils.GetResourceByName("window_title_dialog_new_finance_document"),
   CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, string.Format("window_title_dialog_document_finance_page{0}", pPageIndex + 1))
 );
 

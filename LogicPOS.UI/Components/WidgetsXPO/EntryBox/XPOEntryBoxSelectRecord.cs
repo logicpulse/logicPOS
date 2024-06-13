@@ -388,10 +388,10 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                 }
 
 
-                pEntry.Text = (value != null) ? value.ToString() : CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error");
+                pEntry.Text = (value != null) ? value.ToString() : GeneralUtils.GetResourceByName("global_error");
 
-                pEntryCode.Text = (value != null) ? value.Code.ToString() : CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error");
-                pEntryQtd.Text = (value != null) ? value.DefaultQuantity.ToString() : CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error");
+                pEntryCode.Text = (value != null) ? value.Code.ToString() : GeneralUtils.GetResourceByName("global_error");
+                pEntryQtd.Text = (value != null) ? value.DefaultQuantity.ToString() : GeneralUtils.GetResourceByName("global_error");
 
                 OnClosePopup();
             }
@@ -493,7 +493,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                 }
                 else
                 {
-                    pEntry.Text = (value != null) ? value.ToString() : CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error");
+                    pEntry.Text = (value != null) ? value.ToString() : GeneralUtils.GetResourceByName("global_error");
                 }
                 OnClosePopup();
             }
@@ -526,7 +526,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                   dialog = new PosSelectRecordDialog<XPCollection, Entity, T2>(
                     _sourceWindow,
                     DialogFlags.DestroyWithParent,
-                    CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_select_record"),
+                    GeneralUtils.GetResourceByName("window_title_dialog_select_record"),
                     _dialogSize,
                     _value,
                     CriteriaOperator,
@@ -666,7 +666,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
 
                 List<string> result = new List<string>();
                 //Titulo nas janelas de filtro de relatório [IN:014328]
-                PosReportsQueryDialog dialogFilter = new PosReportsQueryDialog(dialog, DialogFlags.DestroyWithParent, ReportsQueryDialogMode.FILTER_DOCUMENTS_PAGINATION, "fin_documentfinancemaster", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_report_filter"));
+                PosReportsQueryDialog dialogFilter = new PosReportsQueryDialog(dialog, DialogFlags.DestroyWithParent, ReportsQueryDialogMode.FILTER_DOCUMENTS_PAGINATION, "fin_documentfinancemaster", GeneralUtils.GetResourceByName("window_title_dialog_report_filter"));
                 DialogResponseType responseFilter = (DialogResponseType)dialogFilter.Run();
 
                 //If button Clean Filter Clicked

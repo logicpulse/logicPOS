@@ -9,6 +9,7 @@ using LogicPOS.Domain.Entities;
 using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -129,8 +130,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     new Size(600, 400),
                     MessageType.Question,
                     ButtonsType.YesNo,
-                    CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_series_create_series"),
-                    CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_series_create_document_type_series")
+                    GeneralUtils.GetResourceByName("window_title_series_create_series"),
+                    GeneralUtils.GetResourceByName("dialog_message_series_create_document_type_series")
                 );
 
                 if (responseType == ResponseType.Yes)

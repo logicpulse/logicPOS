@@ -8,6 +8,7 @@ using System.Drawing;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Domain.Entities;
+using LogicPOS.Utility;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -27,7 +28,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Init Local Vars Parameters
             _selectedUserDetail = pUserDetail;
             //Init Local Vars
-            string windowTitle = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_request_user_pin");
+            string windowTitle = GeneralUtils.GetResourceByName("window_title_dialog_request_user_pin");
             Size windowSize = new Size(332, DialogHeight);
             string fileDefaultWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_users.png";
             string fontNumberPadPinButtonKeysTextAndLabel = GeneralSettings.Settings["fontNumberPadPinButtonKeysTextAndLabel"];

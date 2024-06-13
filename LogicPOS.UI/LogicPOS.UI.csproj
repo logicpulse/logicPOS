@@ -193,7 +193,6 @@
     <Compile Include="App\GlobalApp.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="App\LicenceManagement.cs" />
     <Compile Include="App\POSSettings.cs" />
     <Compile Include="App\Theme.cs" />
     <Compile Include="Classes\Enums\ShowMessageTouchSimplifiedInvoiceMaxValueExceedMode.cs" />
@@ -439,6 +438,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Components\Utility\GtkUtils.cs" />
+    <Compile Include="Vision.cs" />
     <Compile Include="Web References\AccessTrackParkingTicketService\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -2047,7 +2047,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Folder Include="Classes\Logic\Pos\Windows\" />
     <Folder Include="Resources\Database\Data\Default\en\grb\" />
     <Folder Include="Resources\Database\Data\Default\en\usa\" />
     <Folder Include="Resources\Database\Data\Default\es\esp\" />
@@ -6655,6 +6654,10 @@
     <ProjectReference Include="..\LogicPOS.PDFViewer\LogicPOS.PDFViewer.Winforms\LogicPOS.PDFViewer.Winforms.csproj">
       <Project>{e39a7986-4c2f-4ebe-a31b-59c766150eac}</Project>
       <Name>LogicPOS.PDFViewer.Winforms</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LogicPOS.Persistence\LogicPOS.Persistence.csproj">
+      <Project>{4b305a39-47c9-4f59-ac06-ef868b4903ad}</Project>
+      <Name>LogicPOS.Persistence</Name>
     </ProjectReference>
     <ProjectReference Include="..\LogicPOS.Plugin\LogicPOS.Plugin.csproj">
       <Project>{50C2F757-8478-4FD3-8B35-89BC12E7ACA0}</Project>

@@ -99,6 +99,7 @@ namespace LogicPOS.Reporting.Common
                
             Load(_reportFileLocation);
         }
+
         private void RegisterReportEvents()
         {
             StartReport += delegate
@@ -312,7 +313,7 @@ namespace LogicPOS.Reporting.Common
         public void AddCodeDataToReport()
         {
             PageFooterBand pageFooterBand = (PageFooterBand)FindObject("PageFooter1");
-            // create title text
+
             TextObject textObjectOverlaySoftwareCertification = new TextObject();
             textObjectOverlaySoftwareCertification.Parent = pageFooterBand;
             textObjectOverlaySoftwareCertification.CreateUniqueName();

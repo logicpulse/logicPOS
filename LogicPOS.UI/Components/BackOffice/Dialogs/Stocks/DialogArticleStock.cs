@@ -13,6 +13,7 @@ using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -77,7 +78,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public DialogArticleStock(Window pSourceWindow)
             : base(pSourceWindow, logicpos.Utils.GetGenericTreeViewXPO<TreeViewArticleStock>(pSourceWindow), DialogFlags.DestroyWithParent, DialogMode.Update, null)
         {
-            this.Title = logicpos.Utils.GetWindowTitle(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_document_finance_page3") + " - " + CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_stock_movements"));
+            this.Title = logicpos.Utils.GetWindowTitle(GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page3") + " - " + GeneralUtils.GetResourceByName("global_stock_movements"));
             _treeViewXPO_ArticleDetails = logicpos.Utils.GetGenericTreeViewXPO<TreeViewArticleDetailsStock>(this);
             _treeViewXPO_ArticleHistory = logicpos.Utils.GetGenericTreeViewXPO<TreeViewArticleSerialNumber>(this, GenericTreeViewNavigatorMode.Default, GenericTreeViewMode.CheckBox);
             _treeViewXPO_ArticleWarehouse = logicpos.Utils.GetGenericTreeViewXPO<TreeViewArticleWarehouse>(this);
@@ -112,7 +113,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
 
                 //Append Tab
-                _notebook.AppendPage(vboxTab1, new Label(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_document_finance_page3")));
+                _notebook.AppendPage(vboxTab1, new Label(GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page3")));
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -130,8 +131,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     _treeViewXPO_StockMov.Navigator.ButtonUpdate.Clicked += ButtonUpdateStockMov_Clicked; ;
                     CriteriaOperatorLastFilterStocks = _treeViewXPO_StockMov.DataSource.Criteria;
 
-                    var _buttonMore = GetNewButton("MoreStocks", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_button_label_more"), POSSettings.PaginationRowsPerPage), @"Icons\icon_pos_more.png");
-                    var _buttonFilter = GetNewButton("FilterStocks", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_button_label_filter"), POSSettings.PaginationRowsPerPage), @"Icons\icon_pos_filter.png");
+                    var _buttonMore = GetNewButton("MoreStocks", string.Format(GeneralUtils.GetResourceByName("global_button_label_more"), POSSettings.PaginationRowsPerPage), @"Icons\icon_pos_more.png");
+                    var _buttonFilter = GetNewButton("FilterStocks", string.Format(GeneralUtils.GetResourceByName("global_button_label_filter"), POSSettings.PaginationRowsPerPage), @"Icons\icon_pos_filter.png");
 
                     _treeViewXPO_StockMov.Navigator.PackEnd(_openOriginDocumentMovbutton, false, false, 0);
                     _treeViewXPO_StockMov.Navigator.PackEnd(_openSellDocumentMovbutton, false, false, 0);
@@ -147,7 +148,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 }
 
                 //Append Tab
-                _notebook.AppendPage(_vboxTab2, new Label(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "report_list_stock_movements")));
+                _notebook.AppendPage(_vboxTab2, new Label(GeneralUtils.GetResourceByName("report_list_stock_movements")));
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -182,8 +183,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _treeViewXPO_ArticleHistory.Navigator.PackStart(_openChangeArticleLocationbutton, false, false, 0);
                 _treeViewXPO_ArticleHistory.Navigator.ButtonDelete.Clicked += _buttonClearSerialNumber_Clicked;
 
-                var _buttonMoreArticles = GetNewButton("MoreHistory", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_button_label_more"), POSSettings.PaginationRowsPerPage), @"Icons\icon_pos_more.png");
-                var _buttonFilterArticles = GetNewButton("FilterHistory", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_button_label_filter"), POSSettings.PaginationRowsPerPage), @"Icons\icon_pos_filter.png");
+                var _buttonMoreArticles = GetNewButton("MoreHistory", string.Format(GeneralUtils.GetResourceByName("global_button_label_more"), POSSettings.PaginationRowsPerPage), @"Icons\icon_pos_more.png");
+                var _buttonFilterArticles = GetNewButton("FilterHistory", string.Format(GeneralUtils.GetResourceByName("global_button_label_filter"), POSSettings.PaginationRowsPerPage), @"Icons\icon_pos_filter.png");
 
                 _treeViewXPO_ArticleHistory.Navigator.PackEnd(_buttonMoreArticles, false, false, 0);
                 _treeViewXPO_ArticleHistory.Navigator.PackEnd(_buttonFilterArticles, false, false, 0);
@@ -196,7 +197,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _vboxTab2.Add(_treeViewXPO_ArticleHistory);
 
                 //Append Tab
-                _notebook.AppendPage(_vboxTab2, new Label(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_article_history")));
+                _notebook.AppendPage(_vboxTab2, new Label(GeneralUtils.GetResourceByName("global_article_history")));
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -213,8 +214,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 CriteriaOperatorLastFilterWarehouse = _treeViewXPO_ArticleWarehouse.DataSource.Criteria;
 
-                var _buttonMoreWarehouse = GetNewButton("MoreWarehouse", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_button_label_more"), POSSettings.PaginationRowsPerPage), @"Icons\icon_pos_more.png");
-                var _buttonFilterWarehouse = GetNewButton("FilterWarehouse", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_button_label_filter"), POSSettings.PaginationRowsPerPage), @"Icons\icon_pos_filter.png");
+                var _buttonMoreWarehouse = GetNewButton("MoreWarehouse", string.Format(GeneralUtils.GetResourceByName("global_button_label_more"), POSSettings.PaginationRowsPerPage), @"Icons\icon_pos_more.png");
+                var _buttonFilterWarehouse = GetNewButton("FilterWarehouse", string.Format(GeneralUtils.GetResourceByName("global_button_label_filter"), POSSettings.PaginationRowsPerPage), @"Icons\icon_pos_filter.png");
 
                 _treeViewXPO_ArticleWarehouse.Navigator.PackEnd(_buttonMoreWarehouse, false, false, 0);
                 _treeViewXPO_ArticleWarehouse.Navigator.PackEnd(_buttonFilterWarehouse, false, false, 0);
@@ -223,7 +224,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _buttonFilterWarehouse.Clicked += _buttonFilter_Clicked;
 
                 //Append Tab
-                _notebook.AppendPage(_vboxTab2, new Label(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_warehose_management")));
+                _notebook.AppendPage(_vboxTab2, new Label(GeneralUtils.GetResourceByName("global_warehose_management")));
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
             }
@@ -410,7 +411,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     genericTreeView = _treeViewXPO_StockMov;
                     CriteriaOperatorLastFilter = CriteriaOperatorLastFilterStocks;
                     reportsQueryDialogMode = ReportsQueryDialogMode.FILTER_STOCK_MOVIMENTS;
-                    windowTitle = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_button_label_filter") + " " + CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "report_list_stock_movements");
+                    windowTitle = GeneralUtils.GetResourceByName("global_button_label_filter") + " " + GeneralUtils.GetResourceByName("report_list_stock_movements");
                     tableName = "fin_articlestock";
                 }
                 else if ((sender as TouchButtonIconWithText).Name == "FilterHistory")
@@ -418,7 +419,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     genericTreeView = _treeViewXPO_ArticleHistory;
                     CriteriaOperatorLastFilter = CriteriaOperatorLastFilterHistory;
                     reportsQueryDialogMode = ReportsQueryDialogMode.FILTER_ARTICLE_HISTORY;
-                    windowTitle = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_button_label_filter") + " " + CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_article_history");
+                    windowTitle = GeneralUtils.GetResourceByName("global_button_label_filter") + " " + GeneralUtils.GetResourceByName("global_article_history");
                     tableName = "fin_articleserialnumber";
                 }
                 else if ((sender as TouchButtonIconWithText).Name == "FilterWarehouse")
@@ -426,7 +427,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     genericTreeView = _treeViewXPO_ArticleWarehouse;
                     CriteriaOperatorLastFilter = CriteriaOperatorLastFilterWarehouse;
                     reportsQueryDialogMode = ReportsQueryDialogMode.FILTER_ARTICLE_WAREHOUSE;
-                    windowTitle = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_button_label_filter") + " " + CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ConfigurationDevice_PlaceTerminal");
+                    windowTitle = GeneralUtils.GetResourceByName("global_button_label_filter") + " " + GeneralUtils.GetResourceByName("global_ConfigurationDevice_PlaceTerminal");
                     tableName = "fin_articlewarehouse";
                 }
 
@@ -572,7 +573,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         private void DeleteArticleSerialNumber(fin_articleserialnumber pArticleSerialNumber)
         {
 
-            ResponseType responseType = logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.YesNo, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_delete_record"), string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_warning"), GeneralSettings.ServerVersion));
+            ResponseType responseType = logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.YesNo, GeneralUtils.GetResourceByName("dialog_message_delete_record"), string.Format(GeneralUtils.GetResourceByName("global_warning"), GeneralSettings.ServerVersion));
 
             var selectedRow = pArticleSerialNumber;
 
@@ -582,7 +583,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 //Check if is sold
                 if (selectedRow.StockMovimentOut != null || selectedRow.IsSold)
                 {
-                    logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.Ok, "O artigo único já foi vendido", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_warning"), GeneralSettings.ServerVersion));
+                    logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.Ok, "O artigo único já foi vendido", string.Format(GeneralUtils.GetResourceByName("global_warning"), GeneralSettings.ServerVersion));
                     return;
                 }
 
@@ -602,7 +603,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     articleStock.Date = DateTime.Now;
                     articleStock.Article = selectedRow.Article;
                     articleStock.Customer = (erp_customer)selectedRow.Session.GetObjectByKey(typeof(erp_customer), XPOSettings.XpoOidUserRecord);
-                    articleStock.DocumentNumber = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_internal_moviment");
+                    articleStock.DocumentNumber = GeneralUtils.GetResourceByName("global_internal_moviment");
                     articleStock.Quantity = -1;
                     articleStock.Save();
 
@@ -626,7 +627,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 }
                 else
                 {
-                    logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.Ok, "O artigo único está associado a outro(s) artigos", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_warning"), GeneralSettings.ServerVersion));
+                    logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.Ok, "O artigo único está associado a outro(s) artigos", string.Format(GeneralUtils.GetResourceByName("global_warning"), GeneralSettings.ServerVersion));
                 }
             }
 

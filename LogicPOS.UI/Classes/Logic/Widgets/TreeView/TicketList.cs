@@ -14,11 +14,11 @@ using LogicPOS.Data.XPO.Settings.Terminal;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Enums;
-using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Shared;
 using LogicPOS.Shared.Article;
 using LogicPOS.Shared.Orders;
+using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.IO.Ports;
@@ -44,7 +44,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             if (ListMode == TicketListMode.OrderMain)
             {
-                ResponseType responseType = logicpos.Utils.ShowMessageBox(SourceWindow, DialogFlags.Modal, new System.Drawing.Size(400, 280), MessageType.Question, ButtonsType.YesNo, string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_warning"), GeneralSettings.ServerVersion), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message__pos_order_cancel"));
+                ResponseType responseType = logicpos.Utils.ShowMessageBox(SourceWindow, DialogFlags.Modal, new System.Drawing.Size(400, 280), MessageType.Question, ButtonsType.YesNo, string.Format(GeneralUtils.GetResourceByName("global_warning"), GeneralSettings.ServerVersion), GeneralUtils.GetResourceByName("dialog_message__pos_order_cancel"));
 
                 if (responseType == ResponseType.Yes)
                 {
@@ -74,11 +74,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
                                 //Change Table Status to Free
                                 pos_configurationplacetable placeTable;
-                                placeTable = XPOUtility.GetEntityById<pos_configurationplacetable>( orderMain.Table.Oid);
+                                placeTable = XPOUtility.GetEntityById<pos_configurationplacetable>(orderMain.Table.Oid);
                                 documentOrderMain = (fin_documentordermain)uowSession.GetObjectByKey(typeof(fin_documentordermain), orderMain.PersistentOid);
 
                                 placeTable.TableStatus = TableStatus.Free;
-                               XPOUtility.Audit("TABLE_OPEN", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_table_open"), placeTable.Designation));
+                                XPOUtility.Audit("TABLE_OPEN", string.Format(GeneralUtils.GetResourceByName("audit_message_table_open"), placeTable.Designation));
                                 placeTable.DateTableClosed = DateTime.Now;
                                 placeTable.TotalOpen = 0;
                                 placeTable.Save();
@@ -151,7 +151,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             try
             {
                 int i = 0;
-                var price = Convert.ToDecimal(((string)ListStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price)).Replace('.',','));
+                var price = Convert.ToDecimal(((string)ListStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price)).Replace('.', ','));
                 //_listStoreModelSelectedIndex = _currentOrderDetails.Lines.FindLastIndex(item => item.ArticleOid == _currentDetailArticleOid && item.Properties.PriceFinal == _currentDetailArticle.Price1);
                 foreach (var item in CurrentOrderDetails.Lines)
                 {
@@ -185,7 +185,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             {
                 //Get Article defaultQuantity
                 decimal defaultQuantity = GetArticleDefaultQuantity(_currentDetailArticleOid);
-                var price = Convert.ToDecimal(((string)ListStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price)).Replace('.',','));
+                var price = Convert.ToDecimal(((string)ListStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price)).Replace('.', ','));
                 //_listStoreModelSelectedIndex = _currentOrderDetails.Lines.FindIndex(item => item.ArticleOid == _currentDetailArticleOid && item.Properties.PriceFinal == _currentDetailArticle.Price1);
                 //foreach (var item in CurrentOrderDetails.Lines)
                 //{
@@ -195,7 +195,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 //    }
                 //    i++;
                 //}
-                decimal oldValueQnt = Convert.ToDecimal(((string)ListStoreModel.GetValue(_treeIter, (int)TicketListColumns.Quantity)).Replace('.',','));
+                decimal oldValueQnt = Convert.ToDecimal(((string)ListStoreModel.GetValue(_treeIter, (int)TicketListColumns.Quantity)).Replace('.', ','));
                 if (!logicpos.Utils.CheckStocks())
                 {
                     if (logicpos.Utils.ShowMessageMinimumStock(SourceWindow, CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].ArticleOid, (oldValueQnt + defaultQuantity)))
@@ -264,7 +264,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 decimal oldValueQuantity = CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity;
                 decimal oldValuePrice = CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.PriceFinal;
 
-                MoneyPadResult result = PosMoneyPadDialog.RequestDecimalValue(SourceWindow, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_moneypad_product_price"), oldValuePrice);
+                MoneyPadResult result = PosMoneyPadDialog.RequestDecimalValue(SourceWindow, GeneralUtils.GetResourceByName("window_title_dialog_moneypad_product_price"), oldValuePrice);
                 decimal newValuePrice = result.Value;
 
                 if (result.Response == ResponseType.Ok && newValuePrice > 0)
@@ -388,7 +388,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 //Request Finish Open Ticket
                 if (_listStoreModelTotalItemsTicketListMode > 0)
                 {
-                    ResponseType dialogResponse = logicpos.Utils.ShowMessageTouch(SourceWindow, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.OkCancel, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_message_dialog"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_request_close_open_ticket"));
+                    ResponseType dialogResponse = logicpos.Utils.ShowMessageTouch(SourceWindow, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.OkCancel, GeneralUtils.GetResourceByName("window_title_dialog_message_dialog"), GeneralUtils.GetResourceByName("dialog_message_request_close_open_ticket"));
                     if (dialogResponse != ResponseType.Ok)
                     {
                         return;
@@ -462,7 +462,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         private void _buttonKeyBarCode_Clicked(object sender, EventArgs e)
         {
             string fileWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_input_text_barcode.png";
-            logicpos.Utils.ResponseText dialogResponse = logicpos.Utils.GetInputText(SourceWindow, DialogFlags.Modal, fileWindowIcon, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_barcode_articlecode"), string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true);
+            logicpos.Utils.ResponseText dialogResponse = logicpos.Utils.GetInputText(SourceWindow, DialogFlags.Modal, fileWindowIcon, GeneralUtils.GetResourceByName("global_barcode_articlecode"), string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true);
 
             if (dialogResponse.ResponseType == ResponseType.Ok)
             {
@@ -481,7 +481,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         private void _buttonKeyCardCode_Clicked(object sender, EventArgs e)
         {
             string fileWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_pos_ticketpad_card_entry.png";
-            logicpos.Utils.ResponseText dialogResponse = logicpos.Utils.GetInputText(SourceWindow, DialogFlags.Modal, fileWindowIcon, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_cardcode_small"), string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true);
+            logicpos.Utils.ResponseText dialogResponse = logicpos.Utils.GetInputText(SourceWindow, DialogFlags.Modal, fileWindowIcon, GeneralUtils.GetResourceByName("global_cardcode_small"), string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true);
 
             if (dialogResponse.ResponseType == ResponseType.Ok)
             {
@@ -533,8 +533,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     if (xNewTable.TableStatus != TableStatus.Free)
                     {
                         logicpos.Utils.ShowMessageTouch(
-                            GlobalApp.PosMainWindow, DialogFlags.Modal, MessageType.Warning, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"),
-                            CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_table_is_not_free")
+                            GlobalApp.PosMainWindow, DialogFlags.Modal, MessageType.Warning, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"),
+                            GeneralUtils.GetResourceByName("dialog_message_table_is_not_free")
                         );
                     }
                     else
@@ -542,12 +542,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         //Put Old table Status to Free
                         xOldTable.TableStatus = TableStatus.Free;
                         xOldTable.Save();
-                       XPOUtility.Audit("TABLE_OPEN", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_table_open"), xOldTable.Designation));
+                        XPOUtility.Audit("TABLE_OPEN", string.Format(GeneralUtils.GetResourceByName("audit_message_table_open"), xOldTable.Designation));
 
                         //Put New table Status to Open
                         xNewTable.TableStatus = TableStatus.Open;
                         xNewTable.Save();
-                       XPOUtility.Audit("TABLE_CLOSE", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_table_close"), xNewTable.Designation));
+                        XPOUtility.Audit("TABLE_CLOSE", string.Format(GeneralUtils.GetResourceByName("audit_message_table_close"), xNewTable.Designation));
 
                         //Change DocumentOrderMain table, If OpenOrder Exists in That table
                         Guid documentOrderMainOid = currentOrderMain.GetOpenTableFieldValueGuid(xOldTable.Oid, "Oid");
@@ -668,7 +668,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
               dialog = new PosSelectRecordDialog<XPCollection, Entity, TreeViewConfigurationVatExceptionReason>(
                 SourceWindow,
                 DialogFlags.DestroyWithParent,
-                    CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_vat_exemption_reason"),
+                    GeneralUtils.GetResourceByName("global_vat_exemption_reason"),
                 GlobalApp.MaxWindowSize,
                 null, //XpoDefaultValue
                 criteria,

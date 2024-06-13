@@ -7,6 +7,7 @@ using System.Drawing;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Utility;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -41,11 +42,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             string windowTitle;
             if (pTotalOrder > 0)
             {
-                windowTitle = string.Format("{0} - {1} : {2}", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_moneypad"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_total_table_tickets"), LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(pTotalOrder, XPOSettings.ConfigurationSystemCurrency.Acronym));
+                windowTitle = string.Format("{0} - {1} : {2}", GeneralUtils.GetResourceByName("window_title_dialog_moneypad"), GeneralUtils.GetResourceByName("global_total_table_tickets"), LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(pTotalOrder, XPOSettings.ConfigurationSystemCurrency.Acronym));
             }
             else
             {
-                windowTitle = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_moneypad");
+                windowTitle = GeneralUtils.GetResourceByName("window_title_dialog_moneypad");
             }
 
             this.InitObject(pSourceWindow, pDialogFlags, windowTitle, pInitialValue, pTotalOrder);

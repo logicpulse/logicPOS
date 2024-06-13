@@ -6,16 +6,17 @@ using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Logic.Others;
 using logicpos.Extensions;
+using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO.Utility;
+using LogicPOS.Domain.Entities;
+using LogicPOS.Globalization;
+using LogicPOS.Settings;
+using LogicPOS.UI;
+using LogicPOS.Utility;
 using System;
 using System.Collections;
 using System.Drawing;
 using Image = Gtk.Image;
-using LogicPOS.Globalization;
-using LogicPOS.Settings;
-using LogicPOS.UI;
-using LogicPOS.Data.XPO.Settings;
-using LogicPOS.Data.XPO.Utility;
-using LogicPOS.Domain.Entities;
 
 namespace logicpos
 {
@@ -27,7 +28,7 @@ namespace logicpos
 
         /* IN006045 */
         //private string _clockFormat = LogicPOS.Settings.GeneralSettings.Settings["dateTimeFormatStatusBar"];
-        private readonly string _clockFormat = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "frontoffice_datetime_format_status_bar");
+        private readonly string _clockFormat = GeneralUtils.GetResourceByName("frontoffice_datetime_format_status_bar");
 
         private readonly Color _colorPosNumberPadLeftButtonBackground = GeneralSettings.Settings["colorPosNumberPadLeftButtonBackground"].StringToColor();
         private readonly Color _colorPosNumberRightButtonBackground = GeneralSettings.Settings["colorPosNumberRightButtonBackground"].StringToColor();
@@ -49,7 +50,7 @@ namespace logicpos
         private TouchButtonIconWithText _touchButtonPosToolbarFinanceDocuments;
 
         public TouchButtonIconWithText TouchButtonPosToolbarNewFinanceDocument { get; set; }
-       
+
         private TicketPad _ticketPad;
         //Others
         private readonly uint _borderWidth = 5;
@@ -183,7 +184,7 @@ namespace logicpos
                         ICollection collectionDocumentFinanceSeries = XPOSettings.Session.GetObjects(XPOSettings.Session.GetClassInfo(typeof(fin_documentfinanceyearserieterminal)), criteria, sortCollection, int.MaxValue, false, true);
                         if (collectionDocumentFinanceSeries.Count == 0)
                         {
-                            Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Warning, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_warning"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_warning_open_fiscal_year"));
+                            Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Warning, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_warning"), GeneralUtils.GetResourceByName("global_warning_open_fiscal_year"));
                         }
                     }
                     catch (Exception ex)
@@ -225,7 +226,7 @@ namespace logicpos
                 {
                     fileImageBackOfficeLogo = string.Format(PathsSettings.Paths["themes"] + @"Default\Images\Branding\{0}\logicPOS_loggericpulse_loggerin.png", "NT");
                 }
-                
+
                 var bitmapImage = PluginSettings.LicenceManager.DecodeImage(fileImageBackOfficeLogo, eventBoxImageLogoSize.Width, eventBoxImageLogoSize.Height);
                 Gdk.Pixbuf pixbufImageLogo = Utils.ImageToPixbuf(bitmapImage);
                 imageLogo = new Image(pixbufImageLogo);
@@ -358,7 +359,7 @@ namespace logicpos
             vboxCurrentTable.PackStart(LabelCurrentTable);
 
             //EventBoxStatusBar2:vboxTotalTable:LabelTotalTableLabel
-            Label labelTotalTableLabel = new Label(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_total_price_to_pay"));
+            Label labelTotalTableLabel = new Label(GeneralUtils.GetResourceByName("global_total_price_to_pay"));
             labelTotalTableLabel.ModifyFont(labelTotalTableLabelFont);
             labelTotalTableLabel.ModifyFg(StateType.Normal, labelTotalTableLabelFontColor);
             labelTotalTableLabel.SetAlignment(labelTotalTableLabelAlignmentX, 0.5F);

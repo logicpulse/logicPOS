@@ -10,6 +10,7 @@ using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
+using LogicPOS.Utility;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -94,7 +95,20 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //Declare public Button Event, to Expose Button Clicks
         public event EventHandler Clicked;
 
-        public TablePad(string pSql, string pOrder, string pFilter, Guid pActiveButtonOid, bool pToggleMode, uint pRows, uint pColumns, string pButtonNamePrefix, Color pColorButton, int pButtonWidth, int pButtonHeight, TouchButtonBase buttonPrev, TouchButtonBase buttonNext)
+        public TablePad(
+            string pSql,
+            string pOrder,
+            string pFilter,
+            Guid pActiveButtonOid,
+            bool pToggleMode,
+            uint pRows,
+            uint pColumns,
+            string pButtonNamePrefix,
+            Color pColorButton,
+            int pButtonWidth,
+            int pButtonHeight,
+            TouchButtonBase buttonPrev,
+            TouchButtonBase buttonNext)
             : base(pRows, pColumns, true)
         {
             //_logger.Debug(string.Format("TablePad():{0}pSql: [{1}]{0}pOrder: [{2}]{0}pFilter: [{3}]", Environment.NewLine, pSql, pOrder, pFilter));
@@ -263,7 +277,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     }
                     else
                     {
-                        logicpos.Utils.ShowMessageTouch(GlobalApp.PosMainWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"), "TablePad: Cant create TablePad, invalid query! You must supply mandatory fields name in Sql (id, name, label and image)!");
+                        logicpos.Utils.ShowMessageTouch(GlobalApp.PosMainWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"), "TablePad: Cant create TablePad, invalid query! You must supply mandatory fields name in Sql (id, name, label and image)!");
                     };
                 }
                 else

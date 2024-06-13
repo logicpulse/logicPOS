@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Data.XPO.Utility;
+using LogicPOS.Utility;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -92,7 +93,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             if (Value.Contains(EntryBoxAddDate.Value))
             {
-                logicpos.Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_datepicker_existing_date_error"));
+                logicpos.Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"), GeneralUtils.GetResourceByName("dialog_message_datepicker_existing_date_error"));
             }
             else
             {
@@ -113,8 +114,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 //Failled: Invalid Date Range
                 else
                 {
-                    logicpos.Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"),
-                        string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_datepicker_existing_date_error_outside_range"),
+                    logicpos.Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"),
+                        string.Format(GeneralUtils.GetResourceByName("dialog_message_datepicker_existing_date_error_outside_range"),
                             AllowedPeriodBegin.ToString(CultureSettings.DateFormat),
                             AllowedPeriodEnd.ToString(CultureSettings.DateFormat)
                         )
@@ -126,7 +127,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         private void AddDateTimeEntry(DateTime pDateTime, bool pAddDateTimeToList)
         {
             string iconFileName = string.Format("{0}{1}", PathsSettings.ImagesFolderLocation, @"Icons/Windows/icon_window_delete_record.png");
-            EntryBoxValidationButton entryBoxValidation = new EntryBoxValidationButton(_sourceWindow, string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_date"), Value.Count + 1), KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexDate, true, iconFileName);
+            EntryBoxValidationButton entryBoxValidation = new EntryBoxValidationButton(_sourceWindow, string.Format(GeneralUtils.GetResourceByName("global_date"), Value.Count + 1), KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexDate, true, iconFileName);
             entryBoxValidation.EntryValidation.Validate();
             entryBoxValidation.EntryValidation.Sensitive = false;
             //Remove Event

@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using LogicPOS.Utility;
 
 namespace logicpos
 {
@@ -167,8 +168,8 @@ namespace logicpos
                         DialogFlags.Modal, 
                         MessageType.Error, 
                         ButtonsType.Ok, 
-                        CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"), 
-                        string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_low_resolution_detected"), 
+                        GeneralUtils.GetResourceByName("global_error"), 
+                        string.Format(GeneralUtils.GetResourceByName("dialog_message_low_resolution_detected"), 
                         width, 
                         height));
                     Environment.Exit(0);

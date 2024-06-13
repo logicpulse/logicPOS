@@ -1,6 +1,7 @@
 ﻿using Gtk;
 using logicpos.App;
 using logicpos.Classes.Enums.App;
+using LogicPOS.Persistence.Services;
 using LogicPOS.Settings;
 using System;
 using System.Collections;
@@ -187,7 +188,7 @@ namespace logicpos.Classes.Logic.License
                 thread.Start();
 
                 _logger.Debug("LicenseRouter() :: Show 'loading'");
-                GlobalApp.DialogThreadWork = logicpos.Utils.GetThreadDialog(new Window("POS start up"), logicpos.Utils.checkIfDbExists());
+                GlobalApp.DialogThreadWork = logicpos.Utils.GetThreadDialog(new Window("POS start up"), DatabaseService.DatabaseExists());
                 GlobalApp.DialogThreadWork.Run();
                 /* IN009005 and IN009034: end" */
 

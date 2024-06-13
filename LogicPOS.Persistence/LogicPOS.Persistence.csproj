@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DevExpress.Data" Version="23.2.6" />
+    <PackageReference Include="DevExpress.Xpo" Version="23.2.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LogicPOS.Settings\LogicPOS.Settings.csproj" />
+  </ItemGroup>
+
+</Project>

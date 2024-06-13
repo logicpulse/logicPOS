@@ -17,6 +17,7 @@ using LogicPOS.Settings;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Shared;
 using LogicPOS.Shared.Orders;
+using LogicPOS.Utility;
 using System;
 
 namespace logicpos
@@ -199,7 +200,7 @@ namespace logicpos
                         XPOSettings.LoggedUser = XPOUtility.GetEntityById<sys_userdetail>(dialogChangeUser.UserDetail.Oid);
                         GeneralSettings.LoggedUserPermissions = XPOUtility.GetUserPermissions();
                         TicketList.UpdateTicketListButtons();
-                        XPOUtility.Audit("USER_CHANGE", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_user_change"), XPOSettings.LoggedUser.Name));
+                        XPOUtility.Audit("USER_CHANGE", string.Format(GeneralUtils.GetResourceByName("audit_message_user_change"), XPOSettings.LoggedUser.Name));
                         terminalInfo = string.Format("{0} : {1}", TerminalSettings.LoggedTerminal.Designation, XPOSettings.LoggedUser.Name);
                         if (LabelTerminalInfo.Text != terminalInfo) LabelTerminalInfo.Text = terminalInfo;
                     }
@@ -217,7 +218,7 @@ namespace logicpos
                                 XPOSettings.LoggedUser = XPOUtility.GetEntityById<sys_userdetail>(dialogChangeUser.UserDetail.Oid);
                                 GeneralSettings.LoggedUserPermissions = XPOUtility.GetUserPermissions();
                                 TicketList.UpdateTicketListButtons();
-                                XPOUtility.Audit("USER_loggerIN", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_user_loggerin"), XPOSettings.LoggedUser.Name));
+                                XPOUtility.Audit("USER_loggerIN", string.Format(GeneralUtils.GetResourceByName("audit_message_user_loggerin"), XPOSettings.LoggedUser.Name));
                                 terminalInfo = string.Format("{0} : {1}", TerminalSettings.LoggedTerminal.Designation, XPOSettings.LoggedUser.Name);
                                 if (LabelTerminalInfo.Text != terminalInfo) LabelTerminalInfo.Text = terminalInfo;
                                 //After First time Login ShowNotifications
@@ -345,16 +346,16 @@ namespace logicpos
                 int responsePinPad = dialogPinPad.Run();
                 if (responsePinPad == (int)ResponseType.Ok)
                 {
-                    var resultOpenDoor = PrintingUtils.OpenDoor();
+                    var resultOpenDoor = LogicPOS.Printing.Utility.PrintingUtils.OpenDoor();
                     if (!resultOpenDoor)
                     {
-                        Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_information"), string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "open_cash_draw_permissions")));
+                        Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, GeneralUtils.GetResourceByName("global_information"), string.Format(GeneralUtils.GetResourceByName("open_cash_draw_permissions")));
                     }
                     else
                     {
                         //Audit
                         XPOUtility.Audit("CASHDRAWER_OUT", string.Format(
-                             CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_cashdrawer_out"),
+                             GeneralUtils.GetResourceByName("audit_message_cashdrawer_out"),
                              TerminalSettings.LoggedTerminal.Designation,
                              "Button Open Door"));
                     }

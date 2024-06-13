@@ -13,6 +13,7 @@ using LogicPOS.Globalization;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
+using LogicPOS.Utility;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
 {
@@ -28,7 +29,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
         public DialogConfigurationWarehouse(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, Entity pXPGuidObject)
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
-            this.Title = logicpos.Utils.GetWindowTitle(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_warehouse"));
+            this.Title = logicpos.Utils.GetWindowTitle(GeneralUtils.GetResourceByName("global_warehouse"));
             _warehouseLocationCollection = new List<Tuple<fin_warehouselocation, Entry, BOWidgetBox, TouchButtonIcon, TouchButtonIcon, GenericCRUDWidgetXPO, HBox>>();
             
             SetSizeRequest(500, 450);
@@ -72,35 +73,35 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
                 VBox vboxTab1 = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
                 //Ord
                 Entry entryOrd = new Entry();
-                BOWidgetBox boxOrd = new BOWidgetBox(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_record_order"), entryOrd);
+                BOWidgetBox boxOrd = new BOWidgetBox(GeneralUtils.GetResourceByName("global_record_order"), entryOrd);
                 vboxTab1.PackStart(boxOrd, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxOrd, _dataSourceRow, "Ord", LogicPOS.Utility.RegexUtils.RegexIntegerGreaterThanZero, true));
 
                 //Code
                 Entry entryCode = new Entry();
-                BOWidgetBox boxCode = new BOWidgetBox(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_record_code"), entryCode);
+                BOWidgetBox boxCode = new BOWidgetBox(GeneralUtils.GetResourceByName("global_record_code"), entryCode);
                 vboxTab1.PackStart(boxCode, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCode, _dataSourceRow, "Code", LogicPOS.Utility.RegexUtils.RegexIntegerGreaterThanZero, true));
 
                 //Designation
                 Entry entryDesignation = new Entry();
-                BOWidgetBox boxDesignation = new BOWidgetBox(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_designation"), entryDesignation);
+                BOWidgetBox boxDesignation = new BOWidgetBox(GeneralUtils.GetResourceByName("global_designation"), entryDesignation);
                 vboxTab1.PackStart(boxDesignation, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true));
 
                 //Default
-                CheckButton checkButtonDefault = new CheckButton(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_default_warehouse"));
+                CheckButton checkButtonDefault = new CheckButton(GeneralUtils.GetResourceByName("global_default_warehouse"));
                 vboxTab1.PackStart(checkButtonDefault, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(checkButtonDefault, _dataSourceRow, "IsDefault"));
 
                 //Disabled
-                CheckButton checkButtonDisabled = new CheckButton(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_record_disabled"));
+                CheckButton checkButtonDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
                 if (_dialogMode == DialogMode.Insert) checkButtonDisabled.Active = POSSettings.BOXPOObjectsStartDisabled;
                 vboxTab1.PackStart(checkButtonDisabled, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(checkButtonDisabled, _dataSourceRow, "Disabled"));
 
                 //Append Tab
-                _notebook.AppendPage(vboxTab1, new Label(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_record_main_detail")));
+                _notebook.AppendPage(vboxTab1, new Label(GeneralUtils.GetResourceByName("global_record_main_detail")));
 
                 //Tab1
                 vboxTab2 = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
@@ -127,7 +128,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
                 if (lcode != 10 && entryCode.Text == "") { entryOrd.Text = lcode.ToString(); entryCode.Text = lcode.ToString(); }
 
                 //Append Tab
-                _notebook.AppendPage(_scrolledWindow, new Label(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_locations")));
+                _notebook.AppendPage(_scrolledWindow, new Label(GeneralUtils.GetResourceByName("global_locations")));
             }
             catch (System.Exception ex)
             {
@@ -149,7 +150,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
 
                 //Localização
                 Entry entryLocation = new Entry();
-                BOWidgetBox boxLocation = new BOWidgetBox(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ConfigurationDevice_PlaceTerminal"), entryLocation);
+                BOWidgetBox boxLocation = new BOWidgetBox(GeneralUtils.GetResourceByName("global_ConfigurationDevice_PlaceTerminal"), entryLocation);
                 GenericCRUDWidgetXPO genericCRUDWidgetXPO = new GenericCRUDWidgetXPO(boxLocation, pDataSourceRow, "Designation", LogicPOS.Utility.RegexUtils.RegexAlfaNumeric, true);
                 _crudWidgetList.Add(genericCRUDWidgetXPO);
                 hboxLocation.PackStart(boxLocation);
@@ -187,7 +188,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
         {
             try
             {
-                ResponseType responseType = logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.YesNo, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_delete_record"), string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_warning"), GeneralSettings.ServerVersion));
+                ResponseType responseType = logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.YesNo, GeneralUtils.GetResourceByName("dialog_message_delete_record"), string.Format(GeneralUtils.GetResourceByName("global_warning"), GeneralSettings.ServerVersion));
 
                 if (responseType == ResponseType.Yes)
                 {

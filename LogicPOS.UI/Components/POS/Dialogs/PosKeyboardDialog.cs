@@ -5,6 +5,7 @@ using System;
 using System.Drawing;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using LogicPOS.Utility;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -31,7 +32,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public PosKeyboardDialog(Window pSourceWindow, DialogFlags pDialogFlags, KeyboardMode pKeyboardMode, string pTextEntry, string pValidationRule) : base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
-            string windowTitle = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_virtual_keyboard");
+            string windowTitle = GeneralUtils.GetResourceByName("window_title_dialog_virtual_keyboard");
             Size windowSize = new Size(916, 358);
             string fileDefaultWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_keyboard.png";
             string fileKeyboardXML = PathsSettings.Paths["keyboards"] + @"163.xml";

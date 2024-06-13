@@ -16,6 +16,7 @@ using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Shared.Article;
+using LogicPOS.Utility;
 using System;
 using System.Data;
 using System.Drawing;
@@ -127,7 +128,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 //Init Local Vars
                 _sourceWindow = pSourceWindow;
-                string windowTitle = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_payments");
+                string windowTitle = GeneralUtils.GetResourceByName("window_title_dialog_payments");
                 //TODO:THEME
                 Size windowSize = new Size(633, 620);
                 string fileDefaultWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_payments.png";
@@ -216,9 +217,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
                 //Labels
-                Label labelTotal = new Label(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_total_price_to_pay") + ":");
-                Label labelDelivery = new Label(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_total_deliver") + ":");
-                Label labelChange = new Label(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_total_change") + ":");
+                Label labelTotal = new Label(GeneralUtils.GetResourceByName("global_total_price_to_pay") + ":");
+                Label labelDelivery = new Label(GeneralUtils.GetResourceByName("global_total_deliver") + ":");
+                Label labelChange = new Label(GeneralUtils.GetResourceByName("global_total_change") + ":");
                 _labelTotalValue = new Label(LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(ArticleBagFullPayment.TotalFinal, XPOSettings.ConfigurationSystemCurrency.Acronym))
                 {
                     //Total Width
@@ -278,7 +279,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //Customer Name
                 CriteriaOperator criteriaOperatorCustomerName = null;
                 /* IN009202 */
-                _entryBoxSelectCustomerName = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(_sourceWindow, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_customer"), "Name", "Name", null, criteriaOperatorCustomerName, KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, false);
+                _entryBoxSelectCustomerName = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(_sourceWindow, GeneralUtils.GetResourceByName("global_customer"), "Name", "Name", null, criteriaOperatorCustomerName, KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, false);
                 _entryBoxSelectCustomerName.ClosePopup += delegate
                 {
                     //IN009284 POS - Pagamento conta-corrente - Cliente por defeito 
@@ -297,7 +298,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _entryBoxSelectCustomerName.EntryValidation.Changed += _entryBoxSelectCustomerName_Changed;
 
                 //Customer Discount
-                _entryBoxCustomerDiscount = new EntryBoxValidation(_sourceWindow, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_discount"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexPercentage, true);
+                _entryBoxCustomerDiscount = new EntryBoxValidation(_sourceWindow, GeneralUtils.GetResourceByName("global_discount"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexPercentage, true);
                 _entryBoxCustomerDiscount.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.DecimalToString(0.0m);
                 _entryBoxCustomerDiscount.EntryValidation.Sensitive = false;
                 _entryBoxCustomerDiscount.EntryValidation.Changed += _entryBoxCustomerDiscount_Changed;
@@ -307,26 +308,26 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 };
 
                 //Address
-                _entryBoxCustomerAddress = new EntryBoxValidation(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_address"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, false);/* IN009253 */
+                _entryBoxCustomerAddress = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_address"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, false);/* IN009253 */
                 _entryBoxCustomerAddress.EntryValidation.Changed += delegate { Validate(); };
 
                 //Locality
-                _entryBoxCustomerLocality = new EntryBoxValidation(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_locality"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, false);/* IN009253 */
+                _entryBoxCustomerLocality = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_locality"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, false);/* IN009253 */
                 _entryBoxCustomerLocality.EntryValidation.Changed += delegate { Validate(); };
 
                 //ZipCode
-                _entryBoxCustomerZipCode = new EntryBoxValidation(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_zipcode"), KeyboardMode.Alfa, XPOSettings.ConfigurationSystemCountry.RegExZipCode, false);
+                _entryBoxCustomerZipCode = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_zipcode"), KeyboardMode.Alfa, XPOSettings.ConfigurationSystemCountry.RegExZipCode, false);
                 _entryBoxCustomerZipCode.WidthRequest = 150;
                 _entryBoxCustomerZipCode.EntryValidation.Changed += delegate { Validate(); };
 
                 //City
-                _entryBoxCustomerCity = new EntryBoxValidation(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_city"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, false);/* IN009253 */
+                _entryBoxCustomerCity = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_city"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, false);/* IN009253 */
                 _entryBoxCustomerCity.WidthRequest = 200;
                 _entryBoxCustomerCity.EntryValidation.Changed += delegate { Validate(); };
 
                 //Country
                 CriteriaOperator criteriaOperatorCustomerCountry = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1) AND (RegExFiscalNumber IS NOT NULL AND RegExZipCode IS NOT NULL)");
-                _entryBoxSelectCustomerCountry = new XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry>(pSourceWindow, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_country"), "Designation", "Oid", _intialValueConfigurationCountry, criteriaOperatorCustomerCountry, LogicPOS.Utility.RegexUtils.RegexGuid, true);
+                _entryBoxSelectCustomerCountry = new XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry>(pSourceWindow, GeneralUtils.GetResourceByName("global_country"), "Designation", "Oid", _intialValueConfigurationCountry, criteriaOperatorCustomerCountry, LogicPOS.Utility.RegexUtils.RegexGuid, true);
                 _entryBoxSelectCustomerCountry.WidthRequest = 235;
                 //Extra Protection to prevent Customer without Country
                 if (_entryBoxSelectCustomerCountry.Value != null) _entryBoxSelectCustomerCountry.EntryValidation.Validate(_entryBoxSelectCustomerCountry.Value.Oid.ToString());
@@ -348,12 +349,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 //FiscalNumber
                 CriteriaOperator criteriaOperatorFiscalNumber = null;
-                _entryBoxSelectCustomerFiscalNumber = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(_sourceWindow, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_fiscal_number"), "FiscalNumber", "FiscalNumber", null, criteriaOperatorFiscalNumber, KeyboardMode.AlfaNumeric, _intialValueConfigurationCountry.RegExFiscalNumber, false);
+                _entryBoxSelectCustomerFiscalNumber = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(_sourceWindow, GeneralUtils.GetResourceByName("global_fiscal_number"), "FiscalNumber", "FiscalNumber", null, criteriaOperatorFiscalNumber, KeyboardMode.AlfaNumeric, _intialValueConfigurationCountry.RegExFiscalNumber, false);
                 _entryBoxSelectCustomerFiscalNumber.EntryValidation.Changed += _entryBoxSelectCustomerFiscalNumber_Changed;
 
                 //CardNumber
                 CriteriaOperator criteriaOperatorCardNumber = null;//Now Criteria is assigned in ApplyCriteriaToCustomerInputs();
-                _entryBoxSelectCustomerCardNumber = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(_sourceWindow, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_card_number"), "CardNumber", "CardNumber", null, criteriaOperatorCardNumber, KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false);
+                _entryBoxSelectCustomerCardNumber = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(_sourceWindow, GeneralUtils.GetResourceByName("global_card_number"), "CardNumber", "CardNumber", null, criteriaOperatorCardNumber, KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false);
                 _entryBoxSelectCustomerCardNumber.ClosePopup += delegate
                 {
                     if (_entryBoxSelectCustomerCardNumber.EntryValidation.Validated) GetCustomerDetails("CardNumber", _entryBoxSelectCustomerCardNumber.EntryValidation.Text);
@@ -361,7 +362,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 };
 
                 //Notes
-                _entryBoxCustomerNotes = new EntryBoxValidation(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_notes"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false);
+                _entryBoxCustomerNotes = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_notes"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false);
                 _entryBoxCustomerNotes.EntryValidation.Changed += delegate { Validate(); };
 
                 //Fill Dialog Inputs with Defaults FinalConsumerEntity Values
@@ -463,11 +464,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //ActionArea Buttons
                 _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);
                 _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
-                _buttonClearCustomer = ActionAreaButton.FactoryGetDialogButtonType("touchButtonClearCustomer_DialogActionArea", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_button_label_payment_dialog_clear_client"), fileIconClearCustomer);
-                _buttonNewCustomer = ActionAreaButton.FactoryGetDialogButtonType("touchButtonClearCustomer_DialogActionArea", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_button_label_new_client"), fileIconNewCustomer);
-                _buttonFullPayment = ActionAreaButton.FactoryGetDialogButtonType("touchButtonFullPayment_DialogActionArea", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_button_label_payment_dialog_full_payment"), fileIconFullPayment);
-                _buttonPartialPayment = ActionAreaButton.FactoryGetDialogButtonType("touchButtonPartialPayment_DialogActionArea", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_button_label_payment_dialog_partial_payment"), fileIconPartialPayment);
-                _buttonCurrentAccount = ActionAreaButton.FactoryGetDialogButtonType("touchButtonPartialPayment_DialogActionArea", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_documentfinance_type_title_ft"), fileIconCurrentAccount);
+                _buttonClearCustomer = ActionAreaButton.FactoryGetDialogButtonType("touchButtonClearCustomer_DialogActionArea", GeneralUtils.GetResourceByName("global_button_label_payment_dialog_clear_client"), fileIconClearCustomer);
+                _buttonNewCustomer = ActionAreaButton.FactoryGetDialogButtonType("touchButtonClearCustomer_DialogActionArea", GeneralUtils.GetResourceByName("dialog_button_label_new_client"), fileIconNewCustomer);
+                _buttonFullPayment = ActionAreaButton.FactoryGetDialogButtonType("touchButtonFullPayment_DialogActionArea", GeneralUtils.GetResourceByName("global_button_label_payment_dialog_full_payment"), fileIconFullPayment);
+                _buttonPartialPayment = ActionAreaButton.FactoryGetDialogButtonType("touchButtonPartialPayment_DialogActionArea", GeneralUtils.GetResourceByName("global_button_label_payment_dialog_partial_payment"), fileIconPartialPayment);
+                _buttonCurrentAccount = ActionAreaButton.FactoryGetDialogButtonType("touchButtonPartialPayment_DialogActionArea", GeneralUtils.GetResourceByName("global_documentfinance_type_title_ft"), fileIconCurrentAccount);
                 // Enable if has selectedPaymentMethod defined, ex when working with SplitPayments
                 _buttonOk.Sensitive = (PaymentMethod != null);
                 _buttonFullPayment.Sensitive = false;

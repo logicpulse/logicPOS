@@ -7,6 +7,7 @@ using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -34,7 +35,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
-            string windowTitle = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_document_finance_print"), pDocumentFinanceMaster.DocumentNumber);
+            string windowTitle = string.Format(GeneralUtils.GetResourceByName("window_title_dialog_document_finance_print"), pDocumentFinanceMaster.DocumentNumber);
             Size windowSize = new Size(400, 259);
             string fileDefaultWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_document_new.png";
             //Parameters
@@ -69,17 +70,17 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             Dictionary<string, bool> buttonGroup = new Dictionary<string, bool>
             {
-                { CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_print_copy_title1"), (_printCopies >= 1) },
-                { CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_print_copy_title2"), (_printCopies >= 2) },
-                { CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_print_copy_title3"), (_printCopies >= 3) },
-                { CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_print_copy_title4"), (_printCopies >= 4) }
+                { GeneralUtils.GetResourceByName("global_print_copy_title1"), (_printCopies >= 1) },
+                { GeneralUtils.GetResourceByName("global_print_copy_title2"), (_printCopies >= 2) },
+                { GeneralUtils.GetResourceByName("global_print_copy_title3"), (_printCopies >= 3) },
+                { GeneralUtils.GetResourceByName("global_print_copy_title4"), (_printCopies >= 4) }
             };
             //Not Used Anymore
             //buttonGroup.Add(CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_print_copy_title5, (_printCopies >= 5));
             //buttonGroup.Add(CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_print_copy_title6, (_printCopies >= 6));
 
             //Construct,Pack and Event
-            _checkButtonCopyNamesBoxGroup = new CheckButtonBoxGroup(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_print_copies"), buttonGroup);
+            _checkButtonCopyNamesBoxGroup = new CheckButtonBoxGroup(GeneralUtils.GetResourceByName("global_print_copies"), buttonGroup);
             _vboxContent.PackStart(_checkButtonCopyNamesBoxGroup);
             _checkButtonCopyNamesBoxGroup.Clicked += checkButtonCopyNamesBoxGroup_Clicked;
 
@@ -87,13 +88,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             if (_requestMotive)
             {
                 //CheckButtonBoxSecondCopy
-                _checkButtonBoxSecondCopy = new CheckButtonBox(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_second_copy"), true);
+                _checkButtonBoxSecondCopy = new CheckButtonBox(GeneralUtils.GetResourceByName("global_second_copy"), true);
                 _checkButtonBoxSecondCopy.Clicked += checkButtonBoxSecondCopy_Clicked;
                 _checkButtonBoxSecondCopy.StateChanged += checkButtonBoxSecondCopy_Clicked;
                 //Pack EntryBox with CheckBox into Dialog
                 _vboxContent.PackStart(_checkButtonBoxSecondCopy);
 
-                _entryBoxValidationBoxMotive = new EntryBoxValidation(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_reprint_original_motive"), KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexAlfaNumeric, false);
+                _entryBoxValidationBoxMotive = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_reprint_original_motive"), KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexAlfaNumeric, false);
                 //Start Disabled
                 _entryBoxValidationBoxMotive.EntryValidation.Label.Sensitive = false;
                 _entryBoxValidationBoxMotive.EntryValidation.Sensitive = false;
