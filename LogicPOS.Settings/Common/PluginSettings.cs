@@ -16,7 +16,7 @@ namespace LogicPOS.Settings
         public static string AppCompanyWeb { get; set; }
         public static string AppSoftwareVersionFormat { get; set; }
 
-        public static PluginContainer PluginContainer { get; set; }
+        public static PluginContainer PluginContainer { get; set; } 
 
         public static ISoftwareVendor SoftwareVendor { get; set; }
         public static ILicenseManager LicenceManager { get; set; }

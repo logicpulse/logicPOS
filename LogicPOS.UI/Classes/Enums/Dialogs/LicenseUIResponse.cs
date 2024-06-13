@@ -2,6 +2,9 @@
 {
     public enum LicenseUIResponse
     {
-        None, Register, Continue, Close
+        None, 
+        Register, 
+        Continue, 
+        Close
     }
 }

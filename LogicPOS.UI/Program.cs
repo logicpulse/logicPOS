@@ -3,7 +3,6 @@ using logicpos.App;
 using logicpos.Classes.Enums.App;
 using logicpos.Classes.Logic.License;
 using LogicPOS.Data.XPO.Settings;
-using LogicPOS.Globalization;
 using LogicPOS.Modules;
 using LogicPOS.Modules.StockManagement;
 using LogicPOS.Persistence.Services;
@@ -12,7 +11,6 @@ using LogicPOS.Settings;
 using LogicPOS.Utility;
 using System;
 using System.Configuration;
-using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
 
@@ -73,13 +71,14 @@ namespace logicpos
 
                 InitializePlugins();
 
+                CloseLoadingScreen();
+
                 KeepUIResponsive();
 
-                if (singleProgramInstance.IsSingleInstance)
+                if (singleProgramInstance.IsSingleInstance == false)
                 {
                     ShowInstanceAlreadyRunningMessage();
                     return;
-
                 }
 
                 StartApp();
@@ -99,70 +98,67 @@ namespace logicpos
 
         private static void InitializePlugins()
         {
-
             PluginSettings.InitializeContainer();
+            InitializeSoftwareVendorPlugin();
+            InitializeStockModule();
+            InitializeLicenseManagerPlugin();
+        }
 
+        private static void CloseLoadingScreen()
+        {
+            _loadingThread.Abort();
+            SplashScreen.Destroy();
+        }
+
+        private static void InitializeLicenseManagerPlugin()
+        {
+            PluginSettings.LicenceManager = (PluginSettings.PluginContainer.GetFirstPluginOfType<ILicenseManager>());
+        }
+
+        private static void InitializeStockModule()
+        {
+            ModulesSettings.StockManagementModule = (PluginSettings.PluginContainer.GetFirstPluginOfType<IStockManagementModule>());
+        }
+
+        private static void InitializeSoftwareVendorPlugin()
+        {
             PluginSettings.SoftwareVendor = PluginSettings.PluginContainer.GetFirstPluginOfType<ISoftwareVendor>();
 
             if (PluginSettings.HasSoftwareVendorPlugin)
             {
                 PluginSettings.InitializeSoftwareVendorPluginSettings();
-                //PluginSettings.SoftwareVendor.ValidateEmbeddedResources();
             }
-
-            // Init Stock Module
-            ModulesSettings.StockManagementModule = (PluginSettings.PluginContainer.GetFirstPluginOfType<IStockManagementModule>());
-
-            // Try to Get LicenceManager IntellilockPlugin if in Release 
-            if (!Debugger.IsAttached)
-            {
-                PluginSettings.LicenceManager = (PluginSettings.PluginContainer.GetFirstPluginOfType<ILicenseManager>());
-                // Show Loaded Plugin
-                if (PluginSettings.LicenceManager != null)
-                {
-                    _logger.Debug(string.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ILicenseManager), PluginSettings.LicenceManager.Name));
-                }
-            }
-
-            _loadingThread.Abort();
-
-            SplashScreen.Destroy();
         }
 
         private static void StartApp()
         {
-            if (PluginSettings.LicenceManager != null && Debugger.IsAttached == false)
+            if (PluginSettings.LicenceManager != null && DebugMode == false)
             {
-                _logger.Debug("void StartApp() :: Boot LogicPos after LicenceManager.IntellilockPlugin");
-                // Boot LogicPos after LicenceManager.IntellilockPlugin
                 LicenseRouter licenseRouter = new LicenseRouter();
             }
             else
             {
                 bool dbExists = DatabaseService.DatabaseExists();
-                // Boot LogicPos without pass in LicenseRouter
-                _logger.Debug("void StartApp() :: Boot LogicPos without pass in LicenseRouter");
-                /* IN009005: creating a new thread for app start up */
-                System.Threading.Thread thread = new System.Threading.Thread(new System.Threading.ThreadStart(StartFrontOffice));
+                Thread thread = new Thread(new ThreadStart(StartFrontOffice));
                 GlobalApp.DialogThreadNotify = new ThreadNotify(new ReadyEvent(Utils.NotifyLoadingIsDone));
                 thread.Start();
 
-                /* Show "loading" */
                 _logger.Debug("void StartApp() :: Show 'loading'");
                 GlobalApp.LoadingDialog = Utils.CreateSplashScreen(new Window("POS start up"), dbExists);
                 GlobalApp.LoadingDialog.Run();
-                /* IN009005: end */
-
-
             }
         }
 
-        private static void StartFrontOffice()
+        public static void StartFrontOffice()
         {
-            _logger.Debug("void StartFrontOffice() :: StartApp: AppMode.FrontOffice");
-
             LogicPOSApp logicPos = new LogicPOSApp();
             logicPos.StartApp(AppMode.FrontOffice);
+        }
+
+        public static void StartBackOffice()
+        {
+            LogicPOSApp logicPos = new LogicPOSApp();
+            logicPos.StartApp(AppMode.Backoffice);
         }
 
         private static string GetCultureFromDb()
@@ -171,7 +167,6 @@ namespace logicpos
             XPOSettings.Session = DatabaseService.CreateDatabaseSession();
             return XPOSettings.Session.ExecuteScalar(sql).ToString();
         }
-
 
         public static void SetCulture()
         {
@@ -208,5 +203,13 @@ namespace logicpos
                 _logger.Error(string.Format("Missing Culture in DataBase or DB not created yet, using {0} from config.", CultureSettings.CurrentCultureName));
             }
         }
+
+
+#if (DEBUG)
+        public static readonly bool DebugMode = true;
+#else
+        public static readonly bool DebugMode = false;
+#endif
+
     }
 }

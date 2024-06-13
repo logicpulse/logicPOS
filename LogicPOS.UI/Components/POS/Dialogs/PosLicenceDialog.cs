@@ -4,7 +4,6 @@ using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Logic.License;
-using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Utility;
 using Pango;
@@ -313,12 +312,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             if (PluginSettings.LicenceManager.ConnectToWS() == false)
             {
                 logicpos.Utils.ShowMessageBox(
-                    this, 
-                    DialogFlags.Modal, 
-                    new System.Drawing.Size(600, 300), 
-                    MessageType.Error, 
-                    ButtonsType.Close, 
-                    GeneralUtils.GetResourceByName("global_error"), 
+                    this,
+                    DialogFlags.Modal,
+                    new System.Drawing.Size(600, 300),
+                    MessageType.Error,
+                    ButtonsType.Close,
+                    GeneralUtils.GetResourceByName("global_error"),
                     GeneralUtils.GetResourceByName("dialog_message_license_ws_connection_error"));
 
                 return;
@@ -347,37 +346,23 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     _entryBoxSoftwareKey.EntryValidation.Text
                 );
 
-                string completeFilePath = string.Format("{0}{1}", LicenseRouter.GetCurrentDirectory(), PluginSettings.LicenceManager.GetLicenseFilename());
-                completeFilePath = completeFilePath.Replace("\\", "/");
-                //Used to generate diferent license file names per HardwareId : to Enable find "completeFilePath"
-                //string completeFilePath = GetCurrentDirectory() + string.Format("logicpos_{0}.license", textBoxHardwareID.Text);
+                string licenseFilePath = PluginSettings.LicenceManager.GetLicenseFilename();
 
-                if (!LicenseRouter.WriteByteArrayToFile(registredLicence, completeFilePath))
-                {
-                    logicpos.Utils.ShowMessageBox(this, DialogFlags.Modal, new System.Drawing.Size(600, 300), MessageType.Error, ButtonsType.Close, GeneralUtils.GetResourceByName("global_error"), GeneralUtils.GetResourceByName("dialog_message_license_ws_save_license_error"));
-                    return;
-                }
-                else
-                {
-                    this.Destroy();
-                    logicpos.Utils.ShowMessageBox(this, DialogFlags.Modal, new System.Drawing.Size(600, 300), MessageType.Info, ButtonsType.Close, GeneralUtils.GetResourceByName("global_information"), GeneralUtils.GetResourceByName("dialog_message_license_aplication_registered"));
-                    this.Destroy();
-                    Environment.Exit(0);
-                }
+                LicenseRouter.WriteByteArrayToFile(registredLicence, licenseFilePath);
+
+                this.Destroy();
+                logicpos.Utils.ShowMessageBox(this, DialogFlags.Modal, new System.Drawing.Size(600, 300), MessageType.Info, ButtonsType.Close, GeneralUtils.GetResourceByName("global_information"), GeneralUtils.GetResourceByName("dialog_message_license_aplication_registered"));
+                this.Destroy();
+                Environment.Exit(0);
+
             }
             catch (Exception ex)
             {
-                _logger.Error(ex.Message, ex);
-
                 logicpos.Utils.ShowMessageBox(this, DialogFlags.Modal, new System.Drawing.Size(600, 300), MessageType.Error, ButtonsType.Close, GeneralUtils.GetResourceByName("global_error"), GeneralUtils.GetResourceByName("dialog_message_license_ws_connection_timeout"));
 
-                //Keep Running
                 this.Run();
             }
         }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Static Helper : To Call PosLicenceDialog and return LicenseUIResult
 
         public static LicenseUIResult GetLicenseDetails(string pHardwareID)
         {
