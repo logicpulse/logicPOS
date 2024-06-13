@@ -1,21 +1,12 @@
-﻿using System;
-using Gtk;
+﻿using Gtk;
 
 namespace logicpos
 {
     internal class Theme
     {
-        //Log4Net
-        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-        public static void ParseTheme(bool useTheme = true, bool debug = false)
+        public static void ParseTheme()
         {
-            if (debug)
-            {
-                Console.WriteLine("Gtk.Rc.ModuleDir:" + Rc.ModuleDir);
-            }
-
-            if (useTheme) Rc.ParseString(@"
+                Rc.ParseString(@"
 
 ##:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -441,6 +432,7 @@ widget_class '*AccordionChildButton*' style 'AccordionChildButton'
 #widget_class '*GenericTreeView*.*' style 'KeyboardPadKey'
 #widget_class '*TreeView*' style 'TreeView'
       ");
+
         }
     }
 }

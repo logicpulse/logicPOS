@@ -184,12 +184,12 @@ namespace logicpos.Classes.Logic.License
 
                 /* IN009005 and IN009034: Show "loading" */
                 System.Threading.Thread thread = new System.Threading.Thread(new System.Threading.ThreadStart(StartPOSFrontOffice));
-                GlobalApp.DialogThreadNotify = new ThreadNotify(new ReadyEvent(logicpos.Utils.ThreadDialogReadyEvent));
+                GlobalApp.DialogThreadNotify = new ThreadNotify(new ReadyEvent(logicpos.Utils.NotifyLoadingIsDone));
                 thread.Start();
 
                 _logger.Debug("LicenseRouter() :: Show 'loading'");
-                GlobalApp.DialogThreadWork = logicpos.Utils.GetThreadDialog(new Window("POS start up"), DatabaseService.DatabaseExists());
-                GlobalApp.DialogThreadWork.Run();
+                GlobalApp.LoadingDialog = logicpos.Utils.CreateSplashScreen(new Window("POS start up"), DatabaseService.DatabaseExists());
+                GlobalApp.LoadingDialog.Run();
                 /* IN009005 and IN009034: end" */
 
             }

@@ -36,47 +36,6 @@ namespace logicpos
 
         public bool IsSingleInstance => _owned;
 
-        private Process[] GetCurrentAssemblyProcesses()
-        {
-            string currentAssemblyName = Assembly.GetExecutingAssembly().GetName().Name;
-
-            Process[] currentAssemblyProcesses = Process.GetProcessesByName(currentAssemblyName);
-
-            return currentAssemblyProcesses;
-        }
-
-        private void BringWindowToFrontByHandle(IntPtr handle)
-        {
-            if (IsWindowVisible(handle) == false)
-            {
-                ShowWindowAsync(handle, SW_SHOW);
-            }
-
-            if (IsIconic(handle))
-            {
-                ShowWindowAsync(handle, SW_RESTORE);
-            }
-
-            SetForegroundWindow(handle);
-        }
-
-        public void RaiseOtherProcess()
-        {
-            Process currentProcess = Process.GetCurrentProcess();
-            Process[] currentAssemblyProcesses = GetCurrentAssemblyProcesses();
-
-            foreach (Process otherProcess in currentAssemblyProcesses)
-            {
-                if (otherProcess.Id == currentProcess.Id) continue;
-
-                IntPtr handle = otherProcess.MainWindowHandle;
-
-                BringWindowToFrontByHandle(handle);
-
-                return;
-            }
-        }
-
         private void ReleaseMutex()
         {
             try

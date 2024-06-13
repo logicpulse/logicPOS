@@ -25,10 +25,7 @@ namespace logicpos
         private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         private static Thread _loadingThread;
-
-        public static Dialog DialogLoading { get; set; }
-
-        public static string ConfigurationFile => AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
+        public static Dialog SplashScreen { get; set; }
 
         public static void InitializeSettings()
         {
@@ -38,13 +35,16 @@ namespace logicpos
         public static void InitializeGtk()
         {
             Application.Init();
-            Theme.ParseTheme(true, false);
+            Theme.ParseTheme();
         }
 
         public static void ShowLoadingScreen()
         {
-            DialogLoading = Utils.GetThreadDialog(new Window("POS start loading"), true);
-            _loadingThread = new Thread(() => DialogLoading.Run());
+            SplashScreen = Utils.CreateSplashScreen(
+                new Window("POS start loading"),
+                true);
+
+            _loadingThread = new Thread(() => SplashScreen.Run());
             _loadingThread.Start();
         }
 
@@ -69,26 +69,36 @@ namespace logicpos
 
                 ShowLoadingScreen();
 
+                SetCulture();
+
                 InitializePlugins();
 
                 KeepUIResponsive();
 
-
                 if (singleProgramInstance.IsSingleInstance)
                 {
-                    StartApp();
-                }
-                else
-                {
-                    Utils.ShowMessageNonTouch(null, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, GeneralUtils.GetResourceByName("dialog_message_pos_instance_already_running"), GeneralUtils.GetResourceByName("global_information"));
+                    ShowInstanceAlreadyRunningMessage();
                     return;
+
                 }
+
+                StartApp();
             }
+        }
+
+        private static void ShowInstanceAlreadyRunningMessage()
+        {
+            Utils.ShowMessageNonTouch(
+                                    null,
+                                    DialogFlags.Modal,
+                                    MessageType.Info,
+                                    ButtonsType.Ok,
+                                    GeneralUtils.GetResourceByName("dialog_message_pos_instance_already_running"),
+                                    GeneralUtils.GetResourceByName("global_information"));
         }
 
         private static void InitializePlugins()
         {
-            SetCulture();
 
             PluginSettings.InitializeContainer();
 
@@ -116,7 +126,7 @@ namespace logicpos
 
             _loadingThread.Abort();
 
-            DialogLoading.Destroy();
+            SplashScreen.Destroy();
         }
 
         private static void StartApp()
@@ -134,13 +144,13 @@ namespace logicpos
                 _logger.Debug("void StartApp() :: Boot LogicPos without pass in LicenseRouter");
                 /* IN009005: creating a new thread for app start up */
                 System.Threading.Thread thread = new System.Threading.Thread(new System.Threading.ThreadStart(StartFrontOffice));
-                GlobalApp.DialogThreadNotify = new ThreadNotify(new ReadyEvent(Utils.ThreadDialogReadyEvent));
+                GlobalApp.DialogThreadNotify = new ThreadNotify(new ReadyEvent(Utils.NotifyLoadingIsDone));
                 thread.Start();
 
                 /* Show "loading" */
                 _logger.Debug("void StartApp() :: Show 'loading'");
-                GlobalApp.DialogThreadWork = Utils.GetThreadDialog(new Window("POS start up"), dbExists);
-                GlobalApp.DialogThreadWork.Run();
+                GlobalApp.LoadingDialog = Utils.CreateSplashScreen(new Window("POS start up"), dbExists);
+                GlobalApp.LoadingDialog.Run();
                 /* IN009005: end */
 
 
@@ -158,11 +168,11 @@ namespace logicpos
         private static string GetCultureFromDb()
         {
             string sql = "SELECT value FROM cfg_configurationpreferenceparameter where token = 'CULTURE';";
-            XPOSettings.Session = Utils.SessionXPO();
+            XPOSettings.Session = DatabaseService.CreateDatabaseSession();
             return XPOSettings.Session.ExecuteScalar(sql).ToString();
         }
 
-        //IN009296 BackOffice - Mudar o idioma da aplicação
+
         public static void SetCulture()
         {
             try

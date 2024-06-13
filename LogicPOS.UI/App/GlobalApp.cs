@@ -14,7 +14,7 @@ namespace logicpos.App
         public static PosMainWindow PosMainWindow { get; set; }
         public static BackOfficeMainWindow BackOfficeMainWindow { get; set; }
         public static BackOfficeReportWindow BackOfficeReportWindow { get; set; }
-        public static Dialog DialogThreadWork { get; set; }
+        public static Dialog LoadingDialog { get; set; }
         public static ThreadNotify DialogThreadNotify { get; set; }
         public static PosKeyboardDialog DialogPosKeyboard { get; set; }
         public static Dictionary<string, bool> Notifications { get; set; }

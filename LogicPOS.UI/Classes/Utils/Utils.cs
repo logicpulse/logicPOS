@@ -1165,12 +1165,12 @@ namespace logicpos
 
  
 
-        public static Dialog GetThreadDialog(
+        public static Dialog CreateSplashScreen(
             Window parent,
             bool dbExists,
             string backupProcess = "")
         {
-            string fileWorking = PathsSettings.ImagesFolderLocation + @"Other\working.gif";
+            string loadingImage = PathsSettings.ImagesFolderLocation + @"Other\working.gif";
 
             Dialog dialog = new Dialog(
                 "Working",
@@ -1198,10 +1198,9 @@ namespace logicpos
             labelBoot.ModifyFont(Pango.FontDescription.FromString("Trebuchet MS 10 Bold"));
             labelBoot.ModifyFg(StateType.Normal, Color.DarkSlateGray.ToGdkColor());
             dialog.Decorated = false;
-            //dialog.BorderWidth = 5;
-            dialog.SetSizeRequest(194, 220);
             dialog.ActionArea.Destroy();
-            Gtk.Image imageWorking = new Gtk.Image(fileWorking);
+            dialog.Fullscreen();
+            Gtk.Image imageWorking = new Gtk.Image(loadingImage);
             dialog.VBox.PackStart(imageWorking);
             dialog.VBox.PackStart(labelBoot);
             dialog.ShowAll();
@@ -1209,27 +1208,12 @@ namespace logicpos
             return dialog;
         }
 
-        public static void ThreadDialogReadyEvent()
+        public static void NotifyLoadingIsDone()
         {
-            /* IN008011: avoid issues when "silent mode" backup process is called during POS initial settings window is opened (POS first run) */
-            if (GlobalApp.DialogThreadWork != null)
+            if (GlobalApp.LoadingDialog != null)
             {
-                GlobalApp.DialogThreadWork.Destroy();
+                GlobalApp.LoadingDialog.Destroy();
             }
-        }
-
-
-
-        public static Session SessionXPO()
-        {
-            string configDatabaseName = GeneralSettings.Settings["databaseName"];
-            DatabaseSettings.DatabaseName = (string.IsNullOrEmpty(configDatabaseName)) ? POSSettings.DatabaseName : configDatabaseName;
-            string xpoConnectionString = string.Format(GeneralSettings.Settings["xpoConnectionString"], DatabaseSettings.DatabaseName.ToLower());
-            AutoCreateOption xpoAutoCreateOption = AutoCreateOption.None;
-            XpoDefault.DataLayer = XpoDefault.GetDataLayer(xpoConnectionString, xpoAutoCreateOption);
-            Session LocalSessionXpo = new Session(XpoDefault.DataLayer) { LockingOption = LockingOption.None };
-
-            return LocalSessionXpo;
         }
 
         public static void ThreadStart(
@@ -1237,17 +1221,17 @@ namespace logicpos
             Thread thread,
             string backupProcess)
         {
-            GlobalApp.DialogThreadNotify = new ThreadNotify(new ReadyEvent(ThreadDialogReadyEvent));
+            GlobalApp.DialogThreadNotify = new ThreadNotify(new ReadyEvent(NotifyLoadingIsDone));
             thread.Start();
 
             if (sourceWindow != null)
             {
-                GlobalApp.DialogThreadWork = GetThreadDialog(
+                GlobalApp.LoadingDialog = CreateSplashScreen(
                     sourceWindow,
                     DatabaseService.DatabaseExists(),
                     backupProcess);
 
-                GlobalApp.DialogThreadWork.Run();
+                GlobalApp.LoadingDialog.Run();
             }
         }
 

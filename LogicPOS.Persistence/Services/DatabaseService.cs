@@ -11,20 +11,8 @@ namespace LogicPOS.Persistence.Services
         {
             try
             {
-                string databaseName = GeneralSettings.Settings["databaseName"];
 
-                DatabaseSettings.DatabaseName = databaseName;
-
-                if (string.IsNullOrEmpty(databaseName))
-                {
-                    DatabaseSettings.DatabaseName = "logicposdbdevelopment";
-                }
-
-                string connectionString = string.Format(GeneralSettings.Settings["xpoConnectionString"], DatabaseSettings.DatabaseName.ToLower());
-
-                AutoCreateOption xpoAutoCreateOption = AutoCreateOption.None;
-                XpoDefault.DataLayer = XpoDefault.GetDataLayer(connectionString, xpoAutoCreateOption);
-                Session LocalSessionXpo = new Session(XpoDefault.DataLayer) { LockingOption = LockingOption.None };
+                Session databaseSession = CreateDatabaseSession();
 
                 string databaseType = GeneralSettings.Settings["databaseType"];
 
@@ -33,10 +21,10 @@ namespace LogicPOS.Persistence.Services
                     case "SQLite":
                         return SqliteExists();
                     case "MySql":
-                        return MysqlExists(LocalSessionXpo);
+                        return MysqlExists(databaseSession);
                     case "MSSqlServer":
                     default:
-                        return MsqlServerExists(LocalSessionXpo);
+                        return MsqlServerExists(databaseSession);
                 }
             }
             catch
@@ -75,6 +63,26 @@ namespace LogicPOS.Persistence.Services
         {
             string filename = $"{DatabaseSettings.DatabaseName}.db";
             return File.Exists(filename) && (new FileInfo(filename)).Length > 0;
+        }
+
+        public static Session CreateDatabaseSession()
+        {
+            string databaseName = GeneralSettings.Settings["databaseName"];
+
+            DatabaseSettings.DatabaseName = databaseName;
+
+            if (string.IsNullOrEmpty(databaseName))
+            {
+                DatabaseSettings.DatabaseName = "logicposdbdevelopment";
+            }
+
+            string connectionString = string.Format(GeneralSettings.Settings["xpoConnectionString"], DatabaseSettings.DatabaseName.ToLower());
+
+            AutoCreateOption xpoAutoCreateOption = AutoCreateOption.None;
+
+            XpoDefault.DataLayer = XpoDefault.GetDataLayer(connectionString, xpoAutoCreateOption);
+
+            return  new Session(XpoDefault.DataLayer) { LockingOption = LockingOption.None };
         }
     }
 }
