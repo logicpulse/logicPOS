@@ -1,7 +1,5 @@
 ﻿namespace logicpos.Classes.Gui.Gtk.Widgets
 {
-    //Non-UI - VirtualKey Properties
-
     public class VirtualKeyProperties
     {
         public string Glyph { get; set; }

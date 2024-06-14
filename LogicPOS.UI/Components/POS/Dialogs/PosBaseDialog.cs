@@ -11,8 +11,7 @@ using LogicPOS.Utility;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-    // Dialog
+
     public abstract class PosBaseDialog : Dialog
     {
         //Log4Net
@@ -162,7 +161,15 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             InitObject(pSourceWindow, pDialogFlags, pIcon, pTitle, pSize, pContent, null, pActionAreaRightButtons);
         }
 
-        public void InitObject(Window pSourceWindow, DialogFlags pDialogFlags, string pIcon, string pTitle, System.Drawing.Size pSize, Widget pContent, Widget pActionAreaLeftContent, ActionAreaButtons pActionAreaRightButtons)
+        public void InitObject(
+            Window pSourceWindow,
+            DialogFlags pDialogFlags,
+            string pIcon,
+            string pTitle,
+            System.Drawing.Size pSize,
+            Widget pContent,
+            Widget pActionAreaLeftContent,
+            ActionAreaButtons pActionAreaRightButtons)
         {
             //parameters
             _sourceWindow = pSourceWindow;

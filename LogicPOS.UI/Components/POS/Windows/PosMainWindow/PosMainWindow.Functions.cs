@@ -130,16 +130,6 @@ namespace logicpos
             GlobalApp.StartupWindow.LogOutUser(true);
         }
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Event: touchButtonPosToolbarShowSystemDialog
-
-        // System Dialog
-        private void touchButtonPosToolbarShowSystemDialog_Clicked(object sender, EventArgs e)
-        {
-            PosSystemDialog dialog = new PosSystemDialog(this, DialogFlags.DestroyWithParent);
-            int response = dialog.Run();
-            dialog.Destroy();
-        }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Event: touchButtonPosToolbarCashDrawer

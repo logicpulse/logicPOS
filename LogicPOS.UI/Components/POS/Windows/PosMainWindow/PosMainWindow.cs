@@ -740,7 +740,7 @@ namespace logicpos
             _touchButtonPosToolbarBackOffice.Clicked += touchButtonPosToolbarBackOffice_Clicked;
             // Deprecated
             _touchButtonPosToolbarReports.Clicked += touchButtonPosToolbarReports_Clicked;
-            _touchButtonPosToolbarShowSystemDialog.Clicked += touchButtonPosToolbarShowSystemDialog_Clicked;
+            _touchButtonPosToolbarShowSystemDialog.Clicked += delegate { throw new NotImplementedException(); };
             _touchButtonPosToolbarLogoutUser.Clicked += touchButtonPosToolbarLogoutUser_Clicked;
             _touchButtonPosToolbarShowChangeUserDialog.Clicked += touchButtonPosToolbarShowChangeUserDialog_Clicked;
             _touchButtonPosToolbarCashDrawer.Clicked += touchButtonPosToolbarCashDrawer_Clicked;

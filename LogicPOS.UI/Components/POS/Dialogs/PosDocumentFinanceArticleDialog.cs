@@ -88,7 +88,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         public decimal DiscountGlobal { get; set; } = 0.0m;
 
-        public PosDocumentFinanceArticleDialog(Window pSourceWindow, GenericTreeViewDataTable pTreeView, DialogFlags pDialogFlags, DialogMode pDialogMode, DataRow pDataSourceRow)
+        public PosDocumentFinanceArticleDialog(
+            Window pSourceWindow,
+            GenericTreeViewDataTable pTreeView,
+            DialogFlags pDialogFlags,
+            DialogMode pDialogMode,
+            DataRow pDataSourceRow)
                     : base(pSourceWindow, pDialogFlags, pDialogMode, pDataSourceRow)
         {
             //Parameters

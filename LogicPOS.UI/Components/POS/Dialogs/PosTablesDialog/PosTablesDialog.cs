@@ -4,13 +4,12 @@ using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Logic.Others;
 using logicpos.shared.Enums;
-using System;
-using System.Drawing;
-using LogicPOS.Globalization;
+using LogicPOS.Domain.Enums;
 using LogicPOS.Settings;
 using LogicPOS.Shared;
-using LogicPOS.Domain.Enums;
 using LogicPOS.Utility;
+using System;
+using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -91,7 +90,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             string fileActionTableReservation = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_table_reservation.png";
             string fileActionTableFilterAll = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_table_filter_all.png";
             string fileActionTableFilterFree = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_table_filter_free.png";
-            string fileActionTableFilterOpen = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_table_filter_open.png"  ;
+            string fileActionTableFilterOpen = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_table_filter_open.png";
             string fileActionTableFilterReserved = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_table_filter_reserved.png";
             string fileActionTableViewTables = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_table_view_tables.png";
 

@@ -1,6 +1,7 @@
 using Gtk;
 using logicpos.App;
 using logicpos.Classes.Enums.App;
+using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Logic.License;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Modules;
@@ -80,6 +81,8 @@ namespace logicpos
                     ShowInstanceAlreadyRunningMessage();
                     return;
                 }
+
+              
 
                 StartApp();
             }

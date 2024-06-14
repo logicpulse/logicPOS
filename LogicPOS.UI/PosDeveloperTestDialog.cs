@@ -10,7 +10,6 @@ using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
-using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Utility;
 using System;
@@ -28,8 +27,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private EntryBoxValidation _entryBoxValidationCustomButton1;
         private XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer> _xPOEntryBoxSelectRecordValidationTextMode;
 
-        public PosDeveloperTestDialog(Window pSourceWindow, DialogFlags pDialogFlags)
-            : base(pSourceWindow, pDialogFlags)
+
+        public PosDeveloperTestDialog(Window pSourceWindow)
+            : base(
+                  pSourceWindow,
+                  DialogFlags.DestroyWithParent | DialogFlags.Modal)
         {
             //Init Local Vars
             string windowTitle = GeneralUtils.GetResourceByName("window_title_dialog_template");
@@ -43,7 +45,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             InitUI1();
             //InitUI_FilePicker();
             //InitUI_LittleAdds();
-            //InitUI2();
+            //InitUI2();                                    
             //InitUI3();
 
             Viewport viewport = new Viewport() { ShadowType = ShadowType.None };
@@ -68,7 +70,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             };
 
             //Init Object
-            this.InitObject(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, _windowSize, _scrolledWindow, actionAreaButtons);
+            this.InitObject(
+                this,
+                DialogFlags.DestroyWithParent | DialogFlags.Modal,
+                fileDefaultWindowIcon,
+                windowTitle,
+                _windowSize,
+                _scrolledWindow,
+                actionAreaButtons);
         }
 
         private void InitUI1()

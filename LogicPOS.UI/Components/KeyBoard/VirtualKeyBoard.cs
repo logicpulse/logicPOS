@@ -69,8 +69,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 tmpSelectedKey = _internalKeyBoard[currentRowIndex][currentColIndex];
 
                 //Init key position
-                if (tmpSelectedKey.RowIndex == -1) tmpSelectedKey.RowIndex = currentRowIndex;
-                if (tmpSelectedKey.ColIndex == -1) tmpSelectedKey.ColIndex = currentColIndex;
+                if (tmpSelectedKey.Row == -1) tmpSelectedKey.Row = currentRowIndex;
+                if (tmpSelectedKey.Column == -1) tmpSelectedKey.Column = currentColIndex;
 
                 //Get Attributes from node and Assign to Leve Properties
                 VirtualKeyProperties tmpProperties = new VirtualKeyProperties();

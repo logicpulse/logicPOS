@@ -10,8 +10,7 @@ using LogicPOS.Globalization;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
-    //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-    //KeyBoardPad UI Widget
+
     internal class KeyBoardPad : Box
     {
         //Log4Net

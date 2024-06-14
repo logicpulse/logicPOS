@@ -1,18 +1,17 @@
 ﻿using Gtk;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets;
-using System;
-using System.Drawing;
-using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Utility;
+using System;
+using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
     public class PosKeyboardDialog : PosBaseDialog
     {
         private readonly KeyBoardPad _keyboardPad;
-        //Public Properties
+
         public string Text
         {
             get { return _keyboardPad.TextEntry.Text; }
@@ -29,7 +28,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         }
 
         //Constructor
-        public PosKeyboardDialog(Window pSourceWindow, DialogFlags pDialogFlags, KeyboardMode pKeyboardMode, string pTextEntry, string pValidationRule) : base(pSourceWindow, pDialogFlags)
+        public PosKeyboardDialog(
+            Window pSourceWindow,
+            DialogFlags pDialogFlags,
+            KeyboardMode pKeyboardMode,
+            string pTextEntry,
+            string pValidationRule) : base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
             string windowTitle = GeneralUtils.GetResourceByName("window_title_dialog_virtual_keyboard");
