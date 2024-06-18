@@ -43,23 +43,23 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             AttachmentFileNames = attachmentFileNames;
 
             // EntryBoxValidationSubject
-            _entryBoxValidationSubject = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_email_subject"), KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexAlfaNumericEmail, false);
+            _entryBoxValidationSubject = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_email_subject"), KeyboardMode.AlfaNumeric, RegexUtils.RegexAlfaNumericEmail, false);
             if (!string.IsNullOrEmpty(pSubject))
             {
                 _entryBoxValidationSubject.EntryValidation.Text = pSubject;
             }
             // EntryBoxValidationTo
-            _entryBoxValidationTo = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_email_to"), KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexEmail, false);
+            _entryBoxValidationTo = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_email_to"), KeyboardMode.AlfaNumeric, RegexUtils.RegexEmail, false);
             if (!string.IsNullOrEmpty(pTo))
             {
                 _entryBoxValidationTo.EntryValidation.Text = pTo;
             }
             // EntryBoxValidationCc
-            _entryBoxValidationCc = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_email_cc"), KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexEmail, false);
+            _entryBoxValidationCc = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_email_cc"), KeyboardMode.AlfaNumeric, RegexUtils.RegexEmail, false);
             // EntryBoxValidationBcc
-            _entryBoxValidationBcc = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_email_bcc"), KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexEmail, false);
+            _entryBoxValidationBcc = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_email_bcc"), KeyboardMode.AlfaNumeric, RegexUtils.RegexEmail, false);
 
-            _entryBoxValidationMultiLine = new EntryBoxValidationMultiLine(this, GeneralUtils.GetResourceByName("global_email_body"), KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexAlfaNumericEmail, true) { HeightRequest = 280 };
+            _entryBoxValidationMultiLine = new EntryBoxValidationMultiLine(this, GeneralUtils.GetResourceByName("global_email_body"), KeyboardMode.AlfaNumeric, RegexUtils.RegexAlfaNumericEmail, true) { HeightRequest = 280 };
             if (!string.IsNullOrEmpty(pBody))
             {
                 _entryBoxValidationMultiLine.EntryMultiline.Value.Text = pBody;
@@ -124,7 +124,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 try
                 {
-                    LogicPOS.Utility.EmailUtils.SendMail(
+                    EmailUtils.SendMail(
                         GeneralSettings.PreferenceParameters,
                         SmtpDeliveryMethod.Network,
                         To,

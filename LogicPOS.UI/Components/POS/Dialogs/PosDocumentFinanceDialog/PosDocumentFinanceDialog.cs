@@ -178,14 +178,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 cfg_configurationcurrency configurationCurrency = _pagePad1.EntryBoxSelectConfigurationCurrency.Value;
 
                 //Always Update Totals before Show Title
-                _pagePad3.ArticleBag.DiscountGlobal = LogicPOS.Utility.DataConversionUtils.StringToDecimal(_pagePad2.EntryBoxCustomerDiscount.EntryValidation.Text);
+                _pagePad3.ArticleBag.DiscountGlobal = DataConversionUtils.StringToDecimal(_pagePad2.EntryBoxCustomerDiscount.EntryValidation.Text);
                 _pagePad3.ArticleBag.UpdateTotals();
 
                 if (_pagePad3.ArticleBag.TotalFinal > 0)
                 {
                     //Always Recreate ArticleBag before contruct ProcessFinanceDocumentParameter
                     _pagePad3.ArticleBag = GetArticleBag();
-                    result += string.Format(" : {0}", LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_pagePad3.ArticleBag.TotalFinal * configurationCurrency.ExchangeRate, configurationCurrency.Acronym));
+                    result += string.Format(" : {0}", DataConversionUtils.DecimalToStringCurrency(_pagePad3.ArticleBag.TotalFinal * configurationCurrency.ExchangeRate, configurationCurrency.Acronym));
                     //Enable or Disabled Preview Button
                     _buttonPreview.Visible = true;
                 }

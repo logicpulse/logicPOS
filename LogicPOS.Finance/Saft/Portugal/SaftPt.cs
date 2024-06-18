@@ -510,7 +510,7 @@ namespace LogicPOS.Finance.Saft
                     WriteElement("TaxCountryRegion", row.Values[xPSelectData.GetFieldIndexFromName("TaxCountryRegion")]);
                     WriteElement("TaxCode", row.Values[xPSelectData.GetFieldIndexFromName("TaxCode")]);
                     WriteElement("Description", row.Values[xPSelectData.GetFieldIndexFromName("Description")]);
-                    WriteElement("TaxPercentage", LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndexFromName("TaxPercentage")]), _decimalFormat));
+                    WriteElement("TaxPercentage", DataConversionUtils.DecimalToString(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndexFromName("TaxPercentage")]), _decimalFormat));
                     _xmlWriter.WriteEndElement();
                     //</TaxTableEntry>
                 }
@@ -682,14 +682,14 @@ namespace LogicPOS.Finance.Saft
 
                         object totalDebit = XPOSettings.Session.ExecuteScalar(sqlTotalDebit);
                         if (totalDebit == null) totalDebit = 0;
-                        WriteElement("TotalDebit", LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(totalDebit), _decimalFormat));
+                        WriteElement("TotalDebit", DataConversionUtils.DecimalToString(Convert.ToDecimal(totalDebit), _decimalFormat));
 
                         //<TotalCredit>
                         string sqlTotalCredit = string.Format(sqlTotalDebitTotalCredit, 1);
                         //_logger.Debug(string.Format("SaftDocumentType:[{0}]: sqlTotalCredit: [{1}]", pSaftDocumentType, sqlTotalCredit));
                         object totalCredit = XPOSettings.Session.ExecuteScalar(sqlTotalCredit);
                         if (totalCredit == null) totalCredit = 0;
-                        WriteElement("TotalCredit", LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(totalCredit), _decimalFormat));
+                        WriteElement("TotalCredit", DataConversionUtils.DecimalToString(Convert.ToDecimal(totalCredit), _decimalFormat));
 
                         //<Invoice|StockMovement|WorkDocument>
                         SourceDocuments_DocumentType_Childs(pSaftDocumentType, documentNodeKeyWord, documentNodeNameChild, documentNodeNameChildNo, documentNodeFilter);
@@ -1024,9 +1024,9 @@ namespace LogicPOS.Finance.Saft
 
                     //<DocumentTotals>
                     _xmlWriter.WriteStartElement("DocumentTotals");
-                    WriteElement("TaxPayable", LogicPOS.Utility.DataConversionUtils.DecimalToString(totalLineResult.TaxPayable, _decimalFormatTotals));
-                    WriteElement("NetTotal", LogicPOS.Utility.DataConversionUtils.DecimalToString(totalLineResult.NetTotal, _decimalFormatTotals));
-                    WriteElement("GrossTotal", LogicPOS.Utility.DataConversionUtils.DecimalToString(totalLineResult.GrossTotal, _decimalFormatTotals));
+                    WriteElement("TaxPayable", DataConversionUtils.DecimalToString(totalLineResult.TaxPayable, _decimalFormatTotals));
+                    WriteElement("NetTotal", DataConversionUtils.DecimalToString(totalLineResult.NetTotal, _decimalFormatTotals));
+                    WriteElement("GrossTotal", DataConversionUtils.DecimalToString(totalLineResult.GrossTotal, _decimalFormatTotals));
 
                     //Currency
                     if (_defaultCurrency.Acronym != row.Values[xPSelectData.GetFieldIndexFromName("CurrencyCode")].ToString())
@@ -1038,9 +1038,9 @@ namespace LogicPOS.Finance.Saft
                         //<Currency>
                         _xmlWriter.WriteStartElement("Currency");
                         WriteElement("CurrencyCode", row.Values[xPSelectData.GetFieldIndexFromName("CurrencyCode")].ToString());
-                        WriteElement("CurrencyAmount", LogicPOS.Utility.DataConversionUtils.DecimalToString(currencyCurrencyAmount, _decimalFormat));
+                        WriteElement("CurrencyAmount", DataConversionUtils.DecimalToString(currencyCurrencyAmount, _decimalFormat));
                         //In SAT-F Example we have 2 examples one with decimals 0.00 and other with 0.00000000000 opted to use divide value without conversion
-                        WriteElement("ExchangeRate", LogicPOS.Utility.DataConversionUtils.DecimalToString(currencyExchangeRate, _decimalFormat));
+                        WriteElement("ExchangeRate", DataConversionUtils.DecimalToString(currencyExchangeRate, _decimalFormat));
                         //WriteElement("ExchangeRate", currencyExchangeRate);
                         _xmlWriter.WriteEndElement();
                         //</Currency>
@@ -1059,7 +1059,7 @@ namespace LogicPOS.Finance.Saft
                                 _xmlWriter.WriteStartElement("Payment");
                                 //Default : OU : OtherPayments /Outros Pagamentos
                                 WriteElement("PaymentMechanism", row.Values[xPSelectData.GetFieldIndexFromName("PaymentMechanism")], "OU");
-                                WriteElement("PaymentAmount", LogicPOS.Utility.DataConversionUtils.DecimalToString(paymentAmount, _decimalFormat));
+                                WriteElement("PaymentAmount", DataConversionUtils.DecimalToString(paymentAmount, _decimalFormat));
                                 WriteElement("PaymentDate", row.Values[xPSelectData.GetFieldIndexFromName("DocumentDate")]);
                                 _xmlWriter.WriteEndElement();
                                 //</Payment>
@@ -1239,9 +1239,9 @@ namespace LogicPOS.Finance.Saft
 
                             WriteElement("ProductCode", row.Values[xPSelectData.GetFieldIndexFromName("ProductCode")].ToString());
                             WriteElement("ProductDescription", row.Values[xPSelectData.GetFieldIndexFromName("ProductDescription")]);
-                            WriteElement("Quantity", LogicPOS.Utility.DataConversionUtils.DecimalToString(lineQuantity, _decimalFormat));
+                            WriteElement("Quantity", DataConversionUtils.DecimalToString(lineQuantity, _decimalFormat));
                             WriteElement("UnitOfMeasure", row.Values[xPSelectData.GetFieldIndexFromName("UnitOfMeasure")]);
-                            WriteElement("UnitPrice", LogicPOS.Utility.DataConversionUtils.DecimalToString(lineUnitPrice, _decimalFormat));
+                            WriteElement("UnitPrice", DataConversionUtils.DecimalToString(lineUnitPrice, _decimalFormat));
 
                             switch (pSaftDocumentType)
                             {
@@ -1264,14 +1264,14 @@ namespace LogicPOS.Finance.Saft
 
                             WriteElement("Description", row.Values[xPSelectData.GetFieldIndexFromName("ProductDescription")]);
                             //CreditAmount|DebitAmount
-                            WriteElement(nodeNameCreditOrDebitAmount, LogicPOS.Utility.DataConversionUtils.DecimalToString(lineCreditOrDebit, _decimalFormat));
+                            WriteElement(nodeNameCreditOrDebitAmount, DataConversionUtils.DecimalToString(lineCreditOrDebit, _decimalFormat));
 
                             //<Tax>
                             _xmlWriter.WriteStartElement("Tax");
                             WriteElement("TaxType", row.Values[xPSelectData.GetFieldIndexFromName("TaxType")]);
                             WriteElement("TaxCountryRegion", row.Values[xPSelectData.GetFieldIndexFromName("TaxCountryRegion")]);
                             WriteElement("TaxCode", row.Values[xPSelectData.GetFieldIndexFromName("TaxCode")]);
-                            WriteElement("TaxPercentage", LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndexFromName("TaxPercentage")]), _decimalFormat));
+                            WriteElement("TaxPercentage", DataConversionUtils.DecimalToString(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndexFromName("TaxPercentage")]), _decimalFormat));
                             _xmlWriter.WriteEndElement();
                             Console.WriteLine(row.Values[xPSelectData.GetFieldIndexFromName("TaxExemptionReason")]);
                             Console.WriteLine(row.Values[xPSelectData.GetFieldIndexFromName("TaxPercentage")]);
@@ -1296,7 +1296,7 @@ namespace LogicPOS.Finance.Saft
                                 WriteElement("TaxExemptionReason", row.Values[xPSelectData.GetFieldIndexFromName("TaxExemptionReason")]);
                                 WriteElement("TaxExemptionCode", row.Values[xPSelectData.GetFieldIndexFromName("TaxExemptionCode")]);
                                 if (Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndexFromName("SettlementAmount")]) > 0.0m)
-                                    WriteElement("SettlementAmount", LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndexFromName("SettlementAmount")]), _decimalFormat));
+                                    WriteElement("SettlementAmount", DataConversionUtils.DecimalToString(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndexFromName("SettlementAmount")]), _decimalFormat));
                             }
 
 
@@ -1480,14 +1480,14 @@ namespace LogicPOS.Finance.Saft
 
                 object totalDebit = XPOSettings.Session.ExecuteScalar(sqlTotalDebit);
                 if (totalDebit == null) totalDebit = 0;
-                WriteElement("TotalDebit", LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(totalDebit), _decimalFormat));
+                WriteElement("TotalDebit", DataConversionUtils.DecimalToString(Convert.ToDecimal(totalDebit), _decimalFormat));
 
                 //<TotalCredit>
                 string sqlTotalCredit = string.Format(sqlTotalDebitTotalCredit, "Credit");
                 //_logger.Debug(string.Format("SaftDocumentType:[{0}]: sqlTotalCredit: [{1}]", SaftDocumentType.Payments, sqlTotalCredit));
                 object totalCredit = XPOSettings.Session.ExecuteScalar(sqlTotalCredit);
                 if (totalCredit == null) totalCredit = 0;
-                WriteElement("TotalCredit", LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(totalCredit), _decimalFormat));
+                WriteElement("TotalCredit", DataConversionUtils.DecimalToString(Convert.ToDecimal(totalCredit), _decimalFormat));
 
                 //<Payment>
                 SourceDocuments_Payments_Childs();
@@ -1627,7 +1627,7 @@ namespace LogicPOS.Finance.Saft
                     //<PaymentMethod>
                     _xmlWriter.WriteStartElement("PaymentMethod");
                     WriteElement("PaymentMechanism", row.Values[xPSelectData.GetFieldIndexFromName("PaymentMechanism")]);
-                    WriteElement("PaymentAmount", LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndexFromName("PaymentAmount")]), _decimalFormat));
+                    WriteElement("PaymentAmount", DataConversionUtils.DecimalToString(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndexFromName("PaymentAmount")]), _decimalFormat));
                     WriteElement("PaymentDate", row.Values[xPSelectData.GetFieldIndexFromName("PaymentDate")]);
                     _xmlWriter.WriteEndElement();
                     //</PaymentMethod>
@@ -1642,9 +1642,9 @@ namespace LogicPOS.Finance.Saft
 
                     //<DocumentTotals>
                     _xmlWriter.WriteStartElement("DocumentTotals");
-                    WriteElement("TaxPayable", LogicPOS.Utility.DataConversionUtils.DecimalToString(totalLineResult.TaxPayable, _decimalFormatTotals));
-                    WriteElement("NetTotal", LogicPOS.Utility.DataConversionUtils.DecimalToString(totalLineResult.NetTotal, _decimalFormatTotals));
-                    WriteElement("GrossTotal", LogicPOS.Utility.DataConversionUtils.DecimalToString(totalLineResult.GrossTotal, _decimalFormatTotals));
+                    WriteElement("TaxPayable", DataConversionUtils.DecimalToString(totalLineResult.TaxPayable, _decimalFormatTotals));
+                    WriteElement("NetTotal", DataConversionUtils.DecimalToString(totalLineResult.NetTotal, _decimalFormatTotals));
+                    WriteElement("GrossTotal", DataConversionUtils.DecimalToString(totalLineResult.GrossTotal, _decimalFormatTotals));
 
                     //Note: 4.4.4.17 in 130823_Portaria_no_274_2013.pdf is Outside DocumentTotals, but gives error on validation, moved 4.4.4.17 to DocumentTotals to be valid in validation, may be a error in 130823_Portaria_no_274_2013.pdf
 
@@ -1656,9 +1656,9 @@ namespace LogicPOS.Finance.Saft
                         //<Currency>
                         _xmlWriter.WriteStartElement("Currency");
                         WriteElement("CurrencyCode", row.Values[xPSelectData.GetFieldIndexFromName("CurrencyCode")].ToString());
-                        WriteElement("CurrencyAmount", LogicPOS.Utility.DataConversionUtils.DecimalToString(currencyAmount, _decimalFormat));
+                        WriteElement("CurrencyAmount", DataConversionUtils.DecimalToString(currencyAmount, _decimalFormat));
                         //In SAT-F Example we have 2 examples one with decimals 0.00 and other with 0.00000000000 opted to use divide value without conversion
-                        WriteElement("ExchangeRate", LogicPOS.Utility.DataConversionUtils.DecimalToString(exchangeRate, _decimalFormat));
+                        WriteElement("ExchangeRate", DataConversionUtils.DecimalToString(exchangeRate, _decimalFormat));
                         //WriteElement("ExchangeRate", exchangeRate);
                         _xmlWriter.WriteEndElement();
                         //</Currency>
@@ -1769,7 +1769,7 @@ namespace LogicPOS.Finance.Saft
                         _xmlWriter.WriteEndElement();
                         //</Line>
                         //CreditAmount|DebitAmount
-                        WriteElement(nodeNameCreditOrDebitAmount, LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndexFromName(nodeNameCreditOrDebitAmount)]), _decimalFormat));
+                        WriteElement(nodeNameCreditOrDebitAmount, DataConversionUtils.DecimalToString(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndexFromName(nodeNameCreditOrDebitAmount)]), _decimalFormat));
 
                         //TODO : Nos recibos do sistema de IVA de Caixa, deve ser indicada uma linha por cada taxa de IVA diferente, que conste da fatura respetiva.
                         //<Tax>

@@ -16,7 +16,7 @@ namespace LogicPOS.Utility
         public static string SaltString(string pSaltString, string pSalt)
         {
             SHA512 hashAlgorithm = SHA512.Create();
-            return Convert.ToBase64String(hashAlgorithm.ComputeHash(System.Text.Encoding.UTF8.GetBytes(pSalt + pSaltString)));
+            return Convert.ToBase64String(hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(pSalt + pSaltString)));
         }
 
         public static string GenerateSaltedString(string pSaltString)
@@ -169,9 +169,9 @@ namespace LogicPOS.Utility
 
             if (pDebug)
             {
-                System.IO.File.WriteAllBytes(tempPath + "encrypt.txt", pMessage);
-                System.IO.File.WriteAllBytes(tempPath + "encrypted.sha1", signature);
-                System.IO.File.WriteAllText(tempPath + "encrypted.b64", signatureBase64);
+                File.WriteAllBytes(tempPath + "encrypt.txt", pMessage);
+                File.WriteAllBytes(tempPath + "encrypted.sha1", signature);
+                File.WriteAllText(tempPath + "encrypted.b64", signatureBase64);
             }
 
             return signatureBase64;

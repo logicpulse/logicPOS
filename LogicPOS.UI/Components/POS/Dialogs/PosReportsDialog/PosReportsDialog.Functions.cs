@@ -72,7 +72,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         {filterField} = '{CustomDocumentSettings.CreditNoteId}' OR 
                         {filterField} = '{DocumentSettings.PaymentDocumentTypeId}' 
                         OR 
-                        {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput}'
+                        {filterField} = '{DocumentSettings.CurrentAccountInputId}'
                         )".Replace(Environment.NewLine, string.Empty);
                 }
 

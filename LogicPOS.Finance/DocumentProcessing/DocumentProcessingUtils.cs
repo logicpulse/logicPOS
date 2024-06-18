@@ -286,7 +286,7 @@ namespace LogicPOS.Finance.DocumentProcessing
                         documentFinanceType.Oid == CustomDocumentSettings.CreditNoteId ||
                         documentFinanceType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeBudget ||
                         documentFinanceType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeProformaInvoice ||
-                        documentFinanceType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput ||
+                        documentFinanceType.Oid == DocumentSettings.CurrentAccountInputId ||
                         documentFinanceType.SaftDocumentType == SaftDocumentType.WorkingDocuments ||
                         documentFinanceType.SaftDocumentType == SaftDocumentType.MovementOfGoods
                     )
@@ -362,7 +362,7 @@ namespace LogicPOS.Finance.DocumentProcessing
                             //Get Article
                             article = (fin_article)uowSession.GetObjectByKey(typeof(fin_article), item.Key.ArticleId);
                             //Get VatRate formated for filter, in sql server gives error without this it filters 23,0000 and not 23.0000 resulting in null vatRate
-                            string filterVat = LogicPOS.Utility.DataConversionUtils.DecimalToString(item.Key.Vat);
+                            string filterVat = DataConversionUtils.DecimalToString(item.Key.Vat);
                             string executeSql = string.Format(@"SELECT Oid FROM fin_configurationvatrate WHERE Value = '{0}';", filterVat);
                             vatRateOid = XPOUtility.GetGuidFromQuery(executeSql);
                             vatRate = (fin_configurationvatrate)uowSession.GetObjectByKey(typeof(fin_configurationvatrate), vatRateOid);
@@ -604,7 +604,7 @@ namespace LogicPOS.Finance.DocumentProcessing
                     if (!documentFinanceType.Payed) paymentMethod = null;
 
                     //PersistFinanceDocumentWorkSession if document is Payed or if it is a CurrentAccount (Splited in Prints with SplitCurrentAccountMode Enum)
-                    if (XPOSettings.WorkSessionPeriodTerminal != null && (paymentMethod != null || documentFinanceType.Oid == DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput))
+                    if (XPOSettings.WorkSessionPeriodTerminal != null && (paymentMethod != null || documentFinanceType.Oid == DocumentSettings.CurrentAccountInputId))
                     {
                         //Call PersistFinanceDocumentWorkSession to do WorkSession Job
                         PersistFinanceDocumentWorkSession(uowSession, documentFinanceMaster, pParameters, paymentMethod);
@@ -779,7 +779,7 @@ namespace LogicPOS.Finance.DocumentProcessing
             fin_documentfinancemaster doc = pDocumentFinanceMaster;
             //Required to ALways use "." and not Culture Decimal separator, ex ","
             //string TotalFinalRound = LogicPOS.Utility.DataConversionUtils.DecimalToString(doc.TotalFinalRound).Replace(',', '.');
-            string TotalFinalRound = LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(doc.TotalFinalRound));
+            string TotalFinalRound = DataConversionUtils.DecimalToString(Convert.ToDecimal(doc.TotalFinalRound));
             //Hash must be the first, to use first field has value for ExecuteScalar
             string sql = string.Format(@"SELECT Hash, HashControl, Date AS InvoiceDate, SystemEntryDate, DocumentNumber AS InvoiceNo, TotalFinalRound FROM fin_documentfinancemaster WHERE DocumentType = '{0}' and  DocumentSerie = '{1}' ORDER BY Date DESC;", pDocType.Oid, pDocSerie.Oid);
             var olastDocumentHash = pSession.ExecuteScalar(sql);
@@ -1790,7 +1790,7 @@ SELECT
                     pDocumentFinanceType == DocumentSettings.SimplifiedInvoiceId ||
                     pDocumentFinanceType == DocumentSettings.InvoiceAndPaymentId ||
                     //SaftDocumentType = 0
-                    pDocumentFinanceType == DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput
+                    pDocumentFinanceType == DocumentSettings.CurrentAccountInputId
                 )
                 {
                     //Moçambique - Pedidos da reunião 13/10/2020 [IN:014327]
@@ -1803,7 +1803,7 @@ SELECT
                         DocumentSettings.SimplifiedInvoiceId,
                         DocumentSettings.InvoiceAndPaymentId,
                         CustomDocumentSettings.DeliveryNoteDocumentTypeId,
-                        DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput,
+                        DocumentSettings.CurrentAccountInputId,
                         CustomDocumentSettings.TransportDocumentTypeId,
                         DocumentSettings.XpoOidDocumentFinanceTypeOwnAssetsDriveGuide,
                         DocumentSettings.XpoOidDocumentFinanceTypeConsignmentGuide,
@@ -2303,7 +2303,7 @@ SELECT
                         }
 
                         //Generate New Document
-                        fin_documentfinancemaster newDocument = DocumentProcessingUtils.PersistFinanceDocument(processFinanceDocumentParameter, false);
+                        fin_documentfinancemaster newDocument = PersistFinanceDocument(processFinanceDocumentParameter, false);
 
                         //Assign DocumentStatus and OrderReferences
                         if (newDocument != null)

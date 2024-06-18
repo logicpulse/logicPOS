@@ -23,7 +23,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pDialogFlags)
         {
             //Settings
-            string regexAlfaNumericExtended = LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended;
+            string regexAlfaNumericExtended = RegexUtils.RegexAlfaNumericExtended;
 
             //Init Local Vars
             string windowTitle = GeneralUtils.GetResourceByName("window_title_dialog_readcard");

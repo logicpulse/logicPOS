@@ -330,11 +330,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             }
             else if (keyboardMode == KeyboardMode.Money)
             {
-                PosMoneyPadDialog dialog = new PosMoneyPadDialog(_sourceWindow, DialogFlags.DestroyWithParent, LogicPOS.Utility.DataConversionUtils.StringToDecimal(text));
+                PosMoneyPadDialog dialog = new PosMoneyPadDialog(_sourceWindow, DialogFlags.DestroyWithParent, DataConversionUtils.StringToDecimal(text));
                 int response = dialog.Run();
                 if (response == (int)ResponseType.Ok)
                 {
-                    string input = LogicPOS.Utility.DataConversionUtils.DecimalToString(dialog.Amount);
+                    string input = DataConversionUtils.DecimalToString(dialog.Amount);
                     if (input != null)
                     {
                         if (pBoxObject.GetType() == typeof(ValidatableTextBox))

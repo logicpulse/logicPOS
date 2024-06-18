@@ -78,7 +78,7 @@ namespace LogicPOS.Shared
             foreach (Guid id in CurrentSession.LoggedUsers.Keys)
             {
                 sys_userdetail user = XPOUtility.GetEntityById<sys_userdetail>(id);
-                XPOUtility.Audit("USER_loggerOUT", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_used_forced_loggerout"), user.Name));
+                XPOUtility.Audit("USER_loggerOUT", string.Format(CultureResources.GetResourceByLanguage(Settings.CultureSettings.CurrentCultureName, "audit_message_used_forced_loggerout"), user.Name));
             }
             CurrentSession.LoggedUsers.Clear();
         }
@@ -184,11 +184,11 @@ namespace LogicPOS.Shared
         {
             decimal result = 0.0m;
 
-            if (POSSession.HasCurrentSession
-                && POSSession.CurrentSession.OrderMains.ContainsKey(POSSession.CurrentSession.CurrentOrderMainId)
+            if (HasCurrentSession
+                && CurrentSession.OrderMains.ContainsKey(CurrentSession.CurrentOrderMainId)
             )
             {
-                OrderMain orderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];
+                OrderMain orderMain = CurrentSession.OrderMains[CurrentSession.CurrentOrderMainId];
 
                 pos_configurationplacetable xConfigurationPlaceTable = XPOUtility.GetEntityById<pos_configurationplacetable>(orderMain.Table.Oid);
 

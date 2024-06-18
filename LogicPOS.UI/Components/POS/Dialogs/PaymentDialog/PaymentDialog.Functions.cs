@@ -94,7 +94,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             )
                         )
                         {
-                            logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_cant_create_cc_document_with_default_entity"));
+                            logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_cant_create_cc_document_with_default_entity"));
                             //Prevent Parent Dialog Payments from Close
                             this.Run();
                         }
@@ -179,7 +179,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 )
                             )
                             {
-                                logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error"), string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_value_exceed_customer_card_credit"), LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(Customer.CardCredit, XPOSettings.ConfigurationSystemCurrency.Acronym), LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(processArticleBag.TotalFinal, XPOSettings.ConfigurationSystemCurrency.Acronym)));
+                                logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"), string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_value_exceed_customer_card_credit"), LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(Customer.CardCredit, XPOSettings.ConfigurationSystemCurrency.Acronym), LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(processArticleBag.TotalFinal, XPOSettings.ConfigurationSystemCurrency.Acronym)));
 
                                 //Prevent Parent Dialog Payments from Close
                                 this.Run();
@@ -188,7 +188,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             //Check if Article Bag Full|Partial has Recharge Article and Valid customer Card
                             else if (!DocumentProcessingUtils.IsCustomerCardValidForArticleBag(processArticleBag, Customer))
                             {
-                                logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_invalid_customer_card_detected"));
+                                logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_invalid_customer_card_detected"));
 
                                 //Prevent Parent Dialog Payments from Close
                                 this.Run();
@@ -243,7 +243,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     else if (resultObject.GetType() == typeof(ConstraintViolationException))
                     {
                         Exception ex = (Exception)resultObject;
-                        ResponseType response = logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Warning, ButtonsType.Close, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_dialog_exception_error"), ex.InnerException.Message);
+                        ResponseType response = logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Warning, ButtonsType.Close, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_exception_error"), ex.InnerException.Message);
                         //Prevent Parent Dialog Payments from Close
                         this.Run();
                     }
@@ -291,13 +291,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         )
                     )
                     {
-                        logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_cant_create_cc_document_with_default_entity"));
+                        logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_cant_create_cc_document_with_default_entity"));
                         //Prevent Parent Dialog Payments from Close
                         this.Run();
                     }
                     else if (_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text == string.Empty || _entryBoxSelectCustomerName.EntryValidation.Text == string.Empty)
                     {
-                        logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_cant_create_cc_document_with_default_entity"));
+                        logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_cant_create_cc_document_with_default_entity"));
                         //Prevent Parent Dialog Payments from Close
                         this.Run();
                     }
@@ -324,10 +324,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 switch (ex.Message)
                 {
                     case "ERROR_MISSING_SERIE":
-                        errorMessage = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document_missing_series"));
+                        errorMessage = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document_missing_series"));
                         break;
                     default:
-                        errorMessage = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document"), ex.Message);
+                        errorMessage = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document"), ex.Message);
                         break;
                 }
                 logicpos.Utils.ShowMessageBox(
@@ -336,7 +336,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     new Size(600, 400),
                     MessageType.Error,
                     ButtonsType.Close,
-                    CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error"),
+                    CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"),
                     errorMessage
                 );
 
@@ -347,7 +347,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private void buttonMoney_Clicked(object sender, EventArgs e)
         {
             //Settings
-            int decimalRoundTo = LogicPOS.Settings.CultureSettings.DecimalRoundTo;
+            int decimalRoundTo = CultureSettings.DecimalRoundTo;
 
             //If Has a _articleBagPartialPayment Defined use its Total else use _articleBagFullPayment TotalFinal
             decimal _totalOrder = (ArticleBagPartialPayment == null) ? ArticleBagFullPayment.TotalFinal : ArticleBagPartialPayment.TotalFinal;
@@ -439,7 +439,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
               dialog = new PosSelectRecordDialog<XPCollection, Entity, TreeViewConfigurationCountry>(
                 this.SourceWindow,
                 DialogFlags.DestroyWithParent,
-                CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_select_country"),
+                CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_select_country"),
                 //TODO:THEME
                 GlobalApp.MaxWindowSize,
                 defaultValue,
@@ -570,12 +570,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 Guid customerGuid = new Guid();
 
                 // Encrypt pFieldValue to use in Sql Filter
-                if (LogicPOS.Settings.PluginSettings.HasSoftwareVendorPlugin)
+                if (PluginSettings.HasSoftwareVendorPlugin)
                 {
                     // Only Encrypt Encrypted Fields
                     if (pFieldName == nameof(erp_customer.FiscalNumber) || pFieldName == nameof(erp_customer.CardNumber))
                     {
-                        pFieldValue = LogicPOS.Settings.PluginSettings.SoftwareVendor.Encrypt(pFieldValue);
+                        pFieldValue = PluginSettings.SoftwareVendor.Encrypt(pFieldValue);
                     }
                 }
 
@@ -769,9 +769,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 bool isSingularEntity = (isFinalConsumerEntity || FiscalNumberUtils.IsSingularEntity(_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text, _entryBoxSelectCustomerCountry.Value.Code2));
                 // Encrypt pFieldValue to use in Sql Filter
                 string fiscalNumberFilterValue = string.Empty;
-                if (LogicPOS.Settings.PluginSettings.HasSoftwareVendorPlugin)
+                if (PluginSettings.HasSoftwareVendorPlugin)
                 {
-                    fiscalNumberFilterValue = LogicPOS.Settings.PluginSettings.SoftwareVendor.Encrypt(_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text);
+                    fiscalNumberFilterValue = PluginSettings.SoftwareVendor.Encrypt(_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text);
                 }
                 //Used To Disable FiscalNumber Edits and to Get Customer
                 string sql = string.Format("SELECT Oid FROM erp_customer WHERE FiscalNumber = '{0}' AND (Hidden IS NULL OR Hidden = 0);", fiscalNumberFilterValue);
@@ -979,7 +979,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             if (PaymentMethod != null && PaymentMethod.Token == "MONEY")
             {
-                int decimalRoundTo = LogicPOS.Settings.CultureSettings.DecimalRoundTo;
+                int decimalRoundTo = CultureSettings.DecimalRoundTo;
                 //If Has a _articleBagPartialPayment Defined use its Total else use _articleBagFullPayment TotalFinal
                 decimal _totalOrder = (ArticleBagPartialPayment == null) ? ArticleBagFullPayment.TotalFinal : ArticleBagPartialPayment.TotalFinal;
                 TotalChange = Math.Round(TotalDelivery, decimalRoundTo) - Math.Round(_totalOrder, decimalRoundTo);
@@ -1000,7 +1000,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             TouchButtonIconWithText buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
 
             //Pagamentos parciais -Escolher valor a pagar por artigo[TK: 019295]
-            TouchButtonIconWithText touchButtonChangePrice = new TouchButtonIconWithText("touchButtonChangePrice", Color.Transparent, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_price"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, buttonIconChangePrice, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height);
+            TouchButtonIconWithText touchButtonChangePrice = new TouchButtonIconWithText("touchButtonChangePrice", Color.Transparent, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_price"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, buttonIconChangePrice, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height);
             buttonOk.Sensitive = false;
 
             //ActionArea Buttons
@@ -1027,7 +1027,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
               new PosSelectRecordDialog<DataTable, DataRow, TreeViewPartialPayment>(
                 this,
                 DialogFlags.DestroyWithParent,
-                CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_dialog_partial_payment"),
+                CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_partial_payment"),
                 //TODO:THEME
                 GlobalApp.MaxWindowSize,
                 //new Guid(), //use this to test pDefaultValue 
@@ -1065,7 +1065,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     bool itemChecked = (bool)_dialogPartialPayment.GenericTreeView.DataSourceRow.ItemArray[indexColumnCheckBox];
                     decimal currentRowPrice = (decimal)_dialogPartialPayment.GenericTreeView.DataSourceRow.ItemArray[indexColumnPriceFinal];
                     _totalPartialPaymentItems += (itemChecked) ? currentRowPrice : -currentRowPrice;
-                    _dialogPartialPayment.WindowTitle = (_totalPartialPaymentItems > 0) ? string.Format("{0} : {1}", CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_dialog_partial_payment"), LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_totalPartialPaymentItems, XPOSettings.ConfigurationSystemCurrency.Acronym)) : CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_dialog_partial_payment");
+                    _dialogPartialPayment.WindowTitle = (_totalPartialPaymentItems > 0) ? string.Format("{0} : {1}", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_partial_payment"), LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_totalPartialPaymentItems, XPOSettings.ConfigurationSystemCurrency.Acronym)) : CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_partial_payment");
                 }
             };
 
@@ -1203,7 +1203,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     decimal priceFinal = decimal.Round((decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("PriceFinal")], 2);
                     string priceFinalText = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(priceFinal, XPOSettings.ConfigurationSystemCurrency.Acronym);
 
-                    string moneyPadTitle = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_dialog_moneypad_product_price") + " :: " + (string)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Designation")] + " :: " +
+                    string moneyPadTitle = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_moneypad_product_price") + " :: " + (string)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Designation")] + " :: " +
                         priceFinalText);
 
 

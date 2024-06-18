@@ -21,6 +21,6 @@ namespace LogicPOS.Settings
         public static Guid XpoOidDocumentFinanceTypeProformaInvoice { get; set; } = new Guid("6f4249d0-4aaf-4711-814f-7f9533a1ef7f");
         public static Guid PaymentDocumentTypeId { get; set; } = new Guid("a009168d-fed1-4f52-b9e3-77e280b18ff5");
         public static Guid XpoOidDocumentFinanceTypeInvoiceWayBill { get; set; } = new Guid("f8878cf5-0f88-4270-8a55-1fc2488d81a2");
-        public static Guid XpoOidDocumentFinanceTypeCurrentAccountInput { get; set; } = new Guid("235f06f3-5ec3-4e13-977b-325614b07e35");
+        public static Guid CurrentAccountInputId { get; set; } = new Guid("235f06f3-5ec3-4e13-977b-325614b07e35");
     }
 }

@@ -272,7 +272,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 _labelTotal.ModifyFont(labelTotalFont);
                 _labelTotal.ModifyFg(StateType.Normal, labelTotalFontColor);
                 _labelTotal.SetAlignment(labelTotalAlignmentX, 0.0F);
-                _labelTotal.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(0, XPOSettings.ConfigurationSystemCurrency.Acronym);
+                _labelTotal.Text = DataConversionUtils.DecimalToStringCurrency(0, XPOSettings.ConfigurationSystemCurrency.Acronym);
 
                 HBox hboxTotal = new HBox(false, 4);
                 hboxTotal.PackStart(_labelLabelTotal, true, true, 5);
@@ -447,11 +447,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                             ListStoreModel.AppendValues(
                               line.ArticleOid,
                               line.Designation,
-                              LogicPOS.Utility.DataConversionUtils.DecimalToString(line.Properties.PriceFinal),
-                              LogicPOS.Utility.DataConversionUtils.DecimalToString(line.Properties.Quantity),
+                              DataConversionUtils.DecimalToString(line.Properties.PriceFinal),
+                              DataConversionUtils.DecimalToString(line.Properties.Quantity),
                               line.Properties.DiscountArticle.ToString(),
                               line.Properties.Vat.ToString(),
-                              LogicPOS.Utility.DataConversionUtils.DecimalToString(line.Properties.TotalFinal)
+                              DataConversionUtils.DecimalToString(line.Properties.TotalFinal)
                             );
                             //Store Current TreeIter in Session (Non Public)
                             line.TreeIter = _treeIter;
@@ -483,11 +483,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                             ListStoreModel.AppendValues(
                             item.Key.ArticleId,
                             item.Key.Designation,
-                            LogicPOS.Utility.DataConversionUtils.DecimalToString(item.Value.PriceFinal),
-                            LogicPOS.Utility.DataConversionUtils.DecimalToString(item.Value.Quantity),
+                            DataConversionUtils.DecimalToString(item.Value.PriceFinal),
+                            DataConversionUtils.DecimalToString(item.Value.Quantity),
                             item.Key.Discount.ToString(),
                             item.Key.Vat.ToString(),
-                            LogicPOS.Utility.DataConversionUtils.DecimalToString(item.Value.TotalFinal),
+                            DataConversionUtils.DecimalToString(item.Value.TotalFinal),
                             //Add ArticleBag Key to Model
                             articleBagKey
                             );
@@ -769,9 +769,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     //Update TreeView Model
                     _treeIter = (TreeIter)CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].TreeIter;
                     //Update Quantity
-                    ListStoreModel.SetValue(_treeIter, (int)TicketListColumns.Quantity, LogicPOS.Utility.DataConversionUtils.DecimalToString(CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity));
+                    ListStoreModel.SetValue(_treeIter, (int)TicketListColumns.Quantity, DataConversionUtils.DecimalToString(CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity));
                     //Update Total
-                    ListStoreModel.SetValue(_treeIter, (int)TicketListColumns.Total, LogicPOS.Utility.DataConversionUtils.DecimalToString(CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.TotalFinal));
+                    ListStoreModel.SetValue(_treeIter, (int)TicketListColumns.Total, DataConversionUtils.DecimalToString(CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.TotalFinal));
                 }
                 //Insert
                 else
@@ -900,10 +900,10 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
 
                             //_listStoreModel.SetValue(_treeIter, (int)TicketListColumns.Price, LogicPOS.Utility.DataConversionUtils.DecimalToString(newPrice));
-                            ListStoreModel.SetValue(_treeIter, (int)TicketListColumns.Quantity, LogicPOS.Utility.DataConversionUtils.DecimalToString(newQuantity));
+                            ListStoreModel.SetValue(_treeIter, (int)TicketListColumns.Quantity, DataConversionUtils.DecimalToString(newQuantity));
 
                             //Update Total
-                            ListStoreModel.SetValue(_treeIter, (int)TicketListColumns.Total, LogicPOS.Utility.DataConversionUtils.DecimalToString(newTotalPrice));
+                            ListStoreModel.SetValue(_treeIter, (int)TicketListColumns.Total, DataConversionUtils.DecimalToString(newTotalPrice));
 
                             CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].TreeIter = _treeIter;
 
@@ -925,11 +925,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         object[] columnValues = new object[Enum.GetNames(typeof(TicketListColumns)).Length];
                         columnValues[0] = article.Oid;
                         columnValues[1] = article.Designation;
-                        columnValues[2] = LogicPOS.Utility.DataConversionUtils.DecimalToString(CurrentOrderDetails.Lines[CurrentOrderDetails.Lines.Count - 1].Properties.PriceFinal);
-                        columnValues[3] = LogicPOS.Utility.DataConversionUtils.DecimalToString(defaultQuantity);
+                        columnValues[2] = DataConversionUtils.DecimalToString(CurrentOrderDetails.Lines[CurrentOrderDetails.Lines.Count - 1].Properties.PriceFinal);
+                        columnValues[3] = DataConversionUtils.DecimalToString(defaultQuantity);
                         columnValues[4] = CurrentOrderDetails.Lines[CurrentOrderDetails.Lines.Count - 1].Properties.DiscountArticle.ToString();
                         columnValues[5] = CurrentOrderDetails.Lines[CurrentOrderDetails.Lines.Count - 1].Properties.Vat.ToString();
-                        columnValues[6] = LogicPOS.Utility.DataConversionUtils.DecimalToString(CurrentOrderDetails.Lines[CurrentOrderDetails.Lines.Count - 1].Properties.TotalFinal);
+                        columnValues[6] = DataConversionUtils.DecimalToString(CurrentOrderDetails.Lines[CurrentOrderDetails.Lines.Count - 1].Properties.TotalFinal);
 
                         //Assign Global TreeIter
                         _treeIter = ListStoreModel.AppendValues(columnValues);
@@ -967,10 +967,10 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 //Update orderDetails SessionApp
                 CurrentOrderDetails.Update(_listStoreModelSelectedIndex, pQuantity);
                 //Update TreeView Model: Quantity
-                ListStoreModel.SetValue(_treeIter, (int)TicketListColumns.Quantity, LogicPOS.Utility.DataConversionUtils.DecimalToString(pQuantity));
+                ListStoreModel.SetValue(_treeIter, (int)TicketListColumns.Quantity, DataConversionUtils.DecimalToString(pQuantity));
                 CurrentOrderDetails.Lines[CurrentOrderDetails.Lines.Count - 1].Properties.Quantity = pQuantity;
                 //Update TreeView Model: Total
-                ListStoreModel.SetValue(_treeIter, (int)TicketListColumns.Total, LogicPOS.Utility.DataConversionUtils.DecimalToString(CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.TotalFinal));
+                ListStoreModel.SetValue(_treeIter, (int)TicketListColumns.Total, DataConversionUtils.DecimalToString(CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.TotalFinal));
                 //Update Total
                 UpdateTicketListTotal();
                 if (GeneralSettings.AppUseParkingTicketModule) CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity = pQuantity; ;
@@ -1098,9 +1098,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             else
             {
                 //Update Quantity
-                ListStoreModel.SetValue(_treeIter, (int)TicketListColumns.Quantity, LogicPOS.Utility.DataConversionUtils.DecimalToString(CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity));
+                ListStoreModel.SetValue(_treeIter, (int)TicketListColumns.Quantity, DataConversionUtils.DecimalToString(CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity));
                 //Update Total
-                ListStoreModel.SetValue(_treeIter, (int)TicketListColumns.Total, LogicPOS.Utility.DataConversionUtils.DecimalToString(CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.TotalFinal));
+                ListStoreModel.SetValue(_treeIter, (int)TicketListColumns.Total, DataConversionUtils.DecimalToString(CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.TotalFinal));
             }
 
             //Update Total
@@ -1151,9 +1151,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 else
                 {
                     //Update Quantity
-                    ListStoreModel.SetValue(_treeIter, (int)TicketListColumns.Quantity, LogicPOS.Utility.DataConversionUtils.DecimalToString(currentTotalQuantity));
+                    ListStoreModel.SetValue(_treeIter, (int)TicketListColumns.Quantity, DataConversionUtils.DecimalToString(currentTotalQuantity));
                     //Update Total
-                    ListStoreModel.SetValue(_treeIter, (int)TicketListColumns.Total, LogicPOS.Utility.DataConversionUtils.DecimalToString(currentTotalFinal));
+                    ListStoreModel.SetValue(_treeIter, (int)TicketListColumns.Total, DataConversionUtils.DecimalToString(currentTotalFinal));
                 }
 
                 UpdateOrderStatusBar();
@@ -1399,7 +1399,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 TotalFinal = _articleBag.TotalFinal;
             }
             _labelLabelTotal.Text = labelTotalFinal;
-            _labelTotal.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalFinal, XPOSettings.ConfigurationSystemCurrency.Acronym);
+            _labelTotal.Text = DataConversionUtils.DecimalToStringCurrency(TotalFinal, XPOSettings.ConfigurationSystemCurrency.Acronym);
 
             //Update Display
             if (GlobalApp.UsbDisplay != null) GlobalApp.UsbDisplay.ShowOrder(CurrentOrderDetails, _listStoreModelSelectedIndex);
@@ -1438,13 +1438,13 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     SourceWindow.LabelTotalTable.Text =
                       string.Format(labelTotalTableFormat,
                         //Totals From OrderMain and Not From ArticleBag
-                        LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(orderMain.GlobalTotalFinal, XPOSettings.ConfigurationSystemCurrency.Acronym),
+                        DataConversionUtils.DecimalToStringCurrency(orderMain.GlobalTotalFinal, XPOSettings.ConfigurationSystemCurrency.Acronym),
                         orderMain.GlobalTotalTickets
                       );
 
                     //If in OrderMain Mode Update Total
                     if (ListMode == TicketListMode.OrderMain)
-                        _labelTotal.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(orderMain.GlobalTotalFinal, XPOSettings.ConfigurationSystemCurrency.Acronym);
+                        _labelTotal.Text = DataConversionUtils.DecimalToStringCurrency(orderMain.GlobalTotalFinal, XPOSettings.ConfigurationSystemCurrency.Acronym);
                 }
                 else
                 {

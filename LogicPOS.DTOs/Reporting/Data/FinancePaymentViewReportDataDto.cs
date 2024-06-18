@@ -2,7 +2,7 @@
 
 namespace LogicPOS.DTOs.Reporting
 {
-    public class FinancePaymentViewReportDto 
+    public class FinancePaymentViewReportDataDto 
     {
         public string Oid { get; set; }                                        
         public string DocumentTypeDesignation { get; set; }                            
@@ -30,6 +30,6 @@ namespace LogicPOS.DTOs.Reporting
         public string CurrencySymbol { get; set; }                      
         public decimal ExchangeRate { get; set; }                       
         public string Notes { get; set; }                               
-        public List<FinancePaymentDocumentViewReportDto> DocumentFinancePaymentDocument { get; set; }
+        public List<FinancePaymentDocumentViewReportDataDto> DocumentFinancePaymentDocument { get; set; }
     }
 }

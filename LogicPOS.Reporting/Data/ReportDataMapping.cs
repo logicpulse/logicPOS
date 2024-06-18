@@ -5,10 +5,10 @@ namespace LogicPOS.Reporting.Utility
 {
     public static class ReportDataMapping
     {
-        public static FinanceMasterViewReportDto GetFinanceMasterViewReportDto(
+        public static FinanceMasterViewReportDataDto GetFinanceMasterViewReportDto(
             FinanceMasterViewReportData report)
         {
-            var dto = new FinanceMasterViewReportDto
+            var dto = new FinanceMasterViewReportDataDto
             {
                 Oid = report.Oid,
                 DocumentType = report.DocumentType,
@@ -105,10 +105,10 @@ namespace LogicPOS.Reporting.Utility
             return dto;
         }
 
-        public static FinanceDetailReportDto GetFinanceDetailReportDto(
+        public static FinanceDetailReportDataDto GetFinanceDetailReportDto(
             FinanceDetailReportData financeDetailReport)
         {
-            var FinanceDatailReportDto = new FinanceDetailReportDto
+            var FinanceDatailReportDto = new FinanceDetailReportDataDto
             {
                 Code = financeDetailReport.Code,
                 Designation = financeDetailReport.Designation,
@@ -126,10 +126,10 @@ namespace LogicPOS.Reporting.Utility
             return FinanceDatailReportDto;
         }
 
-        public static FinanceMasterTotalViewReportDto GetFinanceMasterTotalViewReportDto(
+        public static FinanceMasterTotalViewReportDataDto GetFinanceMasterTotalViewReportDto(
             FinanceMasterTotalViewReportData financeMasterTotalViewReport)
         {
-            var TotalViewReportDto = new FinanceMasterTotalViewReportDto
+            var TotalViewReportDto = new FinanceMasterTotalViewReportDataDto
             {
                 Oid = financeMasterTotalViewReport.Oid,
                 Designation = financeMasterTotalViewReport.Designation,
@@ -146,10 +146,10 @@ namespace LogicPOS.Reporting.Utility
             return TotalViewReportDto;
         }
 
-        public static FinancePaymentDocumentViewReportDto GetFinancePaymentDocumentViewReportDto(
+        public static FinancePaymentDocumentViewReportDataDto GetFinancePaymentDocumentViewReportDto(
             FinancePaymentDocumentViewReportData report)
         {
-            var dto = new FinancePaymentDocumentViewReportDto
+            var dto = new FinancePaymentDocumentViewReportDataDto
             {
                 Oid = report.Oid,
                 DocumentTypeDesignation = report.DocumentTypeDesignation,
@@ -165,10 +165,10 @@ namespace LogicPOS.Reporting.Utility
             return dto;
         }
 
-        public static FinancePaymentViewReportDto GetFinancePaymentViewReportDto(
+        public static FinancePaymentViewReportDataDto GetFinancePaymentViewReportDto(
             FinancePaymentViewReportData report)
         {
-            var dto = new FinancePaymentViewReportDto
+            var dto = new FinancePaymentViewReportDataDto
             {
                 Oid = report.Oid,
                 DocumentTypeDesignation = report.DocumentTypeDesignation,

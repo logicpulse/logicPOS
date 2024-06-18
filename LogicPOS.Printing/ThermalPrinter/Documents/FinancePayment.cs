@@ -1,7 +1,6 @@
 ﻿using LogicPOS.Data.XPO.Settings;
 using LogicPOS.DTOs.Printing;
 using LogicPOS.DTOs.Reporting;
-using LogicPOS.Globalization;
 using LogicPOS.Printing.Enums;
 using LogicPOS.Printing.Templates;
 using LogicPOS.Printing.Tickets;
@@ -12,18 +11,18 @@ using System.Data;
 
 namespace LogicPOS.Printing.Documents
 {
-    public class FinanceDocumentPayment : BaseFinanceTemplate
+    public class FinancePayment : BaseFinanceTemplate
     {
         private readonly PrintingFinancePaymentDto _financePaymentDto = null;
-        private readonly List<FinancePaymentViewReportDto> _financePaymentViewReportDtos;
-        private readonly List<FinancePaymentDocumentViewReportDto> _financePaymentDocumentViewReportDtos;
+        private readonly List<FinancePaymentViewReportDataDto> _financePaymentViewReportDtos;
+        private readonly List<FinancePaymentDocumentViewReportDataDto> _financePaymentDocumentViewReportDtos;
 
-        public FinanceDocumentPayment(
-            PrintingPrinterDto printer,
+        public FinancePayment(
+            PrinterDto printer,
             PrintingFinancePaymentDto financePayment,
             List<int> copyNumbers,
             bool secondCopy,
-            List<FinancePaymentViewReportDto> financePaymentViewReportDtos)
+            List<FinancePaymentViewReportDataDto> financePaymentViewReportDtos)
             : base(
                   printer,
                   financePayment.DocumentType,
@@ -78,10 +77,10 @@ namespace LogicPOS.Printing.Documents
         {
             List<TicketColumn> columns = new List<TicketColumn>
                 {
-                    new TicketColumn("DocumentDate", CultureResources.GetResourceByLanguage(Settings.CultureSettings.CurrentCultureName, "global_date"), 11, TicketColumnsAlignment.Left),
-                    new TicketColumn("DocumentNumber", CultureResources.GetResourceByLanguage(Settings.CultureSettings.CurrentCultureName, "global_document_number_acronym"), 0, TicketColumnsAlignment.Left),
-                    new TicketColumn("DocumentTotal", CultureResources.GetResourceByLanguage(Settings.CultureSettings.CurrentCultureName, "global_document_total"), 10, TicketColumnsAlignment.Right, typeof(decimal), "{0:00.00}"),
-                    new TicketColumn("TotalPayed", CultureResources.GetResourceByLanguage(Settings.CultureSettings.CurrentCultureName, "global_total_payed_acronym"), 10, TicketColumnsAlignment.Right, typeof(decimal), "{0:00.00}"),
+                    new TicketColumn("DocumentDate", GeneralUtils.GetResourceByName("global_date"), 11, TicketColumnsAlignment.Left),
+                    new TicketColumn("DocumentNumber", GeneralUtils.GetResourceByName("global_document_number_acronym"), 0, TicketColumnsAlignment.Left),
+                    new TicketColumn("DocumentTotal", GeneralUtils.GetResourceByName("global_document_total"), 10, TicketColumnsAlignment.Right, typeof(decimal), "{0:00.00}"),
+                    new TicketColumn("TotalPayed", GeneralUtils.GetResourceByName("global_total_payed_acronym"), 10, TicketColumnsAlignment.Right, typeof(decimal), "{0:00.00}"),
                     new TicketColumn("Payed", "L", 1, TicketColumnsAlignment.Right)
                 };
             //Prepare Table with Padding
@@ -89,7 +88,7 @@ namespace LogicPOS.Printing.Documents
             TicketTable ticketTable = new TicketTable(dataTable, columns, _maxCharsPerLineNormal - _ticketTablePaddingLeftLength);
             string paddingLeftFormat = "  {0,-" + ticketTable.TableWidth + "}";//"  {0,-TableWidth}"
                                                                                //Print Table Headers
-            ticketTable.Print(_genericThermalPrinter, paddingLeftFormat);
+            ticketTable.Print(_printer, paddingLeftFormat);
 
             foreach (var item in _financePaymentDocumentViewReportDtos)
             {
@@ -99,12 +98,12 @@ namespace LogicPOS.Printing.Documents
             }
 
             //Line Feed
-            _genericThermalPrinter.LineFeed();
+            _printer.LineFeed();
         }
 
         public void PrintDocumentDetail(
             TicketTable ticketTable,
-            FinancePaymentDocumentViewReportDto financePaymentDocumentViewReportDto,
+            FinancePaymentDocumentViewReportDataDto financePaymentDocumentViewReportDto,
             string paddingLeftFormat)
         {
             try
@@ -115,7 +114,7 @@ namespace LogicPOS.Printing.Documents
                     : financePaymentDocumentViewReportDto.DocumentNumber.Substring(0, _maxCharsPerLineNormalBold)
                 ;
                 //Print Document Number : Bold
-                _genericThermalPrinter.WriteLine(documentNumber, WriteLineTextMode.Bold);
+                _printer.WriteLine(documentNumber, WriteLineTextMode.Bold);
 
                 //Document Details
                 DataRow dataRow;
@@ -132,7 +131,7 @@ namespace LogicPOS.Printing.Documents
                 //Add DataRow to Table, Ready for Print
                 ticketTable.Rows.Add(dataRow);
                 //Print Table Rows
-                ticketTable.Print(_genericThermalPrinter, WriteLineTextMode.Normal, true, paddingLeftFormat);
+                ticketTable.Print(_printer, WriteLineTextMode.Normal, true, paddingLeftFormat);
             }
             catch (Exception ex)
             {
@@ -152,7 +151,7 @@ namespace LogicPOS.Printing.Documents
 
                 //Add Row : TotalFinal
                 dataRow = dataTable.NewRow();
-                dataRow[0] = CultureResources.GetResourceByLanguage(Settings.CultureSettings.CurrentCultureName, "global_total");
+                dataRow[0] = GeneralUtils.GetResourceByName("global_total");
                 dataRow[1] = DataConversionUtils.DecimalToString(_financePaymentViewReportDtos[0].PaymentAmount * _financePaymentViewReportDtos[0].ExchangeRate);
                 dataTable.Rows.Add(dataRow);
 
@@ -164,11 +163,11 @@ namespace LogicPOS.Printing.Documents
                 };
 
                 //TicketTable(DataTable pDataTable, List<TicketColumn> pColumnsProperties, int pTableWidth)
-                TicketTable ticketTable = new TicketTable(dataTable, columns, _genericThermalPrinter.MaxCharsPerLineNormalBold);
-                ticketTable.Print(_genericThermalPrinter, WriteLineTextMode.DoubleHeightBold);
+                TicketTable ticketTable = new TicketTable(dataTable, columns, _printer.MaxCharsPerLineNormalBold);
+                ticketTable.Print(_printer, WriteLineTextMode.DoubleHeightBold);
 
                 //Line Feed
-                _genericThermalPrinter.LineFeed();
+                _printer.LineFeed();
             }
             catch (Exception ex)
             {
@@ -191,11 +190,11 @@ namespace LogicPOS.Printing.Documents
                 }
 
                 //ExtendedValue
-                _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(Settings.CultureSettings.CurrentCultureName, "global_total_extended_label"), WriteLineTextMode.Bold);
-                _genericThermalPrinter.WriteLine(extended);
+                _printer.WriteLine(GeneralUtils.GetResourceByName("global_total_extended_label"), WriteLineTextMode.Bold);
+                _printer.WriteLine(extended);
 
                 //Line Feed
-                _genericThermalPrinter.LineFeed();
+                _printer.LineFeed();
             }
             catch (Exception ex)
             {

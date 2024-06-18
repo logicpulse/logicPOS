@@ -355,10 +355,10 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             System.Drawing.Color colInsensitive = colNormal.Darken();
             System.Drawing.Color colSelected = System.Drawing.Color.FromArgb(125, 0, 0);
 
-            string _fontPosBackOfficeParent = LogicPOS.Settings.GeneralSettings.Settings["fontPosBackOfficeParent"];
-            string _fontPosBackOfficeChild = LogicPOS.Settings.GeneralSettings.Settings["fontPosBackOfficeChild"];
-            string _fontPosBackOfficeParentLowRes = LogicPOS.Settings.GeneralSettings.Settings["fontPosBackOfficeParentLowRes"];
-            string _fontPosBackOfficeChildLowRes = LogicPOS.Settings.GeneralSettings.Settings["fontPosBackOfficeChildLowRes"];
+            string _fontPosBackOfficeParent = GeneralSettings.Settings["fontPosBackOfficeParent"];
+            string _fontPosBackOfficeChild = GeneralSettings.Settings["fontPosBackOfficeChild"];
+            string _fontPosBackOfficeParentLowRes = GeneralSettings.Settings["fontPosBackOfficeParentLowRes"];
+            string _fontPosBackOfficeChildLowRes = GeneralSettings.Settings["fontPosBackOfficeChildLowRes"];
 
             Pango.FontDescription fontPosBackOfficeparentLowRes = Pango.FontDescription.FromString(_fontPosBackOfficeParentLowRes);
             Pango.FontDescription fontPosBackOfficeParent = Pango.FontDescription.FromString(_fontPosBackOfficeParent);

@@ -1,19 +1,19 @@
 ﻿using LogicPOS.DTOs.Printing;
-using LogicPOS.Globalization;
 using LogicPOS.Printing.Enums;
 using LogicPOS.Printing.Templates;
+using LogicPOS.Utility;
 using System;
 
 namespace LogicPOS.Printing.Documents
 {
-    public class InternalDocumentCashDrawer : BaseInternalTemplate
+    public class CashDrawer : BaseInternalTemplate
     {
         private readonly decimal _totalAmountInCashDrawer = 0.0m;
         private readonly decimal _movementAmount = 0.0m;
         private readonly string _movementDescription = string.Empty;
 
-        public InternalDocumentCashDrawer(
-            PrintingPrinterDto printer,
+        public CashDrawer(
+            PrinterDto printer,
             string pTicketTitle,
             decimal pTotalAmountInCashDrawer)
             : this(
@@ -23,8 +23,8 @@ namespace LogicPOS.Printing.Documents
                   0.0m)
         { }
 
-        public InternalDocumentCashDrawer(
-            PrintingPrinterDto printer,
+        public CashDrawer(
+            PrinterDto printer,
             string pTicketTitle,
             decimal pTotalAmountInCashDrawer,
             decimal pMovementAmount)
@@ -36,8 +36,8 @@ namespace LogicPOS.Printing.Documents
                   string.Empty)
         { }
 
-        public InternalDocumentCashDrawer(
-            PrintingPrinterDto printer,
+        public CashDrawer(
+            PrinterDto printer,
             string pTicketTitle,
             decimal pTotalAmountInCashDrawer,
             decimal pMovementAmount,
@@ -59,15 +59,15 @@ namespace LogicPOS.Printing.Documents
                 PrintTitles();
 
                 //Align Center
-                _genericThermalPrinter.SetAlignCenter();
+                _printer.SetAlignCenter();
 
                 PrintDocumentDetails();
 
                 //Reset to Left
-                _genericThermalPrinter.SetAlignLeft();
+                _printer.SetAlignLeft();
 
                 //Line Feed
-                _genericThermalPrinter.LineFeed();
+                _printer.LineFeed();
             }
             catch (Exception ex)
             {
@@ -77,20 +77,20 @@ namespace LogicPOS.Printing.Documents
 
         private void PrintDocumentDetails()
         {
-            _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(Settings.CultureSettings.CurrentCultureName, "global_total_cashdrawer"));
-            _genericThermalPrinter.WriteLine(LogicPOS.Utility.DataConversionUtils.DecimalToString(_totalAmountInCashDrawer), WriteLineTextMode.Big);
-            _genericThermalPrinter.LineFeed();
+            _printer.WriteLine(GeneralUtils.GetResourceByName("global_total_cashdrawer"));
+            _printer.WriteLine(DataConversionUtils.DecimalToString(_totalAmountInCashDrawer), WriteLineTextMode.Big);
+            _printer.LineFeed();
 
             if (_movementAmount < 0.0m || _movementAmount > 0.0m)
             {
-                _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(Settings.CultureSettings.CurrentCultureName, "global_movement_amount"));
-                _genericThermalPrinter.WriteLine(LogicPOS.Utility.DataConversionUtils.DecimalToString(_movementAmount), WriteLineTextMode.Big);
-                _genericThermalPrinter.LineFeed();
+                _printer.WriteLine(GeneralUtils.GetResourceByName("global_movement_amount"));
+                _printer.WriteLine(DataConversionUtils.DecimalToString(_movementAmount), WriteLineTextMode.Big);
+                _printer.LineFeed();
             }
 
             string description = (_movementDescription != string.Empty) ? _movementDescription : "________________________________";
-            _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(Settings.CultureSettings.CurrentCultureName, "global_description"));
-            _genericThermalPrinter.WriteLine(description);
+            _printer.WriteLine(GeneralUtils.GetResourceByName("global_description"));
+            _printer.WriteLine(description);
         }
     }
 }

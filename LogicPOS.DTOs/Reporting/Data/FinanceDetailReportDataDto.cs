@@ -1,7 +1,7 @@
 ﻿namespace LogicPOS.DTOs.Reporting
 {
 
-    public class FinanceDetailReportDto
+    public class FinanceDetailReportDataDto
     {
         public string Code { get; set; }
         public string Designation { get; set; }

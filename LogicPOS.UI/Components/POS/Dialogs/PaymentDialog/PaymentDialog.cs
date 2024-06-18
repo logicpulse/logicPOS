@@ -220,13 +220,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 Label labelTotal = new Label(GeneralUtils.GetResourceByName("global_total_price_to_pay") + ":");
                 Label labelDelivery = new Label(GeneralUtils.GetResourceByName("global_total_deliver") + ":");
                 Label labelChange = new Label(GeneralUtils.GetResourceByName("global_total_change") + ":");
-                _labelTotalValue = new Label(LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(ArticleBagFullPayment.TotalFinal, XPOSettings.ConfigurationSystemCurrency.Acronym))
+                _labelTotalValue = new Label(DataConversionUtils.DecimalToStringCurrency(ArticleBagFullPayment.TotalFinal, XPOSettings.ConfigurationSystemCurrency.Acronym))
                 {
                     //Total Width
                     WidthRequest = 135
                 };
-                _labelDeliveryValue = new Label(LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(0, XPOSettings.ConfigurationSystemCurrency.Acronym));
-                _labelChangeValue = new Label(LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(0, XPOSettings.ConfigurationSystemCurrency.Acronym));
+                _labelDeliveryValue = new Label(DataConversionUtils.DecimalToStringCurrency(0, XPOSettings.ConfigurationSystemCurrency.Acronym));
+                _labelChangeValue = new Label(DataConversionUtils.DecimalToStringCurrency(0, XPOSettings.ConfigurationSystemCurrency.Acronym));
 
                 //Colors
                 labelTotal.ModifyFg(StateType.Normal, Color.FromArgb(101, 137, 171).ToGdkColor());
@@ -279,7 +279,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //Customer Name
                 CriteriaOperator criteriaOperatorCustomerName = null;
                 /* IN009202 */
-                _entryBoxSelectCustomerName = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(_sourceWindow, GeneralUtils.GetResourceByName("global_customer"), "Name", "Name", null, criteriaOperatorCustomerName, KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, false);
+                _entryBoxSelectCustomerName = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(_sourceWindow, GeneralUtils.GetResourceByName("global_customer"), "Name", "Name", null, criteriaOperatorCustomerName, KeyboardMode.Alfa, RegexUtils.RegexAlfaNumericPlus, false);
                 _entryBoxSelectCustomerName.ClosePopup += delegate
                 {
                     //IN009284 POS - Pagamento conta-corrente - Cliente por defeito 
@@ -298,21 +298,21 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _entryBoxSelectCustomerName.EntryValidation.Changed += _entryBoxSelectCustomerName_Changed;
 
                 //Customer Discount
-                _entryBoxCustomerDiscount = new EntryBoxValidation(_sourceWindow, GeneralUtils.GetResourceByName("global_discount"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexPercentage, true);
-                _entryBoxCustomerDiscount.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.DecimalToString(0.0m);
+                _entryBoxCustomerDiscount = new EntryBoxValidation(_sourceWindow, GeneralUtils.GetResourceByName("global_discount"), KeyboardMode.Alfa, RegexUtils.RegexPercentage, true);
+                _entryBoxCustomerDiscount.EntryValidation.Text = DataConversionUtils.DecimalToString(0.0m);
                 _entryBoxCustomerDiscount.EntryValidation.Sensitive = false;
                 _entryBoxCustomerDiscount.EntryValidation.Changed += _entryBoxCustomerDiscount_Changed;
                 _entryBoxCustomerDiscount.EntryValidation.FocusOutEvent += delegate
                 {
-                    _entryBoxCustomerDiscount.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.StringToDecimalAndToStringAgain(_entryBoxCustomerDiscount.EntryValidation.Text);
+                    _entryBoxCustomerDiscount.EntryValidation.Text = DataConversionUtils.StringToDecimalAndToStringAgain(_entryBoxCustomerDiscount.EntryValidation.Text);
                 };
 
                 //Address
-                _entryBoxCustomerAddress = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_address"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, false);/* IN009253 */
+                _entryBoxCustomerAddress = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_address"), KeyboardMode.Alfa, RegexUtils.RegexAlfaNumericPlus, false);/* IN009253 */
                 _entryBoxCustomerAddress.EntryValidation.Changed += delegate { Validate(); };
 
                 //Locality
-                _entryBoxCustomerLocality = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_locality"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, false);/* IN009253 */
+                _entryBoxCustomerLocality = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_locality"), KeyboardMode.Alfa, RegexUtils.RegexAlfaNumericPlus, false);/* IN009253 */
                 _entryBoxCustomerLocality.EntryValidation.Changed += delegate { Validate(); };
 
                 //ZipCode
@@ -321,13 +321,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _entryBoxCustomerZipCode.EntryValidation.Changed += delegate { Validate(); };
 
                 //City
-                _entryBoxCustomerCity = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_city"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, false);/* IN009253 */
+                _entryBoxCustomerCity = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_city"), KeyboardMode.Alfa, RegexUtils.RegexAlfaNumericPlus, false);/* IN009253 */
                 _entryBoxCustomerCity.WidthRequest = 200;
                 _entryBoxCustomerCity.EntryValidation.Changed += delegate { Validate(); };
 
                 //Country
                 CriteriaOperator criteriaOperatorCustomerCountry = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1) AND (RegExFiscalNumber IS NOT NULL AND RegExZipCode IS NOT NULL)");
-                _entryBoxSelectCustomerCountry = new XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry>(pSourceWindow, GeneralUtils.GetResourceByName("global_country"), "Designation", "Oid", _intialValueConfigurationCountry, criteriaOperatorCustomerCountry, LogicPOS.Utility.RegexUtils.RegexGuid, true);
+                _entryBoxSelectCustomerCountry = new XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry>(pSourceWindow, GeneralUtils.GetResourceByName("global_country"), "Designation", "Oid", _intialValueConfigurationCountry, criteriaOperatorCustomerCountry, RegexUtils.RegexGuid, true);
                 _entryBoxSelectCustomerCountry.WidthRequest = 235;
                 //Extra Protection to prevent Customer without Country
                 if (_entryBoxSelectCustomerCountry.Value != null) _entryBoxSelectCustomerCountry.EntryValidation.Validate(_entryBoxSelectCustomerCountry.Value.Oid.ToString());
@@ -354,7 +354,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 //CardNumber
                 CriteriaOperator criteriaOperatorCardNumber = null;//Now Criteria is assigned in ApplyCriteriaToCustomerInputs();
-                _entryBoxSelectCustomerCardNumber = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(_sourceWindow, GeneralUtils.GetResourceByName("global_card_number"), "CardNumber", "CardNumber", null, criteriaOperatorCardNumber, KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false);
+                _entryBoxSelectCustomerCardNumber = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(_sourceWindow, GeneralUtils.GetResourceByName("global_card_number"), "CardNumber", "CardNumber", null, criteriaOperatorCardNumber, KeyboardMode.AlfaNumeric, RegexUtils.RegexAlfaNumericExtended, false);
                 _entryBoxSelectCustomerCardNumber.ClosePopup += delegate
                 {
                     if (_entryBoxSelectCustomerCardNumber.EntryValidation.Validated) GetCustomerDetails("CardNumber", _entryBoxSelectCustomerCardNumber.EntryValidation.Text);
@@ -362,7 +362,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 };
 
                 //Notes
-                _entryBoxCustomerNotes = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_notes"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false);
+                _entryBoxCustomerNotes = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_notes"), KeyboardMode.Alfa, RegexUtils.RegexAlfaNumericExtended, false);
                 _entryBoxCustomerNotes.EntryValidation.Changed += delegate { Validate(); };
 
                 //Fill Dialog Inputs with Defaults FinalConsumerEntity Values
@@ -382,8 +382,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     TotalChange = ProcessFinanceDocumentParameter.TotalChange;
                     DiscountGlobal = ProcessFinanceDocumentParameter.ArticleBag.DiscountGlobal;
                     // Update Visual Components
-                    _labelDeliveryValue.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalDelivery, XPOSettings.ConfigurationSystemCurrency.Acronym);
-                    _labelChangeValue.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalChange, XPOSettings.ConfigurationSystemCurrency.Acronym);
+                    _labelDeliveryValue.Text = DataConversionUtils.DecimalToStringCurrency(TotalDelivery, XPOSettings.ConfigurationSystemCurrency.Acronym);
+                    _labelChangeValue.Text = DataConversionUtils.DecimalToStringCurrency(TotalChange, XPOSettings.ConfigurationSystemCurrency.Acronym);
                     // Selects
                     Customer = XPOUtility.GetEntityById<erp_customer>(ProcessFinanceDocumentParameter.Customer);
                     Country = Customer.Country;

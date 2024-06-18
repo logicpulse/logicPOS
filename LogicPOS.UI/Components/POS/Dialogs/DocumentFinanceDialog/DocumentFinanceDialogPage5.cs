@@ -55,11 +55,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             _intialValueConfigurationCountry = XPOSettings.ConfigurationSystemCountry;
 
             //ShipFrom Address
-            EntryBoxShipFromAddressDetail = new EntryBoxValidation(_sourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_address"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, true);/* IN009253 */
+            EntryBoxShipFromAddressDetail = new EntryBoxValidation(_sourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_address"), KeyboardMode.Alfa, RegexUtils.RegexAlfaNumericPlus, true);/* IN009253 */
             EntryBoxShipFromAddressDetail.EntryValidation.Changed += delegate { Validate(); };
 
             //ShipFrom Region
-            EntryBoxShipFromRegion = new EntryBoxValidation(_sourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_region"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, false);/* IN009253 */
+            EntryBoxShipFromRegion = new EntryBoxValidation(_sourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_region"), KeyboardMode.Alfa, RegexUtils.RegexAlfaNumericPlus, false);/* IN009253 */
             EntryBoxShipFromRegion.EntryValidation.Changed += delegate { Validate(); };
 
             //ShipFrom PostalCode
@@ -67,7 +67,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             EntryBoxShipFromPostalCode.EntryValidation.Changed += delegate { Validate(); };
 
             //ShipFrom City
-            EntryBoxShipFromCity = new EntryBoxValidation(_sourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_city"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, true);/* IN009253 */
+            EntryBoxShipFromCity = new EntryBoxValidation(_sourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_city"), KeyboardMode.Alfa, RegexUtils.RegexAlfaNumericPlus, true);/* IN009253 */
             EntryBoxShipFromCity.EntryValidation.Changed += delegate { Validate(); };
 
             //ShipFrom Country
@@ -79,7 +79,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 "Oid",
                 _intialValueConfigurationCountry,
                 criteriaOperatorCustomerCountry,
-                LogicPOS.Utility.RegexUtils.RegexGuid,
+                RegexUtils.RegexGuid,
                 true);
 
             EntryBoxSelectShipFromCountry.EntryValidation.IsEditable = false;
@@ -92,7 +92,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             };
 
             //ShipFromDeliveryDate
-            EntryBoxShipFromDeliveryDate = new EntryBoxValidationDatePickerDialog(_sourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_ship_from_delivery_date"), _pagePad.DateTimeFormat, _pagePad.InitalDateTime, KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexDateTime, true, _pagePad.DateTimeFormat);
+            EntryBoxShipFromDeliveryDate = new EntryBoxValidationDatePickerDialog(_sourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_ship_from_delivery_date"), _pagePad.DateTimeFormat, _pagePad.InitalDateTime, KeyboardMode.AlfaNumeric, RegexUtils.RegexDateTime, true, _pagePad.DateTimeFormat);
             EntryBoxShipFromDeliveryDate.EntryValidation.Sensitive = true;
             EntryBoxShipFromDeliveryDate.EntryValidation.Text = XPOUtility.DateTimeToString(XPOUtility.CurrentDateTimeAtomic()).ToString();
             EntryBoxShipFromDeliveryDate.EntryValidation.Validate();
@@ -102,16 +102,16 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             EntryBoxShipFromDeliveryDate.ClosePopup += _entryBoxShipFromDeliveryDate_ClosePopup;
 
             //ShipFromDeliveryID
-            EntryBoxShipFromDeliveryID = new EntryBoxValidation(_sourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_ship_from_delivery_id"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false);
+            EntryBoxShipFromDeliveryID = new EntryBoxValidation(_sourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_ship_from_delivery_id"), KeyboardMode.Alfa, RegexUtils.RegexAlfaNumericExtended, false);
             EntryBoxShipFromDeliveryID.EntryValidation.Changed += delegate { Validate(); };
 
             //ShipFromWarehouseID
-            EntryBoxShipFromWarehouseID = new EntryBoxValidation(_sourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_ship_from_warehouse_id"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false);
+            EntryBoxShipFromWarehouseID = new EntryBoxValidation(_sourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_ship_from_warehouse_id"), KeyboardMode.Alfa, RegexUtils.RegexAlfaNumericExtended, false);
             EntryBoxShipFromWarehouseID.EntryValidation.MaxLength = 50;
             EntryBoxShipFromWarehouseID.EntryValidation.Changed += delegate { Validate(); };
 
             //ShipFromLocationID
-            EntryBoxShipFromLocationID = new EntryBoxValidation(_sourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_ship_from_location_id"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false);
+            EntryBoxShipFromLocationID = new EntryBoxValidation(_sourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_ship_from_location_id"), KeyboardMode.Alfa, RegexUtils.RegexAlfaNumericExtended, false);
             EntryBoxShipFromLocationID.EntryValidation.MaxLength = 30;
             EntryBoxShipFromLocationID.EntryValidation.Changed += delegate { Validate(); };
 

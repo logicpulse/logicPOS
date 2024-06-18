@@ -31,7 +31,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms.ToolBars
 				Properties.PdfToolStrip.btnFirstPageToolTipText,
 				Properties.PdfToolStrip.btnFirstPageImage,
 				btn_FirstPageClick,
-				System.Windows.Forms.ToolStripItemDisplayStyle.Image);
+                ToolStripItemDisplayStyle.Image);
 			this.Items.Add(btn);
 
 			btn = CreateButton("btnPreviousPage",
@@ -39,7 +39,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms.ToolBars
 				Properties.PdfToolStrip.btnPreviousPageToolTipText,
 				Properties.PdfToolStrip.btnPreviousPageImage,
 				btn_PreviousPageClick,
-				System.Windows.Forms.ToolStripItemDisplayStyle.Image);
+                ToolStripItemDisplayStyle.Image);
 			this.Items.Add(btn);
 
 			btn = CreateTextBox();
@@ -50,7 +50,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms.ToolBars
 				Properties.PdfToolStrip.btnNextPageToolTipText,
 				Properties.PdfToolStrip.btnNextPageImage,
 				btn_NextPageClick,
-				System.Windows.Forms.ToolStripItemDisplayStyle.Image);
+                ToolStripItemDisplayStyle.Image);
 			this.Items.Add(btn);
 
 			btn = CreateButton("btnLastPage",
@@ -58,7 +58,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms.ToolBars
 				Properties.PdfToolStrip.btnLastPageToolTipText,
 				Properties.PdfToolStrip.btnLastPageImage,
 				btn_LastPageClick,
-				System.Windows.Forms.ToolStripItemDisplayStyle.Image);
+                ToolStripItemDisplayStyle.Image);
 			this.Items.Add(btn);
 		}
 

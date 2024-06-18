@@ -83,13 +83,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private void InitUI1()
         {
             //EntryBoxValidation with KeyBoard Input
-            EntryBoxValidation entryBoxValidation = new EntryBoxValidation(this, "EntryBoxValidation", KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true);
+            EntryBoxValidation entryBoxValidation = new EntryBoxValidation(this, "EntryBoxValidation", KeyboardMode.Alfa, RegexUtils.RegexAlfaNumericExtended, true);
             entryBoxValidation.EntryValidation.Sensitive = false;
             entryBoxValidation.ButtonKeyBoard.Sensitive = false;
             _vbox.PackStart(entryBoxValidation, true, true, _padding);
 
             //EntryBoxValidation with KeyBoard Input and Custom Buttons : Start without KeyBoard, and KeyBoard Button After all Others
-            _entryBoxValidationCustomButton1 = new EntryBoxValidation(this, "EntryBoxValidationCustomButton", KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false);
+            _entryBoxValidationCustomButton1 = new EntryBoxValidation(this, "EntryBoxValidationCustomButton", KeyboardMode.None, RegexUtils.RegexAlfaNumericExtended, false);
             TouchButtonIcon customButton1 = _entryBoxValidationCustomButton1.AddButton("CustomButton1", @"Icons/Windows/icon_window_orders.png");
             TouchButtonIcon customButton2 = _entryBoxValidationCustomButton1.AddButton("CustomButton2", @"Icons/Windows/icon_window_pay_invoice.png");
             TouchButtonIcon customButton3 = _entryBoxValidationCustomButton1.AddButton("CustomButton3", @"Icons/Windows/icon_window_orders.png");
@@ -103,21 +103,21 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _vbox.PackStart(_entryBoxValidationCustomButton1, true, true, _padding);
 
             //EntryBoxValidationButton
-            EntryBoxValidationButton entryBoxValidationButton = new EntryBoxValidationButton(this, "EntryBoxValidationButton", KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true);
+            EntryBoxValidationButton entryBoxValidationButton = new EntryBoxValidationButton(this, "EntryBoxValidationButton", KeyboardMode.AlfaNumeric, RegexUtils.RegexAlfaNumericExtended, true);
             entryBoxValidationButton.Button.Clicked += customSharedButton_Clicked;
             _vbox.PackStart(entryBoxValidationButton, true, true, _padding);
 
             //Test XPOEntryBoxSelectRecordValidation without KeyBoard Input
             fin_documentfinancetype defaultValueDocumentFinanceType = XPOUtility.GetEntityById<fin_documentfinancetype>(InvoiceSettings.InvoiceId);
             CriteriaOperator criteriaOperatorDocumentFinanceType = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1)");
-            XPOEntryBoxSelectRecordValidation<fin_documentfinancetype, TreeViewDocumentFinanceType> entryBoxSelectDocumentFinanceType = new XPOEntryBoxSelectRecordValidation<fin_documentfinancetype, TreeViewDocumentFinanceType>(this, GeneralUtils.GetResourceByName("global_documentfinanceseries_documenttype"), "Designation", "Oid", defaultValueDocumentFinanceType, criteriaOperatorDocumentFinanceType, LogicPOS.Utility.RegexUtils.RegexGuid, true);
+            XPOEntryBoxSelectRecordValidation<fin_documentfinancetype, TreeViewDocumentFinanceType> entryBoxSelectDocumentFinanceType = new XPOEntryBoxSelectRecordValidation<fin_documentfinancetype, TreeViewDocumentFinanceType>(this, GeneralUtils.GetResourceByName("global_documentfinanceseries_documenttype"), "Designation", "Oid", defaultValueDocumentFinanceType, criteriaOperatorDocumentFinanceType, RegexUtils.RegexGuid, true);
             //entryBoxSelectDocumentFinanceType.EntryValidation.IsEditable = false;
             entryBoxSelectDocumentFinanceType.ClosePopup += delegate { };
             _vbox.PackStart(entryBoxSelectDocumentFinanceType, true, true, _padding);
 
             //Test XPOEntryBoxSelectRecordValidation with KeyBoard Input
             CriteriaOperator criteriaOperatorXPOEntryBoxSelectRecordValidationTextMode = null;
-            _xPOEntryBoxSelectRecordValidationTextMode = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(this, "XPOEntryBoxSelectRecordValidationTextMode", "Name", "Name", null, criteriaOperatorXPOEntryBoxSelectRecordValidationTextMode, KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false);
+            _xPOEntryBoxSelectRecordValidationTextMode = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(this, "XPOEntryBoxSelectRecordValidationTextMode", "Name", "Name", null, criteriaOperatorXPOEntryBoxSelectRecordValidationTextMode, KeyboardMode.AlfaNumeric, RegexUtils.RegexAlfaNumericExtended, false);
             //_xPOEntryBoxSelectRecordValidationTextMode.EntryValidation.Sensitive = false;
             //Start Disabled
             //_xPOEntryBoxSelectRecordValidationTextMode.ButtonKeyBoard.Sensitive = false;
@@ -126,13 +126,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             //Test XPOEntryBoxSelectRecordValidation without KeyBoard Input / Guid
             CriteriaOperator criteriaOperatorXPOEntryBoxSelectRecordValidationGuidMode = null;
-            XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer> xPOEntryBoxSelectRecordValidationGuidMode = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(this, "XPOEntryBoxSelectRecordValidationGuidMode", "Name", "Oid", null, criteriaOperatorXPOEntryBoxSelectRecordValidationGuidMode, KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexGuid, true);
+            XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer> xPOEntryBoxSelectRecordValidationGuidMode = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(this, "XPOEntryBoxSelectRecordValidationGuidMode", "Name", "Oid", null, criteriaOperatorXPOEntryBoxSelectRecordValidationGuidMode, KeyboardMode.None, RegexUtils.RegexGuid, true);
             _xPOEntryBoxSelectRecordValidationTextMode.ClosePopup += delegate { };
             _vbox.PackStart(xPOEntryBoxSelectRecordValidationGuidMode, true, true, _padding);
 
             //Test DateTime Picker
             DateTime initalDateTime = DateTime.Now;
-            EntryBoxValidationDatePickerDialog entryBoxShipToDeliveryDate = new EntryBoxValidationDatePickerDialog(this, GeneralUtils.GetResourceByName("global_ship_to_delivery_date"), "dateFormat", DateTime.Now, LogicPOS.Utility.RegexUtils.RegexDate, true, CultureSettings.DateFormat);
+            EntryBoxValidationDatePickerDialog entryBoxShipToDeliveryDate = new EntryBoxValidationDatePickerDialog(this, GeneralUtils.GetResourceByName("global_ship_to_delivery_date"), "dateFormat", DateTime.Now, RegexUtils.RegexDate, true, CultureSettings.DateFormat);
             //entryBoxShipToDeliveryDate.EntryValidation.Sensitive = true;
             entryBoxShipToDeliveryDate.EntryValidation.Text = initalDateTime.ToString(CultureSettings.DateFormat);
 
@@ -141,7 +141,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _vbox.PackStart(entryBoxShipToDeliveryDate, true, true, _padding);
 
             //Test DateTime Picker with KeyBoard
-            EntryBoxValidationDatePickerDialog entryBoxShipToDeliveryDateKeyboard = new EntryBoxValidationDatePickerDialog(this, GeneralUtils.GetResourceByName("global_ship_to_delivery_date"), CultureSettings.DateTimeFormat, DateTime.Now, KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexDateTime, true, CultureSettings.DateTimeFormat);
+            EntryBoxValidationDatePickerDialog entryBoxShipToDeliveryDateKeyboard = new EntryBoxValidationDatePickerDialog(this, GeneralUtils.GetResourceByName("global_ship_to_delivery_date"), CultureSettings.DateTimeFormat, DateTime.Now, KeyboardMode.AlfaNumeric, RegexUtils.RegexDateTime, true, CultureSettings.DateTimeFormat);
             entryBoxShipToDeliveryDateKeyboard.EntryValidation.Sensitive = false;
             entryBoxShipToDeliveryDateKeyboard.ButtonKeyBoard.Sensitive = false;
             //entryBoxShipToDeliveryDate.EntryValidation.Sensitive = true;
@@ -168,7 +168,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             //EntryMultiline entryTouchMultiline = new EntryMultiline(this, KeyboardMode.AlfaNumeric, SettingsApp.RegexAlfaNumericExtended, true, 100, 10);
             //vbox.PackStart(entryTouchMultiline, true, true, padding);
-            EntryBoxValidationMultiLine entryBoxMultiLine = new EntryBoxValidationMultiLine(this, "EntryBoxMultiLine", KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true, 18, 6) { HeightRequest = 200 };
+            EntryBoxValidationMultiLine entryBoxMultiLine = new EntryBoxValidationMultiLine(this, "EntryBoxMultiLine", KeyboardMode.AlfaNumeric, RegexUtils.RegexAlfaNumericExtended, true, 18, 6) { HeightRequest = 200 };
 
             //Start Disabled
             entryBoxMultiLine.EntryMultiline.Sensitive = false;

@@ -1,19 +1,17 @@
 ﻿using System;
 using LogicPOS.DTOs.Printing;
 
-//Used this to SubClass ThermalPrinterBaseInternalTemplate
 
 namespace LogicPOS.Printing.Templates
 {
     public class InternalDocumentTemplate : BaseInternalTemplate
     {
-        public InternalDocumentTemplate(PrintingPrinterDto printer)
+        public InternalDocumentTemplate(PrinterDto printer)
             : base(printer)
         {
             _ticketTitle = "DYNAMIC TITLE";
         }
 
-        //Override Parent Template
         public override void PrintContent()
         {
             try
@@ -22,16 +20,16 @@ namespace LogicPOS.Printing.Templates
                 PrintTitles();
                 
                 //Align Center
-                _genericThermalPrinter.SetAlignCenter();
+                _printer.SetAlignCenter();
 
                 //Content
-                _genericThermalPrinter.WriteLine("REPLACE CONTENT STUB");
+                _printer.WriteLine("REPLACE CONTENT STUB");
 
                 //Reset to Left
-                _genericThermalPrinter.SetAlignLeft();
+                _printer.SetAlignLeft();
 
                 //Line Feed
-                _genericThermalPrinter.LineFeed();
+                _printer.LineFeed();
             }
             catch (Exception ex)
             {

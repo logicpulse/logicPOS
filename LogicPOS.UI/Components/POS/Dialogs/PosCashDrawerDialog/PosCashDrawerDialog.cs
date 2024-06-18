@@ -70,7 +70,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 }
 
                 //Init Local Vars
-                string windowTitle = string.Format(GeneralUtils.GetResourceByName("window_title_dialog_cashdrawer"), LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalAmountInCashDrawer, XPOSettings.ConfigurationSystemCurrency.Acronym));
+                string windowTitle = string.Format(GeneralUtils.GetResourceByName("window_title_dialog_cashdrawer"), DataConversionUtils.DecimalToStringCurrency(TotalAmountInCashDrawer, XPOSettings.ConfigurationSystemCurrency.Acronym));
                 Size windowSize = new Size(462, 310);//400 With Other Payments
                 string fileDefaultWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_cash_drawer.png";
                 string fileActionPrint = PathsSettings.ImagesFolderLocation + @"Icons\Dialogs\icon_pos_dialog_action_print.png";
@@ -142,10 +142,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 MovementType.Token = initialButtonToken;
 
                 //EntryAmountMoney
-                _entryBoxMovementAmountMoney = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_money"), KeyboardMode.Money, LogicPOS.Utility.RegexUtils.RegexDecimalGreaterEqualThanZero, true);
+                _entryBoxMovementAmountMoney = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_money"), KeyboardMode.Money, RegexUtils.RegexDecimalGreaterEqualThanZero, true);
                 _entryBoxMovementAmountMoney.EntryValidation.Changed += delegate { ValidateDialog(); };
                 //Alteração no funcionamento do Inicio/fecho Sessão [IN:014330]
-                _entryBoxMovementAmountMoney.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.DecimalToString(TotalAmountInCashDrawer);
+                _entryBoxMovementAmountMoney.EntryValidation.Text = DataConversionUtils.DecimalToString(TotalAmountInCashDrawer);
 
                 //TODO: Enable Other Payments
                 //EntryAmountOtherPayments
@@ -153,7 +153,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //_entryBoxMovementAmountOtherPayments.EntryValidation.Changed += delegate { ValidateDialog(); };
 
                 //EntryDescription
-                _entryBoxMovementDescription = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_description"), KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false);
+                _entryBoxMovementDescription = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_description"), KeyboardMode.AlfaNumeric, RegexUtils.RegexAlfaNumericExtended, false);
                 _entryBoxMovementDescription.EntryValidation.Changed += delegate { ValidateDialog(); };
 
                 //VBox

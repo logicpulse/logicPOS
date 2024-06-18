@@ -1,6 +1,6 @@
 ﻿namespace LogicPOS.DTOs.Reporting
 {
-    public class FinanceMasterTotalViewReportDto 
+    public class FinanceMasterTotalViewReportDataDto 
     {
         public string Oid { get; set; }            
 

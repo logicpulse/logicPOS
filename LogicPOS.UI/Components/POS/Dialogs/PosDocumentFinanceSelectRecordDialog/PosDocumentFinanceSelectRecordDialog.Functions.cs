@@ -171,7 +171,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 //All
                 case "ALL":
-                    criteriaOperator = CriteriaOperator.Parse(string.Format("{0} DocumentType <> '{1}'", criteriaOperatorShared, DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput));
+                    criteriaOperator = CriteriaOperator.Parse(string.Format("{0} DocumentType <> '{1}'", criteriaOperatorShared, DocumentSettings.CurrentAccountInputId));
                     CriteriaOperatorBase = criteriaOperator;// IN009223 IN009227
 
                     var countResult = XPOSettings.Session.Evaluate(typeof(fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), CriteriaOperatorBase);
@@ -394,7 +394,7 @@ WHERE
                     break;
                 // CurrentAccount
                 case "CC":
-                    criteriaOperator = CriteriaOperator.Parse(string.Format("{0} DocumentType = '{1}' AND Payed = 0", criteriaOperatorShared, DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput));
+                    criteriaOperator = CriteriaOperator.Parse(string.Format("{0} DocumentType = '{1}' AND Payed = 0", criteriaOperatorShared, DocumentSettings.CurrentAccountInputId));
                     CriteriaOperatorBase = criteriaOperator;// IN009223 IN009227
 
                     countResult = XPOSettings.Session.Evaluate(typeof(fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), CriteriaOperatorBase);
@@ -660,7 +660,7 @@ WHERE
                 string showResults = string.Format(GeneralUtils.GetResourceByName("window_title_show_results"), nDocs, countResult);
 
                 //Finish Updating Title
-                _dialogDocumentFinanceMaster.WindowTitle = (TotalDialogFinanceMasterDocuments != 0) ? string.Format("{0} :: {1} - {2}", windowTitleDefault, LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalDialogFinanceMasterDocuments, XPOSettings.ConfigurationSystemCurrency.Acronym), showResults) : string.Format("{0} :: {1}", windowTitleDefault, showResults);
+                _dialogDocumentFinanceMaster.WindowTitle = (TotalDialogFinanceMasterDocuments != 0) ? string.Format("{0} :: {1} - {2}", windowTitleDefault, DataConversionUtils.DecimalToStringCurrency(TotalDialogFinanceMasterDocuments, XPOSettings.ConfigurationSystemCurrency.Acronym), showResults) : string.Format("{0} :: {1}", windowTitleDefault, showResults);
             }
             catch (Exception ex)
             {
@@ -958,7 +958,7 @@ WHERE
 			                    {filterField} = '{CustomDocumentSettings.CreditNoteId}' OR 
 			                    {filterField} = '{DocumentSettings.PaymentDocumentTypeId}' 
 			                    OR 
-			                    {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput}'
+			                    {filterField} = '{DocumentSettings.CurrentAccountInputId}'
 			                    )".Replace(Environment.NewLine, string.Empty);
                         /* IN009089 - # TO DO: above, we need to check with business this condition:  {filterField} = '{SettingsApp.XpoOidDocumentFinanceTypeCurrentAccountInput}' */
 
@@ -1339,7 +1339,7 @@ WHERE
                     GeneralSettings.PreferenceParameters,
                     customTokensDictionary
                 };
-                string mailBody = LogicPOS.Utility.StringUtils.ReplaceTextTokens(mailBodyTemplate, tokensDictionaryList);
+                string mailBody = StringUtils.ReplaceTextTokens(mailBodyTemplate, tokensDictionaryList);
 
                 PosSendEmailDialog dialog = new PosSendEmailDialog(
                     pSourceWindow,
@@ -1561,7 +1561,7 @@ WHERE
                         string fileWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_input_text_default.png";
 
                         //Call Request Motive Dialog
-                        dialogResponse = logicpos.Utils.GetInputText(pDialog, DialogFlags.Modal, fileWindowIcon, string.Format(GeneralUtils.GetResourceByName("global_cancel_document_input_text_label"), documentMaster.DocumentNumber), string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtendedForMotive, true);
+                        dialogResponse = logicpos.Utils.GetInputText(pDialog, DialogFlags.Modal, fileWindowIcon, string.Format(GeneralUtils.GetResourceByName("global_cancel_document_input_text_label"), documentMaster.DocumentNumber), string.Empty, RegexUtils.RegexAlfaNumericExtendedForMotive, true);
 
                         if (dialogResponse.ResponseType == ResponseType.Ok)
                         {
@@ -2282,7 +2282,7 @@ WHERE
 			                    {filterField} = '{CustomDocumentSettings.CreditNoteId}' OR 
 			                    {filterField} = '{DocumentSettings.PaymentDocumentTypeId}' 
 			                    OR 
-			                    {filterField} = '{DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput}'
+			                    {filterField} = '{DocumentSettings.CurrentAccountInputId}'
 			                    )".Replace(Environment.NewLine, string.Empty);
                             /* IN009089 - # TO DO: above, we need to check with business this condition:  {filterField} = '{SettingsApp.XpoOidDocumentFinanceTypeCurrentAccountInput}' */
 
@@ -2434,7 +2434,7 @@ WHERE
                     {
                         string fileWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_input_text_default.png";
 
-                        dialogResponse = logicpos.Utils.GetInputText(pDialog, DialogFlags.Modal, fileWindowIcon, string.Format(GeneralUtils.GetResourceByName("global_cancel_document_input_text_label"), document.PaymentRefNo), string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtendedForMotive, true);
+                        dialogResponse = logicpos.Utils.GetInputText(pDialog, DialogFlags.Modal, fileWindowIcon, string.Format(GeneralUtils.GetResourceByName("global_cancel_document_input_text_label"), document.PaymentRefNo), string.Empty, RegexUtils.RegexAlfaNumericExtendedForMotive, true);
                         if (dialogResponse.ResponseType == ResponseType.Ok)
                         {
                             //_logger.Debug(string.Format("PaymentRefNo:[{0}], DocumentStatusStatus:[{1}], reason:[{2}]", document.PaymentRefNo, document.PaymentStatus, dialogResponse.InputText));

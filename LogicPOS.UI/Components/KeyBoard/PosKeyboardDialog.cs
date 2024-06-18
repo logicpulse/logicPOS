@@ -85,8 +85,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public static decimal RequestDecimalValue(Window pSourceWindow, decimal pDefaultValue, bool pUseDefaultValue = true)
         {
             decimal result;
-            string regexDecimalGreaterThanZero = LogicPOS.Utility.RegexUtils.RegexDecimalGreaterThanZero;
-            string defaultValue = (pUseDefaultValue) ? LogicPOS.Utility.DataConversionUtils.DecimalToString(pDefaultValue) : string.Empty;
+            string regexDecimalGreaterThanZero = RegexUtils.RegexDecimalGreaterThanZero;
+            string defaultValue = (pUseDefaultValue) ? DataConversionUtils.DecimalToString(pDefaultValue) : string.Empty;
 
             PosKeyboardDialog dialog = new PosKeyboardDialog(pSourceWindow, DialogFlags.DestroyWithParent, KeyboardMode.Numeric, defaultValue, regexDecimalGreaterThanZero);
             int response = dialog.Run();
@@ -107,7 +107,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public static string RequestAlfaNumericValue(Window pSourceWindow, KeyboardMode pKeyboardMode, string pDefaultValue, bool pUseDefaultValue = true)
         {
             string result;
-            string regexAlfaNumeric = LogicPOS.Utility.RegexUtils.RegexAlfaNumeric;
+            string regexAlfaNumeric = RegexUtils.RegexAlfaNumeric;
             string defaultValue = (pUseDefaultValue) ? pDefaultValue : string.Empty;
 
             PosKeyboardDialog dialog = new PosKeyboardDialog(pSourceWindow, DialogFlags.DestroyWithParent, pKeyboardMode, defaultValue, regexAlfaNumeric);

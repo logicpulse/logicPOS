@@ -59,16 +59,17 @@
     <Compile Include="Enums\WorkSessionMovementResumeQueryMode.cs" />
     <Compile Include="Enums\WriteLineTextMode.cs" />
     <Compile Include="Common\GenericThermalPrinter.cs" />
+    <Compile Include="ThermalPrinter\Documents\WorkSession.DataTableGroupProperties.cs" />
     <Compile Include="Tickets\TicketColumn.cs" />
     <Compile Include="ThermalPrinter\Templates\InternalDocumentTemplate.cs" />
     <Compile Include="ThermalPrinter\Templates\BaseFinanceTemplate.cs" />
     <Compile Include="ThermalPrinter\Templates\BaseInternalTemplate.cs" />
-    <Compile Include="ThermalPrinter\Templates\BaseTemplate.cs" />
-    <Compile Include="ThermalPrinter\Documents\FinanceDocumentMaster.cs" />
-    <Compile Include="ThermalPrinter\Documents\FinanceDocumentPayment.cs" />
-    <Compile Include="ThermalPrinter\Documents\InternalDocumentCashDrawer.cs" />
-    <Compile Include="ThermalPrinter\Documents\InternalDocumentOrderRequest.cs" />
-    <Compile Include="ThermalPrinter\Documents\InternalDocumentWorkSession.cs" />
+    <Compile Include="ThermalPrinter\Templates\Template.cs" />
+    <Compile Include="ThermalPrinter\Documents\FinanceMaster.cs" />
+    <Compile Include="ThermalPrinter\Documents\FinancePayment.cs" />
+    <Compile Include="ThermalPrinter\Documents\CashDrawer.cs" />
+    <Compile Include="ThermalPrinter\Documents\OrderRequest.cs" />
+    <Compile Include="ThermalPrinter\Documents\WorkSessionPrinter.cs" />
     <Compile Include="Tickets\TicketTable.cs">
       <SubType>Component</SubType>
     </Compile>

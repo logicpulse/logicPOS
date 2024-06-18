@@ -564,7 +564,7 @@ namespace LogicPOS.Data.XPO.Utility
                     //:::: Notification : CurrentAccountDocumentsToInvoice ::::
                     //ProcessFinanceDocumentToInvoice to Create Notification in Spool for CurrentAccount Documents
                     //systemNotificationType = (SystemNotificationType)pSession.GetObjectByKey(typeof(SystemNotificationType), SettingsApp.XpoOidSystemNotificationTypeCurrentAccountDocumentsToInvoice);
-                    systemNotification = ProcessFinanceDocumentToInvoice(xpoSession, NotificationSettings.XpoOidSystemNotificationTypeCurrentAccountDocumentsToInvoice, DocumentSettings.XpoOidDocumentFinanceTypeCurrentAccountInput, "(Payed = 0 OR Payed IS NULL)", defaultBackDaysForInvoice);
+                    systemNotification = ProcessFinanceDocumentToInvoice(xpoSession, NotificationSettings.XpoOidSystemNotificationTypeCurrentAccountDocumentsToInvoice, DocumentSettings.CurrentAccountInputId, "(Payed = 0 OR Payed IS NULL)", defaultBackDaysForInvoice);
                     if (systemNotification != null)
                     {
                         systemNotification.Ord = ord; systemNotification.Save();

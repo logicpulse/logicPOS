@@ -8,9 +8,9 @@ namespace LogicPOS.Data.XPO.Utility
 {
     public static class MappingUtils
     {
-        public static PrintingPrinterDto GetPrinterDto(sys_configurationprinters printer)
+        public static PrinterDto GetPrinterDto(sys_configurationprinters printer)
         {
-            return new PrintingPrinterDto
+            return new PrinterDto
             {
                 Id = printer.Oid,
                 Designation = printer.Designation,

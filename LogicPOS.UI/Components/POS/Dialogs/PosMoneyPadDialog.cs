@@ -42,7 +42,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             string windowTitle;
             if (pTotalOrder > 0)
             {
-                windowTitle = string.Format("{0} - {1} : {2}", GeneralUtils.GetResourceByName("window_title_dialog_moneypad"), GeneralUtils.GetResourceByName("global_total_table_tickets"), LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(pTotalOrder, XPOSettings.ConfigurationSystemCurrency.Acronym));
+                windowTitle = string.Format("{0} - {1} : {2}", GeneralUtils.GetResourceByName("window_title_dialog_moneypad"), GeneralUtils.GetResourceByName("global_total_table_tickets"), DataConversionUtils.DecimalToStringCurrency(pTotalOrder, XPOSettings.ConfigurationSystemCurrency.Acronym));
             }
             else
             {
@@ -122,7 +122,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             ResponseType resultResponse;
             decimal resultValue = -1.0m;
-            string defaultValue = LogicPOS.Utility.DataConversionUtils.DecimalToString(pInitialValue);
+            string defaultValue = DataConversionUtils.DecimalToString(pInitialValue);
 
             PosMoneyPadDialog dialog;
 

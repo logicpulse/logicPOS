@@ -1,13 +1,13 @@
 ﻿using LogicPOS.DTOs.Printing;
-using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using LogicPOS.Utility;
 using System;
 
 namespace LogicPOS.Printing.Templates
 {
-    public abstract class BaseInternalTemplate : BaseTemplate
+    public abstract class BaseInternalTemplate : Template
     {
-        public BaseInternalTemplate(PrintingPrinterDto printer)
+        public BaseInternalTemplate(PrinterDto printer)
             : base(
                   printer,
                   PrintingSettings.ThermalPrinter.CompanyLogoLocation)
@@ -47,19 +47,19 @@ namespace LogicPOS.Printing.Templates
         public void PrintFooterExtended()
         {
             //Align Center
-            _genericThermalPrinter.SetAlignCenter();
+            _printer.SetAlignCenter();
 
             //Extended Footer Text
-            _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_internal_document_footer1"));
-            _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_internal_document_footer2"));
-            _genericThermalPrinter.LineFeed();
-            _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_internal_document_footer3"));
+            _printer.WriteLine(GeneralUtils.GetResourceByName("global_internal_document_footer1"));
+            _printer.WriteLine(GeneralUtils.GetResourceByName("global_internal_document_footer2"));
+            _printer.LineFeed();
+            _printer.WriteLine(GeneralUtils.GetResourceByName("global_internal_document_footer3"));
 
             //Reset to Left
-            _genericThermalPrinter.SetAlignLeft();
+            _printer.SetAlignLeft();
 
             //Line Feed
-            _genericThermalPrinter.LineFeed();
+            _printer.LineFeed();
         }
     }
 }

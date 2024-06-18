@@ -45,7 +45,7 @@ namespace LogicPOS.Shared.CustomDocument
                 CultureSettings.CurrentCultureName,
                 "global_documentfinance_type_title_gr"),
             CustomDocumentSettings.DeliveryNoteDocumentTypeId,
-            LogicPOS.Domain.Enums.DocumentType.WayBill,
+            Domain.Enums.DocumentType.WayBill,
             "GR",
             false,
             true,

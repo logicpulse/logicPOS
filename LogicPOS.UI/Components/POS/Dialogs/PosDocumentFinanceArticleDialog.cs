@@ -123,7 +123,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             string fileDefaultWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_finance_article.png";
 
             //Get Discount from Select Customer
-            DiscountGlobal = LogicPOS.Utility.DataConversionUtils.StringToDecimal(((pSourceWindow as PosDocumentFinanceDialog).PagePad.Pages[1] as DocumentFinanceDialogPage2).EntryBoxCustomerDiscount.EntryValidation.Text);
+            DiscountGlobal = DataConversionUtils.StringToDecimal(((pSourceWindow as PosDocumentFinanceDialog).PagePad.Pages[1] as DocumentFinanceDialogPage2).EntryBoxCustomerDiscount.EntryValidation.Text);
             //Get PriceType from Customer
             var customerObject = ((pSourceWindow as PosDocumentFinanceDialog).PagePad.Pages[1] as DocumentFinanceDialogPage2).EntryBoxSelectCustomerName;
             if (customerObject.Value != null)
@@ -172,12 +172,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Default Values (INSERT)
             fin_article initialValueSelectArticle = (_dataSourceRow["Article.Code"] as fin_article);
 
-            string initialValuePrice = LogicPOS.Utility.DataConversionUtils.DecimalToString(0);
-            string initialValuePriceDisplay = LogicPOS.Utility.DataConversionUtils.DecimalToString(0);
-            string initialValueQuantity = LogicPOS.Utility.DataConversionUtils.DecimalToString(0);
-            string initialValueDiscount = LogicPOS.Utility.DataConversionUtils.DecimalToString(0);
-            string initialValueTotalNet = LogicPOS.Utility.DataConversionUtils.DecimalToString(0);
-            string initialValueTotalFinal = LogicPOS.Utility.DataConversionUtils.DecimalToString(0);
+            string initialValuePrice = DataConversionUtils.DecimalToString(0);
+            string initialValuePriceDisplay = DataConversionUtils.DecimalToString(0);
+            string initialValueQuantity = DataConversionUtils.DecimalToString(0);
+            string initialValueDiscount = DataConversionUtils.DecimalToString(0);
+            string initialValueTotalNet = DataConversionUtils.DecimalToString(0);
+            string initialValueTotalFinal = DataConversionUtils.DecimalToString(0);
             string initialValueNotes = string.Empty;
             fin_configurationvatrate initialValueSelectConfigurationVatRate = (fin_configurationvatrate)XPOSettings.Session.GetObjectByKey(typeof(fin_configurationvatrate), XPOSettings.XpoOidArticleDefaultVatDirectSelling);
             fin_configurationvatexemptionreason initialValueSelectConfigurationVatExemptionReason = null;
@@ -186,20 +186,20 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             if (initialValueSelectArticle != null && initialValueSelectArticle.Oid != Guid.Empty)
             {
                 //Always display Values from DataRow, for Both INSERT and UPDATE Modes, We Have defaults comming from ColumnProperties
-                initialValuePrice = LogicPOS.Utility.DataConversionUtils.StringToDecimalAndToStringAgain(_dataSourceRow["Price"].ToString());
-                initialValuePriceDisplay = LogicPOS.Utility.DataConversionUtils.StringToDecimalAndToStringAgain(_dataSourceRow["PriceDisplay"].ToString());
-                initialValueQuantity = LogicPOS.Utility.DataConversionUtils.StringToDecimalAndToStringAgain(_dataSourceRow["Quantity"].ToString());
-                initialValueDiscount = LogicPOS.Utility.DataConversionUtils.StringToDecimalAndToStringAgain(_dataSourceRow["Discount"].ToString());
-                initialValueTotalNet = LogicPOS.Utility.DataConversionUtils.StringToDecimalAndToStringAgain(_dataSourceRow["TotalNet"].ToString());
-                initialValueTotalFinal = LogicPOS.Utility.DataConversionUtils.StringToDecimalAndToStringAgain(_dataSourceRow["TotalFinal"].ToString());
+                initialValuePrice = DataConversionUtils.StringToDecimalAndToStringAgain(_dataSourceRow["Price"].ToString());
+                initialValuePriceDisplay = DataConversionUtils.StringToDecimalAndToStringAgain(_dataSourceRow["PriceDisplay"].ToString());
+                initialValueQuantity = DataConversionUtils.StringToDecimalAndToStringAgain(_dataSourceRow["Quantity"].ToString());
+                initialValueDiscount = DataConversionUtils.StringToDecimalAndToStringAgain(_dataSourceRow["Discount"].ToString());
+                initialValueTotalNet = DataConversionUtils.StringToDecimalAndToStringAgain(_dataSourceRow["TotalNet"].ToString());
+                initialValueTotalFinal = DataConversionUtils.StringToDecimalAndToStringAgain(_dataSourceRow["TotalFinal"].ToString());
                 initialValueSelectConfigurationVatRate = (_dataSourceRow["ConfigurationVatRate.Value"] as fin_configurationvatrate);
                 initialValueSelectConfigurationVatExemptionReason = (_dataSourceRow["VatExemptionReason.Acronym"] as fin_configurationvatexemptionreason);
                 initialValueNotes = _dataSourceRow["Notes"].ToString();
                 //Required, Else Wrong Calculation in UPDATES, when Price is not Defined : 
                 //Reverse Price if not in default System Currency, else use value from Input
                 _articlePrice = (_currencyDefaultSystem == _currencyDisplay)
-                    ? LogicPOS.Utility.DataConversionUtils.StringToDecimal(initialValuePriceDisplay)
-                    : (LogicPOS.Utility.DataConversionUtils.StringToDecimal(initialValuePriceDisplay) / _currencyDisplay.ExchangeRate)
+                    ? DataConversionUtils.StringToDecimal(initialValuePriceDisplay)
+                    : (DataConversionUtils.StringToDecimal(initialValuePriceDisplay) / _currencyDisplay.ExchangeRate)
                 ;
             }
 
@@ -342,14 +342,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 {
                     //Reverse Price if not in default System Currency, else use value from Input
                     _articlePrice = (_currencyDefaultSystem == _currencyDisplay)
-                        ? LogicPOS.Utility.DataConversionUtils.StringToDecimal(_entryBoxValidationPriceDisplay.EntryValidation.Text)
-                        : (LogicPOS.Utility.DataConversionUtils.StringToDecimal(_entryBoxValidationPriceDisplay.EntryValidation.Text) / _currencyDisplay.ExchangeRate);
+                        ? DataConversionUtils.StringToDecimal(_entryBoxValidationPriceDisplay.EntryValidation.Text)
+                        : (DataConversionUtils.StringToDecimal(_entryBoxValidationPriceDisplay.EntryValidation.Text) / _currencyDisplay.ExchangeRate);
                     //Assign to System Currency Price
-                    _entryBoxValidationPrice.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.DecimalToString(_articlePrice);
+                    _entryBoxValidationPrice.EntryValidation.Text = DataConversionUtils.DecimalToString(_articlePrice);
                     UpdatePriceProperties();
                 }
             };
-            _entryBoxValidationPriceDisplay.EntryValidation.FocusOutEvent += delegate { _entryBoxValidationPriceDisplay.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.StringToDecimalAndToStringAgain(_entryBoxValidationPriceDisplay.EntryValidation.Text); };
+            _entryBoxValidationPriceDisplay.EntryValidation.FocusOutEvent += delegate { _entryBoxValidationPriceDisplay.EntryValidation.Text = DataConversionUtils.StringToDecimalAndToStringAgain(_entryBoxValidationPriceDisplay.EntryValidation.Text); };
 
             //Start with _articlePrice Assigned: DISABLED
             //_articlePrice = (_currencyDefaultSystem == _currencyDisplay) 
@@ -379,7 +379,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 try
                 {
-                    _entryBoxValidationQuantity.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.StringToDecimalAndToStringAgain(_entryBoxValidationQuantity.EntryValidation.Text);
+                    _entryBoxValidationQuantity.EntryValidation.Text = DataConversionUtils.StringToDecimalAndToStringAgain(_entryBoxValidationQuantity.EntryValidation.Text);
                 }
                 catch (Exception Ex)
                 {
@@ -395,7 +395,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _crudWidgetList.Add(_crudWidgetDiscount);
             //Events
             _entryBoxValidationDiscount.EntryValidation.Changed += delegate { UpdatePriceProperties(); };
-            _entryBoxValidationDiscount.EntryValidation.FocusOutEvent += delegate { _entryBoxValidationDiscount.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.StringToDecimalAndToStringAgain(_entryBoxValidationDiscount.EntryValidation.Text); };
+            _entryBoxValidationDiscount.EntryValidation.FocusOutEvent += delegate { _entryBoxValidationDiscount.EntryValidation.Text = DataConversionUtils.StringToDecimalAndToStringAgain(_entryBoxValidationDiscount.EntryValidation.Text); };
 
             //TotalNet
             _entryBoxValidationTotalNet = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_total_article_tab"), KeyboardMode.None);/* IN009206 */
@@ -469,7 +469,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _crudWidgetList.Add(new GenericCRUDWidgetDataTable(_entryBoxValidationToken2, new Label(), _dataSourceRow, "Token2"));
 
             //Notes
-            _entryBoxValidationNotes = new EntryBoxValidation(this, "Notes", KeyboardMode.AlfaNumeric, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false);
+            _entryBoxValidationNotes = new EntryBoxValidation(this, "Notes", KeyboardMode.AlfaNumeric, RegexUtils.RegexAlfaNumericExtended, false);
             _entryBoxValidationNotes.EntryValidation.Text = initialValueNotes;
             _crudWidgetList.Add(new GenericCRUDWidgetDataTable(_entryBoxValidationNotes, new Label(), _dataSourceRow, "Notes"));
 
@@ -598,9 +598,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             //Guid vatExemptionReasonOid = Guid.Parse((_dataSourceRow["VatExemptionReason.value"].ToString()).ToString());
                             _article.Code = _entryBoxSelectArticleCode.Entry.Text;
                             _article.Designation = _entryBoxSelectArticle.Entry.Text;
-                            _article.Price1 = LogicPOS.Utility.DataConversionUtils.StringToDecimal(_dataSourceRow["Price"].ToString());
+                            _article.Price1 = DataConversionUtils.StringToDecimal(_dataSourceRow["Price"].ToString());
                             _article.PriceWithVat = false;
-                            _article.Discount = LogicPOS.Utility.DataConversionUtils.StringToDecimal(_dataSourceRow["Discount"].ToString());
+                            _article.Discount = DataConversionUtils.StringToDecimal(_dataSourceRow["Discount"].ToString());
                             _article.VatDirectSelling = (fin_configurationvatrate)XPOSettings.Session.GetObjectByKey(typeof(fin_configurationvatrate), _entryBoxSelectVatRate.Value.Oid);
                             _article.VatOnTable = _article.VatDirectSelling;
                             if (_entryBoxSelectVatExemptionReason.Value != null)
@@ -719,10 +719,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         _articlePrice = priceProperties.PriceNet;
                         _dataSourceRow["PriceFinal"] = priceProperties.PriceNet;
                         //Display Price
-                        _entryBoxValidationPrice.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.DecimalToString(_articlePrice);
-                        _entryBoxValidationPriceDisplay.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.DecimalToString(_articlePrice * _currencyDisplay.ExchangeRate);
-                        _entryBoxValidationQuantity.EntryValidation.Text = (article.DefaultQuantity > 0) ? LogicPOS.Utility.DataConversionUtils.DecimalToString(article.DefaultQuantity) : LogicPOS.Utility.DataConversionUtils.DecimalToString(1.0m);
-                        _entryBoxValidationDiscount.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.DecimalToString(article.Discount);
+                        _entryBoxValidationPrice.EntryValidation.Text = DataConversionUtils.DecimalToString(_articlePrice);
+                        _entryBoxValidationPriceDisplay.EntryValidation.Text = DataConversionUtils.DecimalToString(_articlePrice * _currencyDisplay.ExchangeRate);
+                        _entryBoxValidationQuantity.EntryValidation.Text = (article.DefaultQuantity > 0) ? DataConversionUtils.DecimalToString(article.DefaultQuantity) : DataConversionUtils.DecimalToString(1.0m);
+                        _entryBoxValidationDiscount.EntryValidation.Text = DataConversionUtils.DecimalToString(article.Discount);
 
                         //VatRate
                         _entryBoxSelectVatRate.Value = article.VatDirectSelling;
@@ -733,10 +733,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         _articlePrice = priceProperties.PriceNet;
                         _dataSourceRow["PriceFinal"] = priceProperties.PriceNet;
                         //Display Price
-                        _entryBoxValidationPrice.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.DecimalToString(_articlePrice);
-                        _entryBoxValidationPriceDisplay.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.DecimalToString(_articlePrice * _currencyDisplay.ExchangeRate);
-                        _entryBoxValidationQuantity.EntryValidation.Text = (article.DefaultQuantity > 0) ? LogicPOS.Utility.DataConversionUtils.DecimalToString(article.DefaultQuantity) : LogicPOS.Utility.DataConversionUtils.DecimalToString(1.0m);
-                        _entryBoxValidationDiscount.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.DecimalToString(article.Discount);
+                        _entryBoxValidationPrice.EntryValidation.Text = DataConversionUtils.DecimalToString(_articlePrice);
+                        _entryBoxValidationPriceDisplay.EntryValidation.Text = DataConversionUtils.DecimalToString(_articlePrice * _currencyDisplay.ExchangeRate);
+                        _entryBoxValidationQuantity.EntryValidation.Text = (article.DefaultQuantity > 0) ? DataConversionUtils.DecimalToString(article.DefaultQuantity) : DataConversionUtils.DecimalToString(1.0m);
+                        _entryBoxValidationDiscount.EntryValidation.Text = DataConversionUtils.DecimalToString(article.Discount);
 
 
                         //VatRate
@@ -878,10 +878,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         _articlePrice = priceProperties.PriceNet;
                         _dataSourceRow["PriceFinal"] = priceProperties.PriceNet;
                         //Display Price
-                        _entryBoxValidationPrice.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.DecimalToString(_articlePrice);
-                        _entryBoxValidationPriceDisplay.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.DecimalToString(_articlePrice * _currencyDisplay.ExchangeRate);
-                        _entryBoxValidationQuantity.EntryValidation.Text = (article.DefaultQuantity > 0) ? LogicPOS.Utility.DataConversionUtils.DecimalToString(article.DefaultQuantity) : LogicPOS.Utility.DataConversionUtils.DecimalToString(1.0m);
-                        _entryBoxValidationDiscount.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.DecimalToString(article.Discount);
+                        _entryBoxValidationPrice.EntryValidation.Text = DataConversionUtils.DecimalToString(_articlePrice);
+                        _entryBoxValidationPriceDisplay.EntryValidation.Text = DataConversionUtils.DecimalToString(_articlePrice * _currencyDisplay.ExchangeRate);
+                        _entryBoxValidationQuantity.EntryValidation.Text = (article.DefaultQuantity > 0) ? DataConversionUtils.DecimalToString(article.DefaultQuantity) : DataConversionUtils.DecimalToString(1.0m);
+                        _entryBoxValidationDiscount.EntryValidation.Text = DataConversionUtils.DecimalToString(article.Discount);
 
 
                         //VatRate
@@ -989,11 +989,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _entryBoxSelectArticleSubFamily.ButtonSelectValue.Sensitive = false;
 
 
-                _entryBoxValidationPrice.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.DecimalToString(0.00m);
-                _entryBoxValidationPriceDisplay.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.DecimalToString(0.00m);
-                _entryBoxValidationQuantity.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.DecimalToString(0.00m);
-                _entryBoxValidationTotalNet.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.DecimalToString(0.00m);
-                _entryBoxValidationTotalFinal.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.DecimalToString(0.00m);
+                _entryBoxValidationPrice.EntryValidation.Text = DataConversionUtils.DecimalToString(0.00m);
+                _entryBoxValidationPriceDisplay.EntryValidation.Text = DataConversionUtils.DecimalToString(0.00m);
+                _entryBoxValidationQuantity.EntryValidation.Text = DataConversionUtils.DecimalToString(0.00m);
+                _entryBoxValidationTotalNet.EntryValidation.Text = DataConversionUtils.DecimalToString(0.00m);
+                _entryBoxValidationTotalFinal.EntryValidation.Text = DataConversionUtils.DecimalToString(0.00m);
                 _entryBoxValidationToken1.EntryValidation.Text = string.Empty;
                 _entryBoxValidationToken2.EntryValidation.Text = string.Empty;
                 _entryBoxValidationNotes.EntryValidation.Text = string.Empty;
@@ -1067,8 +1067,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     PricePropertiesSourceMode.FromPriceUser,
                     false, //PriceWithVat : Always use PricesWithoutVat in Invoices
                     _articlePrice,
-                    LogicPOS.Utility.DataConversionUtils.StringToDecimal(_entryBoxValidationQuantity.EntryValidation.Text),
-                    LogicPOS.Utility.DataConversionUtils.StringToDecimal(_entryBoxValidationDiscount.EntryValidation.Text),
+                    DataConversionUtils.StringToDecimal(_entryBoxValidationQuantity.EntryValidation.Text),
+                    DataConversionUtils.StringToDecimal(_entryBoxValidationDiscount.EntryValidation.Text),
                     DiscountGlobal,
                     _entryBoxSelectVatRate.Value.Value
                 );
@@ -1078,13 +1078,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 //Update UI / Display with ExchangeRate
                 /* IN009235 */
-                _entryBoxValidationTotalNet.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.DecimalToString(priceProperties.TotalNetBeforeDiscountGlobal * _currencyDisplay.ExchangeRate);
-                _entryBoxValidationTotalFinal.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.DecimalToString(priceProperties.TotalFinalBeforeDiscountGlobal * _currencyDisplay.ExchangeRate);
+                _entryBoxValidationTotalNet.EntryValidation.Text = DataConversionUtils.DecimalToString(priceProperties.TotalNetBeforeDiscountGlobal * _currencyDisplay.ExchangeRate);
+                _entryBoxValidationTotalFinal.EntryValidation.Text = DataConversionUtils.DecimalToString(priceProperties.TotalFinalBeforeDiscountGlobal * _currencyDisplay.ExchangeRate);
             }
             else
             {
-                _entryBoxValidationTotalNet.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.DecimalToString(0.0m);
-                _entryBoxValidationTotalFinal.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.DecimalToString(0.0m);
+                _entryBoxValidationTotalNet.EntryValidation.Text = DataConversionUtils.DecimalToString(0.0m);
+                _entryBoxValidationTotalFinal.EntryValidation.Text = DataConversionUtils.DecimalToString(0.0m);
             }
         }
 
@@ -1123,7 +1123,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 string quantity = _entryBoxValidationQuantity.EntryValidation.Text;
                 if (!string.IsNullOrEmpty(quantity))
                 {
-                    quantity = LogicPOS.Utility.DataConversionUtils.DecimalToString(LogicPOS.Utility.DataConversionUtils.StringToDecimal(quantity));
+                    quantity = DataConversionUtils.DecimalToString(DataConversionUtils.StringToDecimal(quantity));
                     quantity = quantity.Replace('.', ',');
                 }
                 decimal currentQuantity = Convert.ToDecimal(quantity);
@@ -1164,7 +1164,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 string quantity = _entryBoxValidationQuantity.EntryValidation.Text;
                 if (!string.IsNullOrEmpty(quantity))
                 {
-                    quantity = LogicPOS.Utility.DataConversionUtils.DecimalToString(LogicPOS.Utility.DataConversionUtils.StringToDecimal(quantity));
+                    quantity = DataConversionUtils.DecimalToString(DataConversionUtils.StringToDecimal(quantity));
                     quantity = quantity.Replace('.', ',');
                 }
                 decimal currentQuantity = Convert.ToDecimal(quantity);

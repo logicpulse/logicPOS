@@ -79,8 +79,8 @@ namespace logicpos
                         if (_selectedUserDetail.PasswordReset)
                         {
                             //_logger.Debug(string.Format("Name: [{0}], PasswordReset: [{1}]", _selectedUserDetail.Name, _selectedUserDetail.PasswordReset));
-                            Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_information"),
-                                string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_user_request_change_password"), _selectedUserDetail.Name, XPOSettings.DefaultValueUserDetailAccessPin)
+                            Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_information"),
+                                string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_user_request_change_password"), _selectedUserDetail.Name, XPOSettings.DefaultValueUserDetailAccessPin)
                             );
                         }
                     }
@@ -108,7 +108,7 @@ namespace logicpos
             {
                 POSSession.CurrentSession.LoggedUsers.Remove(pUserDetail.Oid);
                 POSSession.CurrentSession.Save();
-               XPOUtility.Audit("USER_loggerOUT", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_user_loggerout"), pUserDetail.Name));
+               XPOUtility.Audit("USER_loggerOUT", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_user_loggerout"), pUserDetail.Name));
                 //Only Reset LoggedUser if equal to pUser
                 if (XPOSettings.LoggedUser.Equals(pUserDetail))
                 {

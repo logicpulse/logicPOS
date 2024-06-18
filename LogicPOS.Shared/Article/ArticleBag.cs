@@ -182,7 +182,7 @@ namespace LogicPOS.Shared.Article
             {
                 //Get Designation from Key
                 //Get VatRate formated for filter, in sql server gives error without this it filters 23,0000 and not 23.0000 resulting in null vatRate
-                string sql = $"SELECT Designation FROM fin_configurationvatrate WHERE VALUE = '{LogicPOS.Utility.DataConversionUtils.DecimalToString(key.Vat)}'";
+                string sql = $"SELECT Designation FROM fin_configurationvatrate WHERE VALUE = '{Utility.DataConversionUtils.DecimalToString(key.Vat)}'";
                 string designation = XPOSettings.Session.ExecuteScalar(sql).ToString();
                 //Now Add New Key with Designation
                 TaxBag.Add(key.Vat, new TaxBagProperties(designation, addPriceProperties.TotalTax, addPriceProperties.TotalNet));
@@ -223,7 +223,7 @@ namespace LogicPOS.Shared.Article
 
             // SplitPayment : Sometimes we get 0.000000000000001, that makes key dont be removed because its not < 0
             // To prevent this we must round value before compare using DecimalFormatStockQuantity
-            string roundedFormat = $"{{0:{LogicPOS.Settings.CultureSettings.DecimalFormatStockQuantity}}}";//{0:0.00000000}
+            string roundedFormat = $"{{0:{CultureSettings.DecimalFormatStockQuantity}}}";//{0:0.00000000}
             decimal roundedQuantity = Convert.ToDecimal(string.Format(roundedFormat, this[pKey].Quantity));
 
             //if (this[pKey].Quantity <= 0)
@@ -402,7 +402,7 @@ namespace LogicPOS.Shared.Article
 
                 //Audit
                 XPOUtility.Audit("ORDER_ARTICLE_REMOVED", string.Format(
-                        CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_order_article_removed"),
+                        CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_order_article_removed"),
                         articleDesignation,
                         1,
                         resultRemainQuantity - 1,
@@ -443,7 +443,7 @@ namespace LogicPOS.Shared.Article
                             //Open Table
                             deleteOrderMain.PlaceTable.TableStatus = TableStatus.Free;
                             //Audit
-                            XPOUtility.Audit("TABLE_OPEN", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_table_open"), deleteOrderMain.PlaceTable.Designation));
+                            XPOUtility.Audit("TABLE_OPEN", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_table_open"), deleteOrderMain.PlaceTable.Designation));
                             //Delete OrderMain
                             deleteOrderMain.Delete();
                         };

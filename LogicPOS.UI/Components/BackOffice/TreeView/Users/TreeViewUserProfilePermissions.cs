@@ -18,8 +18,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
     internal class TreeViewUserProfilePermissions : GenericTreeViewXPO
     {
         //Settings
-        private readonly string _fontGenericTreeViewColumnTitle = LogicPOS.Settings.GeneralSettings.Settings["fontGenericTreeViewColumnTitle"];
-        private readonly string _fontGenericTreeViewColumn = LogicPOS.Settings.GeneralSettings.Settings["fontGenericTreeViewColumn"];
+        private readonly string _fontGenericTreeViewColumnTitle = GeneralSettings.Settings["fontGenericTreeViewColumnTitle"];
+        private readonly string _fontGenericTreeViewColumn = GeneralSettings.Settings["fontGenericTreeViewColumn"];
 
         private readonly TreeView _treeViewPermissionItem = new TreeView();
         private readonly ListStore _listStoreModelPermissionItem = new ListStore(typeof(string), typeof(string), typeof(bool));
@@ -53,8 +53,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             List<GenericTreeViewColumnProperty> columnPropertiesUserProfile = new List<GenericTreeViewColumnProperty>
             {
-                new GenericTreeViewColumnProperty("Code") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_record_code") },
-                new GenericTreeViewColumnProperty("Designation") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_user_profiles"), MaxWidth = 150 }
+                new GenericTreeViewColumnProperty("Code") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_record_code") },
+                new GenericTreeViewColumnProperty("Designation") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_user_profiles"), MaxWidth = 150 }
             };
 
             InitObject(pSourceWindow, xpCollectionUserProfile, xPGuidObjectType, typeDialogClass, columnPropertiesUserProfile, showStatusBar);
@@ -108,7 +108,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             if (_showStatusBar)
             {
                 _statusbar = new Statusbar() { HasResizeGrip = false };
-                _statusbar.Push(0, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_statusbar"));
+                _statusbar.Push(0, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_statusbar"));
             };
 
             //Treeview
@@ -128,7 +128,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //TODO:THEME
             //if (GlobalApp.ScreenSize.Width >= 800)
             //{
-            TouchButtonIconWithText buttonApplyPrivileges = Navigator.GetNewButton("touchButtonApplyPrivileges_DialogActionArea", CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_user_apply_privileges"), @"Icons/icon_pos_nav_refresh.png");
+            TouchButtonIconWithText buttonApplyPrivileges = Navigator.GetNewButton("touchButtonApplyPrivileges_DialogActionArea", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_user_apply_privileges"), @"Icons/icon_pos_nav_refresh.png");
             //buttonApplyPrivileges.WidthRequest = 110;
             //Apply Permissions
             buttonApplyPrivileges.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("BACKOFFICE_MAN_USER_PRIVILEGES_APPLY");
@@ -189,14 +189,14 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             TreeViewColumn tmpColId = _treeViewPermissionItem.AppendColumn("ID", new CellRendererText(), "text", 0);
             tmpColId.Visible = false;
 
-            TreeViewColumn tmpColProperty = _treeViewPermissionItem.AppendColumn(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_privilege_property"), new CellRendererText() { FontDesc = _fontDesc }, "text", 1);
+            TreeViewColumn tmpColProperty = _treeViewPermissionItem.AppendColumn(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_privilege_property"), new CellRendererText() { FontDesc = _fontDesc }, "text", 1);
             //Config Column Title
             Label labelPropertyTitle = new Label(tmpColProperty.Title);
             labelPropertyTitle.Show();
             labelPropertyTitle.ModifyFont(_fontDescTitle);
             tmpColProperty.Widget = labelPropertyTitle;
 
-            TreeViewColumn tmpColActivo = _treeViewPermissionItem.AppendColumn(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_privilege_active"), _cellRendererTogglePermissionItem, "active", 2);
+            TreeViewColumn tmpColActivo = _treeViewPermissionItem.AppendColumn(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_privilege_active"), _cellRendererTogglePermissionItem, "active", 2);
             tmpColActivo.MaxWidth = 100;
             //Config Column Title
             Label labelActivoTitle = new Label(tmpColActivo.Title);

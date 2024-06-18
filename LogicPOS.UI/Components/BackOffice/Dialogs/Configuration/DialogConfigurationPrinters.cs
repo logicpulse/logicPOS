@@ -62,19 +62,19 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 Entry entryOrd = new Entry();
                 BOWidgetBox boxLabel = new BOWidgetBox(GeneralUtils.GetResourceByName("global_record_order"), entryOrd);
                 vboxTab1.PackStart(boxLabel, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxLabel, _dataSourceRow, "Ord", LogicPOS.Utility.RegexUtils.RegexIntegerGreaterThanZero, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxLabel, _dataSourceRow, "Ord", RegexUtils.RegexIntegerGreaterThanZero, true));
 
                 //Code
                 Entry entryCode = new Entry();
                 BOWidgetBox boxCode = new BOWidgetBox(GeneralUtils.GetResourceByName("global_record_code"), entryCode);
                 vboxTab1.PackStart(boxCode, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCode, _dataSourceRow, "Code", LogicPOS.Utility.RegexUtils.RegexIntegerGreaterThanZero, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCode, _dataSourceRow, "Code", RegexUtils.RegexIntegerGreaterThanZero, true));
 
                 //PrinterType
                 _xpoComboBoxPrinterType = new XPOComboBox(DataSourceRow.Session, typeof(sys_configurationprinterstype), (DataSourceRow as sys_configurationprinters).PrinterType, "Designation", null);
                 BOWidgetBox boxPrinterType = new BOWidgetBox(GeneralUtils.GetResourceByName("global_printer_type"), _xpoComboBoxPrinterType);
                 vboxTab1.PackStart(boxPrinterType, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxPrinterType, DataSourceRow, "PrinterType", LogicPOS.Utility.RegexUtils.RegexGuid, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxPrinterType, DataSourceRow, "PrinterType", RegexUtils.RegexGuid, true));
 
 
                 //Configurar impressora windows com ESC-POS - LINDOTE
@@ -136,7 +136,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     vboxTab1.PackStart(_xpoComboBoxPrinterSelect, false, false, 0);
 
                     //Verifica designação válida
-                    _crudWidgetList.Add(new GenericCRUDWidgetXPO(entryDesignation, _dataSourceRow, "Designation", LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true));
+                    _crudWidgetList.Add(new GenericCRUDWidgetXPO(entryDesignation, _dataSourceRow, "Designation", RegexUtils.RegexAlfaNumericExtended, true));
 
                 }
                 //Se for Linux usa a Designação por defeito, escrita á mão
@@ -146,7 +146,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     Entry entryDesignation = new Entry();
                     BOWidgetBox boxDesignation = new BOWidgetBox(GeneralUtils.GetResourceByName("global_designation"), entryDesignation);
                     vboxTab1.PackStart(boxDesignation, false, false, 0);
-                    _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true));
+                    _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", RegexUtils.RegexAlfaNumericExtended, true));
                 }
 
                 //NetworkName
@@ -190,33 +190,33 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _entryThermalMaxCharsPerLineNormal = new Entry();
                 BOWidgetBox boxThermalMaxCharsPerLineNormal = new BOWidgetBox(GeneralUtils.GetResourceByName("global_printer_thermal_max_chars_per_line_normal"), _entryThermalMaxCharsPerLineNormal);
                 _vboxTab2.PackStart(boxThermalMaxCharsPerLineNormal, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxThermalMaxCharsPerLineNormal, _dataSourceRow, "ThermalMaxCharsPerLineNormal", LogicPOS.Utility.RegexUtils.RegexInteger, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxThermalMaxCharsPerLineNormal, _dataSourceRow, "ThermalMaxCharsPerLineNormal", RegexUtils.RegexInteger, true));
 
                 //ThermalMaxCharsPerLineNormalBold
                 _entryThermalMaxCharsPerLineNormalBold = new Entry();
                 BOWidgetBox boxThermalMaxCharsPerLineNormalBold = new BOWidgetBox(GeneralUtils.GetResourceByName("global_printer_thermal_max_chars_per_line_normal_bold"), _entryThermalMaxCharsPerLineNormalBold);
                 _vboxTab2.PackStart(boxThermalMaxCharsPerLineNormalBold, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxThermalMaxCharsPerLineNormalBold, _dataSourceRow, "ThermalMaxCharsPerLineNormalBold", LogicPOS.Utility.RegexUtils.RegexInteger, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxThermalMaxCharsPerLineNormalBold, _dataSourceRow, "ThermalMaxCharsPerLineNormalBold", RegexUtils.RegexInteger, true));
 
                 //ThermalMaxCharsPerLineSmall
                 _entryThermalMaxCharsPerLineSmall = new Entry();
                 BOWidgetBox boxThermalMaxCharsPerLineSmall = new BOWidgetBox(GeneralUtils.GetResourceByName("global_printer_thermal_max_chars_per_line_small"), _entryThermalMaxCharsPerLineSmall);
                 _vboxTab2.PackStart(boxThermalMaxCharsPerLineSmall, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxThermalMaxCharsPerLineSmall, _dataSourceRow, "ThermalMaxCharsPerLineSmall", LogicPOS.Utility.RegexUtils.RegexInteger, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxThermalMaxCharsPerLineSmall, _dataSourceRow, "ThermalMaxCharsPerLineSmall", RegexUtils.RegexInteger, true));
 
                 //ThermalEncoding
                 _entryThermalEncoding = new Entry();
                 BOWidgetBox boxThermalEncoding = new BOWidgetBox(GeneralUtils.GetResourceByName("global_printer_thermal_encoding"), _entryThermalEncoding);
                 //_vboxTab2.PackStart(boxThermalEncoding, false, false, 0);
                 hbox1.PackStart(boxThermalEncoding, true, true, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxThermalEncoding, _dataSourceRow, "ThermalEncoding", LogicPOS.Utility.RegexUtils.RegexAlfaNumeric, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxThermalEncoding, _dataSourceRow, "ThermalEncoding", RegexUtils.RegexAlfaNumeric, false));
 
                 //ThermalCutCommand
                 _entryThermalCutCommand = new Entry();
                 BOWidgetBox boxThermalCutCommand = new BOWidgetBox(GeneralUtils.GetResourceByName("global_printer_thermal_cut_command"), _entryThermalCutCommand);
                 //_vboxTab2.PackStart(boxThermalCutCommand, false, false, 0);
                 hbox1.PackStart(boxThermalCutCommand, true, true, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxThermalCutCommand, _dataSourceRow, "ThermalCutCommand", LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxThermalCutCommand, _dataSourceRow, "ThermalCutCommand", RegexUtils.RegexAlfaNumericExtended, false));
 
                 // Pack hbox
                 _vboxTab2.PackStart(hbox1, false, false, 0);
@@ -226,21 +226,21 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 BOWidgetBox boxThermalOpenDrawerValueM = new BOWidgetBox(GeneralUtils.GetResourceByName("global_printer_thermal_open_drawer_value_m"), _entryThermalOpenDrawerValueM);
                 //_vboxTab2.PackStart(boxThermalOpenDrawerValueM, false, false, 0);
                 hbox2.PackStart(boxThermalOpenDrawerValueM, true, true, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxThermalOpenDrawerValueM, _dataSourceRow, "ThermalOpenDrawerValueM", LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxThermalOpenDrawerValueM, _dataSourceRow, "ThermalOpenDrawerValueM", RegexUtils.RegexAlfaNumericExtended, false));
 
                 //ThermalOpenDrawerValueT1
                 _entryThermalOpenDrawerValueT1 = new Entry();
                 BOWidgetBox boxThermalOpenDrawerValueT1 = new BOWidgetBox(GeneralUtils.GetResourceByName("global_printer_thermal_open_drawer_value_t1"), _entryThermalOpenDrawerValueT1);
                 //_vboxTab2.PackStart(boxThermalOpenDrawerValueT1, false, false, 0);
                 hbox2.PackStart(boxThermalOpenDrawerValueT1, true, true, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxThermalOpenDrawerValueT1, _dataSourceRow, "ThermalOpenDrawerValueT1", LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxThermalOpenDrawerValueT1, _dataSourceRow, "ThermalOpenDrawerValueT1", RegexUtils.RegexAlfaNumericExtended, false));
 
                 //ThermalOpenDrawerValueT2
                 _entryThermalOpenDrawerValueT2 = new Entry();
                 BOWidgetBox boxThermalOpenDrawerValueT2 = new BOWidgetBox(GeneralUtils.GetResourceByName("global_printer_thermal_open_drawer_value_t2"), _entryThermalOpenDrawerValueT2);
                 //_vboxTab2.PackStart(boxThermalOpenDrawerValueT2, false, false, 0);
                 hbox2.PackStart(boxThermalOpenDrawerValueT2, true, true, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxThermalOpenDrawerValueT2, _dataSourceRow, "ThermalOpenDrawerValueT2", LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxThermalOpenDrawerValueT2, _dataSourceRow, "ThermalOpenDrawerValueT2", RegexUtils.RegexAlfaNumericExtended, false));
 
                 // Pack hbox
                 _vboxTab2.PackStart(hbox2, false, false, 0);
@@ -249,7 +249,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _entryThermalImageCompanyLogo = new Entry();
                 BOWidgetBox boxThermalImageCompanyLogo = new BOWidgetBox(GeneralUtils.GetResourceByName("global_printer_thermal_image_company_loggero"), _entryThermalImageCompanyLogo);
                 _vboxTab2.PackStart(boxThermalImageCompanyLogo, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxThermalImageCompanyLogo, _dataSourceRow, "ThermalImageCompanyLogo", LogicPOS.Utility.RegexUtils.RegexAlfaNumericFilePath, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxThermalImageCompanyLogo, _dataSourceRow, "ThermalImageCompanyLogo", RegexUtils.RegexAlfaNumericFilePath, false));
 
                 //ThermalPrintLogo
                 CheckButton checkButtonThermalPrintLogo = new CheckButton(GeneralUtils.GetResourceByName("global_printer_thermal_print_loggero"));

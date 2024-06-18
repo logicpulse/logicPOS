@@ -275,7 +275,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     fileWindowIcon,
                     GeneralUtils.GetResourceByName("global_acronym"),
                     pInitialValue,
-                    LogicPOS.Utility.RegexUtils.RegexDocumentSeriesAcronym,
+                    RegexUtils.RegexDocumentSeriesAcronym,
                     true
                     );
 

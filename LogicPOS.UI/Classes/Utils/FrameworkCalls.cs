@@ -3,6 +3,7 @@ using logicpos.App;
 using logicpos.Classes.Enums.Finance;
 using logicpos.Classes.Enums.Tickets;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
+using LogicPOS.Data.Services;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Settings.Terminal;
 using LogicPOS.Data.XPO.Utility;
@@ -22,6 +23,7 @@ using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using static LogicPOS.Data.XPO.Utility.XPOUtility;
 
 //Class to Link Project LogicPos to FrameWork API, used to Show Common Messages for LogicPos
 
@@ -622,7 +624,7 @@ namespace logicpos
 
         public static bool PrintFinanceDocumentPayment(
             Window pSourceWindow,
-            PrintingPrinterDto printer,
+            PrinterDto printer,
             fin_documentfinancepayment pDocumentFinancePayment)
         {
             bool result = false;
@@ -761,7 +763,7 @@ namespace logicpos
                 {
                     var printer=MappingUtils.GetPrinterDto(pPrinter);
                     var orderTicketDto = MappingUtils.GetPrintOrderTicketDto(orderTicket);
-                    InternalDocumentOrderRequest thermalPrinterInternalDocumentOrderRequest = new InternalDocumentOrderRequest(printer, orderTicketDto);
+                    OrderRequest thermalPrinterInternalDocumentOrderRequest = new OrderRequest(printer, orderTicketDto);
                     thermalPrinterInternalDocumentOrderRequest.Print();
                 }
             }
@@ -803,24 +805,29 @@ namespace logicpos
 
         public static bool PrintWorkSessionMovement(
             Window pSourceWindow, 
-            sys_configurationprinters pPrinter, 
-            PrintWorkSessionDto pWorkSessionPeriod)
+            sys_configurationprinters printerEntity, 
+            PrintWorkSessionDto workSessionPeriod)
         {
             bool result = false;
             sys_configurationprinterstemplates template = XPOUtility.GetEntityById<sys_configurationprinterstemplates>(PrintingSettings.WorkSessionMovementPrintingTemplateId);
 
             try
             {
-                if (SharedPrintTicket(pSourceWindow, pPrinter, TicketType.WorkSession))
+                if (SharedPrintTicket(pSourceWindow, printerEntity, TicketType.WorkSession))
                 {
-                    //PrintWorkSessionMovement
-                    var printer = MappingUtils.GetPrinterDto(pPrinter);
-                    result = LogicPOS.Printing.Utility.PrintingUtils.PrintWorkSessionMovement(printer, pWorkSessionPeriod);
+                    var printerDto = MappingUtils.GetPrinterDto(printerEntity);
+                    string workSessionMovementPrintingFileTemplate = XPOUtility.WorkSession.GetWorkSessionMovementPrintingFileTemplate();
+                    var sessionPeriodSummaryDetails = WorkSessionProcessor.GetSessionPeriodSummaryDetails(workSessionPeriod.Id);
+                    result = LogicPOS.Printing.Utility.PrintingUtils.PrintWorkSessionMovement(
+                        printerDto, 
+                        workSessionPeriod,
+                        workSessionMovementPrintingFileTemplate,
+                        sessionPeriodSummaryDetails);
                 }
             }
             catch (Exception ex)
             {
-                var printer=MappingUtils.GetPrinterDto(pPrinter);
+                var printer = MappingUtils.GetPrinterDto(printerEntity);
                 Utils.ShowMessageTouchErrorPrintingTicket(pSourceWindow, printer, ex);
             }
 

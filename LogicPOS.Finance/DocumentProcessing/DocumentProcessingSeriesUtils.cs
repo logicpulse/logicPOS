@@ -332,7 +332,7 @@ namespace LogicPOS.Finance.DocumentProcessing
                         {
                             //Audit FINANCE_SERIES_CREATED
                             acronymAudit = string.Format("{0}{1}{2}{3}", "xx", item.Key, 0.ToString("00"), pAcronym);
-                            XPOUtility.Audit("FINANCE_SERIES_CREATED", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_finance_series_created"), acronymAudit, item.Value, XPOSettings.LoggedUser.Name));
+                            XPOUtility.Audit("FINANCE_SERIES_CREATED", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_finance_series_created"), acronymAudit, item.Value, XPOSettings.LoggedUser.Name));
                         }
                     }
                 }

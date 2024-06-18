@@ -55,7 +55,7 @@ namespace LogicPOS.Finance.DocumentProcessing
             try
             {
                 // Override Default with Config Value
-                _requireToChooseVatExemptionReason = Convert.ToBoolean(LogicPOS.Settings.GeneralSettings.Settings["requireToChooseVatExemptionReason"]);
+                _requireToChooseVatExemptionReason = Convert.ToBoolean(GeneralSettings.Settings["requireToChooseVatExemptionReason"]);
             }
             catch (Exception)
             {
@@ -104,7 +104,7 @@ namespace LogicPOS.Finance.DocumentProcessing
 || FiscalNumberUtils.IsSingularEntity(customer.FiscalNumber, customer.Country.Code2);
                 //RegEx
                 //If not Saft Document Type 2, required greater than zero in Price, else we can have zero or greater from Document Type 2 (ex Transportation Guide)
-                string regExArticlePrice = (documentType != null && documentType.SaftDocumentType != SaftDocumentType.MovementOfGoods) ? LogicPOS.Utility.RegexUtils.RegexDecimalGreaterThanZero : LogicPOS.Utility.RegexUtils.RegexDecimalGreaterEqualThanZero;
+                string regExArticlePrice = (documentType != null && documentType.SaftDocumentType != SaftDocumentType.MovementOfGoods) ? RegexUtils.RegexDecimalGreaterThanZero : RegexUtils.RegexDecimalGreaterEqualThanZero;
                 //Never Override SettingsApp.FinanceRuleSimplifiedInvoiceMaxValue|FinanceRuleRequiredCustomerDetailsAboveValue values to be Sync with LogicPos UI
                 int financeRuleSimplifiedInvoiceMaxTotal = InvoiceSettings.GetSimplifiedInvoiceMaxItems(XPOSettings.ConfigurationSystemCountry.Oid);
                 int financeRuleSimplifiedInvoiceMaxTotalServices = InvoiceSettings.GetSimplifiedInvoiceMaxServices(XPOSettings.ConfigurationSystemCountry.Oid);
@@ -153,117 +153,117 @@ namespace LogicPOS.Finance.DocumentProcessing
 
                 //Global
                 _fields.Add(DocumentValidationErrorType.ERROR_RULE_ARTICLEBAG_GLOBAL_DISCOUNT_INVALID,
-                    new DocumentProcessingValidationField("ArticleBag.Discount", (pParameters.ArticleBag != null) ? pParameters.ArticleBag.DiscountGlobal : 0.0m, LogicPOS.Utility.RegexUtils.RegexPercentage, true)
+                    new DocumentProcessingValidationField("ArticleBag.Discount", (pParameters.ArticleBag != null) ? pParameters.ArticleBag.DiscountGlobal : 0.0m, RegexUtils.RegexPercentage, true)
                 );
                 //P1
                 _fields.Add(DocumentValidationErrorType.ERROR_FIELD_DOCUMENT_TYPE_INVALID,
-                    new DocumentProcessingValidationField("DocumentType", pParameters.DocumentType, LogicPOS.Utility.RegexUtils.RegexGuid, true)
+                    new DocumentProcessingValidationField("DocumentType", pParameters.DocumentType, RegexUtils.RegexGuid, true)
                 );
                 _fields.Add(DocumentValidationErrorType.ERROR_FIELD_PAYMENT_CONDITION_INVALID,
-                    new DocumentProcessingValidationField("PaymentCondition", pParameters.PaymentCondition, LogicPOS.Utility.RegexUtils.RegexGuid, requiredPaymentCondition)
+                    new DocumentProcessingValidationField("PaymentCondition", pParameters.PaymentCondition, RegexUtils.RegexGuid, requiredPaymentCondition)
                 );
                 _fields.Add(DocumentValidationErrorType.ERROR_FIELD_PAYMENT_METHOD_INVALID,
-                    new DocumentProcessingValidationField("PaymentMethod", pParameters.PaymentMethod, LogicPOS.Utility.RegexUtils.RegexGuid, requiredPaymentMethod)
+                    new DocumentProcessingValidationField("PaymentMethod", pParameters.PaymentMethod, RegexUtils.RegexGuid, requiredPaymentMethod)
                 );
                 _fields.Add(DocumentValidationErrorType.ERROR_FIELD_CURRENCY_INVALID,
-                    new DocumentProcessingValidationField("Currency", pParameters.Currency, LogicPOS.Utility.RegexUtils.RegexGuid, true)
+                    new DocumentProcessingValidationField("Currency", pParameters.Currency, RegexUtils.RegexGuid, true)
                 );
                 _fields.Add(DocumentValidationErrorType.ERROR_FIELD_DOCUMENT_PARENT_INVALID,
-                    new DocumentProcessingValidationField("DocumentParent", pParameters.DocumentParent, LogicPOS.Utility.RegexUtils.RegexGuid, requireParentDocument)
+                    new DocumentProcessingValidationField("DocumentParent", pParameters.DocumentParent, RegexUtils.RegexGuid, requireParentDocument)
                 );
                 _fields.Add(DocumentValidationErrorType.ERROR_FIELD_NOTES_INVALID,
-                    new DocumentProcessingValidationField("Notes", pParameters.Notes, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false)
+                    new DocumentProcessingValidationField("Notes", pParameters.Notes, RegexUtils.RegexAlfaNumericExtended, false)
                 );
                 //P2
                 _fields.Add(DocumentValidationErrorType.ERROR_FIELD_CUSTOMER_NAME_INVALID,
-                    new DocumentProcessingValidationField("Customer.Name", (customer != null) ? customer.Name : string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, requireCustomerName)
+                    new DocumentProcessingValidationField("Customer.Name", (customer != null) ? customer.Name : string.Empty, RegexUtils.RegexAlfaNumericExtended, requireCustomerName)
                 );
                 _fields.Add(DocumentValidationErrorType.ERROR_FIELD_CUSTOMER_ADDRESS_INVALID,
-                    new DocumentProcessingValidationField("Customer.Address", (customer != null) ? customer.Address : string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, requireAllCustomerFields)
+                    new DocumentProcessingValidationField("Customer.Address", (customer != null) ? customer.Address : string.Empty, RegexUtils.RegexAlfaNumericExtended, requireAllCustomerFields)
                 );
                 _fields.Add(DocumentValidationErrorType.ERROR_FIELD_CUSTOMER_LOCALITY_INVALID,
-                    new DocumentProcessingValidationField("Customer.Locality", (customer != null) ? customer.Locality : string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false)
+                    new DocumentProcessingValidationField("Customer.Locality", (customer != null) ? customer.Locality : string.Empty, RegexUtils.RegexAlfaNumericExtended, false)
                 );
                 //If customer undefined Defaults to SettingsApp.ConfigurationSystemCountry.RegExZipCode
                 _fields.Add(DocumentValidationErrorType.ERROR_FIELD_CUSTOMER_ZIPCODE_INVALID,
                 new DocumentProcessingValidationField("Customer.ZipCode", (customer != null && customer.ZipCode != null) ? customer.ZipCode : string.Empty, (customer != null && customer.Country != null) ? customer.Country.RegExZipCode : XPOSettings.ConfigurationSystemCountry.RegExZipCode, requireAllCustomerFields)
                 );
                 _fields.Add(DocumentValidationErrorType.ERROR_FIELD_CUSTOMER_CITY_INVALID,
-                    new DocumentProcessingValidationField("Customer.City", (customer != null && customer.City != null) ? customer.City : string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfa, requireAllCustomerFields)
+                    new DocumentProcessingValidationField("Customer.City", (customer != null && customer.City != null) ? customer.City : string.Empty, RegexUtils.RegexAlfa, requireAllCustomerFields)
                 );
                 _fields.Add(DocumentValidationErrorType.ERROR_FIELD_CUSTOMER_COUNTRY_INVALID,
-                    new DocumentProcessingValidationField("Customer.Country", (customer != null && customer.Country != null) ? customer.Country.Oid : Guid.Empty, LogicPOS.Utility.RegexUtils.RegexGuid, true)
+                    new DocumentProcessingValidationField("Customer.Country", (customer != null && customer.Country != null) ? customer.Country.Oid : Guid.Empty, RegexUtils.RegexGuid, true)
                 );
                 //If customer undefined Defaults to SettingsApp.ConfigurationSystemCountry.RegExFiscalNumber
                 _fields.Add(DocumentValidationErrorType.ERROR_FIELD_CUSTOMER_FISCAL_NUMBER_INVALID,
                     new DocumentProcessingValidationField("Customer.FiscalNumber", (customer != null && customer.FiscalNumber != null) ? customer.FiscalNumber : string.Empty, (customer != null && customer.Country != null) ? customer.Country.RegExFiscalNumber : XPOSettings.ConfigurationSystemCountry.RegExFiscalNumber, requireFiscalNumber)
                 );
                 _fields.Add(DocumentValidationErrorType.ERROR_FIELD_CUSTOMER_CARDNUMBER_INVALID,
-                    new DocumentProcessingValidationField("Customer.CardNumber", (customer != null && customer.CardNumber != null) ? customer.CardNumber : string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false)
+                    new DocumentProcessingValidationField("Customer.CardNumber", (customer != null && customer.CardNumber != null) ? customer.CardNumber : string.Empty, RegexUtils.RegexAlfaNumericExtended, false)
                 );
                 _fields.Add(DocumentValidationErrorType.ERROR_FIELD_CUSTOMER_DISCOUNT_INVALID,
-                    new DocumentProcessingValidationField("Customer.Discount", (customer != null) ? customer.Discount : 0.0m, LogicPOS.Utility.RegexUtils.RegexPercentage, true)
+                    new DocumentProcessingValidationField("Customer.Discount", (customer != null) ? customer.Discount : 0.0m, RegexUtils.RegexPercentage, true)
                 );
                 //P4
                 if (pParameters.ShipTo != null && countryShipTo != null)
                 {
                     _fields.Add(DocumentValidationErrorType.ERROR_FIELD_SHIPTO_ADDRESS_DETAIL_INVALID,
-                        new DocumentProcessingValidationField("ShipTo.AddressDetail", (pParameters.ShipTo != null) ? pParameters.ShipTo.AddressDetail : string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, requiredWayBillModeFields)
+                        new DocumentProcessingValidationField("ShipTo.AddressDetail", (pParameters.ShipTo != null) ? pParameters.ShipTo.AddressDetail : string.Empty, RegexUtils.RegexAlfaNumericExtended, requiredWayBillModeFields)
                     );
                     _fields.Add(DocumentValidationErrorType.ERROR_FIELD_SHIPTO_REGION_INVALID,
-                        new DocumentProcessingValidationField("ShipTo.Region", (pParameters.ShipTo != null) ? pParameters.ShipTo.Region : string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfa, false)
+                        new DocumentProcessingValidationField("ShipTo.Region", (pParameters.ShipTo != null) ? pParameters.ShipTo.Region : string.Empty, RegexUtils.RegexAlfa, false)
                     );
                     _fields.Add(DocumentValidationErrorType.ERROR_FIELD_SHIPTO_POSTALCODE_INVALID,
                         new DocumentProcessingValidationField("ShipTo.PostalCode", (pParameters.ShipTo != null) ? pParameters.ShipTo.PostalCode : string.Empty, countryShipTo.RegExZipCode, requiredWayBillModeFields)
                     );
                     _fields.Add(DocumentValidationErrorType.ERROR_FIELD_SHIPTO_CITY_INVALID,
-                        new DocumentProcessingValidationField("ShipTo.City", (pParameters.ShipTo != null) ? pParameters.ShipTo.City : string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfa, requiredWayBillModeFields)
+                        new DocumentProcessingValidationField("ShipTo.City", (pParameters.ShipTo != null) ? pParameters.ShipTo.City : string.Empty, RegexUtils.RegexAlfa, requiredWayBillModeFields)
                     );
                     _fields.Add(DocumentValidationErrorType.ERROR_FIELD_SHIPTO_COUNTRY_INVALID,
-                        new DocumentProcessingValidationField("ShipTo.Country", (pParameters.ShipTo != null) ? pParameters.ShipTo.CountryGuid : Guid.Empty, LogicPOS.Utility.RegexUtils.RegexGuid, requiredWayBillModeFields)
+                        new DocumentProcessingValidationField("ShipTo.Country", (pParameters.ShipTo != null) ? pParameters.ShipTo.CountryGuid : Guid.Empty, RegexUtils.RegexGuid, requiredWayBillModeFields)
                     );
                     _fields.Add(DocumentValidationErrorType.ERROR_FIELD_SHIPTO_DELIVERYDATE_INVALID,
-                        new DocumentProcessingValidationField("ShipTo.DeliveryDate", (pParameters.ShipTo != null && pParameters.ShipTo.DeliveryDate != DateTime.MinValue) ? pParameters.ShipTo.DeliveryDate.ToString(LogicPOS.Settings.CultureSettings.DateTimeFormat) : string.Empty, LogicPOS.Utility.RegexUtils.RegexDateTime, requiredWayBillModeFields)
+                        new DocumentProcessingValidationField("ShipTo.DeliveryDate", (pParameters.ShipTo != null && pParameters.ShipTo.DeliveryDate != DateTime.MinValue) ? pParameters.ShipTo.DeliveryDate.ToString(CultureSettings.DateTimeFormat) : string.Empty, RegexUtils.RegexDateTime, requiredWayBillModeFields)
                     );
                     _fields.Add(DocumentValidationErrorType.ERROR_FIELD_SHIPTO_DELIVERYID_INVALID,
-                        new DocumentProcessingValidationField("ShipTo.DeliveryID", (pParameters.ShipTo != null) ? pParameters.ShipTo.DeliveryID : string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false)
+                        new DocumentProcessingValidationField("ShipTo.DeliveryID", (pParameters.ShipTo != null) ? pParameters.ShipTo.DeliveryID : string.Empty, RegexUtils.RegexAlfaNumericExtended, false)
                     );
                     _fields.Add(DocumentValidationErrorType.ERROR_FIELD_SHIPTO_WAREHOUSEID_INVALID,
-                        new DocumentProcessingValidationField("ShipTo.WarehouseID", (pParameters.ShipTo != null) ? pParameters.ShipTo.WarehouseID : string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false)
+                        new DocumentProcessingValidationField("ShipTo.WarehouseID", (pParameters.ShipTo != null) ? pParameters.ShipTo.WarehouseID : string.Empty, RegexUtils.RegexAlfaNumericExtended, false)
                     );
                     _fields.Add(DocumentValidationErrorType.ERROR_FIELD_SHIPTO_LOCATIONID_INVALID,
-                        new DocumentProcessingValidationField("ShipTo.LocationID", (pParameters.ShipTo != null) ? pParameters.ShipTo.LocationID : string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false)
+                        new DocumentProcessingValidationField("ShipTo.LocationID", (pParameters.ShipTo != null) ? pParameters.ShipTo.LocationID : string.Empty, RegexUtils.RegexAlfaNumericExtended, false)
                     );
                 }
                 //P5
                 if (pParameters.ShipTo != null && countryShipFrom != null)
                 {
                     _fields.Add(DocumentValidationErrorType.ERROR_FIELD_SHIPFROM_ADDRESS_DETAIL_INVALID,
-                        new DocumentProcessingValidationField("ShipFrom.AddressDetail", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.AddressDetail : string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, requiredWayBillModeFields)
+                        new DocumentProcessingValidationField("ShipFrom.AddressDetail", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.AddressDetail : string.Empty, RegexUtils.RegexAlfaNumericExtended, requiredWayBillModeFields)
                     );
                     _fields.Add(DocumentValidationErrorType.ERROR_FIELD_SHIPFROM_REGION_INVALID,
-                        new DocumentProcessingValidationField("ShipFrom.Region", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.Region : string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfa, false)
+                        new DocumentProcessingValidationField("ShipFrom.Region", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.Region : string.Empty, RegexUtils.RegexAlfa, false)
                     );
                     _fields.Add(DocumentValidationErrorType.ERROR_FIELD_SHIPFROM_POSTALCODE_INVALID,
                         new DocumentProcessingValidationField("ShipFrom.PostalCode", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.PostalCode : string.Empty, countryShipFrom.RegExZipCode, requiredWayBillModeFields)
                     );
                     _fields.Add(DocumentValidationErrorType.ERROR_FIELD_SHIPFROM_CITY_INVALID,
-                        new DocumentProcessingValidationField("ShipFrom.City", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.City : string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfa, requiredWayBillModeFields)
+                        new DocumentProcessingValidationField("ShipFrom.City", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.City : string.Empty, RegexUtils.RegexAlfa, requiredWayBillModeFields)
                     );
                     _fields.Add(DocumentValidationErrorType.ERROR_FIELD_SHIPFROM_COUNTRY_INVALID,
-                        new DocumentProcessingValidationField("ShipFrom.Country", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.CountryGuid : Guid.Empty, LogicPOS.Utility.RegexUtils.RegexGuid, requiredWayBillModeFields)
+                        new DocumentProcessingValidationField("ShipFrom.Country", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.CountryGuid : Guid.Empty, RegexUtils.RegexGuid, requiredWayBillModeFields)
                     );
                     _fields.Add(DocumentValidationErrorType.ERROR_FIELD_SHIPFROM_DELIVERYDATE_INVALID,
-                        new DocumentProcessingValidationField("ShipFrom.DeliveryDate", (pParameters.ShipFrom != null && pParameters.ShipFrom.DeliveryDate != DateTime.MinValue) ? pParameters.ShipFrom.DeliveryDate.ToString(LogicPOS.Settings.CultureSettings.DateTimeFormat) : string.Empty, LogicPOS.Utility.RegexUtils.RegexDateTime, requiredWayBillModeFields)
+                        new DocumentProcessingValidationField("ShipFrom.DeliveryDate", (pParameters.ShipFrom != null && pParameters.ShipFrom.DeliveryDate != DateTime.MinValue) ? pParameters.ShipFrom.DeliveryDate.ToString(CultureSettings.DateTimeFormat) : string.Empty, RegexUtils.RegexDateTime, requiredWayBillModeFields)
                     );
                     _fields.Add(DocumentValidationErrorType.ERROR_FIELD_SHIPFROM_DELIVERYID_INVALID,
-                        new DocumentProcessingValidationField("ShipFrom.DeliveryID", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.DeliveryID : string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false)
+                        new DocumentProcessingValidationField("ShipFrom.DeliveryID", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.DeliveryID : string.Empty, RegexUtils.RegexAlfaNumericExtended, false)
                     );
                     _fields.Add(DocumentValidationErrorType.ERROR_FIELD_SHIPFROM_WAREHOUSEID_INVALID,
-                        new DocumentProcessingValidationField("ShipFrom.WarehouseID", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.WarehouseID : string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false)
+                        new DocumentProcessingValidationField("ShipFrom.WarehouseID", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.WarehouseID : string.Empty, RegexUtils.RegexAlfaNumericExtended, false)
                     );
                     _fields.Add(DocumentValidationErrorType.ERROR_FIELD_SHIPFROM_LOCATIONID_INVALID,
-                        new DocumentProcessingValidationField("ShipFrom.LocationID", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.LocationID : string.Empty, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false)
+                        new DocumentProcessingValidationField("ShipFrom.LocationID", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.LocationID : string.Empty, RegexUtils.RegexAlfaNumericExtended, false)
                     );
                 }
 
@@ -276,7 +276,7 @@ namespace LogicPOS.Finance.DocumentProcessing
                     if (deliveryDate < shippingDate)
                     {
                         _fields.Add(DocumentValidationErrorType.ERROR_FIELD_SHIPFROM_DELIVERYDATE_BEFORE_SHIPPINGDATE,
-                        new DocumentProcessingValidationField("ShipFrom.DeliveryDate", string.Empty, LogicPOS.Utility.RegexUtils.RegexDateTime, true));
+                        new DocumentProcessingValidationField("ShipFrom.DeliveryDate", string.Empty, RegexUtils.RegexDateTime, true));
                     }
                 }
 
@@ -285,32 +285,32 @@ namespace LogicPOS.Finance.DocumentProcessing
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
                 _fieldsArticle.Add(DocumentValidationErrorType.ERROR_FIELD_ARTICLE_OID_INVALID,
-                    new DocumentProcessingValidationField("Oid", null, LogicPOS.Utility.RegexUtils.RegexGuid, true)
+                    new DocumentProcessingValidationField("Oid", null, RegexUtils.RegexGuid, true)
                 );
                 _fieldsArticle.Add(DocumentValidationErrorType.ERROR_FIELD_ARTICLE_CODE_INVALID,
-                    new DocumentProcessingValidationField("Code", null, LogicPOS.Utility.RegexUtils.RegexAlfaNumericArticleCode, true)
+                    new DocumentProcessingValidationField("Code", null, RegexUtils.RegexAlfaNumericArticleCode, true)
                 );
                 _fieldsArticle.Add(DocumentValidationErrorType.ERROR_FIELD_ARTICLE_DESIGNATION_INVALID,
-                    new DocumentProcessingValidationField("Designation", null, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true)
+                    new DocumentProcessingValidationField("Designation", null, RegexUtils.RegexAlfaNumericExtended, true)
                 );
                 _fieldsArticle.Add(DocumentValidationErrorType.ERROR_FIELD_ARTICLE_PRICE_INVALID,
                     new DocumentProcessingValidationField("Price", null, regExArticlePrice, true)
                 );
                 _fieldsArticle.Add(DocumentValidationErrorType.ERROR_FIELD_ARTICLE_QUANTITY_INVALID,
-                    new DocumentProcessingValidationField("Quantity", null, LogicPOS.Utility.RegexUtils.RegexDecimalGreaterEqualThanZero, true)
+                    new DocumentProcessingValidationField("Quantity", null, RegexUtils.RegexDecimalGreaterEqualThanZero, true)
                 );
                 //Removed : Framework LogicErp dont send ACRONYM : Search all ERROR_FIELD_ARTICLE_UNIT_MEASURE_ACRONYM_INVALID occurences
                 //_fieldsArticle.Add(FinanceValidationError.ERROR_FIELD_ARTICLE_UNIT_MEASURE_ACRONYM_INVALID,
                 //    new ProcessFinanceDocumentValidationField("UnitMeasure.Acronym", null, SettingsApp.RegexAlfaNumeric, true)
                 //);
                 _fieldsArticle.Add(DocumentValidationErrorType.ERROR_FIELD_ARTICLE_DISCOUNT_INVALID,
-                    new DocumentProcessingValidationField("Discount", null, LogicPOS.Utility.RegexUtils.RegexPercentage, true)
+                    new DocumentProcessingValidationField("Discount", null, RegexUtils.RegexPercentage, true)
                 );
                 _fieldsArticle.Add(DocumentValidationErrorType.ERROR_FIELD_ARTICLE_VAT_RATE_INVALID,
-                    new DocumentProcessingValidationField("VatRate", null, LogicPOS.Utility.RegexUtils.RegexPercentage, true)
+                    new DocumentProcessingValidationField("VatRate", null, RegexUtils.RegexPercentage, true)
                 );
                 _fieldsArticle.Add(DocumentValidationErrorType.ERROR_FIELD_ARTICLE_VAT_EXEMPTION_REASON_INVALID,
-                    new DocumentProcessingValidationField("VatExemptionReason", null, LogicPOS.Utility.RegexUtils.RegexGuid, false)
+                    new DocumentProcessingValidationField("VatExemptionReason", null, RegexUtils.RegexGuid, false)
                 );
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::            
@@ -659,19 +659,19 @@ namespace LogicPOS.Finance.DocumentProcessing
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
                 _fields.Add(DocumentValidationErrorType.ERROR_FIELD_CUSTOMER_INVALID,
-                    new DocumentProcessingValidationField("Customer", customer.Oid, LogicPOS.Utility.RegexUtils.RegexGuid, true)
+                    new DocumentProcessingValidationField("Customer", customer.Oid, RegexUtils.RegexGuid, true)
                 );
                 _fields.Add(DocumentValidationErrorType.ERROR_FIELD_PAYMENT_METHOD_INVALID,
-                    new DocumentProcessingValidationField("PaymentMethod", paymentMethod.Oid, LogicPOS.Utility.RegexUtils.RegexGuid, true)
+                    new DocumentProcessingValidationField("PaymentMethod", paymentMethod.Oid, RegexUtils.RegexGuid, true)
                 );
                 _fields.Add(DocumentValidationErrorType.ERROR_FIELD_CURRENCY_INVALID,
-                    new DocumentProcessingValidationField("Currency", currency.Oid, LogicPOS.Utility.RegexUtils.RegexGuid, true)
+                    new DocumentProcessingValidationField("Currency", currency.Oid, RegexUtils.RegexGuid, true)
                 );
                 _fields.Add(DocumentValidationErrorType.ERROR_FIELD_PAYMENT_AMOUNT_INVALID,
-                    new DocumentProcessingValidationField("PaymentAmount", pPaymentAmount, LogicPOS.Utility.RegexUtils.RegexDecimalGreaterEqualThanZero, true)
+                    new DocumentProcessingValidationField("PaymentAmount", pPaymentAmount, RegexUtils.RegexDecimalGreaterEqualThanZero, true)
                 );
                 _fields.Add(DocumentValidationErrorType.ERROR_FIELD_NOTES_INVALID,
-                    new DocumentProcessingValidationField("Notes", pPaymentNotes, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false)
+                    new DocumentProcessingValidationField("Notes", pPaymentNotes, RegexUtils.RegexAlfaNumericExtended, false)
                 );
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::            
@@ -747,7 +747,7 @@ namespace LogicPOS.Finance.DocumentProcessing
 
                 //Calc Diferences
                 totalDocumentsDiference = (totalInvoicesDebit - totalCreditNotes);
-                totalPaymentDiference = Math.Round(totalDocumentsDiference - paymentAmount, LogicPOS.Settings.CultureSettings.DecimalRoundTo);
+                totalPaymentDiference = Math.Round(totalDocumentsDiference - paymentAmount, CultureSettings.DecimalRoundTo);
 
                 if (_debug) _logger.Debug(string.Format(
                     "PaymentAmount: [{0}], InvoicesDebit: [{1}], CreditNotes: [{2}], DocumentsDiference: [{3}], PaymentDiference:[{4}]",

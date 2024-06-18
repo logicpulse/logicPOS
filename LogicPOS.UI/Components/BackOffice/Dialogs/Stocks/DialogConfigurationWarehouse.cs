@@ -75,19 +75,19 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
                 Entry entryOrd = new Entry();
                 BOWidgetBox boxOrd = new BOWidgetBox(GeneralUtils.GetResourceByName("global_record_order"), entryOrd);
                 vboxTab1.PackStart(boxOrd, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxOrd, _dataSourceRow, "Ord", LogicPOS.Utility.RegexUtils.RegexIntegerGreaterThanZero, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxOrd, _dataSourceRow, "Ord", RegexUtils.RegexIntegerGreaterThanZero, true));
 
                 //Code
                 Entry entryCode = new Entry();
                 BOWidgetBox boxCode = new BOWidgetBox(GeneralUtils.GetResourceByName("global_record_code"), entryCode);
                 vboxTab1.PackStart(boxCode, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCode, _dataSourceRow, "Code", LogicPOS.Utility.RegexUtils.RegexIntegerGreaterThanZero, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCode, _dataSourceRow, "Code", RegexUtils.RegexIntegerGreaterThanZero, true));
 
                 //Designation
                 Entry entryDesignation = new Entry();
                 BOWidgetBox boxDesignation = new BOWidgetBox(GeneralUtils.GetResourceByName("global_designation"), entryDesignation);
                 vboxTab1.PackStart(boxDesignation, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", RegexUtils.RegexAlfaNumericExtended, true));
 
                 //Default
                 CheckButton checkButtonDefault = new CheckButton(GeneralUtils.GetResourceByName("global_default_warehouse"));
@@ -151,7 +151,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
                 //Localização
                 Entry entryLocation = new Entry();
                 BOWidgetBox boxLocation = new BOWidgetBox(GeneralUtils.GetResourceByName("global_ConfigurationDevice_PlaceTerminal"), entryLocation);
-                GenericCRUDWidgetXPO genericCRUDWidgetXPO = new GenericCRUDWidgetXPO(boxLocation, pDataSourceRow, "Designation", LogicPOS.Utility.RegexUtils.RegexAlfaNumeric, true);
+                GenericCRUDWidgetXPO genericCRUDWidgetXPO = new GenericCRUDWidgetXPO(boxLocation, pDataSourceRow, "Designation", RegexUtils.RegexAlfaNumeric, true);
                 _crudWidgetList.Add(genericCRUDWidgetXPO);
                 hboxLocation.PackStart(boxLocation);
 

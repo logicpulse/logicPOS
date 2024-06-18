@@ -178,7 +178,7 @@ namespace logicpos
 
         internal static ResponseType ShowMessageTouchErrorPrintingTicket(
             Gtk.Window pSourceWindow,
-            PrintingPrinterDto printer,
+            PrinterDto printer,
             Exception pEx)
         {
             //Protection when Printer is Null, ex printing Ticket Articles (Printer is Assign in Article)

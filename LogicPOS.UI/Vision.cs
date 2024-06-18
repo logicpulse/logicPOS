@@ -12,16 +12,16 @@ namespace logicpos
             GeneralSettings.Settings = ConfigurationManager.AppSettings;
             Program.SetCulture();
 
-            Gtk.Application.Init();
+            Application.Init();
 
             var win = new Window("Vision");
             MoneyPad moneyPad = new MoneyPad(win);
             moneyPad.Show();
             win.Show();
 
-            
 
-            Gtk.Application.Run();
+
+            Application.Run();
         }
 
 

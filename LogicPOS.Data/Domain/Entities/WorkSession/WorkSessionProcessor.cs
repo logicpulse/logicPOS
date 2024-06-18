@@ -53,7 +53,7 @@ namespace LogicPOS.Data.Services
             {
                 PeriodType = pWorkSessionPeriodType,
                 SessionStatus = WorkSessionPeriodStatus.Open,
-                Designation = string.Format("{0} - {1}{2}", periodType, dateTime.ToString(LogicPOS.Settings.CultureSettings.DateTimeFormat), description),
+                Designation = string.Format("{0} - {1}{2}", periodType, dateTime.ToString(Settings.CultureSettings.DateTimeFormat), description),
                 DateStart = dateTime,
                 Terminal = terminal
             };

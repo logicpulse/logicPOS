@@ -143,7 +143,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         //5.3: FT: Cancel Invoice
         private void buttonCancelInvoice_Clicked(object sender, EventArgs e)
         {
-            string dateTimeFormatCombinedDateTime = LogicPOS.Settings.CultureSettings.DateTimeFormatCombinedDateTime;
+            string dateTimeFormatCombinedDateTime = CultureSettings.DateTimeFormatCombinedDateTime;
             Guid documentMasterGuid = new Guid("81fcf207-ff59-4971-90cb-80d2cbdb87dc");//Document To Cancel
             fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)XPOSettings.Session.GetObjectByKey(typeof(fin_documentfinancemaster), documentMasterGuid);
 

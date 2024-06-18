@@ -11,14 +11,14 @@ namespace LogicPOS.Printing.Common
         private readonly string _line = string.Empty;
         private readonly char _lineChar = '-';
 
-        public PrintingPrinterDto Printer { get; private set; }
+        public PrinterDto Printer { get; private set; }
 
         public int MaxCharsPerLineNormal { get; set; }
         public int MaxCharsPerLineNormalBold { get; set; }
         public int MaxCharsPerLineSmall { get; set; }
 
         public GenericThermalPrinter(
-            PrintingPrinterDto printer)
+            PrinterDto printer)
             : this(
                   printer,
                   PrintingSettings.ThermalPrinter.Encoding)
@@ -26,7 +26,7 @@ namespace LogicPOS.Printing.Common
         }
 
         public GenericThermalPrinter(
-            PrintingPrinterDto printer,
+            PrinterDto printer,
             string encoding)
             : this(
                   printer,
@@ -38,7 +38,7 @@ namespace LogicPOS.Printing.Common
         }
 
         public GenericThermalPrinter(
-            PrintingPrinterDto printer,
+            PrinterDto printer,
             string encoding,
             int maxCharsPerLineNormal,
             int maxCharsPerLineNormalBold,

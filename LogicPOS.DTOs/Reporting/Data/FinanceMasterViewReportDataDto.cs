@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace LogicPOS.DTOs.Reporting
 {
 
-    public class FinanceMasterViewReportDto 
+    public class FinanceMasterViewReportDataDto 
     {
         public string Oid { get; set; }
                                                 
@@ -172,7 +172,7 @@ namespace LogicPOS.DTOs.Reporting
 
         public string ATDocQRCode { get; set; }                                    
 
-        public List<FinanceDetailReportDto> DocumentFinanceDetail { get; set; }
-        public List<FinanceMasterTotalViewReportDto> DocumentFinanceMasterTotal { get; set; }
+        public List<FinanceDetailReportDataDto> DocumentFinanceDetail { get; set; }
+        public List<FinanceMasterTotalViewReportDataDto> DocumentFinanceMasterTotal { get; set; }
     }
 }

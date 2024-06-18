@@ -164,7 +164,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if (count <= 0)
                 {
 					/* IN009062 */
-                    logicpos.Utils.ShowMessageBox(this, DialogFlags.Modal, new Size(500, 240), MessageType.Info, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_information"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_report_filter_no_records_with_criteria"));
+                    logicpos.Utils.ShowMessageBox(this, DialogFlags.Modal, new Size(500, 240), MessageType.Info, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_information"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_report_filter_no_records_with_criteria"));
                     //Keep Running
                     this.Run();
                 }
@@ -268,7 +268,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             // Combine final where Filter
             if (!Enums.Reports.ReportsQueryDialogMode.CUSTOMER_BALANCE_SUMMARY.Equals(_reportsQueryDialogMode))
             {
-                string datesFilter = string.Format("{0} >= '{1}' AND {0} <= '{2}'", filterDateField, DateStart.ToString(LogicPOS.Settings.CultureSettings.DateTimeFormat), DateEnd.ToString(LogicPOS.Settings.CultureSettings.DateTimeFormat));
+                string datesFilter = string.Format("{0} >= '{1}' AND {0} <= '{2}'", filterDateField, DateStart.ToString(CultureSettings.DateTimeFormat), DateEnd.ToString(CultureSettings.DateTimeFormat));
                 filter = (!string.IsNullOrEmpty(filterSelectionBoxs))
                     ? string.Format("({0}) AND ({1})", datesFilter, filterSelectionBoxs)
                     : string.Format("({0})", datesFilter);
@@ -282,7 +282,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //}
                 // HumanReadable
                 /* IN006004 */
-                string datesFilterHumanReadable = string.Format(" {0} '{1}', {2} '{3}' ", CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_date_start"), DateStart.ToString(LogicPOS.Settings.CultureSettings.DateTimeFormat), CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_date_end"), DateEnd.ToString(LogicPOS.Settings.CultureSettings.DateTimeFormat));
+                string datesFilterHumanReadable = string.Format(" {0} '{1}', {2} '{3}' ", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_date_start"), DateStart.ToString(CultureSettings.DateTimeFormat), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_date_end"), DateEnd.ToString(CultureSettings.DateTimeFormat));
                 filterHumanReadable = (!string.IsNullOrEmpty(filterSelectionBoxsHumanReadable))
                     ? string.Format("{0}, {1}", datesFilterHumanReadable, filterSelectionBoxsHumanReadable)
                     : datesFilterHumanReadable;
@@ -295,7 +295,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if (Enums.Reports.ReportsQueryDialogMode.COMPANY_BILLING.Equals(_reportsQueryDialogMode))
                 {
                     string documentTypeOid = DocumentSettings.PaymentDocumentTypeId.ToString();
-                    string documentTypeDesignation = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_documentfinance_type_title_rc");
+                    string documentTypeDesignation = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_documentfinance_type_title_rc");
                     /* Based on "view_documentfinancecustomerbalancedetails" we are removing RCs ("a009168d-fed1-4f52-b9e3-77e280b18ff5") */
                     filter += $" AND DocumentTypeOid <> '{documentTypeOid}'";
                     // filterHumanReadable += $", {CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_documentfinance_type} <> '{documentTypeDesignation}'";
@@ -303,7 +303,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
 
             result.Add(filter);
-            result.Add(string.Format("{0}: [{1}]", CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_filter"), filterHumanReadable));
+            result.Add(string.Format("{0}: [{1}]", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_filter"), filterHumanReadable));
 
             // Return Result Filter List
             return result;

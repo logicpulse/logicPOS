@@ -152,32 +152,32 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 Entry entryOrd = new Entry();
                 BOWidgetBox boxLabel = new BOWidgetBox(GeneralUtils.GetResourceByName("global_record_order"), entryOrd);
                 vboxTab1.PackStart(boxLabel, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxLabel, _dataSourceRow, "Ord", LogicPOS.Utility.RegexUtils.RegexIntegerGreaterThanZero, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxLabel, _dataSourceRow, "Ord", RegexUtils.RegexIntegerGreaterThanZero, true));
 
                 //Code
                 Entry entryCode = new Entry();
                 BOWidgetBox boxCode = new BOWidgetBox(GeneralUtils.GetResourceByName("global_record_code"), entryCode);
                 vboxTab1.PackStart(boxCode, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCode, _dataSourceRow, "Code", LogicPOS.Utility.RegexUtils.RegexAlfaNumericArticleCode, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCode, _dataSourceRow, "Code", RegexUtils.RegexAlfaNumericArticleCode, true));
 
                 //CodeDealer
                 Entry entryCodeDealer = new Entry();
                 BOWidgetBox boxCodeDealer = new BOWidgetBox(GeneralUtils.GetResourceByName("global_record_code_dealer"), entryCodeDealer);
                 vboxTab1.PackStart(boxCodeDealer, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCodeDealer, _dataSourceRow, "CodeDealer", LogicPOS.Utility.RegexUtils.RegexAlfaNumeric, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCodeDealer, _dataSourceRow, "CodeDealer", RegexUtils.RegexAlfaNumeric, false));
 
                 //Designation
                 Entry entryDesignation = new Entry();
                 BOWidgetBox boxDesignation = new BOWidgetBox(GeneralUtils.GetResourceByName("global_designation"), entryDesignation);
                 vboxTab1.PackStart(boxDesignation, false, false, 0);
                 // Changed from RegexAlfaNumeric to  RegexAlfaNumericExtended 2017-1011
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", RegexUtils.RegexAlfaNumericExtended, true));
 
                 //ButtonLabel
                 Entry entryButtonLabel = new Entry();
                 BOWidgetBox boxButtonLabel = new BOWidgetBox(GeneralUtils.GetResourceByName("global_button_name"), entryButtonLabel);
                 vboxTab1.PackStart(boxButtonLabel, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxButtonLabel, _dataSourceRow, "ButtonLabel", LogicPOS.Utility.RegexUtils.RegexAlfaNumericArticleButtonLabel, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxButtonLabel, _dataSourceRow, "ButtonLabel", RegexUtils.RegexAlfaNumericArticleButtonLabel, false));
 
                 //Composite article
                 //_xpoComboBoxCompositeArticle = new XPOComboBox(DataSourceRow.Session, typeof(fin_articlefamily), (DataSourceRow as fin_article).Family, "Designation", null);
@@ -189,19 +189,19 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _xpoComboBoxFamily = new XPOComboBox(DataSourceRow.Session, typeof(fin_articlefamily), (DataSourceRow as fin_article).Family, "Designation", null);
                 BOWidgetBox boxFamily = new BOWidgetBox(GeneralUtils.GetResourceByName("global_article_family"), _xpoComboBoxFamily);
                 vboxTab1.PackStart(boxFamily, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxFamily, DataSourceRow, "Family", LogicPOS.Utility.RegexUtils.RegexGuid, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxFamily, DataSourceRow, "Family", RegexUtils.RegexGuid, true));
 
                 //SubFamily
                 _xpoComboBoxSubFamily = new XPOComboBox(DataSourceRow.Session, typeof(fin_articlesubfamily), (DataSourceRow as fin_article).SubFamily, "Designation", null);
                 BOWidgetBox boxSubFamily = new BOWidgetBox(GeneralUtils.GetResourceByName("global_article_subfamily"), _xpoComboBoxSubFamily);
                 vboxTab1.PackStart(boxSubFamily, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxSubFamily, DataSourceRow, "SubFamily", LogicPOS.Utility.RegexUtils.RegexGuid, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxSubFamily, DataSourceRow, "SubFamily", RegexUtils.RegexGuid, true));
 
                 //Type
                 XPOComboBox xpoComboBoxType = new XPOComboBox(DataSourceRow.Session, typeof(fin_articletype), (DataSourceRow as fin_article).Type, "Designation", null);
                 BOWidgetBox boxType = new BOWidgetBox(GeneralUtils.GetResourceByName("global_article_type"), xpoComboBoxType);
                 vboxTab1.PackStart(boxType, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxType, DataSourceRow, "Type", LogicPOS.Utility.RegexUtils.RegexGuid, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxType, DataSourceRow, "Type", RegexUtils.RegexGuid, true));
 
                 //ButtonImage
                 FileChooserButton fileChooserButtonImage = new FileChooserButton(string.Empty, FileChooserAction.Open) { HeightRequest = 23 };
@@ -302,8 +302,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     //Entrys
                     Entry entryPriceNormal = new Entry() { WidthRequest = col2width };
                     Entry entryPricePromotion = new Entry() { WidthRequest = col3width };
-                    _crudWidgetList.Add(new GenericCRUDWidgetXPO(entryPriceNormal, _dataSourceRow, fieldNamePriceNormal, LogicPOS.Utility.RegexUtils.RegexDecimalGreaterEqualThanZero, true));
-                    _crudWidgetList.Add(new GenericCRUDWidgetXPO(entryPricePromotion, _dataSourceRow, fieldNamePricePromotion, LogicPOS.Utility.RegexUtils.RegexDecimalGreaterEqualThanZero, true));
+                    _crudWidgetList.Add(new GenericCRUDWidgetXPO(entryPriceNormal, _dataSourceRow, fieldNamePriceNormal, RegexUtils.RegexDecimalGreaterEqualThanZero, true));
+                    _crudWidgetList.Add(new GenericCRUDWidgetXPO(entryPricePromotion, _dataSourceRow, fieldNamePricePromotion, RegexUtils.RegexDecimalGreaterEqualThanZero, true));
                     //UsePromotion
                     CheckButton checkButtonUsePromotion = new CheckButton(string.Empty) { WidthRequest = col4width };
                     _crudWidgetList.Add(new GenericCRUDWidgetXPO(checkButtonUsePromotion, _dataSourceRow, fieldNamePriceUsePromotionPrice));
@@ -332,13 +332,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 Entry entryDiscount = new Entry();
                 BOWidgetBox boxDiscount = new BOWidgetBox(GeneralUtils.GetResourceByName("global_discount"), entryDiscount);
                 _vboxTab2.PackStart(boxDiscount, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDiscount, _dataSourceRow, "Discount", LogicPOS.Utility.RegexUtils.RegexPercentage, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDiscount, _dataSourceRow, "Discount", RegexUtils.RegexPercentage, false));
 
                 //Class
                 XPOComboBox xpoComboBoxClass = new XPOComboBox(DataSourceRow.Session, typeof(fin_articleclass), (DataSourceRow as fin_article).Class, "Designation", null);
                 BOWidgetBox boxClass = new BOWidgetBox(GeneralUtils.GetResourceByName("global_article_class"), xpoComboBoxClass);
                 _vboxTab2.PackStart(boxClass, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxClass, DataSourceRow, "Class", LogicPOS.Utility.RegexUtils.RegexGuid, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxClass, DataSourceRow, "Class", RegexUtils.RegexGuid, true));
 
                 //Normal App Mode
                 if (AppOperationModeSettings.IsDefaultTheme)/* IN008024 */
@@ -347,20 +347,20 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     _xpoComboBoxVatOnTable = new XPOComboBox(DataSourceRow.Session, typeof(fin_configurationvatrate), (DataSourceRow as fin_article).VatOnTable, "Designation", null);
                     BOWidgetBox boxVatOnTable = new BOWidgetBox(GeneralUtils.GetResourceByName("global_vat_on_table"), _xpoComboBoxVatOnTable);
                     _vboxTab2.PackStart(boxVatOnTable, false, false, 0);
-                    _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxVatOnTable, DataSourceRow, "VatOnTable", LogicPOS.Utility.RegexUtils.RegexGuid, true));
+                    _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxVatOnTable, DataSourceRow, "VatOnTable", RegexUtils.RegexGuid, true));
                 }
 
                 //VatDirectSelling
                 _xpoComboBoxVatDirectSelling = new XPOComboBox(DataSourceRow.Session, typeof(fin_configurationvatrate), (DataSourceRow as fin_article).VatDirectSelling, "Designation", null);
                 BOWidgetBox boxVatDirectSelling = new BOWidgetBox(GeneralUtils.GetResourceByName("global_vat_direct_selling"), _xpoComboBoxVatDirectSelling);
                 _vboxTab2.PackStart(boxVatDirectSelling, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxVatDirectSelling, DataSourceRow, "VatDirectSelling", LogicPOS.Utility.RegexUtils.RegexGuid, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxVatDirectSelling, DataSourceRow, "VatDirectSelling", RegexUtils.RegexGuid, true));
 
                 //VatExemptionReason
                 _xpoComboBoxVatExemptionReason = new XPOComboBox(DataSourceRow.Session, typeof(fin_configurationvatexemptionreason), (DataSourceRow as fin_article).VatExemptionReason, "Designation", null);
                 BOWidgetBox boxVatExemptionReason = new BOWidgetBox(GeneralUtils.GetResourceByName("global_vat_exemption_reason"), _xpoComboBoxVatExemptionReason);
                 _vboxTab2.PackStart(boxVatExemptionReason, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxVatExemptionReason, DataSourceRow, "VatExemptionReason", LogicPOS.Utility.RegexUtils.RegexGuid, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxVatExemptionReason, DataSourceRow, "VatExemptionReason", RegexUtils.RegexGuid, true));
 
                 //Append Tab
                 _notebook.AppendPage(_vboxTab2, new Label(GeneralUtils.GetResourceByName("dialog_edit_article_tab2_label")));
@@ -374,13 +374,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 Entry entryBarCode = new Entry();
                 BOWidgetBox boxBarCode = new BOWidgetBox(GeneralUtils.GetResourceByName("global_barcode"), entryBarCode);
                 vboxTab3.PackStart(boxBarCode, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxBarCode, _dataSourceRow, "BarCode", LogicPOS.Utility.RegexUtils.RegexEan12andEan4, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxBarCode, _dataSourceRow, "BarCode", RegexUtils.RegexEan12andEan4, false));
 
                 //Accounting
                 Entry entryAccounting = new Entry();
                 BOWidgetBox boxAccounting = new BOWidgetBox(GeneralUtils.GetResourceByName("global_total_stock"), entryAccounting);
                 vboxTab3.PackStart(boxAccounting, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxAccounting, _dataSourceRow, "Accounting", LogicPOS.Utility.RegexUtils.RegexDecimal, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxAccounting, _dataSourceRow, "Accounting", RegexUtils.RegexDecimal, false));
                 //entryAccounting.Editable = false;
                 try
                 {
@@ -395,57 +395,57 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 Entry entryMinimumStock = new Entry();
                 BOWidgetBox boxMinimumStock = new BOWidgetBox(GeneralUtils.GetResourceByName("global_minimum_stock"), entryMinimumStock);
                 vboxTab3.PackStart(boxMinimumStock, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxMinimumStock, _dataSourceRow, "MinimumStock", LogicPOS.Utility.RegexUtils.RegexDecimal, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxMinimumStock, _dataSourceRow, "MinimumStock", RegexUtils.RegexDecimal, false));
 
                 //Tare
                 Entry entryTare = new Entry();
                 BOWidgetBox boxTare = new BOWidgetBox(GeneralUtils.GetResourceByName("global_tare"), entryTare);
                 vboxTab3.PackStart(boxTare, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxTare, _dataSourceRow, "Tare", LogicPOS.Utility.RegexUtils.RegexDecimal, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxTare, _dataSourceRow, "Tare", RegexUtils.RegexDecimal, false));
 
                 //Weight
                 Entry entryWeight = new Entry();
                 BOWidgetBox boxWeight = new BOWidgetBox(GeneralUtils.GetResourceByName("global_weight"), entryWeight);
                 vboxTab3.PackStart(boxWeight, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxWeight, _dataSourceRow, "Weight", LogicPOS.Utility.RegexUtils.RegexDecimal, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxWeight, _dataSourceRow, "Weight", RegexUtils.RegexDecimal, false));
 
                 //DefaultQuantity
                 Entry entryDefaultQuantity = new Entry();
                 BOWidgetBox boxDefaultQuantity = new BOWidgetBox(GeneralUtils.GetResourceByName("global_article_default_quantity"), entryDefaultQuantity);
                 vboxTab3.PackStart(boxDefaultQuantity, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDefaultQuantity, _dataSourceRow, "DefaultQuantity", LogicPOS.Utility.RegexUtils.RegexDecimal, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDefaultQuantity, _dataSourceRow, "DefaultQuantity", RegexUtils.RegexDecimal, false));
 
                 //UnitMeasure
                 XPOComboBox xpoComboBoxUnitMeasure = new XPOComboBox(DataSourceRow.Session, typeof(cfg_configurationunitmeasure), (DataSourceRow as fin_article).UnitMeasure, "Designation", null);
                 BOWidgetBox boxUnitMeasure = new BOWidgetBox(GeneralUtils.GetResourceByName("global_unit_measure"), xpoComboBoxUnitMeasure);
                 vboxTab3.PackStart(boxUnitMeasure, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxUnitMeasure, DataSourceRow, "UnitMeasure", LogicPOS.Utility.RegexUtils.RegexGuid, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxUnitMeasure, DataSourceRow, "UnitMeasure", RegexUtils.RegexGuid, true));
 
                 //UnitSize
                 XPOComboBox xpoComboBoxUnitSize = new XPOComboBox(DataSourceRow.Session, typeof(cfg_configurationunitsize), (DataSourceRow as fin_article).UnitSize, "Designation", null);
                 BOWidgetBox boxUnitSize = new BOWidgetBox(GeneralUtils.GetResourceByName("global_unit_size"), xpoComboBoxUnitSize);
                 vboxTab3.PackStart(boxUnitSize, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxUnitSize, DataSourceRow, "UnitSize", LogicPOS.Utility.RegexUtils.RegexGuid, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxUnitSize, DataSourceRow, "UnitSize", RegexUtils.RegexGuid, true));
 
                 //Printer
                 XPOComboBox xpoComboBoxPrinter = new XPOComboBox(DataSourceRow.Session, typeof(sys_configurationprinters), (DataSourceRow as fin_article).Printer, "Designation", null);
                 BOWidgetBox boxPrinter = new BOWidgetBox(GeneralUtils.GetResourceByName("global_device_printer"), xpoComboBoxPrinter);
                 vboxTab3.PackStart(boxPrinter, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxPrinter, DataSourceRow, "Printer", LogicPOS.Utility.RegexUtils.RegexGuid, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxPrinter, DataSourceRow, "Printer", RegexUtils.RegexGuid, false));
 
                 //Template
                 CriteriaOperator criteriaOperatorSelectTemplate = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (IsBarCode IS NULL OR IsBarCode = 0)"));
                 XPOComboBox xpoComboBoxTemplate = new XPOComboBox(DataSourceRow.Session, typeof(sys_configurationprinterstemplates), (DataSourceRow as fin_article).Template, "Designation", criteriaOperatorSelectTemplate);
                 BOWidgetBox boxTemplate = new BOWidgetBox(GeneralUtils.GetResourceByName("global_ConfigurationPrintersTemplates"), xpoComboBoxTemplate);
                 vboxTab3.PackStart(boxTemplate, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxTemplate, DataSourceRow, "Template", LogicPOS.Utility.RegexUtils.RegexGuid, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxTemplate, DataSourceRow, "Template", RegexUtils.RegexGuid, false));
 
                 //TemplateBarCode
                 CriteriaOperator criteriaOperatorSelectTemplateBarCode = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND IsBarCode = 1"));
                 XPOComboBox xpoComboBoxTemplateBarCode = new XPOComboBox(DataSourceRow.Session, typeof(sys_configurationprinterstemplates), (DataSourceRow as fin_article).TemplateBarCode, "Designation", criteriaOperatorSelectTemplateBarCode);
                 BOWidgetBox boxTemplateBarCode = new BOWidgetBox(GeneralUtils.GetResourceByName("global_ConfigurationPrintersBarCodeTemplates"), xpoComboBoxTemplateBarCode);
                 vboxTab3.PackStart(boxTemplateBarCode, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxTemplateBarCode, DataSourceRow, "TemplateBarCode", LogicPOS.Utility.RegexUtils.RegexGuid, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxTemplateBarCode, DataSourceRow, "TemplateBarCode", RegexUtils.RegexGuid, false));
 
                 if (GlobalApp.ScreenSize.Width > 800 && GlobalApp.ScreenSize.Height > 600)
                 {
@@ -453,13 +453,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     XPOComboBox xpoComboBoxCommissionGroup = new XPOComboBox(DataSourceRow.Session, typeof(pos_usercommissiongroup), (DataSourceRow as fin_article).CommissionGroup, "Designation", null);
                     BOWidgetBox boxCommissionGroup = new BOWidgetBox(GeneralUtils.GetResourceByName("global_commission_group"), xpoComboBoxCommissionGroup);
                     vboxTab3.PackStart(boxCommissionGroup, false, false, 0);
-                    _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCommissionGroup, DataSourceRow, "CommissionGroup", LogicPOS.Utility.RegexUtils.RegexGuid, false));
+                    _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCommissionGroup, DataSourceRow, "CommissionGroup", RegexUtils.RegexGuid, false));
 
                     //DiscountGroup
                     XPOComboBox xpoComboBoxDiscountGroup = new XPOComboBox(DataSourceRow.Session, typeof(erp_customerdiscountgroup), (DataSourceRow as fin_article).DiscountGroup, "Designation", null);
                     BOWidgetBox boxDiscountGroup = new BOWidgetBox(GeneralUtils.GetResourceByName("global_discount_group"), xpoComboBoxDiscountGroup);
                     vboxTab3.PackStart(boxDiscountGroup, false, false, 0);
-                    _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDiscountGroup, DataSourceRow, "DiscountGroup", LogicPOS.Utility.RegexUtils.RegexGuid, false));
+                    _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDiscountGroup, DataSourceRow, "DiscountGroup", RegexUtils.RegexGuid, false));
                 }
 
                 //Append Tab
@@ -482,7 +482,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _totalCompositeEntrys++;
                 CriteriaOperator criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1)"));
                 if (_article != null) { criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Oid != '{0}')", _article.Oid.ToString())); }
-                _entryBoxSelectArticle1 = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, GeneralUtils.GetResourceByName("global_article"), "Designation", "Oid", _article, criteriaOperatorSelectArticle, Enums.Keyboard.KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true, true, "", LogicPOS.Utility.RegexUtils.RegexDecimalGreaterThanZero, _totalCompositeEntrys);
+                _entryBoxSelectArticle1 = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, GeneralUtils.GetResourceByName("global_article"), "Designation", "Oid", _article, criteriaOperatorSelectArticle, Enums.Keyboard.KeyboardMode.None, RegexUtils.RegexAlfaNumericExtended, true, true, "", RegexUtils.RegexDecimalGreaterThanZero, _totalCompositeEntrys);
                 _entryBoxSelectArticle1.EntryValidation.IsEditable = true;
                 _entryBoxSelectArticle1.EntryQtdValidation.IsEditable = true;
                 _entryBoxSelectArticle1.Value = null;
@@ -492,9 +492,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _entryBoxSelectArticle1.EntryCodeValidation.Validate();
                 _entryBoxSelectArticle1.EntryQtdValidation.Validate();
 
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryCodeValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", GeneralUtils.GetResourceByName("global_composite_article"), _totalCompositeEntrys, GeneralUtils.GetResourceByName("global_article_code")), LogicPOS.Utility.RegexUtils.RegexAlfaNumericArticleCode, true));
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", GeneralUtils.GetResourceByName("global_composite_article"), _totalCompositeEntrys, GeneralUtils.GetResourceByName("global_designation")), LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true));
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryQtdValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", GeneralUtils.GetResourceByName("global_composite_article"), _totalCompositeEntrys, GeneralUtils.GetResourceByName("global_quantity")), LogicPOS.Utility.RegexUtils.RegexDecimalGreaterThanZero, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryCodeValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", GeneralUtils.GetResourceByName("global_composite_article"), _totalCompositeEntrys, GeneralUtils.GetResourceByName("global_article_code")), RegexUtils.RegexAlfaNumericArticleCode, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", GeneralUtils.GetResourceByName("global_composite_article"), _totalCompositeEntrys, GeneralUtils.GetResourceByName("global_designation")), RegexUtils.RegexAlfaNumericExtended, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryQtdValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", GeneralUtils.GetResourceByName("global_composite_article"), _totalCompositeEntrys, GeneralUtils.GetResourceByName("global_quantity")), RegexUtils.RegexDecimalGreaterThanZero, true));
 
                 _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", GeneralUtils.GetResourceByName("global_composite_article"), _totalCompositeEntrys, GeneralUtils.GetResourceByName("global_article_code"))) as GenericCRUDWidgetXPO);
                 if (_genericCRUDWidgetXPO != null) _genericCRUDWidgetXPO.Validated = true;
@@ -1000,11 +1000,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             {
                 CriteriaOperator criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1)"));
                 if (_article != null) { criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1 AND Oid != '{0}')", _article.Oid)); }
-                XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle> NewEntryBoxSelectArticle = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, GeneralUtils.GetResourceByName("global_article"), "Designation", "Oid", _article, criteriaOperatorSelectArticle, Enums.Keyboard.KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true, true, "", LogicPOS.Utility.RegexUtils.RegexDecimalGreaterThanZero, _totalCompositeEntrys);
+                XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle> NewEntryBoxSelectArticle = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, GeneralUtils.GetResourceByName("global_article"), "Designation", "Oid", _article, criteriaOperatorSelectArticle, Enums.Keyboard.KeyboardMode.None, RegexUtils.RegexAlfaNumericExtended, true, true, "", RegexUtils.RegexDecimalGreaterThanZero, _totalCompositeEntrys);
 
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryCodeValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", GeneralUtils.GetResourceByName("global_composite_article"), NewEntryBoxSelectArticle.EntryNumber, GeneralUtils.GetResourceByName("global_article_code")), "", true));
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", GeneralUtils.GetResourceByName("global_composite_article"), NewEntryBoxSelectArticle.EntryNumber, GeneralUtils.GetResourceByName("global_designation")), LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true));
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryQtdValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", GeneralUtils.GetResourceByName("global_composite_article"), NewEntryBoxSelectArticle.EntryNumber, GeneralUtils.GetResourceByName("global_quantity")), LogicPOS.Utility.RegexUtils.RegexDecimalGreaterThanZero, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", GeneralUtils.GetResourceByName("global_composite_article"), NewEntryBoxSelectArticle.EntryNumber, GeneralUtils.GetResourceByName("global_designation")), RegexUtils.RegexAlfaNumericExtended, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryQtdValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", GeneralUtils.GetResourceByName("global_composite_article"), NewEntryBoxSelectArticle.EntryNumber, GeneralUtils.GetResourceByName("global_quantity")), RegexUtils.RegexDecimalGreaterThanZero, true));
 
                 NewEntryBoxSelectArticle.EntryValidation.IsEditable = true;
                 fin_article articleChild = pArticleComposition.ArticleChild;
@@ -1082,13 +1082,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 //var entrySelected = (XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>)sender;
                 CriteriaOperator criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1)"));
                 if (_article != null) { criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND Oid != '{0}'", _article.Oid.ToString())); }
-                XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle> NewEntryBoxSelectArticle = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, GeneralUtils.GetResourceByName("global_article"), "Designation", "Oid", _article, criteriaOperatorSelectArticle, Enums.Keyboard.KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true, true, LogicPOS.Utility.RegexUtils.RegexAlfaNumericArticleCode, LogicPOS.Utility.RegexUtils.RegexDecimalGreaterThanZero, _totalCompositeEntrys);
+                XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle> NewEntryBoxSelectArticle = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, GeneralUtils.GetResourceByName("global_article"), "Designation", "Oid", _article, criteriaOperatorSelectArticle, Enums.Keyboard.KeyboardMode.None, RegexUtils.RegexAlfaNumericExtended, true, true, RegexUtils.RegexAlfaNumericArticleCode, RegexUtils.RegexDecimalGreaterThanZero, _totalCompositeEntrys);
 
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryCodeValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", GeneralUtils.GetResourceByName("global_composite_article"), _totalCompositeEntrys, GeneralUtils.GetResourceByName("global_article_code")), LogicPOS.Utility.RegexUtils.RegexAlfaNumericArticleCode, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryCodeValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", GeneralUtils.GetResourceByName("global_composite_article"), _totalCompositeEntrys, GeneralUtils.GetResourceByName("global_article_code")), RegexUtils.RegexAlfaNumericArticleCode, true));
 
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", GeneralUtils.GetResourceByName("global_composite_article"), _totalCompositeEntrys, GeneralUtils.GetResourceByName("global_designation")), LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", GeneralUtils.GetResourceByName("global_composite_article"), _totalCompositeEntrys, GeneralUtils.GetResourceByName("global_designation")), RegexUtils.RegexAlfaNumericExtended, true));
 
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryQtdValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", GeneralUtils.GetResourceByName("global_composite_article"), _totalCompositeEntrys, GeneralUtils.GetResourceByName("global_quantity")), LogicPOS.Utility.RegexUtils.RegexDecimalGreaterThanZero, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryQtdValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", GeneralUtils.GetResourceByName("global_composite_article"), _totalCompositeEntrys, GeneralUtils.GetResourceByName("global_quantity")), RegexUtils.RegexDecimalGreaterThanZero, true));
 
                 NewEntryBoxSelectArticle.EntryValidation.IsEditable = true;
                 NewEntryBoxSelectArticle.Value = null;
@@ -1310,7 +1310,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         {
                             if (articleLine.Article != null && articleLine.Article == _article && articleLine.ArticleChild == entrySelected.Value)
                             {
-                                articleLine.Quantity = LogicPOS.Utility.DataConversionUtils.StringToDecimal(entrySelected.EntryQtdValidation.Text);
+                                articleLine.Quantity = DataConversionUtils.StringToDecimal(entrySelected.EntryQtdValidation.Text);
                                 return;
                             }
                         }
@@ -1458,7 +1458,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 HBox hboxSerialNumber = new HBox(false, _boxSpacing);
                 Entry entrySerialNumber = new Entry();
                 BOWidgetBox boxSerialNumber = new BOWidgetBox(GeneralUtils.GetResourceByName("global_serial_number"), entrySerialNumber);
-                GenericCRUDWidgetXPO serialnumberCRUDWidgetXPO = new GenericCRUDWidgetXPO(boxSerialNumber, pDataSourceRow, "SerialNumber", LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true);
+                GenericCRUDWidgetXPO serialnumberCRUDWidgetXPO = new GenericCRUDWidgetXPO(boxSerialNumber, pDataSourceRow, "SerialNumber", RegexUtils.RegexAlfaNumericExtended, true);
                 _crudWidgetList.Add(serialnumberCRUDWidgetXPO);
                 hboxSerialNumber.PackStart(boxSerialNumber);
 
@@ -1467,7 +1467,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 fin_warehouse defaultWareHouse = ((pDataSourceRow as fin_articleserialnumber).ArticleWarehouse.Warehouse != null && (pDataSourceRow as fin_articleserialnumber).ArticleWarehouse.Warehouse.Oid != Guid.Empty) ? (pDataSourceRow as fin_articleserialnumber).ArticleWarehouse.Warehouse : (fin_warehouse)pDataSourceRow.Session.FindObject(typeof(fin_warehouse), defaultWarehouseCriteria);
                 XPOComboBox xpoComboBoxWarehouse = new XPOComboBox(DataSourceRow.Session, typeof(fin_warehouse), defaultWareHouse, "Designation", null);
                 BOWidgetBox boxWareHouse = new BOWidgetBox(GeneralUtils.GetResourceByName("global_warehouse"), xpoComboBoxWarehouse);
-                GenericCRUDWidgetXPO warehouseCRUDWidgetXPO = new GenericCRUDWidgetXPO(boxWareHouse, (pDataSourceRow as fin_articleserialnumber).ArticleWarehouse, "Warehouse", LogicPOS.Utility.RegexUtils.RegexAlfaNumeric, false);
+                GenericCRUDWidgetXPO warehouseCRUDWidgetXPO = new GenericCRUDWidgetXPO(boxWareHouse, (pDataSourceRow as fin_articleserialnumber).ArticleWarehouse, "Warehouse", RegexUtils.RegexAlfaNumeric, false);
                 _crudWidgetList.Add(warehouseCRUDWidgetXPO);
                 hboxSerialNumber.PackStart(boxWareHouse);
 
@@ -1477,7 +1477,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 fin_warehouselocation defaultLocation = ((pDataSourceRow as fin_articleserialnumber).ArticleWarehouse.Location != null) ? (pDataSourceRow as fin_articleserialnumber).ArticleWarehouse.Location : (fin_warehouselocation)pDataSourceRow.Session.FindObject(typeof(fin_warehouselocation), criteria);
                 XPOComboBox xpoComboBoxWarehouseLocation = new XPOComboBox(DataSourceRow.Session, typeof(fin_warehouselocation), defaultLocation, "Designation", criteria);
                 BOWidgetBox boxWareHouseLocation = new BOWidgetBox(GeneralUtils.GetResourceByName("global_ConfigurationDevice_PlaceTerminal"), xpoComboBoxWarehouseLocation);
-                GenericCRUDWidgetXPO warehouseLocationCRUDWidgetXPO = new GenericCRUDWidgetXPO(boxWareHouseLocation, (pDataSourceRow as fin_articleserialnumber).ArticleWarehouse, "Location", LogicPOS.Utility.RegexUtils.RegexAlfaNumeric, false);
+                GenericCRUDWidgetXPO warehouseLocationCRUDWidgetXPO = new GenericCRUDWidgetXPO(boxWareHouseLocation, (pDataSourceRow as fin_articleserialnumber).ArticleWarehouse, "Location", RegexUtils.RegexAlfaNumeric, false);
                 _crudWidgetList.Add(warehouseLocationCRUDWidgetXPO);
                 hboxSerialNumber.PackStart(boxWareHouseLocation);
                 if (defaultWareHouse == null)

@@ -19,7 +19,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public Calendar Calendar { get; set; }
 
         public PosDatePickerDialog(Window pSourceWindow, DialogFlags pDialogFlags)
-            : this(pSourceWindow, pDialogFlags, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_dialog_datepicker"), XPOUtility.CurrentDateTimeAtomic())
+            : this(pSourceWindow, pDialogFlags, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_datepicker"), XPOUtility.CurrentDateTimeAtomic())
         {
         }
 
@@ -29,7 +29,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         }
 
         public PosDatePickerDialog(Window pSourceWindow, DialogFlags pDialogFlags, DateTime pDateTime)
-            : this(pSourceWindow, pDialogFlags, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_dialog_datepicker"), pDateTime)
+            : this(pSourceWindow, pDialogFlags, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_datepicker"), pDateTime)
         {
         }
 
@@ -68,7 +68,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private void InitUI()
         {
             //Init Font Description
-            Pango.FontDescription fontDescription = Pango.FontDescription.FromString(LogicPOS.Settings.GeneralSettings.Settings["fontEntryBoxValue"]);
+            Pango.FontDescription fontDescription = Pango.FontDescription.FromString(GeneralSettings.Settings["fontEntryBoxValue"]);
             //Init Calendar
             Calendar = new Calendar();
             Calendar.Date = _dateTime;

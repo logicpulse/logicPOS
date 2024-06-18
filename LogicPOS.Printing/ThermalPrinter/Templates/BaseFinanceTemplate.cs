@@ -1,10 +1,10 @@
 ﻿using LogicPOS.Data.XPO.Settings;
 using LogicPOS.DTOs.Printing;
-using LogicPOS.Globalization;
 using LogicPOS.Printing.Common;
 using LogicPOS.Printing.Enums;
 using LogicPOS.Printing.Tickets;
 using LogicPOS.Settings;
+using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -12,7 +12,7 @@ using System.Text;
 
 namespace LogicPOS.Printing.Templates
 {
-    public abstract class BaseFinanceTemplate : BaseTemplate
+    public abstract class BaseFinanceTemplate : Template
     {
         protected PrintingDocumentTypeDto _documentType;
         protected List<int> _copyNames;
@@ -22,7 +22,7 @@ namespace LogicPOS.Printing.Templates
         protected int _ticketTablePaddingLeftLength = 2;
 
         public BaseFinanceTemplate(
-            PrintingPrinterDto printer,
+            PrinterDto printer,
             PrintingDocumentTypeDto documentType,
             List<int> copyNames)
             : this(
@@ -34,7 +34,7 @@ namespace LogicPOS.Printing.Templates
         }
 
         public BaseFinanceTemplate(
-            PrintingPrinterDto printer,
+            PrinterDto printer,
             PrintingDocumentTypeDto documentType,
             List<int> copiesNumbers,
             bool isSecondCopy)
@@ -56,42 +56,35 @@ namespace LogicPOS.Printing.Templates
         public override bool Print()
         {
             bool result;
-            try
+
+            for (int i = 0; i < _copyNames.Count; i++)
             {
-                for (int i = 0; i < _copyNames.Count; i++)
-                {
-                    //Call Base Template PrintHeader
-                    PrintHeader();
-                    //PrintExtendedHeader
-                    PrintExtendedHeader();
+                //Call Base Template PrintHeader
+                PrintHeader();
+                //PrintExtendedHeader
+                PrintExtendedHeader();
 
-                    //Get CopyName Position, ex 0[Original], 4[Quadriplicate], we cant use I, else 0[Original], 1[Duplicate]
-                    int copyNameIndex = _copyNames[i] + 1;
-                    //Overrided by Child Classes
-                    _copyName = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, string.Format("global_print_copy_title{0}", copyNameIndex));
-                    if (_secondCopy && i < 1) _copyName = string.Format("{0}/{1}", _copyName, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_print_second_print"));
-                    //_logger.Debug(String.Format("copyName: [{0}], copyNameIndex: [{1}]", _copyName, copyNameIndex));
+                //Get CopyName Position, ex 0[Original], 4[Quadriplicate], we cant use I, else 0[Original], 1[Duplicate]
+                int copyNameIndex = _copyNames[i] + 1;
+                //Overrided by Child Classes
+                _copyName = GeneralUtils.GetResourceByName($"global_print_copy_title{copyNameIndex}");
+                if (_secondCopy && i < 1) _copyName = string.Format("{0}/{1}", _copyName, GeneralUtils.GetResourceByName("global_print_second_print"));
+                //_logger.Debug(String.Format("copyName: [{0}], copyNameIndex: [{1}]", _copyName, copyNameIndex));
 
-                    //Call Child Content (Overrided)
-                    PrintContent();
+                //Call Child Content (Overrided)
+                PrintContent();
 
-                    //PrintFooterExtended
-                    PrintFooterExtended();
+                //PrintFooterExtended
+                PrintFooterExtended();
 
-                    //Call Base Template PrintFooter
-                    PrintFooter();
-                }
-
-                //End Job
-                PrintBuffer();
-
-                result = true;
+                //Call Base Template PrintFooter
+                PrintFooter();
             }
-            catch (Exception ex)
-            {
-                _logger.Debug("override bool Print() :: Thermal Printer: " + ex.Message, ex);
-                throw ex;
-            }
+
+            //End Job
+            PrintBuffer();
+
+            result = true;
 
             return result;
         }
@@ -100,19 +93,19 @@ namespace LogicPOS.Printing.Templates
         protected void PrintExtendedHeader()
         {
             //Align Center
-            _genericThermalPrinter.SetAlignLeft();/* IN009055 */
+            _printer.SetAlignLeft();/* IN009055 */
 
             //Extended Header
-            _genericThermalPrinter.WriteLine(string.Format("{0}", _customVars["COMPANY_ADDRESS"]));
-            _genericThermalPrinter.WriteLine(string.Format("{0} {1} - {2}", _customVars["COMPANY_POSTALCODE"], _customVars["COMPANY_CITY"], _customVars["COMPANY_COUNTRY"]));
+            _printer.WriteLine(string.Format("{0}", _customVars["COMPANY_ADDRESS"]));
+            _printer.WriteLine(string.Format("{0} {1} - {2}", _customVars["COMPANY_POSTALCODE"], _customVars["COMPANY_CITY"], _customVars["COMPANY_COUNTRY"]));
             /* IN009055 block */
-            _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "prefparam_company_telephone"), _customVars["COMPANY_TELEPHONE"]);
+            _printer.WriteLine(GeneralUtils.GetResourceByName("prefparam_company_telephone"), _customVars["COMPANY_TELEPHONE"]);
             //_thermalPrinterGeneric.WriteLine(CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_mobile_phone, _customVars["COMPANY_MOBILEPHONE"]);
             //_thermalPrinterGeneric.WriteLine(CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_fax, _customVars["COMPANY_FAX"]);
             //_thermalPrinterGeneric.WriteLine(CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_email"), _customVars["COMPANY_EMAIL"]);
-            _genericThermalPrinter.WriteLine(_customVars["COMPANY_WEBSITE"], false); /* IN009211 */
-            _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "prefparam_company_fiscalnumber"), _customVars["COMPANY_FISCALNUMBER"]);
-            _genericThermalPrinter.LineFeed();
+            _printer.WriteLine(_customVars["COMPANY_WEBSITE"], false); /* IN009211 */
+            _printer.WriteLine(GeneralUtils.GetResourceByName("prefparam_company_fiscalnumber"), _customVars["COMPANY_FISCALNUMBER"]);
+            _printer.LineFeed();
 
             //Reset to Left
             //_thermalPrinterGeneric.SetAlignLeft(); /* IN009055 */
@@ -122,18 +115,18 @@ namespace LogicPOS.Printing.Templates
         protected void PrintDocumentMaster(string pDocumentTypeResourceString, string pDocumentID, string pDocumentDateTime)
         {
             //Call Base PrintTitle()
-            PrintTitles(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, pDocumentTypeResourceString), pDocumentID);
+            PrintTitles(GeneralUtils.GetResourceByName(pDocumentTypeResourceString), pDocumentID);
 
             //Set Align Center
-            _genericThermalPrinter.SetAlignCenter();
+            _printer.SetAlignCenter();
 
             //Copy Names + Document Date
-            _genericThermalPrinter.WriteLine(_copyName);
-            _genericThermalPrinter.WriteLine(pDocumentDateTime);
-            _genericThermalPrinter.LineFeed();
+            _printer.WriteLine(_copyName);
+            _printer.WriteLine(pDocumentDateTime);
+            _printer.LineFeed();
 
             //Reset Align 
-            _genericThermalPrinter.SetAlignLeft();
+            _printer.SetAlignLeft();
         }
 
         //Child Shared PrintCustomer
@@ -148,12 +141,12 @@ namespace LogicPOS.Printing.Templates
             {
                 //fiscalNumber = SettingsApp.FinanceFinalConsumerFiscalNumberDisplay;
                 fiscalNumber = string.Empty; /* show the Fical Number display value is not necessary */
-                name = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_final_consumer");
+                name = GeneralUtils.GetResourceByName("global_final_consumer");
             }
 
             /* IN009055 block - begin */
-            _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_customer"), name, false);
-            _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_address"), pAddress, false);
+            _printer.WriteLine(GeneralUtils.GetResourceByName("global_customer"), name, false);
+            _printer.WriteLine(GeneralUtils.GetResourceByName("global_address"), pAddress, false);
 
             string addressDetails = pCountry;
 
@@ -169,10 +162,10 @@ namespace LogicPOS.Printing.Templates
             {
                 addressDetails = string.Format("{0} - {1}", pCity, pCountry);
             }
-            _genericThermalPrinter.WriteLine(addressDetails, false); /* When FS, no details */
-            _genericThermalPrinter.WriteLine(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_fiscal_number"), fiscalNumber, false); /* Do not print Fiscal Number when empty */
+            _printer.WriteLine(addressDetails, false); /* When FS, no details */
+            _printer.WriteLine(GeneralUtils.GetResourceByName("global_fiscal_number"), fiscalNumber, false); /* Do not print Fiscal Number when empty */
             /* IN009055  block - end */
-            _genericThermalPrinter.LineFeed();
+            _printer.LineFeed();
         }
 
         public void PrintFooterExtended()
@@ -180,16 +173,16 @@ namespace LogicPOS.Printing.Templates
             if (_customVars["TICKET_FOOTER_LINE1"] != string.Empty || _customVars["TICKET_FOOTER_LINE1"] != string.Empty)
             {
                 //Align Center
-                _genericThermalPrinter.SetAlignCenter();
+                _printer.SetAlignCenter();
 
-                if (_customVars["TICKET_FOOTER_LINE1"] != string.Empty) _genericThermalPrinter.WriteLine(_customVars["TICKET_FOOTER_LINE1"]);
-                if (_customVars["TICKET_FOOTER_LINE2"] != string.Empty) _genericThermalPrinter.WriteLine(_customVars["TICKET_FOOTER_LINE2"]);
+                if (_customVars["TICKET_FOOTER_LINE1"] != string.Empty) _printer.WriteLine(_customVars["TICKET_FOOTER_LINE1"]);
+                if (_customVars["TICKET_FOOTER_LINE2"] != string.Empty) _printer.WriteLine(_customVars["TICKET_FOOTER_LINE2"]);
 
                 //Line Feed
-                _genericThermalPrinter.LineFeed();
+                _printer.LineFeed();
 
                 //Reset to Left
-                _genericThermalPrinter.SetAlignLeft();
+                _printer.SetAlignLeft();
             }
         }
 
@@ -211,7 +204,7 @@ namespace LogicPOS.Printing.Templates
             if (!string.IsNullOrEmpty(pPaymentCondition))
             {
                 dataRow = dataTable.NewRow();
-                dataRow[0] = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_payment_conditions");
+                dataRow[0] = GeneralUtils.GetResourceByName("global_payment_conditions");
                 dataRow[1] = pPaymentCondition;
                 dataTable.Rows.Add(dataRow);
             }
@@ -219,55 +212,55 @@ namespace LogicPOS.Printing.Templates
             if (!string.IsNullOrEmpty(pPaymentMethod))
             {
                 dataRow = dataTable.NewRow();
-                dataRow[0] = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_payment_method_field"); /* IN009055 */
+                dataRow[0] = GeneralUtils.GetResourceByName("global_payment_method_field"); /* IN009055 */
                 dataRow[1] = pPaymentMethod;
                 dataTable.Rows.Add(dataRow);
             }
             //Add Row : Currency
             dataRow = dataTable.NewRow();
-            dataRow[0] = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_currency_field"); /* IN009055 */
+            dataRow[0] = GeneralUtils.GetResourceByName("global_currency_field"); /* IN009055 */
             dataRow[1] = pCurrency;
             dataTable.Rows.Add(dataRow);
 
             //Configure Ticket Column Properties
             List<TicketColumn> columns = new List<TicketColumn>
             {
-                new TicketColumn("Label", "", _genericThermalPrinter.MaxCharsPerLineNormal / 2, TicketColumnsAlignment.Right),
-                new TicketColumn("Value", "", _genericThermalPrinter.MaxCharsPerLineNormal / 2, TicketColumnsAlignment.Left)
+                new TicketColumn("Label", "", _printer.MaxCharsPerLineNormal / 2, TicketColumnsAlignment.Right),
+                new TicketColumn("Value", "", _printer.MaxCharsPerLineNormal / 2, TicketColumnsAlignment.Left)
             };
 
             //TicketTable(DataTable pDataTable, List<TicketColumn> pColumnsProperties, int pTableWidth)
-            TicketTable ticketTable = new TicketTable(dataTable, columns, _genericThermalPrinter.MaxCharsPerLineNormal);
+            TicketTable ticketTable = new TicketTable(dataTable, columns, _printer.MaxCharsPerLineNormal);
 
             //Create Table Buffer, With Bigger TextMode
-            ticketTable.Print(_genericThermalPrinter, true);
+            ticketTable.Print(_printer, true);
 
             //Line Feed
-            _genericThermalPrinter.LineFeed();
+            _printer.LineFeed();
         }
 
         //Used On Child Finance Documents - ResourceStringReport
         protected void PrintDocumentTypeFooterString(string pDocumentTypeMessage)
         {
             //Align Center
-            _genericThermalPrinter.SetAlignCenter();
+            _printer.SetAlignCenter();
 
             //Differ from Payments and Other Document Types
-            string message = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, pDocumentTypeMessage);
-            if (pDocumentTypeMessage != string.Empty && message != null) _genericThermalPrinter.WriteLine(message);
+            string message = GeneralUtils.GetResourceByName(pDocumentTypeMessage);
+            if (pDocumentTypeMessage != string.Empty && message != null) _printer.WriteLine(message);
 
             //Line Feed
-            _genericThermalPrinter.LineFeed();
+            _printer.LineFeed();
 
             //Reset to Left
-            _genericThermalPrinter.SetAlignLeft();
+            _printer.SetAlignLeft();
         }
         //ATCUD Documentos - Criação do QRCode e ATCUD IN016508
         //Print QRCode
         protected void PrintQRCode(string QRCode)
         {
             //Align Center
-            _genericThermalPrinter.SetAlignCenter();
+            _printer.SetAlignCenter();
 
             //Convert ASCII/Decimal
             string ESC = Convert.ToString((char)27);
@@ -297,10 +290,10 @@ namespace LogicPOS.Printing.Templates
 
             //Send to Printer
 
-            _genericThermalPrinter.WriteLine(buffer);
+            _printer.WriteLine(buffer);
 
             //Line Feed
-            _genericThermalPrinter.LineFeed();
+            _printer.LineFeed();
 
             //Reset to Left
             //_thermalPrinterGeneric.SetAlignLeft();
@@ -314,38 +307,38 @@ namespace LogicPOS.Printing.Templates
 
             //printer.SetBarcodeLeftSpace(10);
 
-            _genericThermalPrinter.SelectFontHRIBarcode(0);
-            _genericThermalPrinter.SelectPrintingPositionHRIBarcode(2);
+            _printer.SelectFontHRIBarcode(0);
+            _printer.SelectPrintingPositionHRIBarcode(2);
 
-            _genericThermalPrinter.SetAlignCenter();
+            _printer.SetAlignCenter();
 
-            _genericThermalPrinter.SetBarcodeWidth(4);
-            _genericThermalPrinter.PrintBarcode(BarcodeType.qrcode, myData);
-            _genericThermalPrinter.SetBarcodeWidth(2);
-            _genericThermalPrinter.LineFeed();
-            _genericThermalPrinter.LineFeed();
-            _genericThermalPrinter.LineFeed();
-            _genericThermalPrinter.LineFeed();
+            _printer.SetBarcodeWidth(4);
+            _printer.PrintBarcode(BarcodeType.qrcode, myData);
+            _printer.SetBarcodeWidth(2);
+            _printer.LineFeed();
+            _printer.LineFeed();
+            _printer.LineFeed();
+            _printer.LineFeed();
             //_thermalPrinterGeneric.Cut(false);
         }
 
         protected void PrintQRCodeImage(System.Drawing.Bitmap bitmap)
         {
             //Align Center
-            _genericThermalPrinter.SetAlignCenter();
+            _printer.SetAlignCenter();
 
             //Convert ASCII/Decimal
             string ESC = Convert.ToString((char)27);
             string GS = Convert.ToString((char)29);
             string center = ESC + "a" + (char)1; //align center
 
-            _genericThermalPrinter.PrintImage(@"temp/qrcode.Bmp", true);
+            _printer.PrintImage(@"temp/qrcode.Bmp", true);
 
             //Line Feed
-            _genericThermalPrinter.LineFeed();
+            _printer.LineFeed();
 
             //Reset to Left
-            _genericThermalPrinter.SetAlignLeft();
+            _printer.SetAlignLeft();
 
         }
 
@@ -358,11 +351,11 @@ namespace LogicPOS.Printing.Templates
         protected void PrintCertificationText(string pHash4Chars)
         {
             //Align Center
-            _genericThermalPrinter.SetAlignCenter();
+            _printer.SetAlignCenter();
 
             /* IN009211 */
             string copyRightText = string.Format(
-                CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_copyright") + " {0}",
+                GeneralUtils.GetResourceByName("global_copyright") + " {0}",
                 SaftSettings.SaftProductID
             );
 
@@ -373,12 +366,12 @@ namespace LogicPOS.Printing.Templates
             {
                 //All Finance Documents use Processed, else Payments that use Emmited 
                 string prefix = (_documentType.IsSaftDocumentTypePayments)
-                    ? CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_report_overlay_software_certification_emitted")
-                    : CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_report_overlay_software_certification_processed")
+                    ? GeneralUtils.GetResourceByName("global_report_overlay_software_certification_emitted")
+                    : GeneralUtils.GetResourceByName("global_report_overlay_software_certification_processed")
                 ;
                 //Processed|Emitted with certified Software Nº {0}/AT
                 certificationText = string.Format(
-                    CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_report_overlay_software_certification"),
+                    GeneralUtils.GetResourceByName("global_report_overlay_software_certification"),
                     prefix,
                     SaftSettings.SaftSoftwareCertificateNumber
                 );
@@ -394,21 +387,21 @@ namespace LogicPOS.Printing.Templates
             {/* IN009055 - related to IN006047 */
                 /* {Processado por computador} || Autorização da Autoridade Tributária: {DAFM1 - 0198 / 2018} */
                 certificationText = string.Format(
-                    CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_report_overlay_software_certification_short"),
-                    CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_report_overlay_software_certification_moz_tax_authority_cert_number") + "\n" +
-                    CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_report_overlay_software_certification_processed")
+                    GeneralUtils.GetResourceByName("global_report_overlay_software_certification_short"),
+                    GeneralUtils.GetResourceByName("global_report_overlay_software_certification_moz_tax_authority_cert_number") + "\n" +
+                    GeneralUtils.GetResourceByName("global_report_overlay_software_certification_processed")
                  );
             }
             //TK016268 Angola - Certificação 
             else if (CultureSettings.AngolaCountryId.Equals(XPOSettings.ConfigurationSystemCountry.Oid))
             {
                 //All Finance Documents use Processed, else Payments that use Emmited 
-                string prefix = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_report_overlay_software_certification_processed"); ;
+                string prefix = GeneralUtils.GetResourceByName("global_report_overlay_software_certification_processed"); ;
                 //Current Year
                 string localDate = DateTime.Now.Year.ToString();
                 //Processed|Emitted with certified Software Nº {0}/AT
                 certificationText = string.Format(
-                    CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_report_overlay_software_certification_ao"),
+                    GeneralUtils.GetResourceByName("global_report_overlay_software_certification_ao"),
                     prefix,
                     SaftSettings.SaftSoftwareCertificateNumberAO,
                     SaftSettings.SaftProductIDAO,
@@ -418,27 +411,27 @@ namespace LogicPOS.Printing.Templates
             else
             {
                 /* All other countries: "Processado por computador" */
-                certificationText = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_report_overlay_software_certification_processed");
+                certificationText = GeneralUtils.GetResourceByName("global_report_overlay_software_certification_processed");
             }
 
-            _genericThermalPrinter.WriteLine(certificationText, WriteLineTextMode.Small);
+            _printer.WriteLine(certificationText, WriteLineTextMode.Small);
 
-            _genericThermalPrinter.WriteLine(copyRightText, WriteLineTextMode.Small);
+            _printer.WriteLine(copyRightText, WriteLineTextMode.Small);
 
             /* IN009211 - it was printing empty label */
             if (!string.IsNullOrEmpty(LicenseSettings.LicenseCompany))
             {
                 string licenseText = string.Format(
-                    CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_licensed_to"),
+                    GeneralUtils.GetResourceByName("global_licensed_to"),
                     LicenseSettings.LicenseCompany
             );
-                _genericThermalPrinter.WriteLine(licenseText, WriteLineTextMode.Small);
+                _printer.WriteLine(licenseText, WriteLineTextMode.Small);
             }
 
-            _genericThermalPrinter.LineFeed();
+            _printer.LineFeed();
 
             //Reset to Left
-            _genericThermalPrinter.SetAlignLeft();
+            _printer.SetAlignLeft();
         }
 
         //UTILS

@@ -1,6 +1,6 @@
 ﻿namespace LogicPOS.DTOs.Reporting
 {
-    public class FinancePaymentDocumentViewReportDto 
+    public class FinancePaymentDocumentViewReportDataDto 
     {
         public string Oid { get; set; }                                      
         public string DocumentTypeDesignation { get; set; }                           

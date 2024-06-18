@@ -121,7 +121,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 ArticleCollection = new Dictionary<fin_article, Tuple<decimal, Dictionary<ValidatableTextBox, List<fin_articleserialnumber>>, decimal, fin_warehouselocation>>();
                 //Supplier
                 CriteriaOperator criteriaOperatorSupplier = CriteriaOperator.Parse("(Supplier = 1)");
-                _entryBoxSelectSupplier = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(this, GeneralUtils.GetResourceByName("global_supplier"), "Name", "Oid", _initialSupplier, criteriaOperatorSupplier, LogicPOS.Utility.RegexUtils.RegexGuid, true, true);
+                _entryBoxSelectSupplier = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(this, GeneralUtils.GetResourceByName("global_supplier"), "Name", "Oid", _initialSupplier, criteriaOperatorSupplier, RegexUtils.RegexGuid, true, true);
                 _entryBoxSelectSupplier.EntryValidation.IsEditable = true;
                 _entryBoxSelectSupplier.EntryValidation.Completion.PopupCompletion = true;
                 _entryBoxSelectSupplier.EntryValidation.Completion.InlineCompletion = false;
@@ -130,7 +130,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _entryBoxSelectSupplier.EntryValidation.Changed += delegate { ValidateDialog(); };
 
                 //DocumentDate
-                _entryBoxDocumentDate = new EntryBoxValidationDatePickerDialog(this, GeneralUtils.GetResourceByName("global_date"), GeneralUtils.GetResourceByName("global_date"), _initialDocumentDate, LogicPOS.Utility.RegexUtils.RegexDate, true, CultureSettings.DateFormat, true);
+                _entryBoxDocumentDate = new EntryBoxValidationDatePickerDialog(this, GeneralUtils.GetResourceByName("global_date"), GeneralUtils.GetResourceByName("global_date"), _initialDocumentDate, RegexUtils.RegexDate, true, CultureSettings.DateFormat, true);
                 //_entryBoxDocumentDate.EntryValidation.Sensitive = true;
                 _entryBoxDocumentDate.EntryValidation.Text = _initialDocumentDate.ToString(CultureSettings.DateFormat);
                 _entryBoxDocumentDate.EntryValidation.Validate();
@@ -141,7 +141,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 Color colorBaseDialogEntryBoxBackground = GeneralSettings.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
                 string _fileIconListFinanceDocuments = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_toolbar_finance_document.png";
                 HBox hBoxDocument = new HBox(false, 0);
-                _entryBoxDocumentNumber = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_document_number"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false, true);
+                _entryBoxDocumentNumber = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_document_number"), KeyboardMode.Alfa, RegexUtils.RegexAlfaNumericExtended, false, true);
                 if (_initialDocumentNumber != string.Empty) _entryBoxDocumentNumber.EntryValidation.Text = _initialDocumentNumber;
                 _entryBoxDocumentNumber.EntryValidation.Changed += delegate { ValidateDialog(); };
                 TouchButtonIcon attachPDFButton = new TouchButtonIcon("attachPDFButton", colorBaseDialogEntryBoxBackground, _fileIconListFinanceDocuments, new Size(20, 20), 30, 30);
@@ -165,11 +165,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _viewport.ModifyBg(StateType.Normal, Color.White.ToGdkColor());
                 _totalCompositeEntrys++;
                 CriteriaOperator criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Class = '{0}')", XPOSettings.XpoOidArticleDefaultClass));
-                _entryBoxSelectArticle1 = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, GeneralUtils.GetResourceByName("global_article"), "Designation", "Oid", null, criteriaOperatorSelectArticle, KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true, true, LogicPOS.Utility.RegexUtils.RegexAlfaNumericArticleCode, LogicPOS.Utility.RegexUtils.RegexDecimalPositiveAndNegative, _totalCompositeEntrys);
+                _entryBoxSelectArticle1 = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, GeneralUtils.GetResourceByName("global_article"), "Designation", "Oid", null, criteriaOperatorSelectArticle, KeyboardMode.None, RegexUtils.RegexAlfaNumericExtended, true, true, RegexUtils.RegexAlfaNumericArticleCode, RegexUtils.RegexDecimalPositiveAndNegative, _totalCompositeEntrys);
 
                 //SerialNumber
                 HBox hBoxSerialNumber = new HBox(false, 0);
-                _entryBoxSerialNumber1 = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_serial_number"), KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false, true);
+                _entryBoxSerialNumber1 = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_serial_number"), KeyboardMode.None, RegexUtils.RegexAlfaNumericExtended, false, true);
                 _entryBoxSerialNumber1.EntryValidation.Changed += EntrySerialNumberValidation_Changed;
                 _entryBoxSerialNumber1.EntryValidation.FocusGrabbed += EntryValidation_FocusGrabbed;
                 _entryBoxSerialNumber1.Sensitive = true;
@@ -177,7 +177,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
 
                 //Price
-                _entryBoxPrice1 = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_price"), KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexDecimalGreaterEqualThanZeroFinancial, false, true);
+                _entryBoxPrice1 = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_price"), KeyboardMode.None, RegexUtils.RegexDecimalGreaterEqualThanZeroFinancial, false, true);
                 _entryBoxPrice1.EntryValidation.TooltipText = "Ultimo preço inserido";
                 _entryBoxPrice1.WidthRequest = 40;
                 _entryBoxPrice1.Sensitive = true;
@@ -265,7 +265,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _articleEntryWidgetCollection.Add(_vboxArticles);
 
                 //Notes
-                _entryBoxNotes = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_notes"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false, true);
+                _entryBoxNotes = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_notes"), KeyboardMode.Alfa, RegexUtils.RegexAlfaNumericExtended, false, true);
                 _entryBoxNotes.EntryValidation.Changed += delegate { ValidateDialog(); };
 
                 //Final Pack
@@ -547,7 +547,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             pPurchasePrice.EntryValidation.TooltipText = "Ultimo preço inserido";
                         }
 
-                        pPurchasePrice.EntryValidation.Text = (getLastPrice != null) ? LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(getLastPrice), "0.00").Replace(".", ",") : LogicPOS.Utility.DataConversionUtils.StringToDecimal("0,00").ToString();
+                        pPurchasePrice.EntryValidation.Text = (getLastPrice != null) ? DataConversionUtils.DecimalToString(Convert.ToDecimal(getLastPrice), "0.00").Replace(".", ",") : DataConversionUtils.StringToDecimal("0,00").ToString();
 
 
                         return;
@@ -676,18 +676,18 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _totalCompositeEntrys++;
                 //var entrySelected = (XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>)sender;
                 CriteriaOperator criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1)"));
-                XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle> NewEntryBoxSelectArticle = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, GeneralUtils.GetResourceByName("global_article"), "Designation", "Oid", null, criteriaOperatorSelectArticle, KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true, true, LogicPOS.Utility.RegexUtils.RegexAlfaNumericArticleCode, LogicPOS.Utility.RegexUtils.RegexDecimalPositiveAndNegative, _totalCompositeEntrys);
+                XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle> NewEntryBoxSelectArticle = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, GeneralUtils.GetResourceByName("global_article"), "Designation", "Oid", null, criteriaOperatorSelectArticle, KeyboardMode.None, RegexUtils.RegexAlfaNumericExtended, true, true, RegexUtils.RegexAlfaNumericArticleCode, RegexUtils.RegexDecimalPositiveAndNegative, _totalCompositeEntrys);
 
                 HBox hBoxArticles = new HBox(false, 0);
 
                 //SerialNumber
-                EntryBoxValidation NewEntryBoxSerialNumber = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_serial_number"), KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false, true);
+                EntryBoxValidation NewEntryBoxSerialNumber = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_serial_number"), KeyboardMode.None, RegexUtils.RegexAlfaNumericExtended, false, true);
                 NewEntryBoxSerialNumber.EntryValidation.Changed += delegate { ValidateDialog(); };
                 NewEntryBoxSerialNumber.EntryValidation.Changed += EntrySerialNumberValidation_Changed;
                 NewEntryBoxSerialNumber.EntryValidation.FocusGrabbed += EntryValidation_FocusGrabbed;
 
                 //Price
-                EntryBoxValidation NewEntryBoxPrice = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_price"), KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexDecimalGreaterEqualThanZeroFinancial, false, true);
+                EntryBoxValidation NewEntryBoxPrice = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_price"), KeyboardMode.None, RegexUtils.RegexDecimalGreaterEqualThanZeroFinancial, false, true);
                 NewEntryBoxPrice.EntryValidation.Changed += EntryPurchasedPriceValidation_Changed;
                 NewEntryBoxPrice.WidthRequest = 40;
 
@@ -970,7 +970,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private EntryBoxValidation AddNewSerialNumber()
         {
             //SerialNumber
-            EntryBoxValidation NewEntryBoxSerialNumber = new EntryBoxValidation(this, "", KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false, true);
+            EntryBoxValidation NewEntryBoxSerialNumber = new EntryBoxValidation(this, "", KeyboardMode.None, RegexUtils.RegexAlfaNumericExtended, false, true);
             NewEntryBoxSerialNumber.EntryValidation.Changed += EntrySerialNumberValidation_Changed;
             NewEntryBoxSerialNumber.EntryValidation.FocusGrabbed += EntryValidation_FocusGrabbed;
             return NewEntryBoxSerialNumber;

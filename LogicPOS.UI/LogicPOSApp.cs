@@ -608,7 +608,7 @@ namespace logicpos
                 files[pFileList.Count] = POSSettings.ProtectedFilesFileName;
 
                 //Empty password, to zip without password
-                result = LogicPOS.Utility.CompressionUtils.ZipPack(files, filename, string.Empty);
+                result = CompressionUtils.ZipPack(files, filename, string.Empty);
             }
             catch (Exception ex)
             {

@@ -1,29 +1,4 @@
-﻿/* Report Fields
-SELECT 
-    DocumentTypeOid, 
-    DocumentTypeOrd, 
-    DocumentTypeCode, 
-    DocumentType, 
-    EntityOid, 
-    EntityName, 
-    EntityFiscalNumber, 
-    DocumentDate, 
-    Date, 
-    DocumentNumber, 
-    DocumentAmount, 
-    DocumentStatus, 
-    CreditDebit, 
-    Credit, 
-    Debit,
-    PaymentDocumentNumber,
-    PaymentDate,
-    IsPayed
-FROM 
-    view_documentfinancecurrentaccount
-;
-;*/
-
-using LogicPOS.Reporting.Data.Common;
+﻿using LogicPOS.Reporting.Data.Common;
 using System;
 
 namespace LogicPOS.Reporting.Reports.Data

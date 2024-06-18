@@ -162,7 +162,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 //Prepare executeSql for first time
                 if (_filter != string.Empty) { executeSql = _sql + _filter; } else { executeSql = _sql; };
                 if (Order != string.Empty) { executeSql += Order; };
-                executeSql = string.Format("{0};", LogicPOS.Utility.StringUtils.RemoveCarriageReturnAndExtraWhiteSpaces(executeSql));
+                executeSql = string.Format("{0};", StringUtils.RemoveCarriageReturnAndExtraWhiteSpaces(executeSql));
                 //_logger.Debug(string.Format("TablePad(): executeSql: [{0}]", executeSql));
 
                 //Always clear listItems
