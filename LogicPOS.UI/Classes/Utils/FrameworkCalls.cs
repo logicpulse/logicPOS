@@ -468,14 +468,6 @@ namespace logicpos
 
             DeleteGeneratedFiles();
 
-            if (LicenseSettings.LicenceRegistered == false)
-            {
-                Utils.ShowMessageBoxUnlicensedError(
-                    sourceWindow,
-                    CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, ResourceNames.PRINTING_DISABLED_MESSAGE));
-                return false;
-            }
-
             //TK016249 - Impressoras - Diferenciação entre Tipos
             //Deteta janela de origem de forma a escolher qual impressora usar - TicketList -> ThermalPrinter | PosDocumentFinanceDialog -> Printer
             sys_configurationprinters printer;

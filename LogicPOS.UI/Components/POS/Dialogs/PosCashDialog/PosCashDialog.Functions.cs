@@ -208,7 +208,17 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             if (pResponse == ResponseType.Yes)
                             {
                                 //PrintWorkSessionMovement
-                                FrameworkCalls.PrintCashDrawerOpenAndMoneyInOut(dialogCashDrawer, TerminalSettings.LoggedTerminal.ThermalPrinter, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "ticket_title_worksession_terminal_open"), 0.0m, dialogCashDrawer.TotalAmountInCashDrawer, dialogCashDrawer.MovementDescription);
+                                var thermalPrinter = TerminalSettings.LoggedTerminal.ThermalPrinter;
+                                if(thermalPrinter != null)
+                                {
+                                    FrameworkCalls.PrintCashDrawerOpenAndMoneyInOut(
+                                        dialogCashDrawer,
+                                        thermalPrinter,
+                                        CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "ticket_title_worksession_terminal_open"),
+                                        0.0m,
+                                        dialogCashDrawer.TotalAmountInCashDrawer,
+                                        dialogCashDrawer.MovementDescription);
+                                }
                             }
                             //Enable UI Buttons When Have Open Session
                             GlobalApp.PosMainWindow.TouchButtonPosToolbarNewFinanceDocument.Sensitive = true;
