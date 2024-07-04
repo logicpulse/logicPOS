@@ -18,7 +18,7 @@ namespace logicpos
         {
             TouchButtonBase button = (TouchButtonBase)sender;
 
-            TablePadUser.SelectedButtonOid = button.CurrentButtonOid;
+            UsersPanel.SelectedButtonOid = button.CurrentButtonOid;
 
             //Assign User Detail to Member Reference
             AssignUserDetail();
@@ -26,17 +26,17 @@ namespace logicpos
 
         private void ButtonKeyOK_Clicked(object sender, EventArgs e)
         {
-            _numberPadPin.ProcessPassword(this, _selectedUserDetail);
+            _userPinPanel.ProcessPassword(this, _selectedLoginUser);
         }
 
         private void ButtonKeyResetPassword_Clicked(object sender, EventArgs e)
         {
             //Require to store current Current Pin, else when we change mode it resets pin to messages
-            string currentPin = _numberPadPin.EntryPin.Text;
-            _numberPadPin.Mode = NumberPadPinMode.PasswordReset;
+            string currentPin = _userPinPanel.EntryPin.Text;
+            _userPinPanel.Mode = NumberPadPinMode.PasswordReset;
             //Restore Pin after UpdateLabelStatus triggered in mode
-            _numberPadPin.EntryPin.Text = currentPin;
-            _numberPadPin.ProcessPassword(this, _selectedUserDetail);
+            _userPinPanel.EntryPin.Text = currentPin;
+            _userPinPanel.ProcessPassword(this, _selectedLoginUser);
         }
 
         //Removed : Conflited with Change Password, When we Implement Default Enter Key in All Dilogs, It Trigger Twice
@@ -68,26 +68,26 @@ namespace logicpos
         {
             try
             {
-                if (TablePadUser.SelectedButtonOid != null)
+                if (UsersPanel.SelectedButtonOid != null)
                 {
-                    _selectedUserDetail = XPOUtility.GetEntityById<sys_userdetail>(TablePadUser.SelectedButtonOid);
-                    if (_selectedUserDetail != null)
+                    _selectedLoginUser = XPOUtility.GetEntityById<sys_userdetail>(UsersPanel.SelectedButtonOid);
+                    if (_selectedLoginUser != null)
                     {
                         //Change NumberPadPinMode Mode
-                        _numberPadPin.Mode = (_selectedUserDetail.PasswordReset) ? NumberPadPinMode.PasswordOld : NumberPadPinMode.Password;
+                        _userPinPanel.Mode = (_selectedLoginUser.PasswordReset) ? NumberPadPinMode.PasswordOld : NumberPadPinMode.Password;
 
-                        if (_selectedUserDetail.PasswordReset)
+                        if (_selectedLoginUser.PasswordReset)
                         {
                             //_logger.Debug(string.Format("Name: [{0}], PasswordReset: [{1}]", _selectedUserDetail.Name, _selectedUserDetail.PasswordReset));
                             Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_information"),
-                                string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_user_request_change_password"), _selectedUserDetail.Name, XPOSettings.DefaultValueUserDetailAccessPin)
+                                string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_user_request_change_password"), _selectedLoginUser.Name, XPOSettings.DefaultValueUserDetailAccessPin)
                             );
                         }
                     }
                 }
 
                 //Grab Focus
-                _numberPadPin.EntryPin.GrabFocus();
+                _userPinPanel.EntryPin.GrabFocus();
             }
             catch (Exception ex)
             {
@@ -117,7 +117,7 @@ namespace logicpos
                 }
             }
             //Update Table, In case user change Users in BackOffice
-            GlobalApp.StartupWindow.TablePadUser.UpdateSql();
+            GlobalApp.StartupWindow.UsersPanel.UpdateSql();
             //Required to Assign Details to Update Select User
             AssignUserDetail();
             //Show Startup Windows, or Not (Silent Mode)

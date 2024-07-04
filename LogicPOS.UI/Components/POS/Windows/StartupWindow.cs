@@ -19,9 +19,10 @@ namespace logicpos
     public partial class StartupWindow : PosBaseWindow
     {
         private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private NumberPadPin _numberPadPin;
-        public TablePad TablePadUser { get; set; }
-        private sys_userdetail _selectedUserDetail;
+
+        private NumberPadPin _userPinPanel;
+        public TablePad UsersPanel { get; set; }
+        private sys_userdetail _selectedLoginUser;
 
         public StartupWindow(
             string backgroundImage,
@@ -156,27 +157,27 @@ namespace logicpos
                     }
 
                     //NumberPadPin
-                    _numberPadPin = new NumberPadPin(this, "numberPadPin", System.Drawing.Color.Transparent, numberPadPinFont, numberPadPinLabelStatusFont, numberPadPinFontColor, numberPadPinLabelStatusFontColor, Convert.ToByte(numberPadPinButtonSize.Width), Convert.ToByte(numberPadPinButtonSize.Height), false, true, NumberPadPinVisibleWindow, numberPadPinRowSpacingLabelStatus, numberPadPinRowSpacingSystemButtons);
+                    _userPinPanel = new NumberPadPin(this, "numberPadPin", System.Drawing.Color.Transparent, numberPadPinFont, numberPadPinLabelStatusFont, numberPadPinFontColor, numberPadPinLabelStatusFontColor, Convert.ToByte(numberPadPinButtonSize.Width), Convert.ToByte(numberPadPinButtonSize.Height), false, true, NumberPadPinVisibleWindow, numberPadPinRowSpacingLabelStatus, numberPadPinRowSpacingSystemButtons);
                     //Create and Assign local touchButtonKeyPasswordReset Reference to numberPadPin.ButtonKeyResetPassword
                     //TouchButtonIcon touchButtonKeyPasswordReset = new TouchButtonIcon("touchButtonKeyPasswordReset_Green", System.Drawing.Color.Transparent, numberPadPinButtonPasswordResetImageFileName, numberPadPinButtonPasswordResetIconSize, numberPadPinButtonPasswordResetSize.Width, numberPadPinButtonPasswordResetSize.Height) { Sensitive = false };
                     //_numberPadPin.ButtonKeyResetPassword = touchButtonKeyPasswordReset;
                     // Apply Size to Inner EventBox
                     if (numberPadPinSize.Width > 0 || numberPadPinSize.Height > 0)
                     {
-                        _numberPadPin.Eventbox.WidthRequest = numberPadPinSize.Width;
-                        _numberPadPin.Eventbox.HeightRequest = numberPadPinSize.Height;
+                        _userPinPanel.Eventbox.WidthRequest = numberPadPinSize.Width;
+                        _userPinPanel.Eventbox.HeightRequest = numberPadPinSize.Height;
                     }
 
                     //Put in Fix
-                    fix.Put(_numberPadPin, numberPadPinPosition.X, numberPadPinPosition.Y);
+                    fix.Put(_userPinPanel, numberPadPinPosition.X, numberPadPinPosition.Y);
                     //Over NumberPadPin
                     //fix.Put(touchButtonKeyPasswordReset, numberPadPinButtonPasswordResetPosition.X, numberPadPinButtonPasswordResetPosition.Y);
                     //Events
-                    _numberPadPin.ButtonKeyOK.Clicked += ButtonKeyOK_Clicked;
-                    _numberPadPin.ButtonKeyResetPassword.Clicked += ButtonKeyResetPassword_Clicked;
-                    _numberPadPin.ButtonKeyFrontOffice.Clicked += ButtonKeyFrontOffice_Clicked;
-                    _numberPadPin.ButtonKeyBackOffice.Clicked += ButtonKeyBackOffice_Clicked;
-                    _numberPadPin.ButtonKeyQuit.Clicked += ButtonKeyQuit_Clicked;
+                    _userPinPanel.ButtonKeyOK.Clicked += ButtonKeyOK_Clicked;
+                    _userPinPanel.ButtonKeyResetPassword.Clicked += ButtonKeyResetPassword_Clicked;
+                    _userPinPanel.ButtonKeyFrontOffice.Clicked += ButtonKeyFrontOffice_Clicked;
+                    _userPinPanel.ButtonKeyBackOffice.Clicked += ButtonKeyBackOffice_Clicked;
+                    _userPinPanel.ButtonKeyQuit.Clicked += ButtonKeyQuit_Clicked;
 
                     //Objects:TablePadUserButtonPrev
                     TouchButtonIcon tablePadUserButtonPrev = new TouchButtonIcon("TablePadUserButtonPrev", System.Drawing.Color.Transparent, tablePadUserButtonPrevImageFileName, new System.Drawing.Size(tablePadUserButtonPrevSize.Width - 2, tablePadUserButtonPrevSize.Height - 2), tablePadUserButtonPrevSize.Width, tablePadUserButtonPrevSize.Height);
@@ -198,7 +199,7 @@ namespace logicpos
                             (Disabled IS NULL or Disabled <> 1)
                     ";
 
-                    TablePadUser = new TablePad(
+                    UsersPanel = new TablePad(
                         sqlTablePadUser,
                         "ORDER BY Ord",
                         "",
@@ -213,28 +214,34 @@ namespace logicpos
                         tablePadUserButtonPrev,
                         tablePadUserButtonNext
                     );
-                    TablePadUser.SourceWindow = this;
-                    TablePadUser.Clicked += TablePadUser_Clicked;
+                    UsersPanel.SourceWindow = this;
+                    UsersPanel.Clicked += TablePadUser_Clicked;
 
                     //Put in Fix
                     if (tablePadUserVisible)
                     {
                         fix.Put(tablePadUserButtonPrev, tablePadUserButtonPrevPosition.X, tablePadUserButtonPrevPosition.Y);
                         fix.Put(tablePadUserButtonNext, tablePadUserButtonNextPosition.X, tablePadUserButtonNextPosition.Y);
-                        fix.Put(TablePadUser, tablePadUserPosition.X, tablePadUserPosition.Y);
+                        fix.Put(UsersPanel, tablePadUserPosition.X, tablePadUserPosition.Y);
                     }
 
                     //Label Version
                     string appVersion = "";
-                    if (LicenseSettings.LicenseReseller != null && LicenseSettings.LicenseReseller.ToString().ToLower() != "Logicpulse" && LicenseSettings.LicenseReseller.ToString().ToLower() != "")
+                    if (LicenseSettings.LicenseReseller != null && 
+                        LicenseSettings.LicenseReseller.ToString().ToLower() != "Logicpulse" && 
+                        LicenseSettings.LicenseReseller.ToString().ToLower() != "")
                     {
                         //appVersion = string.Format("Brough by {1}\n{0}",appVersion, GlobalFramework.LicenceReseller);
                         appVersion = string.Format("Powered by {0}© Vers. {1}", LicenseSettings.LicenseReseller, GeneralSettings.ProductVersion);
                     }
                     else
                     {
-                        appVersion = string.Format(PluginSettings.AppSoftwareVersionFormat, GeneralSettings.ProductVersion);
+                        if(PluginSettings.AppSoftwareVersionFormat != null)
+                        {
+                            appVersion = string.Format(PluginSettings.AppSoftwareVersionFormat, GeneralSettings.ProductVersion);
+                        }    
                     }
+
                     Label labelVersion = new Label(appVersion);
                     Pango.FontDescription fontDescLabelVersion = Pango.FontDescription.FromString(labelVersionFont);
                     labelVersion.ModifyFg(StateType.Normal, labelVersionFontColor);
@@ -281,15 +288,15 @@ namespace logicpos
                     ScreenArea.Add(fix);
 
                     //Force EntryPin to be the Entry with Focus
-                    _numberPadPin.EntryPin.GrabFocus();
+                    _userPinPanel.EntryPin.GrabFocus();
 
                     ShowAll();
 
                     //Events
-                    _numberPadPin.ExposeEvent += delegate
+                    _userPinPanel.ExposeEvent += delegate
                     {
-                        _numberPadPin.ButtonKeyFrontOffice.Hide();
-                        _numberPadPin.ButtonKeyBackOffice.Hide();
+                        _userPinPanel.ButtonKeyFrontOffice.Hide();
+                        _userPinPanel.ButtonKeyBackOffice.Hide();
                     };
                 }
                 catch (Exception ex)

@@ -168,7 +168,14 @@ namespace logicpos
         {
             string sql = "SELECT value FROM cfg_configurationpreferenceparameter where token = 'CULTURE';";
             XPOSettings.Session = DatabaseService.CreateDatabaseSession();
-            return XPOSettings.Session.ExecuteScalar(sql).ToString();
+            var result = XPOSettings.Session.ExecuteScalar(sql);
+
+            if (result != null)
+            {
+                return result.ToString();
+            }
+
+            return null;
         }
 
         public static void SetCulture()

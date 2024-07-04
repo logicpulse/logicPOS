@@ -161,7 +161,7 @@ namespace logicpos.App
         public static bool PosPaymentsDialogUseCurrentAccount = Convert.ToBoolean(GeneralSettings.Settings["posPaymentsDialogUseCurrentAccount"]);
 
         //First time boot POS flag
-        public static bool firstBoot;
+        public static bool FirstBoot;
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Pagination Related
         /// <summary>

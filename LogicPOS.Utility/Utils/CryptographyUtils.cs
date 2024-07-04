@@ -13,23 +13,23 @@ namespace LogicPOS.Utility
         private static readonly string _delimiter = "*";
         private const string _key = "6f6a40b4419af34d562a95a1a7c5306d7b03";
 
-        public static string SaltString(string pSaltString, string pSalt)
+        public static string SaltString(string value, string salt)
         {
             SHA512 hashAlgorithm = SHA512.Create();
-            return Convert.ToBase64String(hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(pSalt + pSaltString)));
+            return Convert.ToBase64String(hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(salt + value)));
         }
 
-        public static string GenerateSaltedString(string pSaltString)
+        public static string GenerateSaltedString(string value)
         {
-            if (string.IsNullOrEmpty(pSaltString))
+            if (string.IsNullOrEmpty(value))
             {
-                return pSaltString;
+                return value;
             }
 
             byte[] randomSalt = new byte[_saltLength];
             new RNGCryptoServiceProvider().GetBytes(randomSalt);
             string salt = Convert.ToBase64String(randomSalt);
-            return salt + _delimiter + SaltString(pSaltString, salt);
+            return salt + _delimiter + SaltString(value, salt);
         }
 
         public static bool ValidateSaltedString(string pSaltedString, string pPlainTextString)
@@ -56,6 +56,7 @@ namespace LogicPOS.Utility
                 return expectedSaltedString.Equals(SaltString(pPlainTextString, "System.Byte[]"));
             }
         }
+
         public static string MD5HashFile(string file)
         {
             MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
@@ -74,6 +75,7 @@ namespace LogicPOS.Utility
 
             return result;
         }
+
         public static string Encrypt(string toEncrypt, bool useHashing)
         {
             return Encrypt(toEncrypt, useHashing, _key);

@@ -139,7 +139,7 @@ namespace logicpos
                 try
                 {
                     // Launch Scripts
-                    POSSettings.firstBoot = true;
+                    POSSettings.FirstBoot = true;
                     databaseCreated = DataLayer.CreateDatabaseSchema(
                         xpoConnectionString,
                         DatabaseSettings.DatabaseType,
@@ -158,7 +158,7 @@ namespace logicpos
                     Environment.Exit(0);
                 }
             }
-            POSSettings.firstBoot = false;
+            POSSettings.FirstBoot = false;
             //Init XPO Connector DataLayer
             try
             {
@@ -199,40 +199,42 @@ namespace logicpos
             }
 
             //Compare DataBase version with software version
-            //Desempenho - Comparar versão da base de dados com o versão software [IN:017526]
-#if !DEBUG
-                if (string.IsNullOrEmpty(GlobalFramework.DatabaseVersion))
-                {
-                    try
-                    {
-                        string sql = string.Format(@"SELECT Version FROM sys_databaseversion;", SharedFramework.DatabaseName);
-                        GlobalFramework.DatabaseVersion = XPOSettings.Session.ExecuteScalar(sql).ToString();
+            ////Desempenho - Comparar versão da base de dados com o versão software [IN:017526]
+            //if (Program.DebugMode == false)
+            //{
+            //    if (string.IsNullOrEmpty(DatabaseSettings.DatabaseVersion))
+            //    {
+            //        try
+            //        {
+            //            string sql = string.Format(@"SELECT Version FROM sys_databaseversion;", DatabaseSettings.DatabaseName);
+            //            GlobalFramework.DatabaseVersion = XPOSettings.Session.ExecuteScalar(sql).ToString();
 
-                        string[] tmpDatabaseVersion = GlobalFramework.DatabaseVersion.Split('.');
-                        long tmpDatabaseVersionNumber = int.Parse(tmpDatabaseVersion[0]) * 10000000 + int.Parse(tmpDatabaseVersion[1]) * 10000 + int.Parse(tmpDatabaseVersion[2]);
+            //            string[] tmpDatabaseVersion = GlobalFramework.DatabaseVersion.Split('.');
+            //            long tmpDatabaseVersionNumber = int.Parse(tmpDatabaseVersion[0]) * 10000000 + int.Parse(tmpDatabaseVersion[1]) * 10000 + int.Parse(tmpDatabaseVersion[2]);
 
-                        string[] tmpSoftwareVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString().Split('.');
-                        long tmpSoftwareVersionNumber = int.Parse(tmpSoftwareVersion[0]) * 10000000 + int.Parse(tmpSoftwareVersion[1]) * 10000 + int.Parse(tmpSoftwareVersion[2]);
+            //            string[] tmpSoftwareVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString().Split('.');
+            //            long tmpSoftwareVersionNumber = int.Parse(tmpSoftwareVersion[0]) * 10000000 + int.Parse(tmpSoftwareVersion[1]) * 10000 + int.Parse(tmpSoftwareVersion[2]);
 
-                        if (tmpDatabaseVersionNumber > tmpSoftwareVersionNumber)
-                        {
-                            GlobalApp.DialogThreadNotify.WakeupMain();
-                            //throw new InvalidOperationException(string.Format(CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_warning_message_database_version")) + " : " + GlobalFramework.DatabaseVersion);
-                            string fileName = "\\LPUpdater\\LPUpdater.exe";
-                            string lPathToUpdater = string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileName);
-                            Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(500, 300), MessageType.Error, ButtonsType.Ok, CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error"), string.Format(CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_warning_message_database_version")) + " : " + GlobalFramework.DatabaseVersion);
-                            System.Diagnostics.Process.Start(lPathToUpdater);
-                            Environment.Exit(0);
-                        }
-                    }
-                    catch(Exception Ex)
-                    {
-                        GlobalApp.DialogThreadNotify.Close();
-                        Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(500, 300), MessageType.Error, ButtonsType.Ok, CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error"),  Ex.Message);
-                        Environment.Exit(0);
-                    }
-                }
-#endif
+            //            if (tmpDatabaseVersionNumber > tmpSoftwareVersionNumber)
+            //            {
+            //                GlobalApp.DialogThreadNotify.WakeupMain();
+            //                //throw new InvalidOperationException(string.Format(CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_warning_message_database_version")) + " : " + GlobalFramework.DatabaseVersion);
+            //                string fileName = "\\LPUpdater\\LPUpdater.exe";
+            //                string lPathToUpdater = string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileName);
+            //                Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(500, 300), MessageType.Error, ButtonsType.Ok, CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error"), string.Format(CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_warning_message_database_version")) + " : " + GlobalFramework.DatabaseVersion);
+            //                System.Diagnostics.Process.Start(lPathToUpdater);
+            //                Environment.Exit(0);
+            //            }
+            //        }
+            //        catch (Exception Ex)
+            //        {
+            //            GlobalApp.DialogThreadNotify.Close();
+            //            Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(500, 300), MessageType.Error, ButtonsType.Ok, CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error"), Ex.Message);
+            //            Environment.Exit(0);
+            //        }
+            //    }
+            //}
+
             // Assign PluginSoftwareVendor Reference to DataLayer SettingsApp to use In Date Protection, we Required to assign it Statically to Prevent Circular References
             // Required to be here, before it is used in above lines, ex Utils.GetTerminal()
             //if (PluginSettings.HasSoftwareVendorPlugin) PluginSettings.PluginSoftwareVendor = PluginSettings.SoftwareVendor; -> Trying to use only PluginSettings.SoftwareVendor @tchial0
