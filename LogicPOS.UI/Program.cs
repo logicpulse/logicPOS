@@ -9,6 +9,7 @@ using LogicPOS.Modules.StockManagement;
 using LogicPOS.Persistence.Services;
 using LogicPOS.Plugin.Abstractions;
 using LogicPOS.Settings;
+using LogicPOS.UI.Alerts;
 using LogicPOS.Utility;
 using System;
 using System.Configuration;
@@ -58,6 +59,7 @@ namespace logicpos
         [STAThread]
         public static void Main(string[] args)
         {
+        
             using (var singleProgramInstance = new SingleProgramInstance())
             {
                 InitializeSettings();
@@ -66,37 +68,28 @@ namespace logicpos
 
                 InitializeGtk();
 
-                ShowLoadingScreen();
-
-                SetCulture();
-
-                InitializePlugins();
-
-                CloseLoadingScreen();
-
-                KeepUIResponsive();
-
-                if (singleProgramInstance.IsSingleInstance == false)
+                if (true)
                 {
-                    ShowInstanceAlreadyRunningMessage();
-                    return;
+
+                    ShowLoadingScreen();
+
+                    SetCulture();
+
+                    InitializePlugins();
+
+                    CloseLoadingScreen();
+
+                    KeepUIResponsive();
+
+                    if (singleProgramInstance.IsSingleInstance == false)
+                    {
+                        Alerts.ShowInstanceAlreadyRunningAlert();
+                        return;
+                    }
+
+                    StartApp();
                 }
-
-              
-
-                StartApp();
             }
-        }
-
-        private static void ShowInstanceAlreadyRunningMessage()
-        {
-            Utils.ShowMessageNonTouch(
-                                    null,
-                                    DialogFlags.Modal,
-                                    MessageType.Info,
-                                    ButtonsType.Ok,
-                                    GeneralUtils.GetResourceByName("dialog_message_pos_instance_already_running"),
-                                    GeneralUtils.GetResourceByName("global_information"));
         }
 
         private static void InitializePlugins()

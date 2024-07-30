@@ -971,7 +971,7 @@ namespace logicpos.AccessTrackParkingTicketService {
         
         /// <remarks/>
         public TimeService() {
-            this.Url = global::logicpos.Properties.Settings.Default.logicpos_AccessTrackParkingTicketService_TimeService;
+            this.Url = global::LogicPOS.UI.Properties.Settings.Default.logicpos_AccessTrackParkingTicketService_TimeService;
             if ((this.IsLocalFileSystemWebService(this.Url) == true)) {
                 this.UseDefaultCredentials = true;
                 this.useDefaultCredentialsSetExplicitly = false;

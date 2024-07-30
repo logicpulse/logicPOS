@@ -15,6 +15,7 @@ using LogicPOS.Globalization;
 using LogicPOS.Modules.StockManagement;
 using LogicPOS.Settings;
 using LogicPOS.Shared;
+using LogicPOS.UI.Alerts;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -394,7 +395,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     if (pXPOEntry.Value == _article)
                     {
                         pXPOEntry.Value = null;
-                        logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_composite_article_same"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_composite_article"));
+                        
+                        Alerts.ShowCompositeArticleTheSameAlert(this);
+
                         pXPOEntry.EntryValidation.Text = "";
                         ValidateDialog();
                         return;
@@ -623,7 +626,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if (entrySelected.Value == _article)
                 {
                     entrySelected.Value = null;
-                    logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_composite_article_same"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_composite_article"));
+
+                    Alerts.ShowCompositeArticleTheSameAlert(this);
+                  
                     entrySelected.EntryValidation.Text = "";
                     return;
                 }

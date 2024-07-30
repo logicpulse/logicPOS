@@ -5,15 +5,15 @@ using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Extensions;
-using LogicPOS.Settings;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using LogicPOS.Globalization;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
+using LogicPOS.Settings;
+using LogicPOS.UI.Alerts;
 using LogicPOS.Utility;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
 {
@@ -31,7 +31,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
         {
             this.Title = logicpos.Utils.GetWindowTitle(GeneralUtils.GetResourceByName("global_warehouse"));
             _warehouseLocationCollection = new List<Tuple<fin_warehouselocation, Entry, BOWidgetBox, TouchButtonIcon, TouchButtonIcon, GenericCRUDWidgetXPO, HBox>>();
-            
+
             SetSizeRequest(500, 450);
             InitUI();
             InitNotes();
@@ -186,42 +186,40 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
 
         private void ButtonClearLocation_Clicked(object sender, System.EventArgs e)
         {
-            try
-            {
-                ResponseType responseType = logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.YesNo, GeneralUtils.GetResourceByName("dialog_message_delete_record"), string.Format(GeneralUtils.GetResourceByName("global_warning"), GeneralSettings.ServerVersion));
+            ResponseType responseType = Alerts.Question()
+                                              .WithParent(this)
+                                              .WithTitleResource("global_warning")
+                                              .WithMessageResource("dialog_message_delete_record")
+                                              .Show();
 
-                if (responseType == ResponseType.Yes)
+            if (responseType == ResponseType.Yes)
+            {
+                foreach (var location in _warehouseLocationCollection)
                 {
-                    foreach (var location in _warehouseLocationCollection)
+                    if (_warehouseLocationCollection.Count == 1)
                     {
-                        if (_warehouseLocationCollection.Count == 1)
-                        {
-                            location.Item2.Text = "";
-                            return;
-                        }
-                        else if (location.Item4.Equals(sender as TouchButtonIcon))
-                        {
-                            var xpObject = location.Item1;
-                            xpObject.Delete();
-                            var xpEntry = location.Item2;
-                            var xpBoxWidget = location.Item3;
-                            xpBoxWidget.Hide();
-                            var xpButtonClear = location.Item4;
-                            xpButtonClear.Hide();
-                            var xpButtonAdd = location.Item5;
-                            xpButtonAdd.Hide();
-                            vboxTab2.Remove(location.Item7);
-                            _crudWidgetList.Remove(location.Item6);
-                            _warehouseLocationCollection.Remove(location);
-                            break;
-                        }
+                        location.Item2.Text = "";
+                        return;
+                    }
+                    else if (location.Item4.Equals(sender as TouchButtonIcon))
+                    {
+                        var xpObject = location.Item1;
+                        xpObject.Delete();
+                        var xpEntry = location.Item2;
+                        var xpBoxWidget = location.Item3;
+                        xpBoxWidget.Hide();
+                        var xpButtonClear = location.Item4;
+                        xpButtonClear.Hide();
+                        var xpButtonAdd = location.Item5;
+                        xpButtonAdd.Hide();
+                        vboxTab2.Remove(location.Item7);
+                        _crudWidgetList.Remove(location.Item6);
+                        _warehouseLocationCollection.Remove(location);
+                        break;
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                _logger.Error("Error clear warehouse location Entrys : " + ex.Message);
-            }
+
         }
     }
 }

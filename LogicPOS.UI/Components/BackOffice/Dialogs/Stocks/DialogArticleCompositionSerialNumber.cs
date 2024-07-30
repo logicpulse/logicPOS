@@ -12,9 +12,9 @@ using logicpos.Extensions;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Enums;
-using LogicPOS.Globalization;
 using LogicPOS.Modules;
 using LogicPOS.Settings;
+using LogicPOS.UI.Alerts;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -324,26 +324,22 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 
         private void ButtonOk_Clicked(object sender, EventArgs e)
         {
-            try
+            //Edit stock moviment IN
+            if (_entryBoxSelectSupplier.EntryValidation.Validated
+                && _entryBoxDocumentNumber.EntryValidation.Validated
+                && _entryBoxPrice1.EntryValidation.Validated
+                && _entryBoxDocumentDateIn.EntryValidation.Validated)
             {
-                //Edit stock moviment IN
-                if (_entryBoxSelectSupplier.EntryValidation.Validated && _entryBoxDocumentNumber.EntryValidation.Validated && _entryBoxPrice1.EntryValidation.Validated && _entryBoxDocumentDateIn.EntryValidation.Validated)
-                {
-                    (_dataSourceRow as fin_articleserialnumber).StockMovimentIn.Customer = _entryBoxSelectSupplier.Value;
-                    (_dataSourceRow as fin_articleserialnumber).StockMovimentIn.DocumentNumber = _entryBoxDocumentNumber.EntryValidation.Text;
-                    (_dataSourceRow as fin_articleserialnumber).StockMovimentIn.PurchasePrice = DataConversionUtils.StringToDecimal(_entryBoxPrice1.EntryValidation.Text);
-                    (_dataSourceRow as fin_articleserialnumber).StockMovimentIn.Date = _entryBoxDocumentDateIn.Value;
-                    if (AttachedFile != null) (_dataSourceRow as fin_articleserialnumber).StockMovimentIn.AttachedFile = AttachedFile;
-                    (_dataSourceRow as fin_articleserialnumber).StockMovimentIn.Save();
-                    _logger.Debug("Sock Moviment In Changed with sucess");
+                (_dataSourceRow as fin_articleserialnumber).StockMovimentIn.Customer = _entryBoxSelectSupplier.Value;
+                (_dataSourceRow as fin_articleserialnumber).StockMovimentIn.DocumentNumber = _entryBoxDocumentNumber.EntryValidation.Text;
+                (_dataSourceRow as fin_articleserialnumber).StockMovimentIn.PurchasePrice = DataConversionUtils.StringToDecimal(_entryBoxPrice1.EntryValidation.Text);
+                (_dataSourceRow as fin_articleserialnumber).StockMovimentIn.Date = _entryBoxDocumentDateIn.Value;
+                if (AttachedFile != null) (_dataSourceRow as fin_articleserialnumber).StockMovimentIn.AttachedFile = AttachedFile;
+                (_dataSourceRow as fin_articleserialnumber).StockMovimentIn.Save();
 
-                    ResponseType responseType = logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.Ok, GeneralUtils.GetResourceByName("dialog_message_operation_successfully"), string.Format(GeneralUtils.GetResourceByName("global_documentticket_type_title_cs_short"), GeneralSettings.ServerVersion));
-                }
+                _logger.Debug("Sock Moviment In Changed with sucess");
 
-            }
-            catch (System.Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
+                Alerts.ShowOperationSucceededAlert("global_documentticket_type_title_cs_short");
             }
         }
 
@@ -394,7 +390,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 
                 if (sucess)
                 {
-                    ResponseType responseType = logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.Ok, GeneralUtils.GetResourceByName("dialog_message_operation_successfully"), string.Format(GeneralUtils.GetResourceByName("global_documentticket_type_title_cs_short"), GeneralSettings.ServerVersion));
+                    Alerts.ShowOperationSucceededAlert("global_documentticket_type_title_cs_short");
+                        
                     _entryBoxArticleSerialNumberToChange.Sensitive = false;
                     _buttonChange.Sensitive = false;
                 }
@@ -435,7 +432,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 
                 if (sucess)
                 {
-                    ResponseType responseType = logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.Ok, GeneralUtils.GetResourceByName("dialog_message_operation_successfully"), string.Format(GeneralUtils.GetResourceByName("global_documentticket_type_title_cs_short"), GeneralSettings.ServerVersion));
+                    Alerts.ShowOperationSucceededAlert("global_documentticket_type_title_cs_short");
                     _entryBoxArticleSerialNumberToChange.Sensitive = false;
                     _entryBoxSelectDocumentOut.EntryValidation.Sensitive = false;
                     _entryBoxDocumentDateOut.EntryValidation.Sensitive = false;

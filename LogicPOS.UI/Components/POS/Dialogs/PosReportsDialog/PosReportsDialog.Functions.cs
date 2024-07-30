@@ -9,6 +9,7 @@ using LogicPOS.Reporting.Reports;
 using LogicPOS.Reporting.Reports.CustomerBalanceSummary;
 using LogicPOS.Settings;
 using LogicPOS.Shared.CustomDocument;
+using LogicPOS.UI.Alerts;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -21,7 +22,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         private void buttonReportUnderConstruction_Clicked(object sender, EventArgs e)
         {
-            logicpos.Utils.ShowMessageUnderConstruction();
+            Alerts.ShowUnderConstructionAlert();
         }
 
         private List<string> GetReportsQueryDialogFilter(

@@ -14,10 +14,10 @@ using logicpos.Extensions;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
-using LogicPOS.Globalization;
 using LogicPOS.Modules.StockManagement;
 using LogicPOS.Settings;
 using LogicPOS.Shared;
+using LogicPOS.UI.Alerts;
 using LogicPOS.Utility;
 using System;
 using System.Collections;
@@ -593,7 +593,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     if (pXPOEntry.Value == _article)
                     {
                         pXPOEntry.Value = null;
-                        logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, GeneralUtils.GetResourceByName("dialog_message_composite_article_same"), GeneralUtils.GetResourceByName("global_composite_article"));
+
+                        Alerts.Warning()
+                            .WithTitleResource("global_composite_article")
+                            .WithMessageResource("dialog_message_composite_article_same")
+                            .WithParent(this)
+                            .Show();
+
                         pXPOEntry.EntryValidation.Text = "";
                         ValidateDialog();
                         return;
@@ -877,30 +883,29 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         //Close popup articles event
         private void _entryBoxSelectArticle_ClosePopup(object sender, EventArgs e)
         {
-            try
-            {
-                var entrySelected = (XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>)sender;
+            var entrySelected = (XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>)sender;
 
-                if (string.IsNullOrEmpty(entrySelected.EntryValidation.Text))
-                {
-                    return;
-                }
-
-                if (entrySelected.Value == _article)
-                {
-                    entrySelected.Value = null;
-                    logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, GeneralUtils.GetResourceByName("dialog_message_composite_article_same"), GeneralUtils.GetResourceByName("global_composite_article"));
-                    entrySelected.EntryValidation.Text = "";
-                    return;
-                }
-                entrySelected.CodeEntry.Text = entrySelected.Value.Code;
-                entrySelected.EntryQtdValidation.Text = string.Format("{0:0.##}", entrySelected.Value.DefaultQuantity);
-                ValidateDialog();
-            }
-            catch (Exception ex)
+            if (string.IsNullOrEmpty(entrySelected.EntryValidation.Text))
             {
-                _logger.Error(ex.Message);
+                return;
             }
+
+            if (entrySelected.Value == _article)
+            {
+                entrySelected.Value = null;
+
+                Alerts.Warning()
+                      .WithParent(this)
+                      .WithTitleResource("global_composite_article")
+                      .WithMessageResource("dialog_message_composite_article_same")
+                      .Show();
+
+                entrySelected.EntryValidation.Text = "";
+                return;
+            }
+            entrySelected.CodeEntry.Text = entrySelected.Value.Code;
+            entrySelected.EntryQtdValidation.Text = string.Format("{0:0.##}", entrySelected.Value.DefaultQuantity);
+            ValidateDialog();
         }
 
         //Change quantity

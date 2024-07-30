@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace logicpos.ServiceReference {
+namespace LogicPOS.UI.ServiceReference {
     using System.Runtime.Serialization;
     using System;
     
@@ -195,25 +195,25 @@ namespace logicpos.ServiceReference {
         System.Threading.Tasks.Task<string> GetDataAsync(int value);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService1/GetDataUsingDataContract", ReplyAction="http://tempuri.org/IService1/GetDataUsingDataContractResponse")]
-        logicpos.ServiceReference.CompositeType GetDataUsingDataContract(logicpos.ServiceReference.CompositeType composite);
+        LogicPOS.UI.ServiceReference.CompositeType GetDataUsingDataContract(LogicPOS.UI.ServiceReference.CompositeType composite);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService1/GetDataUsingDataContract", ReplyAction="http://tempuri.org/IService1/GetDataUsingDataContractResponse")]
-        System.Threading.Tasks.Task<logicpos.ServiceReference.CompositeType> GetDataUsingDataContractAsync(logicpos.ServiceReference.CompositeType composite);
+        System.Threading.Tasks.Task<LogicPOS.UI.ServiceReference.CompositeType> GetDataUsingDataContractAsync(LogicPOS.UI.ServiceReference.CompositeType composite);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService1/SendDocument", ReplyAction="http://tempuri.org/IService1/SendDocumentResponse")]
-        logicpos.ServiceReference.ServicesATSoapResult SendDocument(System.Guid pDocumentMaster);
+        LogicPOS.UI.ServiceReference.ServicesATSoapResult SendDocument(System.Guid pDocumentMaster);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService1/SendDocument", ReplyAction="http://tempuri.org/IService1/SendDocumentResponse")]
-        System.Threading.Tasks.Task<logicpos.ServiceReference.ServicesATSoapResult> SendDocumentAsync(System.Guid pDocumentMaster);
+        System.Threading.Tasks.Task<LogicPOS.UI.ServiceReference.ServicesATSoapResult> SendDocumentAsync(System.Guid pDocumentMaster);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public interface IService1Channel : logicpos.ServiceReference.IService1, System.ServiceModel.IClientChannel {
+    public interface IService1Channel : LogicPOS.UI.ServiceReference.IService1, System.ServiceModel.IClientChannel {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class Service1Client : System.ServiceModel.ClientBase<logicpos.ServiceReference.IService1>, logicpos.ServiceReference.IService1 {
+    public partial class Service1Client : System.ServiceModel.ClientBase<LogicPOS.UI.ServiceReference.IService1>, LogicPOS.UI.ServiceReference.IService1 {
         
         public Service1Client() {
         }
@@ -242,19 +242,19 @@ namespace logicpos.ServiceReference {
             return base.Channel.GetDataAsync(value);
         }
         
-        public logicpos.ServiceReference.CompositeType GetDataUsingDataContract(logicpos.ServiceReference.CompositeType composite) {
+        public LogicPOS.UI.ServiceReference.CompositeType GetDataUsingDataContract(LogicPOS.UI.ServiceReference.CompositeType composite) {
             return base.Channel.GetDataUsingDataContract(composite);
         }
         
-        public System.Threading.Tasks.Task<logicpos.ServiceReference.CompositeType> GetDataUsingDataContractAsync(logicpos.ServiceReference.CompositeType composite) {
+        public System.Threading.Tasks.Task<LogicPOS.UI.ServiceReference.CompositeType> GetDataUsingDataContractAsync(LogicPOS.UI.ServiceReference.CompositeType composite) {
             return base.Channel.GetDataUsingDataContractAsync(composite);
         }
         
-        public logicpos.ServiceReference.ServicesATSoapResult SendDocument(System.Guid pDocumentMaster) {
+        public LogicPOS.UI.ServiceReference.ServicesATSoapResult SendDocument(System.Guid pDocumentMaster) {
             return base.Channel.SendDocument(pDocumentMaster);
         }
         
-        public System.Threading.Tasks.Task<logicpos.ServiceReference.ServicesATSoapResult> SendDocumentAsync(System.Guid pDocumentMaster) {
+        public System.Threading.Tasks.Task<LogicPOS.UI.ServiceReference.ServicesATSoapResult> SendDocumentAsync(System.Guid pDocumentMaster) {
             return base.Channel.SendDocumentAsync(pDocumentMaster);
         }
     }

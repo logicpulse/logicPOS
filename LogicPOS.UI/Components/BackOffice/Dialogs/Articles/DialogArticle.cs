@@ -11,8 +11,8 @@ using logicpos.Extensions;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
-using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using LogicPOS.UI.Alerts;
 using LogicPOS.Utility;
 using System;
 using System.Collections;
@@ -901,7 +901,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     if (pXPOEntry.Value == _article)
                     {
                         pXPOEntry.Value = null;
-                        logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, GeneralUtils.GetResourceByName("dialog_message_composite_article_same"), GeneralUtils.GetResourceByName("global_composite_article"));
+
+                        Alerts.ShowCompositeArticleTheSameAlert(this);
+
                         pXPOEntry.EntryValidation.Text = "";
                         return;
                     }
@@ -930,7 +932,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                                 _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", GeneralUtils.GetResourceByName("global_composite_article"), pXPOEntry.EntryNumber, GeneralUtils.GetResourceByName("global_quantity"))) as GenericCRUDWidgetXPO);
                                 if (pXPOEntry.EntryQtdValidation.Validated) _genericCRUDWidgetXPO.Validated = false;
 
-                                logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, GeneralUtils.GetResourceByName("dialog_message_composite_article_already"), GeneralUtils.GetResourceByName("global_composite_article"));
+                                Alerts.Warning()
+                                      .WithTitleResource("global_composite_article")
+                                      .WithMessageResource("dialog_message_composite_article_already")
+                                      .Show();
+
                                 return;
                             }
                         }
@@ -1278,7 +1284,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 if (entrySelected.Value == _article)
                 {
                     entrySelected.Value = null;
-                    logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, GeneralUtils.GetResourceByName("dialog_message_composite_article_same"), GeneralUtils.GetResourceByName("global_composite_article"));
+
+                    Alerts.ShowCompositeArticleTheSameAlert(this);
+
                     entrySelected.EntryValidation.Text = "";
                     return;
                 }
@@ -1565,41 +1573,37 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
         private void ButtonClearSerialNumber_Clicked(object sender, EventArgs e)
         {
-            try
-            {
-                ResponseType responseType = logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.YesNo, GeneralUtils.GetResourceByName("dialog_message_delete_record"), string.Format(GeneralUtils.GetResourceByName("global_warning"), GeneralSettings.ServerVersion));
 
-                if (responseType == ResponseType.Yes)
+            var alertResult = Alerts.Question()
+                                    .WithTitleResource("global_warning")
+                                    .WithMessageResource("dialog_message_delete_record")
+                                    .Show();
+
+            if (alertResult == ResponseType.Yes)
+            {
+                foreach (var serialNumber in _serialNumberCollection)
                 {
-                    foreach (var serialNumber in _serialNumberCollection)
+                    if (_serialNumberCollection.Count == 1)
                     {
-                        if (_serialNumberCollection.Count == 1)
+                        serialNumber.Item2.Text = "";
+                        return;
+                    }
+                    foreach (var child in serialNumber.Item6.Children)
+                    {
+                        if (child.Equals(sender as TouchButtonIcon))
                         {
-                            serialNumber.Item2.Text = "";
-                            return;
-                        }
-                        foreach (var child in serialNumber.Item6.Children)
-                        {
-                            if (child.Equals(sender as TouchButtonIcon))
-                            {
-                                var xpObject = serialNumber.Item1;
-                                _article.ArticleSerialNumber.Remove(xpObject);
-                                vboxTab5.Remove(serialNumber.Item6);
-                                _crudWidgetList.Remove(serialNumber.Item3);
-                                _crudWidgetList.Remove(serialNumber.Item4);
-                                _crudWidgetList.Remove(serialNumber.Item5);
-                                _serialNumberCollection.Remove(serialNumber);
-                                break;
-                            }
+                            var xpObject = serialNumber.Item1;
+                            _article.ArticleSerialNumber.Remove(xpObject);
+                            vboxTab5.Remove(serialNumber.Item6);
+                            _crudWidgetList.Remove(serialNumber.Item3);
+                            _crudWidgetList.Remove(serialNumber.Item4);
+                            _crudWidgetList.Remove(serialNumber.Item5);
+                            _serialNumberCollection.Remove(serialNumber);
+                            break;
                         }
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                _logger.Error("Error clear SerialNumber Entry : " + ex.Message);
-            }
-
         }
     }
 

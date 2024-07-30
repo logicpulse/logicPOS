@@ -8,7 +8,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{340331CF-94E0-49B0-8EBB-D4DF61A3DCCC}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>logicpos</RootNamespace>
+    <RootNamespace>LogicPOS.UI</RootNamespace>
     <AssemblyName>logicpos</AssemblyName>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
@@ -119,6 +119,8 @@
   </ItemGroup>
   -->
   <ItemGroup>
+    <Compile Include="Alerts\Alert.cs" />
+    <Compile Include="Alerts\Alerts.cs" />
     <Compile Include="Classes\DataLayer\DataBaseBackupFileInfo.cs" />
     <Compile Include="Classes\Enums\App\AppMode.cs" />
     <Compile Include="Classes\Enums\App\ScreenSize.cs" />
@@ -2033,6 +2035,12 @@
     <EmbeddedResource Include="Resources\Reports\UserReports\ReportDocumentFinance_pt-PT_QRCode.frx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
+    <None Include="Service References\ServiceReference\LogicPOS.UI.ServiceReference.CompositeType.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ServiceReference\LogicPOS.UI.ServiceReference.ServicesATSoapResult.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
     <None Include="Web References\AccessTrackParkingTicketService\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
@@ -5903,12 +5911,6 @@
     <None Include="Resources\Reports\UserReports\ReportDocumentFinanceCurrentAccount.frx" />
     <None Include="Resources\Reports\UserReports\ReportUserCommission.frx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Service References\ServiceReference\logicpos.ServiceReference.CompositeType.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\ServiceReference\logicpos.ServiceReference.ServicesATSoapResult.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\ServiceReference\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>

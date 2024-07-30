@@ -15,6 +15,7 @@ using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Utility;
+using LogicPOS.UI.Alerts;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 {
@@ -163,7 +164,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                     (_dataSourceRow as fin_articlestock).Save();
                     _logger.Debug("Sock Moviment In Changed with sucess");
 
-                    ResponseType responseType = logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.Ok, GeneralUtils.GetResourceByName("dialog_message_operation_successfully"), string.Format(GeneralUtils.GetResourceByName("global_documentticket_type_title_cs_short"), GeneralSettings.ServerVersion));
+
+                    var alertTitle = GeneralUtils.GetResourceByName("global_documentticket_type_title_cs_short");
+                    Alerts.ShowOperationSucceededAlert(alertTitle);
+                    
                 }
 
             }

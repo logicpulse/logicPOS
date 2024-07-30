@@ -13,6 +13,7 @@ using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using LogicPOS.UI.Alerts;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -573,17 +574,26 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         private void DeleteArticleSerialNumber(fin_articleserialnumber pArticleSerialNumber)
         {
 
-            ResponseType responseType = logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.YesNo, GeneralUtils.GetResourceByName("dialog_message_delete_record"), string.Format(GeneralUtils.GetResourceByName("global_warning"), GeneralSettings.ServerVersion));
+            ResponseType alertResult = Alerts.Question()
+                                              .WithParent(this)
+                                              .WithTitleResource("global_warning")
+                                              .WithMessageResource("dialog_message_delete_record")
+                                              .Show();
 
             var selectedRow = pArticleSerialNumber;
 
-            if (responseType == ResponseType.Yes)
+            if (alertResult == ResponseType.Yes)
             {
 
                 //Check if is sold
                 if (selectedRow.StockMovimentOut != null || selectedRow.IsSold)
                 {
-                    logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.Ok, "O artigo único já foi vendido", string.Format(GeneralUtils.GetResourceByName("global_warning"), GeneralSettings.ServerVersion));
+                    Alerts.Information()
+                          .WithParent(this)
+                          .WithTitleResource("global_warning")
+                          .WithMessage("O artigo único já foi vendido")
+                          .Show();
+
                     return;
                 }
 
@@ -627,7 +637,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 }
                 else
                 {
-                    logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.Ok, "O artigo único está associado a outro(s) artigos", string.Format(GeneralUtils.GetResourceByName("global_warning"), GeneralSettings.ServerVersion));
+                    Alerts.Information()
+                         .WithParent(this)
+                         .WithTitleResource("global_warning")
+                         .WithMessage("O artigo único está associado a outro(s) artigos")
+                         .Show();
                 }
             }
 

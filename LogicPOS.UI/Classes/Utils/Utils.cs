@@ -56,22 +56,9 @@ namespace logicpos
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //ShowMessage Non Touch
 
-        //Call with : Utils.ShowMessage(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, "Message Test", "Error");
-        public static Gtk.ResponseType ShowMessageNonTouch(Gtk.Window pSourceWindow, Gtk.DialogFlags pDialogFlags, MessageType pMsgType, ButtonsType pButtonsType, string pMessage, string pWindowTitle)
-        {
-            MessageDialog messageDialog = new MessageDialog(pSourceWindow, pDialogFlags, pMsgType, pButtonsType, pMessage);
-            messageDialog.Title = pWindowTitle;
-            ResponseType responseType = (Gtk.ResponseType)messageDialog.Run();
-            messageDialog.Destroy();
+      
 
-            return responseType;
-        }
-
-        public static void ShowMessageUnderConstruction()
-        {
-            _logger.Warn(string.Format("ShowMessageUnderConstruction(): {0} {1} ", MessageType.Error, GeneralUtils.GetResourceByName("dialog_message_under_construction_function")));
-            ShowMessageNonTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("dialog_message_under_construction_function"), "Error");
-        }
+       
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //ShowMessage Touch
