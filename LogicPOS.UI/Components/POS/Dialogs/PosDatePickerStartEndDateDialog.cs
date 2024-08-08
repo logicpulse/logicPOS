@@ -1,31 +1,30 @@
 ﻿using Gtk;
-using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using System;
 using System.Drawing;
-using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Utility;
+using LogicPOS.UI.Dialogs;
+using LogicPOS.UI.Buttons;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    internal class PosDatePickerStartEndDateDialog : PosBaseDialog
+    internal class PosDatePickerStartEndDateDialog : BaseDialog
     {
         private Fixed _fixedContent;
         private EntryBoxValidationDatePickerDialog _entryBoxDateStart;
         private EntryBoxValidationDatePickerDialog _entryBoxDateEnd;
 
-        private TouchButtonIconWithText _buttonOk;
-        private TouchButtonIconWithText _buttonCancel;
+        private IconButtonWithText _buttonOk;
+        private IconButtonWithText _buttonCancel;
 
         public DateTime DateStart { get; set; }
         public DateTime DateEnd { get; set; }
 
         //Overload : Default Dates Start: 1st Day of Month, End Last Day Of Month
-        public PosDatePickerStartEndDateDialog(Window pSourceWindow, DialogFlags pDialogFlags)
-            : base(pSourceWindow, pDialogFlags)
+        public PosDatePickerStartEndDateDialog(Window parentWindow, DialogFlags pDialogFlags)
+            : base(parentWindow, pDialogFlags)
         {
             //pastMonths=0 to Work in Curent Month Range, pastMonths=1 Works in Past Month, pastMonths=2 Two months Ago etc
             int pastMonths = 1;
@@ -38,8 +37,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             InitUI(pDialogFlags, dateTimeStart, dateTimeEnd);
         }
 
-        public PosDatePickerStartEndDateDialog(Window pSourceWindow, DialogFlags pDialogFlags, DateTime pDateStart, DateTime pDateEnd)
-            : base(pSourceWindow, pDialogFlags)
+        public PosDatePickerStartEndDateDialog(Window parentWindow, DialogFlags pDialogFlags, DateTime pDateStart, DateTime pDateEnd)
+            : base(parentWindow, pDialogFlags)
         {
             //Call Init UI
             InitUI(pDialogFlags, pDateStart, pDateEnd);
@@ -79,8 +78,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _fixedContent.Put(vbox, 0, 0);
 
             //ActionArea Buttons
-            _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);
-            _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
+            _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
+            _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
 
             //ActionArea
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons
@@ -93,7 +92,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             Validate();
 
             //Init Object
-            this.InitObject(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, _fixedContent, actionAreaButtons);
+            this.Initialize(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, _fixedContent, actionAreaButtons);
         }
 
         private void entryBoxDateEndEntryValidation_Changed(object sender, EventArgs e)

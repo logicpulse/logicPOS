@@ -1,28 +1,27 @@
 ﻿using DevExpress.Data.Filtering;
 using DevExpress.Xpo;
 using Gtk;
-using logicpos.Classes.Enums.GenericTreeView;
-using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Globalization;
+using LogicPOS.UI.Components;
 using System;
 using System.Collections.Generic;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
-    internal class TreeViewConfigurationCurrency : GenericTreeViewXPO
+    internal class TreeViewConfigurationCurrency : XpoGridView
     {
         //Public Parametless Constructor Required by Generics
         public TreeViewConfigurationCurrency() { }
 
         [Obsolete]
-        public TreeViewConfigurationCurrency(Window pSourceWindow)
-            : this(pSourceWindow, null, null, null) { }
+        public TreeViewConfigurationCurrency(Window parentWindow)
+            : this(parentWindow, null, null, null) { }
 
         //XpoMode
         [Obsolete]
-        public TreeViewConfigurationCurrency(Window pSourceWindow, Entity pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default)
+        public TreeViewConfigurationCurrency(Window parentWindow, Entity pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GridViewMode pGenericTreeViewMode = GridViewMode.Default, GridViewNavigatorMode navigatorMode = GridViewNavigatorMode.Default)
         {
             //Init Vars
             Type xpoGuidObjectType = typeof(cfg_configurationcurrency);
@@ -32,23 +31,16 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             Type typeDialogClass = (pDialogType != null) ? pDialogType : typeof(DialogConfigurationCurrency);
 
             //Config
-            int fontGenericTreeViewColumn = Convert.ToInt16(LogicPOS.Settings.GeneralSettings.Settings["fontGenericTreeViewColumn"]);
+            int fontGenericTreeViewColumn = Convert.ToInt16(LogicPOS.Settings.AppSettings.Instance.fontGenericTreeViewColumn);
 
             //Configure columnProperties
-            List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
+            List<GridViewColumnProperty> columnProperties = new List<GridViewColumnProperty>
             {
-                new GenericTreeViewColumnProperty("Code") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_record_code"), MinWidth = 100 },
-                new GenericTreeViewColumnProperty("Designation") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_designation"), Expand = true },
-                new GenericTreeViewColumnProperty("Acronym") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_ConfigurationCurrency_Acronym") },
-                //columnProperties.Add(new GenericTreeViewColumnProperty("ExchangeRate") { 
-                //    Title = CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_exchangerate, 
-                //    Type = typeof(Decimal), 
-                //    Alignment = 1.0F
-                //    //WIP
-                //    //FontDesc = new Pango.FontDescription() { Size = 11 }, // Removed, this will make Trees that use it has diferent row Sizes
-                //    //,CellRenderer = new CellRendererText() { Alignment = Pango.Alignment.Right, Xalign = 1.0F }
-                //});
-                new GenericTreeViewColumnProperty("UpdatedAt") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
+                new GridViewColumnProperty("Code") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_record_code"), MinWidth = 100 },
+                new GridViewColumnProperty("Designation") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_designation"), Expand = true },
+                new GridViewColumnProperty("Acronym") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_ConfigurationCurrency_Acronym") },
+            
+                new GridViewColumnProperty("UpdatedAt") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
             };
 
             //Configure Criteria/XPCollection/Model
@@ -66,10 +58,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             //Call Base Initializer
             base.InitObject(
-              pSourceWindow,                  //Pass parameter 
+              parentWindow,                  //Pass parameter 
               defaultValue,                   //Pass parameter
               pGenericTreeViewMode,           //Pass parameter
-              pGenericTreeViewNavigatorMode,  //Pass parameter
+              navigatorMode,  //Pass parameter
               columnProperties,               //Created Here
               xpoCollection,                  //Created Here
               typeDialogClass                 //Created Here

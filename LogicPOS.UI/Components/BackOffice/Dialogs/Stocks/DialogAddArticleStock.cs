@@ -7,10 +7,7 @@ using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
-using logicpos.Extensions;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
@@ -18,6 +15,9 @@ using LogicPOS.Modules.StockManagement;
 using LogicPOS.Settings;
 using LogicPOS.Shared;
 using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components;
+using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using System;
 using System.Collections;
@@ -27,7 +27,7 @@ using System.IO;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    internal class DialogAddArticleStock : BOBaseDialog
+    internal class DialogAddArticleStock : EditDialog
     {
         //UI Components Dialog
         private VBox _vbox;
@@ -84,8 +84,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             get { return _entryBoxNotes.EntryValidation.Text; }
         }
 
-        public DialogAddArticleStock(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pDialogFlags, DialogMode pDialogMode, Entity pXPGuidObject)
-            : base(pSourceWindow, pTreeView, DialogFlags.Modal, pDialogMode, pXPGuidObject)
+        public DialogAddArticleStock(Window parentWindow, XpoGridView pTreeView, DialogFlags pDialogFlags, DialogMode pDialogMode, Entity pXPGuidObject)
+            : base(parentWindow, pTreeView, DialogFlags.Modal, pDialogMode, pXPGuidObject)
         {
             //Init Local Vars
             string windowTitle = GeneralUtils.GetResourceByName("window_title_dialog_article_stock");
@@ -138,13 +138,23 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _entryBoxDocumentDate.ClosePopup += delegate { ValidateDialog(); };
 
                 //DocumentNumber
-                Color colorBaseDialogEntryBoxBackground = GeneralSettings.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
+                Color colorBaseDialogEntryBoxBackground = AppSettings.Instance.colorBaseDialogEntryBoxBackground;
                 string _fileIconListFinanceDocuments = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_toolbar_finance_document.png";
                 HBox hBoxDocument = new HBox(false, 0);
                 _entryBoxDocumentNumber = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_document_number"), KeyboardMode.Alfa, RegexUtils.RegexAlfaNumericExtended, false, true);
                 if (_initialDocumentNumber != string.Empty) _entryBoxDocumentNumber.EntryValidation.Text = _initialDocumentNumber;
                 _entryBoxDocumentNumber.EntryValidation.Changed += delegate { ValidateDialog(); };
-                TouchButtonIcon attachPDFButton = new TouchButtonIcon("attachPDFButton", colorBaseDialogEntryBoxBackground, _fileIconListFinanceDocuments, new Size(20, 20), 30, 30);
+                
+                IconButton attachPDFButton = new IconButton(
+                    new ButtonSettings
+                    {
+                        Name = "attachPDFButton",
+                        BackgroundColor = colorBaseDialogEntryBoxBackground,
+                        Icon = _fileIconListFinanceDocuments,
+                        IconSize = new Size(20, 20),
+                        ButtonSize = new Size(30, 30)
+                    });
+
                 attachPDFButton.Clicked += AttachPDFButton_Clicked;
                 ((_entryBoxDocumentNumber.Children[0] as VBox).Children[1] as HBox).PackEnd(attachPDFButton, false, false, 0);
                 //hBoxDocument.PackStart(_entryBoxDocumentNumber, true, true, 1);
@@ -173,7 +183,15 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _entryBoxSerialNumber1.EntryValidation.Changed += EntrySerialNumberValidation_Changed;
                 _entryBoxSerialNumber1.EntryValidation.FocusGrabbed += EntryValidation_FocusGrabbed;
                 _entryBoxSerialNumber1.Sensitive = true;
-                var compositeArticleBtn = new TouchButtonIcon("compositeArticleBtn", Color.FromArgb(255, 0, 0), "", new Size(15, 15), 20, 20);
+                var compositeArticleBtn = new IconButton(
+                    new ButtonSettings
+                    {
+                        Name = "compositeArticleBtn",
+                        BackgroundColor = Color.FromArgb(255, 0, 0),
+                        Text = "",
+                        IconSize = new Size(15, 15),
+                        ButtonSize = new Size(20, 20)
+                    });
 
 
                 //Price
@@ -410,7 +428,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //_entryBoxPrice1.Sensitive = _articleCollection.Count > 0;
             //_entryBoxSerialNumber1.Sensitive = _articleCollection.Count > 0;
             if (validateEntrys > 0) multiEntrysValidated = false;
-            buttonOk.Sensitive = (
+            ButtonOk.Sensitive = (
                 _entryBoxSelectSupplier.EntryValidation.Validated &&
                 _entryBoxDocumentDate.EntryValidation.Validated &&
                 _entryBoxDocumentNumber.EntryValidation.Validated &&
@@ -594,7 +612,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     {
                         pXPOEntry.Value = null;
 
-                        Alerts.Warning()
+                        SimpleAlerts.Warning()
                             .WithTitleResource("global_composite_article")
                             .WithMessageResource("dialog_message_composite_article_same")
                             .WithParent(this)
@@ -894,7 +912,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 entrySelected.Value = null;
 
-                Alerts.Warning()
+                SimpleAlerts.Warning()
                       .WithParent(this)
                       .WithTitleResource("global_composite_article")
                       .WithMessageResource("dialog_message_composite_article_same")
@@ -1003,7 +1021,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 {
                     entrySerialNumber.Validated = false;
                     entrySerialNumber.TooltipText = GeneralUtils.GetResourceByName("global_serial_number") + " já existe!";
-                    buttonOk.Sensitive = false;
+                    ButtonOk.Sensitive = false;
                     return;
                 }
                 else
@@ -1043,17 +1061,17 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     }
                     if (((((((entrySerialNumber.Parent.Parent.Parent.Parent as VBox).Children[1] as HBox).Children[1] as BOWidgetBox).Children[1] as XPOComboBox).Value == null) || (((((entrySerialNumber.Parent.Parent.Parent.Parent as VBox).Children[1] as HBox).Children[0] as BOWidgetBox).Children[1] as XPOComboBox).Value == null)) && !string.IsNullOrEmpty(entrySerialNumber.Text))
                     {
-                        buttonOk.Sensitive = false;
+                        ButtonOk.Sensitive = false;
                         entrySerialNumber.TooltipText = "Por favor insira um armazém primeiro";
                         return;
                     }
                     else
                     {
-                        buttonOk.Sensitive = true;
+                        ButtonOk.Sensitive = true;
                     }
                     if (!entrySerialNumber.Validated)
                     {
-                        buttonOk.Sensitive = false;
+                        ButtonOk.Sensitive = false;
                         return;
                     }
 
@@ -1135,7 +1153,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 var selectedWareHouseLocationCB = sender as XPOComboBox;
                 if (selectedWareHouseLocationCB.Value == null)
                 {
-                    buttonOk.Sensitive = false;
+                    ButtonOk.Sensitive = false;
                     return;
                 }
 
@@ -1165,7 +1183,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         /// <summary>
         /// Get ArticleStock Response Object
         /// </summary>
-        /// <param name="pSourceWindow"></param>
+        /// <param name="parentWindow"></param>
         /// <returns>PosArticleStockResponse</returns>
         public static ProcessArticleStockParameter GetProcessArticleStockParameter(DialogAddArticleStock pDialog)
         {
@@ -1202,11 +1220,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         }
 
         //attach PDF to DataBase
-        public static void AttachPDFtoStockMoviment(Window pSourceWindow)
+        public static void AttachPDFtoStockMoviment(Window parentWindow)
         {
 
             FileFilter fileFilterBackups = logicpos.Utils.GetFileFilterBackups();
-            PosFilePickerDialog dialog = new PosFilePickerDialog(pSourceWindow, DialogFlags.DestroyWithParent, fileFilterBackups, FileChooserAction.Open);
+            PosFilePickerDialog dialog = new PosFilePickerDialog(parentWindow, DialogFlags.DestroyWithParent, fileFilterBackups, FileChooserAction.Open);
             ResponseType response = (ResponseType)dialog.Run();
             if (response == ResponseType.Ok)
             {

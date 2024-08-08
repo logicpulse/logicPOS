@@ -16,14 +16,12 @@ using LogicPOS.Finance.Saft;
 using LogicPOS.Finance.Services;
 using LogicPOS.Globalization;
 using LogicPOS.Printing.Documents;
-using LogicPOS.Printing.Utility;
 using LogicPOS.Settings;
 using LogicPOS.Shared.Orders;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using static LogicPOS.Data.XPO.Utility.XPOUtility;
 
 //Class to Link Project LogicPos to FrameWork API, used to Show Common Messages for LogicPos
 
@@ -40,7 +38,7 @@ namespace logicpos
         //ProcessFinanceDocument
         //Use: DocumentFinanceMaster resultDocument = FrameworkCalls.ProcessFinanceDocument(SourceWindow, processFinanceDocumentParameter);
 
-        public static fin_documentfinancemaster PersistFinanceDocument(Window pSourceWindow, DocumentProcessingParameters pProcessFinanceDocumentParameter)
+        public static fin_documentfinancemaster PersistFinanceDocument(Window parentWindow, DocumentProcessingParameters pProcessFinanceDocumentParameter)
         {
             bool printDocument = true;
             fin_documentfinancemaster result = null;
@@ -48,7 +46,7 @@ namespace logicpos
             try
             {
                 //Protection to Check if SystemDate is < Last DocumentDate
-                ResponseType responseType = Utils.ShowMessageTouchCheckIfFinanceDocumentHasValidDocumentDate(pSourceWindow, pProcessFinanceDocumentParameter);
+                ResponseType responseType = Utils.ShowMessageTouchCheckIfFinanceDocumentHasValidDocumentDate(parentWindow, pProcessFinanceDocumentParameter);
                 if (responseType != ResponseType.Yes) return result;
 
                 fin_documentfinancemaster documentFinanceMaster = DocumentProcessingUtils.PersistFinanceDocument(pProcessFinanceDocumentParameter, true);
@@ -66,14 +64,14 @@ namespace logicpos
                             try
                             {
                                 _logger.Debug(string.Format("Send Document {0} to AT", documentFinanceMaster.DocumentNumber));
-                                SendDocumentToATWSDialog(pSourceWindow, documentFinanceMaster);
+                                SendDocumentToATWSDialog(parentWindow, documentFinanceMaster);
                             }
                             catch (Exception Ex)
                             {
                                 _logger.Error(Ex.Message);
                             }
 
-                            //SendDocumentToATWSDialog(pSourceWindow, documentFinanceMaster);
+                            //SendDocumentToATWSDialog(parentWindow, documentFinanceMaster);
                         }
                     }
                     /* TK013134 - Parking Ticket Module */
@@ -137,7 +135,7 @@ namespace logicpos
                     if (documentFinanceMaster.DocumentType.PrintRequestConfirmation)
                     {
                         responseType = Utils.ShowMessageTouch(
-                            pSourceWindow,
+                            parentWindow,
                             DialogFlags.Modal,
                             MessageType.Question,
                             ButtonsType.YesNo,
@@ -151,7 +149,7 @@ namespace logicpos
                     //Print Document
                     fin_documentfinancemaster documentMaster = (fin_documentfinancemaster)XPOSettings.Session.GetObjectByKey(typeof(fin_documentfinancemaster), documentFinanceMaster.Oid);
                     //documentFinanceMaster.Reload();
-                    if (printDocument) PrintFinanceDocument(pSourceWindow, documentMaster);
+                    if (printDocument) PrintFinanceDocument(parentWindow, documentMaster);
                 }
             }
             catch (Exception ex)
@@ -174,7 +172,7 @@ namespace logicpos
                         break;
                 }
                 Utils.ShowMessageBox(
-                  pSourceWindow,
+                  parentWindow,
                   DialogFlags.Modal,
                   _sizeDefaultWindowSize,
                   MessageType.Error,
@@ -216,7 +214,7 @@ namespace logicpos
         }
 
         //ATWS: Send Document to AT WebWebService : UI Part, With Retry Dialog, Calling above SendDocumentToATWS
-        public static bool SendDocumentToATWSDialog(Window pSourceWindow, fin_documentfinancemaster pDocumentFinanceMaster)
+        public static bool SendDocumentToATWSDialog(Window parentWindow, fin_documentfinancemaster pDocumentFinanceMaster)
         {
             //Send Document to AT WebServices - With Retry to notify user and force user to skip
             ServicesATSoapResult sendDocumentResult = new ServicesATSoapResult();
@@ -230,7 +228,7 @@ namespace logicpos
 
                 if (sendDocumentResult == null || sendDocumentResult.ReturnCode != "0")
                 {
-                    dialogResponse = Utils.ShowMessageBox(pSourceWindow, DialogFlags.Modal, new Size(700, 440), MessageType.Error, ButtonsType.YesNo, GeneralUtils.GetResourceByName("global_error"),
+                    dialogResponse = Utils.ShowMessageBox(parentWindow, DialogFlags.Modal, new Size(700, 440), MessageType.Error, ButtonsType.YesNo, GeneralUtils.GetResourceByName("global_error"),
                         string.Format(GeneralUtils.GetResourceByName("dialog_message_error_in_at_webservice"), sendDocumentResult.ReturnCode, sendDocumentResult.ReturnMessage)
                     );
                     /* IN009083 - returns true when WS call fails and user opts to do not retry */
@@ -302,7 +300,7 @@ namespace logicpos
 
 
         public static fin_documentfinancepayment PersistFinanceDocumentPayment(
-            Window pSourceWindow,
+            Window parentWindow,
             List<fin_documentfinancemaster> pInvoices,
             List<fin_documentfinancemaster> pCreditNotes,
             Guid pCustomer,
@@ -322,7 +320,7 @@ namespace logicpos
                     result = documentFinancePayment;
 
                     //Print Document
-                    PrintFinanceDocumentPayment(pSourceWindow, documentFinancePayment);
+                    PrintFinanceDocumentPayment(parentWindow, documentFinancePayment);
                 }
             }
             catch (DocumentProcessingValidationException ex)
@@ -339,7 +337,7 @@ namespace logicpos
                         break;
                 }
                 Utils.ShowMessageBox(
-                  pSourceWindow,
+                  parentWindow,
                   DialogFlags.Modal,
                   _sizeDefaultWindowSize,
                   MessageType.Error,
@@ -354,7 +352,7 @@ namespace logicpos
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //ExportSaftPt
 
-        public static string ExportSaft(Window pSourceWindow, ExportSaftPtMode pExportSaftPtMode)
+        public static string ExportSaft(Window parentWindow, ExportSaftPtMode pExportSaftPtMode)
         {
             string result = string.Empty;
             DateTime dateCurrent = XPOUtility.CurrentDateTimeAtomic();
@@ -365,20 +363,20 @@ namespace logicpos
                 case ExportSaftPtMode.WholeYear:
                     dateStart = new DateTime(dateCurrent.Year, 1, 1);
                     dateEnd = new DateTime(dateCurrent.Year, 12, 31);
-                    result = ExportSaft(pSourceWindow, dateStart, dateEnd);
+                    result = ExportSaft(parentWindow, dateStart, dateEnd);
                     break;
                 case ExportSaftPtMode.LastMonth:
                     dateStart = dateCurrent.AddMonths(-1);
                     dateStart = new DateTime(dateStart.Year, dateStart.Month, 1);
                     dateEnd = dateStart.AddMonths(1).AddSeconds(-1);
-                    result = ExportSaft(pSourceWindow, dateStart, dateEnd);
+                    result = ExportSaft(parentWindow, dateStart, dateEnd);
                     break;
                 case ExportSaftPtMode.Custom:
-                    PosDatePickerStartEndDateDialog dialog = new PosDatePickerStartEndDateDialog(pSourceWindow, DialogFlags.DestroyWithParent);
+                    PosDatePickerStartEndDateDialog dialog = new PosDatePickerStartEndDateDialog(parentWindow, DialogFlags.DestroyWithParent);
                     ResponseType response = (ResponseType)dialog.Run();
                     if (response == ResponseType.Ok)
                     {
-                        result = ExportSaft(pSourceWindow, dialog.DateStart, dialog.DateEnd);
+                        result = ExportSaft(parentWindow, dialog.DateStart, dialog.DateEnd);
                     }
                     dialog.Destroy();
                     break;
@@ -387,7 +385,7 @@ namespace logicpos
             return result;
         }
 
-        public static string ExportSaft(Window pSourceWindow, DateTime? pDateTimeStart, DateTime? pDateTimeEnd)
+        public static string ExportSaft(Window parentWindow, DateTime? pDateTimeStart, DateTime? pDateTimeEnd)
         {
             string result = string.Empty;
 
@@ -423,7 +421,7 @@ namespace logicpos
                 }
 
                 Utils.ShowMessageBox(
-                  pSourceWindow,
+                  parentWindow,
                   DialogFlags.Modal,
                   _sizeDefaultWindowSize,
                   MessageType.Info,
@@ -435,7 +433,7 @@ namespace logicpos
             catch (Exception ex)
             {
                 Utils.ShowMessageBox(
-                  pSourceWindow,
+                  parentWindow,
                   DialogFlags.Modal,
                   _sizeDefaultWindowSize,
                   MessageType.Error,
@@ -452,9 +450,9 @@ namespace logicpos
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //PrintFinanceDocument
 
-        public static bool PrintFinanceDocument(Window pSourceWindow, fin_documentfinancemaster pDocumentFinanceMaster)
+        public static bool PrintFinanceDocument(Window parentWindow, fin_documentfinancemaster pDocumentFinanceMaster)
         {
-            return PrintFinanceDocument(pSourceWindow, null, pDocumentFinanceMaster);
+            return PrintFinanceDocument(parentWindow, null, pDocumentFinanceMaster);
         }
 
         public static bool PrintFinanceDocument(
@@ -609,13 +607,13 @@ namespace logicpos
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //PrintFinanceDocumentPayment
 
-        public static bool PrintFinanceDocumentPayment(Window pSourceWindow, fin_documentfinancepayment pDocumentFinancePayment)
+        public static bool PrintFinanceDocumentPayment(Window parentWindow, fin_documentfinancepayment pDocumentFinancePayment)
         {
-            return PrintFinanceDocumentPayment(pSourceWindow, null, pDocumentFinancePayment);
+            return PrintFinanceDocumentPayment(parentWindow, null, pDocumentFinancePayment);
         }
 
         public static bool PrintFinanceDocumentPayment(
-            Window pSourceWindow,
+            Window parentWindow,
             PrinterDto printer,
             fin_documentfinancepayment pDocumentFinancePayment)
         {
@@ -623,7 +621,7 @@ namespace logicpos
 
             if (LicenseSettings.LicenceRegistered == false)
             {
-                Utils.ShowMessageBoxUnlicensedError(pSourceWindow, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, ResourceNames.PRINTING_DISABLED_MESSAGE));
+                Utils.ShowMessageBoxUnlicensedError(parentWindow, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, ResourceNames.PRINTING_DISABLED_MESSAGE));
                 return false;
             }
 
@@ -632,7 +630,7 @@ namespace logicpos
                 if (printer == null)
                 {
                     Utils.ShowMessageTouchTerminalWithoutAssociatedPrinter(
-                        pSourceWindow,
+                        parentWindow,
                         GeneralUtils.GetResourceByName("global_documentfinance_type_title_rc"));
 
                     return false;
@@ -663,7 +661,7 @@ namespace logicpos
                 {
                    
                     
-                    ResponseType responseType = Utils.ShowMessageTouch(pSourceWindow, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.YesNo, GeneralUtils.GetResourceByName("dialog_edit_DialogConfigurationPrintersType_tab1_label"), GeneralUtils.GetResourceByName("global_printer_choose_printer"));
+                    ResponseType responseType = Utils.ShowMessageTouch(parentWindow, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.YesNo, GeneralUtils.GetResourceByName("dialog_edit_DialogConfigurationPrintersType_tab1_label"), GeneralUtils.GetResourceByName("global_printer_choose_printer"));
 
                     if (responseType == ResponseType.Yes)
                     {
@@ -685,7 +683,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                Utils.ShowMessageTouchErrorPrintingTicket(pSourceWindow, printer, ex);
+                Utils.ShowMessageTouchErrorPrintingTicket(parentWindow, printer, ex);
             }
 
             return result;
@@ -694,13 +692,13 @@ namespace logicpos
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
         //Shared Method to call all other PrintTicketMethods to Check Licence and other Protections
-        public static bool SharedPrintTicket(Window pSourceWindow, sys_configurationprinters pPrinter, TicketType pTicketType)
+        public static bool SharedPrintTicket(Window parentWindow, sys_configurationprinters pPrinter, TicketType pTicketType)
         {
             bool result = false;
 
             if (LicenseSettings.LicenceRegistered == false)
             {
-                Utils.ShowMessageBoxUnlicensedError(pSourceWindow, GeneralUtils.GetResourceByName("global_printing_function_disabled"));
+                Utils.ShowMessageBoxUnlicensedError(parentWindow, GeneralUtils.GetResourceByName("global_printing_function_disabled"));
             }
             else
             {
@@ -727,7 +725,7 @@ namespace logicpos
                             default:
                                 break;
                         }
-                        Utils.ShowMessageTouchTerminalWithoutAssociatedPrinter(pSourceWindow, ticketTitle);
+                        Utils.ShowMessageTouchTerminalWithoutAssociatedPrinter(parentWindow, ticketTitle);
                     }
                     else
                     {
@@ -745,13 +743,13 @@ namespace logicpos
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //PrintTableTicket
 
-        public static bool PrintOrderRequest(Window pSourceWindow, sys_configurationprinters pPrinter, OrderMain pDocumentOrderMain, fin_documentorderticket orderTicket)
+        public static bool PrintOrderRequest(Window parentWindow, sys_configurationprinters pPrinter, OrderMain pDocumentOrderMain, fin_documentorderticket orderTicket)
         {
             bool result = false;
 
             try
             {
-                if (SharedPrintTicket(pSourceWindow, pPrinter, TicketType.TableOrder))
+                if (SharedPrintTicket(parentWindow, pPrinter, TicketType.TableOrder))
                 {
                     var printer=MappingUtils.GetPrinterDto(pPrinter);
                     var orderTicketDto = MappingUtils.GetPrintOrderTicketDto(orderTicket);
@@ -762,7 +760,7 @@ namespace logicpos
             catch (Exception ex)
             {
                 var printerDto = MappingUtils.GetPrinterDto(pPrinter);
-                Utils.ShowMessageTouchErrorPrintingTicket(pSourceWindow, printerDto, ex);
+                Utils.ShowMessageTouchErrorPrintingTicket(parentWindow, printerDto, ex);
             }
 
             return result;
@@ -771,14 +769,14 @@ namespace logicpos
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //PrintArticleRequest
 
-        public static bool PrintArticleRequest(Window pSourceWindow, fin_documentorderticket orderTicket)
+        public static bool PrintArticleRequest(Window parentWindow, fin_documentorderticket orderTicket)
         {
             bool result = false;
 
             try
             {
                 //Removed: Printer is always NULL, is defined in Ticket Article
-                //if (SharedPrintTicket(pSourceWindow, null, TicketType.ArticleOrder))
+                //if (SharedPrintTicket(parentWindow, null, TicketType.ArticleOrder))
                 //{
                 var orderTicketDto = MappingUtils.GetPrintOrderTicketDto(orderTicket);
                 result = LogicPOS.Printing.Utility.PrintingUtils.PrintArticleRequest(orderTicketDto);
@@ -786,7 +784,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                Utils.ShowMessageTouchErrorPrintingTicket(pSourceWindow, null, ex);
+                Utils.ShowMessageTouchErrorPrintingTicket(parentWindow, null, ex);
             }
 
             return result;
@@ -796,7 +794,7 @@ namespace logicpos
         //PrintWorkSessionMovement
 
         public static bool PrintWorkSessionMovement(
-            Window pSourceWindow, 
+            Window parentWindow, 
             sys_configurationprinters printerEntity, 
             PrintWorkSessionDto workSessionPeriod)
         {
@@ -805,7 +803,7 @@ namespace logicpos
 
             try
             {
-                if (SharedPrintTicket(pSourceWindow, printerEntity, TicketType.WorkSession))
+                if (SharedPrintTicket(parentWindow, printerEntity, TicketType.WorkSession))
                 {
                     var printerDto = MappingUtils.GetPrinterDto(printerEntity);
                     string workSessionMovementPrintingFileTemplate = XPOUtility.WorkSession.GetWorkSessionMovementPrintingFileTemplate();
@@ -820,7 +818,7 @@ namespace logicpos
             catch (Exception ex)
             {
                 var printer = MappingUtils.GetPrinterDto(printerEntity);
-                Utils.ShowMessageTouchErrorPrintingTicket(pSourceWindow, printer, ex);
+                Utils.ShowMessageTouchErrorPrintingTicket(parentWindow, printer, ex);
             }
 
             return result;
@@ -829,14 +827,14 @@ namespace logicpos
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //PrintCashDrawerOpenAndMoneyInOut
 
-        public static bool PrintCashDrawerOpenAndMoneyInOut(Window pSourceWindow, sys_configurationprinters pPrinter, string pTicketTitle, decimal pMovementAmount, decimal pTotalAmountInCashDrawer, string pMovementDescription)
+        public static bool PrintCashDrawerOpenAndMoneyInOut(Window parentWindow, sys_configurationprinters pPrinter, string pTicketTitle, decimal pMovementAmount, decimal pTotalAmountInCashDrawer, string pMovementDescription)
         {   var printer = MappingUtils.GetPrinterDto(pPrinter);
             bool result = false;
             sys_configurationprinterstemplates template = XPOUtility.GetEntityById<sys_configurationprinterstemplates>(PrintingSettings.CashDrawerMoneyMovementPrintingTemplateId);
 
             try
             {
-                if (SharedPrintTicket(pSourceWindow, pPrinter, TicketType.CashDrawer))
+                if (SharedPrintTicket(parentWindow, pPrinter, TicketType.CashDrawer))
                 {
                    
                     result = LogicPOS.Printing.Utility.PrintingUtils.PrintCashDrawerOpenAndMoneyInOut(printer, pTicketTitle, pMovementAmount, pTotalAmountInCashDrawer, pMovementDescription);
@@ -844,7 +842,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                Utils.ShowMessageTouchErrorPrintingTicket(pSourceWindow, printer, ex);
+                Utils.ShowMessageTouchErrorPrintingTicket(parentWindow, printer, ex);
             }
 
             return result;
@@ -862,7 +860,7 @@ namespace logicpos
         public static bool IsValidProtectedFile(string pFilePath, string pExtraMessage)
         {
             //Always valid if ProtectedFilesUse not Enabled and ProtectedFilesIgnoreProtection equal to true, this skip Validation
-            if (!POSSettings.ProtectedFilesUse && POSSettings.ProtectedFilesIgnoreProtection) return true;
+            if (!POSSettings.UseProtectedFiles && POSSettings.ProtectedFilesIgnoreProtection) return true;
 
             bool result = true;
 

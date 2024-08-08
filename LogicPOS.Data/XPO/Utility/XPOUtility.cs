@@ -484,7 +484,7 @@ namespace LogicPOS.Data.XPO.Utility
 
         public static void SystemNotification(Session xpoSession)
         {
-            string cultureFinancialRules = GeneralSettings.Settings["cultureFinancialRules"];
+            string cultureFinancialRules = AppSettings.Instance.cultureFinancialRules;
 
             uint ord = 1;
             sys_systemnotificationtype systemNotificationType;
@@ -509,61 +509,13 @@ namespace LogicPOS.Data.XPO.Utility
                 }
             };
 
-            //:::: Notification : RequestPasswordChange ::::
-            //Check existing Notification before Create
-            /* DISABLE Currently in Progress
-            systemNotificationType = (SystemNotificationType)pSession.GetObjectByKey(typeof(SystemNotificationType), SettingsApp.XpoOidSystemNotificationTypeFirstLoginRequestPasswordChange);
-            if (systemNotificationType != null)
-            {
-                criteriaOperator = CriteriaOperator.Parse(string.Format("NotificationType = '{0}' AND UserLastRead = '{1}'", SettingsApp.XpoOidSystemNotificationTypeFirstLoginRequestPasswordChange, XPOSettings.LoggedUser));
-                xpcSystemNotification = new XPCollection(pSession, typeof(SystemNotification), criteriaOperator);
-                //Create Notification
-                if (xpcSystemNotification.Count == 0)
-                {
-                    systemNotification = new SystemNotification(pSession);
-                    systemNotification.Ord = ord;
-                    systemNotification.NotificationType = systemNotificationType;
-                    systemNotification.Message = string.Format(systemNotificationType.Message, XPOSettings.LoggedUser.Login, XPOSettings.LoggedUser.Name);
-                    systemNotification.Save();
-                    ord++;
-                    if (debug) _logger.Debug(string.Format("Notification created: [{0}]", systemNotificationType.Designation));
-                }
-            };
-            */
-
-            //:::: Notification : ProprietaryTestMessage ::::
-            //Check existing Notification before Create
-            /*TEMP REMOVED FOR MediaNova
-            systemNotificationType = (SystemNotificationType)pSession.GetObjectByKey(typeof(SystemNotificationType), SettingsApp.XpoOidSystemNotificationTypeProprietaryTestMessage);
-            criteriaOperator = CriteriaOperator.Parse(string.Format("NotificationType = '{0}' AND UserTarget = '{1}'", SettingsApp.XpoOidSystemNotificationTypeProprietaryTestMessage, userProprietary));
-            xpcSystemNotification = new XPCollection(pSession, typeof(SystemNotification), criteriaOperator);
-            //Create Notification
-            if (xpcSystemNotification.Count == 0)
-            {
-                UserDetail user = (UserDetail)pSession.GetObjectByKey(typeof(UserDetail), new Guid(userProprietary));
-                systemNotification = new SystemNotification(pSession)
-                {
-                    Ord = ord,
-                    NotificationType = systemNotificationType,
-                    Message = string.Format(systemNotificationType.Message, user.Name),
-                    UserTarget = user
-                };
-                systemNotification.Save();
-                ord++;
-                if (debug) _logger.Debug(string.Format("Notification created: [{0}]", systemNotificationType.Designation));
-            }
-            */
-
-            //Financial Culture Notifications
-            //switch (LogicPOS.Settings.CultureSettings.CurrentCulture.ToString())
+           
             switch (cultureFinancialRules)
             {
                 case "pt-PT":
                     int defaultBackDaysForInvoice = NotificationSettings.XpoOidSystemNotificationDaysBackWhenFiltering;
 
-                    //:::: Notification : CurrentAccountDocumentsToInvoice ::::
-                    //ProcessFinanceDocumentToInvoice to Create Notification in Spool for CurrentAccount Documents
-                    //systemNotificationType = (SystemNotificationType)pSession.GetObjectByKey(typeof(SystemNotificationType), SettingsApp.XpoOidSystemNotificationTypeCurrentAccountDocumentsToInvoice);
+                  
                     systemNotification = ProcessFinanceDocumentToInvoice(xpoSession, NotificationSettings.XpoOidSystemNotificationTypeCurrentAccountDocumentsToInvoice, DocumentSettings.CurrentAccountInputId, "(Payed = 0 OR Payed IS NULL)", defaultBackDaysForInvoice);
                     if (systemNotification != null)
                     {
@@ -572,9 +524,7 @@ namespace LogicPOS.Data.XPO.Utility
 
                     };
 
-                    //:::: Notification : ConsignationInvoiceDocumentsToInvoice ::::
-                    //ProcessFinanceDocumentToInvoice to Create Notification in Spool for CurrentAccount Documents
-                    //systemNotificationType = (SystemNotificationType)pSession.GetObjectByKey(typeof(SystemNotificationType), SettingsApp.XpoOidSystemNotificationTypeConsignationInvoiceDocumentsToInvoice);
+             
                     systemNotification = ProcessFinanceDocumentToInvoice(xpoSession, NotificationSettings.XpoOidSystemNotificationTypeConsignationInvoiceDocumentsToInvoice, DocumentSettings.ConsignationInvoiceId, "(DocumentChild IS NULL)", defaultBackDaysForInvoice);
                     if (systemNotification != null)
                     {
@@ -583,8 +533,6 @@ namespace LogicPOS.Data.XPO.Utility
 
                     };
 
-                    //:::: Notification : SaftDocumentType.MovementOfGoodsToInvoice ::::
-                    //ProcessFinanceDocumentToInvoice to Create Notification in Spool for CurrentAccount Documents
                     systemNotification = ProcessFinanceDocumentToInvoice(xpoSession, NotificationSettings.XpoOidSystemNotificationTypeSaftDocumentTypeMovementOfGoods, SaftDocumentType.MovementOfGoods, "(DocumentChild IS NULL AND DocumentStatusStatus = 'N')", defaultBackDaysForInvoice);
                     if (systemNotification != null)
                     {
@@ -651,12 +599,6 @@ namespace LogicPOS.Data.XPO.Utility
             CriteriaOperator criteriaOperator = CriteriaOperator.Parse(filter);
             SortProperty sortProperty = new SortProperty("CreatedAt", SortingDirection.Ascending);
             XPCollection xpcDocumentFinanceMaster = new XPCollection(pSession, typeof(fin_documentfinancemaster), criteriaOperator, sortProperty);
-
-            // Debug Helper
-            //if (pSystemNotificationTypeGuid.Equals(SettingsApp.XpoOidSystemNotificationTypeSaftDocumentTypeMovementOfGoods))
-            //{
-            //    _logger.Debug("BREAK");
-            //}
 
             if (xpcDocumentFinanceMaster.Count > 0)
             {
@@ -736,10 +678,7 @@ namespace LogicPOS.Data.XPO.Utility
             DateTime dateTime = CurrentDateTimeAtomic();
             string executeSql = string.Format(@"SELECT Oid FROM sys_systemaudittype WHERE (Disabled IS NULL or Disabled  <> 1) AND Token = '{0}';", pAuditTypeToken);
 
-            //Check if has a Valid LoggedUser else Assign NULL to INSERT, usefull to log stuff when User is not Yet Logged
-            //string loggedUserOid = (pLoggedUser != null) ? string.Format("'{0}'", pLoggedUser.Oid.ToString()) : "NULL";
-
-
+            
             //Get auditType Guid from Query
             Guid guidAuditType = GetGuidFromQuery(executeSql);
 

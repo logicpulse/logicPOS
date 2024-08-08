@@ -3,9 +3,7 @@ using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
 using Gtk;
 using logicpos.App;
-using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Formatters;
-using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using System;
 using System.Collections.Generic;
 using LogicPOS.Globalization;
@@ -13,21 +11,22 @@ using LogicPOS.Settings;
 using LogicPOS.Shared.CustomDocument;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
+using LogicPOS.UI.Components;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
-    internal class TreeViewDocumentFinanceMaster : GenericTreeViewXPO
+    internal class TreeViewDocumentFinanceMaster : XpoGridView
     {
         //Public Parametless Constructor Required by Generics
         public TreeViewDocumentFinanceMaster() { }
 
         [Obsolete]
-        public TreeViewDocumentFinanceMaster(Window pSourceWindow)
-            : this(pSourceWindow, null, null, null) { }
+        public TreeViewDocumentFinanceMaster(Window parentWindow)
+            : this(parentWindow, null, null, null) { }
 
         //XpoMode
         [Obsolete]
-        public TreeViewDocumentFinanceMaster(Window pSourceWindow, Entity pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default)
+        public TreeViewDocumentFinanceMaster(Window parentWindow, Entity pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GridViewMode pGenericTreeViewMode = GridViewMode.Default, GridViewNavigatorMode navigatorMode = GridViewNavigatorMode.Default)
         {
             //Init Vars
             Type xpoGuidObjectType = typeof(fin_documentfinancemaster);
@@ -37,30 +36,30 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             Type typeDialogClass = (pDialogType != null) ? pDialogType : null;
 
             //Config
-            int fontGenericTreeViewColumn = Convert.ToInt16(GeneralSettings.Settings["fontGenericTreeViewColumn"]);
+            int fontGenericTreeViewColumn = Convert.ToInt16(AppSettings.Instance.fontGenericTreeViewColumn);
 
             //Configure columnProperties
-            List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
+            List<GridViewColumnProperty> columnProperties = new List<GridViewColumnProperty>
             {
-                new GenericTreeViewColumnProperty("Date") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_document_date"), MinWidth = 140 },
-                new GenericTreeViewColumnProperty("DocumentNumber") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_document_number"), MinWidth = 120 }, /* IN009067 */
+                new GridViewColumnProperty("Date") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_document_date"), MinWidth = 140 },
+                new GridViewColumnProperty("DocumentNumber") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_document_number"), MinWidth = 120 }, /* IN009067 */
                 //#if (DEBUG)
-                new GenericTreeViewColumnProperty("DocumentStatusStatus") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_document_status"), MinWidth = 50, MaxWidth = 50 },
+                new GridViewColumnProperty("DocumentStatusStatus") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_document_status"), MinWidth = 50, MaxWidth = 50 },
                 //#endif
-                new GenericTreeViewColumnProperty("EntityName")
+                new GridViewColumnProperty("EntityName")
                 {
                     Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_entity"),
                     MinWidth = 260,
                     MaxWidth = 260,
                     FormatProvider = new DecryptFormatter() /* IN009075 - FormatterDecrypt() created */
                 }, /* IN009067 */
-                new GenericTreeViewColumnProperty("EntityFiscalNumber")
+                new GridViewColumnProperty("EntityFiscalNumber")
                 {
                     Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_fiscal_number"),
                     MinWidth = 100,
                     FormatProvider = new DecryptFormatter() /* IN009075 - FormatterDecrypt() created */
                 }, /* IN009067 */
-                new GenericTreeViewColumnProperty("TotalFinal")
+                new GridViewColumnProperty("TotalFinal")
                 { /* IN009166 */
                     Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_total_final"),
                     MinWidth = 100,
@@ -118,7 +117,7 @@ GROUP BY
 
 ";
             */
-            columnProperties.Add(new GenericTreeViewColumnProperty("TotalOfCredit")
+            columnProperties.Add(new GridViewColumnProperty("TotalOfCredit")
             {
                 Query = queryForTotalOfCredit,
                 Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_document_finance_column_total_credit_rc_nc_based"),
@@ -262,7 +261,7 @@ FROM
 	fin_documentfinancemaster DFM
 WHERE DFM.Oid =  '{stringFormatIndexZero}';
 ";
-            columnProperties.Add(new GenericTreeViewColumnProperty("TotalDebit")
+            columnProperties.Add(new GridViewColumnProperty("TotalDebit")
             {
                 //This Query Exists 3 Locations, Find it and change in all Locations - Required "GROUP BY fmaOid,fmaTotalFinal" to work with SQLServer
                 Query = queryForTotalDebit,
@@ -281,7 +280,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
 
             /* IN009067 - Adding RelatedDocuments column */
             string relatedDocumentsQuery = logicpos.DataLayer.GenerateRelatedDocumentsQuery();
-            columnProperties.Add(new GenericTreeViewColumnProperty("RelatedDocuments")
+            columnProperties.Add(new GridViewColumnProperty("RelatedDocuments")
             {
                 Query = relatedDocumentsQuery,
                 Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_document_finance_column_related_doc"),
@@ -311,10 +310,10 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
 
             //Call Base Initializer
             base.InitObject(
-              pSourceWindow,                  //Pass parameter 
+              parentWindow,                  //Pass parameter 
               defaultValue,                   //Pass parameter
               pGenericTreeViewMode,           //Pass parameter
-              pGenericTreeViewNavigatorMode,  //Pass parameter
+              navigatorMode,  //Pass parameter
               columnProperties,               //Created Here
               xpoCollection,                  //Created Here
               typeDialogClass                 //Created Here

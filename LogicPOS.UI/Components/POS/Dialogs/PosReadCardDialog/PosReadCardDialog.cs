@@ -1,26 +1,25 @@
 ﻿using Gtk;
 using logicpos.Classes.Gui.Gtk.Widgets;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using System;
 using System.Drawing;
-using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.Keyboard;
-using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Utility;
+using LogicPOS.UI.Dialogs;
+using LogicPOS.UI.Buttons;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    internal partial class PosReadCardDialog : PosBaseDialog
+    internal partial class PosReadCardDialog : BaseDialog
     {
-        private readonly TouchButtonIconWithText _buttonOk;
-        private readonly TouchButtonIconWithText _buttonCancel;
+        private readonly IconButtonWithText _buttonOk;
+        private readonly IconButtonWithText _buttonCancel;
         private readonly EntryBoxValidation _entryBoxMovementDescription;
 
         public string CardNumber { get; set; }
 
-        public PosReadCardDialog(Window pSourceWindow, DialogFlags pDialogFlags)
-            : base(pSourceWindow, pDialogFlags)
+        public PosReadCardDialog(Window parentWindow, DialogFlags pDialogFlags)
+            : base(parentWindow, pDialogFlags)
         {
             //Settings
             string regexAlfaNumericExtended = RegexUtils.RegexAlfaNumericExtended;
@@ -43,8 +42,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             fixedContent.Put(vbox, 0, 0);
 
             //ActionArea Buttons
-            _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);
-            _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
+            _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
+            _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
 
             //ActionArea
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons
@@ -57,7 +56,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             this.KeyReleaseEvent += PosReadCardDialog_KeyReleaseEvent;
             //Init Object
-            this.InitObject(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, fixedContent, actionAreaButtons);
+            this.Initialize(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, fixedContent, actionAreaButtons);
         }
 
         private void PosReadCardDialog_KeyReleaseEvent(object o, KeyReleaseEventArgs args)

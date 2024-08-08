@@ -10,7 +10,6 @@ using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Finance.DocumentProcessing;
-using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Shared.Article;
 using LogicPOS.Shared.CustomDocument;
@@ -73,12 +72,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         private readonly cfg_configurationcurrency _defaultValueConfigurationCurrency;
 
         //Constructor
-        public DocumentFinanceDialogPage1(Window pSourceWindow, string pPageName)
-            : this(pSourceWindow, pPageName, "", null, true) { }
-        public DocumentFinanceDialogPage1(Window pSourceWindow, string pPageName, Widget pWidget)
-            : this(pSourceWindow, pPageName, "", pWidget, true) { }
-        public DocumentFinanceDialogPage1(Window pSourceWindow, string pPageName, string pPageIcon, Widget pWidget, bool pEnabled = true)
-            : base(pSourceWindow, pPageName, pPageIcon, pWidget, pEnabled)
+        public DocumentFinanceDialogPage1(Window parentWindow, string pPageName)
+            : this(parentWindow, pPageName, "", null, true) { }
+        public DocumentFinanceDialogPage1(Window parentWindow, string pPageName, Widget pWidget)
+            : this(parentWindow, pPageName, "", pWidget, true) { }
+        public DocumentFinanceDialogPage1(Window parentWindow, string pPageName, string pPageIcon, Widget pWidget, bool pEnabled = true)
+            : base(parentWindow, pPageName, pPageIcon, pWidget, pEnabled)
         {
             //Init private vars References
             _pagePad = (_sourceWindow as PosDocumentFinanceDialog).PagePad;
@@ -180,7 +179,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 }
                 Validate();
                 //Update Dialog Title with Total
-                _posDocumentFinanceDialog.WindowTitle = _posDocumentFinanceDialog.GetPageTitle(_pagePad.CurrentPageIndex);
+                _posDocumentFinanceDialog.WindowSettings.WindowTitle.Text = _posDocumentFinanceDialog.GetPageTitle(_pagePad.CurrentPageIndex);
             };
 
             //DocumentFinanceSource
@@ -409,7 +408,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 EntryBoxSelectSourceDocumentFinance.CriteriaOperator = GetDocumentFinanceTypeSourceDocumentCriteria();
 
                 //Update Dialog Title
-                _posDocumentFinanceDialog.WindowTitle = _posDocumentFinanceDialog.GetPageTitle(_pagePad.CurrentPageIndex);
+                _posDocumentFinanceDialog.WindowSettings.WindowTitle.Text = _posDocumentFinanceDialog.GetPageTitle(_pagePad.CurrentPageIndex);
             }
             catch (Exception ex)
             {
@@ -775,7 +774,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 //Required to initialize ArticleBag from Treeview
                 (_pagePad.Pages[2] as DocumentFinanceDialogPage3).ArticleBag = _posDocumentFinanceDialog.GetArticleBag();
                 //Update Dialog Title with Total
-                _posDocumentFinanceDialog.WindowTitle = _posDocumentFinanceDialog.GetPageTitle(_pagePad.CurrentPageIndex);
+                _posDocumentFinanceDialog.WindowSettings.WindowTitle.Text = _posDocumentFinanceDialog.GetPageTitle(_pagePad.CurrentPageIndex);
             }
             catch (Exception ex)
             {

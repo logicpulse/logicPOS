@@ -2,6 +2,8 @@
 {
     internal enum NullBoolean
     {
-        Null, True, False
+        Null, 
+        True,
+        False
     }
 }

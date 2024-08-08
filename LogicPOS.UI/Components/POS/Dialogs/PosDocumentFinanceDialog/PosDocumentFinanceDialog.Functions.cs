@@ -49,7 +49,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         else
                         {
                             //Proccess Document
-                            fin_documentfinancemaster resultDocument = FrameworkCalls.PersistFinanceDocument(_sourceWindow, processFinanceDocumentParameter);
+                            fin_documentfinancemaster resultDocument = FrameworkCalls.PersistFinanceDocument(WindowSettings.Source,
+                                                                                                             processFinanceDocumentParameter);
+
                             //If Errors Occurs, return null Document, Keep Running until user cancel or a Valid Document is Returned
                             if (resultDocument == null) this.Run();
                         }
@@ -66,7 +68,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 if (_pagePad3.ArticleBag != null && _pagePad3.ArticleBag.Count > 0)
                 {
-                    ResponseType response = logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Question, ButtonsType.YesNo, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_message_dialog"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_finance_dialog_confirm_cancel"));
+                    ResponseType response = logicpos.Utils.ShowMessageTouch(WindowSettings.Source, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Question, ButtonsType.YesNo, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_message_dialog"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_finance_dialog_confirm_cancel"));
                     if (response == ResponseType.No)
                     {
                         //Keep Running
@@ -121,7 +123,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
 
                 List<DataRow> dataRows = new List<DataRow>();
-                foreach (DataRow item in _pagePad3.TreeViewArticles.DataSource.Rows)
+                foreach (DataRow item in _pagePad3.TreeViewArticles.Entities.Rows)
                 {
                     article = (item["Article.Code"] as fin_article);
                     if (article != null && article.UniqueArticles)
@@ -133,7 +135,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             var splitArticleSerialNumber = item["SerialNumber"].ToString().Split(';');
                             for (int i = 0; i < splitArticleWareHouse.Length; i++)
                             {
-                                DataRow newRow = _pagePad3.TreeViewArticles.DataSource.NewRow();
+                                DataRow newRow = _pagePad3.TreeViewArticles.Entities.NewRow();
                                 for (int j = 0; j < item.ItemArray.Length; j++)
                                 {
                                     newRow[j] = item[j];
@@ -152,16 +154,16 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 }
                 if (dataRows.Count > 0)
                 {
-                    _pagePad3.TreeViewArticles.DataSource.Rows.Clear();
+                    _pagePad3.TreeViewArticles.Entities.Rows.Clear();
                     foreach (var items in dataRows)
                     {
-                        _pagePad3.TreeViewArticles.DataSource.Rows.Add(items);
+                        _pagePad3.TreeViewArticles.Entities.Rows.Add(items);
                     }
                 }
             }
 
 
-            foreach (DataRow item in _pagePad3.TreeViewArticles.DataSource.Rows)
+            foreach (DataRow item in _pagePad3.TreeViewArticles.Entities.Rows)
             {
                 article = (item["Article.Code"] as fin_article);
                 configurationVatRate = (item["ConfigurationVatRate.Value"] as fin_configurationvatrate);
@@ -277,7 +279,12 @@ _pagePad2.EntryBoxCustomerEmail.EntryValidation.Text,
                 if (resultObject.GetType() == typeof(ConstraintViolationException))
                 {
                     Exception ex = (Exception)resultObject;
-                    ResponseType response = logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Warning, ButtonsType.Close, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_exception_error"), ex.InnerException.Message);
+                    ResponseType response = logicpos.Utils.ShowMessageTouch(WindowSettings.Source,
+                                                                            DialogFlags.DestroyWithParent | DialogFlags.Modal,
+                                                                            MessageType.Warning,
+                                                                            ButtonsType.Close,
+                                                                            CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_exception_error"),
+                                                                            ex.InnerException.Message);
                 }
                 customer = null;
             }
@@ -410,38 +417,32 @@ _pagePad2.EntryBoxCustomerEmail.EntryValidation.Text,
             bool result = true;
             ArticleBag articleBag = GetArticleBag();
 
-            try
+            //Protection to prevent Exceed Customer CardCredit
+            if (
+                //Can be null if not in a Payable DocumentType
+                _pagePad1.EntryBoxSelectConfigurationPaymentMethod.Value != null
+                && _pagePad1.EntryBoxSelectConfigurationPaymentMethod.Value.Token == "CUSTOMER_CARD"
+                && articleBag.TotalFinal > _pagePad2.EntryBoxSelectCustomerName.Value.CardCredit
+            )
             {
-                //Protection to prevent Exceed Customer CardCredit
-                if (
-                    //Can be null if not in a Payable DocumentType
-                    _pagePad1.EntryBoxSelectConfigurationPaymentMethod.Value != null
-                    && _pagePad1.EntryBoxSelectConfigurationPaymentMethod.Value.Token == "CUSTOMER_CARD"
-                    && articleBag.TotalFinal > _pagePad2.EntryBoxSelectCustomerName.Value.CardCredit
-                )
-                {
-                    logicpos.Utils.ShowMessageTouch(
-                        this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"),
-                        string.Format(
-                            CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_value_exceed_customer_card_credit"),
-                            LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_pagePad2.EntryBoxSelectCustomerName.Value.CardCredit, XPOSettings.ConfigurationSystemCurrency.Acronym),
-                            LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(articleBag.TotalFinal, XPOSettings.ConfigurationSystemCurrency.Acronym)
-                        )
-                    );
-                    result = false;
-                }
+                logicpos.Utils.ShowMessageTouch(
+                    this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"),
+                    string.Format(
+                        CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_value_exceed_customer_card_credit"),
+                        LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_pagePad2.EntryBoxSelectCustomerName.Value.CardCredit, XPOSettings.ConfigurationSystemCurrency.Acronym),
+                        LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(articleBag.TotalFinal, XPOSettings.ConfigurationSystemCurrency.Acronym)
+                    )
+                );
+                result = false;
+            }
 
-                //Protection to Prevent Recharge Customer Card with Invalid User (User without Card or FinalConsumer...)
-                if (result && !DocumentProcessingUtils.IsCustomerCardValidForArticleBag(articleBag, _pagePad2.EntryBoxSelectCustomerName.Value))
-                {
-                    logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_invalid_customer_card_detected"));
-                    result = false;
-                }
-            }
-            catch (Exception ex)
+            //Protection to Prevent Recharge Customer Card with Invalid User (User without Card or FinalConsumer...)
+            if (result && !DocumentProcessingUtils.IsCustomerCardValidForArticleBag(articleBag, _pagePad2.EntryBoxSelectCustomerName.Value))
             {
-                _logger.Error(ex.Message, ex);
+                logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_invalid_customer_card_detected"));
+                result = false;
             }
+
 
             return result;
         }

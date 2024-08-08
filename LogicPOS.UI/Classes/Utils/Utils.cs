@@ -5,16 +5,11 @@ using Gtk;
 using logicpos.App;
 using logicpos.Classes.Enums;
 using logicpos.Classes.Enums.App;
-using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
-using logicpos.Classes.Gui.Gtk.Widgets;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Logic.Others;
-using logicpos.Extensions;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
@@ -24,11 +19,17 @@ using LogicPOS.Globalization;
 using LogicPOS.Modules;
 using LogicPOS.Persistence.Services;
 using LogicPOS.Settings;
+using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components;
+using LogicPOS.UI.Components.Accordions;
+using LogicPOS.UI.Components.BackOffice.Windows;
+using LogicPOS.UI.Dialogs;
+using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Configuration;
 using System.Diagnostics;
 using System.Drawing;
@@ -44,149 +45,86 @@ using System.Threading;
 
 namespace logicpos
 {
-    internal class Utils
+    internal static class Utils
     {
         private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
-        private readonly Hashtable _commands = new Hashtable();
-
-        public Dictionary<string, AccordionNode> AccordionChildDocumentsTemp { get; set; } = new Dictionary<string, AccordionNode>();
-
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //ShowMessage Non Touch
-
-      
-
-       
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //ShowMessage Touch
 
         //Touch Dialog
-        public static ResponseType ShowMessageTouch(Window pSourceWindow, Gtk.DialogFlags pDialogFlags, MessageType pMessageType, ButtonsType pButtonsType, string pWindowTitle, string pMessage)
+        public static ResponseType ShowMessageTouch(Window parentWindow, Gtk.DialogFlags pDialogFlags, MessageType pMessageType, ButtonsType pButtonsType, string pWindowTitle, string pMessage)
         {
             //Default Size
             Size size = new Size(600, 400);
-            return ShowMessageBox(pSourceWindow, pDialogFlags, size, pMessageType, pButtonsType, pWindowTitle, pMessage);
+            return ShowMessageBox(parentWindow, pDialogFlags, size, pMessageType, pButtonsType, pWindowTitle, pMessage);
         }
 
-        public static ResponseType ShowMessageBox(Window pSourceWindow, Gtk.DialogFlags pDialogFlags, Size pSize, MessageType pMessageType, ButtonsType pButtonsType, string pWindowTitle, string pMessage)
+        public static ResponseType ShowMessageBox(Window parentWindow,
+                                                  DialogFlags flags,
+                                                  Size size,
+                                                  MessageType messageType,
+                                                  ButtonsType buttonsType,
+                                                  string title,
+                                                  string message)
         {
-            //Settings
-            Color colorBaseDialogActionAreaButtonBackground = GeneralSettings.Settings["colorBaseDialogActionAreaButtonBackground"].StringToColor();
-            Color colorBaseDialogActionAreaButtonFont = GeneralSettings.Settings["colorBaseDialogActionAreaButtonFont"].StringToColor();
-            Size sizeBaseDialogActionAreaButtonIcon = StringToSize(GeneralSettings.Settings["sizeBaseDialogActionAreaButtonIcon"]);
-            Size sizeBaseDialogActionAreaButton = StringToSize(GeneralSettings.Settings["sizeBaseDialogActionAreaButton"]);
-            string fontBaseDialogActionAreaButton = GeneralSettings.Settings["fontBaseDialogActionAreaButton"];
-            //Images
-            string fileImageDialogBaseMessageTypeImage = GeneralSettings.Settings["fileImageDialogBaseMessageTypeImage"];
-            string fileImageDialogBaseMessageTypeIcon = GeneralSettings.Settings["fileImageDialogBaseMessageTypeIcon"];
-            //Files
-            string fileActionOK = PathsSettings.ImagesFolderLocation + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
-            string fileActionCancel = PathsSettings.ImagesFolderLocation + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png";
-            string fileActionYes = PathsSettings.ImagesFolderLocation + @"Icons\Dialogs\icon_pos_dialog_action_yes.png";
-            string fileActionNo = PathsSettings.ImagesFolderLocation + @"Icons\Dialogs\icon_pos_dialog_action_no.png";
-            string fileActionClose = PathsSettings.ImagesFolderLocation + @"Icons\Dialogs\icon_pos_dialog_action_close.png";
+            var alertSettings = new CustomAlertSettings();
+            var alertButtons = new CustomAlertButtons(alertSettings);
+
             //Init Local Vars
             string fileImageDialog, fileImageWindowIcon;
-            ResponseType resultResponse = ResponseType.None;
+            ResponseType dialogResponse = ResponseType.None;
 
-            //Prepara ActionArea and Buttons
-            ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
-            //Init Buttons
-            TouchButtonIconWithText buttonOk = new TouchButtonIconWithText("touchButtonOk_DialogActionArea", colorBaseDialogActionAreaButtonBackground, GeneralUtils.GetResourceByName("global_button_label_ok"), fontBaseDialogActionAreaButton, colorBaseDialogActionAreaButtonFont, fileActionOK, sizeBaseDialogActionAreaButtonIcon, sizeBaseDialogActionAreaButton.Width, sizeBaseDialogActionAreaButton.Height);
-            TouchButtonIconWithText buttonCancel = new TouchButtonIconWithText("touchButtonCancel_DialogActionArea", colorBaseDialogActionAreaButtonBackground, GeneralUtils.GetResourceByName("global_button_label_cancel"), fontBaseDialogActionAreaButton, colorBaseDialogActionAreaButtonFont, fileActionCancel, sizeBaseDialogActionAreaButtonIcon, sizeBaseDialogActionAreaButton.Width, sizeBaseDialogActionAreaButton.Height);
-            TouchButtonIconWithText buttonYes = new TouchButtonIconWithText("touchButtonYes_DialogActionArea", colorBaseDialogActionAreaButtonBackground, GeneralUtils.GetResourceByName("global_button_label_yes"), fontBaseDialogActionAreaButton, colorBaseDialogActionAreaButtonFont, fileActionYes, sizeBaseDialogActionAreaButtonIcon, sizeBaseDialogActionAreaButton.Width, sizeBaseDialogActionAreaButton.Height);
-            TouchButtonIconWithText buttonNo = new TouchButtonIconWithText("touchButtonNo_DialogActionArea", colorBaseDialogActionAreaButtonBackground, GeneralUtils.GetResourceByName("global_button_label_no"), fontBaseDialogActionAreaButton, colorBaseDialogActionAreaButtonFont, fileActionNo, sizeBaseDialogActionAreaButtonIcon, sizeBaseDialogActionAreaButton.Width, sizeBaseDialogActionAreaButton.Height);
-            TouchButtonIconWithText buttonClose = new TouchButtonIconWithText("touchButtonClose_DialogActionArea", colorBaseDialogActionAreaButtonBackground, GeneralUtils.GetResourceByName("global_button_label_close"), fontBaseDialogActionAreaButton, colorBaseDialogActionAreaButtonFont, fileActionClose, sizeBaseDialogActionAreaButtonIcon, sizeBaseDialogActionAreaButton.Width, sizeBaseDialogActionAreaButton.Height);
+            ActionAreaButtons actionAreaButtons = alertButtons.GetActionAreaButtons(buttonsType);
 
-            //Perpare ActionAreaButtons
-            switch (pButtonsType)
+            fileImageDialog = alertSettings.GetDialogImage(messageType);
+            fileImageWindowIcon = alertSettings.GetDialogIcon(messageType);
+
+            CustomAlert dialog = new CustomAlert(parentWindow,
+                                                 flags,
+                                                 size,
+                                                 title,
+                                                 message,
+                                                 actionAreaButtons,
+                                                 fileImageWindowIcon,
+                                                 fileImageDialog);
+
+            dialog.HideCloseButton();
+
+            dialogResponse = (ResponseType)dialog.Run();
+
+            if (dialogResponse != ResponseType.Apply)
             {
-                case ButtonsType.Ok:
-                    actionAreaButtons.Add(new ActionAreaButton(buttonOk, ResponseType.Ok));
-                    break;
-                case ButtonsType.Cancel:
-                    actionAreaButtons.Add(new ActionAreaButton(buttonCancel, ResponseType.Cancel));
-                    break;
-                case ButtonsType.OkCancel:
-                    actionAreaButtons.Add(new ActionAreaButton(buttonOk, ResponseType.Ok));
-                    actionAreaButtons.Add(new ActionAreaButton(buttonCancel, ResponseType.Cancel));
-                    break;
-                case ButtonsType.YesNo:
-                    actionAreaButtons.Add(new ActionAreaButton(buttonYes, ResponseType.Yes));
-                    actionAreaButtons.Add(new ActionAreaButton(buttonNo, ResponseType.No));
-                    break;
-                case ButtonsType.Close:
-                    actionAreaButtons.Add(new ActionAreaButton(buttonClose, ResponseType.Close));
-                    break;
-                case ButtonsType.None:
-                    break;
-                default:
-                    break;
+                dialog.Destroy();
             }
 
-            //Prepare Images
-            string messageType = Enum.GetName(typeof(MessageType), pMessageType).ToLower();
-
-            if (messageType != string.Empty)
-            {
-                fileImageDialog = string.Format(fileImageDialogBaseMessageTypeImage, messageType);
-                fileImageWindowIcon = string.Format(fileImageDialogBaseMessageTypeIcon, messageType);
-            }
-            else
-            {
-                fileImageDialog = string.Empty;
-                fileImageWindowIcon = string.Empty;
-            }
-
-            //Prepare Dialog
-            PosMessageDialog dialog = new PosMessageDialog(pSourceWindow, pDialogFlags, pSize, pWindowTitle, pMessage, actionAreaButtons, fileImageWindowIcon, fileImageDialog);
-            //Hide WindowTitleCloseButton, Force user to use buttons
-            dialog.WindowTitleCloseButton = false;
-
-            //Call Dialog and Return Result
-            try
-            {
-                resultResponse = (ResponseType)dialog.Run();
-                return resultResponse;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-                return resultResponse;
-            }
-            finally
-            {
-                if (resultResponse != ResponseType.Apply) { dialog.Destroy(); }
-            }
+            return dialogResponse;
         }
 
         internal static ResponseType ShowMessageTouchErrorPrintingTicket(
-            Gtk.Window pSourceWindow,
+            Gtk.Window parentWindow,
             PrinterDto printer,
             Exception pEx)
         {
             //Protection when Printer is Null, ex printing Ticket Articles (Printer is Assign in Article)
             string printerDesignation = (printer != null) ? printer.Designation : "NULL";
             string printerNetworkName = (printer != null) ? printer.NetworkName : "NULL";
-            return ShowMessageBox(pSourceWindow, DialogFlags.Modal, new Size(800, 400), MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"), string.Format(GeneralUtils.GetResourceByName("dialog_message_error_printing_ticket"), printerDesignation, printerNetworkName, pEx.Message));
+            return ShowMessageBox(parentWindow, DialogFlags.Modal, new Size(800, 400), MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"), string.Format(GeneralUtils.GetResourceByName("dialog_message_error_printing_ticket"), printerDesignation, printerNetworkName, pEx.Message));
         }
 
-        public static bool ShowMessageTouchRequiredValidPrinter(Window pSourceWindow, sys_configurationprinters pPrinter)
+        public static bool ShowMessageTouchRequiredValidPrinter(Window parentWindow, sys_configurationprinters pPrinter)
         {
             bool result = pPrinter == null && TerminalSettings.LoggedTerminal.ThermalPrinter == null;
 
             if (result)
             {
-                ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_information"), GeneralUtils.GetResourceByName("dialog_message_required_valid_printer"));
+                ShowMessageTouch(parentWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_information"), GeneralUtils.GetResourceByName("dialog_message_required_valid_printer"));
             }
 
             return result;
         }
 
-        public static void ShowMessageTouchTerminalWithoutAssociatedPrinter(Window pSourceWindow, string pDocumentType)
+        public static void ShowMessageTouchTerminalWithoutAssociatedPrinter(Window parentWindow, string pDocumentType)
         {
             if (
                 (
@@ -195,29 +133,29 @@ namespace logicpos
                 && GlobalApp.Notifications["SHOW_PRINTER_UNDEFINED"] == true
             )
             {
-                ResponseType responseType = ShowMessageBox(pSourceWindow, DialogFlags.Modal, new Size(550, 400), MessageType.Question, ButtonsType.YesNo, GeneralUtils.GetResourceByName("global_information")
+                ResponseType responseType = ShowMessageBox(parentWindow, DialogFlags.Modal, new Size(550, 400), MessageType.Question, ButtonsType.YesNo, GeneralUtils.GetResourceByName("global_information")
                     , string.Format(GeneralUtils.GetResourceByName("dialog_message_show_printer_undefined_on_print"), pDocumentType)
                 );
                 if (responseType == ResponseType.No) GlobalApp.Notifications["SHOW_PRINTER_UNDEFINED"] = false;
             }
         }
 
-        public static void ShowMessageTouchErrorRenderTheme(Window pSourceWindow, string pErrorMessage)
+        public static void ShowMessageTouchErrorRenderTheme(Window parentWindow, string pErrorMessage)
         {
             string errorMessage = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, ResourceNames.APP_ERROR_RENDERING_THEME), POSSettings.FileTheme, pErrorMessage);
-            ShowMessageBox(pSourceWindow, DialogFlags.Modal, new Size(600, 500), MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"), errorMessage);
+            ShowMessageBox(parentWindow, DialogFlags.Modal, new Size(600, 500), MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"), errorMessage);
             Environment.Exit(0);
         }
 
         public static void ShowMessageBoxUnlicensedError(
-            Window pSourceWindow,
+            Window parentWindow,
             string pErrorMessage)
         {
             string errorMessage = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, ResourceNames.APP_ERROR_APPLICATION_UNLICENCED_FUNCTION_DISABLED), pErrorMessage);
-            ShowMessageBox(pSourceWindow, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"), errorMessage);
+            ShowMessageBox(parentWindow, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"), errorMessage);
         }
 
-        public static ResponseType ShowMessageTouchCheckIfFinanceDocumentHasValidDocumentDate(Window pSourceWindow, DocumentProcessingParameters pParameters)
+        public static ResponseType ShowMessageTouchCheckIfFinanceDocumentHasValidDocumentDate(Window parentWindow, DocumentProcessingParameters pParameters)
         {
             //Default is Yes
             ResponseType result = ResponseType.Yes;
@@ -253,7 +191,7 @@ namespace logicpos
                 //Check if DocumentDate is greater than dateLastDocumentFromSerie (If Defined) else if is First Document in Series Skip
                 if (pParameters.DocumentDateTime < dateLastDocumentFromSerie && dateLastDocumentFromSerie != DateTime.MinValue)
                 {
-                    result = ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Question, ButtonsType.Close, GeneralUtils.GetResourceByName("global_warning"), GeneralUtils.GetResourceByName("dialog_message_systementry_is_less_than_last_finance_document_series"));
+                    result = ShowMessageTouch(parentWindow, DialogFlags.Modal, MessageType.Question, ButtonsType.Close, GeneralUtils.GetResourceByName("global_warning"), GeneralUtils.GetResourceByName("dialog_message_systementry_is_less_than_last_finance_document_series"));
                 }
                 else
                 {
@@ -262,7 +200,7 @@ namespace logicpos
                     //Check if DocumentDate is greater than dateLastDocument (If Defined) else if is First Document in Series Skip
                     if (pParameters.DocumentDateTime < dateTimeLastDocument && dateTimeLastDocument != DateTime.MinValue)
                     {
-                        result = ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Question, ButtonsType.Close, GeneralUtils.GetResourceByName("global_warning"), GeneralUtils.GetResourceByName("dialog_message_systementry_is_less_than_last_finance_document_series"));
+                        result = ShowMessageTouch(parentWindow, DialogFlags.Modal, MessageType.Question, ButtonsType.Close, GeneralUtils.GetResourceByName("global_warning"), GeneralUtils.GetResourceByName("dialog_message_systementry_is_less_than_last_finance_document_series"));
                     }
                 }
             }
@@ -274,9 +212,9 @@ namespace logicpos
             return result;
         }
 
-        public static void ShowMessageTouchSimplifiedInvoiceMaxValueExceedForFinalConsumer(Window pSourceWindow, decimal pCurrentTotal, decimal pMaxTotal)
+        public static void ShowMessageTouchSimplifiedInvoiceMaxValueExceedForFinalConsumer(Window parentWindow, decimal pCurrentTotal, decimal pMaxTotal)
         {
-            ShowMessageBox(pSourceWindow, DialogFlags.Modal, new Size(550, 480), MessageType.Info, ButtonsType.Close,
+            ShowMessageBox(parentWindow, DialogFlags.Modal, new Size(550, 480), MessageType.Info, ButtonsType.Close,
                 GeneralUtils.GetResourceByName("global_warning"),
                 string.Format(
                     GeneralUtils.GetResourceByName("dialog_message_value_exceed_simplified_invoice_for_final_or_annonymous_consumer")
@@ -286,7 +224,7 @@ namespace logicpos
             );
         }
 
-        public static ResponseType ShowMessageTouchSimplifiedInvoiceMaxValueExceed(Window pSourceWindow, ShowMessageTouchSimplifiedInvoiceMaxValueExceedMode pMode, decimal pCurrentTotal, decimal pMaxTotal, decimal pCurrentTotalServices, decimal pMaxTotalServices)
+        public static ResponseType ShowMessageTouchSimplifiedInvoiceMaxValueExceed(Window parentWindow, ShowMessageTouchSimplifiedInvoiceMaxValueExceedMode pMode, decimal pCurrentTotal, decimal pMaxTotal, decimal pCurrentTotalServices, decimal pMaxTotalServices)
         {
             ResponseType result = ResponseType.No;
 
@@ -347,7 +285,7 @@ namespace logicpos
                         message += messageMaxExceedServices;
                     }
 
-                    result = ShowMessageBox(pSourceWindow, DialogFlags.Modal, new Size(550, 440), messageType, buttonsType,
+                    result = ShowMessageBox(parentWindow, DialogFlags.Modal, new Size(550, 440), messageType, buttonsType,
                         GeneralUtils.GetResourceByName("global_warning"),
                         string.Format(GeneralUtils.GetResourceByName("dialog_message_value_exceed_simplified_invoice_max_value"), message, messageMode
                         )
@@ -361,13 +299,13 @@ namespace logicpos
 
             return result;
         }
-        public static bool ShowMessageMinimumStock(Window pSourceWindow, Guid pArticleOid, decimal pNewQuantity)
+        public static bool ShowMessageMinimumStock(Window parentWindow, Guid pArticleOid, decimal pNewQuantity)
         {
             bool unusedBool;
-            return ShowMessageMinimumStock(pSourceWindow, pArticleOid, pNewQuantity, out unusedBool);
+            return ShowMessageMinimumStock(parentWindow, pArticleOid, pNewQuantity, out unusedBool);
         }
 
-        public static bool ShowMessageMinimumStock(Window pSourceWindow, Guid pArticleOid, decimal pNewQuantity, out bool showMessage)
+        public static bool ShowMessageMinimumStock(Window parentWindow, Guid pArticleOid, decimal pNewQuantity, out bool showMessage)
         {
             showMessage = false;
             Size size = new Size(500, 350);
@@ -418,7 +356,7 @@ namespace logicpos
                 if (article.IsComposed)
                 {
                     size = new Size(650, 480);
-                    var response = ShowMessageBox(pSourceWindow, DialogFlags.DestroyWithParent, size, MessageType.Question, ButtonsType.YesNo, GeneralUtils.GetResourceByName("global_stock_movements"), GeneralUtils.GetResourceByName("window_check_stock_question") + Environment.NewLine + Environment.NewLine + GeneralUtils.GetResourceByName("global_article") + ": " + article.Designation + Environment.NewLine + GeneralUtils.GetResourceByName("global_total_stock") + ": " + DataConversionUtils.DecimalToString(Convert.ToDecimal(articleStock), "0.00") + Environment.NewLine + GeneralUtils.GetResourceByName("global_minimum_stock") + ": " + DataConversionUtils.DecimalToString(Convert.ToDecimal(article.MinimumStock), "0.00") + childStockMessage);
+                    var response = ShowMessageBox(parentWindow, DialogFlags.DestroyWithParent, size, MessageType.Question, ButtonsType.YesNo, GeneralUtils.GetResourceByName("global_stock_movements"), GeneralUtils.GetResourceByName("window_check_stock_question") + Environment.NewLine + Environment.NewLine + GeneralUtils.GetResourceByName("global_article") + ": " + article.Designation + Environment.NewLine + GeneralUtils.GetResourceByName("global_total_stock") + ": " + DataConversionUtils.DecimalToString(Convert.ToDecimal(articleStock), "0.00") + Environment.NewLine + GeneralUtils.GetResourceByName("global_minimum_stock") + ": " + DataConversionUtils.DecimalToString(Convert.ToDecimal(article.MinimumStock), "0.00") + childStockMessage);
                     if (response == ResponseType.Yes)
                     {
                         showMessage = true;
@@ -432,7 +370,7 @@ namespace logicpos
                 }
                 else
                 {
-                    var response = ShowMessageBox(pSourceWindow, DialogFlags.DestroyWithParent, size, MessageType.Question, ButtonsType.YesNo, GeneralUtils.GetResourceByName("global_stock_movements"), GeneralUtils.GetResourceByName("window_check_stock_question") + Environment.NewLine + Environment.NewLine + GeneralUtils.GetResourceByName("global_article") + ": " + article.Designation + Environment.NewLine + GeneralUtils.GetResourceByName("global_total_stock") + ": " + DataConversionUtils.DecimalToString(Convert.ToDecimal(articleStock), "0.00") + Environment.NewLine + GeneralUtils.GetResourceByName("global_minimum_stock") + ": " + DataConversionUtils.DecimalToString(Convert.ToDecimal(article.MinimumStock), "0.00"));
+                    var response = ShowMessageBox(parentWindow, DialogFlags.DestroyWithParent, size, MessageType.Question, ButtonsType.YesNo, GeneralUtils.GetResourceByName("global_stock_movements"), GeneralUtils.GetResourceByName("window_check_stock_question") + Environment.NewLine + Environment.NewLine + GeneralUtils.GetResourceByName("global_article") + ": " + article.Designation + Environment.NewLine + GeneralUtils.GetResourceByName("global_total_stock") + ": " + DataConversionUtils.DecimalToString(Convert.ToDecimal(articleStock), "0.00") + Environment.NewLine + GeneralUtils.GetResourceByName("global_minimum_stock") + ": " + DataConversionUtils.DecimalToString(Convert.ToDecimal(article.MinimumStock), "0.00"));
                     if (response == ResponseType.Yes)
                     {
                         showMessage = true;
@@ -450,10 +388,10 @@ namespace logicpos
         }
 
 
-        public static void ShowMessageTouchProtectedDeleteRecordMessage(Window pSourceWindow)
+        public static void ShowMessageTouchProtectedDeleteRecordMessage(Window parentWindow)
         {
             ShowMessageTouch(
-                pSourceWindow,
+                parentWindow,
                 DialogFlags.DestroyWithParent | DialogFlags.Modal,
                 MessageType.Error,
                 ButtonsType.Ok,
@@ -462,10 +400,10 @@ namespace logicpos
             ;
         }
 
-        public static void ShowMessageTouchProtectedUpdateRecordMessage(Window pSourceWindow)
+        public static void ShowMessageTouchProtectedUpdateRecordMessage(Window parentWindow)
         {
             ShowMessageTouch(
-                pSourceWindow,
+                parentWindow,
                 DialogFlags.DestroyWithParent | DialogFlags.Modal,
                 MessageType.Error,
                 ButtonsType.Ok,
@@ -474,10 +412,10 @@ namespace logicpos
             ;
         }
 
-        public static void ShowMessageTouchUnsupportedResolutionDetectedAndExit(Window pSourceWindow, int width, int height)
+        public static void ShowMessageTouchUnsupportedResolutionDetectedAndExit(Window parentWindow, int width, int height)
         {
             string message = string.Format(GeneralUtils.GetResourceByName("app_error_unsupported_resolution_detected"), width, height);
-            ShowMessageBox(pSourceWindow, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"), message);
+            ShowMessageBox(parentWindow, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"), message);
             Environment.Exit(Environment.ExitCode);
         }
 
@@ -486,23 +424,23 @@ namespace logicpos
         /// It takes the control of application when user opt to do not follow with low-resolution app startup, closing the application.
         /// <para>See also "IN008023: apply "800x600" settings as default."</para>
         /// </summary>
-        /// <param name="pSourceWindow"></param>
+        /// <param name="parentWindow"></param>
         /// <param name="width"></param>
         /// <param name="height"></param>
-        public static void ShowMessageTouchUnsupportedResolutionDetectedDialogbox(Window pSourceWindow, int width, int height)
+        public static void ShowMessageTouchUnsupportedResolutionDetectedDialogbox(Window parentWindow, int width, int height)
         {
             string message = string.Format(GeneralUtils.GetResourceByName("app_error_unsupported_resolution_detected"), width, height, GeneralUtils.GetResourceByName("global_treeview_true"));
-            ResponseType dialogResponse = ShowMessageBox(pSourceWindow, DialogFlags.Modal, new Size(600, 300), MessageType.Question, ButtonsType.YesNo, GeneralUtils.GetResourceByName("global_information"), message);
+            ResponseType dialogResponse = ShowMessageBox(parentWindow, DialogFlags.Modal, new Size(600, 300), MessageType.Question, ButtonsType.YesNo, GeneralUtils.GetResourceByName("global_information"), message);
             if (dialogResponse == ResponseType.No)
             {
                 Environment.Exit(Environment.ExitCode);
             }
         }
 
-        public static void ShowMessageTouchErrorTryToIssueACreditNoteExceedingSourceDocumentArticleQuantities(Window pSourceWindow, decimal currentQuantity, decimal maxPossibleQuantity)
+        public static void ShowMessageTouchErrorTryToIssueACreditNoteExceedingSourceDocumentArticleQuantities(Window parentWindow, decimal currentQuantity, decimal maxPossibleQuantity)
         {
             string message = string.Format(GeneralUtils.GetResourceByName("dialog_message_error_try_to_issue_a_credit_note_exceeding_source_document_article_quantities"), currentQuantity, maxPossibleQuantity);
-            ShowMessageBox(pSourceWindow, DialogFlags.Modal, new Size(700, 400), MessageType.Info, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_information"), message);
+            ShowMessageBox(parentWindow, DialogFlags.Modal, new Size(700, 400), MessageType.Info, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_information"), message);
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -522,18 +460,18 @@ namespace logicpos
             }
         }
 
-        public static ResponseText GetInputText(Window pSourceWindow, DialogFlags pDialogFlags, string pWindowIcon, string pEntryLabel, string pDefaultValue, string pRule, bool pRequired)
+        public static ResponseText GetInputText(Window parentWindow, DialogFlags pDialogFlags, string pWindowIcon, string pEntryLabel, string pDefaultValue, string pRule, bool pRequired)
         {
-            return GetInputText(pSourceWindow, pDialogFlags, GeneralUtils.GetResourceByName("window_title_default_input_text_dialog"), pWindowIcon, pEntryLabel, pDefaultValue, pRule, pRequired);
+            return GetInputText(parentWindow, pDialogFlags, GeneralUtils.GetResourceByName("window_title_default_input_text_dialog"), pWindowIcon, pEntryLabel, pDefaultValue, pRule, pRequired);
         }
 
-        public static ResponseText GetInputText(Window pSourceWindow, DialogFlags pDialogFlags, string pWindowTitle, string pWindowIcon, string pEntryLabel, string pDefaultValue, string pRule, bool pRequired)
+        public static ResponseText GetInputText(Window parentWindow, DialogFlags pDialogFlags, string pWindowTitle, string pWindowIcon, string pEntryLabel, string pDefaultValue, string pRule, bool pRequired)
         {
             ResponseText result = new ResponseText();
             result.ResponseType = ResponseType.Cancel;
 
             //Prepare Dialog
-            PosInputTextDialog dialog = new PosInputTextDialog(pSourceWindow, pDialogFlags, pWindowTitle, pWindowIcon, pEntryLabel, pDefaultValue, pRule, pRequired);
+            PosInputTextDialog dialog = new PosInputTextDialog(parentWindow, pDialogFlags, pWindowTitle, pWindowIcon, pEntryLabel, pDefaultValue, pRule, pRequired);
 
             //Call Dialog
             try
@@ -792,22 +730,6 @@ namespace logicpos
             return pImage;
         }
 
-
-        //Converts a String to Size using TypeConverter, used to Store values in Appsettings
-        public static Size StringToSize(string pSize)
-        {
-            try
-            {
-                TypeConverter converter = TypeDescriptor.GetConverter(typeof(Size));
-                return (Size)converter.ConvertFromInvariantString(pSize);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-                return new Size();
-            }
-        }
-
         public static Point StringToPosition(string position)
         {
             string[] splitted = position.Split(',');
@@ -882,7 +804,7 @@ namespace logicpos
 
         public static FileFilter GetFileFilterBackups()
         {
-            string databaseType = GeneralSettings.Settings["databaseType"];
+            string databaseType = AppSettings.Instance.databaseType;
             FileFilter filter = new FileFilter();
 
             filter.Name = "Database Backups";
@@ -1000,23 +922,14 @@ namespace logicpos
         {
             Size result = new Size();
 
-            try
-            {
-                // Moke Window only to extract its Resolution
-                Window window = new Window("");
-                Gdk.Screen screen = window.Screen;
-                Gdk.Rectangle monitorGeometry = screen.GetMonitorGeometry(string.IsNullOrEmpty(GeneralSettings.Settings["appScreen"])
-                    ? 0
-                    : Convert.ToInt32(GeneralSettings.Settings["appScreen"]));
-                result = new Size(monitorGeometry.Width, monitorGeometry.Height);
-                // CleanUp
-                window.Dispose();
-                screen.Dispose();
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
+            // Moke Window only to extract its Resolution
+            Window window = new Window("");
+            Gdk.Screen screen = window.Screen;
+            Gdk.Rectangle monitorGeometry = screen.GetMonitorGeometry(AppSettings.Instance.appScreen);
+            result = new Size(monitorGeometry.Width, monitorGeometry.Height);
+            // CleanUp
+            window.Dispose();
+            screen.Dispose();
 
             return result;
         }
@@ -1094,11 +1007,11 @@ namespace logicpos
         }
 
 
-        public static string OpenNewSerialNumberCompositePopUpWindow(Window pSourceWindow, Entity pXPGuidObject, out List<fin_articleserialnumber> pSelectedCollection, string pSerialNumber = "", List<fin_articleserialnumber> pSelectedCollectionToFill = null)
+        public static string OpenNewSerialNumberCompositePopUpWindow(Window parentWindow, Entity pXPGuidObject, out List<fin_articleserialnumber> pSelectedCollection, string pSerialNumber = "", List<fin_articleserialnumber> pSelectedCollectionToFill = null)
         {
             try
             {
-                DialogArticleCompositionSerialNumber dialog = new DialogArticleCompositionSerialNumber(pSourceWindow, GetGenericTreeViewXPO<TreeViewArticleStock>(pSourceWindow), DialogFlags.DestroyWithParent, pXPGuidObject, pSelectedCollectionToFill, pSerialNumber);
+                DialogArticleCompositionSerialNumber dialog = new DialogArticleCompositionSerialNumber(parentWindow, GetGenericTreeViewXPO<TreeViewArticleStock>(parentWindow), DialogFlags.DestroyWithParent, pXPGuidObject, pSelectedCollectionToFill, pSerialNumber);
                 ResponseType response = (ResponseType)dialog.Run();
                 if (response == ResponseType.Ok)
                 {
@@ -1150,7 +1063,7 @@ namespace logicpos
             return supportedScreenSizeEnum;
         }
 
- 
+
 
         public static Dialog CreateSplashScreen(
             Window parent,
@@ -1297,101 +1210,19 @@ namespace logicpos
             return result;
         }
 
-        //<add key="errorMailFirst" value="test@test.no"/>
-        //<add key="errorMailSeond" value="krister@tets.no"/>
-        //Then in my configuration wrapper class, I add a method to search keys.
 
-        //Get Settings Keys List
-        //public static List<string> AppSearchKeys(string searchTerm)
-        //{
-        //    var keys = ConfigurationManager.AppSettings.Keys;
-
-        //    return keys.Cast<object>()
-        //               .Where(key => key.ToString().ToLower()
-        //               .Contains(searchTerm.ToLower()))
-        //               .Select(key => ConfigurationManager.AppSettings.Get(key.ToString())).ToList();
-        //}
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Terminals
-
-        //public static ConfigurationPlaceTerminal GetTerminal_OLD_WORKING_REPLACED_BY_HARDWAREID()
-        //{
-        //  string terminalIdFile = SharedUtils.OSSlash(LogicPOS.Settings.GeneralSettings.Settings["appTerminalIdConfigFile"]);
-        //  string terminalIdString = string.Empty;
-        //  Guid terminalIdGuid = new Guid();
-        //  ConfigurationPlaceTerminal terminalXpo = null;
-
-        //  if (File.Exists(terminalIdFile))
-        //  {
-        //    terminalIdString = RemoveCarriageReturnAndExtraWhiteSpaces(File.ReadAllText(terminalIdFile));
-        //    try
-        //    {
-        //      terminalIdGuid = new Guid(terminalIdString);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //      _logger.Error(ex.Message, ex);
-        //    }
-        //  }
-
-        //  if (terminalIdGuid != new Guid())
-        //  {
-        //    try
-        //    {
-        //      //Get TerminalID from Database
-        //      terminalXpo = (ConfigurationPlaceTerminal)XPOUtility.GetXPGuidObjectFromSession(typeof(ConfigurationPlaceTerminal), terminalIdGuid);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //      _logger.Error(ex.Message, ex);
-        //    }
-        //  }
-
-        //  //Create a new db terminal
-        //  if (terminalXpo == null)
-        //  {
-        //    //Persist Terminal in DB
-        //    terminalXpo = new ConfigurationPlaceTerminal(XPOSettings.Session)
-        //    {
-        //      Ord = XPOUtility.GetNextTableFieldID("pos_configurationplaceterminal", "Ord"),
-        //      Code = XPOUtility.GetNextTableFieldID("pos_configurationplaceterminal", "Code"),
-        //      Designation = "Terminal #" + XPOUtility.GetNextTableFieldID("pos_configurationplaceterminal", "Code")
-        //      //Fqdn = GetFQDN()
-        //    };
-        //    terminalXpo.Save();
-
-        //    _logger.Debug(string.Format("Registered a new Terminal in Database and Config Settings. TerminalId: [{0}] ]", terminalXpo.Oid));
-        //    //Save to Text
-        //    File.WriteAllText(terminalIdFile, terminalXpo.Oid.ToString());
-        //  }
-
-        //  return terminalXpo;
-        //}
-
-        public static pos_configurationplaceterminal GetTerminal()
+        public static pos_configurationplaceterminal GetOrCreateTerminal()
         {
             pos_configurationplaceterminal configurationPlaceTerminal = null;
 
             try
             {
-                // Use HardwareId from Settings, must be added manually, its a hack and its not there, in setuo, only in debug config
-                if (!string.IsNullOrEmpty(GeneralSettings.Settings["appHardwareId"]))
-                {
-                    LicenseSettings.LicenseHardwareId = GeneralSettings.Settings["appHardwareId"];
-                }
-                //Debug Directive disabled by Mario, if enabled we cant force HardwareId in Release, 
-                //if we want to ignore appHardwareId from config we just delete it
-                //If assigned in Config use it, else does nothing and use default ####-####-####-####-####-####
-                else if (POSSettings.AppHardwareId != null && POSSettings.AppHardwareId != string.Empty)
-                {
-                    LicenseSettings.LicenseHardwareId = POSSettings.AppHardwareId;
-                }
+
+                LicenseSettings.LicenseHardwareId = AppSettings.Instance.appHardwareId;
 
                 try
                 {
-                    //Try TerminalID from Database
-                    _logger.Debug("pos_configurationplaceterminal GetTerminal() :: Try TerminalID from Database");
+
                     configurationPlaceTerminal = (pos_configurationplaceterminal)XPOUtility.GetXPGuidObjectFromField(typeof(pos_configurationplaceterminal), "HardwareId", LicenseSettings.LicenseHardwareId);
                 }
                 catch (Exception ex)
@@ -1411,9 +1242,7 @@ namespace logicpos
                             Code = XPOUtility.GetNextTableFieldID("pos_configurationplaceterminal", "Code"),
                             Designation = "Terminal #" + XPOUtility.GetNextTableFieldID("pos_configurationplaceterminal", "Code"),
                             HardwareId = LicenseSettings.LicenseHardwareId
-                            //Fqdn = GetFQDN()
                         };
-                        _logger.Debug("pos_configurationplaceterminal GetTerminal() :: configurationPlaceTerminal.Save()");
                         configurationPlaceTerminal.Save();
                     }
                     catch (Exception ex)
@@ -1435,7 +1264,7 @@ namespace logicpos
             return configurationPlaceTerminal;
         }
 
-        public static bool CloseAllOpenTerminals(Window pSourceWindow, Session pSession)
+        public static bool CloseAllOpenTerminals(Window parentWindow, Session pSession)
         {
             bool result = false;
 
@@ -1473,78 +1302,37 @@ namespace logicpos
         //Helpers
         public static void ShowFrontOffice(Window pHideWindow)
         {
-            _logger.Debug("void ShowFrontOffice(Window pHideWindow) :: Starting..."); /* IN009008 */
-            try
+
+            if (GlobalApp.PosMainWindow == null)
             {
-                if (GlobalApp.PosMainWindow == null)
-                {
-                    //Init Theme Object
-                    Predicate<dynamic> predicate = (Predicate<dynamic>)((dynamic x) => x.ID == "PosMainWindow");
-                    dynamic themeWindow = GlobalApp.Theme.Theme.Frontoffice.Window.Find(predicate);
-                    try
-                    {
-                        /* IN008024 */
-                        CustomAppOperationMode customAppOperationMode = AppOperationModeSettings.CustomAppOperationMode;
-                        //_logger.Debug(string.Format("fileImageBackgroundWindowPos: [{0}]", LogicPOS.Settings.GeneralSettings.Settings["fileImageBackgroundWindowPos"]));
-                        string windowImageFileName = string.Format(themeWindow.Globals.ImageFileName, customAppOperationMode.AppOperationTheme, GlobalApp.ScreenSize.Width, GlobalApp.ScreenSize.Height);
-                        GlobalApp.PosMainWindow = new PosMainWindow(windowImageFileName);
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.Error(ex.Message, ex);
-                    }
-                }
-                else
-                {
-                    //Update POS Components if Window was previously Created, Required to Reflect Outside Changes Like BackOffice
-                    GlobalApp.PosMainWindow.UpdateUI();
-                    //Now Show Updated Window
-                    GlobalApp.PosMainWindow.Show();
-                };
-                pHideWindow.Hide();
+                Predicate<dynamic> predicate = (Predicate<dynamic>)((dynamic x) => x.ID == "PosMainWindow");
+                dynamic themeWindow = GlobalApp.Theme.Theme.Frontoffice.Window.Find(predicate);
+
+                CustomAppOperationMode customAppOperationMode = AppOperationModeSettings.CustomAppOperationMode;
+                string windowImageFileName = string.Format(themeWindow.Globals.ImageFileName, customAppOperationMode.AppOperationTheme, GlobalApp.ScreenSize.Width, GlobalApp.ScreenSize.Height);
+                GlobalApp.PosMainWindow = new PosMainWindow(windowImageFileName);
             }
-            catch (Exception ex)
+            else
             {
-                _logger.Error(ex.Message, ex);
-            }
+                GlobalApp.PosMainWindow.UpdateUI();
+                GlobalApp.PosMainWindow.Show();
+            };
+            pHideWindow.Hide();
+
         }
 
         public static void ShowBackOffice(Window pHideWindow)
         {
-            try
+            if (GlobalApp.BackOfficeMainWindow == null)
             {
-                //TODO: PRIVILEGIOS Exemplo de bloquear funcionalidade
-                /* 
-                if (!GlobalFramework.CheckCurrentUserPermission("BACKOFFICE_ACCESS"))
-                {
-                  //TODO: adicionar msg para indicar que nao tem acesso 
-                  Utils.ShowMessageUnderConstruction();
-                }
-                else
-                */
-                {
-                    //FrameworkUtils.ClearCache();
-
-                    //FrameworkUtils.ShowWaitingCursor();
-
-                    if (GlobalApp.BackOfficeMainWindow == null)
-                    {
-                        GlobalApp.BackOfficeMainWindow = new BackOfficeMainWindow();
-                    }
-                    else
-                    {
-                        GlobalApp.BackOfficeMainWindow.Show();
-                    }
-
-                    pHideWindow.Hide();
-
-
-                }
+                GlobalApp.BackOfficeMainWindow = new BackOfficeMainWindow();
             }
-            catch (Exception ex)
+            else
             {
-                _logger.Error(ex.Message, ex);
+                GlobalApp.BackOfficeMainWindow.Show();
             }
+
+            pHideWindow.Hide();
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -1584,68 +1372,63 @@ namespace logicpos
             }
         }
 
-        public static Gtk.Style GetImageBackgroundDashboard(Gdk.Pixbuf pFilename)
+        public static Gtk.Style GetImageBackgroundDashboard(Gdk.Pixbuf image)
         {
-            using (MemoryStream stream = new MemoryStream())
-            {
-                if (pFilename != null)
-                {
-                    Gdk.Pixmap pixmap = PixbufToPixmap(pFilename);
 
-                    if (pixmap != null)
-                    {
-                        Gtk.Style style = new Style();
-                        style.SetBgPixmap(StateType.Normal, pixmap);
-                        return style;
-                    }
-                    else
-                    {
-                        return null;
-                    }
-                }
-                else
-                {
-                    _logger.Error(string.Format("Missing Theme[{0}] Image: [{1}]", GeneralSettings.AppTheme, pFilename.ToString()));
-                    return null;
-                }
+            if (image == null)
+            {
+                return null;
+            }
+
+            Gdk.Pixmap pixmap = PixbufToPixmap(image);
+
+            if (pixmap != null)
+            {
+                Gtk.Style style = new Style();
+                style.SetBgPixmap(StateType.Normal, pixmap);
+                return style;
+            }
+            else
+            {
+                return null;
             }
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Notifications UI
 
-        public static void ShowNotifications(Window pSourceWindow)
+        public static void ShowNotifications(Window parentWindow)
         {
-            ShowNotifications(pSourceWindow, XPOSettings.Session);
+            ShowNotifications(parentWindow, XPOSettings.Session);
         }
 
-        public static void ShowNotifications(Window pSourceWindow, Session pSession)
+        public static void ShowNotifications(Window parentWindow, Session pSession)
         {
-            ShowNotifications(pSourceWindow, pSession, Guid.Empty);
+            ShowNotifications(parentWindow, pSession, Guid.Empty);
         }
 
         /// <summary>
         /// When user wish to show notifications again.
         /// Please see #IN006001 for further details.
         /// </summary>
-        /// <param name="pSourceWindow"></param>
+        /// <param name="parentWindow"></param>
         /// <param name="showNotificationOnDemand"></param>
-        public static void ShowNotifications(Window pSourceWindow, bool showNotificationOnDemand)
+        public static void ShowNotifications(Window parentWindow, bool showNotificationOnDemand)
         {
-            ShowNotifications(pSourceWindow, XPOSettings.Session, Guid.Empty, showNotificationOnDemand);
+            ShowNotifications(parentWindow, XPOSettings.Session, Guid.Empty, showNotificationOnDemand);
         }
 
         /// <summary>
         /// Shows notifications created by "void FrameworkUtils.SystemNotification(Session pSession)" method.
         /// More information about changes on this, please see #IN006001.
         /// </summary>
-        /// <param name="pSourceWindow"></param>
+        /// <param name="parentWindow"></param>
         /// <param name="pSession"></param>
         /// <param name="pLoggedUser"></param>
         /// <param name="showNotificationOnDemand"></param>
-        public static void ShowNotifications(Window pSourceWindow, Session pSession, Guid pLoggedUser, bool showNotificationOnDemand = false)
+        public static void ShowNotifications(Window parentWindow, Session pSession, Guid pLoggedUser, bool showNotificationOnDemand = false)
         {
-            _logger.Debug("void Utils.ShowNotifications(Window pSourceWindow, Session pSession, Guid pLoggedUser) :: Source Window: " + pSourceWindow.Name);
+            _logger.Debug("void Utils.ShowNotifications(Window parentWindow, Session pSession, Guid pLoggedUser) :: Source Window: " + parentWindow.Name);
             string extraFilter = (pLoggedUser != Guid.Empty) ? string.Format("AND (UserTarget = '{0}' OR UserTarget IS NULL) ", pLoggedUser) : string.Empty;
 
             /* IN006001 */
@@ -1701,7 +1484,7 @@ namespace logicpos
                     {
                         message = string.Format("{1}{0}{0}{2}", Environment.NewLine, item.CreatedAt, item.Message);
                         ResponseType response = ShowMessageBox(
-                          pSourceWindow,
+                          parentWindow,
                           DialogFlags.DestroyWithParent | DialogFlags.Modal,
                           new Size(700, 480),
                           MessageType.Info,
@@ -1725,7 +1508,7 @@ namespace logicpos
                 {/* IN006001 - when "on demand" request returns no results */
                     message = string.Format(GeneralUtils.GetResourceByName("dialog_message_no_notification"), NotificationSettings.XpoOidSystemNotificationDaysBackWhenFiltering);
                     ResponseType response = ShowMessageBox(
-                      pSourceWindow,
+                      parentWindow,
                       DialogFlags.DestroyWithParent | DialogFlags.Modal,
                       new Size(700, 480),
                       MessageType.Info,
@@ -1737,12 +1520,12 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _logger.Error("void Utils.ShowNotifications(Window pSourceWindow, Session pSession, Guid pLoggedUser) :: " + ex.Message, ex);
+                _logger.Error("void Utils.ShowNotifications(Window parentWindow, Session pSession, Guid pLoggedUser) :: " + ex.Message, ex);
                 ShowMessageBox(null, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Close, GeneralUtils.GetResourceByName("global_error"), "There is an error when checking for notifications. Please contact the helpdesk");
             }
         }
 
-        public static void ShowChangeLog(Window pSourceWindow)
+        public static void ShowChangeLog(Window parentWindow)
         {
             try
             {
@@ -1760,18 +1543,18 @@ namespace logicpos
                 message = iso.GetString(isoBytes);
 
                 ResponseType response = ShowMessageBox(
-                         pSourceWindow,
+                         parentWindow,
                          DialogFlags.DestroyWithParent | DialogFlags.Modal,
                          new Size(700, 480),
                          MessageType.Info,
                          ButtonsType.Ok,
-                         GeneralUtils.GetResourceByName("change_logger"),
+                         GeneralUtils.GetResourceByName("change_log"),
                          message
                        );
             }
             catch (Exception ex)
             {
-                _logger.Error("void Utils.ShowNotifications(Window pSourceWindow, Session pSession, Guid pLoggedUser) :: " + ex.Message, ex);
+                _logger.Error("void Utils.ShowNotifications(Window parentWindow, Session pSession, Guid pLoggedUser) :: " + ex.Message, ex);
                 ShowMessageBox(null, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Close, GeneralUtils.GetResourceByName("global_error"), "There is an error when checking for changelog. Please contact the helpdesk");
             }
         }
@@ -1779,9 +1562,9 @@ namespace logicpos
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Virtual KeyBoard
 
-        public static string GetVirtualKeyBoardInput(Window pSourceWindow, KeyboardMode pMode, string pInitialValue, string pRegExRule)
+        public static string GetVirtualKeyBoardInput(Window parentWindow, KeyboardMode pMode, string pInitialValue, string pRegExRule)
         {
-            bool useBaseDialogWindowMask = Convert.ToBoolean(GeneralSettings.Settings["useBaseDialogWindowMask"]);
+            bool useBaseDialogWindowMask = AppSettings.Instance.useBaseDialogWindowMask;
 
             //if (GlobalApp.DialogPosKeyboard == null)
             //{
@@ -1809,14 +1592,14 @@ namespace logicpos
             //Fix TransientFor, ALT+TABS
             if (useBaseDialogWindowMask)
             {
-                GlobalApp.DialogPosKeyboard.TransientFor = GlobalApp.DialogPosKeyboard.WindowMaskBackground;
-                GlobalApp.DialogPosKeyboard.WindowMaskBackground.TransientFor = pSourceWindow;
-                GlobalApp.DialogPosKeyboard.WindowMaskBackground.Show();
+                GlobalApp.DialogPosKeyboard.TransientFor = GlobalApp.DialogPosKeyboard.WindowSettings.Mask;
+                GlobalApp.DialogPosKeyboard.WindowSettings.Mask.TransientFor = parentWindow;
+                GlobalApp.DialogPosKeyboard.WindowSettings.Mask.Show();
             }
             else
             {
                 //Now we can change its TransientFor
-                GlobalApp.DialogPosKeyboard.TransientFor = pSourceWindow;
+                GlobalApp.DialogPosKeyboard.TransientFor = parentWindow;
             }
             //}
 
@@ -1838,7 +1621,7 @@ namespace logicpos
 
             //Fix Keyboard White Bug when useBaseDialogWindowMask = false
             //Required to assign TransientFor to a non Destroyed Window/Dialog like GlobalApp.WindowPos, 
-            //else Keyboard is destroyed when TransientFor Windows/Dialog is Destroyed ex when pSourceWindow = PosInputTextDialog
+            //else Keyboard is destroyed when TransientFor Windows/Dialog is Destroyed ex when parentWindow = PosInputTextDialog
             GlobalApp.DialogPosKeyboard.TransientFor = GlobalApp.PosMainWindow;
 
             return result;
@@ -1998,15 +1781,17 @@ namespace logicpos
 
         //Helper Static Method to Return a GenericTreeView from T
         [Obsolete]
-        public static T GetGenericTreeViewXPO<T>(Window pSourceWindow, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default)
-          where T : IGenericTreeView, new()
+        public static T GetGenericTreeViewXPO<T>(Window parentWindow,
+                                                 GridViewNavigatorMode navigatorMode = GridViewNavigatorMode.Default,
+                                                 GridViewMode pGenericTreeViewMode = GridViewMode.Default)
+          where T : IGridView, new()
         {
-            return GetGenericTreeViewXPO<T>(pSourceWindow, null, pGenericTreeViewNavigatorMode, pGenericTreeViewMode);
+            return GetGenericTreeViewXPO<T>(parentWindow, null, navigatorMode, pGenericTreeViewMode);
         }
 
         [Obsolete]
-        public static T GetGenericTreeViewXPO<T>(Window pSourceWindow, CriteriaOperator pCriteria, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default)
-          where T : IGenericTreeView, new()
+        public static T GetGenericTreeViewXPO<T>(Window parentWindow, CriteriaOperator pCriteria, GridViewNavigatorMode navigatorMode = GridViewNavigatorMode.Default, GridViewMode pGenericTreeViewMode = GridViewMode.Default)
+          where T : IGridView, new()
         {
             T genericTreeView = default;
 
@@ -2026,12 +1811,12 @@ namespace logicpos
 
                 object[] constructor = new object[]
                 {
-                      pSourceWindow,
+                      parentWindow,
                       null,         //Default Value
                       pCriteria,    //Criteria
                       null,         //DialogType
                       pGenericTreeViewMode,
-                      pGenericTreeViewNavigatorMode
+                      navigatorMode
                 };
                 genericTreeView = (T)Activator.CreateInstance(typeof(T), constructor);
                 //Cast to Box to use ShowAll for all T(ypes) of GenericTreeView
@@ -2103,7 +1888,7 @@ namespace logicpos
             return result;
         }
 
-        public static object SaveOrUpdateCustomer(Window pSourceWindow, erp_customer pCustomer, string pName, string pAddress, string pLocality, string pZipCode, string pCity, string pPhone, string pEmail, cfg_configurationcountry pCountry, string pFiscalNumber, string pCardNumber, decimal pDiscount, string pNotes)
+        public static object SaveOrUpdateCustomer(Window parentWindow, erp_customer pCustomer, string pName, string pAddress, string pLocality, string pZipCode, string pCity, string pPhone, string pEmail, cfg_configurationcountry pCountry, string pFiscalNumber, string pCardNumber, decimal pDiscount, string pNotes)
         {
             bool customerExists = false;
             erp_customer result;
@@ -2184,7 +1969,7 @@ namespace logicpos
                     //If final Consumer not save
                     if (changed && result.Oid != finalConsumerEntity.Oid)
                     {
-                        ResponseType responseType = ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Question, ButtonsType.YesNo, GeneralUtils.GetResourceByName("global_record_modified"), GeneralUtils.GetResourceByName("dialog_message_customer_updated_save_changes"));
+                        ResponseType responseType = ShowMessageTouch(parentWindow, DialogFlags.Modal, MessageType.Question, ButtonsType.YesNo, GeneralUtils.GetResourceByName("global_record_modified"), GeneralUtils.GetResourceByName("dialog_message_customer_updated_save_changes"));
                         if (responseType == ResponseType.No)
                         {
                             changed = false;
@@ -2245,11 +2030,11 @@ namespace logicpos
 
 
         //TK016235 BackOffice - Mode
-        public static void StartReportsMenuFromBackOffice(Window pSourceWindow)
+        public static void StartReportsMenuFromBackOffice(Window parentWindow)
         {
             try
             {
-                PosReportsDialog dialog = new PosReportsDialog(pSourceWindow, DialogFlags.DestroyWithParent);
+                PosReportsDialog dialog = new PosReportsDialog(parentWindow, DialogFlags.DestroyWithParent);
                 int response = dialog.Run();
                 dialog.Destroy();
             }
@@ -2260,12 +2045,12 @@ namespace logicpos
         }
 
         //TK016235 BackOffice - Mode
-        public static void StartNewDocumentFromBackOffice(Window pSourceWindow)
+        public static void StartNewDocumentFromBackOffice(Window parentWindow)
         {
             try
             {
                 //Call New DocumentFinance Dialog
-                PosDocumentFinanceDialog dialogNewDocument = new PosDocumentFinanceDialog(pSourceWindow, DialogFlags.DestroyWithParent);
+                PosDocumentFinanceDialog dialogNewDocument = new PosDocumentFinanceDialog(parentWindow, DialogFlags.DestroyWithParent);
                 ResponseType responseNewDocument = (ResponseType)dialogNewDocument.Run();
                 if (responseNewDocument == ResponseType.Ok)
                 {
@@ -2279,11 +2064,11 @@ namespace logicpos
         }
 
         //TK016235 BackOffice - Mode
-        public static void StartDocumentsMenuFromBackOffice(Window pSourceWindow, int docChoice)
+        public static void StartDocumentsMenuFromBackOffice(Window parentWindow, int docChoice)
         {
             try
             {
-                PosDocumentFinanceSelectRecordDialog dialog = new PosDocumentFinanceSelectRecordDialog(pSourceWindow, DialogFlags.DestroyWithParent, docChoice);
+                PosDocumentFinanceSelectRecordDialog dialog = new PosDocumentFinanceSelectRecordDialog(parentWindow, DialogFlags.DestroyWithParent, docChoice);
                 if (docChoice == 0)
                 {
                     ResponseType response = (ResponseType)dialog.Run();
@@ -2298,19 +2083,19 @@ namespace logicpos
         }
 
         //TK016235 BackOffice - Mode
-        public static void OpenArticleStockDialog(Window pSourceWindow)
+        public static void OpenArticleStockDialog(Window parentWindow)
         {
             try
             {
                 if (LicenseSettings.LicenseModuleStocks && ModulesSettings.StockManagementModule != null)
                 {
-                    DialogArticleStock dialog = new DialogArticleStock(pSourceWindow);
+                    DialogArticleStock dialog = new DialogArticleStock(parentWindow);
                     ResponseType response = (ResponseType)dialog.Run();
                     dialog.Destroy();
                 }
                 else if (CheckStockMessage() && !LicenseSettings.LicenseModuleStocks)
                 {
-                    var messageDialog = ShowMessageTouch(pSourceWindow, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.OkCancel, GeneralUtils.GetResourceByName("global_warning"), GeneralUtils.GetResourceByName("global_warning_acquire_module_stocks"));
+                    var messageDialog = ShowMessageTouch(parentWindow, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.OkCancel, GeneralUtils.GetResourceByName("global_warning"), GeneralUtils.GetResourceByName("global_warning_acquire_module_stocks"));
                     if (messageDialog == ResponseType.Ok)
                     {
                         Process.Start("https://logic-pos.com/");
@@ -2320,11 +2105,11 @@ namespace logicpos
                     XPOSettings.Session.ExecuteScalar(query);
                     query = string.Format("UPDATE cfg_configurationpreferenceparameter SET Disabled = '1' WHERE Token = 'CHECK_STOCKS_MESSAGE';");
                     XPOSettings.Session.ExecuteScalar(query);
-                    StartDocumentsMenuFromBackOffice(pSourceWindow, 6);
+                    StartDocumentsMenuFromBackOffice(parentWindow, 6);
                 }
                 else
                 {
-                    StartDocumentsMenuFromBackOffice(pSourceWindow, 6);
+                    StartDocumentsMenuFromBackOffice(parentWindow, 6);
                 }
             }
             catch (Exception ex)

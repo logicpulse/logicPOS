@@ -1,23 +1,24 @@
 ﻿using Gtk;
-using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Logic.Others;
 using logicpos.shared.Enums;
 using LogicPOS.Domain.Enums;
 using LogicPOS.Settings;
 using LogicPOS.Shared;
+using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Dialogs;
+using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using System;
 using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    public partial class PosTablesDialog : PosBaseDialog
+    public partial class PosTablesDialog : BaseDialog
     {
         //Sizes
-        private Size _sizePosSmallButtonScroller = logicpos.Utils.StringToSize(GeneralSettings.Settings["sizePosSmallButtonScroller"]);
-        private Size _sizePosTableButton = logicpos.Utils.StringToSize(GeneralSettings.Settings["sizePosTableButton"]);
+        private Size _sizePosSmallButtonScroller = AppSettings.Instance.sizePosSmallButtonScroller;
+        private Size _sizePosTableButton = AppSettings.Instance.sizePosTableButton;
         private Size _sizeIconScrollLeftRight = new Size(62, 31);
         //Files
         private readonly string _fileScrollLeftImage = PathsSettings.ImagesFolderLocation + @"Buttons\Pos\button_subfamily_article_scroll_left.png";
@@ -29,18 +30,18 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private TablePad _tablePadTable;
         private HBox _hboxTableScrollers;
         private HBox _hboxOrderScrollers;
-        private readonly TouchButtonIconWithText _buttonOk;
-        private readonly TouchButtonIconWithText _buttonCancel;
-        private readonly TouchButtonIconWithText _buttonTableFilterAll;
-        private readonly TouchButtonIconWithText _buttonTableFilterFree;
-        private readonly TouchButtonIconWithText _buttonTableFilterOpen;
-        private readonly TouchButtonIconWithText _buttonTableFilterReserved;
+        private readonly IconButtonWithText _buttonOk;
+        private readonly IconButtonWithText _buttonCancel;
+        private readonly IconButtonWithText _buttonTableFilterAll;
+        private readonly IconButtonWithText _buttonTableFilterFree;
+        private readonly IconButtonWithText _buttonTableFilterOpen;
+        private readonly IconButtonWithText _buttonTableFilterReserved;
         //private TouchButtonIconWithText _buttonOrderChangeTable;
-        private readonly TouchButtonIconWithText _buttonTableReservation;
-        private readonly TouchButtonIconWithText _buttonTableViewOrders;
-        private readonly TouchButtonIconWithText _buttonTableViewTables;
+        private readonly IconButtonWithText _buttonTableReservation;
+        private readonly IconButtonWithText _buttonTableViewOrders;
+        private readonly IconButtonWithText _buttonTableViewTables;
         //Used when we need to access CurrentButton Reference
-        private TouchButtonTable _currentButton;
+        private TableButton _currentButton;
         //ResponseType (Above 10)
         //private ResponseType _responseTypeOrderChangeTable = (ResponseType)11;
         private readonly ResponseType _responseTypeViewOrders = (ResponseType)12;
@@ -63,8 +64,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             get { return _currentTableButtonOid; }
             set { _currentTableButtonOid = value; }
         }
-        public PosTablesDialog(Window pSourceWindow, DialogFlags pDialogFlags, TableFilterMode pFilterMode = TableFilterMode.Default)
-            : base(pSourceWindow, pDialogFlags)
+        public PosTablesDialog(Window parentWindow, DialogFlags pDialogFlags, TableFilterMode pFilterMode = TableFilterMode.Default)
+            : base(parentWindow, pDialogFlags)
         {
             //Init Local Vars
             string windowTitle = GeneralUtils.GetResourceByName("window_title_dialog_orders");
@@ -123,21 +124,106 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             BuildTable();
 
             //ActionArea Buttons
-            _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);
-            _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
+            _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
+            _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
 
             //Table Actions  
-            _buttonTableReservation = new TouchButtonIconWithText("touchButtonTableReservation_DialogActionArea", _colorBaseDialogActionAreaButtonBackground, GeneralUtils.GetResourceByName("pos_button_label_table_reservation"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionTableReservation, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Sensitive = false };
-            //Tables
-            _buttonTableFilterAll = new TouchButtonIconWithText("touchButtonTableFilterAll_Green", Color.Transparent, GeneralUtils.GetResourceByName("dialog_orders_button_label_tables_all"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionTableFilterAll, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Visible = false, Sensitive = false };
-            _buttonTableFilterFree = new TouchButtonIconWithText("touchButtonTableFilterFree_Green", Color.Transparent, GeneralUtils.GetResourceByName("dialog_orders_button_label_tables_free"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionTableFilterFree, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Visible = false };
-            _buttonTableFilterOpen = new TouchButtonIconWithText("touchButtonTableFilterOpen_Green", Color.Transparent, GeneralUtils.GetResourceByName("dialog_orders_button_label_tables_open"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionTableFilterOpen, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Visible = false };
-            _buttonTableFilterReserved = new TouchButtonIconWithText("touchButtonTableFilterReserved_Green", Color.Transparent, GeneralUtils.GetResourceByName("dialog_orders_button_label_tables_reserved"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionTableFilterReserved, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Visible = false };
+            _buttonTableReservation = new IconButtonWithText(
+                new ButtonSettings
+                {
+                    Name = "touchButtonTableReservation_DialogActionArea",
+                    BackgroundColor = ColorSettings.ActionAreaButtonBackground,
+                    Text = GeneralUtils.GetResourceByName("pos_button_label_table_reservation"),
+                    Font = FontSettings.ActionAreaButton,
+                    FontColor = ColorSettings.ActionAreaButtonFont,
+                    Icon = fileActionTableReservation,
+                    IconSize = SizeSettings.ActionAreaButtonIcon,
+                    ButtonSize = SizeSettings.ActionAreaButton
+                })
+            { Sensitive = false };
+
+            _buttonTableFilterAll = new IconButtonWithText(
+                new ButtonSettings
+                {
+                    Name = "touchButtonTableFilterAll_Green",
+                    BackgroundColor = Color.Transparent,
+                    Text = GeneralUtils.GetResourceByName("dialog_orders_button_label_tables_all"),
+                    Font = FontSettings.ActionAreaButton,
+                    FontColor = ColorSettings.ActionAreaButtonFont,
+                    Icon = fileActionTableFilterAll,
+                    IconSize = SizeSettings.ActionAreaButtonIcon,
+                    ButtonSize = SizeSettings.ActionAreaButton
+                })
+            { Visible = false, Sensitive = false };
+
+
+
+
+            _buttonTableFilterFree = new IconButtonWithText(
+                new ButtonSettings
+                {
+                    Name = "touchButtonTableFilterFree_Green",
+                    BackgroundColor = ColorSettings.ActionAreaButtonBackground,
+                    Text = GeneralUtils.GetResourceByName("dialog_orders_button_label_tables_free"),
+                    Font = FontSettings.ActionAreaButton,
+                    FontColor = ColorSettings.ActionAreaButtonFont,
+                    Icon = fileActionTableFilterFree,
+                    IconSize = SizeSettings.ActionAreaButtonIcon,
+                    ButtonSize = SizeSettings.ActionAreaButton
+                })
+            { Visible = false };
+
+            _buttonTableFilterOpen = new IconButtonWithText(
+                new ButtonSettings
+                {
+                    Name = "touchButtonTableFilterOpen_Green",
+                    Text = GeneralUtils.GetResourceByName("dialog_orders_button_label_tables_open"),
+                    Font = FontSettings.ActionAreaButton,
+                    FontColor = ColorSettings.ActionAreaButtonFont,
+                    Icon = fileActionTableFilterOpen,
+                    IconSize = SizeSettings.ActionAreaButtonIcon,
+                    ButtonSize = SizeSettings.ActionAreaButton
+                })
+            { Visible = false };
+
+            _buttonTableFilterReserved = new IconButtonWithText(
+                new ButtonSettings
+                {
+                    Name = "touchButtonTableFilterReserved_Green",
+                    Text = GeneralUtils.GetResourceByName("dialog_orders_button_label_tables_reserved"),
+                    Font = FontSettings.ActionAreaButton,
+                    FontColor = ColorSettings.ActionAreaButtonFont,
+                    Icon = fileActionTableFilterReserved,
+                    IconSize = SizeSettings.ActionAreaButtonIcon,
+                    ButtonSize = SizeSettings.ActionAreaButton
+                })
+            { Visible = false };
+
             //Views
-            _buttonTableViewOrders = new TouchButtonIconWithText("touchButtonViewOrders_Red", Color.Transparent, GeneralUtils.GetResourceByName("dialog_orders_button_label_view_orders"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionViewOrders, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height);
-            _buttonTableViewTables = new TouchButtonIconWithText("touchButtonViewTables_Green", Color.Transparent, GeneralUtils.GetResourceByName("dialog_orders_button_label_view_tables"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionTableViewTables, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height);
-            //Orders
-            //_buttonOrderChangeTable = new TouchButtonIconWithText("touchButtonOrderChangeTable_Red", Color.Transparent, CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "pos_button_label_change_table, _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, _fileActionDefault, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Sensitive = false };
+            _buttonTableViewOrders = new IconButtonWithText(
+                new ButtonSettings
+                {
+                    Name = "touchButtonViewOrders_Red",
+                    Text = GeneralUtils.GetResourceByName("dialog_orders_button_label_view_orders"),
+                    Font = FontSettings.ActionAreaButton,
+                    FontColor = ColorSettings.ActionAreaButtonFont,
+                    Icon = fileActionViewOrders,
+                    IconSize = SizeSettings.ActionAreaButtonIcon,
+                    ButtonSize = SizeSettings.ActionAreaButton
+                });
+
+            _buttonTableViewTables = new IconButtonWithText(
+                new ButtonSettings
+                {
+                    Name = "touchButtonViewTables_Green",
+                    BackgroundColor = Color.Transparent,
+                    Text = GeneralUtils.GetResourceByName("dialog_orders_button_label_view_tables"),
+                    Font = FontSettings.ActionAreaButton,
+                    FontColor = ColorSettings.ActionAreaButtonFont,
+                    Icon = fileActionTableViewTables,
+                    IconSize = SizeSettings.ActionAreaButtonIcon,
+                    ButtonSize = SizeSettings.ActionAreaButton
+                });
 
             //ActionArea
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
@@ -160,7 +246,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             actionAreaButtons.Add(new ActionAreaButton(_buttonCancel, ResponseType.Cancel));
 
             //Init Object
-            this.InitObject(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, _fixedContent, actionAreaButtons);
+            this.Initialize(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, _fixedContent, actionAreaButtons);
 
             this.ExposeEvent += delegate
             {
@@ -184,12 +270,30 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         private void BuildPlace()
         {
-            //Colors
-            //Color colorPosButtonFamilyBackground = FrameworkUtils.StringToColor(LogicPOS.Settings.GeneralSettings.Settings["colorPosButtonFamilyBackground"]);
-
             //Scrollers
-            TouchButtonIcon buttonPosScrollersPlacePrev = new TouchButtonIcon("buttonPosScrollersTablePrev", Color.White, _fileScrollLeftImage, _sizeIconScrollLeftRight, _sizePosSmallButtonScroller.Width, _sizePosSmallButtonScroller.Height);
-            TouchButtonIcon buttonPosScrollersPlaceNext = new TouchButtonIcon("buttonPosScrollersTableNext", Color.White, _fileScrollRightImage, _sizeIconScrollLeftRight, _sizePosSmallButtonScroller.Width, _sizePosSmallButtonScroller.Height);
+            IconButton buttonPosScrollersPlacePrev = new IconButton(
+                new ButtonSettings
+                {
+                    Name = "buttonPosScrollersTablePrev",
+                    BackgroundColor = Color.White,
+                    Icon = _fileScrollLeftImage,
+                    IconSize = _sizeIconScrollLeftRight,
+                    ButtonSize = new Size(_sizePosSmallButtonScroller.Width,
+                                          _sizePosSmallButtonScroller.Height)
+                });
+
+            IconButton buttonPosScrollersPlaceNext = new IconButton(
+                new ButtonSettings
+                {
+                    Name = "buttonPosScrollersTableNext",
+                    BackgroundColor = Color.White,
+                    Icon = _fileScrollRightImage,
+                    IconSize = _sizeIconScrollLeftRight,
+                    ButtonSize = new Size(_sizePosSmallButtonScroller.Width,
+                                          _sizePosSmallButtonScroller.Height)
+                });
+
+
             buttonPosScrollersPlacePrev.Relief = ReliefStyle.None;
             buttonPosScrollersPlaceNext.Relief = ReliefStyle.None;
             buttonPosScrollersPlacePrev.BorderWidth = 0;
@@ -231,11 +335,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private void BuildOrders()
         {
             //Colors
-            //Color colorPosButtonArticleBackground = FrameworkUtils.StringToColor(LogicPOS.Settings.GeneralSettings.Settings["colorPosButtonArticleBackground"]);
+            //Color colorPosButtonArticleBackground = FrameworkUtils.StringToColor(LogicPOS.Settings.AppSettings.Instance.colorPosButtonArticleBackground"]);
 
             //Scrollers
-            TouchButtonIcon buttonPosScrollersOrderPrev = new TouchButtonIcon("buttonPosScrollersOrderPrev", Color.White, _fileScrollLeftImage, _sizeIconScrollLeftRight, _sizePosSmallButtonScroller.Width, _sizePosSmallButtonScroller.Height);
-            TouchButtonIcon buttonPosScrollersOrderNext = new TouchButtonIcon("buttonPosScrollersOrderNext", Color.White, _fileScrollRightImage, _sizeIconScrollLeftRight, _sizePosSmallButtonScroller.Width, _sizePosSmallButtonScroller.Height);
+            IconButton buttonPosScrollersOrderPrev = new IconButton(new ButtonSettings { Name = "buttonPosScrollersOrderPrev", BackgroundColor = Color.White, Icon = _fileScrollLeftImage, IconSize = _sizeIconScrollLeftRight, ButtonSize = new Size(_sizePosSmallButtonScroller.Width, _sizePosSmallButtonScroller.Height) });
+            IconButton buttonPosScrollersOrderNext = new IconButton(new ButtonSettings { Name = "buttonPosScrollersOrderNext", BackgroundColor = Color.White, Icon = _fileScrollRightImage, IconSize = _sizeIconScrollLeftRight, ButtonSize = new Size(_sizePosSmallButtonScroller.Width, _sizePosSmallButtonScroller.Height) });
             buttonPosScrollersOrderPrev.Relief = ReliefStyle.None;
             buttonPosScrollersOrderNext.Relief = ReliefStyle.None;
             buttonPosScrollersOrderPrev.BorderWidth = 0;
@@ -293,11 +397,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private void BuildTable()
         {
             //Colors
-            //Color colorPosButtonArticleBackground = FrameworkUtils.StringToColor(LogicPOS.Settings.GeneralSettings.Settings["colorPosButtonArticleBackground"]);
+            //Color colorPosButtonArticleBackground = FrameworkUtils.StringToColor(LogicPOS.Settings.AppSettings.Instance.colorPosButtonArticleBackground"]);
 
             //Scrollers
-            TouchButtonIcon buttonPosScrollersTablePrev = new TouchButtonIcon("buttonPosScrollersTablePrev", Color.White, _fileScrollLeftImage, _sizeIconScrollLeftRight, _sizePosSmallButtonScroller.Width, _sizePosSmallButtonScroller.Height);
-            TouchButtonIcon buttonPosScrollersTableNext = new TouchButtonIcon("buttonPosScrollersTableNext", Color.White, _fileScrollRightImage, _sizeIconScrollLeftRight, _sizePosSmallButtonScroller.Width, _sizePosSmallButtonScroller.Height);
+            IconButton buttonPosScrollersTablePrev = new IconButton(new ButtonSettings { Name = "buttonPosScrollersTablePrev", BackgroundColor = Color.White, Icon = _fileScrollLeftImage, IconSize = _sizeIconScrollLeftRight, ButtonSize = new Size(_sizePosSmallButtonScroller.Width, _sizePosSmallButtonScroller.Height) });
+            IconButton buttonPosScrollersTableNext = new IconButton(new ButtonSettings { Name = "buttonPosScrollersTableNext", BackgroundColor = Color.White, Icon = _fileScrollRightImage, IconSize = _sizeIconScrollLeftRight, ButtonSize = new Size(_sizePosSmallButtonScroller.Width, _sizePosSmallButtonScroller.Height) });
             buttonPosScrollersTablePrev.Relief = ReliefStyle.None;
             buttonPosScrollersTableNext.Relief = ReliefStyle.None;
             buttonPosScrollersTablePrev.BorderWidth = 0;

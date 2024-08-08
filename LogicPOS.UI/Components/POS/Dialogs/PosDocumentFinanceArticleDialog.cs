@@ -1,28 +1,27 @@
 ﻿using DevExpress.Data.Filtering;
+using DevExpress.Xpo;
 using Gtk;
+using logicpos.Classes.Enums.Dialogs;
+using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog;
 using logicpos.Classes.Gui.Gtk.Widgets;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.shared.Enums;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Drawing;
-using logicpos.Classes.Enums.Dialogs;
-using logicpos.Classes.Enums.Keyboard;
-using DevExpress.Xpo;
-using System.Collections;
-using LogicPOS.Globalization;
-using LogicPOS.Settings;
-using LogicPOS.Shared.CustomDocument;
-using LogicPOS.Shared.Article;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Enums;
+using LogicPOS.Settings;
+using LogicPOS.Shared.Article;
+using LogicPOS.Shared.CustomDocument;
+using LogicPOS.UI.Buttons;
 using LogicPOS.Utility;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Data;
+using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -31,9 +30,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         //Window
         private readonly PosDocumentFinanceDialog _posDocumentFinanceDialog;
         //Action Buttons
-        private readonly TouchButtonIconWithText _buttonOk;
-        private readonly TouchButtonIconWithText _buttonCancel;
-        private readonly TouchButtonIconWithText _buttonClear;
+        private readonly IconButtonWithText _buttonOk;
+        private readonly IconButtonWithText _buttonCancel;
+        private readonly IconButtonWithText _buttonClear;
         //UI
         private VBox _vboxEntrys;
         private XPOEntryBoxSelectRecord<fin_article, TreeViewArticle> _entryBoxSelectArticle;
@@ -89,25 +88,25 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public decimal DiscountGlobal { get; set; } = 0.0m;
 
         public PosDocumentFinanceArticleDialog(
-            Window pSourceWindow,
-            GenericTreeViewDataTable pTreeView,
+            Window parentWindow,
+            GridViewDataTable pTreeView,
             DialogFlags pDialogFlags,
             DialogMode pDialogMode,
             DataRow pDataSourceRow)
-                    : base(pSourceWindow, pDialogFlags, pDialogMode, pDataSourceRow)
+                    : base(parentWindow, pDialogFlags, pDialogMode, pDataSourceRow)
         {
             //Parameters
-            _sourceWindow = pSourceWindow;
+            WindowSettings.Source = parentWindow;
             _dialogMode = pDialogMode;
             _dataSourceRow = pDataSourceRow;
             //References
-            _posDocumentFinanceDialog = (_sourceWindow as PosDocumentFinanceDialog);
+            _posDocumentFinanceDialog = (WindowSettings.Source as PosDocumentFinanceDialog);
             _currencyDisplay = (_posDocumentFinanceDialog.PagePad.Pages[0] as DocumentFinanceDialogPage1).EntryBoxSelectConfigurationCurrency.Value;
             //Require to Update ExchangeRate after create Database
             _currencyDisplay.Reload();
 
             //Get Reference for documentFinanceType
-            _documentFinanceType = ((_sourceWindow as PosDocumentFinanceDialog).PagePad.Pages[0] as DocumentFinanceDialogPage1).EntryBoxSelectDocumentFinanceType.Value;
+            _documentFinanceType = ((WindowSettings.Source as PosDocumentFinanceDialog).PagePad.Pages[0] as DocumentFinanceDialogPage1).EntryBoxSelectDocumentFinanceType.Value;
 
             //Init Local Vars
             string windowTitle = GeneralUtils.GetResourceByName("global_insert_articles");
@@ -118,14 +117,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _vatRateConsignationInvoiceExemptionReason = (fin_configurationvatexemptionreason)XPOSettings.Session.GetObjectByKey(typeof(fin_configurationvatexemptionreason), InvoiceSettings.XpoOidConfigurationVatExemptionReasonM99);
 
             //TODO:THEME
-            _windowSize = new Size(900, 360);
+            WindowSettings.Size = new Size(900, 360);
 
             string fileDefaultWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_finance_article.png";
 
             //Get Discount from Select Customer
-            DiscountGlobal = DataConversionUtils.StringToDecimal(((pSourceWindow as PosDocumentFinanceDialog).PagePad.Pages[1] as DocumentFinanceDialogPage2).EntryBoxCustomerDiscount.EntryValidation.Text);
+            DiscountGlobal = DataConversionUtils.StringToDecimal(((parentWindow as PosDocumentFinanceDialog).PagePad.Pages[1] as DocumentFinanceDialogPage2).EntryBoxCustomerDiscount.EntryValidation.Text);
             //Get PriceType from Customer
-            var customerObject = ((pSourceWindow as PosDocumentFinanceDialog).PagePad.Pages[1] as DocumentFinanceDialogPage2).EntryBoxSelectCustomerName;
+            var customerObject = ((parentWindow as PosDocumentFinanceDialog).PagePad.Pages[1] as DocumentFinanceDialogPage2).EntryBoxSelectCustomerName;
             if (customerObject.Value != null)
             {
                 Guid customerOid = customerObject.Value.Oid;
@@ -133,9 +132,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
 
             //ActionArea Buttons
-            _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);
-            _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
-            _buttonClear = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.CleanFilter);
+            _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
+            _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
+            _buttonClear = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.CleanFilter);
 
             //ActionArea
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons
@@ -162,7 +161,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             fixedContent.Put(_vboxEntrys, 0, 0);
 
             //Init Object
-            this.InitObject(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, _windowSize, fixedContent, actionAreaButtons);
+            this.Initialize(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, WindowSettings.Size, fixedContent, actionAreaButtons);
         }
 
         private void InitUI()
@@ -224,20 +223,20 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             ////}
             //_article.Code = "";
             if (initialValueSelectArticle != null) _article = initialValueSelectArticle;
-            if(_dataSourceRow["Warehouse"] != null && _dataSourceRow["SerialNumber"] != null)
+            if (_dataSourceRow["Warehouse"] != null && _dataSourceRow["SerialNumber"] != null)
             {
                 var sql = string.Format("SELECT ArticleWarehouse FROM fin_articleserialnumber WHERE SerialNumber = '{0}';", _dataSourceRow["SerialNumber"].ToString());
                 var Oid = _article.Session.ExecuteScalar(sql);
                 if (Oid != null) _articleWarehouse = (fin_articlewarehouse)_article.Session.GetObjectByKey(typeof(fin_articlewarehouse), Guid.Parse(Oid.ToString()));
             }
-            else if(_dataSourceRow["Warehouse"] != null)
+            else if (_dataSourceRow["Warehouse"] != null)
             {
                 var sql = string.Format("SELECT Oid FROM ArticleWarehouse WHERE Location = '{0}' AND Article = '{1}';", _dataSourceRow["Warehouse"].ToString(), _article);
                 var Oid = _article.Session.ExecuteScalar(sql);
                 if (Oid != null) _articleWarehouse = (fin_articlewarehouse)_article.Session.GetObjectByKey(typeof(fin_articlewarehouse), Guid.Parse(Oid.ToString()));
             }
-            
-            if(_articleWarehouse == null) _articleWarehouse = new fin_articlewarehouse(_article.Session);
+
+            if (_articleWarehouse == null) _articleWarehouse = new fin_articlewarehouse(_article.Session);
 
             CriteriaOperator criteriaOperatorSelectArticle = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1)");
             _entryBoxSelectArticleCode = new XPOEntryBoxSelectRecord<fin_article, TreeViewArticle>(this, GeneralUtils.GetResourceByName("global_article_code"), "Code", "Oid", initialValueSelectArticle, criteriaOperatorSelectArticle);
@@ -249,7 +248,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             CriteriaOperator criteriaOperatorSelectArticleWarehouse = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1) AND (Quantity > 0)");
             _entryBoxSelectArticleWarehouse = new XPOEntryBoxSelectRecord<fin_articlewarehouse, TreeViewArticleWarehouse>(this, GeneralUtils.GetResourceByName("global_serial_number"), "ArticleSerialNumber", "Oid", _articleWarehouse, criteriaOperatorSelectArticleWarehouse);
-            _entryBoxSelectArticleWarehouse.Entry.IsEditable = true;            
+            _entryBoxSelectArticleWarehouse.Entry.IsEditable = true;
             _entryBoxSelectArticleWarehouse.WidthRequest = 149;
             //_crudWidgetSelectArticleSerialNumber = new GenericCRUDWidgetDataTable(_entryBoxSelectArticleSerialNumber, _entryBoxSelectArticleSerialNumber.Label, _dataSourceRow, "SerialNumber", _regexAlfaNumericExtended, false);
             //_crudWidgetList.Add(_crudWidgetSelectArticleSerialNumber);
@@ -260,23 +259,23 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _entryBoxSelectArticleFamily.Entry.Sensitive = false;
             _entryBoxSelectArticleFamily.WidthRequest = 160;
             _entryBoxSelectArticleFamily.ClosePopup += _entryBoxSelectArticleFamily_ClosePopup;
-                        
+
             _crudWidgetSelectArticleFamily = new GenericCRUDWidgetDataTable(_entryBoxSelectArticleFamily, _entryBoxSelectArticleFamily.Label, _dataSourceRow, "article.Family", _regexAlfaNumericExtended, true);
             _crudWidgetList.Add(_crudWidgetSelectArticleFamily);
 
             fin_articlesubfamily initialValueSelectArticleSubFamily = (_dataSourceRow["Article.SubFamily"] as fin_articlesubfamily);
-            CriteriaOperator criteriaOperatorSelectArticleSubFamily = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1)");            
+            CriteriaOperator criteriaOperatorSelectArticleSubFamily = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1)");
             _entryBoxSelectArticleSubFamily = new XPOEntryBoxSelectRecord<fin_articlesubfamily, TreeViewArticleSubFamily>(this, GeneralUtils.GetResourceByName("global_article_subfamily"), "Designation", "Oid", initialValueSelectArticle.SubFamily, criteriaOperatorSelectArticle);
             _entryBoxSelectArticleSubFamily.Entry.IsEditable = false;
             _entryBoxSelectArticleSubFamily.Entry.Sensitive = false;
             _entryBoxSelectArticleSubFamily.WidthRequest = 160;
             _entryBoxSelectArticleSubFamily.ClosePopup += _entryBoxSelectArticleSubFamily_ClosePopup;
             _entryBoxSelectArticleSubFamily.ButtonSelectValue.Sensitive = false;
-            
+
             _crudWidgetSelectArticleSubFamily = new GenericCRUDWidgetDataTable(_entryBoxSelectArticleSubFamily, _entryBoxSelectArticleSubFamily.Label, _dataSourceRow, "article.Subfamily", _regexAlfaNumericExtended, true);
             _crudWidgetList.Add(_crudWidgetSelectArticleSubFamily);
 
-            if(initialValueSelectArticle.Family != null && initialValueSelectArticle.SubFamily != null)
+            if (initialValueSelectArticle.Family != null && initialValueSelectArticle.SubFamily != null)
             {
                 _entryBoxSelectArticleFamily.Entry.Text = initialValueSelectArticle.Family.Designation;
                 _entryBoxSelectArticleSubFamily.Entry.Text = initialValueSelectArticle.SubFamily.Designation;
@@ -288,8 +287,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //_crudWidgetSelectArticleCode = new GenericCRUDWidgetDataTable(_entryBoxSelectArticleCode, _entryBoxSelectArticleCode.Label, _dataSourceRow, "Oid", _regexGuid, true);
             //_crudWidgetList.Add(_crudWidgetSelectArticleCode);
 
-                //Events
-                _entryBoxSelectArticleCode.ClosePopup += _entryBoxSelectArticleCode_ClosePopup;
+            //Events
+            _entryBoxSelectArticleCode.ClosePopup += _entryBoxSelectArticleCode_ClosePopup;
             _entryBoxSelectArticleWarehouse.ClosePopup += _entryBoxSelectArticleCode_ClosePopup;
 
             //Select Article Name
@@ -366,25 +365,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Events
             _entryBoxValidationQuantity.EntryValidation.Changed += delegate
             {
-                try
-                {                    
-                    UpdatePriceProperties();
-                }
-                catch (Exception Ex)
-                {
-                    _logger.Error("Error updating article quantity :" + Ex.Message);
-                }
+                UpdatePriceProperties();
             };
             _entryBoxValidationQuantity.EntryValidation.FocusOutEvent += delegate
             {
-                try
-                {
-                    _entryBoxValidationQuantity.EntryValidation.Text = DataConversionUtils.StringToDecimalAndToStringAgain(_entryBoxValidationQuantity.EntryValidation.Text);
-                }
-                catch (Exception Ex)
-                {
-                    _logger.Error("Error updating article quantity :" + Ex.Message);
-                }
+                _entryBoxValidationQuantity.EntryValidation.Text = DataConversionUtils.StringToDecimalAndToStringAgain(_entryBoxValidationQuantity.EntryValidation.Text);
             };
 
             //Discount
@@ -416,7 +401,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             HBox ArticleCodeAndArticleName = new HBox(false, 0);
             //Invisible, only used to Debug, to View Values in System Currency
             //hboxPriceQuantityDiscountAndTotals.PackStart(_entryBoxValidationPrice, true, true, 0);
-            if(GeneralSettings.AppUseBackOfficeMode && LicenseSettings.LicenseModuleStocks) ArticleCodeAndArticleName.PackStart(_entryBoxSelectArticleWarehouse, false, false, 0); 
+            if (GeneralSettings.AppUseBackOfficeMode && LicenseSettings.LicenseModuleStocks) ArticleCodeAndArticleName.PackStart(_entryBoxSelectArticleWarehouse, false, false, 0);
             ArticleCodeAndArticleName.PackStart(_entryBoxSelectArticleCode, false, false, 0);
             ArticleCodeAndArticleName.PackStart(_entryBoxSelectArticle, true, true, 0);
             ArticleCodeAndArticleName.PackStart(_entryBoxSelectArticleFamily, false, false, 0);
@@ -489,7 +474,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Uncomment to Show Invisible Widgets
             //_vboxEntrys.PackStart(hboxToken1AndToken2);
             _vboxEntrys.PackStart(_entryBoxValidationNotes);
-            _vboxEntrys.WidthRequest = _windowSize.Width - 13;
+            _vboxEntrys.WidthRequest = WindowSettings.Size.Width - 13;
 
             // CreditNote : Protect all components, only Quantity is Editable in CreditMode
             if (_documentFinanceType.Oid == CustomDocumentSettings.CreditNoteId)
@@ -551,7 +536,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             // Call ValidateMaxQuantities before 
             else if (pResponse == ResponseType.Ok && !ValidateMaxArticleQuantity())
-            {     
+            {
                 this.Run();
             }
             else if (pResponse == ResponseType.Ok && !ValidateSerialNumber())
@@ -574,68 +559,62 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _crudWidgetList.ProcessDialogResponse(this, _dialogMode, pResponse);
 
                 //Save new article
-                try
+
+                if (_article == null || _article.Oid == Guid.Empty)
                 {
-                    if (_article == null || _article.Oid == Guid.Empty)
+                    //Verifica se artigo já existe
+                    fin_configurationpricetype configurationPriceTypeDefault = (fin_configurationpricetype)XPOSettings.Session.GetObjectByKey(typeof(fin_configurationpricetype), XPOSettings.XpoOidConfigurationPriceTypeDefault);
+
+                    _article = new fin_article(XPOSettings.Session);
+                    //Prepare Objects
+                    Guid haveCode = new Guid();
+
+                    string sql = string.Format(@"SELECT Oid FROM fin_article WHERE Code = '{0}' ORDER BY Code; ", _entryBoxSelectArticleCode.Entry.Text);
+                    var result = XPOSettings.Session.ExecuteQuery(sql);
+                    if (result != null && result.ResultSet[0].Rows.Length > 0)
                     {
-                        //Verifica se artigo já existe
-                        fin_configurationpricetype configurationPriceTypeDefault = (fin_configurationpricetype)XPOSettings.Session.GetObjectByKey(typeof(fin_configurationpricetype), XPOSettings.XpoOidConfigurationPriceTypeDefault);
-
-                        _article = new fin_article(XPOSettings.Session);
-                        //Prepare Objects
-                        Guid haveCode = new Guid();
-
-                        string sql = string.Format(@"SELECT Oid FROM fin_article WHERE Code = '{0}' ORDER BY Code; ", _entryBoxSelectArticleCode.Entry.Text);
-                        var result = XPOSettings.Session.ExecuteQuery(sql);
-                        if (result != null && result.ResultSet[0].Rows.Length > 0)
-                        {
-                            haveCode = Guid.Parse(result.ResultSet[0].Rows[0].Values[0].ToString());
-                        }
-
-                        //Code don't exists on database
-                        if ((result.ResultSet[0].Rows.Length == 0) && (!string.IsNullOrEmpty(_entryBoxSelectArticleCode.Entry.Text) || !string.IsNullOrEmpty(_entryBoxSelectArticle.Entry.Text)))
-                        {
-                            //Guid vatExemptionReasonOid = Guid.Parse((_dataSourceRow["VatExemptionReason.value"].ToString()).ToString());
-                            _article.Code = _entryBoxSelectArticleCode.Entry.Text;
-                            _article.Designation = _entryBoxSelectArticle.Entry.Text;
-                            _article.Price1 = DataConversionUtils.StringToDecimal(_dataSourceRow["Price"].ToString());
-                            _article.PriceWithVat = false;
-                            _article.Discount = DataConversionUtils.StringToDecimal(_dataSourceRow["Discount"].ToString());
-                            _article.VatDirectSelling = (fin_configurationvatrate)XPOSettings.Session.GetObjectByKey(typeof(fin_configurationvatrate), _entryBoxSelectVatRate.Value.Oid);
-                            _article.VatOnTable = _article.VatDirectSelling;
-                            if (_entryBoxSelectVatExemptionReason.Value != null)
-                            {
-                                _article.VatExemptionReason = (fin_configurationvatexemptionreason)XPOSettings.Session.GetObjectByKey(typeof(fin_configurationvatexemptionreason), _entryBoxSelectVatExemptionReason.Value.Oid);
-                            }
-                            _article.Notes = _entryBoxValidationNotes.EntryValidation.Text;
-                            _article.Family = (fin_articlefamily)XPOSettings.Session.GetObjectByKey(typeof(fin_articlefamily), _entryBoxSelectArticleFamily.Value.Oid);
-                            _article.SubFamily = (fin_articlesubfamily)XPOSettings.Session.GetObjectByKey(typeof(fin_articlesubfamily), _entryBoxSelectArticleSubFamily.Value.Oid);
-                            _article.Type = (fin_articletype)XPOSettings.Session.GetObjectByKey(typeof(fin_articletype), XPOSettings.XpoOidArticleDefaultType);
-
-                            _article.Save();
-
-                            _entryBoxSelectArticle.Value = _article;
-                            _entryBoxSelectArticle_ClosePopup(null, null);
-
-                            logicpos.Utils.ShowMessageTouch(this, DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_insert_articles"), GeneralUtils.GetResourceByName("global_documentfinance_insert_new_article"));
-                        }
-                        else
-                        {
-                            logicpos.Utils.ShowMessageTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_insert_articles"), GeneralUtils.GetResourceByName("global_documentfinance_insert_new_article_code_error"));
-                            this.Run();
-                        }
-
+                        haveCode = Guid.Parse(result.ResultSet[0].Rows[0].Values[0].ToString());
                     }
-                    //Codigo ou designação vazias
-                    if (string.IsNullOrEmpty(_entryBoxSelectArticleCode.Entry.Text) || string.IsNullOrEmpty(_entryBoxSelectArticle.Entry.Text))
+
+                    //Code don't exists on database
+                    if ((result.ResultSet[0].Rows.Length == 0) && (!string.IsNullOrEmpty(_entryBoxSelectArticleCode.Entry.Text) || !string.IsNullOrEmpty(_entryBoxSelectArticle.Entry.Text)))
+                    {
+                        //Guid vatExemptionReasonOid = Guid.Parse((_dataSourceRow["VatExemptionReason.value"].ToString()).ToString());
+                        _article.Code = _entryBoxSelectArticleCode.Entry.Text;
+                        _article.Designation = _entryBoxSelectArticle.Entry.Text;
+                        _article.Price1 = DataConversionUtils.StringToDecimal(_dataSourceRow["Price"].ToString());
+                        _article.PriceWithVat = false;
+                        _article.Discount = DataConversionUtils.StringToDecimal(_dataSourceRow["Discount"].ToString());
+                        _article.VatDirectSelling = (fin_configurationvatrate)XPOSettings.Session.GetObjectByKey(typeof(fin_configurationvatrate), _entryBoxSelectVatRate.Value.Oid);
+                        _article.VatOnTable = _article.VatDirectSelling;
+                        if (_entryBoxSelectVatExemptionReason.Value != null)
+                        {
+                            _article.VatExemptionReason = (fin_configurationvatexemptionreason)XPOSettings.Session.GetObjectByKey(typeof(fin_configurationvatexemptionreason), _entryBoxSelectVatExemptionReason.Value.Oid);
+                        }
+                        _article.Notes = _entryBoxValidationNotes.EntryValidation.Text;
+                        _article.Family = (fin_articlefamily)XPOSettings.Session.GetObjectByKey(typeof(fin_articlefamily), _entryBoxSelectArticleFamily.Value.Oid);
+                        _article.SubFamily = (fin_articlesubfamily)XPOSettings.Session.GetObjectByKey(typeof(fin_articlesubfamily), _entryBoxSelectArticleSubFamily.Value.Oid);
+                        _article.Type = (fin_articletype)XPOSettings.Session.GetObjectByKey(typeof(fin_articletype), XPOSettings.XpoOidArticleDefaultType);
+
+                        _article.Save();
+
+                        _entryBoxSelectArticle.Value = _article;
+                        _entryBoxSelectArticle_ClosePopup(null, null);
+
+                        logicpos.Utils.ShowMessageTouch(this, DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_insert_articles"), GeneralUtils.GetResourceByName("global_documentfinance_insert_new_article"));
+                    }
+                    else
                     {
                         logicpos.Utils.ShowMessageTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_insert_articles"), GeneralUtils.GetResourceByName("global_documentfinance_insert_new_article_code_error"));
                         this.Run();
                     }
+
                 }
-                catch (Exception ex)
+                //Codigo ou designação vazias
+                if (string.IsNullOrEmpty(_entryBoxSelectArticleCode.Entry.Text) || string.IsNullOrEmpty(_entryBoxSelectArticle.Entry.Text))
                 {
-                    _logger.Error(string.Format("Error saving new article: {0}", ex.Message));
+                    logicpos.Utils.ShowMessageTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_insert_articles"), GeneralUtils.GetResourceByName("global_documentfinance_insert_new_article_code_error"));
+                    this.Run();
                 }
 
             }
@@ -655,303 +634,292 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         //TK016251 - FrontOffice - Criar novo documento com auto-complete para artigos e clientes 
         private void _entryBoxSelectArticleCode_ClosePopup(object sender, EventArgs e)
         {
-            try
+
+            //Prepare Objects
+            Guid haveCode = new Guid();
+            if ((sender as XPOEntryBoxSelectRecord<fin_articlewarehouse, TreeViewArticleWarehouse>) == _entryBoxSelectArticleWarehouse)
             {
-                //Prepare Objects
-                Guid haveCode = new Guid();
-                if ((sender as XPOEntryBoxSelectRecord<fin_articlewarehouse, TreeViewArticleWarehouse>) == _entryBoxSelectArticleWarehouse)
-                {
-                    haveCode = _entryBoxSelectArticleWarehouse.Value.Article.Oid;                    
-                }
-
-                if(haveCode == Guid.Empty)
-                {
-                    string sql = string.Format(@"SELECT Oid FROM fin_article WHERE Code = '{0}' ORDER BY Code; ", _entryBoxSelectArticleCode.Entry.Text);
-
-                    var result = XPOSettings.Session.ExecuteQuery(sql);
-                    if (result != null && result.ResultSet[0].Rows.Length > 0)
-                    {
-                        haveCode = Guid.Parse(result.ResultSet[0].Rows[0].Values[0].ToString());
-                    }
-                }
-
-                if (haveCode != null && haveCode != Guid.Empty)
-                {
-                    fin_article article = (fin_article)XPOSettings.Session.GetObjectByKey(typeof(fin_article), haveCode);
-                    fin_configurationpricetype configurationPriceTypeDefault = (fin_configurationpricetype)XPOSettings.Session.GetObjectByKey(typeof(fin_configurationpricetype), XPOSettings.XpoOidConfigurationPriceTypeDefault);
-
-                    if (article != null && article.Type.HavePrice && article.Oid != Guid.Empty)
-                    {
-                        this.WindowTitle = string.Format(GeneralUtils.GetResourceByName("global_insert_articles"));
-                        if (string.IsNullOrEmpty(_entryBoxSelectArticle.Entry.Text) || _entryBoxSelectArticle.Entry.Text != article.Designation)
-                        {
-                            _entryBoxSelectArticle.Value = article;
-                            _entryBoxSelectArticle.Entry.Text = article.Designation;
-                        }
-
-                        if (article.SubFamily != null && article.Family != null)
-                        {
-                            _entryBoxSelectArticleSubFamily.Entry.Text = article.SubFamily.Designation;
-                            _entryBoxSelectArticleSubFamily.Value = article.SubFamily;
-                            _entryBoxSelectArticleSubFamily.ButtonSelectValue.Sensitive = false;
-
-                            _entryBoxSelectArticleFamily.Entry.Text = article.Family.Designation;
-                            _entryBoxSelectArticleFamily.Value = article.Family;
-                            _entryBoxSelectArticleFamily.ButtonSelectValue.Sensitive = false;
-
-                            _crudWidgetSelectArticleFamily.Validated = true;
-                            _crudWidgetSelectArticleFamily.ValidateField();
-
-                            _crudWidgetSelectArticleSubFamily.Validated = true;
-                            _crudWidgetSelectArticleSubFamily.ValidateField();
-                        }
-                        //Get PriceType from Customer.PriceType or from default if a New Customer or a Customer without PriceType Defined in BackOffice, always revert to Price1
-                        PriceType priceType = (_customer != null)
-                            ? (PriceType)_customer.PriceType.EnumValue
-                            : (PriceType)configurationPriceTypeDefault.EnumValue
-                        ;
-
-                        //Common changes for MediaNova | Non-MediaNova Articles | Here Prices are always in Retail Mode
-                        PriceProperties priceProperties = ArticleUtils.GetArticlePrice(article, priceType, TaxSellType.Normal);
-
-
-                        //Price
-                        _articlePrice = priceProperties.PriceNet;
-                        _dataSourceRow["PriceFinal"] = priceProperties.PriceNet;
-                        //Display Price
-                        _entryBoxValidationPrice.EntryValidation.Text = DataConversionUtils.DecimalToString(_articlePrice);
-                        _entryBoxValidationPriceDisplay.EntryValidation.Text = DataConversionUtils.DecimalToString(_articlePrice * _currencyDisplay.ExchangeRate);
-                        _entryBoxValidationQuantity.EntryValidation.Text = (article.DefaultQuantity > 0) ? DataConversionUtils.DecimalToString(article.DefaultQuantity) : DataConversionUtils.DecimalToString(1.0m);
-                        _entryBoxValidationDiscount.EntryValidation.Text = DataConversionUtils.DecimalToString(article.Discount);
-
-                        //VatRate
-                        _entryBoxSelectVatRate.Value = article.VatDirectSelling;
-                        _entryBoxSelectVatRate.Entry.Text = article.VatDirectSelling.Designation;
-
-
-                        //Price
-                        _articlePrice = priceProperties.PriceNet;
-                        _dataSourceRow["PriceFinal"] = priceProperties.PriceNet;
-                        //Display Price
-                        _entryBoxValidationPrice.EntryValidation.Text = DataConversionUtils.DecimalToString(_articlePrice);
-                        _entryBoxValidationPriceDisplay.EntryValidation.Text = DataConversionUtils.DecimalToString(_articlePrice * _currencyDisplay.ExchangeRate);
-                        _entryBoxValidationQuantity.EntryValidation.Text = (article.DefaultQuantity > 0) ? DataConversionUtils.DecimalToString(article.DefaultQuantity) : DataConversionUtils.DecimalToString(1.0m);
-                        _entryBoxValidationDiscount.EntryValidation.Text = DataConversionUtils.DecimalToString(article.Discount);
-
-
-                        //VatRate
-                        _entryBoxSelectVatRate.Value = article.VatDirectSelling;
-                        _entryBoxSelectVatRate.Entry.Text = article.VatDirectSelling.Designation;
-
-                        //Default Vat Exception Reason
-                        if (article.VatExemptionReason != null)
-                        {
-                            _entryBoxSelectVatExemptionReason.Value = article.VatExemptionReason;
-                            _entryBoxSelectVatExemptionReason.Entry.Text = article.VatExemptionReason.Designation;
-                        }
-
-                        //Toggle ToggleVatExemptionReasonEditMode Validation
-                        ToggleVatExemptionReasonEditMode();
-                        //Update Price Properties
-                        UpdatePriceProperties();
-
-                        //Assign to DataRow
-                        _dataSourceRow["Article.Code"] = article;
-                        _dataSourceRow[3] = article;
-                        _dataSourceRow[1] = article.Oid;
-
-                        _dataSourceRow["Price"] = _dataSourceRow["PriceFinal"];
-                        _article = article;
-                        if(_entryBoxSelectArticleWarehouse.Value != null) { _dataSourceRow["Warehouse"] = (_entryBoxSelectArticleWarehouse.Value as fin_articlewarehouse).Oid.ToString(); }
-                        
-                        if (_article.ArticleSerialNumber.Count > 0)
-                        {
-                            _entryBoxSelectArticleWarehouse.Entry.IsEditable = true;
-                            _entryBoxSelectArticleWarehouse.Entry.Sensitive = true;
-                            if(_entryBoxSelectArticleWarehouse.Value.ArticleSerialNumber != null)
-                            {
-                                _dataSourceRow["SerialNumber"] = _entryBoxSelectArticleWarehouse.Value.ArticleSerialNumber.SerialNumber;
-                                _entryBoxValidationQuantity.EntryValidation.Sensitive = false;
-                            }
-                            else
-                            {
-                                _dataSourceRow["SerialNumber"] = "";
-                                _entryBoxValidationQuantity.EntryValidation.Sensitive = true;
-                            }
-                        }
-                        else
-                        {
-                            _entryBoxSelectArticleWarehouse.Entry.IsEditable = false;
-                            _entryBoxSelectArticleWarehouse.Entry.Sensitive = false;
-                            _entryBoxSelectArticleWarehouse.Value = null;
-                            _entryBoxValidationQuantity.EntryValidation.Sensitive = true;
-                            _entryBoxSelectArticleWarehouse.Entry.Text = "";
-                            _dataSourceRow["SerialNumber"] = "";
-                        }
-                    }
-
-                    else
-                    {
-                        logicpos.Utils.ShowMessageBox(_sourceWindow, DialogFlags.DestroyWithParent, new Size(450, 350), MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("window_title_dialog_already_exited"), GeneralUtils.GetResourceByName("article_type_without_price"));
-                    }
-
-                }
-                else
-                {
-                    this.WindowTitle = string.Format(GeneralUtils.GetResourceByName("global_insert_articles") + " :: " + GeneralUtils.GetResourceByName("global_new_article"));
-                    CleanArticleFields(false);
-                }
-
-
+                haveCode = _entryBoxSelectArticleWarehouse.Value.Article.Oid;
             }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message);
-            }
-        }
 
-        private void _entryBoxSelectArticle_ClosePopup(object sender, EventArgs e)
-        {
-            try
+            if (haveCode == Guid.Empty)
             {
-                //Prepare Objects
-                Guid haveCode = new Guid();
+                string sql = string.Format(@"SELECT Oid FROM fin_article WHERE Code = '{0}' ORDER BY Code; ", _entryBoxSelectArticleCode.Entry.Text);
 
-                string sql = string.Format(@"SELECT Oid FROM fin_article WHERE Designation = '{0}' ORDER BY Code; ", _entryBoxSelectArticle.Entry.Text);
                 var result = XPOSettings.Session.ExecuteQuery(sql);
-
                 if (result != null && result.ResultSet[0].Rows.Length > 0)
                 {
                     haveCode = Guid.Parse(result.ResultSet[0].Rows[0].Values[0].ToString());
                 }
+            }
 
-                if (haveCode != null && haveCode != Guid.Empty)
+            if (haveCode != null && haveCode != Guid.Empty)
+            {
+                fin_article article = (fin_article)XPOSettings.Session.GetObjectByKey(typeof(fin_article), haveCode);
+                fin_configurationpricetype configurationPriceTypeDefault = (fin_configurationpricetype)XPOSettings.Session.GetObjectByKey(typeof(fin_configurationpricetype), XPOSettings.XpoOidConfigurationPriceTypeDefault);
+
+                if (article != null && article.Type.HavePrice && article.Oid != Guid.Empty)
                 {
-                    fin_article article = (fin_article)XPOSettings.Session.GetObjectByKey(typeof(fin_article), haveCode);
-                    fin_configurationpricetype configurationPriceTypeDefault = (fin_configurationpricetype)XPOSettings.Session.GetObjectByKey(typeof(fin_configurationpricetype), XPOSettings.XpoOidConfigurationPriceTypeDefault);
-
-                    if (article != null && article.Type.HavePrice && article.Oid != Guid.Empty)
+                    this.WindowSettings.WindowTitle.Text = string.Format(GeneralUtils.GetResourceByName("global_insert_articles"));
+                    if (string.IsNullOrEmpty(_entryBoxSelectArticle.Entry.Text) || _entryBoxSelectArticle.Entry.Text != article.Designation)
                     {
-                        //bool showMessage = false;
-                        //if (GlobalFramework.CheckStocks)
-                        //{
-                        //    if (!Utils.ShowMessageMinimumStock(this, haveCode, article.DefaultQuantity, out showMessage))
-                        //    {
-                        //        if (showMessage) { return; }                                
-                        //    }
-                        //}
+                        _entryBoxSelectArticle.Value = article;
+                        _entryBoxSelectArticle.Entry.Text = article.Designation;
+                    }
 
-                        this.WindowTitle = string.Format(GeneralUtils.GetResourceByName("global_insert_articles"));
+                    if (article.SubFamily != null && article.Family != null)
+                    {
+                        _entryBoxSelectArticleSubFamily.Entry.Text = article.SubFamily.Designation;
+                        _entryBoxSelectArticleSubFamily.Value = article.SubFamily;
+                        _entryBoxSelectArticleSubFamily.ButtonSelectValue.Sensitive = false;
 
-                        if (string.IsNullOrEmpty(_entryBoxSelectArticleCode.Entry.Text) || _entryBoxSelectArticleCode.Entry.Text != article.Code)
+                        _entryBoxSelectArticleFamily.Entry.Text = article.Family.Designation;
+                        _entryBoxSelectArticleFamily.Value = article.Family;
+                        _entryBoxSelectArticleFamily.ButtonSelectValue.Sensitive = false;
+
+                        _crudWidgetSelectArticleFamily.Validated = true;
+                        _crudWidgetSelectArticleFamily.ValidateField();
+
+                        _crudWidgetSelectArticleSubFamily.Validated = true;
+                        _crudWidgetSelectArticleSubFamily.ValidateField();
+                    }
+                    //Get PriceType from Customer.PriceType or from default if a New Customer or a Customer without PriceType Defined in BackOffice, always revert to Price1
+                    PriceType priceType = (_customer != null)
+                        ? (PriceType)_customer.PriceType.EnumValue
+                        : (PriceType)configurationPriceTypeDefault.EnumValue
+                    ;
+
+                    //Common changes for MediaNova | Non-MediaNova Articles | Here Prices are always in Retail Mode
+                    PriceProperties priceProperties = ArticleUtils.GetArticlePrice(article, priceType, TaxSellType.Normal);
+
+
+                    //Price
+                    _articlePrice = priceProperties.PriceNet;
+                    _dataSourceRow["PriceFinal"] = priceProperties.PriceNet;
+                    //Display Price
+                    _entryBoxValidationPrice.EntryValidation.Text = DataConversionUtils.DecimalToString(_articlePrice);
+                    _entryBoxValidationPriceDisplay.EntryValidation.Text = DataConversionUtils.DecimalToString(_articlePrice * _currencyDisplay.ExchangeRate);
+                    _entryBoxValidationQuantity.EntryValidation.Text = (article.DefaultQuantity > 0) ? DataConversionUtils.DecimalToString(article.DefaultQuantity) : DataConversionUtils.DecimalToString(1.0m);
+                    _entryBoxValidationDiscount.EntryValidation.Text = DataConversionUtils.DecimalToString(article.Discount);
+
+                    //VatRate
+                    _entryBoxSelectVatRate.Value = article.VatDirectSelling;
+                    _entryBoxSelectVatRate.Entry.Text = article.VatDirectSelling.Designation;
+
+
+                    //Price
+                    _articlePrice = priceProperties.PriceNet;
+                    _dataSourceRow["PriceFinal"] = priceProperties.PriceNet;
+                    //Display Price
+                    _entryBoxValidationPrice.EntryValidation.Text = DataConversionUtils.DecimalToString(_articlePrice);
+                    _entryBoxValidationPriceDisplay.EntryValidation.Text = DataConversionUtils.DecimalToString(_articlePrice * _currencyDisplay.ExchangeRate);
+                    _entryBoxValidationQuantity.EntryValidation.Text = (article.DefaultQuantity > 0) ? DataConversionUtils.DecimalToString(article.DefaultQuantity) : DataConversionUtils.DecimalToString(1.0m);
+                    _entryBoxValidationDiscount.EntryValidation.Text = DataConversionUtils.DecimalToString(article.Discount);
+
+
+                    //VatRate
+                    _entryBoxSelectVatRate.Value = article.VatDirectSelling;
+                    _entryBoxSelectVatRate.Entry.Text = article.VatDirectSelling.Designation;
+
+                    //Default Vat Exception Reason
+                    if (article.VatExemptionReason != null)
+                    {
+                        _entryBoxSelectVatExemptionReason.Value = article.VatExemptionReason;
+                        _entryBoxSelectVatExemptionReason.Entry.Text = article.VatExemptionReason.Designation;
+                    }
+
+                    //Toggle ToggleVatExemptionReasonEditMode Validation
+                    ToggleVatExemptionReasonEditMode();
+                    //Update Price Properties
+                    UpdatePriceProperties();
+
+                    //Assign to DataRow
+                    _dataSourceRow["Article.Code"] = article;
+                    _dataSourceRow[3] = article;
+                    _dataSourceRow[1] = article.Oid;
+
+                    _dataSourceRow["Price"] = _dataSourceRow["PriceFinal"];
+                    _article = article;
+                    if (_entryBoxSelectArticleWarehouse.Value != null) { _dataSourceRow["Warehouse"] = (_entryBoxSelectArticleWarehouse.Value as fin_articlewarehouse).Oid.ToString(); }
+
+                    if (_article.ArticleSerialNumber.Count > 0)
+                    {
+                        _entryBoxSelectArticleWarehouse.Entry.IsEditable = true;
+                        _entryBoxSelectArticleWarehouse.Entry.Sensitive = true;
+                        if (_entryBoxSelectArticleWarehouse.Value.ArticleSerialNumber != null)
                         {
-                            _entryBoxSelectArticleCode.Value = article;
-                            _entryBoxSelectArticleCode.Entry.Text = article.Code;
-                        }
-
-                        if (article.SubFamily != null && article.Family != null)
-                        {
-                            _entryBoxSelectArticleSubFamily.Entry.Text = article.SubFamily.Designation;
-                            _entryBoxSelectArticleSubFamily.Value = article.SubFamily;
-                            _entryBoxSelectArticleSubFamily.ButtonSelectValue.Sensitive = false;
-
-                            _entryBoxSelectArticleFamily.Entry.Text = article.Family.Designation;
-                            _entryBoxSelectArticleFamily.Value = article.Family;
-                            _entryBoxSelectArticleFamily.ButtonSelectValue.Sensitive = false;
-
-                            _crudWidgetSelectArticleFamily.Validated = true;
-                            _crudWidgetSelectArticleFamily.ValidateField();
-
-                            _crudWidgetSelectArticleSubFamily.Validated = true;
-                            _crudWidgetSelectArticleSubFamily.ValidateField();
-                        }
-                        //Get PriceType from Customer.PriceType or from default if a New Customer or a Customer without PriceType Defined in BackOffice, always revert to Price1
-                        PriceType priceType = (_customer != null)
-                            ? (PriceType)_customer.PriceType.EnumValue
-                            : (PriceType)configurationPriceTypeDefault.EnumValue
-                        ;
-
-                        //Common changes for MediaNova | Non-MediaNova Articles | Here Prices are always in Retail Mode
-                        PriceProperties priceProperties = ArticleUtils.GetArticlePrice(article, priceType, TaxSellType.Normal);
-
-                        //Price
-                        _articlePrice = priceProperties.PriceNet;
-                        _dataSourceRow["PriceFinal"] = priceProperties.PriceNet;
-                        //Display Price
-                        _entryBoxValidationPrice.EntryValidation.Text = DataConversionUtils.DecimalToString(_articlePrice);
-                        _entryBoxValidationPriceDisplay.EntryValidation.Text = DataConversionUtils.DecimalToString(_articlePrice * _currencyDisplay.ExchangeRate);
-                        _entryBoxValidationQuantity.EntryValidation.Text = (article.DefaultQuantity > 0) ? DataConversionUtils.DecimalToString(article.DefaultQuantity) : DataConversionUtils.DecimalToString(1.0m);
-                        _entryBoxValidationDiscount.EntryValidation.Text = DataConversionUtils.DecimalToString(article.Discount);
-
-
-                        //VatRate
-                        _entryBoxSelectVatRate.Value = article.VatDirectSelling;
-                        _entryBoxSelectVatRate.Entry.Text = article.VatDirectSelling.Designation;
-
-                        //Default Vat Exception Reason
-                        if (article.VatExemptionReason != null)
-                        {
-                            _entryBoxSelectVatExemptionReason.Value = article.VatExemptionReason;
-                            _entryBoxSelectVatExemptionReason.Entry.Text = article.VatExemptionReason.Designation;
-                        }
-
-                        //Toggle ToggleVatExemptionReasonEditMode Validation
-                        ToggleVatExemptionReasonEditMode();
-                        //Update Price Properties
-                        UpdatePriceProperties();
-
-                        //Assign to DataRow
-                        _dataSourceRow["Article.Code"] = article;
-                        _dataSourceRow[3] = article;
-                        _dataSourceRow[1] = article.Oid;
-                        _dataSourceRow["Price"] = _dataSourceRow["PriceFinal"];
-                        _article = article;
-                        if (_entryBoxSelectArticleWarehouse.Value != null) { _dataSourceRow["Warehouse"] = (_entryBoxSelectArticleWarehouse.Value as fin_articlewarehouse).Oid.ToString(); }
-                        if (_article.ArticleSerialNumber.Count > 0)
-                        {
-                            _entryBoxSelectArticleWarehouse.Entry.IsEditable = true;
-                            _entryBoxSelectArticleWarehouse.Entry.Sensitive = true;
-                            if (_entryBoxSelectArticleWarehouse.Value.ArticleSerialNumber != null)
-                            {
-                                _dataSourceRow["SerialNumber"] = _entryBoxSelectArticleWarehouse.Value.ArticleSerialNumber.SerialNumber;
-                                _entryBoxValidationQuantity.EntryValidation.Sensitive = false;
-                            }
-                            else
-                            {
-                                _dataSourceRow["SerialNumber"] = "";
-                                _entryBoxValidationQuantity.EntryValidation.Sensitive = true;
-                            }
+                            _dataSourceRow["SerialNumber"] = _entryBoxSelectArticleWarehouse.Value.ArticleSerialNumber.SerialNumber;
+                            _entryBoxValidationQuantity.EntryValidation.Sensitive = false;
                         }
                         else
                         {
-                            _entryBoxSelectArticleWarehouse.Entry.IsEditable = false;
-                            _entryBoxSelectArticleWarehouse.Entry.Sensitive = false;
-                            _entryBoxValidationQuantity.EntryValidation.Sensitive = true;
-                            _entryBoxSelectArticleWarehouse.Value = null;
-                            _entryBoxSelectArticleWarehouse.Entry.Text = "";
                             _dataSourceRow["SerialNumber"] = "";
+                            _entryBoxValidationQuantity.EntryValidation.Sensitive = true;
                         }
                     }
-
                     else
                     {
-                        logicpos.Utils.ShowMessageBox(_sourceWindow, DialogFlags.DestroyWithParent, new Size(450, 350), MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("window_title_dialog_already_exited"), GeneralUtils.GetResourceByName("article_type_without_price"));
+                        _entryBoxSelectArticleWarehouse.Entry.IsEditable = false;
+                        _entryBoxSelectArticleWarehouse.Entry.Sensitive = false;
+                        _entryBoxSelectArticleWarehouse.Value = null;
+                        _entryBoxValidationQuantity.EntryValidation.Sensitive = true;
+                        _entryBoxSelectArticleWarehouse.Entry.Text = "";
+                        _dataSourceRow["SerialNumber"] = "";
                     }
-
                 }
+
                 else
                 {
-                    this.WindowTitle = string.Format(GeneralUtils.GetResourceByName("global_insert_articles") + " :: " + GeneralUtils.GetResourceByName("global_new_article"));
-                    CleanArticleFields(false);
+                    logicpos.Utils.ShowMessageBox(WindowSettings.Source, DialogFlags.DestroyWithParent, new Size(450, 350), MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("window_title_dialog_already_exited"), GeneralUtils.GetResourceByName("article_type_without_price"));
                 }
 
-
             }
-            catch (Exception ex)
+            else
             {
-                _logger.Error(ex.Message);
+                this.WindowSettings.WindowTitle.Text = string.Format(GeneralUtils.GetResourceByName("global_insert_articles") + " :: " + GeneralUtils.GetResourceByName("global_new_article"));
+                CleanArticleFields(false);
             }
 
+        }
+
+        private void _entryBoxSelectArticle_ClosePopup(object sender, EventArgs e)
+        {
+            //Prepare Objects
+            Guid haveCode = new Guid();
+
+            string sql = string.Format(@"SELECT Oid FROM fin_article WHERE Designation = '{0}' ORDER BY Code; ", _entryBoxSelectArticle.Entry.Text);
+            var result = XPOSettings.Session.ExecuteQuery(sql);
+
+            if (result != null && result.ResultSet[0].Rows.Length > 0)
+            {
+                haveCode = Guid.Parse(result.ResultSet[0].Rows[0].Values[0].ToString());
+            }
+
+            if (haveCode != null && haveCode != Guid.Empty)
+            {
+                fin_article article = (fin_article)XPOSettings.Session.GetObjectByKey(typeof(fin_article), haveCode);
+                fin_configurationpricetype configurationPriceTypeDefault = (fin_configurationpricetype)XPOSettings.Session.GetObjectByKey(typeof(fin_configurationpricetype), XPOSettings.XpoOidConfigurationPriceTypeDefault);
+
+                if (article != null && article.Type.HavePrice && article.Oid != Guid.Empty)
+                {
+                    //bool showMessage = false;
+                    //if (GlobalFramework.CheckStocks)
+                    //{
+                    //    if (!Utils.ShowMessageMinimumStock(this, haveCode, article.DefaultQuantity, out showMessage))
+                    //    {
+                    //        if (showMessage) { return; }                                
+                    //    }
+                    //}
+
+                    this.WindowSettings.WindowTitle.Text = string.Format(GeneralUtils.GetResourceByName("global_insert_articles"));
+
+                    if (string.IsNullOrEmpty(_entryBoxSelectArticleCode.Entry.Text) || _entryBoxSelectArticleCode.Entry.Text != article.Code)
+                    {
+                        _entryBoxSelectArticleCode.Value = article;
+                        _entryBoxSelectArticleCode.Entry.Text = article.Code;
+                    }
+
+                    if (article.SubFamily != null && article.Family != null)
+                    {
+                        _entryBoxSelectArticleSubFamily.Entry.Text = article.SubFamily.Designation;
+                        _entryBoxSelectArticleSubFamily.Value = article.SubFamily;
+                        _entryBoxSelectArticleSubFamily.ButtonSelectValue.Sensitive = false;
+
+                        _entryBoxSelectArticleFamily.Entry.Text = article.Family.Designation;
+                        _entryBoxSelectArticleFamily.Value = article.Family;
+                        _entryBoxSelectArticleFamily.ButtonSelectValue.Sensitive = false;
+
+                        _crudWidgetSelectArticleFamily.Validated = true;
+                        _crudWidgetSelectArticleFamily.ValidateField();
+
+                        _crudWidgetSelectArticleSubFamily.Validated = true;
+                        _crudWidgetSelectArticleSubFamily.ValidateField();
+                    }
+                    //Get PriceType from Customer.PriceType or from default if a New Customer or a Customer without PriceType Defined in BackOffice, always revert to Price1
+                    PriceType priceType = (_customer != null)
+                        ? (PriceType)_customer.PriceType.EnumValue
+                        : (PriceType)configurationPriceTypeDefault.EnumValue
+                    ;
+
+                    //Common changes for MediaNova | Non-MediaNova Articles | Here Prices are always in Retail Mode
+                    PriceProperties priceProperties = ArticleUtils.GetArticlePrice(article, priceType, TaxSellType.Normal);
+
+                    //Price
+                    _articlePrice = priceProperties.PriceNet;
+                    _dataSourceRow["PriceFinal"] = priceProperties.PriceNet;
+                    //Display Price
+                    _entryBoxValidationPrice.EntryValidation.Text = DataConversionUtils.DecimalToString(_articlePrice);
+                    _entryBoxValidationPriceDisplay.EntryValidation.Text = DataConversionUtils.DecimalToString(_articlePrice * _currencyDisplay.ExchangeRate);
+                    _entryBoxValidationQuantity.EntryValidation.Text = (article.DefaultQuantity > 0) ? DataConversionUtils.DecimalToString(article.DefaultQuantity) : DataConversionUtils.DecimalToString(1.0m);
+                    _entryBoxValidationDiscount.EntryValidation.Text = DataConversionUtils.DecimalToString(article.Discount);
+
+
+                    //VatRate
+                    _entryBoxSelectVatRate.Value = article.VatDirectSelling;
+                    _entryBoxSelectVatRate.Entry.Text = article.VatDirectSelling.Designation;
+
+                    //Default Vat Exception Reason
+                    if (article.VatExemptionReason != null)
+                    {
+                        _entryBoxSelectVatExemptionReason.Value = article.VatExemptionReason;
+                        _entryBoxSelectVatExemptionReason.Entry.Text = article.VatExemptionReason.Designation;
+                    }
+
+                    //Toggle ToggleVatExemptionReasonEditMode Validation
+                    ToggleVatExemptionReasonEditMode();
+                    //Update Price Properties
+                    UpdatePriceProperties();
+
+                    //Assign to DataRow
+                    _dataSourceRow["Article.Code"] = article;
+                    _dataSourceRow[3] = article;
+                    _dataSourceRow[1] = article.Oid;
+                    _dataSourceRow["Price"] = _dataSourceRow["PriceFinal"];
+                    _article = article;
+                    if (_entryBoxSelectArticleWarehouse.Value != null) { _dataSourceRow["Warehouse"] = (_entryBoxSelectArticleWarehouse.Value as fin_articlewarehouse).Oid.ToString(); }
+                    if (_article.ArticleSerialNumber.Count > 0)
+                    {
+                        _entryBoxSelectArticleWarehouse.Entry.IsEditable = true;
+                        _entryBoxSelectArticleWarehouse.Entry.Sensitive = true;
+                        if (_entryBoxSelectArticleWarehouse.Value.ArticleSerialNumber != null)
+                        {
+                            _dataSourceRow["SerialNumber"] = _entryBoxSelectArticleWarehouse.Value.ArticleSerialNumber.SerialNumber;
+                            _entryBoxValidationQuantity.EntryValidation.Sensitive = false;
+                        }
+                        else
+                        {
+                            _dataSourceRow["SerialNumber"] = "";
+                            _entryBoxValidationQuantity.EntryValidation.Sensitive = true;
+                        }
+                    }
+                    else
+                    {
+                        _entryBoxSelectArticleWarehouse.Entry.IsEditable = false;
+                        _entryBoxSelectArticleWarehouse.Entry.Sensitive = false;
+                        _entryBoxValidationQuantity.EntryValidation.Sensitive = true;
+                        _entryBoxSelectArticleWarehouse.Value = null;
+                        _entryBoxSelectArticleWarehouse.Entry.Text = "";
+                        _dataSourceRow["SerialNumber"] = "";
+                    }
+                }
+
+                else
+                {
+                    logicpos.Utils.ShowMessageBox(WindowSettings.Source,
+                                                  DialogFlags.DestroyWithParent,
+                                                  new Size(450, 350),
+                                                  MessageType.Error,
+                                                  ButtonsType.Ok,
+                                                  GeneralUtils.GetResourceByName("window_title_dialog_already_exited"),
+                                                  GeneralUtils.GetResourceByName("article_type_without_price"));
+                }
+
+            }
+            else
+            {
+                this.WindowSettings.WindowTitle.Text = $"{GeneralUtils.GetResourceByName("global_insert_articles")} :: {GeneralUtils.GetResourceByName("global_new_article")}";
+                CleanArticleFields(false);
+            }
 
         }
 
@@ -1090,25 +1058,18 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         private bool ValidateSerialNumber()
         {
-            if((_posDocumentFinanceDialog.PagePad.Pages[2] as DocumentFinanceDialogPage3).ArticleBag != null)
+            if ((_posDocumentFinanceDialog.PagePad.Pages[2] as DocumentFinanceDialogPage3).ArticleBag != null)
             {
-                try
+                foreach (var item in (_posDocumentFinanceDialog.PagePad.Pages[2] as DocumentFinanceDialogPage3).ArticleBag)
                 {
-                    foreach (var item in (_posDocumentFinanceDialog.PagePad.Pages[2] as DocumentFinanceDialogPage3).ArticleBag)
+                    if ((item.Key as ArticleBagKey).ArticleId == Guid.Parse(_dataSourceRow[1].ToString()))
                     {
-                        if ((item.Key as ArticleBagKey).ArticleId == Guid.Parse(_dataSourceRow[1].ToString()))
+                        if (!string.IsNullOrEmpty(_dataSourceRow["SerialNumber"].ToString()) && (item.Value as ArticleBagProperties).SerialNumber.Contains(_dataSourceRow["SerialNumber"].ToString()) && _dialogMode != DialogMode.Update)
                         {
-                            if (!string.IsNullOrEmpty(_dataSourceRow["SerialNumber"].ToString()) && (item.Value as ArticleBagProperties).SerialNumber.Contains(_dataSourceRow["SerialNumber"].ToString()) && _dialogMode != DialogMode.Update)
-                            {
-                                logicpos.Utils.ShowMessageTouch(this, DialogFlags.DestroyWithParent, MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"), "Artigo com o nº série: " + _dataSourceRow["SerialNumber"].ToString() + " Já foi inserido");
-                                return false;
-                            }
+                            logicpos.Utils.ShowMessageTouch(this, DialogFlags.DestroyWithParent, MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"), "Artigo com o nº série: " + _dataSourceRow["SerialNumber"].ToString() + " Já foi inserido");
+                            return false;
                         }
                     }
-                }
-                catch (Exception ex)
-                {
-                    _logger.Error("bool ValidateSerialNumber() :: " + ex.Message, ex);
                 }
             }
             return true;
@@ -1117,38 +1078,31 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private bool ValidateMaxArticleQuantity()
         {
             bool result = true;
-            try
+
+            /* IN009171 - when receiving a '.' on it, converter throws "System.FormatException" */
+            string quantity = _entryBoxValidationQuantity.EntryValidation.Text;
+            if (!string.IsNullOrEmpty(quantity))
             {
-                /* IN009171 - when receiving a '.' on it, converter throws "System.FormatException" */
-                string quantity = _entryBoxValidationQuantity.EntryValidation.Text;
-                if (!string.IsNullOrEmpty(quantity))
-                {
-                    quantity = DataConversionUtils.DecimalToString(DataConversionUtils.StringToDecimal(quantity));
-                    quantity = quantity.Replace('.', ',');
-                }
-                decimal currentQuantity = Convert.ToDecimal(quantity);
-                // Validate Max Quantities only if ValidateMaxQuantities is defined
-                if (_posDocumentFinanceDialog.ValidateMaxQuantities != null && _posDocumentFinanceDialog.ValidateMaxQuantities.Count > 0)
-                {
-                    decimal maxPossibleQuantity = _posDocumentFinanceDialog.ValidateMaxQuantities[_entryBoxSelectArticle.Value.Oid];
-
-                    if (currentQuantity > maxPossibleQuantity)
-                    {
-                        _logger.Debug(string.Format("CurrentQuantity: [{0}] is Greater than MaxPossibleQuantity: [{1}]", currentQuantity, maxPossibleQuantity));
-                        result = false;
-                    }
-
-                    // Check if has Errrors, and Show Error Message
-                    if (!result)
-                    {
-                        // Show Message
-                        logicpos.Utils.ShowMessageTouchErrorTryToIssueACreditNoteExceedingSourceDocumentArticleQuantities(this, currentQuantity, maxPossibleQuantity);
-                    }
-                }                
+                quantity = DataConversionUtils.DecimalToString(DataConversionUtils.StringToDecimal(quantity));
+                quantity = quantity.Replace('.', ',');
             }
-            catch (Exception ex)
+            decimal currentQuantity = Convert.ToDecimal(quantity);
+            // Validate Max Quantities only if ValidateMaxQuantities is defined
+            if (_posDocumentFinanceDialog.ValidateMaxQuantities != null && _posDocumentFinanceDialog.ValidateMaxQuantities.Count > 0)
             {
-                _logger.Error("bool ValidateMaxArticleQuantity() :: _entryBoxValidationQuantity.EntryValidation.Text [ " + _entryBoxValidationQuantity.EntryValidation.Text + " ]: " + ex.Message, ex);
+                decimal maxPossibleQuantity = _posDocumentFinanceDialog.ValidateMaxQuantities[_entryBoxSelectArticle.Value.Oid];
+
+                if (currentQuantity > maxPossibleQuantity)
+                {
+                    result = false;
+                }
+
+                // Check if has Errrors, and Show Error Message
+                if (!result)
+                {
+                    // Show Message
+                    logicpos.Utils.ShowMessageTouchErrorTryToIssueACreditNoteExceedingSourceDocumentArticleQuantities(this, currentQuantity, maxPossibleQuantity);
+                }
             }
 
             return result;
@@ -1158,37 +1112,31 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private bool ValidateMinArticleStockQuantity()
         {
             bool result = true;
-            try
+
+            /* IN009171 - when receiving a '.' on it, converter throws "System.FormatException" */
+            string quantity = _entryBoxValidationQuantity.EntryValidation.Text;
+            if (!string.IsNullOrEmpty(quantity))
             {
-                /* IN009171 - when receiving a '.' on it, converter throws "System.FormatException" */
-                string quantity = _entryBoxValidationQuantity.EntryValidation.Text;
-                if (!string.IsNullOrEmpty(quantity))
-                {
-                    quantity = DataConversionUtils.DecimalToString(DataConversionUtils.StringToDecimal(quantity));
-                    quantity = quantity.Replace('.', ',');
-                }
-                decimal currentQuantity = Convert.ToDecimal(quantity);
-  
-                //Check for Minimum stock
-                bool showMessage;
-                if (logicpos.Utils.CheckStocks())
-                {
-
-                    if (!logicpos.Utils.ShowMessageMinimumStock(this, _article.Oid, currentQuantity, out showMessage))
-                    {
-                        if (showMessage)
-                        {
-                            result = false;
-                        }else
-                        result = true;
-                    }
-                    else { result = true; }
-                }
-
+                quantity = DataConversionUtils.DecimalToString(DataConversionUtils.StringToDecimal(quantity));
+                quantity = quantity.Replace('.', ',');
             }
-            catch (Exception ex)
+            decimal currentQuantity = Convert.ToDecimal(quantity);
+
+            //Check for Minimum stock
+            bool showMessage;
+            if (logicpos.Utils.CheckStocks())
             {
-                _logger.Error("bool ValidateMinArticleStockQuantity() :: _entryBoxValidationQuantity.EntryValidation.Text [ " + _entryBoxValidationQuantity.EntryValidation.Text + " ]: " + ex.Message, ex);
+
+                if (!logicpos.Utils.ShowMessageMinimumStock(this, _article.Oid, currentQuantity, out showMessage))
+                {
+                    if (showMessage)
+                    {
+                        result = false;
+                    }
+                    else
+                        result = true;
+                }
+                else { result = true; }
             }
 
             return result;

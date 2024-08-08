@@ -37,14 +37,14 @@
         public const string AUDIT_MESSAGE_TABLE_OPEN = "audit_message_table_open";
         public const string AUDIT_MESSAGE_TABLE_RESERVED = "audit_message_table_reserved";
         public const string AUDIT_MESSAGE_TABLE_UNRESERVED = "audit_message_table_unreserved";
-        public const string AUDIT_MESSAGE_USED_FORCED_LOGGEROUT = "audit_message_used_forced_loggerout";
+        public const string AUDIT_MESSAGE_USED_FORCED_logout = "audit_message_used_forced_logout";
         public const string AUDIT_MESSAGE_USER_CHANGE = "audit_message_user_change";
         public const string AUDIT_MESSAGE_USER_CHANGE_PASSWORD = "audit_message_user_change_password";
         public const string AUDIT_MESSAGE_USER_LOGGERIN = "audit_message_user_loggerin";
         public const string AUDIT_MESSAGE_USER_LOGGERIN_ERROR = "audit_message_user_loggerin_error";
-        public const string AUDIT_MESSAGE_USER_LOGGEROUT = "audit_message_user_loggerout";
+        public const string AUDIT_MESSAGE_USER_logout = "audit_message_user_logout";
         public const string BACKOFFICE_DATETIME_FORMAT_STATUS_BAR = "backoffice_datetime_format_status_bar";
-        public const string CHANGE_LOGGER = "change_logger";
+        public const string change_log = "change_log";
         public const string DIALOG_BUTTON_LABEL_NEW_CLIENT = "dialog_button_label_new_client";
         public const string DIALOG_BUTTON_LABEL_NEW_FINANCE_DOCUMENTS = "dialog_button_label_new_finance_documents";
         public const string DIALOG_BUTTON_LABEL_SELECT_FINANCE_DOCUMENTS_CC = "dialog_button_label_select_finance_documents_cc";
@@ -194,7 +194,7 @@
         public const string GLOBAL_ADD = "global_add";
         public const string GLOBAL_ADDRESS = "global_address";
         public const string GLOBAL_APPLICATION_CLOSE = "global_application_close";
-        public const string GLOBAL_APPLICATION_LOGGEROUT_USER = "global_application_loggerout_user";
+        public const string GLOBAL_APPLICATION_logout_USER = "global_application_logout_user";
         public const string GLOBAL_APPLICATION_MAIN_MENU = "global_application_main_menu";
         public const string GLOBAL_APPLICATION_SETUP = "global_application_setup";
         public const string GLOBAL_ARTICLE = "global_article";

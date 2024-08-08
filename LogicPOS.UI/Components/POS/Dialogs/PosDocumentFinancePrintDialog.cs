@@ -1,12 +1,11 @@
 ﻿using Gtk;
-using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
-using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Dialogs;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -14,15 +13,15 @@ using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    internal class PosDocumentFinancePrintDialog : PosBaseDialog
+    internal class PosDocumentFinancePrintDialog : BaseDialog
     {
         //UI
         private VBox _vboxContent;
         private CheckButtonBoxGroup _checkButtonCopyNamesBoxGroup;
         private CheckButtonBox _checkButtonBoxSecondCopy;
         private EntryBoxValidation _entryBoxValidationBoxMotive;
-        private readonly TouchButtonIconWithText _buttonOk;
-        private readonly TouchButtonIconWithText _buttonCancel;
+        private readonly IconButtonWithText _buttonOk;
+        private readonly IconButtonWithText _buttonCancel;
 
         //Properties
         private int _printCopies = 0;
@@ -31,8 +30,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         //Parameters
         private readonly fin_documentfinancemaster _documentFinanceMaster;
 
-        public PosDocumentFinancePrintDialog(Window pSourceWindow, DialogFlags pDialogFlags, fin_documentfinancemaster pDocumentFinanceMaster)
-            : base(pSourceWindow, pDialogFlags)
+        public PosDocumentFinancePrintDialog(Window parentWindow, DialogFlags pDialogFlags, fin_documentfinancemaster pDocumentFinanceMaster)
+            : base(parentWindow, pDialogFlags)
         {
             //Init Local Vars
             string windowTitle = string.Format(GeneralUtils.GetResourceByName("window_title_dialog_document_finance_print"), pDocumentFinanceMaster.DocumentNumber);
@@ -45,8 +44,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             if (_requestMotive) windowSize.Height += 42 + 76;//Secondcopy + Motive UI Components
 
             //ActionArea Buttons
-            _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);
-            _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
+            _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
+            _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
 
             //ActionArea
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons
@@ -59,7 +58,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             InitUI();
 
             //Init Object
-            this.InitObject(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, _vboxContent, actionAreaButtons);
+            this.Initialize(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, _vboxContent, actionAreaButtons);
         }
 
         private void InitUI()
@@ -237,7 +236,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
         }
 
-        public static PrintDialogResponse GetDocumentFinancePrintProperties(Window pSourceWindow, fin_documentfinancemaster pDocumentFinanceMaster)
+        public static PrintDialogResponse GetDocumentFinancePrintProperties(Window parentWindow, fin_documentfinancemaster pDocumentFinanceMaster)
         {
             //Log4Net
             log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -261,7 +260,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //Call Re-Print Dialog
                 if (printed)
                 {
-                    PosDocumentFinancePrintDialog dialog = new PosDocumentFinancePrintDialog(pSourceWindow, DialogFlags.DestroyWithParent, pDocumentFinanceMaster);
+                    PosDocumentFinancePrintDialog dialog = new PosDocumentFinancePrintDialog(parentWindow, DialogFlags.DestroyWithParent, pDocumentFinanceMaster);
                     result.Response = (ResponseType)dialog.Run();
                     if (result.Response == ResponseType.Ok)
                     {

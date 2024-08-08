@@ -4,11 +4,7 @@ using DevExpress.Xpo.DB.Exceptions;
 using Gtk;
 using logicpos.App;
 using logicpos.Classes.Enums;
-using logicpos.Classes.Enums.Dialogs;
-using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.BackOffice;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.Extensions;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
@@ -18,6 +14,9 @@ using LogicPOS.Finance.Utility;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Shared.Article;
+using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components;
+using LogicPOS.UI.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -126,7 +125,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                     processArticleBag.GetClassTotals("S") > InvoiceSettings.GetSimplifiedInvoiceMaxItems(XPOSettings.ConfigurationSystemCountry.Oid))
                                 )
                             {
-                                responseTypeOverrideDefaultDocumentTypeSimplifiedInvoice = logicpos.Utils.ShowMessageTouchSimplifiedInvoiceMaxValueExceed(_sourceWindow, ShowMessageTouchSimplifiedInvoiceMaxValueExceedMode.PaymentsDialog, processArticleBag.TotalFinal, InvoiceSettings.GetSimplifiedInvoiceMaxItems(XPOSettings.ConfigurationSystemCountry.Oid), processArticleBag.GetClassTotals("S"), InvoiceSettings.GetSimplifiedInvoiceMaxServices(XPOSettings.ConfigurationSystemCountry.Oid));
+                                responseTypeOverrideDefaultDocumentTypeSimplifiedInvoice = logicpos.Utils.ShowMessageTouchSimplifiedInvoiceMaxValueExceed(WindowSettings.Source, ShowMessageTouchSimplifiedInvoiceMaxValueExceedMode.PaymentsDialog, processArticleBag.TotalFinal, InvoiceSettings.GetSimplifiedInvoiceMaxItems(XPOSettings.ConfigurationSystemCountry.Oid), processArticleBag.GetClassTotals("S"), InvoiceSettings.GetSimplifiedInvoiceMaxServices(XPOSettings.ConfigurationSystemCountry.Oid));
                                 //Override Back processDocumentType if Exceed FS Max Total
                                 if (responseTypeOverrideDefaultDocumentTypeSimplifiedInvoice == ResponseType.Yes)
                                 {
@@ -243,7 +242,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     else if (resultObject.GetType() == typeof(ConstraintViolationException))
                     {
                         Exception ex = (Exception)resultObject;
-                        ResponseType response = logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Warning, ButtonsType.Close, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_exception_error"), ex.InnerException.Message);
+                        ResponseType response = logicpos.Utils.ShowMessageTouch(WindowSettings.Source, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Warning, ButtonsType.Close, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_exception_error"), ex.InnerException.Message);
                         //Prevent Parent Dialog Payments from Close
                         this.Run();
                     }
@@ -281,7 +280,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 else if (pResponse == _responseTypeCurrentAccount)
                 {
                     _buttonCurrentAccount.Token = "CURRENT_ACCOUNT";
-                    _buttonCurrentAccount.CurrentButtonOid = InvoiceSettings.XpoOidConfigurationPaymentMethodCurrentAccount;
+                    _buttonCurrentAccount.CurrentButtonId = InvoiceSettings.XpoOidConfigurationPaymentMethodCurrentAccount;
                     //Prevent Default Customer Entity and Hidden Customer (Only with Name Filled) to Process CC Documents
                     if (
                         (Customer != null && (
@@ -310,7 +309,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         _entryBoxSelectCustomerCountry.EntryValidation.Sensitive = false;
                         _entryBoxSelectCustomerFiscalNumber.EntryValidation.Sensitive = false;
                         _entryBoxCustomerLocality.EntryValidation.Sensitive = false;
-                        buttonCurrentAccount_Clicked((TouchButtonBase)_buttonCurrentAccount, null);
+                        buttonCurrentAccount_Clicked((CustomButton)_buttonCurrentAccount, null);
                         //Keep Running
                         this.Run();
                     }
@@ -319,7 +318,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _logger.Error(ex.Message, ex);
                 string errorMessage;
                 switch (ex.Message)
                 {
@@ -331,7 +329,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         break;
                 }
                 logicpos.Utils.ShowMessageBox(
-                    _sourceWindow,
+                    WindowSettings.Source,
                     DialogFlags.Modal,
                     new Size(600, 400),
                     MessageType.Error,
@@ -435,16 +433,16 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             ;
 
             //CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("OrderMain = '{0}'", currentOrderMain.PersistentOid));
-            PosSelectRecordDialog<XPCollection, Entity, TreeViewConfigurationCountry>
-              dialog = new PosSelectRecordDialog<XPCollection, Entity, TreeViewConfigurationCountry>(
-                this.SourceWindow,
+            PosSelectRecordDialog<XPCollection, Entity, GridViewCountries>
+              dialog = new PosSelectRecordDialog<XPCollection, Entity, GridViewCountries>(
+                this.Source,
                 DialogFlags.DestroyWithParent,
                 CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_select_country"),
                 //TODO:THEME
                 GlobalApp.MaxWindowSize,
                 defaultValue,
                 null, //CriteriaOperator,
-                GenericTreeViewMode.Default,
+                GridViewMode.Default,
                 null  //ActionAreaButtons
               );
 
@@ -452,7 +450,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             if (response == (int)ResponseType.Ok)
             {
                 //Get Object from dialog else Mixing Sessions, Both belong to diferente Sessions
-                Country = XPOUtility.GetEntityById<cfg_configurationcountry>(dialog.GenericTreeView.DataSourceRow.Oid);
+                Country = XPOUtility.GetEntityById<cfg_configurationcountry>(dialog.GenericTreeView.Entity.Oid);
                 entryValidation.Text = Country.Designation;
                 Validate();
             }
@@ -468,8 +466,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             if (SelectedPaymentMethodButton != null) SelectedPaymentMethodButton.Sensitive = true;
 
             //Enable Sender
-            SelectedPaymentMethodButton = (TouchButtonBase)pSender;
-            PaymentMethod = XPOUtility.GetEntityById<fin_configurationpaymentmethod>(SelectedPaymentMethodButton.CurrentButtonOid);
+            SelectedPaymentMethodButton = (CustomButton)pSender;
+            PaymentMethod = XPOUtility.GetEntityById<fin_configurationpaymentmethod>(SelectedPaymentMethodButton.CurrentButtonId);
             //_logger.Debug(string.Format("AssignPaymentMethod: ButtonName: [{0}], PaymentMethodToken: [{1}]", _selectedPaymentMethodButton.Name, _selectedPaymentMethod.Token));
 
             if (PaymentMethod.Token == "MONEY")
@@ -515,163 +513,114 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         private void Validate()
         {
-            try
-            {
-                //Validate Selected Entities and Change Value
-                if (_buttonOk != null)
-                    _buttonOk.Sensitive =
-                      (
+            //Validate Selected Entities and Change Value
+            if (_buttonOk != null)
+                _buttonOk.Sensitive =
+                  (
+                    (
+                        Customer != null
+                        ||
                         (
-                            Customer != null
-                            ||
-                            (
-                                _entryBoxSelectCustomerName.EntryValidation.Text != string.Empty || _entryBoxSelectCustomerFiscalNumber.EntryValidation.Text != string.Empty
-                            )
-                        ) &&
-                        PaymentMethod != null &&
-                        TotalChange >= 0 &&
-                        (
-                            _entryBoxSelectCustomerName.EntryValidation.Validated &&
-                            _entryBoxCustomerDiscount.EntryValidation.Validated &&
-                            _entryBoxSelectCustomerFiscalNumber.EntryValidation.Validated &&
-                            _entryBoxSelectCustomerCardNumber.EntryValidation.Validated &&
-                            _entryBoxCustomerAddress.EntryValidation.Validated &&
-                            _entryBoxCustomerLocality.EntryValidation.Validated &&
-                            _entryBoxCustomerZipCode.EntryValidation.Validated &&
-                            _entryBoxCustomerCity.EntryValidation.Validated &&
-                            _entryBoxSelectCustomerCountry.EntryValidation.Validated &&
-                            _entryBoxCustomerNotes.EntryValidation.Validated
+                            _entryBoxSelectCustomerName.EntryValidation.Text != string.Empty || _entryBoxSelectCustomerFiscalNumber.EntryValidation.Text != string.Empty
                         )
-                      );
+                    ) &&
+                    PaymentMethod != null &&
+                    TotalChange >= 0 &&
+                    (
+                        _entryBoxSelectCustomerName.EntryValidation.Validated &&
+                        _entryBoxCustomerDiscount.EntryValidation.Validated &&
+                        _entryBoxSelectCustomerFiscalNumber.EntryValidation.Validated &&
+                        _entryBoxSelectCustomerCardNumber.EntryValidation.Validated &&
+                        _entryBoxCustomerAddress.EntryValidation.Validated &&
+                        _entryBoxCustomerLocality.EntryValidation.Validated &&
+                        _entryBoxCustomerZipCode.EntryValidation.Validated &&
+                        _entryBoxCustomerCity.EntryValidation.Validated &&
+                        _entryBoxSelectCustomerCountry.EntryValidation.Validated &&
+                        _entryBoxCustomerNotes.EntryValidation.Validated
+                    )
+                  );
 
-                //Validate Change Value
-                if (TotalChange >= 0)
-                {
-                    _labelChangeValue.ModifyFg(StateType.Normal, Color.White.ToGdkColor());
-                }
-                else
-                {
-                    _labelChangeValue.ModifyFg(StateType.Normal, _colorEntryValidationInvalidFont.ToGdkColor());
-                };
-            }
-            catch (Exception ex)
+            //Validate Change Value
+            if (TotalChange >= 0)
             {
-                _logger.Error(ex.Message, ex);
+                _labelChangeValue.ModifyFg(StateType.Normal, Color.White.ToGdkColor());
             }
+            else
+            {
+                _labelChangeValue.ModifyFg(StateType.Normal, _colorEntryValidationInvalidFont.ToGdkColor());
+            };
+
         }
 
         public void GetCustomerDetails(string pFieldName, string pFieldValue)
         {
-            try
+            //Disable calls to this function when we trigger .Changed events, creating recursive calls to this function
+            _enableGetCustomerDetails = false;
+
+            Guid customerGuid = new Guid();
+
+            // Encrypt pFieldValue to use in Sql Filter
+            if (PluginSettings.HasSoftwareVendorPlugin)
             {
-                //Disable calls to this function when we trigger .Changed events, creating recursive calls to this function
-                _enableGetCustomerDetails = false;
-
-                Guid customerGuid = new Guid();
-
-                // Encrypt pFieldValue to use in Sql Filter
-                if (PluginSettings.HasSoftwareVendorPlugin)
+                // Only Encrypt Encrypted Fields
+                if (pFieldName == nameof(erp_customer.FiscalNumber) || pFieldName == nameof(erp_customer.CardNumber))
                 {
-                    // Only Encrypt Encrypted Fields
-                    if (pFieldName == nameof(erp_customer.FiscalNumber) || pFieldName == nameof(erp_customer.CardNumber))
-                    {
-                        pFieldValue = PluginSettings.SoftwareVendor.Encrypt(pFieldValue);
-                    }
+                    pFieldValue = PluginSettings.SoftwareVendor.Encrypt(pFieldValue);
                 }
+            }
 
-                string sql = string.Format("SELECT Oid FROM erp_customer WHERE {0} = '{1}' AND (Hidden IS NULL OR Hidden = 0);", pFieldName, pFieldValue);
+            string sql = string.Format("SELECT Oid FROM erp_customer WHERE {0} = '{1}' AND (Hidden IS NULL OR Hidden = 0);", pFieldName, pFieldValue);
 
-                if (pFieldValue != string.Empty)
-                {
-                    customerGuid = XPOUtility.GetGuidFromQuery(sql);
-                }
+            if (pFieldValue != string.Empty)
+            {
+                customerGuid = XPOUtility.GetGuidFromQuery(sql);
+            }
 
-                if (customerGuid != Guid.Empty)
-                {
-                    Customer = XPOUtility.GetEntityById<erp_customer>(customerGuid);
-                }
-                else
-                {
-                    Customer = null;
-                }
+            if (customerGuid != Guid.Empty)
+            {
+                Customer = XPOUtility.GetEntityById<erp_customer>(customerGuid);
+            }
+            else
+            {
+                Customer = null;
+            }
 
-                //If Valid Customer, and not Not SimplifiedInvoice, and ! isSingularEntity
-                if (
-                    Customer != null
-                )
+            //If Valid Customer, and not Not SimplifiedInvoice, and ! isSingularEntity
+            if (
+                Customer != null
+            )
+            {
+                Country = Customer.Country;
+                DiscountGlobal = (Customer.Discount > 0) ? Customer.Discount : 0;
+                //Update EntryBoxs
+                _entryBoxSelectCustomerName.EntryValidation.Text = (Customer != null) ? Customer.Name : string.Empty;
+                _entryBoxCustomerDiscount.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.DecimalToString(DiscountGlobal);
+
+                _entryBoxSelectCustomerFiscalNumber.EntryValidation.Text = (Customer.FiscalNumber != null) ? Customer.FiscalNumber.ToString() : string.Empty;
+                _entryBoxSelectCustomerCardNumber.EntryValidation.Text = (Customer.CardNumber != null) ? Customer.CardNumber.ToString() : string.Empty;
+                _entryBoxCustomerAddress.EntryValidation.Text = (Customer.Address != null) ? Customer.Address.ToString() : string.Empty;
+                _entryBoxCustomerLocality.EntryValidation.Text = (Customer.Locality != null) ? Customer.Locality.ToString() : string.Empty;
+                _entryBoxCustomerZipCode.EntryValidation.Text = (Customer.ZipCode != null) ? Customer.ZipCode.ToString() : string.Empty;
+                _entryBoxCustomerCity.EntryValidation.Text = (Customer.City != null) ? Customer.City.ToString() : string.Empty;
+                _entryBoxSelectCustomerCountry.Value = Country;
+                _entryBoxSelectCustomerCountry.EntryValidation.Text = (Country != null) ? Country.Designation : string.Empty;
+                _entryBoxCustomerNotes.EntryValidation.Text = (Customer.Notes != null) ? Customer.Notes.ToString() : string.Empty;
+            }
+            //IN:009275 Use Euro VAT Info 
+            else if (logicpos.Utils.UseVatAutocomplete())
+            {
+                string cod_FiscalNumber = string.Format("{0}{1}", cfg_configurationpreferenceparameter.GetCountryCode2, _entryBoxSelectCustomerFiscalNumber.EntryValidation.Text);
+                if (EuropeanVatInformation.Get(cod_FiscalNumber) != null)
                 {
-                    Country = Customer.Country;
-                    DiscountGlobal = (Customer.Discount > 0) ? Customer.Discount : 0;
-                    //Update EntryBoxs
-                    _entryBoxSelectCustomerName.EntryValidation.Text = (Customer != null) ? Customer.Name : string.Empty;
+                    var address = EuropeanVatInformation.Get(cod_FiscalNumber).Address.Split('\n');
+                    string zip = address[2].Substring(0, address[2].IndexOf(' '));
+                    string city = address[2].Substring(address[2].IndexOf(' ') + 1);
+                    _entryBoxCustomerAddress.EntryValidation.Text = address[0];
+                    _entryBoxCustomerLocality.EntryValidation.Text = address[1];
+                    _entryBoxCustomerZipCode.EntryValidation.Text = zip;
+                    _entryBoxCustomerCity.EntryValidation.Text = city;
+                    _entryBoxSelectCustomerName.EntryValidation.Text = EuropeanVatInformation.Get(cod_FiscalNumber).Name;
                     _entryBoxCustomerDiscount.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.DecimalToString(DiscountGlobal);
-
-                    _entryBoxSelectCustomerFiscalNumber.EntryValidation.Text = (Customer.FiscalNumber != null) ? Customer.FiscalNumber.ToString() : string.Empty;
-                    _entryBoxSelectCustomerCardNumber.EntryValidation.Text = (Customer.CardNumber != null) ? Customer.CardNumber.ToString() : string.Empty;
-                    _entryBoxCustomerAddress.EntryValidation.Text = (Customer.Address != null) ? Customer.Address.ToString() : string.Empty;
-                    _entryBoxCustomerLocality.EntryValidation.Text = (Customer.Locality != null) ? Customer.Locality.ToString() : string.Empty;
-                    _entryBoxCustomerZipCode.EntryValidation.Text = (Customer.ZipCode != null) ? Customer.ZipCode.ToString() : string.Empty;
-                    _entryBoxCustomerCity.EntryValidation.Text = (Customer.City != null) ? Customer.City.ToString() : string.Empty;
-                    _entryBoxSelectCustomerCountry.Value = Country;
-                    _entryBoxSelectCustomerCountry.EntryValidation.Text = (Country != null) ? Country.Designation : string.Empty;
-                    _entryBoxCustomerNotes.EntryValidation.Text = (Customer.Notes != null) ? Customer.Notes.ToString() : string.Empty;
-                }
-                //IN:009275 Use Euro VAT Info 
-                else if (logicpos.Utils.UseVatAutocomplete())
-                {
-                    string cod_FiscalNumber = string.Format("{0}{1}", cfg_configurationpreferenceparameter.GetCountryCode2, _entryBoxSelectCustomerFiscalNumber.EntryValidation.Text);
-                    if (EuropeanVatInformation.Get(cod_FiscalNumber) != null)
-                    {
-                        var address = EuropeanVatInformation.Get(cod_FiscalNumber).Address.Split('\n');
-                        string zip = address[2].Substring(0, address[2].IndexOf(' '));
-                        string city = address[2].Substring(address[2].IndexOf(' ') + 1);
-                        _entryBoxCustomerAddress.EntryValidation.Text = address[0];
-                        _entryBoxCustomerLocality.EntryValidation.Text = address[1];
-                        _entryBoxCustomerZipCode.EntryValidation.Text = zip;
-                        _entryBoxCustomerCity.EntryValidation.Text = city;
-                        _entryBoxSelectCustomerName.EntryValidation.Text = EuropeanVatInformation.Get(cod_FiscalNumber).Name;
-                        _entryBoxCustomerDiscount.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.DecimalToString(DiscountGlobal);
-                        if (pFieldName != "CardNumber")
-                        {
-                            _entryBoxSelectCustomerCardNumber.Value = null;
-                            _entryBoxSelectCustomerCardNumber.EntryValidation.Text = string.Empty;
-                        }
-                        _entryBoxCustomerNotes.EntryValidation.Text = string.Empty;
-                    }
-                    else
-                    {
-                        _entryBoxCustomerAddress.EntryValidation.Text = string.Empty;
-                        _entryBoxCustomerLocality.EntryValidation.Text = string.Empty;
-                        _entryBoxCustomerZipCode.EntryValidation.Text = string.Empty;
-                        _entryBoxCustomerCity.EntryValidation.Text = string.Empty;
-                        _entryBoxSelectCustomerName.EntryValidation.Text = string.Empty;
-                        _entryBoxCustomerDiscount.EntryValidation.Text = string.Empty;
-                        if (pFieldName != "CardNumber")
-                        {
-                            _entryBoxSelectCustomerCardNumber.Value = null;
-                            _entryBoxSelectCustomerCardNumber.EntryValidation.Text = string.Empty;
-                        }
-                        _entryBoxCustomerNotes.EntryValidation.Text = string.Empty;
-                    }
-                }
-                ////IN:009275 ENDS
-                //New User
-                else
-                {
-                    Customer = null;
-                    DiscountGlobal = 0;
-                    //Update EntryBoxs
-                    _entryBoxSelectCustomerName.EntryValidation.Text = string.Empty;
-                    _entryBoxCustomerDiscount.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.DecimalToString(DiscountGlobal);
-                    _entryBoxCustomerAddress.EntryValidation.Text = string.Empty;
-                    _entryBoxCustomerLocality.EntryValidation.Text = string.Empty;
-                    _entryBoxCustomerZipCode.EntryValidation.Text = string.Empty;
-                    _entryBoxCustomerCity.EntryValidation.Text = string.Empty;
-                    if (pFieldName != "FiscalNumber")
-                    {
-                        _entryBoxSelectCustomerFiscalNumber.Value = null;
-                        _entryBoxSelectCustomerFiscalNumber.EntryValidation.Text = string.Empty;
-                    }
                     if (pFieldName != "CardNumber")
                     {
                         _entryBoxSelectCustomerCardNumber.Value = null;
@@ -679,25 +628,59 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     }
                     _entryBoxCustomerNotes.EntryValidation.Text = string.Empty;
                 }
-
-                //Require to Update RegEx and Criteria to filter Country Clients Only
-                _entryBoxSelectCustomerFiscalNumber.EntryValidation.Rule = _entryBoxSelectCustomerCountry.Value.RegExFiscalNumber;
-                _entryBoxCustomerZipCode.EntryValidation.Rule = _entryBoxSelectCustomerCountry.Value.RegExZipCode;
-
-                //Apply Criteria Operators
-                ApplyCriteriaToCustomerInputs();
-                //Call UpdateCustomerEditMode
-                UpdateCustomerEditMode();
+                else
+                {
+                    _entryBoxCustomerAddress.EntryValidation.Text = string.Empty;
+                    _entryBoxCustomerLocality.EntryValidation.Text = string.Empty;
+                    _entryBoxCustomerZipCode.EntryValidation.Text = string.Empty;
+                    _entryBoxCustomerCity.EntryValidation.Text = string.Empty;
+                    _entryBoxSelectCustomerName.EntryValidation.Text = string.Empty;
+                    _entryBoxCustomerDiscount.EntryValidation.Text = string.Empty;
+                    if (pFieldName != "CardNumber")
+                    {
+                        _entryBoxSelectCustomerCardNumber.Value = null;
+                        _entryBoxSelectCustomerCardNumber.EntryValidation.Text = string.Empty;
+                    }
+                    _entryBoxCustomerNotes.EntryValidation.Text = string.Empty;
+                }
             }
-            catch (Exception ex)
+            ////IN:009275 ENDS
+            //New User
+            else
             {
-                _logger.Error(ex.Message, ex);
+                Customer = null;
+                DiscountGlobal = 0;
+                //Update EntryBoxs
+                _entryBoxSelectCustomerName.EntryValidation.Text = string.Empty;
+                _entryBoxCustomerDiscount.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.DecimalToString(DiscountGlobal);
+                _entryBoxCustomerAddress.EntryValidation.Text = string.Empty;
+                _entryBoxCustomerLocality.EntryValidation.Text = string.Empty;
+                _entryBoxCustomerZipCode.EntryValidation.Text = string.Empty;
+                _entryBoxCustomerCity.EntryValidation.Text = string.Empty;
+                if (pFieldName != "FiscalNumber")
+                {
+                    _entryBoxSelectCustomerFiscalNumber.Value = null;
+                    _entryBoxSelectCustomerFiscalNumber.EntryValidation.Text = string.Empty;
+                }
+                if (pFieldName != "CardNumber")
+                {
+                    _entryBoxSelectCustomerCardNumber.Value = null;
+                    _entryBoxSelectCustomerCardNumber.EntryValidation.Text = string.Empty;
+                }
+                _entryBoxCustomerNotes.EntryValidation.Text = string.Empty;
             }
-            finally
-            {
-                //Re Enable GetCustomerDetails
-                _enableGetCustomerDetails = true;
-            }
+
+            //Require to Update RegEx and Criteria to filter Country Clients Only
+            _entryBoxSelectCustomerFiscalNumber.EntryValidation.Rule = _entryBoxSelectCustomerCountry.Value.RegExFiscalNumber;
+            _entryBoxCustomerZipCode.EntryValidation.Rule = _entryBoxSelectCustomerCountry.Value.RegExZipCode;
+
+            //Apply Criteria Operators
+            ApplyCriteriaToCustomerInputs();
+            //Call UpdateCustomerEditMode
+            UpdateCustomerEditMode();
+
+            _enableGetCustomerDetails = true;
+
         }
 
         //Clear Customer Details
@@ -708,210 +691,196 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         public void ClearCustomer(bool pClearCountry)
         {
-            try
+            //Disable calls to this function when we trigger .Changed events, creating recursive calls to this function
+            _enableGetCustomerDetails = false;
+
+            //Clear Reference
+            Customer = null;
+
+            //Clear Fields
+            _entryBoxSelectCustomerName.Value = null;
+            _entryBoxSelectCustomerName.EntryValidation.Text = string.Empty;
+            _entryBoxSelectCustomerName.EntryValidation.Validate();
+
+            _entryBoxCustomerAddress.EntryValidation.Text = string.Empty;
+            _entryBoxCustomerLocality.EntryValidation.Text = string.Empty;
+            _entryBoxCustomerZipCode.EntryValidation.Text = string.Empty;
+            _entryBoxCustomerCity.EntryValidation.Text = string.Empty;
+
+            if (pClearCountry)
             {
-                //Disable calls to this function when we trigger .Changed events, creating recursive calls to this function
-                _enableGetCustomerDetails = false;
-
-                //Clear Reference
-                Customer = null;
-
-                //Clear Fields
-                _entryBoxSelectCustomerName.Value = null;
-                _entryBoxSelectCustomerName.EntryValidation.Text = string.Empty;
-                _entryBoxSelectCustomerName.EntryValidation.Validate();
-
-                _entryBoxCustomerAddress.EntryValidation.Text = string.Empty;
-                _entryBoxCustomerLocality.EntryValidation.Text = string.Empty;
-                _entryBoxCustomerZipCode.EntryValidation.Text = string.Empty;
-                _entryBoxCustomerCity.EntryValidation.Text = string.Empty;
-
-                if (pClearCountry)
-                {
-                    _entryBoxSelectCustomerCountry.Value = _intialValueConfigurationCountry;
-                    _entryBoxSelectCustomerCountry.EntryValidation.Text = _intialValueConfigurationCountry.Designation;
-                    _entryBoxSelectCustomerCountry.EntryValidation.Validate(_entryBoxSelectCustomerCountry.Value.Oid.ToString());
-                }
-
-                _entryBoxSelectCustomerFiscalNumber.Value = null;
-                _entryBoxSelectCustomerFiscalNumber.EntryValidation.Text = string.Empty;
-                _entryBoxSelectCustomerFiscalNumber.EntryValidation.Validate();
-
-                _entryBoxSelectCustomerCardNumber.Value = null;
-                _entryBoxSelectCustomerCardNumber.EntryValidation.Text = string.Empty;
-                _entryBoxSelectCustomerCardNumber.EntryValidation.Validate();
-
-                _entryBoxCustomerNotes.EntryValidation.Text = string.Empty;
-
-                //Call UpdateCustomerEditMode
-                UpdateCustomerEditMode();
+                _entryBoxSelectCustomerCountry.Value = _intialValueConfigurationCountry;
+                _entryBoxSelectCustomerCountry.EntryValidation.Text = _intialValueConfigurationCountry.Designation;
+                _entryBoxSelectCustomerCountry.EntryValidation.Validate(_entryBoxSelectCustomerCountry.Value.Oid.ToString());
             }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
-            finally
-            {
-                //Re Enable GetCustomerDetails
-                _enableGetCustomerDetails = true;
-            }
+
+            _entryBoxSelectCustomerFiscalNumber.Value = null;
+            _entryBoxSelectCustomerFiscalNumber.EntryValidation.Text = string.Empty;
+            _entryBoxSelectCustomerFiscalNumber.EntryValidation.Validate();
+
+            _entryBoxSelectCustomerCardNumber.Value = null;
+            _entryBoxSelectCustomerCardNumber.EntryValidation.Text = string.Empty;
+            _entryBoxSelectCustomerCardNumber.EntryValidation.Validate();
+
+            _entryBoxCustomerNotes.EntryValidation.Text = string.Empty;
+
+            //Call UpdateCustomerEditMode
+            UpdateCustomerEditMode();
+
+            //Re Enable GetCustomerDetails
+            _enableGetCustomerDetails = true;
+
         }
 
         //Almost Equal to DocumentFinanceDialogPage2 Method
         //Method to enable/disable edit components based on customer type and many other combinations
         private void UpdateCustomerEditMode()
         {
-            try
+            //Init Variables
+            decimal totalDocument = (ArticleBagPartialPayment == null) ? ArticleBagFullPayment.TotalFinal : ArticleBagPartialPayment.TotalFinal;
+            bool isFinalConsumerEntity = (Customer != null && Customer.Oid == InvoiceSettings.FinalConsumerId);
+            bool isSingularEntity = (isFinalConsumerEntity || FiscalNumberUtils.IsSingularEntity(_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text, _entryBoxSelectCustomerCountry.Value.Code2));
+            // Encrypt pFieldValue to use in Sql Filter
+            string fiscalNumberFilterValue = string.Empty;
+            if (PluginSettings.HasSoftwareVendorPlugin)
             {
-                //Init Variables
-                decimal totalDocument = (ArticleBagPartialPayment == null) ? ArticleBagFullPayment.TotalFinal : ArticleBagPartialPayment.TotalFinal;
-                bool isFinalConsumerEntity = (Customer != null && Customer.Oid == InvoiceSettings.FinalConsumerId);
-                bool isSingularEntity = (isFinalConsumerEntity || FiscalNumberUtils.IsSingularEntity(_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text, _entryBoxSelectCustomerCountry.Value.Code2));
-                // Encrypt pFieldValue to use in Sql Filter
-                string fiscalNumberFilterValue = string.Empty;
-                if (PluginSettings.HasSoftwareVendorPlugin)
-                {
-                    fiscalNumberFilterValue = PluginSettings.SoftwareVendor.Encrypt(_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text);
-                }
-                //Used To Disable FiscalNumber Edits and to Get Customer
-                string sql = string.Format("SELECT Oid FROM erp_customer WHERE FiscalNumber = '{0}' AND (Hidden IS NULL OR Hidden = 0);", fiscalNumberFilterValue);
-                Guid customerGuid = XPOUtility.GetGuidFromQuery(sql);
-                erp_customer customer = (customerGuid != Guid.Empty) ? XPOUtility.GetEntityById<erp_customer>(customerGuid) : null;
+                fiscalNumberFilterValue = PluginSettings.SoftwareVendor.Encrypt(_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text);
+            }
+            //Used To Disable FiscalNumber Edits and to Get Customer
+            string sql = string.Format("SELECT Oid FROM erp_customer WHERE FiscalNumber = '{0}' AND (Hidden IS NULL OR Hidden = 0);", fiscalNumberFilterValue);
+            Guid customerGuid = XPOUtility.GetGuidFromQuery(sql);
+            erp_customer customer = (customerGuid != Guid.Empty) ? XPOUtility.GetEntityById<erp_customer>(customerGuid) : null;
 
-                //Required Minimal Fields Edit : SingularEntity
-                if (isFinalConsumerEntity)
-                {
-                    //EntryBox
-                    //Janela Pagamentos - Aplicação de desconto total ao utilizador consumidor-final
-                    _entryBoxCustomerDiscount.EntryValidation.Sensitive = true;
-                    _entryBoxCustomerAddress.EntryValidation.Sensitive = false;
-                    _entryBoxCustomerLocality.EntryValidation.Sensitive = false;
-                    _entryBoxCustomerZipCode.EntryValidation.Sensitive = false;
-                    _entryBoxCustomerCity.EntryValidation.Sensitive = false;
-                    _entryBoxCustomerNotes.EntryValidation.Sensitive = false;
-                    //EntryBoxSelect
-                    _entryBoxSelectCustomerName.EntryValidation.Sensitive = false;
-                    _entryBoxSelectCustomerName.ButtonKeyBoard.Sensitive = false;
-                    _entryBoxSelectCustomerName.ButtonSelectValue.Sensitive = true;
-                    _entryBoxSelectCustomerCountry.EntryValidation.Sensitive = false;
-                    _entryBoxSelectCustomerCountry.ButtonSelectValue.Sensitive = true;
-                    _entryBoxSelectCustomerFiscalNumber.EntryValidation.Sensitive = false;
-                    _entryBoxSelectCustomerFiscalNumber.ButtonKeyBoard.Sensitive = false;
-                    _entryBoxSelectCustomerFiscalNumber.ButtonSelectValue.Sensitive = true;
-                    _entryBoxSelectCustomerCardNumber.EntryValidation.Sensitive = false;
-                    _entryBoxSelectCustomerCardNumber.ButtonKeyBoard.Sensitive = false;
-                    _entryBoxSelectCustomerCardNumber.ButtonSelectValue.Sensitive = true;
-                    //Validation
-                    //EntryBox
-                    _entryBoxSelectCustomerFiscalNumber.EntryValidation.Required = true;
-                }
-                else if (totalDocument < GeneralSettings.GetRequiredCustomerDetailsAboveValue(XPOSettings.ConfigurationSystemCountry.Oid) && isSingularEntity)
-                {
-                    //Enable edit User details, usefull to edit Name, Address etc
-                    bool enableEditCustomerDetails = !isFinalConsumerEntity;
-
-                    //Address
-                    _entryBoxCustomerDiscount.EntryValidation.Sensitive = enableEditCustomerDetails;
-                    _entryBoxCustomerAddress.EntryValidation.Sensitive = enableEditCustomerDetails;
-                    _entryBoxCustomerAddress.ButtonKeyBoard.Sensitive = enableEditCustomerDetails;
-                    //Locality
-                    _entryBoxCustomerLocality.EntryValidation.Sensitive = enableEditCustomerDetails;
-                    _entryBoxCustomerLocality.ButtonKeyBoard.Sensitive = enableEditCustomerDetails;
-                    //ZipCode
-                    _entryBoxCustomerZipCode.EntryValidation.Sensitive = enableEditCustomerDetails;
-                    _entryBoxCustomerZipCode.ButtonKeyBoard.Sensitive = enableEditCustomerDetails;
-                    //City
-                    _entryBoxCustomerCity.EntryValidation.Sensitive = enableEditCustomerDetails;
-                    _entryBoxCustomerCity.ButtonKeyBoard.Sensitive = enableEditCustomerDetails;
-                    //Notes
-                    _entryBoxCustomerNotes.EntryValidation.Sensitive = enableEditCustomerDetails;
-                    _entryBoxCustomerNotes.ButtonKeyBoard.Sensitive = enableEditCustomerDetails;
-
-                    //EntryBoxSelect
-                    _entryBoxSelectCustomerName.EntryValidation.Sensitive = enableEditCustomerDetails;
-                    _entryBoxSelectCustomerName.ButtonKeyBoard.Sensitive = enableEditCustomerDetails;
-                    _entryBoxSelectCustomerName.ButtonSelectValue.Sensitive = true;
-                    _entryBoxSelectCustomerCountry.EntryValidation.Sensitive = enableEditCustomerDetails;
-                    _entryBoxSelectCustomerCountry.ButtonSelectValue.Sensitive = enableEditCustomerDetails;
-                    //Always Disabled/Only Enabled in New Customer
-                    _entryBoxSelectCustomerFiscalNumber.EntryValidation.Sensitive = (customer == null || customer != null && customer.FiscalNumber != string.Empty);
-                    _entryBoxSelectCustomerFiscalNumber.ButtonKeyBoard.Sensitive = (customer == null || customer != null && customer.FiscalNumber != string.Empty);
-                    _entryBoxSelectCustomerFiscalNumber.ButtonSelectValue.Sensitive = true;
-                    _entryBoxSelectCustomerCardNumber.EntryValidation.Sensitive = enableEditCustomerDetails;
-                    _entryBoxSelectCustomerCardNumber.ButtonKeyBoard.Sensitive = enableEditCustomerDetails;
-                    _entryBoxSelectCustomerCardNumber.ButtonSelectValue.Sensitive = true;
-                    //Validation
-                    //EntryBox
-                    _entryBoxSelectCustomerName.EntryValidation.Required = false;
-                    _entryBoxCustomerAddress.EntryValidation.Required = false;
-                    _entryBoxCustomerZipCode.EntryValidation.Required = false;
-                    _entryBoxCustomerCity.EntryValidation.Required = false;
-                    //EntryBoxSelect
-                    _entryBoxSelectCustomerFiscalNumber.EntryValidation.Required = false;
-                }
-                else
-                {
-                    //EntryBox
-                    _entryBoxCustomerDiscount.EntryValidation.Sensitive = true;
-                    _entryBoxCustomerAddress.EntryValidation.Sensitive = true;
-                    _entryBoxCustomerLocality.EntryValidation.Sensitive = true;
-                    _entryBoxCustomerZipCode.EntryValidation.Sensitive = true;
-                    _entryBoxCustomerCity.EntryValidation.Sensitive = true;
-                    _entryBoxCustomerNotes.EntryValidation.Sensitive = true;
-                    //EntryBoxSelect
-                    _entryBoxSelectCustomerName.EntryValidation.Sensitive = (customer == null || !string.IsNullOrEmpty(customer.Name));
-                    _entryBoxSelectCustomerName.ButtonKeyBoard.Sensitive = (customer == null || !string.IsNullOrEmpty(customer.Name));
-                    _entryBoxSelectCustomerName.ButtonSelectValue.Sensitive = true;
-                    _entryBoxSelectCustomerCountry.EntryValidation.Sensitive = true;
-                    _entryBoxSelectCustomerCountry.ButtonSelectValue.Sensitive = true;
-                    _entryBoxSelectCustomerFiscalNumber.EntryValidation.Sensitive = (customer == null || !string.IsNullOrEmpty(customer.FiscalNumber));
-                    _entryBoxSelectCustomerFiscalNumber.ButtonKeyBoard.Sensitive = (customer == null || !string.IsNullOrEmpty(customer.FiscalNumber));
-                    _entryBoxSelectCustomerFiscalNumber.ButtonSelectValue.Sensitive = true;
-                    _entryBoxSelectCustomerCardNumber.EntryValidation.Sensitive = false;
-                    _entryBoxSelectCustomerCardNumber.ButtonKeyBoard.Sensitive = false;
-                    _entryBoxSelectCustomerCardNumber.ButtonSelectValue.Sensitive = false;
-
-                    //Validation
-                    //EntryBox
-                    _entryBoxCustomerAddress.EntryValidation.Required = true;
-                    _entryBoxCustomerZipCode.EntryValidation.Required = true;
-                    _entryBoxCustomerCity.EntryValidation.Required = true;
-                }
-
-                //Always update Discount Global
-                DiscountGlobal = (customer != null && customer.Discount > 0) ? customer.Discount : 0;
-                _entryBoxCustomerDiscount.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.DecimalToString(DiscountGlobal);
-
-                //Always Validate All Fields
+            //Required Minimal Fields Edit : SingularEntity
+            if (isFinalConsumerEntity)
+            {
                 //EntryBox
-                _entryBoxCustomerDiscount.EntryValidation.Validate();
-                _entryBoxCustomerAddress.EntryValidation.Validate();
-                _entryBoxCustomerLocality.EntryValidation.Validate();
-                _entryBoxCustomerZipCode.EntryValidation.Validate();
-                _entryBoxCustomerCity.EntryValidation.Validate();
+                //Janela Pagamentos - Aplicação de desconto total ao utilizador consumidor-final
+                _entryBoxCustomerDiscount.EntryValidation.Sensitive = true;
+                _entryBoxCustomerAddress.EntryValidation.Sensitive = false;
+                _entryBoxCustomerLocality.EntryValidation.Sensitive = false;
+                _entryBoxCustomerZipCode.EntryValidation.Sensitive = false;
+                _entryBoxCustomerCity.EntryValidation.Sensitive = false;
+                _entryBoxCustomerNotes.EntryValidation.Sensitive = false;
                 //EntryBoxSelect
-                _entryBoxSelectCustomerCountry.EntryValidation.Validate(_entryBoxSelectCustomerCountry.Value.Oid.ToString());
-                _entryBoxSelectCustomerCardNumber.EntryValidation.Validate();
-
-                //Call Before ReCheck if FiscalNumber is Valid
-                UpdateCustomerAddressAndFiscalNumberRequireFields();
-
-                //ReCheck if FiscalNumber is Valid
-                if (_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text != string.Empty && _entryBoxSelectCustomerFiscalNumber.EntryValidation.Validated)
-                {
-                    bool isValidFiscalNumber = FiscalNumberUtils.IsValidFiscalNumber(_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text, _entryBoxSelectCustomerCountry.Value.Code2);
-                    _entryBoxSelectCustomerFiscalNumber.EntryValidation.Validated = isValidFiscalNumber;
-                }
-
-                //Shared
-
-                //Require Validate
-                Validate();
+                _entryBoxSelectCustomerName.EntryValidation.Sensitive = false;
+                _entryBoxSelectCustomerName.ButtonKeyBoard.Sensitive = false;
+                _entryBoxSelectCustomerName.ButtonSelectValue.Sensitive = true;
+                _entryBoxSelectCustomerCountry.EntryValidation.Sensitive = false;
+                _entryBoxSelectCustomerCountry.ButtonSelectValue.Sensitive = true;
+                _entryBoxSelectCustomerFiscalNumber.EntryValidation.Sensitive = false;
+                _entryBoxSelectCustomerFiscalNumber.ButtonKeyBoard.Sensitive = false;
+                _entryBoxSelectCustomerFiscalNumber.ButtonSelectValue.Sensitive = true;
+                _entryBoxSelectCustomerCardNumber.EntryValidation.Sensitive = false;
+                _entryBoxSelectCustomerCardNumber.ButtonKeyBoard.Sensitive = false;
+                _entryBoxSelectCustomerCardNumber.ButtonSelectValue.Sensitive = true;
+                //Validation
+                //EntryBox
+                _entryBoxSelectCustomerFiscalNumber.EntryValidation.Required = true;
             }
-            catch (Exception ex)
+            else if (totalDocument < GeneralSettings.GetRequiredCustomerDetailsAboveValue(XPOSettings.ConfigurationSystemCountry.Oid) && isSingularEntity)
             {
-                _logger.Error(ex.Message, ex);
+                //Enable edit User details, usefull to edit Name, Address etc
+                bool enableEditCustomerDetails = !isFinalConsumerEntity;
+
+                //Address
+                _entryBoxCustomerDiscount.EntryValidation.Sensitive = enableEditCustomerDetails;
+                _entryBoxCustomerAddress.EntryValidation.Sensitive = enableEditCustomerDetails;
+                _entryBoxCustomerAddress.ButtonKeyBoard.Sensitive = enableEditCustomerDetails;
+                //Locality
+                _entryBoxCustomerLocality.EntryValidation.Sensitive = enableEditCustomerDetails;
+                _entryBoxCustomerLocality.ButtonKeyBoard.Sensitive = enableEditCustomerDetails;
+                //ZipCode
+                _entryBoxCustomerZipCode.EntryValidation.Sensitive = enableEditCustomerDetails;
+                _entryBoxCustomerZipCode.ButtonKeyBoard.Sensitive = enableEditCustomerDetails;
+                //City
+                _entryBoxCustomerCity.EntryValidation.Sensitive = enableEditCustomerDetails;
+                _entryBoxCustomerCity.ButtonKeyBoard.Sensitive = enableEditCustomerDetails;
+                //Notes
+                _entryBoxCustomerNotes.EntryValidation.Sensitive = enableEditCustomerDetails;
+                _entryBoxCustomerNotes.ButtonKeyBoard.Sensitive = enableEditCustomerDetails;
+
+                //EntryBoxSelect
+                _entryBoxSelectCustomerName.EntryValidation.Sensitive = enableEditCustomerDetails;
+                _entryBoxSelectCustomerName.ButtonKeyBoard.Sensitive = enableEditCustomerDetails;
+                _entryBoxSelectCustomerName.ButtonSelectValue.Sensitive = true;
+                _entryBoxSelectCustomerCountry.EntryValidation.Sensitive = enableEditCustomerDetails;
+                _entryBoxSelectCustomerCountry.ButtonSelectValue.Sensitive = enableEditCustomerDetails;
+                //Always Disabled/Only Enabled in New Customer
+                _entryBoxSelectCustomerFiscalNumber.EntryValidation.Sensitive = (customer == null || customer != null && customer.FiscalNumber != string.Empty);
+                _entryBoxSelectCustomerFiscalNumber.ButtonKeyBoard.Sensitive = (customer == null || customer != null && customer.FiscalNumber != string.Empty);
+                _entryBoxSelectCustomerFiscalNumber.ButtonSelectValue.Sensitive = true;
+                _entryBoxSelectCustomerCardNumber.EntryValidation.Sensitive = enableEditCustomerDetails;
+                _entryBoxSelectCustomerCardNumber.ButtonKeyBoard.Sensitive = enableEditCustomerDetails;
+                _entryBoxSelectCustomerCardNumber.ButtonSelectValue.Sensitive = true;
+                //Validation
+                //EntryBox
+                _entryBoxSelectCustomerName.EntryValidation.Required = false;
+                _entryBoxCustomerAddress.EntryValidation.Required = false;
+                _entryBoxCustomerZipCode.EntryValidation.Required = false;
+                _entryBoxCustomerCity.EntryValidation.Required = false;
+                //EntryBoxSelect
+                _entryBoxSelectCustomerFiscalNumber.EntryValidation.Required = false;
             }
+            else
+            {
+                //EntryBox
+                _entryBoxCustomerDiscount.EntryValidation.Sensitive = true;
+                _entryBoxCustomerAddress.EntryValidation.Sensitive = true;
+                _entryBoxCustomerLocality.EntryValidation.Sensitive = true;
+                _entryBoxCustomerZipCode.EntryValidation.Sensitive = true;
+                _entryBoxCustomerCity.EntryValidation.Sensitive = true;
+                _entryBoxCustomerNotes.EntryValidation.Sensitive = true;
+                //EntryBoxSelect
+                _entryBoxSelectCustomerName.EntryValidation.Sensitive = (customer == null || !string.IsNullOrEmpty(customer.Name));
+                _entryBoxSelectCustomerName.ButtonKeyBoard.Sensitive = (customer == null || !string.IsNullOrEmpty(customer.Name));
+                _entryBoxSelectCustomerName.ButtonSelectValue.Sensitive = true;
+                _entryBoxSelectCustomerCountry.EntryValidation.Sensitive = true;
+                _entryBoxSelectCustomerCountry.ButtonSelectValue.Sensitive = true;
+                _entryBoxSelectCustomerFiscalNumber.EntryValidation.Sensitive = (customer == null || !string.IsNullOrEmpty(customer.FiscalNumber));
+                _entryBoxSelectCustomerFiscalNumber.ButtonKeyBoard.Sensitive = (customer == null || !string.IsNullOrEmpty(customer.FiscalNumber));
+                _entryBoxSelectCustomerFiscalNumber.ButtonSelectValue.Sensitive = true;
+                _entryBoxSelectCustomerCardNumber.EntryValidation.Sensitive = false;
+                _entryBoxSelectCustomerCardNumber.ButtonKeyBoard.Sensitive = false;
+                _entryBoxSelectCustomerCardNumber.ButtonSelectValue.Sensitive = false;
+
+                //Validation
+                //EntryBox
+                _entryBoxCustomerAddress.EntryValidation.Required = true;
+                _entryBoxCustomerZipCode.EntryValidation.Required = true;
+                _entryBoxCustomerCity.EntryValidation.Required = true;
+            }
+
+            //Always update Discount Global
+            DiscountGlobal = (customer != null && customer.Discount > 0) ? customer.Discount : 0;
+            _entryBoxCustomerDiscount.EntryValidation.Text = LogicPOS.Utility.DataConversionUtils.DecimalToString(DiscountGlobal);
+
+            //Always Validate All Fields
+            //EntryBox
+            _entryBoxCustomerDiscount.EntryValidation.Validate();
+            _entryBoxCustomerAddress.EntryValidation.Validate();
+            _entryBoxCustomerLocality.EntryValidation.Validate();
+            _entryBoxCustomerZipCode.EntryValidation.Validate();
+            _entryBoxCustomerCity.EntryValidation.Validate();
+            //EntryBoxSelect
+            _entryBoxSelectCustomerCountry.EntryValidation.Validate(_entryBoxSelectCustomerCountry.Value.Oid.ToString());
+            _entryBoxSelectCustomerCardNumber.EntryValidation.Validate();
+
+            //Call Before ReCheck if FiscalNumber is Valid
+            UpdateCustomerAddressAndFiscalNumberRequireFields();
+
+            //ReCheck if FiscalNumber is Valid
+            if (_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text != string.Empty && _entryBoxSelectCustomerFiscalNumber.EntryValidation.Validated)
+            {
+                bool isValidFiscalNumber = FiscalNumberUtils.IsValidFiscalNumber(_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text, _entryBoxSelectCustomerCountry.Value.Code2);
+                _entryBoxSelectCustomerFiscalNumber.EntryValidation.Validated = isValidFiscalNumber;
+            }
+
+            //Shared
+
+            //Require Validate
+            Validate();
+
         }
 
         //Almost Equal to DocumentFinanceDialogPage2 Method : Both methods have same Name
@@ -996,11 +965,22 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             string buttonIconChangePrice = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_cashdrawer_out.png";
 
             //Default ActionArea Buttons
-            TouchButtonIconWithText buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);
-            TouchButtonIconWithText buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
+            IconButtonWithText buttonOk = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
+            IconButtonWithText buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
 
             //Pagamentos parciais -Escolher valor a pagar por artigo[TK: 019295]
-            TouchButtonIconWithText touchButtonChangePrice = new TouchButtonIconWithText("touchButtonChangePrice", Color.Transparent, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_price"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, buttonIconChangePrice, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height);
+            IconButtonWithText touchButtonChangePrice = new IconButtonWithText(
+                new ButtonSettings
+                {
+                    Name = "touchButtonChangePrice",
+                    Text = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_price"),
+                    Font = FontSettings.ActionAreaButton,
+                    FontColor = ColorSettings.ActionAreaButtonFont,
+                    Icon = buttonIconChangePrice,
+                    IconSize = SizeSettings.ActionAreaButtonIcon,
+                    ButtonSize = SizeSettings.ActionAreaButton
+                });
+
             buttonOk.Sensitive = false;
 
             //ActionArea Buttons
@@ -1033,7 +1013,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //new Guid(), //use this to test pDefaultValue 
                 //new Guid("630ff869-e433-46bb-a53b-563c43535424"), 
                 null, //pDefaultValue : Require to Send a DataRow
-                GenericTreeViewMode.CheckBox,
+                GridViewMode.CheckBox,
                 actionAreaButtons
               );
 
@@ -1042,12 +1022,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _dialogPartialPayment.CheckBoxToggled += delegate
             {
                 //Use inside delegate to have accesss to local references, ex dialogPartialPayment, actionAreaButtonOk
-                if (_dialogPartialPayment.GenericTreeViewMode == GenericTreeViewMode.Default)
+                if (_dialogPartialPayment.GenericTreeViewMode == GridViewMode.Default)
                 {
                     //DataTableMode else use XPGuidObject
-                    if (_dialogPartialPayment.GenericTreeView.DataSourceRow != null) actionAreaButtonOk.Button.Sensitive = true;
+                    if (_dialogPartialPayment.GenericTreeView.Entity != null) actionAreaButtonOk.Button.Sensitive = true;
                 }
-                else if (_dialogPartialPayment.GenericTreeViewMode == GenericTreeViewMode.CheckBox)
+                else if (_dialogPartialPayment.GenericTreeViewMode == GridViewMode.CheckBox)
                 {
                     actionAreaButtonOk.Button.Sensitive = (_dialogPartialPayment.GenericTreeView.MarkedCheckBoxs > 0);
 
@@ -1055,17 +1035,17 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     actionAreaButtonChangePrice.Button.Sensitive = (_dialogPartialPayment.GenericTreeView.MarkedCheckBoxs > 0);
 
                     //Get Indexes
-                    int indexColumnCheckBox = _dialogPartialPayment.GenericTreeView.DataSource.Columns.IndexOf("CheckBox");
-                    int indexColumnPrice = _dialogPartialPayment.GenericTreeView.DataSource.Columns.IndexOf("Price");
-                    int indexColumnDiscount = _dialogPartialPayment.GenericTreeView.DataSource.Columns.IndexOf("Discount");
-                    int indexColumnVat = _dialogPartialPayment.GenericTreeView.DataSource.Columns.IndexOf("Vat");
-                    int indexColumnPriceFinal = _dialogPartialPayment.GenericTreeView.DataSource.Columns.IndexOf("PriceFinal");
+                    int indexColumnCheckBox = _dialogPartialPayment.GenericTreeView.Entities.Columns.IndexOf("CheckBox");
+                    int indexColumnPrice = _dialogPartialPayment.GenericTreeView.Entities.Columns.IndexOf("Price");
+                    int indexColumnDiscount = _dialogPartialPayment.GenericTreeView.Entities.Columns.IndexOf("Discount");
+                    int indexColumnVat = _dialogPartialPayment.GenericTreeView.Entities.Columns.IndexOf("Vat");
+                    int indexColumnPriceFinal = _dialogPartialPayment.GenericTreeView.Entities.Columns.IndexOf("PriceFinal");
 
                     //Update Dialog Title with Total Checked Items
-                    bool itemChecked = (bool)_dialogPartialPayment.GenericTreeView.DataSourceRow.ItemArray[indexColumnCheckBox];
-                    decimal currentRowPrice = (decimal)_dialogPartialPayment.GenericTreeView.DataSourceRow.ItemArray[indexColumnPriceFinal];
+                    bool itemChecked = (bool)_dialogPartialPayment.GenericTreeView.Entity.ItemArray[indexColumnCheckBox];
+                    decimal currentRowPrice = (decimal)_dialogPartialPayment.GenericTreeView.Entity.ItemArray[indexColumnPriceFinal];
                     _totalPartialPaymentItems += (itemChecked) ? currentRowPrice : -currentRowPrice;
-                    _dialogPartialPayment.WindowTitle = (_totalPartialPaymentItems > 0) ? string.Format("{0} : {1}", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_partial_payment"), LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_totalPartialPaymentItems, XPOSettings.ConfigurationSystemCurrency.Acronym)) : CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_partial_payment");
+                    _dialogPartialPayment.WindowSettings.WindowTitle.Text = (_totalPartialPaymentItems > 0) ? string.Format("{0} : {1}", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_partial_payment"), LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_totalPartialPaymentItems, XPOSettings.ConfigurationSystemCurrency.Acronym)) : CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_partial_payment");
                 }
             };
 
@@ -1090,12 +1070,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if (args.ResponseId == ResponseType.Ok)
                 {
                     //Single Record Mode - Default - USED HERE ONLY TO TEST Both Dialogs Modes (Default and CheckBox)
-                    if (dialog.GenericTreeViewMode == GenericTreeViewMode.Default)
+                    if (dialog.GenericTreeViewMode == GridViewMode.Default)
                     {
                         //use dialog.GenericTreeView.DataTableRow.ItemArray
                     }
                     //Multi Record Mode - CheckBox - ACTIVE MODE
-                    else if (dialog.GenericTreeViewMode == GenericTreeViewMode.CheckBox)
+                    else if (dialog.GenericTreeViewMode == GridViewMode.CheckBox)
                     {
                         //Init Global ArticleBag
                         ArticleBagPartialPayment = new ArticleBag();
@@ -1133,53 +1113,47 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             int columnIndexCheckBox = 1;
             ArticleBagKey articleBagKey;
             ArticleBagProperties articleBagProps;
-            DataTable dataTable = _dialogPartialPayment.GenericTreeView.DataSource;
+            DataTable dataTable = _dialogPartialPayment.GenericTreeView.Entities;
 
-            try
+            int itemIndex = Convert.ToInt32(model.GetValue(iter, columnIndexIndex).ToString());
+            bool itemChecked = Convert.ToBoolean(model.GetValue(iter, columnIndexCheckBox));
+
+            string token1 = string.Empty;
+            string token2 = string.Empty;
+
+            if (itemChecked)
             {
-                int itemIndex = Convert.ToInt32(model.GetValue(iter, columnIndexIndex).ToString());
-                bool itemChecked = Convert.ToBoolean(model.GetValue(iter, columnIndexCheckBox));
+                //Always get values from DataTable, this way we have Types :)
+                Guid itemGuid = (Guid)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Oid")];
+                //_logger.Debug(string.Format("{0}:{1}:{2}", itemIndex, itemChecked, itemGuid));
 
-                string token1 = string.Empty;
-                string token2 = string.Empty;
-
-                if (itemChecked)
-                {
-                    //Always get values from DataTable, this way we have Types :)
-                    Guid itemGuid = (Guid)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Oid")];
-                    //_logger.Debug(string.Format("{0}:{1}:{2}", itemIndex, itemChecked, itemGuid));
-
-                    //Prepare articleBag Key and Props
-                    articleBagKey = new ArticleBagKey(
-                      (Guid)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Oid")],
-                      (string)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Designation")],
-                      (decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Price")],
-                      (decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Discount")],
-                      (decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Vat")]
-                    );
-                    articleBagProps = new ArticleBagProperties(
-                      (Guid)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("PlaceOid")],
-                      (Guid)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("TableOid")],
-                      (PriceType)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("PriceType")],
-                      (string)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Code")],
-                      Convert.ToDecimal(dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Quantity")]),
-                      (string)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("UnitMeasure")]
-                    );
-                    //Token Work
-                    if (!dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Token1")].Equals(DBNull.Value))
-                        token1 = (string)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Token1")];
-                    if (!dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Token2")].Equals(DBNull.Value))
-                        token2 = (string)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Token2")];
-                    if (token1 != string.Empty) articleBagProps.Token1 = token1;
-                    if (token2 != string.Empty) articleBagProps.Token2 = token2;
-                    //Send to Bag
-                    ArticleBagPartialPayment.Add(articleBagKey, articleBagProps);
-                }
+                //Prepare articleBag Key and Props
+                articleBagKey = new ArticleBagKey(
+                  (Guid)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Oid")],
+                  (string)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Designation")],
+                  (decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Price")],
+                  (decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Discount")],
+                  (decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Vat")]
+                );
+                articleBagProps = new ArticleBagProperties(
+                  (Guid)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("PlaceOid")],
+                  (Guid)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("TableOid")],
+                  (PriceType)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("PriceType")],
+                  (string)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Code")],
+                  Convert.ToDecimal(dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Quantity")]),
+                  (string)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("UnitMeasure")]
+                );
+                //Token Work
+                if (!dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Token1")].Equals(DBNull.Value))
+                    token1 = (string)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Token1")];
+                if (!dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Token2")].Equals(DBNull.Value))
+                    token2 = (string)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Token2")];
+                if (token1 != string.Empty) articleBagProps.Token1 = token1;
+                if (token2 != string.Empty) articleBagProps.Token2 = token2;
+                //Send to Bag
+                ArticleBagPartialPayment.Add(articleBagKey, articleBagProps);
             }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
+
 
             return false;
         }
@@ -1191,85 +1165,87 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             int columnIndexCheckBox = 1;
             ArticleBagKey articleBagKey;
             ArticleBagProperties articleBagProps;
-            DataTable dataTable = _dialogPartialPayment.GenericTreeView.DataSource;
+            DataTable dataTable = _dialogPartialPayment.GenericTreeView.Entities;
             int itemIndex = Convert.ToInt32(model.GetValue(iter, columnIndexIndex).ToString());
             bool itemChecked = Convert.ToBoolean(model.GetValue(iter, columnIndexCheckBox));
 
-            try
+            if (itemChecked)
             {
-                if (itemChecked)
+                //Get Money pad title based on line selected (Desigantion & Price)
+                decimal priceFinal = decimal.Round((decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("PriceFinal")], 2);
+                string priceFinalText = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(priceFinal, XPOSettings.ConfigurationSystemCurrency.Acronym);
+
+                string moneyPadTitle = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_moneypad_product_price") + " :: " + (string)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Designation")] + " :: " +
+                    priceFinalText);
+
+
+                MoneyPadResult result = PosMoneyPadDialog.RequestDecimalValue(WindowSettings.Source,
+                                                                              moneyPadTitle,
+                                                                              priceFinal,
+                                                                              priceFinal);
+                newValuePrice = result.Value;
+
+                if (result.Response == ResponseType.Ok && newValuePrice > 0)
                 {
-                    //Get Money pad title based on line selected (Desigantion & Price)
-                    decimal priceFinal = decimal.Round((decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("PriceFinal")], 2);
-                    string priceFinalText = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(priceFinal, XPOSettings.ConfigurationSystemCurrency.Acronym);
-
-                    string moneyPadTitle = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_moneypad_product_price") + " :: " + (string)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Designation")] + " :: " +
-                        priceFinalText);
-
-
-                    MoneyPadResult result = PosMoneyPadDialog.RequestDecimalValue(_sourceWindow, moneyPadTitle, priceFinal, priceFinal);
-                    newValuePrice = result.Value;
-
-                    if (result.Response == ResponseType.Ok && newValuePrice > 0)
+                    if (newValuePrice > decimal.Round((decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("PriceFinal")], 2))
                     {
-                        if (newValuePrice > decimal.Round((decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("PriceFinal")], 2))
-                        {
-                            logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, "Valor Errado", "Valor inserido superior ao total");
-                        }
-                        else
-                        {
-                            //dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("PriceFinal")] = decimal.Round(newValuePrice,2);
+                        logicpos.Utils.ShowMessageTouch(WindowSettings.Source,
+                                                        DialogFlags.DestroyWithParent,
+                                                        MessageType.Warning,
+                                                        ButtonsType.Ok,
+                                                        "Valor Errado",
+                                                        "Valor inserido superior ao total");
+                    }
+                    else
+                    {
+                        //dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("PriceFinal")] = decimal.Round(newValuePrice,2);
 
-                            string token1 = string.Empty;
-                            string token2 = string.Empty;
+                        string token1 = string.Empty;
+                        string token2 = string.Empty;
 
 
-                            //Always get values from DataTable, this way we have Types :)
-                            Guid itemGuid = (Guid)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Oid")];
-                            //_logger.Debug(string.Format("{0}:{1}:{2}", itemIndex, itemChecked, itemGuid));
+                        //Always get values from DataTable, this way we have Types :)
+                        Guid itemGuid = (Guid)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Oid")];
+                        //_logger.Debug(string.Format("{0}:{1}:{2}", itemIndex, itemChecked, itemGuid));
 
-                            //Calculate values with new price
-                            decimal vatRate = (decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Vat")];
-                            decimal PriceNet = (newValuePrice / (vatRate / 100 + 1));
-                            decimal totalTax = newValuePrice - PriceNet;
-                            decimal oldQuantity = Convert.ToDecimal(dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Quantity")]);
-                            decimal quantity = (newValuePrice * oldQuantity) / (decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("PriceFinal")];
+                        //Calculate values with new price
+                        decimal vatRate = (decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Vat")];
+                        decimal PriceNet = (newValuePrice / (vatRate / 100 + 1));
+                        decimal totalTax = newValuePrice - PriceNet;
+                        decimal oldQuantity = Convert.ToDecimal(dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Quantity")]);
+                        decimal quantity = (newValuePrice * oldQuantity) / (decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("PriceFinal")];
 
-                            //Prepare articleBag Key and Props
-                            articleBagKey = new ArticleBagKey(
-                              (Guid)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Oid")],
-                              (string)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Designation")],
-                              (decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Price")],
-                              (decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Discount")],
-                              (decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Vat")]
-                            );
-                            articleBagProps = new ArticleBagProperties(
-                              (Guid)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("PlaceOid")],
-                              (Guid)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("TableOid")],
-                              (PriceType)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("PriceType")],
-                              (string)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Code")],
-                              quantity,
-                              (string)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("UnitMeasure")]
-                            );
-                            //Token Work
-                            if (!dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Token1")].Equals(DBNull.Value))
-                                token1 = (string)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Token1")];
-                            if (!dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Token2")].Equals(DBNull.Value))
-                                token2 = (string)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Token2")];
-                            if (token1 != string.Empty) articleBagProps.Token1 = token1;
-                            if (token2 != string.Empty) articleBagProps.Token2 = token2;
+                        //Prepare articleBag Key and Props
+                        articleBagKey = new ArticleBagKey(
+                          (Guid)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Oid")],
+                          (string)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Designation")],
+                          (decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Price")],
+                          (decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Discount")],
+                          (decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Vat")]
+                        );
+                        articleBagProps = new ArticleBagProperties(
+                          (Guid)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("PlaceOid")],
+                          (Guid)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("TableOid")],
+                          (PriceType)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("PriceType")],
+                          (string)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Code")],
+                          quantity,
+                          (string)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("UnitMeasure")]
+                        );
+                        //Token Work
+                        if (!dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Token1")].Equals(DBNull.Value))
+                            token1 = (string)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Token1")];
+                        if (!dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Token2")].Equals(DBNull.Value))
+                            token2 = (string)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Token2")];
+                        if (token1 != string.Empty) articleBagProps.Token1 = token1;
+                        if (token2 != string.Empty) articleBagProps.Token2 = token2;
 
-                            //Send to Bag
-                            ArticleBagPartialPayment.Add(articleBagKey, articleBagProps);
+                        //Send to Bag
+                        ArticleBagPartialPayment.Add(articleBagKey, articleBagProps);
 
-                        }
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
+
 
             return false;
         }

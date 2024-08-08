@@ -39,7 +39,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 bool result = WorkSessionProcessor.SessionPeriodClose(XPOSettings.WorkSessionPeriodDay);
                 if (result)
                 {
-                    _touchButtonStartStopWorkSessionPeriodDay.LabelText = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_worksession_open_day");
+                    _touchButtonStartStopWorkSessionPeriodDay.ButtonLabel.Text = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_worksession_open_day");
                     _touchButtonCashDrawer.Sensitive = false;
 
                     //Show ClosePeriodMessage
@@ -66,7 +66,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 bool result = WorkSessionProcessor.SessionPeriodOpen(WorkSessionPeriodType.Day);
                 if (result)
                 {
-                    _touchButtonStartStopWorkSessionPeriodDay.LabelText = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_worksession_close_day");
+                    _touchButtonStartStopWorkSessionPeriodDay.ButtonLabel.Text = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_worksession_close_day");
                     _touchButtonCashDrawer.Sensitive = true;
                 }
             }
@@ -209,7 +209,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             {
                                 //PrintWorkSessionMovement
                                 var thermalPrinter = TerminalSettings.LoggedTerminal.ThermalPrinter;
-                                if(thermalPrinter != null)
+                                if (thermalPrinter != null)
                                 {
                                     FrameworkCalls.PrintCashDrawerOpenAndMoneyInOut(
                                         dialogCashDrawer,
@@ -544,9 +544,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //With Valid WorkSessionPeriodDay
                 if (XPOSettings.WorkSessionPeriodDay.SessionStatus == WorkSessionPeriodStatus.Open)
                 {
-                    if (_touchButtonStartStopWorkSessionPeriodDay.LabelText != CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_worksession_close_day"))
+                    if (_touchButtonStartStopWorkSessionPeriodDay.ButtonLabel.Text
+                        != CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_worksession_close_day"))
                     {
-                        _touchButtonStartStopWorkSessionPeriodDay.LabelText = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_worksession_close_day");
+                        _touchButtonStartStopWorkSessionPeriodDay.ButtonLabel.Text = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_worksession_close_day");
                     }
 
                     if (!_touchButtonCashDrawer.Sensitive == true)
@@ -560,9 +561,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //No WorkSessionPeriodDay
             else
             {
-                if (_touchButtonStartStopWorkSessionPeriodDay.LabelText != CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_worksession_open_day"))
+                if (_touchButtonStartStopWorkSessionPeriodDay.ButtonLabel.Text != CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_worksession_open_day"))
                 {
-                    _touchButtonStartStopWorkSessionPeriodDay.LabelText = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_worksession_open_day");
+                    _touchButtonStartStopWorkSessionPeriodDay.ButtonLabel.Text = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_worksession_open_day");
                 }
                 _touchButtonCashDrawer.Sensitive = false;
             }
@@ -573,7 +574,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         /// </summary>
         /// <param name="pWorkSessionPeriod"></param>
         /// <returns></returns>
-        public void ShowClosePeriodMessage(Window pSourceWindow, pos_worksessionperiod pWorkSessionPeriod)
+        public void ShowClosePeriodMessage(Window parentWindow, pos_worksessionperiod pWorkSessionPeriod)
         {
             string messageResource = (pWorkSessionPeriod.PeriodType == WorkSessionPeriodType.Day) ?
               CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_worksession_day_close_successfully") :
@@ -597,35 +598,29 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             string messageTotalSummary = string.Format("{1}{0}{2}{0}{3}{0}{4}{0}", Environment.NewLine, totalMoneyInCashDrawerOnOpen, totalMoneyInCashDrawer, totalMoneyIn, totalMoneyOut);
 
             //Get Payments Totals
-            try
+
+            XPCollection workSessionPeriodTotal = WorkSessionProcessor.GetSessionPeriodTotal(pWorkSessionPeriod);
+            if (workSessionPeriodTotal.Count > 0)
             {
-                XPCollection workSessionPeriodTotal = WorkSessionProcessor.GetSessionPeriodTotal(pWorkSessionPeriod);
-                if (workSessionPeriodTotal.Count > 0)
+                messageTotalSummary += string.Format("{0}{1}{0}", Environment.NewLine, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_total_by_type_of_payment"));
+                foreach (pos_worksessionperiodtotal item in workSessionPeriodTotal)
                 {
-                    messageTotalSummary += string.Format("{0}{1}{0}", Environment.NewLine, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_total_by_type_of_payment"));
-                    foreach (pos_worksessionperiodtotal item in workSessionPeriodTotal)
-                    {
-                        messageTotalSummary += string.Format("{1}-{2}: {3}{0}", Environment.NewLine, item.PaymentMethod.Acronym, item.PaymentMethod.Designation, LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(item.Total, XPOSettings.ConfigurationSystemCurrency.Acronym));
-                    }
-                    workSessionPeriodTotalCount = workSessionPeriodTotal.Count;
+                    messageTotalSummary += string.Format("{1}-{2}: {3}{0}", Environment.NewLine, item.PaymentMethod.Acronym, item.PaymentMethod.Designation, LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(item.Total, XPOSettings.ConfigurationSystemCurrency.Acronym));
                 }
-
-                windowHeight = (workSessionPeriodTotalCount > 0) ? windowHeight + ((workSessionPeriodTotalCount + 2) * lineHeight) : windowHeight + lineHeight;
-
-                logicpos.Utils.ShowMessageBox(
-                  pSourceWindow,
-                  DialogFlags.Modal,
-                  new Size(600, windowHeight),
-                  MessageType.Info,
-                  ButtonsType.Close,
-                  "Info",
-                  string.Format(messageResource, messageTotalSummary)
-                );
+                workSessionPeriodTotalCount = workSessionPeriodTotal.Count;
             }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
+
+            windowHeight = (workSessionPeriodTotalCount > 0) ? windowHeight + ((workSessionPeriodTotalCount + 2) * lineHeight) : windowHeight + lineHeight;
+
+            logicpos.Utils.ShowMessageBox(
+              parentWindow,
+              DialogFlags.Modal,
+              new Size(600, windowHeight),
+              MessageType.Info,
+              ButtonsType.Close,
+              "Info",
+              string.Format(messageResource, messageTotalSummary)
+            );
         }
     }
 }

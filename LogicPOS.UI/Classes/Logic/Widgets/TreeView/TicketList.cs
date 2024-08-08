@@ -2,12 +2,9 @@
 using DevExpress.Xpo;
 using Gtk;
 using logicpos.App;
-using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Enums.TicketList;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.Extensions;
 using logicpos.shared.Enums;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Settings.Terminal;
@@ -18,6 +15,10 @@ using LogicPOS.Settings;
 using LogicPOS.Shared;
 using LogicPOS.Shared.Article;
 using LogicPOS.Shared.Orders;
+using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components;
+using LogicPOS.UI.Dialogs;
+using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -347,11 +348,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     TerminalSettings.LoggedTerminal.ThermalPrinter.PrinterType.ThermalPrinter &&
                     orderTicket.OrderDetail.Count != 0)
                 {
-                    //public static bool PrintOrderRequest(Window pSourceWindow, sys_configurationprinters pPrinter, OrderMain pDocumentOrderMain, fin_documentorderticket pOrderTicket)
+                    //public static bool PrintOrderRequest(Window parentWindow, sys_configurationprinters pPrinter, OrderMain pDocumentOrderMain, fin_documentorderticket pOrderTicket)
                     //IN009239 - This avoids orders being printed when in use of ParkingTicketModule
                     //Opção para imprimir ou não o ticket
                     //bool printTicket = true;
-                    //printTicket = Convert.ToBoolean(LogicPOS.Settings.GeneralSettings.Settings["printTicket"]);
+                    //printTicket = Convert.ToBoolean(LogicPOS.Settings.AppSettings.Instance.printTicket"]);
 
                     //Criação de variável nas configurações para imprimir ou não ticket's [IN:013328]
                     if (!GeneralSettings.AppUseParkingTicketModule && logicpos.Utils.PrintTicket())
@@ -378,7 +379,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //Payments and SplitAccount (Shared for Both Actions)
         private void _buttonKeyPayments_Clicked(object sender, EventArgs e)
         {
-            TouchButtonIconWithText button = (sender as TouchButtonIconWithText);
+            IconButtonWithText button = (sender as IconButtonWithText);
 
             try
             {
@@ -423,7 +424,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 ArticleBag articleBag = ArticleBag.TicketOrderToArticleBag(orderMain);
 
                 // Shared Referencesfor Dialog
-                PosBaseDialog dialog = null;
+                BaseDialog dialog = null;
 
                 // Get Dialog Reference
                 if (button.Name.Equals("touchButtonPosTicketPadPayments_Green"))
@@ -672,14 +673,14 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 GlobalApp.MaxWindowSize,
                 null, //XpoDefaultValue
                 criteria,
-                GenericTreeViewMode.Default,
+                GridViewMode.Default,
                 null  //pActionAreaButtons
               );
 
             int response = dialog.Run();
             if (response == (int)ResponseType.Ok)
             {
-                result = dialog.GenericTreeView.DataSourceRow.Oid;
+                result = dialog.GenericTreeView.Entity.Oid;
             }
             dialog.Destroy();
 

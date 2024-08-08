@@ -1,11 +1,10 @@
 ﻿using Gtk;
-using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.Extensions;
-using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Shared.Article;
+using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Dialogs;
+using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -13,22 +12,22 @@ using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    internal partial class PosSplitPaymentsDialog : PosBaseDialog
+    internal partial class PosSplitPaymentsDialog : BaseDialog
     {
         private readonly ArticleBag _articleBag;
         private readonly TicketList _ticketList;
 
-        private readonly TouchButtonIconWithText _buttonOk;
-        private readonly TouchButtonIconWithText _buttonCancel;
-        private readonly TouchButtonIconWithText _buttonTableRemoveSplit;
-        private readonly TouchButtonIconWithText _buttonTableAddSplit;
+        private readonly IconButtonWithText _buttonOk;
+        private readonly IconButtonWithText _buttonCancel;
+        private readonly IconButtonWithText _buttonTableRemoveSplit;
+        private readonly IconButtonWithText _buttonTableAddSplit;
         private readonly ResponseType _responseTypeRemoveSplit = (ResponseType)11;
         private readonly ResponseType _responseTypeAddSplit = (ResponseType)10;
         // Strore Total per Split
         private decimal _totalPerSplit;
         // UI
         private readonly VBox _vbox;
-        private readonly List<TouchButtonSplitPayment> _splitPaymentButtons = new List<TouchButtonSplitPayment>();
+        private readonly List<SplitPaymentButton> _splitPaymentButtons = new List<SplitPaymentButton>();
         // Settings
         private string _fontSplitPaymentTouchButtonSplitPayment;
         private int _intSplitPaymentTouchButtonSplitPaymentHeight;
@@ -37,8 +36,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private int _intSplitPaymentMinClients;
         private int _intSplitPaymentMaxClients;
 
-        public PosSplitPaymentsDialog(Window pSourceWindow, DialogFlags pDialogFlags, ArticleBag articleBag, TicketList ticketList)
-            : base(pSourceWindow, pDialogFlags)
+        public PosSplitPaymentsDialog(Window parentWindow, DialogFlags pDialogFlags, ArticleBag articleBag, TicketList ticketList)
+            : base(parentWindow, pDialogFlags)
         {
             // Parameters
             _articleBag = articleBag;
@@ -68,13 +67,36 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _scrolledWindow.ResizeMode = ResizeMode.Parent;
 
             //ActionArea Buttons
-            _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);
-            _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
+            _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
+            _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
             _buttonOk.Sensitive = false;
 
-            _buttonTableAddSplit = new TouchButtonIconWithText("touchButtonTableIncrementSplit_DialogActionArea", _colorBaseDialogActionAreaButtonBackground, GeneralUtils.GetResourceByName("global_add"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileAddSplitIcon, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height)
+            _buttonTableAddSplit = new IconButtonWithText(
+                new ButtonSettings
+                {
+                    Name = "touchButtonTableIncrementSplit_DialogActionArea",
+                    BackgroundColor = ColorSettings.ActionAreaButtonBackground,
+                    Text = GeneralUtils.GetResourceByName("global_add"),
+                    Font = FontSettings.ActionAreaButton,
+                    FontColor = ColorSettings.ActionAreaButtonFont,
+                    Icon = fileAddSplitIcon,
+                    IconSize = SizeSettings.ActionAreaButtonIcon,
+                    ButtonSize = SizeSettings.ActionAreaButton
+                })
             { Sensitive = true };
-            _buttonTableRemoveSplit = new TouchButtonIconWithText("touchButtonTableDecrementSplit_DialogActionArea", _colorBaseDialogActionAreaButtonBackground, GeneralUtils.GetResourceByName("global_remove"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileRemoveSplitIcon, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height)
+
+            _buttonTableRemoveSplit = new IconButtonWithText(
+                new ButtonSettings
+                {
+                    Name = "touchButtonTableDecrementSplit_DialogActionArea",
+                    BackgroundColor = ColorSettings.ActionAreaButtonBackground,
+                    Text = GeneralUtils.GetResourceByName("global_remove"),
+                    Font = FontSettings.ActionAreaButton,
+                    FontColor = ColorSettings.ActionAreaButtonFont,
+                    Icon = fileRemoveSplitIcon,
+                    IconSize = SizeSettings.ActionAreaButtonIcon,
+                    ButtonSize = SizeSettings.ActionAreaButton
+                })
             { Sensitive = true };
 
             //ActionArea
@@ -93,7 +115,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
 
             //Init Object
-            this.InitObject(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, _scrolledWindow, actionAreaButtons);
+            this.Initialize(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, _scrolledWindow, actionAreaButtons);
 
             // CalculateSplit to Calc and Assign Title after Dialog Construction
             CalculateSplit();
@@ -106,33 +128,30 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             // Settings : fontSplitPaymentTouchButtonSplitPayment
             try
             {
-                _fontSplitPaymentTouchButtonSplitPayment = GeneralSettings.Settings["fontSplitPaymentTouchButtonSplitPayment"];
+                _fontSplitPaymentTouchButtonSplitPayment = AppSettings.Instance.fontSplitPaymentTouchButtonSplitPayment;
             }
             catch (Exception)
             {
-                _logger.Debug(string.Format("Error in Config value fontSplitPaymentTouchButtonSplitPayment: [{0}]", _fontSplitPaymentTouchButtonSplitPayment));
                 _fontSplitPaymentTouchButtonSplitPayment = "Bold 12";
             }
 
             // Settings : intSplitPaymentTouchButtonSplitPaymentHeight
             try
             {
-                _intSplitPaymentTouchButtonSplitPaymentHeight = Convert.ToInt16(GeneralSettings.Settings["intSplitPaymentTouchButtonSplitPaymentHeight"]);
+                _intSplitPaymentTouchButtonSplitPaymentHeight = AppSettings.Instance.intSplitPaymentTouchButtonSplitPaymentHeight;
             }
             catch (Exception)
             {
-                _logger.Debug(string.Format("Error in Config value intSplitPaymentTouchButtonSplitPaymentHeight: [{0}]", _intSplitPaymentTouchButtonSplitPaymentHeight));
                 _intSplitPaymentTouchButtonSplitPaymentHeight = 72;
             }
 
             // Settings : colorSplitPaymentTouchButtonFilledDataBackground
             try
             {
-                _colorSplitPaymentTouchButtonFilledDataBackground = GeneralSettings.Settings["colorSplitPaymentTouchButtonFilledDataBackground"].StringToColor();
+                _colorSplitPaymentTouchButtonFilledDataBackground = AppSettings.Instance.colorSplitPaymentTouchButtonFilledDataBackground;
             }
             catch (Exception)
             {
-                _logger.Debug(string.Format("Error in Config value colorSplitPaymentTouchButtonFilledDataBackground: [{0}]", _colorSplitPaymentTouchButtonFilledDataBackground));
                 _colorSplitPaymentTouchButtonFilledDataBackground = ("72,  84,  96").StringToColor();
             }
 
@@ -143,7 +162,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception)
             {
-                _logger.Debug(string.Format("Error in Config value SPLIT_PAYMENT_START_CLIENTS: [{0}]", Convert.ToInt16(GeneralSettings.PreferenceParameters["SPLIT_PAYMENT_START_CLIENTS"])));
                 // Use Defaults
                 _intSplitPaymentStartClients = 2;
             }
@@ -155,7 +173,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception)
             {
-                _logger.Debug(string.Format("Error in Config value SPLIT_PAYMENT_MIN_CLIENTS: [{0}]", Convert.ToInt16(GeneralSettings.PreferenceParameters["SPLIT_PAYMENT_MIN_CLIENTS"])));
                 // Use Defaults
                 _intSplitPaymentMinClients = 2;
             }
@@ -167,7 +184,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception)
             {
-                _logger.Debug(string.Format("Error in Config value SPLIT_PAYMENT_MAX_CLIENTS: [{0}]", Convert.ToInt16(GeneralSettings.PreferenceParameters["SPLIT_PAYMENT_MAX_CLIENTS"])));
                 // Use Defaults
                 _intSplitPaymentMaxClients = 10;
             }

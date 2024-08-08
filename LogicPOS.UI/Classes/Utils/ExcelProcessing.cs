@@ -7,7 +7,6 @@ using logicpos.Classes.Enums;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
-using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
 using LogicPOS.Settings.Extensions;
@@ -35,7 +34,7 @@ namespace logicpos
         public static ImportExportFileOpen ImportExportFileOpen;
         private static string pathBackups;
 
-        public static void OpenFilePicker(Gtk.Window pSourceWindow, ImportExportFileOpen pImportFrom)
+        public static void OpenFilePicker(Gtk.Window parentWindow, ImportExportFileOpen pImportFrom)
         {
             try
             {
@@ -60,7 +59,7 @@ namespace logicpos
 
                         string windowName = (GeneralUtils.GetResourceByName("global_articles"));
                         FileFilter fileFilterBackups = Utils.GetFileFilterImportExport();
-                        PosFilePickerDialog dialog = new PosFilePickerDialog(pSourceWindow, DialogFlags.DestroyWithParent, fileFilterBackups, FileChooserAction.Open, windowName);
+                        PosFilePickerDialog dialog = new PosFilePickerDialog(parentWindow, DialogFlags.DestroyWithParent, fileFilterBackups, FileChooserAction.Open, windowName);
                         ResponseType response = (ResponseType)dialog.Run();
                         if (response == ResponseType.Ok)
                         {
@@ -78,14 +77,14 @@ namespace logicpos
                         if (!string.IsNullOrEmpty(pathBackups))
                         {
                             fileName = Path.ChangeExtension(fileNamePacked, _fileExtension);
-                            ReadExcel(fileName, pSourceWindow, pImportFrom);
+                            ReadExcel(fileName, parentWindow, pImportFrom);
                         }
                         else
                         {
                             //Require to assign filename and packed filename from fileInfo
                             fileName = fileInfo.FileName;
                             fileNamePacked = fileInfo.FileName;
-                            ReadExcel(fileName, pSourceWindow, pImportFrom);
+                            ReadExcel(fileName, parentWindow, pImportFrom);
                         }
                         break;
 
@@ -93,7 +92,7 @@ namespace logicpos
 
                         windowName = (GeneralUtils.GetResourceByName("global_customer"));
                         fileFilterBackups = Utils.GetFileFilterImportExport();
-                        dialog = new PosFilePickerDialog(pSourceWindow, DialogFlags.DestroyWithParent, fileFilterBackups, FileChooserAction.Open, windowName);
+                        dialog = new PosFilePickerDialog(parentWindow, DialogFlags.DestroyWithParent, fileFilterBackups, FileChooserAction.Open, windowName);
                         response = (ResponseType)dialog.Run();
                         if (response == ResponseType.Ok)
                         {
@@ -111,14 +110,14 @@ namespace logicpos
                         if (!string.IsNullOrEmpty(pathBackups))
                         {
                             fileName = Path.ChangeExtension(fileNamePacked, _fileExtension);
-                            ReadExcel(fileName, pSourceWindow, pImportFrom);
+                            ReadExcel(fileName, parentWindow, pImportFrom);
                         }
                         else
                         {
                             //Require to assign filename and packed filename from fileInfo
                             fileName = fileInfo.FileName;
                             fileNamePacked = fileInfo.FileName;
-                            ReadExcel(fileName, pSourceWindow, pImportFrom);
+                            ReadExcel(fileName, parentWindow, pImportFrom);
                         }
                         break;
 
@@ -126,7 +125,7 @@ namespace logicpos
 
                         windowName = (GeneralUtils.GetResourceByName("global_articles"));
                         fileFilterBackups = Utils.GetFileFilterImportExport();
-                        dialog = new PosFilePickerDialog(pSourceWindow, DialogFlags.DestroyWithParent, fileFilterBackups, FileChooserAction.Save, windowName);
+                        dialog = new PosFilePickerDialog(parentWindow, DialogFlags.DestroyWithParent, fileFilterBackups, FileChooserAction.Save, windowName);
                         response = (ResponseType)dialog.Run();
                         if (response == ResponseType.Ok)
                         {
@@ -145,14 +144,14 @@ namespace logicpos
                         {
                             fileName = Path.ChangeExtension(fileNamePacked, _fileExtension);
 
-                            CreateDataTableFromDB(fileName, pSourceWindow, pImportFrom);
+                            CreateDataTableFromDB(fileName, parentWindow, pImportFrom);
                         }
                         else
                         {
                             //Require to assign filename and packed filename from fileInfo
                             fileName = fileInfo.FileName;
                             fileNamePacked = fileInfo.FileName;
-                            CreateDataTableFromDB(fileName, pSourceWindow, pImportFrom);
+                            CreateDataTableFromDB(fileName, parentWindow, pImportFrom);
                         }
                         break;
 
@@ -160,7 +159,7 @@ namespace logicpos
 
                         windowName = (GeneralUtils.GetResourceByName("global_customer"));
                         fileFilterBackups = Utils.GetFileFilterImportExport();
-                        dialog = new PosFilePickerDialog(pSourceWindow, DialogFlags.DestroyWithParent, fileFilterBackups, FileChooserAction.Save, windowName);
+                        dialog = new PosFilePickerDialog(parentWindow, DialogFlags.DestroyWithParent, fileFilterBackups, FileChooserAction.Save, windowName);
                         response = (ResponseType)dialog.Run();
                         if (response == ResponseType.Ok)
                         {
@@ -179,14 +178,14 @@ namespace logicpos
                         {
                             fileName = Path.ChangeExtension(fileNamePacked, _fileExtension);
 
-                            CreateDataTableFromDB(fileName, pSourceWindow, pImportFrom);
+                            CreateDataTableFromDB(fileName, parentWindow, pImportFrom);
                         }
                         else
                         {
                             //Require to assign filename and packed filename from fileInfo
                             fileName = fileInfo.FileName;
                             fileNamePacked = fileInfo.FileName;
-                            CreateDataTableFromDB(fileName, pSourceWindow, pImportFrom);
+                            CreateDataTableFromDB(fileName, parentWindow, pImportFrom);
                         }
                         break;
 
@@ -214,7 +213,7 @@ namespace logicpos
         }
 
 
-        public static DataTable ReadExcel(string path, Gtk.Window pSourceWindow, ImportExportFileOpen pImportFrom)
+        public static DataTable ReadExcel(string path, Gtk.Window parentWindow, ImportExportFileOpen pImportFrom)
         {
             DataTable dtResult = new DataTable();
             try
@@ -244,16 +243,16 @@ namespace logicpos
                     switch (pImportFrom)
                     {
                         case ImportExportFileOpen.OpenExcelArticles:
-                            _threadImport = new Thread(() => result = SaveArticles(dtResult, pSourceWindow));
-                            Utils.ThreadStart(pSourceWindow, _threadImport, GeneralUtils.GetResourceByName("global_import_articles"));
+                            _threadImport = new Thread(() => result = SaveArticles(dtResult, parentWindow));
+                            Utils.ThreadStart(parentWindow, _threadImport, GeneralUtils.GetResourceByName("global_import_articles"));
                             _threadImport.Abort();
-                            //SaveArticles(dtResult, pSourceWindow);
+                            //SaveArticles(dtResult, parentWindow);
                             break;
                         case ImportExportFileOpen.OpenExcelCostumers:
-                            _threadImport = new Thread(() => result = SaveCostumers(dtResult, pSourceWindow));
-                            Utils.ThreadStart(pSourceWindow, _threadImport, GeneralUtils.GetResourceByName("global_import_customers"));
+                            _threadImport = new Thread(() => result = SaveCostumers(dtResult, parentWindow));
+                            Utils.ThreadStart(parentWindow, _threadImport, GeneralUtils.GetResourceByName("global_import_customers"));
                             _threadImport.Abort();
-                            //SaveCostumers(dtResult, pSourceWindow);
+                            //SaveCostumers(dtResult, parentWindow);
                             break;
 
                         default:
@@ -261,22 +260,22 @@ namespace logicpos
                     }
                     if (result == 1)
                     {
-                        Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, GeneralUtils.GetResourceByName("dialog_message_operation_successfully"), GeneralUtils.GetResourceByName("dialog_message_import_successfully"));
+                        Utils.ShowMessageTouch(parentWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, GeneralUtils.GetResourceByName("dialog_message_operation_successfully"), GeneralUtils.GetResourceByName("dialog_message_import_successfully"));
                     }
                     else if (result == -1)
                     {
-                        Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Warning, ButtonsType.Close, GeneralUtils.GetResourceByName("global_warning"), GeneralUtils.GetResourceByName("dialog_message_partial_import"));
+                        Utils.ShowMessageTouch(parentWindow, DialogFlags.Modal, MessageType.Warning, ButtonsType.Close, GeneralUtils.GetResourceByName("global_warning"), GeneralUtils.GetResourceByName("dialog_message_partial_import"));
                     }
                     else
                     {
-                        Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, GeneralUtils.GetResourceByName("global_error"), GeneralUtils.GetResourceByName("dialog_message_import_error"));
+                        Utils.ShowMessageTouch(parentWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, GeneralUtils.GetResourceByName("global_error"), GeneralUtils.GetResourceByName("dialog_message_import_error"));
                     }
                 }
             }
             catch (Exception ex)
             {
                 _logger.Error("ReadExcel: Error proccess file " + ex.Message, ex);
-                Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, GeneralUtils.GetResourceByName("global_error"), string.Format(GeneralUtils.GetResourceByName("dialog_message_import_error")));
+                Utils.ShowMessageTouch(parentWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, GeneralUtils.GetResourceByName("global_error"), string.Format(GeneralUtils.GetResourceByName("dialog_message_import_error")));
             }
 
             return dtResult;
@@ -314,7 +313,7 @@ namespace logicpos
         }
 
 
-        public static int SaveArticles(DataTable dtImport, Gtk.Window pSourceWindow)
+        public static int SaveArticles(DataTable dtImport, Gtk.Window parentWindow)
         {
             var result = 0;
             string queryOrderedString = "SELECT * FROM fin_article";
@@ -540,7 +539,7 @@ namespace logicpos
             }
         }
 
-        public static int SaveCostumers(DataTable dtImport, Gtk.Window pSourceWindow)
+        public static int SaveCostumers(DataTable dtImport, Gtk.Window parentWindow)
         {
             int indexFiscalNumber = 0;
             bool flagImport = false;
@@ -653,7 +652,7 @@ namespace logicpos
             }
         }
 
-        public static void CreateDataTableFromDB(string path, Gtk.Window pSourceWindow, ImportExportFileOpen pImportFrom)
+        public static void CreateDataTableFromDB(string path, Gtk.Window parentWindow, ImportExportFileOpen pImportFrom)
         {
             DataTable importFromDBdataTable = new DataTable();
 
@@ -739,15 +738,15 @@ namespace logicpos
                             );
                         }
                         bool result = false;
-                        _threadExport = new Thread(() => result = ExportExcel(importFromDBdataTable, path, true, pSourceWindow));
-                        Utils.ThreadStart(pSourceWindow, _threadExport, GeneralUtils.GetResourceByName("global_export_articles"));
+                        _threadExport = new Thread(() => result = ExportExcel(importFromDBdataTable, path, true, parentWindow));
+                        Utils.ThreadStart(parentWindow, _threadExport, GeneralUtils.GetResourceByName("global_export_articles"));
                         if (result)
                         {
-                            Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, GeneralUtils.GetResourceByName("dialog_message_operation_successfully"), GeneralUtils.GetResourceByName("dialog_message_exported_successfully"));
+                            Utils.ShowMessageTouch(parentWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, GeneralUtils.GetResourceByName("dialog_message_operation_successfully"), GeneralUtils.GetResourceByName("dialog_message_exported_successfully"));
                         }
                         else
                         {
-                            Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, GeneralUtils.GetResourceByName("global_error"), "Empty Database");
+                            Utils.ShowMessageTouch(parentWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, GeneralUtils.GetResourceByName("global_error"), "Empty Database");
                         }
                         break;
 
@@ -823,16 +822,16 @@ namespace logicpos
                             customersInDb.ResultSet[1].Rows[j].Values[indexEmail] == null ? "" : CryptographyUtils.Decrypt(customersInDb.ResultSet[1].Rows[j].Values[indexEmail].ToString(), true, PluginSettings.SecretKey));
                         }
                         result = false;
-                        _threadExport = new Thread(() => result = ExportExcel(importFromDBdataTable, path, true, pSourceWindow));
-                        Utils.ThreadStart(pSourceWindow, _threadExport, GeneralUtils.GetResourceByName("global_export_customers"));
-                        Utils.ThreadStart(pSourceWindow, _threadExport, GeneralUtils.GetResourceByName("global_export_articles"));
+                        _threadExport = new Thread(() => result = ExportExcel(importFromDBdataTable, path, true, parentWindow));
+                        Utils.ThreadStart(parentWindow, _threadExport, GeneralUtils.GetResourceByName("global_export_customers"));
+                        Utils.ThreadStart(parentWindow, _threadExport, GeneralUtils.GetResourceByName("global_export_articles"));
                         if (result)
                         {
-                            Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, GeneralUtils.GetResourceByName("dialog_message_operation_successfully"), GeneralUtils.GetResourceByName("dialog_message_exported_successfully"));
+                            Utils.ShowMessageTouch(parentWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, GeneralUtils.GetResourceByName("dialog_message_operation_successfully"), GeneralUtils.GetResourceByName("dialog_message_exported_successfully"));
                         }
                         else
                         {
-                            Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, GeneralUtils.GetResourceByName("global_error"), "Empty Database");
+                            Utils.ShowMessageTouch(parentWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, GeneralUtils.GetResourceByName("global_error"), "Empty Database");
                         }
                         break;
 
@@ -844,13 +843,13 @@ namespace logicpos
             catch (Exception ex)
             {
                 _logger.Error(ex.Message, ex);
-                Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, GeneralUtils.GetResourceByName("global_error"), GeneralUtils.GetResourceByName("dialog_message_export_error"));
+                Utils.ShowMessageTouch(parentWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, GeneralUtils.GetResourceByName("global_error"), GeneralUtils.GetResourceByName("dialog_message_export_error"));
             }
 
         }
 
 
-        public static bool ExportExcel(DataTable dtExport, string path, bool openFile, Gtk.Window pSourceWindow)
+        public static bool ExportExcel(DataTable dtExport, string path, bool openFile, Gtk.Window parentWindow)
         {
             try
             {

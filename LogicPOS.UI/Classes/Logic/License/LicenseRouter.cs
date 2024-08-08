@@ -4,6 +4,7 @@ using logicpos.Classes.Enums.App;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using LogicPOS.Persistence.Services;
 using LogicPOS.Settings;
+using LogicPOS.UI;
 using LogicPOS.Utility;
 using System;
 using System.IO;

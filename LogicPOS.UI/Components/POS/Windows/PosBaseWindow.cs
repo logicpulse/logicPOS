@@ -1,11 +1,11 @@
 using Gtk;
 using logicpos.App;
-using logicpos.Extensions;
 using System;
 using System.Drawing;
 using System.IO;
 using LogicPOS.Settings;
 using LogicPOS.Utility;
+using LogicPOS.UI.Extensions;
 
 namespace logicpos
 {
@@ -146,19 +146,13 @@ namespace logicpos
             args.RetVal = true;
         }
 
-        private int GetMonitorNumber()
-        {
-            return string.IsNullOrEmpty(GeneralSettings.Settings["appScreen"])
-                    ? 0
-                    : Convert.ToInt32(GeneralSettings.Settings["appScreen"]);
-        }
 
         protected void CheckMonitorGeometry(int width, int height)
         {
             try
             {
                 Gdk.Screen screen = Screen;
-                Gdk.Rectangle monitorGeometry = screen.GetMonitorGeometry(GetMonitorNumber());
+                Gdk.Rectangle monitorGeometry = screen.GetMonitorGeometry(AppSettings.Instance.appScreen);
 
                 if (monitorGeometry.Width < width || monitorGeometry.Height < height)
                 {

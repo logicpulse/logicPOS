@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
+using System.Configuration;
 
 //ThirdParty Lib - Adapted to LogicPos
 //Class Based on Third Party XmlToObjectParser
@@ -22,9 +24,7 @@ namespace logicpos
 
         public static dynamic ParseFromFile(string filename)
         {
-            //Log4Net
-            log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
+ 
             if (File.Exists(filename))
             {
                 return ParseFromXml(File.ReadAllText(filename));
@@ -48,11 +48,6 @@ namespace logicpos
             ExpandoObject root = CreateChildElement(rootElement);
 
             parsedObject.Add(rootElement.Name.LocalName, root);
-
-            //GlobalApp.ExpressionEvaluator.Variables["themeRoot"] =  _expressionEvaluatorReference;
-
-            //_logger.Debug(string.Format("Message: [{0}]", _expressionEvaluatorReference.Theme.Frontoffice.Window[0].Globals.Name));
-            //(GlobalApp.ExpressionEvaluator.Variables["themeRoot"] as dynamic).Theme.Frontoffice.Window[0].Globals.Name
 
             return parsedObject;
         }
@@ -149,7 +144,12 @@ namespace logicpos
             {
                 case ReplaceType.Config:
                     patternPrefix = "Cfg";
-                    if (pInput.Contains(string.Format("{0}[", patternPrefix))) funcGetValue = (x) => LogicPOS.Settings.GeneralSettings.Settings[x];
+                    if (pInput.Contains($"{patternPrefix}["))
+                    {
+
+                        //funcGetValue = (x) => typeof(AppSettings).GetProperty(x).GetValue(AppSettings.Instance).ToString(); -> tchial0
+                        if (pInput.Contains(string.Format("{0}[", patternPrefix))) funcGetValue = (x) => ConfigurationManager.AppSettings[x];
+                    }
                     break;
                 case ReplaceType.Resource:
                     patternPrefix = "Resx";

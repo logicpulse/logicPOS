@@ -1,10 +1,11 @@
 ﻿using Gtk;
 using logicpos.Classes.Enums.Dialogs;
+using LogicPOS.UI.Dialogs;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
     //T DataSourceRow (XPGuidObject|DataRow)
-    internal abstract class PosBaseDialogGenericTreeView<T> : PosBaseDialog
+    internal abstract class PosBaseDialogGenericTreeView<T> : BaseDialog
     {
         //Protected Members
         protected DialogMode _dialogMode;
@@ -26,11 +27,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             set { _dataSourceRow = value; }
         }
 
-        public PosBaseDialogGenericTreeView(Window pSourceWindow, DialogFlags pDialogFlags, DialogMode pDialogMode, T pDataSourceRow)
-            : base(pSourceWindow, pDialogFlags)
+        public PosBaseDialogGenericTreeView(Window parentWindow, DialogFlags pDialogFlags, DialogMode pDialogMode, T pDataSourceRow)
+            : base(parentWindow, pDialogFlags)
         {
             //Parameters
-            _sourceWindow = pSourceWindow;
+            WindowSettings.Source = parentWindow;
             _dialogMode = pDialogMode;
             _dataSourceRow = pDataSourceRow;
         }

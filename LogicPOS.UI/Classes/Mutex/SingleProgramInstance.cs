@@ -1,8 +1,6 @@
 using System;
-using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
-using static logicpos.Classes.Utils.Win32APIWindowHelper;
 
 namespace logicpos
 {

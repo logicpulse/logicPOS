@@ -2,11 +2,11 @@
 using logicpos.App;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
-using logicpos.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using LogicPOS.Globalization;
+using LogicPOS.UI.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -23,7 +23,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         public ValidatableTextBox TextEntry { get; set; }
 
         //Private Members
-        private readonly string _fontKeyboardPadTextEntry = LogicPOS.Settings.GeneralSettings.Settings["fontKeyboardPadTextEntry"];
+        private readonly string _fontKeyboardPadTextEntry = LogicPOS.Settings.AppSettings.Instance.fontKeyboardPadTextEntry;
         private readonly VirtualKeyBoard _virtualKeyBoard;
         private readonly int _spacing = 10;
         private bool _isCapsEnabled = false;
@@ -146,8 +146,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             List<VirtualKey> currentKeyboardRow;
             VirtualKey currentKey;
             char charKey;
-            Color _colorKeyboardPadKeyDefaultFont = LogicPOS.Settings.GeneralSettings.Settings["colorKeyboardPadKeyDefaultFont"].StringToColor();
-            Color _colorKeyboardPadKeySecondaryFont = LogicPOS.Settings.GeneralSettings.Settings["colorKeyboardPadKeySecondaryFont"].StringToColor();
+            Color _colorKeyboardPadKeyDefaultFont = LogicPOS.Settings.AppSettings.Instance.colorKeyboardPadKeyDefaultFont;
+            Color _colorKeyboardPadKeySecondaryFont = LogicPOS.Settings.AppSettings.Instance.colorKeyboardPadKeySecondaryFont;
 
             //loop rows
             for (int i = 0; i < _virtualKeyBoard.KeyBoard.Count; i++)

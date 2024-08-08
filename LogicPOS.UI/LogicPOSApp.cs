@@ -17,6 +17,8 @@ using LogicPOS.Reporting.Utility;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
 using LogicPOS.Shared;
+using LogicPOS.UI.Components.BackOffice.Windows;
+using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -39,7 +41,7 @@ namespace logicpos
         private TimeSpan _backupDatabaseTimeSpan = new TimeSpan();
         private TimeSpan _databaseBackupTimeSpanRangeStart = new TimeSpan();
         private TimeSpan _databaseBackupTimeSpanRangeEnd = new TimeSpan();
-        private static bool needToUpdate = false;
+        private static bool _needToUpdate = false;
 
         public void StartApp(AppMode pMode)
         {
@@ -88,73 +90,64 @@ namespace logicpos
         private void Init()
         {
 
-            //Used to Force create DatabaseScema and Fixtures with XPO (Non Script Mode): Requirements for Work: Empty or Non Exist Database
-            //Notes: OnError "An exception of type 'DevExpress.Xpo.DB.Exceptions.SchemaCorrectionNeededException'", UnCheck [X] Break when this exception is user-unhandled and continue, watch log and wait until sucefull message appear
-            bool xpoCreateDatabaseAndSchema = POSSettings.XPOCreateDatabaseAndSchema;
-            bool xpoCreateDatabaseObjectsWithFixtures = xpoCreateDatabaseAndSchema;
-            //Prepare AutoCreateOption
-            AutoCreateOption xpoAutoCreateOption = (xpoCreateDatabaseAndSchema) ? AutoCreateOption.DatabaseAndSchema : AutoCreateOption.None;
+            bool createDatabase = POSSettings.XPOCreateDatabaseAndSchema;
+            bool createDatabaseObjectsWithFixtures = createDatabase;
+       
+            AutoCreateOption xpoAutoCreateOption = (createDatabase) ? AutoCreateOption.DatabaseAndSchema : AutoCreateOption.None;
 
-            //Init Settings Main Config Settings
-            //LogicPOS.Settings.GeneralSettings.Settings = ConfigurationManager.AppSettings;
-
-            //Override Licence data with Encrypted File Data
             if (File.Exists(POSSettings.LicenceFileName))
             {
                 Utils.AssignLicence(POSSettings.LicenceFileName, true);
             }
 
-            //Other Global App Settings
-            GlobalApp.MultiUserEnvironment = Convert.ToBoolean(GeneralSettings.Settings["appMultiUserEnvironment"]);
-            GlobalApp.UseVirtualKeyBoard = Convert.ToBoolean(GeneralSettings.Settings["useVirtualKeyBoard"]);
+            GlobalApp.MultiUserEnvironment = AppSettings.Instance.appMultiUserEnvironment;
+            GlobalApp.UseVirtualKeyBoard = AppSettings.Instance.useVirtualKeyBoard;
 
-            //Init App Notifications
-            GlobalApp.Notifications = new System.Collections.Generic.Dictionary<string, bool>
+            GlobalApp.Notifications = new Dictionary<string, bool>
             {
                 ["SHOW_PRINTER_UNDEFINED"] = true
             };
 
-            //System
-            GlobalApp.FilePickerStartPath = Directory.GetCurrentDirectory();
+            GlobalApp.OpenFileDialogStartPath = Directory.GetCurrentDirectory();
+    
+            DatabaseSettings.DatabaseType = (DatabaseType)Enum.Parse(typeof(DatabaseType), AppSettings.Instance.databaseType);
+           
+            DatabaseSettings.DatabaseName = AppSettings.Instance.databaseName;
+       
+            string connectionString = string.Format(AppSettings.Instance.xpoConnectionString, DatabaseSettings.DatabaseName.ToLower());
+            DatabaseSettings.AssignConnectionStringToSettings(connectionString);
 
-            //Get DataBase Details
-            DatabaseSettings.DatabaseType = (DatabaseType)Enum.Parse(typeof(DatabaseType), GeneralSettings.Settings["databaseType"]);
-            //Override default Database name with parameter from config
-            string configDatabaseName = GeneralSettings.Settings["databaseName"];
-            DatabaseSettings.DatabaseName = (string.IsNullOrEmpty(configDatabaseName)) ? POSSettings.DatabaseName : configDatabaseName;
-            //Xpo Connection String
-            string xpoConnectionString = string.Format(GeneralSettings.Settings["xpoConnectionString"], DatabaseSettings.DatabaseName.ToLower());
-            DatabaseSettings.AssignConnectionStringToSettings(xpoConnectionString);
+            if (POSSettings.UseProtectedFiles)
+            {
+                GlobalApp.ProtectedFiles = InitProtectedFiles();
+            }
 
-            //Removed Protected Files
-            //ProtectedFiles, Before Create Database from Scripts, usefull if Scripts are modified by User
-            if (POSSettings.ProtectedFilesUse) GlobalApp.ProtectedFiles = InitProtectedFiles();
-
-            //Check if Database Exists if Not Create it from Scripts
             bool databaseCreated = false;
 
-            if (!xpoCreateDatabaseAndSchema)
+            if (createDatabase == false)
             {
-                //Get result to check if DB is created (true)
                 try
                 {
-                    // Launch Scripts
+                 
                     POSSettings.FirstBoot = true;
                     databaseCreated = DataLayer.CreateDatabaseSchema(
-                        xpoConnectionString,
+                        connectionString,
                         DatabaseSettings.DatabaseType,
                         DatabaseSettings.DatabaseName,
-                        out needToUpdate);
+                        out _needToUpdate);
+
                 }
                 catch (Exception ex)
                 {
-                    //Extra protection to prevent goes to login without a valid connection
-                    _logger.Error("void Init() :: DataLayer.CreateDatabaseSchema :: " + ex.Message, ex);
-
-                    /* IN009034 */
                     GlobalApp.DialogThreadNotify.WakeupMain();
 
-                    Utils.ShowMessageBox(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(900, 700), MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"), ex.Message);
+                    Utils.ShowMessageBox(null,
+                                         DialogFlags.Modal,
+                                         new Size(900, 700),
+                                         MessageType.Error,
+                                         ButtonsType.Ok,
+                                         GeneralUtils.GetResourceByName("global_error"),
+                                         ex.Message);
                     Environment.Exit(0);
                 }
             }
@@ -164,11 +157,11 @@ namespace logicpos
             {
                 /* IN007011 */
                 var connectionStringBuilder = new System.Data.Common.DbConnectionStringBuilder()
-                { ConnectionString = xpoConnectionString };
+                { ConnectionString = connectionString };
                 if (connectionStringBuilder.ContainsKey("password")) { connectionStringBuilder["password"] = "*****"; };
                 _logger.Debug(string.Format("void Init() :: Init XpoDefault.DataLayer: [{0}]", connectionStringBuilder.ToString()));
 
-                XpoDefault.DataLayer = XpoDefault.GetDataLayer(xpoConnectionString, xpoAutoCreateOption);
+                XpoDefault.DataLayer = XpoDefault.GetDataLayer(connectionString, xpoAutoCreateOption);
                 XPOSettings.Session = new Session(XpoDefault.DataLayer) { LockingOption = LockingOption.None };
             }
             catch (Exception ex)
@@ -183,9 +176,9 @@ namespace logicpos
             }
 
             //Check Valid Database Scheme
-            if (!xpoCreateDatabaseAndSchema && !GeneralUtils.IsRunningOnMono)
+            if (!createDatabase && !GeneralUtils.IsRunningOnMono)
             {
-                bool isSchemaValid = DataLayer.IsSchemaValid(xpoConnectionString);
+                bool isSchemaValid = DataLayer.IsSchemaValid(connectionString);
                 _logger.Debug(string.Format("void Init() :: Check if Database Scheme: isSchemaValid : [{0}]", isSchemaValid));
                 if (!isSchemaValid)
                 {
@@ -198,55 +191,14 @@ namespace logicpos
                 }
             }
 
-            //Compare DataBase version with software version
-            ////Desempenho - Comparar versão da base de dados com o versão software [IN:017526]
-            //if (Program.DebugMode == false)
-            //{
-            //    if (string.IsNullOrEmpty(DatabaseSettings.DatabaseVersion))
-            //    {
-            //        try
-            //        {
-            //            string sql = string.Format(@"SELECT Version FROM sys_databaseversion;", DatabaseSettings.DatabaseName);
-            //            GlobalFramework.DatabaseVersion = XPOSettings.Session.ExecuteScalar(sql).ToString();
-
-            //            string[] tmpDatabaseVersion = GlobalFramework.DatabaseVersion.Split('.');
-            //            long tmpDatabaseVersionNumber = int.Parse(tmpDatabaseVersion[0]) * 10000000 + int.Parse(tmpDatabaseVersion[1]) * 10000 + int.Parse(tmpDatabaseVersion[2]);
-
-            //            string[] tmpSoftwareVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString().Split('.');
-            //            long tmpSoftwareVersionNumber = int.Parse(tmpSoftwareVersion[0]) * 10000000 + int.Parse(tmpSoftwareVersion[1]) * 10000 + int.Parse(tmpSoftwareVersion[2]);
-
-            //            if (tmpDatabaseVersionNumber > tmpSoftwareVersionNumber)
-            //            {
-            //                GlobalApp.DialogThreadNotify.WakeupMain();
-            //                //throw new InvalidOperationException(string.Format(CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_warning_message_database_version")) + " : " + GlobalFramework.DatabaseVersion);
-            //                string fileName = "\\LPUpdater\\LPUpdater.exe";
-            //                string lPathToUpdater = string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileName);
-            //                Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(500, 300), MessageType.Error, ButtonsType.Ok, CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error"), string.Format(CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_warning_message_database_version")) + " : " + GlobalFramework.DatabaseVersion);
-            //                System.Diagnostics.Process.Start(lPathToUpdater);
-            //                Environment.Exit(0);
-            //            }
-            //        }
-            //        catch (Exception Ex)
-            //        {
-            //            GlobalApp.DialogThreadNotify.Close();
-            //            Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(500, 300), MessageType.Error, ButtonsType.Ok, CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error"), Ex.Message);
-            //            Environment.Exit(0);
-            //        }
-            //    }
-            //}
-
-            // Assign PluginSoftwareVendor Reference to DataLayer SettingsApp to use In Date Protection, we Required to assign it Statically to Prevent Circular References
-            // Required to be here, before it is used in above lines, ex Utils.GetTerminal()
-            //if (PluginSettings.HasSoftwareVendorPlugin) PluginSettings.PluginSoftwareVendor = PluginSettings.SoftwareVendor; -> Trying to use only PluginSettings.SoftwareVendor @tchial0
-
             //If not in Xpo create database Scheme Mode, Get Terminal from Db
-            if (!xpoCreateDatabaseAndSchema)
+            if (createDatabase == false)
             {
-                TerminalSettings.LoggedTerminal = Utils.GetTerminal();
+                TerminalSettings.LoggedTerminal = Utils.GetOrCreateTerminal();
             }
 
             //After Assigned LoggedUser
-            if (xpoCreateDatabaseObjectsWithFixtures)
+            if (createDatabaseObjectsWithFixtures)
             {
                 InitFixtures.InitUserAndTerminal(XPOSettings.Session);
                 InitFixtures.InitOther(XPOSettings.Session);
@@ -255,7 +207,7 @@ namespace logicpos
             }
 
             //End Xpo Create Scheme and Fixtures, Terminate App and Request assign False to Developer Vars
-            if (xpoCreateDatabaseAndSchema)
+            if (createDatabase)
             {
                 /* IN009034 */
                 GlobalApp.DialogThreadNotify.WakeupMain();
@@ -311,20 +263,17 @@ namespace logicpos
             XPOSettings.WorkSessionPeriodTerminal = WorkSessionProcessor.GetSessionPeriod(WorkSessionPeriodType.Terminal);
 
             //Use Detected ScreenSize
-            string appScreenSize = string.IsNullOrEmpty(GeneralSettings.Settings["appScreenSize"])
-                ? GeneralSettings.PreferenceParameters["APP_SCREEN_SIZE"]
-                : GeneralSettings.Settings["appScreenSize"];
-            if (appScreenSize.Replace(" ", string.Empty).Equals("0,0") || string.IsNullOrEmpty(appScreenSize))
+            var appScreenSize = AppSettings.Instance.appScreenSize;
+
+            if (appScreenSize == new Size(0,0))
             {
-                // Force Unknown Screen Size
-                //GlobalApp.ScreenSize = new Size(2000, 1800);
+
                 GlobalApp.ScreenSize = Utils.GetThemeScreenSize();
             }
-            //Use config ScreenSize
             else
             {
-                Size configAppScreenSize = Utils.StringToSize(appScreenSize);
-                GlobalApp.ScreenSize = Utils.GetThemeScreenSize(configAppScreenSize);
+
+                GlobalApp.ScreenSize = Utils.GetThemeScreenSize(appScreenSize);
             }
 
             // Init ExpressionEvaluator
@@ -343,13 +292,8 @@ namespace logicpos
             try
             {
                 GlobalApp.Theme = XmlToObjectParser.ParseFromFile(POSSettings.FileTheme);
-                // Use with dynamic Theme properties like: 
-                // GlobalApp.Theme.Theme.Frontoffice.Window[0].Globals.Name = PosBaseWindow
-                // GlobalApp.Theme.Theme.Frontoffice.Window[1].Objects.TablePadUser.Position = 50,50
-                // or use predicate with from object id ex 
-                //var predicate = (Predicate<dynamic>)((dynamic x) => x.ID == "StartupWindow");
-                //var themeWindow = GlobalApp.Theme.Theme.Frontoffice.Window.Find(predicate);
-                //_logger.Debug(string.Format("Message: [{0}]", themeWindow.Globals.Title));
+                var json = Newtonsoft.Json.JsonConvert.SerializeObject(GlobalApp.Theme);
+
             }
             catch (Exception ex)
             {
@@ -429,9 +373,6 @@ namespace logicpos
             // TK013134: HardCoded Modules : PakingTicket
             try
             {
-                // Override default AppUseParkingTicketModule
-                /* IN009239 */
-                //GlobalFramework.AppUseParkingTicketModule = Convert.ToBoolean(LogicPOS.Settings.GeneralSettings.Settings["appMultiUserEnvironment"]);
                 CustomAppOperationMode customAppOperationMode = AppOperationModeSettings.GetCustomAppOperationMode();
                 GeneralSettings.AppUseParkingTicketModule = CustomAppOperationMode.PARKING.Equals(customAppOperationMode);
 
@@ -534,25 +475,13 @@ namespace logicpos
             {
                 protectedFiles = new ProtectedFiles(fileList, filePath);
                 string md5FromFile = CryptographyUtils.MD5HashFile(filePath);
-                //End Xpo Create Scheme and Fixtures, Terminate App and Request assign False to Developer Vars
-                //string message = string.Format(@"ProtectedFiles '{1}' re-created with {2} files found!
-                //    {0}- Assign false to 'SettingsApp.ProtectedFilesRecreateCsv'.
-                //    {0}- Update logicpos.financial.library SettingsApp.ProtectedFilesFileHash with Hash: '{3}.'"
-                //    , Environment.NewLine, filePath, fileList.Count, md5FromFile
-                //);
-                //_logger.Debug(String.Format("Protected files: [{0}]", message));
+               
                 string message = string.Format(@"ProtectedFiles '{1}' re-created with {2} files found!{0}{0}Assign false to 'SettingsApp.ProtectedFilesRecreateCsv' and run app again.", Environment.NewLine, filePath, fileList.Count);
 
                 ExportProtectedFiles(fileList);
                 Utils.ShowMessageBox(GlobalApp.StartupWindow, DialogFlags.Modal, new System.Drawing.Size(600, 350), MessageType.Info, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_information"), message);
                 Environment.Exit(0);
             }
-            //Dont check changed files if Developer, Uncomment to Enable
-            //else if (SettingsApp.DeveloperMode)
-            //{
-            //    protectedFiles = new ProtectedFiles(filePath);
-            //}
-            //Use File
             else
             {
                 protectedFiles = new ProtectedFiles(filePath);
@@ -637,22 +566,11 @@ namespace logicpos
                 var predicate = (Predicate<dynamic>)((dynamic x) => x.ID == "StartupWindow");
                 var themeWindow = GlobalApp.Theme.Theme.Frontoffice.Window.Find(predicate);
 
-                //// Inject themeWindow into 
-                //GlobalApp.ExpressionEvaluator.Variables.Add("themeWindow", themeWindow);
+                _logger.Debug("Init windowImageFileName ");
+                string windowImageFileName = string.Format(themeWindow.Globals.ImageFileName, GlobalApp.ScreenSize.Width, GlobalApp.ScreenSize.Height);
+                _logger.Debug("StartupWindow " + windowImageFileName);
+                GlobalApp.StartupWindow = new StartupWindow(windowImageFileName, _needToUpdate);
 
-                try
-                {
-                    _logger.Debug("Init windowImageFileName ");
-                    string windowImageFileName = string.Format(themeWindow.Globals.ImageFileName, GlobalApp.ScreenSize.Width, GlobalApp.ScreenSize.Height);
-                    _logger.Debug("StartupWindow " + windowImageFileName);
-                    GlobalApp.StartupWindow = new StartupWindow(windowImageFileName, needToUpdate);
-
-
-                }
-                catch (Exception ex)
-                {
-                    _logger.Error(ex.Message, ex);
-                }
             };
         }
 
@@ -682,10 +600,10 @@ namespace logicpos
             //Environment.Exit(0);
         }
 
-        public static void Quit(Window pSourceWindow)
+        public static void Quit(Window parentWindow)
         {
             ResponseType responseType = Utils.ShowMessageBox(
-                pSourceWindow,
+                parentWindow,
                 DialogFlags.Modal,
                 new Size(400, 300),
                 MessageType.Question,

@@ -1,28 +1,27 @@
 ﻿using DevExpress.Data.Filtering;
 using DevExpress.Xpo;
 using Gtk;
-using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using System;
 using System.Collections.Generic;
-using logicpos.Classes.Enums.GenericTreeView;
 using LogicPOS.Globalization;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
+using LogicPOS.UI.Components;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
-    internal class TreeViewArticleFamily : GenericTreeViewXPO
+    internal class TreeViewArticleFamily : XpoGridView
     {
         //Public Parametless Constructor Required by Generics
         public TreeViewArticleFamily() { }
 
         [Obsolete]
-        public TreeViewArticleFamily(Window pSourceWindow)
-            : this(pSourceWindow, null, null, null) { }
+        public TreeViewArticleFamily(Window parentWindow)
+            : this(parentWindow, null, null, null) { }
 
         //XpoMode
         [Obsolete]
-        public TreeViewArticleFamily(Window pSourceWindow, Entity pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default)
+        public TreeViewArticleFamily(Window parentWindow, Entity pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GridViewMode pGenericTreeViewMode = GridViewMode.Default, GridViewNavigatorMode navigatorMode = GridViewNavigatorMode.Default)
         {
             //Init Vars
             Type xpoGuidObjectType = typeof(fin_articlefamily);
@@ -32,12 +31,12 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             Type typeDialogClass = (pDialogType != null) ? pDialogType : typeof(DialogArticleFamily);
 
             //Configure columnProperties
-            List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
+            List<GridViewColumnProperty> columnProperties = new List<GridViewColumnProperty>
             {
-                new GenericTreeViewColumnProperty("Code") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_record_code"), MinWidth = 100 },
-                new GenericTreeViewColumnProperty("Designation") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_designation"), Expand = true },
-                new GenericTreeViewColumnProperty("Printer") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_device_printer"), ChildName = "Designation" },
-                new GenericTreeViewColumnProperty("UpdatedAt") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
+                new GridViewColumnProperty("Code") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_record_code"), MinWidth = 100 },
+                new GridViewColumnProperty("Designation") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_designation"), Expand = true },
+                new GridViewColumnProperty("Printer") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_device_printer"), ChildName = "Designation" },
+                new GridViewColumnProperty("UpdatedAt") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
             };
 
             //Configure Criteria/XPCollection/Model
@@ -53,27 +52,12 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             XPCollection xpoCollection = new XPCollection(XPOSettings.Session, xpoGuidObjectType, criteria);
 
-            //TODO: Clean Comments : Moved Events to XPOWidget - Capture Events - VIEW DialogArticleFamily _crudWidgetList.BeforeUpdate and _crudWidgetList.AfterUpdate
-            //this.RecordBeforeInsert += delegate { 
-            //  _logger.Debug(string.Format("[{0}] [{1}]", this.GetType(), "RecordBeforeInsert")); 
-            //  _logger.Debug(string.Format("Dialog.DataSourceRow: [{0}]", (_dialog as DialogArticleFamily).DataSourceRow));
-            //  _logger.Debug(string.Format("Dialog.CrudWidgetList: [{0}]", (_dialog as DialogArticleFamily).CrudWidgetList));
-            //};
-
-            //TODO: Test Events Here
-            //this.RecordBeforeUpdate += delegate { _logger.Debug(string.Format("[{0}] [{1}]", this.GetType(), "RecordBeforeUpdate"));};
-            //this.RecordBeforeDelete += delegate { _logger.Debug(string.Format("[{0}] [{1}]", this.GetType(), "RecordBeforeDelete"));};
-            //this.RecordAfterInsert += delegate { _logger.Debug(string.Format("[{0}] [{1}]", this.GetType(), "RecordAfterInsert")); };
-            //this.RecordAfterUpdate += delegate { _logger.Debug(string.Format("[{0}] [{1}]", this.GetType(), "RecordAfterUpdate"));};
-            //this.RecordAfterDelete += delegate { _logger.Debug(string.Format("[{0}] [{1}]", this.GetType(), "RecordAfterDelete"));};
-            //this.RecordBeforeConfirm += delegate { _logger.Debug(string.Format("[{0}] [{1}]", this.GetType(), "RecordBeforeConfirm"));};
-
             //Call Base Initializer
             base.InitObject(
-              pSourceWindow,                  //Pass parameter 
+              parentWindow,                  //Pass parameter 
               defaultValue,                   //Pass parameter
               pGenericTreeViewMode,           //Pass parameter
-              pGenericTreeViewNavigatorMode,  //Pass parameter
+              navigatorMode,  //Pass parameter
               columnProperties,               //Created Here
               xpoCollection,                  //Created Here
               typeDialogClass                 //Created Here

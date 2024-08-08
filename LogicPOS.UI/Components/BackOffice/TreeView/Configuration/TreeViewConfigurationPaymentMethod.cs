@@ -1,29 +1,28 @@
 ﻿using DevExpress.Data.Filtering;
 using DevExpress.Xpo;
 using Gtk;
-using logicpos.Classes.Enums.GenericTreeView;
-using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using System;
 using System.Collections.Generic;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
+using LogicPOS.UI.Components;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
-    internal class TreeViewConfigurationPaymentMethod : GenericTreeViewXPO
+    internal class TreeViewConfigurationPaymentMethod : XpoGridView
     {
         //Public Parametless Constructor Required by Generics
         public TreeViewConfigurationPaymentMethod() { }
 
         [Obsolete]
-        public TreeViewConfigurationPaymentMethod(Window pSourceWindow)
-            : this(pSourceWindow, null, null, null) { }
+        public TreeViewConfigurationPaymentMethod(Window parentWindow)
+            : this(parentWindow, null, null, null) { }
 
         //XpoMode
         [Obsolete]
-        public TreeViewConfigurationPaymentMethod(Window pSourceWindow, Entity pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default)
+        public TreeViewConfigurationPaymentMethod(Window parentWindow, Entity pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GridViewMode pGenericTreeViewMode = GridViewMode.Default, GridViewNavigatorMode navigatorMode = GridViewNavigatorMode.Default)
         {
             //Init Vars
             Type xpoGuidObjectType = typeof(fin_configurationpaymentmethod);
@@ -33,14 +32,14 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             Type typeDialogClass = (pDialogType != null) ? pDialogType : typeof(DialogConfigurationPaymentMethod);
 
             //Configure columnProperties
-            List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
+            List<GridViewColumnProperty> columnProperties = new List<GridViewColumnProperty>
             {
-                new GenericTreeViewColumnProperty("Code") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_record_code"), MinWidth = 100 },
-                new GenericTreeViewColumnProperty("Designation") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_designation"), Expand = true },
+                new GridViewColumnProperty("Code") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_record_code"), MinWidth = 100 },
+                new GridViewColumnProperty("Designation") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_designation"), Expand = true },
                 //columnProperties.Add(new GenericTreeViewColumnProperty("Token") { Title = CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_ConfigurationPaymentMethod_Token, MinWidth = 180 });
-                new GenericTreeViewColumnProperty("Acronym") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ConfigurationPaymentMethod_Acronym") },
+                new GridViewColumnProperty("Acronym") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_ConfigurationPaymentMethod_Acronym") },
                 //columnProperties.Add(new GenericTreeViewColumnProperty("Symbol") { Title = CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_ConfigurationPaymentMethod_Symbol });
-                new GenericTreeViewColumnProperty("UpdatedAt") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
+                new GridViewColumnProperty("UpdatedAt") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
             };
 
             //Configure Criteria/XPCollection/Model
@@ -58,10 +57,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             //Call Base Initializer
             base.InitObject(
-              pSourceWindow,                  //Pass parameter 
+              parentWindow,                  //Pass parameter 
               defaultValue,                   //Pass parameter
               pGenericTreeViewMode,           //Pass parameter
-              pGenericTreeViewNavigatorMode,  //Pass parameter
+              navigatorMode,  //Pass parameter
               columnProperties,               //Created Here
               xpoCollection,                  //Created Here
               typeDialogClass                 //Created Here

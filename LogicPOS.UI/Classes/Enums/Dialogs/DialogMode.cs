@@ -2,6 +2,8 @@
 {
     public enum DialogMode
     {
-        Insert, Update, View
+        Insert, 
+        Update, 
+        View
     }
 }

@@ -2,33 +2,32 @@
 using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
 using Gtk;
-using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Formatters;
-using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Enums;
 using LogicPOS.Globalization;
 using LogicPOS.Modules.StockManagement;
+using LogicPOS.UI.Components;
 using System;
 using System.Collections.Generic;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
     //Gestão de Stocks : Janela de Gestão de Stocks [IN:016534]
-    internal class TreeViewArticleDetailsStock : GenericTreeViewXPO
+    internal class TreeViewArticleDetailsStock : XpoGridView
     {
         private readonly XPCollection xpoCollection;
         //Public Parametless Constructor Required by Generics
         public TreeViewArticleDetailsStock() { }
 
         [Obsolete]
-        public TreeViewArticleDetailsStock(Window pSourceWindow)
-            : this(pSourceWindow, null, null, null) { }
+        public TreeViewArticleDetailsStock(Window parentWindow)
+            : this(parentWindow, null, null, null) { }
 
         //XpoMode
         [Obsolete]
-        public TreeViewArticleDetailsStock(Window pSourceWindow, Entity pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default)
+        public TreeViewArticleDetailsStock(Window parentWindow, Entity pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GridViewMode pGenericTreeViewMode = GridViewMode.Default, GridViewNavigatorMode navigatorMode = GridViewNavigatorMode.Default)
         {
             //Init Vars
             Type xpoGuidObjectType = typeof(fin_article);
@@ -53,14 +52,14 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             };
             MinStockCellRender.Edited += MinStockCellRender_Edited;
             //Config
-            int fontGenericTreeViewColumn = Convert.ToInt16(LogicPOS.Settings.GeneralSettings.Settings["fontGenericTreeViewColumn"]);
+            int fontGenericTreeViewColumn = Convert.ToInt16(LogicPOS.Settings.AppSettings.Instance.fontGenericTreeViewColumn);
 
             //Configure columnProperties
-            List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
+            List<GridViewColumnProperty> columnProperties = new List<GridViewColumnProperty>
             {
-                new GenericTreeViewColumnProperty("Code") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_article_code"), MinWidth = 100 },
-                new GenericTreeViewColumnProperty("Designation") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_designation"), Expand = true },
-                new GenericTreeViewColumnProperty("Accounting")
+                new GridViewColumnProperty("Code") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_article_code"), MinWidth = 100 },
+                new GridViewColumnProperty("Designation") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_designation"), Expand = true },
+                new GridViewColumnProperty("Accounting")
                 {
                     Query = "SELECT SUM(Quantity) as Result FROM fin_articlestock WHERE Article = '{0}' AND (Disabled = 0 OR Disabled is NULL) GROUP BY Article;",
                     Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_total_stock"),
@@ -70,22 +69,16 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     CellRenderer = StockCellRenderer
 
                 },
-                new GenericTreeViewColumnProperty("MinimumStock")
+                new GridViewColumnProperty("MinimumStock")
                 {
                     Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_minimum_stock"),
                     MinWidth = 100,
                     //Alignment = 1.0F,
                     FormatProvider = new DecimalFormatter(),
                     CellRenderer = MinStockCellRender
-                    //CellRenderer = new CellRendererText()
-                    //{
-                    //    FontDesc = new Pango.FontDescription() { Size = fontGenericTreeViewColumn },
-                    //    Alignment = Pango.Alignment.Right,
-                    //    Xalign = 1.0F
-                    //}
                 },
-                new GenericTreeViewColumnProperty("UnitMeasure") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_unit_measure"), ChildName = "Designation", Expand = true },
-                new GenericTreeViewColumnProperty("UpdatedAt") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
+                new GridViewColumnProperty("UnitMeasure") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_unit_measure"), ChildName = "Designation", Expand = true },
+                new GridViewColumnProperty("UpdatedAt") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
             };
 
 
@@ -109,10 +102,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             //Call Base Initializer
             base.InitObject(
-              pSourceWindow,                  //Pass parameter 
+              parentWindow,                  //Pass parameter 
               defaultValue,                   //Pass parameter
               pGenericTreeViewMode,           //Pass parameter
-              pGenericTreeViewNavigatorMode,  //Pass parameter
+              navigatorMode,  //Pass parameter
               columnProperties,               //Created Here
               xpoCollection,                  //Created Here
               typeDialogClass                 //Created Here
@@ -123,10 +116,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         {
             try
             {
-                if (_dataSourceRow != null && (_dataSourceRow as fin_article).MinimumStock != Convert.ToDecimal(args.NewText))
+                if (Entity != null && (Entity as fin_article).MinimumStock != Convert.ToDecimal(args.NewText))
                 {
-                    (_dataSourceRow as fin_article).MinimumStock = Convert.ToDecimal(args.NewText);
-                    (_dataSourceRow as fin_article).Save();
+                    (Entity as fin_article).MinimumStock = Convert.ToDecimal(args.NewText);
+                    (Entity as fin_article).Save();
                     xpoCollection.Reload();
                     this.Refresh();
                 }
@@ -166,11 +159,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     //}
 
                     //fin_article article = (fin_article)xpoCollection.BaseIndexer(Convert.ToInt32(args.Path));
-                    (_dataSourceRow as fin_article).Accounting = Convert.ToDecimal(args.NewText);
-                    (_dataSourceRow as fin_article).Save();
-                    string stockQuery = string.Format("SELECT SUM(Quantity) as Result FROM fin_articlestock WHERE Article = '{0}' AND (Disabled = 0 OR Disabled is NULL) GROUP BY Article;", (_dataSourceRow as fin_article).Oid);
-                    decimal getArticleStock = Convert.ToDecimal(_dataSourceRow.Session.ExecuteScalar(stockQuery).ToString());
-                    if (getArticleStock != (_dataSourceRow as fin_article).Accounting)
+                    (Entity as fin_article).Accounting = Convert.ToDecimal(args.NewText);
+                    (Entity as fin_article).Save();
+                    string stockQuery = string.Format("SELECT SUM(Quantity) as Result FROM fin_articlestock WHERE Article = '{0}' AND (Disabled = 0 OR Disabled is NULL) GROUP BY Article;", (Entity as fin_article).Oid);
+                    decimal getArticleStock = Convert.ToDecimal(Entity.Session.ExecuteScalar(stockQuery).ToString());
+                    if (getArticleStock != (Entity as fin_article).Accounting)
                     {
                         var own_customer = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), XPOSettings.XpoOidUserRecord);
                         if (own_customer != null)
@@ -183,15 +176,15 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                                 own_customer.Save();
                             }
                         }
-                        if ((_dataSourceRow as fin_article).Accounting > getArticleStock)
+                        if ((Entity as fin_article).Accounting > getArticleStock)
                         {
-                            decimal quantity = (_dataSourceRow as fin_article).Accounting - getArticleStock;
-                            ProcessArticleStock.Add(ProcessArticleStockMode.In, own_customer, 1, DateTime.Now, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_internal_document_footer1"), (_dataSourceRow as fin_article), quantity, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_internal_document_footer1"));
+                            decimal quantity = (Entity as fin_article).Accounting - getArticleStock;
+                            ProcessArticleStock.Add(ProcessArticleStockMode.In, own_customer, 1, DateTime.Now, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_internal_document_footer1"), (Entity as fin_article), quantity, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_internal_document_footer1"));
                         }
                         else
                         {
-                            decimal quantity = getArticleStock - (_dataSourceRow as fin_article).Accounting;
-                            ProcessArticleStock.Add(ProcessArticleStockMode.Out, own_customer, 1, DateTime.Now, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_internal_document_footer1"), (_dataSourceRow as fin_article), quantity, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_internal_document_footer1"));
+                            decimal quantity = getArticleStock - (Entity as fin_article).Accounting;
+                            ProcessArticleStock.Add(ProcessArticleStockMode.Out, own_customer, 1, DateTime.Now, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_internal_document_footer1"), (Entity as fin_article), quantity, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_internal_document_footer1"));
                         }
                     }
                     xpoCollection.Reload();
@@ -201,7 +194,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //New article
             catch
             {
-                ProcessArticleStock.Add(ProcessArticleStockMode.In, null, 1, DateTime.Now, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_internal_document_footer1"), (_dataSourceRow as fin_article), (_dataSourceRow as fin_article).Accounting, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_internal_document_footer1"));
+                ProcessArticleStock.Add(ProcessArticleStockMode.In, null, 1, DateTime.Now, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_internal_document_footer1"), (Entity as fin_article), (Entity as fin_article).Accounting, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_internal_document_footer1"));
                 xpoCollection.Reload();
                 this.Refresh();
             }

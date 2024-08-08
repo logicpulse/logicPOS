@@ -1,16 +1,15 @@
 ﻿using DevExpress.Xpo.DB;
 using Gtk;
 using logicpos.App;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
+using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Domain.Entities;
+using LogicPOS.Settings;
+using LogicPOS.UI.Buttons;
+using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Reflection;
-using LogicPOS.Globalization;
-using LogicPOS.Settings;
-using LogicPOS.Data.XPO.Settings;
-using LogicPOS.Domain.Entities;
-using LogicPOS.Utility;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -20,13 +19,13 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         protected log4net.ILog _logger = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         //Settings
-        private readonly int _posBaseButtonScrollerHeight = Convert.ToInt32(GeneralSettings.Settings["posBaseButtonScrollerHeight"]);
-        private readonly int _posBaseButtonMaxCharsPerLabel = Convert.ToInt16(GeneralSettings.Settings["posBaseButtonMaxCharsPerLabel"]);
-        protected int _fontPosBaseButtonSize = Convert.ToInt16(GeneralSettings.Settings["fontPosBaseButtonSize"]);
+        private readonly int _posBaseButtonScrollerHeight = 0;
+        private readonly int _posBaseButtonMaxCharsPerLabel = AppSettings.Instance.posBaseButtonMaxCharsPerLabel;
+        protected int _fontPosBaseButtonSize = Convert.ToInt16(AppSettings.Instance.fontPosBaseButtonSize);
         //Paths/Files
         protected string _fileBaseButtonOverlay = PathsSettings.ImagesFolderLocation + @"Buttons\Pos\button_overlay.png";
         //TouchButton List        
-        private List<TouchButtonBase> _listButtons;
+        private List<CustomButton> _listButtons;
         //TouchButton Properties
         protected string _strButtonName;
         protected string _strButtonLabel;
@@ -42,8 +41,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         private int _currentPage;
         private int _itemsPerPage;
         //Buttons Scrollers
-        private readonly TouchButtonBase _buttonScrollPrev;
-        private readonly TouchButtonBase _buttonScrollNext;
+        private readonly CustomButton _buttonScrollPrev;
+        private readonly CustomButton _buttonScrollNext;
         //Constructor Parameters
         private readonly uint _rows;
         private readonly uint _columns;
@@ -68,7 +67,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             set { _selectedButtonOid = value; }
         }
 
-        public TouchButtonBase SelectedButton { get; set; }
+        public CustomButton SelectedButton { get; set; }
         private string _sql;
         public string Sql
         {
@@ -107,8 +106,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             Color pColorButton,
             int pButtonWidth,
             int pButtonHeight,
-            TouchButtonBase buttonPrev,
-            TouchButtonBase buttonNext)
+            CustomButton buttonPrev,
+            CustomButton buttonNext)
             : base(pRows, pColumns, true)
         {
             //_logger.Debug(string.Format("TablePad():{0}pSql: [{1}]{0}pOrder: [{2}]{0}pFilter: [{3}]", Environment.NewLine, pSql, pOrder, pFilter));
@@ -131,7 +130,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             _buttonScrollNext.Sensitive = false;
 
             //Create List
-            _listButtons = new List<TouchButtonBase>();
+            _listButtons = new List<CustomButton>();
 
             //Signals/events
             _buttonScrollPrev.Clicked += _buttonScrollPrev_Clicked;
@@ -144,7 +143,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             try
             {
-                bool useImageOverlay = Convert.ToBoolean(GeneralSettings.Settings["useImageOverlay"]);
+                bool useImageOverlay = AppSettings.Instance.useImageOverlay;
                 if (!useImageOverlay) _fileBaseButtonOverlay = null;
 
                 //When update always set page 1, start page
@@ -154,7 +153,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
                 //Local Vars
                 string executeSql;
-                TouchButtonBase buttonCurrent = null;
+                CustomButton buttonCurrent = null;
 
                 //Reset CurrentButtonOid, Or Assign it to initialActiveButtonOid if Defined in TablePad Constructor
                 _selectedButtonOid = (_initialActiveButtonOid != Guid.Empty) ? _initialActiveButtonOid : Guid.Empty;
@@ -230,7 +229,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                             //Add Current Button to List
                             _listButtons.Add(buttonCurrent);
 
-                            buttonCurrent.CurrentButtonOid = new Guid(_resultRow.Values[_fieldIndex["id"]].ToString());
+                            buttonCurrent.CurrentButtonId = new Guid(_resultRow.Values[_fieldIndex["id"]].ToString());
                             //Disable Current Active Button, and turn it the selected
                             if (new Guid(_resultRow.Values[_fieldIndex["id"]].ToString()) == _initialActiveButtonOid)
                             {
@@ -347,24 +346,24 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 if (_totalPages > 1) _buttonScrollNext.Sensitive = true;
             };
 
-            //Debug
-            //_logger.Debug(
-            //  "Update()" +
-            //  ": startItem=" + startItem +
-            //  ", endItem=" + endItem +
-            //  ", _currentPage=" + _currentPage +
-            //  ", _totalPages=" + _totalPages +
-            //  ", _totalItems=" + _totalItems +
-            //  ", _itemsPerPage=" + _itemsPerPage
-            //);
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Protected Methods - To Override 
 
-        public virtual TouchButtonBase InitializeButton()
+        public virtual CustomButton InitializeButton()
         {
-            return new TouchButtonImage(_strButtonName, _colorButton, _strButtonLabel, _fontPosBaseButtonSize, _strButtonImage, _fileBaseButtonOverlay, _buttonWidth, _buttonHeight);
+            return new ImageButton(
+                new ButtonSettings
+                {
+                    Name = _strButtonName,
+                    BackgroundColor = _colorButton,
+                    Text = _strButtonLabel,
+                    FontSize = _fontPosBaseButtonSize,
+                    Image = _strButtonImage,
+                    Overlay = _fileBaseButtonOverlay,
+                    ButtonSize = new Size(_buttonWidth, _buttonHeight)
+                });
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -385,7 +384,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //Redirect to public Clicked Event
         private void TablePadChildButton_Clicked(object sender, EventArgs e)
         {
-            TouchButtonBase button = (TouchButtonBase)sender;
+            CustomButton button = (CustomButton)sender;
 
             //Restore old selected button Color
             if (_toggleMode && SelectedButton != null) SelectedButton.Sensitive = true;
@@ -398,7 +397,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         internal void Refresh()
         {
-            _listButtons = new List<TouchButtonBase>();
+            _listButtons = new List<CustomButton>();
             UpdateSql();
         }
     }

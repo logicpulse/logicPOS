@@ -4,22 +4,22 @@ using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
-using logicpos.Extensions;
+using LogicPOS.Domain.Entities;
+using LogicPOS.Settings;
+using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components;
+using LogicPOS.UI.Extensions;
+using LogicPOS.Utility;
 using System;
 using System.Drawing;
 using System.IO;
-using LogicPOS.Globalization;
-using LogicPOS.Settings;
-using LogicPOS.Domain.Entities;
-using LogicPOS.Utility;
-using LogicPOS.UI.Alerts;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 {
-    internal class DialogArticleStockMoviment : BOBaseDialog
+    internal class DialogArticleStockMoviment : EditDialog
     {
         private VBox vboxTab3;
         private XPOEntryBoxSelectRecordValidation<fin_articleserialnumber, TreeViewArticleSerialNumber> _entryBoxArticleSerialNumber;
@@ -32,9 +32,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
         private readonly Window _sourceWindow;
         private byte[] AttachedFile;
 
-        public TouchButtonIconWithText ButtonInsert { get; set; }
-        protected GenericTreeViewNavigator<fin_article, TreeViewArticle> _navigator;
-        public GenericTreeViewNavigator<fin_article, TreeViewArticle> Navigator
+        public IconButtonWithText ButtonInsert { get; set; }
+        protected GridViewNavigator<fin_article, TreeViewArticle> _navigator;
+        public GridViewNavigator<fin_article, TreeViewArticle> Navigator
         {
             get { return _navigator; }
             set { _navigator = value; }
@@ -43,10 +43,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
         public EntryBoxValidation EntryBoxSerialNumber1 { get; set; }
 
 
-        public DialogArticleStockMoviment(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pDialogFlags, Entity pXPGuidObject)
-            : base(pSourceWindow, pTreeView, pDialogFlags, DialogMode.Update, pXPGuidObject)
+        public DialogArticleStockMoviment(Window parentWindow, XpoGridView pTreeView, DialogFlags pDialogFlags, Entity pXPGuidObject)
+            : base(parentWindow, pTreeView, pDialogFlags, DialogMode.Update, pXPGuidObject)
         {
-            _sourceWindow = pSourceWindow;
+            _sourceWindow = parentWindow;
             _xPGuidObject = pXPGuidObject;
             this.Title = "Editar Movimento";
             if (GlobalApp.ScreenSize.Width == 800 && GlobalApp.ScreenSize.Height == 600)
@@ -71,47 +71,56 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 
                 //Supplier
                 CriteriaOperator criteriaOperatorSupplier = CriteriaOperator.Parse("(Supplier = 1)");
-                _entryBoxSelectSupplier = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(this, GeneralUtils.GetResourceByName("global_supplier"), "Name", "Oid", (_dataSourceRow as fin_articlestock).Customer, criteriaOperatorSupplier, RegexUtils.RegexGuid, true, true);
+                _entryBoxSelectSupplier = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(this, GeneralUtils.GetResourceByName("global_supplier"), "Name", "Oid", (Entity as fin_articlestock).Customer, criteriaOperatorSupplier, RegexUtils.RegexGuid, true, true);
                 _entryBoxSelectSupplier.EntryValidation.IsEditable = true;
                 _entryBoxSelectSupplier.EntryValidation.Completion.PopupCompletion = true;
                 _entryBoxSelectSupplier.EntryValidation.Completion.InlineCompletion = false;
                 _entryBoxSelectSupplier.EntryValidation.Completion.PopupSingleMatch = true;
                 _entryBoxSelectSupplier.EntryValidation.Completion.InlineSelection = true;
-                _entryBoxSelectSupplier.Sensitive = ((_dataSourceRow as fin_articlestock).DocumentMaster == null);
+                _entryBoxSelectSupplier.Sensitive = ((Entity as fin_articlestock).DocumentMaster == null);
 
                 vboxTab3.PackStart(_entryBoxSelectSupplier, false, false, 0);
 
                 //_entryBoxSelectSupplier.EntryValidation.Changed += delegate { ValidateDialog(); };
 
                 //DocumentDate
-                _entryBoxDocumentDateIn = new EntryBoxValidationDatePickerDialog(this, GeneralUtils.GetResourceByName("global_date"), GeneralUtils.GetResourceByName("global_date"), (_dataSourceRow as fin_articlestock).Date, RegexUtils.RegexDate, true, CultureSettings.DateFormat, true);
+                _entryBoxDocumentDateIn = new EntryBoxValidationDatePickerDialog(this, GeneralUtils.GetResourceByName("global_date"), GeneralUtils.GetResourceByName("global_date"), (Entity as fin_articlestock).Date, RegexUtils.RegexDate, true, CultureSettings.DateFormat, true);
                 //_entryBoxDocumentDate.EntryValidation.Sensitive = true;
-                _entryBoxDocumentDateIn.EntryValidation.Text = (_dataSourceRow as fin_articlestock).Date.ToString(CultureSettings.DateFormat);
+                _entryBoxDocumentDateIn.EntryValidation.Text = (Entity as fin_articlestock).Date.ToString(CultureSettings.DateFormat);
                 _entryBoxDocumentDateIn.EntryValidation.Validate();
-                _entryBoxDocumentDateIn.Sensitive = ((_dataSourceRow as fin_articlestock).DocumentMaster == null);
+                _entryBoxDocumentDateIn.Sensitive = ((Entity as fin_articlestock).DocumentMaster == null);
                 //_entryBoxDocumentDate.ClosePopup += delegate { ValidateDialog(); };
 
                 vboxTab3.PackStart(_entryBoxDocumentDateIn, false, false, 0);
 
 
                 //DocumentNumber
-                Color colorBaseDialogEntryBoxBackground = GeneralSettings.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
+                Color colorBaseDialogEntryBoxBackground = AppSettings.Instance.colorBaseDialogEntryBoxBackground;
                 string _fileIconListFinanceDocuments = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_toolbar_finance_document.png";
                 HBox hBoxDocument = new HBox(false, 0);
                 _entryBoxDocumentNumber = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_document_number"), KeyboardMode.Alfa, RegexUtils.RegexAlfaNumericExtended, false, true);
-                if ((_dataSourceRow as fin_articlestock).DocumentNumber != string.Empty) _entryBoxDocumentNumber.EntryValidation.Text = (_dataSourceRow as fin_articlestock).DocumentNumber;
+                if ((Entity as fin_articlestock).DocumentNumber != string.Empty) _entryBoxDocumentNumber.EntryValidation.Text = (Entity as fin_articlestock).DocumentNumber;
                 //_entryBoxDocumentNumber.EntryValidation.Changed += delegate { ValidateDialog(); };
-                TouchButtonIcon attachPDFButton = new TouchButtonIcon("attachPDFButton", colorBaseDialogEntryBoxBackground, _fileIconListFinanceDocuments, new Size(20, 20), 30, 30);
+                IconButton attachPDFButton = new IconButton(
+                    new ButtonSettings
+                    {
+                        Name = "attachPDFButton",
+                        BackgroundColor = colorBaseDialogEntryBoxBackground,
+                        Icon = _fileIconListFinanceDocuments,
+                        IconSize = new Size(20, 20),
+                        ButtonSize = new Size(30, 30)
+                    });
+
                 attachPDFButton.Clicked += AttachPDFButton_Clicked;
                 ((_entryBoxDocumentNumber.Children[0] as VBox).Children[1] as HBox).PackEnd(attachPDFButton, false, false, 0);
-                _entryBoxDocumentNumber.Sensitive = ((_dataSourceRow as fin_articlestock).DocumentMaster == null);
+                _entryBoxDocumentNumber.Sensitive = ((Entity as fin_articlestock).DocumentMaster == null);
                 vboxTab3.PackStart(_entryBoxDocumentNumber, false, false, 0);
 
                 //Quantity
                 _entryBoxQuantity = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_quantity"), KeyboardMode.None, RegexUtils.RegexDecimal, false, true);
                 _entryBoxQuantity.WidthRequest = 40;
-                _entryBoxQuantity.EntryValidation.Text = (_dataSourceRow as fin_articlestock).Quantity.ToString();
-                _entryBoxQuantity.Sensitive = ((_dataSourceRow as fin_articlestock).DocumentMaster == null);
+                _entryBoxQuantity.EntryValidation.Text = (Entity as fin_articlestock).Quantity.ToString();
+                _entryBoxQuantity.Sensitive = ((Entity as fin_articlestock).DocumentMaster == null);
                 //_entryBoxPrice1.EntryValidation.Changed += EntryPurchasedPriceValidation_Changed;
 
                 vboxTab3.PackStart(_entryBoxQuantity, false, false, 0);
@@ -119,15 +128,15 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                 //Price
                 _entryBoxPrice1 = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_price"), KeyboardMode.None, RegexUtils.RegexDecimal, false, true);
                 _entryBoxPrice1.WidthRequest = 40;
-                _entryBoxPrice1.EntryValidation.Text = (_dataSourceRow as fin_articlestock).PurchasePrice.ToString();
-                _entryBoxPrice1.Sensitive = ((_dataSourceRow as fin_articlestock).DocumentMaster == null);
+                _entryBoxPrice1.EntryValidation.Text = (Entity as fin_articlestock).PurchasePrice.ToString();
+                _entryBoxPrice1.Sensitive = ((Entity as fin_articlestock).DocumentMaster == null);
                 //_entryBoxPrice1.EntryValidation.Changed += EntryPurchasedPriceValidation_Changed;
 
                 vboxTab3.PackStart(_entryBoxPrice1, false, false, 0);
 
 
                 //SerialNumber 
-                _entryBoxArticleSerialNumber = new XPOEntryBoxSelectRecordValidation<fin_articleserialnumber, TreeViewArticleSerialNumber>(this, "Número de série", "SerialNumber", "Oid", (_dataSourceRow as fin_articlestock).ArticleSerialNumber, null, RegexUtils.RegexGuid, true, true);
+                _entryBoxArticleSerialNumber = new XPOEntryBoxSelectRecordValidation<fin_articleserialnumber, TreeViewArticleSerialNumber>(this, "Número de série", "SerialNumber", "Oid", (Entity as fin_articlestock).ArticleSerialNumber, null, RegexUtils.RegexGuid, true, true);
                 _entryBoxArticleSerialNumber.EntryValidation.IsEditable = true;
                 _entryBoxArticleSerialNumber.EntryValidation.Completion.PopupCompletion = true;
                 _entryBoxArticleSerialNumber.EntryValidation.Completion.InlineCompletion = false;
@@ -139,7 +148,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 
                 _notebook.AppendPage(vboxTab3, new Label("Movimento de Entrada"));
 
-                buttonOk.Clicked += ButtonOk_Clicked;
+                ButtonOk.Clicked += ButtonOk_Clicked;
 
             }
             catch (System.Exception ex)
@@ -155,19 +164,19 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                 //Edit stock moviment IN
                 if (_entryBoxSelectSupplier.EntryValidation.Validated && _entryBoxDocumentNumber.EntryValidation.Validated && _entryBoxPrice1.EntryValidation.Validated && _entryBoxDocumentDateIn.EntryValidation.Validated)
                 {
-                    (_dataSourceRow as fin_articlestock).Customer = _entryBoxSelectSupplier.Value;
-                    (_dataSourceRow as fin_articlestock).DocumentNumber = _entryBoxDocumentNumber.EntryValidation.Text;
-                    (_dataSourceRow as fin_articlestock).PurchasePrice = DataConversionUtils.StringToDecimal(_entryBoxPrice1.EntryValidation.Text);
-                    (_dataSourceRow as fin_articlestock).Date = _entryBoxDocumentDateIn.Value;
-                    (_dataSourceRow as fin_articlestock).Quantity = DataConversionUtils.StringToDecimal(_entryBoxQuantity.EntryValidation.Text);
-                    if (AttachedFile != null) (_dataSourceRow as fin_articlestock).AttachedFile = AttachedFile;
-                    (_dataSourceRow as fin_articlestock).Save();
+                    (Entity as fin_articlestock).Customer = _entryBoxSelectSupplier.Value;
+                    (Entity as fin_articlestock).DocumentNumber = _entryBoxDocumentNumber.EntryValidation.Text;
+                    (Entity as fin_articlestock).PurchasePrice = DataConversionUtils.StringToDecimal(_entryBoxPrice1.EntryValidation.Text);
+                    (Entity as fin_articlestock).Date = _entryBoxDocumentDateIn.Value;
+                    (Entity as fin_articlestock).Quantity = DataConversionUtils.StringToDecimal(_entryBoxQuantity.EntryValidation.Text);
+                    if (AttachedFile != null) (Entity as fin_articlestock).AttachedFile = AttachedFile;
+                    (Entity as fin_articlestock).Save();
                     _logger.Debug("Sock Moviment In Changed with sucess");
 
 
                     var alertTitle = GeneralUtils.GetResourceByName("global_documentticket_type_title_cs_short");
-                    Alerts.ShowOperationSucceededAlert(alertTitle);
-                    
+                    SimpleAlerts.ShowOperationSucceededAlert(alertTitle);
+
                 }
 
             }

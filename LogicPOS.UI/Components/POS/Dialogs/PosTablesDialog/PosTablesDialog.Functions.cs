@@ -1,9 +1,9 @@
 ﻿using Gtk;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.shared.Enums;
 using LogicPOS.Domain.Enums;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using LogicPOS.UI.Buttons;
 using System;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
@@ -26,7 +26,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             else if (pResponse == _responseTypeTableReservation)
             {
-                if (_currentButton.TableStatus == TableStatus.Free)
+                if (_currentButton.TableSettings.TableStatus == TableStatus.Free)
                 {
                     _currentButton.ChangeTableStatus(_currentTableButtonOid, TableStatus.Reserved);
                 }
@@ -53,9 +53,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         private void tablePadPlace_Clicked(object sender, EventArgs e)
         {
-            TouchButtonBase button = (TouchButtonBase)sender;
+            CustomButton button = (CustomButton)sender;
             //Assign CurrentId to TablePad.CurrentId, to Know last Clicked Button Id
-            _tablePadPlace.SelectedButtonOid = button.CurrentButtonOid;
+            _tablePadPlace.SelectedButtonOid = button.CurrentButtonId;
 
             switch (_currentViewMode)
             {
@@ -76,17 +76,17 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         private void tablePadTable_Clicked(object sender, EventArgs e)
         {
-            TouchButtonTable button = (TouchButtonTable)sender;
+            TableButton button = (TableButton)sender;
 
             //Assign CurrentId to TablePad.CurrentId, to Know last Clicked Button Id
-            _tablePadTable.SelectedButtonOid = button.CurrentButtonOid;
+            _tablePadTable.SelectedButtonOid = button.CurrentButtonId;
             //To be Used in Dialog Result
-            _currentTableButtonOid = button.CurrentButtonOid;
+            _currentTableButtonOid = button.CurrentButtonId;
             //Assign current clicked Reference button to CurrentButton
             _currentButton = button;
 
             //Update Reservation Button
-            if (button.TableStatus != TableStatus.Open)
+            if (button.TableSettings.TableStatus != TableStatus.Open)
             {
                 _buttonTableReservation.Sensitive = true;
             }
@@ -96,7 +96,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
 
             //Update buttonOk
-            if (button.TableStatus == TableStatus.Reserved)
+            if (button.TableSettings.TableStatus == TableStatus.Reserved)
             {
                 _buttonOk.Sensitive = false;
             }
@@ -165,7 +165,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 case TableViewMode.Orders:
                     /* IN008024 */
-                    _labelWindowTitle.Text = CultureResources.GetResourceByLanguage("", string.Format("window_title_dialog_tables_appmode_{0}", AppOperationModeSettings.CustomAppOperationMode.AppOperationTheme).ToLower());
+                    WindowSettings.WindowTitle.Text = CultureResources.GetResourceByLanguage("", string.Format("window_title_dialog_tables_appmode_{0}", AppOperationModeSettings.CustomAppOperationMode.AppOperationTheme).ToLower());
                     //Tables
                     _currentViewMode = TableViewMode.Tables;
                     _buttonTableViewOrders.Visible = true;
@@ -185,7 +185,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     _tablePadPlace.Sql = _sqlPlaceBaseTable;
                     break;
                 case TableViewMode.Tables:
-                    _labelWindowTitle.Text = CultureResources.GetResourceByLanguage("", "window_title_dialog_orders");
+                    WindowSettings.WindowTitle.Text = CultureResources.GetResourceByLanguage("", "window_title_dialog_orders");
                     //Orders
                     _currentViewMode = TableViewMode.Orders;
                     _buttonTableViewOrders.Visible = false;

@@ -7,13 +7,14 @@ using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using System;
 using logicpos.Classes.Enums.Dialogs;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using LogicPOS.Globalization;
 using LogicPOS.Domain.Entities;
+using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 {
-    internal class DialogArticleWarehouse : BOBaseDialog
+    internal class DialogArticleWarehouse : EditDialog
     {
         private fin_article _selectedArticle;
         private XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle> _articleBoxSelectRecord;
@@ -24,11 +25,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
         private XPOComboBox xpoComboBoxWarehouseLocation;
         private bool _modifyArticle;
 
-        public TouchButtonIconWithText ButtonInsert { get; set; }
-        protected GenericTreeViewNavigator<fin_article, TreeViewArticle> _navigator;
+        public IconButtonWithText ButtonInsert { get; set; }
+        protected GridViewNavigator<fin_article, TreeViewArticle> _navigator;
 
-        public DialogArticleWarehouse(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pDialogFlags, DialogMode dialogMode, Entity pXPGuidObject)
-            : base(pSourceWindow, pTreeView, pDialogFlags, dialogMode, pXPGuidObject)
+        public DialogArticleWarehouse(Window parentWindow, XpoGridView pTreeView, DialogFlags pDialogFlags, DialogMode dialogMode, Entity pXPGuidObject)
+            : base(parentWindow, pTreeView, pDialogFlags, dialogMode, pXPGuidObject)
         {
             this.Title = logicpos.Utils.GetWindowTitle(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_warehose_management"));
 
@@ -41,7 +42,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                 SetSizeRequest(320, 450);
             }
             _modifyArticle = true;
-            if (dialogMode == DialogMode.Update && _dataSourceRow != null && _dataSourceRow.GetType() == typeof(fin_articlewarehouse) && (_dataSourceRow as fin_articlewarehouse).ArticleSerialNumber != null)
+            if (dialogMode == DialogMode.Update && Entity != null && Entity.GetType() == typeof(fin_articlewarehouse) && (Entity as fin_articlewarehouse).ArticleSerialNumber != null)
             {
                 _modifyArticle = false;
             }
@@ -58,21 +59,21 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                 //Tab1
                 VBox vboxTab1 = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
 
-                buttonOk.Sensitive = false;
+                ButtonOk.Sensitive = false;
 
-                if (_dataSourceRow != null && _dataSourceRow.GetType() == typeof(fin_articleserialnumber))
+                if (Entity != null && Entity.GetType() == typeof(fin_articleserialnumber))
                 {
-                    fin_articlewarehouse selectedArticleWarehouse = (_dataSourceRow as fin_articleserialnumber).ArticleWarehouse;
-                    _dataSourceRow = selectedArticleWarehouse;
+                    fin_articlewarehouse selectedArticleWarehouse = (Entity as fin_articleserialnumber).ArticleWarehouse;
+                    Entity = selectedArticleWarehouse;
                     _modifyArticle = false;
                 }
 
 
                 //Articles
                 CriteriaOperator articleCriteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL)"));
-                _articleBoxSelectRecord = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_article"), "Designation", "Oid", (_dataSourceRow as fin_articlewarehouse).Article, articleCriteria, LogicPOS.Utility.RegexUtils.RegexAlfaNumeric, true, true);
-                GenericCRUDWidgetXPO genericCRUDWidgetXPO = new GenericCRUDWidgetXPO(_articleBoxSelectRecord, _dataSourceRow, "Article", "", true);
-                _crudWidgetList.Add(genericCRUDWidgetXPO);
+                _articleBoxSelectRecord = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_article"), "Designation", "Oid", (Entity as fin_articlewarehouse).Article, articleCriteria, LogicPOS.Utility.RegexUtils.RegexAlfaNumeric, true, true);
+                GenericCRUDWidgetXPO genericCRUDWidgetXPO = new GenericCRUDWidgetXPO(_articleBoxSelectRecord, Entity, "Article", "", true);
+                InputFields.Add(genericCRUDWidgetXPO);
                 _articleBoxSelectRecord.EntryValidation.IsEditable = true;
                 _articleBoxSelectRecord.EntryValidation.Completion.PopupCompletion = true;
                 _articleBoxSelectRecord.EntryValidation.Completion.InlineCompletion = false;
@@ -83,30 +84,30 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 
                 //SerialNumber
                 CriteriaOperator serialNumberCriteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL)"));
-                if ((_dataSourceRow as fin_articlewarehouse).Article != null)
+                if ((Entity as fin_articlewarehouse).Article != null)
                 {
-                    serialNumberCriteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND Article == '{0}'", (_dataSourceRow as fin_articlewarehouse).Article.Oid));
+                    serialNumberCriteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND Article == '{0}'", (Entity as fin_articlewarehouse).Article.Oid));
                 }
 
-                _entryBoxArticleSerialNumber = new XPOEntryBoxSelectRecordValidation<fin_articleserialnumber, TreeViewArticleSerialNumber>(this, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_serialnumber"), "SerialNumber", "Oid", (_dataSourceRow as fin_articlewarehouse).ArticleSerialNumber, serialNumberCriteria, LogicPOS.Utility.RegexUtils.RegexGuid, true, true);
+                _entryBoxArticleSerialNumber = new XPOEntryBoxSelectRecordValidation<fin_articleserialnumber, TreeViewArticleSerialNumber>(this, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_serialnumber"), "SerialNumber", "Oid", (Entity as fin_articlewarehouse).ArticleSerialNumber, serialNumberCriteria, LogicPOS.Utility.RegexUtils.RegexGuid, true, true);
                 _entryBoxArticleSerialNumber.EntryValidation.IsEditable = true;
                 _entryBoxArticleSerialNumber.EntryValidation.Completion.PopupCompletion = true;
                 _entryBoxArticleSerialNumber.EntryValidation.Completion.InlineCompletion = false;
                 _entryBoxArticleSerialNumber.EntryValidation.Completion.PopupSingleMatch = true;
                 _entryBoxArticleSerialNumber.EntryValidation.Completion.InlineSelection = true;
                 //if (_entryBoxArticleSerialNumber.Value != null) _entryBoxArticleSerialNumber.EntryValidation.Changed += EntrySerialNumberValidation_Changed;
-                genericCRUDWidgetXPO = new GenericCRUDWidgetXPO(_entryBoxArticleSerialNumber, _dataSourceRow, "ArticleSerialNumber", "", false);
-                _crudWidgetList.Add(genericCRUDWidgetXPO);
+                genericCRUDWidgetXPO = new GenericCRUDWidgetXPO(_entryBoxArticleSerialNumber, Entity, "ArticleSerialNumber", "", false);
+                InputFields.Add(genericCRUDWidgetXPO);
                 _entryBoxArticleSerialNumber.Sensitive = false;
                 vboxTab1.PackStart(_entryBoxArticleSerialNumber, false, false, 0);
 
                 //Warehouse
                 CriteriaOperator defaultWarehouseCriteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND IsDefault == '1'"));
-                fin_warehouse defaultWareHouse = ((_dataSourceRow as fin_articlewarehouse).Warehouse != null) ? (_dataSourceRow as fin_articlewarehouse).Warehouse : (fin_warehouse)_dataSourceRow.Session.FindObject(typeof(fin_warehouse), defaultWarehouseCriteria);
-                xpoComboBoxWarehouse = new XPOComboBox(DataSourceRow.Session, typeof(fin_warehouse), defaultWareHouse, "Designation", null);
+                fin_warehouse defaultWareHouse = ((Entity as fin_articlewarehouse).Warehouse != null) ? (Entity as fin_articlewarehouse).Warehouse : (fin_warehouse)Entity.Session.FindObject(typeof(fin_warehouse), defaultWarehouseCriteria);
+                xpoComboBoxWarehouse = new XPOComboBox(Entity.Session, typeof(fin_warehouse), defaultWareHouse, "Designation", null);
                 BOWidgetBox boxWareHouse = new BOWidgetBox(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_warehouse"), xpoComboBoxWarehouse);
-                genericCRUDWidgetXPO = new GenericCRUDWidgetXPO(boxWareHouse, _dataSourceRow, "Warehouse", LogicPOS.Utility.RegexUtils.RegexAlfaNumeric, false);
-                _crudWidgetList.Add(genericCRUDWidgetXPO);
+                genericCRUDWidgetXPO = new GenericCRUDWidgetXPO(boxWareHouse, Entity, "Warehouse", LogicPOS.Utility.RegexUtils.RegexAlfaNumeric, false);
+                InputFields.Add(genericCRUDWidgetXPO);
                 vboxTab1.PackStart(boxWareHouse, false, false, 0);
 
                 //Location
@@ -115,18 +116,18 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                 {
                     criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND Warehouse == '{0}'", defaultWareHouse.Oid.ToString()));
                 }
-                fin_warehouselocation defaultLocation = ((_dataSourceRow as fin_articlewarehouse).Location != null) ? (_dataSourceRow as fin_articlewarehouse).Location : (fin_warehouselocation)_dataSourceRow.Session.FindObject(typeof(fin_warehouselocation), criteria);
-                xpoComboBoxWarehouseLocation = new XPOComboBox(DataSourceRow.Session, typeof(fin_warehouselocation), defaultLocation, "Designation", criteria);
+                fin_warehouselocation defaultLocation = ((Entity as fin_articlewarehouse).Location != null) ? (Entity as fin_articlewarehouse).Location : (fin_warehouselocation)Entity.Session.FindObject(typeof(fin_warehouselocation), criteria);
+                xpoComboBoxWarehouseLocation = new XPOComboBox(Entity.Session, typeof(fin_warehouselocation), defaultLocation, "Designation", criteria);
                 BOWidgetBox boxWareHouseLocation = new BOWidgetBox(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_ConfigurationDevice_PlaceTerminal"), xpoComboBoxWarehouseLocation);
-                genericCRUDWidgetXPO = new GenericCRUDWidgetXPO(boxWareHouseLocation, _dataSourceRow, "Location", LogicPOS.Utility.RegexUtils.RegexAlfaNumeric, false);
-                _crudWidgetList.Add(genericCRUDWidgetXPO);
+                genericCRUDWidgetXPO = new GenericCRUDWidgetXPO(boxWareHouseLocation, Entity, "Location", LogicPOS.Utility.RegexUtils.RegexAlfaNumeric, false);
+                InputFields.Add(genericCRUDWidgetXPO);
                 vboxTab1.PackStart(boxWareHouseLocation, false, false, 0);
 
 
                 entryQuantity = new Entry();
                 boxQuantity = new BOWidgetBox(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_quantity"), entryQuantity);
                 vboxTab1.PackStart(boxQuantity, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxQuantity, _dataSourceRow, "Quantity", LogicPOS.Utility.RegexUtils.RegexDecimal, false));
+                InputFields.Add(new GenericCRUDWidgetXPO(boxQuantity, Entity, "Quantity", LogicPOS.Utility.RegexUtils.RegexDecimal, false));
 
 
                 //Append Tab
@@ -134,7 +135,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-                if ((_dataSourceRow as fin_articlewarehouse).ArticleSerialNumber != null && ((this._dialogMode.Equals(DialogMode.View) || (_dataSourceRow as fin_articlewarehouse).ArticleSerialNumber.IsSold == true)))
+                if ((Entity as fin_articlewarehouse).ArticleSerialNumber != null && ((this._dialogMode.Equals(DialogMode.View) || (Entity as fin_articlewarehouse).ArticleSerialNumber.IsSold == true)))
                 {
                     _articleBoxSelectRecord.Sensitive = false;
                     _entryBoxArticleSerialNumber.Sensitive = false;
@@ -186,13 +187,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 
         public void DefineInitialValues()
         {
-            if (_dataSourceRow != null && _dataSourceRow.Oid != Guid.Empty && (_dataSourceRow as fin_articlewarehouse).ArticleSerialNumber != null && !string.IsNullOrEmpty((_dataSourceRow as fin_articlewarehouse).ArticleSerialNumber.SerialNumber) && _selectedArticle != null && _selectedArticle.ArticleSerialNumber.Count > 0)
+            if (Entity != null && Entity.Oid != Guid.Empty && (Entity as fin_articlewarehouse).ArticleSerialNumber != null && !string.IsNullOrEmpty((Entity as fin_articlewarehouse).ArticleSerialNumber.SerialNumber) && _selectedArticle != null && _selectedArticle.ArticleSerialNumber.Count > 0)
             {
                 SortProperty sortProperty = new SortProperty("SerialNumber", DevExpress.Xpo.DB.SortingDirection.Ascending);
                 CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("Article = '{0}'", _selectedArticle.Oid));
-                string sql = string.Format("SELECT OID FROM fin_articleserialnumber where SerialNumber = '{0}';", (_dataSourceRow as fin_articlewarehouse).ArticleSerialNumber.SerialNumber);
-                string serialNumberOid = _dataSourceRow.Session.ExecuteScalar(sql).ToString();
-                var articleSerialNumber = (fin_articleserialnumber)_dataSourceRow.Session.GetObjectByKey(typeof(fin_articleserialnumber), Guid.Parse(serialNumberOid));
+                string sql = string.Format("SELECT OID FROM fin_articleserialnumber where SerialNumber = '{0}';", (Entity as fin_articlewarehouse).ArticleSerialNumber.SerialNumber);
+                string serialNumberOid = Entity.Session.ExecuteScalar(sql).ToString();
+                var articleSerialNumber = (fin_articleserialnumber)Entity.Session.GetObjectByKey(typeof(fin_articleserialnumber), Guid.Parse(serialNumberOid));
                 _entryBoxArticleSerialNumber.CriteriaOperator = criteria;/*.UpdateModel(criteria, articleSerialNumber, sortProperty);*/
                 _entryBoxArticleSerialNumber.Sensitive = _modifyArticle;
         
@@ -202,7 +203,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
             if(_selectedArticle != null)
             {
                 string stockQuery = string.Format("SELECT SUM(Quantity) as Result FROM fin_articlestock WHERE Article = '{0}' AND (Disabled = 0 OR Disabled is NULL) GROUP BY Article;", _selectedArticle.Oid);
-                boxQuantity.TooltipText = _dataSourceRow.Session.ExecuteScalar(stockQuery).ToString();
+                boxQuantity.TooltipText = Entity.Session.ExecuteScalar(stockQuery).ToString();
                 _selectedArticle.Accounting = Convert.ToDecimal(boxQuantity.TooltipText);
                 boxQuantity.LabelComponent.Text = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_quantity") + " :: Total em Stock: " + _selectedArticle.Accounting.ToString());
             }
@@ -236,16 +237,16 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                 if (_selectedArticle == null || entryQuantity.Text == "0" || Convert.ToDecimal(entryQuantity.Text) > _selectedArticle.Accounting
                     || xpoComboBoxWarehouseLocation.Value == null || xpoComboBoxWarehouse.Value == null)
                 {
-                    buttonOk.Sensitive = false;
+                    ButtonOk.Sensitive = false;
                 }
                 else
                 {
-                    buttonOk.Sensitive = true;
+                    ButtonOk.Sensitive = true;
                 }
 
                 if (_selectedArticle != null && _entryBoxArticleSerialNumber.Value != null && Convert.ToDecimal(entryQuantity.Text) > 1)
                 {
-                    buttonOk.Sensitive = false;
+                    ButtonOk.Sensitive = false;
                 }
 
             }
@@ -268,7 +269,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                 if (_selectedArticle != null)
                 {
                     string stockQuery = string.Format("SELECT SUM(Quantity) as Result FROM fin_articlestock WHERE Article = '{0}' AND (Disabled = 0 OR Disabled is NULL) GROUP BY Article;", _selectedArticle.Oid);
-                    boxQuantity.TooltipText = _dataSourceRow.Session.ExecuteScalar(stockQuery).ToString();
+                    boxQuantity.TooltipText = Entity.Session.ExecuteScalar(stockQuery).ToString();
                     _selectedArticle.Accounting = Convert.ToDecimal(boxQuantity.TooltipText);
                     boxQuantity.LabelComponent.Text = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_quantity") + " :: Total em Stock: " + _selectedArticle.Accounting.ToString());
                 }

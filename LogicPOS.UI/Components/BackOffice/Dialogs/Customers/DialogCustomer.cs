@@ -12,12 +12,13 @@ using LogicPOS.Domain.Entities;
 using LogicPOS.Finance.Utility;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using LogicPOS.UI.Components;
 using System;
 using System.Collections;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
-    internal class DialogCustomer : BOBaseDialog
+    internal class DialogCustomer : EditDialog
     {
         private erp_customer _customer = null;
         private uint _totalNumberOfFinanceDocuments = 0;
@@ -41,8 +42,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         //Other
         private bool _isFinalConsumerEntity = false;
 
-        public DialogCustomer(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, Entity pXPGuidObject)
-            : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
+        public DialogCustomer(Window parentWindow, XpoGridView pTreeView, DialogFlags pFlags, DialogMode pDialogMode, Entity pXPGuidObject)
+            : base(parentWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
             this.Title = logicpos.Utils.GetWindowTitle(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_edit_customer"));
             SetSize(400, 566);
@@ -56,11 +57,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             try
             {
                 //Init Local Vars
-                _configurationCountry = (_dataSourceRow as erp_customer).Country;
+                _configurationCountry = (Entity as erp_customer).Country;
                 /* When customers already have a document issued to them, edit Fiscal Number field is not allowed */
                 if (_dialogMode != DialogMode.Insert)
                 {
-                    _customer = (_dataSourceRow as erp_customer);
+                    _customer = (Entity as erp_customer);
 
                     /* IN009249 - begin */
                     string customerFiscalNumberCrypto = PluginSettings.SoftwareVendor.Encrypt(_customer.FiscalNumber);
@@ -89,46 +90,46 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 Entry entryOrd = new Entry();
                 BOWidgetBox boxLabel = new BOWidgetBox(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_record_order"), entryOrd);
                 vboxTab1.PackStart(boxLabel, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxLabel, _dataSourceRow, "Ord", LogicPOS.Utility.RegexUtils.RegexIntegerGreaterThanZero, true));
+                InputFields.Add(new GenericCRUDWidgetXPO(boxLabel, Entity, "Ord", LogicPOS.Utility.RegexUtils.RegexIntegerGreaterThanZero, true));
 
                 //Code
                 Entry entryCode = new Entry();
                 BOWidgetBox boxCode = new BOWidgetBox(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_record_code"), entryCode);
                 vboxTab1.PackStart(boxCode, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCode, _dataSourceRow, "Code", LogicPOS.Utility.RegexUtils.RegexIntegerGreaterThanZero, true));
+                InputFields.Add(new GenericCRUDWidgetXPO(boxCode, Entity, "Code", LogicPOS.Utility.RegexUtils.RegexIntegerGreaterThanZero, true));
 
                 //FiscalNumber
                 _entryFiscalNumber = new Entry();
                 BOWidgetBox boxFiscalNumber = new BOWidgetBox(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_fiscal_number"), _entryFiscalNumber);
                 vboxTab1.PackStart(boxFiscalNumber, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxFiscalNumber, _dataSourceRow, "FiscalNumber", _configurationCountry.RegExFiscalNumber, true));/* IN009061 */
+                InputFields.Add(new GenericCRUDWidgetXPO(boxFiscalNumber, Entity, "FiscalNumber", _configurationCountry.RegExFiscalNumber, true));/* IN009061 */
 
                 //Name
                 _entryName = new Entry();
                 BOWidgetBox boxName = new BOWidgetBox(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_name"), _entryName);
                 vboxTab1.PackStart(boxName, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxName, _dataSourceRow, "Name", LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, true));/* IN009253 */
+                InputFields.Add(new GenericCRUDWidgetXPO(boxName, Entity, "Name", LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, true));/* IN009253 */
 
                 //Discount
                 Entry entryDiscount = new Entry();
                 BOWidgetBox boxDiscount = new BOWidgetBox(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_discount"), entryDiscount);
                 vboxTab1.PackStart(boxDiscount, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDiscount, _dataSourceRow, "Discount", LogicPOS.Utility.RegexUtils.RegexPercentage, true));
+                InputFields.Add(new GenericCRUDWidgetXPO(boxDiscount, Entity, "Discount", LogicPOS.Utility.RegexUtils.RegexPercentage, true));
 
                 //PriceType IN:009261
-                XPOComboBox xpoComboBoxPriceType = new XPOComboBox(DataSourceRow.Session, typeof(fin_configurationpricetype), (DataSourceRow as erp_customer).PriceType, "Designation", null, null, 1);
+                XPOComboBox xpoComboBoxPriceType = new XPOComboBox(Entity.Session, typeof(fin_configurationpricetype), (Entity as erp_customer).PriceType, "Designation", null, null, 1);
                 BOWidgetBox boxPriceType = new BOWidgetBox(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_price_type"), xpoComboBoxPriceType);
                 vboxTab1.PackStart(boxPriceType, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxPriceType, DataSourceRow, "PriceType", LogicPOS.Utility.RegexUtils.RegexGuid, true));
+                InputFields.Add(new GenericCRUDWidgetXPO(boxPriceType, Entity, "PriceType", LogicPOS.Utility.RegexUtils.RegexGuid, true));
 
                 //CustomerType IN009261
                 SortProperty[] sortPropertyCostumerType = new SortProperty[1];
                 sortPropertyCostumerType[0] = new SortProperty("Designation", SortingDirection.Descending);
 
-                _xpoComboBoxCustomerType = new XPOComboBox(DataSourceRow.Session, typeof(erp_customertype), (DataSourceRow as erp_customer).CustomerType, "Designation", null, sortPropertyCostumerType, 1);
+                _xpoComboBoxCustomerType = new XPOComboBox(Entity.Session, typeof(erp_customertype), (Entity as erp_customer).CustomerType, "Designation", null, sortPropertyCostumerType, 1);
                 BOWidgetBox boxCustomerType = new BOWidgetBox(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_customer_types"), _xpoComboBoxCustomerType);
                 vboxTab1.PackStart(boxCustomerType, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCustomerType, DataSourceRow, "CustomerType", LogicPOS.Utility.RegexUtils.RegexGuid, true));
+                InputFields.Add(new GenericCRUDWidgetXPO(boxCustomerType, Entity, "CustomerType", LogicPOS.Utility.RegexUtils.RegexGuid, true));
 
                 ////DISABLED : DiscountGroup
                 //XPOComboBox xpoComboBoxDiscountGroup = new XPOComboBox(DataSourceRow.Session, typeof(erp_customerdiscountgroup), (DataSourceRow as erp_customer).DiscountGroup, "Designation");
@@ -139,13 +140,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 //Supplier
                 CheckButton checkButtonSupplier = new CheckButton(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_supplier"));
                 vboxTab1.PackStart(checkButtonSupplier, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(checkButtonSupplier, _dataSourceRow, "Supplier"));
+                InputFields.Add(new GenericCRUDWidgetXPO(checkButtonSupplier, Entity, "Supplier"));
 
                 //Disabled
                 CheckButton checkButtonDisabled = new CheckButton(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_record_disabled"));
                 if (_dialogMode == DialogMode.Insert) checkButtonDisabled.Active = POSSettings.BOXPOObjectsStartDisabled;
                 vboxTab1.PackStart(checkButtonDisabled, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(checkButtonDisabled, _dataSourceRow, "Disabled"));
+                InputFields.Add(new GenericCRUDWidgetXPO(checkButtonDisabled, Entity, "Disabled"));
 
                 //Append Tab
                 _notebook.AppendPage(vboxTab1, new Label(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_record_main_detail")));
@@ -159,25 +160,25 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _entryAddress = new Entry();
                 BOWidgetBox boxAddress = new BOWidgetBox(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_address"), _entryAddress);
                 vboxTab2.PackStart(boxAddress, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxAddress, _dataSourceRow, "Address", LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, false));/* IN009253 */
+                InputFields.Add(new GenericCRUDWidgetXPO(boxAddress, Entity, "Address", LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, false));/* IN009253 */
 
                 //Locality
                 _entryLocality = new Entry();
                 BOWidgetBox boxLocality = new BOWidgetBox(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_locality"), _entryLocality);
                 vboxTab2.PackStart(boxLocality, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxLocality, _dataSourceRow, "Locality", LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, false));/* IN009253 */
+                InputFields.Add(new GenericCRUDWidgetXPO(boxLocality, Entity, "Locality", LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, false));/* IN009253 */
 
                 //ZipCode
                 _entryZipCode = new Entry() { WidthRequest = 100 }; ;
                 BOWidgetBox boxZipCode = new BOWidgetBox(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_zipcode"), _entryZipCode);
                 vboxTab2.PackStart(boxZipCode, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxZipCode, _dataSourceRow, "ZipCode", _configurationCountry.RegExZipCode, false));
+                InputFields.Add(new GenericCRUDWidgetXPO(boxZipCode, Entity, "ZipCode", _configurationCountry.RegExZipCode, false));
 
                 //City
                 _entryCity = new Entry();
                 BOWidgetBox boxCity = new BOWidgetBox(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_city"), _entryCity);
                 vboxTab2.PackStart(boxCity, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCity, _dataSourceRow, "City", LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, false)); /* IN009176, IN009253 */
+                InputFields.Add(new GenericCRUDWidgetXPO(boxCity, Entity, "City", LogicPOS.Utility.RegexUtils.RegexAlfaNumericPlus, false)); /* IN009176, IN009253 */
 
                 //Hbox ZipCode and City
                 HBox hboxZipCodeAndCity = new HBox(false, _boxSpacing);
@@ -189,22 +190,22 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 SortProperty[] sortPropertyCountry = new SortProperty[1];
                 sortPropertyCountry[0] = new SortProperty("Designation", SortingDirection.Ascending);
                 //Country
-                _xpoComboBoxCountry = new XPOComboBox(DataSourceRow.Session, typeof(cfg_configurationcountry), (DataSourceRow as erp_customer).Country, "Designation", null, sortPropertyCountry);
+                _xpoComboBoxCountry = new XPOComboBox(Entity.Session, typeof(cfg_configurationcountry), (Entity as erp_customer).Country, "Designation", null, sortPropertyCountry);
                 BOWidgetBox boxCountry = new BOWidgetBox(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_country"), _xpoComboBoxCountry);
                 vboxTab2.PackStart(boxCountry, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCountry, DataSourceRow, "Country", LogicPOS.Utility.RegexUtils.RegexGuid, true));
+                InputFields.Add(new GenericCRUDWidgetXPO(boxCountry, Entity, "Country", LogicPOS.Utility.RegexUtils.RegexGuid, true));
 
                 //Phone
                 Entry entryPhone = new Entry();
                 BOWidgetBox boxPhone = new BOWidgetBox(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_phone"), entryPhone);
                 vboxTab2.PackStart(boxPhone, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxPhone, _dataSourceRow, "Phone", LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false));
+                InputFields.Add(new GenericCRUDWidgetXPO(boxPhone, Entity, "Phone", LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false));
 
                 //MobilePhone
                 Entry entryMobilePhone = new Entry();
                 BOWidgetBox boxMobilePhone = new BOWidgetBox(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_mobile_phone"), entryMobilePhone);
                 vboxTab2.PackStart(boxMobilePhone, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxMobilePhone, _dataSourceRow, "MobilePhone", LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false));
+                InputFields.Add(new GenericCRUDWidgetXPO(boxMobilePhone, Entity, "MobilePhone", LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false));
 
                 //Hbox Phone and MobilePhone
                 HBox hboxPhoneAndMobilePhone = new HBox(false, _boxSpacing);
@@ -216,13 +217,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 Entry entryFax = new Entry();
                 BOWidgetBox boxFax = new BOWidgetBox(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_fax"), entryFax);
                 vboxTab2.PackStart(boxFax, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxFax, _dataSourceRow, "Fax", LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false));
+                InputFields.Add(new GenericCRUDWidgetXPO(boxFax, Entity, "Fax", LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false));
 
                 //Email
                 Entry entryEmail = new Entry();
                 BOWidgetBox boxEmail = new BOWidgetBox(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_email_separator"), entryEmail);
                 vboxTab2.PackStart(boxEmail, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxEmail, _dataSourceRow, "Email", LogicPOS.Utility.RegexUtils.RegexEmail, false));
+                InputFields.Add(new GenericCRUDWidgetXPO(boxEmail, Entity, "Email", LogicPOS.Utility.RegexUtils.RegexEmail, false));
 
                 //Hbox Fax and Email
                 HBox hboxFaxAndEmail = new HBox(false, _boxSpacing);
@@ -242,19 +243,19 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 Entry entryCardNumber = new Entry();
                 BOWidgetBox boxCardNumber = new BOWidgetBox(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_card_number"), entryCardNumber);
                 vboxTab3.PackStart(boxCardNumber, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCardNumber, _dataSourceRow, "CardNumber", LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false));
+                InputFields.Add(new GenericCRUDWidgetXPO(boxCardNumber, Entity, "CardNumber", LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false));
 
                 //CardCredit
                 Entry entryCardCredit = new Entry();
                 BOWidgetBox boxCardCredit = new BOWidgetBox(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_card_credit_amount"), entryCardCredit);
                 vboxTab3.PackStart(boxCardCredit, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCardCredit, _dataSourceRow, "CardCredit", LogicPOS.Utility.RegexUtils.RegexDecimalGreaterEqualThanZero, false));
+                InputFields.Add(new GenericCRUDWidgetXPO(boxCardCredit, Entity, "CardCredit", LogicPOS.Utility.RegexUtils.RegexDecimalGreaterEqualThanZero, false));
 
                 //DateOfBirth
                 Entry entryDateOfBirth = new Entry();
                 BOWidgetBox boxDateOfBirth = new BOWidgetBox(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_dob"), entryDateOfBirth);
                 vboxTab3.PackStart(boxDateOfBirth, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDateOfBirth, _dataSourceRow, "DateOfBirth", LogicPOS.Utility.RegexUtils.RegexDate, false));
+                InputFields.Add(new GenericCRUDWidgetXPO(boxDateOfBirth, Entity, "DateOfBirth", LogicPOS.Utility.RegexUtils.RegexDate, false));
 
                 //Append Tab
                 _notebook.AppendPage(vboxTab3, new Label(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_others")));
@@ -268,8 +269,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _xpoComboBoxCountry.Sensitive = GetEntryFiscalNumberSensitiveValue();
 
                 //Get References to GenericCRUDWidgetXPO
-                _genericCRUDWidgetXPOFiscalNumber = (_crudWidgetList.GetFieldWidget("FiscalNumber") as GenericCRUDWidgetXPO);
-                _genericCRUDWidgetXPOZipCode = (_crudWidgetList.GetFieldWidget("ZipCode") as GenericCRUDWidgetXPO);
+                _genericCRUDWidgetXPOFiscalNumber = (InputFields.GetFieldWidget("FiscalNumber") as GenericCRUDWidgetXPO);
+                _genericCRUDWidgetXPOZipCode = (InputFields.GetFieldWidget("ZipCode") as GenericCRUDWidgetXPO);
                 //Call Validation
                 _genericCRUDWidgetXPOFiscalNumber.ValidateField(ValidateFiscalNumberFunc);
 

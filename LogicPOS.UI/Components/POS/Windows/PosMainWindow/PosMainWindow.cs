@@ -3,15 +3,15 @@ using DevExpress.Xpo;
 using Gtk;
 using logicpos.App;
 using logicpos.Classes.Gui.Gtk.Widgets;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Logic.Others;
-using logicpos.Extensions;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.UI;
+using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using System;
 using System.Collections;
@@ -27,12 +27,12 @@ namespace logicpos
         private readonly string _fileBaseButtonOverlay = PathsSettings.ImagesFolderLocation + @"Buttons\Pos\button_overlay.png";
 
         /* IN006045 */
-        //private string _clockFormat = LogicPOS.Settings.GeneralSettings.Settings["dateTimeFormatStatusBar"];
+        //private string _clockFormat = LogicPOS.Settings.AppSettings.Instance.dateTimeFormatStatusBar"];
         private readonly string _clockFormat = GeneralUtils.GetResourceByName("frontoffice_datetime_format_status_bar");
 
-        private readonly Color _colorPosNumberPadLeftButtonBackground = GeneralSettings.Settings["colorPosNumberPadLeftButtonBackground"].StringToColor();
-        private readonly Color _colorPosNumberRightButtonBackground = GeneralSettings.Settings["colorPosNumberRightButtonBackground"].StringToColor();
-        private readonly Color _colorPosHelperBoxsBackground = GeneralSettings.Settings["colorPosHelperBoxsBackground"].StringToColor();
+        private readonly Color _colorPosNumberPadLeftButtonBackground = AppSettings.Instance.colorPosNumberPadLeftButtonBackground;
+        private readonly Color _colorPosNumberRightButtonBackground = AppSettings.Instance.colorPosNumberRightButtonBackground;
+        private readonly Color _colorPosHelperBoxsBackground = AppSettings.Instance.colorPosHelperBoxsBackground;
         //UI
         private readonly Fixed _fixedWindow;
         private Label _labelClock;
@@ -40,16 +40,16 @@ namespace logicpos
 
         public TicketList TicketList { get; private set; }
 
-        private TouchButtonIconWithText _touchButtonPosToolbarApplicationClose;
-        private TouchButtonIconWithText _touchButtonPosToolbarBackOffice;
-        private TouchButtonIconWithText _touchButtonPosToolbarReports;
-        private TouchButtonIconWithText _touchButtonPosToolbarShowSystemDialog;
-        private TouchButtonIconWithText _touchButtonPosToolbarLogoutUser;
-        private TouchButtonIconWithText _touchButtonPosToolbarShowChangeUserDialog;
-        private TouchButtonIconWithText _touchButtonPosToolbarCashDrawer;
-        private TouchButtonIconWithText _touchButtonPosToolbarFinanceDocuments;
+        private IconButtonWithText _touchButtonPosToolbarApplicationClose;
+        private IconButtonWithText _touchButtonPosToolbarBackOffice;
+        private IconButtonWithText _touchButtonPosToolbarReports;
+        private IconButtonWithText _touchButtonPosToolbarShowSystemDialog;
+        private IconButtonWithText _touchButtonPosToolbarLogoutUser;
+        private IconButtonWithText _touchButtonPosToolbarShowChangeUserDialog;
+        private IconButtonWithText _touchButtonPosToolbarCashDrawer;
+        private IconButtonWithText _touchButtonPosToolbarFinanceDocuments;
 
-        public TouchButtonIconWithText TouchButtonPosToolbarNewFinanceDocument { get; set; }
+        public IconButtonWithText TouchButtonPosToolbarNewFinanceDocument { get; set; }
 
         private TicketPad _ticketPad;
         //Others
@@ -70,72 +70,43 @@ namespace logicpos
         public PosMainWindow(string pBackgroundImage)
             : base(pBackgroundImage)
         {
-            try
+            _fixedWindow = new Fixed();
+
+            InitUI();
+
+            TicketList.UpdateOrderStatusBar();
+
+            UpdateWorkSessionUI();
+
+            StartClock();
+
+            TablePadArticle.Filter = " AND (Favorite = 1)";
+
+            TicketList.UpdateTicketListButtons();
+
+            this.ScreenArea.Add(_fixedWindow);
+
+            bool _showMinimize = AppSettings.Instance.appShowMinimize;
+            if (_showMinimize)
             {
-                /* IN009005 */
-                //GlobalApp.DialogThreadNotify.WakeupMain();
-
-                _fixedWindow = new Fixed();
-
-                //New Thread InitUI 
-                /* IN009005 */
-                //Thread thread = new Thread(new ThreadStart(InitUI));
-                //GlobalApp.DialogThreadNotify = new ThreadNotify (new ReadyEvent (Utils.ThreadDialogReadyEvent));
-                //thread.Start();
-                InitUI();
-
-                //Use Startup Window, not this Window, because it is not visible, it is in construction mode
-                /* IN009005 */
-                //GlobalApp.DialogThreadWork = Utils.GetThreadDialog(GlobalApp.WindowStartup);
-                //GlobalApp.DialogThreadWork.Run();
-
-                //Call - To Update start _labelCurrentTable.Text
-                TicketList.UpdateOrderStatusBar();
-
-                //Update WorkSessionUI Before Clock
-                UpdateWorkSessionUI();
-
-                //Clock
-                StartClock();
-
-                //Startup Filter
-                TablePadArticle.Filter = " AND (Favorite = 1)";
-
-                //Always update buttons when construct window, may return from a program crash
-                TicketList.UpdateTicketListButtons();
-
-                this.ScreenArea.Add(_fixedWindow);
-
-                //Place Minimize EventBox : After InitUI, to be placed Above all Other
-                bool _showMinimize = (!string.IsNullOrEmpty(GeneralSettings.Settings["appShowMinimize"]))
-                    && Convert.ToBoolean(GeneralSettings.Settings["appShowMinimize"]);
-                if (_showMinimize)
-                {
-                    EventBox eventBoxMinimize = GtkUtils.CreateMinimizeButton();
-                    eventBoxMinimize.ButtonReleaseEvent += delegate { Iconify(); };
-                    _fixedWindow.Put(eventBoxMinimize, GlobalApp.ScreenSize.Width - 27 - 10, 10);
-                }
-
-                this.ShowAll();
-
-                //Window Events
-                this.WindowStateEvent += PosMainWindow_WindowStateEvent;
-                //Update UI if has a Working Order (Initialized by SessionApp)
-                this.ExposeEvent += delegate { UpdateUIIfHasWorkingOrder(); };
-                this.KeyReleaseEvent += PosMainWindow_KeyReleaseEvent;
-
-                //Hardware Events
-                if (TerminalSettings.LoggedTerminal.BarcodeReader != null || TerminalSettings.LoggedTerminal.CardReader != null)
-                {
-                    GlobalApp.BarCodeReader.Captured += HWBarCodeReader_Captured;
-                }
-
-                _logger.Debug("PosMainWindow(String pBackgroundImage) :: Completed!"); /* IN009008 */
+                EventBox eventBoxMinimize = GtkUtils.CreateMinimizeButton();
+                eventBoxMinimize.ButtonReleaseEvent += delegate { Iconify(); };
+                _fixedWindow.Put(eventBoxMinimize, GlobalApp.ScreenSize.Width - 27 - 10, 10);
             }
-            catch (Exception ex)
+
+            this.ShowAll();
+
+            this.WindowStateEvent += PosMainWindow_WindowStateEvent;
+            this.ExposeEvent += delegate { UpdateUIIfHasWorkingOrder(); };
+            this.KeyReleaseEvent += PosMainWindow_KeyReleaseEvent;
+
+            //Hardware Events
+            if (TerminalSettings.LoggedTerminal.BarcodeReader != null || TerminalSettings.LoggedTerminal.CardReader != null)
             {
-                _logger.Error(ex.Message, ex);
+                GlobalApp.BarCodeReader.Captured += HWBarCodeReader_Captured;
             }
+
+            _logger.Debug("PosMainWindow(String pBackgroundImage) :: Completed!");
         }
 
         private void InitUI()
@@ -153,50 +124,33 @@ namespace logicpos
             //Assign Theme Vars + UI
             if (themeWindow != null)
             {
-                try
-                {
-                    //Globals
-                    Name = Convert.ToString(themeWindow.Globals.Name);
+                //Globals
+                Name = Convert.ToString(themeWindow.Globals.Name);
 
-                    //Init Components
-                    InitUIEventBoxImageLogo(themeWindow);
-                    InitUIEventBoxStatusBar1(themeWindow);
-                    InitUIEventBoxStatusBar2(themeWindow);
-                    InitUIButtonFavorites(themeWindow);
-                    InitUITablePads(themeWindow);
-                    InitUIEventBoxPosTicketList(themeWindow);
-                    InitUIEventBoxPosTicketPad(themeWindow);
-                    //After InitUIEventBoxPosTicketList, require _ticketList initialized
-                    InitUiEventboxToolbar(themeWindow);
+                //Init Components
+                InitUIEventBoxImageLogo(themeWindow);
+                InitUIEventBoxStatusBar1(themeWindow);
+                InitUIEventBoxStatusBar2(themeWindow);
+                InitUIButtonFavorites(themeWindow);
+                InitUITablePads(themeWindow);
+                InitUIEventBoxPosTicketList(themeWindow);
+                InitUIEventBoxPosTicketPad(themeWindow);
+               
+                InitUiEventboxToolbar(themeWindow);
 
-                    _logger.Debug("void InitUI() :: POS Main Window theme rendering completed!"); /* IN009008 */
-                    //Notify Thread End
-                    GlobalApp.DialogThreadNotify.WakeupMain();
+                _logger.Debug("void InitUI() :: POS Main Window theme rendering completed!"); /* IN009008 */
+                //Notify Thread End
+                GlobalApp.DialogThreadNotify.WakeupMain();
 
-                    //Check if fiscal year was created
-                    try
-                    {
-                        SortingCollection sortCollection = new SortingCollection
+                SortingCollection sortCollection = new SortingCollection
                         {
                             new SortProperty("FiscalYear", DevExpress.Xpo.DB.SortingDirection.Ascending)
                         };
-                        CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL)"));
-                        ICollection collectionDocumentFinanceSeries = XPOSettings.Session.GetObjects(XPOSettings.Session.GetClassInfo(typeof(fin_documentfinanceyearserieterminal)), criteria, sortCollection, int.MaxValue, false, true);
-                        if (collectionDocumentFinanceSeries.Count == 0)
-                        {
-                            Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Warning, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_warning"), GeneralUtils.GetResourceByName("global_warning_open_fiscal_year"));
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.Error("Error checking fiscal year existance " + ex.Message);
-                    }
-
-                }
-                catch (Exception ex)
+                CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL)"));
+                ICollection collectionDocumentFinanceSeries = XPOSettings.Session.GetObjects(XPOSettings.Session.GetClassInfo(typeof(fin_documentfinanceyearserieterminal)), criteria, sortCollection, int.MaxValue, false, true);
+                if (collectionDocumentFinanceSeries.Count == 0)
                 {
-                    _logger.Error(ex.Message, ex);
-                    Utils.ShowMessageTouchErrorRenderTheme(this, string.Format("{1}{0}{0}{2}", Environment.NewLine, errorMessage, ex.Message));
+                    Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Warning, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_warning"), GeneralUtils.GetResourceByName("global_warning_open_fiscal_year"));
                 }
             }
             else
@@ -211,13 +165,13 @@ namespace logicpos
             dynamic themeWindow = pThemeWindow;
             //Objects:EventBoxImageLogo
             Point eventBoxImageLogoPosition = Utils.StringToPosition(themeWindow.Objects.EventBoxImageLogo.Position);
-            Size eventBoxImageLogoSize = Utils.StringToSize(themeWindow.Objects.EventBoxImageLogo.Size);
+            Size eventBoxImageLogoSize = (themeWindow.Objects.EventBoxImageLogo.Size as string).ToSize();
             bool eventBoxImageLogoVisible = Convert.ToBoolean(themeWindow.Objects.EventBoxImageLogo.Visible);
             bool eventBoxImageLogoVisibleWindow = Convert.ToBoolean(themeWindow.Objects.EventBoxImageLogo.VisibleWindow);
             Gdk.Color eventBoxImageLogoBackgroundColor = (themeWindow.Objects.EventBoxImageLogo.BackgroundColor as string).StringToGdkColor();
 
             //LOGO
-            Image imageLogo = new Image(Utils.GetThemeFileLocation(GeneralSettings.Settings["fileImageBackOfficeLogo"]));
+            Image imageLogo = new Image(Utils.GetThemeFileLocation(AppSettings.Instance.fileImageBackOfficeLogo));
             if (PluginSettings.LicenceManager != null)
             {
                 string fileImageBackOfficeLogo = string.Format(PathsSettings.Paths["themes"] + @"Default\Images\logicPOS_logicpulse_login.png");
@@ -228,7 +182,7 @@ namespace logicpos
                 }
 
                 var bitmapImage = PluginSettings.LicenceManager.DecodeImage(fileImageBackOfficeLogo, eventBoxImageLogoSize.Width, eventBoxImageLogoSize.Height);
-                 Gdk.Pixbuf pixbufImageLogo = Utils.ImageToPixbuf(bitmapImage);
+                Gdk.Pixbuf pixbufImageLogo = Utils.ImageToPixbuf(bitmapImage);
                 imageLogo = new Image(pixbufImageLogo);
             }
 
@@ -255,7 +209,7 @@ namespace logicpos
 
             //Objects:EventBoxStatusBar1
             Point eventBoxStatusBar1Position = Utils.StringToPosition(themeWindow.Objects.EventBoxStatusBar1.Position); ;
-            Size eventBoxStatusBar1Size = Utils.StringToSize(themeWindow.Objects.EventBoxStatusBar1.Size);
+            Size eventBoxStatusBar1Size = (themeWindow.Objects.EventBoxStatusBar1.Size as string).ToSize();
             bool eventBoxStatusBar1Visible = Convert.ToBoolean(themeWindow.Objects.EventBoxStatusBar1.Visible);
             bool eventBoxStatusBar1VisibleWindow = Convert.ToBoolean(themeWindow.Objects.EventBoxStatusBar1.VisibleWindow);
             Gdk.Color eventBoxStatusBar1BackgroundColor = (themeWindow.Objects.EventBoxStatusBar1.BackgroundColor as string).StringToGdkColor();
@@ -307,7 +261,7 @@ namespace logicpos
 
             //Objects:EventBoxStatusBar2
             Point eventBoxStatusBar2Position = Utils.StringToPosition(themeWindow.Objects.EventBoxStatusBar2.Position); ;
-            Size eventBoxStatusBar2Size = Utils.StringToSize(themeWindow.Objects.EventBoxStatusBar2.Size);
+            Size eventBoxStatusBar2Size = (themeWindow.Objects.EventBoxStatusBar2.Size as string).ToSize();
             bool eventBoxStatusBar2Visible = Convert.ToBoolean(themeWindow.Objects.EventBoxStatusBar2.Visible);
             bool eventBoxStatusBar2VisibleWindow = Convert.ToBoolean(themeWindow.Objects.EventBoxStatusBar2.VisibleWindow);
             Gdk.Color eventBoxStatusBar2BackgroundColor = (themeWindow.Objects.EventBoxStatusBar2.BackgroundColor as string).StringToGdkColor();
@@ -393,7 +347,7 @@ namespace logicpos
 
             //Objects:ButtonFavorites
             Point buttonFavoritesPosition = Utils.StringToPosition(themeWindow.Objects.ButtonFavorites.Position);
-            Size buttonFavoritesButtonSize = Utils.StringToSize(themeWindow.Objects.ButtonFavorites.ButtonSize);
+            Size buttonFavoritesButtonSize = (themeWindow.Objects.ButtonFavorites.ButtonSize as string).ToSize();
             string buttonFavoritesImageFileName = themeWindow.Objects.ButtonFavorites.ImageFileName;
             string buttonFavoritesText = themeWindow.Objects.ButtonFavorites.Text;
             int buttonFavoritesFontSize = Convert.ToInt16(themeWindow.Objects.ButtonFavorites.FontSize);
@@ -403,7 +357,19 @@ namespace logicpos
             //UI
 
             string buttonFavoritesImageOverlay = (buttonFavoritesUseImageOverlay) ? _fileBaseButtonOverlay : string.Empty;
-            TouchButtonImage buttonFavorites = new TouchButtonImage("buttonFavorites", Color.Transparent, buttonFavoritesText, buttonFavoritesFontSize, buttonFavoritesImageFileName, buttonFavoritesImageOverlay, buttonFavoritesButtonSize.Width, buttonFavoritesButtonSize.Height);
+
+            ImageButton buttonFavorites = new ImageButton(
+                new ButtonSettings
+                {
+                    Name = "buttonFavorites",
+                    Text = buttonFavoritesText,
+                    FontSize = buttonFavoritesFontSize,
+                    Image = buttonFavoritesImageFileName,
+                    Overlay = buttonFavoritesImageOverlay,
+                    ButtonSize = new Size(buttonFavoritesButtonSize.Width, buttonFavoritesButtonSize.Height)
+                });
+
+
             buttonFavorites.Clicked += buttonFavorites_Clicked;
 
             if (buttonFavoritesVisible) _fixedWindow.Put(buttonFavorites, buttonFavoritesPosition.X, buttonFavoritesPosition.Y);
@@ -418,55 +384,72 @@ namespace logicpos
 
             //Objects:TablePadFamilyButtonPrev
             Point TablePadFamilyButtonPrevPosition = Utils.StringToPosition(themeWindow.Objects.TablePadFamily.TablePadFamilyButtonPrev.Position);
-            Size TablePadFamilyButtonPrevSize = Utils.StringToSize(themeWindow.Objects.TablePadFamily.TablePadFamilyButtonPrev.Size);
+            Size TablePadFamilyButtonPrevSize = (themeWindow.Objects.TablePadFamily.TablePadFamilyButtonPrev.Size as string).ToSize();
             string TablePadFamilyButtonPrevImageFileName = themeWindow.Objects.TablePadFamily.TablePadFamilyButtonPrev.ImageFileName;
             //Objects:TablePadFamilyButtonNext
             Point TablePadFamilyButtonNextPosition = Utils.StringToPosition(themeWindow.Objects.TablePadFamily.TablePadFamilyButtonNext.Position);
-            Size TablePadFamilyButtonNextSize = Utils.StringToSize(themeWindow.Objects.TablePadFamily.TablePadFamilyButtonNext.Size);
+            Size TablePadFamilyButtonNextSize = (themeWindow.Objects.TablePadFamily.TablePadFamilyButtonNext.Size as string).ToSize();
             string TablePadFamilyButtonNextImageFileName = themeWindow.Objects.TablePadFamily.TablePadFamilyButtonNext.ImageFileName;
             //Objects:TablePadFamily
             Point tablePadFamilyPosition = Utils.StringToPosition(themeWindow.Objects.TablePadFamily.Position);
-            Size tablePadFamilyButtonSize = Utils.StringToSize(themeWindow.Objects.TablePadFamily.ButtonSize);
+            Size tablePadFamilyButtonSize = (themeWindow.Objects.TablePadFamily.ButtonSize as string).ToSize();
             TableConfig tablePadFamilyTableConfig = Utils.StringToTableConfig(themeWindow.Objects.TablePadFamily.TableConfig);
             bool tablePadFamilyVisible = Convert.ToBoolean(themeWindow.Objects.TablePadFamily.Visible);
 
             //Objects:TablePadSubFamilyButtonPrev
             Point TablePadSubFamilyButtonPrevPosition = Utils.StringToPosition(themeWindow.Objects.TablePadSubFamily.TablePadSubFamilyButtonPrev.Position);
-            Size TablePadSubFamilyButtonPrevSize = Utils.StringToSize(themeWindow.Objects.TablePadSubFamily.TablePadSubFamilyButtonPrev.Size);
+            Size TablePadSubFamilyButtonPrevSize = (themeWindow.Objects.TablePadSubFamily.TablePadSubFamilyButtonPrev.Size as string).ToSize();
             string TablePadSubFamilyButtonPrevImageFileName = themeWindow.Objects.TablePadSubFamily.TablePadSubFamilyButtonPrev.ImageFileName;
             //Objects:TablePadSubFamilyButtonNext
             Point TablePadSubFamilyButtonNextPosition = Utils.StringToPosition(themeWindow.Objects.TablePadSubFamily.TablePadSubFamilyButtonNext.Position);
-            Size TablePadSubFamilyButtonNextSize = Utils.StringToSize(themeWindow.Objects.TablePadSubFamily.TablePadSubFamilyButtonNext.Size);
+            Size TablePadSubFamilyButtonNextSize = (themeWindow.Objects.TablePadSubFamily.TablePadSubFamilyButtonNext.Size as string).ToSize();
             string TablePadSubFamilyButtonNextImageFileName = themeWindow.Objects.TablePadSubFamily.TablePadSubFamilyButtonNext.ImageFileName;
             //Objects:TablePadSubFamily
             Point tablePadSubFamilyPosition = Utils.StringToPosition(themeWindow.Objects.TablePadSubFamily.Position);
-            Size tablePadSubFamilyButtonSize = Utils.StringToSize(themeWindow.Objects.TablePadSubFamily.ButtonSize);
+            Size tablePadSubFamilyButtonSize = (themeWindow.Objects.TablePadSubFamily.ButtonSize as string).ToSize();
             TableConfig tablePadSubFamilyTableConfig = Utils.StringToTableConfig(themeWindow.Objects.TablePadSubFamily.TableConfig);
             bool tablePadSubFamilyVisible = Convert.ToBoolean(themeWindow.Objects.TablePadSubFamily.Visible);
 
             //Objects:TablePadArticleButtonPrev
             Point TablePadArticleButtonPrevPosition = Utils.StringToPosition(themeWindow.Objects.TablePadArticle.TablePadArticleButtonPrev.Position);
-            Size TablePadArticleButtonPrevSize = Utils.StringToSize(themeWindow.Objects.TablePadArticle.TablePadArticleButtonPrev.Size);
+            Size TablePadArticleButtonPrevSize = (themeWindow.Objects.TablePadArticle.TablePadArticleButtonPrev.Size as string).ToSize();
             string TablePadArticleButtonPrevImageFileName = themeWindow.Objects.TablePadArticle.TablePadArticleButtonPrev.ImageFileName;
             //Objects:TablePadArticleButtonNext
             Point TablePadArticleButtonNextPosition = Utils.StringToPosition(themeWindow.Objects.TablePadArticle.TablePadArticleButtonNext.Position);
-            Size TablePadArticleButtonNextSize = Utils.StringToSize(themeWindow.Objects.TablePadArticle.TablePadArticleButtonNext.Size);
+            Size TablePadArticleButtonNextSize = (themeWindow.Objects.TablePadArticle.TablePadArticleButtonNext.Size as string).ToSize();
             string TablePadArticleButtonNextImageFileName = themeWindow.Objects.TablePadArticle.TablePadArticleButtonNext.ImageFileName;
             //Objects:TablePadArticle
             Point tablePadArticlePosition = Utils.StringToPosition(themeWindow.Objects.TablePadArticle.Position);
-            Size tablePadArticleButtonSize = Utils.StringToSize(themeWindow.Objects.TablePadArticle.ButtonSize);
+            Size tablePadArticleButtonSize = (themeWindow.Objects.TablePadArticle.ButtonSize as string).ToSize();
             TableConfig tablePadArticleTableConfig = Utils.StringToTableConfig(themeWindow.Objects.TablePadArticle.TableConfig);
             bool tablePadArticleVisible = Convert.ToBoolean(themeWindow.Objects.TablePadArticle.Visible);
 
             //UI
 
             //Objects:TablePadFamilyButtonPrev
-            TouchButtonIcon TablePadFamilyButtonPrev = new TouchButtonIcon("TablePadFamilyButtonPrev", Color.Transparent, TablePadFamilyButtonPrevImageFileName, new Size(TablePadFamilyButtonPrevSize.Width - 2, TablePadFamilyButtonPrevSize.Height - 2), TablePadFamilyButtonPrevSize.Width, TablePadFamilyButtonPrevSize.Height);
+            IconButton TablePadFamilyButtonPrev = new IconButton(
+                new ButtonSettings
+                {
+                    Name = "TablePadFamilyButtonPrev",
+                    Icon = TablePadFamilyButtonPrevImageFileName,
+                    IconSize = new Size(TablePadFamilyButtonPrevSize.Width - 2, TablePadFamilyButtonPrevSize.Height - 2),
+                    ButtonSize = new Size(TablePadFamilyButtonPrevSize.Width, TablePadFamilyButtonPrevSize.Height)
+                });
+
             TablePadFamilyButtonPrev.Relief = ReliefStyle.None;
             TablePadFamilyButtonPrev.BorderWidth = 0;
             TablePadFamilyButtonPrev.CanFocus = false;
+
             //Objects:TablePadFamilyButtonNext
-            TouchButtonIcon TablePadFamilyButtonNext = new TouchButtonIcon("TablePadFamilyButtonNext", Color.Transparent, TablePadFamilyButtonNextImageFileName, new Size(TablePadFamilyButtonNextSize.Width - 2, TablePadFamilyButtonNextSize.Height - 2), TablePadFamilyButtonNextSize.Width, TablePadFamilyButtonNextSize.Height);
+            IconButton TablePadFamilyButtonNext = new IconButton(
+                new ButtonSettings
+                {
+                    Name = "TablePadFamilyButtonNext",
+                    Icon = TablePadFamilyButtonNextImageFileName,
+                    IconSize = new Size(TablePadFamilyButtonNextSize.Width - 2, TablePadFamilyButtonNextSize.Height - 2),
+                    ButtonSize = new Size(TablePadFamilyButtonNextSize.Width, TablePadFamilyButtonNextSize.Height)
+                });
+
             TablePadFamilyButtonNext.Relief = ReliefStyle.None;
             TablePadFamilyButtonNext.BorderWidth = 0;
             TablePadFamilyButtonNext.CanFocus = false;
@@ -506,12 +489,20 @@ namespace logicpos
             }
 
             //Objects:TablePadSubFamilyButtonPrev
-            TouchButtonIcon TablePadSubFamilyButtonPrev = new TouchButtonIcon("TablePadSubFamilyButtonPrev", Color.Transparent, TablePadSubFamilyButtonPrevImageFileName, new Size(TablePadSubFamilyButtonPrevSize.Width - 6/*2*/, TablePadSubFamilyButtonPrevSize.Height - 6/*2*/), TablePadSubFamilyButtonPrevSize.Width, TablePadSubFamilyButtonPrevSize.Height);
+            IconButton TablePadSubFamilyButtonPrev = new IconButton(
+                new ButtonSettings
+                {
+                    Name = "TablePadSubFamilyButtonPrev",
+                    Icon = TablePadSubFamilyButtonPrevImageFileName,
+                    IconSize = new Size(TablePadSubFamilyButtonPrevSize.Width - 6, TablePadSubFamilyButtonPrevSize.Height - 6),
+                    ButtonSize = new Size(TablePadSubFamilyButtonPrevSize.Width, TablePadSubFamilyButtonPrevSize.Height)
+                });
+
             TablePadSubFamilyButtonPrev.Relief = ReliefStyle.None;
             TablePadSubFamilyButtonPrev.BorderWidth = 0;
             TablePadSubFamilyButtonPrev.CanFocus = false;
             //Objects:TablePadSubFamilyButtonNext
-            TouchButtonIcon TablePadSubFamilyButtonNext = new TouchButtonIcon("TablePadSubFamilyButtonNext", Color.Transparent, TablePadSubFamilyButtonNextImageFileName, new Size(TablePadSubFamilyButtonNextSize.Width - 6/*2*/, TablePadSubFamilyButtonNextSize.Height - 6/*2*/), TablePadSubFamilyButtonNextSize.Width, TablePadSubFamilyButtonNextSize.Height);
+            IconButton TablePadSubFamilyButtonNext = new IconButton(new ButtonSettings { Name = "TablePadSubFamilyButtonNext", Icon = TablePadSubFamilyButtonNextImageFileName, IconSize = new Size(TablePadSubFamilyButtonNextSize.Width - 6, TablePadSubFamilyButtonNextSize.Height - 6), ButtonSize = new Size(TablePadSubFamilyButtonNextSize.Width, TablePadSubFamilyButtonNextSize.Height) });
             TablePadSubFamilyButtonNext.Relief = ReliefStyle.None;
             TablePadSubFamilyButtonNext.BorderWidth = 0;
             TablePadSubFamilyButtonNext.CanFocus = false;
@@ -552,12 +543,12 @@ namespace logicpos
             }
 
             //Objects:TablePadArticleButtonPrev
-            TouchButtonIcon TablePadArticleButtonPrev = new TouchButtonIcon("TablePadArticleButtonPrev", Color.Transparent, TablePadArticleButtonPrevImageFileName, new Size(TablePadArticleButtonPrevSize.Width - 6/*2*/, TablePadArticleButtonPrevSize.Height - 6/*2*/), TablePadArticleButtonPrevSize.Width, TablePadArticleButtonPrevSize.Height);
+            IconButton TablePadArticleButtonPrev = new IconButton(new ButtonSettings { Name = "TablePadArticleButtonPrev", Icon = TablePadArticleButtonPrevImageFileName, IconSize = new Size(TablePadArticleButtonPrevSize.Width - 6, TablePadArticleButtonPrevSize.Height - 6), ButtonSize = new Size(TablePadArticleButtonPrevSize.Width, TablePadArticleButtonPrevSize.Height) });
             TablePadArticleButtonPrev.Relief = ReliefStyle.None;
             TablePadArticleButtonPrev.BorderWidth = 0;
             TablePadArticleButtonPrev.CanFocus = false;
             //Objects:TablePadArticleButtonNext
-            TouchButtonIcon TablePadArticleButtonNext = new TouchButtonIcon("TablePadArticleButtonNext", Color.Transparent, TablePadArticleButtonNextImageFileName, new Size(TablePadArticleButtonNextSize.Width - 6/*2*/, TablePadArticleButtonNextSize.Height - 6/*2*/), TablePadArticleButtonNextSize.Width, TablePadArticleButtonNextSize.Height);
+            IconButton TablePadArticleButtonNext = new IconButton(new ButtonSettings { Name = "TablePadArticleButtonNext", Icon = TablePadArticleButtonNextImageFileName, IconSize = new Size(TablePadArticleButtonNextSize.Width - 6, TablePadArticleButtonNextSize.Height - 6), ButtonSize = new Size(TablePadArticleButtonNextSize.Width, TablePadArticleButtonNextSize.Height) });
             TablePadArticleButtonNext.Relief = ReliefStyle.None;
             TablePadArticleButtonNext.BorderWidth = 0;
             TablePadArticleButtonNext.CanFocus = false;
@@ -600,22 +591,19 @@ namespace logicpos
 
         private void InitUiEventboxToolbar(dynamic pThemeWindow)
         {
-            _logger.Debug("void InitUiEventboxToolbar(dynamic pThemeWindow) :: Starting..."); /* IN009008 */
             dynamic themeWindow = pThemeWindow;
 
             //Objects:EventboxToolbar
             Point eventboxToolbarPosition = Utils.StringToPosition(themeWindow.Objects.EventboxToolbar.Position);
-            Size eventboxToolbarSize = Utils.StringToSize(themeWindow.Objects.EventboxToolbar.Size);
-            Size eventboxToolbarButtonSize = Utils.StringToSize(themeWindow.Objects.EventboxToolbar.ButtonSize);
-            Size eventboxToolbarIconSize = Utils.StringToSize(themeWindow.Objects.EventboxToolbar.IconSize);
+            Size eventboxToolbarSize = (themeWindow.Objects.EventboxToolbar.Size as string).ToSize();
+            Size eventboxToolbarButtonSize = (themeWindow.Objects.EventboxToolbar.ButtonSize as string).ToSize();
+            Size eventboxToolbarIconSize = (themeWindow.Objects.EventboxToolbar.IconSize as string).ToSize();
             string eventboxToolbarFont = themeWindow.Objects.EventboxToolbar.Font;
             Color eventboxToolbarFontColor = (themeWindow.Objects.EventboxToolbar.FontColor as string).StringToColor();
             bool eventboxToolbarVisible = Convert.ToBoolean(themeWindow.Objects.EventboxToolbar.Visible);
             bool eventboxToolbarVisibleWindow = Convert.ToBoolean(themeWindow.Objects.EventboxToolbar.VisibleWindow);
 
             Gdk.Color eventboxToolbarBackgroundColor = (themeWindow.Objects.EventboxToolbar.BackgroundColor as string).StringToGdkColor();
-
-            //_logger.Debug("after eventboxToolbarBackgroundColor");
 
             //Objects:EventboxToolbar:ButtonApplicationClose
             string buttonApplicationCloseName = themeWindow.Objects.EventboxToolbar.Buttons.ButtonApplicationClose.Name;
@@ -681,18 +669,20 @@ namespace logicpos
 
             //_logger.Debug("Local Func to Get Shared Buttons");
             //Local Func to Get Shared Buttons
-            Func<string, string, string, TouchButtonIconWithText> getButton = (pName, pText, pImageFileName)
-                => new TouchButtonIconWithText(
-                pName,
-                Color.Transparent,
-                pText,
-                eventboxToolbarFont,
-                eventboxToolbarFontColor,
-                pImageFileName,
-                eventboxToolbarIconSize,
-                eventboxToolbarButtonSize.Width,
-                eventboxToolbarButtonSize.Height
-             );
+            Func<string, string, string, IconButtonWithText> getButton = (pName, pText, pImageFileName)
+                => new IconButtonWithText(
+                    new ButtonSettings
+                    {
+                        Name = pName,
+                        Text = pText,
+                        Font = eventboxToolbarFont,
+                        FontColor = eventboxToolbarFontColor,
+                        Icon = pImageFileName,
+                        IconSize = eventboxToolbarIconSize,
+                        ButtonSize = new Size(eventboxToolbarButtonSize.Width, eventboxToolbarButtonSize.Height)
+
+                    });
+
             //Create Button References with Local Func
             _touchButtonPosToolbarApplicationClose = getButton(buttonApplicationCloseName, buttonApplicationCloseText, buttonApplicationCloseImageFileName);
             _touchButtonPosToolbarBackOffice = getButton(buttonBackOfficeName, buttonBackOfficeText, buttonBackOfficeImageFileName);
@@ -750,12 +740,11 @@ namespace logicpos
 
         private void InitUIEventBoxPosTicketPad(dynamic pThemeWindow)
         {
-            _logger.Debug("void InitUIEventBoxPosTicketPad(dynamic pThemeWindow) :: Starting..."); /* IN009008 */
             dynamic themeWindow = pThemeWindow;
 
             //Objects:EventBoxPosTicketPad
             Point eventBoxPosTicketPadPosition = Utils.StringToPosition(themeWindow.Objects.EventBoxPosTicketPad.Position);
-            Size eventBoxPosTicketPadSize = Utils.StringToSize(themeWindow.Objects.EventBoxPosTicketPad.Size);
+            Size eventBoxPosTicketPadSize = (themeWindow.Objects.EventBoxPosTicketPad.Size as string).ToSize();
             Gdk.Color eventBoxPosTicketPadBackgroundColor = (themeWindow.Objects.EventBoxPosTicketPad.BackgroundColor as string).StringToGdkColor();
             bool eventBoxPosTicketPadVisible = Convert.ToBoolean(themeWindow.Objects.EventBoxPosTicketPad.Visible);
             bool eventBoxPosTicketPadVisibleWindow = Convert.ToBoolean(themeWindow.Objects.EventBoxPosTicketPad.VisibleWindow);
@@ -783,7 +772,7 @@ namespace logicpos
 
             //Objects:EventBoxPosTicketList
             Point eventBoxPosTicketListPosition = Utils.StringToPosition(themeWindow.Objects.EventBoxPosTicketList.Position);
-            Size eventBoxPosTicketListSize = Utils.StringToSize(themeWindow.Objects.EventBoxPosTicketList.Size);
+            Size eventBoxPosTicketListSize = (themeWindow.Objects.EventBoxPosTicketList.Size as string).ToSize();
             bool eventBoxPosTicketListVisible = Convert.ToBoolean(themeWindow.Objects.EventBoxPosTicketList.Visible);
             bool eventBoxPosTicketListVisibleWindow = Convert.ToBoolean(themeWindow.Objects.EventBoxPosTicketList.VisibleWindow);
             Gdk.Color eventBoxPosTicketListBackgroundColor = (themeWindow.Objects.EventBoxPosTicketList.BackgroundColor as string).StringToGdkColor();

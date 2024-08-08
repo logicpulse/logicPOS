@@ -1,8 +1,8 @@
-﻿using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
+﻿using LogicPOS.UI.Components;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
-    internal class TreeViewArticleClass : GenericTreeViewXPO
+    internal class TreeViewArticleClass : XpoGridView
     {
 
     }

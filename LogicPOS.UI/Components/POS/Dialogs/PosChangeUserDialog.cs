@@ -2,23 +2,23 @@
 using Gtk;
 using System.Drawing;
 using logicpos.Classes.Gui.Gtk.Widgets;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.Classes.Enums.Dialogs;
-using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Utility;
+using LogicPOS.UI.Dialogs;
+using LogicPOS.UI.Extensions;
+using LogicPOS.UI.Buttons;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    internal class PosChangeUserDialog : PosBaseDialog
+    internal class PosChangeUserDialog : BaseDialog
     {
         //Settings
         //Sizes
-        private Size _sizePosSmallButtonScroller = logicpos.Utils.StringToSize(GeneralSettings.Settings["sizePosSmallButtonScroller"]);
-        private Size _sizePosUserButton = logicpos.Utils.StringToSize(GeneralSettings.Settings["sizePosUserButton"]);
+        private Size _sizePosSmallButtonScroller = AppSettings.Instance.sizePosSmallButtonScroller;
+        private Size _sizePosUserButton = AppSettings.Instance.sizePosUserButton;
         private Size _sizeIconScrollLeftRight = new Size(62, 31);
         //Files
         private readonly string _fileScrollLeftImage = PathsSettings.ImagesFolderLocation + @"Buttons\Pos\button_subfamily_article_scroll_left.png";
@@ -29,12 +29,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private TablePad _tablePadUsers;
 
         //TouchButtonIconWithText _buttonOk;
-        private readonly TouchButtonIconWithText _buttonCancel;
+        private readonly IconButtonWithText _buttonCancel;
 
         public sys_userdetail UserDetail { get; set; }
 
-        public PosChangeUserDialog(Window pSourceWindow, DialogFlags pDialogFlags)
-            : base(pSourceWindow, pDialogFlags)
+        public PosChangeUserDialog(Window parentWindow, DialogFlags pDialogFlags)
+            : base(parentWindow, pDialogFlags)
         {
             //Init Local Vars
             string windowTitle = GeneralUtils.GetResourceByName("window_title_dialog_change_user");
@@ -48,7 +48,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             //ActionArea Buttons
             //_buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok) { Sensitive = false };
-            _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
+            _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
 
             //ActionArea
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons
@@ -58,17 +58,35 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             };
 
             //Init Object
-            this.InitObject(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, _fixedContent, actionAreaButtons);
+            this.Initialize(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, _fixedContent, actionAreaButtons);
         }
 
         private void InitTablePadUsers()
         {
             //Colors
-            //Color colorPosButtonArticleBackground = FrameworkUtils.StringToColor(LogicPOS.Settings.GeneralSettings.Settings["colorPosButtonArticleBackground"]);
+            //Color colorPosButtonArticleBackground = FrameworkUtils.StringToColor(LogicPOS.Settings.AppSettings.Instance.colorPosButtonArticleBackground"]);
 
             //Scrollers
-            TouchButtonIcon buttonPosScrollersPlacePrev = new TouchButtonIcon("buttonPosScrollersTablePrev", Color.White, _fileScrollLeftImage, _sizeIconScrollLeftRight, _sizePosSmallButtonScroller.Width, _sizePosSmallButtonScroller.Height);
-            TouchButtonIcon buttonPosScrollersPlaceNext = new TouchButtonIcon("buttonPosScrollersTableNext", Color.White, _fileScrollRightImage, _sizeIconScrollLeftRight, _sizePosSmallButtonScroller.Width, _sizePosSmallButtonScroller.Height);
+            IconButton buttonPosScrollersPlacePrev = new IconButton(
+                new ButtonSettings
+                {
+                    Name = "buttonPosScrollersTablePrev",
+                    BackgroundColor = Color.White,
+                    Icon = _fileScrollLeftImage,
+                    IconSize = _sizeIconScrollLeftRight,
+                    ButtonSize = _sizePosSmallButtonScroller
+                });
+
+            IconButton buttonPosScrollersPlaceNext = new IconButton(
+                new ButtonSettings
+                {
+                    Name = "buttonPosScrollersTableNext",
+                    BackgroundColor = Color.White,
+                    Icon = _fileScrollRightImage,
+                    IconSize = _sizeIconScrollLeftRight,
+                    ButtonSize = _sizePosSmallButtonScroller
+                });
+            
             buttonPosScrollersPlacePrev.Relief = ReliefStyle.None;
             buttonPosScrollersPlaceNext.Relief = ReliefStyle.None;
             buttonPosScrollersPlacePrev.BorderWidth = 0;
@@ -105,12 +123,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         private void _tablePadUsers_Clicked(object sender, EventArgs e)
         {
-            TouchButtonBase button = (TouchButtonBase)sender;
+            CustomButton button = (CustomButton)sender;
 
             //Assign CurrentId to TablePad.CurrentId, to Know last Clicked Button Id
-            _tablePadUsers.SelectedButtonOid = button.CurrentButtonOid;
+            _tablePadUsers.SelectedButtonOid = button.CurrentButtonId;
             //To be Used in Dialog Result
-            UserDetail = XPOUtility.GetEntityById<sys_userdetail>(button.CurrentButtonOid);
+            UserDetail = XPOUtility.GetEntityById<sys_userdetail>(button.CurrentButtonId);
 
             if (UserDetail.PasswordReset)
             {

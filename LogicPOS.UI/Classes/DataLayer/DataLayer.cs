@@ -13,14 +13,10 @@ namespace logicpos
 {
     public class DataLayer
     {
-        /// <summary>
-        /// Create initial database Scheme and Initial scripts
-        /// </summary>
-        /// <param name="ConnectionString"></param>
-        /// <param name="DatabaseType"></param>
-        /// <param name="DatabaseName"></param>
-        /// <returns></returns>
-        public static bool CreateDatabaseSchema(string pXpoConnectionString, DatabaseType pDatabaseType, string pDatabaseName, out bool needToUpdate)
+        public static bool CreateDatabaseSchema(string connectionString,
+                                                DatabaseType databaseType,
+                                                string databaseName,
+                                                out bool needToUpdate)
         {
             //Log4Net
             log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -29,10 +25,7 @@ namespace logicpos
 
                 needToUpdate = false;
                 bool result = false;
-                string xpoConnectionString = pXpoConnectionString;
-                DatabaseType databaseType = pDatabaseType;
                 string databaseTypeString = Enum.GetName(typeof(DatabaseType), DatabaseSettings.DatabaseType);
-                string databaseName = pDatabaseName;
                 IDataLayer xpoDataLayer = null;
                 string sql = string.Empty;
                 object resultCmd;
@@ -40,29 +33,24 @@ namespace logicpos
                 string commandSeparator = ";";
                 bool databaseExists = false;
                 Session xpoSession;
-                Dictionary<string, string> replace = GetReplaceables(pDatabaseType);
+                Dictionary<string, string> replace = GetReplaceables(databaseType);
 
                 string sqlDatabaseSchema = string.Format(POSSettings.FileDatabaseSchema, databaseTypeString);
                 string sqlDatabaseUpdate = string.Format(POSSettings.FileDatabaseUpdate, databaseTypeString);
-                //string sqlDatabaseOtherDatabaseType = SharedUtils.OSSlash(string.Format(SettingsApp.FileDatabaseOtherDatabaseType, databaseTypeString)); /* IN009045: Not in use */
                 string sqlDatabaseOtherCommon = POSSettings.FileDatabaseOtherCommon;
-                /* IN008024 and after IN009035: data being included by databasedata.sql accordingly to its specific theme/language */
-                // string sqlDatabaseOtherCommonAppMode = string.Format("{0}/{1}", SharedUtils.OSSlash(SettingsApp.FileDatabaseOtherCommonAppMode), SettingsApp.CustomAppOperationMode.AppOperationTheme.ToLower());
                 string sqlDatabaseOtherCommonPluginsSoftwareVendor = POSSettings.FileDatabaseOtherCommonPluginsSoftwareVendor;
                 string FileDatabaseOtherCommonPluginsSoftwareVendorOtherCommonCountry = POSSettings.FileDatabaseOtherCommonPluginsSoftwareVendor;
                 string sqlDatabaseData = POSSettings.FileDatabaseData;
                 string sqlDatabaseDataDemo = POSSettings.FileDatabaseDataDemo;
                 string sqlDatabaseViews = POSSettings.FileDatabaseViews;
-                bool useDatabaseDataDemo = Convert.ToBoolean(GeneralSettings.Settings["useDatabaseDataDemo"]);
+                bool useDatabaseDataDemo = AppSettings.Instance.useDatabaseDataDemo;
 
                 string version = GeneralSettings.ProductVersion.Replace("v", "");
-                //string version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
-
+           
                 switch (databaseType)
                 {
                     case DatabaseType.SQLite:
                     case DatabaseType.MonoLite:
-                        //connectionstring = string.Format(LogicPOS.Settings.GeneralSettings.Settings["xpoConnectionString"], databaseName);
                         commands.Add("check_version", string.Format(@"SELECT name FROM sqlite_master WHERE type='table' AND name='sys_databaseversion';"));
                         commands.Add("create_version", string.Format(@"CREATE TABLE [sys_databaseversion] ([Version] [varchar](20)); INSERT INTO sys_databaseversion (version) VALUES ('{0}');", version));
                         commands.Add("select_version", string.Format(@"SELECT version FROM sys_databaseversion;"));
@@ -70,8 +58,7 @@ namespace logicpos
                         commands.Add("update_version", string.Format(@"UPDATE sys_databaseversion SET version = '{0}';", version));
                         break;
                     case DatabaseType.MSSqlServer:
-                        //Required to Remove DataBase Name From Connection String
-                        xpoConnectionString = xpoConnectionString.Replace(string.Format("Initial Catalog={0};", pDatabaseName), string.Empty);
+                        connectionString = connectionString.Replace(string.Format("Initial Catalog={0};", databaseName), string.Empty);
                         commands.Add("select_schema", string.Format(@"SELECT name FROM sys.databases WHERE name = '{0}' AND name NOT IN ('master', 'tempdb', 'model', 'msdb');", databaseName));
                         commands.Add("create_database", string.Format(@"IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = '{0}') CREATE DATABASE {0};", databaseName));
                         commands.Add("use_database", string.Format(@"USE {0};", databaseName));
@@ -82,12 +69,10 @@ namespace logicpos
                         commands.Add("select_version", string.Format(@"USE {0}; SELECT version FROM sys_databaseversion;", databaseName));
                         commands.Add("insert_version", string.Format(@"USE {0}; INSERT INTO sys_databaseversion (version) VALUES ('{1}');", databaseName, version));
                         commands.Add("update_version", string.Format(@"USE {0}; UPDATE sys_databaseversion SET version = '{1}';", databaseName, version));
-                        //ByPass Default commandSeparator ;
                         commandSeparator = "GO";
                         break;
                     case DatabaseType.MySql:
-                        //Required to Remove DataBase Name From Connection String
-                        xpoConnectionString = xpoConnectionString.Replace(string.Format("database={0};", pDatabaseName), string.Empty);
+                        connectionString = connectionString.Replace(string.Format("database={0};", databaseName), string.Empty);
                         commands.Add("select_schema", string.Format(@"SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '{0}';", databaseName));
                         commands.Add("create_database", string.Format(@"CREATE DATABASE IF NOT EXISTS {0} CHARACTER SET utf8 COLLATE utf8_bin /*!40100 DEFAULT CHARACTER SET utf8*/;", databaseName));
                         commands.Add("use_database", string.Format(@"USE {0};", databaseName));
@@ -101,10 +86,10 @@ namespace logicpos
                         break;
                 }
 
-                //Get DataLayer
+
                 try
                 {
-                    xpoDataLayer = XpoDefault.GetDataLayer(xpoConnectionString, AutoCreateOption.None);
+                    xpoDataLayer = XpoDefault.GetDataLayer(connectionString, AutoCreateOption.None);
                 }
                 catch (Exception ex)
                 {
@@ -137,21 +122,17 @@ namespace logicpos
                             log.Debug(string.Format("DatabaseExists:[{0}] [{1}]", databaseName, databaseExists));
                             break;
                     }
-                    //FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(CurrentAppFileName);
-                    //CurrentAppVersion = fvi.FileVersion;
-
-                    //Create Database and Data
+                    
                     if (!databaseExists)
                     {
                         log.Debug(string.Format("Creating {0} Database: [{1}]", databaseType, databaseName));
 
-                        //Always Delete Old appsession.json file when Create new Database
                         if (File.Exists(Utils.GetSessionFileName()))
                         {
                             File.Delete(Utils.GetSessionFileName());
                         }
 
-                        if (pDatabaseType != DatabaseType.SQLite && pDatabaseType != DatabaseType.MonoLite)
+                        if (databaseType != DatabaseType.SQLite && databaseType != DatabaseType.MonoLite)
                         {
                             sql = commands["create_database"].ToString();
                             log.Debug(string.Format("ExecuteScalar create_database: [{0}]", sql));
@@ -178,41 +159,21 @@ namespace logicpos
                         {
                             result = ProcessDump(xpoSession, sqlDatabaseDataDemo, ";", replace);
                         }
-                        //Process Other Files: DatabaseOtherCommonPluginsSoftwareVendor
+
                         if (result)
                         {
                             result = ProcessDumpDirectory(xpoSession, sqlDatabaseOtherCommonPluginsSoftwareVendor, ";", replace);
                         }
-                        //Views
                         if (result)
                         {
                             result = ProcessDump(xpoSession, sqlDatabaseViews, ";", replace);
                         }
-                        //Directory Scripts
-                        //Process Other Files: DatabaseOtherDatabaseType
-                        /* IN009045: not in use */
-                        /*if (result)
-                        {
-                            result = ProcessDumpDirectory(xpoSession, sqlDatabaseOtherDatabaseType, ";", replace);//commandSeparator
-                        }*/
-                        //Process Other Files: DatabaseOtherCommon
+                    
                         if (result)
                         {
                             result = ProcessDumpDirectory(xpoSession, sqlDatabaseOtherCommon, ";", replace); /* IN009045 */
                         }
-                        ////Process Other Files: DatabaseOtherCommonPluginsSoftwareVendor
-                        //if (result)
-                        //{
-                        //    result = ProcessDumpDirectory(xpoSession, sqlDatabaseOtherCommonPluginsSoftwareVendor, commandSeparator, replace);
-                        //}
-                        //Process Other Files: DatabaseOtherCommonAppMode
-                        /* IN009045 and IN009035: data being included by databasedata.sql accordingly to its specific theme/language */
-                        /*if (result)
-                        {
-                            result = ProcessDumpDirectory(xpoSession, sqlDatabaseOtherCommonAppMode, ";", replace);
-                        }*/
-
-                        //Clean ConfigurationPreferenceParameter
+                       
                         string sqlConfigurationPreferenceParameter = @"UPDATE cfg_configurationpreferenceparameter SET Value = NULL WHERE (Token = 'COMPANY_COUNTRY' OR Token = 'COMPANY_COUNTRY_CODE2' OR Token = 'SYSTEM_CURRENCY' OR Token = 'COMPANY_COUNTRY_OID' OR Token = 'SYSTEM_CURRENCY_OID')";
                         if (result && Debugger.IsAttached == true)
                         {
@@ -403,7 +364,7 @@ namespace logicpos
                         break;
                     case DatabaseType.MonoLite:
                     case DatabaseType.SQLite:
-                        //connectionstring = string.Format(LogicPOS.Settings.GeneralSettings.Settings["xpoConnectionString"], databaseName);
+                        //connectionstring = string.Format(LogicPOS.Settings.AppSettings.Instance.xpoConnectionString"], databaseName);
                         //Replace content - Currently not used, Here only for Example
                         //result.Add("dm.Table", "dm.[Table]");
                         //result.Add("dt.Table", "dt.[Table]");

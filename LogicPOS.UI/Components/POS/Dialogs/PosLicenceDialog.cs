@@ -2,9 +2,10 @@
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Logic.License;
 using LogicPOS.Settings;
+using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Dialogs;
 using LogicPOS.Utility;
 using Pango;
 using System;
@@ -14,7 +15,7 @@ using System.Linq;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    internal class PosLicenceDialog : PosBaseDialog
+    internal class PosLicenceDialog : BaseDialog
     {
         //Parameters
         private string _hardwareId;
@@ -26,9 +27,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private HBox _hboxMain;
         private EntryBoxValidation _entryBoxHardwareId;
         private EntryBoxValidation _entryBoxSoftwareKey;
-        private readonly TouchButtonIconWithText _buttonRegister;
-        private readonly TouchButtonIconWithText _buttonContinue;
-        private readonly TouchButtonIconWithText _buttonClose;
+        private readonly IconButtonWithText _buttonRegister;
+        private readonly IconButtonWithText _buttonContinue;
+        private readonly IconButtonWithText _buttonClose;
 
         public EntryBoxValidation EntryBoxName { get; set; }
         public EntryBoxValidation EntryBoxCompany { get; set; }
@@ -39,10 +40,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public ListComboBox ComboBoxCountry { get; set; }
 
         public PosLicenceDialog(
-            Window pSourceWindow,
+            Window parentWindow,
             DialogFlags pDialogFlags,
             string pHardwareId)
-                    : base(pSourceWindow, pDialogFlags)
+                    : base(parentWindow, pDialogFlags)
         {
             //Init Local Vars
             string windowTitle = GeneralUtils.GetResourceByName("window_title_license");
@@ -75,30 +76,31 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             string fileActionContinue = PathsSettings.ImagesFolderLocation + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
 
             //ActionArea Buttons
-            _buttonRegister = new TouchButtonIconWithText(
-                "touchButtonRegister_DialogActionArea",
-                System.Drawing.Color.Transparent,
-                GeneralUtils.GetResourceByName("pos_button_label_licence_register"),
-                _fontBaseDialogActionAreaButton,
-                _colorBaseDialogActionAreaButtonFont,
-                fileActionRegister,
-                _sizeBaseDialogActionAreaButtonIcon,
-                _sizeBaseDialogActionAreaButton.Width,
-                _sizeBaseDialogActionAreaButton.Height)
-            { Sensitive = false };
+            _buttonRegister = new IconButtonWithText(
+                new ButtonSettings
+                {
+                    Name = "touchButtonRegister_DialogActionArea",
+                    Text = GeneralUtils.GetResourceByName("pos_button_label_licence_register"),
+                    Font = FontSettings.ActionAreaButton,
+                    FontColor = ColorSettings.ActionAreaButtonFont,
+                    Icon = fileActionRegister,
+                    IconSize = SizeSettings.ActionAreaButtonIcon,
+                    ButtonSize = SizeSettings.ActionAreaButton
+                }){ Sensitive = false };
 
-            _buttonContinue = new TouchButtonIconWithText(
-                "touchButtonContinue_DialogActionArea",
-                System.Drawing.Color.Transparent,
-                GeneralUtils.GetResourceByName("pos_button_label_licence_continue"),
-                _fontBaseDialogActionAreaButton,
-                _colorBaseDialogActionAreaButtonFont,
-                fileActionContinue,
-                _sizeBaseDialogActionAreaButtonIcon,
-                _sizeBaseDialogActionAreaButton.Width,
-                _sizeBaseDialogActionAreaButton.Height);
+            _buttonContinue = new IconButtonWithText(
+                new ButtonSettings
+                {
+                    Name = "touchButtonContinue_DialogActionArea",
+                    Text = GeneralUtils.GetResourceByName("pos_button_label_licence_continue"),
+                    Font = FontSettings.ActionAreaButton,
+                    FontColor = ColorSettings.ActionAreaButtonFont,
+                    Icon = fileActionContinue,
+                    IconSize = SizeSettings.ActionAreaButtonIcon,
+                    ButtonSize = SizeSettings.ActionAreaButton
+                });
 
-            _buttonClose = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Close);
+            _buttonClose = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Close);
 
             //ActionArea
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons
@@ -115,7 +117,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             Validate();
 
             //Init Object
-            this.InitObject(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, _hboxMain, actionAreaButtons);
+            this.Initialize(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, _hboxMain, actionAreaButtons);
         }
 
         private void InitUI()

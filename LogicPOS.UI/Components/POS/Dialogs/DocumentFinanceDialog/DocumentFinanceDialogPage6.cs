@@ -6,10 +6,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
     internal class DocumentFinanceDialogPage6 : PagePadPage
     {
         //Constructor
-        public DocumentFinanceDialogPage6(Window pSourceWindow, string pPageName) : this(pSourceWindow, pPageName, "", null, true) { }
-        public DocumentFinanceDialogPage6(Window pSourceWindow, string pPageName, Widget pWidget) : this(pSourceWindow, pPageName, "", pWidget, true) { }
-        public DocumentFinanceDialogPage6(Window pSourceWindow, string pPageName, string pPageIcon, Widget pWidget, bool pEnabled = true)
-            : base(pSourceWindow, pPageName, pPageIcon, pWidget, pEnabled)
+        public DocumentFinanceDialogPage6(Window parentWindow, string pPageName) : this(parentWindow, pPageName, "", null, true) { }
+        public DocumentFinanceDialogPage6(Window parentWindow, string pPageName, Widget pWidget) : this(parentWindow, pPageName, "", pWidget, true) { }
+        public DocumentFinanceDialogPage6(Window parentWindow, string pPageName, string pPageIcon, Widget pWidget, bool pEnabled = true)
+            : base(parentWindow, pPageName, pPageIcon, pWidget, pEnabled)
         {
         }
 

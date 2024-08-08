@@ -1,11 +1,11 @@
 ﻿using DevExpress.Xpo.DB;
 using Gtk;
-using logicpos.Classes.Gui.Gtk.Widgets;
 using LogicPOS.Globalization.Resources.Localization;
 using System.Collections.Generic;
 using LogicPOS.Globalization;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Data.XPO;
+using LogicPOS.UI.Components.Accordions;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
 {
@@ -17,7 +17,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
         public XPOAccordion(string pTableParent, string pTableChild, string pTableChildWhereField, string pNodePrivilegesTokenFormat)
         {
             InitDefinition(pTableParent, pTableChild, pTableChildWhereField);
-            InitObject(_accordionDefinition, pNodePrivilegesTokenFormat);
+            Initialize(Nodes, pNodePrivilegesTokenFormat);
         }
 
         private void InitDefinition(string pTableParent, string pTableChild, string pTableChildWhereField)
@@ -25,7 +25,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             bool debug = false;
 
             //Init Definition
-            _accordionDefinition = new Dictionary<string, AccordionNode>();
+            Nodes = new Dictionary<string, AccordionNode>();
 
             //Generate Base Queries
             string sqlTableParent = string.Format(@"SELECT Oid AS id, Designation AS label, ResourceString AS resource FROM {0} WHERE (Disabled IS NULL or Disabled  <> 1) ORDER BY Ord;", pTableParent);
@@ -75,7 +75,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                     }
                     _accordionChilds.Add(string.Format("childId_{0}", childId), new AccordionNode(childLabel) { Content = new Button(childLabel) });
                 }
-                _accordionDefinition.Add(string.Format("parentId_{0}", parentId), new AccordionNode(parentLabel) { Childs = _accordionChilds });
+                Nodes.Add(string.Format("parentId_{0}", parentId), new AccordionNode(parentLabel) { Children = _accordionChilds });
             }
         }
     }

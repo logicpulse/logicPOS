@@ -2,7 +2,6 @@
 using DevExpress.Xpo;
 using Gtk;
 using logicpos.App;
-using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Settings.Terminal;
@@ -14,6 +13,7 @@ using LogicPOS.Printing.Documents;
 using LogicPOS.Shared;
 using LogicPOS.Shared.Article;
 using LogicPOS.Shared.Orders;
+using LogicPOS.UI.Components;
 using System;
 using System.Drawing;
 
@@ -23,71 +23,63 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
     {
         private void buttonTableConsult_Clicked(object sender, EventArgs e)
         {
-            try
+
+            //Get Current OrderMain
+            OrderMain currentOrderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];
+            //Initialize ArticleBag to Send to ProcessFinanceDocuments or Compare
+            ArticleBag articleBag = ArticleBag.TicketOrderToArticleBag(currentOrderMain);
+
+            //Get Latest DocumentConference Document without Recreate it if Diference, compare it in Above Line
+            fin_documentfinancemaster lastDocument = DocumentProcessingUtils.GetOrderMainLastDocumentConference(false);
+
+            //Reprint Existing Document After compare with current ArticleBag
+            if (
+                lastDocument != null && articleBag != null &&
+                lastDocument.TotalFinal.Equals(articleBag.TotalFinal) && lastDocument.DocumentDetail.Count.Equals(articleBag.Count)
+            )
             {
-                //Get Current OrderMain
-                OrderMain currentOrderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];
-                //Initialize ArticleBag to Send to ProcessFinanceDocuments or Compare
-                ArticleBag articleBag = ArticleBag.TicketOrderToArticleBag(currentOrderMain);
-
-                //Get Latest DocumentConference Document without Recreate it if Diference, compare it in Above Line
-                fin_documentfinancemaster lastDocument = DocumentProcessingUtils.GetOrderMainLastDocumentConference(false);
-
-                //Reprint Existing Document After compare with current ArticleBag
-                if (
-                    lastDocument != null && articleBag != null &&
-                    lastDocument.TotalFinal.Equals(articleBag.TotalFinal) && lastDocument.DocumentDetail.Count.Equals(articleBag.Count)
-                )
+                FrameworkCalls.PrintFinanceDocument(this, lastDocument);
+            }
+            //Else Create new DocumentConference recalling FrameworkUtils.GetOrderMainLastDocumentConference with true to Create New One
+            else
+            {
+                try
                 {
-                    FrameworkCalls.PrintFinanceDocument(this, lastDocument);
+                    //Call Recreate New Document
+                    fin_documentfinancemaster newDocument = DocumentProcessingUtils.GetOrderMainLastDocumentConference(true);
+
+                    //Call Print New Document
+                    FrameworkCalls.PrintFinanceDocument(this, newDocument);
                 }
-                //Else Create new DocumentConference recalling FrameworkUtils.GetOrderMainLastDocumentConference with true to Create New One
-                else
+                catch (Exception ex)
                 {
-                    try
+                    string errorMessage = string.Empty;
+
+                    switch (ex.Message)
                     {
-                        //Call Recreate New Document
-                        fin_documentfinancemaster newDocument = DocumentProcessingUtils.GetOrderMainLastDocumentConference(true);
-
-                        //Call Print New Document
-                        FrameworkCalls.PrintFinanceDocument(this, newDocument);
+                        case "ERROR_MISSING_SERIE":
+                            errorMessage = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document_missing_series"));
+                            break;
+                        case "ERROR_COMMIT_FINANCE_DOCUMENT_PAYMENT":
+                        default:
+                            errorMessage = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document"), ex.Message);
+                            break;
                     }
-                    catch (Exception ex)
-                    {
-                        string errorMessage = string.Empty;
+                    logicpos.Utils.ShowMessageBox(
+                      WindowSettings.Source,
+                      DialogFlags.Modal,
+                      new Size(600, 400),
+                      MessageType.Error,
+                      ButtonsType.Close,
+                      CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error"),
+                      errorMessage
+                    );
 
-                        switch (ex.Message)
-                        {
-                            case "ERROR_MISSING_SERIE":
-                                errorMessage = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document_missing_series"));
-                                break;
-                            case "ERROR_COMMIT_FINANCE_DOCUMENT_PAYMENT":
-                            default:
-                                errorMessage = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document"), ex.Message);
-                                break;
-                        }
-                        logicpos.Utils.ShowMessageBox(
-                          _sourceWindow,
-                          DialogFlags.Modal,
-                          new Size(600, 400),
-                          MessageType.Error,
-                          ButtonsType.Close,
-                          CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error"),
-                          errorMessage
-                        );
-
-                        this.Run();
-                    }
+                    this.Run();
                 }
             }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
-            finally
-            {
-                this.Destroy();
-            }
+
+            this.Destroy();
         }
 
         private void buttonPrintOrder_Clicked(object sender, EventArgs e)
@@ -105,21 +97,21 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("OrderMain = '{0}'", currentOrderMain.PersistentOid));
                 PosSelectRecordDialog<XPCollection, Entity, TreeViewDocumentOrderTicket>
                   dialog = new PosSelectRecordDialog<XPCollection, Entity, TreeViewDocumentOrderTicket>(
-                    this.SourceWindow,
+                    this.Source,
                     DialogFlags.DestroyWithParent,
                     CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_select_ticket"),
                     //TODO:THEME
                     GlobalApp.MaxWindowSize,
                     null, //XpoDefaultValue
                     criteria,
-                    GenericTreeViewMode.Default,
+                    GridViewMode.Default,
                     null  //pActionAreaButtons
                   );
 
                 int response = dialog.Run();
                 if (response == (int)ResponseType.Ok)
                 {
-                    orderTicketOid = dialog.GenericTreeView.DataSourceRow.Oid;
+                    orderTicketOid = dialog.GenericTreeView.Entity.Oid;
                 }
                 dialog.Destroy();
             }

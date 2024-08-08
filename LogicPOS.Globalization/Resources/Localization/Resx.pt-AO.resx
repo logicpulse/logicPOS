@@ -229,7 +229,7 @@ Ou selecione '{2}' para iniciar o POS em resolução '1024x768'.</value>
   <data name="audit_message_table_unreserved" xml:space="preserve">
     <value>Mesa não reservada: {0}</value>
   </data>
-  <data name="audit_message_used_forced_loggerout" xml:space="preserve">
+  <data name="audit_message_used_forced_logout" xml:space="preserve">
     <value>Aplicação fechada, foi forçado o logout do utilizador: {0}</value>
   </data>
   <data name="audit_message_user_change" xml:space="preserve">
@@ -244,7 +244,7 @@ Ou selecione '{2}' para iniciar o POS em resolução '1024x768'.</value>
   <data name="audit_message_user_loggerin_error" xml:space="preserve">
     <value>Erro ao efectuar o login: {0}</value>
   </data>
-  <data name="audit_message_user_loggerout" xml:space="preserve">
+  <data name="audit_message_user_logout" xml:space="preserve">
     <value>Logout do utilizador: {0}</value>
   </data>
   <data name="backoffice_datetime_format_status_bar" xml:space="preserve">
@@ -813,7 +813,7 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
   <data name="global_application_close" xml:space="preserve">
     <value>Fechar</value>
   </data>
-  <data name="global_application_loggerout_user" xml:space="preserve">
+  <data name="global_application_logout_user" xml:space="preserve">
     <value>Sair da Sessão</value>
   </data>
   <data name="global_application_main_menu" xml:space="preserve">
@@ -3847,7 +3847,7 @@ Por favor, insira outro número e tente novamente.</value>
   <data name="dialog_message_composite_article_already" xml:space="preserve">
     <value>Artigo inserido já está associado!</value>
   </data>
-  <data name="change_logger" xml:space="preserve">
+  <data name="change_log" xml:space="preserve">
     <value>Registro de alterações (Changelog)</value>
   </data>
   <data name="global_minimum_stock" xml:space="preserve">

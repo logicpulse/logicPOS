@@ -1,10 +1,12 @@
-﻿namespace LogicPOS.Settings
+﻿using System.Drawing;
+
+namespace LogicPOS.Settings
 {
     public static class ColorSettings
     {
-        public static string ValidTextBoxColor => GeneralSettings.Settings["colorEntryValidationValidFont"];
-        public static string InvalidTextBoxColor => GeneralSettings.Settings["colorEntryValidationInvalidFont"];
-        public static string ValidTextBoxBackgroundColor => GeneralSettings.Settings["colorEntryValidationValidBackground"];
-        public static string InvalidTextBoxBackgroundColor => GeneralSettings.Settings["colorEntryValidationInvalidBackground"];
+        public static Color ValidTextBoxColor => AppSettings.Instance.colorEntryValidationValidFont;
+        public static Color InvalidTextBoxColor => AppSettings.Instance.colorEntryValidationInvalidFont;
+        public static Color ValidTextBoxBackgroundColor => AppSettings.Instance.colorEntryValidationValidBackground;
+        public static Color InvalidTextBoxBackgroundColor => AppSettings.Instance.colorEntryValidationInvalidBackground;
     }
 }

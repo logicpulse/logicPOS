@@ -2,28 +2,27 @@
 using DevExpress.Xpo;
 using Gtk;
 using logicpos.App;
-using logicpos.Classes.Enums.GenericTreeView;
-using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Globalization;
+using LogicPOS.UI.Components;
 using System;
 using System.Collections.Generic;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
-    internal class TreeViewUser : GenericTreeViewXPO
+    internal class TreeViewUser : XpoGridView
     {
         //Public Parametless Constructor Required by Generics
         public TreeViewUser() { }
 
         [Obsolete]
-        public TreeViewUser(Window pSourceWindow)
-            : this(pSourceWindow, null, null, null) { }
+        public TreeViewUser(Window parentWindow)
+            : this(parentWindow, null, null, null) { }
 
         //XpoMode
         [Obsolete]
-        public TreeViewUser(Window pSourceWindow, Entity pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default)
+        public TreeViewUser(Window parentWindow, Entity pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GridViewMode pGenericTreeViewMode = GridViewMode.Default, GridViewNavigatorMode navigatorMode = GridViewNavigatorMode.Default)
         {
             Type xpoGuidObjectType = typeof(sys_userdetail);
             //Override Default Value with Parameter Default Value, this way we can have diferent Default Values for GenericTreeView
@@ -32,14 +31,14 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             Type typeDialogClass = (pDialogType != null) ? pDialogType : typeof(DialogUserDetail);
 
             // XPO column properties
-            List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
+            List<GridViewColumnProperty> columnProperties = new List<GridViewColumnProperty>
             {
-                new GenericTreeViewColumnProperty("Code") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_record_code"), MinWidth = 100 },
-                new GenericTreeViewColumnProperty("Name") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_users"), Expand = true },
-                new GenericTreeViewColumnProperty("Profile") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_profile"), ChildName = "Designation", MinWidth = 160 },
+                new GridViewColumnProperty("Code") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_record_code"), MinWidth = 100 },
+                new GridViewColumnProperty("Name") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_users"), Expand = true },
+                new GridViewColumnProperty("Profile") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_profile"), ChildName = "Designation", MinWidth = 160 },
                 //columnProperties.Add(new GenericTreeViewColumnProperty("MobilePhone") { Title = CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_mobile_phone });
-                new GenericTreeViewColumnProperty("FiscalNumber") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_fiscal_number"), MinWidth = 100 },
-                new GenericTreeViewColumnProperty("UpdatedAt") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
+                new GridViewColumnProperty("FiscalNumber") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_fiscal_number"), MinWidth = 100 },
+                new GridViewColumnProperty("UpdatedAt") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
             };
 
             //configure criteria/xpcollection/model
@@ -56,10 +55,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             //Call Base Initializer
             base.InitObject(
-              pSourceWindow,                  //Pass parameter 
+              parentWindow,                  //Pass parameter 
               defaultValue,                   //Pass parameter
               pGenericTreeViewMode,           //Pass parameter
-              pGenericTreeViewNavigatorMode,  //Pass parameter
+              navigatorMode,  //Pass parameter
               columnProperties,               //Created Here
               xpoCollection,                  //Created Here
               typeDialogClass                 //Created Here
@@ -72,7 +71,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         //LogOff User Before Delete
         private void TreeView_RecordBeforeDelete(object sender, EventArgs e)
         {
-            sys_userdetail userDetail = (_dataSourceRow as sys_userdetail);
+            sys_userdetail userDetail = (Entity as sys_userdetail);
             //If User deleted Force Logout in Sytem
             GlobalApp.StartupWindow.LogOutUser(false, userDetail);
         }

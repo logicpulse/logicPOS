@@ -17,27 +17,24 @@ namespace LogicPOS.Settings
         {
             Paths = new Hashtable
             {
-                { "assets", GeneralSettings.Settings["pathAssets"] },
-                { "images", GeneralSettings.Settings["pathImages"] },
-                { "keyboards", GeneralSettings.Settings["pathKeyboards"] },
-                { "themes", GeneralSettings.Settings["pathThemes"] },
-                { "sounds", GeneralSettings.Settings["pathSounds"] },
-                { "resources", GeneralSettings.Settings["pathResources"] },
-                { "reports", GeneralSettings.Settings["pathReports"] },
-                { "temp", GeneralSettings.Settings["pathTemp"] },
-                { "cache", GeneralSettings.Settings["pathCache"] },
-                { "plugins", GeneralSettings.Settings["pathPlugins"] },
-                { "documents", GeneralSettings.Settings["pathDocuments"] },
-                { "certificates", GeneralSettings.Settings["pathCertificates"] }
+                { "assets", AppSettings.Instance.pathAssets },
+                { "images", AppSettings.Instance.pathImages },
+                { "keyboards", AppSettings.Instance.pathKeyboards },
+                { "themes", AppSettings.Instance.pathThemes },
+                { "sounds", AppSettings.Instance.pathSounds },
+                { "resources", AppSettings.Instance.pathResources },
+                { "reports", AppSettings.Instance.pathReports },
+                { "temp", AppSettings.Instance.pathTemp },
+                { "cache", AppSettings.Instance.pathCache },
+                { "plugins", AppSettings.Instance.pathPlugins },
+                { "documents", AppSettings.Instance.pathDocuments },
+                { "certificates", AppSettings.Instance.pathCertificates }
+
             };
 
             Directory.CreateDirectory(Convert.ToString(Paths["temp"]));
             Directory.CreateDirectory(Convert.ToString(Paths["cache"]));
             Directory.CreateDirectory(Convert.ToString(Paths["documents"]));
-            Directory.CreateDirectory($@"{ResourcesFolderLocation}Database\Other");
-            Directory.CreateDirectory(string.Format(@"{0}Database\{1}\Other", ResourcesFolderLocation, GeneralSettings.Settings["databaseType"], @"Database\MSSqlServer"));
-            Directory.CreateDirectory(string.Format(@"{0}Database\{1}\Other", ResourcesFolderLocation, GeneralSettings.Settings["databaseType"], @"Database\SQLite"));
-            Directory.CreateDirectory(string.Format(@"{0}Database\{1}\Other", ResourcesFolderLocation, GeneralSettings.Settings["databaseType"], @"Database\MySql"));
         }
 
         public static void InitializePreferencesPaths()

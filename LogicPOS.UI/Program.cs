@@ -1,8 +1,9 @@
 using Gtk;
+using logicpos;
 using logicpos.App;
 using logicpos.Classes.Enums.App;
-using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Logic.License;
+using LogicPOS.Api.Features.Countries.AddCountry;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Modules;
 using LogicPOS.Modules.StockManagement;
@@ -10,15 +11,15 @@ using LogicPOS.Persistence.Services;
 using LogicPOS.Plugin.Abstractions;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
-using LogicPOS.Utility;
 using System;
 using System.Configuration;
 using System.Globalization;
+using System.Net.Http;
 using System.Threading;
 
 [assembly: log4net.Config.XmlConfigurator(Watch = true)]
 
-namespace logicpos
+namespace LogicPOS.UI
 {
     internal class Program
     {
@@ -59,11 +60,9 @@ namespace logicpos
         [STAThread]
         public static void Main(string[] args)
         {
-        
+
             using (var singleProgramInstance = new SingleProgramInstance())
             {
-                InitializeSettings();
-
                 PathsSettings.InitializePaths();
 
                 InitializeGtk();
@@ -83,7 +82,7 @@ namespace logicpos
 
                     if (singleProgramInstance.IsSingleInstance == false)
                     {
-                        Alerts.ShowInstanceAlreadyRunningAlert();
+                        SimpleAlerts.ShowInstanceAlreadyRunningAlert();
                         return;
                     }
 
@@ -108,12 +107,12 @@ namespace logicpos
 
         private static void InitializeLicenseManagerPlugin()
         {
-            PluginSettings.LicenceManager = (PluginSettings.PluginContainer.GetFirstPluginOfType<ILicenseManager>());
+            PluginSettings.LicenceManager = PluginSettings.PluginContainer.GetFirstPluginOfType<ILicenseManager>();
         }
 
         private static void InitializeStockModule()
         {
-            ModulesSettings.StockManagementModule = (PluginSettings.PluginContainer.GetFirstPluginOfType<IStockManagementModule>());
+            ModulesSettings.StockManagementModule = PluginSettings.PluginContainer.GetFirstPluginOfType<IStockManagementModule>();
         }
 
         private static void InitializeSoftwareVendorPlugin()
@@ -128,7 +127,7 @@ namespace logicpos
 
         private static void StartApp()
         {
-            if (PluginSettings.LicenceManager != null && DebugMode == false)
+            if (PluginSettings.LicenceManager != null)
             {
                 LicenseRouter licenseRouter = new LicenseRouter();
             }
@@ -159,51 +158,39 @@ namespace logicpos
 
         private static string GetCultureFromDb()
         {
-            string sql = "SELECT value FROM cfg_configurationpreferenceparameter where token = 'CULTURE';";
-            XPOSettings.Session = DatabaseService.CreateDatabaseSession();
-            var result = XPOSettings.Session.ExecuteScalar(sql);
-
-            if (result != null)
+            try
             {
-                return result.ToString();
-            }
+                string sql = "SELECT value FROM cfg_configurationpreferenceparameter where token = 'CULTURE';";
+                XPOSettings.Session = DatabaseService.CreateDatabaseSession();
+                var result = XPOSettings.Session.ExecuteScalar(sql);
 
-            return null;
+                if (result != null)
+                {
+                    return result.ToString();
+                }
+
+                return null;
+
+            } catch (Exception ex)
+            {
+                _logger.Error("GetCultureFromDb() :: " + ex.Message);
+                return null;
+            }     
         }
 
         public static void SetCulture()
         {
-            try
+            string cultureFromDb = GetCultureFromDb();
+
+            if (cultureFromDb == null || CultureSettings.OSHasCulture(cultureFromDb) == false)
             {
-                string cultureFromDb = GetCultureFromDb();
-
-                if (CultureSettings.OSHasCulture(cultureFromDb) == false)
-                {
-                    CultureSettings.CurrentCulture = new CultureInfo("pt-PT");
-                    GeneralSettings.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
-                }
-                else
-                {
-                    GeneralSettings.Settings["customCultureResourceDefinition"] = cultureFromDb;
-                    CultureSettings.CurrentCulture = new CultureInfo(cultureFromDb);
-                }
-
+                CultureSettings.CurrentCulture = new CultureInfo("pt-PT");
+                AppSettings.Instance.customCultureResourceDefinition = "pt-PT";
             }
-            catch
+            else
             {
-
-                if (CultureSettings.OSHasCulture(ConfigurationManager.AppSettings["customCultureResourceDefinition"]) == false)
-                {
-                    CultureSettings.CurrentCulture = new CultureInfo("pt-PT");
-                    GeneralSettings.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
-                }
-                else
-                {
-                    CultureSettings.CurrentCulture = new CultureInfo(CultureSettings.CurrentCultureName);
-                    GeneralSettings.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
-                }
-
-                _logger.Error(string.Format("Missing Culture in DataBase or DB not created yet, using {0} from config.", CultureSettings.CurrentCultureName));
+                AppSettings.Instance.customCultureResourceDefinition = cultureFromDb;
+                CultureSettings.CurrentCulture = new CultureInfo(cultureFromDb);
             }
         }
 

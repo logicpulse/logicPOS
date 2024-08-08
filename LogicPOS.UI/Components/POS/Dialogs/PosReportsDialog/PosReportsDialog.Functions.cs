@@ -2,14 +2,14 @@
 using logicpos.Classes.Enums;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.Reports;
-using logicpos.Classes.Gui.Gtk.Widgets;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.shared.Enums;
 using LogicPOS.Reporting.Reports;
 using LogicPOS.Reporting.Reports.CustomerBalanceSummary;
 using LogicPOS.Settings;
 using LogicPOS.Shared.CustomDocument;
 using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Accordions;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -22,7 +22,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         private void buttonReportUnderConstruction_Clicked(object sender, EventArgs e)
         {
-            Alerts.ShowUnderConstructionAlert();
+            SimpleAlerts.ShowUnderConstructionAlert();
         }
 
         private List<string> GetReportsQueryDialogFilter(
@@ -30,11 +30,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             string databaseSourceObject)
         {
             PosReportsQueryDialog reportsQueryDialog = new PosReportsQueryDialog(
-                _sourceWindow, 
+                WindowSettings.Source, 
                 DialogFlags.DestroyWithParent, 
                 reportsQueryDialogMode, 
                 databaseSourceObject, 
-                _windowTitle);
+                WindowSettings.WindowTitle.Text);
 
             ResponseType response = (ResponseType)reportsQueryDialog.Run();
             List<string> result = new List<string>();
@@ -107,7 +107,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             else
             {
-                button = (sender as TouchButtonIconWithText);
+                button = (sender as IconButtonWithText);
             }
 
             ReportsTypeToken reportToken = GetReportTokenByName(button.Name);
@@ -122,48 +122,48 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 switch (reportToken.ToString())
                 {
                     case "REPORT_SALES_DETAIL_PER_FINANCE_DOCUMENT":
-                        this._windowTitle = GeneralUtils.GetResourceByName("report_sales_per_finance_document") + 
+                        this.WindowSettings.WindowTitle.Text = GeneralUtils.GetResourceByName("report_sales_per_finance_document") + 
                                             GeneralUtils.GetResourceByName("report_sales_detail_postfix");
                         break;
                     case "REPORT_SALES_DETAIL_PER_DATE":
-                        this._windowTitle = GeneralUtils.GetResourceByName("report_sales_per_date") + 
+                        this.WindowSettings.WindowTitle.Text = GeneralUtils.GetResourceByName("report_sales_per_date") + 
                                             GeneralUtils.GetResourceByName("report_sales_detail_postfix");
                         break;
                     case "REPORT_SALES_DETAIL_PER_USER":
-                        this._windowTitle = GeneralUtils.GetResourceByName("report_sales_per_user") + 
+                        this.WindowSettings.WindowTitle.Text = GeneralUtils.GetResourceByName("report_sales_per_user") + 
                                             GeneralUtils.GetResourceByName("report_sales_detail_postfix");
                         break;
                     case "REPORT_SALES_DETAIL_PER_TERMINAL":
-                        this._windowTitle = GeneralUtils.GetResourceByName("report_sales_per_terminal") + 
+                        this.WindowSettings.WindowTitle.Text = GeneralUtils.GetResourceByName("report_sales_per_terminal") + 
                                             GeneralUtils.GetResourceByName("report_sales_detail_postfix");
                         break;
                     case "REPORT_SALES_DETAIL_PER_CUSTOMER":
-                        this._windowTitle = GeneralUtils.GetResourceByName("report_sales_per_customer") + 
+                        this.WindowSettings.WindowTitle.Text = GeneralUtils.GetResourceByName("report_sales_per_customer") + 
                                             GeneralUtils.GetResourceByName("report_sales_detail_postfix");
                         break;
                     case "REPORT_SALES_DETAIL_PER_PAYMENT_METHOD":
-                        this._windowTitle = GeneralUtils.GetResourceByName("report_sales_per_payment_method") + 
+                        this.WindowSettings.WindowTitle.Text = GeneralUtils.GetResourceByName("report_sales_per_payment_method") + 
                                             GeneralUtils.GetResourceByName("report_sales_detail_postfix");
                         break;
                     case "REPORT_SALES_DETAIL_PER_PAYMENT_CONDITION":
-                        this._windowTitle = GeneralUtils.GetResourceByName("report_sales_per_payment_condition") + 
+                        this.WindowSettings.WindowTitle.Text = GeneralUtils.GetResourceByName("report_sales_per_payment_condition") + 
                                             GeneralUtils.GetResourceByName("report_sales_detail_postfix");
                         break;
                     case "REPORT_SALES_DETAIL_PER_CURRENCY":
-                        this._windowTitle = GeneralUtils.GetResourceByName("report_sales_per_currency") + 
+                        this.WindowSettings.WindowTitle.Text = GeneralUtils.GetResourceByName("report_sales_per_currency") + 
                                             GeneralUtils.GetResourceByName("report_sales_detail_postfix");
                         break;
                     case "REPORT_SALES_DETAIL_PER_COUNTRY":
-                        this._windowTitle = GeneralUtils.GetResourceByName("report_sales_per_country") + 
+                        this.WindowSettings.WindowTitle.Text = GeneralUtils.GetResourceByName("report_sales_per_country") + 
                                             GeneralUtils.GetResourceByName("report_sales_detail_postfix");
                         break;
                     case "REPORT_SALES_DETAIL_GROUP_PER_VAT":
                     case "REPORT_SALES_PER_VAT":
-                        this._windowTitle = GeneralUtils.GetResourceByName("report_sales_per_vat");
+                        this.WindowSettings.WindowTitle.Text = GeneralUtils.GetResourceByName("report_sales_per_vat");
                         reportsQueryDialogMode = ReportsQueryDialogMode.FINANCIAL_DETAIL_VAT;
                         break;
                     default:
-                        this._windowTitle = GeneralUtils.GetResourceByName("window_title_dialog_report_filter") + 
+                        this.WindowSettings.WindowTitle.Text = GeneralUtils.GetResourceByName("window_title_dialog_report_filter") + 
                                             GeneralUtils.GetResourceByName("report_sales_detail_postfix");
                         break;
                 }
@@ -178,7 +178,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             else if (reportToken.ToString() == "REPORT_SALES_PER_VAT" || 
                      reportToken.ToString() == "REPORT_SALES_PER_VAT_BY_ARTICLE_CLASS")
             {
-                this._windowTitle = GeneralUtils.GetResourceByName("report_sales_per_vat");
+                this.WindowSettings.WindowTitle.Text = GeneralUtils.GetResourceByName("report_sales_per_vat");
                 reportsQueryDialogMode = ReportsQueryDialogMode.FINANCIAL_DETAIL_VAT;
                 databaseSourceObject = "view_documentfinance";
             }
@@ -188,34 +188,34 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 switch (reportToken.ToString())
                 {
                     case "REPORT_SALES_PER_FINANCE_DOCUMENT":
-                        this._windowTitle = GeneralUtils.GetResourceByName("report_sales_per_finance_document");
+                        this.WindowSettings.WindowTitle.Text = GeneralUtils.GetResourceByName("report_sales_per_finance_document");
                         break;
                     case "REPORT_SALES_PER_DATE":
-                        this._windowTitle = GeneralUtils.GetResourceByName("report_sales_per_date");
+                        this.WindowSettings.WindowTitle.Text = GeneralUtils.GetResourceByName("report_sales_per_date");
                         break;
                     case "REPORT_SALES_PER_USER":
-                        this._windowTitle = GeneralUtils.GetResourceByName("report_sales_per_user");
+                        this.WindowSettings.WindowTitle.Text = GeneralUtils.GetResourceByName("report_sales_per_user");
                         break;
                     case "REPORT_SALES_PER_TERMINAL":
-                        this._windowTitle = GeneralUtils.GetResourceByName("report_sales_per_terminal");
+                        this.WindowSettings.WindowTitle.Text = GeneralUtils.GetResourceByName("report_sales_per_terminal");
                         break;
                     case "REPORT_SALES_PER_CUSTOMER":
-                        this._windowTitle = GeneralUtils.GetResourceByName("report_sales_per_customer");
+                        this.WindowSettings.WindowTitle.Text = GeneralUtils.GetResourceByName("report_sales_per_customer");
                         break;
                     case "REPORT_SALES_PER_PAYMENT_METHOD":
-                        this._windowTitle = GeneralUtils.GetResourceByName("report_sales_per_payment_method");
+                        this.WindowSettings.WindowTitle.Text = GeneralUtils.GetResourceByName("report_sales_per_payment_method");
                         break;
                     case "REPORT_SALES_PER_PAYMENT_CONDITION":
-                        this._windowTitle = GeneralUtils.GetResourceByName("report_sales_per_payment_condition");
+                        this.WindowSettings.WindowTitle.Text = GeneralUtils.GetResourceByName("report_sales_per_payment_condition");
                         break;
                     case "REPORT_SALES_PER_CURRENCY":
-                        this._windowTitle = GeneralUtils.GetResourceByName("report_sales_per_currency");
+                        this.WindowSettings.WindowTitle.Text = GeneralUtils.GetResourceByName("report_sales_per_currency");
                         break;
                     case "REPORT_SALES_PER_COUNTRY":
-                        this._windowTitle = GeneralUtils.GetResourceByName("report_sales_per_country");
+                        this.WindowSettings.WindowTitle.Text = GeneralUtils.GetResourceByName("report_sales_per_country");
                         break;
                     default:
-                        this._windowTitle = GeneralUtils.GetResourceByName("window_title_dialog_report_filter"); 
+                        this.WindowSettings.WindowTitle.Text = GeneralUtils.GetResourceByName("window_title_dialog_report_filter"); 
                         break;
                 }
 
@@ -224,65 +224,65 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             else if (reportToken.ToString().Equals("REPORT_LIST_AUDIT_TABLE"))
             {
-                this._windowTitle = GeneralUtils.GetResourceByName("report_list_audit_table");
+                this.WindowSettings.WindowTitle.Text = GeneralUtils.GetResourceByName("report_list_audit_table");
                 reportsQueryDialogMode = ReportsQueryDialogMode.SYSTEM_AUDIT;
                 databaseSourceObject = "view_systemaudit";
             }
             else if (reportToken.ToString().Equals("REPORT_LIST_CURRENT_ACCOUNT"))
             {
-                this._windowTitle = GeneralUtils.GetResourceByName("report_customer_balance_details");
+                this.WindowSettings.WindowTitle.Text = GeneralUtils.GetResourceByName("report_customer_balance_details");
                 reportsQueryDialogMode = ReportsQueryDialogMode.CURRENT_ACCOUNT;
                 databaseSourceObject = "view_documentfinancecurrentaccount";
             }
             /* IN008018 */
             else if (reportToken.ToString().Equals("REPORT_CUSTOMER_BALANCE_DETAILS"))
             {
-                this._windowTitle = GeneralUtils.GetResourceByName("report_customer_balance_summary");
+                this.WindowSettings.WindowTitle.Text = GeneralUtils.GetResourceByName("report_customer_balance_summary");
                 reportsQueryDialogMode = ReportsQueryDialogMode.CUSTOMER_BALANCE_DETAILS;
                 databaseSourceObject = "view_documentfinancecustomerbalancedetails";
             }
             /* IN009010 */
             else if (reportToken.ToString().Equals("REPORT_CUSTOMER_BALANCE_SUMMARY"))
             {
-                this._windowTitle = GeneralUtils.GetResourceByName("report_customer_balance_details");
+                this.WindowSettings.WindowTitle.Text = GeneralUtils.GetResourceByName("report_customer_balance_details");
                 reportsQueryDialogMode = ReportsQueryDialogMode.CUSTOMER_BALANCE_SUMMARY;
                 databaseSourceObject = "view_documentfinancecustomerbalancesummary";
             }
             /* IN009204 - based on CUSTOMER_BALANCE_DETAILS report */
             else if (reportToken.ToString().Equals("REPORT_COMPANY_BILLING"))
             {
-                this._windowTitle = GeneralUtils.GetResourceByName("report_company_billing");
+                this.WindowSettings.WindowTitle.Text = GeneralUtils.GetResourceByName("report_company_billing");
                 reportsQueryDialogMode = ReportsQueryDialogMode.COMPANY_BILLING;
                 databaseSourceObject = "view_documentfinancecustomerbalancedetails";
             }
             else if (reportToken.ToString().Equals("REPORT_LIST_USER_COMMISSION"))
             {
-                this._windowTitle = GeneralUtils.GetResourceByName("report_list_user_commission");
+                this.WindowSettings.WindowTitle.Text = GeneralUtils.GetResourceByName("report_list_user_commission");
                 reportsQueryDialogMode = ReportsQueryDialogMode.USER_COMMISSION;
                 databaseSourceObject = "view_usercommission";
             }
             //Stock Reports
             else if (reportToken.ToString().Equals("REPORT_LIST_STOCK_MOVEMENTS"))
             {
-                this._windowTitle = GeneralUtils.GetResourceByName("report_list_stock_movements");
+                this.WindowSettings.WindowTitle.Text = GeneralUtils.GetResourceByName("report_list_stock_movements");
                 reportsQueryDialogMode = ReportsQueryDialogMode.ARTICLE_STOCK_MOVEMENTS;
                 databaseSourceObject = "view_articlestockmovement";
             }
             else if (reportToken.ToString().Equals("REPORT_LIST_STOCK_WAREHOUSE"))
             {
-                this._windowTitle = GeneralUtils.GetResourceByName("report_list_stock_warehouse");
+                this.WindowSettings.WindowTitle.Text = GeneralUtils.GetResourceByName("report_list_stock_warehouse");
                 reportsQueryDialogMode = ReportsQueryDialogMode.FILTER_ARTICLE_WAREHOUSE;
                 databaseSourceObject = "view_articlestockwarehouse";
             }
             else if (reportToken.ToString().Equals("REPORT_LIST_STOCK_ARTICLE"))
             {
-                this._windowTitle = GeneralUtils.GetResourceByName("report_list_stock_article");
+                this.WindowSettings.WindowTitle.Text = GeneralUtils.GetResourceByName("report_list_stock_article");
                 reportsQueryDialogMode = ReportsQueryDialogMode.FILTER_ARTICLE_STOCK;
                 databaseSourceObject = "view_articlestock";
             }
             else if (reportToken.ToString().Equals("REPORT_LIST_STOCK_SUPPLIER"))
             {
-                this._windowTitle = GeneralUtils.GetResourceByName("report_list_stock_supplier");
+                this.WindowSettings.WindowTitle.Text = GeneralUtils.GetResourceByName("report_list_stock_supplier");
                 reportsQueryDialogMode = ReportsQueryDialogMode.FILTER_ARTICLE_STOCK_SUPPLIER;
                 databaseSourceObject = "view_articlestocksupplier";
             }
@@ -327,7 +327,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             reportReadableFilter,
                             displayMode);
 
-                        this._windowTitle = GeneralUtils.GetResourceByName("report_sales_per_date");
+                        this.WindowSettings.WindowTitle.Text = GeneralUtils.GetResourceByName("report_sales_per_date");
                         break;
 
                     case ReportsTypeToken.REPORT_SALES_PER_USER:

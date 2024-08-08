@@ -1,24 +1,24 @@
 ﻿using Gtk;
-using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using LogicPOS.Globalization;
 using LogicPOS.Data.XPO.Utility;
+using LogicPOS.UI.Components;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
-    internal class TreeViewTerminalSeries : GenericTreeViewDataTable
+    internal class TreeViewTerminalSeries : GridViewDataTable
     {
         //Public Parametless Constructor Required by Generics
         public TreeViewTerminalSeries() { }
 
-        public TreeViewTerminalSeries(Window pSourceWindow)
-            : this(pSourceWindow, null, null) { }
+        public TreeViewTerminalSeries(Window parentWindow)
+            : this(parentWindow, null, null) { }
 
         //DataTable Mode
-        public TreeViewTerminalSeries(Window pSourceWindow, DataRow pDefaultValue, Type pDialogType, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default)
+        public TreeViewTerminalSeries(Window parentWindow, DataRow pDefaultValue, Type pDialogType, GridViewMode pGenericTreeViewMode = GridViewMode.Default, GridViewNavigatorMode navigatorMode = GridViewNavigatorMode.Default)
         {
             //Init Vars
             DataRow defaultValue = (pDefaultValue != null) ? pDefaultValue : null;
@@ -26,16 +26,16 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             Type typeDialogClass = (pDialogType != null) ? pDialogType : null;
 
             //Configure columnProperties
-            List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
+            List<GridViewColumnProperty> columnProperties = new List<GridViewColumnProperty>
             {
                 /*00*/
-                new GenericTreeViewColumnProperty("Oid") { Type = typeof(Guid), Visible = false },
+                new GridViewColumnProperty("Oid") { Type = typeof(Guid), Visible = false },
                 /*01*/
-                new GenericTreeViewColumnProperty("Code") { Type = typeof(uint), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_record_code") },
+                new GridViewColumnProperty("Code") { Type = typeof(uint), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_record_code") },
                 /*02*/
-                new GenericTreeViewColumnProperty("Designation") { Type = typeof(string), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_designation"), Expand = true },
+                new GridViewColumnProperty("Designation") { Type = typeof(string), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_designation"), Expand = true },
                 /*03*/
-                new GenericTreeViewColumnProperty("HardwareId") { Type = typeof(string), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_hardware_id"), MinWidth = 200 }
+                new GridViewColumnProperty("HardwareId") { Type = typeof(string), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_hardware_id"), MinWidth = 200 }
             };
 
             //init DataTable
@@ -43,17 +43,17 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             //Call Base Initializer
             base.InitObject(
-              pSourceWindow,                    //Pass parameter 
+              parentWindow,                    //Pass parameter 
               pDefaultValue,                    //Pass parameter 
               pGenericTreeViewMode,             //Pass parameter 
-              pGenericTreeViewNavigatorMode,    //Pass parameter 
+              navigatorMode,    //Pass parameter 
               columnProperties,                 //Created Here
               dataTable,                        //Created Here
               typeDialogClass                   //Created Here
             );
         }
 
-        private DataTable GetDataTable(List<GenericTreeViewColumnProperty> pColumnProperties)
+        private DataTable GetDataTable(List<GridViewColumnProperty> pColumnProperties)
         {
             //Init Local Vars
             string sql = @"

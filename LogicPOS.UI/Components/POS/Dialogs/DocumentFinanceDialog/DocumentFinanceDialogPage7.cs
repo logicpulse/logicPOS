@@ -30,10 +30,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         private readonly ArticleBag _articleBag;
 
         //Constructor
-        public DocumentFinanceDialogPage7(Window pSourceWindow, string pPageName) : this(pSourceWindow, pPageName, "", null, true) { }
-        public DocumentFinanceDialogPage7(Window pSourceWindow, string pPageName, Widget pWidget) : this(pSourceWindow, pPageName, "", pWidget, true) { }
-        public DocumentFinanceDialogPage7(Window pSourceWindow, string pPageName, string pPageIcon, Widget pWidget, bool pEnabled = true)
-            : base(pSourceWindow, pPageName, pPageIcon, pWidget, pEnabled)
+        public DocumentFinanceDialogPage7(Window parentWindow, string pPageName) : this(parentWindow, pPageName, "", null, true) { }
+        public DocumentFinanceDialogPage7(Window parentWindow, string pPageName, Widget pWidget) : this(parentWindow, pPageName, "", pWidget, true) { }
+        public DocumentFinanceDialogPage7(Window parentWindow, string pPageName, string pPageIcon, Widget pWidget, bool pEnabled = true)
+            : base(parentWindow, pPageName, pPageIcon, pWidget, pEnabled)
         {
             _vboxButtons = new VBox(true, 0);
             _hboxButtons1 = new HBox(true, 0);

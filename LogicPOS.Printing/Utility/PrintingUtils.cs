@@ -4,7 +4,6 @@ using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Settings.Terminal;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.DTOs.Printing;
-using LogicPOS.Globalization;
 using LogicPOS.Printing.Common;
 using LogicPOS.Printing.Documents;
 using LogicPOS.Printing.Enums;

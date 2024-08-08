@@ -1,6 +1,7 @@
 ﻿using Gtk;
-using logicpos.Classes.Gui.Gtk.Widgets;
 using LogicPOS.Settings;
+using LogicPOS.UI;
+using LogicPOS.UI.Buttons;
 using System.Configuration;
 
 namespace logicpos
@@ -15,15 +16,26 @@ namespace logicpos
             Application.Init();
 
             var win = new Window("Vision");
-            MoneyPad moneyPad = new MoneyPad(win);
-            moneyPad.Show();
-            win.Show();
 
+            VBox vBox = new VBox(false, 10);
+
+            var button = new CustomButton(new ButtonSettings { Name=""});
+            button.Label = "Hello, World!";
+            button.ModifyText(StateType.Active, new Gdk.Color(23, 43, 23));
+
+            var button2 = new CustomButton(new ButtonSettings { Name = "" });
+            button2.Label = "Hello, World 2!";
+
+            vBox.Add(button2);
+            vBox.Add(button);
+            vBox.ShowAll();
+
+            win.Add(vBox);
+          
+            win.Show();
 
 
             Application.Run();
         }
-
-
     }
 }

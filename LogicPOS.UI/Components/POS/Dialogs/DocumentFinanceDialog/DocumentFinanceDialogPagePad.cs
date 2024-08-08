@@ -20,10 +20,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
         public string DateTimeFormat { get; set; }
 
-        public DocumentFinanceDialogPagePad(Window pSourceWindow)
+        public DocumentFinanceDialogPagePad(Window parentWindow)
         {
             //Parameters
-            SourceWindow = pSourceWindow;
+            SourceWindow = parentWindow;
             //Init Private Vars 
             Session = XPOSettings.Session;
             //Init Other

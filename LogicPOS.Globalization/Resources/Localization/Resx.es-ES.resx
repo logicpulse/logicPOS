@@ -229,7 +229,7 @@ O seleccione '{2}' para iniciar POS en el modo predeterminado '1024x768'.</value
   <data name="audit_message_table_unreserved" xml:space="preserve">
     <value>Mesa sin reservas: {0}</value>
   </data>
-  <data name="audit_message_used_forced_loggerout" xml:space="preserve">
+  <data name="audit_message_used_forced_logout" xml:space="preserve">
     <value>Aplicación cerrada, Cierre de Sesión Forzado del Usuario: {0}</value>
   </data>
   <data name="audit_message_user_change" xml:space="preserve">
@@ -244,7 +244,7 @@ O seleccione '{2}' para iniciar POS en el modo predeterminado '1024x768'.</value
   <data name="audit_message_user_loggerin_error" xml:space="preserve">
     <value>Error de inicio de sesión del usuario: {0}</value>
   </data>
-  <data name="audit_message_user_loggerout" xml:space="preserve">
+  <data name="audit_message_user_logout" xml:space="preserve">
     <value>Usuario desconectado: {0}</value>
   </data>
   <data name="backoffice_datetime_format_status_bar" xml:space="preserve">
@@ -813,7 +813,7 @@ Para continuar y cerrar todas las terminales presione SI o NO y cierre todos los
   <data name="global_application_close" xml:space="preserve">
     <value>Cerrar</value>
   </data>
-  <data name="global_application_loggerout_user" xml:space="preserve">
+  <data name="global_application_logout_user" xml:space="preserve">
     <value>Cerrar sesión</value>
   </data>
   <data name="global_application_main_menu" xml:space="preserve">
@@ -3846,7 +3846,7 @@ Por favor, ingrese otro número e intente nuevamente.</value>
   <data name="dialog_message_composite_article_already" xml:space="preserve">
     <value>¡El artículo insertado ya está asociado!</value>
   </data>
-  <data name="change_logger" xml:space="preserve">
+  <data name="change_log" xml:space="preserve">
     <value>Registro de cambios (registro de cambios)</value>
   </data>
   <data name="global_minimum_stock" xml:space="preserve">

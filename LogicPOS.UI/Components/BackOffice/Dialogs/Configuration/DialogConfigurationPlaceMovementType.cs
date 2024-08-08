@@ -4,16 +4,16 @@ using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using LogicPOS.Domain.Entities;
-using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using LogicPOS.UI.Components;
 using LogicPOS.Utility;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
-    internal class DialogConfigurationPlaceMovementType : BOBaseDialog
+    internal class DialogConfigurationPlaceMovementType : EditDialog
     {
-        public DialogConfigurationPlaceMovementType(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, Entity pXPGuidObject)
-            : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
+        public DialogConfigurationPlaceMovementType(Window parentWindow, XpoGridView pTreeView, DialogFlags pFlags, DialogMode pDialogMode, Entity pXPGuidObject)
+            : base(parentWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
             /* IN009039 */
 
@@ -35,19 +35,19 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 Entry entryOrd = new Entry();
                 BOWidgetBox boxLabel = new BOWidgetBox(GeneralUtils.GetResourceByName("global_record_order"), entryOrd);
                 vboxTab1.PackStart(boxLabel, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxLabel, _dataSourceRow, "Ord", RegexUtils.RegexIntegerGreaterThanZero, true));
+                InputFields.Add(new GenericCRUDWidgetXPO(boxLabel, Entity, "Ord", RegexUtils.RegexIntegerGreaterThanZero, true));
 
                 //Code
                 Entry entryCode = new Entry();
                 BOWidgetBox boxCode = new BOWidgetBox(GeneralUtils.GetResourceByName("global_record_code"), entryCode);
                 vboxTab1.PackStart(boxCode, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCode, _dataSourceRow, "Code", RegexUtils.RegexIntegerGreaterThanZero, true));
+                InputFields.Add(new GenericCRUDWidgetXPO(boxCode, Entity, "Code", RegexUtils.RegexIntegerGreaterThanZero, true));
 
                 //Designation
                 Entry entryDesignation = new Entry();
                 BOWidgetBox boxDesignation = new BOWidgetBox(GeneralUtils.GetResourceByName("global_designation"), entryDesignation);
                 vboxTab1.PackStart(boxDesignation, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", RegexUtils.RegexAlfaNumericExtended, true));
+                InputFields.Add(new GenericCRUDWidgetXPO(boxDesignation, Entity, "Designation", RegexUtils.RegexAlfaNumericExtended, true));
 
                 //VatDirectSelling
                 //In POS Mode add VatDirectSelling
@@ -55,14 +55,14 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 {
                     CheckButton checkButtonVatDirectSelling = new CheckButton(GeneralUtils.GetResourceByName("global_vat_direct_selling"));
                     vboxTab1.PackStart(checkButtonVatDirectSelling, false, false, 0);
-                    _crudWidgetList.Add(new GenericCRUDWidgetXPO(checkButtonVatDirectSelling, _dataSourceRow, "VatDirectSelling"));
+                    InputFields.Add(new GenericCRUDWidgetXPO(checkButtonVatDirectSelling, Entity, "VatDirectSelling"));
                 }
 
                 //Disabled
                 CheckButton checkButtonDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
                 if (_dialogMode == DialogMode.Insert) checkButtonDisabled.Active = POSSettings.BOXPOObjectsStartDisabled;
                 vboxTab1.PackStart(checkButtonDisabled, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(checkButtonDisabled, _dataSourceRow, "Disabled"));
+                InputFields.Add(new GenericCRUDWidgetXPO(checkButtonDisabled, Entity, "Disabled"));
 
                 //Append Tab
                 _notebook.AppendPage(vboxTab1, new Label(GeneralUtils.GetResourceByName("global_record_main_detail")));

@@ -1,7 +1,7 @@
 ﻿using Gtk;
 using logicpos.Classes.Gui.Gtk.Widgets.Entrys;
-using logicpos.Extensions;
 using LogicPOS.Settings;
+using LogicPOS.UI.Extensions;
 
 namespace LogicPOS.UI
 {
@@ -27,10 +27,10 @@ namespace LogicPOS.UI
                 ? (widget as EntryBoxValidationMultiLine).EntryMultiline.TextView
                 : widget;
 
-            var validColor = ColorSettings.ValidTextBoxColor.StringToGdkColor();
-            var invalidColor = ColorSettings.InvalidTextBoxColor.StringToGdkColor();
-            var validBackgroundColor = ColorSettings.ValidTextBoxBackgroundColor.StringToGdkColor();
-            var invalidBackgroundColor = ColorSettings.InvalidTextBoxBackgroundColor.StringToGdkColor();
+            var validColor = ColorSettings.ValidTextBoxColor.ToGdkColor();
+            var invalidColor = ColorSettings.InvalidTextBoxColor.ToGdkColor();
+            var validBackgroundColor = ColorSettings.ValidTextBoxBackgroundColor.ToGdkColor();
+            var invalidBackgroundColor = ColorSettings.InvalidTextBoxBackgroundColor.ToGdkColor();
 
             if (validated)
             {

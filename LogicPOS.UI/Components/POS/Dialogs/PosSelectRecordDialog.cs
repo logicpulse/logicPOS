@@ -2,33 +2,32 @@
 using Gtk;
 using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
-using logicpos.Classes.Enums.GenericTreeView;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
+using LogicPOS.Domain.Entities;
+using LogicPOS.Settings;
+using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components;
+using LogicPOS.UI.Dialogs;
+using LogicPOS.Utility;
 using System;
 using System.Data;
 using System.Drawing;
-using LogicPOS.Globalization;
-using LogicPOS.Settings;
-using LogicPOS.Domain.Entities;
-using LogicPOS.Utility;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
     //T1: DataSource (XPCollection|DataTable)
     //T2: DataSourceRow (XPGuidObject|DataRow)
     //T3: GenericTreeType
-    internal class PosSelectRecordDialog<T1, T2, T3> : PosBaseDialog
+    internal class PosSelectRecordDialog<T1, T2, T3> : BaseDialog
         //Generic Types Constrained to Classes that Implement IGenericTreeView
         //where T : IGenericTreeView, new()
-      where T3 : GenericTreeView<T1, T2>, new()
+      where T3 : GridView<T1, T2>, new()
     {
         //UI
-        private TouchButtonIconWithText _buttonOk;
-        private TouchButtonIconWithText _buttonCancel;
+        private IconButtonWithText _buttonOk;
+        private IconButtonWithText _buttonCancel;
 
         internal T3 GenericTreeView { get; set; }
-        public GenericTreeViewMode GenericTreeViewMode { get; set; }
+        public GridViewMode GenericTreeViewMode { get; set; }
 
         public ActionAreaButtons ActionAreaButtons { get; set; }
 
@@ -38,42 +37,37 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         //XPO Mode: Prepare GenericTreeView to Use in InitObject : Constructor OverLoad 2
         public PosSelectRecordDialog(
-          Window pSourceWindow,
+          Window parentWindow,
           DialogFlags pDialogFlags,
           string pWindowsTitle,
           Size pSize,
           Entity pDefaultValue,
           CriteriaOperator pXpoCriteria,
-          GenericTreeViewMode pGenericTreeViewMode,
+          GridViewMode pGenericTreeViewMode,
           ActionAreaButtons pActionAreaButtons
         )
-            : base(pSourceWindow, pDialogFlags)
+            : base(parentWindow, pDialogFlags)
         {
-            try
-            {
-                //We can use InitObject Here because we dont have pColumnProperties, pDataSource and pDialogType
-                //We must create instance with Activator to use Generic parameter constructors, and Send it to InitObject
-                GenericTreeView = (T3)Activator.CreateInstance(typeof(T3), new object[] {
-                    pSourceWindow,
+
+            //We can use InitObject Here because we dont have pColumnProperties, pDataSource and pDialogType
+            //We must create instance with Activator to use Generic parameter constructors, and Send it to InitObject
+            GenericTreeView = (T3)Activator.CreateInstance(typeof(T3), new object[] {
+                    parentWindow,
                     pDefaultValue,
                     pXpoCriteria,
                     null,          //DialogType
                     pGenericTreeViewMode,
-                    GenericTreeViewNavigatorMode.HideToolBar
+                    GridViewNavigatorMode.HideToolBar
                 });
 
-                //InitObject
-                InitObject(pSourceWindow, pDialogFlags, pWindowsTitle, pSize, GenericTreeView, pGenericTreeViewMode, pActionAreaButtons);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
+            //InitObject
+            InitObject(parentWindow, pDialogFlags, pWindowsTitle, pSize, GenericTreeView, pGenericTreeViewMode, pActionAreaButtons);
+
         }
 
         //DataTable Mode: Prepare GenericTreeView to Use in InitObject : Constructor OverLoad 2
         public PosSelectRecordDialog(
-            Window pSourceWindow,
+            Window parentWindow,
             DialogFlags pDialogFlags,
             string pWindowsTitle,
             Size pSize,
@@ -81,43 +75,37 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             DataRow pDefaultValue,
             //CriteriaOperator pXpoCriteria, //Absent in DataTable Mode: To Implement in future, if Required
             //Type pDialogType,              //Absent in DataTable Mode: To Implement in future, if Required
-            GenericTreeViewMode pGenericTreeViewMode,
+            GridViewMode pGenericTreeViewMode,
             ActionAreaButtons pActionAreaButtons
         )
-            : base(pSourceWindow, pDialogFlags)
+            : base(parentWindow, pDialogFlags)
         {
             //We can use InitObject Here because we dont have pColumnProperties, pDataSource and pDialogType
             //We must create instance with Activator to use Generic parameter constructors, and Send it to InitObject
-            try
+
+            GenericTreeView = (T3)Activator.CreateInstance(typeof(T3), new object[]
             {
-                GenericTreeView = (T3)Activator.CreateInstance(typeof(T3), new object[]
-                {
-                    pSourceWindow,
+                    parentWindow,
                     pDefaultValue, 
                     //null,         //Not Used in DataTable
                     null,           //DialogType
                     pGenericTreeViewMode,
-                    GenericTreeViewNavigatorMode.HideToolBar
-                });
+                    GridViewNavigatorMode.HideToolBar
+            });
 
-                //InitObject
-                InitObject(pSourceWindow, pDialogFlags, pWindowsTitle, pSize, GenericTreeView, pGenericTreeViewMode, pActionAreaButtons);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
+            //InitObject
+            InitObject(parentWindow, pDialogFlags, pWindowsTitle, pSize, GenericTreeView, pGenericTreeViewMode, pActionAreaButtons);
         }
 
         public void InitObject(
-            Window pSourceWindow,
+            Window parentWindow,
             DialogFlags pDialogFlags,
             string pWindowsTitle,
             Size pSize,
             //Type pTreeViewType, 
             //CriteriaOperator pCriteria, 
             T3 pGenericTreeView,
-            GenericTreeViewMode pGenericTreeViewMode,
+            GridViewMode pGenericTreeViewMode,
             ActionAreaButtons pActionAreaButtons
         )
         {
@@ -152,7 +140,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             GenericTreeView.CheckBoxToggled += _genericTreeView_CheckBoxToggled;
 
             //Init Object
-            this.InitObject(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, fixedContent, GenericTreeView.Navigator.TreeViewSearch, ActionAreaButtons);
+            this.Initialize(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, fixedContent, GenericTreeView.Navigator.TreeViewSearch, ActionAreaButtons);
         }
 
         public ActionAreaButtons GetDefaultActionAreaButtons()
@@ -164,8 +152,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //_buttonMore.Clicked += _genericTreeView_ButtonMoreClicked;
 
             //Default ActionArea Buttons
-            _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);
-            _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
+            _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
+            _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
             _buttonOk.Sensitive = false;
 
             //ActionArea Buttons
@@ -201,7 +189,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
 
             //if Default Action Area Buttons with buttonOk, else we catch event outside and enable buttons outside
-            if (_buttonOk != null && GenericTreeView.DataSourceRow != null) _buttonOk.Sensitive = true;
+            if (_buttonOk != null && GenericTreeView.Entity != null) _buttonOk.Sensitive = true;
         }
 
         //public void _genericTreeView_ButtonMoreClicked(object sender, EventArgs e)
@@ -240,12 +228,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         //T1: DataSource (XPCollection|DataTable)
         //T2: DataSourceRow (XPGuidObject|DataRow)
         //T3: GenericTreeType
-        public static DataTable GetSelected(Window pSourceWindow)
+        public static DataTable GetSelected(Window parentWindow)
         {
             //Default ActionArea Buttons
-            TouchButtonIconWithText buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);
+            IconButtonWithText buttonOk = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
             buttonOk.Sensitive = false;
-            TouchButtonIconWithText buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
+            IconButtonWithText buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
             //ActionArea Buttons
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
             //Add references to Send to Event CursorChanged
@@ -256,12 +244,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             _dialogSelectRecord =
               new PosSelectRecordDialog<T1, T2, T3>(
-                pSourceWindow,
+                parentWindow,
                 DialogFlags.DestroyWithParent,
                 GeneralUtils.GetResourceByName("window_title_dialog_select_record"),
                 GlobalApp.MaxWindowSize,
                 null, //pDefaultValue : Require to Send a DataRow
-                GenericTreeViewMode.CheckBox,
+                GridViewMode.CheckBox,
                 actionAreaButtons
               );
 
@@ -269,12 +257,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _dialogSelectRecord.CheckBoxToggled += delegate
             {
                 //Use inside delegate to have accesss to local references, ex dialogPartialPayment, actionAreaButtonOk
-                if (_dialogSelectRecord.GenericTreeViewMode == GenericTreeViewMode.Default)
+                if (_dialogSelectRecord.GenericTreeViewMode == GridViewMode.Default)
                 {
                     //DataTableMode else use XPGuidObject
-                    if (_dialogSelectRecord.GenericTreeView.DataSourceRow != null) actionAreaButtonOk.Button.Sensitive = true;
+                    if (_dialogSelectRecord.GenericTreeView.Entity != null) actionAreaButtonOk.Button.Sensitive = true;
                 }
-                else if (_dialogSelectRecord.GenericTreeViewMode == GenericTreeViewMode.CheckBox)
+                else if (_dialogSelectRecord.GenericTreeViewMode == GridViewMode.CheckBox)
                 {
                     actionAreaButtonOk.Button.Sensitive = (_dialogSelectRecord.GenericTreeView.MarkedCheckBoxs > 0);
 
@@ -320,15 +308,15 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if (args.ResponseId == ResponseType.Ok)
                 {
                     //Init _resultDataTable, Clone Structure from _dialogSelectRecord.GenericTreeView.DataSource
-                    _resultDataTable = (_dialogSelectRecord.GenericTreeView.DataSource as DataTable).Clone();
+                    _resultDataTable = (_dialogSelectRecord.GenericTreeView.Entities as DataTable).Clone();
 
                     //Single Record Mode - Default - USED HERE ONLY TO TEST Both Dialogs Modes (Default and CheckBox)
-                    if (dialog.GenericTreeViewMode == GenericTreeViewMode.Default)
+                    if (dialog.GenericTreeViewMode == GridViewMode.Default)
                     {
                         //use dialog.GenericTreeView.DataTableRow.ItemArray
                     }
                     //Multi Record Mode - CheckBox - ACTIVE MODE
-                    else if (dialog.GenericTreeViewMode == GenericTreeViewMode.CheckBox)
+                    else if (dialog.GenericTreeViewMode == GridViewMode.CheckBox)
                     {
                         //Required to use ListStoreModel and not ListStoreModelFilterSort, we only loop the visible filtered rows, and not The hidden Checked Rows
                         dialog.GenericTreeView.ListStoreModel.Foreach(new TreeModelForeachFunc(TreeModelForEachTask));
@@ -342,7 +330,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             int columnIndexIndex = 0;
             int columnIndexCheckBox = 1;
             //Reference Alias Only
-            DataTable dataTable = (_dialogSelectRecord.GenericTreeView.DataSource as DataTable);
+            DataTable dataTable = (_dialogSelectRecord.GenericTreeView.Entities as DataTable);
 
             try
             {

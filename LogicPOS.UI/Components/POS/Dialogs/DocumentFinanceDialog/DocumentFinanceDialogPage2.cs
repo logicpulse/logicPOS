@@ -13,6 +13,7 @@ using LogicPOS.Finance.Utility;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Shared.Article;
+using LogicPOS.UI.Components;
 using System;
 using System.Collections;
 
@@ -70,7 +71,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
         public EntryBoxValidation EntryBoxCustomerCity { get; }
 
-        public XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry> EntryBoxSelectCustomerCountry { get; }
+        public XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, GridViewCountries> EntryBoxSelectCustomerCountry { get; }
 
         public XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer> EntryBoxSelectCustomerFiscalNumber { get; }
 
@@ -86,16 +87,16 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
         //Constructor
         [Obsolete]
-        public DocumentFinanceDialogPage2(Window pSourceWindow, string pPageName)
-            : this(pSourceWindow, pPageName, "", null, true) { }
+        public DocumentFinanceDialogPage2(Window parentWindow, string pPageName)
+            : this(parentWindow, pPageName, "", null, true) { }
 
         [Obsolete]
-        public DocumentFinanceDialogPage2(Window pSourceWindow, string pPageName, Widget pWidget)
-            : this(pSourceWindow, pPageName, "", pWidget, true) { }
+        public DocumentFinanceDialogPage2(Window parentWindow, string pPageName, Widget pWidget)
+            : this(parentWindow, pPageName, "", pWidget, true) { }
 
         [Obsolete]
-        public DocumentFinanceDialogPage2(Window pSourceWindow, string pPageName, string pPageIcon, Widget pWidget, bool pEnabled = true)
-            : base(pSourceWindow, pPageName, pPageIcon, pWidget, pEnabled)
+        public DocumentFinanceDialogPage2(Window parentWindow, string pPageName, string pPageIcon, Widget pWidget, bool pEnabled = true)
+            : base(parentWindow, pPageName, pPageIcon, pWidget, pEnabled)
         {
             //Init private vars
             _pagePad = (_sourceWindow as PosDocumentFinanceDialog).PagePad;
@@ -108,7 +109,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             CriteriaOperator criteriaOperatorCustomerName = null;
             //TK016251 - FrontOffice - Criar novo documento com auto-complete para artigos e clientes 
             treeViewCustomer = new TreeViewCustomer(
-              pSourceWindow,
+              parentWindow,
               null,//DefaultValue 
               null,//DialogType
               null
@@ -175,7 +176,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
             //Customer Country
             CriteriaOperator criteriaOperatorCustomerCountry = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1) AND (RegExFiscalNumber IS NOT NULL AND RegExZipCode IS NOT NULL)");
-            EntryBoxSelectCustomerCountry = new XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry>(_sourceWindow, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_country"), "Designation", "Oid", _intialValueConfigurationCountry, criteriaOperatorCustomerCountry, LogicPOS.Utility.RegexUtils.RegexGuid, true);
+            EntryBoxSelectCustomerCountry = new XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, GridViewCountries>(_sourceWindow, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_country"), "Designation", "Oid", _intialValueConfigurationCountry, criteriaOperatorCustomerCountry, LogicPOS.Utility.RegexUtils.RegexGuid, true);
             EntryBoxSelectCustomerCountry.EntryValidation.IsEditable = true;
             EntryBoxSelectCustomerCountry.EntryValidation.Validate(EntryBoxSelectCustomerCountry.Value.Oid.ToString());
             EntryBoxSelectCustomerCountry.ClosePopup += delegate
@@ -338,7 +339,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             {
                 //Update TreeView With Changed Discount
                 (_pagePad.Pages[2] as DocumentFinanceDialogPage3).UpdateTotalFinal();
-                _posDocumentFinanceDialog.WindowTitle = _posDocumentFinanceDialog.GetPageTitle(_pagePad.CurrentPageIndex);
+                _posDocumentFinanceDialog.WindowSettings.WindowTitle.Text = _posDocumentFinanceDialog.GetPageTitle(_pagePad.CurrentPageIndex);
             }
             Validate();
         }
@@ -1062,7 +1063,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             (_pagePad.Pages[2] as DocumentFinanceDialogPage3).ArticleBag = new ArticleBag();
 
             //Update TitleBar
-            _posDocumentFinanceDialog.WindowTitle = _posDocumentFinanceDialog.GetPageTitle(_pagePad.CurrentPageIndex);
+            _posDocumentFinanceDialog.WindowSettings.WindowTitle.Text = _posDocumentFinanceDialog.GetPageTitle(_pagePad.CurrentPageIndex);
         }
     }
 }

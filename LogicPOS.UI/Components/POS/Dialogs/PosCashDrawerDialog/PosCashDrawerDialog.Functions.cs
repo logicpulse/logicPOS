@@ -1,11 +1,11 @@
 ﻿using Gtk;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.Extensions;
 using LogicPOS.Data.Services;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Globalization;
+using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Extensions;
 using System;
 using System.Drawing;
 
@@ -119,14 +119,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         private void PosCashDrawerDialog_Clicked(object sender, EventArgs e)
         {
-            TouchButtonIconWithText button = (TouchButtonIconWithText)sender;
+            IconButtonWithText button = (IconButtonWithText)sender;
             ActivateButton(button);
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Helper Methods
 
-        private void ActivateButton(TouchButtonIconWithText pButton)
+        private void ActivateButton(IconButtonWithText pButton)
         {
             //If Changed Button, Clean old Values
             if (_selectedCashDrawerButton != pButton)
@@ -136,7 +136,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
 
             //Assign _selectedMovementType
-            MovementType = XPOUtility.GetEntityById<pos_worksessionmovementtype>(pButton.CurrentButtonOid);
+            MovementType = XPOUtility.GetEntityById<pos_worksessionmovementtype>(pButton.CurrentButtonId);
 
             //Detect Cash open
             if (MovementType.Token == "CASHDRAWER_OPEN")
@@ -167,7 +167,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //Toggle Button Off
                 _selectedCashDrawerButton.ModifyBg(
                     StateType.Normal,
-                    _colorBaseDialogDefaultButtonBackground.ToGdkColor());
+                    ColorSettings.DefaultButtonBackground.ToGdkColor());
             }
 
             //In the End Change reference to new Seleted Button
@@ -175,7 +175,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Toggle Button On
             _selectedCashDrawerButton.ModifyBg(
                 StateType.Normal,
-                _colorBaseDialogDefaultButtonBackground.Lighten(0.50f).ToGdkColor());
+                ColorSettings.DefaultButtonBackground.Lighten(0.50f).ToGdkColor());
 
             //Validate
             ValidateDialog();

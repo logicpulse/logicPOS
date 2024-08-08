@@ -1,9 +1,8 @@
-﻿using System.Drawing;
-using Gtk;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using LogicPOS.Globalization;
+﻿using Gtk;
 using LogicPOS.Settings;
+using LogicPOS.UI.Buttons;
 using LogicPOS.Utility;
+using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -25,10 +24,47 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             Table.Homogeneous = false;
             Table.NColumns = 4;
 
-            TouchButtonIconWithText buttonKeySplitAccount = new TouchButtonIconWithText("buttonKeySplitAccount", colorRightButton, GeneralUtils.GetResourceByName("global_split_account"), fontRightButton, colorFont, icon1, sizeIcon, rightButtonWidth, buttonHeight);
-            TouchButtonIconWithText buttonKeyMessages = new TouchButtonIconWithText("buttonKeyMessages", colorRightButton, GeneralUtils.GetResourceByName("global_messages"), fontRightButton, colorFont, icon2, sizeIcon, rightButtonWidth, buttonHeight);
-            TouchButtonIconWithText buttonKeyGifts = new TouchButtonIconWithText("buttonKeyGifts", colorRightButton, GeneralUtils.GetResourceByName("global_gifts"), fontRightButton, colorFont, icon3, sizeIcon, rightButtonWidth, buttonHeight);
-            TouchButtonIconWithText buttonKeyWeight = new TouchButtonIconWithText("buttonKeyWeight", colorRightButton, GeneralUtils.GetResourceByName("global_weight"), fontRightButton, colorFont, icon4, sizeIcon, rightButtonWidth, buttonHeight);
+            IconButtonWithText buttonKeySplitAccount = new IconButtonWithText(
+                new ButtonSettings
+                {
+                    Name = "buttonKeySplitAccount",
+                    BackgroundColor = colorRightButton,
+                    Text = GeneralUtils.GetResourceByName("global_split_account"),
+                    Font = fontRightButton,
+                    FontColor = colorFont,
+                    Icon = icon1,
+                    IconSize = sizeIcon,
+                    ButtonSize = new Size(rightButtonWidth, buttonHeight)
+                });
+
+            IconButtonWithText buttonKeyMessages = new IconButtonWithText(
+                new ButtonSettings
+                {
+                    Name = "buttonKeyMessages",
+                    BackgroundColor = colorRightButton,
+                    Text = GeneralUtils.GetResourceByName("global_messages"),
+                    Font = fontRightButton,
+                    FontColor = colorFont,
+                    Icon = icon2,
+                    IconSize = sizeIcon,
+                    ButtonSize = new Size(rightButtonWidth, buttonHeight)
+                });
+
+            IconButtonWithText buttonKeyGifts = new IconButtonWithText(
+                new ButtonSettings
+                {
+                    Name = "buttonKeyGifts",
+                    BackgroundColor = colorRightButton,
+                    Text = GeneralUtils.GetResourceByName("global_gifts"),
+                    Font = fontRightButton,
+                    FontColor = colorFont,
+                    Icon = icon3,
+                    IconSize = sizeIcon,
+                    ButtonSize = new Size(rightButtonWidth, buttonHeight)
+                });
+
+            IconButtonWithText buttonKeyWeight = new IconButtonWithText(new ButtonSettings { Name = "buttonKeyWeight", BackgroundColor = colorRightButton, Text = GeneralUtils.GetResourceByName("global_weight"), Font = fontRightButton, FontColor = colorFont, Icon = icon4, IconSize = sizeIcon, ButtonSize = new Size(rightButtonWidth, buttonHeight) });
+            
             buttonKeyMessages.Sensitive = false;
             buttonKeyGifts.Sensitive = false;
 

@@ -4,16 +4,15 @@ using DevExpress.Xpo.DB;
 using Gtk;
 using logicpos.App;
 using logicpos.Classes.Enums;
-using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Finance.DocumentProcessing;
-using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
+using LogicPOS.UI.Components;
 using LogicPOS.Utility;
 using MySql.Data.MySqlClient;
 using System;
@@ -73,7 +72,7 @@ namespace logicpos.Classes.DataLayer
         }
 
 
-        public static bool Backup(Window pSourceWindow)
+        public static bool Backup(Window parentWindow)
         {
             bool backupResult = true;
             string fileName = string.Empty;
@@ -89,12 +88,12 @@ namespace logicpos.Classes.DataLayer
 
                 /* IN009164 - Begin */
                 string xpoConnectionString = string.Format(
-                    GeneralSettings.Settings["xpoConnectionString"],
+                    AppSettings.Instance.xpoConnectionString,
                     DatabaseSettings.DatabaseName.ToLower());
 
                 XpoDefault.DataLayer = XpoDefault.GetDataLayer(xpoConnectionString, AutoCreateOption.None);
                 Session SessionXpoForBackupPurposes = new Session(XpoDefault.DataLayer) { LockingOption = LockingOption.None };
-                _logger.Debug(string.Format("bool Backup(Window pSourceWindow) :: Init XpoDefault.DataLayer [ {0} ]", SessionXpoForBackupPurposes.ToString()));
+                _logger.Debug(string.Format("bool Backup(Window parentWindow) :: Init XpoDefault.DataLayer [ {0} ]", SessionXpoForBackupPurposes.ToString()));
                 /* IN009164 - End */
 
                 //Initialize object before start Actions, to allocate database (automatic backups) and assign CreatedAt, this way next Terminal Skip Backup when trigger backup event
@@ -118,7 +117,7 @@ namespace logicpos.Classes.DataLayer
                         //resultBackup = BackupSQLite(fileName);
                         //Thread
                         thread = new Thread(() => backupResult = BackupSQLite(fileName));
-                        logicpos.Utils.ThreadStart(pSourceWindow, thread, backupProcess);
+                        logicpos.Utils.ThreadStart(parentWindow, thread, backupProcess);
                         break;
                     case DatabaseType.MSSqlServer:
                         fileName = GetBackupFileName(_fileExtension, systemBackup.Version, "");
@@ -126,7 +125,7 @@ namespace logicpos.Classes.DataLayer
                         //resultBackup = BackupMSSqlServer(fileName);
                         //Thread
                         thread = new Thread(() => backupResult = BackupMSSqlServer(Path.GetFileName(fileName), SessionXpoForBackupPurposes));
-                        logicpos.Utils.ThreadStart(pSourceWindow, thread, backupProcess);
+                        logicpos.Utils.ThreadStart(parentWindow, thread, backupProcess);
                         break;
                     case DatabaseType.MySql:
                         fileName = GetBackupFileName(_fileExtension, systemBackup.Version, "");
@@ -134,7 +133,7 @@ namespace logicpos.Classes.DataLayer
                         //resultBackup = BackupMySql(_backupConnectionString, fileName);
                         //Thread
                         thread = new Thread(() => backupResult = BackupMySql(_backupConnectionString, fileName));
-                        logicpos.Utils.ThreadStart(pSourceWindow, thread, backupProcess);
+                        logicpos.Utils.ThreadStart(parentWindow, thread, backupProcess);
                         break;
                     default:
                         break;
@@ -190,7 +189,7 @@ namespace logicpos.Classes.DataLayer
                          ));
 
                         //Moved to Thread Outside > Only Show if not in Silence Mode
-                        if (pSourceWindow != null) logicpos.Utils.ShowMessageBox(pSourceWindow, DialogFlags.Modal, _sizeDialog, MessageType.Info, ButtonsType.Close, GeneralUtils.GetResourceByName("global_information"), string.Format(GeneralUtils.GetResourceByName("dialog_message_database_backup_successfully"), systemBackup.FileNamePacked));
+                        if (parentWindow != null) logicpos.Utils.ShowMessageBox(parentWindow, DialogFlags.Modal, _sizeDialog, MessageType.Info, ButtonsType.Close, GeneralUtils.GetResourceByName("global_information"), string.Format(GeneralUtils.GetResourceByName("dialog_message_database_backup_successfully"), systemBackup.FileNamePacked));
                     }
                     else
                     {
@@ -205,18 +204,18 @@ namespace logicpos.Classes.DataLayer
                          * Please note that variable "backupResult" never changes its value when "DatabaseType.MSSqlServer", therefore is not being covered by this.
                          */
                         // Show only when "Silent Mode" is on
-                        if (pSourceWindow != null)
+                        if (parentWindow != null)
                         {
-                            logicpos.Utils.ShowMessageBox(pSourceWindow, DialogFlags.Modal, _sizeDialog, MessageType.Warning, ButtonsType.Close, GeneralUtils.GetResourceByName("global_information"), string.Format(GeneralUtils.GetResourceByName("dialog_message_database_backup_error_when_secure_compacting"), systemBackup.FileNamePacked));
+                            logicpos.Utils.ShowMessageBox(parentWindow, DialogFlags.Modal, _sizeDialog, MessageType.Warning, ButtonsType.Close, GeneralUtils.GetResourceByName("global_information"), string.Format(GeneralUtils.GetResourceByName("dialog_message_database_backup_error_when_secure_compacting"), systemBackup.FileNamePacked));
                         }
 
-                        _logger.Debug($"DataBaseBackup.Backup(Window pSourceWindow): {string.Format(GeneralUtils.GetResourceByName("dialog_message_database_backup_error_when_secure_compacting"), systemBackup.FileNamePacked)}");
+                        _logger.Debug($"DataBaseBackup.Backup(Window parentWindow): {string.Format(GeneralUtils.GetResourceByName("dialog_message_database_backup_error_when_secure_compacting"), systemBackup.FileNamePacked)}");
                     }
                 }
                 else
                 {
                     //Moved to Thread Outside > Only Show if not in Silence Mode
-                    if (pSourceWindow != null) logicpos.Utils.ShowMessageBox(pSourceWindow, DialogFlags.Modal, _sizeDialog, MessageType.Error, ButtonsType.Close, GeneralUtils.GetResourceByName("global_error"), string.Format(GeneralUtils.GetResourceByName("dialog_message_database_backup_error"), Path.GetFileName(fileName)));
+                    if (parentWindow != null) logicpos.Utils.ShowMessageBox(parentWindow, DialogFlags.Modal, _sizeDialog, MessageType.Error, ButtonsType.Close, GeneralUtils.GetResourceByName("global_error"), string.Format(GeneralUtils.GetResourceByName("dialog_message_database_backup_error"), Path.GetFileName(fileName)));
                 }
                 /* IN009164 */
                 SessionXpoForBackupPurposes.Disconnect();
@@ -224,14 +223,14 @@ namespace logicpos.Classes.DataLayer
             }
             catch (Exception ex)
             {
-                _logger.Error("bool Backup(Window pSourceWindow) :: Error during backup process: " + ex.Message, ex);
-                // _logger.Error("bool Backup(Window pSourceWindow) :: Error during backup process on Session [ " + SessionXpoForBackupPurposes.ToString() + " ]: " + ex.Message, ex);
+                _logger.Error("bool Backup(Window parentWindow) :: Error during backup process: " + ex.Message, ex);
+                // _logger.Error("bool Backup(Window parentWindow) :: Error during backup process on Session [ " + SessionXpoForBackupPurposes.ToString() + " ]: " + ex.Message, ex);
                 // SessionXpoForBackupPurposes.Disconnect();
             }
             return backupResult;
         }
 
-        public static bool Restore(Window pSourceWindow, DataBaseRestoreFrom pRestoreFrom)
+        public static bool Restore(Window parentWindow, DataBaseRestoreFrom pRestoreFrom)
         {
             try
             {
@@ -255,7 +254,7 @@ namespace logicpos.Classes.DataLayer
                 switch (pRestoreFrom)
                 {
                     case DataBaseRestoreFrom.SystemBackup:
-                        fileInfo = GetSelectRecordFileName(pSourceWindow);
+                        fileInfo = GetSelectRecordFileName(parentWindow);
                         //Equal to Filename not FileNamePacked
                         fileNamePacked = fileInfo.FileNamePacked;
                         if (_debug) _logger.Debug(string.Format("RestoreBackup: FileNamePacked:[{0}], FileHashDB:[{1}], FileHashFile:[{2}] FileHashValid:[{3}]", fileInfo.FileNamePacked, fileInfo.FileHashDB, fileInfo.FileHashFile, fileInfo.FileHashValid));
@@ -263,13 +262,13 @@ namespace logicpos.Classes.DataLayer
                         {
                             //#EQUAL#1
                             string message = string.Format(GeneralUtils.GetResourceByName("dialog_message_database_restore_error_invalid_backup_file"), fileNamePacked);
-                            logicpos.Utils.ShowMessageBox(pSourceWindow, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"), message);
+                            logicpos.Utils.ShowMessageBox(parentWindow, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"), message);
                             return false;
                         }
                         break;
                     case DataBaseRestoreFrom.ChooseFromFilePickerDialog:
                         FileFilter fileFilterBackups = logicpos.Utils.GetFileFilterBackups();
-                        PosFilePickerDialog dialog = new PosFilePickerDialog(pSourceWindow, DialogFlags.DestroyWithParent, fileFilterBackups, FileChooserAction.Open);
+                        PosFilePickerDialog dialog = new PosFilePickerDialog(parentWindow, DialogFlags.DestroyWithParent, fileFilterBackups, FileChooserAction.Open);
                         ResponseType response = (ResponseType)dialog.Run();
                         if (response == ResponseType.Ok)
                         {
@@ -327,7 +326,7 @@ namespace logicpos.Classes.DataLayer
                         }
 
                         //Send fileNamePacked only to show its name in success dialog
-                        if (Restore(pSourceWindow, fileName, fileNamePacked, systemBackup))
+                        if (Restore(parentWindow, fileName, fileNamePacked, systemBackup))
                         {
                             //Audit DATABASE_RESTORE
                             XPOUtility.Audit("DATABASE_RESTORE", string.Format(GeneralUtils.GetResourceByName("audit_message_database_restore"), fileNamePacked));
@@ -376,7 +375,7 @@ namespace logicpos.Classes.DataLayer
                     {
                         //#EQUAL#1
                         string message = string.Format(GeneralUtils.GetResourceByName("dialog_message_database_restore_error_invalid_backup_file"), fileNamePacked);
-                        logicpos.Utils.ShowMessageBox(pSourceWindow, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"), message);
+                        logicpos.Utils.ShowMessageBox(parentWindow, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"), message);
                         return false;
                     }
                 }
@@ -396,7 +395,7 @@ namespace logicpos.Classes.DataLayer
             }
         }
 
-        public static bool Restore(Window pSourceWindow, string pFileName, string pFileNamePacked, sys_systembackup pSystemBackup)
+        public static bool Restore(Window parentWindow, string pFileName, string pFileNamePacked, sys_systembackup pSystemBackup)
         {
             Thread thread;
             bool resultRestore = false;
@@ -410,20 +409,20 @@ namespace logicpos.Classes.DataLayer
                     //resultRestore = RestoreSQLite(pFileName);
                     //Thread
                     thread = new Thread(() => resultRestore = RestoreSQLite(pFileName));
-                    logicpos.Utils.ThreadStart(pSourceWindow, thread, backupProcess);
+                    logicpos.Utils.ThreadStart(parentWindow, thread, backupProcess);
                     break;
                 case DatabaseType.MSSqlServer:
                     //string FileName = GetBackupFileName(_fileExtension, pSystemBackup.Version, pFileName);
                     //Non Thread
                     //resultRestore = RestoreMSSqlServer(_backupConnectionString, pFileName);
                     thread = new Thread(() => resultRestore = RestoreMSSqlServer(_backupConnectionString, pFileName));
-                    logicpos.Utils.ThreadStart(pSourceWindow, thread, backupProcess);
+                    logicpos.Utils.ThreadStart(parentWindow, thread, backupProcess);
                     break;
                 case DatabaseType.MySql:
                     //Non Thread
                     //resultRestore = RestoreMySql(_backupConnectionString, pFileName);
                     thread = new Thread(() => resultRestore = RestoreMySql(_backupConnectionString, pFileName));
-                    logicpos.Utils.ThreadStart(pSourceWindow, thread, backupProcess);
+                    logicpos.Utils.ThreadStart(parentWindow, thread, backupProcess);
                     break;
                 default:
                     break;
@@ -434,11 +433,11 @@ namespace logicpos.Classes.DataLayer
 
             if (resultRestore)
             {
-                logicpos.Utils.ShowMessageBox(pSourceWindow, DialogFlags.Modal, _sizeDialog, MessageType.Info, ButtonsType.Close, GeneralUtils.GetResourceByName("global_information"), string.Format(GeneralUtils.GetResourceByName("dialog_message_database_restore_successfully"), pFileNamePacked));
+                logicpos.Utils.ShowMessageBox(parentWindow, DialogFlags.Modal, _sizeDialog, MessageType.Info, ButtonsType.Close, GeneralUtils.GetResourceByName("global_information"), string.Format(GeneralUtils.GetResourceByName("dialog_message_database_restore_successfully"), pFileNamePacked));
             }
             else
             {
-                logicpos.Utils.ShowMessageBox(pSourceWindow, DialogFlags.Modal, _sizeDialog, MessageType.Error, ButtonsType.Close, GeneralUtils.GetResourceByName("global_error"), string.Format(GeneralUtils.GetResourceByName("dialog_message_database_restore_error"), pFileNamePacked));
+                logicpos.Utils.ShowMessageBox(parentWindow, DialogFlags.Modal, _sizeDialog, MessageType.Error, ButtonsType.Close, GeneralUtils.GetResourceByName("global_error"), string.Format(GeneralUtils.GetResourceByName("dialog_message_database_restore_error"), pFileNamePacked));
             }
 
             return resultRestore;
@@ -475,7 +474,7 @@ namespace logicpos.Classes.DataLayer
             //Override default LocalPath with MSSqlServer.BackupDirectory
             if (GlobalFramework.DatabaseType == "MSSqlServer")
             {
-              _backupConnectionString = string.Format(LogicPOS.Settings.GeneralSettings.Settings["backupConnectionString"], GlobalFramework.DatabaseServer);
+              _backupConnectionString = string.Format(LogicPOS.Settings.AppSettings.Instance.backupConnectionString"], GlobalFramework.DatabaseServer);
               ServerConnection connection = new ServerConnection(_backupConnectionString);
               Server server = new Server(connection);
 
@@ -516,7 +515,7 @@ namespace logicpos.Classes.DataLayer
             }
         }
 
-        private static DataBaseBackupFileInfo GetSelectRecordFileName(Window pSourceWindow)
+        private static DataBaseBackupFileInfo GetSelectRecordFileName(Window parentWindow)
         {
             DataBaseBackupFileInfo resultFileInfo = new DataBaseBackupFileInfo();
 
@@ -526,13 +525,13 @@ namespace logicpos.Classes.DataLayer
 
                 PosSelectRecordDialog<XPCollection, Entity, TreeViewSystemBackup>
                   dialogSystemBackup = new PosSelectRecordDialog<XPCollection, Entity, TreeViewSystemBackup>(
-                    pSourceWindow,
+                    parentWindow,
                     DialogFlags.DestroyWithParent,
                     GeneralUtils.GetResourceByName("window_title_select_backup_filename"),
                     new Size(780, 580),
                     null, //XpoDefaultValue
                     criteriaOperator,
-                    GenericTreeViewMode.Default,
+                    GridViewMode.Default,
                     null  //ActionAreaButtons
                   );
 
@@ -542,7 +541,7 @@ namespace logicpos.Classes.DataLayer
                     //Assign Result
                     resultFileInfo.Response = response;
 
-                    sys_systembackup systemBackup = (sys_systembackup)dialogSystemBackup.GenericTreeView.DataSourceRow;
+                    sys_systembackup systemBackup = (sys_systembackup)dialogSystemBackup.GenericTreeView.Entity;
                     if (systemBackup != null)
                     {
                         if (DatabaseSettings.DatabaseType == DatabaseType.MSSqlServer)
@@ -569,10 +568,10 @@ namespace logicpos.Classes.DataLayer
             return resultFileInfo;
         }
 
-        public static void ShowRequestBackupDialog(Window pSourceWindow)
+        public static void ShowRequestBackupDialog(Window parentWindow)
         {
             ResponseType responseType = logicpos.Utils.ShowMessageTouch(
-              pSourceWindow,
+              parentWindow,
               DialogFlags.Modal,
               MessageType.Question,
               ButtonsType.YesNo,
@@ -582,7 +581,7 @@ namespace logicpos.Classes.DataLayer
 
             if (responseType == ResponseType.Yes)
             {
-                Backup(pSourceWindow);
+                Backup(parentWindow);
             }
         }
 
@@ -870,7 +869,7 @@ namespace logicpos.Classes.DataLayer
             /* IN009068 - logs to track the cause of the issue. #TODO: pending implementation to solve the issue definitively */
             try
             {
-                //string xpoConnectionString = string.Format(LogicPOS.Settings.GeneralSettings.Settings["xpoConnectionString"], SharedFramework.DatabaseName.ToLower());
+                //string xpoConnectionString = string.Format(LogicPOS.Settings.AppSettings.Instance.xpoConnectionString"], SharedFramework.DatabaseName.ToLower());
                 //AutoCreateOption xpoAutoCreateOption = AutoCreateOption.None;
                 //
                 ////XpoDefault.TrackPropertiesModifications = true;

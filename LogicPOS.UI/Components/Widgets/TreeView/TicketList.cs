@@ -2,9 +2,7 @@
 using logicpos.App;
 using logicpos.Classes.Enums.TicketList;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Logic.Others;
-using logicpos.Extensions;
 using logicpos.shared.Enums;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
@@ -16,6 +14,8 @@ using LogicPOS.Settings.Enums;
 using LogicPOS.Shared;
 using LogicPOS.Shared.Article;
 using LogicPOS.Shared.Orders;
+using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using System;
 using System.Drawing;
@@ -29,11 +29,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         //Settings: App
         /* IN008024 */
-        //private string _appOperationModeToken = LogicPOS.Settings.GeneralSettings.Settings["appOperationModeToken"];
+        //private string _appOperationModeToken = LogicPOS.Settings.AppSettings.Instance.appOperationModeToken"];
         //Settings: Colors
-        private readonly Color _colorPosTicketListModeTicketBackground = GeneralSettings.Settings["colorPosTicketListModeTicketBackground"].StringToColor();
-        private readonly Color _colorPosTicketListModeOrderMainBackground = GeneralSettings.Settings["colorPosTicketListModeOrderMainBackground"].StringToColor();
-        private readonly Color _colorPosTicketListModeEditBackground = GeneralSettings.Settings["colorPosTicketListModeEditBackground"].StringToColor();
+        private readonly Color _colorPosTicketListModeTicketBackground = AppSettings.Instance.colorPosTicketListModeTicketBackground;
+        private readonly Color _colorPosTicketListModeOrderMainBackground = AppSettings.Instance.colorPosTicketListModeOrderMainBackground;
+        private readonly Color _colorPosTicketListModeEditBackground = AppSettings.Instance.colorPosTicketListModeEditBackground;
         //SessionApp
         private Guid _currentOrderMainOid;
         private int _currentTicketId;
@@ -60,161 +60,161 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         internal TicketListMode ListMode { get; set; } = TicketListMode.Ticket;
 
         //TicketPad Button References
-        private TouchButtonIconWithText _buttonKeyPrev;
-        public TouchButtonIconWithText ButtonKeyPrev
+        private IconButtonWithText _buttonKeyPrev;
+        public IconButtonWithText ButtonKeyPrev
         {
             set { _buttonKeyPrev = value; _buttonKeyPrev.Clicked += _buttonKeyPrev_Clicked; }
         }
 
-        private TouchButtonIconWithText _buttonKeyNext;
-        public TouchButtonIconWithText ButtonKeyNext
+        private IconButtonWithText _buttonKeyNext;
+        public IconButtonWithText ButtonKeyNext
         {
             set { _buttonKeyNext = value; _buttonKeyNext.Clicked += _buttonKeyNext_Clicked; }
         }
 
-        private TouchButtonIconWithText _buttonKeyDelete;
-        public TouchButtonIconWithText ButtonKeyDelete
+        private IconButtonWithText _buttonKeyDelete;
+        public IconButtonWithText ButtonKeyDelete
         {
             set { _buttonKeyDelete = value; _buttonKeyDelete.Clicked += _buttonKeyDelete_Clicked; }
         }
 
-        private TouchButtonIconWithText _buttonKeyChangeQuantity;
-        public TouchButtonIconWithText ButtonKeyChangeQuantity
+        private IconButtonWithText _buttonKeyChangeQuantity;
+        public IconButtonWithText ButtonKeyChangeQuantity
         {
             set { _buttonKeyChangeQuantity = value; _buttonKeyChangeQuantity.Clicked += _buttonKeyChangeQuantity_Clicked; }
         }
 
-        private TouchButtonIconWithText _buttonKeyChangePrice;
-        public TouchButtonIconWithText ButtonKeyChangePrice
+        private IconButtonWithText _buttonKeyChangePrice;
+        public IconButtonWithText ButtonKeyChangePrice
         {
             set { _buttonKeyChangePrice = value; _buttonKeyChangePrice.Clicked += _buttonKeyChangePrice_Clicked; }
         }
 
-        private TouchButtonIconWithText _buttonKeyWeight;
-        public TouchButtonIconWithText ButtonKeyWeight
+        private IconButtonWithText _buttonKeyWeight;
+        public IconButtonWithText ButtonKeyWeight
         {
             set { _buttonKeyWeight = value; _buttonKeyWeight.Clicked += _buttonKeyWeight_Clicked; }
         }
 
-        private TouchButtonIconWithText _buttonKeyGifts;
-        public TouchButtonIconWithText ButtonKeyGifts
+        private IconButtonWithText _buttonKeyGifts;
+        public IconButtonWithText ButtonKeyGifts
         {
             set { _buttonKeyGifts = value; _buttonKeyGifts.Clicked += _buttonKeyGifts_Clicked; }
         }
 
-        private TouchButtonIconWithText _buttonKeyFinishOrder;
-        public TouchButtonIconWithText ButtonKeyFinishOrder
+        private IconButtonWithText _buttonKeyFinishOrder;
+        public IconButtonWithText ButtonKeyFinishOrder
         {
             set { _buttonKeyFinishOrder = value; _buttonKeyFinishOrder.Clicked += _buttonKeyFinishOrder_Clicked; }
         }
 
-        private TouchButtonIconWithText _buttonKeyPayments;
-        public TouchButtonIconWithText ButtonKeyPayments
+        private IconButtonWithText _buttonKeyPayments;
+        public IconButtonWithText ButtonKeyPayments
         {
             // Shared Event for Payments and SplitAccount
             set { _buttonKeyPayments = value; _buttonKeyPayments.Clicked += _buttonKeyPayments_Clicked; }
         }
 
-        private TouchButtonIconWithText _buttonKeySplitAccount;
-        public TouchButtonIconWithText ButtonKeySplitAccount
+        private IconButtonWithText _buttonKeySplitAccount;
+        public IconButtonWithText ButtonKeySplitAccount
         {
             // Shared Event for Payments and SplitAccount
             set { _buttonKeySplitAccount = value; _buttonKeySplitAccount.Clicked += _buttonKeyPayments_Clicked; }
         }
 
-        private TouchButtonIconWithText _buttonKeyBarCode;
-        public TouchButtonIconWithText ButtonKeyBarCode
+        private IconButtonWithText _buttonKeyBarCode;
+        public IconButtonWithText ButtonKeyBarCode
         {
             set { _buttonKeyBarCode = value; _buttonKeyBarCode.Clicked += _buttonKeyBarCode_Clicked; }
         }
 
-        private TouchButtonIconWithText _buttonKeyCardCode;
-        public TouchButtonIconWithText ButtonKeyCardCode
+        private IconButtonWithText _buttonKeyCardCode;
+        public IconButtonWithText ButtonKeyCardCode
         {
             set { _buttonKeyCardCode = value; _buttonKeyCardCode.Clicked += _buttonKeyCardCode_Clicked; }
         }
 
-        private TouchButtonIconWithText _buttonKeyListOrder;
-        public TouchButtonIconWithText ButtonKeyListOrder
+        private IconButtonWithText _buttonKeyListOrder;
+        public IconButtonWithText ButtonKeyListOrder
         {
             set { _buttonKeyListOrder = value; _buttonKeyListOrder.Clicked += _buttonKeyListOrder_Clicked; }
         }
 
-        private TouchButtonIconWithText _buttonKeyChangeTable;
-        public TouchButtonIconWithText ButtonKeyChangeTable
+        private IconButtonWithText _buttonKeyChangeTable;
+        public IconButtonWithText ButtonKeyChangeTable
         {
             set { _buttonKeyChangeTable = value; _buttonKeyChangeTable.Clicked += _buttonKeyChangeTable_Clicked; }
         }
 
-        private TouchButtonIconWithText _buttonKeyListMode;
-        public TouchButtonIconWithText ButtonKeyListMode
+        private IconButtonWithText _buttonKeyListMode;
+        public IconButtonWithText ButtonKeyListMode
         {
             set { _buttonKeyListMode = value; _buttonKeyListMode.Clicked += _buttonKeyListMode_Clicked; }
         }
 
-        private TouchButtonIconWithText _buttonKeyDecrease;
-        public TouchButtonIconWithText ButtonKeyDecrease
+        private IconButtonWithText _buttonKeyDecrease;
+        public IconButtonWithText ButtonKeyDecrease
         {
             set { _buttonKeyDecrease = value; _buttonKeyDecrease.Clicked += _buttonKeyDecrease_Clicked; }
         }
 
-        private TouchButtonIconWithText _buttonKeyIncrease;
-        public TouchButtonIconWithText ButtonKeyIncrease
+        private IconButtonWithText _buttonKeyIncrease;
+        public IconButtonWithText ButtonKeyIncrease
         {
             set { _buttonKeyIncrease = value; _buttonKeyIncrease.Clicked += _buttonKeyIncrease_Clicked; }
         }
 
         //Toolbar Button References
-        private TouchButtonIconWithText _toolbarApplicationClose;
-        public TouchButtonIconWithText ToolbarApplicationClose
+        private IconButtonWithText _toolbarApplicationClose;
+        public IconButtonWithText ToolbarApplicationClose
         {
             set { _toolbarApplicationClose = value; }
         }
 
-        private TouchButtonIconWithText _toolbarLogoutUser;
-        public TouchButtonIconWithText ToolbarLogoutUser
+        private IconButtonWithText _toolbarLogoutUser;
+        public IconButtonWithText ToolbarLogoutUser
         {
             set { _toolbarLogoutUser = value; }
         }
 
-        private TouchButtonIconWithText _toolbarShowSystemDialog;
-        public TouchButtonIconWithText ToolbarShowSystemDialog
+        private IconButtonWithText _toolbarShowSystemDialog;
+        public IconButtonWithText ToolbarShowSystemDialog
         {
             set { _toolbarShowSystemDialog = value; }
         }
 
-        private TouchButtonIconWithText _toolbarShowChangeUserDialog;
-        public TouchButtonIconWithText ToolbarShowChangeUserDialog
+        private IconButtonWithText _toolbarShowChangeUserDialog;
+        public IconButtonWithText ToolbarShowChangeUserDialog
         {
             set { _toolbarShowChangeUserDialog = value; }
         }
 
-        private TouchButtonIconWithText _toolbarBackOffice;
-        public TouchButtonIconWithText ToolbarBackOffice
+        private IconButtonWithText _toolbarBackOffice;
+        public IconButtonWithText ToolbarBackOffice
         {
             set { _toolbarBackOffice = value; }
         }
 
-        private TouchButtonIconWithText _toolbarReports;
-        public TouchButtonIconWithText ToolbarReports
+        private IconButtonWithText _toolbarReports;
+        public IconButtonWithText ToolbarReports
         {
             set { _toolbarReports = value; }
         }
 
-        private TouchButtonIconWithText _toolbarCashDrawer;
-        public TouchButtonIconWithText ToolbarCashDrawer
+        private IconButtonWithText _toolbarCashDrawer;
+        public IconButtonWithText ToolbarCashDrawer
         {
             set { _toolbarCashDrawer = value; }
         }
 
-        private TouchButtonIconWithText _toolbarFinanceDocuments;
-        public TouchButtonIconWithText ToolbarFinanceDocuments
+        private IconButtonWithText _toolbarFinanceDocuments;
+        public IconButtonWithText ToolbarFinanceDocuments
         {
             set { _toolbarFinanceDocuments = value; }
         }
 
-        private TouchButtonIconWithText _toolbarNewFinanceDocument;
-        public TouchButtonIconWithText ToolbarNewFinanceDocument
+        private IconButtonWithText _toolbarNewFinanceDocument;
+        public IconButtonWithText ToolbarNewFinanceDocument
         {
             set { _toolbarNewFinanceDocument = value; }
         }
@@ -661,7 +661,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             try
             {
                 // Override Default with Config Value
-                requireToChooseVatExemptionReason = Convert.ToBoolean(GeneralSettings.Settings["requireToChooseVatExemptionReason"]);
+                requireToChooseVatExemptionReason = AppSettings.Instance.requireToChooseVatExemptionReason;
             }
             catch (Exception)
             {

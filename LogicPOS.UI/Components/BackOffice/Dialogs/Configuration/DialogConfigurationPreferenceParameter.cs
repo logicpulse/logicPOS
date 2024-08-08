@@ -11,10 +11,11 @@ using LogicPOS.Utility;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Enums;
+using LogicPOS.UI.Components;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
-    internal class DialogConfigurationPreferenceParameter : BOBaseDialog
+    internal class DialogConfigurationPreferenceParameter : EditDialog
     {
         private readonly int _windowWidth = 500;
         private readonly int _windowHeightForTextComponent = 331;
@@ -37,8 +38,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
 
         }
-        public DialogConfigurationPreferenceParameter(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, Entity pXPGuidObject)
-            : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
+        public DialogConfigurationPreferenceParameter(Window parentWindow, XpoGridView pTreeView, DialogFlags pFlags, DialogMode pDialogMode, Entity pXPGuidObject)
+            : base(parentWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
             _XPGuidObject = pXPGuidObject;
             this.Title = logicpos.Utils.GetWindowTitle(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_edit_configurationpreferenceparameter"));
@@ -58,7 +59,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             try
             {
-                cfg_configurationpreferenceparameter dataSourceRow = (cfg_configurationpreferenceparameter)_dataSourceRow;
+                cfg_configurationpreferenceparameter dataSourceRow = (cfg_configurationpreferenceparameter)Entity;
 
                 //Define Label for Value
                 string valueLabel = (CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, dataSourceRow.ResourceString) != null)
@@ -89,19 +90,19 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 Entry entryOrd = new Entry();
                 BOWidgetBox boxLabel = new BOWidgetBox(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_record_order"), entryOrd);
                 vboxTab1.PackStart(boxLabel, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxLabel, _dataSourceRow, "Ord", RegexUtils.RegexIntegerGreaterThanZero, true));
+                InputFields.Add(new GenericCRUDWidgetXPO(boxLabel, Entity, "Ord", RegexUtils.RegexIntegerGreaterThanZero, true));
 
                 //Code
                 Entry entryCode = new Entry();
                 BOWidgetBox boxCode = new BOWidgetBox(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_record_code"), entryCode);
                 vboxTab1.PackStart(boxCode, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCode, _dataSourceRow, "Code", RegexUtils.RegexIntegerGreaterThanZero, true));
+                InputFields.Add(new GenericCRUDWidgetXPO(boxCode, Entity, "Code", RegexUtils.RegexIntegerGreaterThanZero, true));
 
                 //Token
                 Entry entryToken = new Entry();
                 BOWidgetBox boxToken = new BOWidgetBox(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_token"), entryToken);
                 vboxTab1.PackStart(boxToken, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxToken, _dataSourceRow, "Token", RegexUtils.RegexAlfaNumericExtended, true));
+                InputFields.Add(new GenericCRUDWidgetXPO(boxToken, Entity, "Token", RegexUtils.RegexAlfaNumericExtended, true));
 
                 //Get InputType
                 PreferenceParameterInputType inputType = (PreferenceParameterInputType)Enum.Parse(typeof(PreferenceParameterInputType), dataSourceRow.InputType.ToString(), true);
@@ -117,7 +118,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         // Turn entry into a TextPassword, curently we not use it, until we can turn Visibility = false into TreeView Cell
                         if (inputType.Equals(PreferenceParameterInputType.TextPassword)) entryValue.Visibility = false;
 
-                        _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxValue, _dataSourceRow, "Value", valueRegEx, valueRequired));
+                        InputFields.Add(new GenericCRUDWidgetXPO(boxValue, Entity, "Value", valueRegEx, valueRequired));
                         // ValueTip
                         if (!string.IsNullOrEmpty(dataSourceRow.ValueTip))
                         {
@@ -125,21 +126,21 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         }
                         break;
                     case PreferenceParameterInputType.Multiline:
-                        EntryMultiline entryMultiline = new EntryMultiline();
+                        MultilineTextBox entryMultiline = new MultilineTextBox();
                         entryMultiline.Value.Text = dataSourceRow.Value;
                         entryMultiline.ScrolledWindow.BorderWidth = 1;
                         entryMultiline.HeightRequest = 122;
                         Label labelMultiline = new Label(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_notes"));
                         boxValue = new BOWidgetBox(valueLabel, entryMultiline);
                         vboxTab1.PackStart(boxValue, false, false, 0);
-                        _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxValue, _dataSourceRow, "Value", valueRegEx, valueRequired));
+                        InputFields.Add(new GenericCRUDWidgetXPO(boxValue, Entity, "Value", valueRegEx, valueRequired));
                         // Override Default Window Height
                         _windowHeight = _windowHeightForTextComponent + 100;
                         break;
                     case PreferenceParameterInputType.CheckButton:
                         CheckButton checkButtonValue = new CheckButton(valueLabel);
                         vboxTab1.PackStart(checkButtonValue, false, false, 0);
-                        _crudWidgetList.Add(new GenericCRUDWidgetXPO(checkButtonValue, _dataSourceRow, "Value"));
+                        InputFields.Add(new GenericCRUDWidgetXPO(checkButtonValue, Entity, "Value"));
                         // Override Default Window Height
                         _windowHeight = _windowHeightForTextComponent - 20;
                         break;
@@ -217,7 +218,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                             //_crudWidgetList.Add(new GenericCRUDWidgetXPO(boxValue, _dataSourceRow, "Value", string.Empty, false));
                         };
                         boxValue = new BOWidgetBox(valueLabel, entryValue);
-                        _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxValue, _dataSourceRow, "Value", string.Empty, false));
+                        InputFields.Add(new GenericCRUDWidgetXPO(boxValue, Entity, "Value", string.Empty, false));
                         break;
                     case PreferenceParameterInputType.FilePicker:
                     case PreferenceParameterInputType.DirPicker:
@@ -243,7 +244,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         }
                         boxValue = new BOWidgetBox(valueLabel, fileChooser);
                         vboxTab1.PackStart(boxValue, false, false, 0);
-                        _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxValue, _dataSourceRow, "Value", string.Empty, false));
+                        InputFields.Add(new GenericCRUDWidgetXPO(boxValue, Entity, "Value", string.Empty, false));
                         break;
                     default:
                         break;
@@ -258,7 +259,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 entryToken.Sensitive = false;
 
                 //Protect PreferenceParameterInputType : Disable if is COMPANY_FISCALNUMBER or Other Sensitive Data
-                cfg_configurationpreferenceparameter parameter = (_dataSourceRow as cfg_configurationpreferenceparameter);
+                cfg_configurationpreferenceparameter parameter = (Entity as cfg_configurationpreferenceparameter);
 #if !DEBUG
                 if (entryValue != null) entryValue.Sensitive = (
                     parameter.Token != "COMPANY_NAME"

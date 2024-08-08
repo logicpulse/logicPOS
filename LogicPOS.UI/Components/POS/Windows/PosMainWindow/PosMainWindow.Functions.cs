@@ -5,18 +5,16 @@ using logicpos.Classes.Enums.Hardware;
 using logicpos.Classes.Enums.TicketList;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using LogicPOS.Data.Services;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Enums;
-using LogicPOS.Globalization;
-using LogicPOS.Printing.Utility;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Shared;
 using LogicPOS.Shared.Orders;
+using LogicPOS.UI.Buttons;
 using LogicPOS.Utility;
 using System;
 
@@ -247,12 +245,12 @@ namespace logicpos
 
         private void _tablePadFamily_Clicked(object sender, EventArgs e)
         {
-            TouchButtonBase button = (TouchButtonBase)sender;
+            CustomButton button = (CustomButton)sender;
 
             //Assign CurrentId to TablePad.CurrentId, to Know last Clicked Button Id
-            TablePadFamily.SelectedButtonOid = button.CurrentButtonOid;
+            TablePadFamily.SelectedButtonOid = button.CurrentButtonId;
             //SubFamily Filter
-            TablePadSubFamily.Filter = string.Format(" AND (Family = '{0}')", button.CurrentButtonOid);
+            TablePadSubFamily.Filter = string.Format(" AND (Family = '{0}')", button.CurrentButtonId);
 
             //IN009277
             string getFirstSubFamily = "0";
@@ -282,13 +280,13 @@ namespace logicpos
 
         private void _tablePadSubFamily_Clicked(object sender, EventArgs e)
         {
-            TouchButtonBase button = (TouchButtonBase)sender;
+            CustomButton button = (CustomButton)sender;
 
             //Assign CurrentId to TablePad.CurrentId, to Know last Clicked Button Id
-            TablePadSubFamily.SelectedButtonOid = button.CurrentButtonOid;
+            TablePadSubFamily.SelectedButtonOid = button.CurrentButtonId;
 
             //Article Filter
-            TablePadArticle.Filter = string.Format(" AND (SubFamily = '{0}')", button.CurrentButtonOid);
+            TablePadArticle.Filter = string.Format(" AND (SubFamily = '{0}')", button.CurrentButtonId);
 
             //Debug
             //_logger.Debug(string.Format("_tablePadSubFamily_Clicked(): S:CurrentId:[{0}], Name:[{1}]", button.CurrentId, button.Name));
@@ -302,7 +300,7 @@ namespace logicpos
         {
             try
             {
-                TouchButtonBase button = (TouchButtonBase)sender;
+                CustomButton button = (CustomButton)sender;
                 //_logger.Debug(string.Format("_tablePadArticle_Clicked(): A:CurrentId:[{0}], Name:[{1}]", button.CurrentButtonOid, button.Name));
 
                 //Change Mode
@@ -313,10 +311,10 @@ namespace logicpos
                 }
 
                 //Assign CurrentId to TablePad.CurrentId, to Know last Clicked Button Id
-                TablePadArticle.SelectedButtonOid = button.CurrentButtonOid;
+                TablePadArticle.SelectedButtonOid = button.CurrentButtonId;
 
                 //Send to TicketList
-                TicketList.InsertOrUpdate(button.CurrentButtonOid);
+                TicketList.InsertOrUpdate(button.CurrentButtonId);
             }
             catch (Exception ex)
             {

@@ -1,29 +1,29 @@
 ﻿using Gtk;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using System;
 using System.Drawing;
-using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Utility;
+using LogicPOS.UI.Dialogs;
+using LogicPOS.UI.Buttons;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    internal partial class PosDocumentFinanceSelectRecordDialog : PosBaseDialog
+    internal partial class PosDocumentFinanceSelectRecordDialog : BaseDialog
     {
-        private readonly TouchButtonIconWithText _touchButtonPosToolbarFinanceDocuments;
-        private readonly TouchButtonIconWithText _toolbarFinanceDocumentsInvoicesUnpayed;
-        private readonly TouchButtonIconWithText _toolbarFinanceDocumentsPayments;
-        private readonly TouchButtonIconWithText _touchButtonPosToolbarCurrentAccountDocuments;
-        private readonly TouchButtonIconWithText _touchButtonPosToolbarWorkSessionPeriods;
-        private readonly TouchButtonIconWithText _touchButtonPosToolbarMerchandiseEntry;
+        private readonly IconButtonWithText _touchButtonPosToolbarFinanceDocuments;
+        private readonly IconButtonWithText _toolbarFinanceDocumentsInvoicesUnpayed;
+        private readonly IconButtonWithText _toolbarFinanceDocumentsPayments;
+        private readonly IconButtonWithText _touchButtonPosToolbarCurrentAccountDocuments;
+        private readonly IconButtonWithText _touchButtonPosToolbarWorkSessionPeriods;
+        private readonly IconButtonWithText _touchButtonPosToolbarMerchandiseEntry;
 
-        public PosDocumentFinanceSelectRecordDialog(Window pSourceWindow, DialogFlags pDialogFlags, int docChoice)
-            : base(pSourceWindow, pDialogFlags)
+        public PosDocumentFinanceSelectRecordDialog(Window parentWindow, DialogFlags pDialogFlags, int docChoice)
+            : base(parentWindow, pDialogFlags)
         {
             //Parameters
-            _sourceWindow = pSourceWindow;            
+            WindowSettings.Source = parentWindow;            
 
             //Settings
             string _fileIconListFinanceDocuments = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_toolbar_finance_document.png";
@@ -45,12 +45,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             string fileDefaultWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_documents.png";
 
             //Buttons
-            _touchButtonPosToolbarFinanceDocuments = new TouchButtonIconWithText("touchButtonPosToolbarFinanceDocuments_Green", _colorBaseDialogDefaultButtonBackground, GeneralUtils.GetResourceByName("dialog_button_label_select_record_finance_documents"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileIconListFinanceDocuments, sizeIcon, buttonWidth, buttonHeight) { Token = "ALL" };
-            _toolbarFinanceDocumentsInvoicesUnpayed = new TouchButtonIconWithText("touchButtonPosToolbarFinanceDocumentsInvoicesForPayment_Green", _colorBaseDialogDefaultButtonBackground, GeneralUtils.GetResourceByName("dialog_button_label_select_finance_documents_ft_unpaid"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileIconListFinanceDocuments, sizeIcon, buttonWidth, buttonHeight) { Token = "FT_UNPAYED" };
-            _toolbarFinanceDocumentsPayments = new TouchButtonIconWithText("touchButtonPosToolbarFinanceDocumentsPayments_Green", _colorBaseDialogDefaultButtonBackground, GeneralUtils.GetResourceByName("dialog_button_label_select_payments"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileIconListFinanceDocuments, sizeIcon, buttonWidth, buttonHeight);
-            _touchButtonPosToolbarCurrentAccountDocuments = new TouchButtonIconWithText("REPORT_CUSTOMER_BALANCE_DETAILS", _colorBaseDialogDefaultButtonBackground, GeneralUtils.GetResourceByName("dialog_button_label_select_finance_documents_cc"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileIconListCurrentAccountDocuments, sizeIcon, buttonWidth, buttonHeight) { Token = "CC" };
-            _touchButtonPosToolbarWorkSessionPeriods = new TouchButtonIconWithText("touchButtonPosToolbarWorkSessionPeriods_Green", _colorBaseDialogDefaultButtonBackground, GeneralUtils.GetResourceByName("dialog_button_label_select_worksession_period"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileIconListWorksessionPeriods, sizeIcon, buttonWidth, buttonHeight);
-            _touchButtonPosToolbarMerchandiseEntry = new TouchButtonIconWithText("touchButtonPosToolbarMerchandiseEntry_Green", _colorBaseDialogDefaultButtonBackground, GeneralUtils.GetResourceByName("dialog_button_label_select_merchandise_entry"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileIconListMerchandiseEntry, sizeIcon, buttonWidth, buttonHeight);
+            _touchButtonPosToolbarFinanceDocuments = new IconButtonWithText(new ButtonSettings { Name = "touchButtonPosToolbarFinanceDocuments_Green", BackgroundColor = ColorSettings.DefaultButtonBackground, Text = GeneralUtils.GetResourceByName("dialog_button_label_select_record_finance_documents"), Font = FontSettings.Button, FontColor = ColorSettings.DefaultButtonFont, Icon = _fileIconListFinanceDocuments, IconSize = sizeIcon, ButtonSize = new Size(buttonWidth, buttonHeight) }) { Token = "ALL" };
+            _toolbarFinanceDocumentsInvoicesUnpayed = new IconButtonWithText(new ButtonSettings { Name = "touchButtonPosToolbarFinanceDocumentsInvoicesForPayment_Green", BackgroundColor = ColorSettings.DefaultButtonBackground, Text = GeneralUtils.GetResourceByName("dialog_button_label_select_finance_documents_ft_unpaid"), Font = FontSettings.Button, FontColor = ColorSettings.DefaultButtonFont, Icon = _fileIconListFinanceDocuments, IconSize = sizeIcon, ButtonSize = new Size(buttonWidth, buttonHeight) }) { Token = "FT_UNPAYED" };
+            _toolbarFinanceDocumentsPayments = new IconButtonWithText(new ButtonSettings { Name = "touchButtonPosToolbarFinanceDocumentsPayments_Green", BackgroundColor = ColorSettings.DefaultButtonBackground, Text = GeneralUtils.GetResourceByName("dialog_button_label_select_payments"), Font = FontSettings.Button, FontColor = ColorSettings.DefaultButtonFont, Icon = _fileIconListFinanceDocuments, IconSize = sizeIcon, ButtonSize = new Size(buttonWidth, buttonHeight) });
+            _touchButtonPosToolbarCurrentAccountDocuments = new IconButtonWithText(new ButtonSettings { Name = "REPORT_CUSTOMER_BALANCE_DETAILS", BackgroundColor = ColorSettings.DefaultButtonBackground, Text = GeneralUtils.GetResourceByName("dialog_button_label_select_finance_documents_cc"), Font = FontSettings.Button, FontColor = ColorSettings.DefaultButtonFont, Icon = _fileIconListCurrentAccountDocuments, IconSize = sizeIcon, ButtonSize = new Size(buttonWidth, buttonHeight) }) { Token = "CC" };
+            _touchButtonPosToolbarWorkSessionPeriods = new IconButtonWithText(new ButtonSettings { Name = "touchButtonPosToolbarWorkSessionPeriods_Green", BackgroundColor = ColorSettings.DefaultButtonBackground, Text = GeneralUtils.GetResourceByName("dialog_button_label_select_worksession_period"), Font = FontSettings.Button, FontColor = ColorSettings.DefaultButtonFont, Icon = _fileIconListWorksessionPeriods, IconSize = sizeIcon, ButtonSize = new Size(buttonWidth, buttonHeight) });
+            _touchButtonPosToolbarMerchandiseEntry = new IconButtonWithText(new ButtonSettings { Name = "touchButtonPosToolbarMerchandiseEntry_Green", BackgroundColor = ColorSettings.DefaultButtonBackground, Text = GeneralUtils.GetResourceByName("dialog_button_label_select_merchandise_entry"), Font = FontSettings.Button, FontColor = ColorSettings.DefaultButtonFont, Icon = _fileIconListMerchandiseEntry, IconSize = sizeIcon, ButtonSize = new Size(buttonWidth, buttonHeight) });
             //Permission
             _touchButtonPosToolbarMerchandiseEntry.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("STOCK_MERCHANDISE_ENTRY_ACCESS");
 
@@ -93,7 +93,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 case 0:
 
                     //Init Object
-                    this.InitObject(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, table, null);
+                    this.Initialize(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, table, null);
 
                     //Shared Events 
                     _touchButtonPosToolbarFinanceDocuments.Clicked += touchButtonPosToolbarFinanceDocuments_Clicked;

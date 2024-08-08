@@ -1,7 +1,5 @@
 ﻿using logicpos.shared.Enums;
 using LogicPOS.Reporting.Data.Common;
-using LogicPOS.Reporting.Reports.Customers;
-using LogicPOS.Reporting.Reports.Data;
 using LogicPOS.Reporting.Reports.Users;
 using LogicPOS.Settings;
 using LogicPOS.Utility;

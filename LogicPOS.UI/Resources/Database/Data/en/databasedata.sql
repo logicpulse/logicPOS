@@ -1365,7 +1365,7 @@ UPDATE cfg_configurationpreferenceparameter SET UpdatedBy = '090c5684-52ba-4d7a-
 INSERT INTO sys_systemaudittype (Oid,Ord,Code,Token,Designation,ResourceString) VALUES ('c3a6486a-8c80-46bb-9047-e5f228247d53',10,10,'APP_START','App Started','systemaudittype_app_start');
 INSERT INTO sys_systemaudittype (Oid,Ord,Code,Token,Designation,ResourceString) VALUES ('03cdf338-de16-4b31-8908-3b3f9706d134',20,20,'APP_CLOSE','App Closed','systemaudittype_app_close');
 INSERT INTO sys_systemaudittype (Oid,Ord,Code,Token,Designation,ResourceString) VALUES ('ced761ee-d338-4a5f-8971-b0548e8ffc68',30,30,'USER_loggerIN','User Login','systemaudittype_user_loggerin');
-INSERT INTO sys_systemaudittype (Oid,Ord,Code,Token,Designation,ResourceString) VALUES ('4a6e396f-1d89-4f5d-b315-097aa408b853',40,40,'USER_loggerOUT','User Logout','systemaudittype_user_loggerout');
+INSERT INTO sys_systemaudittype (Oid,Ord,Code,Token,Designation,ResourceString) VALUES ('4a6e396f-1d89-4f5d-b315-097aa408b853',40,40,'USER_logout','User Logout','systemaudittype_user_logout');
 INSERT INTO sys_systemaudittype (Oid,Ord,Code,Token,Designation,ResourceString) VALUES ('c2d0923a-821d-43a7-9e70-b8b792539184',50,50,'USER_CHANGE','User Updated','systemaudittype_user_change');
 INSERT INTO sys_systemaudittype (Oid,Ord,Code,Token,Designation,ResourceString) VALUES ('20f85113-f180-49c3-a125-d4b015e08504',60,60,'USER_CHANGE_PASSWORD','Password Update','systemaudittype_user_change_password');
 INSERT INTO sys_systemaudittype (Oid,Ord,Code,Token,Designation,ResourceString) VALUES ('9ca32a1a-f1e5-4e9b-8e3b-72e5d6f875fd',70,70,'USER_loggerIN_ERROR','Passworg Wrong','systemaudittype_user_loggerin_error');

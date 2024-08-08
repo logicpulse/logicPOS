@@ -6,13 +6,14 @@ using System;
 using logicpos.Classes.Enums.Dialogs;
 using LogicPOS.Globalization;
 using LogicPOS.Domain.Entities;
+using LogicPOS.UI.Components;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
-    internal class DialogDocumentFinanceType : BOBaseDialog
+    internal class DialogDocumentFinanceType : EditDialog
     {
-        public DialogDocumentFinanceType(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, Entity pXPGuidObject)
-            : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
+        public DialogDocumentFinanceType(Window parentWindow, XpoGridView pTreeView, DialogFlags pFlags, DialogMode pDialogMode, Entity pXPGuidObject)
+            : base(parentWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
             this.Title = logicpos.Utils.GetWindowTitle(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_edit_template"));
             SetSizeRequest(400, 514);
@@ -32,53 +33,53 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 Entry entryOrd = new Entry();
                 BOWidgetBox boxLabel = new BOWidgetBox(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_record_order"), entryOrd);
                 vboxTab1.PackStart(boxLabel, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxLabel, _dataSourceRow, "Ord", LogicPOS.Utility.RegexUtils.RegexIntegerGreaterThanZero, true));
+                InputFields.Add(new GenericCRUDWidgetXPO(boxLabel, Entity, "Ord", LogicPOS.Utility.RegexUtils.RegexIntegerGreaterThanZero, true));
 
                 //Code
                 Entry entryCode = new Entry();
                 BOWidgetBox boxCode = new BOWidgetBox(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_record_code"), entryCode);
                 vboxTab1.PackStart(boxCode, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCode, _dataSourceRow, "Code", LogicPOS.Utility.RegexUtils.RegexIntegerGreaterThanZero, true));
+                InputFields.Add(new GenericCRUDWidgetXPO(boxCode, Entity, "Code", LogicPOS.Utility.RegexUtils.RegexIntegerGreaterThanZero, true));
 
                 //Designation
                 Entry entryDesignation = new Entry();
                 BOWidgetBox boxDesignation = new BOWidgetBox(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_designation"), entryDesignation);
                 vboxTab1.PackStart(boxDesignation, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true));
+                InputFields.Add(new GenericCRUDWidgetXPO(boxDesignation, Entity, "Designation", LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true));
 
                 //Acronym
                 Entry entryAcronym = new Entry();
                 BOWidgetBox boxAcronym = new BOWidgetBox(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_acronym"), entryAcronym);
                 vboxTab1.PackStart(boxAcronym, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxAcronym, _dataSourceRow, "Acronym", LogicPOS.Utility.RegexUtils.RegexAlfa, true));
+                InputFields.Add(new GenericCRUDWidgetXPO(boxAcronym, Entity, "Acronym", LogicPOS.Utility.RegexUtils.RegexAlfa, true));
 
                 //PrintCopies
                 Entry entryPrintCopies = new Entry();
                 BOWidgetBox boxPrintCopies = new BOWidgetBox(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_print_copies"), entryPrintCopies);
                 vboxTab1.PackStart(boxPrintCopies, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxPrintCopies, _dataSourceRow, "PrintCopies", LogicPOS.Utility.RegexUtils.RegexPrintCopies, true));
+                InputFields.Add(new GenericCRUDWidgetXPO(boxPrintCopies, Entity, "PrintCopies", LogicPOS.Utility.RegexUtils.RegexPrintCopies, true));
 
                 //Printer
-                XPOComboBox xpoComboBoxPrinter = new XPOComboBox(DataSourceRow.Session, typeof(sys_configurationprinters), (DataSourceRow as fin_documentfinancetype).Printer, "Designation", null);
+                XPOComboBox xpoComboBoxPrinter = new XPOComboBox(Entity.Session, typeof(sys_configurationprinters), (Entity as fin_documentfinancetype).Printer, "Designation", null);
                 BOWidgetBox boxPrinter = new BOWidgetBox(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_device_printer"), xpoComboBoxPrinter);
                 vboxTab1.PackStart(boxPrinter, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxPrinter, DataSourceRow, "Printer", LogicPOS.Utility.RegexUtils.RegexGuid, false));
+                InputFields.Add(new GenericCRUDWidgetXPO(boxPrinter, Entity, "Printer", LogicPOS.Utility.RegexUtils.RegexGuid, false));
 
                 //Template
-                XPOComboBox xpoComboBoxTemplate = new XPOComboBox(DataSourceRow.Session, typeof(sys_configurationprinterstemplates), (DataSourceRow as fin_documentfinancetype).Template, "Designation", null);
+                XPOComboBox xpoComboBoxTemplate = new XPOComboBox(Entity.Session, typeof(sys_configurationprinterstemplates), (Entity as fin_documentfinancetype).Template, "Designation", null);
                 BOWidgetBox boxTemplate = new BOWidgetBox(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_configurationprintersTemplate"), xpoComboBoxTemplate);
                 vboxTab1.PackStart(boxTemplate, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxTemplate, DataSourceRow, "Template", LogicPOS.Utility.RegexUtils.RegexGuid, false));
+                InputFields.Add(new GenericCRUDWidgetXPO(boxTemplate, Entity, "Template", LogicPOS.Utility.RegexUtils.RegexGuid, false));
 
                 //PrintRequestConfirmation
                 CheckButton checkButtonPrintRequestConfirmation = new CheckButton(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_print_request_confirmation"));
                 vboxTab1.PackStart(checkButtonPrintRequestConfirmation, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(checkButtonPrintRequestConfirmation, _dataSourceRow, "PrintRequestConfirmation"));
+                InputFields.Add(new GenericCRUDWidgetXPO(checkButtonPrintRequestConfirmation, Entity, "PrintRequestConfirmation"));
 
                 //PrintOpenDrawer
                 CheckButton checkButtonPrintOpenDrawer = new CheckButton(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_open_drawer"));
                 vboxTab1.PackStart(checkButtonPrintOpenDrawer, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(checkButtonPrintOpenDrawer, _dataSourceRow, "PrintOpenDrawer"));
+                InputFields.Add(new GenericCRUDWidgetXPO(checkButtonPrintOpenDrawer, Entity, "PrintOpenDrawer"));
 
                 //Append Tab
                 _notebook.AppendPage(vboxTab1, new Label(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_record_main_detail")));

@@ -3,7 +3,6 @@ using DevExpress.Xpo;
 using Gtk;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.Keyboard;
-using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
@@ -11,6 +10,8 @@ using System;
 using LogicPOS.Globalization;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
+using LogicPOS.UI.Components.InputFieds;
+using LogicPOS.UI.Components;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 {
@@ -27,17 +28,17 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         private readonly EntryBoxValidation _entryBoxLocality;
         private readonly EntryBoxValidation _entryBoxZipCode;
         private readonly EntryBoxValidation _entryBoxCity;
-        private readonly XPOEntryBoxSelectRecord<cfg_configurationcountry, TreeViewConfigurationCountry> _entryBoxSelectCountry;
-        private readonly XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry> _entryBoxSelectCountryValidation;
+        private readonly XPOEntryBoxSelectRecord<cfg_configurationcountry, GridViewCountries> _entryBoxSelectCountry;
+        private readonly XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, GridViewCountries> _entryBoxSelectCountryValidation;
         private readonly EntryBoxValidation _entryBoxNotes;
 
         public erp_customer ValueCustomer { get; set; }
 
         //Constructor
-        public DocumentFinanceDialogPage8(Window pSourceWindow, string pPageName) : this(pSourceWindow, pPageName, "", null, true) { }
-        public DocumentFinanceDialogPage8(Window pSourceWindow, string pPageName, Widget pWidget) : this(pSourceWindow, pPageName, "", pWidget, true) { }
-        public DocumentFinanceDialogPage8(Window pSourceWindow, string pPageName, string pPageIcon, Widget pWidget, bool pEnabled = true)
-            : base(pSourceWindow, pPageName, pPageIcon, pWidget, pEnabled)
+        public DocumentFinanceDialogPage8(Window parentWindow, string pPageName) : this(parentWindow, pPageName, "", null, true) { }
+        public DocumentFinanceDialogPage8(Window parentWindow, string pPageName, Widget pWidget) : this(parentWindow, pPageName, "", pWidget, true) { }
+        public DocumentFinanceDialogPage8(Window parentWindow, string pPageName, string pPageIcon, Widget pWidget, bool pEnabled = true)
+            : base(parentWindow, pPageName, pPageIcon, pWidget, pEnabled)
         {
             //Init private vars
             _pagePad = (_sourceWindow as PosDocumentFinanceDialog).PagePad;
@@ -77,11 +78,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
             //Country (Used in _crudWidgetList)
             CriteriaOperator criteriaOperator = CriteriaOperator.Parse("CurrencyCode = 'EUR'");
-            _entryBoxSelectCountry = new XPOEntryBoxSelectRecord<cfg_configurationcountry, TreeViewConfigurationCountry>(_sourceWindow, string.Format("{0}/WL", CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_country")), "Designation", "Oid", ValueCustomer.Country, criteriaOperator);
+            _entryBoxSelectCountry = new XPOEntryBoxSelectRecord<cfg_configurationcountry, GridViewCountries>(_sourceWindow, string.Format("{0}/WL", CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_country")), "Designation", "Oid", ValueCustomer.Country, criteriaOperator);
             //_entryBoxSelectCountry.WidthRequest = _pagePad.EntryBoxMaxWidth;
             _entryBoxSelectCountry.Entry.IsEditable = false;
             //CountryValidation
-            _entryBoxSelectCountryValidation = new XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry>(_sourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_country"), "Designation", "Oid", ValueCustomer.Country, criteriaOperator, LogicPOS.Utility.RegexUtils.RegexGuid, true);
+            _entryBoxSelectCountryValidation = new XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, GridViewCountries>(_sourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_country"), "Designation", "Oid", ValueCustomer.Country, criteriaOperator, LogicPOS.Utility.RegexUtils.RegexGuid, true);
             //_entryBoxSelectCountryValidation.WidthRequest = _pagePad.EntryBoxMaxWidth;
             _entryBoxSelectCountryValidation.EntryValidation.IsEditable = false;
             //Test _selectedXPGuidObject :)
@@ -105,8 +106,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //_entryBoxCountryValidation.EntryValidation.Text = xCustomer.Country.Designation;
 
             //Using Labels ;)
-            GenericCRUDWidget<Entity> crudWidgetClientName = new GenericCRUDWidgetXPO(_entryBoxClient, _entryBoxClient.Label, ValueCustomer, "Name", LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true);
-            GenericCRUDWidget<Entity> crudWidgetClientCountry = new GenericCRUDWidgetXPO(_entryBoxSelectCountry, _entryBoxSelectCountry.Label, ValueCustomer, "Country", LogicPOS.Utility.RegexUtils.RegexGuid, true);
+            InputField<Entity> crudWidgetClientName = new GenericCRUDWidgetXPO(_entryBoxClient, _entryBoxClient.Label, ValueCustomer, "Name", LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true);
+            InputField<Entity> crudWidgetClientCountry = new GenericCRUDWidgetXPO(_entryBoxSelectCountry, _entryBoxSelectCountry.Label, ValueCustomer, "Country", LogicPOS.Utility.RegexUtils.RegexGuid, true);
             _crudWidgetList.Add(crudWidgetClientName);
             _crudWidgetList.Add(crudWidgetClientCountry);
 

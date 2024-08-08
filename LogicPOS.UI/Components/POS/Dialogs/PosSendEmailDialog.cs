@@ -1,24 +1,23 @@
 ﻿using Gtk;
-using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.Widgets.Entrys;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Net.Mail;
-using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Utility;
+using LogicPOS.UI.Dialogs;
+using LogicPOS.UI.Buttons;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    internal class PosSendEmailDialog : PosBaseDialog
+    internal class PosSendEmailDialog : BaseDialog
     {
         private readonly VBox _vbox;
-        private readonly TouchButtonIconWithText _buttonOk;
-        private readonly TouchButtonIconWithText _buttonCancel;
+        private readonly IconButtonWithText _buttonOk;
+        private readonly IconButtonWithText _buttonCancel;
         private readonly EntryBoxValidation _entryBoxValidationSubject;
         private readonly EntryBoxValidation _entryBoxValidationTo;
         private readonly EntryBoxValidation _entryBoxValidationCc;
@@ -32,8 +31,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public string Body { get => _entryBoxValidationMultiLine.EntryMultiline.Value.Text; }
         public List<string> AttachmentFileNames { get; }
 
-        public PosSendEmailDialog(Window pSourceWindow, DialogFlags pDialogFlags, Size pSize, string pWindowTitle, string pSubject, string pTo, string pBody, List<string> attachmentFileNames)
-            : base(pSourceWindow, pDialogFlags)
+        public PosSendEmailDialog(Window parentWindow, DialogFlags pDialogFlags, Size pSize, string pWindowTitle, string pSubject, string pTo, string pBody, List<string> attachmentFileNames)
+            : base(parentWindow, pDialogFlags)
         {
             // Init Local Vars
             string windowTitle = pWindowTitle;
@@ -78,8 +77,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             fixedContent.Put(_vbox, 0, 0);
 
             //ActionArea Buttons
-            _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);
-            _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
+            _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
+            _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
 
             // Start Validated
             Validate();
@@ -98,7 +97,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             };
 
             //Init Object
-            this.InitObject(this, pDialogFlags, windowIcon, windowTitle, windowSize, fixedContent, actionAreaButtons);
+            this.Initialize(this, pDialogFlags, windowIcon, windowTitle, windowSize, fixedContent, actionAreaButtons);
         }
 
         private void Validate()
@@ -138,7 +137,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(ex.Message, ex);
                     logicpos.Utils.ShowMessageBox(this, DialogFlags.Modal, new Size(650, 380), MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"), ex.Message);
                     // Keep Running
                     this.Run();

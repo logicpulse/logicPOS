@@ -1,29 +1,28 @@
 ﻿using DevExpress.Data.Filtering;
 using DevExpress.Xpo;
 using Gtk;
-using logicpos.Classes.Enums.GenericTreeView;
-using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using LogicPOS.UI.Components;
 using System;
 using System.Collections.Generic;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
-    internal class TreeViewCustomer : GenericTreeViewXPO
+    internal class TreeViewCustomer : XpoGridView
     {
         //Public Parametless Constructor Required by Generics
         public TreeViewCustomer() { }
 
         [Obsolete]
-        public TreeViewCustomer(Window pSourceWindow)
-            : this(pSourceWindow, null, null, null) { }
+        public TreeViewCustomer(Window parentWindow)
+            : this(parentWindow, null, null, null) { }
 
         //XpoMode
         [Obsolete]
-        public TreeViewCustomer(Window pSourceWindow, Entity pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default)
+        public TreeViewCustomer(Window parentWindow, Entity pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GridViewMode pGenericTreeViewMode = GridViewMode.Default, GridViewNavigatorMode navigatorMode = GridViewNavigatorMode.Default)
         {
             //Init Vars
             Type xpoGuidObjectType = typeof(erp_customer);
@@ -33,13 +32,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             Type typeDialogClass = (pDialogType != null) ? pDialogType : typeof(DialogCustomer);
 
             //Configure columnProperties
-            List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
+            List<GridViewColumnProperty> columnProperties = new List<GridViewColumnProperty>
             {
-                new GenericTreeViewColumnProperty("Code") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_record_code"), MinWidth = 100 },
-                new GenericTreeViewColumnProperty("Name") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_name"), MinWidth = 200, Expand = true, DecryptValue = true },
-                new GenericTreeViewColumnProperty("FiscalNumber") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_fiscal_number"), MinWidth = 150, DecryptValue = true },
-                new GenericTreeViewColumnProperty("CardNumber") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_card_number"), MinWidth = 150 },
-                new GenericTreeViewColumnProperty("UpdatedAt") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
+                new GridViewColumnProperty("Code") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_record_code"), MinWidth = 100 },
+                new GridViewColumnProperty("Name") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_name"), MinWidth = 200, Expand = true, DecryptValue = true },
+                new GridViewColumnProperty("FiscalNumber") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_fiscal_number"), MinWidth = 150, DecryptValue = true },
+                new GridViewColumnProperty("CardNumber") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_card_number"), MinWidth = 150 },
+                new GridViewColumnProperty("UpdatedAt") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
             };
 
             //Configure Criteria/XPCollection/Model
@@ -55,7 +54,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             /* IN009162 - customer sorting changes when "PosDocumentFinanceDialog" window */
             string sortedColumn = "Ord"; // Default one
-            if ("PosDocumentFinanceDialog".Equals(pSourceWindow.GetType().Name))
+            if ("PosDocumentFinanceDialog".Equals(parentWindow.GetType().Name))
             {
                 sortedColumn = "UpdatedAt";
             }
@@ -68,10 +67,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             //Call Base Initializer
             base.InitObject(
-              pSourceWindow,                  //Pass parameter 
+              parentWindow,                  //Pass parameter 
               defaultValue,                   //Pass parameter
               pGenericTreeViewMode,           //Pass parameter
-              pGenericTreeViewNavigatorMode,  //Pass parameter
+              navigatorMode,  //Pass parameter
               columnProperties,               //Created Here
               xpoCollection,                  //Created Here
               typeDialogClass                 //Created Here

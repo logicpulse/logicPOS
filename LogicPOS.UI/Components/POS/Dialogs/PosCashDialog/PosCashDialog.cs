@@ -1,19 +1,19 @@
 ﻿using Gtk;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using System.Drawing;
-using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Utility;
+using LogicPOS.UI.Dialogs;
+using LogicPOS.UI.Buttons;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    internal partial class PosCashDialog : PosBaseDialog
+    internal partial class PosCashDialog : BaseDialog
     {
-        private readonly TouchButtonIconWithText _touchButtonStartStopWorkSessionPeriodDay;
-        private readonly TouchButtonIconWithText _touchButtonCashDrawer;
+        private readonly IconButtonWithText _touchButtonStartStopWorkSessionPeriodDay;
+        private readonly IconButtonWithText _touchButtonCashDrawer;
 
-        public PosCashDialog(Window pSourceWindow, DialogFlags pDialogFlags)
-            : base(pSourceWindow, pDialogFlags)
+        public PosCashDialog(Window parentWindow, DialogFlags pDialogFlags)
+            : base(parentWindow, pDialogFlags)
         {
             //Settings
             string _fileToolbarStartStopWorkSessionPeriodDay = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_toolbar_start_stop_worksession_period_day.png";
@@ -30,8 +30,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             uint tablePadding = 15;
 
             //Buttons
-            _touchButtonStartStopWorkSessionPeriodDay = new TouchButtonIconWithText("touchButtonStartStopWorkSessionPeriodDay_Green", _colorBaseDialogDefaultButtonBackground, GeneralUtils.GetResourceByName("global_worksession_open_day"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileToolbarStartStopWorkSessionPeriodDay, sizeIcon, buttonWidth, buttonHeight);
-            _touchButtonCashDrawer = new TouchButtonIconWithText("touchButtonCashDrawer_Green", _colorBaseDialogDefaultButtonBackground, GeneralUtils.GetResourceByName("pos_button_label_cashdrawer"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileToolbarCashDrawer, sizeIcon, buttonWidth, buttonHeight) { Sensitive = false };
+            _touchButtonStartStopWorkSessionPeriodDay = new IconButtonWithText(new ButtonSettings { Name = "touchButtonStartStopWorkSessionPeriodDay_Green", BackgroundColor = ColorSettings.DefaultButtonBackground, Text = GeneralUtils.GetResourceByName("global_worksession_open_day"), Font = FontSettings.Button, FontColor = ColorSettings.DefaultButtonFont, Icon = _fileToolbarStartStopWorkSessionPeriodDay, IconSize = sizeIcon, ButtonSize = new Size(buttonWidth, buttonHeight) });
+            _touchButtonCashDrawer = new IconButtonWithText(new ButtonSettings { Name = "touchButtonCashDrawer_Green", BackgroundColor = ColorSettings.DefaultButtonBackground, Text = GeneralUtils.GetResourceByName("pos_button_label_cashdrawer"), Font = FontSettings.Button, FontColor = ColorSettings.DefaultButtonFont, Icon = _fileToolbarCashDrawer, IconSize = sizeIcon, ButtonSize = new Size(buttonWidth, buttonHeight) }) { Sensitive = false };
 
             //Table
             Table table = new Table(1, 1, true);
@@ -41,7 +41,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             table.Attach(_touchButtonCashDrawer, 1, 2, 0, 1, AttachOptions.Fill, AttachOptions.Fill, tablePadding, tablePadding);
 
             //Init Object
-            this.InitObject(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, table, null);
+            this.Initialize(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, table, null);
 
             //Update UI
             UpdateButtons();

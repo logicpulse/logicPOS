@@ -1,25 +1,24 @@
 ﻿using Gtk;
-using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.Widgets;
-using logicpos.Classes.Gui.Gtk.Widgets;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using System;
 using System.Drawing;
-using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Utility;
+using LogicPOS.UI.Dialogs;
+using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Widgets;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    internal class PosPinPadDialog : PosBaseDialog
+    internal class PosPinPadDialog : BaseDialog
     {
         private readonly sys_userdetail _selectedUserDetail;
         private readonly NumberPadPin _numberPadPin;
         private readonly bool _notLoginAuth;
 
-        public PosPinPadDialog(Window pSourceWindow, DialogFlags pDialogFlags, sys_userdetail pUserDetail, bool pNotLoginAuth = false)
-            : base(pSourceWindow, pDialogFlags)
+        public PosPinPadDialog(Window parentWindow, DialogFlags pDialogFlags, sys_userdetail pUserDetail, bool pNotLoginAuth = false)
+            : base(parentWindow, pDialogFlags)
         {
             _notLoginAuth = pNotLoginAuth;
             //Dialog compile time preferences
@@ -31,14 +30,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             string windowTitle = GeneralUtils.GetResourceByName("window_title_dialog_request_user_pin");
             Size windowSize = new Size(332, DialogHeight);
             string fileDefaultWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_users.png";
-            string fontNumberPadPinButtonKeysTextAndLabel = GeneralSettings.Settings["fontNumberPadPinButtonKeysTextAndLabel"];
+            string fontNumberPadPinButtonKeysTextAndLabel = AppSettings.Instance.fontNumberPadPinButtonKeysTextAndLabel;
             ActionAreaButtons actionAreaButtons;
 
             //Init Content
             Fixed fixedContent = new Fixed();
 
             //NumberPadPin
-            _numberPadPin = new NumberPadPin(pSourceWindow, "numberPadPin", Color.Transparent, fontNumberPadPinButtonKeysTextAndLabel, "12", Color.White, Color.Black, 100, 67, _notLoginAuth);
+            _numberPadPin = new NumberPadPin(parentWindow, "numberPadPin", Color.Transparent, fontNumberPadPinButtonKeysTextAndLabel, "12", Color.White, Color.Black, 100, 67, _notLoginAuth);
             _numberPadPin.ButtonKeyOK.Clicked += ButtonKeyOK_Clicked;
 
             fixedContent.Put(_numberPadPin, 0, 0);
@@ -46,7 +45,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             if (showCancel)
             {
                 //ActionArea Buttons
-                TouchButtonIconWithText buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
+                IconButtonWithText buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
 
                 //ActionArea
                 actionAreaButtons = new ActionAreaButtons
@@ -67,7 +66,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             this.KeyReleaseEvent += PosPinPadDialog_KeyReleaseEvent;
 
             //Init Object
-            this.InitObject(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, fixedContent, actionAreaButtons);
+            this.Initialize(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, fixedContent, actionAreaButtons);
         }
 
         private void ButtonKeyOK_Clicked(object sender, EventArgs e)

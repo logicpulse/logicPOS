@@ -1,28 +1,27 @@
 ﻿using DevExpress.Data.Filtering;
 using DevExpress.Xpo;
 using Gtk;
-using logicpos.Classes.Enums.GenericTreeView;
-using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using System;
 using System.Collections.Generic;
 using LogicPOS.Globalization;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
+using LogicPOS.UI.Components;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
-    internal class TreeViewConfigurationPreferenceParameter : GenericTreeViewXPO
+    internal class TreeViewConfigurationPreferenceParameter : XpoGridView
     {
         //Public Parametless Constructor Required by Generics
         public TreeViewConfigurationPreferenceParameter() { }
 
         [Obsolete]
-        public TreeViewConfigurationPreferenceParameter(Window pSourceWindow)
-            : this(pSourceWindow, null, null, null) { }
+        public TreeViewConfigurationPreferenceParameter(Window parentWindow)
+            : this(parentWindow, null, null, null) { }
 
         //XpoMode
         [Obsolete]
-        public TreeViewConfigurationPreferenceParameter(Window pSourceWindow, Entity pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default)
+        public TreeViewConfigurationPreferenceParameter(Window parentWindow, Entity pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GridViewMode pGenericTreeViewMode = GridViewMode.Default, GridViewNavigatorMode navigatorMode = GridViewNavigatorMode.Default)
         {
             //Init Vars
             Type xpoGuidObjectType = typeof(cfg_configurationpreferenceparameter);
@@ -32,11 +31,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             Type typeDialogClass = (pDialogType != null) ? pDialogType : typeof(DialogConfigurationPreferenceParameter);
 
             //Configure columnProperties
-            List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
+            List<GridViewColumnProperty> columnProperties = new List<GridViewColumnProperty>
             {
-                new GenericTreeViewColumnProperty("ResourceString") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_designation"), Expand = true, ResourceString = true },
-                new GenericTreeViewColumnProperty("Value") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_value"), Expand = true },
-                new GenericTreeViewColumnProperty("UpdatedAt") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
+                new GridViewColumnProperty("ResourceString") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_designation"), Expand = true, ResourceString = true },
+                new GridViewColumnProperty("Value") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_value"), Expand = true },
+                new GridViewColumnProperty("UpdatedAt") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
             };
 
             //Configure Criteria/XPCollection/Model : pXpoCriteria Parameter sent by BO
@@ -55,10 +54,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             //Call Base Initializer
             base.InitObject(
-              pSourceWindow,                //Pass parameter 
+              parentWindow,                //Pass parameter 
               defaultValue,                 //Pass parameter
               pGenericTreeViewMode,         //Pass parameter
-              pGenericTreeViewNavigatorMode,//Pass parameter
+              navigatorMode,//Pass parameter
               columnProperties,             //Created Here
               xpoCollection,                //Created Here
               typeDialogClass               //Created Here
@@ -67,25 +66,15 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
         private void TreeViewConfigurationPreferenceParameter_RecordAfterUpdate(object sender, EventArgs e)
         {
-            // Get ConfigurationPreferenceParameter Reference
-            cfg_configurationpreferenceparameter configurationPreferenceParameter = (_dataSourceRow as cfg_configurationpreferenceparameter);
+            cfg_configurationpreferenceparameter configurationPreferenceParameter = (Entity as cfg_configurationpreferenceparameter);
 
-            try
+            if (LogicPOS.Settings.GeneralSettings.PreferenceParameters[configurationPreferenceParameter.Token] == null ||
+                !LogicPOS.Settings.GeneralSettings.PreferenceParameters[configurationPreferenceParameter.Token].Equals(configurationPreferenceParameter.Value)
+                )
             {
-                // We Must ModifyLogicPOS.Settings.AppSettings.PreferenceParameters after user Change Value, if Value is Changed, this will Update in MemoryLogicPOS.Settings.AppSettings.PreferenceParameters Dictionary
-                if (LogicPOS.Settings.GeneralSettings.PreferenceParameters[configurationPreferenceParameter.Token] == null ||
-                    !LogicPOS.Settings.GeneralSettings.PreferenceParameters[configurationPreferenceParameter.Token].Equals(configurationPreferenceParameter.Value)
-                    )
-                {
-                    if (_debug) _logger.Debug($"TreeViewConfigurationPreferenceParameter: Previous Value: [{LogicPOS.Settings.GeneralSettings.PreferenceParameters[configurationPreferenceParameter.Token]}]");
-                    LogicPOS.Settings.GeneralSettings.PreferenceParameters[configurationPreferenceParameter.Token] = configurationPreferenceParameter.Value;
-                    if (_debug) _logger.Debug($"TreeViewConfigurationPreferenceParameter: Current Value: [{LogicPOS.Settings.GeneralSettings.PreferenceParameters[configurationPreferenceParameter.Token]}]");
-                }
+                LogicPOS.Settings.GeneralSettings.PreferenceParameters[configurationPreferenceParameter.Token] = configurationPreferenceParameter.Value;
             }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
+
         }
     }
 }

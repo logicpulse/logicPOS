@@ -2,14 +2,15 @@
 using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
-using logicpos.Extensions;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components;
+using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -17,20 +18,20 @@ using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
 {
-    internal class DialogConfigurationWarehouse : BOBaseDialog
+    internal class DialogConfigurationWarehouse : EditDialog
     {
-        private readonly ICollection<Tuple<fin_warehouselocation, Entry, BOWidgetBox, TouchButtonIcon, TouchButtonIcon, GenericCRUDWidgetXPO, HBox>> _warehouseLocationCollection;
+        private readonly ICollection<Tuple<fin_warehouselocation, Entry, BOWidgetBox, IconButton, IconButton, GenericCRUDWidgetXPO, HBox>> _warehouseLocationCollection;
         private fin_warehouse _Warehouse;
         private ScrolledWindow _scrolledWindow;
         private VBox vboxTab2;
         private readonly string iconAddRecord = string.Format("{0}{1}", PathsSettings.ImagesFolderLocation, @"Icons/icon_pos_nav_new.png");
         private readonly string iconClearRecord = string.Format("{0}{1}", PathsSettings.ImagesFolderLocation, @"Icons/Windows/icon_window_delete_record.png");
 
-        public DialogConfigurationWarehouse(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, Entity pXPGuidObject)
-            : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
+        public DialogConfigurationWarehouse(Window parentWindow, XpoGridView pTreeView, DialogFlags pFlags, DialogMode pDialogMode, Entity pXPGuidObject)
+            : base(parentWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
             this.Title = logicpos.Utils.GetWindowTitle(GeneralUtils.GetResourceByName("global_warehouse"));
-            _warehouseLocationCollection = new List<Tuple<fin_warehouselocation, Entry, BOWidgetBox, TouchButtonIcon, TouchButtonIcon, GenericCRUDWidgetXPO, HBox>>();
+            _warehouseLocationCollection = new List<Tuple<fin_warehouselocation, Entry, BOWidgetBox, IconButton, IconButton, GenericCRUDWidgetXPO, HBox>>();
 
             SetSizeRequest(500, 450);
             InitUI();
@@ -67,38 +68,38 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
                 {
                     _logger.Error(ex.Message, ex);
                 }
-                if (_dataSourceRow == null) _Warehouse = new fin_warehouse();
-                else _Warehouse = (_dataSourceRow as fin_warehouse);
+                if (Entity == null) _Warehouse = new fin_warehouse();
+                else _Warehouse = (Entity as fin_warehouse);
                 //Tab1
                 VBox vboxTab1 = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
                 //Ord
                 Entry entryOrd = new Entry();
                 BOWidgetBox boxOrd = new BOWidgetBox(GeneralUtils.GetResourceByName("global_record_order"), entryOrd);
                 vboxTab1.PackStart(boxOrd, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxOrd, _dataSourceRow, "Ord", RegexUtils.RegexIntegerGreaterThanZero, true));
+                InputFields.Add(new GenericCRUDWidgetXPO(boxOrd, Entity, "Ord", RegexUtils.RegexIntegerGreaterThanZero, true));
 
                 //Code
                 Entry entryCode = new Entry();
                 BOWidgetBox boxCode = new BOWidgetBox(GeneralUtils.GetResourceByName("global_record_code"), entryCode);
                 vboxTab1.PackStart(boxCode, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCode, _dataSourceRow, "Code", RegexUtils.RegexIntegerGreaterThanZero, true));
+                InputFields.Add(new GenericCRUDWidgetXPO(boxCode, Entity, "Code", RegexUtils.RegexIntegerGreaterThanZero, true));
 
                 //Designation
                 Entry entryDesignation = new Entry();
                 BOWidgetBox boxDesignation = new BOWidgetBox(GeneralUtils.GetResourceByName("global_designation"), entryDesignation);
                 vboxTab1.PackStart(boxDesignation, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", RegexUtils.RegexAlfaNumericExtended, true));
+                InputFields.Add(new GenericCRUDWidgetXPO(boxDesignation, Entity, "Designation", RegexUtils.RegexAlfaNumericExtended, true));
 
                 //Default
                 CheckButton checkButtonDefault = new CheckButton(GeneralUtils.GetResourceByName("global_default_warehouse"));
                 vboxTab1.PackStart(checkButtonDefault, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(checkButtonDefault, _dataSourceRow, "IsDefault"));
+                InputFields.Add(new GenericCRUDWidgetXPO(checkButtonDefault, Entity, "IsDefault"));
 
                 //Disabled
                 CheckButton checkButtonDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
                 if (_dialogMode == DialogMode.Insert) checkButtonDisabled.Active = POSSettings.BOXPOObjectsStartDisabled;
                 vboxTab1.PackStart(checkButtonDisabled, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(checkButtonDisabled, _dataSourceRow, "Disabled"));
+                InputFields.Add(new GenericCRUDWidgetXPO(checkButtonDisabled, Entity, "Disabled"));
 
                 //Append Tab
                 _notebook.AppendPage(vboxTab1, new Label(GeneralUtils.GetResourceByName("global_record_main_detail")));
@@ -143,7 +144,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
                 //Dynamic SerialNumber
                 if (pDataSourceRow == null)
                 {
-                    pDataSourceRow = new fin_warehouselocation(_dataSourceRow.Session);
+                    pDataSourceRow = new fin_warehouselocation(Entity.Session);
                 }
                 if ((pDataSourceRow as fin_warehouselocation).Warehouse == null) (pDataSourceRow as fin_warehouselocation).Warehouse = _Warehouse;
                 HBox hboxLocation = new HBox(false, _boxSpacing);
@@ -152,15 +153,31 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
                 Entry entryLocation = new Entry();
                 BOWidgetBox boxLocation = new BOWidgetBox(GeneralUtils.GetResourceByName("global_ConfigurationDevice_PlaceTerminal"), entryLocation);
                 GenericCRUDWidgetXPO genericCRUDWidgetXPO = new GenericCRUDWidgetXPO(boxLocation, pDataSourceRow, "Designation", RegexUtils.RegexAlfaNumeric, true);
-                _crudWidgetList.Add(genericCRUDWidgetXPO);
+                InputFields.Add(genericCRUDWidgetXPO);
                 hboxLocation.PackStart(boxLocation);
 
                 //Apagar
-                TouchButtonIcon buttonClearLocation = new TouchButtonIcon("touchButtonIcon", Color.Transparent, iconClearRecord, new Size(15, 15), 20, 15);
+                IconButton buttonClearLocation = new IconButton(
+                    new ButtonSettings
+                    {
+                        Name = "touchButtonIcon",
+                        Icon = iconClearRecord,
+                        IconSize = new Size(15, 15),
+                        ButtonSize = new Size(20, 15)
+                    });
+
                 hboxLocation.PackEnd(buttonClearLocation, false, false, 1);
 
                 //Adicionar
-                TouchButtonIcon buttonAddLocation = new TouchButtonIcon("touchButtonIcon", Color.Transparent, iconAddRecord, new Size(15, 15), 20, 15);
+                IconButton buttonAddLocation = new IconButton(
+                    new ButtonSettings
+                    {
+                        Name = "touchButtonIcon",
+                        Icon = iconAddRecord,
+                        IconSize = new Size(15, 15),
+                        ButtonSize = new Size(20, 15)
+                    });
+
                 hboxLocation.PackEnd(buttonAddLocation, false, false, 1);
 
                 vboxTab2.PackStart(hboxLocation, false, false, 0);
@@ -175,7 +192,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
                 vboxTab2.ShowAll();
 
                 //Add to collection
-                _warehouseLocationCollection.Add(new Tuple<fin_warehouselocation, Entry, BOWidgetBox, TouchButtonIcon, TouchButtonIcon, GenericCRUDWidgetXPO, HBox>(pDataSourceRow as fin_warehouselocation, entryLocation, boxLocation, buttonClearLocation, buttonAddLocation, genericCRUDWidgetXPO, hboxLocation));
+                _warehouseLocationCollection.Add(new Tuple<fin_warehouselocation, Entry, BOWidgetBox, IconButton, IconButton, GenericCRUDWidgetXPO, HBox>(pDataSourceRow as fin_warehouselocation, entryLocation, boxLocation, buttonClearLocation, buttonAddLocation, genericCRUDWidgetXPO, hboxLocation));
 
             }
             catch (Exception ex)
@@ -186,7 +203,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
 
         private void ButtonClearLocation_Clicked(object sender, System.EventArgs e)
         {
-            ResponseType responseType = Alerts.Question()
+            ResponseType responseType = SimpleAlerts.Question()
                                               .WithParent(this)
                                               .WithTitleResource("global_warning")
                                               .WithMessageResource("dialog_message_delete_record")
@@ -201,7 +218,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
                         location.Item2.Text = "";
                         return;
                     }
-                    else if (location.Item4.Equals(sender as TouchButtonIcon))
+                    else if (location.Item4.Equals(sender as IconButton))
                     {
                         var xpObject = location.Item1;
                         xpObject.Delete();
@@ -213,7 +230,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
                         var xpButtonAdd = location.Item5;
                         xpButtonAdd.Hide();
                         vboxTab2.Remove(location.Item7);
-                        _crudWidgetList.Remove(location.Item6);
+                        InputFields.Remove(location.Item6);
                         _warehouseLocationCollection.Remove(location);
                         break;
                     }

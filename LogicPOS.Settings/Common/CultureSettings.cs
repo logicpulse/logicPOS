@@ -8,7 +8,7 @@ namespace LogicPOS.Settings
         public static CultureInfo CurrentCulture { get; set; }
         public static CultureInfo CurrentCultureNumberFormat { get; set; }
 
-        public static string CurrentCultureName => GeneralSettings.Settings["customCultureResourceDefinition"];
+        public static string CurrentCultureName => AppSettings.Instance.customCultureResourceDefinition;
 
         public static string DateFormat { get; set; } = "yyyy-MM-dd";
         public static string DateTimeFormat { get; set; } = "yyyy-MM-dd HH:mm:ss";

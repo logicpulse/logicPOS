@@ -1,5 +1,5 @@
 using Gtk;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
+using LogicPOS.UI.Buttons;
 using System;
 using System.Drawing;
 
@@ -23,20 +23,32 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
             EventBox eventbox = new EventBox() { VisibleWindow = false };
             Table = new Table(4, 3, true);
+
             Table.Homogeneous = true;
 
-            TouchButtonText buttonKey1 = new TouchButtonText("touchButtonKey1_DarkGrey", color, "1", font, colorFont, buttonWidth, buttonHeight);
-            TouchButtonText buttonKey2 = new TouchButtonText("touchButtonKey2_DarkGrey", color, "2", font, colorFont, buttonWidth, buttonHeight);
-            TouchButtonText buttonKey3 = new TouchButtonText("touchButtonKey3_DarkGrey", color, "3", font, colorFont, buttonWidth, buttonHeight);
-            TouchButtonText buttonKey4 = new TouchButtonText("touchButtonKey4_DarkGrey", color, "4", font, colorFont, buttonWidth, buttonHeight);
-            TouchButtonText buttonKey5 = new TouchButtonText("touchButtonKey5_DarkGrey", color, "5", font, colorFont, buttonWidth, buttonHeight);
-            TouchButtonText buttonKey6 = new TouchButtonText("touchButtonKey6_DarkGrey", color, "6", font, colorFont, buttonWidth, buttonHeight);
-            TouchButtonText buttonKey7 = new TouchButtonText("touchButtonKey7_DarkGrey", color, "7", font, colorFont, buttonWidth, buttonHeight);
-            TouchButtonText buttonKey8 = new TouchButtonText("touchButtonKey8_DarkGrey", color, "8", font, colorFont, buttonWidth, buttonHeight);
-            TouchButtonText buttonKey9 = new TouchButtonText("touchButtonKey9_DarkGrey", color, "9", font, colorFont, buttonWidth, buttonHeight);
-            TouchButtonText buttonKey0 = new TouchButtonText("touchButtonKey0_DarkGrey", color, "0", font, colorFont, buttonWidth, buttonHeight);
-            TouchButtonText buttonKeyDot = new TouchButtonText("touchButtonKeyDOT_DarkGrey", color, decimalSeparator.ToString(), font, colorFont, buttonWidth, buttonHeight);
-            TouchButtonText buttonKeyCE = new TouchButtonText("touchButtonKeyCE_DarkGrey", color, "CE", font, colorFont, buttonWidth, buttonHeight);
+            TextButton buttonKey1 = CreateNumberedButton("1");
+            TextButton buttonKey2 = CreateNumberedButton("2");
+            TextButton buttonKey3 = CreateNumberedButton("3");
+            TextButton buttonKey4 = CreateNumberedButton("4");
+            TextButton buttonKey5 = CreateNumberedButton("5");
+            TextButton buttonKey6 = CreateNumberedButton("6");
+            TextButton buttonKey7 = CreateNumberedButton("7");
+            TextButton buttonKey8 = CreateNumberedButton("8");
+            TextButton buttonKey9 = CreateNumberedButton("9");
+            TextButton buttonKey0 = CreateNumberedButton("0");
+
+            TextButton buttonKeyDot = new TextButton(
+                new ButtonSettings
+                {
+                    Name = "touchButtonKeyDOT_DarkGrey",
+                    BackgroundColor = color,
+                    Text = decimalSeparator.ToString(),
+                    Font = font,
+                    FontColor = colorFont,
+                    ButtonSize = new Size(buttonWidth, buttonHeight)
+                });
+
+            TextButton buttonKeyCE = CreateNumberedButton("CE");
 
             //prepare _table
             //row0
@@ -73,6 +85,20 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             buttonKey0.Clicked += buttonKey_Clicked;
             buttonKeyDot.Clicked += buttonKey_Clicked;
             buttonKeyCE.Clicked += buttonKey_Clicked;
+
+            TextButton CreateNumberedButton(string number)
+            {
+                return new TextButton(
+                    new ButtonSettings
+                    {
+                        Name = $"touchButtonKey{number}_DarkGrey",
+                        BackgroundColor = color,
+                        Text = number,
+                        Font = font,
+                        FontColor = colorFont,
+                        ButtonSize = new Size(buttonWidth, buttonHeight)
+                    });
+            }
         }
 
         private void buttonKey_Clicked(object sender, EventArgs e)

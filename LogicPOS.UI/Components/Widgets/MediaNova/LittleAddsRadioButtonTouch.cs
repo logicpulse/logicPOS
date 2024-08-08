@@ -18,7 +18,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         public LittleAddsRadioButtonTouch(List<LittleAddsWidget> pLittleAddsList, string pInitialValue)
         {
             //Init FontDescription
-            Pango.FontDescription fontDescriptionEntry = Pango.FontDescription.FromString(LogicPOS.Settings.GeneralSettings.Settings["fontEntryBoxValue"]);
+            Pango.FontDescription fontDescriptionEntry = Pango.FontDescription.FromString(LogicPOS.Settings.AppSettings.Instance.fontEntryBoxValue);
 
             //Parameters
             RadioButton groupButton = null;

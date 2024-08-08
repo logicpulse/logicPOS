@@ -388,9 +388,9 @@ namespace LogicPOS.Globalization.Resources.Localization {
         /// <summary>
         ///   Looks up a localized string similar to Application Closed, Forced Logout of User: {0}.
         /// </summary>
-        public static string audit_message_used_forced_loggerout {
+        public static string audit_message_used_forced_logout {
             get {
-                return ResourceManager.GetString("audit_message_used_forced_loggerout", resourceCulture);
+                return ResourceManager.GetString("audit_message_used_forced_logout", resourceCulture);
             }
         }
         
@@ -433,9 +433,9 @@ namespace LogicPOS.Globalization.Resources.Localization {
         /// <summary>
         ///   Looks up a localized string similar to User Logged Out: {0}.
         /// </summary>
-        public static string audit_message_user_loggerout {
+        public static string audit_message_user_logout {
             get {
-                return ResourceManager.GetString("audit_message_user_loggerout", resourceCulture);
+                return ResourceManager.GetString("audit_message_user_logout", resourceCulture);
             }
         }
         
@@ -451,9 +451,9 @@ namespace LogicPOS.Globalization.Resources.Localization {
         /// <summary>
         ///   Looks up a localized string similar to Changelog.
         /// </summary>
-        public static string change_logger {
+        public static string change_log {
             get {
-                return ResourceManager.GetString("change_logger", resourceCulture);
+                return ResourceManager.GetString("change_log", resourceCulture);
             }
         }
         
@@ -1933,9 +1933,9 @@ namespace LogicPOS.Globalization.Resources.Localization {
         /// <summary>
         ///   Looks up a localized string similar to LogOut.
         /// </summary>
-        public static string global_application_loggerout_user {
+        public static string global_application_logout_user {
             get {
-                return ResourceManager.GetString("global_application_loggerout_user", resourceCulture);
+                return ResourceManager.GetString("global_application_logout_user", resourceCulture);
             }
         }
         

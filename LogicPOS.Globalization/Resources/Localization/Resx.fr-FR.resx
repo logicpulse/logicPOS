@@ -229,7 +229,7 @@ Ou sélectionnez "{2}" pour démarrer POS en mode "1024x768" par défaut.</value
   <data name="audit_message_table_unreserved" xml:space="preserve">
     <value>Table sans réserve: {0}</value>
   </data>
-  <data name="audit_message_used_forced_loggerout" xml:space="preserve">
+  <data name="audit_message_used_forced_logout" xml:space="preserve">
     <value>Application fermée, la déconnexion de l´utilisateur a été forcé: {0}</value>
   </data>
   <data name="audit_message_user_change" xml:space="preserve">
@@ -244,7 +244,7 @@ Ou sélectionnez "{2}" pour démarrer POS en mode "1024x768" par défaut.</value
   <data name="audit_message_user_loggerin_error" xml:space="preserve">
     <value>Utilisateur Login Erreur: {0}</value>
   </data>
-  <data name="audit_message_user_loggerout" xml:space="preserve">
+  <data name="audit_message_user_logout" xml:space="preserve">
     <value>Déconnexion de l´utilisateur: {0}</value>
   </data>
   <data name="backoffice_datetime_format_status_bar" xml:space="preserve">
@@ -813,7 +813,7 @@ Pour continuer, appuyez sur Oui pour fermer tous les terminaux, ou appuyez sur N
   <data name="global_application_close" xml:space="preserve">
     <value>Près</value>
   </data>
-  <data name="global_application_loggerout_user" xml:space="preserve">
+  <data name="global_application_logout_user" xml:space="preserve">
     <value>Se déconnecter</value>
   </data>
   <data name="global_application_main_menu" xml:space="preserve">
@@ -3842,7 +3842,7 @@ Veuillez entrer un autre numéro et réessayer.</value>
   <data name="dialog_message_composite_article_already" xml:space="preserve">
     <value>L'article inséré est déjà associé!</value>
   </data>
-  <data name="change_logger" xml:space="preserve">
+  <data name="change_log" xml:space="preserve">
     <value>Changelog</value>
   </data>
   <data name="global_minimum_stock" xml:space="preserve">

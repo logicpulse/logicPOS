@@ -3,29 +3,28 @@ using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
 using Gtk;
 using logicpos.App;
-using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Formatters;
-using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using System;
 using System.Collections.Generic;
 using LogicPOS.Globalization;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
+using LogicPOS.UI.Components;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
-    internal class TreeViewDocumentFinancePayment : GenericTreeViewXPO
+    internal class TreeViewDocumentFinancePayment : XpoGridView
     {
         //Public Parametless Constructor Required by Generics
         public TreeViewDocumentFinancePayment() { }
 
         [Obsolete]
-        public TreeViewDocumentFinancePayment(Window pSourceWindow)
-            : this(pSourceWindow, null, null, null) { }
+        public TreeViewDocumentFinancePayment(Window parentWindow)
+            : this(parentWindow, null, null, null) { }
 
         //XpoMode
         [Obsolete]
-        public TreeViewDocumentFinancePayment(Window pSourceWindow, Entity pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default)
+        public TreeViewDocumentFinancePayment(Window parentWindow, Entity pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GridViewMode pGenericTreeViewMode = GridViewMode.Default, GridViewNavigatorMode navigatorMode = GridViewNavigatorMode.Default)
         {
             //Init Vars
             Type xpoGuidObjectType = typeof(fin_documentfinancepayment);
@@ -35,20 +34,20 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             Type typeDialogClass = (pDialogType != null) ? pDialogType : null;
 
             //Config
-            int fontGenericTreeViewColumn = Convert.ToInt16(LogicPOS.Settings.GeneralSettings.Settings["fontGenericTreeViewColumn"]);
+            int fontGenericTreeViewColumn = Convert.ToInt16(LogicPOS.Settings.AppSettings.Instance.fontGenericTreeViewColumn);
 
             //Configure columnProperties
-            List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
+            List<GridViewColumnProperty> columnProperties = new List<GridViewColumnProperty>
             {
-                new GenericTreeViewColumnProperty("CreatedAt") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_document_date"), MinWidth = 140 }, /* IN009067 */
-                new GenericTreeViewColumnProperty("PaymentRefNo") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_document_number"), MinWidth = 120 }, /* IN009067 */
-                new GenericTreeViewColumnProperty("PaymentStatus") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_document_status"), MinWidth = 50, MaxWidth = 50 }
+                new GridViewColumnProperty("CreatedAt") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_document_date"), MinWidth = 140 }, /* IN009067 */
+                new GridViewColumnProperty("PaymentRefNo") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_document_number"), MinWidth = 120 }, /* IN009067 */
+                new GridViewColumnProperty("PaymentStatus") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_document_status"), MinWidth = 50, MaxWidth = 50 }
             };
             //Shared Query
             /* IN009075 - removing call to view */
             // string query = "SELECT {0} as Result FROM view_documentfinancepayment WHERE fpaOid = '{1}' GROUP BY fpaOid,{0};";
             string queryForCustomerDetails = "SELECT {0} FROM erp_customer AS Customer LEFT JOIN fin_documentfinancepayment AS Payment ON (Payment.EntityOid = Customer.Oid) WHERE Payment.Oid = '{1}';";
-            columnProperties.Add(new GenericTreeViewColumnProperty("EntityName")
+            columnProperties.Add(new GridViewColumnProperty("EntityName")
             {
                 Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_entity"),
                 MinWidth = 260,
@@ -57,14 +56,14 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 DecryptValue = true
             });
             /* IN009067 */
-            columnProperties.Add(new GenericTreeViewColumnProperty("EntityFiscalNumber")
+            columnProperties.Add(new GridViewColumnProperty("EntityFiscalNumber")
             {
                 Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_fiscal_number"),
                 MinWidth = 100,
                 Query = string.Format(queryForCustomerDetails, "FiscalNumber", "{0}"), /* IN009075 */
                 DecryptValue = true
             });
-            columnProperties.Add(new GenericTreeViewColumnProperty("PaymentAmount")
+            columnProperties.Add(new GridViewColumnProperty("PaymentAmount")
             {
                 Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_total"),
                 MinWidth = 100,
@@ -81,7 +80,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             /* IN009067 - TODO */
             string relatedDocumentsQuery = logicpos.DataLayer.GenerateRelatedDocumentsQuery(true);
-            columnProperties.Add(new GenericTreeViewColumnProperty("RelatedDocuments")
+            columnProperties.Add(new GridViewColumnProperty("RelatedDocuments")
             {
                 Query = relatedDocumentsQuery,
                 Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_dialog_document_finance_column_related_doc"),
@@ -108,10 +107,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             //Call Base Initializer
             base.InitObject(
-              pSourceWindow,                  //Pass parameter 
+              parentWindow,                  //Pass parameter 
               defaultValue,                   //Pass parameter
               pGenericTreeViewMode,           //Pass parameter
-              pGenericTreeViewNavigatorMode,  //Pass parameter
+              navigatorMode,  //Pass parameter
               columnProperties,               //Created Here
               xpoCollection,                  //Created Here
               typeDialogClass                 //Created Here

@@ -1,13 +1,10 @@
 ﻿using DevExpress.Data.Filtering;
 using DevExpress.Xpo;
 using Gtk;
-using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
-using logicpos.Extensions;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
@@ -16,6 +13,9 @@ using LogicPOS.Modules.StockManagement;
 using LogicPOS.Settings;
 using LogicPOS.Shared;
 using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Dialogs;
+using LogicPOS.UI.Extensions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -26,12 +26,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
     /// <summary>
     /// PosArticleStock Dialog
     /// </summary>
-    public class PosArticleStockDialog : PosBaseDialog
+    public class PosArticleStockDialog : BaseDialog
     {
         //UI Components Dialog
         private VBox _vbox;
-        private readonly TouchButtonIconWithText _buttonOk;
-        private readonly TouchButtonIconWithText _buttonCancel;
+        private readonly IconButtonWithText _buttonOk;
+        private readonly IconButtonWithText _buttonCancel;
         //UI Components Form
         private XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer> _entryBoxSelectSupplier;
         private EntryBoxValidationDatePickerDialog _entryBoxDocumentDate;
@@ -76,8 +76,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             get { return _entryBoxNotes.EntryValidation.Text; }
         }
 
-        public PosArticleStockDialog(Window pSourceWindow, DialogFlags pDialogFlags)
-            : base(pSourceWindow, pDialogFlags)
+        public PosArticleStockDialog(Window parentWindow, DialogFlags pDialogFlags)
+            : base(parentWindow, pDialogFlags)
         {
             //Init Local Vars
             string windowTitle = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_article_stock");
@@ -87,8 +87,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             InitUI();
 
             //ActionArea Buttons
-            _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);
-            _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
+            _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
+            _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
             _buttonOk.Sensitive = false;
 
             //ActionArea
@@ -99,127 +99,121 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             };
 
             //Init Object
-            this.InitObject(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, _scrolledWindowView, actionAreaButtons);
+            this.Initialize(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, _scrolledWindowView, actionAreaButtons);
         }
 
         private void InitUI()
         {
-            try
+            //Load Initial Values
+            Load();
+
+            //Init VBOX
+            _vbox = new VBox(false, 0);
+            _entryCompositeLinesCollection = new List<XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>>();
+            //_articleCollection = new List<fin_article>();
+            ArticleCollection = new Dictionary<fin_article, decimal>();
+            //Supplier
+            CriteriaOperator criteriaOperatorSupplier = CriteriaOperator.Parse("(Supplier = 1)");
+            _entryBoxSelectSupplier = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_supplier"), "Name", "Oid", _initialSupplier, criteriaOperatorSupplier, LogicPOS.Utility.RegexUtils.RegexGuid, true);
+            _entryBoxSelectSupplier.EntryValidation.IsEditable = true;
+            _entryBoxSelectSupplier.EntryValidation.Completion.PopupCompletion = true;
+            _entryBoxSelectSupplier.EntryValidation.Completion.InlineCompletion = false;
+            _entryBoxSelectSupplier.EntryValidation.Completion.PopupSingleMatch = true;
+            _entryBoxSelectSupplier.EntryValidation.Completion.InlineSelection = true;
+            _entryBoxSelectSupplier.EntryValidation.Changed += delegate { ValidateDialog(); };
+
+            //DocumentDate
+            _entryBoxDocumentDate = new EntryBoxValidationDatePickerDialog(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_date"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_date"), _initialDocumentDate, LogicPOS.Utility.RegexUtils.RegexDate, true, CultureSettings.DateFormat);
+            //_entryBoxDocumentDate.EntryValidation.Sensitive = true;
+            _entryBoxDocumentDate.EntryValidation.Text = _initialDocumentDate.ToString(CultureSettings.DateFormat);
+            _entryBoxDocumentDate.EntryValidation.Validate();
+            _entryBoxDocumentDate.EntryValidation.Sensitive = true;
+            _entryBoxDocumentDate.ClosePopup += delegate { ValidateDialog(); };
+
+            //DocumentNumber
+            _entryBoxDocumentNumber = new EntryBoxValidation(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_document_number"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false);
+            if (_initialDocumentNumber != string.Empty) _entryBoxDocumentNumber.EntryValidation.Text = _initialDocumentNumber;
+            _entryBoxDocumentNumber.EntryValidation.Changed += delegate { ValidateDialog(); };
+
+
+            //MultiArticles
+            _vboxArticles = new VBox(true, 0);
+            _scrolledWindowView = new ScrolledWindow();
+            _scrolledWindowView.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
+            _scrolledWindowView.ModifyBg(StateType.Normal, Color.White.ToGdkColor());
+            _scrolledWindowView.ShadowType = ShadowType.Out;
+            _totalCompositeEntrys++;
+            CriteriaOperator criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Class = '{0}')", XPOSettings.XpoOidArticleDefaultClass));
+            _entryBoxSelectArticle1 = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_article"), "Designation", "Oid", null, criteriaOperatorSelectArticle, KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true, true, LogicPOS.Utility.RegexUtils.RegexAlfaNumericArticleCode, LogicPOS.Utility.RegexUtils.RegexDecimalPositiveAndNegative, _totalCompositeEntrys);
+            _entryBoxSelectArticle1.EntryValidation.IsEditable = true;
+            _entryBoxSelectArticle1.EntryQtdValidation.IsEditable = true;
+            _entryBoxSelectArticle1.Value = null;
+            _entryBoxSelectArticle1.EntryValidation.Text = "";
+
+            _entryBoxSelectArticle1.EntryValidation.Validate();
+            _entryBoxSelectArticle1.EntryCodeValidation.Validate();
+            _entryBoxSelectArticle1.EntryQtdValidation.Validate();
+
+            //Events Composition
+            _entryBoxSelectArticle1.ClosePopup += _entryBoxSelectArticle_ClosePopup;
+            _entryBoxSelectArticle1.CleanArticleEvent += _entryBoxSelectArticle_CleanArticleEvent;
+            _entryBoxSelectArticle1.AddNewEntryEvent += NewBox_AddNewEntryEvent;
+            _entryBoxSelectArticle1.EntryQtdValidation.TextInserted += QtdEntryValidation_TextInserted;
+
+            //Auto Complete
+            _entryBoxSelectArticle1.EntryValidation.Completion = new EntryCompletion();
+            _entryBoxSelectArticle1.EntryValidation.Completion.Model = FillDropDownListStore(false, criteriaOperatorSelectArticle);
+            _entryBoxSelectArticle1.EntryValidation.Completion.TextColumn = 0;
+            _entryBoxSelectArticle1.EntryValidation.Completion.PopupCompletion = true;
+            _entryBoxSelectArticle1.EntryValidation.Completion.InlineCompletion = false;
+            _entryBoxSelectArticle1.EntryValidation.Completion.PopupSingleMatch = true;
+            _entryBoxSelectArticle1.EntryValidation.Completion.InlineSelection = true;
+
+            _entryBoxSelectArticle1.EntryValidation.Changed += delegate
             {
-                //Load Initial Values
-                Load();
+                SelectRecordDropDownArticle(false, _entryBoxSelectArticle1);
+            };
 
-                //Init VBOX
-                _vbox = new VBox(false, 0);
-                _entryCompositeLinesCollection = new List<XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>>();
-                //_articleCollection = new List<fin_article>();
-                ArticleCollection = new Dictionary<fin_article, decimal>();
-                //Supplier
-                CriteriaOperator criteriaOperatorSupplier = CriteriaOperator.Parse("(Supplier = 1)");
-                _entryBoxSelectSupplier = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_supplier"), "Name", "Oid", _initialSupplier, criteriaOperatorSupplier, LogicPOS.Utility.RegexUtils.RegexGuid, true);
-                _entryBoxSelectSupplier.EntryValidation.IsEditable = true;
-                _entryBoxSelectSupplier.EntryValidation.Completion.PopupCompletion = true;
-                _entryBoxSelectSupplier.EntryValidation.Completion.InlineCompletion = false;
-                _entryBoxSelectSupplier.EntryValidation.Completion.PopupSingleMatch = true;
-                _entryBoxSelectSupplier.EntryValidation.Completion.InlineSelection = true;
-                _entryBoxSelectSupplier.EntryValidation.Changed += delegate { ValidateDialog(); };
+            _entryBoxSelectArticle1.EntryCodeValidation.Completion = new EntryCompletion();
+            _entryBoxSelectArticle1.EntryCodeValidation.Completion.Model = FillDropDownListStore(true);
+            _entryBoxSelectArticle1.EntryCodeValidation.Completion.TextColumn = 0;
+            _entryBoxSelectArticle1.EntryCodeValidation.Completion.PopupCompletion = true;
+            _entryBoxSelectArticle1.EntryCodeValidation.Completion.InlineCompletion = false;
+            _entryBoxSelectArticle1.EntryCodeValidation.Completion.PopupSingleMatch = true;
+            _entryBoxSelectArticle1.EntryCodeValidation.Completion.InlineSelection = true;
 
-                //DocumentDate
-                _entryBoxDocumentDate = new EntryBoxValidationDatePickerDialog(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_date"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_date"), _initialDocumentDate, LogicPOS.Utility.RegexUtils.RegexDate, true, CultureSettings.DateFormat);
-                //_entryBoxDocumentDate.EntryValidation.Sensitive = true;
-                _entryBoxDocumentDate.EntryValidation.Text = _initialDocumentDate.ToString(CultureSettings.DateFormat);
-                _entryBoxDocumentDate.EntryValidation.Validate();
-                _entryBoxDocumentDate.EntryValidation.Sensitive = true;
-                _entryBoxDocumentDate.ClosePopup += delegate { ValidateDialog(); };
-
-                //DocumentNumber
-                _entryBoxDocumentNumber = new EntryBoxValidation(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_document_number"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false);
-                if (_initialDocumentNumber != string.Empty) _entryBoxDocumentNumber.EntryValidation.Text = _initialDocumentNumber;
-                _entryBoxDocumentNumber.EntryValidation.Changed += delegate { ValidateDialog(); };
-
-
-                //MultiArticles
-                _vboxArticles = new VBox(true, 0);
-                _scrolledWindowView = new ScrolledWindow();
-                _scrolledWindowView.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
-                _scrolledWindowView.ModifyBg(StateType.Normal, Color.White.ToGdkColor());
-                _scrolledWindowView.ShadowType = ShadowType.Out;
-                _totalCompositeEntrys++;
-                CriteriaOperator criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Class = '{0}')", XPOSettings.XpoOidArticleDefaultClass));
-                _entryBoxSelectArticle1 = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_article"), "Designation", "Oid", null, criteriaOperatorSelectArticle, KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true, true, LogicPOS.Utility.RegexUtils.RegexAlfaNumericArticleCode, LogicPOS.Utility.RegexUtils.RegexDecimalPositiveAndNegative, _totalCompositeEntrys);
-                _entryBoxSelectArticle1.EntryValidation.IsEditable = true;
-                _entryBoxSelectArticle1.EntryQtdValidation.IsEditable = true;
-                _entryBoxSelectArticle1.Value = null;
-                _entryBoxSelectArticle1.EntryValidation.Text = "";
-
-                _entryBoxSelectArticle1.EntryValidation.Validate();
-                _entryBoxSelectArticle1.EntryCodeValidation.Validate();
-                _entryBoxSelectArticle1.EntryQtdValidation.Validate();
-
-                //Events Composition
-                _entryBoxSelectArticle1.ClosePopup += _entryBoxSelectArticle_ClosePopup;
-                _entryBoxSelectArticle1.CleanArticleEvent += _entryBoxSelectArticle_CleanArticleEvent;
-                _entryBoxSelectArticle1.AddNewEntryEvent += NewBox_AddNewEntryEvent;
-                _entryBoxSelectArticle1.EntryQtdValidation.TextInserted += QtdEntryValidation_TextInserted;
-
-                //Auto Complete
-                _entryBoxSelectArticle1.EntryValidation.Completion = new EntryCompletion();
-                _entryBoxSelectArticle1.EntryValidation.Completion.Model = FillDropDownListStore(false, criteriaOperatorSelectArticle);
-                _entryBoxSelectArticle1.EntryValidation.Completion.TextColumn = 0;
-                _entryBoxSelectArticle1.EntryValidation.Completion.PopupCompletion = true;
-                _entryBoxSelectArticle1.EntryValidation.Completion.InlineCompletion = false;
-                _entryBoxSelectArticle1.EntryValidation.Completion.PopupSingleMatch = true;
-                _entryBoxSelectArticle1.EntryValidation.Completion.InlineSelection = true;
-
-                _entryBoxSelectArticle1.EntryValidation.Changed += delegate
-                {
-                    SelectRecordDropDownArticle(false, _entryBoxSelectArticle1);
-                };
-
-                _entryBoxSelectArticle1.EntryCodeValidation.Completion = new EntryCompletion();
-                _entryBoxSelectArticle1.EntryCodeValidation.Completion.Model = FillDropDownListStore(true);
-                _entryBoxSelectArticle1.EntryCodeValidation.Completion.TextColumn = 0;
-                _entryBoxSelectArticle1.EntryCodeValidation.Completion.PopupCompletion = true;
-                _entryBoxSelectArticle1.EntryCodeValidation.Completion.InlineCompletion = false;
-                _entryBoxSelectArticle1.EntryCodeValidation.Completion.PopupSingleMatch = true;
-                _entryBoxSelectArticle1.EntryCodeValidation.Completion.InlineSelection = true;
-
-                _entryBoxSelectArticle1.EntryCodeValidation.Changed += delegate
-                {
-                    SelectRecordDropDownArticle(true, _entryBoxSelectArticle1);
-                };
-
-                _entryCompositeLinesCollection.Add(_entryBoxSelectArticle1);
-
-
-                //SelectArticle
-                //CriteriaOperator criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Class = '{0}')", SettingsApp.XpoOidArticleDefaultClass));
-                //_entryBoxSelectArticle = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_article"), "Designation", "Oid", null, criteriaOperatorSelectArticle, SettingsApp.RegexGuid, true);
-                //_entryBoxSelectArticle.EntryValidation.IsEditable = false;
-                //_entryBoxSelectArticle.EntryValidation.Changed += delegate { ValidateDialog(); };
-
-                ////Quantity
-                //_entryBoxQuantity = new EntryBoxValidation(this, CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_quantity"), KeyboardMode.Numeric, SettingsApp.RegexDecimalPositiveAndNegative, true);
-                //_entryBoxQuantity.EntryValidation.Changed += delegate { ValidateDialog(); };
-
-                //Notes
-                _entryBoxNotes = new EntryBoxValidation(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_notes"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false);
-                _entryBoxNotes.EntryValidation.Changed += delegate { ValidateDialog(); };
-
-                //Final Pack
-                _vbox.PackStart(_entryBoxSelectSupplier, false, false, 0);
-                _vbox.PackStart(_entryBoxDocumentDate, false, false, 0);
-                _vbox.PackStart(_entryBoxDocumentNumber, false, false, 0);
-                _vbox.PackStart(_entryBoxNotes, false, false, 0);
-                _vbox.PackStart(_entryBoxSelectArticle1, false, false, 0);
-                //_vbox.PackStart(_entryBoxQuantity, false, false, 0);
-
-                _scrolledWindowView.AddWithViewport(_vbox);
-            }
-            catch (Exception ex)
+            _entryBoxSelectArticle1.EntryCodeValidation.Changed += delegate
             {
-                _logger.Error(ex.Message, ex);
-            }
+                SelectRecordDropDownArticle(true, _entryBoxSelectArticle1);
+            };
+
+            _entryCompositeLinesCollection.Add(_entryBoxSelectArticle1);
+
+
+            //SelectArticle
+            //CriteriaOperator criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Class = '{0}')", SettingsApp.XpoOidArticleDefaultClass));
+            //_entryBoxSelectArticle = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_article"), "Designation", "Oid", null, criteriaOperatorSelectArticle, SettingsApp.RegexGuid, true);
+            //_entryBoxSelectArticle.EntryValidation.IsEditable = false;
+            //_entryBoxSelectArticle.EntryValidation.Changed += delegate { ValidateDialog(); };
+
+            ////Quantity
+            //_entryBoxQuantity = new EntryBoxValidation(this, CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_quantity"), KeyboardMode.Numeric, SettingsApp.RegexDecimalPositiveAndNegative, true);
+            //_entryBoxQuantity.EntryValidation.Changed += delegate { ValidateDialog(); };
+
+            //Notes
+            _entryBoxNotes = new EntryBoxValidation(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_notes"), KeyboardMode.Alfa, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, false);
+            _entryBoxNotes.EntryValidation.Changed += delegate { ValidateDialog(); };
+
+            //Final Pack
+            _vbox.PackStart(_entryBoxSelectSupplier, false, false, 0);
+            _vbox.PackStart(_entryBoxDocumentDate, false, false, 0);
+            _vbox.PackStart(_entryBoxDocumentNumber, false, false, 0);
+            _vbox.PackStart(_entryBoxNotes, false, false, 0);
+            _vbox.PackStart(_entryBoxSelectArticle1, false, false, 0);
+            //_vbox.PackStart(_entryBoxQuantity, false, false, 0);
+
+            _scrolledWindowView.AddWithViewport(_vbox);
+
         }
 
         private void ValidateDialog()
@@ -253,122 +247,73 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             object documentDate = POSSession.CurrentSession.GetToken(string.Format("{0}_{1}", this.GetType().Name, "documentDate").ToUpper());
             object documentNumber = POSSession.CurrentSession.GetToken(string.Format("{0}_{1}", this.GetType().Name, "documentNumber").ToUpper());
             //Assign if Valid
-            try
-            {
-                if (supplier != null) _initialSupplier = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), new Guid(supplier.ToString()));
-                var own_customer = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), XPOSettings.XpoOidUserRecord);
-                if (own_customer != null)
-                {
-                    //update owner customer for internal stock moviments                        
-                    own_customer.FiscalNumber = GeneralSettings.PreferenceParameters["COMPANY_FISCALNUMBER"];
-                    own_customer.Name = GeneralSettings.PreferenceParameters["COMPANY_NAME"];
-                    own_customer.Save();
 
-                    if (supplier == null) { supplier = own_customer; }
-                }
-
-            }
-            catch (Exception ex)
+            if (supplier != null) _initialSupplier = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), new Guid(supplier.ToString()));
+            var own_customer = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), XPOSettings.XpoOidUserRecord);
+            if (own_customer != null)
             {
-                _logger.Error(ex.Message, ex);
+                //update owner customer for internal stock moviments                        
+                own_customer.FiscalNumber = GeneralSettings.PreferenceParameters["COMPANY_FISCALNUMBER"];
+                own_customer.Name = GeneralSettings.PreferenceParameters["COMPANY_NAME"];
+                own_customer.Save();
+
+                if (supplier == null) { supplier = own_customer; }
             }
 
-            try
-            {
-                _initialDocumentDate = (documentDate != null) ? Convert.ToDateTime(documentDate) : XPOUtility.CurrentDateTimeAtomic();
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
 
-            try
-            {
-                _initialDocumentNumber = (documentNumber != null) ? Convert.ToString(documentNumber) : string.Empty;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
+            _initialDocumentDate = (documentDate != null) ? Convert.ToDateTime(documentDate) : XPOUtility.CurrentDateTimeAtomic();
+
+            _initialDocumentNumber = (documentNumber != null) ? Convert.ToString(documentNumber) : string.Empty;
+
         }
 
         public void Save()
         {
-            try
-            {
-                POSSession.CurrentSession.SetToken(string.Format("{0}_{1}", this.GetType().Name, "supplier").ToUpper(), _entryBoxSelectSupplier.Value.Oid);
-                POSSession.CurrentSession.SetToken(string.Format("{0}_{1}", this.GetType().Name, "documentDate").ToUpper(), _entryBoxDocumentDate.Value);
-                POSSession.CurrentSession.SetToken(string.Format("{0}_{1}", this.GetType().Name, "documentNumber").ToUpper(), _entryBoxDocumentNumber.EntryValidation.Text);
-                POSSession.CurrentSession.Save();
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
+
+            POSSession.CurrentSession.SetToken(string.Format("{0}_{1}", this.GetType().Name, "supplier").ToUpper(), _entryBoxSelectSupplier.Value.Oid);
+            POSSession.CurrentSession.SetToken(string.Format("{0}_{1}", this.GetType().Name, "documentDate").ToUpper(), _entryBoxDocumentDate.Value);
+            POSSession.CurrentSession.SetToken(string.Format("{0}_{1}", this.GetType().Name, "documentNumber").ToUpper(), _entryBoxDocumentNumber.EntryValidation.Text);
+            POSSession.CurrentSession.Save();
         }
 
         //Select record from dropdown menu
         private void SelectRecordDropDownArticle(bool isArticleCode, XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle> pXPOEntry)
         {
-            try
+            Guid articleOid = Guid.Empty;
+            _previousValue = (fin_article)pXPOEntry.Value;
+            if (_dropdownTextCollection != null)
             {
-                Guid articleOid = Guid.Empty;
-                _previousValue = (fin_article)pXPOEntry.Value;
-                if (_dropdownTextCollection != null)
+                foreach (dynamic item in _dropdownTextCollection)
                 {
-                    foreach (dynamic item in _dropdownTextCollection)
+                    if (isArticleCode)
                     {
-                        if (isArticleCode)
-                        {
-                            if (item.Code == pXPOEntry.CodeEntry.Text)
-                            {
-                                articleOid = item.Oid;
-                                break;
-                            }
-                        }
-                        else if (item.Designation == pXPOEntry.EntryValidation.Text)
+                        if (item.Code == pXPOEntry.CodeEntry.Text)
                         {
                             articleOid = item.Oid;
                             break;
                         }
                     }
-                }
-                if (!articleOid.Equals(Guid.Empty))
-                {
-                    //Get Object from dialog else Mixing Sessions, Both belong to diferente Sessions
-                    fin_article newArticle = XPOUtility.GetEntityById<fin_article>(articleOid);
-
-                    if (isArticleCode)
+                    else if (item.Designation == pXPOEntry.EntryValidation.Text)
                     {
-                        pXPOEntry.EntryValidation.Changed -= delegate { pXPOEntry.EntryValidation.Validate(); };
-
-                        pXPOEntry.EntryValidation.Text = (newArticle != null) ? newArticle.Designation.ToString() : CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error");
-
-                        pXPOEntry.EntryValidation.Changed += delegate { pXPOEntry.EntryValidation.Validate(); };
-
-                        pXPOEntry.EntryQtdValidation.Text = (newArticle != null) ? string.Format("{0:0.##}", newArticle.DefaultQuantity) : CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error");
-
-                        pXPOEntry.EntryCodeValidation.Validate();
-
-                        pXPOEntry.EntryValidation.Validate();
-
-                        pXPOEntry.EntryQtdValidation.Validate();
-
-                        ValidateDialog();
-
-                        return;
+                        articleOid = item.Oid;
+                        break;
                     }
+                }
+            }
+            if (!articleOid.Equals(Guid.Empty))
+            {
+                //Get Object from dialog else Mixing Sessions, Both belong to diferente Sessions
+                fin_article newArticle = XPOUtility.GetEntityById<fin_article>(articleOid);
+
+                if (isArticleCode)
+                {
                     pXPOEntry.EntryValidation.Changed -= delegate { pXPOEntry.EntryValidation.Validate(); };
 
                     pXPOEntry.EntryValidation.Text = (newArticle != null) ? newArticle.Designation.ToString() : CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error");
 
                     pXPOEntry.EntryValidation.Changed += delegate { pXPOEntry.EntryValidation.Validate(); };
 
-                    pXPOEntry.EntryCodeValidation.Text = (newArticle != null) ? newArticle.Code.ToString() : CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error");
-
                     pXPOEntry.EntryQtdValidation.Text = (newArticle != null) ? string.Format("{0:0.##}", newArticle.DefaultQuantity) : CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error");
-
-                    pXPOEntry.Value = newArticle;
 
                     pXPOEntry.EntryCodeValidation.Validate();
 
@@ -376,41 +321,59 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                     pXPOEntry.EntryQtdValidation.Validate();
 
+                    ValidateDialog();
 
-                    //Clean previous value from colection
-                    if (_previousValue != null)
-                    {
-                        ArticleCollection.Remove(_previousValue);
-                        //foreach (var articleLine in _articleCollection)
-                        //{
-                        //    if (articleLine.Key == _previousValue)
-                        //    {
-                        //        _articleCollection.Remove(articleLine.Key);
-                        //        break;
-                        //    }
-                        //}
-                    }
+                    return;
+                }
+                pXPOEntry.EntryValidation.Changed -= delegate { pXPOEntry.EntryValidation.Validate(); };
 
-                    //Insert associated articles to collection
-                    if (pXPOEntry.Value == _article)
-                    {
-                        pXPOEntry.Value = null;
-                        
-                        Alerts.ShowCompositeArticleTheSameAlert(this);
+                pXPOEntry.EntryValidation.Text = (newArticle != null) ? newArticle.Designation.ToString() : CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error");
 
-                        pXPOEntry.EntryValidation.Text = "";
-                        ValidateDialog();
-                        return;
-                    }
-                    ArticleCollection.Add(pXPOEntry.Value, Convert.ToDecimal(pXPOEntry.QtdEntry.Text));
+                pXPOEntry.EntryValidation.Changed += delegate { pXPOEntry.EntryValidation.Validate(); };
+
+                pXPOEntry.EntryCodeValidation.Text = (newArticle != null) ? newArticle.Code.ToString() : CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error");
+
+                pXPOEntry.EntryQtdValidation.Text = (newArticle != null) ? string.Format("{0:0.##}", newArticle.DefaultQuantity) : CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error");
+
+                pXPOEntry.Value = newArticle;
+
+                pXPOEntry.EntryCodeValidation.Validate();
+
+                pXPOEntry.EntryValidation.Validate();
+
+                pXPOEntry.EntryQtdValidation.Validate();
+
+
+                //Clean previous value from colection
+                if (_previousValue != null)
+                {
+                    ArticleCollection.Remove(_previousValue);
+                    //foreach (var articleLine in _articleCollection)
+                    //{
+                    //    if (articleLine.Key == _previousValue)
+                    //    {
+                    //        _articleCollection.Remove(articleLine.Key);
+                    //        break;
+                    //    }
+                    //}
+                }
+
+                //Insert associated articles to collection
+                if (pXPOEntry.Value == _article)
+                {
+                    pXPOEntry.Value = null;
+
+                    SimpleAlerts.ShowCompositeArticleTheSameAlert(this);
+
+                    pXPOEntry.EntryValidation.Text = "";
                     ValidateDialog();
                     return;
                 }
+                ArticleCollection.Add(pXPOEntry.Value, Convert.ToDecimal(pXPOEntry.QtdEntry.Text));
+                ValidateDialog();
+                return;
             }
-            catch (Exception ex)
-            {
-                _logger.Error("Error selecting new Composite article Entry : " + ex.Message);
-            }
+
         }
 
         //Populate dropdown list
@@ -446,7 +409,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _logger.Error("Error populating dropdown list : " + ex.Message);
                 return null;
             }
         }
@@ -455,191 +417,172 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         //Add new entry's event
         private void NewBox_AddNewEntryEvent(object sender, EventArgs e)
         {
-            try
+            _totalCompositeEntrys++;
+            //var entrySelected = (XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>)sender;
+            CriteriaOperator criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1)"));
+            XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle> NewEntryBoxSelectArticle = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_article"), "Designation", "Oid", null, criteriaOperatorSelectArticle, KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true, true, LogicPOS.Utility.RegexUtils.RegexAlfaNumericArticleCode, LogicPOS.Utility.RegexUtils.RegexDecimalPositiveAndNegative, _totalCompositeEntrys);
+
+            NewEntryBoxSelectArticle.EntryValidation.IsEditable = true;
+            NewEntryBoxSelectArticle.Value = null;
+            NewEntryBoxSelectArticle.EntryValidation.Text = "";
+            NewEntryBoxSelectArticle.EntryCodeValidation.Text = "";
+            NewEntryBoxSelectArticle.EntryQtdValidation.Text = "";
+            NewEntryBoxSelectArticle.EntryCodeValidation.Validate();
+            NewEntryBoxSelectArticle.EntryQtdValidation.Validate();
+            _vbox.PackStart(NewEntryBoxSelectArticle, false, false, 0);
+
+            //Events
+            NewEntryBoxSelectArticle.ClosePopup += _entryBoxSelectArticle_ClosePopup;
+            NewEntryBoxSelectArticle.CleanArticleEvent += _entryBoxSelectArticle_CleanArticleEvent;
+            NewEntryBoxSelectArticle.AddNewEntryEvent += NewBox_AddNewEntryEvent;
+            NewEntryBoxSelectArticle.EntryQtdValidation.TextInserted += QtdEntryValidation_TextInserted;
+            NewEntryBoxSelectArticle.ShowAll();
+
+            //Auto Complete
+            NewEntryBoxSelectArticle.EntryValidation.Completion = new EntryCompletion();
+            NewEntryBoxSelectArticle.EntryValidation.Completion.Model = FillDropDownListStore(false, criteriaOperatorSelectArticle);
+            NewEntryBoxSelectArticle.EntryValidation.Completion.TextColumn = 0;
+            NewEntryBoxSelectArticle.EntryValidation.Completion.PopupCompletion = true;
+            NewEntryBoxSelectArticle.EntryValidation.Completion.InlineCompletion = false;
+            NewEntryBoxSelectArticle.EntryValidation.Completion.PopupSingleMatch = true;
+            NewEntryBoxSelectArticle.EntryValidation.Completion.InlineSelection = true;
+
+            NewEntryBoxSelectArticle.EntryValidation.Changed += delegate
             {
-                _totalCompositeEntrys++;
-                //var entrySelected = (XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>)sender;
-                CriteriaOperator criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1)"));
-                XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle> NewEntryBoxSelectArticle = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_article"), "Designation", "Oid", null, criteriaOperatorSelectArticle, KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexAlfaNumericExtended, true, true, LogicPOS.Utility.RegexUtils.RegexAlfaNumericArticleCode, LogicPOS.Utility.RegexUtils.RegexDecimalPositiveAndNegative, _totalCompositeEntrys);
+                SelectRecordDropDownArticle(false, NewEntryBoxSelectArticle);
+            };
 
-                NewEntryBoxSelectArticle.EntryValidation.IsEditable = true;
-                NewEntryBoxSelectArticle.Value = null;
-                NewEntryBoxSelectArticle.EntryValidation.Text = "";
-                NewEntryBoxSelectArticle.EntryCodeValidation.Text = "";
-                NewEntryBoxSelectArticle.EntryQtdValidation.Text = "";
-                NewEntryBoxSelectArticle.EntryCodeValidation.Validate();
-                NewEntryBoxSelectArticle.EntryQtdValidation.Validate();
-                _vbox.PackStart(NewEntryBoxSelectArticle, false, false, 0);
+            NewEntryBoxSelectArticle.EntryCodeValidation.Completion = new EntryCompletion();
+            NewEntryBoxSelectArticle.EntryCodeValidation.Completion.Model = FillDropDownListStore(true);
+            NewEntryBoxSelectArticle.EntryCodeValidation.Completion.TextColumn = 0;
+            NewEntryBoxSelectArticle.EntryCodeValidation.Completion.PopupCompletion = true;
+            NewEntryBoxSelectArticle.EntryCodeValidation.Completion.InlineCompletion = false;
+            NewEntryBoxSelectArticle.EntryCodeValidation.Completion.PopupSingleMatch = true;
+            NewEntryBoxSelectArticle.EntryCodeValidation.Completion.InlineSelection = true;
 
-                //Events
-                NewEntryBoxSelectArticle.ClosePopup += _entryBoxSelectArticle_ClosePopup;
-                NewEntryBoxSelectArticle.CleanArticleEvent += _entryBoxSelectArticle_CleanArticleEvent;
-                NewEntryBoxSelectArticle.AddNewEntryEvent += NewBox_AddNewEntryEvent;
-                NewEntryBoxSelectArticle.EntryQtdValidation.TextInserted += QtdEntryValidation_TextInserted;
-                NewEntryBoxSelectArticle.ShowAll();
-
-                //Auto Complete
-                NewEntryBoxSelectArticle.EntryValidation.Completion = new EntryCompletion();
-                NewEntryBoxSelectArticle.EntryValidation.Completion.Model = FillDropDownListStore(false, criteriaOperatorSelectArticle);
-                NewEntryBoxSelectArticle.EntryValidation.Completion.TextColumn = 0;
-                NewEntryBoxSelectArticle.EntryValidation.Completion.PopupCompletion = true;
-                NewEntryBoxSelectArticle.EntryValidation.Completion.InlineCompletion = false;
-                NewEntryBoxSelectArticle.EntryValidation.Completion.PopupSingleMatch = true;
-                NewEntryBoxSelectArticle.EntryValidation.Completion.InlineSelection = true;
-
-                NewEntryBoxSelectArticle.EntryValidation.Changed += delegate
-                {
-                    SelectRecordDropDownArticle(false, NewEntryBoxSelectArticle);
-                };
-
-                NewEntryBoxSelectArticle.EntryCodeValidation.Completion = new EntryCompletion();
-                NewEntryBoxSelectArticle.EntryCodeValidation.Completion.Model = FillDropDownListStore(true);
-                NewEntryBoxSelectArticle.EntryCodeValidation.Completion.TextColumn = 0;
-                NewEntryBoxSelectArticle.EntryCodeValidation.Completion.PopupCompletion = true;
-                NewEntryBoxSelectArticle.EntryCodeValidation.Completion.InlineCompletion = false;
-                NewEntryBoxSelectArticle.EntryCodeValidation.Completion.PopupSingleMatch = true;
-                NewEntryBoxSelectArticle.EntryCodeValidation.Completion.InlineSelection = true;
-
-                NewEntryBoxSelectArticle.EntryCodeValidation.Changed += delegate
-                {
-                    SelectRecordDropDownArticle(true, NewEntryBoxSelectArticle);
-                };
-
-                NewEntryBoxSelectArticle.EntryValidation.Validate();
-                NewEntryBoxSelectArticle.EntryCodeValidation.Validate();
-                NewEntryBoxSelectArticle.EntryQtdValidation.Validate();
-
-                _entryCompositeLinesCollection.Add(NewEntryBoxSelectArticle);
-                _scrolledWindowView.AddWithViewport(_vbox);
-                //eventBoxPosCompositionView.Add(scrolledWindowCompositionView);
-                ValidateDialog();
-            }
-            catch (Exception ex)
+            NewEntryBoxSelectArticle.EntryCodeValidation.Changed += delegate
             {
-                _logger.Error("Error Adding new Composite article Entry : " + ex.Message);
-            }
+                SelectRecordDropDownArticle(true, NewEntryBoxSelectArticle);
+            };
+
+            NewEntryBoxSelectArticle.EntryValidation.Validate();
+            NewEntryBoxSelectArticle.EntryCodeValidation.Validate();
+            NewEntryBoxSelectArticle.EntryQtdValidation.Validate();
+
+            _entryCompositeLinesCollection.Add(NewEntryBoxSelectArticle);
+            _scrolledWindowView.AddWithViewport(_vbox);
+            //eventBoxPosCompositionView.Add(scrolledWindowCompositionView);
+            ValidateDialog();
+
         }
 
         //Clean article event
         private void _entryBoxSelectArticle_CleanArticleEvent(object sender, EventArgs e)
         {
-            try
+            bool cleanFirstEntry = false;
+            var entrySelected = (XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>)sender;
+            Guid articleToDeleteAux = Guid.Empty;
+            if (entrySelected != null)
             {
-                bool cleanFirstEntry = false;
-                var entrySelected = (XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>)sender;
-                Guid articleToDeleteAux = Guid.Empty;
-                if (entrySelected != null)
+                if (entrySelected.Value != null) articleToDeleteAux = entrySelected.Value.Oid;
+
+                if (entrySelected == _entryBoxSelectArticle1)
                 {
-                    if (entrySelected.Value != null) articleToDeleteAux = entrySelected.Value.Oid;
-
-                    if (entrySelected == _entryBoxSelectArticle1)
+                    if (_totalCompositeEntrys > 1 && _entryCompositeLinesCollection.Count > 1)
                     {
-                        if (_totalCompositeEntrys > 1 && _entryCompositeLinesCollection.Count > 1)
+                        foreach (var line in _entryCompositeLinesCollection)
                         {
-                            foreach (var line in _entryCompositeLinesCollection)
+                            if (line.EntryNumber == _totalCompositeEntrys)
                             {
-                                if (line.EntryNumber == _totalCompositeEntrys)
-                                {
-                                    _entryBoxSelectArticle1.Value = line.Value;
-                                    _entryBoxSelectArticle1.EntryValidation.Text = line.EntryValidation.Text;
-                                    _entryBoxSelectArticle1.EntryQtdValidation.Text = line.EntryQtdValidation.Text;
-                                    _entryBoxSelectArticle1.CodeEntry.Text = line.CodeEntry.Text;
-                                    _entryBoxSelectArticle1.EntryValidation.Validate();
-                                    _entryBoxSelectArticle1.EntryCodeValidation.Validate();
-                                    _entryBoxSelectArticle1.EntryQtdValidation.Validate();
+                                _entryBoxSelectArticle1.Value = line.Value;
+                                _entryBoxSelectArticle1.EntryValidation.Text = line.EntryValidation.Text;
+                                _entryBoxSelectArticle1.EntryQtdValidation.Text = line.EntryQtdValidation.Text;
+                                _entryBoxSelectArticle1.CodeEntry.Text = line.CodeEntry.Text;
+                                _entryBoxSelectArticle1.EntryValidation.Validate();
+                                _entryBoxSelectArticle1.EntryCodeValidation.Validate();
+                                _entryBoxSelectArticle1.EntryQtdValidation.Validate();
 
 
-                                    line.Hide();
-                                    _entryCompositeLinesCollection.Remove(line);
-                                    line.Value = null;
-                                    _totalCompositeEntrys--;
-                                    cleanFirstEntry = true;
-                                    break;
-                                }
+                                line.Hide();
+                                _entryCompositeLinesCollection.Remove(line);
+                                line.Value = null;
+                                _totalCompositeEntrys--;
+                                cleanFirstEntry = true;
+                                break;
                             }
-                        }
-                        else
-                        {
-                            _entryBoxSelectArticle1.EntryValidation.Text = "";
-                            _entryBoxSelectArticle1.EntryQtdValidation.Text = "";
-                            _entryBoxSelectArticle1.CodeEntry.Text = "";
-                            _entryBoxSelectArticle1.EntryValidation.Validate();
-                            _entryBoxSelectArticle1.EntryCodeValidation.Validate();
-                            _entryBoxSelectArticle1.EntryQtdValidation.Validate();
                         }
                     }
                     else
                     {
-                        entrySelected.Hide();
-
-
-                        _totalCompositeEntrys--;
-
-                        _entryCompositeLinesCollection.Remove(entrySelected);
-
-                    }
-                    if (entrySelected.Value != null)
-                    {
-                        fin_article auxArticle = new fin_article();
-
-                        if (cleanFirstEntry)
-                        {
-                            auxArticle = (fin_article)XPOSettings.Session.GetObjectByKey(typeof(fin_article), articleToDeleteAux);
-                        }
-                        else
-                        {
-                            auxArticle = entrySelected.Value;
-                        }
-                        ArticleCollection.Remove(auxArticle);
-                        //foreach (var articleLine in _articleCollection)
-                        //{
-                        //    if (articleLine.Key == auxArticle)
-                        //    {
-                        //        _articleCollection.Remove(articleLine.Key);
-                        //        if (entrySelected != _entryBoxSelectArticle1) entrySelected = null;
-                        //        break;
-                        //    }
-                        //}
-                        entrySelected = null;
+                        _entryBoxSelectArticle1.EntryValidation.Text = "";
+                        _entryBoxSelectArticle1.EntryQtdValidation.Text = "";
+                        _entryBoxSelectArticle1.CodeEntry.Text = "";
+                        _entryBoxSelectArticle1.EntryValidation.Validate();
+                        _entryBoxSelectArticle1.EntryCodeValidation.Validate();
+                        _entryBoxSelectArticle1.EntryQtdValidation.Validate();
                     }
                 }
-                ValidateDialog();
+                else
+                {
+                    entrySelected.Hide();
+
+
+                    _totalCompositeEntrys--;
+
+                    _entryCompositeLinesCollection.Remove(entrySelected);
+
+                }
+                if (entrySelected.Value != null)
+                {
+                    fin_article auxArticle = new fin_article();
+
+                    if (cleanFirstEntry)
+                    {
+                        auxArticle = (fin_article)XPOSettings.Session.GetObjectByKey(typeof(fin_article), articleToDeleteAux);
+                    }
+                    else
+                    {
+                        auxArticle = entrySelected.Value;
+                    }
+                    ArticleCollection.Remove(auxArticle);
+                    //foreach (var articleLine in _articleCollection)
+                    //{
+                    //    if (articleLine.Key == auxArticle)
+                    //    {
+                    //        _articleCollection.Remove(articleLine.Key);
+                    //        if (entrySelected != _entryBoxSelectArticle1) entrySelected = null;
+                    //        break;
+                    //    }
+                    //}
+                    entrySelected = null;
+                }
             }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message);
-            }
+            ValidateDialog();
+
         }
 
         //Close popup articles event
         private void _entryBoxSelectArticle_ClosePopup(object sender, EventArgs e)
         {
-            try
+            var entrySelected = (XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>)sender;
+
+            if (string.IsNullOrEmpty(entrySelected.EntryValidation.Text))
             {
-                var entrySelected = (XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>)sender;
-
-                if (string.IsNullOrEmpty(entrySelected.EntryValidation.Text))
-                {
-                    return;
-                }
-
-                if (entrySelected.Value == _article)
-                {
-                    entrySelected.Value = null;
-
-                    Alerts.ShowCompositeArticleTheSameAlert(this);
-                  
-                    entrySelected.EntryValidation.Text = "";
-                    return;
-                }
-                entrySelected.CodeEntry.Text = entrySelected.Value.Code;
-                entrySelected.EntryQtdValidation.Text = string.Format("{0:0.##}", entrySelected.Value.DefaultQuantity);
-                ValidateDialog();
+                return;
             }
-            catch (Exception ex)
+
+            if (entrySelected.Value == _article)
             {
-                _logger.Error(ex.Message);
+                entrySelected.Value = null;
+
+                SimpleAlerts.ShowCompositeArticleTheSameAlert(this);
+
+                entrySelected.EntryValidation.Text = "";
+                return;
             }
+            entrySelected.CodeEntry.Text = entrySelected.Value.Code;
+            entrySelected.EntryQtdValidation.Text = string.Format("{0:0.##}", entrySelected.Value.DefaultQuantity);
+            ValidateDialog();
         }
 
         //Change quantity
@@ -660,7 +603,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _logger.Error("Error updating quantity from article : " + ex.Message);
                 ValidateDialog();
             }
         }
@@ -671,13 +613,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         /// <summary>
         /// Get ArticleStock Response Object
         /// </summary>
-        /// <param name="pSourceWindow"></param>
+        /// <param name="parentWindow"></param>
         /// <returns>PosArticleStockResponse</returns>
-        public static ProcessArticleStockParameter GetProcessArticleStockParameter(Window pSourceWindow)
+        public static ProcessArticleStockParameter GetProcessArticleStockParameter(Window parentWindow)
         {
             ProcessArticleStockParameter result = null;
 
-            PosArticleStockDialog dialog = new PosArticleStockDialog(pSourceWindow, DialogFlags.DestroyWithParent | DialogFlags.Modal);
+            PosArticleStockDialog dialog = new PosArticleStockDialog(parentWindow, DialogFlags.DestroyWithParent | DialogFlags.Modal);
             ResponseType response = (ResponseType)dialog.Run();
             if (response == ResponseType.Ok)
             {

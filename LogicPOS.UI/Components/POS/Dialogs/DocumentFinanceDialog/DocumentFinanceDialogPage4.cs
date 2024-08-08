@@ -2,7 +2,6 @@
 using DevExpress.Xpo;
 using Gtk;
 using logicpos.Classes.Enums.Keyboard;
-using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using System;
@@ -10,6 +9,7 @@ using LogicPOS.Globalization;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
+using LogicPOS.UI.Components;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 {
@@ -35,15 +35,15 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
         public EntryBoxValidation EntryBoxShipToCity { get; }
 
-        public XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry> EntryBoxSelectShipToCountry { get; }
+        public XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, GridViewCountries> EntryBoxSelectShipToCountry { get; }
 
         //Constructor
-        public DocumentFinanceDialogPage4(Window pSourceWindow, string pPageName) 
-            : this(pSourceWindow, pPageName, "", null, true) { }
-        public DocumentFinanceDialogPage4(Window pSourceWindow, string pPageName, Widget pWidget) 
-            : this(pSourceWindow, pPageName, "", pWidget, true) { }
-        public DocumentFinanceDialogPage4(Window pSourceWindow, string pPageName, string pPageIcon, Widget pWidget, bool pEnabled = true)
-            : base(pSourceWindow, pPageName, pPageIcon, pWidget, pEnabled)
+        public DocumentFinanceDialogPage4(Window parentWindow, string pPageName) 
+            : this(parentWindow, pPageName, "", null, true) { }
+        public DocumentFinanceDialogPage4(Window parentWindow, string pPageName, Widget pWidget) 
+            : this(parentWindow, pPageName, "", pWidget, true) { }
+        public DocumentFinanceDialogPage4(Window parentWindow, string pPageName, string pPageIcon, Widget pWidget, bool pEnabled = true)
+            : base(parentWindow, pPageName, pPageIcon, pWidget, pEnabled)
         {
             //Init private vars
             _pagePad = (_sourceWindow as PosDocumentFinanceDialog).PagePad;
@@ -70,7 +70,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
             //ShipTo Country
             CriteriaOperator criteriaOperatorCustomerCountry = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1)");
-            EntryBoxSelectShipToCountry = new XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry>(_sourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_country"), "Designation", "Oid", _intialValueConfigurationCountry, criteriaOperatorCustomerCountry, LogicPOS.Utility.RegexUtils.RegexGuid, true);
+            EntryBoxSelectShipToCountry = new XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, GridViewCountries>(_sourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_country"), "Designation", "Oid", _intialValueConfigurationCountry, criteriaOperatorCustomerCountry, LogicPOS.Utility.RegexUtils.RegexGuid, true);
             EntryBoxSelectShipToCountry.EntryValidation.Validate(EntryBoxSelectShipToCountry.Value.Oid.ToString());
             EntryBoxSelectShipToCountry.EntryValidation.IsEditable = false;
             EntryBoxSelectShipToCountry.EntryValidation.Changed += delegate { Validate(); };

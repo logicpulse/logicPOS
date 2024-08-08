@@ -1,7 +1,6 @@
 ﻿using Gtk;
 using logicpos.App;
 using logicpos.Classes.Enums.Widgets;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using System;
 using LogicPOS.Globalization;
 using LogicPOS.Shared;
@@ -9,6 +8,7 @@ using LogicPOS.Settings;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
+using LogicPOS.UI.Buttons;
 
 namespace logicpos
 {
@@ -16,9 +16,9 @@ namespace logicpos
     {
         private void TablePadUser_Clicked(object sender, EventArgs e)
         {
-            TouchButtonBase button = (TouchButtonBase)sender;
+            CustomButton button = (CustomButton)sender;
 
-            UsersPanel.SelectedButtonOid = button.CurrentButtonOid;
+            UsersPanel.SelectedButtonOid = button.CurrentButtonId;
 
             //Assign User Detail to Member Reference
             AssignUserDetail();
@@ -108,7 +108,7 @@ namespace logicpos
             {
                 POSSession.CurrentSession.LoggedUsers.Remove(pUserDetail.Oid);
                 POSSession.CurrentSession.Save();
-               XPOUtility.Audit("USER_loggerOUT", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_user_loggerout"), pUserDetail.Name));
+               XPOUtility.Audit("USER_logout", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_user_logout"), pUserDetail.Name));
                 //Only Reset LoggedUser if equal to pUser
                 if (XPOSettings.LoggedUser.Equals(pUserDetail))
                 {

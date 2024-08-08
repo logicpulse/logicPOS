@@ -1,7 +1,6 @@
 ﻿using DevExpress.Xpo;
 using Gtk;
 using logicpos.Classes.Enums;
-using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.shared.Enums;
@@ -11,6 +10,7 @@ using LogicPOS.Domain.Entities;
 using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Settings;
 using LogicPOS.Shared.Article;
+using LogicPOS.UI.Components;
 using System;
 using System.Data;
 
@@ -39,12 +39,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         }
 
         //Constructor
-        public DocumentFinanceDialogPage3(Window pSourceWindow, string pPageName)
-            : this(pSourceWindow, pPageName, "", null, true) { }
-        public DocumentFinanceDialogPage3(Window pSourceWindow, string pPageName, Widget pWidget)
-            : this(pSourceWindow, pPageName, "", pWidget, true) { }
-        public DocumentFinanceDialogPage3(Window pSourceWindow, string pPageName, string pPageIcon, Widget pWidget, bool pEnabled = true)
-            : base(pSourceWindow, pPageName, pPageIcon, pWidget, pEnabled)
+        public DocumentFinanceDialogPage3(Window parentWindow, string pPageName)
+            : this(parentWindow, pPageName, "", null, true) { }
+        public DocumentFinanceDialogPage3(Window parentWindow, string pPageName, Widget pWidget)
+            : this(parentWindow, pPageName, "", pWidget, true) { }
+        public DocumentFinanceDialogPage3(Window parentWindow, string pPageName, string pPageIcon, Widget pWidget, bool pEnabled = true)
+            : base(parentWindow, pPageName, pPageIcon, pWidget, pEnabled)
         {
             //Init private vars
             _pagePad = (_sourceWindow as PosDocumentFinanceDialog).PagePad;
@@ -53,16 +53,16 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
             //Init Tree
             TreeViewArticles = new TreeViewDocumentFinanceArticle(
-              pSourceWindow,
+              parentWindow,
               null,//DefaultValue 
               null,//DialogType
-              GenericTreeViewMode.Default,
-              GenericTreeViewNavigatorMode.Default
+              GridViewMode.Default,
+              GridViewNavigatorMode.Default
             );
 
             //Settings
-            string fontGenericTreeViewFinanceDocumentArticleColumnTitle = GeneralSettings.Settings["fontGenericTreeViewFinanceDocumentArticleColumnTitle"];
-            string fontGenericTreeViewFinanceDocumentArticleColumn = GeneralSettings.Settings["fontGenericTreeViewFinanceDocumentArticleColumn"];
+            string fontGenericTreeViewFinanceDocumentArticleColumnTitle = AppSettings.Instance.fontGenericTreeViewFinanceDocumentArticleColumnTitle;
+            string fontGenericTreeViewFinanceDocumentArticleColumn = AppSettings.Instance.fontGenericTreeViewFinanceDocumentArticleColumn;
             //Format Columns FontSizes for Touch
             TreeViewArticles.FormatColumnPropertiesForTouch(fontGenericTreeViewFinanceDocumentArticleColumnTitle, fontGenericTreeViewFinanceDocumentArticleColumn);
             //Disable View Button
@@ -76,7 +76,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             TreeViewArticles.RecordAfterInsert += delegate
             {
                 //FORCE Assign FriendlyId to Designation
-                fin_article article = (TreeViewArticles.DataSourceRow["Article.Code"] as fin_article);
+                fin_article article = (TreeViewArticles.Entity["Article.Code"] as fin_article);
                 TreeViewArticlesRecordAfterChange();
             };
             TreeViewArticles.RecordAfterDelete += delegate { TreeViewArticlesRecordAfterChange(); };
@@ -88,7 +88,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //Recreate ArticleBag
             ArticleBag = _posDocumentFinanceDialog.GetArticleBag();
             //Update Main Dialog Title
-            _posDocumentFinanceDialog.WindowTitle = _posDocumentFinanceDialog.GetPageTitle(_pagePad.CurrentPageIndex);
+            _posDocumentFinanceDialog.WindowSettings.WindowTitle.Text = _posDocumentFinanceDialog.GetPageTitle(_pagePad.CurrentPageIndex);
             //Update Customer Edit Mode Fields
             _pagePad2.UpdateCustomerEditMode();
             //Validate this PagePad
@@ -102,7 +102,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         public override void Validate()
         {
             //If not a Invoice|InvoiceAndPayment|Simplified Invoice
-            if (TreeViewArticles.DataSource.Rows.Count > 0
+            if (TreeViewArticles.Entities.Rows.Count > 0
                 && _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid != InvoiceSettings.InvoiceId
                 && _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid != DocumentSettings.InvoiceAndPaymentId
                 && _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid != DocumentSettings.SimplifiedInvoiceId
@@ -112,7 +112,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             }
             //Check TotalFinal with Current Customer Details
             else if (
-                TreeViewArticles.DataSource.Rows.Count > 0 &&
+                TreeViewArticles.Entities.Rows.Count > 0 &&
                 DocumentProcessingUtils.IsInValidFinanceDocumentCustomer(
                     ArticleBag.TotalFinal,
                     _pagePad2.EntryBoxSelectCustomerName.EntryValidation.Text,
@@ -129,7 +129,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             }
             //If Simplified Invoice, Check if Total Document and Total Services is Not Greater than Max Value
             else if (
-                TreeViewArticles.DataSource.Rows.Count > 0 &&
+                TreeViewArticles.Entities.Rows.Count > 0 &&
                 (
                     _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid == DocumentSettings.SimplifiedInvoiceId
                     && (
@@ -146,7 +146,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             }
             else
             {
-                _validated = (TreeViewArticles.DataSource.Rows.Count > 0);
+                _validated = (TreeViewArticles.Entities.Rows.Count > 0);
             }
 
             //Enable Next Button, If not In Last Page and in WayBill Mode (WayBill + Invoice)
@@ -170,7 +170,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
             try
             {
-                if (TreeViewArticles.DataSource.Rows.Count > 0)
+                if (TreeViewArticles.Entities.Rows.Count > 0)
                 {
                     fin_article article;
                     //Get Discount from Select Customer
@@ -178,7 +178,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                     decimal exchangeRate = _pagePad1.EntryBoxSelectConfigurationCurrency.Value.ExchangeRate;
 
                     //Update DataTable Rows
-                    foreach (DataRow item in TreeViewArticles.DataSource.Rows)
+                    foreach (DataRow item in TreeViewArticles.Entities.Rows)
                     {
                         article = XPOUtility.GetEntityById<fin_article>(new Guid(item.ItemArray[item.Table.Columns["Oid"].Ordinal].ToString()));
 
@@ -194,13 +194,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                         );
 
                         //Finnally Update DataSourceRow Value with calculated PriceProperties
-                        if (debug) _logger.Debug(string.Format("#1:TotalFinal DataSourceRow: [{0}], discountGlobal: [{1}]", LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(TreeViewArticles.DataSourceRow["TotalFinal"])), LogicPOS.Utility.DataConversionUtils.DecimalToString(discountGlobal)));
+                        if (debug) _logger.Debug(string.Format("#1:TotalFinal DataSourceRow: [{0}], discountGlobal: [{1}]", LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(TreeViewArticles.Entity["TotalFinal"])), LogicPOS.Utility.DataConversionUtils.DecimalToString(discountGlobal)));
                         //Update Display Values with ExchangeRate Multiplier
                         item["PriceDisplay"] = priceProperties.PriceNet * exchangeRate;
                         item["TotalNet"] = (priceProperties.TotalNet * exchangeRate);
                         item["TotalFinal"] = priceProperties.TotalFinal * exchangeRate;
                         item["PriceFinal"] = priceProperties.PriceFinal * exchangeRate;
-                        if (debug) _logger.Debug(string.Format("#2:TotalFinal DataSourceRow: [{0}], discountGlobal: [{1}]", LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(TreeViewArticles.DataSourceRow["TotalFinal"])), LogicPOS.Utility.DataConversionUtils.DecimalToString(discountGlobal)));
+                        if (debug) _logger.Debug(string.Format("#2:TotalFinal DataSourceRow: [{0}], discountGlobal: [{1}]", LogicPOS.Utility.DataConversionUtils.DecimalToString(Convert.ToDecimal(TreeViewArticles.Entity["TotalFinal"])), LogicPOS.Utility.DataConversionUtils.DecimalToString(discountGlobal)));
                     }
                     //Call Refresh, Recreate TreeView from Model
                     TreeViewArticles.Refresh();

@@ -1,16 +1,15 @@
 ﻿using Gtk;
 using logicpos.App;
-using logicpos.Classes.Enums.Dialogs;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using System.Drawing;
 using System.IO;
-using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Utility;
+using LogicPOS.UI.Dialogs;
+using LogicPOS.UI.Buttons;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    internal class PosFilePickerDialog : PosBaseDialog
+    internal class PosFilePickerDialog : BaseDialog
     {
         //Private Members
         private readonly FileFilter _fileFilter;
@@ -20,19 +19,19 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         public FileChooserWidget FilePicker { get; set; }
 
-        public PosFilePickerDialog(Window pSourceWindow, DialogFlags pDialogFlags)
-            : this(pSourceWindow, pDialogFlags, null, FileChooserAction.Open)
+        public PosFilePickerDialog(Window parentWindow, DialogFlags pDialogFlags)
+            : this(parentWindow, pDialogFlags, null, FileChooserAction.Open)
         {
         }
 
-        public PosFilePickerDialog(Window pSourceWindow, DialogFlags pDialogFlags, FileFilter pFileFilter, FileChooserAction pFileChooserAction)
-           : this(pSourceWindow, pDialogFlags, pFileFilter, FileChooserAction.Open, null)
+        public PosFilePickerDialog(Window parentWindow, DialogFlags pDialogFlags, FileFilter pFileFilter, FileChooserAction pFileChooserAction)
+           : this(parentWindow, pDialogFlags, pFileFilter, FileChooserAction.Open, null)
         {
         }
 
 
-        public PosFilePickerDialog(Window pSourceWindow, DialogFlags pDialogFlags, FileFilter pFileFilter, FileChooserAction pFileChooserAction, string windowName)
-            : base(pSourceWindow, pDialogFlags)
+        public PosFilePickerDialog(Window parentWindow, DialogFlags pDialogFlags, FileFilter pFileFilter, FileChooserAction pFileChooserAction, string windowName)
+            : base(parentWindow, pDialogFlags)
         {
             //Parameters
             _fileFilter = pFileFilter;
@@ -40,7 +39,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             //Init Local Vars
             string windowTitle = string.Format("{0} {1}", GeneralUtils.GetResourceByName("window_title_dialog_filepicker"), windowName);
-            _windowSize = new Size(700, 473);
+            WindowSettings.Size = new Size(700, 473);
             string fileDefaultWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_select_record.png";
 
             //Init Content
@@ -50,8 +49,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             InitUI();
 
             //ActionArea Buttons
-            TouchButtonIconWithText buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);
-            TouchButtonIconWithText buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
+            IconButtonWithText buttonOk = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
+            IconButtonWithText buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
 
             //ActionArea
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons
@@ -61,23 +60,23 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             };
 
             //Init Object
-            this.InitObject(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, _windowSize, _fixedContent, actionAreaButtons);
+            this.Initialize(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, WindowSettings.Size, _fixedContent, actionAreaButtons);
         }
 
         private void InitUI()
         {
             //Init Font Description
-            Pango.FontDescription fontDescription = Pango.FontDescription.FromString(GeneralSettings.Settings["fontEntryBoxValue"]);
+            Pango.FontDescription fontDescription = Pango.FontDescription.FromString(AppSettings.Instance.fontEntryBoxValue);
             //Init FileChooserWidget
             FilePicker = new FileChooserWidget(_fileChooserAction, "none");
             if (_fileFilter != null) FilePicker.Filter = _fileFilter;
             //Assign FilePicker StartPath
-            if (Directory.Exists(GlobalApp.FilePickerStartPath)) FilePicker.SetCurrentFolder(GlobalApp.FilePickerStartPath);
+            if (Directory.Exists(GlobalApp.OpenFileDialogStartPath)) FilePicker.SetCurrentFolder(GlobalApp.OpenFileDialogStartPath);
             //Size and Put
-            FilePicker.SetSizeRequest(_windowSize.Width - 13, _windowSize.Height - 120);
+            FilePicker.SetSizeRequest(WindowSettings.Size.Width - 13, WindowSettings.Size.Height - 120);
             _fixedContent.Put(FilePicker, 0, 0);
             //Events
-            FilePicker.CurrentFolderChanged += delegate { GlobalApp.FilePickerStartPath = FilePicker.CurrentFolder; };
+            FilePicker.CurrentFolderChanged += delegate { GlobalApp.OpenFileDialogStartPath = FilePicker.CurrentFolder; };
         }
     }
 }

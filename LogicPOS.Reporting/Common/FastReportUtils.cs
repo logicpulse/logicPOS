@@ -90,21 +90,22 @@ namespace LogicPOS.Reporting.Utility
             customVars.Add("COMPANY_CIVIL_REGISTRATION_ID", PreferencesUtils.GetPreferenceParameterFromToken("COMPANY_CIVIL_REGISTRATION_ID"));
             customVars.Add("COMPANY_TAX_ENTITY", PreferencesUtils.GetPreferenceParameterFromToken("COMPANY_TAX_ENTITY"));
             //Report
-            customVars.Add("REPORT_FILENAME_loggerO", PreferencesUtils.GetPreferenceParameterFromToken("REPORT_FILENAME_loggerO"));
-            customVars.Add("REPORT_FILENAME_loggerO_SMALL", PreferencesUtils.GetPreferenceParameterFromToken("REPORT_FILENAME_loggerO_SMALL"));
+            customVars.Add("REPORT_FILENAME_LOGO", PreferencesUtils.GetPreferenceParameterFromToken("REPORT_FILENAME_LOGO"));
+            customVars.Add("REPORT_FILENAME_LOGO_SMALL", PreferencesUtils.GetPreferenceParameterFromToken("REPORT_FILENAME_LOGO_SMALL"));
             customVars.Add("REPORT_FOOTER_LINE1", PreferencesUtils.GetPreferenceParameterFromToken("REPORT_FOOTER_LINE1"));
             customVars.Add("REPORT_FOOTER_LINE2", PreferencesUtils.GetPreferenceParameterFromToken("REPORT_FOOTER_LINE2"));
             //Ticket
-            customVars.Add("TICKET_FILENAME_loggerO", PreferencesUtils.GetPreferenceParameterFromToken("TICKET_FILENAME_loggerO"));
+            customVars.Add("TICKET_FILENAME_LOGOO", PreferencesUtils.GetPreferenceParameterFromToken("TICKET_FILENAME_LOGO"));
             customVars.Add("TICKET_FOOTER_LINE1", PreferencesUtils.GetPreferenceParameterFromToken("TICKET_FOOTER_LINE1"));
             customVars.Add("TICKET_FOOTER_LINE2", PreferencesUtils.GetPreferenceParameterFromToken("TICKET_FOOTER_LINE2"));
             //Session
-            customVars.Add("SESSION_loggerGED_USER", string.Empty);//Not Yet Assigned (BootStrap), This is Assigned on Report Constructor
+            customVars.Add("SESSION_LOGGED_USER", string.Empty);//Not Yet Assigned (BootStrap), This is Assigned on Report Constructor
 
-            if (GeneralSettings.Settings["POS_CURRENTTERMINAL"] != null)
-            {
-                customVars.Add("SESSION_loggerGED_TERMINAL", GeneralSettings.Settings["POS_CURRENTTERMINAL"]);
-            }
+            //tchial0
+            //if (GeneralSettings.Settings["POS_CURRENTTERMINAL"] != null)
+            //{
+            //    customVars.Add("SESSION_LOGGED_TERMINAL", GeneralSettings.Settings["POS_CURRENTTERMINAL"]);
+            //}
 
             PrintingSettings.FastReportCustomVars = customVars;
         }

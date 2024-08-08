@@ -3,18 +3,16 @@ using DevExpress.Xpo;
 using Gtk;
 using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
-using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Enums.Reports;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
-using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components;
 using LogicPOS.Utility;
 using System;
 using System.Collections;
@@ -32,7 +30,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
         //Generic Type T1 Constrained to XPGuidObject BaseClass or XPGuidObject SubClass Objects (New)
         where T1 : Entity, new()
         //Generic Type T2 Constrained to GenericTreeView BaseClass or GenericTreeView SubClass Objects (New)
-        where T2 : GenericTreeViewXPO, new()
+        where T2 : XpoGridView, new()
     {
         //Param: Optional: Used to get Display value to Show to user, ex Default is "Designation"
         protected string _fieldDisplayValue;
@@ -53,11 +51,11 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             set { _previousValue = value; }
         }
 
-        public TouchButtonIcon ButtonSelectValue { get; set; }
+        public IconButton ButtonSelectValue { get; set; }
 
-        public TouchButtonIcon ButtonClearValue { get; set; }
+        public IconButton ButtonClearValue { get; set; }
 
-        public TouchButtonIcon ButtonAddValue { get; set; }
+        public IconButton ButtonAddValue { get; set; }
 
 
         //Custom Events
@@ -82,20 +80,20 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
         public CriteriaOperator CriteriaOperatorLastFilter { get; private set; }
 
         //Constructor/OverLoads
-        public XPOEntryBoxSelectRecord(Window pSourceWindow, string pLabelText)
-            : this(pSourceWindow, pLabelText, string.Empty, string.Empty) { }
+        public XPOEntryBoxSelectRecord(Window parentWindow, string pLabelText)
+            : this(parentWindow, pLabelText, string.Empty, string.Empty) { }
 
-        public XPOEntryBoxSelectRecord(Window pSourceWindow, string pLabelText, string pFieldDisplayValue, string pFieldValidateValue)
-            : this(pSourceWindow, pLabelText, pFieldDisplayValue, pFieldDisplayValue, null) { }
+        public XPOEntryBoxSelectRecord(Window parentWindow, string pLabelText, string pFieldDisplayValue, string pFieldValidateValue)
+            : this(parentWindow, pLabelText, pFieldDisplayValue, pFieldDisplayValue, null) { }
 
-        public XPOEntryBoxSelectRecord(Window pSourceWindow, string pLabelText, string pFieldDisplayValue, string pFieldValidateValue, T1 pValue)
-            : this(pSourceWindow, pLabelText, pFieldDisplayValue, pFieldDisplayValue, pValue, null) { }
+        public XPOEntryBoxSelectRecord(Window parentWindow, string pLabelText, string pFieldDisplayValue, string pFieldValidateValue, T1 pValue)
+            : this(parentWindow, pLabelText, pFieldDisplayValue, pFieldDisplayValue, pValue, null) { }
 
-        public XPOEntryBoxSelectRecord(Window pSourceWindow, string pLabelText, string pFieldDisplayValue, string pFieldValidateValue, T1 pValue, CriteriaOperator pCriteriaOperator, bool BOSource = false)
-            : base(pSourceWindow, pLabelText, BOSource)
+        public XPOEntryBoxSelectRecord(Window parentWindow, string pLabelText, string pFieldDisplayValue, string pFieldValidateValue, T1 pValue, CriteriaOperator pCriteriaOperator, bool BOSource = false)
+            : base(parentWindow, pLabelText, BOSource)
         {
             //Parameters
-            _sourceWindow = pSourceWindow;
+            _sourceWindow = parentWindow;
             _fieldDisplayValue = (pFieldDisplayValue != string.Empty) ? pFieldDisplayValue : "Designation";
             _value = pValue;
             CriteriaOperator = pCriteriaOperator;
@@ -121,9 +119,9 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             string iconClearRecord = string.Format("{0}{1}", PathsSettings.ImagesFolderLocation, @"Icons/Windows/icon_window_delete_record.png");
             string iconAddRecord = string.Format("{0}{1}", PathsSettings.ImagesFolderLocation, @"Icons/icon_pos_nav_new.png");
             //Init Button
-            ButtonSelectValue = new TouchButtonIcon("touchButtonIcon", Color.Transparent, iconSelectRecord, new Size(20, 20), 30, 30);
-            ButtonClearValue = new TouchButtonIcon("touchButtonIcon", Color.Transparent, iconClearRecord, new Size(20, 20), 30, 30);
-            ButtonAddValue = new TouchButtonIcon("touchButtonIcon", Color.Transparent, iconAddRecord, new Size(20, 20), 30, 30);
+            ButtonSelectValue = new IconButton(new ButtonSettings { Name = "touchButtonIcon", Icon = iconSelectRecord, IconSize = new Size(20, 20), ButtonSize = new Size(30, 30) });
+            ButtonClearValue = new IconButton(new ButtonSettings { Name = "touchButtonIcon", Icon = iconClearRecord, IconSize = new Size(20, 20), ButtonSize = new Size(30, 30) });
+            ButtonAddValue = new IconButton(new ButtonSettings { Name = "touchButtonIcon", Icon = iconAddRecord, IconSize = new Size(20, 20), ButtonSize = new Size(30, 30) });
 
             //UI/Pack
             //Assign Initial Value
@@ -209,7 +207,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             //Settings
             string iconSelectRecord = string.Format("{0}{1}", PathsSettings.ImagesFolderLocation, @"Icons/Windows/icon_window_select_record.png");
             //Init Button
-            ButtonSelectValue = new TouchButtonIcon("touchButtonIcon", Color.Transparent, iconSelectRecord, new Size(20, 20), 30, 30);
+            ButtonSelectValue = new IconButton(new ButtonSettings { Name = "touchButtonIcon", Icon = iconSelectRecord, IconSize = new Size(20, 20), ButtonSize = new Size(30, 30) });
             //UI/Pack
             //Assign Initial Value
             if (_value != null && _value.GetMemberValue(_fieldDisplayValue) != null)
@@ -530,11 +528,11 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                     _dialogSize,
                     _value,
                     CriteriaOperator,
-                    GenericTreeViewMode.Default,
+                    GridViewMode.Default,
                     null //ActionAreaButtons
                   );
 
-                CriteriaOperatorLastFilter = dialog.GenericTreeView.DataSource.Criteria;
+                CriteriaOperatorLastFilter = dialog.GenericTreeView.Entities.Criteria;
                 int response = 0;
                 // Recapture RowActivated : DoubleClick and trigger dialog.Respond
                 dialog.GenericTreeView.TreeView.RowActivated += delegate
@@ -568,7 +566,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             _previousValue = _value;
             object value = null;
             //Get Object from dialog else Mixing Sessions, Both belong to diferente Sessions
-            _value = XPOUtility.GetEntityById<T1>(dialog.GenericTreeView.DataSourceRow.Oid);
+            _value = XPOUtility.GetEntityById<T1>(dialog.GenericTreeView.Entity.Oid);
             propertyInfo = typeof(T1).GetProperty(_fieldDisplayValue);
 
             if (typeof(T2) == typeof(TreeViewArticleSerialNumber))
@@ -578,7 +576,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
 
             if (typeof(T2) == typeof(TreeViewArticleWarehouse))
             {
-                _value = XPOUtility.GetEntityById<T1>((dialog.GenericTreeView.DataSourceRow as fin_articlewarehouse).Oid);
+                _value = XPOUtility.GetEntityById<T1>((dialog.GenericTreeView.Entity as fin_articlewarehouse).Oid);
                 propertyInfo = typeof(T1).GetProperty(_fieldDisplayValue);
                 if (propertyInfo == null) { propertyInfo = typeof(T1).GetProperty("Warehouse"); }
             }
@@ -613,7 +611,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             }
             if (typeof(T2) == typeof(TreeViewArticleWarehouse))
             {
-                var articleWarehouse = XPOUtility.GetEntityById<fin_articlewarehouse>((dialog.GenericTreeView.DataSourceRow as fin_articlewarehouse).Oid);
+                var articleWarehouse = XPOUtility.GetEntityById<fin_articlewarehouse>((dialog.GenericTreeView.Entity as fin_articlewarehouse).Oid);
                 if (articleWarehouse.ArticleSerialNumber != null)
                 {
                     pEntry.Text = articleWarehouse.ArticleSerialNumber.SerialNumber;
@@ -648,7 +646,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             //Pagination response 
             if (DialogResponseType.LoadMore.Equals(response))
             {
-                dialog.GenericTreeView.DataSource.TopReturnedObjects = (POSSettings.PaginationRowsPerPage * dialog.GenericTreeView.CurrentPageNumber);
+                dialog.GenericTreeView.Entities.TopReturnedObjects = (POSSettings.PaginationRowsPerPage * dialog.GenericTreeView.CurrentPageNumber);
                 dialog.GenericTreeView.Refresh();
                 PopuDialogMore(pEntry, dialog);
             }
@@ -673,8 +671,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                 if (DialogResponseType.CleanFilter.Equals(responseFilter))
                 {
                     dialog.GenericTreeView.CurrentPageNumber = 1;
-                    dialog.GenericTreeView.DataSource.Criteria = CriteriaOperatorLastFilter;
-                    dialog.GenericTreeView.DataSource.TopReturnedObjects = POSSettings.PaginationRowsPerPage * dialog.GenericTreeView.CurrentPageNumber;
+                    dialog.GenericTreeView.Entities.Criteria = CriteriaOperatorLastFilter;
+                    dialog.GenericTreeView.Entities.TopReturnedObjects = POSSettings.PaginationRowsPerPage * dialog.GenericTreeView.CurrentPageNumber;
                     dialog.GenericTreeView.Refresh();
                     dialogFilter.Destroy();
                     PopuDialogMore(pEntry, dialog);
@@ -705,20 +703,20 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                     result.Add(dialogFilter.FilterValueHumanReadble);
                     //string addFilter = FilterValue;
 
-                    CriteriaOperator criteriaOperatorLast = dialog.GenericTreeView.DataSource.Criteria;
+                    CriteriaOperator criteriaOperatorLast = dialog.GenericTreeView.Entities.Criteria;
                     CriteriaOperator criteriaOperator = CriteriaOperator.And(CriteriaOperatorLastFilter, CriteriaOperator.Parse(result[0]));
 
                     //lastData = dialog.GenericTreeView.DataSource;
 
-                    dialog.GenericTreeView.DataSource.Criteria = criteriaOperator;
-                    dialog.GenericTreeView.DataSource.TopReturnedObjects = POSSettings.PaginationRowsPerPage * dialog.GenericTreeView.CurrentPageNumber;
+                    dialog.GenericTreeView.Entities.Criteria = criteriaOperator;
+                    dialog.GenericTreeView.Entities.TopReturnedObjects = POSSettings.PaginationRowsPerPage * dialog.GenericTreeView.CurrentPageNumber;
                     dialog.GenericTreeView.Refresh();
 
                     //se retornar zero resultados apresenta dados anteriores ao filtro
-                    if (dialog.GenericTreeView.DataSource.Count == 0)
+                    if (dialog.GenericTreeView.Entities.Count == 0)
                     {
-                        dialog.GenericTreeView.DataSource.Criteria = criteriaOperatorLast;
-                        dialog.GenericTreeView.DataSource.TopReturnedObjects = POSSettings.PaginationRowsPerPage * dialog.GenericTreeView.CurrentPageNumber;
+                        dialog.GenericTreeView.Entities.Criteria = criteriaOperatorLast;
+                        dialog.GenericTreeView.Entities.TopReturnedObjects = POSSettings.PaginationRowsPerPage * dialog.GenericTreeView.CurrentPageNumber;
                         dialog.GenericTreeView.Refresh();
                     }
                     dialogFilter.Destroy();

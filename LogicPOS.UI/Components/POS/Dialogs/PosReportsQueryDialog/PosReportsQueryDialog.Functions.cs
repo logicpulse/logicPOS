@@ -1,22 +1,23 @@
 ﻿using DevExpress.Data.Filtering;
 using Gtk;
 using logicpos.Classes.Enums.Dialogs;
-using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.shared.Enums;
+using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Data.XPO.Utility;
+using LogicPOS.Domain.Entities;
+using LogicPOS.Globalization;
+using LogicPOS.Settings;
+using LogicPOS.UI.Components;
+using LogicPOS.UI.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
-using LogicPOS.Globalization;
-using LogicPOS.Settings;
-using LogicPOS.Data.XPO.Settings;
-using LogicPOS.Data.XPO.Utility;
-using LogicPOS.Domain.Entities;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    internal partial class PosReportsQueryDialog : PosBaseDialog
+    internal partial class PosReportsQueryDialog : BaseDialog
     {
         private void entryBoxDateStart_ClosePopup(object sender, EventArgs e)
         {
@@ -70,7 +71,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 dynamic dynamicSelectedObject = _selectionBoxs[widget.Name];
                 Entity dynamicSelectedXPOObject = dynamicSelectedObject.Value;
-                if (debug) _logger.Debug(string.Format("Selected Type Key: [{0}] Value: [{1}]", widget.Name, dynamicSelectedXPOObject.Oid));
             }
         }
 
@@ -95,7 +95,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             // Call Validate
             Validate();
             PosReportsDialog.ReportDisplayMode = CustomReportDisplayMode.ExportXls;
-            
+
             List<string> result = GetComposedFilter();
             if (result.Count == 2)
             {
@@ -112,7 +112,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             // Call Validate
             Validate();
             PosReportsDialog.ReportDisplayMode = CustomReportDisplayMode.ExportPDF;
-            
+
             List<string> result = GetComposedFilter();
             if (result.Count == 2)
             {
@@ -124,7 +124,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 throw new Exception("Error! Cant get filter Values from GetComposedFilter");
             }
         }
-        
+
         // Prevent Dialog Destroy, Validate Count Records, we must override OnResponse to prevent Close Dialog
         protected override void OnResponse(ResponseType pResponse)
         {
@@ -134,28 +134,22 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 // Test Query for Records
                 int count = 0;
                 string countQuerySql = string.Empty;
-                if(pResponse == ResponseType.Ok)
+                if (pResponse == ResponseType.Ok)
                 {
                     PosReportsDialog.ReportDisplayMode = CustomReportDisplayMode.ExportPDF;
                 }
 
-                try
-                {
-                    if (_databaseSourceObject == "fin_articleserialnumber" || _databaseSourceObject == "fin_articlewarehouse")
-                    {
-                        FilterValue = FilterValue.Replace("Date", "CreatedAt");
-                    }
-                    
-                     countQuerySql = string.Format("SELECT COUNT(*) AS Count FROM {0} WHERE {1};", _databaseSourceObject, FilterValue);
 
-                    DataTable dataTable = XPOUtility.GetDataTableFromQuery(countQuerySql);
-                    count = Convert.ToInt32(Convert.ToDecimal(dataTable.Rows[0].ItemArray[0]));
-                }
-                catch (Exception ex)
+                if (_databaseSourceObject == "fin_articleserialnumber" || _databaseSourceObject == "fin_articlewarehouse")
                 {
-                    _logger.Error(ex.Message, ex);
-                    _logger.Error(string.Format("Error in countQuerySql: [{0}]", countQuerySql));
+                    FilterValue = FilterValue.Replace("Date", "CreatedAt");
                 }
+
+                countQuerySql = string.Format("SELECT COUNT(*) AS Count FROM {0} WHERE {1};", _databaseSourceObject, FilterValue);
+
+                DataTable dataTable = XPOUtility.GetDataTableFromQuery(countQuerySql);
+                count = Convert.ToInt32(Convert.ToDecimal(dataTable.Rows[0].ItemArray[0]));
+
                 //if(_databaseSourceObject == "fin_articlewarehouse" && _filterValue.Contains("SerialNumber"))
                 //{
                 //    this.Destroy();
@@ -163,7 +157,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 if (count <= 0)
                 {
-					/* IN009062 */
+                    /* IN009062 */
                     logicpos.Utils.ShowMessageBox(this, DialogFlags.Modal, new Size(500, 240), MessageType.Info, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_information"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_report_filter_no_records_with_criteria"));
                     //Keep Running
                     this.Run();
@@ -191,7 +185,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             // Store Human Readable Filter
             string filterSelectionBoxsHumanReadable = string.Empty;
             string humanReadbleValue = string.Empty;
-            string filterDateField = (_fieldsModeComponents[_reportsQueryDialogMode].ContainsKey(typeof(DateTime).Name)) 
+            string filterDateField = (_fieldsModeComponents[_reportsQueryDialogMode].ContainsKey(typeof(DateTime).Name))
                 ? _fieldsModeComponents[_reportsQueryDialogMode][typeof(DateTime).Name]
                 : "UNDEFINED_DATE_FIELD";
             Entity dynamicSelectedXPOObject;
@@ -222,10 +216,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         dynamicSelectedXPOObject = dynamicSelectedObject.Value;
                         // Extract humanReadbleValue from EntryValidation, ex "Fatura"
                         humanReadbleValue = dynamicSelectedObject.EntryValidation.Text;
-                    }
-                    else
-                    {
-                        _logger.Error(string.Format("Error cant get _selectionBox[{0}]", item.Key));
                     }
                 }
 
@@ -287,10 +277,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     ? string.Format("{0}, {1}", datesFilterHumanReadable, filterSelectionBoxsHumanReadable)
                     : datesFilterHumanReadable;
 
-                if (debug) _logger.Debug(string.Format("Filter: [{0}]", filter));
-                if (debug) _logger.Debug(string.Format("filterHumanReadable: [{0}]", filterHumanReadable));
-
-
                 /* IN009204 - RCs should be removed from this report, only AT Financial documents here */
                 if (Enums.Reports.ReportsQueryDialogMode.COMPANY_BILLING.Equals(_reportsQueryDialogMode))
                 {
@@ -314,15 +300,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         // Generic Method to Generate XPOEntryBoxSelectRecordValidation
         private XPOEntryBoxSelectRecordValidation<T1, T2> SelectionBoxFactory<T1, T2>(string labelText, string fieldDisplayValue = "Designation", string extraFilter = "")
             where T1 : Entity, new()
-            where T2 : GenericTreeViewXPO, new()
+            where T2 : XpoGridView, new()
         {
             XPOEntryBoxSelectRecordValidation<T1, T2> resultObject;
 
-            // Helper to debug extraFilter
-            //if (!string.IsNullOrEmpty(extraFilter))
-            //{
-            //    _logger.Debug("BREAK");
-            //}
             T1 defaultValue = XPOUtility.GetEntityById<T1>(XPOSettings.XpoOidUndefinedRecord);
             CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("((Disabled IS NULL OR Disabled  <> 1) OR (Oid = '{0}') OR (Oid = '{1}')) {2}", XPOSettings.XpoOidUndefinedRecord, XPOSettings.XpoOidUserRecord, extraFilter));
             resultObject = new XPOEntryBoxSelectRecordValidation<T1, T2>(this, labelText, fieldDisplayValue, "Oid", (defaultValue as T1), criteriaOperator, LogicPOS.Utility.RegexUtils.RegexGuid, true);

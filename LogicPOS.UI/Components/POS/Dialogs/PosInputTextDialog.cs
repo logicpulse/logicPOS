@@ -1,9 +1,9 @@
 ﻿using Gtk;
-using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using LogicPOS.Settings;
+using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Dialogs;
 using System.Drawing;
 using System.IO;
 
@@ -14,7 +14,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
     /// ex in PosConfirmAcronymSeriesDialog Method
     /// </summary>
 
-    internal class PosInputTextDialog : PosBaseDialog
+    internal class PosInputTextDialog : BaseDialog
     {
         protected VBox _vbox;
         public VBox VBoxContent
@@ -35,18 +35,18 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             set { _value = value; }
         }
 
-        public PosInputTextDialog(Window pSourceWindow, DialogFlags pDialogFlags, string pWindowTitle, string pWindowIcon, string pEntryLabel, string pDefaultValue, string pRule, bool pRequired)
-            : this(pSourceWindow, pDialogFlags, new Size(600, 180), pWindowTitle, pWindowIcon, pEntryLabel, pDefaultValue, pRule, pRequired)
+        public PosInputTextDialog(Window parentWindow, DialogFlags pDialogFlags, string pWindowTitle, string pWindowIcon, string pEntryLabel, string pDefaultValue, string pRule, bool pRequired)
+            : this(parentWindow, pDialogFlags, new Size(600, 180), pWindowTitle, pWindowIcon, pEntryLabel, pDefaultValue, pRule, pRequired)
         {
         }
 
-        public PosInputTextDialog(Window pSourceWindow, DialogFlags pDialogFlags, Size pSize, string pWindowTitle, string pWindowIcon, string pEntryLabel, string pInitialValue, string pRule, bool pRequired)
-            : this(pSourceWindow, pDialogFlags, pSize, pWindowTitle, pWindowIcon, pEntryLabel, pInitialValue, KeyboardMode.AlfaNumeric, pRule, pRequired)
+        public PosInputTextDialog(Window parentWindow, DialogFlags pDialogFlags, Size pSize, string pWindowTitle, string pWindowIcon, string pEntryLabel, string pInitialValue, string pRule, bool pRequired)
+            : this(parentWindow, pDialogFlags, pSize, pWindowTitle, pWindowIcon, pEntryLabel, pInitialValue, KeyboardMode.AlfaNumeric, pRule, pRequired)
         {
         }
 
-        public PosInputTextDialog(Window pSourceWindow, DialogFlags pDialogFlags, Size pSize, string pWindowTitle, string pWindowIcon, string pEntryLabel, string pInitialValue, KeyboardMode pKeyboardMode, string pRule, bool pRequired)
-            : base(pSourceWindow, pDialogFlags)
+        public PosInputTextDialog(Window parentWindow, DialogFlags pDialogFlags, Size pSize, string pWindowTitle, string pWindowIcon, string pEntryLabel, string pInitialValue, KeyboardMode pKeyboardMode, string pRule, bool pRequired)
+            : base(parentWindow, pDialogFlags)
         {
             //Init Local Vars
             string windowTitle = pWindowTitle;
@@ -76,8 +76,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             fixedContent.Put(_vbox, 0, 0);
 
             //ActionArea Buttons
-            TouchButtonIconWithText buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);
-            TouchButtonIconWithText buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
+            IconButtonWithText buttonOk = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
+            IconButtonWithText buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
             buttonOk.Sensitive = _entryBoxValidation.EntryValidation.Validated;
 
             //After Button Construction
@@ -95,7 +95,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             };
 
             //Init Object
-            this.InitObject(this, pDialogFlags, pWindowIcon, windowTitle, windowSize, fixedContent, actionAreaButtons);
+            this.Initialize(this, pDialogFlags, pWindowIcon, windowTitle, windowSize, fixedContent, actionAreaButtons);
         }
     }
 }

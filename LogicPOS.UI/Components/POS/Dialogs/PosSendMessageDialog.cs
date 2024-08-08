@@ -17,22 +17,22 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         public pos_configurationplaceterminal ValueTerminal { get; set; } = null;
 
-        public PosSendMessageDialog(Window pSourceWindow, DialogFlags pDialogFlags, string pWindowIcon)
-        //public PosInputTextDialog(Window pSourceWindow, DialogFlags pDialogFlags, string pWindowTitle, string pEntryLabel, string pDefaultValue, string pRule, bool pRequired)            
-            : base(pSourceWindow, pDialogFlags, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_dialog_send_message"), pWindowIcon, "Label", "Default", LogicPOS.Utility.RegexUtils.RegexAlfaNumericEmail, true)
+        public PosSendMessageDialog(Window parentWindow, DialogFlags pDialogFlags, string pWindowIcon)
+        //public PosInputTextDialog(Window parentWindow, DialogFlags pDialogFlags, string pWindowTitle, string pEntryLabel, string pDefaultValue, string pRule, bool pRequired)            
+            : base(parentWindow, pDialogFlags, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_dialog_send_message"), pWindowIcon, "Label", "Default", LogicPOS.Utility.RegexUtils.RegexAlfaNumericEmail, true)
         {
             this.HeightRequest = 320;
 
             //UserDetail
             CriteriaOperator criteriaOperatorUser = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1)");
-            _entryBoxSelectUser = new XPOEntryBoxSelectRecordValidation<sys_userdetail, TreeViewUser>(_sourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_user"), "Designation", "Oid", ValueUser, criteriaOperatorUser, LogicPOS.Utility.RegexUtils.RegexGuid, false);
+            _entryBoxSelectUser = new XPOEntryBoxSelectRecordValidation<sys_userdetail, TreeViewUser>(WindowSettings.Source, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_user"), "Designation", "Oid", ValueUser, criteriaOperatorUser, LogicPOS.Utility.RegexUtils.RegexGuid, false);
             _entryBoxSelectUser.EntryValidation.IsEditable = false;
             //Public Reference
             ValueUser = _entryBoxSelectUser.Value;
 
             //Terminal
             CriteriaOperator criteriaOperatorTerminal = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1)");
-            _entryBoxSelectTerminal = new XPOEntryBoxSelectRecordValidation<pos_configurationplaceterminal, TreeViewConfigurationPlaceTerminal>(_sourceWindow, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_user"), "Designation", "Oid", ValueTerminal, criteriaOperatorTerminal, LogicPOS.Utility.RegexUtils.RegexGuid, false);
+            _entryBoxSelectTerminal = new XPOEntryBoxSelectRecordValidation<pos_configurationplaceterminal, TreeViewConfigurationPlaceTerminal>(WindowSettings.Source, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_user"), "Designation", "Oid", ValueTerminal, criteriaOperatorTerminal, LogicPOS.Utility.RegexUtils.RegexGuid, false);
             _entryBoxSelectTerminal.EntryValidation.IsEditable = false;
             //Public Reference
             ValueTerminal = _entryBoxSelectTerminal.Value;

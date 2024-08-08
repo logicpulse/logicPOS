@@ -14,7 +14,7 @@ namespace LogicPOS.Persistence.Services
 
                 Session databaseSession = CreateDatabaseSession();
 
-                string databaseType = GeneralSettings.Settings["databaseType"];
+                string databaseType = AppSettings.Instance.databaseType;
 
                 switch (databaseType)
                 {
@@ -67,7 +67,7 @@ namespace LogicPOS.Persistence.Services
 
         public static Session CreateDatabaseSession()
         {
-            string databaseName = GeneralSettings.Settings["databaseName"];
+            string databaseName = AppSettings.Instance.databaseName;
 
             DatabaseSettings.DatabaseName = databaseName;
 
@@ -76,7 +76,8 @@ namespace LogicPOS.Persistence.Services
                 DatabaseSettings.DatabaseName = "logicposdbdevelopment";
             }
 
-            string connectionString = string.Format(GeneralSettings.Settings["xpoConnectionString"], DatabaseSettings.DatabaseName.ToLower());
+            string connectionString = string.Format(AppSettings.Instance.xpoConnectionString,
+                                                    DatabaseSettings.DatabaseName.ToLower());
 
             AutoCreateOption xpoAutoCreateOption = AutoCreateOption.None;
 

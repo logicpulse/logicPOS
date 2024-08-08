@@ -1,26 +1,26 @@
 ﻿using Gtk;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.Extensions;
+using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Extensions;
 using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
     //KeyboardKey UI Key Widgets
-    public class KeyboardPadKey : TouchButtonBase
+    public class KeyboardPadKey : CustomButton
     {
         //Private Members
         private readonly string _l1LabelText;
         private readonly string _l2LabelText;
-        private readonly Color _colorKeyboardPadKeyDefaultFont = LogicPOS.Settings.GeneralSettings.Settings["colorKeyboardPadKeyDefaultFont"].StringToColor();
-        private readonly Color _colorKeyboardPadKeySecondaryFont = LogicPOS.Settings.GeneralSettings.Settings["colorKeyboardPadKeySecondaryFont"].StringToColor();
-        private readonly Color _colorKeyboardPadKeyBackground = LogicPOS.Settings.GeneralSettings.Settings["colorKeyboardPadKeyBackground"].StringToColor();
-        private readonly Color _colorKeyboardPadKeyBackgroundActive = LogicPOS.Settings.GeneralSettings.Settings["colorKeyboardPadKeyBackgroundActive"].StringToColor();
+        private readonly Color _colorKeyboardPadKeyDefaultFont = LogicPOS.Settings.AppSettings.Instance.colorKeyboardPadKeyDefaultFont;
+        private readonly Color _colorKeyboardPadKeySecondaryFont = LogicPOS.Settings.AppSettings.Instance.colorKeyboardPadKeySecondaryFont;
+        private readonly Color _colorKeyboardPadKeyBackground = LogicPOS.Settings.AppSettings.Instance.colorKeyboardPadKeyBackground;
+        private readonly Color _colorKeyboardPadKeyBackgroundActive = LogicPOS.Settings.AppSettings.Instance.colorKeyboardPadKeyBackgroundActive;
 
         public Label LabelL1 { get; set; }
         public Label LabelL2 { get; set; }
-        //Store VirtualKey in Properties
+
         public VirtualKey Properties { get; set; }
-        //Active Modifier Key, Change Color
+    
         private bool _active;
         public bool Active
         {
@@ -30,18 +30,18 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 _active = value;
                 if (_active)
                 {
-                    SetBackgroundColor(_colorKeyboardPadKeyBackgroundActive, _eventboxBackgroundColor);
+                    SetBackgroundColor(_colorKeyboardPadKeyBackgroundActive, _backgroundColorEventBox);
                 }
                 else
                 {
-                    SetBackgroundColor(_colorKeyboardPadKeyBackground, _eventboxBackgroundColor);
+                    SetBackgroundColor(_colorKeyboardPadKeyBackground, _backgroundColorEventBox);
                 }
             }
         }
 
         //Constructor
         public KeyboardPadKey(VirtualKey virtualKey)
-            : base("")
+            : base(new ButtonSettings())
         {
             //Always Store full VirtualKey Properties in KeyBoardKey
             this.Properties = virtualKey;
@@ -51,9 +51,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             if (virtualKey.L2 != null) { _l2LabelText = virtualKey.L2.Glyph; } else { _l2LabelText = ""; };
 
             //Init Local Vars
-            Size sizeKeyboardPadDefaultKey = logicpos.Utils.StringToSize(LogicPOS.Settings.GeneralSettings.Settings["sizeKeyboardPadDefaultKey"]);
-            string fontKeyboardPadPrimaryKey = LogicPOS.Settings.GeneralSettings.Settings["fontKeyboardPadPrimaryKey"];
-            string fontKeyboardPadSecondaryKey = LogicPOS.Settings.GeneralSettings.Settings["fontKeyboardPadSecondaryKey"];
+            Size sizeKeyboardPadDefaultKey = LogicPOS.Settings.AppSettings.Instance.sizeKeyboardPadDefaultKey;
+            string fontKeyboardPadPrimaryKey = LogicPOS.Settings.AppSettings.Instance.fontKeyboardPadPrimaryKey;
+            string fontKeyboardPadSecondaryKey = LogicPOS.Settings.AppSettings.Instance.fontKeyboardPadSecondaryKey;
 
             //ByPass Defaults
             if (virtualKey.L1.KeyWidth > 0)
@@ -104,7 +104,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
             //Changed for theme
             this.BorderWidth = 1;
-            InitObject("", Color.Transparent, vbox, sizeKeyboardPadDefaultKey.Width, sizeKeyboardPadDefaultKey.Height);
+
+            _settings.BackgroundColor = Color.Transparent;
+            _settings.ButtonSize = new Size(sizeKeyboardPadDefaultKey.Width, sizeKeyboardPadDefaultKey.Height);
+            _settings.Widget = vbox;
+
+            Initialize();
         }
     }
 }

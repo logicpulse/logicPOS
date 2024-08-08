@@ -1,8 +1,9 @@
 ﻿using Gtk;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Enums.Widgets;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Settings;
+using LogicPOS.UI.Buttons;
 using System;
 using System.Drawing;
 
@@ -14,29 +15,29 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Settings
-        private readonly decimal _decimalMoneyButtonL1Value = LogicPOS.Utility.DataConversionUtils.StringToDecimal(LogicPOS.Settings.GeneralSettings.Settings["decimalMoneyButtonL1Value"]);
-        private readonly decimal _decimalMoneyButtonL2Value = LogicPOS.Utility.DataConversionUtils.StringToDecimal(LogicPOS.Settings.GeneralSettings.Settings["decimalMoneyButtonL2Value"]);
-        private readonly decimal _decimalMoneyButtonL3Value = LogicPOS.Utility.DataConversionUtils.StringToDecimal(LogicPOS.Settings.GeneralSettings.Settings["decimalMoneyButtonL3Value"]);
-        private readonly decimal _decimalMoneyButtonL4Value = LogicPOS.Utility.DataConversionUtils.StringToDecimal(LogicPOS.Settings.GeneralSettings.Settings["decimalMoneyButtonL4Value"]);
-        private readonly decimal _decimalMoneyButtonL5Value = LogicPOS.Utility.DataConversionUtils.StringToDecimal(LogicPOS.Settings.GeneralSettings.Settings["decimalMoneyButtonL5Value"]);
-        private readonly decimal _decimalMoneyButtonR1Value = LogicPOS.Utility.DataConversionUtils.StringToDecimal(LogicPOS.Settings.GeneralSettings.Settings["decimalMoneyButtonR1Value"]);
-        private readonly decimal _decimalMoneyButtonR2Value = LogicPOS.Utility.DataConversionUtils.StringToDecimal(LogicPOS.Settings.GeneralSettings.Settings["decimalMoneyButtonR2Value"]);
-        private readonly decimal _decimalMoneyButtonR3Value = LogicPOS.Utility.DataConversionUtils.StringToDecimal(LogicPOS.Settings.GeneralSettings.Settings["decimalMoneyButtonR3Value"]);
-        private readonly decimal _decimalMoneyButtonR4Value = LogicPOS.Utility.DataConversionUtils.StringToDecimal(LogicPOS.Settings.GeneralSettings.Settings["decimalMoneyButtonR4Value"]);
-        private readonly decimal _decimalMoneyButtonR5Value = LogicPOS.Utility.DataConversionUtils.StringToDecimal(LogicPOS.Settings.GeneralSettings.Settings["decimalMoneyButtonR5Value"]);
+        private readonly decimal _decimalMoneyButtonL1Value = AppSettings.Instance.decimalMoneyButtonL1Value;
+        private readonly decimal _decimalMoneyButtonL2Value = AppSettings.Instance.decimalMoneyButtonL2Value;
+        private readonly decimal _decimalMoneyButtonL3Value = AppSettings.Instance.decimalMoneyButtonL3Value;
+        private readonly decimal _decimalMoneyButtonL4Value = AppSettings.Instance.decimalMoneyButtonL4Value;
+        private readonly decimal _decimalMoneyButtonL5Value = AppSettings.Instance.decimalMoneyButtonL5Value;
+        private readonly decimal _decimalMoneyButtonR1Value = AppSettings.Instance.decimalMoneyButtonR1Value;
+        private readonly decimal _decimalMoneyButtonR2Value = AppSettings.Instance.decimalMoneyButtonR2Value;
+        private readonly decimal _decimalMoneyButtonR3Value = AppSettings.Instance.decimalMoneyButtonR3Value;
+        private readonly decimal _decimalMoneyButtonR4Value = AppSettings.Instance.decimalMoneyButtonR4Value;
+        private readonly decimal _decimalMoneyButtonR5Value = AppSettings.Instance.decimalMoneyButtonR5Value;
         //UI
         private readonly NumberPad _numberPad;
         private readonly ValidatableTextBox _entryDeliveryValue;
-        private readonly TouchButtonText _buttonKeyMBL1;
-        private readonly TouchButtonText _buttonKeyMBL2;
-        private readonly TouchButtonText _buttonKeyMBL3;
-        private readonly TouchButtonText _buttonKeyMBL4;
-        private readonly TouchButtonText _buttonKeyMBL5;
-        private readonly TouchButtonText _buttonKeyMBR1;
-        private readonly TouchButtonText _buttonKeyMBR2;
-        private readonly TouchButtonText _buttonKeyMBR3;
-        private readonly TouchButtonText _buttonKeyMBR4;
-        private readonly TouchButtonText _buttonKeyMBR5;
+        private readonly TextButton _buttonKeyMBL1;
+        private readonly TextButton _buttonKeyMBL2;
+        private readonly TextButton _buttonKeyMBL3;
+        private readonly TextButton _buttonKeyMBL4;
+        private readonly TextButton _buttonKeyMBL5;
+        private readonly TextButton _buttonKeyMBR1;
+        private readonly TextButton _buttonKeyMBR2;
+        private readonly TextButton _buttonKeyMBR3;
+        private readonly TextButton _buttonKeyMBR4;
+        private readonly TextButton _buttonKeyMBR5;
         //Helper Vars
         private MoneyPadMode _moneyPadMode = MoneyPadMode.Money;
         private int _tempCursorPosition = 0;
@@ -47,11 +48,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //Public Event Handlers
         public event EventHandler EntryChanged;
 
-        public MoneyPad(Window pSourceWindow, decimal pInitialValue = 0.0m)
+        public MoneyPad(Window parentWindow, decimal pInitialValue = 0.0m)
         {
             //Settings
-            string fontMoneyPadButtonKeys = LogicPOS.Settings.GeneralSettings.Settings["fontMoneyPadButtonKeys"];
-            string fontMoneyPadTextEntry = LogicPOS.Settings.GeneralSettings.Settings["fontMoneyPadTextEntry"];
+            string fontMoneyPadButtonKeys = AppSettings.Instance.fontMoneyPadButtonKeys;
+            string fontMoneyPadTextEntry = AppSettings.Instance.fontMoneyPadTextEntry;
             //ButtonLabels
             string moneyButtonL1Label = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_decimalMoneyButtonL1Value, XPOSettings.ConfigurationSystemCurrency.Acronym);
             string moneyButtonL2Label = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_decimalMoneyButtonL2Value, XPOSettings.ConfigurationSystemCurrency.Acronym);
@@ -71,7 +72,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
             //Delivery Entry
             string initialValue = (pInitialValue > 0) ? LogicPOS.Utility.DataConversionUtils.DecimalToString(pInitialValue) : string.Empty;
-            _entryDeliveryValue = new ValidatableTextBox(pSourceWindow, KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexDecimal, true) { Text = initialValue, Alignment = 0.5F };
+            _entryDeliveryValue = new ValidatableTextBox(parentWindow, KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexDecimal, true) { Text = initialValue, Alignment = 0.5F };
             _entryDeliveryValue.ModifyFont(Pango.FontDescription.FromString(fontMoneyPadTextEntry));
             //Dialog Validated Equal to Entry, Its the Only Entry in Dialog
             Validated = _entryDeliveryValue.Validated;
@@ -83,18 +84,36 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             _numberPad.Clicked += _numberPad_Clicked;
 
             //MoneyButtons Left
-            _buttonKeyMBL1 = new TouchButtonText("touchButtonKeyMBL1_Green", Color.Transparent, moneyButtonL1Label, fontMoneyPadButtonKeys, colorFont, (byte)moneyButtonSize.Width, (byte)moneyButtonSize.Height);
-            _buttonKeyMBL2 = new TouchButtonText("touchButtonKeyMBL2_Green", Color.Transparent, moneyButtonL2Label, fontMoneyPadButtonKeys, colorFont, (byte)moneyButtonSize.Width, (byte)moneyButtonSize.Height);
-            _buttonKeyMBL3 = new TouchButtonText("touchButtonKeyMBL3_Green", Color.Transparent, moneyButtonL3Label, fontMoneyPadButtonKeys, colorFont, (byte)moneyButtonSize.Width, (byte)moneyButtonSize.Height);
-            _buttonKeyMBL4 = new TouchButtonText("touchButtonKeyMBL4_Green", Color.Transparent, moneyButtonL4Label, fontMoneyPadButtonKeys, colorFont, (byte)moneyButtonSize.Width, (byte)moneyButtonSize.Height);
-            _buttonKeyMBL5 = new TouchButtonText("touchButtonKeyMBL5_Green", Color.Transparent, moneyButtonL5Label, fontMoneyPadButtonKeys, colorFont, (byte)moneyButtonSize.Width, (byte)moneyButtonSize.Height);
-            //MoneyButtons Right
-            _buttonKeyMBR1 = new TouchButtonText("touchButtonKeyMBR1_Green", Color.Transparent, moneyButtonR1Label, fontMoneyPadButtonKeys, colorFont, (byte)moneyButtonSize.Width, (byte)moneyButtonSize.Height);
-            _buttonKeyMBR2 = new TouchButtonText("touchButtonKeyMBR2_Green", Color.Transparent, moneyButtonR2Label, fontMoneyPadButtonKeys, colorFont, (byte)moneyButtonSize.Width, (byte)moneyButtonSize.Height);
-            _buttonKeyMBR3 = new TouchButtonText("touchButtonKeyMBR3_Green", Color.Transparent, moneyButtonR3Label, fontMoneyPadButtonKeys, colorFont, (byte)moneyButtonSize.Width, (byte)moneyButtonSize.Height);
-            _buttonKeyMBR4 = new TouchButtonText("touchButtonKeyMBR4_Green", Color.Transparent, moneyButtonR4Label, fontMoneyPadButtonKeys, colorFont, (byte)moneyButtonSize.Width, (byte)moneyButtonSize.Height);
-            _buttonKeyMBR5 = new TouchButtonText("touchButtonKeyMBR5_Green", Color.Transparent, moneyButtonR5Label, fontMoneyPadButtonKeys, colorFont, (byte)moneyButtonSize.Width, (byte)moneyButtonSize.Height);
-            //Events
+            _buttonKeyMBL1 = new TextButton(
+                new ButtonSettings
+                {
+                    Name = "touchButtonKeyMBL1_Green",
+                    Text = moneyButtonL1Label,
+                    Font = fontMoneyPadButtonKeys,
+                    FontColor = colorFont,
+                    ButtonSize = new Size(moneyButtonSize.Width, moneyButtonSize.Height)
+                });
+
+            _buttonKeyMBL2 = new TextButton(
+              new ButtonSettings
+              {
+                  Name = "touchButtonKeyMBL2_Green",
+                  Text = moneyButtonL2Label,
+                  Font = fontMoneyPadButtonKeys,
+                  FontColor = colorFont,
+                  ButtonSize = new Size(moneyButtonSize.Width, moneyButtonSize.Height)
+              });
+
+			_buttonKeyMBL3 = new TextButton(new ButtonSettings { Name = "touchButtonKeyMBL3_Green", Text = moneyButtonL3Label, Font = fontMoneyPadButtonKeys, FontColor = colorFont, ButtonSize = new Size(moneyButtonSize.Width, moneyButtonSize.Height) });
+			_buttonKeyMBL4 = new TextButton(new ButtonSettings { Name = "touchButtonKeyMBL4_Green", Text = moneyButtonL4Label, Font = fontMoneyPadButtonKeys, FontColor = colorFont, ButtonSize = new Size(moneyButtonSize.Width, moneyButtonSize.Height) });
+			_buttonKeyMBL5 = new TextButton(new ButtonSettings { Name = "touchButtonKeyMBL5_Green", Text = moneyButtonL5Label, Font = fontMoneyPadButtonKeys, FontColor = colorFont, ButtonSize = new Size(moneyButtonSize.Width, moneyButtonSize.Height) });
+			//MoneyButtons Right
+			_buttonKeyMBR1 = new TextButton(new ButtonSettings { Name = "touchButtonKeyMBR1_Green", Text = moneyButtonR1Label, Font = fontMoneyPadButtonKeys, FontColor = colorFont, ButtonSize = new Size(moneyButtonSize.Width, moneyButtonSize.Height) });
+			_buttonKeyMBR2 = new TextButton(new ButtonSettings { Name = "touchButtonKeyMBR2_Green", Text = moneyButtonR2Label, Font = fontMoneyPadButtonKeys, FontColor = colorFont, ButtonSize = new Size(moneyButtonSize.Width, moneyButtonSize.Height) });
+			_buttonKeyMBR3 = new TextButton(new ButtonSettings { Name = "touchButtonKeyMBR3_Green", Text = moneyButtonR3Label, Font = fontMoneyPadButtonKeys, FontColor = colorFont, ButtonSize = new Size(moneyButtonSize.Width, moneyButtonSize.Height) });
+			_buttonKeyMBR4 = new TextButton(new ButtonSettings { Name = "touchButtonKeyMBR4_Green", Text = moneyButtonR4Label, Font = fontMoneyPadButtonKeys, FontColor = colorFont, ButtonSize = new Size(moneyButtonSize.Width, moneyButtonSize.Height) });
+			_buttonKeyMBR5 = new TextButton(new ButtonSettings { Name = "touchButtonKeyMBR5_Green", Text = moneyButtonR5Label, Font = fontMoneyPadButtonKeys, FontColor = colorFont, ButtonSize = new Size(moneyButtonSize.Width, moneyButtonSize.Height) });
+			//Events
             _buttonKeyMBL1.Clicked += buttonKeyMB_Clicked;
             _buttonKeyMBL2.Clicked += buttonKeyMB_Clicked;
             _buttonKeyMBL3.Clicked += buttonKeyMB_Clicked;
@@ -147,7 +166,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         private void buttonKeyMB_Clicked(object sender, EventArgs e)
         {
-            TouchButtonText button = (TouchButtonText)sender;
+            TextButton button = (TextButton)sender;
             decimal value = 0.0m;
 
             switch (button.Name)
@@ -190,7 +209,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         private void _numberPad_Clicked(object sender, EventArgs e)
         {
-            TouchButtonText button = (TouchButtonText)sender;
+            TextButton button = (TextButton)sender;
 
             if (_moneyPadMode != MoneyPadMode.NumberPad)
             {
@@ -199,14 +218,14 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 _moneyPadMode = MoneyPadMode.NumberPad;
             }
 
-            switch (button.LabelText)
+            switch (button.ButtonLabel.Text)
             {
                 case "CE":
                     _entryDeliveryValue.DeleteText(_entryDeliveryValue.Position - 1, _entryDeliveryValue.Position);
                     _tempCursorPosition = _entryDeliveryValue.Position;
                     break;
                 default:
-                    _entryDeliveryValue.InsertText(button.LabelText, ref _tempCursorPosition);
+                    _entryDeliveryValue.InsertText(button.ButtonLabel.Text, ref _tempCursorPosition);
                     _entryDeliveryValue.Position = _tempCursorPosition;
                     break;
             }

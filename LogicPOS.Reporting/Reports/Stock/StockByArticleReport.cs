@@ -1,5 +1,4 @@
 ﻿using LogicPOS.Data.XPO.Settings;
-using LogicPOS.Domain.Entities;
 using LogicPOS.Reporting.Data.Common;
 using LogicPOS.Reporting.Reports.Data;
 using LogicPOS.Settings;

@@ -124,7 +124,7 @@ namespace logicpos.Classes.Logic.Hardware
             return _timerEnabled;
         }
 
-        public void KeyReleaseEvent(Window pSourceWindow, object o, KeyReleaseEventArgs args)
+        public void KeyReleaseEvent(Window parentWindow, object o, KeyReleaseEventArgs args)
         {
             if (!_timerEnabled) StartTimer();
             char keyChar;

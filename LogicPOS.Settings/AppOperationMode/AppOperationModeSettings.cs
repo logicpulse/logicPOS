@@ -3,7 +3,7 @@ using System;
 
 namespace LogicPOS.Settings
 {
-    public  static class AppOperationModeSettings
+    public static class AppOperationModeSettings
     {
         public static AppOperationMode AppMode { get; set; } = GetAppMode();
 
@@ -14,21 +14,17 @@ namespace LogicPOS.Settings
         public static AppOperationMode GetAppMode()
         {
             AppOperationMode mode = AppOperationMode.Default;
-            string appOperationModeToken = GeneralSettings.Settings["appOperationModeToken"];
+            string appOperationModeToken = AppSettings.Instance.appOperationModeToken;
 
-
-            if (!string.IsNullOrEmpty(appOperationModeToken))
-            {
-                CustomAppOperationMode customAppOperationMode = CustomAppOperationMode.GetAppOperationMode(appOperationModeToken);
-                mode = (AppOperationMode)Enum.Parse(typeof(AppOperationMode), customAppOperationMode.AppOperationTheme);
-            }
+            CustomAppOperationMode customAppOperationMode = CustomAppOperationMode.GetAppOperationMode(appOperationModeToken);
+            mode = (AppOperationMode)Enum.Parse(typeof(AppOperationMode), customAppOperationMode.AppOperationTheme);
 
             return mode;
         }
 
         public static CustomAppOperationMode GetCustomAppOperationMode()
         {
-            return CustomAppOperationMode.GetAppOperationMode(GeneralSettings.Settings["appOperationModeToken"]);
+            return CustomAppOperationMode.GetAppOperationMode(AppSettings.Instance.appOperationModeToken);
         }
 
         public static bool IsDefaultAppOperationTheme()

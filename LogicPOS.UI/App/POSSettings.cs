@@ -4,13 +4,8 @@ using System.Collections.Generic;
 
 namespace logicpos.App
 {
-    public static class POSSettings 
+    public static class POSSettings
     {
-    
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Developer
-
-        // To Override Database add <add key="databaseName" value="logicposdbtest" /> to .config
 
 #if (DEBUG)
         //Used to Force/Override Intellilock assigned GlobalFramework.LicenceRegistered in BootStrap
@@ -35,23 +30,16 @@ namespace logicpos.App
         public static string DatabaseName = "logicposdb";
         public static bool ProtectedFilesIgnoreProtection = true;
         public static bool XPOCreateDatabaseAndSchema = false;
-        public static bool ProtectedFilesUse = false;
+        public static bool UseProtectedFiles = false;
         public static bool ProtectedFilesRecreateCSV = false;
         public static string AppHardwareId = string.Empty;
 #endif
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Application
 
         public static string AppName = "LogicPos";
         public static string AppIcon = "application.ico";
         public static string AppUrl = "www.logicpulse.com";
 
-        //Custom licence, Outside of Config, if exist use it overriding intelilock mechanism
         public static string LicenceFileName = "licence.lic";
-        //Override Intellilock HardWareId Method : Old Method Commented, not Used Anymore
-        //public static string AppTerminalIdConfigFile = "terminal.id";
-        //DEBUG and OPTIONAL - CAN BE COMMENTED to use DEFAULT ####-####-####-####-####-#### 
 
         //Executables
         public static string ExecutableComposer = "logicpos.composer.exe";
@@ -93,7 +81,7 @@ namespace logicpos.App
         //Theme File Format : ex.: {theme}_{default}_{default}_{1024}x{768}.xml (LOWERCASE) - {0}: appTheme, {1}: appOperationModeToken, {2}: Width, {3}: Height
         //private static string FileFormatThemeFile = "theme_{0}_{1}_{2}x{3}.xml";//Deprecated
         private static readonly string FileFormatThemeFile = "theme_{0}_{1}.xml";
-        public static string FileTheme { get { return GetFileTheme(); } }
+        public static string FileTheme { get { return GetThemeFileLocation(); } }
 
         //Database Script Files
         public static string FileDatabaseSchema = @"Resources\Database\{0}\databaseschema.sql";
@@ -128,11 +116,11 @@ namespace logicpos.App
         //Database Oids/Guids
 
         //Payment Defaults
-        public static Guid XpoOidConfigurationPaymentConditionDefaultInvoicePaymentCondition = new Guid(GeneralSettings.Settings["xpoOidConfigurationPaymentConditionDefaultInvoicePaymentCondition"]);
-        public static Guid XpoOidConfigurationPaymentMethodDefaultInvoicePaymentMethod = new Guid(GeneralSettings.Settings["xpoOidConfigurationPaymentMethodDefaultInvoicePaymentMethod"]);
+        public static Guid XpoOidConfigurationPaymentConditionDefaultInvoicePaymentCondition { get; set; } = new Guid(AppSettings.Instance.xpoOidConfigurationPaymentConditionDefaultInvoicePaymentCondition);
+        public static Guid XpoOidConfigurationPaymentMethodDefaultInvoicePaymentMethod = new Guid(AppSettings.Instance.xpoOidConfigurationPaymentMethodDefaultInvoicePaymentMethod);
 
         //ConfigurationPlaceTable
-        public static Guid XpoOidConfigurationPlaceTableDefaultOpenTable = new Guid(GeneralSettings.Settings["xpoOidConfigurationPlaceTableDefaultOpenTable"]);
+        public static Guid XpoOidConfigurationPlaceTableDefaultOpenTable = new Guid(AppSettings.Instance.xpoOidConfigurationPlaceTableDefaultOpenTable);
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         // Other
@@ -158,7 +146,7 @@ namespace logicpos.App
         //Payments Window
 
         //Use CurrentAccount or CustomerCard in PaymentsDialog
-        public static bool PosPaymentsDialogUseCurrentAccount = Convert.ToBoolean(GeneralSettings.Settings["posPaymentsDialogUseCurrentAccount"]);
+        public static bool PosPaymentsDialogUseCurrentAccount = AppSettings.Instance.posPaymentsDialogUseCurrentAccount;
 
         //First time boot POS flag
         public static bool FirstBoot;
@@ -175,115 +163,24 @@ namespace logicpos.App
         private static List<string> GetProtectedFilesList()
         {
             List<string> result = new List<string>
-            {
-                //result.Add(@"Assets\Themes\Default\Backgrounds\Dialogs\dialog_default.jpg");
-                //result.Add(@"Assets\Themes\Default\Backgrounds\Dialogs\dialog_tables.jpg");
-                //result.Add(@"Assets\Themes\Default\Backgrounds\Windows\window_pos_1024x768.jpg");
-                //result.Add(@"Assets\Themes\Default\Backgrounds\Windows\window_pos_800x600.jpg");
-                //result.Add(@"Assets\Themes\Default\Backgrounds\Windows\window_startup_1024x768.jpg");
-                //result.Add(@"Assets\Themes\Default\Backgrounds\Windows\window_startup_800x600.jpg");
-                //result.Add(@"Assets\Themes\Default\Images\logo_backoffice.png");
-                //result.Add(@"Assets\Themes\Default\Images\logo_pos.png");
-                //result.Add(@"Assets\Themes\theme_default_default_1024x768.xml");
-                //result.Add(@"Assets\Themes\theme_default_default_800x600.xml");
-                //result.Add(@"Assets\Themes\theme_default_retail_1024x768.xml");
-                //result.Add(@"Assets\Themes\theme_default_retail_800x600.xml");
-                //result.Add(@"Resources\Database\databasedata.sql");
-                //result.Add(@"Resources\Database\databasedatademo.sql");
-                //result.Add(@"Resources\Database\databaseviews.sql");
-                //result.Add(@"Resources\Database\MSSqlServer\databaseschema.sql");
-                //result.Add(@"Resources\Database\MySql\databaseschema.sql");
-                //result.Add(@"Resources\Database\Other\configurationpreferenceparameter.sql");
-                //result.Add(@"Resources\Database\Other\Country\AO\configurationcurrency.sql");
-                //result.Add(@"Resources\Database\Other\Country\AO\configurationholidays.sql");
-                //result.Add(@"Resources\Database\Other\Country\AO\configurationprinters.sql");
-                //result.Add(@"Resources\Database\Other\Country\AO\configurationvatrate.sql");
-                //result.Add(@"Resources\Database\Other\Country\AO\customer.sql");
-                //result.Add(@"Resources\Database\Other\Country\MZ\configurationcurrency.sql");
-                //result.Add(@"Resources\Database\Other\Country\MZ\configurationholidays.sql");
-                //result.Add(@"Resources\Database\Other\Country\MZ\configurationprinters.sql");
-                //result.Add(@"Resources\Database\Other\Country\MZ\configurationvatrate.sql");
-                //result.Add(@"Resources\Database\Other\Country\MZ\customer.sql");
-                //result.Add(@"Resources\Database\SQLite\databaseschema.sql");
-                //result.Add(@"Resources\Hardware\Printers\Templates\template_abertura_caixa.ticket");
-                //result.Add(@"Resources\Hardware\Printers\Templates\template_abertura_de_caixa_e_entrada_saida_numerario.ticket");
-                //result.Add(@"Resources\Hardware\Printers\Templates\template_artigo.ticket");
-                //result.Add(@"Resources\Hardware\Printers\Templates\template_consulta_mesa.ticket");
-                //result.Add(@"Resources\Hardware\Printers\Templates\template_consulta_mesa_pantera.ticket");
-                //result.Add(@"Resources\Hardware\Printers\Templates\template_documento_fiscal.ticket");
-                //result.Add(@"Resources\Hardware\Printers\Templates\template_entrada_conta_corrente.ticket");
-                //result.Add(@"Resources\Hardware\Printers\Templates\template_fecho_caixa.ticket");
-                //result.Add(@"Resources\Hardware\Printers\Templates\template_recibo.ticket");
-                //result.Add(@"Resources\Hardware\Printers\Templates\template_ticket.ticket");
-                //result.Add(@"Resources\Keyboards\163.xml");
+            { 
                 @"Resources\Reports\UserReports\ReportArticle.frx",
                 @"Resources\Reports\UserReports\ReportDocumentFinance.frx",
-                /// <summary>
-                ///     This change refers to "ENH201810#04".
-                /// </summary>
-                /// <remarks>
-                ///     <para>DESCRIPTION: This code change covers MZ and AO invoice layout enhancement, based on "CurrentCulture" settings.</para>
-                ///     <para>ISSUE: all prices greater than million were being cut on invoice.</para>
-                ///     <para>CAUSE: there was no proper locale based invoice files.</para>
-                ///     <para>SOLUTION: It was created a file for each of those specific locale settings, based on original files. 
-                ///     For example: based on "ReportDocumentFinance.frx" it was created "ReportDocumentFinance_pt-MZ.frx".
-                ///     </para>
-                /// </remarks>
-                /// <example>
-                ///     "Preço" value: 35 000 000,00
-                ///     Shows the value:  000 000,00
-                /// </example>
-                //result.Add(@"Resources\Reports\UserReports\ReportDocumentFinance.pt-PT.frx");
-                //result.Add(@"Resources\Reports\UserReports\ReportDocumentFinance.pt-MZ.frx");
-                //result.Add(@"Resources\Reports\UserReports\ReportDocumentFinance.pt-AO.frx");
                 @"Resources\Reports\UserReports\ReportDocumentFinancePayment.frx",
                 @"Resources\Reports\UserReports\ReportDocumentFinanceWayBill.frx",
                 @"Resources\Reports\UserReports\ReportTest.frx"
             };
-            //result.Add(@"Resources\Reports\UserReports\TemplateBase.frx");
-            //result.Add(@"Resources\Reports\UserReports\TemplateBaseSimple.frx");
 
             return result;
         }
 
-        /// <summary>
-        /// It is responsible for loading the file theme based on user´s choice during POS installation.
-        /// Please see #IN008024# for further details.
-        /// </summary>
-        /// <returns></returns>
-        private static string GetFileTheme()
+        private static string GetThemeFileLocation()
         {
-            log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+          
+            CustomAppOperationMode customAppOperationMode = AppOperationModeSettings.CustomAppOperationMode;
 
-            string result = string.Empty;
-
-            try
-            {
-                /* IN008024 */
-                //logicpos.datalayer.Enums.CustomAppOperationMode customAppOperationMode = logicpos.datalayer.Enums.CustomAppOperationMode.GetAppOperationMode(LogicPOS.Settings.GeneralSettings.Settings["appOperationModeToken"]);
-                CustomAppOperationMode customAppOperationMode = AppOperationModeSettings.CustomAppOperationMode;
-
-                /* 
-                 * Possible themes:
-                 * theme_default_default.xml
-                 * theme_default_retail.xml
-                 */
-                result = string.Format(
-                    "{0}{1}",
-                    PathsSettings.Paths["themes"],
-                    string.Format(
-                        FileFormatThemeFile
-                        , GeneralSettings.AppTheme.ToLower() /* IN008024: Before, from Database :LogicPOS.Settings.AppSettings.PreferenceParameters["APP_THEME"].ToLower() */
-                        , customAppOperationMode.AppOperationTheme.ToLower()/*  From App.Config: Default|Coffee|Bakery|Fish|Butchery|Shoe|Clothing|Hardware */
-                    )
-                );
-            }
-            catch (Exception ex)
-            {
-                log.Error("string GetFileTheme() :: " + ex.Message, ex);
-            }
-
-            return result;
+            var themeLocation =  $"{PathsSettings.Paths["themes"]}{string.Format(FileFormatThemeFile, GeneralSettings.AppTheme.ToLower(), customAppOperationMode.AppOperationTheme.ToLower())}";
+            return themeLocation;
         }
 
         private static bool GetServiceATSendDocuments()
@@ -310,19 +207,16 @@ namespace logicpos.App
             /* Custom scripts */
             try
             {
-                CustomAppOperationMode customAppOperationMode = CustomAppOperationMode.GetAppOperationMode(GeneralSettings.Settings["appOperationModeToken"]);
-                        
+                CustomAppOperationMode customAppOperationMode = CustomAppOperationMode.GetAppOperationMode(AppSettings.Instance.appOperationModeToken);
+
                 string cultureName = CultureSettings.CurrentCultureName;
-                string cultureCountryPrefix = cultureName.Substring(0, cultureName.IndexOf('-'));         
+                string cultureCountryPrefix = cultureName.Substring(0, cultureName.IndexOf('-'));
 
                 if (demo)
-                {                    
-                    //string appOperationModeToken = LogicPOS.Settings.GeneralSettings.Settings["appOperationModeToken"];
+                {
                     string appOperationModeToken = customAppOperationMode.AppOperationModeToken;
-                    //..\Resources\Database\Demos\..\..\databasedatademo_backery.sql
                     string fileName = customAppOperationMode.DatabaseDemoFileName;
 
-                    //"Resources\Database\Demos\{0}\{1}\{2}
                     result = string.Format(basePath,
                         appOperationModeToken,
                         cultureCountryPrefix,
@@ -331,15 +225,15 @@ namespace logicpos.App
                 }
                 else
                 {
-					//Angola - Certificação [TK:016268]
+                    //Angola - Certificação [TK:016268]
                     if (cultureName == "pt-AO" && basePath == "Resources\\Database\\Data\\{0}\\{1}\\databasedata.sql")
                     {
                         cultureCountryPrefix = "ao";
                     }
                     /* Default or Retail */
                     string appOperationTheme = customAppOperationMode.AppOperationTheme;
-					//Utiliza SQL para BackOfficeMode
-                    if(AppOperationModeSettings.CustomAppOperationMode.AppOperationModeToken == "BackOfficeMode")
+                    //Utiliza SQL para BackOfficeMode
+                    if (AppOperationModeSettings.CustomAppOperationMode.AppOperationModeToken == "BackOfficeMode")
                     {
                         appOperationTheme = "BackOfficeMode";
                     }
@@ -355,7 +249,7 @@ namespace logicpos.App
             {
                 log.Error("string GetDatabaseFileName(bool demo) :: " + ex.Message, ex);
                 /* Default script for demo or data */
-                  result = demo ?  @"Resources\Database\databasedatademo.sql" : basePath.EndsWith(".sql") ? @"Resources\Database\databasedata.sql" : @"Resources\Database\Other\Plugins\SoftwareVendor";
+                result = demo ? @"Resources\Database\databasedatademo.sql" : basePath.EndsWith(".sql") ? @"Resources\Database\databasedata.sql" : @"Resources\Database\Other\Plugins\SoftwareVendor";
             }
 
             return result;

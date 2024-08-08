@@ -1,14 +1,8 @@
-﻿using FastReport;
-using LogicPOS.Domain.Entities;
-using LogicPOS.Globalization;
-using LogicPOS.Reporting.Data.Common;
+﻿using LogicPOS.Reporting.Data.Common;
 using LogicPOS.Reporting.Reports.Data;
 using LogicPOS.Settings;
-using LogicPOS.Shared.CustomDocument;
 using logicpos.shared.Enums;
 using LogicPOS.Utility;
-using System;
-using LogicPOS.Reporting.Reports.Customers;
 
 namespace LogicPOS.Reporting.Reports
 {

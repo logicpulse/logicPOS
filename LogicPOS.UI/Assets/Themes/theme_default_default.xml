@@ -247,8 +247,8 @@
 						<!-- ButtonLogoutUser -->
 						<ButtonLogoutUser>
 							<Name>touchButtonPosToolbarLogoutUser_DarkGrey</Name>
-							<Text>Resx[global_application_loggerout_user]</Text>
-							<ImageFileName>Assets/Images/Icons/icon_pos_toolbar_loggerout_user.png</ImageFileName>
+							<Text>Resx[global_application_logout_user]</Text>
+							<ImageFileName>Assets/Images/Icons/icon_pos_toolbar_logout_user.png</ImageFileName>
 							<Visible>true</Visible>
 						</ButtonLogoutUser>
 						<!-- ButtonShowChangeUserDialog -->

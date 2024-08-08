@@ -119,8 +119,12 @@
   </ItemGroup>
   -->
   <ItemGroup>
-    <Compile Include="Alerts\Alert.cs" />
-    <Compile Include="Alerts\Alerts.cs" />
+    <Compile Include="Alerts\Custom\CustomAlertButtons.cs" />
+    <Compile Include="Alerts\Custom\CustomAlertSettings.cs" />
+    <Compile Include="Alerts\Simple\SimpleAlert.cs" />
+    <Compile Include="Alerts\Simple\SimpleAlerts.cs" />
+    <Compile Include="Buttons\ButtonSettings.cs" />
+    <Compile Include="Buttons\TableButtonSettings.cs" />
     <Compile Include="Classes\DataLayer\DataBaseBackupFileInfo.cs" />
     <Compile Include="Classes\Enums\App\AppMode.cs" />
     <Compile Include="Classes\Enums\App\ScreenSize.cs" />
@@ -130,20 +134,28 @@
     <Compile Include="Classes\Enums\Dialogs\DocumentFinanceDialogPreviewMode.cs" />
     <Compile Include="Classes\Enums\Dialogs\LicenseUIResponse.cs" />
     <Compile Include="Classes\Enums\Finance\ExportSaftPtMode.cs" />
-    <Compile Include="Classes\Enums\GenericTreeView\GenericTreeViewColumnPropertyType.cs" />
-    <Compile Include="Classes\Enums\GenericTreeView\GenericTreeViewMode.cs" />
-    <Compile Include="Classes\Enums\GenericTreeView\GenericTreeViewNavigatorMode.cs" />
+    <Compile Include="Components\Accordions\AccordionChildButton.cs" />
+    <Compile Include="Components\Accordions\AccordionNode.cs" />
+    <Compile Include="Components\Accordions\AccordionParentButton.cs" />
+    <Compile Include="Components\GridView\GridViewPropertyType.cs" />
+    <Compile Include="Components\GridView\GridViewMode.cs" />
+    <Compile Include="Components\GridView\GridViewNavigatorMode.cs" />
     <Compile Include="Classes\Enums\GenericTreeView\NullBoolean.cs" />
     <Compile Include="Classes\Enums\Hardware\InputReaderDevice.cs" />
     <Compile Include="Classes\Enums\ImportExportFileOpen.cs" />
     <Compile Include="Classes\Enums\Keyboard\KeyboardMode.cs" />
     <Compile Include="Classes\Enums\Keyboard\ModifierKeys.cs" />
-    <Compile Include="Classes\Enums\Dialogs\PosBaseDialogButtonType.cs" />
+    <Compile Include="Buttons\DialogButtonType.cs" />
     <Compile Include="Classes\Enums\Reports\ReportsQueryDialogMode.cs" />
     <Compile Include="Classes\Enums\Reports\ReportsTypeToken.cs" />
     <Compile Include="Classes\Enums\SaveSystemProtectionMode.cs" />
     <Compile Include="Classes\Enums\Tickets\TicketType.cs" />
     <Compile Include="Classes\Enums\Widgets\MoneyPadMode.cs" />
+    <Compile Include="Components\Countries\CountryModal.Designer.cs">
+      <DependentUpon>CountryModal.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Components\InputFieds\TextBox.cs" />
+    <Compile Include="Components\InputFieds\ValidationColors.cs" />
     <Compile Include="Components\KeyBoard\NumPadPin\NumberPadPinMode.cs" />
     <Compile Include="Classes\Enums\Xml\ReplaceType.cs" />
     <Compile Include="Classes\Formatters\DateFormatter.cs" />
@@ -163,17 +175,19 @@
     <Compile Include="Components\BackOffice\TreeView\Configuration\TreeViewConfigurationPoleDisplay.cs" />
     <Compile Include="Components\BackOffice\TreeView\Configuration\TreeViewConfigurationInputReader.cs" />
     <Compile Include="Components\BackOffice\TreeView\Stocks\TreeViewWarehouse.cs" />
-    <Compile Include="Components\BackOffice\TreeView\DashBoard.cs" />
+    <Compile Include="Components\Pages\DashBoard.cs" />
     <Compile Include="Components\BackOffice\TreeView\Stocks\TreeViewArticleDetailsStock.cs" />
     <Compile Include="Components\BackOffice\TreeView\Stocks\TreeViewArticleSerialNumber.cs" />
     <Compile Include="Components\BackOffice\TreeView\Stocks\TreeViewArticleStock.cs" />
     <Compile Include="Components\BackOffice\TreeView\Stocks\TreeViewArticleWarehouse.cs" />
     <Compile Include="Components\BackOffice\TreeView\System\TreeViewSystemAuditType.cs" />
+    <Compile Include="Components\Pages\Page.cs" />
+    <Compile Include="Components\Pages\PageNavigator.cs" />
     <Compile Include="Components\POS\Dialogs\PosPricePickerDialog.cs" />
     <Compile Include="Components\POS\Dialogs\PosReportsQueryDialog\PosReportsQueryDialog.cs" />
     <Compile Include="Components\POS\Dialogs\PosSendEmailDialog.cs" />
     <Compile Include="Components\POS\Dialogs\PosSplitPaymentsDialog\PosSplitPaymentsDialog.cs" />
-    <Compile Include="Components\Widgets\Buttons\TouchButtonSplitPayment.cs" />
+    <Compile Include="Buttons\SplitPaymentButton.cs" />
     <Compile Include="Classes\Logic\Hardware\WeighingBalance\WeighingBalance.cs" />
     <Compile Include="Classes\Logic\Others\ParkingTicketResult.cs" />
     <Compile Include="Classes\Logic\Others\ParkingTicket.cs" />
@@ -185,7 +199,16 @@
     <Compile Include="Classes\Mutex\SingleProgramInstance.cs" />
     <Compile Include="Classes\Utils\EuropeanVatInformation.cs" />
     <Compile Include="Classes\Utils\Win32APIWindowHelper.cs" />
-    <Compile Include="Extensions\ColorExtension.cs" />
+    <Compile Include="Buttons\ActionAreaButton.cs" />
+    <Compile Include="DependencyInjection.cs" />
+    <Compile Include="Dialogs\Base\BaseDialogColorSettings.cs" />
+    <Compile Include="Dialogs\Base\BaseDialogFontSettings.cs" />
+    <Compile Include="Dialogs\Base\BaseDialogIconSettings.cs" />
+    <Compile Include="Dialogs\Base\BaseDialogSizeSettings.cs" />
+    <Compile Include="Dialogs\Base\BaseDialogWindowSettings.cs" />
+    <Compile Include="Extensions\ColorExtensions.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Extensions\WindowExtensions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="App\GlobalApp.cs">
@@ -199,7 +222,7 @@
     <Compile Include="Classes\Enums\TicketList\TicketListMode.cs" />
     <Compile Include="Classes\Formatters\DecryptFormatter.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Articles\DialogArticleClass.cs" />
-    <Compile Include="Components\BackOffice\Dialogs\Configuration\DialogConfigurationCountry.cs" />
+    <Compile Include="Components\Countries\CountryModal.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Configuration\DialogConfigurationVatExemptionReason.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Configuration\DialogConfigurationHolidays.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Documents\DialogDocumentFinanceType.cs" />
@@ -217,20 +240,19 @@
     <Compile Include="Components\POS\Dialogs\PosDatePickerStartEndDateDialog.cs" />
     <Compile Include="Components\POS\Dialogs\PosSendMessageDialog.cs" />
     <Compile Include="Components\POS\Dialogs\PosLicenceDialog.cs" />
-    <Compile Include="Components\Widgets\Buttons\TouchButtonBase.cs" />
-    <Compile Include="Components\Widgets\Buttons\TouchButtonIcon.cs" />
-    <Compile Include="Components\Widgets\Buttons\TouchButtonIconWithText.cs" />
-    <Compile Include="Components\Widgets\Buttons\TouchButtonImage.cs" />
-    <Compile Include="Components\Widgets\Buttons\TouchButtonImageEvent.cs" />
-    <Compile Include="Components\Widgets\Buttons\TouchButtonTable.cs" />
-    <Compile Include="Components\Widgets\Buttons\TouchButtonTemplate.cs" />
-    <Compile Include="Components\Widgets\Buttons\TouchButtonText.cs" />
-    <Compile Include="Components\Widgets\Buttons\TouchButtonUser.cs" />
+    <Compile Include="Buttons\CustomButton.cs" />
+    <Compile Include="Buttons\IconButton.cs" />
+    <Compile Include="Buttons\IconButtonWithText.cs" />
+    <Compile Include="Buttons\ImageButton.cs" />
+    <Compile Include="Buttons\TouchButtonImageEvent.cs" />
+    <Compile Include="Buttons\TableButton.cs" />
+    <Compile Include="Buttons\TextButton.cs" />
+    <Compile Include="Buttons\UserButton.cs" />
     <Compile Include="Components\Widgets\CheckButton\CheckButtonBox.cs" />
     <Compile Include="Components\Widgets\CheckButton\CheckButtonBoxGroup.cs" />
     <Compile Include="Components\Widgets\CheckButton\CheckButtonExtended.cs" />
-    <Compile Include="Components\Widgets\TextBoxes\EntryBoxValidationMultiLine.cs" />
-    <Compile Include="Components\Widgets\TextBoxes\EntryMultiline.cs" />
+    <Compile Include="Components\Widgets\EntryBox\EntryBoxValidationMultiLine.cs" />
+    <Compile Include="Components\InputFieds\MultilineTextBox.cs" />
     <Compile Include="Components\Widgets\BackOffice\BOWidgetBox.cs" />
     <Compile Include="Classes\Logic\Hardware\InputDevices\InputReader.cs" />
     <Compile Include="Classes\Logic\Hardware\OutputDevices\UsbDisplayDevice.cs" />
@@ -238,7 +260,7 @@
     <Compile Include="Classes\Logic\License\LicenseUIResult.cs" />
     <Compile Include="Classes\DataLayer\DataBaseBackup.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Articles\DialogArticleType.cs" />
-    <Compile Include="Components\BackOffice\Dialogs\BOBaseDialog.cs" />
+    <Compile Include="Components\BackOffice\Dialogs\EditDialog.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Configuration\DialogConfigurationCashRegister.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Configuration\DialogConfigurationCurrency.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Configuration\DialogConfigurationDevice.cs" />
@@ -265,7 +287,7 @@
     <Compile Include="Components\BackOffice\TreeView\Articles\TreeViewArticleType.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Configuration\DialogConfigurationUnitMeasure.cs" />
     <Compile Include="Components\BackOffice\TreeView\Configuration\TreeViewConfigurationCashRegister.cs" />
-    <Compile Include="Components\BackOffice\TreeView\Configuration\TreeViewConfigurationCountry.cs" />
+    <Compile Include="Components\Countries\GridViewCountries.cs" />
     <Compile Include="Components\BackOffice\TreeView\Configuration\TreeViewConfigurationCurrency.cs" />
     <Compile Include="Components\BackOffice\TreeView\Configuration\TreeViewConfigurationDevice.cs" />
     <Compile Include="Components\BackOffice\TreeView\Configuration\TreeViewConfigurationKeyboard.cs" />
@@ -295,7 +317,7 @@
     <Compile Include="Components\BackOffice\TreeView\NonPersistent\TreeViewDocumentFinanceArticle.cs" />
     <Compile Include="Components\BackOffice\TreeView\NonPersistent\TreeViewPartialPayment.cs" />
     <Compile Include="Components\BackOffice\TreeView\System\TreeViewSystemBackup.cs" />
-    <Compile Include="Components\BackOffice\TreeView\Users\TreeViewUserProfilePermissions.cs" />
+    <Compile Include="Components\Pages\ProfilePermissionsPage.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Customers\DialogCustomer.cs" />
     <Compile Include="Components\BackOffice\TreeView\Customers\TreeViewCustomer.cs" />
     <Compile Include="Components\POS\Dialogs\DocumentFinanceDialog\DocumentFinanceDialogPage7.cs" />
@@ -315,34 +337,33 @@
     <Compile Include="Components\POS\Dialogs\PosSelectRecordDialog.cs" />
     <Compile Include="Components\POS\Dialogs\PosReadCardDialog\PosReadCardDialog.cs" />
     <Compile Include="Components\POS\Windows\StartupWindow.cs" />
-    <Compile Include="Components\WidgetsGeneric\GenericCRUDWidget\GenericCRUDWidget.cs" />
-    <Compile Include="Components\WidgetsGeneric\GenericCRUDWidget\GenericCRUDWidgetDataTable.cs" />
-    <Compile Include="Components\WidgetsGeneric\GenericCRUDWidget\GenericCRUDWidgetList.cs" />
-    <Compile Include="Components\WidgetsGeneric\GenericCRUDWidget\GenericCRUDWidgetListDataTable.cs" />
-    <Compile Include="Components\WidgetsGeneric\GenericCRUDWidget\GenericCRUDWidgetListXPO.cs" />
-    <Compile Include="Components\WidgetsGeneric\GenericCRUDWidget\GenericCRUDWidgetXPO.cs" />
-    <Compile Include="Components\WidgetsGeneric\GenericTreeView\GenericTreeView.cs" />
-    <Compile Include="Components\WidgetsGeneric\GenericTreeView\GenericTreeViewColumnProperty.cs" />
-    <Compile Include="Components\WidgetsGeneric\GenericTreeView\GenericTreeViewDataTable.cs" />
-    <Compile Include="Components\WidgetsGeneric\GenericTreeView\GenericTreeViewModel.cs" />
-    <Compile Include="Components\WidgetsGeneric\GenericTreeView\GenericTreeViewNavigator.cs" />
-    <Compile Include="Components\WidgetsGeneric\GenericTreeView\GenericTreeViewSearch.cs" />
-    <Compile Include="Components\WidgetsGeneric\GenericTreeView\GenericTreeViewTemplate.cs" />
-    <Compile Include="Components\WidgetsGeneric\GenericTreeView\GenericTreeViewXPO.cs" />
-    <Compile Include="Components\WidgetsGeneric\GenericTreeView\IGenericTreeView.cs" />
+    <Compile Include="Components\InputFieds\InputField.cs" />
+    <Compile Include="Components\InputFieds\GenericCRUDWidgetDataTable.cs" />
+    <Compile Include="Components\InputFieds\GenericCRUDWidgetList.cs" />
+    <Compile Include="Components\InputFieds\GenericCRUDWidgetListDataTable.cs" />
+    <Compile Include="Components\InputFieds\GenericCRUDWidgetListXPO.cs" />
+    <Compile Include="Components\InputFieds\GenericCRUDWidgetXPO.cs" />
+    <Compile Include="Components\GridView\GridView.cs" />
+    <Compile Include="Components\GridView\GridViewColumnProperty.cs" />
+    <Compile Include="Components\GridView\GridViewDataTable.cs" />
+    <Compile Include="Components\GridView\GridViewModel.cs" />
+    <Compile Include="Components\GridView\GridViewNavigator.cs" />
+    <Compile Include="Components\GridView\GridViewSearchBox.cs" />
+    <Compile Include="Components\GridView\XpoGridView.cs" />
+    <Compile Include="Components\GridView\IGridView.cs" />
     <Compile Include="Components\WidgetsXPO\EntryBox\XPOEntryBoxSelectRecord.cs" />
     <Compile Include="Components\WidgetsXPO\EntryBox\XPOEntryBoxSelectRecordValidation.cs" />
     <Compile Include="Components\Widgets\ComboBox\ListComboBox.cs" />
     <Compile Include="Components\Widgets\ComboBox\ListComboBoxTouch.cs" />
-    <Compile Include="Components\Widgets\TextBoxes\EntryBoxBase.cs" />
-    <Compile Include="Components\Widgets\TextBoxes\EntryBoxValidation.cs" />
-    <Compile Include="Components\Widgets\TextBoxes\EntryBoxValidationButton.cs" />
-    <Compile Include="Components\Widgets\TextBoxes\EntryBoxValidationDatePickerDialog.cs" />
-    <Compile Include="Components\Widgets\TextBoxes\EntryBoxValidationDatePickerMultiDates.cs" />
-    <Compile Include="Components\Widgets\TextBoxes\EntryBoxValidationFilePickerDialog.cs" />
-    <Compile Include="Components\Widgets\TextBoxes\EntryBoxValidationFilePickerMultiImages.cs" />
-    <Compile Include="Components\Widgets\TextBoxes\ValidatableTextBoxBase.cs" />
-    <Compile Include="Components\Widgets\TextBoxes\ValidatableTextBox.cs" />
+    <Compile Include="Components\Widgets\EntryBox\EntryBoxBase.cs" />
+    <Compile Include="Components\Widgets\EntryBox\EntryBoxValidation.cs" />
+    <Compile Include="Components\Widgets\EntryBox\EntryBoxValidationButton.cs" />
+    <Compile Include="Components\Widgets\EntryBox\EntryBoxValidationDatePickerDialog.cs" />
+    <Compile Include="Components\Widgets\EntryBox\EntryBoxValidationDatePickerMultiDates.cs" />
+    <Compile Include="Components\Widgets\EntryBox\EntryBoxValidationFilePickerDialog.cs" />
+    <Compile Include="Components\Widgets\EntryBox\EntryBoxValidationFilePickerMultiImages.cs" />
+    <Compile Include="Components\Widgets\EntryBox\ValidatableTextBoxBase.cs" />
+    <Compile Include="Components\Widgets\EntryBox\ValidatableTextBox.cs" />
     <Compile Include="Components\POS\Dialogs\DocumentFinanceDialog\DocumentFinanceDialogPage1.cs" />
     <Compile Include="Components\POS\Dialogs\DocumentFinanceDialog\DocumentFinanceDialogPage2.cs" />
     <Compile Include="Components\POS\Dialogs\DocumentFinanceDialog\DocumentFinanceDialogPage3.cs" />
@@ -351,7 +372,6 @@
     <Compile Include="Components\POS\Dialogs\DocumentFinanceDialog\DocumentFinanceDialogPage6.cs" />
     <Compile Include="Components\Widgets\MediaNova\LittleAddsRadioButtonTouch.cs" />
     <Compile Include="Components\Widgets\MediaNova\LittleAddsWidget.cs" />
-    <Compile Include="Components\Widgets\Other\ConnectionStatus.cs" />
     <Compile Include="Components\Widgets\RadioGroup\ListRadioButton.cs" />
     <Compile Include="Components\Widgets\RadioGroup\ListRadioButtonTouch.cs" />
     <Compile Include="Components\KeyBoard\KeyboardPadKey.cs" />
@@ -369,7 +389,6 @@
     <Compile Include="Components\BackOffice\Dialogs\Users\DialogUserDetail.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Users\DialogUserProfile.cs" />
     <Compile Include="Components\BackOffice\Windows\BackOfficeBaseWindow.cs" />
-    <Compile Include="Components\BackOffice\Windows\BackOfficeReportWindow.cs" />
     <Compile Include="Components\BackOffice\TreeView\Articles\TreeViewArticleFamily.cs" />
     <Compile Include="Components\BackOffice\TreeView\Articles\TreeViewArticleSubFamily.cs" />
     <Compile Include="Components\BackOffice\TreeView\TreeViewTemplate.cs" />
@@ -378,9 +397,9 @@
     <Compile Include="Components\BackOffice\TreeView\Users\TreeViewUserProfile.cs" />
     <Compile Include="Components\BackOffice\Windows\BackOfficeMainWindow.cs" />
     <Compile Include="Components\POS\Dialogs\PosChangeUserDialog.cs" />
-    <Compile Include="Components\POS\Dialogs\PosBaseDialog.cs" />
+    <Compile Include="Dialogs\Base\BaseDialog.cs" />
     <Compile Include="Components\KeyBoard\PosKeyboardDialog.cs" />
-    <Compile Include="Components\POS\Dialogs\PosMessageDialog.cs" />
+    <Compile Include="Alerts\Custom\CustomAlert.cs" />
     <Compile Include="Components\POS\Dialogs\PosMoneyPadDialog.cs" />
     <Compile Include="Components\POS\Dialogs\PaymentDialog\PaymentDialog.cs" />
     <Compile Include="Components\POS\Dialogs\PosPinPadDialog.cs" />
@@ -397,7 +416,7 @@
     <Compile Include="Components\KeyBoard\KeyboardPad.cs" />
     <Compile Include="Components\KeyBoard\NumPadPin\NumberPadPin.cs" />
     <Compile Include="Components\KeyBoard\NumberPadPos.cs" />
-    <Compile Include="Components\Widgets\Other\Accordion.cs" />
+    <Compile Include="Components\Accordions\Accordion.cs" />
     <Compile Include="Components\Widgets\Pads\TablePad.cs" />
     <Compile Include="Components\Widgets\Pads\TablePadTable.cs" />
     <Compile Include="Components\Widgets\Pads\TablePadUser.cs" />
@@ -434,6 +453,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Components\Utility\GtkUtils.cs" />
+    <Compile Include="Services\AuthenticationService.cs" />
     <Compile Include="Vision.cs" />
     <Compile Include="Web References\AccessTrackParkingTicketService\Reference.cs">
       <AutoGen>True</AutoGen>
@@ -6627,6 +6647,10 @@
       <Name>logicpos.financial.service</Name>
     </ProjectReference>
 	-->
+    <ProjectReference Include="..\LogicPOS.Api\LogicPOS.Api.csproj">
+      <Project>{267c627f-2248-4500-9247-ce7f30431a25}</Project>
+      <Name>LogicPOS.Api</Name>
+    </ProjectReference>
     <ProjectReference Include="..\LogicPOS.Data\LogicPOS.Data.csproj">
       <Project>{42af3be2-44b4-477d-8e45-55c64992b805}</Project>
       <Name>LogicPOS.Data</Name>
@@ -6713,6 +6737,9 @@
     <PackageReference Include="DocumentFormat.OpenXml">
       <Version>2.20.0</Version>
     </PackageReference>
+    <PackageReference Include="ErrorOr">
+      <Version>2.0.1</Version>
+    </PackageReference>
     <PackageReference Include="ExcelDataReader.DataSet">
       <Version>3.7.0-develop00310</Version>
     </PackageReference>
@@ -6731,8 +6758,17 @@
     <PackageReference Include="log4net">
       <Version>2.0.17</Version>
     </PackageReference>
+    <PackageReference Include="MediatR">
+      <Version>12.4.0</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.Data.Sqlite">
       <Version>8.0.3</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection">
+      <Version>8.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Http">
+      <Version>8.0.0</Version>
     </PackageReference>
     <PackageReference Include="MSBuild.Microsoft.VisualStudio.Web.targets">
       <Version>14.0.0.3</Version>

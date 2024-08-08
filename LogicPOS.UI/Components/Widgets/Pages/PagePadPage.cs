@@ -1,6 +1,6 @@
 ﻿using Gtk;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using LogicPOS.Settings;
+using LogicPOS.UI.Buttons;
 using System.IO;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
@@ -33,17 +33,17 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         public bool Enabled { get; set; } = true;
 
-        public TouchButtonIconWithText NavigatorButton { get; set; }
+        public IconButtonWithText NavigatorButton { get; set; }
 
         //Required to Override Public Methods
         public abstract void Validate();
 
         //Constructors
-        public PagePadPage(Window pSourceWindow, string pPageName, Widget pWidget) : this(pSourceWindow, pPageName, "", pWidget) { }
-        public PagePadPage(Window pSourceWindow, string pPageName, string pPageIcon, Widget pWidget, bool pEnabled = true)
+        public PagePadPage(Window parentWindow, string pPageName, Widget pWidget) : this(parentWindow, pPageName, "", pWidget) { }
+        public PagePadPage(Window parentWindow, string pPageName, string pPageIcon, Widget pWidget, bool pEnabled = true)
         {
             //Parameters
-            _sourceWindow = pSourceWindow;
+            _sourceWindow = parentWindow;
             PageName = pPageName;
             PageIcon = (pPageIcon != string.Empty && File.Exists(pPageIcon))
               ? pPageIcon

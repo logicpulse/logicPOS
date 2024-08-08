@@ -5,16 +5,17 @@ using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
-using logicpos.Extensions;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Enums;
 using LogicPOS.Modules;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components;
+using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,7 @@ using System.IO;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 {
-    internal class DialogArticleCompositionSerialNumber : BOBaseDialog
+    internal class DialogArticleCompositionSerialNumber : EditDialog
     {
         //UI
         private VBox vboxTab1;
@@ -43,13 +44,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
         private readonly Entity _xPGuidObject;
         private readonly Window _sourceWindow;
         private Viewport _viewport;
-        private TouchButtonIconWithText _buttonChange;
-        private TouchButtonIconWithText _buttonArticleOut;
+        private IconButtonWithText _buttonChange;
+        private IconButtonWithText _buttonArticleOut;
         private byte[] AttachedFile;
 
-        public TouchButtonIconWithText ButtonInsert { get; set; }
-        protected GenericTreeViewNavigator<fin_article, TreeViewArticle> _navigator;
-        public GenericTreeViewNavigator<fin_article, TreeViewArticle> Navigator
+        public IconButtonWithText ButtonInsert { get; set; }
+        protected GridViewNavigator<fin_article, TreeViewArticle> _navigator;
+        public GridViewNavigator<fin_article, TreeViewArticle> Navigator
         {
             get { return _navigator; }
             set { _navigator = value; }
@@ -64,10 +65,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
         private readonly string _serialNumber;
         private ScrolledWindow _scrolledWindowView;
 
-        public DialogArticleCompositionSerialNumber(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pDialogFlags, Entity pXPGuidObject, List<fin_articleserialnumber> pSelectedAssocietedArticles, string pSerialNumber = "")
-            : base(pSourceWindow, pTreeView, pDialogFlags, DialogMode.Update, pXPGuidObject)
+        public DialogArticleCompositionSerialNumber(Window parentWindow, XpoGridView pTreeView, DialogFlags pDialogFlags, Entity pXPGuidObject, List<fin_articleserialnumber> pSelectedAssocietedArticles, string pSerialNumber = "")
+            : base(parentWindow, pTreeView, pDialogFlags, DialogMode.Update, pXPGuidObject)
         {
-            _sourceWindow = pSourceWindow;
+            _sourceWindow = parentWindow;
             _xPGuidObject = pXPGuidObject;
             this.Title = "Editar Artigo Único";
             _serialNumber = pSerialNumber;
@@ -173,7 +174,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                 {
 
                     //SerialNumber Changed
-                    _entryBoxArticleSerialNumber = new XPOEntryBoxSelectRecordValidation<fin_articleserialnumber, TreeViewArticleSerialNumber>(this, "Artigo Original", "SerialNumber", "Oid", (_dataSourceRow as fin_articleserialnumber), null, RegexUtils.RegexGuid, true, true);
+                    _entryBoxArticleSerialNumber = new XPOEntryBoxSelectRecordValidation<fin_articleserialnumber, TreeViewArticleSerialNumber>(this, "Artigo Original", "SerialNumber", "Oid", (Entity as fin_articleserialnumber), null, RegexUtils.RegexGuid, true, true);
                     _entryBoxArticleSerialNumber.EntryValidation.IsEditable = true;
                     _entryBoxArticleSerialNumber.EntryValidation.Completion.PopupCompletion = true;
                     _entryBoxArticleSerialNumber.EntryValidation.Completion.InlineCompletion = false;
@@ -184,9 +185,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 
                     //SerialNumber to Change
                     CriteriaOperator serialNumberCriteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL)"));
-                    if ((_dataSourceRow as fin_articleserialnumber).Article != null)
+                    if ((Entity as fin_articleserialnumber).Article != null)
                     {
-                        serialNumberCriteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND SerialNumber != '{0}' AND IsSold == False", (_dataSourceRow as fin_articleserialnumber).SerialNumber));
+                        serialNumberCriteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND SerialNumber != '{0}' AND IsSold == False", (Entity as fin_articleserialnumber).SerialNumber));
                     }
 
                     _entryBoxArticleSerialNumberToChange = new XPOEntryBoxSelectRecordValidation<fin_articleserialnumber, TreeViewArticleSerialNumber>(this, "Artigo para troca", "SerialNumber", "Oid", null, serialNumberCriteria, RegexUtils.RegexGuid, true, true);
@@ -197,7 +198,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                     _entryBoxArticleSerialNumberToChange.EntryValidation.Completion.InlineSelection = true;
                     _entryBoxArticleSerialNumberToChange.EntryValidation.Changed += _entryBoxArticleSerialNumberToChange_Changed;
 
-                    if (!(_dataSourceRow as fin_articleserialnumber).IsSold) _entryBoxArticleSerialNumberToChange.Sensitive = false;
+                    if (!(Entity as fin_articleserialnumber).IsSold) _entryBoxArticleSerialNumberToChange.Sensitive = false;
 
                     vboxTab2.PackStart(_entryBoxArticleSerialNumberToChange, false, false, 0);
 
@@ -220,7 +221,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 
                     //Supplier
                     CriteriaOperator criteriaOperatorSupplier = CriteriaOperator.Parse("(Supplier = 1)");
-                    _entryBoxSelectSupplier = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(this, GeneralUtils.GetResourceByName("global_supplier"), "Name", "Oid", (_dataSourceRow as fin_articleserialnumber).StockMovimentIn.Customer, criteriaOperatorSupplier, RegexUtils.RegexGuid, true, true);
+                    _entryBoxSelectSupplier = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(this, GeneralUtils.GetResourceByName("global_supplier"), "Name", "Oid", (Entity as fin_articleserialnumber).StockMovimentIn.Customer, criteriaOperatorSupplier, RegexUtils.RegexGuid, true, true);
                     _entryBoxSelectSupplier.EntryValidation.IsEditable = true;
                     _entryBoxSelectSupplier.EntryValidation.Completion.PopupCompletion = true;
                     _entryBoxSelectSupplier.EntryValidation.Completion.InlineCompletion = false;
@@ -232,9 +233,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                     //_entryBoxSelectSupplier.EntryValidation.Changed += delegate { ValidateDialog(); };
 
                     //DocumentDate
-                    _entryBoxDocumentDateIn = new EntryBoxValidationDatePickerDialog(this, GeneralUtils.GetResourceByName("global_date"), GeneralUtils.GetResourceByName("global_date"), (_dataSourceRow as fin_articleserialnumber).StockMovimentIn.Date, RegexUtils.RegexDate, true, CultureSettings.DateFormat, true);
+                    _entryBoxDocumentDateIn = new EntryBoxValidationDatePickerDialog(this, GeneralUtils.GetResourceByName("global_date"), GeneralUtils.GetResourceByName("global_date"), (Entity as fin_articleserialnumber).StockMovimentIn.Date, RegexUtils.RegexDate, true, CultureSettings.DateFormat, true);
                     //_entryBoxDocumentDate.EntryValidation.Sensitive = true;
-                    _entryBoxDocumentDateIn.EntryValidation.Text = (_dataSourceRow as fin_articleserialnumber).StockMovimentIn.Date.ToString(CultureSettings.DateFormat);
+                    _entryBoxDocumentDateIn.EntryValidation.Text = (Entity as fin_articleserialnumber).StockMovimentIn.Date.ToString(CultureSettings.DateFormat);
                     _entryBoxDocumentDateIn.EntryValidation.Validate();
                     _entryBoxDocumentDateIn.EntryValidation.Sensitive = true;
                     //_entryBoxDocumentDate.ClosePopup += delegate { ValidateDialog(); };
@@ -243,13 +244,22 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 
 
                     //DocumentNumber
-                    Color colorBaseDialogEntryBoxBackground = GeneralSettings.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
+                    Color colorBaseDialogEntryBoxBackground = AppSettings.Instance.colorBaseDialogEntryBoxBackground;
                     string _fileIconListFinanceDocuments = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_toolbar_finance_document.png";
                     HBox hBoxDocument = new HBox(false, 0);
                     _entryBoxDocumentNumber = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_document_number"), KeyboardMode.Alfa, RegexUtils.RegexAlfaNumericExtended, false, true);
-                    if ((_dataSourceRow as fin_articleserialnumber).StockMovimentIn.DocumentNumber != string.Empty) _entryBoxDocumentNumber.EntryValidation.Text = (_dataSourceRow as fin_articleserialnumber).StockMovimentIn.DocumentNumber;
-                    //_entryBoxDocumentNumber.EntryValidation.Changed += delegate { ValidateDialog(); };
-                    TouchButtonIcon attachPDFButton = new TouchButtonIcon("attachPDFButton", colorBaseDialogEntryBoxBackground, _fileIconListFinanceDocuments, new Size(20, 20), 30, 30);
+                    if ((Entity as fin_articleserialnumber).StockMovimentIn.DocumentNumber != string.Empty) _entryBoxDocumentNumber.EntryValidation.Text = (Entity as fin_articleserialnumber).StockMovimentIn.DocumentNumber;
+                   
+                    IconButton attachPDFButton = new IconButton(
+                        new ButtonSettings
+                        {
+                            Name = "attachPDFButton",
+                            BackgroundColor = colorBaseDialogEntryBoxBackground,
+                            Icon = _fileIconListFinanceDocuments,
+                            IconSize = new Size(20, 20),
+                            ButtonSize = new Size(30, 30)
+                        });
+
                     attachPDFButton.Clicked += AttachPDFButton_Clicked;
                     ((_entryBoxDocumentNumber.Children[0] as VBox).Children[1] as HBox).PackEnd(attachPDFButton, false, false, 0);
 
@@ -258,7 +268,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                     //Price
                     _entryBoxPrice1 = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_price"), KeyboardMode.None, RegexUtils.RegexDecimalGreaterEqualThanZeroFinancial, false, true);
                     _entryBoxPrice1.WidthRequest = 40;
-                    _entryBoxPrice1.EntryValidation.Text = (_dataSourceRow as fin_articleserialnumber).StockMovimentIn.PurchasePrice.ToString();
+                    _entryBoxPrice1.EntryValidation.Text = (Entity as fin_articleserialnumber).StockMovimentIn.PurchasePrice.ToString();
                     //_entryBoxPrice1.EntryValidation.Changed += EntryPurchasedPriceValidation_Changed;
 
                     vboxTab3.PackStart(_entryBoxPrice1, false, false, 0);
@@ -269,7 +279,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                     //Moviment In Edit details
 
                     vboxTab4 = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
-                    fin_documentfinancemaster documentfinancemaster = ((_dataSourceRow as fin_articleserialnumber).StockMovimentOut != null) ? (_dataSourceRow as fin_articleserialnumber).StockMovimentOut.DocumentMaster : null;
+                    fin_documentfinancemaster documentfinancemaster = ((Entity as fin_articleserialnumber).StockMovimentOut != null) ? (Entity as fin_articleserialnumber).StockMovimentOut.DocumentMaster : null;
 
                     //Document Number
                     CriteriaOperator criteriaOperatorSourceDocumentFinance = CriteriaOperator.Parse("([Disabled] Is Null Or [Disabled] <> 1) And [DocumentStatusStatus] <> 'A' And [DocumentStatusStatus] <> 'F' ");
@@ -280,7 +290,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                     _entryBoxSelectDocumentOut.EntryValidation.Completion.PopupSingleMatch = true;
                     _entryBoxSelectDocumentOut.EntryValidation.Completion.InlineSelection = true;
 
-                    _entryBoxSelectDocumentOut.EntryValidation.Sensitive = !((_dataSourceRow as fin_articleserialnumber).IsSold);
+                    _entryBoxSelectDocumentOut.EntryValidation.Sensitive = !((Entity as fin_articleserialnumber).IsSold);
 
 
                     vboxTab4.PackStart(_entryBoxSelectDocumentOut, false, false, 0);
@@ -288,26 +298,26 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                     //_entryBoxSelectSupplier.EntryValidation.Changed += delegate { ValidateDialog(); };
 
                     //DocumentDate
-                    DateTime dateTime = ((_dataSourceRow as fin_articleserialnumber).StockMovimentOut != null) ? (_dataSourceRow as fin_articleserialnumber).StockMovimentOut.Date : DateTime.Now;
-                    _entryBoxDocumentDateOut = new EntryBoxValidationDatePickerDialog(this, GeneralUtils.GetResourceByName("global_date"), GeneralUtils.GetResourceByName("global_date"), (_dataSourceRow as fin_articleserialnumber).StockMovimentIn.Date, RegexUtils.RegexDate, true, CultureSettings.DateFormat, true);
+                    DateTime dateTime = ((Entity as fin_articleserialnumber).StockMovimentOut != null) ? (Entity as fin_articleserialnumber).StockMovimentOut.Date : DateTime.Now;
+                    _entryBoxDocumentDateOut = new EntryBoxValidationDatePickerDialog(this, GeneralUtils.GetResourceByName("global_date"), GeneralUtils.GetResourceByName("global_date"), (Entity as fin_articleserialnumber).StockMovimentIn.Date, RegexUtils.RegexDate, true, CultureSettings.DateFormat, true);
                     //_entryBoxDocumentDate.EntryValidation.Sensitive = true;
                     _entryBoxDocumentDateOut.EntryValidation.Text = dateTime.ToString(CultureSettings.DateFormat);
                     _entryBoxDocumentDateOut.EntryValidation.Validate();
-                    _entryBoxDocumentDateOut.EntryValidation.Sensitive = !((_dataSourceRow as fin_articleserialnumber).IsSold);
+                    _entryBoxDocumentDateOut.EntryValidation.Sensitive = !((Entity as fin_articleserialnumber).IsSold);
                     //_entryBoxDocumentDate.ClosePopup += delegate { ValidateDialog(); };
 
                     vboxTab4.PackStart(_entryBoxDocumentDateOut, false, false, 0);
 
                     //Button Out
-                    _buttonArticleOut = (_sourceWindow as DialogArticleStock).GetNewButton("touchButtonPrev_DialogActionArea", "Saída do artigo", @"Icons/icon_pos_toolbar_loggerout_user.png");
-                    _buttonArticleOut.Sensitive = !((_dataSourceRow as fin_articleserialnumber).IsSold);
+                    _buttonArticleOut = (_sourceWindow as DialogArticleStock).GetNewButton("touchButtonPrev_DialogActionArea", "Saída do artigo", @"Icons/icon_pos_toolbar_logout_user.png");
+                    _buttonArticleOut.Sensitive = !((Entity as fin_articleserialnumber).IsSold);
                     _buttonArticleOut.Clicked += ArticleOutButton_Clicked;
 
                     vboxTab4.PackStart(_buttonArticleOut, false, false, 0);
 
                     _notebook.AppendPage(vboxTab4, new Label("Movimento de Saída"));
 
-                    buttonOk.Clicked += ButtonOk_Clicked;
+                    ButtonOk.Clicked += ButtonOk_Clicked;
                 }
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -330,16 +340,16 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                 && _entryBoxPrice1.EntryValidation.Validated
                 && _entryBoxDocumentDateIn.EntryValidation.Validated)
             {
-                (_dataSourceRow as fin_articleserialnumber).StockMovimentIn.Customer = _entryBoxSelectSupplier.Value;
-                (_dataSourceRow as fin_articleserialnumber).StockMovimentIn.DocumentNumber = _entryBoxDocumentNumber.EntryValidation.Text;
-                (_dataSourceRow as fin_articleserialnumber).StockMovimentIn.PurchasePrice = DataConversionUtils.StringToDecimal(_entryBoxPrice1.EntryValidation.Text);
-                (_dataSourceRow as fin_articleserialnumber).StockMovimentIn.Date = _entryBoxDocumentDateIn.Value;
-                if (AttachedFile != null) (_dataSourceRow as fin_articleserialnumber).StockMovimentIn.AttachedFile = AttachedFile;
-                (_dataSourceRow as fin_articleserialnumber).StockMovimentIn.Save();
+                (Entity as fin_articleserialnumber).StockMovimentIn.Customer = _entryBoxSelectSupplier.Value;
+                (Entity as fin_articleserialnumber).StockMovimentIn.DocumentNumber = _entryBoxDocumentNumber.EntryValidation.Text;
+                (Entity as fin_articleserialnumber).StockMovimentIn.PurchasePrice = DataConversionUtils.StringToDecimal(_entryBoxPrice1.EntryValidation.Text);
+                (Entity as fin_articleserialnumber).StockMovimentIn.Date = _entryBoxDocumentDateIn.Value;
+                if (AttachedFile != null) (Entity as fin_articleserialnumber).StockMovimentIn.AttachedFile = AttachedFile;
+                (Entity as fin_articleserialnumber).StockMovimentIn.Save();
 
                 _logger.Debug("Sock Moviment In Changed with sucess");
 
-                Alerts.ShowOperationSucceededAlert("global_documentticket_type_title_cs_short");
+                SimpleAlerts.ShowOperationSucceededAlert("global_documentticket_type_title_cs_short");
             }
         }
 
@@ -354,35 +364,35 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
             try
             {
                 var own_customer = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), XPOSettings.XpoOidUserRecord);
-                var stockMovimentOut = (_dataSourceRow as fin_articleserialnumber).StockMovimentOut;
+                var stockMovimentOut = (Entity as fin_articleserialnumber).StockMovimentOut;
                 bool sucess = false; ;
 
                 //Devolver artigo original
-                sucess = ModulesSettings.StockManagementModule.Add(_dataSourceRow.Session,
+                sucess = ModulesSettings.StockManagementModule.Add(Entity.Session,
                     ProcessArticleStockMode.In,
                     own_customer,
                     0,
                     DateTime.Now,
                     "",
-                    (_dataSourceRow as fin_articleserialnumber).Article,
+                    (Entity as fin_articleserialnumber).Article,
                     1,
-                    string.Format("Troca de artigos: " + (_dataSourceRow as fin_articleserialnumber).SerialNumber + " / " + (_entryBoxArticleSerialNumberToChange.Value as fin_articleserialnumber).SerialNumber),
-                    (_dataSourceRow as fin_articleserialnumber).SerialNumber,
-                    (_dataSourceRow as fin_articleserialnumber).StockMovimentIn.PurchasePrice,
-                    (_dataSourceRow as fin_articleserialnumber).ArticleWarehouse.Location,
+                    string.Format("Troca de artigos: " + (Entity as fin_articleserialnumber).SerialNumber + " / " + (_entryBoxArticleSerialNumberToChange.Value as fin_articleserialnumber).SerialNumber),
+                    (Entity as fin_articleserialnumber).SerialNumber,
+                    (Entity as fin_articleserialnumber).StockMovimentIn.PurchasePrice,
+                    (Entity as fin_articleserialnumber).ArticleWarehouse.Location,
                     null, SelectedAssocietedArticles, true, true);
 
                 //Criar movimento de saida do artigo novo
-                sucess = ModulesSettings.StockManagementModule.Add(_dataSourceRow.Session,
+                sucess = ModulesSettings.StockManagementModule.Add(Entity.Session,
                     ProcessArticleStockMode.Out,
                     stockMovimentOut.DocumentDetail,
                     own_customer,
                     0,
                     DateTime.Now,
                     "",
-                    (_dataSourceRow as fin_articleserialnumber).Article,
+                    (Entity as fin_articleserialnumber).Article,
                     1,
-                     string.Format("Troca de artigos: " + (_dataSourceRow as fin_articleserialnumber).SerialNumber + " / " + (_entryBoxArticleSerialNumberToChange.Value as fin_articleserialnumber).SerialNumber),
+                     string.Format("Troca de artigos: " + (Entity as fin_articleserialnumber).SerialNumber + " / " + (_entryBoxArticleSerialNumberToChange.Value as fin_articleserialnumber).SerialNumber),
                     (_entryBoxArticleSerialNumberToChange.Value as fin_articleserialnumber).SerialNumber,
                     (_entryBoxArticleSerialNumberToChange.Value as fin_articleserialnumber).StockMovimentIn.PurchasePrice,
                     (_entryBoxArticleSerialNumberToChange.Value as fin_articleserialnumber).ArticleWarehouse.Location,
@@ -390,8 +400,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 
                 if (sucess)
                 {
-                    Alerts.ShowOperationSucceededAlert("global_documentticket_type_title_cs_short");
-                        
+                    SimpleAlerts.ShowOperationSucceededAlert("global_documentticket_type_title_cs_short");
+
                     _entryBoxArticleSerialNumberToChange.Sensitive = false;
                     _buttonChange.Sensitive = false;
                 }
@@ -408,31 +418,31 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
             try
             {
                 var own_customer = (erp_customer)XPOSettings.Session.GetObjectByKey(typeof(erp_customer), XPOSettings.XpoOidUserRecord);
-                var stockMovimentOut = (_dataSourceRow as fin_articleserialnumber).StockMovimentOut;
+                var stockMovimentOut = (Entity as fin_articleserialnumber).StockMovimentOut;
                 bool sucess = false;
 
-                fin_documentfinancedetail documentDetail = new fin_documentfinancedetail(_dataSourceRow.Session);
+                fin_documentfinancedetail documentDetail = new fin_documentfinancedetail(Entity.Session);
                 documentDetail.DocumentMaster = _entryBoxSelectDocumentOut.Value;
 
                 //Criar movimento de saida do artigo 
-                sucess = ModulesSettings.StockManagementModule.Add(_dataSourceRow.Session,
+                sucess = ModulesSettings.StockManagementModule.Add(Entity.Session,
                     ProcessArticleStockMode.Out,
                     documentDetail,
                     own_customer,
                     0,
                     _entryBoxDocumentDateOut.Value,
                     "",
-                    (_dataSourceRow as fin_articleserialnumber).Article,
+                    (Entity as fin_articleserialnumber).Article,
                     1,
-                     string.Format("Saída de artigo unico: " + (_dataSourceRow as fin_articleserialnumber).SerialNumber),
-                    (_dataSourceRow as fin_articleserialnumber).SerialNumber,
-                    (_dataSourceRow as fin_articleserialnumber).StockMovimentIn.PurchasePrice,
-                    (_dataSourceRow as fin_articleserialnumber).ArticleWarehouse.Location,
+                     string.Format("Saída de artigo unico: " + (Entity as fin_articleserialnumber).SerialNumber),
+                    (Entity as fin_articleserialnumber).SerialNumber,
+                    (Entity as fin_articleserialnumber).StockMovimentIn.PurchasePrice,
+                    (Entity as fin_articleserialnumber).ArticleWarehouse.Location,
                     null, SelectedAssocietedArticles, false, false);
 
                 if (sucess)
                 {
-                    Alerts.ShowOperationSucceededAlert("global_documentticket_type_title_cs_short");
+                    SimpleAlerts.ShowOperationSucceededAlert("global_documentticket_type_title_cs_short");
                     _entryBoxArticleSerialNumberToChange.Sensitive = false;
                     _entryBoxSelectDocumentOut.EntryValidation.Sensitive = false;
                     _entryBoxDocumentDateOut.EntryValidation.Sensitive = false;

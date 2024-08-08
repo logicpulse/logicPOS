@@ -1,16 +1,16 @@
 ﻿using DevExpress.Data.Filtering;
 using Gtk;
-using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.Widgets.Entrys;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Settings;
+using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Dialogs;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -18,7 +18,7 @@ using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    internal class PosDeveloperTestDialog : PosBaseDialog
+    internal class PosDeveloperTestDialog : BaseDialog
     {
         //private Fixed _fixedContent;
         private readonly ScrolledWindow _scrolledWindow;
@@ -28,18 +28,18 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer> _xPOEntryBoxSelectRecordValidationTextMode;
 
 
-        public PosDeveloperTestDialog(Window pSourceWindow)
+        public PosDeveloperTestDialog(Window parentWindow)
             : base(
-                  pSourceWindow,
+                  parentWindow,
                   DialogFlags.DestroyWithParent | DialogFlags.Modal)
         {
             //Init Local Vars
             string windowTitle = GeneralUtils.GetResourceByName("window_title_dialog_template");
             string fileDefaultWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_default.png";
-            _windowSize = new Size(595, 740);
+            WindowSettings.Size = new Size(595, 740);
 
             //Init VBox
-            _vbox = new VBox(false, 2) { WidthRequest = _windowSize.Width - 44 };
+            _vbox = new VBox(false, 2) { WidthRequest = WindowSettings.Size.Width - 44 };
 
             //Call InitUI
             InitUI1();
@@ -59,8 +59,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _scrolledWindow.Add(viewport);
 
             //ActionArea Buttons
-            TouchButtonIconWithText buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);
-            TouchButtonIconWithText buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
+            IconButtonWithText buttonOk = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
+            IconButtonWithText buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
 
             //ActionArea
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons
@@ -70,12 +70,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             };
 
             //Init Object
-            this.InitObject(
+            this.Initialize(
                 this,
                 DialogFlags.DestroyWithParent | DialogFlags.Modal,
                 fileDefaultWindowIcon,
                 windowTitle,
-                _windowSize,
+                WindowSettings.Size,
                 _scrolledWindow,
                 actionAreaButtons);
         }
@@ -90,9 +90,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             //EntryBoxValidation with KeyBoard Input and Custom Buttons : Start without KeyBoard, and KeyBoard Button After all Others
             _entryBoxValidationCustomButton1 = new EntryBoxValidation(this, "EntryBoxValidationCustomButton", KeyboardMode.None, RegexUtils.RegexAlfaNumericExtended, false);
-            TouchButtonIcon customButton1 = _entryBoxValidationCustomButton1.AddButton("CustomButton1", @"Icons/Windows/icon_window_orders.png");
-            TouchButtonIcon customButton2 = _entryBoxValidationCustomButton1.AddButton("CustomButton2", @"Icons/Windows/icon_window_pay_invoice.png");
-            TouchButtonIcon customButton3 = _entryBoxValidationCustomButton1.AddButton("CustomButton3", @"Icons/Windows/icon_window_orders.png");
+            IconButton customButton1 = _entryBoxValidationCustomButton1.AddButton("CustomButton1", @"Icons/Windows/icon_window_orders.png");
+            IconButton customButton2 = _entryBoxValidationCustomButton1.AddButton("CustomButton2", @"Icons/Windows/icon_window_pay_invoice.png");
+            IconButton customButton3 = _entryBoxValidationCustomButton1.AddButton("CustomButton3", @"Icons/Windows/icon_window_orders.png");
             //Now we manually Init Keyboard
             _entryBoxValidationCustomButton1.EntryValidation.KeyboardMode = KeyboardMode.AlfaNumeric;
             _entryBoxValidationCustomButton1.InitKeyboard(_entryBoxValidationCustomButton1.EntryValidation);
@@ -203,7 +203,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             _xPOEntryBoxSelectRecordValidationTextMode.EntryValidation.Required = true;
             _xPOEntryBoxSelectRecordValidationTextMode.EntryValidation.Validate();
-            _logger.Debug(string.Format("Validated: [{0}]", _entryBoxValidationCustomButton1.EntryValidation.Validated));
         }
 
         private void customButton2_Clicked(object sender, EventArgs e)
@@ -213,7 +212,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             _xPOEntryBoxSelectRecordValidationTextMode.EntryValidation.Required = false;
             _xPOEntryBoxSelectRecordValidationTextMode.EntryValidation.Validate();
-            _logger.Debug(string.Format("Validated: [{0}]", _entryBoxValidationCustomButton1.EntryValidation.Validated));
         }
 
         private void buttonTestDocumentMasterCreatePDF_Clicked(object sender, EventArgs e)
@@ -221,7 +219,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             Guid guidOid = new Guid("099EF525-FCEC-48D8-9EE8-FA0F34A34ED4");
             fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)XPOSettings.Session.GetObjectByKey(typeof(fin_documentfinancemaster), guidOid);
             string fileName = LogicPOS.Reporting.Common.FastReport.DocumentMasterCreatePDF(documentFinanceMaster);
-            _logger.Debug(string.Format("fileName: [{0}]", fileName));
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -229,7 +226,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         private void customSharedButton_Clicked(object sender, EventArgs e)
         {
-            _logger.Debug("customSharedButton_Clicked");
+            throw new NotImplementedException();
         }
     }
 }

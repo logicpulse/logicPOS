@@ -1,5 +1,4 @@
 ﻿using Gtk;
-using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
@@ -8,22 +7,23 @@ using LogicPOS.Globalization;
 using LogicPOS.Shared;
 using LogicPOS.Shared.Article;
 using LogicPOS.Shared.Orders;
+using LogicPOS.UI.Components;
 using System;
 using System.Collections.Generic;
 using System.Data;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
-    internal class TreeViewPartialPayment : GenericTreeViewDataTable
+    internal class TreeViewPartialPayment : GridViewDataTable
     {
         //Public Parametless Constructor Required by Generics
         public TreeViewPartialPayment() { }
 
-        public TreeViewPartialPayment(Window pSourceWindow)
-            : this(pSourceWindow, null, null) { }
+        public TreeViewPartialPayment(Window parentWindow)
+            : this(parentWindow, null, null) { }
 
         //DataTable Mode
-        public TreeViewPartialPayment(Window pSourceWindow, DataRow pDefaultValue, Type pDialogType, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default)
+        public TreeViewPartialPayment(Window parentWindow, DataRow pDefaultValue, Type pDialogType, GridViewMode pGenericTreeViewMode = GridViewMode.Default, GridViewNavigatorMode navigatorMode = GridViewNavigatorMode.Default)
         {
             //Init Vars
             DataRow defaultValue = (pDefaultValue != null) ? pDefaultValue : null;
@@ -35,41 +35,41 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             int decimalsColumnWidth = 100;
 
             //Configure columnProperties
-            List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
+            List<GridViewColumnProperty> columnProperties = new List<GridViewColumnProperty>
             {
                 /*00*/
-                new GenericTreeViewColumnProperty("Oid") { Type = typeof(Guid), Visible = false },
+                new GridViewColumnProperty("Oid") { Type = typeof(Guid), Visible = false },
                 /*01*/
-                new GenericTreeViewColumnProperty("Code") { Type = typeof(string), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_record_code") },
+                new GridViewColumnProperty("Code") { Type = typeof(string), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_record_code") },
                 /*02*/
-                new GenericTreeViewColumnProperty("Designation") { Type = typeof(string), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_designation"), Expand = true },
+                new GridViewColumnProperty("Designation") { Type = typeof(string), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_designation"), Expand = true },
                 /*03*/
-                new GenericTreeViewColumnProperty("PriceFinal") { Type = typeof(decimal), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_price"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, CellRenderer = cellRendererCurrency },
+                new GridViewColumnProperty("PriceFinal") { Type = typeof(decimal), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_price"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, CellRenderer = cellRendererCurrency },
                 /*04*/
-                new GenericTreeViewColumnProperty("Vat") { Type = typeof(decimal), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_vat_rate"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
+                new GridViewColumnProperty("Vat") { Type = typeof(decimal), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_vat_rate"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
                 /*05*/
-                new GenericTreeViewColumnProperty("Discount") { Type = typeof(decimal), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_discount"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
+                new GridViewColumnProperty("Discount") { Type = typeof(decimal), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_discount"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
                 /*06*/
-                new GenericTreeViewColumnProperty("Place") { Type = typeof(string), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_placetable_place") },
+                new GridViewColumnProperty("Place") { Type = typeof(string), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_placetable_place") },
                 //Other Invisible Fields
                 /*07*/
-                new GenericTreeViewColumnProperty("Price") { Type = typeof(decimal), Visible = false },
+                new GridViewColumnProperty("Price") { Type = typeof(decimal), Visible = false },
                 /*08*/
-                new GenericTreeViewColumnProperty("Quantity") { Type = typeof(decimal), Visible = false },
+                new GridViewColumnProperty("Quantity") { Type = typeof(decimal), Visible = false },
                 /*09*/
-                new GenericTreeViewColumnProperty("UnitMeasure") { Type = typeof(string), Visible = false },
+                new GridViewColumnProperty("UnitMeasure") { Type = typeof(string), Visible = false },
                 /*10*/
-                new GenericTreeViewColumnProperty("PlaceOid") { Type = typeof(Guid), Visible = false },
+                new GridViewColumnProperty("PlaceOid") { Type = typeof(Guid), Visible = false },
                 /*11*/
-                new GenericTreeViewColumnProperty("TableOid") { Type = typeof(Guid), Visible = false },
+                new GridViewColumnProperty("TableOid") { Type = typeof(Guid), Visible = false },
                 /*12*/
-                new GenericTreeViewColumnProperty("PriceType") { Type = typeof(PriceType), Visible = false },
+                new GridViewColumnProperty("PriceType") { Type = typeof(PriceType), Visible = false },
                 /*13*/
-                new GenericTreeViewColumnProperty("Token1") { Type = typeof(string), Visible = false },  //ClassifiedID
+                new GridViewColumnProperty("Token1") { Type = typeof(string), Visible = false },  //ClassifiedID
                 /*14*/
-                new GenericTreeViewColumnProperty("Token2") { Type = typeof(string), Visible = false },  //FriendlyID
+                new GridViewColumnProperty("Token2") { Type = typeof(string), Visible = false },  //FriendlyID
                 /*15*/
-                new GenericTreeViewColumnProperty("Notes") { Type = typeof(string), Visible = false }
+                new GridViewColumnProperty("Notes") { Type = typeof(string), Visible = false }
             };
 
             //init DataTable
@@ -77,10 +77,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             //Call Base Initializer
             base.InitObject(
-              pSourceWindow,        //Pass parameter 
+              parentWindow,        //Pass parameter 
               pDefaultValue,        //Pass parameter 
               pGenericTreeViewMode, //Pass parameter 
-              pGenericTreeViewNavigatorMode,//Pass parameter 
+              navigatorMode,//Pass parameter 
               columnProperties,     //Created Here
               dataTable,            //Created Here
               typeDialogClass       //Created Here
@@ -90,7 +90,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //this.FormatColumnPropertiesForTouch();
         }
 
-        private DataTable GetDataTable(List<GenericTreeViewColumnProperty> pColumnProperties)
+        private DataTable GetDataTable(List<GridViewColumnProperty> pColumnProperties)
         {
             //Init Local Vars
             DataTable resultDataTable = new DataTable();
@@ -101,7 +101,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             pos_configurationplace configurationPlace;
 
             //Add Columns with specific Types From Column Properties
-            foreach (GenericTreeViewColumnProperty column in pColumnProperties)
+            foreach (GridViewColumnProperty column in pColumnProperties)
             {
                 dataTableColumnType = (column.Type != null) ? column.Type : typeof(string);
                 resultDataTable.Columns.Add(column.Name, dataTableColumnType);

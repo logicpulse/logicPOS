@@ -1,8 +1,6 @@
 ﻿using Gtk;
-using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog;
 using logicpos.Classes.Gui.Gtk.Widgets;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -10,10 +8,12 @@ using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Utility;
+using LogicPOS.UI.Dialogs;
+using LogicPOS.UI.Buttons;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    internal partial class PosDocumentFinanceDialog : PosBaseDialog
+    internal partial class PosDocumentFinanceDialog : BaseDialog
     {
         //Private
         private List<PagePadPage> _listPages;
@@ -23,10 +23,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private DocumentFinanceDialogPage4 _pagePad4;
         private DocumentFinanceDialogPage5 _pagePad5;
 
-        public TouchButtonIconWithText ButtonClearCustomer { get; }
-        private readonly TouchButtonIconWithText _buttonOk;
-        private readonly TouchButtonIconWithText _buttonCancel;
-        private readonly TouchButtonIconWithText _buttonPreview;
+        public IconButtonWithText ButtonClearCustomer { get; }
+        private readonly IconButtonWithText _buttonOk;
+        private readonly IconButtonWithText _buttonCancel;
+        private readonly IconButtonWithText _buttonPreview;
         //Custom Responses Types
         private readonly ResponseType _responseTypePreview = (ResponseType)11;
         private readonly ResponseType _responseTypeClearCustomer = (ResponseType)12;
@@ -35,11 +35,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         public DocumentFinanceDialogPagePad PagePad { get; set; }
 
-        public PosDocumentFinanceDialog(Window pSourceWindow, DialogFlags pDialogFlags)
-            : base(pSourceWindow, pDialogFlags)
+        public PosDocumentFinanceDialog(Window parentWindow, DialogFlags pDialogFlags)
+            : base(parentWindow, pDialogFlags)
         {
             //Parameters
-            _sourceWindow = pSourceWindow;
+            WindowSettings.Source = parentWindow;
             //Init Local Vars
             Size windowSize = new Size(790, 546);
             //Image Icons
@@ -55,8 +55,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             boxContent.PackStart(PagePad, true, true, 0);
 
             //ActionArea Buttons
-            _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);
-            _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
+            _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
+            _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
             ButtonClearCustomer = ActionAreaButton.FactoryGetDialogButtonType("touchButtonClearCustomer_DialogActionArea", GeneralUtils.GetResourceByName("global_button_label_payment_dialog_clear_client"), fileIconClearCustomer);
 
             _buttonPreview = ActionAreaButton.FactoryGetDialogButtonType("touchButtonPreview_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_preview"), fileActionPreview); /* IN009111 */
@@ -72,7 +72,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             };
 
             //Init Object
-            this.InitObject(this, pDialogFlags, fileDefaultWindowIcon, _windowTitle, windowSize, boxContent, actionAreaButtons);
+            this.Initialize(this, pDialogFlags, fileDefaultWindowIcon, WindowSettings.WindowTitle.Text, windowSize, boxContent, actionAreaButtons);
 
             //Hide After Init Show All
             ButtonClearCustomer.Visible = false;
@@ -90,7 +90,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             _listPages = new List<PagePadPage>();
             //Assign Page Title
-            _windowTitle = GetPageTitle(0);
+            WindowSettings.WindowTitle.Text = GetPageTitle(0);
 
             string icon1 = PathsSettings.ImagesFolderLocation + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_1_new_document.png";
             string icon2 = PathsSettings.ImagesFolderLocation + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_2_customer.png";
@@ -154,7 +154,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         private void _pagePad_PageChanged(object sender, EventArgs e)
         {
-            this.WindowTitle = GetPageTitle(PagePad.CurrentPageIndex);
+            this.WindowSettings.WindowTitle.Text = GetPageTitle(PagePad.CurrentPageIndex);
             PagePad.ActivePage.Validate();
         }
 
