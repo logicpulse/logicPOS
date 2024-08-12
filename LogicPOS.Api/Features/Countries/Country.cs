@@ -3,7 +3,7 @@ using System;
 
 namespace LogicPOS.Api.Features.Countries
 {
-    public class Country : Entity
+    public class Country : ApiEntity
     {
         public uint Order { get; set; }
         public string Code { get; set; }

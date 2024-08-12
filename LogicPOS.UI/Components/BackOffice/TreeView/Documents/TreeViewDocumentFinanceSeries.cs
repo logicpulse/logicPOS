@@ -44,12 +44,12 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             Type typeDialogClass = (pDialogType != null) ? pDialogType : typeof(DialogDocumentFinanceSeries);
 
             //Configure columnProperties
-            List<GridViewColumnProperty> columnProperties = new List<GridViewColumnProperty>
+            List<GridViewColumn> columnProperties = new List<GridViewColumn>
             {
-                new GridViewColumnProperty("FiscalYear") { Title = GeneralUtils.GetResourceByName("global_fiscal_year"), ChildName = "Designation", MinWidth = 160 },
-                new GridViewColumnProperty("DocumentType") { Title = GeneralUtils.GetResourceByName("global_documentfinanceseries_documenttype"), ChildName = "Designation", Expand = true },
-                new GridViewColumnProperty("Designation") { Title = GeneralUtils.GetResourceByName("global_designation"), Expand = true },
-                new GridViewColumnProperty("UpdatedAt") { Title = GeneralUtils.GetResourceByName("global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
+                new GridViewColumn("FiscalYear") { Title = GeneralUtils.GetResourceByName("global_fiscal_year"), ChildName = "Designation", MinWidth = 160 },
+                new GridViewColumn("DocumentType") { Title = GeneralUtils.GetResourceByName("global_documentfinanceseries_documenttype"), ChildName = "Designation", Expand = true },
+                new GridViewColumn("Designation") { Title = GeneralUtils.GetResourceByName("global_designation"), Expand = true },
+                new GridViewColumn("UpdatedAt") { Title = GeneralUtils.GetResourceByName("global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
             };
 
             //Configure Criteria/XPCollection/Model : Use Default Filter

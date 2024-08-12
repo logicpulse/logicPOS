@@ -48,7 +48,7 @@ namespace LogicPOS.UI.Components
         public TreeModelSort ListStoreModelFilterSort { get; set; }
         public T1 Entities { get; set; }
         public T2 Entity { get; set; }
-        public List<GridViewColumnProperty> Columns { get; set; }
+        public List<GridViewColumn> Columns { get; set; }
         public bool AllowNavigate { get; set; } = true;
 
 
@@ -125,14 +125,14 @@ namespace LogicPOS.UI.Components
           T2 pDefaultValue,
           GridViewMode pGenericTreeViewMode,
           GridViewNavigatorMode navigatorMode,
-          List<GridViewColumnProperty> pColumnProperties,
+          List<GridViewColumn> pColumnProperties,
           T1 pDataSource,
           Type pDialogType
         );
 
         public abstract void InitDataModel(
           T1 pDataSource,
-          List<GridViewColumnProperty> pColumnProperties,
+          List<GridViewColumn> pColumnProperties,
           GridViewMode pGenericTreeViewMode
         );
 
@@ -201,7 +201,7 @@ namespace LogicPOS.UI.Components
         {
             bool assignValue;
             CellRendererText currentCellRendererProperties;
-            GridViewColumnProperty currentTreeViewColumnProperty;
+            GridViewColumn currentTreeViewColumnProperty;
             PropertyInfo[] pisTreeViewColumnProperties;
             object pInfoValue;
             PropertyInfo piTreeViewColumn;
@@ -223,7 +223,7 @@ namespace LogicPOS.UI.Components
                 }
 
                 currentTreeViewColumnProperty = Columns[i];
-                pisTreeViewColumnProperties = typeof(GridViewColumnProperty).GetProperties(BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public);
+                pisTreeViewColumnProperties = typeof(GridViewColumn).GetProperties(BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public);
                 pInfoValue = new object();
 
                 foreach (PropertyInfo pInfo in pisTreeViewColumnProperties)
@@ -283,7 +283,7 @@ namespace LogicPOS.UI.Components
             log4net.ILog log = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
             PropertyInfo[] pisTreeViewColumnProperties;
-            GridViewColumnProperty currentTreeViewColumnProperty;
+            GridViewColumn currentTreeViewColumnProperty;
             object pInfoValue;
 
             object[] columnValues = new object[Columns.Count];
@@ -291,7 +291,7 @@ namespace LogicPOS.UI.Components
 
             for (int i = 0; i < Columns.Count; i++)
             {
-                pisTreeViewColumnProperties = typeof(GridViewColumnProperty).GetProperties(BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public);
+                pisTreeViewColumnProperties = typeof(GridViewColumn).GetProperties(BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public);
                 string currentFieldName;
                 foreach (PropertyInfo pInfo in pisTreeViewColumnProperties)
                 {
@@ -1032,7 +1032,7 @@ namespace LogicPOS.UI.Components
 
             //IMPORTANT NOTE: REQUIRED to Update TreeViewSearch.ListStoreModelFilter to the new REFERENCE, else we Lost REFERENCE, and we cant FILTER
             //IMPORTANT NOTE: in TreeViewSearch SETTER we ReAssign VisibleFunc again to the new REFERENCE ex.: _listStoreModelFilter.VisibleFunc = FilterTree;
-            Navigator.TreeViewSearch.ListStoreModelFilter = ListStoreModelFilter;
+            Navigator.TreeViewSearch.Filter = ListStoreModelFilter;
             //ReFilter after Assign to TreeViewSearch
             ListStoreModelFilter.Refilter();
 
@@ -1227,7 +1227,7 @@ namespace LogicPOS.UI.Components
             return RecordBeforeDelete != null;
         }
 
-        protected static int GetGenericTreeViewColumnPropertyIndex(List<GridViewColumnProperty> pColumnProperties, string pFieldName)
+        protected static int GetGenericTreeViewColumnPropertyIndex(List<GridViewColumn> pColumnProperties, string pFieldName)
         {
             //int i = 0;
             //foreach (GenericTreeViewColumnProperty item in pColumnProperties)

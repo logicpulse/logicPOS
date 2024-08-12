@@ -15,9 +15,9 @@ namespace LogicPOS.UI.Components
         }
 
 
-        public static ListStore InitModel(List<GridViewColumnProperty> pColumnProperties, GridViewMode pGenericTreeViewMode)
+        public static ListStore InitModel(List<GridViewColumn> pColumnProperties, GridViewMode pGenericTreeViewMode)
         {
-            List<GridViewColumnProperty> _columnProperties = pColumnProperties;
+            List<GridViewColumn> _columnProperties = pColumnProperties;
             GridViewMode _treeViewMode = pGenericTreeViewMode;
 
 
@@ -25,18 +25,18 @@ namespace LogicPOS.UI.Components
 
             if (addSystemColumns)
             {
-                _columnProperties.Insert(0, new GridViewColumnProperty("RowIndex") { Type = typeof(int), Visible = _showSystemColumns });
+                _columnProperties.Insert(0, new GridViewColumn("RowIndex") { Type = typeof(int), Visible = _showSystemColumns });
 
-                bool hasOid = _columnProperties.Contains(new GridViewColumnProperty("Oid"));
+                bool hasOid = _columnProperties.Contains(new GridViewColumn("Oid"));
 
                 switch (_treeViewMode)
                 {
                     case GridViewMode.Default:
-                        if (!hasOid) _columnProperties.Insert(1, new GridViewColumnProperty("Oid") { Visible = _showSystemColumns });
+                        if (!hasOid) _columnProperties.Insert(1, new GridViewColumn("Oid") { Visible = _showSystemColumns });
                         break;
                     case GridViewMode.CheckBox:
-                        _columnProperties.Insert(1, new GridViewColumnProperty("RowCheckBox") { Title = string.Empty, PropertyType = GridViewPropertyType.CheckBox, MinWidth = 50, MaxWidth = 50 });
-                        if (!hasOid) _columnProperties.Insert(2, new GridViewColumnProperty("Oid") { Visible = _showSystemColumns });
+                        _columnProperties.Insert(1, new GridViewColumn("RowCheckBox") { Title = string.Empty, PropertyType = GridViewPropertyType.CheckBox, MinWidth = 50, MaxWidth = 50 });
+                        if (!hasOid) _columnProperties.Insert(2, new GridViewColumn("Oid") { Visible = _showSystemColumns });
                         break;
                     default:
                         break;

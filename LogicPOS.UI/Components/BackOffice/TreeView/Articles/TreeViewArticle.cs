@@ -36,11 +36,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             int fontGenericTreeViewColumn = Convert.ToInt16(AppSettings.Instance.fontGenericTreeViewColumn);
 
             //Configure columnProperties
-            List<GridViewColumnProperty> columnProperties = new List<GridViewColumnProperty>
+            List<GridViewColumn> columnProperties = new List<GridViewColumn>
             {
-                new GridViewColumnProperty("Code") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_record_code"), MinWidth = 100 },
-                new GridViewColumnProperty("Designation") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_designation"), Expand = true },
-                new GridViewColumnProperty("TotalStock")
+                new GridViewColumn("Code") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_record_code"), MinWidth = 100 },
+                new GridViewColumn("Designation") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_designation"), Expand = true },
+                new GridViewColumn("TotalStock")
                 {
                     Query = "SELECT SUM(Quantity) as Result FROM fin_articlestock WHERE Article = '{0}' AND (Disabled = 0 OR Disabled is NULL) GROUP BY Article;",
                     Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_total_stock"),
@@ -55,12 +55,12 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     //}
                 },
                 //To Test XPGuidObject InitialValue (InitialValue = xArticleFamily) : ArticleFamily xArticleFamily = (ArticleFamily)XPOUtility.GetXPGuidObjectFromSession(XPOSettings.SessionBackoffice, typeof(ArticleFamily), new Guid("471d8c1e-45c1-4dbe-8526-349c20bd53ef"));
-                new GridViewColumnProperty("IsComposed") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_composite_article") },
+                new GridViewColumn("IsComposed") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_composite_article") },
                 //Artigos Compostos [IN:016522]
-                new GridViewColumnProperty("Family") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_article_family"), ChildName = "Designation" },
-                new GridViewColumnProperty("SubFamily") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_article_subfamily"), ChildName = "Designation" },
-                new GridViewColumnProperty("Type") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_article_type"), ChildName = "Designation" },
-                new GridViewColumnProperty("UpdatedAt") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
+                new GridViewColumn("Family") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_article_family"), ChildName = "Designation" },
+                new GridViewColumn("SubFamily") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_article_subfamily"), ChildName = "Designation" },
+                new GridViewColumn("Type") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_article_type"), ChildName = "Designation" },
+                new GridViewColumn("UpdatedAt") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
             };
 
             //Configure Criteria/XPCollection/Model

@@ -37,17 +37,17 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             int fontGenericTreeViewColumn = Convert.ToInt16(LogicPOS.Settings.AppSettings.Instance.fontGenericTreeViewColumn);
 
             //Configure columnProperties
-            List<GridViewColumnProperty> columnProperties = new List<GridViewColumnProperty>
+            List<GridViewColumn> columnProperties = new List<GridViewColumn>
             {
-                new GridViewColumnProperty("CreatedAt") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_document_date"), MinWidth = 140 }, /* IN009067 */
-                new GridViewColumnProperty("PaymentRefNo") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_document_number"), MinWidth = 120 }, /* IN009067 */
-                new GridViewColumnProperty("PaymentStatus") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_document_status"), MinWidth = 50, MaxWidth = 50 }
+                new GridViewColumn("CreatedAt") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_document_date"), MinWidth = 140 }, /* IN009067 */
+                new GridViewColumn("PaymentRefNo") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_document_number"), MinWidth = 120 }, /* IN009067 */
+                new GridViewColumn("PaymentStatus") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_document_status"), MinWidth = 50, MaxWidth = 50 }
             };
             //Shared Query
             /* IN009075 - removing call to view */
             // string query = "SELECT {0} as Result FROM view_documentfinancepayment WHERE fpaOid = '{1}' GROUP BY fpaOid,{0};";
             string queryForCustomerDetails = "SELECT {0} FROM erp_customer AS Customer LEFT JOIN fin_documentfinancepayment AS Payment ON (Payment.EntityOid = Customer.Oid) WHERE Payment.Oid = '{1}';";
-            columnProperties.Add(new GridViewColumnProperty("EntityName")
+            columnProperties.Add(new GridViewColumn("EntityName")
             {
                 Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_entity"),
                 MinWidth = 260,
@@ -56,14 +56,14 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 DecryptValue = true
             });
             /* IN009067 */
-            columnProperties.Add(new GridViewColumnProperty("EntityFiscalNumber")
+            columnProperties.Add(new GridViewColumn("EntityFiscalNumber")
             {
                 Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_fiscal_number"),
                 MinWidth = 100,
                 Query = string.Format(queryForCustomerDetails, "FiscalNumber", "{0}"), /* IN009075 */
                 DecryptValue = true
             });
-            columnProperties.Add(new GridViewColumnProperty("PaymentAmount")
+            columnProperties.Add(new GridViewColumn("PaymentAmount")
             {
                 Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_total"),
                 MinWidth = 100,
@@ -80,7 +80,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             /* IN009067 - TODO */
             string relatedDocumentsQuery = logicpos.DataLayer.GenerateRelatedDocumentsQuery(true);
-            columnProperties.Add(new GridViewColumnProperty("RelatedDocuments")
+            columnProperties.Add(new GridViewColumn("RelatedDocuments")
             {
                 Query = relatedDocumentsQuery,
                 Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_dialog_document_finance_column_related_doc"),

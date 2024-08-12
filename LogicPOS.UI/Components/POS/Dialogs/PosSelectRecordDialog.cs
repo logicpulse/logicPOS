@@ -174,7 +174,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //If button more clicked
             if (GenericTreeView.Navigator.TreeViewSearch.Button_MoreResponse())
             {
-                GenericTreeView.Navigator.TreeViewSearch.flagMore = false;
+                GenericTreeView.Navigator.TreeViewSearch.ShowMoreButton = false;
                 GenericTreeView.Navigator.TreeViewSearch.Button_FilterResponse();
                 GenericTreeView.CurrentPageNumber++;
                 Respond((int)DialogResponseType.LoadMore);
@@ -183,7 +183,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //If filter more clicked
             if (GenericTreeView.Navigator.TreeViewSearch.Button_FilterResponse())
             {
-                GenericTreeView.Navigator.TreeViewSearch.flagFilter = false;
+                GenericTreeView.Navigator.TreeViewSearch.ShowFilterButton = false;
                 GenericTreeView.Navigator.TreeViewSearch.Button_FilterResponse();
                 Respond((int)DialogResponseType.Filter);
             }

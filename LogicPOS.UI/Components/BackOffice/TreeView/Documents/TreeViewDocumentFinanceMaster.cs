@@ -39,27 +39,27 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             int fontGenericTreeViewColumn = Convert.ToInt16(AppSettings.Instance.fontGenericTreeViewColumn);
 
             //Configure columnProperties
-            List<GridViewColumnProperty> columnProperties = new List<GridViewColumnProperty>
+            List<GridViewColumn> columnProperties = new List<GridViewColumn>
             {
-                new GridViewColumnProperty("Date") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_document_date"), MinWidth = 140 },
-                new GridViewColumnProperty("DocumentNumber") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_document_number"), MinWidth = 120 }, /* IN009067 */
+                new GridViewColumn("Date") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_document_date"), MinWidth = 140 },
+                new GridViewColumn("DocumentNumber") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_document_number"), MinWidth = 120 }, /* IN009067 */
                 //#if (DEBUG)
-                new GridViewColumnProperty("DocumentStatusStatus") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_document_status"), MinWidth = 50, MaxWidth = 50 },
+                new GridViewColumn("DocumentStatusStatus") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_document_status"), MinWidth = 50, MaxWidth = 50 },
                 //#endif
-                new GridViewColumnProperty("EntityName")
+                new GridViewColumn("EntityName")
                 {
                     Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_entity"),
                     MinWidth = 260,
                     MaxWidth = 260,
                     FormatProvider = new DecryptFormatter() /* IN009075 - FormatterDecrypt() created */
                 }, /* IN009067 */
-                new GridViewColumnProperty("EntityFiscalNumber")
+                new GridViewColumn("EntityFiscalNumber")
                 {
                     Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_fiscal_number"),
                     MinWidth = 100,
                     FormatProvider = new DecryptFormatter() /* IN009075 - FormatterDecrypt() created */
                 }, /* IN009067 */
-                new GridViewColumnProperty("TotalFinal")
+                new GridViewColumn("TotalFinal")
                 { /* IN009166 */
                     Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_total_final"),
                     MinWidth = 100,
@@ -117,7 +117,7 @@ GROUP BY
 
 ";
             */
-            columnProperties.Add(new GridViewColumnProperty("TotalOfCredit")
+            columnProperties.Add(new GridViewColumn("TotalOfCredit")
             {
                 Query = queryForTotalOfCredit,
                 Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_document_finance_column_total_credit_rc_nc_based"),
@@ -261,7 +261,7 @@ FROM
 	fin_documentfinancemaster DFM
 WHERE DFM.Oid =  '{stringFormatIndexZero}';
 ";
-            columnProperties.Add(new GridViewColumnProperty("TotalDebit")
+            columnProperties.Add(new GridViewColumn("TotalDebit")
             {
                 //This Query Exists 3 Locations, Find it and change in all Locations - Required "GROUP BY fmaOid,fmaTotalFinal" to work with SQLServer
                 Query = queryForTotalDebit,
@@ -280,7 +280,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
 
             /* IN009067 - Adding RelatedDocuments column */
             string relatedDocumentsQuery = logicpos.DataLayer.GenerateRelatedDocumentsQuery();
-            columnProperties.Add(new GridViewColumnProperty("RelatedDocuments")
+            columnProperties.Add(new GridViewColumn("RelatedDocuments")
             {
                 Query = relatedDocumentsQuery,
                 Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_document_finance_column_related_doc"),

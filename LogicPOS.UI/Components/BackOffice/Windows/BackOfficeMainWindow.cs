@@ -15,6 +15,7 @@ using LogicPOS.Domain.Enums;
 using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Accordions;
+using LogicPOS.UI.Components.Pages;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -58,7 +59,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
 
         private void ShowStartPage()
         {
-            _currentPage = new DashBoard(this);
+            _currentPage = new DashBoardPage(this);
             _panelContent.PackEnd(_currentPage);
         }
 
@@ -91,7 +92,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
 
         private void ButtonDashBoard_Click(object sender, EventArgs args)
         {
-            _btnDashboard.Page = new DashBoard(this);
+            _btnDashboard.Page = new DashBoardPage(this);
             Button_Click(_btnDashboard, null);
         }
 
@@ -175,7 +176,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
             Dictionary<string, AccordionNode> _accordionChildUsers = new Dictionary<string, AccordionNode>
                 {
                     { "UserDetail", new AccordionNode(GeneralUtils.GetResourceByName("global_users")) { Content = Utils.GetGenericTreeViewXPO<TreeViewUser>(this) } },
-                    { "UserPermissionProfile", new AccordionNode(GeneralUtils.GetResourceByName("global_user_permissions")) { Content = new ProfilePermissionsPage(this) } },
+                    { "UserPermissionProfile", new AccordionNode(GeneralUtils.GetResourceByName("global_user_permissions")) { Content = new PermissionsPage(this) } },
                     { "UserCommissionGroup", new AccordionNode(GeneralUtils.GetResourceByName("global_user_commission_groups")) { Content = Utils.GetGenericTreeViewXPO<TreeViewUserCommissionGroup>(this) } }
                 };
 

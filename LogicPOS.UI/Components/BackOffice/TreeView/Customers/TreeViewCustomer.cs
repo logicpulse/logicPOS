@@ -32,13 +32,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             Type typeDialogClass = (pDialogType != null) ? pDialogType : typeof(DialogCustomer);
 
             //Configure columnProperties
-            List<GridViewColumnProperty> columnProperties = new List<GridViewColumnProperty>
+            List<GridViewColumn> columnProperties = new List<GridViewColumn>
             {
-                new GridViewColumnProperty("Code") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_record_code"), MinWidth = 100 },
-                new GridViewColumnProperty("Name") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_name"), MinWidth = 200, Expand = true, DecryptValue = true },
-                new GridViewColumnProperty("FiscalNumber") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_fiscal_number"), MinWidth = 150, DecryptValue = true },
-                new GridViewColumnProperty("CardNumber") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_card_number"), MinWidth = 150 },
-                new GridViewColumnProperty("UpdatedAt") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
+                new GridViewColumn("Code") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_record_code"), MinWidth = 100 },
+                new GridViewColumn("Name") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_name"), MinWidth = 200, Expand = true, DecryptValue = true },
+                new GridViewColumn("FiscalNumber") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_fiscal_number"), MinWidth = 150, DecryptValue = true },
+                new GridViewColumn("CardNumber") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_card_number"), MinWidth = 150 },
+                new GridViewColumn("UpdatedAt") { Title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
             };
 
             //Configure Criteria/XPCollection/Model

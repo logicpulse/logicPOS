@@ -32,12 +32,12 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             Type typeDialogClass = (pDialogType != null) ? pDialogType : null;
 
             //Configure columnProperties
-            List<GridViewColumnProperty> columnProperties = new List<GridViewColumnProperty>
+            List<GridViewColumn> columnProperties = new List<GridViewColumn>
             {
-                new GridViewColumnProperty("TicketId") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_ticket_number"), MinWidth = 50 },
-                new GridViewColumnProperty("DateStart") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_date"), MinWidth = 100 },
-                new GridViewColumnProperty("UpdatedBy") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_user_name"), ChildName = "Name", MinWidth = 100 },
-                new GridViewColumnProperty("UpdatedWhere") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_terminal_name"), ChildName = "Designation", MinWidth = 100 }
+                new GridViewColumn("TicketId") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_ticket_number"), MinWidth = 50 },
+                new GridViewColumn("DateStart") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_date"), MinWidth = 100 },
+                new GridViewColumn("UpdatedBy") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_user_name"), ChildName = "Name", MinWidth = 100 },
+                new GridViewColumn("UpdatedWhere") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_terminal_name"), ChildName = "Designation", MinWidth = 100 }
             };
 
             //Sort Order

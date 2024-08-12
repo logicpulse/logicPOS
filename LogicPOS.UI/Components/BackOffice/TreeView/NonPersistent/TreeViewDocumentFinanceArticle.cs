@@ -38,12 +38,12 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             int decimalsColumnWidth = 100;
 
             //Configure columnProperties
-            List<GridViewColumnProperty> columnProperties = new List<GridViewColumnProperty>
+            List<GridViewColumn> columnProperties = new List<GridViewColumn>
             {
                 /*00*/
-                new GridViewColumnProperty("Oid") { Type = typeof(Guid), Visible = false },
+                new GridViewColumn("Oid") { Type = typeof(Guid), Visible = false },
                 /*01*/
-                new GridViewColumnProperty("Article.Code")
+                new GridViewColumn("Article.Code")
                 {
                     Type = typeof(fin_article),
                     Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_record_code"),
@@ -54,9 +54,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     CellRenderer = new CellRendererText() { Alignment = Pango.Alignment.Right, Xalign = 1.0F, ForegroundGdk = new Gdk.Color(255, 0, 0) }
                 },
                 /*02*/
-                new GridViewColumnProperty("Article.Designation") { Type = typeof(fin_article), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_designation"), ChildName = "Designation", MinWidth = 170, MaxWidth = 170 },
+                new GridViewColumn("Article.Designation") { Type = typeof(fin_article), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_designation"), ChildName = "Designation", MinWidth = 170, MaxWidth = 170 },
                 /*03*/
-                new GridViewColumnProperty("Quantity")
+                new GridViewColumn("Quantity")
                 {
                     Type = typeof(decimal),
                     Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_quantity_acronym"),
@@ -67,15 +67,15 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     CellRenderer = new CellRendererText() { Alignment = Pango.Alignment.Right, Xalign = 1.0F, }
                 },
                 /*04: Used to store DefaultCurrency price, Set visible = true to show it, Default is Hidden */
-                new GridViewColumnProperty("Price") { Type = typeof(decimal), Title = string.Format("{0}{1}", CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_price"), "*"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency, Visible = false },
+                new GridViewColumn("Price") { Type = typeof(decimal), Title = string.Format("{0}{1}", CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_price"), "*"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency, Visible = false },
                 /*05: Visible Display Value, In Current Selected Currency*/
-                new GridViewColumnProperty("PriceDisplay") { Type = typeof(decimal), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_price"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
+                new GridViewColumn("PriceDisplay") { Type = typeof(decimal), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_price"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
                 /*06 IN009206*/
-                new GridViewColumnProperty("Discount") { Type = typeof(decimal), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_discount"), MinWidth = 60, MaxWidth = 60, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
+                new GridViewColumn("Discount") { Type = typeof(decimal), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_discount"), MinWidth = 60, MaxWidth = 60, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
                 /*07 IN009206*/
-                new GridViewColumnProperty("VatExemptionReason.Acronym") { Type = typeof(fin_configurationvatexemptionreason), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_vat_exemption_reason_acronym"), ChildName = "Acronym", MinWidth = 60, MaxWidth = 60, Visible = false },
+                new GridViewColumn("VatExemptionReason.Acronym") { Type = typeof(fin_configurationvatexemptionreason), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_vat_exemption_reason_acronym"), ChildName = "Acronym", MinWidth = 60, MaxWidth = 60, Visible = false },
                 /*08*/
-                new GridViewColumnProperty("ConfigurationVatRate.Value")
+                new GridViewColumn("ConfigurationVatRate.Value")
                 {
                     Type = typeof(fin_configurationvatrate),
                     ChildName = "Value",
@@ -88,28 +88,28 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     CellRenderer = new CellRendererText() { Alignment = Pango.Alignment.Right, Xalign = 1.0F, }
                 },
                 /*09*/
-                new GridViewColumnProperty("TotalNet") { Type = typeof(decimal), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_total_article_tab"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
+                new GridViewColumn("TotalNet") { Type = typeof(decimal), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_total_article_tab"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
                 /*10*/ /* IN009206 */
-                new GridViewColumnProperty("TotalFinal") { Type = typeof(decimal), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_total_per_item_vat"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
+                new GridViewColumn("TotalFinal") { Type = typeof(decimal), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_total_per_item_vat"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
                 //Other Invisible Fields
                 /*11*/
-                new GridViewColumnProperty("PriceFinal") { Type = typeof(decimal), Visible = false },
+                new GridViewColumn("PriceFinal") { Type = typeof(decimal), Visible = false },
                 /*12*/
-                new GridViewColumnProperty("PriceType") { Type = typeof(PriceType), Visible = false },
+                new GridViewColumn("PriceType") { Type = typeof(PriceType), Visible = false },
                 /*13*/
-                new GridViewColumnProperty("Token1") { Type = typeof(string), Visible = false },  //MediaNova:ClassifiedID
+                new GridViewColumn("Token1") { Type = typeof(string), Visible = false },  //MediaNova:ClassifiedID
                 /*14*/
-                new GridViewColumnProperty("Token2") { Type = typeof(string), Visible = false },  //MediaNova:FriendlyID
+                new GridViewColumn("Token2") { Type = typeof(string), Visible = false },  //MediaNova:FriendlyID
                 /*15*/
-                new GridViewColumnProperty("Notes") { Type = typeof(string), Visible = false },
+                new GridViewColumn("Notes") { Type = typeof(string), Visible = false },
                 /*16*/
-                new GridViewColumnProperty("Article.Family") { Type = typeof(fin_articlefamily), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_family"), ChildName = "Designation", MinWidth = 60, MaxWidth = 60, Visible = false },
+                new GridViewColumn("Article.Family") { Type = typeof(fin_articlefamily), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_family"), ChildName = "Designation", MinWidth = 60, MaxWidth = 60, Visible = false },
                 /*17*/
-                new GridViewColumnProperty("Article.Subfamily") { Type = typeof(fin_articlesubfamily), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_subfamily"), ChildName = "Designation", MinWidth = 60, MaxWidth = 60, Visible = false },
+                new GridViewColumn("Article.Subfamily") { Type = typeof(fin_articlesubfamily), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_subfamily"), ChildName = "Designation", MinWidth = 60, MaxWidth = 60, Visible = false },
                 /*18*/
-                new GridViewColumnProperty("SerialNumber") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_serialnumber"), Type = typeof(string), Visible = true },
+                new GridViewColumn("SerialNumber") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_serialnumber"), Type = typeof(string), Visible = true },
                 /*19*/
-                new GridViewColumnProperty("Warehouse") { Type = typeof(string), Visible = false }
+                new GridViewColumn("Warehouse") { Type = typeof(string), Visible = false }
             };
             //init DataTable
             DataTable dataTable = GetDataTable(columnProperties, false);
@@ -126,10 +126,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             );
         }
 
-        private DataTable GetDataTable(List<GridViewColumnProperty> pColumnProperties, bool pGetArticlesFromCurrentOrderMain)
+        private DataTable GetDataTable(List<GridViewColumn> pColumnProperties, bool pGetArticlesFromCurrentOrderMain)
         {
             //Get a New DataTable Scheme Ready to Fill with Rows
-            DataTable resultDataTable = GridViewColumnProperty.ColumnPropertiesToDataTableScheme(pColumnProperties);
+            DataTable resultDataTable = GridViewColumn.ColumnPropertiesToDataTableScheme(pColumnProperties);
 
             //Usefull to Tests
             if (pGetArticlesFromCurrentOrderMain)

@@ -38,7 +38,7 @@ namespace LogicPOS.UI.Components
           Entity pXpoDefaultValue,
           GridViewMode pGenericTreeViewMode,
           GridViewNavigatorMode navigatorMode,
-          List<GridViewColumnProperty> pColumnProperties,
+          List<GridViewColumn> pColumnProperties,
           XPCollection pXpoCollection,
           Type pDialogType
         )
@@ -97,10 +97,10 @@ namespace LogicPOS.UI.Components
             SetInitialCursorPosition();
         }
 
-        public override void InitDataModel(XPCollection pDataSource, List<GridViewColumnProperty> pColumnProperties, GridViewMode pGenericTreeViewMode)
+        public override void InitDataModel(XPCollection pDataSource, List<GridViewColumn> pColumnProperties, GridViewMode pGenericTreeViewMode)
         {
             XPCollection _XpCollection = pDataSource;
-            List<GridViewColumnProperty> _columnProperties = pColumnProperties;
+            List<GridViewColumn> _columnProperties = pColumnProperties;
 
             ListStore model = GridViewModel.InitModel(_columnProperties, pGenericTreeViewMode);
 
@@ -324,7 +324,7 @@ namespace LogicPOS.UI.Components
         {
             Entity newXPGuidObject = (Entity)Activator.CreateInstance(XPObjectType);
 
-            foreach (GridViewColumnProperty column in Columns)
+            foreach (GridViewColumn column in Columns)
             {
                 //if (_debug) _logger.Debug(string.Format("column.Name: [{0}], column.Type: [{1}]", column.Name, column.Type));
                 if (column.InitialValue != null)

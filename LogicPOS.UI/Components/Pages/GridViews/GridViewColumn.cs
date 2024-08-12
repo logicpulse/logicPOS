@@ -6,7 +6,7 @@ using System.Data;
 
 namespace LogicPOS.UI.Components
 {
-    internal class GridViewColumnProperty : IEquatable<GridViewColumnProperty>, IComparable<GridViewColumnProperty>
+    internal class GridViewColumn : IEquatable<GridViewColumn>, IComparable<GridViewColumn>
     {
         private readonly string _fontGenericTreeViewColumnTitle = Settings.AppSettings.Instance.fontGenericTreeViewColumnTitle;
         private readonly string _fontGenericTreeViewColumn = Settings.AppSettings.Instance.fontGenericTreeViewColumn;
@@ -36,8 +36,8 @@ namespace LogicPOS.UI.Components
         public bool DecryptValue { get; set; }
         public bool ResourceString { get; set; }
 
-        public GridViewColumnProperty(string fieldName,
-                                      GridViewColumnProperty defaultColumnProperty = null)
+        public GridViewColumn(string fieldName,
+                                      GridViewColumn defaultColumnProperty = null)
         {
             Name = fieldName;
             PropertyType = GridViewPropertyType.Text;
@@ -66,7 +66,7 @@ namespace LogicPOS.UI.Components
             InitDefaultPropertiesByFieldName(fieldName);
         }
 
-        public void InitDefaultColumnProperties(GridViewColumnProperty pDefaultProperties)
+        public void InitDefaultColumnProperties(GridViewColumn pDefaultProperties)
         {
             if (pDefaultProperties != null)
             {
@@ -130,7 +130,7 @@ namespace LogicPOS.UI.Components
             }
         }
 
-        public bool Equals(GridViewColumnProperty other)
+        public bool Equals(GridViewColumn other)
         {
             if (Name == other.Name)
             {
@@ -142,18 +142,18 @@ namespace LogicPOS.UI.Components
             }
         }
 
-        public int CompareTo(GridViewColumnProperty other)
+        public int CompareTo(GridViewColumn other)
         {
             if (other == null) return 1;
             return Name.CompareTo(other.Name);
         }
 
 
-        public static DataTable ColumnPropertiesToDataTableScheme(List<GridViewColumnProperty> pColumnProperties)
+        public static DataTable ColumnPropertiesToDataTableScheme(List<GridViewColumn> pColumnProperties)
         {
             DataTable resultDataTable = new DataTable();
 
-            foreach (GridViewColumnProperty column in pColumnProperties)
+            foreach (GridViewColumn column in pColumnProperties)
             {
                 Type dataTableColumnType = column.Type != null ? column.Type : typeof(string);
                 resultDataTable.Columns.Add(column.Name, dataTableColumnType);

@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace LogicPOS.Api.Features.Common
 {
-    public abstract class Entity
+    public abstract class ApiEntity
     {
-        public Guid Id { get; set; } 
+        public Guid Id { get; set; }
         public string Notes { get; set; }
         public DateTime CreatedAt { get; set; }
         public Guid CreatedBy { get; set; }
@@ -15,6 +13,6 @@ namespace LogicPOS.Api.Features.Common
         public Guid LastUpdatedBy { get; set; }
         public Guid LastUpdatedWhere { get; set; }
         public bool IsDeleted { get; set; }
-        public DateTime DeletedAt { get; set; }
+        public Nullable<DateTime> DeletedAt { get; set; }
     }
 }

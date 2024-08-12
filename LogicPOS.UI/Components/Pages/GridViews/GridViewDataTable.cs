@@ -25,7 +25,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
           DataRow pDefaultValue,
           GridViewMode pGenericTreeViewMode,
           GridViewNavigatorMode navigatorMode,
-          List<GridViewColumnProperty> pColumnProperties,
+          List<GridViewColumn> pColumnProperties,
           DataTable pDataSource,
           Type pDialogType
         )
@@ -57,14 +57,14 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             SetInitialCursorPosition();
         }
 
-        public override void InitDataModel(DataTable pDataSource, List<GridViewColumnProperty> pColumnProperties, GridViewMode pGenericTreeViewMode)
+        public override void InitDataModel(DataTable pDataSource, List<GridViewColumn> pColumnProperties, GridViewMode pGenericTreeViewMode)
         {
             //Log4Net
             log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
             //Parameters
             DataTable dataTable = pDataSource;
-            List<GridViewColumnProperty> _columnProperties = pColumnProperties;
+            List<GridViewColumn> _columnProperties = pColumnProperties;
             GridViewMode _treeViewMode = pGenericTreeViewMode;
 
             //Initialize Model and Column Properties
@@ -186,11 +186,11 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 
         public override DataRow DataSourceRowGetNewRecord()
         {
-            DataTable dataTableScheme = GridViewColumnProperty.ColumnPropertiesToDataTableScheme(Columns);
+            DataTable dataTableScheme = GridViewColumn.ColumnPropertiesToDataTableScheme(Columns);
 
             object[] rowArray = new object[Columns.Count];
             int i = -1;
-            foreach (GridViewColumnProperty column in Columns)
+            foreach (GridViewColumn column in Columns)
             {
                 i++;
                 object defaultFieldValue;

@@ -9,7 +9,6 @@ using LogicPOS.Domain.Entities;
 using LogicPOS.Settings;
 using LogicPOS.Shared.CustomDocument;
 using LogicPOS.UI.Buttons;
-using LogicPOS.UI.Components;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using Medsphere.Widgets;
@@ -22,7 +21,7 @@ using Color = System.Drawing.Color;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    internal class DashBoard : Box
+    internal class DashBoardPage : Box
     {
         private readonly Window _parentWindow;
         private readonly IconButtonWithText botao1;
@@ -47,7 +46,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private readonly string simpleInvoiceOid = DocumentSettings.SimplifiedInvoiceId.ToString();
         private readonly string invoiceAndPaymentOid = DocumentSettings.InvoiceAndPaymentId.ToString();
 
-     
+
         //Cores usadas nos gráficos
         public PlotColor[] plotColors = new PlotColor[] {
             PlotColor.Red,
@@ -91,7 +90,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         //private Frame frame;
         private readonly Label label;
 
-        public DashBoard(Window parentWindow)
+        public DashBoardPage(Window parentWindow)
         {
             //Config
             int fontGenericTreeViewColumn = Convert.ToInt16(AppSettings.Instance.fontGenericTreeViewColumn);
@@ -445,7 +444,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             ShowAll();
         }
-       
+
         private Widget drawSalesGraphic(DateTime date, bool cleanGraph)
         {
             if (cleanGraph) newGraph.Clear();

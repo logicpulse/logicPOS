@@ -9,11 +9,11 @@ namespace LogicPOS.UI.Components.Pages
 {
     internal class PageNavigator : Box
     {
-        private readonly Window _sourceWindow;
+        private readonly Window _parentWindow;
         private readonly Page _page;
-        private readonly GridViewNavigatorMode _navigatorMode;
+        private readonly GridViewNavigatorMode _mode;
 
-        public HBox ExtraSlot { get; set; }
+        public HBox ExtraButtonSpace { get; set; }
 
         public IconButtonWithText ButtonFirstPage { get; set; }
 
@@ -48,20 +48,18 @@ namespace LogicPOS.UI.Components.Pages
         public PageNavigator(
             Window parent,
             Page page,
-            GridViewNavigatorMode navigatorMode)
+            GridViewNavigatorMode mode)
         {
-            _sourceWindow = parent;
+            _parentWindow = parent;
             _page = page;
-            _navigatorMode = navigatorMode;
+            _mode = mode;
 
             CurrentPage = 1;
-
             this.HeightRequest = 60;
-
-            InitNavigator();
+            Initialize();
         }
 
-        private void InitNavigator()
+        private void Initialize()
         {
             HBox hboxNavigator = new HBox(false, 0);
             HBox hboxNavigatorButtons = new HBox(true, 0);
@@ -71,32 +69,16 @@ namespace LogicPOS.UI.Components.Pages
             if (name == "logicpos.Classes.Gui.Gtk.BackOffice.TreeViewDocumentFinanceMaster" || name == "logicpos.Classes.Gui.Gtk.BackOffice.TreeViewDocumentFinancePayment") { buttonMoreFilterVisible = true; }
 
 
-            TreeViewSearch = new GridViewSearchBox(_sourceWindow,
-                                                   _page.TreeView,
-                                                   _page.ListStoreModelFilter,
-                                                   _page.Columns,
+            TreeViewSearch = new GridViewSearchBox(_parentWindow,
+                                                   _page.GridView,
+                                                   _page.GridViewSettings.Filter,
+                                                   null, //tchial0
                                                    buttonMoreFilterVisible);
+            InitializeButtons();
 
-            ButtonPrevRecord = GetNewButton("touchButtonPrev_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_record_prev"), @"Icons/icon_pos_nav_prev.png");
-            ButtonNextRecord = GetNewButton("touchButtonNext_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_record_next"), @"Icons/icon_pos_nav_next.png");
-            ButtonInsert = GetNewButton("touchButtonInsert_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_insert"), @"Icons/icon_pos_nav_new.png");
-            ButtonView = GetNewButton("touchButtonView_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_view"), @"Icons/icon_pos_nav_view.png");
-            ButtonUpdate = GetNewButton("touchButtonUpdate_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_update"), @"Icons/icon_pos_nav_update.png");
-            ButtonDelete = GetNewButton("touchButtonDelete_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_delete"), @"Icons/icon_pos_nav_delete.png");
-            ButtonRefresh = GetNewButton("touchButtonRefresh_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_refresh"), @"Icons/icon_pos_nav_refresh.png");
-
-            ButtonPrevRecord.Clicked += delegate { _page.PrevRecord(); };
-            ButtonNextRecord.Clicked += delegate { _page.NextRecord(); };
-
-            ButtonInsert.Clicked += delegate { _page.Insert(); };
-            ButtonView.Clicked += delegate { _page.Update(DialogMode.View); };
-            ButtonUpdate.Clicked += delegate { _page.Update(); };
-            ButtonDelete.Clicked += delegate { _page.Delete(); };
-            ButtonRefresh.Clicked += delegate { _page.Refresh(); };
-
-            if (_navigatorMode == GridViewNavigatorMode.Default)
+            if (_mode == GridViewNavigatorMode.Default)
             {
-                ExtraSlot = new HBox(false, 0);
+                ExtraButtonSpace = new HBox(false, 0);
 
                 hboxNavigatorButtons.PackStart(ButtonPrevRecord, false, false, 0);
                 hboxNavigatorButtons.PackStart(ButtonNextRecord, false, false, 0);
@@ -108,37 +90,55 @@ namespace LogicPOS.UI.Components.Pages
 
                 hboxNavigator.PackStart(TreeViewSearch, false, false, 0);
 
-                hboxNavigator.PackStart(ExtraSlot, true, true, 0);
+                hboxNavigator.PackStart(ExtraButtonSpace, true, true, 0);
                 hboxNavigator.PackStart(hboxNavigatorButtons, false, false, 0);
                 this.PackStart(hboxNavigator);
             }
         }
 
-        public IconButtonWithText GetNewButton(string pId, string pLabel, string pIcon)
+        private void InitializeButtons()
         {
-            IconButtonWithText result = null;
+            ButtonPrevRecord = CreateButton("touchButtonPrev_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_record_prev"), @"Icons/icon_pos_nav_prev.png");
+            ButtonNextRecord = CreateButton("touchButtonNext_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_record_next"), @"Icons/icon_pos_nav_next.png");
+            ButtonInsert = CreateButton("touchButtonInsert_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_insert"), @"Icons/icon_pos_nav_new.png");
+            ButtonView = CreateButton("touchButtonView_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_view"), @"Icons/icon_pos_nav_view.png");
+            ButtonUpdate = CreateButton("touchButtonUpdate_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_update"), @"Icons/icon_pos_nav_update.png");
+            ButtonDelete = CreateButton("touchButtonDelete_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_delete"), @"Icons/icon_pos_nav_delete.png");
+            ButtonRefresh = CreateButton("touchButtonRefresh_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_refresh"), @"Icons/icon_pos_nav_refresh.png");
 
-            string fileIcon = PathsSettings.ImagesFolderLocation + pIcon;
+            ButtonPrevRecord.Clicked += delegate { _page.Previous(); };
+            ButtonNextRecord.Clicked += delegate { _page.Next(); };
+
+            ButtonInsert.Clicked += delegate { _page.Insert(); };
+            ButtonView.Clicked += delegate { _page.Update(DialogMode.View); };
+            ButtonUpdate.Clicked += delegate { _page.Update(); };
+            ButtonDelete.Clicked += delegate { _page.Delete(); };
+            ButtonRefresh.Clicked += delegate { _page.Refresh(); };
+        }
+
+        public IconButtonWithText CreateButton(string name,
+                                               string label,
+                                               string icon)
+        {
+            string fileIcon = PathsSettings.ImagesFolderLocation + icon;
             string fontBaseDialogActionAreaButton = AppSettings.Instance.fontBaseDialogActionAreaButton;
             Color colorBaseDialogActionAreaButtonBackground = Color.Transparent;
             Color colorBaseDialogActionAreaButtonFont = AppSettings.Instance.colorBaseDialogActionAreaButtonFont;
             Size sizeBaseDialogActionAreaBackOfficeNavigatorButton = AppSettings.Instance.sizeBaseDialogActionAreaBackOfficeNavigatorButton;
             Size sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon = AppSettings.Instance.sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon;
 
-            result = new IconButtonWithText(
+            return new IconButtonWithText(
                 new ButtonSettings
                 {
-                    Name = pId,
+                    Name = name,
                     BackgroundColor = colorBaseDialogActionAreaButtonBackground,
-                    Text = pLabel,
+                    Text = label,
                     Font = fontBaseDialogActionAreaButton,
                     FontColor = colorBaseDialogActionAreaButtonFont,
                     Icon = fileIcon,
                     IconSize = sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon,
                     ButtonSize = sizeBaseDialogActionAreaBackOfficeNavigatorButton
                 });
-
-            return (result);
         }
 
         public void UpdateButtons(TreeView gridView)
@@ -185,7 +185,7 @@ namespace LogicPOS.UI.Components.Pages
             };
 
             //View/Update/Delete
-            if (gridView.Model.IterNChildren() > 0 && _page.Entity != null)
+            if (gridView.Model.IterNChildren() > 0 && _page.SelectedEntity != null)
             {
                 if (ButtonView != null && !ButtonView.Sensitive && _page.AllowRecordView) ButtonView.Sensitive = true;
                 if (ButtonUpdate != null && !ButtonUpdate.Sensitive && _page.AllowRecordUpdate) ButtonUpdate.Sensitive = true;

@@ -35,33 +35,33 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             int fontGenericTreeViewColumn = Convert.ToInt16(LogicPOS.Settings.AppSettings.Instance.fontGenericTreeViewColumn);
 
             //Configure columnProperties
-            List<GridViewColumnProperty> columnProperties = new List<GridViewColumnProperty>
+            List<GridViewColumn> columnProperties = new List<GridViewColumn>
             {
-                new GridViewColumnProperty("Article") { ChildName = "Designation", Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_designation"), Expand = true, MinWidth = 200 },
-                new GridViewColumnProperty("SerialNumber") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_serial_number"), Expand = true, MinWidth = 200 },
-                new GridViewColumnProperty("IsSold") { Title = "Vendido", Expand = false },
-                new GridViewColumnProperty("Status") { Title = "Estado", Expand = true, MinWidth = 150 },
-                new GridViewColumnProperty("Article") { ChildName = "IsComposed", Title = "Artigo Composto", Expand = false },
-                new GridViewColumnProperty("StockMovimentIn") { ChildName = "Date", Title = "Data de Compra", Expand = true, FormatProvider = new DateFormatter() },
-                new GridViewColumnProperty("StockMovimentIn")
+                new GridViewColumn("Article") { ChildName = "Designation", Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_designation"), Expand = true, MinWidth = 200 },
+                new GridViewColumn("SerialNumber") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_serial_number"), Expand = true, MinWidth = 200 },
+                new GridViewColumn("IsSold") { Title = "Vendido", Expand = false },
+                new GridViewColumn("Status") { Title = "Estado", Expand = true, MinWidth = 150 },
+                new GridViewColumn("Article") { ChildName = "IsComposed", Title = "Artigo Composto", Expand = false },
+                new GridViewColumn("StockMovimentIn") { ChildName = "Date", Title = "Data de Compra", Expand = true, FormatProvider = new DateFormatter() },
+                new GridViewColumn("StockMovimentIn")
                 {
                     Query = "SELECT Name as Result FROM erp_customer WHERE Oid = '{0}';",
                     Title = "Fornecedor",
                     DecryptValue = true,
                     MinWidth = 100
                 },
-                new GridViewColumnProperty("StockMovimentIn") { ChildName = "PurchasePrice", Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_purchase_price"), Expand = false },
-                new GridViewColumnProperty("StockMovimentIn") { ChildName = "DocumentNumber", Title = "Documento Origem", Expand = true },
-                new GridViewColumnProperty("StockMovimentOut")
+                new GridViewColumn("StockMovimentIn") { ChildName = "PurchasePrice", Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_purchase_price"), Expand = false },
+                new GridViewColumn("StockMovimentIn") { ChildName = "DocumentNumber", Title = "Documento Origem", Expand = true },
+                new GridViewColumn("StockMovimentOut")
                 {
                     Query = "SELECT DocumentNumber as Result FROM fin_documentfinancemaster WHERE Oid = '{0}';",
                     Title = "Documento Venda",
                     DecryptValue = false,
                     MinWidth = 100
                 },
-                new GridViewColumnProperty("ArticleWarehouse") { Query = "SELECT Designation as Result FROM fin_warehouse WHERE Oid = (SELECT Warehouse FROM fin_warehouselocation WHERE Oid = '{0}');", ChildName = "Warehouse", Title = "Armazem", Expand = true },
-                new GridViewColumnProperty("ArticleWarehouse") { Query = "SELECT Designation as Result FROM fin_warehouselocation WHERE Oid = '{0}';", ChildName = "Location", Title = "Localização", Expand = true },
-                new GridViewColumnProperty("UpdatedAt") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
+                new GridViewColumn("ArticleWarehouse") { Query = "SELECT Designation as Result FROM fin_warehouse WHERE Oid = (SELECT Warehouse FROM fin_warehouselocation WHERE Oid = '{0}');", ChildName = "Warehouse", Title = "Armazem", Expand = true },
+                new GridViewColumn("ArticleWarehouse") { Query = "SELECT Designation as Result FROM fin_warehouselocation WHERE Oid = '{0}';", ChildName = "Location", Title = "Localização", Expand = true },
+                new GridViewColumn("UpdatedAt") { Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
             };
 
             //Configure Criteria/XPCollection/Model

@@ -35,41 +35,41 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             int decimalsColumnWidth = 100;
 
             //Configure columnProperties
-            List<GridViewColumnProperty> columnProperties = new List<GridViewColumnProperty>
+            List<GridViewColumn> columnProperties = new List<GridViewColumn>
             {
                 /*00*/
-                new GridViewColumnProperty("Oid") { Type = typeof(Guid), Visible = false },
+                new GridViewColumn("Oid") { Type = typeof(Guid), Visible = false },
                 /*01*/
-                new GridViewColumnProperty("Code") { Type = typeof(string), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_record_code") },
+                new GridViewColumn("Code") { Type = typeof(string), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_record_code") },
                 /*02*/
-                new GridViewColumnProperty("Designation") { Type = typeof(string), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_designation"), Expand = true },
+                new GridViewColumn("Designation") { Type = typeof(string), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_designation"), Expand = true },
                 /*03*/
-                new GridViewColumnProperty("PriceFinal") { Type = typeof(decimal), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_price"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, CellRenderer = cellRendererCurrency },
+                new GridViewColumn("PriceFinal") { Type = typeof(decimal), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_price"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, CellRenderer = cellRendererCurrency },
                 /*04*/
-                new GridViewColumnProperty("Vat") { Type = typeof(decimal), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_vat_rate"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
+                new GridViewColumn("Vat") { Type = typeof(decimal), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_vat_rate"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
                 /*05*/
-                new GridViewColumnProperty("Discount") { Type = typeof(decimal), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_discount"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
+                new GridViewColumn("Discount") { Type = typeof(decimal), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_discount"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
                 /*06*/
-                new GridViewColumnProperty("Place") { Type = typeof(string), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_placetable_place") },
+                new GridViewColumn("Place") { Type = typeof(string), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_placetable_place") },
                 //Other Invisible Fields
                 /*07*/
-                new GridViewColumnProperty("Price") { Type = typeof(decimal), Visible = false },
+                new GridViewColumn("Price") { Type = typeof(decimal), Visible = false },
                 /*08*/
-                new GridViewColumnProperty("Quantity") { Type = typeof(decimal), Visible = false },
+                new GridViewColumn("Quantity") { Type = typeof(decimal), Visible = false },
                 /*09*/
-                new GridViewColumnProperty("UnitMeasure") { Type = typeof(string), Visible = false },
+                new GridViewColumn("UnitMeasure") { Type = typeof(string), Visible = false },
                 /*10*/
-                new GridViewColumnProperty("PlaceOid") { Type = typeof(Guid), Visible = false },
+                new GridViewColumn("PlaceOid") { Type = typeof(Guid), Visible = false },
                 /*11*/
-                new GridViewColumnProperty("TableOid") { Type = typeof(Guid), Visible = false },
+                new GridViewColumn("TableOid") { Type = typeof(Guid), Visible = false },
                 /*12*/
-                new GridViewColumnProperty("PriceType") { Type = typeof(PriceType), Visible = false },
+                new GridViewColumn("PriceType") { Type = typeof(PriceType), Visible = false },
                 /*13*/
-                new GridViewColumnProperty("Token1") { Type = typeof(string), Visible = false },  //ClassifiedID
+                new GridViewColumn("Token1") { Type = typeof(string), Visible = false },  //ClassifiedID
                 /*14*/
-                new GridViewColumnProperty("Token2") { Type = typeof(string), Visible = false },  //FriendlyID
+                new GridViewColumn("Token2") { Type = typeof(string), Visible = false },  //FriendlyID
                 /*15*/
-                new GridViewColumnProperty("Notes") { Type = typeof(string), Visible = false }
+                new GridViewColumn("Notes") { Type = typeof(string), Visible = false }
             };
 
             //init DataTable
@@ -90,7 +90,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //this.FormatColumnPropertiesForTouch();
         }
 
-        private DataTable GetDataTable(List<GridViewColumnProperty> pColumnProperties)
+        private DataTable GetDataTable(List<GridViewColumn> pColumnProperties)
         {
             //Init Local Vars
             DataTable resultDataTable = new DataTable();
@@ -101,7 +101,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             pos_configurationplace configurationPlace;
 
             //Add Columns with specific Types From Column Properties
-            foreach (GridViewColumnProperty column in pColumnProperties)
+            foreach (GridViewColumn column in pColumnProperties)
             {
                 dataTableColumnType = (column.Type != null) ? column.Type : typeof(string);
                 resultDataTable.Columns.Add(column.Name, dataTableColumnType);

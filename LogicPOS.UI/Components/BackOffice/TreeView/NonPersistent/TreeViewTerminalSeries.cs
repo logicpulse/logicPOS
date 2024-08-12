@@ -26,16 +26,16 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             Type typeDialogClass = (pDialogType != null) ? pDialogType : null;
 
             //Configure columnProperties
-            List<GridViewColumnProperty> columnProperties = new List<GridViewColumnProperty>
+            List<GridViewColumn> columnProperties = new List<GridViewColumn>
             {
                 /*00*/
-                new GridViewColumnProperty("Oid") { Type = typeof(Guid), Visible = false },
+                new GridViewColumn("Oid") { Type = typeof(Guid), Visible = false },
                 /*01*/
-                new GridViewColumnProperty("Code") { Type = typeof(uint), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_record_code") },
+                new GridViewColumn("Code") { Type = typeof(uint), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_record_code") },
                 /*02*/
-                new GridViewColumnProperty("Designation") { Type = typeof(string), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_designation"), Expand = true },
+                new GridViewColumn("Designation") { Type = typeof(string), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_designation"), Expand = true },
                 /*03*/
-                new GridViewColumnProperty("HardwareId") { Type = typeof(string), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_hardware_id"), MinWidth = 200 }
+                new GridViewColumn("HardwareId") { Type = typeof(string), Title = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_hardware_id"), MinWidth = 200 }
             };
 
             //init DataTable
@@ -53,7 +53,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             );
         }
 
-        private DataTable GetDataTable(List<GridViewColumnProperty> pColumnProperties)
+        private DataTable GetDataTable(List<GridViewColumn> pColumnProperties)
         {
             //Init Local Vars
             string sql = @"

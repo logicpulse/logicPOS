@@ -14,17 +14,11 @@ using System.Threading.Tasks;
 
 namespace LogicPOS.Api.Features.Countries.AddCountry
 {
-    public class AddCountryCommandHandler : IRequestHandler<AddCountryCommand, ErrorOr<Guid>>
+    public class AddCountryCommandHandler : RequestHandler<AddCountryCommand, ErrorOr<Guid>>
     {
-        private readonly HttpClient _httpClient;
-
-
-        public AddCountryCommandHandler(IHttpClientFactory httpClientFactory)
-        {
-            _httpClient = httpClientFactory.CreateClient("Default");
-        }
-
-        public async Task<ErrorOr<Guid>> Handle(
+        public AddCountryCommandHandler(IHttpClientFactory httpClientFactory) : base(httpClientFactory) { }
+ 
+        public override async Task<ErrorOr<Guid>> Handle(
             AddCountryCommand command,
             CancellationToken cancellationToken = default)
         {
@@ -40,7 +34,7 @@ namespace LogicPOS.Api.Features.Countries.AddCountry
             }
             catch (HttpRequestException)
             {
-                return Error.Unexpected(description: "Erro ao se comunicar com a API.");
+                return ApiErrors.CommunicationError;
             }
         }
 
@@ -55,7 +49,7 @@ namespace LogicPOS.Api.Features.Countries.AddCountry
                     var problemDetails = await httpResponse.Content.ReadFromJsonAsync<ProblemDetails>();
                     return Error.Validation(metadata: new Dictionary<string, object> { { "problem", problemDetails } });
                 default:
-                    return Error.Unexpected();
+                    return ApiErrors.CommunicationError;
             }
         }
     }

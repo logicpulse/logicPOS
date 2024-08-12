@@ -15,7 +15,7 @@ namespace LogicPOS.UI
             services.AddHttpClient("Default", config =>
             {
                 config.DefaultRequestHeaders.Add("Accept", "application/json");
-                config.BaseAddress = new Uri("http://192.168.1.69:5011/");
+                config.BaseAddress = new Uri("http://localhost:5011/");
             });
 
             services.AddMediatR(config =>
