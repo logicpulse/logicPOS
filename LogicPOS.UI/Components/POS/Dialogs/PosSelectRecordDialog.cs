@@ -171,33 +171,21 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             CursorChanged?.Invoke(sender, e);
 
-            //If button more clicked
-            if (GenericTreeView.Navigator.TreeViewSearch.Button_MoreResponse())
+            if (GenericTreeView.Navigator.TreeViewSearch.ShowMoreButton)
             {
                 GenericTreeView.Navigator.TreeViewSearch.ShowMoreButton = false;
-                GenericTreeView.Navigator.TreeViewSearch.Button_FilterResponse();
                 GenericTreeView.CurrentPageNumber++;
                 Respond((int)DialogResponseType.LoadMore);
             }
 
-            //If filter more clicked
-            if (GenericTreeView.Navigator.TreeViewSearch.Button_FilterResponse())
+            if (GenericTreeView.Navigator.TreeViewSearch.ShowFilterButton)
             {
                 GenericTreeView.Navigator.TreeViewSearch.ShowFilterButton = false;
-                GenericTreeView.Navigator.TreeViewSearch.Button_FilterResponse();
                 Respond((int)DialogResponseType.Filter);
             }
 
-            //if Default Action Area Buttons with buttonOk, else we catch event outside and enable buttons outside
             if (_buttonOk != null && GenericTreeView.Entity != null) _buttonOk.Sensitive = true;
         }
-
-        //public void _genericTreeView_ButtonMoreClicked(object sender, EventArgs e)
-        //{
-        //    GenericTreeView.CurrentPageNumber++;
-        //    GenericTreeView.DataSource.TopReturnedObjects = (SettingsApp.PaginationRowsPerPage * _currentPage);
-        //    GenericTreeView.Refresh();
-        //}
 
         private void _genericTreeView_CheckBoxToggled(object sender, EventArgs e)
         {
@@ -222,12 +210,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private static PosSelectRecordDialog<T1, T2, T3> _dialogSelectRecord;
         private static DataTable _resultDataTable;
 
-        //Todo
-        //Improve in future to Work with XPOObjects Too, when needed, already wotk with generics, only need minor changes to XPObjects
-
-        //T1: DataSource (XPCollection|DataTable)
-        //T2: DataSourceRow (XPGuidObject|DataRow)
-        //T3: GenericTreeType
+   
         public static DataTable GetSelected(Window parentWindow)
         {
             //Default ActionArea Buttons

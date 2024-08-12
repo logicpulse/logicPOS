@@ -37,7 +37,7 @@ namespace LogicPOS.UI.Components.Pages
 
         public IconButtonWithText ButtonRefresh { get; set; }
 
-        public GridViewSearchBox TreeViewSearch { get; set; }
+        public PageSearchBox SearchBox { get; set; }
 
         public int CurrentPage { get; set; }
         public int TotalPages { get; set; }
@@ -61,38 +61,39 @@ namespace LogicPOS.UI.Components.Pages
 
         private void Initialize()
         {
-            HBox hboxNavigator = new HBox(false, 0);
-            HBox hboxNavigatorButtons = new HBox(true, 0);
+            HBox navigatorComponent = new HBox(false, 0);
+            HBox buttonsComponent = new HBox(true, 0);
 
             string name = _page.Toplevel.ToString();
-            bool buttonMoreFilterVisible = false;
-            if (name == "logicpos.Classes.Gui.Gtk.BackOffice.TreeViewDocumentFinanceMaster" || name == "logicpos.Classes.Gui.Gtk.BackOffice.TreeViewDocumentFinancePayment") { buttonMoreFilterVisible = true; }
+            bool showFilterAndMoreButtons = false;
 
+            if (name == "logicpos.Classes.Gui.Gtk.BackOffice.TreeViewDocumentFinanceMaster" ||
+                name == "logicpos.Classes.Gui.Gtk.BackOffice.TreeViewDocumentFinancePayment")
+            {
+                showFilterAndMoreButtons = true;
+            }
 
-            TreeViewSearch = new GridViewSearchBox(_parentWindow,
-                                                   _page.GridView,
-                                                   _page.GridViewSettings.Filter,
-                                                   null, //tchial0
-                                                   buttonMoreFilterVisible);
+            SearchBox = new PageSearchBox(_parentWindow, showFilterAndMoreButtons);
+
             InitializeButtons();
 
             if (_mode == GridViewNavigatorMode.Default)
             {
                 ExtraButtonSpace = new HBox(false, 0);
 
-                hboxNavigatorButtons.PackStart(ButtonPrevRecord, false, false, 0);
-                hboxNavigatorButtons.PackStart(ButtonNextRecord, false, false, 0);
-                hboxNavigatorButtons.PackStart(ButtonInsert, false, false, 0);
-                hboxNavigatorButtons.PackStart(ButtonView, false, false, 0);
-                hboxNavigatorButtons.PackStart(ButtonUpdate, false, false, 0);
-                hboxNavigatorButtons.PackStart(ButtonDelete, false, false, 0);
-                hboxNavigatorButtons.PackStart(ButtonRefresh, false, false, 0);
+                buttonsComponent.PackStart(ButtonPrevRecord, false, false, 0);
+                buttonsComponent.PackStart(ButtonNextRecord, false, false, 0);
+                buttonsComponent.PackStart(ButtonInsert, false, false, 0);
+                buttonsComponent.PackStart(ButtonView, false, false, 0);
+                buttonsComponent.PackStart(ButtonUpdate, false, false, 0);
+                buttonsComponent.PackStart(ButtonDelete, false, false, 0);
+                buttonsComponent.PackStart(ButtonRefresh, false, false, 0);
 
-                hboxNavigator.PackStart(TreeViewSearch, false, false, 0);
+                navigatorComponent.PackStart(SearchBox, false, false, 0);
 
-                hboxNavigator.PackStart(ExtraButtonSpace, true, true, 0);
-                hboxNavigator.PackStart(hboxNavigatorButtons, false, false, 0);
-                this.PackStart(hboxNavigator);
+                navigatorComponent.PackStart(ExtraButtonSpace, true, true, 0);
+                navigatorComponent.PackStart(buttonsComponent, false, false, 0);
+                PackStart(navigatorComponent);
             }
         }
 
@@ -106,6 +107,11 @@ namespace LogicPOS.UI.Components.Pages
             ButtonDelete = CreateButton("touchButtonDelete_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_delete"), @"Icons/icon_pos_nav_delete.png");
             ButtonRefresh = CreateButton("touchButtonRefresh_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_refresh"), @"Icons/icon_pos_nav_refresh.png");
 
+            AddButtonsEventHandlers();
+        }
+
+        private void AddButtonsEventHandlers()
+        {
             ButtonPrevRecord.Clicked += delegate { _page.Previous(); };
             ButtonNextRecord.Clicked += delegate { _page.Next(); };
 

@@ -137,6 +137,7 @@
     <Compile Include="Components\Accordions\AccordionChildButton.cs" />
     <Compile Include="Components\Accordions\AccordionNode.cs" />
     <Compile Include="Components\Accordions\AccordionParentButton.cs" />
+    <Compile Include="Components\Pages\Common\PageSearchBox.cs" />
     <Compile Include="Components\Pages\GridViews\Common\CellRenderers.cs" />
     <Compile Include="Components\Pages\GridViews\Common\GridViewSettings.cs" />
     <Compile Include="Components\Pages\GridViews\GridViewPropertyType.cs" />

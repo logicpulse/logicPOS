@@ -40,7 +40,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             string windowTitle = GeneralUtils.GetResourceByName("window_title_dialog_virtual_keyboard");
             Size windowSize = new Size(916, 358);
             string fileDefaultWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_keyboard.png";
-            string fileKeyboardXML = PathsSettings.Paths["keyboards"] + @"163.xml";
+            string fileKeyboardXML = System.IO.Path.Combine(PathsSettings.Paths["keyboards"].ToString(), @"163.xml");
 
             //Init Content
             Fixed fixedContent = new Fixed();
