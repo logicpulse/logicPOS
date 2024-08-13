@@ -14,19 +14,18 @@ namespace LogicPOS.UI.Components.Pages
 {
     public class PageSearchBox : Box
     {
+        private Window _parentWindow;
         public bool ShowMoreButton { get; set; }
         public bool ShowFilterButton { get; set; }
-
-        private Window _parentWindow;
-        private EntryBoxValidation _txtSearch;
+        internal EntryBoxValidation TxtSearch { get; set; }
+        public string SearchText => TxtSearch.EntryValidation.Text;
+  
 
         public PageSearchBox(Window parentWindow, bool showFilterAndMoreButtons)
         {
             _parentWindow = parentWindow;
             Design(showFilterAndMoreButtons);
         }
-
-    
         private void Design(bool showFilterAndMoreButtons)
         {
             string fontBaseDialogActionAreaButton = AppSettings.Instance.fontBaseDialogActionAreaButton;
@@ -37,20 +36,19 @@ namespace LogicPOS.UI.Components.Pages
             string regexAlfaNumericExtended = RegexUtils.RegexAlfaNumericExtended;
 
 
-            _txtSearch = new EntryBoxValidation(_parentWindow,
+            TxtSearch = new EntryBoxValidation(_parentWindow,
                                             GeneralUtils.GetResourceByName("widget_generictreeviewsearch_search_label"),
                                             KeyboardMode.AlfaNumeric,
                                             regexAlfaNumericExtended,
                                             false);
 
-            _txtSearch.WidthRequest = GlobalApp.ScreenSize.Width == 800 && GlobalApp.ScreenSize.Height == 600 ? 150 : 250;
+            TxtSearch.WidthRequest = GlobalApp.ScreenSize.Width == 800 && GlobalApp.ScreenSize.Height == 600 ? 150 : 250;
 
             HBox horizontalBox = new HBox(false, 0);
-            horizontalBox.PackStart(_txtSearch, true, true, 0);
+            horizontalBox.PackStart(TxtSearch, true, true, 0);
 
             PackStart(horizontalBox);
 
-            _txtSearch.EntryValidation.Changed += TxtSearch_Changed;
 
             if (showFilterAndMoreButtons)
             {
@@ -97,23 +95,7 @@ namespace LogicPOS.UI.Components.Pages
 
         }
 
-        private void TxtSearch_Changed(object sender, EventArgs e)
-        {
-            SimpleAlerts.Information()
-                        .WithParent(_parentWindow)
-                        .WithTitle("Search")
-                        .WithMessage("Search changed")
-                        .Show();
-        }
-
-        public CustomButton Button { get; set; }
-        public ResponseType Response { get; set; }
         public event EventHandler Clicked;
-        private void ActionAreaButton_Clicked(object sender, EventArgs e)
-        {
-            //Send this and Not sender, to catch base object
-            Clicked?.Invoke(this, e);
-        }
         public void BtnMore_Clicked(object sender, EventArgs e)
         {
             //TreeIter iterator;

@@ -13,7 +13,7 @@ namespace logicpos
     {
 		//IN009257 Redimensionar botões para a resolução 1024 x 768
         public static Size sizePosBaseButtonSizeDefault;
-        public static Size sizePosToolbarButtonSizeDefault;
+        public static Size sizePosToolbarButtonSizeDefault { get; set; }
         public static Size sizePosTicketPadButtonSizeDefault;
         public static Size sizePosTicketPadButtonDoubleWidthDefault;
         public static Size sizePosToolbarButtonIconSizeDefault;
