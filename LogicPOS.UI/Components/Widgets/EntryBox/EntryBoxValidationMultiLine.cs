@@ -2,6 +2,7 @@
 using logicpos.Classes.Enums.Keyboard;
 using LogicPOS.DTOs.Common;
 using LogicPOS.UI;
+using LogicPOS.UI.Components.InputFieds;
 using LogicPOS.Utility;
 using System;
 

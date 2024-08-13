@@ -1,7 +1,9 @@
 ﻿using Gtk;
+using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
 using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.GridViews;
 using LogicPOS.Utility;
 using System.Drawing;
 
@@ -9,53 +11,31 @@ namespace LogicPOS.UI.Components.Pages
 {
     internal class PageNavigator : Box
     {
-        private readonly Window _parentWindow;
         private readonly Page _page;
-        private readonly GridViewNavigatorMode _mode;
 
         public HBox ExtraButtonSpace { get; set; }
-
-        public IconButtonWithText ButtonFirstPage { get; set; }
-
-        public IconButtonWithText ButtonPrevPage { get; set; }
-
-        public IconButtonWithText ButtonNextPage { get; set; }
-
-        public IconButtonWithText ButtonLastPage { get; set; }
-
-        public IconButtonWithText ButtonPrevRecord { get; set; }
-
-        public IconButtonWithText ButtonNextRecord { get; set; }
-
-        public IconButtonWithText ButtonInsert { get; set; }
-
-        public IconButtonWithText ButtonView { get; set; }
-
-        public IconButtonWithText ButtonUpdate { get; set; }
-
-        public IconButtonWithText ButtonDelete { get; set; }
-
-        public IconButtonWithText ButtonRefresh { get; set; }
-
         public PageSearchBox SearchBox { get; set; }
 
-        public int CurrentPage { get; set; }
-        public int TotalPages { get; set; }
+        #region Buttons
+        public IconButtonWithText BtnPrevious { get; set; }
+        public IconButtonWithText ButtonNextRecord { get; set; }
+        public IconButtonWithText ButtonInsert { get; set; }
+        public IconButtonWithText ButtonView { get; set; }
+        public IconButtonWithText ButtonUpdate { get; set; }
+        public IconButtonWithText ButtonDelete { get; set; }
+        public IconButtonWithText ButtonRefresh { get; set; }
+        #endregion
+
+     
         public int CurrentRecord { get; set; }
         public int TotalRecords { get; set; }
 
 
-        public PageNavigator(
-            Window parent,
-            Page page,
-            GridViewNavigatorMode mode)
+        public PageNavigator(Page page)
         {
-            _parentWindow = parent;
             _page = page;
-            _mode = mode;
+            HeightRequest = 60;
 
-            CurrentPage = 1;
-            this.HeightRequest = 60;
             Initialize();
         }
 
@@ -64,42 +44,69 @@ namespace LogicPOS.UI.Components.Pages
             HBox navigatorComponent = new HBox(false, 0);
             HBox buttonsComponent = new HBox(true, 0);
 
-            string name = _page.Toplevel.ToString();
+            InitializeButtons();
+
+            buttonsComponent.PackStart(BtnPrevious, false, false, 0);
+            buttonsComponent.PackStart(ButtonNextRecord, false, false, 0);
+            buttonsComponent.PackStart(ButtonInsert, false, false, 0);
+            buttonsComponent.PackStart(ButtonView, false, false, 0);
+            buttonsComponent.PackStart(ButtonUpdate, false, false, 0);
+            buttonsComponent.PackStart(ButtonDelete, false, false, 0);
+            buttonsComponent.PackStart(ButtonRefresh, false, false, 0);
+
+            InitializeSearchBox();
+            navigatorComponent.PackStart(SearchBox, false, false, 0);
+
+            InitializeExtraButtonSpace();
+            navigatorComponent.PackStart(ExtraButtonSpace, true, true, 0);
+
+            navigatorComponent.PackStart(buttonsComponent, false, false, 0);
+
+            PackStart(navigatorComponent);
+
+        }
+
+        private void InitializeSearchBox()
+        {
             bool showFilterAndMoreButtons = false;
 
-            if (name == "logicpos.Classes.Gui.Gtk.BackOffice.TreeViewDocumentFinanceMaster" ||
-                name == "logicpos.Classes.Gui.Gtk.BackOffice.TreeViewDocumentFinancePayment")
+            if ((_page as object) is logicpos.Classes.Gui.Gtk.BackOffice.TreeViewDocumentFinanceMaster ||
+                (_page as object) is logicpos.Classes.Gui.Gtk.BackOffice.TreeViewDocumentFinancePayment)
             {
                 showFilterAndMoreButtons = true;
             }
 
-            SearchBox = new PageSearchBox(_parentWindow, showFilterAndMoreButtons);
+            SearchBox = new PageSearchBox(_page.PageParentWindow, showFilterAndMoreButtons);
 
-            InitializeButtons();
-
-            if (_mode == GridViewNavigatorMode.Default)
+            SearchBox.TxtSearch.EntryValidation.Changed += delegate
             {
-                ExtraButtonSpace = new HBox(false, 0);
+                _page.GridViewSettings.Filter.Refilter();
+                Update();
+            };
+        }
 
-                buttonsComponent.PackStart(ButtonPrevRecord, false, false, 0);
-                buttonsComponent.PackStart(ButtonNextRecord, false, false, 0);
-                buttonsComponent.PackStart(ButtonInsert, false, false, 0);
-                buttonsComponent.PackStart(ButtonView, false, false, 0);
-                buttonsComponent.PackStart(ButtonUpdate, false, false, 0);
-                buttonsComponent.PackStart(ButtonDelete, false, false, 0);
-                buttonsComponent.PackStart(ButtonRefresh, false, false, 0);
+        private void InitializeExtraButtonSpace()
+        {
+            ExtraButtonSpace = new HBox(false, 0);
 
-                navigatorComponent.PackStart(SearchBox, false, false, 0);
+            IconButtonWithText buttonApplyPrivileges = CreateButton("touchButtonApplyPrivileges_DialogActionArea",
+                                                                    GeneralUtils.GetResourceByName("global_user_apply_privileges"),
+                                                                    @"Icons/icon_pos_nav_refresh.png");
 
-                navigatorComponent.PackStart(ExtraButtonSpace, true, true, 0);
-                navigatorComponent.PackStart(buttonsComponent, false, false, 0);
-                PackStart(navigatorComponent);
-            }
+            buttonApplyPrivileges.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("BACKOFFICE_MAN_USER_PRIVILEGES_APPLY");
+
+            buttonApplyPrivileges.Clicked += delegate
+            {
+                GlobalApp.BackOfficeMainWindow.Accordion.UpdateMenuPrivileges();
+                GlobalApp.PosMainWindow.TicketList.UpdateTicketListButtons();
+            };
+
+            ExtraButtonSpace.PackStart(buttonApplyPrivileges, false, false, 0);
         }
 
         private void InitializeButtons()
         {
-            ButtonPrevRecord = CreateButton("touchButtonPrev_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_record_prev"), @"Icons/icon_pos_nav_prev.png");
+            BtnPrevious = CreateButton("touchButtonPrev_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_record_prev"), @"Icons/icon_pos_nav_prev.png");
             ButtonNextRecord = CreateButton("touchButtonNext_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_record_next"), @"Icons/icon_pos_nav_next.png");
             ButtonInsert = CreateButton("touchButtonInsert_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_insert"), @"Icons/icon_pos_nav_new.png");
             ButtonView = CreateButton("touchButtonView_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_view"), @"Icons/icon_pos_nav_view.png");
@@ -110,15 +117,27 @@ namespace LogicPOS.UI.Components.Pages
             AddButtonsEventHandlers();
         }
 
+        public void Next()
+        {
+            _page.GridViewSettings.Path.Next();
+            _page.GridView.SetCursor(_page.GridViewSettings.Path, null, false);
+        }
+        
+        public void Previous()
+        {
+            _page.GridViewSettings.Path.Prev();
+            _page.GridView.SetCursor(_page.GridViewSettings.Path, null, false);
+        }
+        
         private void AddButtonsEventHandlers()
         {
-            ButtonPrevRecord.Clicked += delegate { _page.Previous(); };
-            ButtonNextRecord.Clicked += delegate { _page.Next(); };
+            BtnPrevious.Clicked += delegate { Previous(); };
+            ButtonNextRecord.Clicked += delegate { Next(); };
 
-            ButtonInsert.Clicked += delegate { _page.Insert(); };
-            ButtonView.Clicked += delegate { _page.Update(DialogMode.View); };
-            ButtonUpdate.Clicked += delegate { _page.Update(); };
-            ButtonDelete.Clicked += delegate { _page.Delete(); };
+            ButtonInsert.Clicked += delegate { _page.InsertEntity(); };
+            ButtonView.Clicked += delegate { _page.ViewEntity(); };
+            ButtonUpdate.Clicked += delegate { _page.UpdateEntity(); };
+            ButtonDelete.Clicked += delegate { _page.DeleteEntity(); };
             ButtonRefresh.Clicked += delegate { _page.Refresh(); };
         }
 
@@ -147,55 +166,31 @@ namespace LogicPOS.UI.Components.Pages
                 });
         }
 
-        public void UpdateButtons(TreeView gridView)
+        public void UpdateButtonsSensitivity()
         {
-            //FirstPage/PrevPage
-            if (CurrentPage == 1 || TotalRecords == 0)
-            {
-                if (ButtonFirstPage != null && ButtonFirstPage.Sensitive) ButtonFirstPage.Sensitive = false;
-                if (ButtonPrevPage != null && ButtonPrevPage.Sensitive) ButtonPrevPage.Sensitive = false;
-            }
-            else
-            {
-                if (ButtonFirstPage != null && !ButtonFirstPage.Sensitive) ButtonFirstPage.Sensitive = true;
-                if (ButtonPrevPage != null && !ButtonPrevPage.Sensitive) ButtonPrevPage.Sensitive = true;
-            };
-            //NextPage/LastPage
-            if (CurrentPage == TotalPages || TotalRecords == 0)
-            {
-                if (ButtonNextPage != null && ButtonNextPage.Sensitive) ButtonNextPage.Sensitive = false;
-                if (ButtonLastPage != null && ButtonLastPage.Sensitive) ButtonLastPage.Sensitive = false;
-            }
-            else
-            {
-                if (ButtonNextPage != null && !ButtonNextPage.Sensitive) ButtonNextPage.Sensitive = true;
-                if (ButtonLastPage != null && !ButtonLastPage.Sensitive) ButtonLastPage.Sensitive = true;
-            }
-            //PrevRecord
             if (CurrentRecord == 0 || TotalRecords == 0)
             {
-                if (ButtonPrevRecord != null && ButtonPrevRecord.Sensitive) ButtonPrevRecord.Sensitive = false;
+                if (BtnPrevious.Sensitive) BtnPrevious.Sensitive = false;
             }
             else
             {
-                if (ButtonPrevRecord != null && !ButtonPrevRecord.Sensitive) ButtonPrevRecord.Sensitive = true;
-            };
-            //NextRecord
-            if (CurrentRecord == TotalRecords || TotalRecords < 1 || TotalRecords == 0)
-            {
-                if (ButtonNextRecord != null && ButtonNextRecord.Sensitive) ButtonNextRecord.Sensitive = false;
+                if (!BtnPrevious.Sensitive) BtnPrevious.Sensitive = true;
             }
-            else
-            {
-                if (ButtonNextRecord != null && !ButtonNextRecord.Sensitive) ButtonNextRecord.Sensitive = true;
-            };
 
-            //View/Update/Delete
-            if (gridView.Model.IterNChildren() > 0 && _page.SelectedEntity != null)
+            if (CurrentRecord == TotalRecords || TotalRecords < 1)
             {
-                if (ButtonView != null && !ButtonView.Sensitive && _page.AllowRecordView) ButtonView.Sensitive = true;
-                if (ButtonUpdate != null && !ButtonUpdate.Sensitive && _page.AllowRecordUpdate) ButtonUpdate.Sensitive = true;
-                if (ButtonDelete != null && !ButtonDelete.Sensitive && _page.AllowRecordDelete) ButtonDelete.Sensitive = true;
+                if (ButtonNextRecord.Sensitive) ButtonNextRecord.Sensitive = false;
+            }
+            else
+            {
+                if (!ButtonNextRecord.Sensitive) ButtonNextRecord.Sensitive = true;
+            }
+
+            if (_page.GridView.Model.IterNChildren() > 0 && _page.SelectedEntity != null)
+            {
+                if (!ButtonView.Sensitive && _page.CanViewEntity) ButtonView.Sensitive = true;
+                if (!ButtonUpdate.Sensitive && _page.CanUpdateEntity) ButtonUpdate.Sensitive = true;
+                if (!ButtonDelete.Sensitive && _page.CanDeleteEntity) ButtonDelete.Sensitive = true;
             }
             else
             {
@@ -204,7 +199,20 @@ namespace LogicPOS.UI.Components.Pages
                 if (ButtonUpdate != null && ButtonUpdate.Sensitive) ButtonUpdate.Sensitive = false;
                 if (ButtonDelete != null && ButtonDelete.Sensitive) ButtonDelete.Sensitive = false;
             };
+        }
 
+        public void Update()
+        {
+            if (_page.GridView.Model == null)
+            {
+                TotalRecords = 0;
+            }
+            else
+            {
+                TotalRecords = _page.GridView.Model.IterNChildren() - 1;
+            }
+;
+            UpdateButtonsSensitivity();
         }
     }
 }

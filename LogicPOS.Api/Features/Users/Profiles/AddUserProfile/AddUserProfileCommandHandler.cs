@@ -1,30 +1,27 @@
 ﻿using ErrorOr;
 using LogicPOS.Api.Errors;
 using LogicPOS.Api.Features.Common;
-using MediatR;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace LogicPOS.Api.Features.Countries.AddCountry
+namespace LogicPOS.Api.Features.Users.Profiles.AddUserProfile
 {
-    public class AddCountryCommandHandler : RequestHandler<AddCountryCommand, ErrorOr<Guid>>
+    public class AddUserProfileCommandHandler : RequestHandler<AddUserProfileCommand, ErrorOr<Guid>>
     {
-        public AddCountryCommandHandler(IHttpClientFactory httpClientFactory) : base(httpClientFactory) { }
- 
+        public AddUserProfileCommandHandler(IHttpClientFactory factory) : base(factory)
+        {
+        }
+
         public override async Task<ErrorOr<Guid>> Handle(
-            AddCountryCommand command,
+            AddUserProfileCommand command, 
             CancellationToken cancellationToken = default)
         {
             try
             {
-                var httpResponse = await _httpClient.PostAsJsonAsync("countries",
+                var httpResponse = await _httpClient.PostAsJsonAsync("users/profiles",
                                                                      command,
                                                                      cancellationToken);
                 var response = await httpResponse.Content.ReadAsStringAsync();

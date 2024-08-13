@@ -1,7 +1,6 @@
 ﻿using Gtk;
 using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
-using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using LogicPOS.Globalization;
@@ -12,6 +11,7 @@ using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Enums;
 using LogicPOS.UI.Components;
+using LogicPOS.UI.Components.InputFieds;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {

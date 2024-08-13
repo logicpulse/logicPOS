@@ -1,22 +1,9 @@
 ﻿
 using Gtk;
-using logicpos.App;
-using logicpos.Classes.Enums.Dialogs;
-using logicpos.Classes.Gui.Gtk.BackOffice;
-using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
-using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
-using LogicPOS.Globalization;
 using LogicPOS.Utility;
 using LogicPOS.UI.Components.InputFieds;
-using LogicPOS.Domain.Entities;
-using LogicPOS.Settings;
-using System.IO;
-using LogicPOS.UI.Buttons;
-using logicpos.Classes.Gui.Gtk.Widgets;
-using logicpos;
-using System.Collections.Generic;
-using System;
-using System.Linq;
+using System.Drawing;
+using LogicPOS.UI.Components.Modals;
 
 namespace LogicPOS.UI.Components
 {
@@ -35,58 +22,16 @@ namespace LogicPOS.UI.Components
         private TextBox _txtZipCodeRegex = new TextBox("global_regex_postal_code");
         private MultilineTextBox _txtNotes = new MultilineTextBox();
         private CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
-        private Notebook _notebook;
-        protected HBox _statusBar;
-        private IconButtonWithText _buttonOk;
-        private IconButtonWithText _buttonCancel;
-        private List<Widget> _fields = new List<Widget>();
         #endregion
+        public override Size ModalSize => new Size(500, 500);
+        public override string ModalTitleResourceName => "window_title_edit_dialog_configuration_country";
 
-        protected int _boxSpacing = 5;
-        private DialogMode _dialogMode;
-
-        private void SetWindowTitle()
+        protected override void Design()
         {
-            Title = Utils.GetWindowTitle(GeneralUtils.GetResourceByName("window_title_edit_dialog_configuration_country"));
-        }
-
-        private void DesignUI(DialogMode dialogMode)
-        {
-            SetWindowTitle();
-            SetWindowIcon();
-
-            _dialogMode = dialogMode;
-            WindowPosition = WindowPosition.CenterAlways;
-            GrabFocus();
-            SetSizeRequest(500, 500);
-
-            this.Decorated = true;
-            this.Resizable = false;
-            this.WindowPosition = WindowPosition.Center;
-
-            AccelGroup accelGroup = new AccelGroup();
-            AddAccelGroup(accelGroup);
-
-            HandleDialogMode();
             AddNotebook();
-            AddStatusBar();
-            AddActionButtons();
         }
 
-        private void HandleDialogMode()
-        {
-            if(_fields.Any() == false)
-            {
-               RegisterFields();
-            }
-
-            if(_dialogMode == DialogMode.View)
-            {
-                _fields.ForEach(f => f.Sensitive = false);
-            }
-        }
-
-        private void RegisterFields()
+        protected override void RegisterFields()
         {
             _fields.Add(_txtOrder.Entry);
             _fields.Add(_txtCode.Entry);
@@ -102,72 +47,17 @@ namespace LogicPOS.UI.Components
             _fields.Add(_checkDisabled);
         }
 
-        private void AddStatusBar()
-        {
-            _statusBar = CreateStatusBar();
-            VBox.PackStart(_statusBar, false, false, 0);
-            this.AddActionWidget(_statusBar, -1);
-        }
-
         private void AddNotebook()
         {
-            _notebook = CreateNoteBook();
-            VBox.PackStart(_notebook, true, true, 0);
-        }
-
-        private void SetWindowIcon()
-        {
-            string fileImageAppIcon = string.Format("{0}{1}", PathsSettings.ImagesFolderLocation, POSSettings.AppIcon);
-            if (File.Exists(fileImageAppIcon))
-            {
-                Icon = logicpos.Utils.ImageToPixbuf(System.Drawing.Image.FromFile(fileImageAppIcon));
-            }
-        }
-
-        private HBox CreateStatusBar()
-        {
-            var statusBar = new HBox(true, 0);
-            statusBar.BorderWidth = 3;
-
-            //UpdatedBy
-            VBox vboxUpdatedBy = new VBox(true, 0);
-            Label labelUpdatedBy = new Label(GeneralUtils.GetResourceByName("global_record_user_update"));
-            Label labelUpdatedByValue = new Label(string.Empty);
-            labelUpdatedBy.SetAlignment(0.0F, 0.5F);
-            labelUpdatedByValue.SetAlignment(0.0F, 0.5F);
-            vboxUpdatedBy.PackStart(labelUpdatedBy);
-            vboxUpdatedBy.PackStart(labelUpdatedByValue);
-
-            //CreatedAt
-            VBox vboxCreatedAt = new VBox(true, 0);
-            Label labelCreatedAt = new Label(GeneralUtils.GetResourceByName("global_record_date_created"));
-            Label labelCreatedAtValue = new Label(string.Empty);
-            labelCreatedAt.SetAlignment(0.5F, 0.5F);
-            labelCreatedAtValue.SetAlignment(0.5F, 0.5F);
-            vboxCreatedAt.PackStart(labelCreatedAt);
-            vboxCreatedAt.PackStart(labelCreatedAtValue);
-
-            //UpdatedAt
-            VBox vboxUpdatedAt = new VBox(true, 0);
-            Label labelUpdatedAt = new Label(GeneralUtils.GetResourceByName("global_record_date_updated_for_base_dialog"));
-            Label labelUpdatedAtValue = new Label(string.Empty);
-            labelUpdatedAt.SetAlignment(1.0F, 0.5F);
-            labelUpdatedAtValue.SetAlignment(1.0F, 0.5F);
-            vboxUpdatedAt.PackStart(labelUpdatedAt);
-            vboxUpdatedAt.PackStart(labelUpdatedAtValue);
-
-            statusBar.PackStart(vboxUpdatedBy);
-            statusBar.PackStart(vboxCreatedAt);
-            statusBar.PackStart(vboxUpdatedAt);
-
-            return statusBar;
+            var notebook = CreateNoteBook();
+            VBox.PackStart(notebook, true, true, 0);
         }
 
         private VBox CreateTab1()
         {
             var tab1 =  new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
 
-            if(_dialogMode != DialogMode.Insert)
+            if(_modalMode != EntityModalMode.Insert)
             {
                 tab1.PackStart(_txtOrder.Component, false, false, 0);
                 tab1.PackStart(_txtCode.Component, false, false, 0);
@@ -203,55 +93,6 @@ namespace LogicPOS.UI.Components
             notebook.AppendPage(CreateTab2(), new Label(GeneralUtils.GetResourceByName("global_others")));
             notebook.AppendPage(CreateNotesTab(), new Label(GeneralUtils.GetResourceByName("global_notes")));
             return notebook;
-        }
-
-        private void AddActionButtons()
-        {
-            string fontBaseDialogActionAreaButton = AppSettings.Instance.fontBaseDialogActionAreaButton;
-            string tmpFileActionOK = PathsSettings.ImagesFolderLocation + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
-            string tmpFileActionCancel = PathsSettings.ImagesFolderLocation + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png";
-            System.Drawing.Size sizeBaseDialogActionAreaButtonIcon = AppSettings.Instance.sizeBaseDialogActionAreaButtonIcon;
-            System.Drawing.Size sizeBaseDialogActionAreaButton = AppSettings.Instance.sizeBaseDialogActionAreaButton;
-            System.Drawing.Color colorBaseDialogActionAreaButtonBackground = AppSettings.Instance.colorBaseDialogActionAreaButtonBackground;
-            System.Drawing.Color colorBaseDialogActionAreaButtonFont = AppSettings.Instance.colorBaseDialogActionAreaButtonFont;
-
-            if (GlobalApp.ScreenSize.Width == 800 && GlobalApp.ScreenSize.Height == 600)
-            {
-                sizeBaseDialogActionAreaButton.Height -= 10;
-                sizeBaseDialogActionAreaButtonIcon.Width -= 10;
-                sizeBaseDialogActionAreaButtonIcon.Height -= 10;
-            };
-
-            var buttonOkSettings = new ButtonSettings
-            {
-                Name = "touchButtonOk_DialogActionArea",
-                BackgroundColor = colorBaseDialogActionAreaButtonBackground,
-                Text = GeneralUtils.GetResourceByName("global_button_label_ok"),
-                Font = fontBaseDialogActionAreaButton,
-                FontColor = colorBaseDialogActionAreaButtonFont,
-                Icon = tmpFileActionOK,
-                IconSize = sizeBaseDialogActionAreaButtonIcon,
-                ButtonSize = sizeBaseDialogActionAreaButton
-            };
-
-            _buttonOk = new IconButtonWithText(buttonOkSettings);
-            _buttonOk.Clicked += ButtonOk_Clicked;
-
-            var buttonCancelSettings = buttonOkSettings.Clone();
-
-            buttonCancelSettings.Text = GeneralUtils.GetResourceByName("global_button_label_cancel");
-            buttonCancelSettings.Name = "touchButtonCancel_DialogActionArea";
-            buttonCancelSettings.Icon = tmpFileActionCancel;
-
-
-            _buttonCancel = new IconButtonWithText(buttonCancelSettings);
-
-            if (_dialogMode != DialogMode.View)
-            {
-                this.AddActionWidget(_buttonOk, ResponseType.Ok);
-            }
-
-            this.AddActionWidget(_buttonCancel, ResponseType.Cancel);
         }
 
         private VBox CreateNotesTab()

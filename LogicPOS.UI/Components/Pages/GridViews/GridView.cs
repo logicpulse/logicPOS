@@ -834,7 +834,7 @@ namespace LogicPOS.UI.Components
             #region API Integration
             if (DialogType == typeof(CountryModal))
             {
-                Dialog = new CountryModal(_parentWindow, pDialogMode);
+                Dialog = new CountryModal(Modals.EntityModalMode.Insert);
                 var countryModalResponse = (ResponseType) Dialog.Run();
                 if(countryModalResponse == ResponseType.Cancel || countryModalResponse == ResponseType.DeleteEvent)
                 {

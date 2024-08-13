@@ -1,39 +1,28 @@
 ﻿using ErrorOr;
-using Gtk;
-using logicpos.Classes.Enums.Dialogs;
-using LogicPOS.Api.Errors;
 using LogicPOS.Api.Features.Countries.AddCountry;
 using LogicPOS.UI.Alerts;
-using MediatR;
-using Microsoft.Extensions.DependencyInjection;
+using LogicPOS.UI.Components.Modals;
 using System;
-using System.Linq;
 
 namespace LogicPOS.UI.Components
 {
-    internal partial class CountryModal : Dialog
+    internal partial class CountryModal : EntityModal
     {
-        private readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<ISender>();
-        public CountryModal(
-            Window parent,
-            DialogMode dialogMode)
+        public CountryModal(EntityModalMode modalMode) : base(modalMode)
         {
-            DesignUI(dialogMode);
-            ShowAll();
         }
 
-        private void ButtonOk_Clicked(object sender, EventArgs e)
+        protected override void ButtonOk_Clicked(object sender, EventArgs e)
         {
-            switch (_dialogMode)
+            switch (_modalMode)
             {
-                case DialogMode.Insert:
+                case EntityModalMode.Insert:
                     var addCountryResult = SendAddCountryCommand();
                     HandleAddCountryResult(addCountryResult);
                     break;
-                case DialogMode.Update:
+                case EntityModalMode.Update:
                     break;
             }
-
         }
 
         private void HandleAddCountryResult(ErrorOr<Guid> addCountryResult)
@@ -51,30 +40,6 @@ namespace LogicPOS.UI.Components
                         .Show();
 
             Destroy();
-        }
-
-        private void HandleError(Error error)
-        {
-            switch (error.Type)
-            {
-                case ErrorType.Validation:
-                    var problem = error.Metadata["problem"] as ProblemDetails;
-                    SimpleAlerts.Error()
-                                .WithParent(this)
-                                .WithMessage(problem.Errors.First().Reason)
-                                .WithTitle(problem.Title)
-                                .Show();
-                    break;
-
-                default:
-                    SimpleAlerts.Error()
-                                .WithParent(this)
-                                .WithMessage(error.Description ?? "Ocorreu um erro")
-                                .WithTitle("Erro inesperado")
-                                .Show();
-                    break;
-            }
-
         }
 
         private ErrorOr<Guid> SendAddCountryCommand()
@@ -99,6 +64,11 @@ namespace LogicPOS.UI.Components
                 Notes = _txtNotes.Value.Text,
                 IsDeleted = _checkDisabled.Active
             };
+        }
+
+        protected override void ShowEntity()
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -11,6 +11,7 @@ using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.GridViews;
+using LogicPOS.UI.Components.Modals;
 using LogicPOS.Utility;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,8 +23,6 @@ namespace LogicPOS.UI.Components.Pages
 {
     internal class PermissionsPage : Page
     {
-        private readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<ISender>();
-
         private TreeView _gridPermissionItems;
         private List<PermissionProfile> _permissionProfiles = new List<PermissionProfile>();
         private List<PermissionItem> _permissionItems = new List<PermissionItem>();
@@ -35,8 +34,6 @@ namespace LogicPOS.UI.Components.Pages
 
             InitializeUserProfilesGrid();
 
-            InitializeNavigator();
-
             InitializePermissionItemsGrid();
 
             Design();
@@ -46,15 +43,6 @@ namespace LogicPOS.UI.Components.Pages
             AddPermissionItemsToModel();
 
             ShowAll();
-        }
-
-        private void ShowApiErrorAlert()
-        {
-            SimpleAlerts.Error()
-                .WithParent(_parentWindow)
-                .WithTitle("API")
-                .WithMessage(ApiErrors.CommunicationError.Description)
-                .Show();
         }
 
         private void LoadEntities()
@@ -73,6 +61,8 @@ namespace LogicPOS.UI.Components.Pages
                 ShowApiErrorAlert();
                 return;
             }
+
+            _permissionItems.Clear();
             _permissionItems.AddRange(getPermissionItemsResult.Value);
         }
 
@@ -86,6 +76,7 @@ namespace LogicPOS.UI.Components.Pages
                 return;
             }
 
+            _permissionProfiles.Clear();
             _permissionProfiles.AddRange(getPermissionProfiles.Value);
         }
 
@@ -99,6 +90,7 @@ namespace LogicPOS.UI.Components.Pages
                 return;
             }
 
+            _userProfiles.Clear();
             _userProfiles.AddRange(getUserProfilesResult.Value);
         }
 
@@ -106,8 +98,6 @@ namespace LogicPOS.UI.Components.Pages
         {
             var model = (ListStore)GridViewSettings.Model;
             _userProfiles.ForEach(profile => model.AppendValues(profile));
-
-            GridView.Selection.SelectPath(new TreePath("0"));
         }
 
         private void AddPermissionItemsToModel()
@@ -358,49 +348,9 @@ namespace LogicPOS.UI.Components.Pages
         private void AddUserProfilesGridEventHandlers()
         {
             GridView.CursorChanged += GridUserProfilesRow_Changed;
-
-            GridView.RowActivated += delegate
-            {
-                SimpleAlerts.Information()
-                            .WithParent(_parentWindow)
-                            .WithTitle("Teste")
-                            .WithMessage(nameof(GridView.RowActivated))
-                            .Show();
-            };
-
-            GridView.Vadjustment.ValueChanged += delegate { UpdatePages(); };
-            GridView.Vadjustment.Changed += delegate { UpdatePages(); };
-        }
-
-        private void InitializeNavigator()
-        {
-            Navigator = new PageNavigator(_parentWindow, this, GridViewNavigatorMode.Default);
-
-
-            IconButtonWithText buttonApplyPrivileges = Navigator.CreateButton("touchButtonApplyPrivileges_DialogActionArea",
-                                                                              GeneralUtils.GetResourceByName("global_user_apply_privileges"),
-                                                                              @"Icons/icon_pos_nav_refresh.png");
-
-            buttonApplyPrivileges.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("BACKOFFICE_MAN_USER_PRIVILEGES_APPLY");
-
-            buttonApplyPrivileges.Clicked += delegate
-            {
-                GlobalApp.BackOfficeMainWindow.Accordion.UpdateMenuPrivileges();
-                GlobalApp.PosMainWindow.TicketList.UpdateTicketListButtons();
-            };
-
-            Navigator.ExtraButtonSpace.PackStart(buttonApplyPrivileges, false, false, 0);
-
-            AddSearchEventHandlers();
-        }
-
-        private void AddSearchEventHandlers()
-        {
-            Navigator.SearchBox.TxtSearch.EntryValidation.Changed += delegate
-            {
-                GridViewSettings.Filter.Refilter();
-                UpdatePages();
-            };
+            GridView.RowActivated += delegate { UpdateEntity(); };
+            GridView.Vadjustment.ValueChanged += delegate { Navigator.Update(); };
+            GridView.Vadjustment.Changed += delegate { Navigator.Update(); };
         }
 
         private void CheckBox_Clicked(object o, ToggledArgs args)
@@ -412,18 +362,7 @@ namespace LogicPOS.UI.Components.Pages
             {
                 var currentValue = (bool)_gridPermissionItems.Model.GetValue(iterator, 1);
                 _gridPermissionItems.Model.SetValue(iterator, 1, !currentValue);
-                //UpdatePermissionProfile("" + _permissionItemModel.GetValue(iterator, 0), _permissionItemCellRenderer.Active);
             }
-        }
-
-        private void UpdatePermissionProfile(string permissionProfileId,
-                                             bool granted)
-        {
-            SimpleAlerts.Information()
-                        .WithParent(_parentWindow)
-                        .WithTitle("Teste")
-                        .WithMessage("Update Permission Profile")
-                        .Show();
         }
 
         protected void GridUserProfilesRow_Changed(object sender, EventArgs e)
@@ -434,26 +373,37 @@ namespace LogicPOS.UI.Components.Pages
             {
                 GridViewSettings.Path = model.GetPath(GridViewSettings.Iterator);
                 Navigator.CurrentRecord = Convert.ToInt16(GridViewSettings.Path.ToString());
-                ShowUserProfilePermissions((UserProfile)model.GetValue(GridViewSettings.Iterator, 0));
+                SelectedEntity = model.GetValue(GridViewSettings.Iterator, 0);
+                ShowUserProfilePermissions((UserProfile)SelectedEntity);
             };
 
-            UpdatePages();
+            Navigator.Update();
         }
 
-        protected void UpdatePages()
+        internal override void Refresh()
         {
-            Navigator.CurrentPage = (int)Math.Floor(GridView.Vadjustment.Value / GridView.Vadjustment.PageSize) + 1;
-            Navigator.TotalPages = (int)Math.Floor(GridView.Vadjustment.Upper / GridView.Vadjustment.PageSize);
-            if (GridView.Model != null)
-            {
-                Navigator.TotalRecords = GridView.Model.IterNChildren() - 1;
-            }
-            else
-            {
-                Navigator.TotalRecords = 0;
-            };
-            Navigator.UpdateButtons(GridView);
+            LoadEntities();
+            var model = (ListStore)GridViewSettings.Model;
+            model.Clear();
+            AddUserProfilesToModel();
         }
 
+        internal override void ViewEntity() => RunModal(EntityModalMode.View);
+
+        internal override void UpdateEntity() => RunModal(EntityModalMode.Update);
+
+        internal override void DeleteEntity()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal override void InsertEntity() => RunModal(EntityModalMode.Insert);
+
+        private void RunModal(EntityModalMode mode)
+        {
+            var modal = new UserProfileModal(mode, SelectedEntity as UserProfile);
+            var response =  modal.Run();
+            modal.Destroy();
+        }
     }
 }

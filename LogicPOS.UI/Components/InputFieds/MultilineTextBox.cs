@@ -2,7 +2,7 @@
 using logicpos.Classes.Enums.Keyboard;
 using System;
 
-namespace logicpos.Classes.Gui.Gtk.Widgets
+namespace LogicPOS.UI.Components.InputFieds
 {
     public class MultilineTextBox : EventBox
     {
@@ -27,7 +27,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //Constructor
         public MultilineTextBox()
             : this(null) { }
-        public MultilineTextBox(Window parentWindow) 
+        public MultilineTextBox(Window parentWindow)
             : this(parentWindow, KeyboardMode.None) { }
         public MultilineTextBox(Window parentWindow, KeyboardMode pKeyboardMode)
         {
