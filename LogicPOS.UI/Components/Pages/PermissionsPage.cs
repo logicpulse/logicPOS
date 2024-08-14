@@ -12,6 +12,7 @@ using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.GridViews;
 using LogicPOS.UI.Components.Modals;
+using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,22 +31,9 @@ namespace LogicPOS.UI.Components.Pages
 
         public PermissionsPage(Window parentWindow) : base(parentWindow)
         {
-            LoadEntities();
-
-            InitializeUserProfilesGrid();
-
-            InitializePermissionItemsGrid();
-
-            Design();
-
-            AddUserProfilesToModel();
-
-            AddPermissionItemsToModel();
-
-            ShowAll();
         }
 
-        private void LoadEntities()
+        protected override void LoadEntities()
         {
             LoadPermissionItems();
             LoadPermissionProfiles();
@@ -119,7 +107,7 @@ namespace LogicPOS.UI.Components.Pages
             });
         }
 
-        private void Design()
+        protected override void Design()
         {
             VBox verticalBox = new VBox(false, 1);
 
@@ -155,11 +143,11 @@ namespace LogicPOS.UI.Components.Pages
             _gridPermissionItems.AppendColumn(grantedColumn);
         }
 
-        private void InitializeUserProfilesGrid()
+        private void InitializeUserProfilesGridView()
         {
-            GridViewSettings.Model = new ListStore(typeof(UserProfile));
+            GridViewSettings.Model = CreateGridViewModel();
 
-            InitializeUserProfilesGridModel();
+            InitializeGridViewModel();
 
             GridView = new TreeView();
             GridView.Model = GridViewSettings.Sort;
@@ -169,87 +157,20 @@ namespace LogicPOS.UI.Components.Pages
             GridView.RulesHint = true;
             GridView.ModifyBase(StateType.Active, new Gdk.Color(215, 215, 215));
 
-            AddUserProfilesGridColumns();
-            AddUserProfilesGridEventHandlers();
+            AddColumns();
+            AddEventHandlers();
         }
-
-        private void AddUserProfilesGridColumns()
-        {
-            var codeColumn = CreateCodeColumn();
-            GridView.AppendColumn(codeColumn);
-
-            var designationColumn = CreateDesignationColumn();
-            GridView.AppendColumn(designationColumn);
-        }
-
-        private void InitializeUserProfilesGridModel()
-        {
-            InitializeProfilesGridFilter();
-            InitializeUserProfilesGridSort();
-        }
-
-        private void InitializeUserProfilesGridSort()
-        {
-            GridViewSettings.Sort = new TreeModelSort(GridViewSettings.Filter);
-            GridViewSettings.Sort.SetSortFunc(0, (model, a, b) =>
-            {
-                var userProfileA = (UserProfile)model.GetValue(a, 0);
-                var userProfileB = (UserProfile)model.GetValue(b, 0);
-                return userProfileA.Code.CompareTo(userProfileB.Code);
-            });
-
-            GridViewSettings.Sort.SetSortFunc(1, (model, a, b) =>
-            {
-                var userProfileA = (UserProfile)model.GetValue(a, 0);
-                var userProfileB = (UserProfile)model.GetValue(b, 0);
-                return userProfileA.Designation.CompareTo(userProfileB.Designation);
-            });
-        }
-
-        private void InitializeProfilesGridFilter()
-        {
-            GridViewSettings.Filter = new TreeModelFilter(GridViewSettings.Model, null);
-            GridViewSettings.Filter.VisibleFunc = (model, iterator) =>
-            {
-                var search = Navigator.SearchBox.SearchText.ToLower();
-                if (string.IsNullOrWhiteSpace(search))
-                {
-                    return true;
-                }
-
-                search = search.Trim().ToLower();
-                var userProfile = (UserProfile)model.GetValue(iterator, 0);
-
-                if (userProfile.Designation.ToLower().Contains(search))
-                {
-                    return true;
-                }
-
-                return false;
-            };
-        }
-
+  
         private TreeViewColumn CreatePermissiontemColumn()
         {
-
-            TreeViewColumn itemDesignationCol = new TreeViewColumn();
-            itemDesignationCol.Title = GeneralUtils.GetResourceByName("global_privilege_property");
-
-            var label = new Label(itemDesignationCol.Title);
-            label.ModifyFont(CellRenderers.TitleFont);
-            label.Show();
-            itemDesignationCol.Widget = label;
-
-            var designationCellRenderer = CellRenderers.Text();
-            itemDesignationCol.PackStart(designationCellRenderer, true);
-
             void RenderDesignation(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var permissionItem = (PermissionItem)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = permissionItem.Designation;
             }
 
-            itemDesignationCol.SetCellDataFunc(designationCellRenderer, RenderDesignation);
+            var title = GeneralUtils.GetResourceByName("global_privilege_property");
+            var itemDesignationCol = Columns.CreateColumn(title, 0, RenderDesignation);
 
             return itemDesignationCol;
         }
@@ -283,74 +204,24 @@ namespace LogicPOS.UI.Components.Pages
 
         private TreeViewColumn CreateCodeColumn()
         {
-            TreeViewColumn codeColumn = new TreeViewColumn();
-            codeColumn.Title = GeneralUtils.GetResourceByName("global_record_code");
-            codeColumn.Resizable = true;
-            codeColumn.MinWidth = 60;
-            codeColumn.MaxWidth = 100;
-            codeColumn.Clickable = true;
-            codeColumn.SortColumnId = 0;
-            codeColumn.SortIndicator = true;
-            codeColumn.SortOrder = SortType.Ascending;
-
-
-            var label = new Label(codeColumn.Title);
-            label.ModifyFont(CellRenderers.TitleFont);
-            label.Show();
-            codeColumn.Widget = label;
-
-            var codeCellRenderer = CellRenderers.Code();
-            codeColumn.PackStart(codeCellRenderer, true);
-
             void RenderCode(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var userProfile = (UserProfile)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = userProfile.Code;
             }
 
-            codeColumn.SetCellDataFunc(codeCellRenderer, RenderCode);
-
-            return codeColumn;
+            return Columns.CreateCodeColumn(RenderCode);
         }
 
         private TreeViewColumn CreateDesignationColumn()
         {
-            TreeViewColumn designationColumn = new TreeViewColumn();
-            designationColumn.Title = GeneralUtils.GetResourceByName("global_designation");
-            designationColumn.Resizable = true;
-            designationColumn.MinWidth = 250;
-            designationColumn.MaxWidth = 800;
-            designationColumn.Expand = true;
-            designationColumn.Clickable = true;
-            designationColumn.SortIndicator = true;
-            designationColumn.SortOrder = SortType.Ascending;
-            designationColumn.SortColumnId = 1;
-
-            var label = new Label(designationColumn.Title);
-            label.ModifyFont(CellRenderers.TitleFont);
-            label.Show();
-            designationColumn.Widget = label;
-
-            var designationCellRenderer = CellRenderers.Text();
-            designationColumn.PackStart(designationCellRenderer, true);
-
             void RenderDesignation(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var userProfile = (UserProfile)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = userProfile.Designation;
             }
 
-            designationColumn.SetCellDataFunc(designationCellRenderer, RenderDesignation);
-
-            return designationColumn;
-        }
-
-        private void AddUserProfilesGridEventHandlers()
-        {
-            GridView.CursorChanged += GridUserProfilesRow_Changed;
-            GridView.RowActivated += delegate { UpdateEntity(); };
-            GridView.Vadjustment.ValueChanged += delegate { Navigator.Update(); };
-            GridView.Vadjustment.Changed += delegate { Navigator.Update(); };
+            return Columns.CreateDesignationColumn(RenderDesignation); 
         }
 
         private void CheckBox_Clicked(object o, ToggledArgs args)
@@ -380,7 +251,7 @@ namespace LogicPOS.UI.Components.Pages
             Navigator.Update();
         }
 
-        internal override void Refresh()
+        public override void Refresh()
         {
             LoadEntities();
             var model = (ListStore)GridViewSettings.Model;
@@ -388,22 +259,111 @@ namespace LogicPOS.UI.Components.Pages
             AddUserProfilesToModel();
         }
 
-        internal override void ViewEntity() => RunModal(EntityModalMode.View);
+        public override void ViewEntity() => RunModal(EntityModalMode.View);
 
-        internal override void UpdateEntity() => RunModal(EntityModalMode.Update);
+        public override void UpdateEntity() => RunModal(EntityModalMode.Update);
 
-        internal override void DeleteEntity()
+        public override void DeleteEntity()
         {
             throw new NotImplementedException();
         }
 
-        internal override void InsertEntity() => RunModal(EntityModalMode.Insert);
+        public override void InsertEntity() => RunModal(EntityModalMode.Insert);
 
         private void RunModal(EntityModalMode mode)
         {
             var modal = new UserProfileModal(mode, SelectedEntity as UserProfile);
-            var response =  modal.Run();
+            modal.Run();
             modal.Destroy();
+        }
+
+        protected override void InitializeGridView()
+        {
+            InitializeUserProfilesGridView();
+            InitializePermissionItemsGrid();
+        }
+
+        protected override void AddEntitiesToModel()
+        {
+            AddUserProfilesToModel();
+            AddPermissionItemsToModel();
+        }
+
+        protected override ListStore CreateGridViewModel()
+        {
+            return new ListStore(typeof(UserProfile));
+        }
+
+        protected override void InitializeSort()
+        {
+            GridViewSettings.Sort = new TreeModelSort(GridViewSettings.Filter);
+
+            AddCodeSorting();
+            AddDesignationSorting();
+        }
+
+        private void AddDesignationSorting()
+        {
+            GridViewSettings.Sort.SetSortFunc(1, (model, a, b) =>
+            {
+                var userProfileA = (UserProfile)model.GetValue(a, 0);
+                var userProfileB = (UserProfile)model.GetValue(b, 0);
+
+                if (userProfileA == null || userProfileB == null)
+                {
+                    return 0;
+                }
+
+                return userProfileA.Designation.CompareTo(userProfileB.Designation);
+            });
+        }
+
+        private void AddCodeSorting()
+        {
+            GridViewSettings.Sort.SetSortFunc(0, (model, a, b) =>
+            {
+                var userProfileA = (UserProfile)model.GetValue(a, 0);
+                var userProfileB = (UserProfile)model.GetValue(b, 0);
+
+                if (userProfileA == null || userProfileB == null)
+                {
+                    return 0;
+                }
+
+                return userProfileA.Code.CompareTo(userProfileB.Code);
+            });
+        }
+
+        protected override void InitializeFilter()
+        {
+            GridViewSettings.Filter = new TreeModelFilter(GridViewSettings.Model, null);
+            GridViewSettings.Filter.VisibleFunc = (model, iterator) =>
+            {
+                var search = Navigator.SearchBox.SearchText.ToLower();
+                if (string.IsNullOrWhiteSpace(search))
+                {
+                    return true;
+                }
+
+                search = search.Trim();
+                var userProfile = (UserProfile)model.GetValue(iterator, 0);
+
+                if (userProfile.Designation.ToLower().Contains(search))
+                {
+                    return true;
+                }
+
+                return false;
+            };
+        }
+
+        protected override void AddColumns()
+        {
+            var codeColumn = CreateCodeColumn();
+            GridView.AppendColumn(codeColumn);
+
+            var designationColumn = CreateDesignationColumn();
+            GridView.AppendColumn(designationColumn);
         }
     }
 }

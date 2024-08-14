@@ -2,12 +2,12 @@
 using Gtk;
 using logicpos;
 using logicpos.App;
-using logicpos.Classes.Enums.Dialogs;
 using LogicPOS.Api.Errors;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.InputFieds;
 using LogicPOS.Utility;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -34,7 +34,7 @@ namespace LogicPOS.UI.Components.Modals
         public abstract System.Drawing.Size ModalSize { get; }
         public abstract string ModalTitleResourceName { get; }
 
-        public EntityModal(EntityModalMode modalMode, ApiEntity entity = null) 
+        public EntityModal(EntityModalMode modalMode, ApiEntity entity = null)
         {
             _modalMode = modalMode;
             _entity = entity;
@@ -66,6 +66,7 @@ namespace LogicPOS.UI.Components.Modals
                     break;
             }
 
+            this.Run();
         }
 
         private void DefaultDesign()
@@ -110,7 +111,7 @@ namespace LogicPOS.UI.Components.Modals
 
             if (_modalMode != EntityModalMode.Insert)
             {
-                ShowEntity();
+                ShowEntityData();
             }
 
         }
@@ -123,7 +124,7 @@ namespace LogicPOS.UI.Components.Modals
             }
         }
 
-        protected abstract void ShowEntity();
+        protected abstract void ShowEntityData();
 
         protected abstract void Design();
 
@@ -141,7 +142,7 @@ namespace LogicPOS.UI.Components.Modals
             }
         }
 
-        protected  void AddActionButtons()
+        protected void AddActionButtons()
         {
             string fontBaseDialogActionAreaButton = AppSettings.Instance.fontBaseDialogActionAreaButton;
             string tmpFileActionOK = PathsSettings.ImagesFolderLocation + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
@@ -189,7 +190,24 @@ namespace LogicPOS.UI.Components.Modals
             this.AddActionWidget(_buttonCancel, ResponseType.Cancel);
         }
 
-        protected abstract void ButtonOk_Clicked(object sender, EventArgs e);
+        protected virtual void ButtonOk_Clicked(object sender, EventArgs e)
+        {
+            switch (_modalMode)
+            {
+                case EntityModalMode.Insert:
+                    AddEntity();
+                    break;
+                case EntityModalMode.Update:
+                    UpdateEntity();
+                    break;
+                default:
+                    throw new Exception("Invalid modal mode");
+ 
+            }
+        }
+
+        protected abstract void UpdateEntity();
+        protected abstract void AddEntity();
 
         protected abstract void RegisterFields();
 

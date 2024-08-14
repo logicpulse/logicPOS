@@ -3,9 +3,8 @@ using Gtk;
 using LogicPOS.Utility;
 using LogicPOS.UI.Components.InputFieds;
 using System.Drawing;
-using LogicPOS.UI.Components.Modals;
 
-namespace LogicPOS.UI.Components
+namespace LogicPOS.UI.Components.Modals
 {
     internal partial class CountryModal
     {

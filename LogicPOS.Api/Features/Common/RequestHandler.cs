@@ -18,7 +18,7 @@ namespace LogicPOS.Api.Features.Common
 
         public abstract Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken = default);
 
-        protected async Task<ErrorOr<Guid>> HandleHttpResponseAsync(HttpResponseMessage httpResponse)
+        protected async Task<ErrorOr<Guid>> HandleAddEntityHttpResponseAsync(HttpResponseMessage httpResponse)
         {
             switch (httpResponse.StatusCode)
             {
@@ -26,8 +26,26 @@ namespace LogicPOS.Api.Features.Common
                     var response = await httpResponse.Content.ReadFromJsonAsync<AddEntityResponse>();
                     return response.Id;
                 case HttpStatusCode.BadRequest:
-                    var problemDetails = await httpResponse.Content.ReadFromJsonAsync<ProblemDetails>();
-                    return Error.Validation(metadata: new Dictionary<string, object> { { "problem", problemDetails } });
+                    return await GetProblemDetailsErrorAsync(httpResponse);
+                default:
+                    return ApiErrors.CommunicationError;
+            }
+        }
+
+        private async Task<Error> GetProblemDetailsErrorAsync(HttpResponseMessage httpResponse)
+        {
+            var problemDetails =  await httpResponse.Content.ReadFromJsonAsync<ProblemDetails>();
+            return Error.Validation(metadata: new Dictionary<string, object> { { "problem", problemDetails } });
+        }
+
+        protected async Task<ErrorOr<Unit>> HandleUpdateEntityHttpResponseAsync(HttpResponseMessage httpResponse)
+        {
+            switch (httpResponse.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    return Unit.Value;
+                case HttpStatusCode.BadRequest:
+                    return await GetProblemDetailsErrorAsync(httpResponse);
                 default:
                     return ApiErrors.CommunicationError;
             }

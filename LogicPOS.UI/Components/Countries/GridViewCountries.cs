@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using LogicPOS.Globalization;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
+using LogicPOS.UI.Components.Modals;
 
 namespace LogicPOS.UI.Components
 {

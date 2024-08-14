@@ -27,9 +27,8 @@ namespace LogicPOS.Api.Features.Countries.AddCountry
                 var httpResponse = await _httpClient.PostAsJsonAsync("countries",
                                                                      command,
                                                                      cancellationToken);
-                var response = await httpResponse.Content.ReadAsStringAsync();
 
-                return await HandleHttpResponseAsync(httpResponse);
+                return await HandleAddEntityHttpResponseAsync(httpResponse);
 
             }
             catch (HttpRequestException)

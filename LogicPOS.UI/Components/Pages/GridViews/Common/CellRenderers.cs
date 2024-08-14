@@ -1,10 +1,10 @@
 ﻿using Gtk;
 
-namespace LogicPOS.UI.Components.GridViews
+namespace LogicPOS.UI.Components.Pages.GridViews
 {
     public static class CellRenderers
     {
-        public static readonly  Pango.FontDescription TitleFont = Pango.FontDescription.FromString(Settings.AppSettings.Instance.fontGenericTreeViewColumnTitle);
+        public static readonly Pango.FontDescription TitleFont = Pango.FontDescription.FromString(Settings.AppSettings.Instance.fontGenericTreeViewColumnTitle);
         public static readonly Pango.FontDescription CellFont = Pango.FontDescription.FromString(Settings.AppSettings.Instance.fontGenericTreeViewColumn);
 
         public static CellRenderer Title() => new CellRendererText

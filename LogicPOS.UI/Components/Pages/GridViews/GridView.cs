@@ -831,20 +831,6 @@ namespace LogicPOS.UI.Components
 
             }
 
-            #region API Integration
-            if (DialogType == typeof(CountryModal))
-            {
-                Dialog = new CountryModal(Modals.EntityModalMode.Insert);
-                var countryModalResponse = (ResponseType) Dialog.Run();
-                if(countryModalResponse == ResponseType.Cancel || countryModalResponse == ResponseType.DeleteEvent)
-                {
-                    Dialog.Destroy();
-                }
-                return false;
-            }
-
-            #endregion
-
             //After Dialog Constructor
             Dialog.WindowPosition = WindowPosition.Center;
 

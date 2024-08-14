@@ -24,9 +24,8 @@ namespace LogicPOS.Api.Features.Users.Profiles.AddUserProfile
                 var httpResponse = await _httpClient.PostAsJsonAsync("users/profiles",
                                                                      command,
                                                                      cancellationToken);
-                var response = await httpResponse.Content.ReadAsStringAsync();
 
-                return await HandleHttpResponseAsync(httpResponse);
+                return await HandleAddEntityHttpResponseAsync(httpResponse);
 
             }
             catch (HttpRequestException)

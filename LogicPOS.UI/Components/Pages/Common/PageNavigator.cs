@@ -26,7 +26,6 @@ namespace LogicPOS.UI.Components.Pages
         public IconButtonWithText ButtonRefresh { get; set; }
         #endregion
 
-     
         public int CurrentRecord { get; set; }
         public int TotalRecords { get; set; }
 
@@ -41,10 +40,17 @@ namespace LogicPOS.UI.Components.Pages
 
         private void Initialize()
         {
+            InitializeButtons();
+            InitializeSearchBox();
+            InitializeExtraButtonSpace();
+
+            Design();
+        }
+
+        private void Design()
+        {
             HBox navigatorComponent = new HBox(false, 0);
             HBox buttonsComponent = new HBox(true, 0);
-
-            InitializeButtons();
 
             buttonsComponent.PackStart(BtnPrevious, false, false, 0);
             buttonsComponent.PackStart(ButtonNextRecord, false, false, 0);
@@ -54,16 +60,12 @@ namespace LogicPOS.UI.Components.Pages
             buttonsComponent.PackStart(ButtonDelete, false, false, 0);
             buttonsComponent.PackStart(ButtonRefresh, false, false, 0);
 
-            InitializeSearchBox();
+
             navigatorComponent.PackStart(SearchBox, false, false, 0);
-
-            InitializeExtraButtonSpace();
             navigatorComponent.PackStart(ExtraButtonSpace, true, true, 0);
-
             navigatorComponent.PackStart(buttonsComponent, false, false, 0);
 
             PackStart(navigatorComponent);
-
         }
 
         private void InitializeSearchBox()

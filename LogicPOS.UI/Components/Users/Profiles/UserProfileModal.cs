@@ -1,8 +1,6 @@
-﻿using ErrorOr;
-using LogicPOS.Api.Features.Users.Profiles;
+﻿using LogicPOS.Api.Features.Users.Profiles;
 using LogicPOS.Api.Features.Users.Profiles.AddUserProfile;
-using LogicPOS.UI.Alerts;
-using System;
+using LogicPOS.Api.Features.Users.Profiles.UpdateUserProfile;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -14,29 +12,6 @@ namespace LogicPOS.UI.Components.Modals
         {
         }
 
-        protected override void ButtonOk_Clicked(object sender, EventArgs e)
-        {
-            switch (_modalMode)
-            {
-                case EntityModalMode.Insert:
-                    AddUserProfile();
-                    break;
-                case EntityModalMode.Update:
-                    break;
-            }
-        }
-
-        private void HandleAddResult(ErrorOr<Guid> addUserProfileResult)
-        {
-            if (addUserProfileResult.IsError)
-            {
-                HandleError(addUserProfileResult.FirstError);
-                return;
-            }
-
-            Destroy();
-        }
-
         private AddUserProfileCommand CreateAddCommand()
         {
             return new AddUserProfileCommand
@@ -45,13 +20,21 @@ namespace LogicPOS.UI.Components.Modals
                 Notes = _txtNotes.Value.Text
             };
         }
-        private void AddUserProfile()
+
+        private UpdateUserProfileCommand CreateUpdateCommand()
         {
-            var command = CreateAddCommand();
-            var result = _mediator.Send(command).Result;
-            HandleAddResult(result);
+            return new UpdateUserProfileCommand
+            {
+                Id = _entity.Id,
+                NewOrder = uint.Parse(_txtOrder.Text),
+                NewCode = _txtCode.Text,
+                NewDesignation = _txtDesignation.Text,
+                NewNotes = _txtNotes.Value.Text,
+                IsDeleted = _checkDisabled.Active
+            };
         }
-        protected override void ShowEntity()
+
+        protected override void ShowEntityData()
         {
             var userProfile = _entity as UserProfile;
             _txtOrder.Text = userProfile.Order.ToString();
@@ -59,6 +42,28 @@ namespace LogicPOS.UI.Components.Modals
             _txtDesignation.Text = userProfile.Designation;
             _txtNotes.Value.Text = userProfile.Notes;
             _checkDisabled.Active = userProfile.IsDeleted;
+        }
+
+        protected override void UpdateEntity()
+        {
+            var command = CreateUpdateCommand();
+            var result = _mediator.Send(command).Result;
+
+            if (result.IsError)
+            {
+                HandleError(result.FirstError);
+            }
+        }
+
+        protected override void AddEntity()
+        {
+            var command = CreateAddCommand();
+            var result = _mediator.Send(command).Result;
+
+            if (result.IsError)
+            {
+                HandleError(result.FirstError);
+            }
         }
     }
 }
