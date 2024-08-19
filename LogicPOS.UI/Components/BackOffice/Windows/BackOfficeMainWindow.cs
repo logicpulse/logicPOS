@@ -222,8 +222,8 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
             //Configuration
             Dictionary<string, AccordionNode> _accordionChildConfiguration = new Dictionary<string, AccordionNode>
                 {
-                    { "ConfigurationPreferenceParameterCompany", new AccordionNode(GeneralUtils.GetResourceByName("global_preferenceparameter_company")) { Content = new PreferenceParametersPage(this) } },
-                    { "ConfigurationPreferenceParameterSystem", new AccordionNode(GeneralUtils.GetResourceByName("global_preferenceparameter_system")) { Content =  new PreferenceParametersPage(this) } },
+                    { "ConfigurationPreferenceParameterCompany", new AccordionNode(GeneralUtils.GetResourceByName("global_preferenceparameter_company")) { Content = new PreferenceParametersPage(this, new Dictionary<string, string>{{"parameters","company"}}) } },
+                    { "ConfigurationPreferenceParameterSystem", new AccordionNode(GeneralUtils.GetResourceByName("global_preferenceparameter_system")) {Content = new PreferenceParametersPage(this, new Dictionary<string, string>{{"parameters","system"}}) }  },
                     { "ConfigurationPlaceTerminal", new AccordionNode(GeneralUtils.GetResourceByName("global_places_terminals")) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlaceTerminal>(this) } }
                 };
 

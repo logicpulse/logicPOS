@@ -6,14 +6,15 @@ using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.Pages
 {
     public class PreferenceParametersPage : Page
     {
         private readonly List<PreferenceParameter> _parameters = new List<PreferenceParameter>();
-
-        public PreferenceParametersPage(Window parent) : base(parent)
+ 
+        public PreferenceParametersPage(Window parent, Dictionary<string,string> options) : base(parent,options)
         {
             Navigator.ButtonDelete.Sensitive = false;
             Navigator.ButtonInsert.Sensitive = false;
@@ -164,7 +165,20 @@ namespace LogicPOS.UI.Components.Pages
             }
 
             _parameters.Clear();
-            _parameters.AddRange(getParametersResult.Value);
+
+
+            List<PreferenceParameter> parameters;
+
+            if (Options["parameters"] == "company")
+            {
+                parameters = getParametersResult.Value.Where(p => p.FormType == 1).ToList();
+            }
+            else
+            {
+                parameters = getParametersResult.Value.Where(p => p.FormType == 2).ToList();
+            }
+
+            _parameters.AddRange(parameters);
             _parameters.ForEach(p => p.ResourceStringValue = GeneralUtils.GetResourceByName(p.ResourceString));
         }
 

@@ -1,15 +1,8 @@
 ﻿using Gtk;
-using logicpos.App;
-using logicpos.Classes.Enums.Dialogs;
 using LogicPOS.Api.Errors;
-using LogicPOS.Api.Features.Common;
-using LogicPOS.Api.Features.Countries;
-using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
-using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.GridViews;
 using LogicPOS.UI.Components.Modals;
-using LogicPOS.Utility;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -28,11 +21,13 @@ namespace LogicPOS.UI.Components.Pages
         public bool CanDeleteEntity { get; set; }
         public GridViewSettings GridViewSettings { get; } = new GridViewSettings();
         internal PageNavigator Navigator { get; }
+        protected Dictionary<string,string> Options { get; set; }
 
-        public Page(Window parent)
+        public Page(Window parent, Dictionary<string,string> options = null)
         {
             PageParentWindow = parent;
             Navigator = new PageNavigator(this);
+            Options = options;
 
             LoadEntities();
 
@@ -44,7 +39,7 @@ namespace LogicPOS.UI.Components.Pages
 
             ShowAll();
         }
-       
+
         protected void ShowApiErrorAlert()
         {
             SimpleAlerts.Error()
@@ -110,9 +105,9 @@ namespace LogicPOS.UI.Components.Pages
 
             PackStart(verticalLayout);
         }
-        
+
         protected abstract void AddEntitiesToModel();
-       
+
         protected virtual void GridViewRow_Changed(object sender, EventArgs e)
         {
             TreeSelection selection = GridView.Selection;
@@ -126,7 +121,7 @@ namespace LogicPOS.UI.Components.Pages
 
             Navigator.Update();
         }
-        
+
         protected virtual void AddEventHandlers()
         {
             GridView.CursorChanged += GridViewRow_Changed;
