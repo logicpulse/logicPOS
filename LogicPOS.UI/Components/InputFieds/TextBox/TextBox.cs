@@ -31,7 +31,7 @@ namespace LogicPOS.UI.Components.InputFieds
             IsValidatable = isValidatable;
             _regex = regex;
             Entry = new Entry();
-            Component = CreateBox();
+            Component = CreateComponent();
             AddEventHandlers();
             UpdateValidationColors();
         }
@@ -77,7 +77,7 @@ namespace LogicPOS.UI.Components.InputFieds
             return label;
         }
 
-        private VBox CreateBox()
+        private VBox CreateComponent()
         {
             var box = new VBox(false, 2);
             box.PackStart(Label, false, false, 0);

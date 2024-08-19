@@ -1,4 +1,5 @@
 ﻿using ErrorOr;
+using LogicPOS.Api.Entities;
 using MediatR;
 using System;
 using System.Collections.Generic;

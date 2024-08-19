@@ -8,16 +8,15 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class UserProfileModal
     {
-        #region Components
-        private TextBox _txtOrder = new TextBox("global_record_order", true);
-        private TextBox _txtCode = new TextBox("global_record_code", true);
-        private TextBox _txtDesignation = new TextBox("global_designation", true);
-        private MultilineTextBox _txtNotes = new MultilineTextBox();
-        private CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
-        #endregion
-
         public override Size ModalSize => new Size(500, 335);
         public override string ModalTitleResourceName => "window_title_edit_user_profile";
+
+        #region Components
+        private TextBox _txtOrder = TextBoxes.CreateOrderField();
+        private TextBox _txtCode = TextBoxes.CreateCodeField();
+        private TextBox _txtDesignation = new TextBox("global_designation", true);
+        private CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
+        #endregion
 
         protected override void Design()
         {
@@ -25,15 +24,30 @@ namespace LogicPOS.UI.Components.Modals
             VBox.PackStart(notebook, true, true, 0);
         }
 
-        protected override void RegisterFields()
+        protected override void AddSensitiveFields()
         {
-            _fields.Add(_txtOrder.Entry);
-            _fields.Add(_txtCode.Entry);
-            _fields.Add(_txtDesignation.Entry);
-            _fields.Add(_txtNotes.TextView);
-            _fields.Add(_checkDisabled);
+            SensitiveFields.Add(_txtOrder.Entry);
+            SensitiveFields.Add(_txtCode.Entry);
+            SensitiveFields.Add(_txtDesignation.Entry);
+            SensitiveFields.Add(_txtNotes.TextView);
+            SensitiveFields.Add(_checkDisabled);
         }
 
+        protected override void AddValidatableFields()
+        {
+            switch(_modalMode)
+            {
+               case EntityModalMode.Insert:
+                    ValidatableFields.Add(_txtDesignation);
+                    break;
+                case EntityModalMode.Update:
+                    ValidatableFields.Add(_txtDesignation);
+                    ValidatableFields.Add(_txtOrder);
+                    ValidatableFields.Add(_txtCode);
+                    break;
+            }
+        }
+        
         private VBox CreateTab1()
         {
             var tab1 = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
@@ -64,13 +78,6 @@ namespace LogicPOS.UI.Components.Modals
             return notebook;
         }
 
-        private VBox CreateNotesTab()
-        {
-            VBox box = new VBox(true, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
-            _txtNotes.ScrolledWindow.BorderWidth = 0;
-            box.PackStart(_txtNotes, true, true, 0);
-            return box;
-        }
-
+      
     }
 }

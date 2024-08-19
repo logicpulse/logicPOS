@@ -75,7 +75,7 @@ namespace logicpos.Classes.Logic.License
                         GeneralUtils.GetResourceByName("global_information"),
                         GeneralUtils.GetResourceByName("dialog_message_license_updated"));
 
-                    return;
+                    //return; -> removed by tchial0 to continue the execution
                 }
 
                 if (version == "LOGICPOS_BLOCK")

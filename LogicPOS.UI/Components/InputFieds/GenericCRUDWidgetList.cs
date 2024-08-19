@@ -157,7 +157,13 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 
             if (!result)
             {
-                ResponseType response = logicpos.Utils.ShowMessageBox(GlobalApp.BackOfficeMainWindow, DialogFlags.DestroyWithParent | DialogFlags.Modal, new Size(500, 500), MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_dialog_validation_error"), string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_field_validation_error"), invalidFields));
+                ResponseType response = logicpos.Utils.ShowMessageBox(GlobalApp.BackOfficeMainWindow,
+                                                                      DialogFlags.DestroyWithParent | DialogFlags.Modal,
+                                                                      new Size(500, 500),
+                                                                      MessageType.Error,
+                                                                      ButtonsType.Ok,
+                                                                      CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_dialog_validation_error"),
+                                                                      string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_field_validation_error"), invalidFields));
             };
 
             return result;

@@ -40,8 +40,8 @@
         public const string AUDIT_MESSAGE_USED_FORCED_logout = "audit_message_used_forced_logout";
         public const string AUDIT_MESSAGE_USER_CHANGE = "audit_message_user_change";
         public const string AUDIT_MESSAGE_USER_CHANGE_PASSWORD = "audit_message_user_change_password";
-        public const string AUDIT_MESSAGE_USER_LOGGERIN = "audit_message_user_loggerin";
-        public const string AUDIT_MESSAGE_USER_LOGGERIN_ERROR = "audit_message_user_loggerin_error";
+        public const string AUDIT_MESSAGE_USER_LOGGERIN = "audit_message_user_login";
+        public const string AUDIT_MESSAGE_USER_LOGGERIN_ERROR = "audit_message_user_login_error";
         public const string AUDIT_MESSAGE_USER_logout = "audit_message_user_logout";
         public const string BACKOFFICE_DATETIME_FORMAT_STATUS_BAR = "backoffice_datetime_format_status_bar";
         public const string change_log = "change_log";
@@ -478,7 +478,7 @@
         public const string GLOBAL_LOAD_FIRST_TIME = "global_load_first_time";
         public const string GLOBAL_LOCALITY = "global_locality";
         public const string GLOBAL_LOCATIONS = "global_locations";
-        public const string GLOBAL_LOGGERIN = "global_loggerin";
+        public const string GLOBAL_LOGGERIN = "global_login";
         public const string GLOBAL_MAINTENANCE = "global_maintenance";
         public const string GLOBAL_MAXIMUM = "global_maximum";
         public const string GLOBAL_MESSAGES = "global_messages";
@@ -1054,7 +1054,7 @@
         public const string WIDGET_GENERICTREEVIEWSEARCH_SEARCH_ADVANCED = "widget_generictreeviewsearch_search_advanced";
         public const string WIDGET_GENERICTREEVIEWSEARCH_SEARCH_LABEL = "widget_generictreeviewsearch_search_label";
         public const string WIDGET_POSPINPAD_CHANGE_PASSWORD = "widget_pospinpad_change_password";
-        public const string WIDGET_POSPINPAD_LOGGERIN = "widget_pospinpad_loggerin";
+        public const string WIDGET_POSPINPAD_LOGGERIN = "widget_pospinpad_login";
         public const string WIDGET_POSPINPAD_OK = "widget_pospinpad_ok";
         public const string WINDOW_CHECK_STOCK_QUESTION = "window_check_stock_question";
         public const string WINDOW_DIALOG_CANT_OPEN_DOCUMENT = "window_dialog_cant_open_document";

@@ -13,6 +13,7 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 
@@ -20,19 +21,22 @@ namespace LogicPOS.UI.Components.Modals
 {
     public abstract class EntityModal : Dialog
     {
+        protected ApiEntity _entity;
         protected readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<ISender>();
         protected readonly EntityModalMode _modalMode;
+        protected int _boxSpacing = 5;
+        public abstract Size ModalSize { get; }
+        public abstract string ModalTitleResourceName { get; }
+
         #region Components
         protected IconButtonWithText _buttonOk;
         protected IconButtonWithText _buttonCancel;
-        protected List<Widget> _fields = new List<Widget>();
-        protected HBox _statusBar;
-        #endregion
-        protected int _boxSpacing = 5;
-        protected ApiEntity _entity;
+        public List<Widget> SensitiveFields { get; private set; } = new List<Widget>();
+        public List<TextBox> ValidatableFields { get; private set; } = new List<TextBox>();
 
-        public abstract System.Drawing.Size ModalSize { get; }
-        public abstract string ModalTitleResourceName { get; }
+        protected HBox _statusBar;
+        protected MultilineTextBox _txtNotes = new MultilineTextBox();
+        #endregion
 
         public EntityModal(EntityModalMode modalMode, ApiEntity entity = null)
         {
@@ -40,11 +44,24 @@ namespace LogicPOS.UI.Components.Modals
             _entity = entity;
 
             HandleModalMode();
+            AddValidatableFields();
             DefaultDesign();
             ShowAll();
         }
 
-        protected virtual void HandleError(Error error)
+        protected void Validate()
+        {
+            if (AllFieldsAreValid())
+            {
+                return;
+            }
+
+            ShowValidationErrors();
+
+            this.Run();
+        }
+
+        protected virtual void HandleApiError(Error error)
         {
             switch (error.Type)
             {
@@ -67,6 +84,24 @@ namespace LogicPOS.UI.Components.Modals
             }
 
             this.Run();
+        }
+
+        protected bool AllFieldsAreValid()
+        {
+            return ValidatableFields.All(txt => txt.IsValid());
+        }
+
+        protected void ShowValidationErrors()
+        {
+            var invalidFields = string.Join(", ", ValidatableFields.Where(txt => txt.IsValid() == false).Select(txt => txt.Label.Text));
+
+            Utils.ShowMessageBox(GlobalApp.BackOfficeMainWindow,
+                                 DialogFlags.DestroyWithParent | DialogFlags.Modal,
+                                 new Size(500, 500),
+                                 MessageType.Error,
+                                 ButtonsType.Ok,
+                                 GeneralUtils.GetResourceByName("window_title_dialog_validation_error"),
+                                 string.Format(GeneralUtils.GetResourceByName("dialog_message_field_validation_error"), invalidFields));
         }
 
         private void DefaultDesign()
@@ -102,9 +137,9 @@ namespace LogicPOS.UI.Components.Modals
                 throw new ArgumentNullException(nameof(_entity));
             }
 
-            if (_fields.Any() == false)
+            if (SensitiveFields.Any() == false)
             {
-                RegisterFields();
+                AddSensitiveFields();
             }
 
             SetViewMode();
@@ -120,13 +155,9 @@ namespace LogicPOS.UI.Components.Modals
         {
             if (_modalMode == EntityModalMode.View)
             {
-                _fields.ForEach(f => f.Sensitive = false);
+                SensitiveFields.ForEach(field => field.Sensitive = false);
             }
         }
-
-        protected abstract void ShowEntityData();
-
-        protected abstract void Design();
 
         private void SetWindowTitle()
         {
@@ -147,10 +178,10 @@ namespace LogicPOS.UI.Components.Modals
             string fontBaseDialogActionAreaButton = AppSettings.Instance.fontBaseDialogActionAreaButton;
             string tmpFileActionOK = PathsSettings.ImagesFolderLocation + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
             string tmpFileActionCancel = PathsSettings.ImagesFolderLocation + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png";
-            System.Drawing.Size sizeBaseDialogActionAreaButtonIcon = AppSettings.Instance.sizeBaseDialogActionAreaButtonIcon;
-            System.Drawing.Size sizeBaseDialogActionAreaButton = AppSettings.Instance.sizeBaseDialogActionAreaButton;
-            System.Drawing.Color colorBaseDialogActionAreaButtonBackground = AppSettings.Instance.colorBaseDialogActionAreaButtonBackground;
-            System.Drawing.Color colorBaseDialogActionAreaButtonFont = AppSettings.Instance.colorBaseDialogActionAreaButtonFont;
+            Size sizeBaseDialogActionAreaButtonIcon = AppSettings.Instance.sizeBaseDialogActionAreaButtonIcon;
+            Size sizeBaseDialogActionAreaButton = AppSettings.Instance.sizeBaseDialogActionAreaButton;
+            Color colorBaseDialogActionAreaButtonBackground = AppSettings.Instance.colorBaseDialogActionAreaButtonBackground;
+            Color colorBaseDialogActionAreaButtonFont = AppSettings.Instance.colorBaseDialogActionAreaButtonFont;
 
             if (GlobalApp.ScreenSize.Width == 800 && GlobalApp.ScreenSize.Height == 600)
             {
@@ -192,6 +223,12 @@ namespace LogicPOS.UI.Components.Modals
 
         protected virtual void ButtonOk_Clicked(object sender, EventArgs e)
         {
+            if(AllFieldsAreValid() == false)
+            {
+                Validate();
+                return;
+            }
+
             switch (_modalMode)
             {
                 case EntityModalMode.Insert:
@@ -202,14 +239,9 @@ namespace LogicPOS.UI.Components.Modals
                     break;
                 default:
                     throw new Exception("Invalid modal mode");
- 
+
             }
         }
-
-        protected abstract void UpdateEntity();
-        protected abstract void AddEntity();
-
-        protected abstract void RegisterFields();
 
         private HBox CreateStatusBar()
         {
@@ -219,7 +251,8 @@ namespace LogicPOS.UI.Components.Modals
             //UpdatedBy
             VBox vboxUpdatedBy = new VBox(true, 0);
             Label labelUpdatedBy = new Label(GeneralUtils.GetResourceByName("global_record_user_update"));
-            Label labelUpdatedByValue = new Label(string.Empty);
+            var lastUpdatedBy = _entity?.UpdatedBy.ToString() ?? "?";
+            Label labelUpdatedByValue = new Label(lastUpdatedBy);
             labelUpdatedBy.SetAlignment(0.0F, 0.5F);
             labelUpdatedByValue.SetAlignment(0.0F, 0.5F);
             vboxUpdatedBy.PackStart(labelUpdatedBy);
@@ -228,7 +261,8 @@ namespace LogicPOS.UI.Components.Modals
             //CreatedAt
             VBox vboxCreatedAt = new VBox(true, 0);
             Label labelCreatedAt = new Label(GeneralUtils.GetResourceByName("global_record_date_created"));
-            Label labelCreatedAtValue = new Label(string.Empty);
+            var createdAt = _entity?.CreatedAt.ToString() ?? "?";
+            Label labelCreatedAtValue = new Label(createdAt);
             labelCreatedAt.SetAlignment(0.5F, 0.5F);
             labelCreatedAtValue.SetAlignment(0.5F, 0.5F);
             vboxCreatedAt.PackStart(labelCreatedAt);
@@ -237,7 +271,8 @@ namespace LogicPOS.UI.Components.Modals
             //UpdatedAt
             VBox vboxUpdatedAt = new VBox(true, 0);
             Label labelUpdatedAt = new Label(GeneralUtils.GetResourceByName("global_record_date_updated_for_base_dialog"));
-            Label labelUpdatedAtValue = new Label(string.Empty);
+            var updatedAt = _entity?.UpdatedAt.ToString() ?? "?";
+            Label labelUpdatedAtValue = new Label(updatedAt);
             labelUpdatedAt.SetAlignment(1.0F, 0.5F);
             labelUpdatedAtValue.SetAlignment(1.0F, 0.5F);
             vboxUpdatedAt.PackStart(labelUpdatedAt);
@@ -249,6 +284,21 @@ namespace LogicPOS.UI.Components.Modals
 
             return statusBar;
         }
+
+        protected virtual VBox CreateNotesTab()
+        {
+            VBox box = new VBox(true, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
+            _txtNotes.ScrolledWindow.BorderWidth = 0;
+            box.PackStart(_txtNotes, true, true, 0);
+            return box;
+        }
+
+        protected abstract void ShowEntityData();
+        protected abstract void Design();
+        protected abstract void UpdateEntity();
+        protected abstract void AddEntity();
+        protected abstract void AddSensitiveFields();
+        protected abstract void AddValidatableFields();
 
     }
 }

@@ -1,21 +1,12 @@
 ﻿using Gtk;
-using logicpos.App;
-using LogicPOS.Api.Errors;
-using LogicPOS.Api.Features.Users.Permissions.PermissionItems;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Users.Permissions.PermissionItems.GetAllPermissionItems;
-using LogicPOS.Api.Features.Users.Permissions.Profiles;
 using LogicPOS.Api.Features.Users.Permissions.Profiles.GetAllPermissionProfiles;
-using LogicPOS.Api.Features.Users.Profiles;
 using LogicPOS.Api.Features.Users.Profiles.GetAllUserProfiles;
-using LogicPOS.Settings;
-using LogicPOS.UI.Alerts;
-using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.GridViews;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
-using MediatR;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -160,7 +151,7 @@ namespace LogicPOS.UI.Components.Pages
             AddColumns();
             AddEventHandlers();
         }
-  
+
         private TreeViewColumn CreatePermissiontemColumn()
         {
             void RenderDesignation(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
@@ -221,7 +212,7 @@ namespace LogicPOS.UI.Components.Pages
                 (cell as CellRendererText).Text = userProfile.Designation;
             }
 
-            return Columns.CreateDesignationColumn(RenderDesignation); 
+            return Columns.CreateDesignationColumn(RenderDesignation);
         }
 
         private void CheckBox_Clicked(object o, ToggledArgs args)
@@ -259,18 +250,12 @@ namespace LogicPOS.UI.Components.Pages
             AddUserProfilesToModel();
         }
 
-        public override void ViewEntity() => RunModal(EntityModalMode.View);
-
-        public override void UpdateEntity() => RunModal(EntityModalMode.Update);
-
         public override void DeleteEntity()
         {
             throw new NotImplementedException();
         }
-
-        public override void InsertEntity() => RunModal(EntityModalMode.Insert);
-
-        private void RunModal(EntityModalMode mode)
+   
+        protected override void RunModal(EntityModalMode mode)
         {
             var modal = new UserProfileModal(mode, SelectedEntity as UserProfile);
             modal.Run();

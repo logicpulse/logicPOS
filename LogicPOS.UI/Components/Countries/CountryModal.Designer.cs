@@ -9,8 +9,8 @@ namespace LogicPOS.UI.Components.Modals
     internal partial class CountryModal
     {
         #region Components
-        private TextBox _txtOrder = new TextBox("global_record_order", true);
-        private TextBox _txtCode = new TextBox("global_record_code", true);
+        private TextBox _txtOrder = TextBoxes.CreateOrderField();
+        private TextBox _txtCode = TextBoxes.CreateCodeField();
         private TextBox _txtDesignation = new TextBox("global_designation", true);
         private TextBox _txtCapital = new TextBox("global_country_capital", true);
         private TextBox _txtCurrency = new TextBox("global_currency", true);
@@ -19,7 +19,6 @@ namespace LogicPOS.UI.Components.Modals
         private TextBox _txtCurrencyCode = new TextBox("global_currency_code");
         private TextBox _txtFiscalNumberRegex = new TextBox("global_regex_fiscal_number");
         private TextBox _txtZipCodeRegex = new TextBox("global_regex_postal_code");
-        private MultilineTextBox _txtNotes = new MultilineTextBox();
         private CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
         #endregion
         public override Size ModalSize => new Size(500, 500);
@@ -30,20 +29,35 @@ namespace LogicPOS.UI.Components.Modals
             AddNotebook();
         }
 
-        protected override void RegisterFields()
+        protected override void AddSensitiveFields()
         {
-            _fields.Add(_txtOrder.Entry);
-            _fields.Add(_txtCode.Entry);
-            _fields.Add(_txtDesignation.Entry);
-            _fields.Add(_txtCapital.Entry);
-            _fields.Add(_txtCurrency.Entry);
-            _fields.Add(_txtCode2.Entry);
-            _fields.Add(_txtCode3.Entry);
-            _fields.Add(_txtCurrencyCode.Entry);
-            _fields.Add(_txtFiscalNumberRegex.Entry);
-            _fields.Add(_txtZipCodeRegex.Entry);
-            _fields.Add(_txtNotes.TextView);
-            _fields.Add(_checkDisabled);
+            SensitiveFields.Add(_txtOrder.Entry);
+            SensitiveFields.Add(_txtCode.Entry);
+            SensitiveFields.Add(_txtDesignation.Entry);
+            SensitiveFields.Add(_txtCapital.Entry);
+            SensitiveFields.Add(_txtCurrency.Entry);
+            SensitiveFields.Add(_txtCode2.Entry);
+            SensitiveFields.Add(_txtCode3.Entry);
+            SensitiveFields.Add(_txtCurrencyCode.Entry);
+            SensitiveFields.Add(_txtFiscalNumberRegex.Entry);
+            SensitiveFields.Add(_txtZipCodeRegex.Entry);
+            SensitiveFields.Add(_txtNotes.TextView);
+            SensitiveFields.Add(_checkDisabled);
+        }
+
+        protected override void AddValidatableFields()
+        {
+            switch (_modalMode)
+            {
+                case EntityModalMode.Insert:
+                    ValidatableFields.Add(_txtDesignation);
+                    break;
+                case EntityModalMode.Update:
+                    ValidatableFields.Add(_txtDesignation);
+                    ValidatableFields.Add(_txtOrder);
+                    ValidatableFields.Add(_txtCode);
+                    break;
+            }
         }
 
         private void AddNotebook()
@@ -92,14 +106,6 @@ namespace LogicPOS.UI.Components.Modals
             notebook.AppendPage(CreateTab2(), new Label(GeneralUtils.GetResourceByName("global_others")));
             notebook.AppendPage(CreateNotesTab(), new Label(GeneralUtils.GetResourceByName("global_notes")));
             return notebook;
-        }
-
-        private VBox CreateNotesTab()
-        {
-            VBox box = new VBox(true, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
-            _txtNotes.ScrolledWindow.BorderWidth = 0;
-            box.PackStart(_txtNotes, true, true, 0);
-            return box;
         }
     }
 }

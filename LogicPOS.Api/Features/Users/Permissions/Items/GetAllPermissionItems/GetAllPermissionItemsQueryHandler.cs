@@ -1,4 +1,5 @@
 ﻿using ErrorOr;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Errors;
 using LogicPOS.Api.Features.Common;
 using System.Collections.Generic;

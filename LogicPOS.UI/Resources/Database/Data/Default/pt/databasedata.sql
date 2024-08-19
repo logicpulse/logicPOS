@@ -1335,11 +1335,11 @@ UPDATE cfg_configurationpreferenceparameter SET UpdatedBy = '090c5684-52ba-4d7a-
 --UPDATE sys_systemaudittype SET ResourceString = LOWER(CONCAT("systemaudittype_", TOKEN));
 INSERT INTO sys_systemaudittype (Oid,Ord,Code,Token,Designation,ResourceString) VALUES ('c3a6486a-8c80-46bb-9047-e5f228247d53',10,10,'APP_START','Aplicação Iniciada','systemaudittype_app_start');
 INSERT INTO sys_systemaudittype (Oid,Ord,Code,Token,Designation,ResourceString) VALUES ('03cdf338-de16-4b31-8908-3b3f9706d134',20,20,'APP_CLOSE','Aplicação Encerrada','systemaudittype_app_close');
-INSERT INTO sys_systemaudittype (Oid,Ord,Code,Token,Designation,ResourceString) VALUES ('ced761ee-d338-4a5f-8971-b0548e8ffc68',30,30,'USER_loggerIN','Login Utilizador','systemaudittype_user_loggerin');
+INSERT INTO sys_systemaudittype (Oid,Ord,Code,Token,Designation,ResourceString) VALUES ('ced761ee-d338-4a5f-8971-b0548e8ffc68',30,30,'USER_LOGIN','Login Utilizador','systemaudittype_user_login');
 INSERT INTO sys_systemaudittype (Oid,Ord,Code,Token,Designation,ResourceString) VALUES ('4a6e396f-1d89-4f5d-b315-097aa408b853',40,40,'USER_logout','Logout Utilizador','systemaudittype_user_logout');
 INSERT INTO sys_systemaudittype (Oid,Ord,Code,Token,Designation,ResourceString) VALUES ('c2d0923a-821d-43a7-9e70-b8b792539184',50,50,'USER_CHANGE','Utilizador Alterado','systemaudittype_user_change');
 INSERT INTO sys_systemaudittype (Oid,Ord,Code,Token,Designation,ResourceString) VALUES ('20f85113-f180-49c3-a125-d4b015e08504',60,60,'USER_CHANGE_PASSWORD','Utilizador Alterou a Password','systemaudittype_user_change_password');
-INSERT INTO sys_systemaudittype (Oid,Ord,Code,Token,Designation,ResourceString) VALUES ('9ca32a1a-f1e5-4e9b-8e3b-72e5d6f875fd',70,70,'USER_loggerIN_ERROR','Utilizador enganou se na Password','systemaudittype_user_loggerin_error');
+INSERT INTO sys_systemaudittype (Oid,Ord,Code,Token,Designation,ResourceString) VALUES ('9ca32a1a-f1e5-4e9b-8e3b-72e5d6f875fd',70,70,'USER_LOGIN_ERROR','Utilizador enganou se na Password','systemaudittype_user_login_error');
 INSERT INTO sys_systemaudittype (Oid,Ord,Code,Token,Designation,ResourceString) VALUES ('d559cc92-9488-43a6-9b60-4079b86699b7',80,80,'TABLE_CLOSE','Ordem Fechada','systemaudittype_table_close');
 INSERT INTO sys_systemaudittype (Oid,Ord,Code,Token,Designation,ResourceString) VALUES ('6da3df7f-31f0-4098-91a7-5e2623dc3518',90,90,'TABLE_OPEN','Ordem Aberta','systemaudittype_table_open');
 INSERT INTO sys_systemaudittype (Oid,Ord,Code,Token,Designation,ResourceString) VALUES ('066f10fc-f62f-43a1-98a1-3ade1bf3ffa6',100,100,'TABLE_RESERVED','Ordem Reservada','systemaudittype_table_reserved');

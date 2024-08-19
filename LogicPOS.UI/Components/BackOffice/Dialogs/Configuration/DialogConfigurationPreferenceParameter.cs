@@ -179,12 +179,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         getCulturesLabels[7] = "Espanol";
 
                         TreeIter iter;
-                        TreeStore store = new TreeStore(typeof(string), typeof(string));
-                        for (int i = 0; i < getCulturesLabels.Length; i++)
-                        {
-                            iter = store.AppendValues(getCulturesValues.GetValue(i), getCulturesLabels.GetValue(i));
-                        }
-
+                       
                         ComboBox xpoComboBoxInputType = new ComboBox(getCulturesLabels);
 
                         xpoComboBoxInputType.Model.GetIterFirst(out iter);
@@ -193,7 +188,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         {
                             GLib.Value thisRow = new GLib.Value();
                             xpoComboBoxInputType.Model.GetValue(iter, 0, ref thisRow);
-                            //if ((thisRow.Val as string).Equals(getCultureFromDB))
+
                             if (getCulturesValues[cbox] == getCultureFromDB)
                             {
                                 xpoComboBoxInputType.SetActiveIter(iter);
@@ -211,11 +206,6 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         xpoComboBoxInputType.Changed += delegate
                         {
                             entryValue.Text = getCulturesValues[xpoComboBoxInputType.Active];
-   
-                            //LogicPOS.Settings.CultureSettings.CurrentCulture = new System.Globalization.CultureInfo(getCulturesValues[xpoComboBoxInputType.Active]);
-                            //LogicPOS.Settings.CultureSettings.CurrentCultureName = getCulturesValues[xpoComboBoxInputType.Active];
-                            //CustomResources.UpdateLanguage(getCulturesValues[xpoComboBoxInputType.Active]);
-                            //_crudWidgetList.Add(new GenericCRUDWidgetXPO(boxValue, _dataSourceRow, "Value", string.Empty, false));
                         };
                         boxValue = new BOWidgetBox(valueLabel, entryValue);
                         InputFields.Add(new GenericCRUDWidgetXPO(boxValue, Entity, "Value", string.Empty, false));

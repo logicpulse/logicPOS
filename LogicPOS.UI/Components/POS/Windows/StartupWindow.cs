@@ -10,15 +10,15 @@ using LogicPOS.Domain.Entities;
 using LogicPOS.Settings;
 using LogicPOS.UI;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Widgets;
-using Newtonsoft.Json;
 using System;
 using Image = Gtk.Image;
 
 namespace logicpos
 {
-    public partial class StartupWindow : PosBaseWindow
+    public partial class StartupWindow : POSWindow
     {
         private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -125,7 +125,7 @@ namespace logicpos
                 bool NumberPadPinVisibleWindow = Convert.ToBoolean(theme.Objects.NumberPadPin.VisibleWindow);
                 System.Drawing.Size numberPadPinSize = (theme.Objects.NumberPadPin.Size as string).ToSize();
 
-          
+
                 //Objects:TablePadUserButtonPrev
                 System.Drawing.Point tablePadUserButtonPrevPosition = Utils.StringToPosition(theme.Objects.TablePadUser.TablePadUserButtonPrev.Position);
                 System.Drawing.Size tablePadUserButtonPrevSize = (theme.Objects.TablePadUser.TablePadUserButtonPrev.Size as string).ToSize();
@@ -166,7 +166,7 @@ namespace logicpos
                                                  NumberPadPinVisibleWindow,
                                                  numberPadPinRowSpacingLabelStatus,
                                                  numberPadPinRowSpacingSystemButtons);
-              
+
                 if (numberPadPinSize.Width > 0 || numberPadPinSize.Height > 0)
                 {
                     _userPinPanel.Eventbox.WidthRequest = numberPadPinSize.Width;
@@ -290,11 +290,11 @@ namespace logicpos
                 //LOGO
                 if (PluginSettings.LicenceManager != null)
                 {
-                    string fileImageBackOfficeLogo = string.Format(PathsSettings.Paths["themes"] + @"Default\Images\logicPOS_loggericpulse_loggerin.png");
+                    string fileImageBackOfficeLogo = string.Format(PathsSettings.Paths["themes"] + @"Default\Images\logicPOS_loggericpulse_login.png");
 
                     if (!string.IsNullOrEmpty(LicenseSettings.LicenseReseller) && LicenseSettings.LicenseReseller == "NewTech")
                     {
-                        fileImageBackOfficeLogo = string.Format(PathsSettings.Paths["themes"] + @"Default\Images\Branding\{0}\logicPOS_loggericpulse_loggerin.png", "NT");
+                        fileImageBackOfficeLogo = string.Format(PathsSettings.Paths["themes"] + @"Default\Images\Branding\{0}\logicPOS_loggericpulse_login.png", "NT");
                     }
                 }
                 else

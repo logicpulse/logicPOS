@@ -1,6 +1,7 @@
 ﻿using Gtk;
-using LogicPOS.Api.Features.Countries;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Countries.GetAllCountries;
+using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
 using System.Collections.Generic;
@@ -29,23 +30,8 @@ namespace LogicPOS.UI.Components.Pages
             var designationColumn = CreateDesignationColumn();
             GridView.AppendColumn(designationColumn);
 
-            var lastUpdateAtColumn = CreateLastUpdateAtColumn();
-            GridView.AppendColumn(lastUpdateAtColumn);
-        }
-
-        private TreeViewColumn CreateLastUpdateAtColumn()
-        {
-            void RenderLastUpdateAt(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
-            {
-                var country = (Country)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = country.LastUpdateAt.ToString();
-                cell.Xalign = 1;
-            }
-
-            var title = GeneralUtils.GetResourceByName("global_record_date_updated");
-            var col = Columns.CreateColumn(title, 2, RenderLastUpdateAt);
-            col.Alignment = 1;
-            return col;
+            var updateAtColumn = Columns.CreateUpdatedAtColumn(2);
+            GridView.AppendColumn(updateAtColumn);
         }
 
         private TreeViewColumn CreateDesignationColumn()
@@ -91,7 +77,7 @@ namespace LogicPOS.UI.Components.Pages
                     return 0;
                 }
 
-                return leftCountry.LastUpdateAt.CompareTo(rightCountry.LastUpdateAt);
+                return leftCountry.UpdatedAt.CompareTo(rightCountry.UpdatedAt);
             });
         }
 
@@ -168,26 +154,17 @@ namespace LogicPOS.UI.Components.Pages
         {
             throw new System.NotImplementedException();
         }
-
-        public override void InsertEntity()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public override void UpdateEntity()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public override void ViewEntity()
-        {
-            throw new System.NotImplementedException();
-        }
-
+       
         protected override ListStore CreateGridViewModel()
         {
             return new ListStore(typeof(Country));
         }
 
+        protected override void RunModal(EntityModalMode mode)
+        {
+            var modal = new CountryModal(mode, SelectedEntity as Country);
+            modal.Run();
+            modal.Destroy();
+        }
     }
 }

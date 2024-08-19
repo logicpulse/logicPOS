@@ -9,6 +9,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using System;
+using LogicPOS.Api.Entities;
 
 namespace LogicPOS.Api.Features.Users.Permissions.Profiles.GetAllPermissionProfiles
 {

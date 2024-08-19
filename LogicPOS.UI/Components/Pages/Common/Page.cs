@@ -8,6 +8,7 @@ using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.GridViews;
+using LogicPOS.UI.Components.Modals;
 using LogicPOS.Utility;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -62,10 +63,10 @@ namespace LogicPOS.UI.Components.Pages
         }
 
         protected abstract ListStore CreateGridViewModel();
-        public abstract void ViewEntity();
-        public abstract void UpdateEntity();
+        public virtual void ViewEntity() => RunModal(EntityModalMode.View);
+        public virtual void UpdateEntity() => RunModal(EntityModalMode.Update);
         public abstract void DeleteEntity();
-        public abstract void InsertEntity();
+        public virtual void InsertEntity() => RunModal(EntityModalMode.Insert);
         protected abstract void LoadEntities();
         protected virtual void InitializeGridView()
         {
@@ -93,7 +94,7 @@ namespace LogicPOS.UI.Components.Pages
         protected abstract void InitializeSort();
         protected abstract void InitializeFilter();
         protected abstract void AddColumns();
-
+        protected abstract void RunModal(EntityModalMode mode);
         protected virtual void Design()
         {
             VBox verticalLayout = new VBox(false, 1);

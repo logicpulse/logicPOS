@@ -283,6 +283,8 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
 
             bool needToUpdate = false;
 
+            return; //tchial0 -> Disable update check
+
             if (GeneralSettings.ServerVersion != null)
             {
 

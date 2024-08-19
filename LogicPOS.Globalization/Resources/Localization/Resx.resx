@@ -238,10 +238,10 @@ Or select '{2}' to start POS on default '1024x768' mode.</value>
   <data name="audit_message_user_change_password" xml:space="preserve">
     <value>User Changed Password: {0}</value>
   </data>
-  <data name="audit_message_user_loggerin" xml:space="preserve">
+  <data name="audit_message_user_login" xml:space="preserve">
     <value>User Logged In: {0}</value>
   </data>
-  <data name="audit_message_user_loggerin_error" xml:space="preserve">
+  <data name="audit_message_user_login_error" xml:space="preserve">
     <value>User Login Error: {0}</value>
   </data>
   <data name="audit_message_user_logout" xml:space="preserve">
@@ -650,8 +650,28 @@ All the series related to selected terminals will be deleted and new ones create
 
 By accepting the conditions you are responsible for creating the series. We recall that under applicable law may not use series that have been used in the past.</value>
   </data>
+  <data name="dialog_message_series_create_confirmation_text_pt" xml:space="preserve">
+    <value>Deseja continuar e criar novas séries fiscais?
+
+Todas as séries relacionadas com os terminais selecionados vão ser apagadas e recriadas.
+
+Ao aceitar as condições está a responsabilizar-se pela criação das séries. Relembramos que ao abrigo da lei em vigor não pode usar séries que já foram usadas no passado.
+
+As séries comunicadas á AT serão agora sujeitas a anulação/finalização.As séries que tenham documentos emitidos serão finalizadas e as séries sem documentos emitidos serão anuladas. 
+
+Ao continuar está a tomar conhecimento e a concordar com o processo de comunicação de séries documentais segundo o Decreto-Lei n.º 28/2019, artigo 35º.
+</value>
+  </data>
   <data name="dialog_message_series_create_document_type_series" xml:space="preserve">
     <value>Create fiscal series for all types of finance documents/terminals?</value>
+  </data>
+  <data name="dialog_message_series_create_document_type_series_pt" xml:space="preserve">
+    <value>Deseja criar séries para todos os tipos de documentos fiscais/terminais?
+	       Irão ser criadas novas séries que irão susbtituir as atuais.
+	       As séries comunicadas á AT serão agora sujeitas a anulação/finalização.As séries que tenham documentos emitidos serão finalizadas e as séries sem documentos emitidos serão anuladas. 
+		   As novas séries serão comunicadas á AT para obtenção do código obrigatório para gerar o ATCUD nos novos documentos emitidos.
+           Ao continuar está a tomar conhecimento e a concordar com o processo de comunicação de séries documentais segundo o Decreto-Lei n.º 28/2019, artigo 35º.
+	</value>
   </data>
   <data name="dialog_message_series_create_document_type_series_already_exist" xml:space="preserve">
     <value>There are already fiscal series active, to create new fiscal series you have to disable the current series and create new ones.
@@ -698,7 +718,7 @@ You can't issue finance documents with dates smaller than system date!</value>
 
 This record is necessary for the proper functioning of the application!</value>
   </data>
-  <data name="dialog_message_user_profile_changed_request_loggeroff" xml:space="preserve">
+  <data name="dialog_message_user_profile_changed_request_logoff" xml:space="preserve">
     <value>The currently registered user profile was changed!
 
 To apply changes, you have logout and login to apply this profile privileges!</value>
@@ -1650,7 +1670,7 @@ To continue press Yes to close all terminals, or press No and close all terminal
   <data name="global_load_first_time" xml:space="preserve">
     <value>Creating POS Database...</value>
   </data>
-  <data name="global_loggerin" xml:space="preserve">
+  <data name="global_login" xml:space="preserve">
     <value>Login</value>
   </data>
   <data name="global_maintenance" xml:space="preserve">
@@ -1847,7 +1867,7 @@ To continue press Yes to close all terminals, or press No and close all terminal
   <data name="global_printer_thermal_encoding" xml:space="preserve">
     <value>Encoding</value>
   </data>
-  <data name="global_printer_thermal_image_company_loggero" xml:space="preserve">
+  <data name="global_printer_thermal_image_company_logo" xml:space="preserve">
     <value>File of Company Logo</value>
   </data>
   <data name="global_printer_thermal_max_chars_per_line_normal" xml:space="preserve">
@@ -1875,7 +1895,7 @@ To continue press Yes to close all terminals, or press No and close all terminal
     <value>Total in {0}</value>
     <comment>When printing the invoice total thermal-printer printed, this shows the default currency and total amount already converted, for the countries where this is required (Mozambique, for example).</comment>
   </data>
-  <data name="global_printer_thermal_print_loggero" xml:space="preserve">
+  <data name="global_printer_thermal_print_logo" xml:space="preserve">
     <value>Print Company Logo</value>
   </data>
   <data name="global_printer_type" xml:space="preserve">
@@ -2426,6 +2446,9 @@ To continue press Yes to close all terminals, or press No and close all terminal
   <data name="global_warning_open_fiscal_year" xml:space="preserve">
     <value>For using POS properly, please start fiscal year in BackOffice</value>
   </data>
+  <data name="global_warning_open_fiscal_year_actual" xml:space="preserve">
+    <value>Has not yet started a fiscal series for the current year ({0}).</value>
+  </data>
   <data name="global_website" xml:space="preserve">
     <value>WebSite</value>
   </data>
@@ -2952,10 +2975,10 @@ To proceed you must change the old password!</value>
   <data name="prefparam_path_saftpt" xml:space="preserve">
     <value>Path :: Saft Export</value>
   </data>
-  <data name="prefparam_report_filename_loggero" xml:space="preserve">
+  <data name="prefparam_report_filename_logo" xml:space="preserve">
     <value>Report :: Logo FileName</value>
   </data>
-  <data name="prefparam_report_filename_loggero_small" xml:space="preserve">
+  <data name="prefparam_report_filename_logo_small" xml:space="preserve">
     <value>Report :: Logo FileName Small</value>
   </data>
   <data name="prefparam_report_footer_line1" xml:space="preserve">
@@ -3030,7 +3053,7 @@ To proceed you must change the old password!</value>
   <data name="prefparam_system_currency" xml:space="preserve">
     <value>Currency :: System Currency</value>
   </data>
-  <data name="prefparam_ticket_filename_loggero" xml:space="preserve">
+  <data name="prefparam_ticket_filename_logo" xml:space="preserve">
     <value>Ticket :: Logo FileName</value>
   </data>
   <data name="prefparam_ticket_footer_line1" xml:space="preserve">
@@ -3042,8 +3065,14 @@ To proceed you must change the old password!</value>
   <data name="prefparam_ticket_print_ticket" xml:space="preserve">
     <value>Ticket :: Print Ticket</value>
   </data>
+  <data name="prefparam_qrcode_method" xml:space="preserve">
+    <value>Ticket :: Método de impressão QRCode</value>
+  </data>
   <data name="prefparam_print_qrcode" xml:space="preserve">
     <value>Documents :: Print QRCode</value>
+  </data>
+  <data name="global_method" xml:space="preserve">
+    <value>Método</value>
   </data>
   <data name="prefparam_use_cached_images" xml:space="preserve">
     <value>Application :: Use Cached Images</value>
@@ -3198,6 +3227,12 @@ To proceed you must change the old password!</value>
   </data>
   <data name="report_list_stock_supplier" xml:space="preserve">
     <value>Stock by Supplier</value>
+  </data>
+	<data name="report_list_stock_gain" xml:space="preserve">
+    <value>Stock by article Gain</value>
+  </data>
+	<data name="report_stock_gain" xml:space="preserve">
+    <value>Article Gain</value>
   </data>
   <data name="report_list_user_commission" xml:space="preserve">
     <value>Commissions</value>
@@ -3396,7 +3431,7 @@ To proceed you must change the old password!</value>
   <data name="widget_pospinpad_change_password" xml:space="preserve">
     <value>Reset</value>
   </data>
-  <data name="widget_pospinpad_loggerin" xml:space="preserve">
+  <data name="widget_pospinpad_login" xml:space="preserve">
     <value>Enter</value>
   </data>
   <data name="widget_pospinpad_ok" xml:space="preserve">
@@ -3885,6 +3920,9 @@ Note: You can only open documents issued on A4 printer or Export to PDF</value>
   <data name="global_internal_moviment" xml:space="preserve">
     <value>Internal Moviment</value>
   </data>
+  <data name="global_by_default" xml:space="preserve">
+    <value>By default</value>
+  </data>
   <data name="global_locations" xml:space="preserve">
     <value>Locations</value>
   </data>
@@ -3908,5 +3946,26 @@ Note: You can only open documents issued on A4 printer or Export to PDF</value>
   </data>
   <data name="prefparam_ticket_print_company_name" xml:space="preserve">
     <value>Ticket :: Imprimir nome comercial</value>
+  </data>
+  <data name="global_button_label_showHidden" xml:space="preserve">
+    <value>show/hide off</value>
+  </data>
+  <data name="label_communicate_series" xml:space="preserve">
+    <value>Communicate Series</value>
+  </data>
+  <data name="msg_successfully_communicated_series" xml:space="preserve">
+    <value>Successfully communicated series</value>
+  </data>
+  <data name="report_phonenumber_label" xml:space="preserve">
+    <value>Call to the national fixed network</value>
+  </data>
+  <data name="report_mobilephonenumber_label" xml:space="preserve">
+    <value>Call to the mobile fixed network</value>
+  </data>
+  <data name="open_fiscal_year_at_errors" xml:space="preserve">
+    <value>Your fiscal year has been opened and your series have been successfully created!\n\nHowever, there were errors in the communication to AT!\nPlease report each series individually!\n\nAT result:</value>
+  </data>
+  <data name="dialog_message_no_tables" xml:space="preserve">
+    <value>There are no active tables/orders. Please add or activate in backoffice / Other Tables / Tables</value>
   </data>
 </root>

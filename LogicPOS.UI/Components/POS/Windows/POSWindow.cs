@@ -1,18 +1,17 @@
 using Gtk;
+using logicpos;
 using logicpos.App;
+using LogicPOS.Settings;
+using LogicPOS.UI.Extensions;
+using LogicPOS.Utility;
 using System;
 using System.Drawing;
 using System.IO;
-using LogicPOS.Settings;
-using LogicPOS.Utility;
-using LogicPOS.UI.Extensions;
 
-namespace logicpos
+namespace LogicPOS.UI.Components.Windows
 {
-    public abstract class PosBaseWindow : Gtk.Window
+    public abstract class POSWindow : Window
     {
-        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
         protected EventBox _eventBoxMinimize;
         protected bool _showMinimize;
         public StartupWindow SourceWindow { get; set; }
@@ -20,7 +19,7 @@ namespace logicpos
 
         private dynamic GetTheme()
         {
-            var predicate = (Predicate<dynamic>)((dynamic x) => x.ID == "PosBaseWindow");
+            var predicate = (Predicate<dynamic>)((x) => x.ID == "PosBaseWindow");
             var theme = GlobalApp.Theme.Theme.Frontoffice.Window.Find(predicate);
             return theme;
         }
@@ -87,11 +86,9 @@ namespace logicpos
             Add(alignment);
         }
 
-        public PosBaseWindow(string backgroundImageFileLocation)
+        public POSWindow(string backgroundImageFileLocation)
             : base(WindowType.Toplevel)
         {
-            _logger.Debug("PosBaseWindow: " + backgroundImageFileLocation);
-
             var theme = GetTheme();
 
             string errorMessage = "Node: <Window ID=\"PosBaseWindow\">";
@@ -99,7 +96,6 @@ namespace logicpos
             if (theme == null)
             {
                 Utils.ShowMessageTouchErrorRenderTheme(this, errorMessage);
-                _logger.Debug("PosBaseWindow end");
             }
 
             try
@@ -125,11 +121,9 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _logger.Error(ex.Message, ex);
-                Utils.ShowMessageTouchErrorRenderTheme(this, string.Format("{1}{0}{0}{2}", Environment.NewLine, errorMessage, ex.Message));
+                Utils.ShowMessageTouchErrorRenderTheme(this, $"{errorMessage}{Environment.NewLine}{Environment.NewLine}{ex.Message}");
             }
 
-            _logger.Debug("PosBaseWindow end");
         }
 
         private void PosBaseWindow_DeleteEvent(object o, DeleteEventArgs args)
@@ -149,30 +143,23 @@ namespace logicpos
 
         protected void CheckMonitorGeometry(int width, int height)
         {
-            try
-            {
-                Gdk.Screen screen = Screen;
-                Gdk.Rectangle monitorGeometry = screen.GetMonitorGeometry(AppSettings.Instance.appScreen);
+            Gdk.Screen screen = Screen;
+            Gdk.Rectangle monitorGeometry = screen.GetMonitorGeometry(AppSettings.Instance.appScreen);
 
-                if (monitorGeometry.Width < width || monitorGeometry.Height < height)
-                {
-                    Utils.ShowMessageTouch(
-                        this, 
-                        DialogFlags.Modal, 
-                        MessageType.Error, 
-                        ButtonsType.Ok, 
-                        GeneralUtils.GetResourceByName("global_error"), 
-                        string.Format(GeneralUtils.GetResourceByName("dialog_message_low_resolution_detected"), 
-                        width, 
-                        height));
-                    Environment.Exit(0);
-                }
-
-            }
-            catch (Exception ex)
+            if (monitorGeometry.Width < width || monitorGeometry.Height < height)
             {
-                _logger.Error(ex.Message, ex);
+                Utils.ShowMessageTouch(
+                    this,
+                    DialogFlags.Modal,
+                    MessageType.Error,
+                    ButtonsType.Ok,
+                    GeneralUtils.GetResourceByName("global_error"),
+                    string.Format(GeneralUtils.GetResourceByName("dialog_message_low_resolution_detected"),
+                    width,
+                    height));
+                Environment.Exit(0);
             }
+
         }
     }
 }

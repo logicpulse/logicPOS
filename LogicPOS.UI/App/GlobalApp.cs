@@ -11,7 +11,7 @@ namespace logicpos.App
     public static class GlobalApp
     {
         public static StartupWindow StartupWindow { get; set; }
-        public static PosMainWindow PosMainWindow { get; set; }
+        public static POSMainWindow PosMainWindow { get; set; }
         public static BackOfficeMainWindow BackOfficeMainWindow { get; set; }
         public static Dialog LoadingDialog { get; set; }
         public static ThreadNotify DialogThreadNotify { get; set; }

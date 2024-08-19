@@ -238,10 +238,10 @@ Ou selecione '{2}' para iniciar o POS em resolução '1024x768'.</value>
   <data name="audit_message_user_change_password" xml:space="preserve">
     <value>Utilizador alterou a password: {0}</value>
   </data>
-  <data name="audit_message_user_loggerin" xml:space="preserve">
+  <data name="audit_message_user_login" xml:space="preserve">
     <value>Login do utilizador: {0}</value>
   </data>
-  <data name="audit_message_user_loggerin_error" xml:space="preserve">
+  <data name="audit_message_user_login_error" xml:space="preserve">
     <value>Erro ao efectuar o login: {0}</value>
   </data>
   <data name="audit_message_user_logout" xml:space="preserve">
@@ -653,9 +653,29 @@ Ao aceitar as condições está a responsabilizar-se pela criação das séries.
   <data name="dialog_message_series_create_document_type_series" xml:space="preserve">
     <value>Deseja criar séries para todos os tipos de documentos fiscais/terminais?</value>
   </data>
+  <data name="dialog_message_series_create_document_type_series_pt" xml:space="preserve">
+    <value>Deseja criar séries para todos os tipos de documentos fiscais/terminais?
+	       Irão ser criadas novas séries que irão susbtituir as atuais.
+	       As séries comunicadas á AT serão agora sujeitas a anulação/finalização.As séries que tenham documentos emitidos serão finalizadas e as séries sem documentos emitidos serão anuladas. 
+		   As novas séries serão comunicadas á AT para obtenção do código obrigatório para gerar o ATCUD nos novos documentos emitidos.
+           Ao continuar está a tomar conhecimento e a concordar com o processo de comunicação de séries documentais segundo o Decreto-Lei n.º 28/2019, artigo 35º.
+	</value>
+  </data>
   <data name="dialog_message_series_create_document_type_series_already_exist" xml:space="preserve">
     <value>Já existem séries fiscais criadas, para criar novas séries fiscais tem que desativar as séries atuais e criar novas.
 Deseja continuar e desativar as séries atuais e criar novas?</value>
+  </data>
+  <data name="dialog_message_series_create_confirmation_text_pt" xml:space="preserve">
+    <value>Deseja continuar e criar novas séries fiscais?
+
+Todas as séries relacionadas com os terminais selecionados vão ser apagadas e recriadas.
+
+Ao aceitar as condições está a responsabilizar-se pela criação das séries. Relembramos que ao abrigo da lei em vigor não pode usar séries que já foram usadas no passado.
+
+As séries comunicadas á AT serão agora sujeitas a anulação/finalização.As séries que tenham documentos emitidos serão finalizadas e as séries sem documentos emitidos serão anuladas. 
+
+Ao continuar está a tomar conhecimento e a concordar com o processo de comunicação de séries documentais segundo o Decreto-Lei n.º 28/2019, artigo 35º.
+</value>
   </data>
   <data name="dialog_message_series_create_document_type_series_miss_year" xml:space="preserve">
     <value>Para criar a série de documentos, crie primeiro um ano fiscal.</value>
@@ -698,7 +718,7 @@ Não pode emitir documentos fiscais com a data inferior a data do sistema dentro
 
 Este registo é necessário ao sistema e está protegido contra edição!</value>
   </data>
-  <data name="dialog_message_user_profile_changed_request_loggeroff" xml:space="preserve">
+  <data name="dialog_message_user_profile_changed_request_logoff" xml:space="preserve">
     <value>O perfil do utilizador atualmente registado mudou!
 
 Para que as alterações se apliquem, tem que fazer Logout, e Login para que os previlégios do perfil sejam aplicados!</value>
@@ -869,7 +889,7 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
     <value>Atendido por</value>
   </data>
   <data name="global_at_atdoccodeid" xml:space="preserve">
-    <value>Código de Identificação</value>
+    <value>Código AT</value>
   </data>
   <data name="global_audit" xml:space="preserve">
     <value>Auditoria</value>
@@ -1650,7 +1670,7 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
   <data name="global_load_first_time" xml:space="preserve">
     <value>A criar base de dados...</value>
   </data>
-  <data name="global_loggerin" xml:space="preserve">
+  <data name="global_login" xml:space="preserve">
     <value>Login</value>
   </data>
   <data name="global_maintenance" xml:space="preserve">
@@ -1844,7 +1864,7 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
   <data name="global_printer_thermal_encoding" xml:space="preserve">
     <value>Encoding</value>
   </data>
-  <data name="global_printer_thermal_image_company_loggero" xml:space="preserve">
+  <data name="global_printer_thermal_image_company_logo" xml:space="preserve">
     <value>Ficheiro de Imagem de Logotipo</value>
   </data>
   <data name="global_printer_thermal_max_chars_per_line_normal" xml:space="preserve">
@@ -1872,7 +1892,7 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
     <value>Valor Total em {0}</value>
     <comment>When printing the invoice total thermal-printer printed, this shows the default currency and total amount already converted, for the countries where this is required (Mozambique, for example).</comment>
   </data>
-  <data name="global_printer_thermal_print_loggero" xml:space="preserve">
+  <data name="global_printer_thermal_print_logo" xml:space="preserve">
     <value>Imprimir Imagem de Logotipo</value>
   </data>
   <data name="global_printer_type" xml:space="preserve">
@@ -2426,6 +2446,9 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
   <data name="global_warning_open_fiscal_year" xml:space="preserve">
     <value>Para começar a utilizar o POS por favor inicie o ano fiscal no BackOffice e reinicie a aplicação.</value>
   </data>
+  <data name="global_warning_open_fiscal_year_actual" xml:space="preserve">
+    <value>Ainda não iniciou uma série fiscal para o ano atual ({0}).</value>
+  </data>
   <data name="global_website" xml:space="preserve">
     <value>Página</value>
   </data>
@@ -2952,10 +2975,10 @@ Por motivos de segurança, para prosseguir tem que alterar a palavra-passe!</val
   <data name="prefparam_path_saftpt" xml:space="preserve">
     <value>Pasta :: Exportação do Saft</value>
   </data>
-  <data name="prefparam_report_filename_loggero" xml:space="preserve">
+  <data name="prefparam_report_filename_logo" xml:space="preserve">
     <value>Relatório :: Ficheiro do Logo</value>
   </data>
-  <data name="prefparam_report_filename_loggero_small" xml:space="preserve">
+  <data name="prefparam_report_filename_logo_small" xml:space="preserve">
     <value>Relatório :: Ficheiro do Logo Pequeno</value>
   </data>
   <data name="prefparam_report_footer_line1" xml:space="preserve">
@@ -3001,7 +3024,7 @@ Por motivos de segurança, para prosseguir tem que alterar a palavra-passe!</val
     <value>E-Mail :: Utilizador do SMTP</value>
   </data>
   <data name="prefparam_service_at_production_account_fiscal_number" xml:space="preserve">
-    <value>Serviço da Autoridade Tributária :: Account Fiscal Number</value>
+    <value>Serviço da Autoridade Tributária :: Nº de Contribuinte</value>
   </data>
   <data name="prefparam_service_at_production_account_password" xml:space="preserve">
     <value>Serviço da Autoridade Tributária :: Account Password</value>
@@ -3030,7 +3053,7 @@ Por motivos de segurança, para prosseguir tem que alterar a palavra-passe!</val
   <data name="prefparam_system_currency" xml:space="preserve">
     <value>Moeda :: Moeda do Sistema</value>
   </data>
-  <data name="prefparam_ticket_filename_loggero" xml:space="preserve">
+  <data name="prefparam_ticket_filename_logo" xml:space="preserve">
     <value>Ticket :: Ficheiro do Logo</value>
   </data>
   <data name="prefparam_ticket_footer_line1" xml:space="preserve">
@@ -3045,8 +3068,14 @@ Por motivos de segurança, para prosseguir tem que alterar a palavra-passe!</val
   <data name="prefparam_ticket_print_ticket" xml:space="preserve">
     <value>Ticket :: Imprimir Ticket</value>
   </data>
+  <data name="prefparam_qrcode_method" xml:space="preserve">
+    <value>Ticket :: Método de impressão QRCode</value>
+  </data>
   <data name="prefparam_print_qrcode" xml:space="preserve">
     <value>Documentos :: Imprimir QRCode</value>
+  </data>
+  <data name="global_method" xml:space="preserve">
+    <value>Método</value>
   </data>
   <data name="prefparam_use_pdfviewer" xml:space="preserve">
     <value>Aplicação :: Usar o POS PDF Viewer para abrir ficheiros PDF</value>
@@ -3198,6 +3227,12 @@ Por motivos de segurança, para prosseguir tem que alterar a palavra-passe!</val
   </data>
   <data name="report_list_stock_supplier" xml:space="preserve">
     <value>Stock por Fornecedor</value>
+  </data>
+	<data name="report_list_stock_gain" xml:space="preserve">
+    <value>Stock por valorização de artigo</value>
+  </data>
+	<data name="report_stock_gain" xml:space="preserve">
+    <value>Valorização de artigo</value>
   </data>
   <data name="report_list_user_commission" xml:space="preserve">
     <value>Comissões</value>
@@ -3396,7 +3431,7 @@ Por motivos de segurança, para prosseguir tem que alterar a palavra-passe!</val
   <data name="widget_pospinpad_change_password" xml:space="preserve">
     <value>Reset</value>
   </data>
-  <data name="widget_pospinpad_loggerin" xml:space="preserve">
+  <data name="widget_pospinpad_login" xml:space="preserve">
     <value>Entrar</value>
   </data>
   <data name="widget_pospinpad_ok" xml:space="preserve">
@@ -3889,6 +3924,9 @@ Por favor, insira outro número e tente novamente.</value>
   <data name="global_internal_moviment" xml:space="preserve">
     <value>Movimento interno</value>
   </data>
+  <data name="global_by_default" xml:space="preserve">
+    <value>Por padrão</value>
+  </data>
   <data name="global_locations" xml:space="preserve">
     <value>Localizações</value>
   </data>
@@ -3912,5 +3950,26 @@ Por favor, insira outro número e tente novamente.</value>
   </data>
   <data name="prefparam_ticket_print_company_name" xml:space="preserve">
     <value>Ticket :: Imprimir nome comercial</value>
+  </data>
+  <data name="global_button_label_showHidden" xml:space="preserve">
+    <value>Mostrar/esconder desligados</value>
+  </data>
+  <data name="label_communicate_series" xml:space="preserve">
+    <value>Comunicar séries</value>
+  </data>
+  <data name="msg_successfully_communicated_series" xml:space="preserve">
+    <value>Série comunicada com sucesso</value>
+  </data>
+  <data name="report_phonenumber_label" xml:space="preserve">
+    <value>Chamada para a rede fixa nacional</value>
+  </data>
+  <data name="report_mobilephonenumber_label" xml:space="preserve">
+    <value>Chamada para a rede móvel nacional</value>
+  </data>
+  <data name="open_fiscal_year_at_errors" xml:space="preserve">
+    <value>O seu ano fiscal foi aberto e as suas séries foram criadas com sucesso!\n\nContudo existiu erros de comunicação á AT!\nPor favor faça a comunicação individual de cada série!\n\nResultado da AT:</value>
+  </data>
+  <data name="dialog_message_no_tables" xml:space="preserve">
+    <value>Não tem mesas/ordens ativas. Por favor adicione ou ative no backoffice / Outras Tabelas / Mesas</value>
   </data>
 </root>

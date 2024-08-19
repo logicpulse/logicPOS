@@ -11,6 +11,7 @@ using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.UI;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using System;
@@ -20,20 +21,16 @@ using Image = Gtk.Image;
 
 namespace logicpos
 {
-    public partial class PosMainWindow : PosBaseWindow
+    public partial class POSMainWindow : POSWindow
     {
-
-        //Files
         private readonly string _fileBaseButtonOverlay = PathsSettings.ImagesFolderLocation + @"Buttons\Pos\button_overlay.png";
 
-        /* IN006045 */
-        //private string _clockFormat = LogicPOS.Settings.AppSettings.Instance.dateTimeFormatStatusBar"];
         private readonly string _clockFormat = GeneralUtils.GetResourceByName("frontoffice_datetime_format_status_bar");
 
         private readonly Color _colorPosNumberPadLeftButtonBackground = AppSettings.Instance.colorPosNumberPadLeftButtonBackground;
         private readonly Color _colorPosNumberRightButtonBackground = AppSettings.Instance.colorPosNumberRightButtonBackground;
         private readonly Color _colorPosHelperBoxsBackground = AppSettings.Instance.colorPosHelperBoxsBackground;
-        //UI
+
         private readonly Fixed _fixedWindow;
         private Label _labelClock;
         private TextView _textviewLog;
@@ -52,7 +49,7 @@ namespace logicpos
         public IconButtonWithText TouchButtonPosToolbarNewFinanceDocument { get; set; }
 
         private TicketPad _ticketPad;
-        //Others
+
         private readonly uint _borderWidth = 5;
 
         internal TablePad TablePadFamily { get; set; }
@@ -66,8 +63,7 @@ namespace logicpos
 
         public Label LabelTotalTable { get; set; }
 
-        //Constructor
-        public PosMainWindow(string pBackgroundImage)
+        public POSMainWindow(string pBackgroundImage)
             : base(pBackgroundImage)
         {
             _fixedWindow = new Fixed();
@@ -105,16 +101,10 @@ namespace logicpos
             {
                 GlobalApp.BarCodeReader.Captured += HWBarCodeReader_Captured;
             }
-
-            _logger.Debug("PosMainWindow(String pBackgroundImage) :: Completed!");
         }
 
         private void InitUI()
         {
-
-            _logger.Debug("void InitUI() :: Initializing UI for POS Main Window..."); /* IN009008 */
-
-            //Init Theme Object
             Predicate<dynamic> predicate = (Predicate<dynamic>)((dynamic x) => x.ID == "PosMainWindow");
             dynamic themeWindow = GlobalApp.Theme.Theme.Frontoffice.Window.Find(predicate);
 
@@ -138,8 +128,6 @@ namespace logicpos
                
                 InitUiEventboxToolbar(themeWindow);
 
-                _logger.Debug("void InitUI() :: POS Main Window theme rendering completed!"); /* IN009008 */
-                //Notify Thread End
                 GlobalApp.DialogThreadNotify.WakeupMain();
 
                 SortingCollection sortCollection = new SortingCollection
@@ -161,7 +149,6 @@ namespace logicpos
 
         private void InitUIEventBoxImageLogo(dynamic pThemeWindow)
         {
-            _logger.Debug("void InitUIEventBoxImageLogo(dynamic pThemeWindow) :: Starting..."); /* IN009008 */
             dynamic themeWindow = pThemeWindow;
             //Objects:EventBoxImageLogo
             Point eventBoxImageLogoPosition = Utils.StringToPosition(themeWindow.Objects.EventBoxImageLogo.Position);
@@ -202,12 +189,8 @@ namespace logicpos
 
         private void InitUIEventBoxStatusBar1(dynamic pThemeWindow)
         {
-            _logger.Debug("void InitUIEventBoxStatusBar1(dynamic pThemeWindow) :: Starting..."); /* IN009008 */
             dynamic themeWindow = pThemeWindow;
 
-            //VARS
-
-            //Objects:EventBoxStatusBar1
             Point eventBoxStatusBar1Position = Utils.StringToPosition(themeWindow.Objects.EventBoxStatusBar1.Position); ;
             Size eventBoxStatusBar1Size = (themeWindow.Objects.EventBoxStatusBar1.Size as string).ToSize();
             bool eventBoxStatusBar1Visible = Convert.ToBoolean(themeWindow.Objects.EventBoxStatusBar1.Visible);
@@ -254,7 +237,6 @@ namespace logicpos
 
         private void InitUIEventBoxStatusBar2(dynamic pThemeWindow)
         {
-            _logger.Debug("void InitUIEventBoxStatusBar2(dynamic pThemeWindow) :: Starting..."); /* IN009008 */
             dynamic themeWindow = pThemeWindow;
 
             //VARS
@@ -340,7 +322,6 @@ namespace logicpos
 
         private void InitUIButtonFavorites(dynamic pThemeWindow)
         {
-            _logger.Debug("void InitUIButtonFavorites(dynamic pThemeWindow) :: Starting..."); /* IN009008 */
             dynamic themeWindow = pThemeWindow;
 
             //VARS
@@ -377,7 +358,6 @@ namespace logicpos
 
         private void InitUITablePads(dynamic pThemeWindow)
         {
-            _logger.Debug("void InitUITablePads(dynamic pThemeWindow) :: Starting..."); /* IN009008 */
             dynamic themeWindow = pThemeWindow;
 
             //VARS
@@ -767,7 +747,6 @@ namespace logicpos
 
         private void InitUIEventBoxPosTicketList(dynamic pThemeWindow)
         {
-            _logger.Debug("void InitUIEventBoxPosTicketList(dynamic pThemeWindow) :: Starting...");
             dynamic themeWindow = pThemeWindow;
 
             //Objects:EventBoxPosTicketList
@@ -789,24 +768,6 @@ namespace logicpos
             TicketList = new TicketList(themeEventBoxPosTicketList) { SourceWindow = this };
             eventBoxPosTicketList.Add(TicketList);
             if (eventBoxPosTicketListVisible) _fixedWindow.Put(eventBoxPosTicketList, eventBoxPosTicketListPosition.X, eventBoxPosTicketListPosition.Y);
-        }
-
-        //CURRENTLY Disabled, but very Usefull to Show Log in Screen
-        private void BuildTextViewLog()
-        {
-            //TextviewLog
-            EventBox eventBoxPosTextviewLog = new EventBox() { VisibleWindow = false, BorderWidth = 0 };
-            eventBoxPosTextviewLog.WidthRequest = 326;
-            eventBoxPosTextviewLog.HeightRequest = 84;
-            //Add Text with > _bufferTextView.InsertAtCursor("Text" + Environment.NewLine);
-            _textviewLog = new TextView();
-            _textviewLog.SizeAllocated += new SizeAllocatedHandler(ScrollTextViewLog);
-            _textviewLog.BorderWidth = 0;
-            BufferTextView = _textviewLog.Buffer;
-            ScrolledWindow scrolledWindowTextviewLog = new ScrolledWindow();
-            scrolledWindowTextviewLog.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
-            scrolledWindowTextviewLog.Add(_textviewLog);
-            eventBoxPosTextviewLog.Add(scrolledWindowTextviewLog);
         }
     }
 }

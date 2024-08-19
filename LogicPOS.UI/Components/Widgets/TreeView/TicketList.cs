@@ -55,7 +55,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         private Label _labelTotal;
         private Label _labelLabelTotal;
 
-        public PosMainWindow SourceWindow { get; set; }
+        public POSMainWindow SourceWindow { get; set; }
         public ListStore ListStoreModel { get; set; }
         internal TicketListMode ListMode { get; set; } = TicketListMode.Ticket;
 

@@ -1,4 +1,6 @@
 ﻿using Gtk;
+using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Common;
 using LogicPOS.Utility;
 
 namespace LogicPOS.UI.Components.Pages.GridViews
@@ -59,5 +61,20 @@ namespace LogicPOS.UI.Components.Pages.GridViews
             return column;
         }
 
+
+        public static TreeViewColumn CreateUpdatedAtColumn(int sortColumnId)
+        {
+            void RenderUpdatedAt(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
+            {
+                var entity = (ApiEntity)model.GetValue(iter, 0);
+                (cell as CellRendererText).Text = entity.UpdatedAt.ToString();
+                cell.Xalign = 1;
+            }
+
+            var title = GeneralUtils.GetResourceByName("global_record_date_updated");
+            var col = CreateColumn(title, sortColumnId, RenderUpdatedAt);
+            col.Alignment = 1;
+            return col;
+        }
     }
 }

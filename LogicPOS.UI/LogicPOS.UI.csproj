@@ -138,6 +138,7 @@
     <Compile Include="Components\Accordions\AccordionNode.cs" />
     <Compile Include="Components\Accordions\AccordionParentButton.cs" />
     <Compile Include="Components\Countries\CountriesPage.cs" />
+    <Compile Include="Components\InputFieds\TextBox\TextBoxes.cs" />
     <Compile Include="Components\Modals\EntityModal.cs" />
     <Compile Include="Components\Modals\EntityModalMode.cs" />
     <Compile Include="Components\Pages\Common\PageSearchBox.cs" />
@@ -161,7 +162,7 @@
     <Compile Include="Components\Countries\CountryModal.Designer.cs">
       <DependentUpon>CountryModal.cs</DependentUpon>
     </Compile>
-    <Compile Include="Components\InputFieds\TextBox.cs" />
+    <Compile Include="Components\InputFieds\TextBox\TextBox.cs" />
     <Compile Include="Components\InputFieds\ValidationColors.cs" />
     <Compile Include="Components\KeyBoard\NumPadPin\NumberPadPinMode.cs" />
     <Compile Include="Classes\Enums\Xml\ReplaceType.cs" />
@@ -207,8 +208,14 @@
     <Compile Include="Classes\Utils\EuropeanVatInformation.cs" />
     <Compile Include="Classes\Utils\Win32APIWindowHelper.cs" />
     <Compile Include="Buttons\ActionAreaButton.cs" />
-    <Compile Include="Components\Users\Profiles\UserProfileModal.cs" />
-    <Compile Include="Components\Users\Profiles\UserProfileModal.Designer.cs">
+    <Compile Include="Components\PreferenceParameters\PreferenceParameterInputField.cs" />
+    <Compile Include="Components\PreferenceParameters\PreferenceParameterModal.cs" />
+    <Compile Include="Components\PreferenceParameters\PreferenceParameterModal.Designer.cs">
+      <DependentUpon>PreferenceParameterModal.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Components\PreferenceParameters\PreferenceParametersPage.cs" />
+    <Compile Include="Components\Users\Permissions\UserProfileModal.cs" />
+    <Compile Include="Components\Users\Permissions\UserProfileModal.Designer.cs">
       <DependentUpon>UserProfileModal.cs</DependentUpon>
     </Compile>
     <Compile Include="DependencyInjection.cs" />
@@ -328,7 +335,7 @@
     <Compile Include="Components\BackOffice\TreeView\NonPersistent\TreeViewDocumentFinanceArticle.cs" />
     <Compile Include="Components\BackOffice\TreeView\NonPersistent\TreeViewPartialPayment.cs" />
     <Compile Include="Components\BackOffice\TreeView\System\TreeViewSystemBackup.cs" />
-    <Compile Include="Components\Pages\PermissionsPage.cs" />
+    <Compile Include="Components\Users\Permissions\PermissionsPage.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Customers\DialogCustomer.cs" />
     <Compile Include="Components\BackOffice\TreeView\Customers\TreeViewCustomer.cs" />
     <Compile Include="Components\POS\Dialogs\DocumentFinanceDialog\DocumentFinanceDialogPage7.cs" />
@@ -416,8 +423,8 @@
     <Compile Include="Components\POS\Dialogs\PosReportsDialog\PosReportsDialog.cs" />
     <Compile Include="Components\POS\Dialogs\PosTablesDialog\PosTablesDialog.cs" />
     <Compile Include="Components\POS\Dialogs\PosTemplateDialog.cs" />
-    <Compile Include="Components\POS\Windows\PosBaseWindow.cs" />
-    <Compile Include="Components\POS\Windows\PosMainWindow\PosMainWindow.cs" />
+    <Compile Include="Components\POS\Windows\POSWindow.cs" />
+    <Compile Include="Components\POS\Windows\POSMainWindow.cs" />
     <Compile Include="Components\WidgetsXPO\ComboBox\XPOComboBox.cs" />
     <Compile Include="Components\BackOffice\TreeView\Articles\TreeViewArticle.cs" />
     <Compile Include="Components\WidgetsXPO\Other\XPOAccordion.cs" />
@@ -443,7 +450,7 @@
     <Compile Include="Components\POS\Dialogs\PosReadCardDialog\PosReadCardDialog.Functions.cs" />
     <Compile Include="Components\POS\Windows\StartupWindowEvents.cs" />
     <Compile Include="Components\POS\Dialogs\PaymentDialog\PaymentDialog.Functions.cs" />
-    <Compile Include="Components\POS\Windows\PosMainWindow\PosMainWindow.Functions.cs" />
+    <Compile Include="Components\POS\Windows\POSMainWindow.Functions.cs" />
     <Compile Include="Classes\Logic\Widgets\Pads\TicketPad.cs" />
     <Compile Include="Classes\Logic\Widgets\TreeView\TicketList.cs" />
     <Compile Include="Classes\DataLayer\DataLayer.cs" />

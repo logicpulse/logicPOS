@@ -39,7 +39,6 @@ namespace logicpos
             _userPinPanel.ProcessPassword(this, _selectedLoginUser);
         }
 
-        //Removed : Conflited with Change Password, When we Implement Default Enter Key in All Dilogs, It Trigger Twice
         private void StartupWindow_KeyReleaseEvent(object o, KeyReleaseEventArgs args)
         {
             //if (args.Event.Key.ToString().Equals("Return"))
@@ -63,7 +62,6 @@ namespace logicpos
             Utils.ShowBackOffice(this);
         }
 
-        //Assign Selected UserDetail to classe Member
         private void AssignUserDetail()
         {
             try
@@ -95,7 +93,6 @@ namespace logicpos
             }
         }
 
-        //Main Logout User Method, Shared for FrontOffice and BackOffice
         public void LogOutUser(bool pShowStartup)
         {
             LogOutUser(pShowStartup, XPOSettings.LoggedUser);

@@ -1,4 +1,5 @@
 ﻿using ErrorOr;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Countries.AddCountry;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Modals;
@@ -8,7 +9,9 @@ namespace LogicPOS.UI.Components.Modals
 {
     internal partial class CountryModal : EntityModal
     {
-        public CountryModal(EntityModalMode modalMode) : base(modalMode)
+        public CountryModal(
+            EntityModalMode modalMode, 
+            Country country = null) : base(modalMode,country)
         {
         }
 
@@ -47,7 +50,7 @@ namespace LogicPOS.UI.Components.Modals
 
             if (result.IsError)
             {
-                HandleError(result.FirstError);
+                HandleApiError(result.FirstError);
                 this.Run();
                 return;
             }

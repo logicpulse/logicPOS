@@ -1,7 +1,7 @@
 ﻿using LogicPOS.Api.Features.Common;
 using System;
 
-namespace LogicPOS.Api.Features.Users.Permissions.Profiles
+namespace LogicPOS.Api.Entities
 {
     public class PermissionProfile : ApiEntity
     {

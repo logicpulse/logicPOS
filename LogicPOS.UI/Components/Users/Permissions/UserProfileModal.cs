@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Features.Users.Profiles;
+﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Users.Profiles.AddUserProfile;
 using LogicPOS.Api.Features.Users.Profiles.UpdateUserProfile;
 
@@ -51,7 +51,7 @@ namespace LogicPOS.UI.Components.Modals
 
             if (result.IsError)
             {
-                HandleError(result.FirstError);
+                HandleApiError(result.FirstError);
             }
         }
 
@@ -62,7 +62,7 @@ namespace LogicPOS.UI.Components.Modals
 
             if (result.IsError)
             {
-                HandleError(result.FirstError);
+                HandleApiError(result.FirstError);
             }
         }
     }

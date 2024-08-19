@@ -1,7 +1,6 @@
 ﻿using LogicPOS.Api.Features.Common;
-using System;
 
-namespace LogicPOS.Api.Features.Countries
+namespace LogicPOS.Api.Entities
 {
     public class Country : ApiEntity
     {

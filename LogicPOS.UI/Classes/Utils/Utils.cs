@@ -1310,7 +1310,7 @@ namespace logicpos
 
                 CustomAppOperationMode customAppOperationMode = AppOperationModeSettings.CustomAppOperationMode;
                 string windowImageFileName = string.Format(themeWindow.Globals.ImageFileName, customAppOperationMode.AppOperationTheme, GlobalApp.ScreenSize.Width, GlobalApp.ScreenSize.Height);
-                GlobalApp.PosMainWindow = new PosMainWindow(windowImageFileName);
+                GlobalApp.PosMainWindow = new POSMainWindow(windowImageFileName);
             }
             else
             {

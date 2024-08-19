@@ -17,8 +17,6 @@ namespace LogicPOS.UI.Widgets
 {
     public class NumberPadPin : Box
     {
-        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
         protected Table _table;
         private readonly Window _sourceWindow;
         private int _tempCursorPosition = 0;
@@ -426,34 +424,28 @@ namespace LogicPOS.UI.Widgets
                 ;", pUserDetail.Oid
             );
 
-            try
-            {
-                var resultObject = XPOSettings.Session.ExecuteScalar(sql);
 
-                if (resultObject != null && resultObject.GetType() == typeof(string) && CryptographyUtils.ValidateSaltedString(resultObject.ToString(), password))
-                {
-                    EntryPin.ModifyText(StateType.Normal, Color.Black.ToGdkColor());
-                    EntryPin.Visibility = false;
-                    _entryPinShowStatus = false;
-                    result = true;
-                }
-                else
-                {
-                    XPOUtility.Audit("USER_loggerIN_ERROR", string.Format(GeneralUtils.GetResourceByName("audit_message_user_loggerin_error"), pUserDetail.Name));
-                    EntryPin.ModifyText(StateType.Normal, Color.Red.ToGdkColor());
-                    EntryPin.Text = GeneralUtils.GetResourceByName("status_message_pin_error");
-                    EntryPin.Visibility = true;
-                    _entryPinShowStatus = true;
-                    result = false;
-                }
+            var resultObject = XPOSettings.Session.ExecuteScalar(sql);
 
-                return result;
-            }
-            catch (Exception ex)
+            if (resultObject != null && resultObject.GetType() == typeof(string) && CryptographyUtils.ValidateSaltedString(resultObject.ToString(), password))
             {
-                _logger.Error(ex.Message, ex);
-                return result;
+                EntryPin.ModifyText(StateType.Normal, Color.Black.ToGdkColor());
+                EntryPin.Visibility = false;
+                _entryPinShowStatus = false;
+                result = true;
             }
+            else
+            {
+                XPOUtility.Audit("USER_LOGIN_ERROR", string.Format(GeneralUtils.GetResourceByName("audit_message_user_login_error"), pUserDetail.Name));
+                EntryPin.ModifyText(StateType.Normal, Color.Red.ToGdkColor());
+                EntryPin.Text = GeneralUtils.GetResourceByName("status_message_pin_error");
+                EntryPin.Visibility = true;
+                _entryPinShowStatus = true;
+                result = false;
+            }
+
+            return result;
+
         }
 
         private void ClearEntryPinStatusMessage(bool pForceClear = false)
@@ -474,8 +466,8 @@ namespace LogicPOS.UI.Widgets
             {
                 case NumberPadPinMode.Password:
                     _labelStatus.Text = GeneralUtils.GetResourceByName("pos_pinpad_message_type_password");
-                    //_buttonKeyOK.LabelText = CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "widget_pospinpad_loggerin;
-                    ButtonKeyOK.ButtonLabel.Text = !_notLoginAuth ? GeneralUtils.GetResourceByName("widget_pospinpad_loggerin") : GeneralUtils.GetResourceByName("widget_pospinpad_ok");
+                    //_buttonKeyOK.LabelText = CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "widget_pospinpad_login;
+                    ButtonKeyOK.ButtonLabel.Text = !_notLoginAuth ? GeneralUtils.GetResourceByName("widget_pospinpad_login") : GeneralUtils.GetResourceByName("widget_pospinpad_ok");
                     break;
                 case NumberPadPinMode.PasswordOld:
                     //Show message to user, to change old password
@@ -503,7 +495,7 @@ namespace LogicPOS.UI.Widgets
         {
             XPOSettings.LoggedUser = pUserDetail;
             GeneralSettings.LoggedUserPermissions = XPOUtility.GetUserPermissions();
-            XPOUtility.Audit("USER_loggerIN", string.Format(GeneralUtils.GetResourceByName("audit_message_user_loggerin"), pUserDetail.Name));
+            XPOUtility.Audit("USER_LOGIN", string.Format(GeneralUtils.GetResourceByName("audit_message_user_login"), pUserDetail.Name));
 
             //SessionApp Add LoggedUser
             if (!POSSession.CurrentSession.LoggedUsers.ContainsKey(XPOSettings.LoggedUser.Oid))
