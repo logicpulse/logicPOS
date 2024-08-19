@@ -47,15 +47,9 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override void AddValidatableFields()
         {
-            switch (_modalMode)
-            {
-                case EntityModalMode.Insert:
-                    throw new NotImplementedException();
-                case EntityModalMode.Update:
-                    ValidatableFields.Add(_txtOrder);
-                    ValidatableFields.Add(_txtCode);
-                    break;
-            }
+            ValidatableFields.Add(_txtOrder);
+            ValidatableFields.Add(_txtCode);
+            ValidatableFields.Add(_field.TextBox);
         }
 
         private VBox CreateTab1()

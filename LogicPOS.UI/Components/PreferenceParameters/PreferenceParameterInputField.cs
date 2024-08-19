@@ -34,6 +34,7 @@ namespace LogicPOS.UI.Components.InputFieds
         {
             _entity = entity;
             InitializeLabel();
+            InitializeTextBox();
             InitializeInputField();
         }
 
@@ -49,7 +50,7 @@ namespace LogicPOS.UI.Components.InputFieds
             {
                 case PreferenceParameterInputType.Text:
                 case PreferenceParameterInputType.TextPassword:
-                    InitializeTextBox();
+                    FieldComponent = TextBox.Component;
                     break;
                 case PreferenceParameterInputType.Multiline:
                     InitializeMutilineTextBox();
@@ -74,6 +75,11 @@ namespace LogicPOS.UI.Components.InputFieds
             var fileChooserAction = FileChooserAction.SelectFolder;
             FileChooserButton = new FileChooserButton(string.Empty, fileChooserAction) { HeightRequest = 23 };
             FileChooserButton.SetCurrentFolder(_entity.Value);
+
+            FileChooserButton.SelectionChanged += (sender, e) =>
+            {
+                TextBox.Text = FileChooserButton.Filename;
+            };
 
             InitializeFileChooserButtonComponent();
         }
@@ -118,6 +124,11 @@ namespace LogicPOS.UI.Components.InputFieds
                 FileChooserButton.Filter = GetFileFilterImages();
             }
 
+            FileChooserButton.FileSet += (sender, e) =>
+            {
+                TextBox.Text = FileChooserButton.Filename;
+            };
+
             InitializeFileChooserButtonComponent();
         }
 
@@ -126,7 +137,6 @@ namespace LogicPOS.UI.Components.InputFieds
             var box = FieldComponent as VBox;
             box.PackStart(Label, false, false, 0);
             box.PackStart(FileChooserButton, false, false, 0);
-
         }
 
         private void InitializeComboBox()
@@ -156,6 +166,12 @@ namespace LogicPOS.UI.Components.InputFieds
             Label.Text = GeneralUtils.GetResourceByName("global_language");
             box.PackStart(Label, false, false, 0);
             box.PackStart(ComboBox, false, false, 0);
+
+            ComboBox.Changed += (sender, e) =>
+            {
+                TextBox.Text = Cultures.ElementAt(ComboBox.Active).Value;
+            };
+
             FieldComponent = box;
         }
 
@@ -163,6 +179,12 @@ namespace LogicPOS.UI.Components.InputFieds
         {
             CheckButton = new CheckButton(_entity.ResourceStringValue);
             CheckButton.Active = _entity.Value.ToLower() == "true";
+
+            CheckButton.Toggled += (sender, e) =>
+            {
+                TextBox.Text = CheckButton.Active.ToString();
+            };
+
             FieldComponent = CheckButton;
         }
 
@@ -176,35 +198,17 @@ namespace LogicPOS.UI.Components.InputFieds
             var vbox = FieldComponent as VBox;
             vbox.PackStart(Label, false, false, 0);
             vbox.PackStart(MultilineTextBox, false, false, 0);
+
+            MultilineTextBox.Value.Changed += (sender, e) =>
+            {
+                TextBox.Text = MultilineTextBox.Value.Text;
+            };
         }
 
         private void InitializeTextBox()
         {
             TextBox = new TextBox(_entity.ResourceString, _entity.Required);
             TextBox.Text = _entity.Value;
-            FieldComponent = TextBox.Component;
-        }
-
-        public string GetValue()
-        {
-            switch (_entity.InputType)
-            {
-                case PreferenceParameterInputType.Text:
-                case PreferenceParameterInputType.TextPassword:
-                    return TextBox.Text;
-                case PreferenceParameterInputType.Multiline:
-                    return MultilineTextBox.Value.Text;
-                case PreferenceParameterInputType.CheckButton:
-                    return CheckButton.Active.ToString();
-                case PreferenceParameterInputType.ComboBox:               
-                    return Cultures.ElementAt(ComboBox.Active).Value;
-                case PreferenceParameterInputType.FilePicker:
-                    return FileChooserButton.Filename;
-                case PreferenceParameterInputType.DirPicker:
-                    return FileChooserButton.Filename;
-                default:
-                    return string.Empty;
-            }
         }
     }
 }

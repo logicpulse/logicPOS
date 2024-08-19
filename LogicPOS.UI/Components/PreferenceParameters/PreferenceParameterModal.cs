@@ -12,11 +12,8 @@ namespace LogicPOS.UI.Components.Modals
         }
 
 
-        protected override void AddEntity()
-        {
-            throw new InvalidOperationException();
-        }
-
+        protected override void AddEntity() => throw new InvalidOperationException();
+        
         protected override void ShowEntityData()
         {
             var preferenceParameter = _entity as PreferenceParameter;
@@ -44,7 +41,7 @@ namespace LogicPOS.UI.Components.Modals
                 Id = _entity.Id,
                 NewOrder = uint.Parse(_txtOrder.Text),
                 NewCode = _txtCode.Text,
-                NewValue = _field.GetValue(),
+                NewValue = _field.TextBox.Text,
                 NewNotes = _txtNotes.Value.Text
             };
         }
