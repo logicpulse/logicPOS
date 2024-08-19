@@ -14,7 +14,7 @@ namespace LogicPOS.UI.Components.Modals
         #region Components
         private TextBox _txtOrder = TextBoxes.CreateOrderField();
         private TextBox _txtCode = TextBoxes.CreateCodeField();
-        private TextBox _txtDesignation = new TextBox("global_designation", true);
+        private TextBox _txtDesignation = TextBoxes.CreateDesignationField();
         private CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
         #endregion
 

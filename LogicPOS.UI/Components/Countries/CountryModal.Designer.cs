@@ -11,7 +11,7 @@ namespace LogicPOS.UI.Components.Modals
         #region Components
         private TextBox _txtOrder = TextBoxes.CreateOrderField();
         private TextBox _txtCode = TextBoxes.CreateCodeField();
-        private TextBox _txtDesignation = new TextBox("global_designation", true);
+        private TextBox _txtDesignation = TextBoxes.CreateDesignationField();
         private TextBox _txtCapital = new TextBox("global_country_capital", true);
         private TextBox _txtCurrency = new TextBox("global_currency", true);
         private TextBox _txtCode2 = new TextBox("global_country_code2", true);
@@ -79,8 +79,12 @@ namespace LogicPOS.UI.Components.Modals
             tab1.PackStart(_txtDesignation.Component, false, false, 0);
             tab1.PackStart(_txtCapital.Component, false, false, 0);
             tab1.PackStart(_txtCurrency.Component, false, false, 0);
-            tab1.PackStart(_checkDisabled, false, false, 0);
 
+            if (_modalMode != EntityModalMode.Insert)
+            {
+                tab1.PackStart(_checkDisabled, false, false, 0);
+            }
+          
             return tab1;
         }
 
