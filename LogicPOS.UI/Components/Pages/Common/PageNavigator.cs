@@ -5,6 +5,7 @@ using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.GridViews;
 using LogicPOS.Utility;
+using System;
 using System.Drawing;
 
 namespace LogicPOS.UI.Components.Pages
@@ -29,17 +30,11 @@ namespace LogicPOS.UI.Components.Pages
         public int CurrentRecord { get; set; }
         public int TotalRecords { get; set; }
 
-
         public PageNavigator(Page page)
         {
             _page = page;
             HeightRequest = 60;
 
-            Initialize();
-        }
-
-        private void Initialize()
-        {
             InitializeButtons();
             InitializeSearchBox();
             InitializeExtraButtonSpace();
@@ -148,27 +143,63 @@ namespace LogicPOS.UI.Components.Pages
                                                string icon)
         {
             string fileIcon = PathsSettings.ImagesFolderLocation + icon;
-            string fontBaseDialogActionAreaButton = AppSettings.Instance.fontBaseDialogActionAreaButton;
-            Color colorBaseDialogActionAreaButtonBackground = Color.Transparent;
-            Color colorBaseDialogActionAreaButtonFont = AppSettings.Instance.colorBaseDialogActionAreaButtonFont;
-            Size sizeBaseDialogActionAreaBackOfficeNavigatorButton = AppSettings.Instance.sizeBaseDialogActionAreaBackOfficeNavigatorButton;
-            Size sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon = AppSettings.Instance.sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon;
+            string font = AppSettings.Instance.fontBaseDialogActionAreaButton;
+            Color bgColor = Color.Transparent;
+            Color fontColor = AppSettings.Instance.colorBaseDialogActionAreaButtonFont;
+            Size buttonSize = AppSettings.Instance.sizeBaseDialogActionAreaBackOfficeNavigatorButton;
+            Size iconSize = AppSettings.Instance.sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon;
 
             return new IconButtonWithText(
                 new ButtonSettings
                 {
                     Name = name,
-                    BackgroundColor = colorBaseDialogActionAreaButtonBackground,
+                    BackgroundColor = bgColor,
                     Text = label,
-                    Font = fontBaseDialogActionAreaButton,
-                    FontColor = colorBaseDialogActionAreaButtonFont,
+                    Font = font,
+                    FontColor = fontColor,
                     Icon = fileIcon,
-                    IconSize = sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon,
-                    ButtonSize = sizeBaseDialogActionAreaBackOfficeNavigatorButton
+                    IconSize = iconSize,
+                    ButtonSize = buttonSize
                 });
         }
 
         public void UpdateButtonsSensitivity()
+        {
+            UpdateBtnPrevious();
+            UpdateBtnNext();
+            UpdateBtnView();
+            UpdateBtnUpdate();
+            UpdateBtnDelete();
+        }
+
+        private void UpdateBtnDelete()
+        {
+            ButtonDelete.Sensitive = _page.CanDeleteEntity && _page.SelectedEntity != null;
+        }
+
+        private void UpdateBtnUpdate()
+        {
+            ButtonUpdate.Sensitive = _page.CanUpdateEntity && _page.SelectedEntity != null;
+        }
+
+        private void UpdateBtnView()
+        {
+           ButtonView.Sensitive = _page.CanViewEntity && _page.SelectedEntity != null;
+        }
+
+        private void UpdateBtnNext()
+        {
+            if (CurrentRecord == TotalRecords || TotalRecords < 1)
+            {
+                if (ButtonNextRecord.Sensitive) ButtonNextRecord.Sensitive = false;
+            }
+            else
+            {
+                if (!ButtonNextRecord.Sensitive) ButtonNextRecord.Sensitive = true;
+            }
+        }
+
+        private void UpdateBtnPrevious()
         {
             if (CurrentRecord == 0 || TotalRecords == 0)
             {
@@ -178,29 +209,6 @@ namespace LogicPOS.UI.Components.Pages
             {
                 if (!BtnPrevious.Sensitive) BtnPrevious.Sensitive = true;
             }
-
-            if (CurrentRecord == TotalRecords || TotalRecords < 1)
-            {
-                if (ButtonNextRecord.Sensitive) ButtonNextRecord.Sensitive = false;
-            }
-            else
-            {
-                if (!ButtonNextRecord.Sensitive) ButtonNextRecord.Sensitive = true;
-            }
-
-            if (_page.GridView.Model.IterNChildren() > 0 && _page.SelectedEntity != null)
-            {
-                if (!ButtonView.Sensitive && _page.CanViewEntity) ButtonView.Sensitive = true;
-                if (!ButtonUpdate.Sensitive && _page.CanUpdateEntity) ButtonUpdate.Sensitive = true;
-                if (!ButtonDelete.Sensitive && _page.CanDeleteEntity) ButtonDelete.Sensitive = true;
-            }
-            else
-            {
-
-                if (ButtonView != null && ButtonView.Sensitive) ButtonView.Sensitive = false;
-                if (ButtonUpdate != null && ButtonUpdate.Sensitive) ButtonUpdate.Sensitive = false;
-                if (ButtonDelete != null && ButtonDelete.Sensitive) ButtonDelete.Sensitive = false;
-            };
         }
 
         public void Update()

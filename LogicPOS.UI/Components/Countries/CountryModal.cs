@@ -8,7 +8,7 @@ using System;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    internal partial class CountryModal : EntityModal
+    internal partial class CountryModal : EntityModal<Country>
     {
         public CountryModal(
             EntityModalMode modalMode, 
@@ -55,19 +55,18 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override void ShowEntityData()
         {
-            var country = _entity as Country;
-            _txtOrder.Text = country.Order.ToString();
-            _txtCode.Text = country.Code;
-            _txtCode2.Text = country.Code2;
-            _txtCode3.Text = country.Code3;
-            _txtCapital.Text = country.Capital;
-            _txtCurrency.Text = country.Currency;
-            _txtCurrencyCode.Text = country.CurrencyCode;
-            _txtFiscalNumberRegex.Text = country.FiscalNumberRegex;
-            _txtZipCodeRegex.Text = country.ZipCodeRegex;
-            _txtDesignation.Text = country.Designation;
-            _txtNotes.Value.Text = country.Notes;
-            _checkDisabled.Active = country.IsDeleted;
+            _txtOrder.Text = _entity.Order.ToString();
+            _txtCode.Text = _entity.Code;
+            _txtCode2.Text = _entity.Code2;
+            _txtCode3.Text = _entity.Code3;
+            _txtCapital.Text = _entity.Capital;
+            _txtCurrency.Text = _entity.Currency;
+            _txtCurrencyCode.Text = _entity.CurrencyCode;
+            _txtFiscalNumberRegex.Text = _entity.FiscalNumberRegex;
+            _txtZipCodeRegex.Text = _entity.ZipCodeRegex;
+            _txtDesignation.Text = _entity.Designation;
+            _txtNotes.Value.Text = _entity.Notes;
+            _checkDisabled.Active = _entity.IsDeleted;
         }
 
         protected override void UpdateEntity()

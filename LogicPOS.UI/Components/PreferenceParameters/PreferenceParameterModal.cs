@@ -4,31 +4,30 @@ using System;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class PreferenceParameterModal : EntityModal
+    public partial class PreferenceParameterModal : EntityModal<PreferenceParameter>
     {
         public PreferenceParameterModal(EntityModalMode modalMode,
-                                        PreferenceParameter entity = null) : base(modalMode, entity)
+                                        PreferenceParameter preferenceParameter = null) : base(modalMode, preferenceParameter)
         {
             _txtToken.Entry.Sensitive = false;
         }
 
 
         protected override void AddEntity() => throw new InvalidOperationException();
-        
+
         protected override void ShowEntityData()
         {
-            var preferenceParameter = _entity as PreferenceParameter;
-            _txtOrder.Text = preferenceParameter.Order.ToString();
-            _txtCode.Text = preferenceParameter.Code;
-            _txtToken.Text = preferenceParameter.Token;
-            _txtNotes.Value.Text = preferenceParameter.Notes;
+            _txtOrder.Text = _entity.Order.ToString();
+            _txtCode.Text = _entity.Code;
+            _txtToken.Text = _entity.Token;
+            _txtNotes.Value.Text = _entity.Notes;
         }
 
         protected override void UpdateEntity()
         {
             var command = CreateUpdateCommand();
             var result = _mediator.Send(command).Result;
-        
+
             if (result.IsError)
             {
                 HandleApiError(result.FirstError);

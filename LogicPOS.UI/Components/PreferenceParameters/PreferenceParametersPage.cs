@@ -16,8 +16,9 @@ namespace LogicPOS.UI.Components.Pages
  
         public PreferenceParametersPage(Window parent, Dictionary<string,string> options) : base(parent,options)
         {
-            Navigator.ButtonDelete.Sensitive = false;
+            CanDeleteEntity = false;
             Navigator.ButtonInsert.Sensitive = false;
+            Navigator.Update();
         }
 
         public override void DeleteEntity()

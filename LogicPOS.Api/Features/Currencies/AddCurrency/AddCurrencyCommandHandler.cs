@@ -7,21 +7,21 @@ using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace LogicPOS.Api.Features.Users.Permissions.Profiles.AddPermissionProfile
+namespace LogicPOS.Api.Features.Currencies.AddCurrency
 {
-    public class AddPermissionProfileCommandHandler :
-        RequestHandler<AddPermissionProfileCommand, ErrorOr<Guid>>
+    public class AddCurrencyCommandHandler :
+        RequestHandler<AddCurrencyCommand, ErrorOr<Guid>>
     {
-        public AddPermissionProfileCommandHandler(IHttpClientFactory factory) : base(factory)
+        public AddCurrencyCommandHandler(IHttpClientFactory factory) : base(factory)
         {
         }
 
-        public override async Task<ErrorOr<Guid>> Handle(AddPermissionProfileCommand command,
-                                                         CancellationToken cancellationToken = default)
+        public override async Task<ErrorOr<Guid>> Handle(AddCurrencyCommand command,
+                                                                CancellationToken cancellationToken = default)
         {
             try
             {
-                var httpResponse = await _httpClient.PostAsJsonAsync("users/permissions/profiles",
+                var httpResponse = await _httpClient.PostAsJsonAsync("currencies",
                                                                      command,
                                                                      cancellationToken);
 

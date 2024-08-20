@@ -196,7 +196,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
             Dictionary<string, AccordionNode> _accordionChildAuxiliarTables = new Dictionary<string, AccordionNode>
                 {
                     { "ConfigurationCountry", new AccordionNode(GeneralUtils.GetResourceByName("global_country")) { Content = new CountriesPage(this) } },
-                    { "ConfigurationCurrency", new AccordionNode(GeneralUtils.GetResourceByName("global_ConfigurationCurrency")) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationCurrency>(this) } },
+                    { "ConfigurationCurrency", new AccordionNode(GeneralUtils.GetResourceByName("global_ConfigurationCurrency")) { Content = new CurrenciesPage(this) } },
                     { "ConfigurationPlace", new AccordionNode(GeneralUtils.GetResourceByName("global_places")) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlace>(this) } }
                 };
             /* IN009035 */

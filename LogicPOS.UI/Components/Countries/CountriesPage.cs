@@ -62,10 +62,10 @@ namespace LogicPOS.UI.Components.Pages
 
             AddCodeSorting();
             AddDesignationSorting();
-            AddLastUpdatedAtSorting();
+            AddUpdatedAtSorting();
         }
 
-        private void AddLastUpdatedAtSorting()
+        private void AddUpdatedAtSorting()
         {
             GridViewSettings.Sort.SetSortFunc(2, (model, left, right) =>
             {

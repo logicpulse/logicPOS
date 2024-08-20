@@ -4,7 +4,7 @@ using LogicPOS.Api.Features.Users.Profiles.UpdateUserProfile;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class UserProfileModal : EntityModal
+    public partial class UserProfileModal : EntityModal<UserProfile>
     {
         public UserProfileModal(
             EntityModalMode modalMode,
@@ -36,12 +36,11 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override void ShowEntityData()
         {
-            var userProfile = _entity as UserProfile;
-            _txtOrder.Text = userProfile.Order.ToString();
-            _txtCode.Text = userProfile.Code;
-            _txtDesignation.Text = userProfile.Designation;
-            _txtNotes.Value.Text = userProfile.Notes;
-            _checkDisabled.Active = userProfile.IsDeleted;
+            _txtOrder.Text = _entity.Order.ToString();
+            _txtCode.Text = _entity.Code;
+            _txtDesignation.Text = _entity.Designation;
+            _txtNotes.Value.Text = _entity.Notes;
+            _checkDisabled.Active = _entity.IsDeleted;
         }
 
         protected override void UpdateEntity()

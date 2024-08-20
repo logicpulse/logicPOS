@@ -138,6 +138,11 @@
     <Compile Include="Components\Accordions\AccordionNode.cs" />
     <Compile Include="Components\Accordions\AccordionParentButton.cs" />
     <Compile Include="Components\Countries\CountriesPage.cs" />
+    <Compile Include="Components\Currencies\CurrenciesPage.cs" />
+    <Compile Include="Components\Currencies\CurrencyModal.cs" />
+    <Compile Include="Components\Currencies\CurrencyModal.Designer.cs">
+      <DependentUpon>CurrencyModal.cs</DependentUpon>
+    </Compile>
     <Compile Include="Components\InputFieds\TextBox\TextBoxes.cs" />
     <Compile Include="Components\Modals\EntityModal.cs" />
     <Compile Include="Components\Modals\EntityModalMode.cs" />
@@ -280,7 +285,7 @@
     <Compile Include="Components\BackOffice\Dialogs\Articles\DialogArticleType.cs" />
     <Compile Include="Components\BackOffice\Dialogs\EditDialog.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Configuration\DialogConfigurationCashRegister.cs" />
-    <Compile Include="Components\BackOffice\Dialogs\Configuration\DialogConfigurationCurrency.cs" />
+    <Compile Include="Components\Currencies\DialogConfigurationCurrency.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Configuration\DialogConfigurationDevice.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Configuration\DialogConfigurationKeyboard.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Configuration\DialogConfigurationMaintenance.cs" />
@@ -290,7 +295,7 @@
     <Compile Include="Components\BackOffice\Dialogs\Configuration\DialogConfigurationPlaceMovementType.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Configuration\DialogConfigurationPlaceTable.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Configuration\DialogConfigurationPlaceTerminal.cs" />
-    <Compile Include="Components\BackOffice\Dialogs\Configuration\DialogConfigurationPreferenceParameter.cs" />
+    <Compile Include="Components\PreferenceParameters\DialogConfigurationPreferenceParameter.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Configuration\DialogConfigurationPriceType.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Configuration\DialogConfigurationPrinters.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Configuration\DialogConfigurationPrintersTemplates.cs" />
@@ -306,7 +311,7 @@
     <Compile Include="Components\BackOffice\Dialogs\Configuration\DialogConfigurationUnitMeasure.cs" />
     <Compile Include="Components\BackOffice\TreeView\Configuration\TreeViewConfigurationCashRegister.cs" />
     <Compile Include="Components\Countries\GridViewCountries.cs" />
-    <Compile Include="Components\BackOffice\TreeView\Configuration\TreeViewConfigurationCurrency.cs" />
+    <Compile Include="Components\Currencies\TreeViewConfigurationCurrency.cs" />
     <Compile Include="Components\BackOffice\TreeView\Configuration\TreeViewConfigurationDevice.cs" />
     <Compile Include="Components\BackOffice\TreeView\Configuration\TreeViewConfigurationKeyboard.cs" />
     <Compile Include="Components\BackOffice\TreeView\Configuration\TreeViewConfigurationMaintenance.cs" />
@@ -316,7 +321,7 @@
     <Compile Include="Components\BackOffice\TreeView\Configuration\TreeViewConfigurationPlaceMovementType.cs" />
     <Compile Include="Components\BackOffice\TreeView\Configuration\TreeViewConfigurationPlaceTable.cs" />
     <Compile Include="Components\BackOffice\TreeView\Configuration\TreeViewConfigurationPlaceTerminal.cs" />
-    <Compile Include="Components\BackOffice\TreeView\Configuration\TreeViewConfigurationPreferenceParameter.cs" />
+    <Compile Include="Components\PreferenceParameters\TreeViewConfigurationPreferenceParameter.cs" />
     <Compile Include="Components\BackOffice\TreeView\Configuration\TreeViewConfigurationPriceType.cs" />
     <Compile Include="Components\BackOffice\TreeView\Configuration\TreeViewConfigurationPrinters.cs" />
     <Compile Include="Components\BackOffice\TreeView\Configuration\TreeViewConfigurationPrintersTemplates.cs" />
@@ -411,7 +416,7 @@
     <Compile Include="Components\BackOffice\TreeView\Articles\TreeViewArticleSubFamily.cs" />
     <Compile Include="Components\BackOffice\TreeView\Users\TreeViewUser.cs" />
     <Compile Include="Components\BackOffice\TreeView\Users\TreeViewUserCommissionGroup.cs" />
-    <Compile Include="Components\BackOffice\TreeView\Users\TreeViewUserProfile.cs" />
+    <Compile Include="Components\Users\Permissions\TreeViewUserProfile.cs" />
     <Compile Include="Components\BackOffice\Windows\BackOfficeMainWindow.cs" />
     <Compile Include="Components\POS\Dialogs\PosChangeUserDialog.cs" />
     <Compile Include="Dialogs\Base\BaseDialog.cs" />

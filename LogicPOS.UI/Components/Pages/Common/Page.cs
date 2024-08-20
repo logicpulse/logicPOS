@@ -17,9 +17,11 @@ namespace LogicPOS.UI.Components.Pages
         public Window PageParentWindow { get; }
         public TreeView GridView { get; set; }
         public object SelectedEntity { get; set; }
-        public bool CanViewEntity { get; set; }
-        public bool CanUpdateEntity { get; set; }
-        public bool CanDeleteEntity { get; set; }
+
+        public bool CanViewEntity { get; set; } = true;
+        public bool CanUpdateEntity { get; set; } = true;
+        public bool CanDeleteEntity { get; set; } = true;
+
         public GridViewSettings GridViewSettings { get; } = new GridViewSettings();
         internal PageNavigator Navigator { get; }
         protected Dictionary<string,string> Options { get; set; }
@@ -39,6 +41,8 @@ namespace LogicPOS.UI.Components.Pages
             AddEntitiesToModel();
 
             ShowAll();
+
+            Navigator.Update();
         }
 
         protected void ShowApiErrorAlert()

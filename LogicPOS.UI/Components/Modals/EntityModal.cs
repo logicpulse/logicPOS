@@ -19,9 +19,9 @@ using System.Linq;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public abstract class EntityModal : Dialog
+    public abstract class EntityModal<TEntity> : Dialog where TEntity : ApiEntity
     {
-        protected ApiEntity _entity;
+        protected TEntity _entity;
         protected readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<ISender>();
         protected readonly EntityModalMode _modalMode;
         protected int _boxSpacing = 5;
@@ -38,7 +38,8 @@ namespace LogicPOS.UI.Components.Modals
         protected MultilineTextBox _txtNotes = new MultilineTextBox();
         #endregion
 
-        public EntityModal(EntityModalMode modalMode, ApiEntity entity = null)
+        public EntityModal(EntityModalMode modalMode,
+                           TEntity entity = null)
         {
             _modalMode = modalMode;
             _entity = entity;
@@ -119,7 +120,11 @@ namespace LogicPOS.UI.Components.Modals
 
             VBox.PackStart(CreateNoteBook(), true, true, 0);
 
-            AddStatusBar();
+            if(_modalMode != EntityModalMode.Insert)
+            {
+                AddStatusBar();
+            }
+
             AddActionButtons();
         }
 
