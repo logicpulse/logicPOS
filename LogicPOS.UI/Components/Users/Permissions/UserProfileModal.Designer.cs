@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using Gtk;
 using LogicPOS.UI.Components.InputFieds;
@@ -18,10 +19,10 @@ namespace LogicPOS.UI.Components.Modals
         private CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
         #endregion
 
-        protected override void Design()
+        protected override IEnumerable<(VBox Page, string Title)> CreateTabs()
         {
-            var notebook = CreateNoteBook();
-            VBox.PackStart(notebook, true, true, 0);
+            yield return (CreateDetailsTab(), GeneralUtils.GetResourceByName("global_record_main_detail"));
+            yield return (CreateNotesTab(), GeneralUtils.GetResourceByName("global_notes"));
         }
 
         protected override void AddSensitiveFields()
@@ -48,7 +49,7 @@ namespace LogicPOS.UI.Components.Modals
             }
         }
         
-        private VBox CreateTab1()
+        private VBox CreateDetailsTab()
         {
             var tab1 = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
 
@@ -67,17 +68,6 @@ namespace LogicPOS.UI.Components.Modals
 
             return tab1;
         }
-
-        private Notebook CreateNoteBook()
-        {
-            Notebook notebook = new Notebook();
-            notebook.BorderWidth = 3;
-
-            notebook.AppendPage(CreateTab1(), new Label(GeneralUtils.GetResourceByName("global_record_main_detail")));
-            notebook.AppendPage(CreateNotesTab(), new Label(GeneralUtils.GetResourceByName("global_notes")));
-            return notebook;
-        }
-
       
     }
 }

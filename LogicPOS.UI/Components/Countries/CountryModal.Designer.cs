@@ -3,6 +3,7 @@ using Gtk;
 using LogicPOS.Utility;
 using LogicPOS.UI.Components.InputFieds;
 using System.Drawing;
+using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -23,11 +24,6 @@ namespace LogicPOS.UI.Components.Modals
         #endregion
         public override Size ModalSize => new Size(500, 500);
         public override string ModalTitleResourceName => "window_title_edit_dialog_configuration_country";
-
-        protected override void Design()
-        {
-            AddNotebook();
-        }
 
         protected override void AddSensitiveFields()
         {
@@ -60,13 +56,7 @@ namespace LogicPOS.UI.Components.Modals
             }
         }
 
-        private void AddNotebook()
-        {
-            var notebook = CreateNoteBook();
-            VBox.PackStart(notebook, true, true, 0);
-        }
-
-        private VBox CreateTab1()
+        private VBox CreateDetailsTab()
         {
             var tab1 =  new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
 
@@ -88,7 +78,7 @@ namespace LogicPOS.UI.Components.Modals
             return tab1;
         }
 
-        private VBox CreateTab2()
+        private VBox CreateOthersTab()
         {
             var tab2 = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
 
@@ -101,15 +91,11 @@ namespace LogicPOS.UI.Components.Modals
             return tab2;
         }
 
-        private Notebook CreateNoteBook()
+        protected override IEnumerable<(VBox Page, string Title)> CreateTabs()
         {
-            Notebook notebook = new Notebook();
-            notebook.BorderWidth = 3;
-
-            notebook.AppendPage(CreateTab1(), new Label(GeneralUtils.GetResourceByName("global_record_main_detail")));
-            notebook.AppendPage(CreateTab2(), new Label(GeneralUtils.GetResourceByName("global_others")));
-            notebook.AppendPage(CreateNotesTab(), new Label(GeneralUtils.GetResourceByName("global_notes")));
-            return notebook;
+            yield return (CreateDetailsTab(), GeneralUtils.GetResourceByName("global_record_main_detail"));
+            yield return (CreateOthersTab(), GeneralUtils.GetResourceByName("global_others"));
+            yield return (CreateNotesTab(), GeneralUtils.GetResourceByName("global_notes"));
         }
     }
 }

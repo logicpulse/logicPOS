@@ -1,4 +1,5 @@
-﻿using Gtk;
+﻿using ErrorOr;
+using Gtk;
 using LogicPOS.Api.Errors;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.GridViews;
@@ -78,7 +79,7 @@ namespace LogicPOS.UI.Components.Pages
             GridView.ModifyBase(StateType.Active, new Gdk.Color(215, 215, 215));
 
             AddColumns();
-            AddEventHandlers();
+            AddGridViewEventHandlers();
         }
         protected void InitializeGridViewModel()
         {
@@ -116,13 +117,13 @@ namespace LogicPOS.UI.Components.Pages
             {
                 GridViewSettings.Path = model.GetPath(GridViewSettings.Iterator);
                 Navigator.CurrentRecord = Convert.ToInt16(GridViewSettings.Path.ToString());
-                SelectedEntity = model.GetValue(GridViewSettings.Iterator, 0); ;
+                SelectedEntity = model.GetValue(GridViewSettings.Iterator, 0); 
             };
 
             Navigator.Update();
         }
 
-        protected virtual void AddEventHandlers()
+        protected virtual void AddGridViewEventHandlers()
         {
             GridView.CursorChanged += GridViewRow_Changed;
             GridView.RowActivated += delegate { UpdateEntity(); };

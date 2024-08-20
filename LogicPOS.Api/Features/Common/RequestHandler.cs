@@ -50,5 +50,18 @@ namespace LogicPOS.Api.Features.Common
                     return ApiErrors.CommunicationError;
             }
         }
+
+        protected async Task<ErrorOr<Unit>> HandleDeleteEntityHttpResponseAsync(HttpResponseMessage httpResponse)
+        {
+            switch (httpResponse.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    return Unit.Value;
+                case HttpStatusCode.BadRequest:
+                    return await GetProblemDetailsErrorAsync(httpResponse);
+                default:
+                    return ApiErrors.CommunicationError;
+            }
+        }
     }
 }

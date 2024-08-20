@@ -1,6 +1,8 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Users.Permissions.PermissionItems.GetAllPermissionItems;
+using LogicPOS.Api.Features.Users.Permissions.Profiles.AddPermissionProfile;
+using LogicPOS.Api.Features.Users.Permissions.Profiles.DeletePermissionProfile;
 using LogicPOS.Api.Features.Users.Permissions.Profiles.GetAllPermissionProfiles;
 using LogicPOS.Api.Features.Users.Profiles.GetAllUserProfiles;
 using LogicPOS.UI.Components.GridViews;
@@ -149,7 +151,7 @@ namespace LogicPOS.UI.Components.Pages
             GridView.ModifyBase(StateType.Active, new Gdk.Color(215, 215, 215));
 
             AddColumns();
-            AddEventHandlers();
+            AddGridViewEventHandlers();
         }
 
         private TreeViewColumn CreatePermissiontemColumn()
@@ -224,22 +226,72 @@ namespace LogicPOS.UI.Components.Pages
             {
                 var currentValue = (bool)_gridPermissionItems.Model.GetValue(iterator, 1);
                 _gridPermissionItems.Model.SetValue(iterator, 1, !currentValue);
+
+                var permissionItem = _gridPermissionItems.Model.GetValue(iterator, 0) as PermissionItem; 
+                
+                if (currentValue)
+                {
+                    DeleteUserProfilePermission(permissionItem);
+                }
+                else
+                {
+                    AddUserProfilePermission(permissionItem);
+                }
             }
         }
 
-        protected void GridUserProfilesRow_Changed(object sender, EventArgs e)
+        private void DeleteUserProfilePermission(PermissionItem permissionItem)
         {
-            TreeSelection selection = GridView.Selection;
+            var userProfile = (UserProfile)SelectedEntity;
 
-            if (selection.GetSelected(out TreeModel model, out GridViewSettings.Iterator))
+            if (userProfile is null)
             {
-                GridViewSettings.Path = model.GetPath(GridViewSettings.Iterator);
-                Navigator.CurrentRecord = Convert.ToInt16(GridViewSettings.Path.ToString());
-                SelectedEntity = model.GetValue(GridViewSettings.Iterator, 0);
-                ShowUserProfilePermissions((UserProfile)SelectedEntity);
-            };
+                return;
+            }
 
-            Navigator.Update();
+            var permissionProfile = _permissionProfiles.FirstOrDefault(x => x.UserProfileId == userProfile.Id && x.PermissionItemId == permissionItem.Id);
+
+            if (permissionProfile is null)
+            {
+                return;
+            }
+
+            var deleteResult = _mediator.Send(new DeletePermissionProfileCommand
+            {
+                Id = permissionProfile.Id
+            }).Result;
+
+            if (deleteResult.IsError)
+            {
+                ShowApiErrorAlert();
+            }
+        }
+
+        private void AddUserProfilePermission(PermissionItem permissionItem)
+        {
+            var userProfile  = (UserProfile)SelectedEntity;
+
+            if(userProfile is null)
+            {
+                return;
+            }
+
+            var addResult = _mediator.Send(new AddPermissionProfileCommand
+            {
+                PermissionItemId = permissionItem.Id,
+                UserProfileId = userProfile.Id
+            }).Result;
+
+            if (addResult.IsError)
+            {
+                ShowApiErrorAlert();
+            }
+        }
+
+        protected override void GridViewRow_Changed(object sender, EventArgs e)
+        {
+            base.GridViewRow_Changed(sender, e);
+            ShowUserProfilePermissions((UserProfile)SelectedEntity);
         }
 
         public override void Refresh()

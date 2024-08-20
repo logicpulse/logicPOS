@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using Gtk;
 using LogicPOS.Api.Entities;
@@ -19,13 +20,6 @@ namespace LogicPOS.UI.Components.Modals
         private TextBox _txtToken = new TextBox("global_token");
         private PreferenceParameterInputField _field;
         #endregion
-
-        protected override void Design()
-        {
-            _txtToken.Entry.Sensitive = false;
-            var notebook = CreateNoteBook();
-            VBox.PackStart(notebook, true, true, 0);
-        }
 
         private void InitializeField()
         {
@@ -52,25 +46,21 @@ namespace LogicPOS.UI.Components.Modals
             ValidatableFields.Add(_field.TextBox);
         }
 
-        private VBox CreateTab1()
+        private VBox CreateDetailsTab()
         {
-            var tab1 = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
+            var details = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
 
-            tab1.PackStart(_txtOrder.Component, false, false, 0);
-            tab1.PackStart(_txtCode.Component, false, false, 0);
-            tab1.PackStart(_txtToken.Component, false, false, 0);
-            tab1.PackStart(_field.FieldComponent, false, false, 0);
-            return tab1;
+            details.PackStart(_txtOrder.Component, false, false, 0);
+            details.PackStart(_txtCode.Component, false, false, 0);
+            details.PackStart(_txtToken.Component, false, false, 0);
+            details.PackStart(_field.FieldComponent, false, false, 0);
+            return details;
         }
 
-        private Notebook CreateNoteBook()
+        protected override IEnumerable<(VBox Page, string Title)> CreateTabs()
         {
-            Notebook notebook = new Notebook();
-            notebook.BorderWidth = 3;
-
-            notebook.AppendPage(CreateTab1(), new Label(GeneralUtils.GetResourceByName("global_record_main_detail")));
-            notebook.AppendPage(CreateNotesTab(), new Label(GeneralUtils.GetResourceByName("global_notes")));
-            return notebook;
+            yield return (CreateDetailsTab(), GeneralUtils.GetResourceByName("global_record_main_detail"));
+            yield return (CreateNotesTab(), GeneralUtils.GetResourceByName("global_notes"));
         }
     }
 }

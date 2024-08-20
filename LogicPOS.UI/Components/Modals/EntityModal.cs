@@ -45,7 +45,7 @@ namespace LogicPOS.UI.Components.Modals
 
             HandleModalMode();
             AddValidatableFields();
-            DefaultDesign();
+            Design();
             ShowAll();
         }
 
@@ -104,7 +104,7 @@ namespace LogicPOS.UI.Components.Modals
                                  string.Format(GeneralUtils.GetResourceByName("dialog_message_field_validation_error"), invalidFields));
         }
 
-        private void DefaultDesign()
+        private void Design()
         {
             SetWindowTitle();
             SetWindowIcon();
@@ -117,7 +117,7 @@ namespace LogicPOS.UI.Components.Modals
 
             AddAccelGroup(new AccelGroup());
 
-            Design();
+            VBox.PackStart(CreateNoteBook(), true, true, 0);
 
             AddStatusBar();
             AddActionButtons();
@@ -294,11 +294,25 @@ namespace LogicPOS.UI.Components.Modals
         }
 
         protected abstract void ShowEntityData();
-        protected abstract void Design();
+
+        protected virtual Notebook CreateNoteBook()
+        {
+            Notebook notebook = new Notebook();
+            notebook.BorderWidth = 3;
+
+            foreach (var tab in CreateTabs())
+            {
+                notebook.AppendPage(tab.Page, new Label(tab.Title));
+            }
+
+            return notebook;
+        }
+
         protected abstract void UpdateEntity();
         protected abstract void AddEntity();
         protected abstract void AddSensitiveFields();
         protected abstract void AddValidatableFields();
+        protected abstract IEnumerable<(VBox Page, string Title)> CreateTabs();
 
     }
 }
