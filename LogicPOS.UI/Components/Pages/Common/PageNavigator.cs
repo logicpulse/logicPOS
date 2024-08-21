@@ -116,6 +116,14 @@ namespace LogicPOS.UI.Components.Pages
 
         public void Next()
         {
+            if (_page.GridViewSettings.Path == null)
+            {
+                var test = new TreePath();
+                test.AppendIndex(1);
+                _page.GridView.SetCursor(test, null, false);
+                return;
+            }
+            
             _page.GridViewSettings.Path.Next();
             _page.GridView.SetCursor(_page.GridViewSettings.Path, null, false);
         }
