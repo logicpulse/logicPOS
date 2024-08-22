@@ -10,11 +10,11 @@ using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Pages
 {
-    public class CustomerTypesPage : Page<CustomerType>
+    public class CustomerTypePage : Page<CustomerType>
     {
         protected override IRequest<ErrorOr<IEnumerable<CustomerType>>> GetAllQuery => new GetAllCustomerTypesQuery();
 
-        public CustomerTypesPage(Window parent) : base(parent)
+        public CustomerTypePage(Window parent) : base(parent)
         {
         }
 

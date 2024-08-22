@@ -1,28 +1,32 @@
-﻿using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Users.Profiles.AddUserProfile;
-using LogicPOS.Api.Features.Users.Profiles.UpdateUserProfile;
+﻿using Gtk;
+using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Customers.Types.AddCustomerType;
+using LogicPOS.Api.Features.Customers.Types.UpdateCustomerType;
+using System.Collections.Generic;
+using System.Drawing;
 
 namespace LogicPOS.UI.Components.Modals
 {
     public partial class CustomerTypeModal : EntityModal<CustomerType>
     {
+
         public CustomerTypeModal(EntityModalMode modalMode,
-                                 CustomerType entity = null) : base(modalMode, entity)
+                                 CustomerType customerType = null) : base(modalMode, customerType)
         {
         }
 
-        private AddUserProfileCommand CreateAddCommand()
+        private AddCustomerTypeCommand CreateAddCommand()
         {
-            return new AddUserProfileCommand
+            return new AddCustomerTypeCommand
             {
                 Designation = _txtDesignation.Text,
                 Notes = _txtNotes.Value.Text
             };
         }
 
-        private UpdateUserProfileCommand CreateUpdateCommand()
+        private UpdateCustomerTypeCommand CreateUpdateCommand()
         {
-            return new UpdateUserProfileCommand
+            return new UpdateCustomerTypeCommand
             {
                 Id = _entity.Id,
                 NewOrder = uint.Parse(_txtOrder.Text),
@@ -63,5 +67,6 @@ namespace LogicPOS.UI.Components.Modals
                 HandleApiError(result.FirstError);
             }
         }
+
     }
 }

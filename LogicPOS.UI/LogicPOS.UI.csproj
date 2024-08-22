@@ -137,6 +137,8 @@
     <Compile Include="Components\Accordions\AccordionChildButton.cs" />
     <Compile Include="Components\Accordions\AccordionNode.cs" />
     <Compile Include="Components\Accordions\AccordionParentButton.cs" />
+    <Compile Include="Components\BackOffice\Dialogs\Users\DialogUserCommissionGroup.cs" />
+    <Compile Include="Components\BackOffice\TreeView\Users\TreeViewUserCommissionGroup.cs" />
     <Compile Include="Components\Countries\CountriesPage.cs" />
     <Compile Include="Components\Currencies\CurrenciesPage.cs" />
     <Compile Include="Components\Currencies\CurrencyModal.cs" />
@@ -413,14 +415,12 @@
     <Compile Include="Components\BackOffice\Dialogs\Articles\DialogArticleSubFamily.cs" />
     <Compile Include="Components\BackOffice\Dialogs\DialogTemplate.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Articles\DialogArticle.cs" />
-    <Compile Include="Components\BackOffice\Dialogs\Users\DialogUserCommissionGroup.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Users\DialogUserDetail.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Users\DialogUserProfile.cs" />
     <Compile Include="Components\BackOffice\Windows\BackOfficeBaseWindow.cs" />
     <Compile Include="Components\BackOffice\TreeView\Articles\TreeViewArticleFamily.cs" />
     <Compile Include="Components\BackOffice\TreeView\Articles\TreeViewArticleSubFamily.cs" />
     <Compile Include="Components\BackOffice\TreeView\Users\TreeViewUser.cs" />
-    <Compile Include="Components\BackOffice\TreeView\Users\TreeViewUserCommissionGroup.cs" />
     <Compile Include="Components\Users\Permissions\TreeViewUserProfile.cs" />
     <Compile Include="Components\BackOffice\Windows\BackOfficeMainWindow.cs" />
     <Compile Include="Components\POS\Dialogs\PosChangeUserDialog.cs" />
