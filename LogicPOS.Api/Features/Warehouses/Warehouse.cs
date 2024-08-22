@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace LogicPOS.Api.Entities
 {
-    public class Warehouse : ApiEntity
+    public class Warehouse : ApiEntity, IWithCode, IWithDesignation
     {
         public uint Order { get; set; }
         public string Code { get; set; }

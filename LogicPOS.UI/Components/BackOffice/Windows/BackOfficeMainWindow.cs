@@ -206,7 +206,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
             _accordionChildAuxiliarTables.Add("ConfigurationUnitMeasure", new AccordionNode(GeneralUtils.GetResourceByName("global_units_measure")) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationUnitMeasure>(this) });
             _accordionChildAuxiliarTables.Add("ConfigurationUnitSize", new AccordionNode(GeneralUtils.GetResourceByName("global_units_size")) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationUnitSize>(this) });
             _accordionChildAuxiliarTables.Add("ConfigurationHolidays", new AccordionNode(GeneralUtils.GetResourceByName("global_holidays")) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationHolidays>(this) });
-            _accordionChildAuxiliarTables.Add("Warehouse", new AccordionNode(GeneralUtils.GetResourceByName("global_warehouse")) { Content = Utils.GetGenericTreeViewXPO<TreeViewWarehouse>(this) });
+            _accordionChildAuxiliarTables.Add("Warehouse", new AccordionNode(GeneralUtils.GetResourceByName("global_warehouse")) { Content = new WarehousesPage(this) });
 
 
             //Devices
