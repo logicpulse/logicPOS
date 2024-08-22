@@ -143,7 +143,12 @@
     <Compile Include="Components\Currencies\CurrencyModal.Designer.cs">
       <DependentUpon>CurrencyModal.cs</DependentUpon>
     </Compile>
-    <Compile Include="Components\InputFieds\TextBox\TextBoxes.cs" />
+    <Compile Include="Components\Customers\Types\CustomerTypeModal.cs" />
+    <Compile Include="Components\Customers\Types\CustomerTypeModal.Designer.cs">
+      <DependentUpon>CustomerTypeModal.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Components\Customers\Types\CustomerTypesPage.cs" />
+    <Compile Include="Components\InputFields\TextBox\TextBoxes.cs" />
     <Compile Include="Components\Modals\EntityModal.cs" />
     <Compile Include="Components\Modals\EntityModalMode.cs" />
     <Compile Include="Components\Pages\Common\PageSearchBox.cs" />
@@ -167,8 +172,8 @@
     <Compile Include="Components\Countries\CountryModal.Designer.cs">
       <DependentUpon>CountryModal.cs</DependentUpon>
     </Compile>
-    <Compile Include="Components\InputFieds\TextBox\TextBox.cs" />
-    <Compile Include="Components\InputFieds\ValidationColors.cs" />
+    <Compile Include="Components\InputFields\TextBox\TextBox.cs" />
+    <Compile Include="Components\InputFields\ValidationColors.cs" />
     <Compile Include="Components\KeyBoard\NumPadPin\NumberPadPinMode.cs" />
     <Compile Include="Classes\Enums\Xml\ReplaceType.cs" />
     <Compile Include="Classes\Formatters\DateFormatter.cs" />
@@ -183,7 +188,7 @@
     <Compile Include="Components\BackOffice\Dialogs\Stocks\DialogArticleCompositionSerialNumber.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Stocks\DialogArticleStock.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Stocks\DialogArticleWarehouse.cs" />
-    <Compile Include="Components\BackOffice\Dialogs\Stocks\DialogConfigurationWarehouse.cs" />
+    <Compile Include="Components\Warehouses\DialogConfigurationWarehouse.cs" />
     <Compile Include="Components\BackOffice\TreeView\Configuration\TreeViewConfigurationWeighingMachine.cs" />
     <Compile Include="Components\BackOffice\TreeView\Configuration\TreeViewConfigurationPoleDisplay.cs" />
     <Compile Include="Components\BackOffice\TreeView\Configuration\TreeViewConfigurationInputReader.cs" />
@@ -192,7 +197,7 @@
     <Compile Include="Components\BackOffice\TreeView\Stocks\TreeViewArticleDetailsStock.cs" />
     <Compile Include="Components\BackOffice\TreeView\Stocks\TreeViewArticleSerialNumber.cs" />
     <Compile Include="Components\BackOffice\TreeView\Stocks\TreeViewArticleStock.cs" />
-    <Compile Include="Components\BackOffice\TreeView\Stocks\TreeViewArticleWarehouse.cs" />
+    <Compile Include="Components\Warehouses\TreeViewArticleWarehouse.cs" />
     <Compile Include="Components\BackOffice\TreeView\System\TreeViewSystemAuditType.cs" />
     <Compile Include="Components\Pages\Common\Page.cs" />
     <Compile Include="Components\Pages\Common\PageNavigator.cs" />
@@ -275,7 +280,7 @@
     <Compile Include="Components\Widgets\CheckButton\CheckButtonBoxGroup.cs" />
     <Compile Include="Components\Widgets\CheckButton\CheckButtonExtended.cs" />
     <Compile Include="Components\Widgets\EntryBox\EntryBoxValidationMultiLine.cs" />
-    <Compile Include="Components\InputFieds\MultilineTextBox.cs" />
+    <Compile Include="Components\InputFields\MultilineTextBox.cs" />
     <Compile Include="Components\Widgets\BackOffice\BOWidgetBox.cs" />
     <Compile Include="Classes\Logic\Hardware\InputDevices\InputReader.cs" />
     <Compile Include="Classes\Logic\Hardware\OutputDevices\UsbDisplayDevice.cs" />
@@ -303,7 +308,7 @@
     <Compile Include="Components\BackOffice\Dialogs\Configuration\DialogConfigurationUnitSize.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Configuration\DialogConfigurationVatRate.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Customers\DialogCustomerDiscountGroup.cs" />
-    <Compile Include="Components\BackOffice\Dialogs\Customers\DialogCustomerType.cs" />
+    <Compile Include="Components\Customers\Types\DialogCustomerType.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Documents\DialogDocumentFinanceSeries.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Documents\DialogDocumentFinanceYears.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Documents\DialogDocumentFinanceYearSerieTerminal.cs" />
@@ -330,7 +335,7 @@
     <Compile Include="Components\BackOffice\TreeView\Configuration\TreeViewConfigurationUnitSize.cs" />
     <Compile Include="Components\BackOffice\TreeView\Configuration\TreeViewConfigurationVatRate.cs" />
     <Compile Include="Components\BackOffice\TreeView\Customers\TreeViewCustomerDiscountGroup.cs" />
-    <Compile Include="Components\BackOffice\TreeView\Customers\TreeViewCustomerType.cs" />
+    <Compile Include="Components\Customers\Types\TreeViewCustomerType.cs" />
     <Compile Include="Components\BackOffice\TreeView\Documents\TreeViewDocumentFinanceMaster.cs" />
     <Compile Include="Components\BackOffice\TreeView\Documents\TreeViewDocumentFinanceSeries.cs" />
     <Compile Include="Components\BackOffice\TreeView\Documents\TreeViewDocumentFinanceType.cs" />
@@ -360,12 +365,12 @@
     <Compile Include="Components\POS\Dialogs\PosSelectRecordDialog.cs" />
     <Compile Include="Components\POS\Dialogs\PosReadCardDialog\PosReadCardDialog.cs" />
     <Compile Include="Components\POS\Windows\StartupWindow.cs" />
-    <Compile Include="Components\InputFieds\InputField.cs" />
-    <Compile Include="Components\InputFieds\GenericCRUDWidgetDataTable.cs" />
-    <Compile Include="Components\InputFieds\GenericCRUDWidgetList.cs" />
-    <Compile Include="Components\InputFieds\GenericCRUDWidgetListDataTable.cs" />
-    <Compile Include="Components\InputFieds\GenericCRUDWidgetListXPO.cs" />
-    <Compile Include="Components\InputFieds\GenericCRUDWidgetXPO.cs" />
+    <Compile Include="Components\InputFields\InputField.cs" />
+    <Compile Include="Components\InputFields\GenericCRUDWidgetDataTable.cs" />
+    <Compile Include="Components\InputFields\GenericCRUDWidgetList.cs" />
+    <Compile Include="Components\InputFields\GenericCRUDWidgetListDataTable.cs" />
+    <Compile Include="Components\InputFields\GenericCRUDWidgetListXPO.cs" />
+    <Compile Include="Components\InputFields\GenericCRUDWidgetXPO.cs" />
     <Compile Include="Components\Pages\GridViews\GridView.cs" />
     <Compile Include="Components\Pages\GridViews\GridViewColumn.cs" />
     <Compile Include="Components\Pages\GridViews\GridViewDataTable.cs" />

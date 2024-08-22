@@ -2,7 +2,7 @@
 
 namespace LogicPOS.Api.Entities
 {
-    public class UserProfile : ApiEntity, IWithCode, IWithDesignation
+    public class CustomerType : ApiEntity, IWithCode, IWithDesignation
     {
         public uint Order { get; set; }
         public string Code { get; set; }

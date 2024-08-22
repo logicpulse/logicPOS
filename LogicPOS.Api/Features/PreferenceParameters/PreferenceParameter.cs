@@ -4,7 +4,7 @@ using System;
 
 namespace LogicPOS.Api.Entities
 {
-    public class PreferenceParameter : ApiEntity
+    public class PreferenceParameter : ApiEntity, IWithCode
     {
         public uint Order { get; set; }
         public string Code { get; set; }

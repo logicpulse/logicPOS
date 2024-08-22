@@ -2,7 +2,7 @@
 using logicpos.Classes.Enums.Keyboard;
 using System;
 
-namespace LogicPOS.UI.Components.InputFieds
+namespace LogicPOS.UI.Components.InputFields
 {
     public class MultilineTextBox : EventBox
     {

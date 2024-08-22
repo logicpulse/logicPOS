@@ -1,16 +1,15 @@
-﻿using System;
+﻿using Gtk;
 using System.Collections.Generic;
 using System.Drawing;
-using Gtk;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.Utility;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class UserProfileModal
+    public partial class CustomerTypeModal
     {
-        public override Size ModalSize => new Size(500, 335);
-        public override string ModalTitleResourceName => "window_title_edit_user_profile";
+        public override Size ModalSize => new Size(500, 309);
+        public override string ModalTitleResourceName => "window_title_edit_customertype";
 
         #region Components
         private TextBox _txtOrder = TextBoxes.CreateOrderField();
@@ -36,9 +35,9 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override void AddValidatableFields()
         {
-            switch(_modalMode)
+            switch (_modalMode)
             {
-               case EntityModalMode.Insert:
+                case EntityModalMode.Insert:
                     ValidatableFields.Add(_txtDesignation);
                     break;
                 case EntityModalMode.Update:
@@ -48,7 +47,7 @@ namespace LogicPOS.UI.Components.Modals
                     break;
             }
         }
-        
+
         private VBox CreateDetailsTab()
         {
             var tab1 = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
@@ -61,13 +60,12 @@ namespace LogicPOS.UI.Components.Modals
 
             tab1.PackStart(_txtDesignation.Component, false, false, 0);
 
-            if(_modalMode != EntityModalMode.Insert)
+            if (_modalMode != EntityModalMode.Insert)
             {
                 tab1.PackStart(_checkDisabled, false, false, 0);
             }
 
             return tab1;
         }
-      
     }
 }

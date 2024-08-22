@@ -1,4 +1,5 @@
-﻿using Gtk;
+﻿using ErrorOr;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Users.Permissions.PermissionItems.GetAllPermissionItems;
 using LogicPOS.Api.Features.Users.Permissions.Profiles.AddPermissionProfile;
@@ -9,18 +10,19 @@ using LogicPOS.UI.Components.GridViews;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace LogicPOS.UI.Components.Pages
 {
-    internal class PermissionsPage : Page
+    internal class PermissionsPage : Page<UserProfile>
     {
         private TreeView _gridPermissionItems;
         private List<PermissionProfile> _permissionProfiles = new List<PermissionProfile>();
         private List<PermissionItem> _permissionItems = new List<PermissionItem>();
-        private List<UserProfile> _userProfiles = new List<UserProfile>();
+        protected override IRequest<ErrorOr<IEnumerable<UserProfile>>> GetAllQuery => new GetAllUserProfilesQuery();
 
         public PermissionsPage(Window parentWindow) : base(parentWindow)
         {
@@ -28,9 +30,9 @@ namespace LogicPOS.UI.Components.Pages
 
         protected override void LoadEntities()
         {
+            base.LoadEntities();
             LoadPermissionItems();
             LoadPermissionProfiles();
-            LoadUserProfiles();
         }
 
         private void LoadPermissionItems()
@@ -59,26 +61,6 @@ namespace LogicPOS.UI.Components.Pages
 
             _permissionProfiles.Clear();
             _permissionProfiles.AddRange(getPermissionProfiles.Value);
-        }
-
-        private void LoadUserProfiles()
-        {
-            var getUserProfilesResult = _mediator.Send(new GetAllUserProfilesQuery()).Result;
-
-            if (getUserProfilesResult.IsError)
-            {
-                ShowApiErrorAlert();
-                return;
-            }
-
-            _userProfiles.Clear();
-            _userProfiles.AddRange(getUserProfilesResult.Value);
-        }
-
-        private void AddUserProfilesToModel()
-        {
-            var model = (ListStore)GridViewSettings.Model;
-            _userProfiles.ForEach(profile => model.AppendValues(profile));
         }
 
         private void AddPermissionItemsToModel()
@@ -138,7 +120,7 @@ namespace LogicPOS.UI.Components.Pages
 
         private void InitializeUserProfilesGridView()
         {
-            GridViewSettings.Model = CreateGridViewModel();
+            GridViewSettings.Model = new ListStore(typeof(UserProfile));
 
             InitializeGridViewModel();
 
@@ -193,28 +175,6 @@ namespace LogicPOS.UI.Components.Pages
 
 
             return grantedColumn;
-        }
-
-        private TreeViewColumn CreateCodeColumn()
-        {
-            void RenderCode(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
-            {
-                var userProfile = (UserProfile)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = userProfile.Code;
-            }
-
-            return Columns.CreateCodeColumn(RenderCode);
-        }
-
-        private TreeViewColumn CreateDesignationColumn()
-        {
-            void RenderDesignation(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
-            {
-                var userProfile = (UserProfile)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = userProfile.Designation;
-            }
-
-            return Columns.CreateDesignationColumn(RenderDesignation);
         }
 
         private void CheckBox_Clicked(object o, ToggledArgs args)
@@ -299,7 +259,7 @@ namespace LogicPOS.UI.Components.Pages
             LoadEntities();
             var model = (ListStore)GridViewSettings.Model;
             model.Clear();
-            AddUserProfilesToModel();
+            base.AddEntitiesToModel();
         }
 
         public override void DeleteEntity()
@@ -307,7 +267,7 @@ namespace LogicPOS.UI.Components.Pages
             throw new NotImplementedException();
         }
    
-        protected override void RunModal(EntityModalMode mode)
+        public override void RunModal(EntityModalMode mode)
         {
             var modal = new UserProfileModal(mode, SelectedEntity as UserProfile);
             modal.Run();
@@ -322,85 +282,22 @@ namespace LogicPOS.UI.Components.Pages
 
         protected override void AddEntitiesToModel()
         {
-            AddUserProfilesToModel();
+            base.AddEntitiesToModel();
             AddPermissionItemsToModel();
-        }
-
-        protected override ListStore CreateGridViewModel()
-        {
-            return new ListStore(typeof(UserProfile));
         }
 
         protected override void InitializeSort()
         {
             GridViewSettings.Sort = new TreeModelSort(GridViewSettings.Filter);
 
-            AddCodeSorting();
-            AddDesignationSorting();
-        }
-
-        private void AddDesignationSorting()
-        {
-            GridViewSettings.Sort.SetSortFunc(1, (model, a, b) =>
-            {
-                var userProfileA = (UserProfile)model.GetValue(a, 0);
-                var userProfileB = (UserProfile)model.GetValue(b, 0);
-
-                if (userProfileA == null || userProfileB == null)
-                {
-                    return 0;
-                }
-
-                return userProfileA.Designation.CompareTo(userProfileB.Designation);
-            });
-        }
-
-        private void AddCodeSorting()
-        {
-            GridViewSettings.Sort.SetSortFunc(0, (model, a, b) =>
-            {
-                var userProfileA = (UserProfile)model.GetValue(a, 0);
-                var userProfileB = (UserProfile)model.GetValue(b, 0);
-
-                if (userProfileA == null || userProfileB == null)
-                {
-                    return 0;
-                }
-
-                return userProfileA.Code.CompareTo(userProfileB.Code);
-            });
-        }
-
-        protected override void InitializeFilter()
-        {
-            GridViewSettings.Filter = new TreeModelFilter(GridViewSettings.Model, null);
-            GridViewSettings.Filter.VisibleFunc = (model, iterator) =>
-            {
-                var search = Navigator.SearchBox.SearchText.ToLower();
-                if (string.IsNullOrWhiteSpace(search))
-                {
-                    return true;
-                }
-
-                search = search.Trim();
-                var userProfile = (UserProfile)model.GetValue(iterator, 0);
-
-                if (userProfile.Designation.ToLower().Contains(search))
-                {
-                    return true;
-                }
-
-                return false;
-            };
+            AddCodeSorting(0);
+            AddDesignationSorting(1);
         }
 
         protected override void AddColumns()
         {
-            var codeColumn = CreateCodeColumn();
-            GridView.AppendColumn(codeColumn);
-
-            var designationColumn = CreateDesignationColumn();
-            GridView.AppendColumn(designationColumn);
+            GridView.AppendColumn(Columns.CreateCodeColumn(0));
+            GridView.AppendColumn(Columns.CreateDesignationColumn(1));
         }
     }
 }

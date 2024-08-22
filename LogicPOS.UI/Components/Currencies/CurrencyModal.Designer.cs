@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using Gtk;
-using LogicPOS.UI.Components.InputFieds;
+using LogicPOS.UI.Components.InputFields;
 using LogicPOS.Utility;
 
 namespace LogicPOS.UI.Components.Modals

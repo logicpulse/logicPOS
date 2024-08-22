@@ -7,7 +7,7 @@ using LogicPOS.Api.Features.Common;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
-using LogicPOS.UI.Components.InputFieds;
+using LogicPOS.UI.Components.InputFields;
 using LogicPOS.Utility;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;

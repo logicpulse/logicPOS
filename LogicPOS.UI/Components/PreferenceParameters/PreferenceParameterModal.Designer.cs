@@ -4,6 +4,7 @@ using System.Drawing;
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.InputFieds;
+using LogicPOS.UI.Components.InputFields;
 using LogicPOS.Utility;
 
 

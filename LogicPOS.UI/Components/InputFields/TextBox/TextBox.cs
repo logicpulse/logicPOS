@@ -3,7 +3,7 @@ using LogicPOS.Utility;
 using System;
 using System.Text.RegularExpressions;
 
-namespace LogicPOS.UI.Components.InputFieds
+namespace LogicPOS.UI.Components.InputFields
 {
     public class TextBox
     {
@@ -21,7 +21,7 @@ namespace LogicPOS.UI.Components.InputFieds
                        bool isValidatable = false,
                        string regex = null)
         {
-            if(isValidatable && string.IsNullOrEmpty(regex))
+            if (isValidatable && string.IsNullOrEmpty(regex))
             {
                 throw new ArgumentException("Regex must be provided when the field is validatable");
             }
@@ -40,7 +40,7 @@ namespace LogicPOS.UI.Components.InputFieds
         {
             if (IsRequired)
             {
-                if(IsEmpty)
+                if (IsEmpty)
                 {
                     return false;
                 }

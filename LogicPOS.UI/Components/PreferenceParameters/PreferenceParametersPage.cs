@@ -10,10 +10,8 @@ using System.Linq;
 
 namespace LogicPOS.UI.Components.Pages
 {
-    public class PreferenceParametersPage : Page
+    public class PreferenceParametersPage : Page<PreferenceParameter>
     {
-        private readonly List<PreferenceParameter> _parameters = new List<PreferenceParameter>();
- 
         public PreferenceParametersPage(Window parent, Dictionary<string,string> options) : base(parent,options)
         {
             CanDeleteEntity = false;
@@ -28,14 +26,9 @@ namespace LogicPOS.UI.Components.Pages
 
         protected override void AddColumns()
         {
-            var designationColumn = CreateDesignationColumn();
-            GridView.AppendColumn(designationColumn);
-
-            var valueColumn = CreateValueColumn();
-            GridView.AppendColumn(valueColumn);
-
-            var updateAtColumn = Columns.CreateUpdatedAtColumn(2);
-            GridView.AppendColumn(updateAtColumn);
+            GridView.AppendColumn(CreateDesignationColumn());
+            GridView.AppendColumn(CreateValueColumn());
+            GridView.AppendColumn(Columns.CreateUpdatedAtColumn(2));
         }
 
         private TreeViewColumn CreateValueColumn()
@@ -54,24 +47,21 @@ namespace LogicPOS.UI.Components.Pages
 
         private TreeViewColumn CreateDesignationColumn()
         {
-            void RenderDesignation(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
+            void RenderDesignation(TreeViewColumn col, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var parameter = (PreferenceParameter)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = parameter.ResourceStringValue;
             }
 
-            return Columns.CreateDesignationColumn(RenderDesignation, 0);
-        }
+            var title = GeneralUtils.GetResourceByName("global_designation");
 
-        protected override void AddEntitiesToModel()
-        {
-            var model = (ListStore)GridViewSettings.Model;
-            _parameters.ForEach(parameter => model.AppendValues(parameter));
-        }
+            var column = Columns.CreateColumn(title,
+                                              0,
+                                              RenderDesignation);
+            column.MinWidth = 250;
+            column.MaxWidth = 800;
 
-        protected override ListStore CreateGridViewModel()
-        {
-            return new ListStore(typeof(PreferenceParameter));
+            return column;
         }
 
         protected override void InitializeFilter()
@@ -104,23 +94,7 @@ namespace LogicPOS.UI.Components.Pages
 
             AddDesignationSorting();
             AddValueSorting();
-            AddUpdateAtSorting();
-        }
-
-        private void AddUpdateAtSorting()
-        {
-            GridViewSettings.Sort.SetSortFunc(2, (model, a, b) =>
-            {
-                var parameterA = (PreferenceParameter)model.GetValue(a, 0);
-                var paramterB = (PreferenceParameter)model.GetValue(b, 0);
-
-                if (parameterA == null || paramterB == null)
-                {
-                    return 0;
-                }
-
-                return parameterA.UpdatedAt.CompareTo(paramterB.UpdatedAt);
-            });
+            AddUpdatedAtSorting(2);
         }
 
         private void AddValueSorting()
@@ -165,7 +139,7 @@ namespace LogicPOS.UI.Components.Pages
                 return;
             }
 
-            _parameters.Clear();
+            _entities.Clear();
 
 
             List<PreferenceParameter> parameters;
@@ -179,11 +153,11 @@ namespace LogicPOS.UI.Components.Pages
                 parameters = getParametersResult.Value.Where(p => p.FormType == 2).ToList();
             }
 
-            _parameters.AddRange(parameters);
-            _parameters.ForEach(p => p.ResourceStringValue = GeneralUtils.GetResourceByName(p.ResourceString));
+            _entities.AddRange(parameters);
+            _entities.ForEach(p => p.ResourceStringValue = GeneralUtils.GetResourceByName(p.ResourceString));
         }
 
-        protected override void RunModal(EntityModalMode mode)
+        public override void RunModal(EntityModalMode mode)
         {
             var modal = new PreferenceParameterModal(mode, SelectedEntity as PreferenceParameter);
             modal.Run();

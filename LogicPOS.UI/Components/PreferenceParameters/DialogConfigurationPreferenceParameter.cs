@@ -11,7 +11,7 @@ using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Enums;
 using LogicPOS.UI.Components;
-using LogicPOS.UI.Components.InputFieds;
+using LogicPOS.UI.Components.InputFields;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {

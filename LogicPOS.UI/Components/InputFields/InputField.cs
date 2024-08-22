@@ -1,6 +1,7 @@
 ﻿using Gtk;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
+using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using System;

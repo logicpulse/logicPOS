@@ -2,7 +2,7 @@
 using LogicPOS.UI.Extensions;
 using System.Drawing;
 
-namespace LogicPOS.UI.Components.InputFieds
+namespace LogicPOS.UI.Components.InputFields
 {
     public class ValidationColors
     {
@@ -42,11 +42,11 @@ namespace LogicPOS.UI.Components.InputFieds
         }
 
         public void UpdateComponent(
-            Widget component, 
+            Widget component,
             bool isValid,
             bool updateFontColor = true,
             bool updateBackgroundColor = true)
-   
+
         {
             if (updateFontColor)
             {
@@ -67,7 +67,7 @@ namespace LogicPOS.UI.Components.InputFieds
             InvalidFontColor = Settings.AppSettings.Instance.colorEntryValidationInvalidFont,
             InvalidBackgroundColor = Settings.AppSettings.Instance.colorEntryValidationInvalidBackground
         };
-     
+
 
     }
 }

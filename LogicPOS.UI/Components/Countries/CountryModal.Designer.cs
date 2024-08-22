@@ -1,9 +1,9 @@
 ﻿
 using Gtk;
 using LogicPOS.Utility;
-using LogicPOS.UI.Components.InputFieds;
 using System.Drawing;
 using System.Collections.Generic;
+using LogicPOS.UI.Components.InputFields;
 
 namespace LogicPOS.UI.Components.Modals
 {

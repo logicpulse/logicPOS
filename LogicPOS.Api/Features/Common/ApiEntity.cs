@@ -13,6 +13,6 @@ namespace LogicPOS.Api.Features.Common
         public Guid UpdatedBy { get; set; }
         public Guid UpdatedWhere { get; set; }
         public bool IsDeleted { get; set; }
-        public Nullable<DateTime> DeletedAt { get; set; }
+        public DateTime DeletedAt { get; set; }
     }
 }

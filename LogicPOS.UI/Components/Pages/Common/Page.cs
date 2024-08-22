@@ -1,9 +1,13 @@
 ﻿using ErrorOr;
 using Gtk;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Errors;
+using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Countries.GetAllCountries;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.GridViews;
 using LogicPOS.UI.Components.Modals;
+using LogicPOS.UI.Components.Pages.GridViews;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -11,25 +15,29 @@ using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Pages
 {
-    public abstract class Page : Box
+    public abstract class Page<TEntity> : Box where TEntity : ApiEntity
     {
         protected readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<ISender>();
+
+        protected readonly List<TEntity> _entities = new List<TEntity>();
+        protected virtual IRequest<ErrorOr<IEnumerable<TEntity>>> GetAllQuery { get; set; }
+
         public Window PageParentWindow { get; }
         public TreeView GridView { get; set; }
-        public object SelectedEntity { get; set; }
+        public TEntity SelectedEntity { get; set; }
 
         public bool CanViewEntity { get; set; } = true;
         public bool CanUpdateEntity { get; set; } = true;
         public bool CanDeleteEntity { get; set; } = true;
 
         public GridViewSettings GridViewSettings { get; } = new GridViewSettings();
-        internal PageNavigator Navigator { get; }
+        internal PageNavigator<TEntity> Navigator { get; }
         protected Dictionary<string,string> Options { get; set; }
 
         public Page(Window parent, Dictionary<string,string> options = null)
         {
             PageParentWindow = parent;
-            Navigator = new PageNavigator(this);
+            Navigator = new PageNavigator<TEntity>(this);
             Options = options;
 
             LoadEntities();
@@ -62,15 +70,25 @@ namespace LogicPOS.UI.Components.Pages
             AddEntitiesToModel();
         }
 
-        protected abstract ListStore CreateGridViewModel();
-        public virtual void ViewEntity() => RunModal(EntityModalMode.View);
-        public virtual void UpdateEntity() => RunModal(EntityModalMode.Update);
         public abstract void DeleteEntity();
-        public virtual void InsertEntity() => RunModal(EntityModalMode.Insert);
-        protected abstract void LoadEntities();
+
+        protected virtual void LoadEntities()
+        {
+            var getEntitiesResult = _mediator.Send(GetAllQuery).Result;
+
+            if (getEntitiesResult.IsError)
+            {
+                ShowApiErrorAlert();
+                return;
+            }
+
+            _entities.Clear();
+            _entities.AddRange(getEntitiesResult.Value);
+        }
+
         protected virtual void InitializeGridView()
         {
-            GridViewSettings.Model = CreateGridViewModel();
+            GridViewSettings.Model = new ListStore(typeof(TEntity));
 
             InitializeGridViewModel();
 
@@ -90,11 +108,84 @@ namespace LogicPOS.UI.Components.Pages
             InitializeFilter();
             InitializeSort();
         }
+        protected virtual void AddEntitiesToModel()
+        {
+            var model = (ListStore)GridViewSettings.Model;
+            _entities.ForEach(entity => model.AppendValues(entity));
+        }
+        protected virtual void InitializeFilter()
+        {
+            GridViewSettings.Filter = new TreeModelFilter(GridViewSettings.Model, null);
+            GridViewSettings.Filter.VisibleFunc = (model, iterator) =>
+            {
+                var search = Navigator.SearchBox.SearchText.ToLower();
+                if (string.IsNullOrWhiteSpace(search))
+                {
+                    return true;
+                }
+
+                search = search.Trim();
+                var entity = (IWithDesignation)model.GetValue(iterator, 0);
+
+                if (entity.Designation.ToLower().Contains(search))
+                {
+                    return true;
+                }
+
+                return false;
+            };
+        }
+
+        protected void AddDesignationSorting(int sortColumnId)
+        {
+            GridViewSettings.Sort.SetSortFunc(sortColumnId, (model, left, right) =>
+            {
+                var leftEntity = (IWithDesignation)model.GetValue(left, 0);
+                var rightEntity = (IWithDesignation)model.GetValue(right, 0);
+
+                if (leftEntity == null || rightEntity == null)
+                {
+                    return 0;
+                }
+
+                return leftEntity.Designation.CompareTo(rightEntity.Designation);
+            });
+        }
+        protected void AddCodeSorting(int sortColumnId)
+        {
+            GridViewSettings.Sort.SetSortFunc(sortColumnId, (model, left, right) =>
+            {
+                var leftEntity = (IWithCode)model.GetValue(left, 0);
+                var rightEnity = (IWithCode)model.GetValue(right, 0);
+
+                if (leftEntity == null || rightEnity == null)
+                {
+                    return 0;
+                }
+
+                return leftEntity.Code.CompareTo(rightEnity.Code);
+            });
+        }
+        protected void AddUpdatedAtSorting(int sortColumnId)
+        {
+            GridViewSettings.Sort.SetSortFunc(sortColumnId, (model, left, right) =>
+            {
+                var leftEntity = (ApiEntity)model.GetValue(left, 0);
+                var rightEntity = (ApiEntity)model.GetValue(right, 0);
+
+                if (leftEntity == null || rightEntity == null)
+                {
+                    return 0;
+                }
+
+                return leftEntity.UpdatedAt.CompareTo(rightEntity.UpdatedAt);
+            });
+        }
 
         protected abstract void InitializeSort();
-        protected abstract void InitializeFilter();
+      
         protected abstract void AddColumns();
-        protected abstract void RunModal(EntityModalMode mode);
+        public abstract void RunModal(EntityModalMode mode);
         protected virtual void Design()
         {
             VBox verticalLayout = new VBox(false, 1);
@@ -111,8 +202,6 @@ namespace LogicPOS.UI.Components.Pages
             PackStart(verticalLayout);
         }
 
-        protected abstract void AddEntitiesToModel();
-
         protected virtual void GridViewRow_Changed(object sender, EventArgs e)
         {
             TreeSelection selection = GridView.Selection;
@@ -121,7 +210,7 @@ namespace LogicPOS.UI.Components.Pages
             {
                 GridViewSettings.Path = model.GetPath(GridViewSettings.Iterator);
                 Navigator.CurrentRecord = Convert.ToInt16(GridViewSettings.Path.ToString());
-                SelectedEntity = model.GetValue(GridViewSettings.Iterator, 0); 
+                SelectedEntity = (TEntity)model.GetValue(GridViewSettings.Iterator, 0); 
             };
 
             Navigator.Update();
@@ -130,7 +219,7 @@ namespace LogicPOS.UI.Components.Pages
         protected virtual void AddGridViewEventHandlers()
         {
             GridView.CursorChanged += GridViewRow_Changed;
-            GridView.RowActivated += delegate { UpdateEntity(); };
+            GridView.RowActivated += delegate { RunModal(EntityModalMode.Update); };
             GridView.Vadjustment.ValueChanged += delegate { Navigator.Update(); };
             GridView.Vadjustment.Changed += delegate { Navigator.Update(); };
         }

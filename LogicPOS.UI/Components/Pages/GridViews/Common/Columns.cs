@@ -35,13 +35,19 @@ namespace LogicPOS.UI.Components.Pages.GridViews
             return column;
         }
 
-        public static TreeViewColumn CreateCodeColumn(TreeCellDataFunc renderFunction)
+        public static TreeViewColumn CreateCodeColumn(int sortColumnId)
         {
             var title = GeneralUtils.GetResourceByName("global_record_code");
 
+            void RenderCode(TreeViewColumn col, CellRenderer cell, TreeModel model, TreeIter iter)
+            {
+                var entity = (IWithCode)model.GetValue(iter, 0);
+                (cell as CellRendererText).Text = entity.Code;
+            }
+
             var column = CreateColumn(title,
-                                      0,
-                                      renderFunction,
+                                      sortColumnId,
+                                      RenderCode,
                                       CellRenderers.Code());
             column.MinWidth = 60;
             column.MaxWidth = 100;
@@ -49,12 +55,20 @@ namespace LogicPOS.UI.Components.Pages.GridViews
             return column;
         }
 
-        public static TreeViewColumn CreateDesignationColumn(TreeCellDataFunc renderFunction,
-                                                             int sortColumnId = 1)
+       
+        public static TreeViewColumn CreateDesignationColumn(int sortColumnId)
         {
             var title = GeneralUtils.GetResourceByName("global_designation");
 
-            var column = CreateColumn(title,sortColumnId,renderFunction);
+            void RenderDesignation(TreeViewColumn col, CellRenderer cell, TreeModel model, TreeIter iter)
+            {
+                var entity = (IWithDesignation)model.GetValue(iter, 0);
+                (cell as CellRendererText).Text = entity.Designation;
+            }
+
+            var column = CreateColumn(title,
+                                      sortColumnId,
+                                      RenderDesignation);
             column.MinWidth = 250;
             column.MaxWidth = 800;
 

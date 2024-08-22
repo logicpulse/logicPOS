@@ -3,7 +3,7 @@ using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
-using LogicPOS.UI.Components.InputFieds;
+using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using System.Drawing;

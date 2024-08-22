@@ -1,20 +1,26 @@
 ﻿using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Countries.GetAllCountries;
+using LogicPOS.Api.Features.Customers.Types.GetAllCustomerTypes;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using MediatR;
+using System;
 using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Pages
 {
-    public class CountriesPage : Page<Country>
+    public class CustomerTypesPage : Page<CustomerType>
     {
-        protected override IRequest<ErrorOr<IEnumerable<Country>>> GetAllQuery => new GetAllCountriesQuery();
+        protected override IRequest<ErrorOr<IEnumerable<CustomerType>>> GetAllQuery => new GetAllCustomerTypesQuery();
 
-        public CountriesPage(Window parent) : base(parent)
+        public CustomerTypesPage(Window parent) : base(parent)
         {
+        }
+
+        public override void DeleteEntity()
+        {
+            throw new NotImplementedException();
         }
 
         protected override void AddColumns()
@@ -33,14 +39,9 @@ namespace LogicPOS.UI.Components.Pages
             AddUpdatedAtSorting(2);
         }
 
-        public override void DeleteEntity()
-        {
-            throw new System.NotImplementedException();
-        }
-
         public override void RunModal(EntityModalMode mode)
         {
-            var modal = new CountryModal(mode, SelectedEntity);
+            var modal = new CustomerTypeModal(mode, SelectedEntity);
             modal.Run();
             modal.Destroy();
         }

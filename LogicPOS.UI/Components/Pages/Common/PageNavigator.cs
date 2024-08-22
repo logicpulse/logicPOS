@@ -1,18 +1,17 @@
 ﻿using Gtk;
 using logicpos.App;
-using logicpos.Classes.Enums.Dialogs;
+using LogicPOS.Api.Features.Common;
 using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
-using LogicPOS.UI.Components.GridViews;
+using LogicPOS.UI.Components.Modals;
 using LogicPOS.Utility;
-using System;
 using System.Drawing;
 
 namespace LogicPOS.UI.Components.Pages
 {
-    internal class PageNavigator : Box
+    internal class PageNavigator<Tentity> : Box where Tentity : ApiEntity
     {
-        private readonly Page _page;
+        private readonly Page<Tentity> _page;
 
         public HBox ExtraButtonSpace { get; set; }
         public PageSearchBox SearchBox { get; set; }
@@ -30,7 +29,7 @@ namespace LogicPOS.UI.Components.Pages
         public int CurrentRecord { get; set; }
         public int TotalRecords { get; set; }
 
-        public PageNavigator(Page page)
+        public PageNavigator(Page<Tentity> page)
         {
             _page = page;
             HeightRequest = 60;
@@ -118,30 +117,35 @@ namespace LogicPOS.UI.Components.Pages
         {
             if (_page.GridViewSettings.Path == null)
             {
-                var test = new TreePath();
-                test.AppendIndex(1);
-                _page.GridView.SetCursor(test, null, false);
+                SelectSecondRecord();
                 return;
             }
-            
+
             _page.GridViewSettings.Path.Next();
             _page.GridView.SetCursor(_page.GridViewSettings.Path, null, false);
         }
-        
+
+        private void SelectSecondRecord()
+        {
+            var path = new TreePath();
+            path.AppendIndex(1);
+            _page.GridView.SetCursor(path, null, false);
+        }
+
         public void Previous()
         {
             _page.GridViewSettings.Path.Prev();
             _page.GridView.SetCursor(_page.GridViewSettings.Path, null, false);
         }
-        
+
         private void AddButtonsEventHandlers()
         {
             BtnPrevious.Clicked += delegate { Previous(); };
             ButtonNextRecord.Clicked += delegate { Next(); };
 
-            ButtonInsert.Clicked += delegate { _page.InsertEntity(); };
-            ButtonView.Clicked += delegate { _page.ViewEntity(); };
-            ButtonUpdate.Clicked += delegate { _page.UpdateEntity(); };
+            ButtonInsert.Clicked += delegate { _page.RunModal(EntityModalMode.Insert); };
+            ButtonView.Clicked += delegate { _page.RunModal(EntityModalMode.View); };
+            ButtonUpdate.Clicked += delegate { _page.RunModal(EntityModalMode.Update); };
             ButtonDelete.Clicked += delegate { _page.DeleteEntity(); };
             ButtonRefresh.Clicked += delegate { _page.Refresh(); };
         }
@@ -192,7 +196,7 @@ namespace LogicPOS.UI.Components.Pages
 
         private void UpdateBtnView()
         {
-           ButtonView.Sensitive = _page.CanViewEntity && _page.SelectedEntity != null;
+            ButtonView.Sensitive = _page.CanViewEntity && _page.SelectedEntity != null;
         }
 
         private void UpdateBtnNext()

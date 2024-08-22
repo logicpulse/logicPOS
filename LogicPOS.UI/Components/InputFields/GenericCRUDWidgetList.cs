@@ -12,6 +12,7 @@ using LogicPOS.Globalization;
 using LogicPOS.Modules;
 using LogicPOS.Modules.StockManagement;
 using LogicPOS.UI.Components.InputFieds;
+using LogicPOS.UI.Components.InputFields;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

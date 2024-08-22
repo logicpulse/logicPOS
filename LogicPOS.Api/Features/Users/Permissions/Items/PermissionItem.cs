@@ -3,7 +3,7 @@ using System;
 
 namespace LogicPOS.Api.Entities
 {
-    public class PermissionItem : ApiEntity
+    public class PermissionItem : ApiEntity, IWithCode, IWithDesignation
     {
         public uint Order { get; set; }
         public string Code { get; set; }

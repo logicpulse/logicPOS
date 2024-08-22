@@ -2,7 +2,7 @@
 
 namespace LogicPOS.Api.Entities
 {
-    public class Currency : ApiEntity
+    public class Currency : ApiEntity, IWithCode, IWithDesignation
     {
         public uint Order { get; set; }
         public string Code { get; set; }
