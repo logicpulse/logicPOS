@@ -45,14 +45,14 @@ namespace LogicPOS.UI.Components.Pages
 
         private TreeViewColumn CreateCommissionColumn()
         {
-            void RenderAcronym(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
+            void RenderCommission(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var commissionGroup = (CommissionGroup)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = commissionGroup.Commission.ToString();
             }
 
             var title = GeneralUtils.GetResourceByName("global_commission");
-            return Columns.CreateColumn(title, 2, RenderAcronym);
+            return Columns.CreateColumn(title, 2, RenderCommission);
             
         }
 

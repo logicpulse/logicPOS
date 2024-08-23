@@ -137,6 +137,11 @@
     <Compile Include="Components\Accordions\AccordionChildButton.cs" />
     <Compile Include="Components\Accordions\AccordionNode.cs" />
     <Compile Include="Components\Accordions\AccordionParentButton.cs" />
+    <Compile Include="Components\Articles\Types\ArticleTypeModal.cs" />
+    <Compile Include="Components\Articles\Types\ArticleTypeModal.Designer.cs">
+      <DependentUpon>ArticleTypeModal.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Components\Articles\Types\ArticleTypePage.cs" />
     <Compile Include="Components\Customers\DiscountGroup\DiscountGroupPage.cs" />
     <Compile Include="Components\Customers\DiscountGroup\DiscountGroupModal.cs" />
     <Compile Include="Components\Customers\DiscountGroup\DiscountGroupModal.Designer.cs">
@@ -300,7 +305,7 @@
     <Compile Include="Classes\Logic\License\LicenseRouter.cs" />
     <Compile Include="Classes\Logic\License\LicenseUIResult.cs" />
     <Compile Include="Classes\DataLayer\DataBaseBackup.cs" />
-    <Compile Include="Components\BackOffice\Dialogs\Articles\DialogArticleType.cs" />
+    <Compile Include="Components\Articles\Types\DialogArticleType.cs" />
     <Compile Include="Components\BackOffice\Dialogs\EditDialog.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Configuration\DialogConfigurationCashRegister.cs" />
     <Compile Include="Components\Currencies\DialogConfigurationCurrency.cs" />
@@ -325,7 +330,7 @@
     <Compile Include="Components\BackOffice\Dialogs\Documents\DialogDocumentFinanceSeries.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Documents\DialogDocumentFinanceYears.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Documents\DialogDocumentFinanceYearSerieTerminal.cs" />
-    <Compile Include="Components\BackOffice\TreeView\Articles\TreeViewArticleType.cs" />
+    <Compile Include="Components\Articles\Types\TreeViewArticleType.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Configuration\DialogConfigurationUnitMeasure.cs" />
     <Compile Include="Components\BackOffice\TreeView\Configuration\TreeViewConfigurationCashRegister.cs" />
     <Compile Include="Components\Countries\GridViewCountries.cs" />

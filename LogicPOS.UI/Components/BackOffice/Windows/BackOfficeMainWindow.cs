@@ -337,7 +337,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
             articleButtons.Add("ArticleFamily", new AccordionNode(GeneralUtils.GetResourceByName("global_families")) { Content = Utils.GetGenericTreeViewXPO<TreeViewArticleFamily>(this) });
             articleButtons.Add("ArticleSubFamily", new AccordionNode(GeneralUtils.GetResourceByName("global_subfamilies")) { Content = Utils.GetGenericTreeViewXPO<TreeViewArticleSubFamily>(this) });
             articleButtons.Add("Article", new AccordionNode(GeneralUtils.GetResourceByName("global_articles")) { Content = Utils.GetGenericTreeViewXPO<TreeViewArticle>(this) });
-            articleButtons.Add("ArticleType", new AccordionNode(GeneralUtils.GetResourceByName("global_article_types")) { Content = Utils.GetGenericTreeViewXPO<TreeViewArticleType>(this) });
+            articleButtons.Add("ArticleType", new AccordionNode(GeneralUtils.GetResourceByName("global_article_types")) { Content = new ArticleTypePage(this) });
             articleButtons.Add("ArticleClass", new AccordionNode(GeneralUtils.GetResourceByName("global_article_class")) { Content = Utils.GetGenericTreeViewXPO<TreeViewArticleClass>(this) });
             articleButtons.Add("ConfigurationPriceType", new AccordionNode(GeneralUtils.GetResourceByName("global_price_type")) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPriceType>(this) });
             articleButtons.Add("ArticleStock", new AccordionNode(GeneralUtils.GetResourceByName("global_stock_movements")) { Clicked = delegate { Utils.OpenArticleStockDialog(this); } });
