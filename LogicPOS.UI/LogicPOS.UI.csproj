@@ -137,8 +137,13 @@
     <Compile Include="Components\Accordions\AccordionChildButton.cs" />
     <Compile Include="Components\Accordions\AccordionNode.cs" />
     <Compile Include="Components\Accordions\AccordionParentButton.cs" />
-    <Compile Include="Components\BackOffice\Dialogs\Users\DialogUserCommissionGroup.cs" />
-    <Compile Include="Components\BackOffice\TreeView\Users\TreeViewUserCommissionGroup.cs" />
+    <Compile Include="Components\Customers\DiscountGroup\DiscountGroupPage.cs" />
+    <Compile Include="Components\Customers\DiscountGroup\DiscountGroupModal.cs" />
+    <Compile Include="Components\Customers\DiscountGroup\DiscountGroupModal.Designer.cs">
+      <DependentUpon>DiscountGroupModal.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Components\Users\CommissionGroups\DialogUserCommissionGroup.cs" />
+    <Compile Include="Components\Users\CommissionGroups\TreeViewUserCommissionGroup.cs" />
     <Compile Include="Components\Countries\CountriesPage.cs" />
     <Compile Include="Components\Currencies\CurrenciesPage.cs" />
     <Compile Include="Components\Currencies\CurrencyModal.cs" />
@@ -190,6 +195,11 @@
     <Compile Include="Components\BackOffice\Dialogs\Stocks\DialogArticleCompositionSerialNumber.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Stocks\DialogArticleStock.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Stocks\DialogArticleWarehouse.cs" />
+    <Compile Include="Components\Users\CommissionGroups\CommissionGroupModal.cs" />
+    <Compile Include="Components\Users\CommissionGroups\CommissionGroupModal.Designer.cs">
+      <DependentUpon>CommissionGroupModal.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Components\Users\CommissionGroups\CommissionGroupPage.cs" />
     <Compile Include="Components\Warehouses\DialogConfigurationWarehouse.cs" />
     <Compile Include="Components\BackOffice\TreeView\Configuration\TreeViewConfigurationWeighingMachine.cs" />
     <Compile Include="Components\BackOffice\TreeView\Configuration\TreeViewConfigurationPoleDisplay.cs" />
@@ -310,7 +320,7 @@
     <Compile Include="Components\BackOffice\Dialogs\Configuration\DialogConfigurationPrintersType.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Configuration\DialogConfigurationUnitSize.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Configuration\DialogConfigurationVatRate.cs" />
-    <Compile Include="Components\BackOffice\Dialogs\Customers\DialogCustomerDiscountGroup.cs" />
+    <Compile Include="Components\Customers\DiscountGroup\DialogCustomerDiscountGroup.cs" />
     <Compile Include="Components\Customers\Types\DialogCustomerType.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Documents\DialogDocumentFinanceSeries.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Documents\DialogDocumentFinanceYears.cs" />
@@ -337,7 +347,7 @@
     <Compile Include="Components\BackOffice\TreeView\Configuration\TreeViewConfigurationUnitMeasure.cs" />
     <Compile Include="Components\BackOffice\TreeView\Configuration\TreeViewConfigurationUnitSize.cs" />
     <Compile Include="Components\BackOffice\TreeView\Configuration\TreeViewConfigurationVatRate.cs" />
-    <Compile Include="Components\BackOffice\TreeView\Customers\TreeViewCustomerDiscountGroup.cs" />
+    <Compile Include="Components\Customers\DiscountGroup\TreeViewCustomerDiscountGroup.cs" />
     <Compile Include="Components\Customers\Types\TreeViewCustomerType.cs" />
     <Compile Include="Components\BackOffice\TreeView\Documents\TreeViewDocumentFinanceMaster.cs" />
     <Compile Include="Components\BackOffice\TreeView\Documents\TreeViewDocumentFinanceSeries.cs" />

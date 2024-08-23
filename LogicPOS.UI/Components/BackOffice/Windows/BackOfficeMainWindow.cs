@@ -177,7 +177,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
                 {
                     { "UserDetail", new AccordionNode(GeneralUtils.GetResourceByName("global_users")) { Content = Utils.GetGenericTreeViewXPO<TreeViewUser>(this) } },
                     { "UserPermissionProfile", new AccordionNode(GeneralUtils.GetResourceByName("global_user_permissions")) { Content = new PermissionsPage(this) } },
-                    { "UserCommissionGroup", new AccordionNode(GeneralUtils.GetResourceByName("global_user_commission_groups")) { Content = Utils.GetGenericTreeViewXPO<TreeViewUserCommissionGroup>(this) } }
+                    { "UserCommissionGroup", new AccordionNode(GeneralUtils.GetResourceByName("global_user_commission_groups")) { Content = new CommissionGroupPage(this) } }
                 };
 
             //Documents
@@ -306,7 +306,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
                 {
                     { "Customer", new AccordionNode(GeneralUtils.GetResourceByName("global_customers")) { Content = Utils.GetGenericTreeViewXPO<TreeViewCustomer>(this, criteriaOperatorCustomer) } },
                     { "CustomerType", new AccordionNode(GeneralUtils.GetResourceByName("global_customer_types")) { Content = new CustomerTypePage(this) } },
-                    { "CustomerDiscountGroup", new AccordionNode(GeneralUtils.GetResourceByName("global_customer_discount_groups")) { Content = Utils.GetGenericTreeViewXPO<TreeViewCustomerDiscountGroup>(this) } }
+                    { "CustomerDiscountGroup", new AccordionNode(GeneralUtils.GetResourceByName("global_customer_discount_groups")) { Content = new DiscountGroupPage(this) } }
                 };
         }
 
