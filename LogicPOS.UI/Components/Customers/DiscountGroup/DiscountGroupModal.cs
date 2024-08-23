@@ -2,9 +2,7 @@
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Customers.DiscountGroups.AddDiscountGroup;
 using LogicPOS.Api.Features.Customers.DiscountGroups.UpdateDiscountGroup;
-using LogicPOS.Api.Features.Customers.Types.AddCustomerType;
-using LogicPOS.Api.Features.Customers.Types.UpdateCustomerType;
-using LogicPOS.Domain.Entities;
+
 
 namespace LogicPOS.UI.Components.Modals
 {
