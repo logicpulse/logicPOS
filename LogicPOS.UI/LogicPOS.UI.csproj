@@ -250,6 +250,11 @@
     <Compile Include="Components\Users\Permissions\UserProfileModal.Designer.cs">
       <DependentUpon>UserProfileModal.cs</DependentUpon>
     </Compile>
+    <Compile Include="Components\Warehouses\WarehouseLocationField.cs" />
+    <Compile Include="Components\Warehouses\WarehouseModal.cs" />
+    <Compile Include="Components\Warehouses\WarehouseModal.Designer.cs">
+      <DependentUpon>WarehouseModal.cs</DependentUpon>
+    </Compile>
     <Compile Include="Components\Warehouses\WarehousesPage.cs" />
     <Compile Include="DependencyInjection.cs" />
     <Compile Include="Dialogs\Base\BaseDialogColorSettings.cs" />

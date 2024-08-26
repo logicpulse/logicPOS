@@ -11,6 +11,6 @@ namespace LogicPOS.Api.Features.Warehouses.AddWarehouse
         public string Designation { get; set; }
         public bool IsDefault { get; set; }
 
-        public IEnumerable<WarehouseLocation> Locations { get; set; }
+        public IEnumerable<string> Locations { get; set; }
     }
 }

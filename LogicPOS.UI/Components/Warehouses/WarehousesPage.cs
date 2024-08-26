@@ -24,7 +24,9 @@ namespace LogicPOS.UI.Components.Pages
 
         public override void RunModal(EntityModalMode mode)
         {
-            throw new System.NotImplementedException();
+            var modal = new WarehouseModal(mode, SelectedEntity);
+            modal.Run();
+            modal.Destroy();
         }
 
         protected override void AddColumns()

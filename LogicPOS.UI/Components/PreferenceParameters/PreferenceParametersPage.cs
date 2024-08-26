@@ -159,7 +159,7 @@ namespace LogicPOS.UI.Components.Pages
 
         public override void RunModal(EntityModalMode mode)
         {
-            var modal = new PreferenceParameterModal(mode, SelectedEntity as PreferenceParameter);
+            var modal = new PreferenceParameterModal(mode, SelectedEntity);
             modal.Run();
             modal.Destroy();
         }
