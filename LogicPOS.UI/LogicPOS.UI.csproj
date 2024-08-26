@@ -147,6 +147,11 @@
     <Compile Include="Components\Customers\DiscountGroup\DiscountGroupModal.Designer.cs">
       <DependentUpon>DiscountGroupModal.cs</DependentUpon>
     </Compile>
+    <Compile Include="Components\Holidays\HolidayModal.cs" />
+    <Compile Include="Components\Holidays\HolidayModal.Designer.cs">
+      <DependentUpon>HolidayModal.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Components\Holidays\HolidayPage.cs" />
     <Compile Include="Components\Users\CommissionGroups\DialogUserCommissionGroup.cs" />
     <Compile Include="Components\Users\CommissionGroups\TreeViewUserCommissionGroup.cs" />
     <Compile Include="Components\Countries\CountriesPage.cs" />
@@ -270,11 +275,11 @@
     <Compile Include="Components\BackOffice\Dialogs\Articles\DialogArticleClass.cs" />
     <Compile Include="Components\Countries\CountryModal.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Configuration\DialogConfigurationVatExemptionReason.cs" />
-    <Compile Include="Components\BackOffice\Dialogs\Configuration\DialogConfigurationHolidays.cs" />
+    <Compile Include="Components\Holidays\DialogConfigurationHolidays.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Documents\DialogDocumentFinanceType.cs" />
     <Compile Include="Components\BackOffice\TreeView\Articles\TreeViewArticleClass.cs" />
     <Compile Include="Components\BackOffice\TreeView\Configuration\TreeViewConfigurationVatExemptionReason.cs" />
-    <Compile Include="Components\BackOffice\TreeView\Configuration\TreeViewConfigurationHolidays.cs" />
+    <Compile Include="Components\Holidays\TreeViewConfigurationHolidays.cs" />
     <Compile Include="Components\BackOffice\TreeView\Documents\TreeViewDocumentFinancePayment.cs" />
     <Compile Include="Components\BackOffice\TreeView\NonPersistent\TreeViewTerminalSeries.cs" />
     <Compile Include="Components\BackOffice\TreeView\WorkSession\TreeViewWorkSessionPeriod.cs" />
