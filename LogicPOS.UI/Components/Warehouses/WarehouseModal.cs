@@ -1,7 +1,12 @@
-﻿using Gtk;
+﻿using DocumentFormat.OpenXml.Drawing;
+using DocumentFormat.OpenXml.Spreadsheet;
+using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Holidays.UpdateHoliday;
 using LogicPOS.Api.Features.Warehouses.AddWarehouse;
 using LogicPOS.Api.Features.Warehouses.Locations.DeleteWarehouseLocation;
+using LogicPOS.Api.Features.Warehouses.Locations.UpdateWarehouseLocation;
+using LogicPOS.Api.Features.Warehouses.UpdateWarehouse;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Warehouses;
 using System;
@@ -58,8 +63,29 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override void UpdateEntity()
         {
-            throw new System.NotImplementedException();
+            var result = _mediator.Send(CreateUpdateCommand()).Result;
+
+            if (result.IsError)
+            {
+                HandleApiError(result.FirstError);
+                return;
+            }
         }
+
+
+        private UpdateWarehouseCommand CreateUpdateCommand()
+        {
+            return new UpdateWarehouseCommand()
+            {
+                Id = _entity.Id,
+                NewDesignation = _txtDesignation.Text,
+                IsDefault = _checkDefaultWarehouse.Active,
+                Locations = _locations.Select(x=>x.TxtLocation.Text).ToList()
+            };
+            
+        }
+
+
 
         private void Button_AddLocation_Clicked(object sender, System.EventArgs e)
         {
@@ -104,10 +130,37 @@ namespace LogicPOS.UI.Components.Modals
             _entity.Locations.Remove(warehouseLocation);
         }
 
+
         private void Button_UpdateLocation_Clicked(WarehouseLocationField field)
         {
             var id = field.Location.Id;
             var newDesignation = field.TxtLocation.Text;
+
+            foreach (var location in _entity.Locations)
+            {
+                if (location.Id == id)
+                {
+                    location.Designation = newDesignation;
+                    UpdateLocationCommand(location);
+                }
+            }
+        }
+
+        private void UpdateLocationCommand(WarehouseLocation location)
+        {
+            var command = new UpdateWarehouseLocationCommand() { 
+                Id = location.Id, 
+                NewDesignation = location.Designation
+            };
+
+
+            var result = _mediator.Send(command).Result;
+
+            if (result.IsError)
+            {
+                HandleApiError(result.FirstError);
+                return;
+            }
         }
     }
 }
