@@ -43,6 +43,8 @@ namespace LogicPOS.Api.Features.Common
             switch (httpResponse.StatusCode)
             {
                 case HttpStatusCode.OK:
+                case HttpStatusCode.Created:
+                case HttpStatusCode.NoContent:
                     return Unit.Value;
                 case HttpStatusCode.BadRequest:
                     return await GetProblemDetailsErrorAsync(httpResponse);

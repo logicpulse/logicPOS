@@ -13,8 +13,8 @@ namespace LogicPOS.UI.Components.Warehouses
 
         public TextBox TxtLocation { get; } =  new TextBox("global_ConfigurationDevice_PlaceTerminal", isRequired: true);
 
-        public event System.Action<WarehouseLocationField, WarehouseLocation> OnRemoveLocation;
-        public event System.Action<WarehouseLocationField> OnUpdateLocation;
+        public event System.Action<WarehouseLocationField, WarehouseLocation> OnRemove;
+        public event System.Action<WarehouseLocationField> OnUpdate;
 
         private readonly IconButton BtnRemove = new IconButton(new ButtonSettings
         {
@@ -41,22 +41,14 @@ namespace LogicPOS.UI.Components.Warehouses
             Component = new HBox(false, 5);
             Component.PackStart(TxtLocation.Component);
             Component.PackEnd(BtnRemove, false, false, 1);
-
             Location = location;
-
-            if (Location != null)
-            {
-                TxtLocation.Text = Location.Designation;
-                Component.PackEnd(BtnUpdate, false, false, 1);
-            }
-
+            TxtLocation.Text = location?.Designation;
             AddEventHandlers();    
         }
 
         private void AddEventHandlers()
         {
-            BtnRemove.Clicked += (s, e) => OnRemoveLocation?.Invoke(this, Location);
-            BtnUpdate.Clicked += (s, e) => OnUpdateLocation?.Invoke(this);
+            BtnRemove.Clicked += (s, e) => OnRemove?.Invoke(this, Location);
         }
 
     }
