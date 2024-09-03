@@ -339,7 +339,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
                 { "ArticleSubFamily", new AccordionNode(GeneralUtils.GetResourceByName("global_subfamilies")) { Content = Utils.GetGenericTreeViewXPO<TreeViewArticleSubFamily>(this) } },
                 { "Article", new AccordionNode(GeneralUtils.GetResourceByName("global_articles")) { Content = Utils.GetGenericTreeViewXPO<TreeViewArticle>(this) } },
                 { "ArticleType", new AccordionNode(GeneralUtils.GetResourceByName("global_article_types")) { Content = new ArticleTypePage(this) } },
-                { "ArticleClass", new AccordionNode(GeneralUtils.GetResourceByName("global_article_class")) { Content = Utils.GetGenericTreeViewXPO<TreeViewArticleClass>(this) } },
+                { "ArticleClass", new AccordionNode(GeneralUtils.GetResourceByName("global_article_class")) { Content = new ArticleClassPage(this) } },
                 { "ConfigurationPriceType", new AccordionNode(GeneralUtils.GetResourceByName("global_price_type")) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPriceType>(this) } },
                 { "ArticleStock", new AccordionNode(GeneralUtils.GetResourceByName("global_stock_movements")) { Clicked = delegate { Utils.OpenArticleStockDialog(this); } } }
             };
