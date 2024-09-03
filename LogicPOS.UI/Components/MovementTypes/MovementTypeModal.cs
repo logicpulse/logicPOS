@@ -16,6 +16,7 @@ namespace LogicPOS.UI.Components.Modals
             return new AddMovementTypeCommand
             {
                 Designation = _txtDesignation.Text,
+                VatDirectSelling = _checkVatDirectSelling.Active,
                 Notes = _txtNotes.Value.Text
             };
         }
@@ -51,6 +52,7 @@ namespace LogicPOS.UI.Components.Modals
             _txtOrder.Text = _entity.Order.ToString();
             _txtCode.Text = _entity.Code;
             _txtDesignation.Text = _entity.Designation;
+            _checkVatDirectSelling.Active = _entity.VatDirectSelling;
             _checkDisabled.Active = _entity.IsDeleted;
             _txtNotes.Value.Text = _entity.Notes;
         }
