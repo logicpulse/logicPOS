@@ -157,6 +157,11 @@
       <DependentUpon>MeasurementUnitModal.cs</DependentUpon>
     </Compile>
     <Compile Include="Components\MeasurementUnits\MeasurementUnitPage.cs" />
+    <Compile Include="Components\MovementTypes\MovementTypeModal.cs" />
+    <Compile Include="Components\MovementTypes\MovementTypeModal.Designer.cs">
+      <DependentUpon>MovementTypeModal.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Components\MovementTypes\MovementTypePage.cs" />
     <Compile Include="Components\SizeUnits\SizeUnitModal.cs" />
     <Compile Include="Components\SizeUnits\SizeUnitModal.Designer.cs">
       <DependentUpon>SizeUnitModal.cs</DependentUpon>
