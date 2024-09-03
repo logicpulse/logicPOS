@@ -188,7 +188,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
                     { "DocumentFinanceType", new AccordionNode(GeneralUtils.GetResourceByName("global_documentfinance_type")) { Content = Utils.GetGenericTreeViewXPO<TreeViewDocumentFinanceType>(this) } },
                     { "ConfigurationVatRate", new AccordionNode(GeneralUtils.GetResourceByName("global_vat_rates")) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationVatRate>(this) } },
                     { "ConfigurationVatExemptionReason", new AccordionNode(GeneralUtils.GetResourceByName("global_vat_exemption_reason")) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationVatExceptionReason>(this) } },
-                    { "ConfigurationPaymentCondition", new AccordionNode(GeneralUtils.GetResourceByName("global_payment_conditions")) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPaymentCondition>(this) } },
+                    { "ConfigurationPaymentCondition", new AccordionNode(GeneralUtils.GetResourceByName("global_payment_conditions")) { Content = new PaymentConditionsPage(this) } },
                     { "ConfigurationPaymentMethod", new AccordionNode(GeneralUtils.GetResourceByName("global_payment_methods")) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPaymentMethod>(this) } }
                 };
 

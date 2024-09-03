@@ -1,8 +1,7 @@
 ﻿using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Articles.Classes.GetAllArticleClasses;
-using LogicPOS.Api.Features.MeasurementUnits.GetAllMeasurementUnits;
+using LogicPOS.Api.Features.PaymentConditions.GetAllPaymentCondition;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
@@ -15,9 +14,9 @@ using System.Threading.Tasks;
 
 namespace LogicPOS.UI.Components.Pages
 {
-    public class ArticleClassPage : Page<ArticleClass>
+    public class PaymentConditionsPage : Page<PaymentCondition>
     {
-        public ArticleClassPage(Window parent) : base(parent)
+        public PaymentConditionsPage(Window parent) : base(parent)
         {
         }
 
@@ -25,11 +24,11 @@ namespace LogicPOS.UI.Components.Pages
         {
             throw new NotImplementedException();
         }
-        protected override IRequest<ErrorOr<IEnumerable<ArticleClass>>> GetAllQuery => new GetAllArticleClassesQuery();
+        protected override IRequest<ErrorOr<IEnumerable<PaymentCondition>>> GetAllQuery => new GetAllPaymentConditionsQuery();
 
         public override void RunModal(EntityModalMode mode)
         {
-            var modal = new ArticleClassModal(mode, SelectedEntity as ArticleClass);
+            var modal = new PaymentConditionModal(mode, SelectedEntity as PaymentCondition);
             modal.Run();
             modal.Destroy();
         }
@@ -46,8 +45,8 @@ namespace LogicPOS.UI.Components.Pages
         {
             void RenderMonth(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var articleClass = (ArticleClass)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = articleClass.Acronym.ToString();
+                var paymentCondition = (PaymentCondition)model.GetValue(iter, 0);
+                (cell as CellRendererText).Text = paymentCondition.Acronym.ToString();
             }
 
             var title = GeneralUtils.GetResourceByName("global_acronym");

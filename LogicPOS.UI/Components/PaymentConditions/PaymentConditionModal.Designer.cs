@@ -7,17 +7,16 @@ using System.Drawing;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class ArticleClassModal
+    public partial class PaymentConditionModal
     {
         public override Size ModalSize => new Size(500, 500);
-        public override string ModalTitleResourceName => "global_article_class";
+        public override string ModalTitleResourceName => "dialog_edit_ConfigurationPaymentCondition_tab1_label";
 
         #region Components
         private TextBox _txtOrder = TextBoxes.CreateOrderField();
         private TextBox _txtCode = TextBoxes.CreateCodeField();
         private TextBox _txtDesignation = TextBoxes.CreateDesignationField();
-        private TextBox _txtAcronym= new TextBox("global_acronym", true, true, "^.{1}$");
-        private CheckButton _checkWorkInStock = new CheckButton(GeneralUtils.GetResourceByName("global_work_in_stock"));
+        private TextBox _txtAcronym= new TextBox("global_acronym", true, true, "^.{1,3}$");
         private CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
         #endregion
 
@@ -27,7 +26,6 @@ namespace LogicPOS.UI.Components.Modals
             SensitiveFields.Add(_txtCode.Entry);
             SensitiveFields.Add(_txtDesignation.Entry);
             SensitiveFields.Add(_txtAcronym.Entry);
-            SensitiveFields.Add(_checkWorkInStock);
             SensitiveFields.Add(_txtNotes.TextView);
             SensitiveFields.Add(_checkDisabled);
         }
@@ -66,8 +64,6 @@ namespace LogicPOS.UI.Components.Modals
 
             tab1.PackStart(_txtDesignation.Component, false, false, 0);
             tab1.PackStart(_txtAcronym.Component, false, false, 0);
-            tab1.PackStart(_checkWorkInStock,false, false, 0);
-
             if (_modalMode != EntityModalMode.Insert)
             {
                 tab1.PackStart(_checkDisabled, false, false, 0);
