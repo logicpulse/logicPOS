@@ -152,6 +152,16 @@
       <DependentUpon>HolidayModal.cs</DependentUpon>
     </Compile>
     <Compile Include="Components\Holidays\HolidayPage.cs" />
+    <Compile Include="Components\MeasurementUnits\MeasurementUnitModal.cs" />
+    <Compile Include="Components\MeasurementUnits\MeasurementUnitModal.Designer.cs">
+      <DependentUpon>MeasurementUnitModal.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Components\MeasurementUnits\MeasurementUnitPage.cs" />
+    <Compile Include="Components\SizeUnits\SizeUnitModal.cs" />
+    <Compile Include="Components\SizeUnits\SizeUnitModal.Designer.cs">
+      <DependentUpon>SizeUnitModal.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Components\SizeUnits\SizeUnitPage.cs" />
     <Compile Include="Components\Users\CommissionGroups\DialogUserCommissionGroup.cs" />
     <Compile Include="Components\Users\CommissionGroups\TreeViewUserCommissionGroup.cs" />
     <Compile Include="Components\Countries\CountriesPage.cs" />
@@ -333,7 +343,7 @@
     <Compile Include="Components\BackOffice\Dialogs\Configuration\DialogConfigurationPrinters.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Configuration\DialogConfigurationPrintersTemplates.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Configuration\DialogConfigurationPrintersType.cs" />
-    <Compile Include="Components\BackOffice\Dialogs\Configuration\DialogConfigurationUnitSize.cs" />
+    <Compile Include="Components\SizeUnits\DialogConfigurationUnitSize.cs" />
     <Compile Include="Components\BackOffice\Dialogs\Configuration\DialogConfigurationVatRate.cs" />
     <Compile Include="Components\Customers\DiscountGroup\DialogCustomerDiscountGroup.cs" />
     <Compile Include="Components\Customers\Types\DialogCustomerType.cs" />
@@ -360,7 +370,7 @@
     <Compile Include="Components\BackOffice\TreeView\Configuration\TreeViewConfigurationPrintersTemplates.cs" />
     <Compile Include="Components\BackOffice\TreeView\Configuration\TreeViewConfigurationPrintersType.cs" />
     <Compile Include="Components\BackOffice\TreeView\Configuration\TreeViewConfigurationUnitMeasure.cs" />
-    <Compile Include="Components\BackOffice\TreeView\Configuration\TreeViewConfigurationUnitSize.cs" />
+    <Compile Include="Components\SizeUnits\TreeViewConfigurationUnitSize.cs" />
     <Compile Include="Components\BackOffice\TreeView\Configuration\TreeViewConfigurationVatRate.cs" />
     <Compile Include="Components\Customers\DiscountGroup\TreeViewCustomerDiscountGroup.cs" />
     <Compile Include="Components\Customers\Types\TreeViewCustomerType.cs" />

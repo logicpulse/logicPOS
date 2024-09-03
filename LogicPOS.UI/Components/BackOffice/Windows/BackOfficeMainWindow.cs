@@ -203,8 +203,8 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
             string configurationPlaceTableLabel = AppOperationModeSettings.IsDefaultTheme ? GeneralUtils.GetResourceByName("global_place_tables") : GeneralUtils.GetResourceByName("window_title_dialog_orders");
             _accordionChildAuxiliarTables.Add("ConfigurationPlaceTable", new AccordionNode(configurationPlaceTableLabel) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlaceTable>(this) });
             _accordionChildAuxiliarTables.Add("ConfigurationPlaceMovementType", new AccordionNode(GeneralUtils.GetResourceByName("global_places_movement_type")) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlaceMovementType>(this) });
-            _accordionChildAuxiliarTables.Add("ConfigurationUnitMeasure", new AccordionNode(GeneralUtils.GetResourceByName("global_units_measure")) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationUnitMeasure>(this) });
-            _accordionChildAuxiliarTables.Add("ConfigurationUnitSize", new AccordionNode(GeneralUtils.GetResourceByName("global_units_size")) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationUnitSize>(this) });
+            _accordionChildAuxiliarTables.Add("ConfigurationUnitMeasure", new AccordionNode(GeneralUtils.GetResourceByName("global_units_measure")) { Content = new MeasurementUnitPage(this) });
+            _accordionChildAuxiliarTables.Add("ConfigurationUnitSize", new AccordionNode(GeneralUtils.GetResourceByName("global_units_size")) { Content = new SizeUnitPage(this) });
             _accordionChildAuxiliarTables.Add("ConfigurationHolidays", new AccordionNode(GeneralUtils.GetResourceByName("global_holidays")) { Content = new HolidayPage(this) });
             _accordionChildAuxiliarTables.Add("Warehouse", new AccordionNode(GeneralUtils.GetResourceByName("global_warehouse")) { Content = new WarehousesPage(this) });
 
