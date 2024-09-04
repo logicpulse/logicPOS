@@ -12,7 +12,6 @@
 *.db
 *.db-shm
 *.db-wal
-LogicPOS.UI/LogicPOS.UI.csproj
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
