@@ -22,19 +22,7 @@ namespace LogicPOS.Api.Features.Countries.AddCountry
             AddCountryCommand command,
             CancellationToken cancellationToken = default)
         {
-            try
-            {
-                var httpResponse = await _httpClient.PostAsJsonAsync("countries",
-                                                                     command,
-                                                                     cancellationToken);
-
-                return await HandleAddEntityHttpResponseAsync(httpResponse);
-
-            }
-            catch (HttpRequestException)
-            {
-                return ApiErrors.CommunicationError;
-            }
+            return await HandleAddCommand("countries", command, cancellationToken);
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using ErrorOr;
-using LogicPOS.Api.Errors;
 using LogicPOS.Api.Features.Common;
 using MediatR;
 using System.Net.Http;
@@ -17,15 +16,7 @@ namespace LogicPOS.Api.Features.Warehouses.Locations.DeleteWarehouseLocation
 
         public override async Task<ErrorOr<Unit>> Handle(DeleteWarehouseLocationCommand request, CancellationToken cancellationToken = default)
         {
-            try
-            {
-                var response = await _httpClient.DeleteAsync($"warehouses/locations/{request.Id}", cancellationToken);
-                return await HandleDeleteEntityHttpResponseAsync(response);
-            }
-            catch (HttpRequestException)
-            {
-                return ApiErrors.CommunicationError;
-            }
+            return await HandleDeleteCommand($"warehouses/locations/{request.Id}", cancellationToken);
         }
     }
 }

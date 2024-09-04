@@ -1,5 +1,7 @@
 ﻿using ErrorOr;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Errors;
+using LogicPOS.Api.Features.Articles.Classes.GetAllArticleClasses;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -18,6 +20,66 @@ namespace LogicPOS.Api.Features.Common
 
         public abstract Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken = default);
 
+        protected async Task<ErrorOr<IEnumerable<TEntity>>> HandleGetAllQuery<TEntity>(
+            string endpoint,
+            CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var items = await _httpClient.GetFromJsonAsync<List<TEntity>>(endpoint,cancellationToken);
+                return items;
+            }
+            catch (HttpRequestException)
+            {
+                return ApiErrors.CommunicationError;
+            }
+        }
+
+        protected async Task<ErrorOr<Guid>> HandleAddCommand(
+            string endpoint,
+            TRequest command,
+            CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var response = await _httpClient.PostAsJsonAsync(endpoint, command, cancellationToken);
+                return await HandleAddEntityHttpResponseAsync(response);
+            }
+            catch (HttpRequestException)
+            {
+                return ApiErrors.CommunicationError;
+            }
+        }
+
+        protected async Task<ErrorOr<Unit>> HandleUpdateCommand(
+            string endpoint,
+            TRequest command,
+            CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var response = await _httpClient.PutAsJsonAsync(endpoint, command, cancellationToken);
+                return await HandleUpdateEntityHttpResponseAsync(response);
+            }
+            catch (HttpRequestException)
+            {
+                return ApiErrors.CommunicationError;
+            }
+        }
+
+        protected async Task<ErrorOr<Unit>> HandleDeleteCommand(string endpoint, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var response = await _httpClient.DeleteAsync(endpoint, cancellationToken);
+                return await HandleDeleteEntityHttpResponseAsync(response);
+            }
+            catch (HttpRequestException)
+            {
+                return ApiErrors.CommunicationError;
+            }
+        }
+
         protected async Task<ErrorOr<Guid>> HandleAddEntityHttpResponseAsync(HttpResponseMessage httpResponse)
         {
             switch (httpResponse.StatusCode)
@@ -34,7 +96,7 @@ namespace LogicPOS.Api.Features.Common
 
         private async Task<Error> GetProblemDetailsErrorAsync(HttpResponseMessage httpResponse)
         {
-            var problemDetails =  await httpResponse.Content.ReadFromJsonAsync<ProblemDetails>();
+            var problemDetails = await httpResponse.Content.ReadFromJsonAsync<ProblemDetails>();
             return Error.Validation(metadata: new Dictionary<string, object> { { "problem", problemDetails } });
         }
 

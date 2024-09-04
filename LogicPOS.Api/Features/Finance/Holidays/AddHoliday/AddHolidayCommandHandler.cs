@@ -2,10 +2,8 @@
 using LogicPOS.Api.Errors;
 using LogicPOS.Api.Features.Common;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -18,18 +16,10 @@ namespace LogicPOS.Api.Features.Holidays.AddHoliday
         }
 
         public override async Task<ErrorOr<Guid>> Handle(
-            AddHolidayCommand command, 
+            AddHolidayCommand command,
             CancellationToken cancellationToken = default)
         {
-            try {     
-                    var httpResponse = await _httpClient.PostAsJsonAsync("/holidays", command, cancellationToken);
-                    return await HandleAddEntityHttpResponseAsync(httpResponse);
-                }
-
-            catch (HttpRequestException)
-                {
-                    return ApiErrors.CommunicationError;
-                }
-}
+          return await HandleAddCommand("holidays", command, cancellationToken);
+        }
     }
 }

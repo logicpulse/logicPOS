@@ -20,16 +20,7 @@ namespace LogicPOS.Api.Features.MeasurementUnits.GetAllMeasurementUnits
         public override async Task<ErrorOr<IEnumerable<MeasurementUnit>>> Handle(GetAllMeasurementUnitsQuery query,
                                                                      CancellationToken cancellationToken = default)
         {
-            try
-            {
-                var items = await _httpClient.GetFromJsonAsync<List<MeasurementUnit>>("articles/measurementunits",
-                                                                                cancellationToken);
-                return items;
-            }
-            catch (HttpRequestException)
-            {
-                return ApiErrors.CommunicationError;
-            }
+            return await HandleGetAllQuery<MeasurementUnit>("articles/measurementunits", cancellationToken);
         }
     }
 }

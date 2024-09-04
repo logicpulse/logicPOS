@@ -17,15 +17,7 @@ namespace LogicPOS.Api.Features.Articles.PriceTypes.AddPriceType
 
         public override async Task<ErrorOr<Guid>> Handle(AddPriceTypeCommand command, CancellationToken cancellationToken = default)
         {
-            try
-            {
-                var response = await _httpClient.PostAsJsonAsync("articles/pricetypes", command, cancellationToken);
-                return await HandleAddEntityHttpResponseAsync(response);
-            }
-            catch (HttpRequestException)
-            {
-                return ApiErrors.CommunicationError;
-            }
+            return await HandleAddCommand("articles/pricetypes", command, cancellationToken);
         }
     }
 }

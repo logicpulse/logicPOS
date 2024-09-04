@@ -18,15 +18,7 @@ namespace LogicPOS.Api.Features.Articles.Types.UpdateArticleType
 
         public override async Task<ErrorOr<Unit>> Handle(UpdateArticleTypeCommand command, CancellationToken cancellationToken = default)
         {
-            try
-            {
-                var response = await _httpClient.PutAsJsonAsync($"article/types/{command.Id}", command, cancellationToken);
-                return await HandleUpdateEntityHttpResponseAsync(response);
-            }
-            catch (HttpRequestException)
-            {
-                return ApiErrors.CommunicationError;
-            }
+            return await HandleUpdateCommand($"/articles/types/{command.Id}", command, cancellationToken);
         }
     }
 }

@@ -1,9 +1,7 @@
 ﻿using ErrorOr;
-using LogicPOS.Api.Errors;
 using LogicPOS.Api.Features.Common;
 using System;
 using System.Net.Http;
-using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,17 +15,9 @@ namespace LogicPOS.Api.Features.Warehouses.AddWarehouse
         }
 
         public override async Task<ErrorOr<Guid>> Handle(AddWarehouseCommand command,
-                                                                      CancellationToken cancellationToken = default)
+                                                         CancellationToken cancellationToken = default)
         {
-            try
-            {
-                var response = await _httpClient.PostAsJsonAsync("warehouses", command, cancellationToken);
-                return await HandleAddEntityHttpResponseAsync(response);
-            }
-            catch (HttpRequestException)
-            {
-                return ApiErrors.CommunicationError;
-            }
+            return await HandleAddCommand("warehouses", command, cancellationToken);
         }
     }
 }

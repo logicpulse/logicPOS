@@ -19,19 +19,7 @@ namespace LogicPOS.Api.Features.Users.Profiles.AddUserProfile
             AddUserProfileCommand command, 
             CancellationToken cancellationToken = default)
         {
-            try
-            {
-                var httpResponse = await _httpClient.PostAsJsonAsync("users/profiles",
-                                                                     command,
-                                                                     cancellationToken);
-
-                return await HandleAddEntityHttpResponseAsync(httpResponse);
-
-            }
-            catch (HttpRequestException)
-            {
-                return ApiErrors.CommunicationError;
-            }
+           return await HandleAddCommand("users/profiles", command, cancellationToken);
         }
     }
 }
