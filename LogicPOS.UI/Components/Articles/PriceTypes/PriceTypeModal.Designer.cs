@@ -1,15 +1,17 @@
-﻿using Gtk;
-using LogicPOS.UI.Components.InputFields;
-using LogicPOS.Utility;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using Gtk;
+using LogicPOS.UI.Components.InputFields;
+using LogicPOS.UI.Components.Modals;
+using LogicPOS.Utility;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class SizeUnitModal
+    public partial class PriceTypeModal
     {
-        public override Size ModalSize => new Size(500, 500);
-        public override string ModalTitleResourceName => "dialog_edit_ConfigurationUnitSize_tab1_label";
+        public override Size ModalSize => new Size(500, 309);
+        public override string ModalTitleResourceName => "window_title_edit_configurationpricetype";
 
         #region Components
         private TextBox _txtOrder = TextBoxes.CreateOrderField();
