@@ -12,9 +12,9 @@ using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Pages
 {
-    public class MeasurementUnitPage : Page<MeasurementUnit>
+    public class MeasurementUnitsPage : Page<MeasurementUnit>
     {
-        public MeasurementUnitPage(Window parent) : base(parent)
+        public MeasurementUnitsPage(Window parent) : base(parent)
         {
         }
 

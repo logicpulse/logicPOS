@@ -11,9 +11,9 @@ using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Pages
 {
-    public class SizeUnitPage : Page<SizeUnit>
+    public class SizeUnitsPage : Page<SizeUnit>
     {
-        public SizeUnitPage(Window parent) : base(parent)
+        public SizeUnitsPage(Window parent) : base(parent)
         {
         }
 

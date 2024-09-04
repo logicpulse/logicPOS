@@ -203,8 +203,8 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
             string configurationPlaceTableLabel = AppOperationModeSettings.IsDefaultTheme ? GeneralUtils.GetResourceByName("global_place_tables") : GeneralUtils.GetResourceByName("window_title_dialog_orders");
             _accordionChildAuxiliarTables.Add("ConfigurationPlaceTable", new AccordionNode(configurationPlaceTableLabel) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlaceTable>(this) });
             _accordionChildAuxiliarTables.Add("ConfigurationPlaceMovementType", new AccordionNode(GeneralUtils.GetResourceByName("global_places_movement_type")) { Content = new MovementTypePage(this) });
-            _accordionChildAuxiliarTables.Add("ConfigurationUnitMeasure", new AccordionNode(GeneralUtils.GetResourceByName("global_units_measure")) { Content = new MeasurementUnitPage(this) });
-            _accordionChildAuxiliarTables.Add("ConfigurationUnitSize", new AccordionNode(GeneralUtils.GetResourceByName("global_units_size")) { Content = new SizeUnitPage(this) });
+            _accordionChildAuxiliarTables.Add("ConfigurationUnitMeasure", new AccordionNode(GeneralUtils.GetResourceByName("global_units_measure")) { Content = new MeasurementUnitsPage(this) });
+            _accordionChildAuxiliarTables.Add("ConfigurationUnitSize", new AccordionNode(GeneralUtils.GetResourceByName("global_units_size")) { Content = new SizeUnitsPage(this) });
             _accordionChildAuxiliarTables.Add("ConfigurationHolidays", new AccordionNode(GeneralUtils.GetResourceByName("global_holidays")) { Content = new HolidayPage(this) });
             _accordionChildAuxiliarTables.Add("Warehouse", new AccordionNode(GeneralUtils.GetResourceByName("global_warehouse")) { Content = new WarehousesPage(this) });
 
@@ -340,7 +340,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
                 { "Article", new AccordionNode(GeneralUtils.GetResourceByName("global_articles")) { Content = Utils.GetGenericTreeViewXPO<TreeViewArticle>(this) } },
                 { "ArticleType", new AccordionNode(GeneralUtils.GetResourceByName("global_article_types")) { Content = new ArticleTypePage(this) } },
                 { "ArticleClass", new AccordionNode(GeneralUtils.GetResourceByName("global_article_class")) { Content = new ArticleClassPage(this) } },
-                { "ConfigurationPriceType", new AccordionNode(GeneralUtils.GetResourceByName("global_price_type")) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPriceType>(this) } },
+                { "ConfigurationPriceType", new AccordionNode(GeneralUtils.GetResourceByName("global_price_type")) { Content = new PriceTypesPage(this) } },
                 { "ArticleStock", new AccordionNode(GeneralUtils.GetResourceByName("global_stock_movements")) { Clicked = delegate { Utils.OpenArticleStockDialog(this); } } }
             };
 
