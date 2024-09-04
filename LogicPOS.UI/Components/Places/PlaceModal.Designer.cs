@@ -1,21 +1,23 @@
 ﻿using Gtk;
-using LogicPOS.UI.Components.InputFields;
-using LogicPOS.Utility;
 using System.Collections.Generic;
 using System.Drawing;
+using LogicPOS.UI.Components.InputFields;
+using LogicPOS.Utility;
+using LogicPOS.Api.Entities;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class SizeUnitModal
+    public partial class PlaceModal
     {
-        public override Size ModalSize => new Size(500, 500);
-        public override string ModalTitleResourceName => "dialog_edit_ConfigurationUnitSize_tab1_label";
+        public override Size ModalSize => new Size(500, 450);
+        public override string ModalTitleResourceName => "window_title_edit_configurationplacetable";
 
         #region Components
         private TextBox _txtOrder = TextBoxes.CreateOrderField();
         private TextBox _txtCode = TextBoxes.CreateCodeField();
         private TextBox _txtDesignation = TextBoxes.CreateDesignationField();
         private CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
+        private EntityComboBox<PriceType> _comboPriceTypes;
         #endregion
 
         protected override void AddSensitiveFields()
@@ -25,6 +27,7 @@ namespace LogicPOS.UI.Components.Modals
             SensitiveFields.Add(_txtDesignation.Entry);
             SensitiveFields.Add(_txtNotes.TextView);
             SensitiveFields.Add(_checkDisabled);
+            SensitiveFields.Add(_comboPriceTypes.Component);
         }
 
         protected override void AddValidatableFields()
@@ -57,6 +60,8 @@ namespace LogicPOS.UI.Components.Modals
             }
 
             tab1.PackStart(_txtDesignation.Component, false, false, 0);
+
+            tab1.PackStart(_comboPriceTypes.Component, false, false, 0);
 
             if (_modalMode != EntityModalMode.Insert)
             {

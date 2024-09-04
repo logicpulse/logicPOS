@@ -44,10 +44,16 @@ namespace LogicPOS.UI.Components.Modals
             _modalMode = modalMode;
             _entity = entity;
 
+            BeforeDesign();
             Design();
             HandleModalMode();
             AddValidatableFields();      
             ShowAll();
+        }
+
+        protected virtual void BeforeDesign()
+        {
+
         }
 
         protected void Validate()

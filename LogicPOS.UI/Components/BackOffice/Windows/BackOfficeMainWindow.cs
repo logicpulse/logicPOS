@@ -186,7 +186,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
                     { "DocumentFinanceYears", new AccordionNode(GeneralUtils.GetResourceByName("global_documentfinance_years")) { Content = Utils.GetGenericTreeViewXPO<TreeViewDocumentFinanceYears>(this) } },
                     { "DocumentFinanceSeries", new AccordionNode(GeneralUtils.GetResourceByName("global_documentfinance_series")) { Content = Utils.GetGenericTreeViewXPO<TreeViewDocumentFinanceSeries>(this) } },
                     { "DocumentFinanceType", new AccordionNode(GeneralUtils.GetResourceByName("global_documentfinance_type")) { Content = Utils.GetGenericTreeViewXPO<TreeViewDocumentFinanceType>(this) } },
-                    { "ConfigurationVatRate", new AccordionNode(GeneralUtils.GetResourceByName("global_vat_rates")) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationVatRate>(this) } },
+                    { "ConfigurationVatRate", new AccordionNode(GeneralUtils.GetResourceByName("global_vat_rates")) { Content = new VatRatesPage(this) } },
                     { "ConfigurationVatExemptionReason", new AccordionNode(GeneralUtils.GetResourceByName("global_vat_exemption_reason")) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationVatExceptionReason>(this) } },
                     { "ConfigurationPaymentCondition", new AccordionNode(GeneralUtils.GetResourceByName("global_payment_conditions")) { Content = new PaymentConditionsPage(this) } },
                     { "ConfigurationPaymentMethod", new AccordionNode(GeneralUtils.GetResourceByName("global_payment_methods")) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPaymentMethod>(this) } }
@@ -197,7 +197,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
                 {
                     { "ConfigurationCountry", new AccordionNode(GeneralUtils.GetResourceByName("global_country")) { Content = new CountriesPage(this) } },
                     { "ConfigurationCurrency", new AccordionNode(GeneralUtils.GetResourceByName("global_ConfigurationCurrency")) { Content = new CurrenciesPage(this) } },
-                    { "ConfigurationPlace", new AccordionNode(GeneralUtils.GetResourceByName("global_places")) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlace>(this) } }
+                    { "ConfigurationPlace", new AccordionNode(GeneralUtils.GetResourceByName("global_places")) { Content = new PlacesPage(this) } }
                 };
             /* IN009035 */
             string configurationPlaceTableLabel = AppOperationModeSettings.IsDefaultTheme ? GeneralUtils.GetResourceByName("global_place_tables") : GeneralUtils.GetResourceByName("window_title_dialog_orders");
