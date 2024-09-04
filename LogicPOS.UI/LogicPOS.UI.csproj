@@ -1,0 +1,425 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\MSBuild.Microsoft.VisualStudio.Web.targets.14.0.0.3\build\MSBuild.Microsoft.VisualStudio.Web.targets.props" Condition="Exists('..\packages\MSBuild.Microsoft.VisualStudio.Web.targets.14.0.0.3\build\MSBuild.Microsoft.VisualStudio.Web.targets.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{340331CF-94E0-49B0-8EBB-D4DF61A3DCCC}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>LogicPOS.UI</RootNamespace>
+    <AssemblyName>logicpos</AssemblyName>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.4.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>application.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\artifacts\Debug\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\artifacts\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f, processorArchitecture=MSIL" />
+    <Reference Include="FastReport.Mono, Version=2014.1.14.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\fastreport\FastReport.Mono.dll</HintPath>
+    </Reference>
+    <Reference Include="Medsphere.Widgets, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\Medsphere.Widgets.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Mono.Cairo, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL" />
+    <Reference Include="Mono.Data.Sqlite, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\Mono.Data.Sqlite.dll</HintPath>
+    </Reference>
+    <Reference Include="Patagames.Pdf, Version=4.3.4.40, Culture=neutral, PublicKeyToken=60fd6cf9b15941cf, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\Patagames.Pdf.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="pango-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Data">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="**\*.cs" Exclude="obj\**\*.cs;Properties\**\*.cs;Resources\**\*.cs" />
+
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+	
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+	
+    <Compile Include="Web References\AccessTrackParkingTicketService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+	
+    <None Include="app.manifest" />
+	
+    <Content Include="..\libs\SQLite.Interop.dll">
+      <Link>SQLite.Interop.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+	
+    <Content Include="Assets\**\*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+   
+    <None Include="logicpos.exe.files">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+	
+    <None Include="Resources\Database\NOTES.md" />
+    <None Include="Resources\Reports\Scripts\ReportDocumentFinance.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+	
+    <Compile Include="Service References\ServiceReference\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+	
+    <None Include="Resources\Reports\UserReports\*.frx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+	
+    <None Include="Service References\ServiceReference\LogicPOS.UI.ServiceReference.CompositeType.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+	
+    <None Include="Service References\ServiceReference\LogicPOS.UI.ServiceReference.ServicesATSoapResult.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+
+  </ItemGroup>
+  
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  
+  <ItemGroup>
+  
+    <Content Include="..\libs\sqlite3.dll">
+      <Link>sqlite3.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+	
+    <Content Include="application.ico" />
+	
+    <Content Include="Assets\**\*.png;Assets\**\*.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+	
+    <Content Include="Assets\Themes\theme_default_default.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </Content>
+	
+    <None Include="Service References\ServiceReference\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+	
+    <None Include="Service References\ServiceReference\configuration.svcinfo" />
+    <None Include="Service References\ServiceReference\configuration91.svcinfo" />
+    <None Include="Service References\ServiceReference\Service1.disco" />
+    <None Include="Resources\Reports\Styles\StyleMain.frs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+	
+    <None Include="Service References\ServiceReference\Service1.wsdl" />
+    <None Include="Service References\ServiceReference\Service1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReference\Service11.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReference\Service12.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReference\Service13.xsd">
+      <SubType>Designer</SubType>
+    </None>
+  
+    <Content Include="Assets\Themes\theme_default_retail.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </Content>
+	
+    <Content Include="Resources\Database\**\*.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+   
+    <Content Include="Resources\Database\MSSqlServer\databaseschema.txt" />
+    <Content Include="Resources\Database\Other\Country\notes.txt" />
+	
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+	
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Content Include="Resources\Keyboards\163.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+	<WCFMetadataStorage Include="Service References\ServiceReference\" />
+	 <WebReferences Include="Web References\" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\LogicPOS.Api\LogicPOS.Api.csproj">
+      <Project>{267c627f-2248-4500-9247-ce7f30431a25}</Project>
+      <Name>LogicPOS.Api</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LogicPOS.Data\LogicPOS.Data.csproj">
+      <Project>{42af3be2-44b4-477d-8e45-55c64992b805}</Project>
+      <Name>LogicPOS.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LogicPOS.DTOs\LogicPOS.DTOs.csproj">
+      <Project>{e23bdf58-f0a9-40ac-acce-57235fb7a7f1}</Project>
+      <Name>LogicPOS.DTOs</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LogicPOS.Finance\LogicPOS.Finance.csproj">
+      <Project>{6F50BD8B-A054-424C-9247-3892EFCC25B6}</Project>
+      <Name>LogicPOS.Finance</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LogicPOS.Globalization\LogicPOS.Globalization.csproj">
+      <Project>{b9e8d813-d694-4a7f-955e-ccc4b10f3774}</Project>
+      <Name>LogicPOS.Globalization</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LogicPOS.Modules\LogicPOS.Modules.csproj">
+      <Project>{96E6AD22-DC88-4F9B-89B7-0F78E59F9070}</Project>
+      <Name>LogicPOS.Modules</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LogicPOS.PDFViewer\LogicPOS.PDFViewer.Winforms\LogicPOS.PDFViewer.Winforms.csproj">
+      <Project>{e39a7986-4c2f-4ebe-a31b-59c766150eac}</Project>
+      <Name>LogicPOS.PDFViewer.Winforms</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LogicPOS.Persistence\LogicPOS.Persistence.csproj">
+      <Project>{4b305a39-47c9-4f59-ac06-ef868b4903ad}</Project>
+      <Name>LogicPOS.Persistence</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LogicPOS.Plugin\LogicPOS.Plugin.csproj">
+      <Project>{50C2F757-8478-4FD3-8B35-89BC12E7ACA0}</Project>
+      <Name>LogicPOS.Plugin</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LogicPOS.Printing\LogicPOS.Printing.csproj">
+      <Project>{ee93c7f8-f973-4a6e-8c59-e4bac4ff7bf7}</Project>
+      <Name>LogicPOS.Printing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LogicPOS.Reporting\LogicPOS.Reporting.csproj">
+      <Project>{e8105c12-d5fa-4afb-906b-f762bd2f9a27}</Project>
+      <Name>LogicPOS.Reporting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LogicPOS.Settings\LogicPOS.Settings.csproj">
+      <Project>{a4e7f0ea-8360-41f2-a625-517f6e943a29}</Project>
+      <Name>LogicPOS.Settings</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\logicpos.shared\LogicPOS.Shared.csproj">
+      <Project>{fb74327c-1794-47ec-8f52-fd3f464f3258}</Project>
+      <Name>LogicPOS.Shared</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LogicPOS.Utility\LogicPOS.Utility.csproj">
+      <Project>{18488ce5-c06f-40f5-9339-0467a47d7985}</Project>
+      <Name>LogicPOS.Utility</Name>
+    </ProjectReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <WebReferenceUrl Include="http://192.168.1.86/POS/service.asmx">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\AccessTrackParkingTicketService\</RelPath>
+      <UpdateFromURL>http://192.168.1.86/POS/service.asmx</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>logicpos_AccessTrackParkingTicketService_TimeService</CachedSettingsPropName>
+    </WebReferenceUrl>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Analyzer Include="..\libs\DocumentFormat.OpenXml.dll" />
+    <Analyzer Include="..\libs\System.IO.FileSystem.Primitives.dll" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="ClosedXML">
+      <Version>0.102.2</Version>
+    </PackageReference>
+    <PackageReference Include="DevExpress.Xpo">
+      <Version>23.2.6</Version>
+    </PackageReference>
+    <PackageReference Include="DocumentFormat.OpenXml">
+      <Version>2.20.0</Version>
+    </PackageReference>
+    <PackageReference Include="ErrorOr">
+      <Version>2.0.1</Version>
+    </PackageReference>
+    <PackageReference Include="ExcelDataReader.DataSet">
+      <Version>3.7.0-develop00310</Version>
+    </PackageReference>
+    <PackageReference Include="FastMember">
+      <Version>1.5.0</Version>
+    </PackageReference>
+    <PackageReference Include="FSharp.Charting.Gtk">
+      <Version>2.1.0</Version>
+    </PackageReference>
+    <PackageReference Include="FSharp.Core">
+      <Version>8.0.200</Version>
+    </PackageReference>
+    <PackageReference Include="LibUsbDotNet">
+      <Version>2.2.29</Version>
+    </PackageReference>
+    <PackageReference Include="log4net">
+      <Version>2.0.17</Version>
+    </PackageReference>
+    <PackageReference Include="MediatR">
+      <Version>12.4.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Data.Sqlite">
+      <Version>8.0.3</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection">
+      <Version>8.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Http">
+      <Version>8.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="MSBuild.Microsoft.VisualStudio.Web.targets">
+      <Version>14.0.0.3</Version>
+    </PackageReference>
+    <PackageReference Include="MySql.Data">
+      <Version>8.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="MySqlBackup.NET">
+      <Version>2.3.8</Version>
+    </PackageReference>
+    <PackageReference Include="OxyPlot.Core">
+      <Version>2.1.2</Version>
+    </PackageReference>
+    <PackageReference Include="OxyPlot.GtkSharp">
+      <Version>2013.2.118.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.Data.SQLite.Core">
+      <Version>1.0.118</Version>
+    </PackageReference>
+    <PackageReference Include="System.IO.Ports">
+      <Version>8.0.0</Version>
+    </PackageReference>
+  </ItemGroup>
+</Project>
