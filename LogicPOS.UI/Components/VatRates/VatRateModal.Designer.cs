@@ -8,18 +8,18 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class VatRateModal
     {
-        public override Size ModalSize => new Size(500, 500);
+        public override Size ModalSize => new Size(500, 550);
         public override string ModalTitleResourceName => "dialog_edit_configurationvatrate_tab1_label";
 
         #region Components
         private TextBox _txtOrder = TextBoxes.CreateOrderField();
         private TextBox _txtCode = TextBoxes.CreateCodeField();
         private TextBox _txtDesignation = TextBoxes.CreateDesignationField();
-        private TextBox _txtValue = new TextBox("global_vat_rate", true, true, @"^\d+$");
-        private TextBox _txtTaxType = new TextBox("global_vat_rate_tax_type", true, true, @"^\d+$");
-        private TextBox _txtTaxCode = new TextBox("global_vat_rate_tax_code", true, true, @"^\d+$");
-        private TextBox _txtCountryRegionCode = new TextBox("global_vat_rate_tax_country_region", true, true, @"^\d+$");
-        private TextBox _txtDescription= new TextBox("global_vat_rate_description", true, true, @"^\d+$");
+        private TextBox _txtValue = new TextBox("global_vat_rate", true, true, @"-?\d+\.?\d*");
+        private TextBox _txtTaxType = new TextBox("global_vat_rate_tax_type", true, true, @"^[a-zA-Z]+$");
+        private TextBox _txtTaxCode = new TextBox("global_vat_rate_tax_code", true, true, @"^[a-zA-Z]+$");
+        private TextBox _txtCountryRegionCode = new TextBox("global_vat_rate_tax_country_region", true, true, @"^[a-zA-Z0-9]+$");
+        private TextBox _txtDescription= new TextBox("global_vat_rate_description", true, true, @"^[a-zA-Z0-9]+$");
         private CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
         #endregion
 

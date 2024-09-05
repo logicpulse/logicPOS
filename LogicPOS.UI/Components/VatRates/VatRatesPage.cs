@@ -34,15 +34,22 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridView.AppendColumn(Columns.CreateCodeColumn(0));
             GridView.AppendColumn(Columns.CreateDesignationColumn(1));
-            GridView.AppendColumn(Columns.CreateUpdatedAtColumn(2));
             GridView.AppendColumn(CreateValueColumn());
+            GridView.AppendColumn(Columns.CreateUpdatedAtColumn(3));
         }
 
       
 
         private TreeViewColumn CreateValueColumn()
         {
-            throw new NotImplementedException();
+            void RenderValue(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
+            {
+                var vatRate = (VatRate)model.GetValue(iter, 0);
+                (cell as CellRendererText).Text = vatRate.Value.ToString();
+            }
+
+            var title = GeneralUtils.GetResourceByName("global_vat_rate");
+            return Columns.CreateColumn(title, 2, RenderValue);
         }
 
         protected override void InitializeSort()

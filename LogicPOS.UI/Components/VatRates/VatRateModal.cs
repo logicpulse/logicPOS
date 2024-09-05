@@ -2,6 +2,7 @@
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.VatRates.AddVatRate;
 using LogicPOS.Api.Features.VatRates.UpdateVatRate;
+using System.Globalization;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -16,6 +17,7 @@ namespace LogicPOS.UI.Components.Modals
             return new AddVatRateCommand
             {
                 Designation = _txtDesignation.Text,
+                Value = decimal.Parse(_txtValue.Text),
                 TaxType = _txtTaxType.Text,
                 TaxCode = _txtTaxCode.Text,
                 CountryRegionCode = _txtCountryRegionCode.Text,
@@ -61,6 +63,9 @@ namespace LogicPOS.UI.Components.Modals
             _txtDesignation.Text = _entity.Designation;
             _txtValue.Text = _entity.Value.ToString();
             _txtTaxType.Text = _entity.TaxType;
+            _txtTaxCode.Text= _entity.TaxCode;
+            _txtCountryRegionCode.Text= _entity.CountryRegion;
+            _txtDescription.Text = _entity.Description;
             _checkDisabled.Active = _entity.IsDeleted;
             _txtNotes.Value.Text = _entity.Notes;
         }
