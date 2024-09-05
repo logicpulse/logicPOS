@@ -35,13 +35,13 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridView.AppendColumn(Columns.CreateCodeColumn(0));
             GridView.AppendColumn(Columns.CreateDesignationColumn(1));
-            GridView.AppendColumn(CreateValueColumn());
+            GridView.AppendColumn(CreateAcronymColumn());
             GridView.AppendColumn(Columns.CreateUpdatedAtColumn(3));
         }
 
       
 
-        private TreeViewColumn CreateValueColumn()
+        private TreeViewColumn CreateAcronymColumn()
         {
             void RenderAcronym(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
