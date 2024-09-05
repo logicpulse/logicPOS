@@ -23,16 +23,7 @@ namespace LogicPOS.UI.Components.Modals
             _txtNotes.Value.Text = _entity.Notes;
         }
 
-        protected override void UpdateEntity()
-        {
-            var command = CreateUpdateCommand();
-            var result = _mediator.Send(command).Result;
-
-            if (result.IsError)
-            {
-                HandleApiError(result.FirstError);
-            }
-        }
+        protected override void UpdateEntity() => ExecuteUpdateCommand(CreateUpdateCommand());
 
         private UpdatePreferenceParameterCommand CreateUpdateCommand()
         {

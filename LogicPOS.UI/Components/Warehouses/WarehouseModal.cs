@@ -19,17 +19,8 @@ namespace LogicPOS.UI.Components.Modals
         }
 
 
-        protected override void AddEntity()
-        {
-            var command = CreateAddCommand();
-            var result = _mediator.Send(command).Result;
+        protected override void AddEntity()=>ExecuteAddCommand(CreateAddCommand());
 
-            if (result.IsError)
-            {
-                HandleApiError(result.FirstError);
-                return;
-            }
-        }
 
         private AddWarehouseCommand CreateAddCommand()
         {

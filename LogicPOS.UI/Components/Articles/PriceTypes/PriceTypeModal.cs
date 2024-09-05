@@ -32,19 +32,10 @@ namespace LogicPOS.UI.Components.Modals
                 IsDeleted = _checkDisabled.Active
             };
         }
+        protected override void AddEntity() => ExecuteAddCommand(CreateAddCommand());
+        protected override void UpdateEntity() => ExecuteUpdateCommand(CreateUpdateCommand());
 
-        protected override void AddEntity()
-        {
-            var command = CreateAddCommand();
-            var result = _mediator.Send(command).Result;
-
-            if (result.IsError)
-            {
-                HandleApiError(result.FirstError);
-                return;
-            }
-        }
-
+      
         protected override void ShowEntityData()
         {
             _txtOrder.Text = _entity.Order.ToString();
@@ -54,16 +45,6 @@ namespace LogicPOS.UI.Components.Modals
             _txtNotes.Value.Text = _entity.Notes;
         }
 
-        protected override void UpdateEntity()
-        {
-            var command = CreateUpdateCommand();
-            var result = _mediator.Send(command).Result;
-
-            if (result.IsError)
-            {
-                HandleApiError(result.FirstError);
-                return;
-            }
-        }
+      
     }
 }

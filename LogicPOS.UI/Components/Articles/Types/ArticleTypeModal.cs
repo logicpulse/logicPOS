@@ -37,17 +37,10 @@ namespace LogicPOS.UI.Components.Modals
            };
         }
 
-        protected override void AddEntity()
-        {
-           var command = CreateAddCommand();
-           var result = _mediator.Send(command).Result;
 
-           if (result.IsError)
-           {
-               HandleApiError(result.FirstError);
-               return;
-           }
-        }
+        protected override void AddEntity() => ExecuteAddCommand(CreateAddCommand());
+        protected override void UpdateEntity() => ExecuteUpdateCommand(CreateUpdateCommand());
+
 
         protected override void ShowEntityData()
         {
@@ -57,18 +50,6 @@ namespace LogicPOS.UI.Components.Modals
            _checkHasPrice.Active= _entity.HasPrice;
            _checkDisabled.Active = _entity.IsDeleted;
            _txtNotes.Value.Text = _entity.Notes;
-        }
-
-        protected override void UpdateEntity()
-        {
-           var command = CreateUpdateCommand();
-           var result = _mediator.Send(command).Result;
-
-           if (result.IsError)
-           {
-               HandleApiError(result.FirstError);
-               return;
-           }
         }
     }
 }

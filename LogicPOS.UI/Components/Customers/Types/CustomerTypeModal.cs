@@ -46,27 +46,9 @@ namespace LogicPOS.UI.Components.Modals
             _checkDisabled.Active = _entity.IsDeleted;
         }
 
-        protected override void UpdateEntity()
-        {
-            var command = CreateUpdateCommand();
-            var result = _mediator.Send(command).Result;
+        protected override void AddEntity() => ExecuteAddCommand(CreateAddCommand());
+        protected override void UpdateEntity() => ExecuteUpdateCommand(CreateUpdateCommand());
 
-            if (result.IsError)
-            {
-                HandleApiError(result.FirstError);
-            }
-        }
-
-        protected override void AddEntity()
-        {
-            var command = CreateAddCommand();
-            var result = _mediator.Send(command).Result;
-
-            if (result.IsError)
-            {
-                HandleApiError(result.FirstError);
-            }
-        }
 
     }
 }
