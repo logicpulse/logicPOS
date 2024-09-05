@@ -4,6 +4,7 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Places.GetAllPlaces;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
+using LogicPOS.Utility;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -33,8 +34,34 @@ namespace LogicPOS.UI.Components.Pages
         protected override void AddColumns()
         {
             GridView.AppendColumn(Columns.CreateCodeColumn(0));
-            GridView.AppendColumn(Columns.CreateDesignationColumn(4));
-            GridView.AppendColumn(Columns.CreateUpdatedAtColumn(5));
+            GridView.AppendColumn(Columns.CreateDesignationColumn(1));
+            GridView.AppendColumn(CreatePriceTypeColumn());
+            GridView.AppendColumn(CreateMovementTypeColumn());
+            GridView.AppendColumn(Columns.CreateUpdatedAtColumn(4));
+        }
+
+        private TreeViewColumn CreatePriceTypeColumn()
+        {
+            void RenderPriceType(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
+            {
+                var place = (Place)model.GetValue(iter, 0);
+                (cell as CellRendererText).Text = place.PriceType.Designation.ToString();
+            }
+
+            var title = GeneralUtils.GetResourceByName("global_ConfigurationPlace_PriceType");
+            return Columns.CreateColumn(title, 2, RenderPriceType);
+        }
+
+        private TreeViewColumn CreateMovementTypeColumn()
+        {
+            void RenderMovementType(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
+            {
+                var place = (Place)model.GetValue(iter, 0);
+                (cell as CellRendererText).Text = place.MovementType.Designation.ToString();
+            }
+
+            var title = GeneralUtils.GetResourceByName("global_ConfigurationPlace_MovementType");
+            return Columns.CreateColumn(title,3, RenderMovementType);
         }
 
         protected override void InitializeSort()
