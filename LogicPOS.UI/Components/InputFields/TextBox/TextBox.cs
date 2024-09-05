@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace LogicPOS.UI.Components.InputFields
 {
-    public class TextBox
+    public class TextBox : IValidatableField
     {
         public Entry Entry { get; private set; }
         public string Text { get => Entry.Text; set => Entry.Text = value; }
@@ -15,6 +15,8 @@ namespace LogicPOS.UI.Components.InputFields
         public bool IsValidatable { get; private set; }
         private readonly string _regex;
         public VBox Component { get; private set; }
+
+        public string FieldName => Label.Text;
 
         public TextBox(string labelResourceName,
                        bool isRequired = false,

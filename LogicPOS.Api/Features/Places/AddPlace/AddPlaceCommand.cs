@@ -10,5 +10,6 @@ namespace LogicPOS.Api.Features.Places.AddPlace
         public string ButtonImage { get; set; }
         public Guid PriceTypeId { get; set; }
         public Guid MovementTypeId { get; set; }
+        public string Notes { get; set; }
     }
 }

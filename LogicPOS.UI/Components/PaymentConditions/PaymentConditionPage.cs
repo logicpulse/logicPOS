@@ -8,9 +8,6 @@ using LogicPOS.Utility;
 using MediatR;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LogicPOS.UI.Components.Pages
 {
@@ -24,11 +21,12 @@ namespace LogicPOS.UI.Components.Pages
         {
             throw new NotImplementedException();
         }
+
         protected override IRequest<ErrorOr<IEnumerable<PaymentCondition>>> GetAllQuery => new GetAllPaymentConditionsQuery();
 
         public override void RunModal(EntityModalMode mode)
         {
-            var modal = new PaymentConditionModal(mode, SelectedEntity as PaymentCondition);
+            var modal = new PaymentConditionModal(mode, SelectedEntity);
             modal.Run();
             modal.Destroy();
         }

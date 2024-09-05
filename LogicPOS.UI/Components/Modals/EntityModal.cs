@@ -32,7 +32,7 @@ namespace LogicPOS.UI.Components.Modals
         protected IconButtonWithText _buttonOk;
         protected IconButtonWithText _buttonCancel;
         public List<Widget> SensitiveFields { get; private set; } = new List<Widget>();
-        public List<TextBox> ValidatableFields { get; private set; } = new List<TextBox>();
+        public List<IValidatableField> ValidatableFields { get; private set; } = new List<IValidatableField>();
 
         protected HBox _statusBar;
         protected MultilineTextBox _txtNotes = new MultilineTextBox();
@@ -42,7 +42,11 @@ namespace LogicPOS.UI.Components.Modals
                            TEntity entity = null)
         {
             _modalMode = modalMode;
-            _entity = entity;
+
+            if(modalMode != EntityModalMode.Insert)
+            {
+                _entity = entity;
+            }
 
             BeforeDesign();
             Design();
@@ -100,7 +104,9 @@ namespace LogicPOS.UI.Components.Modals
 
         protected void ShowValidationErrors()
         {
-            var invalidFields = string.Join(", ", ValidatableFields.Where(txt => txt.IsValid() == false).Select(txt => txt.Label.Text));
+            var invalidFields = string.Join(", ",
+                                            ValidatableFields.Where(field => field.IsValid() == false)
+                                                             .Select(field => field.FieldName));
 
             Utils.ShowMessageBox(GlobalApp.BackOfficeMainWindow,
                                  DialogFlags.DestroyWithParent | DialogFlags.Modal,
@@ -108,7 +114,8 @@ namespace LogicPOS.UI.Components.Modals
                                  MessageType.Error,
                                  ButtonsType.Ok,
                                  GeneralUtils.GetResourceByName("window_title_dialog_validation_error"),
-                                 string.Format(GeneralUtils.GetResourceByName("dialog_message_field_validation_error"), invalidFields));
+                                 string.Format(GeneralUtils.GetResourceByName("dialog_message_field_validation_error"),
+                                               invalidFields));
         }
 
         private void Design()
@@ -318,6 +325,21 @@ namespace LogicPOS.UI.Components.Modals
 
             return notebook;
         }
+
+        protected void ExecuteCommand<Response>(IRequest<ErrorOr<Response>> command)
+        {
+            var result = _mediator.Send(command).Result;
+
+            if (result.IsError)
+            {
+                HandleApiError(result.FirstError);
+                return;
+            }
+        }
+
+        protected void ExecuteAddCommand(IRequest<ErrorOr<Guid>> command) => ExecuteCommand(command);
+
+        protected void ExecuteUpdateCommand(IRequest<ErrorOr<MediatR.Unit>> command) => ExecuteCommand(command);
 
         protected abstract void UpdateEntity();
         protected abstract void AddEntity();
