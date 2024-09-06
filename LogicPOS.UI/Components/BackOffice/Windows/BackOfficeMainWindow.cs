@@ -215,7 +215,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
                 {
                     { "ConfigurationPrintersType", new AccordionNode(GeneralUtils.GetResourceByName("global_ConfigurationPrintersType")) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPrintersType>(this) } },
                     { "ConfigurationPrinters", new AccordionNode(GeneralUtils.GetResourceByName("global_ConfigurationPrinters")) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPrinters>(this) } },
-                    { "ConfigurationInputReader", new AccordionNode(GeneralUtils.GetResourceByName("global_ConfigurationInputReader")) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationInputReader>(this) } },
+                    { "ConfigurationInputReader", new AccordionNode(GeneralUtils.GetResourceByName("global_ConfigurationInputReader")) { Content = new InputReadersPage(this) } },
                     { "ConfigurationPoleDisplay", new AccordionNode(GeneralUtils.GetResourceByName("global_ConfigurationPoleDisplay")) { Content = new PoleDisplaysPage(this) } },
                     { "ConfigurationWeighingMachine", new AccordionNode(GeneralUtils.GetResourceByName("global_ConfigurationWeighingMachine")) { Content = new WeighingMachinesPage(this) } }
                 };
