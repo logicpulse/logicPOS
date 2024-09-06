@@ -36,7 +36,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridView.AppendColumn(Columns.CreateCodeColumn(0));
             GridView.AppendColumn(Columns.CreateDesignationColumn(2));
-            //GridView.AppendColumn(CreatePlaceColumn());
+            GridView.AppendColumn(CreatePlaceColumn());
             GridView.AppendColumn(Columns.CreateUpdatedAtColumn(4));
         }
 
