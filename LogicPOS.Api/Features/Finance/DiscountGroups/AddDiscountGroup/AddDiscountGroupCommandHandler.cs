@@ -19,7 +19,7 @@ namespace LogicPOS.Api.Features.Customers.DiscountGroups.AddDiscountGroup
             AddDiscountGroupCommand command,
             CancellationToken cancellationToken = default)
         {
-            return await HandleAddCommand("discountgroups", command, cancellationToken);
+            return await HandleAddCommandAsync("discountgroups", command, cancellationToken);
         }
     }
 }

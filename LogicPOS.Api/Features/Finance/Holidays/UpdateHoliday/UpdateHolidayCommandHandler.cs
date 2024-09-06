@@ -16,7 +16,7 @@ namespace LogicPOS.Api.Features.Holidays.UpdateHoliday
 
         public override async Task<ErrorOr<Unit>> Handle(UpdateHolidayCommand command, CancellationToken cancellationToken = default)
         {
-            return await HandleUpdateCommand($"/holidays/{command.Id}", command, cancellationToken);
+            return await HandleUpdateCommandAsync($"/holidays/{command.Id}", command, cancellationToken);
         }
     }
 }

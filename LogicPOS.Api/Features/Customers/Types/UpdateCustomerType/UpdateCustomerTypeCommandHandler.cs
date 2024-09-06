@@ -16,7 +16,7 @@ namespace LogicPOS.Api.Features.Customers.Types.UpdateCustomerType
 
         public override async Task<ErrorOr<Unit>> Handle(UpdateCustomerTypeCommand command, CancellationToken cancellationToken = default)
         {
-            return await HandleUpdateCommand($"customers/types/{command.Id}", command, cancellationToken);
+            return await HandleUpdateCommandAsync($"customers/types/{command.Id}", command, cancellationToken);
         }
     }
 }

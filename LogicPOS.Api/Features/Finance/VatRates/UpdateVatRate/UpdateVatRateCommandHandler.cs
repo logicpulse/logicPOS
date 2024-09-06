@@ -18,7 +18,7 @@ namespace LogicPOS.Api.Features.VatRates.UpdateVatRate
 
         public override async Task<ErrorOr<Unit>> Handle(UpdateVatRateCommand command, CancellationToken cancellationToken = default)
         {
-            return await HandleUpdateCommand($"/vatrates/{command.Id}", command, cancellationToken);
+            return await HandleUpdateCommandAsync($"/vatrates/{command.Id}", command, cancellationToken);
         }
     }
 }

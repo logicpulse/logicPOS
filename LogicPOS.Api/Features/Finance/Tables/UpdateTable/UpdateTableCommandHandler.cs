@@ -16,7 +16,7 @@ namespace LogicPOS.Api.Features.Tables.UpdateTable
 
         public override async Task<ErrorOr<Unit>> Handle(UpdateTableCommand command, CancellationToken cancellationToken = default)
         {
-            return await HandleUpdateCommand($"tables/{command.Id}", command, cancellationToken);
+            return await HandleUpdateCommandAsync($"tables/{command.Id}", command, cancellationToken);
         }
     }
 }

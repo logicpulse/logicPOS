@@ -16,7 +16,7 @@ namespace LogicPOS.Api.Features.CommissionGroups.UpdateCommissionGroup
         public override async Task<ErrorOr<Unit>> Handle(UpdateCommissionGroupCommand command,
                                                            CancellationToken cancellationToken = default)
         {
-            return await HandleUpdateCommand($"users/commission-groups/{command.Id}", command, cancellationToken);
+            return await HandleUpdateCommandAsync($"users/commission-groups/{command.Id}", command, cancellationToken);
         }
     }
 }

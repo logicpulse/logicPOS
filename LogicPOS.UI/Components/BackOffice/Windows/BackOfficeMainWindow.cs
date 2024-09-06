@@ -16,6 +16,7 @@ using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Accordions;
 using LogicPOS.UI.Components.Pages;
+using LogicPOS.UI.Components.PoleDisplays;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -215,7 +216,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
                     { "ConfigurationPrintersType", new AccordionNode(GeneralUtils.GetResourceByName("global_ConfigurationPrintersType")) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPrintersType>(this) } },
                     { "ConfigurationPrinters", new AccordionNode(GeneralUtils.GetResourceByName("global_ConfigurationPrinters")) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPrinters>(this) } },
                     { "ConfigurationInputReader", new AccordionNode(GeneralUtils.GetResourceByName("global_ConfigurationInputReader")) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationInputReader>(this) } },
-                    { "ConfigurationPoleDisplay", new AccordionNode(GeneralUtils.GetResourceByName("global_ConfigurationPoleDisplay")) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPoleDisplay>(this) } },
+                    { "ConfigurationPoleDisplay", new AccordionNode(GeneralUtils.GetResourceByName("global_ConfigurationPoleDisplay")) { Content = new PoleDisplaysPage(this) } },
                     { "ConfigurationWeighingMachine", new AccordionNode(GeneralUtils.GetResourceByName("global_ConfigurationWeighingMachine")) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationWeighingMachine>(this) } }
                 };
 

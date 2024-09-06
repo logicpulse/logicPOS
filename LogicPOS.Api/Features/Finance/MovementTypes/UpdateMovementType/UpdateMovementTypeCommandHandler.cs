@@ -16,7 +16,7 @@ namespace LogicPOS.Api.Features.MovementTypes.UpdateMovementType
 
         public override async Task<ErrorOr<Unit>> Handle(UpdateMovementTypeCommand command, CancellationToken cancellationToken = default)
         {
-            return await HandleUpdateCommand($"/movementtypes/{command.Id}", command, cancellationToken);
+            return await HandleUpdateCommandAsync($"/movementtypes/{command.Id}", command, cancellationToken);
         }
     }
 }

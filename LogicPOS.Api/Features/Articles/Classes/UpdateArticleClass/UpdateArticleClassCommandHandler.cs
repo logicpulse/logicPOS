@@ -16,7 +16,7 @@ namespace LogicPOS.Api.Features.Articles.Classes.UpdateArticleClass
 
         public override async Task<ErrorOr<Unit>> Handle(UpdateArticleClassCommand command, CancellationToken cancellationToken = default)
         {
-            return await HandleUpdateCommand($"/article/classes/{command.Id}", command, cancellationToken);
+            return await HandleUpdateCommandAsync($"/article/classes/{command.Id}", command, cancellationToken);
         }
     }
 }

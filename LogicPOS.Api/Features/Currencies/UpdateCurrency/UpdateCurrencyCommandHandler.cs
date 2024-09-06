@@ -18,7 +18,7 @@ namespace LogicPOS.Api.Features.Currencies.UpdateCurrency
         public override async Task<ErrorOr<Unit>> Handle(UpdateCurrencyCommand command,
                                                            CancellationToken cancellationToken = default)
         {
-           return await HandleUpdateCommand($"currencies/{command.Id}", command, cancellationToken);
+           return await HandleUpdateCommandAsync($"currencies/{command.Id}", command, cancellationToken);
         }
     }
 }

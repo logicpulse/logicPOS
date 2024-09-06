@@ -17,7 +17,7 @@ namespace LogicPOS.Api.Features.VatExemptionReasons.AddVatExemptionReason
 
         public override async Task<ErrorOr<Guid>> Handle(AddVatExemptionReasonCommand command, CancellationToken cancellationToken = default)
         {
-            return await HandleAddCommand("vatexemptionreasons", command, cancellationToken);
+            return await HandleAddCommandAsync("vatexemptionreasons", command, cancellationToken);
         }
     }
 }

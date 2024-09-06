@@ -19,7 +19,7 @@ namespace LogicPOS.Api.Features.Holidays.AddHoliday
             AddHolidayCommand command,
             CancellationToken cancellationToken = default)
         {
-          return await HandleAddCommand("holidays", command, cancellationToken);
+          return await HandleAddCommandAsync("holidays", command, cancellationToken);
         }
     }
 }

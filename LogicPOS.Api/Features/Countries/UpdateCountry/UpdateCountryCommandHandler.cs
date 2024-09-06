@@ -16,7 +16,7 @@ namespace LogicPOS.Api.Features.Countries.UpdateCountry
 
         public override async Task<ErrorOr<Unit>> Handle(UpdateCountryCommand command, CancellationToken cancellationToken = default)
         {
-            return await HandleUpdateCommand($"countries/{command.Id}", command, cancellationToken);
+            return await HandleUpdateCommandAsync($"countries/{command.Id}", command, cancellationToken);
         }
     }
 }

@@ -17,7 +17,7 @@ namespace LogicPOS.Api.Features.Currencies.AddCurrency
         public override async Task<ErrorOr<Guid>> Handle(AddCurrencyCommand command,
                                                          CancellationToken cancellationToken = default)
         {
-            return await HandleAddCommand("currencies", command, cancellationToken);
+            return await HandleAddCommandAsync("currencies", command, cancellationToken);
         }
     }
 }

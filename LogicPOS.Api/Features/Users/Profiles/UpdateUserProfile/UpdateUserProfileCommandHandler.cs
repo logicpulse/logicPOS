@@ -16,7 +16,7 @@ namespace LogicPOS.Api.Features.Users.Profiles.UpdateUserProfile
         public override async Task<ErrorOr<Unit>> Handle(UpdateUserProfileCommand command,
                                                          CancellationToken cancellationToken = default)
         {
-            return await HandleUpdateCommand($"users/profiles/{command.Id}", command, cancellationToken);
+            return await HandleUpdateCommandAsync($"users/profiles/{command.Id}", command, cancellationToken);
         }
     }
 }

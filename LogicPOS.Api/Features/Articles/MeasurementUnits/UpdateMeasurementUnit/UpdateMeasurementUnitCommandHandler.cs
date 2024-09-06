@@ -16,7 +16,7 @@ namespace LogicPOS.Api.Features.MeasurementUnits.UpdateMeasurementUnit
 
         public override async Task<ErrorOr<Unit>> Handle(UpdateMeasurementUnitCommand command, CancellationToken cancellationToken = default)
         {
-            return await HandleUpdateCommand($"/articles/measurementunits/{command.Id}", command, cancellationToken);
+            return await HandleUpdateCommandAsync($"/articles/measurementunits/{command.Id}", command, cancellationToken);
         }
     }
 }

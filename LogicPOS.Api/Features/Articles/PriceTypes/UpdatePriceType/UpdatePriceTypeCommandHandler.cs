@@ -18,7 +18,7 @@ namespace LogicPOS.Api.Features.Articles.PriceTypes.UpdatePriceType
 
         public override async Task<ErrorOr<Unit>> Handle(UpdatePriceTypeCommand command, CancellationToken cancellationToken = default)
         {
-            return await HandleUpdateCommand($"/articles/pricetypes/{command.Id}", command, cancellationToken);
+            return await HandleUpdateCommandAsync($"/articles/pricetypes/{command.Id}", command, cancellationToken);
         }
     }
 }

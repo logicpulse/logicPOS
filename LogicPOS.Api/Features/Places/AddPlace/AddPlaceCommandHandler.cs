@@ -16,7 +16,7 @@ namespace LogicPOS.Api.Features.Places.AddPlace
 
         public override async Task<ErrorOr<Guid>> Handle(AddPlaceCommand command, CancellationToken cancellationToken = default)
         {
-            return await HandleAddCommand("places", command, cancellationToken);
+            return await HandleAddCommandAsync("places", command, cancellationToken);
         }
     }
 }

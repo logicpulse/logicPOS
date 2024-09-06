@@ -16,7 +16,7 @@ namespace LogicPOS.Api.Features.PaymentConditions.UpdatePaymentCondition
 
         public override async Task<ErrorOr<Unit>> Handle(UpdatePaymentConditionCommand command, CancellationToken cancellationToken = default)
         {
-            return await HandleUpdateCommand($"/payment/conditions/{command.Id}", command, cancellationToken);
+            return await HandleUpdateCommandAsync($"/payment/conditions/{command.Id}", command, cancellationToken);
         }
     }
 }

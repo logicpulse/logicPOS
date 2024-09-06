@@ -17,7 +17,7 @@ namespace LogicPOS.Api.Features.Customers.Types.AddCustomerType
             AddCustomerTypeCommand command,
             CancellationToken cancellationToken = default)
         {
-            return await HandleAddCommand("customers/types", command, cancellationToken);
+            return await HandleAddCommandAsync("customers/types", command, cancellationToken);
         }
     }
 }

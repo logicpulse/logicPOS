@@ -19,7 +19,7 @@ namespace LogicPOS.Api.Features.CommissionGroups.AddCommissionGroup
         public override async Task<ErrorOr<Guid>> Handle(AddCommissionGroupCommand command,
                                                                 CancellationToken cancellationToken = default)
         {
-            return await HandleAddCommand("users/commission-groups", command, cancellationToken);
+            return await HandleAddCommandAsync("users/commission-groups", command, cancellationToken);
         }
     }
 }

@@ -29,14 +29,12 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override void AddValidatableFields()
         {
-            switch (_modalMode)
+            ValidatableFields.Add(_txtDesignation);
+
+            if (_modalMode == EntityModalMode.Update)
             {
-                case EntityModalMode.Insert:
-                    ValidatableFields.Add(_txtDesignation);
-                    break;
-                case EntityModalMode.Update:
-                    ValidatableFields.Add(_txtDesignation);
-                    break;
+                ValidatableFields.Add(_txtOrder);
+                ValidatableFields.Add(_txtCode);
             }
         }
 
@@ -48,22 +46,22 @@ namespace LogicPOS.UI.Components.Modals
 
         private VBox CreateDetailsTab()
         {
-            var tab1 = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
+            var detailsTab = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
 
             if (_modalMode != EntityModalMode.Insert)
             {
-                tab1.PackStart(_txtOrder.Component, false, false, 0);
-                tab1.PackStart(_txtCode.Component, false, false, 0);
+                detailsTab.PackStart(_txtOrder.Component, false, false, 0);
+                detailsTab.PackStart(_txtCode.Component, false, false, 0);
             }
 
-            tab1.PackStart(_txtDesignation.Component, false, false, 0);
+            detailsTab.PackStart(_txtDesignation.Component, false, false, 0);
 
             if (_modalMode != EntityModalMode.Insert)
             {
-                tab1.PackStart(_checkDisabled, false, false, 0);
+                detailsTab.PackStart(_checkDisabled, false, false, 0);
             }
 
-            return tab1;
+            return detailsTab;
         }
     }
 }

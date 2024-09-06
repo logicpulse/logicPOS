@@ -18,7 +18,7 @@ namespace LogicPOS.Api.Features.Customers.DiscountGroups.UpdateDiscountGroup
 
         public override async Task<ErrorOr<Unit>> Handle(UpdateDiscountGroupCommand command, CancellationToken cancellationToken = default)
         {
-            return await HandleUpdateCommand($"discountgroups/{command.Id}", command, cancellationToken);
+            return await HandleUpdateCommandAsync($"discountgroups/{command.Id}", command, cancellationToken);
         }
     }
 }

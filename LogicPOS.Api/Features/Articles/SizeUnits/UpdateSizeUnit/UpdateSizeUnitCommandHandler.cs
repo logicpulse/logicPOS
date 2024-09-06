@@ -16,7 +16,7 @@ namespace LogicPOS.Api.Features.SizeUnits.UpdateSizeUnit
 
         public override async Task<ErrorOr<Unit>> Handle(UpdateSizeUnitCommand command, CancellationToken cancellationToken = default)
         {
-            return await HandleUpdateCommand($"articles/sizeunits/{command.Id}", command, cancellationToken);
+            return await HandleUpdateCommandAsync($"articles/sizeunits/{command.Id}", command, cancellationToken);
         }
     }
 }

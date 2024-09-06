@@ -35,7 +35,7 @@ namespace LogicPOS.Api.Features.Common
             }
         }
 
-        protected async Task<ErrorOr<Guid>> HandleAddCommand(
+        protected async Task<ErrorOr<Guid>> HandleAddCommandAsync(
             string endpoint,
             TRequest command,
             CancellationToken cancellationToken = default)
@@ -51,7 +51,7 @@ namespace LogicPOS.Api.Features.Common
             }
         }
 
-        protected async Task<ErrorOr<Unit>> HandleUpdateCommand(
+        protected async Task<ErrorOr<Unit>> HandleUpdateCommandAsync(
             string endpoint,
             TRequest command,
             CancellationToken cancellationToken = default)
@@ -67,7 +67,7 @@ namespace LogicPOS.Api.Features.Common
             }
         }
 
-        protected async Task<ErrorOr<Unit>> HandleDeleteCommand(string endpoint, CancellationToken cancellationToken = default)
+        protected async Task<ErrorOr<Unit>> HandleDeleteCommandAsync(string endpoint, CancellationToken cancellationToken = default)
         {
             try
             {

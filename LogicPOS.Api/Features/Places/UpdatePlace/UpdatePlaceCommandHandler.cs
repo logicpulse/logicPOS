@@ -16,7 +16,7 @@ namespace LogicPOS.Api.Features.Places.UpdatePlace
 
         public override async Task<ErrorOr<Unit>> Handle(UpdatePlaceCommand command, CancellationToken cancellationToken = default)
         {
-            return await HandleUpdateCommand($"places/{command.Id}", command, cancellationToken);
+            return await HandleUpdateCommandAsync($"places/{command.Id}", command, cancellationToken);
         }
     }
 }

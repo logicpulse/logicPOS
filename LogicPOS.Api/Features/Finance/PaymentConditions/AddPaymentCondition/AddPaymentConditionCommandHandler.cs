@@ -15,7 +15,7 @@ namespace LogicPOS.Api.Features.PaymentConditions.AddPaymentCondition
 
         public override async Task<ErrorOr<Guid>> Handle(AddPaymentConditionCommand command, CancellationToken cancellationToken = default)
         {
-            return await HandleAddCommand("payment/conditions", command, cancellationToken);
+            return await HandleAddCommandAsync("payment/conditions", command, cancellationToken);
         }
     }
 }

@@ -16,7 +16,7 @@ namespace LogicPOS.Api.Features.Tables.AddTable
 
         public override async Task<ErrorOr<Guid>> Handle(AddTableCommand command, CancellationToken cancellationToken = default)
         {
-            return await HandleAddCommand("tables", command, cancellationToken);
+            return await HandleAddCommandAsync("tables", command, cancellationToken);
         }
     }
 }

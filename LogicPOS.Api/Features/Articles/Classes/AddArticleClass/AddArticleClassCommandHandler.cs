@@ -15,7 +15,7 @@ namespace LogicPOS.Api.Features.Articles.Classes.AddArticleClass
 
         public override async Task<ErrorOr<Guid>> Handle(AddArticleClassCommand command, CancellationToken cancellationToken = default)
         {
-            return await HandleAddCommand("article/classes", command, cancellationToken);
+            return await HandleAddCommandAsync("article/classes", command, cancellationToken);
         }
     }
 }

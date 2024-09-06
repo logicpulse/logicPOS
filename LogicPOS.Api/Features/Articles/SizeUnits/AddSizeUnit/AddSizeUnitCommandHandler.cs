@@ -15,7 +15,7 @@ namespace LogicPOS.Api.Features.SizeUnits.AddSizeUnit
 
         public override async Task<ErrorOr<Guid>> Handle(AddSizeUnitCommand command, CancellationToken cancellationToken = default)
         {
-            return await HandleAddCommand("articles/sizeunits", command, cancellationToken);
+            return await HandleAddCommandAsync("articles/sizeunits", command, cancellationToken);
         }
     }
 }

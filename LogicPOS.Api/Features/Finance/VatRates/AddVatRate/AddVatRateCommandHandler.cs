@@ -19,7 +19,7 @@ namespace LogicPOS.Api.Features.VatRates.AddVatRate
 
         public override async Task<ErrorOr<Guid>> Handle(AddVatRateCommand command, CancellationToken cancellationToken = default)
         {
-            return await HandleAddCommand("vatrates", command, cancellationToken);
+            return await HandleAddCommandAsync("vatrates", command, cancellationToken);
         }
     }
 }

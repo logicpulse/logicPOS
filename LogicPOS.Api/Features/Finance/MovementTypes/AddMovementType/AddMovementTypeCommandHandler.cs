@@ -17,7 +17,7 @@ namespace LogicPOS.Api.Features.MovementTypes.AddMovementType
             AddMovementTypeCommand command,
             CancellationToken cancellationToken = default)
         {
-            return await HandleAddCommand("/movementtypes", command, cancellationToken);
+            return await HandleAddCommandAsync("/movementtypes", command, cancellationToken);
         }
     }
 }

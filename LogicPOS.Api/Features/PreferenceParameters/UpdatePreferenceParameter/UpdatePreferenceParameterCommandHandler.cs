@@ -17,7 +17,7 @@ namespace LogicPOS.Api.Features.PreferenceParameters.UpdatePreferenceParameter
         public override async Task<ErrorOr<Unit>> Handle(UpdatePreferenceParameterCommand command,
                                                    CancellationToken cancellationToken = default)
         {
-            return await HandleUpdateCommand($"preferenceparameters/{command.Id}", command, cancellationToken);
+            return await HandleUpdateCommandAsync($"preferenceparameters/{command.Id}", command, cancellationToken);
         }
     }
 }
