@@ -34,6 +34,10 @@ namespace LogicPOS.UI.Components.Modals
             _checkDisabled.Active = _entity.IsDeleted;
         }
 
+
+
+       
+
         protected override void UpdateEntity() => ExecuteUpdateCommand(CreateUpdateCommand());
 
         private UpdateTableCommand CreateUpdateCommand()

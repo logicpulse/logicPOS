@@ -51,7 +51,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 vboxTab1.PackStart(boxDesignation, false, false, 0);
                 InputFields.Add(new GenericCRUDWidgetXPO(boxDesignation, Entity, "Designation", RegexUtils.RegexAlfaNumericExtended, true));
 
-                //Place
+                //PrinterType
                 XPOComboBox xpoComboBoxPlace = new XPOComboBox(Entity.Session, typeof(pos_configurationplace), (Entity as pos_configurationplaceterminal).Place, "Designation", null);
                 BOWidgetBox boxPlace = new BOWidgetBox(GeneralUtils.GetResourceByName("global_places"), xpoComboBoxPlace);
                 vboxTab1.PackStart(boxPlace, false, false, 0);

@@ -1,23 +1,24 @@
 ﻿using ErrorOr;
 using Gtk;
-using LogicPOS.Api.Features.Tables.GetAllTables;
+using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Printers.GetAllPrinters;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
 using MediatR;
 using System;
 using System.Collections.Generic;
-using Table = LogicPOS.Api.Entities.Table;
+using Printer = LogicPOS.Api.Entities.Printer;
 
 namespace LogicPOS.UI.Components.Pages
 {
-    public class TablesPage : Page<Table>
+    public class PrintersPage : Page<Printer>
     {
-        public TablesPage(Window parent) : base(parent)
+        public PrintersPage(Window parent) : base(parent)
         {
         }
 
-        protected override IRequest<ErrorOr<IEnumerable<Table>>> GetAllQuery => new GetAllTablesQuery();
+        protected override IRequest<ErrorOr<IEnumerable<Printer>>> GetAllQuery => new GetAllPrintersQuery();
 
         public override void DeleteEntity()
         {
@@ -26,7 +27,7 @@ namespace LogicPOS.UI.Components.Pages
 
         public override void RunModal(EntityModalMode mode)
         {
-            var modal = new TableModal(mode, SelectedEntity);
+            var modal = new PrinterModal(mode, SelectedEntity);
             modal.Run();
             modal.Destroy();
         }
@@ -35,19 +36,19 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridView.AppendColumn(Columns.CreateCodeColumn(0));
             GridView.AppendColumn(Columns.CreateDesignationColumn(2));
-            GridView.AppendColumn(CreatePlaceColumn());
+            GridView.AppendColumn(CreatePrinterTypeColumn());
             GridView.AppendColumn(Columns.CreateUpdatedAtColumn(4));
         }
 
-        private TreeViewColumn CreatePlaceColumn()
+        private TreeViewColumn CreatePrinterTypeColumn()
         {
             void RenderPlace(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var table = (Table)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = table.Place.Designation;
+                var table = (Printer)model.GetValue(iter, 0);
+                (cell as CellRendererText).Text = table.Type.Designation;
             }
 
-            var title = GeneralUtils.GetResourceByName("global_places");
+            var title = GeneralUtils.GetResourceByName("global_printer_type");
             return Columns.CreateColumn(title, 3, RenderPlace);
         }
 

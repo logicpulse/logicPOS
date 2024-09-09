@@ -166,7 +166,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
 
             // Init Object to Use priceTax on above Loop
-            //Get Place Objects to extract TaxSellType Normal|TakeWay, Place, Tables etc
+            //Get PrinterType Objects to extract TaxSellType Normal|TakeWay, PrinterType, Tables etc
             OrderMain currentOrderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];
             pos_configurationplace configurationPlace = (pos_configurationplace)XPOSettings.Session.GetObjectByKey(typeof(pos_configurationplace), currentOrderMain.Table.PlaceId);
 

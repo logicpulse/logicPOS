@@ -142,7 +142,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             vbox.PackStart(_entryBoxDateStart, false, false, 2);
             vbox.PackStart(_entryBoxDateEnd, false, false, 2);
 
-            // Loop selectionBoxs and Place it in VBox
+            // Loop selectionBoxs and PrinterType it in VBox
             foreach (var item in _selectionBoxs)
             {
                 vbox.PackStart((item.Value as Widget), false, false, 2);

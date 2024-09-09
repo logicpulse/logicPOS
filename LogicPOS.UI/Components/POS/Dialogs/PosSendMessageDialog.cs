@@ -52,7 +52,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             //Init Content
             Fixed fixedContent = new Fixed();
-            fixedContent.Put(new Label("Place content here"), 0, 0);
+            fixedContent.Put(new Label("PrinterType content here"), 0, 0);
 
             //ActionArea Buttons
             TouchButtonIconWithText buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);

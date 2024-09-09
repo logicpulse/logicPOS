@@ -233,7 +233,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //Article:Line4
             Guid articleNORGuid = new Guid("6b547918-769e-4f5b-bcd6-01af54846f73");
             fin_article articleNOR = (fin_article)XPOSettings.Session.GetObjectByKey(typeof(fin_article), articleNORGuid);
-            //Place
+            //PrinterType
             Guid placeGuid = new Guid("dd5a3869-db52-42d4-bbed-dec4adfaf62b");
             //Table
             Guid tableGuid = new Guid("64d417f6-ff97-4f4b-bded-4bc9bf9f18d9");
@@ -268,7 +268,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //Article:Line2
             Guid article2Guid = new Guid("78638720-e728-4e96-8643-6d6267ff817b");
             fin_article article2 = (fin_article)XPOSettings.Session.GetObjectByKey(typeof(fin_article), article2Guid);
-            //Place
+            //PrinterType
             Guid placeGuid = new Guid("dd5a3869-db52-42d4-bbed-dec4adfaf62b");
             //Table
             Guid tableGuid = new Guid("64d417f6-ff97-4f4b-bded-4bc9bf9f18d9");
@@ -303,7 +303,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //Article:Line2
             Guid article2Guid = new Guid("78638720-e728-4e96-8643-6d6267ff817b");
             fin_article article2 = (fin_article)XPOSettings.Session.GetObjectByKey(typeof(fin_article), article2Guid);
-            //Place
+            //PrinterType
             Guid placeGuid = new Guid("dd5a3869-db52-42d4-bbed-dec4adfaf62b");
             //Table
             Guid tableGuid = new Guid("64d417f6-ff97-4f4b-bded-4bc9bf9f18d9");
@@ -335,7 +335,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //Article
             Guid article1Guid = new Guid("72e8bde8-d03b-4637-90f1-fcb265658af0");
             fin_article article1 = (fin_article)XPOSettings.Session.GetObjectByKey(typeof(fin_article), article1Guid);
-            //Place
+            //PrinterType
             Guid placeGuid = new Guid("dd5a3869-db52-42d4-bbed-dec4adfaf62b");
             //Table
             Guid tableGuid = new Guid("64d417f6-ff97-4f4b-bded-4bc9bf9f18d9");
@@ -364,7 +364,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //Article
             Guid article1Guid = new Guid("32deb30d-ffa2-45e4-bca6-03569b9e8b08");
             fin_article article1 = (fin_article)XPOSettings.Session.GetObjectByKey(typeof(fin_article), article1Guid);
-            //Place
+            //PrinterType
             Guid placeGuid = new Guid("dd5a3869-db52-42d4-bbed-dec4adfaf62b");
             //Table
             Guid tableGuid = new Guid("64d417f6-ff97-4f4b-bded-4bc9bf9f18d9");
@@ -393,7 +393,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //Article
             Guid article1Guid = new Guid("55892c3f-de10-4076-afde-619c54100c9b");
             fin_article article1 = (fin_article)XPOSettings.Session.GetObjectByKey(typeof(fin_article), article1Guid);
-            //Place
+            //PrinterType
             Guid placeGuid = new Guid("dd5a3869-db52-42d4-bbed-dec4adfaf62b");
             //Table
             Guid tableGuid = new Guid("64d417f6-ff97-4f4b-bded-4bc9bf9f18d9");
@@ -422,7 +422,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //Article
             Guid article1Guid = new Guid("55892c3f-de10-4076-afde-619c54100c9b");
             fin_article article1 = (fin_article)XPOSettings.Session.GetObjectByKey(typeof(fin_article), article1Guid);
-            //Place
+            //PrinterType
             Guid placeGuid = new Guid("dd5a3869-db52-42d4-bbed-dec4adfaf62b");
             //Table
             Guid tableGuid = new Guid("64d417f6-ff97-4f4b-bded-4bc9bf9f18d9");

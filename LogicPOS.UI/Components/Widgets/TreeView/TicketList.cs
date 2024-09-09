@@ -784,7 +784,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                             if (showMessage) return;
                         }
                     }
-                    //Get Place Object to extract TaxSellType Normal|TakeWay
+                    //Get PrinterType Object to extract TaxSellType Normal|TakeWay
                     OrderMain currentOrderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];
                     pos_configurationplace configurationPlace = (pos_configurationplace)XPOSettings.Session.GetObjectByKey(typeof(pos_configurationplace), currentOrderMain.Table.PlaceId);
                     fin_articletype articletype = (fin_articletype)XPOSettings.Session.GetObjectByKey(typeof(fin_articletype), article.Type.Oid);

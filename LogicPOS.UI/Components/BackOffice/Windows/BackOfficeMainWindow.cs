@@ -213,8 +213,8 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
             //Devices
             Dictionary<string, AccordionNode> _accordionDevices = new Dictionary<string, AccordionNode>
                 {
-                    { "ConfigurationPrintersType", new AccordionNode(GeneralUtils.GetResourceByName("global_ConfigurationPrintersType")) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPrintersType>(this) } },
-                    { "ConfigurationPrinters", new AccordionNode(GeneralUtils.GetResourceByName("global_ConfigurationPrinters")) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPrinters>(this) } },
+                    { "ConfigurationPrintersType", new AccordionNode(GeneralUtils.GetResourceByName("global_ConfigurationPrintersType")) { Content = new PrinterTypesPage(this) } },
+                    { "ConfigurationPrinters", new AccordionNode(GeneralUtils.GetResourceByName("global_ConfigurationPrinters")) { Content = new PrintersPage(this) } },
                     { "ConfigurationInputReader", new AccordionNode(GeneralUtils.GetResourceByName("global_ConfigurationInputReader")) { Content = new InputReadersPage(this) } },
                     { "ConfigurationPoleDisplay", new AccordionNode(GeneralUtils.GetResourceByName("global_ConfigurationPoleDisplay")) { Content = new PoleDisplaysPage(this) } },
                     { "ConfigurationWeighingMachine", new AccordionNode(GeneralUtils.GetResourceByName("global_ConfigurationWeighingMachine")) { Content = new WeighingMachinesPage(this) } }

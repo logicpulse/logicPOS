@@ -181,7 +181,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     _buttonTableFilterFree.Visible = true;
                     _buttonTableFilterOpen.Visible = true;
                     _buttonTableFilterReserved.Visible = true;
-                    //Change Place Sql, to Reflect Childs Button State
+                    //Change PrinterType Sql, to Reflect Childs Button State
                     _tablePadPlace.Sql = _sqlPlaceBaseTable;
                     break;
                 case TableViewMode.Tables:
@@ -201,7 +201,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     _buttonTableFilterFree.Visible = false;
                     _buttonTableFilterOpen.Visible = false;
                     _buttonTableFilterReserved.Visible = false;
-                    //Change Place Sql, to Reflect Childs Button State
+                    //Change PrinterType Sql, to Reflect Childs Button State
                     _tablePadPlace.Sql = _sqlPlaceBaseOrder;
                     break;
                 default:

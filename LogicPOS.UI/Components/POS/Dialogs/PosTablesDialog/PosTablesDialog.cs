@@ -352,7 +352,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _hboxOrderScrollers.PackStart(buttonPosScrollersOrderNext, false, false, 0);
 
             //TablePad Tables
-            //String sql = string.Format(@"SELECT om.Oid as id, concat(om.Oid, ':', om.OrderStatus, ':',Place) as name, NULL as label, NULL as image 
+            //String sql = string.Format(@"SELECT om.Oid as id, concat(om.Oid, ':', om.OrderStatus, ':',PrinterType) as name, NULL as label, NULL as image 
             string sql = string.Format(@"
                 SELECT 
                     om.Oid as id, Designation as name, NULL as label, NULL as image, TableStatus as status, TotalOpen as total, DateTableOpen as dateopen, DateTableClosed as dateclosed 
