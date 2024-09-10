@@ -19,19 +19,7 @@ namespace LogicPOS.Api.Features.Users.Permissions.Profiles.AddPermissionProfile
         public override async Task<ErrorOr<Guid>> Handle(AddPermissionProfileCommand command,
                                                          CancellationToken cancellationToken = default)
         {
-            try
-            {
-                var httpResponse = await _httpClient.PostAsJsonAsync("users/permissions/profiles",
-                                                                     command,
-                                                                     cancellationToken);
-
-                return await HandleAddEntityHttpResponseAsync(httpResponse);
-
-            }
-            catch (HttpRequestException)
-            {
-                return ApiErrors.CommunicationError;
-            }
+            return await HandleAddCommandAsync("users/permissions/profiles", command, cancellationToken);
         }
     }
 }

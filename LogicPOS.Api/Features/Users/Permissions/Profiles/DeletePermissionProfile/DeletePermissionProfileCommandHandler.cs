@@ -1,8 +1,6 @@
 ﻿using ErrorOr;
-using LogicPOS.Api.Errors;
 using LogicPOS.Api.Features.Common;
 using MediatR;
-using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,18 +14,11 @@ namespace LogicPOS.Api.Features.Users.Permissions.Profiles.DeletePermissionProfi
         {
         }
 
-        public override async Task<ErrorOr<Unit>> Handle(DeletePermissionProfileCommand request, CancellationToken cancellationToken = default)
+        public override async Task<ErrorOr<Unit>> Handle(
+            DeletePermissionProfileCommand command,
+            CancellationToken cancellationToken = default)
         {
-            try
-            {
-                var httpResponse = await _httpClient.DeleteAsync($"users/permissions/profiles/{request.Id}", cancellationToken);
-
-                return await HandleDeleteEntityHttpResponseAsync(httpResponse);
-
-            } catch(HttpRequestException)
-            {
-                return ApiErrors.CommunicationError;
-            }
+            return await HandleDeleteCommandAsync($"users/permissions/profiles/{command.Id}", cancellationToken);
         }
     }
 }

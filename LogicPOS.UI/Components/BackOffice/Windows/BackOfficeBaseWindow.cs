@@ -3,7 +3,6 @@ using logicpos;
 using logicpos.App;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
-using LogicPOS.Domain.Entities;
 using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Accordions;
@@ -11,7 +10,6 @@ using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using Pango;
 using System;
-using System.Collections.Generic;
 using System.IO;
 
 namespace LogicPOS.UI.Components.BackOffice.Windows
@@ -29,7 +27,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
         protected string _dataTimeFormat;
         protected Image _imageLogo = new Image();
         protected Label _reseller;
-        public System.Drawing.Size _buttonsSize = new System.Drawing.Size(200,38);
+        public System.Drawing.Size _buttonsSize = new System.Drawing.Size(200, 38);
         public Accordion Accordion { get; set; }
 
         public IconButtonWithText _btnDashboard;
@@ -389,8 +387,8 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
                 Accordion.CurrentPageChildButton = button;
                 _labelActivePage.Text = button.Label;
 
-                 _currentPage.Visible = true;
-                
+                _currentPage.Visible = true;
+
                 _panelContent.PackStart(_currentPage);
 
                 return;

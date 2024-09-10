@@ -1,5 +1,4 @@
 ﻿using DevExpress.Data.Filtering;
-using DocumentFormat.OpenXml.Bibliography;
 using Gtk;
 using logicpos;
 using logicpos.App;
@@ -176,7 +175,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
             //Users
             Dictionary<string, AccordionNode> _accordionChildUsers = new Dictionary<string, AccordionNode>
                 {
-                    { "UserDetail", new AccordionNode(GeneralUtils.GetResourceByName("global_users")) { Content = Utils.GetGenericTreeViewXPO<TreeViewUser>(this) } },
+                    { "UserDetail", new AccordionNode(GeneralUtils.GetResourceByName("global_users")) { Content = new UsersPage(this) } },
                     { "UserPermissionProfile", new AccordionNode(GeneralUtils.GetResourceByName("global_user_permissions")) { Content = new PermissionsPage(this) } },
                     { "UserCommissionGroup", new AccordionNode(GeneralUtils.GetResourceByName("global_user_commission_groups")) { Content = new CommissionGroupPage(this) } }
                 };
@@ -280,10 +279,10 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
             nodes.Add("TopMenuArticles", new AccordionNode(GeneralUtils.GetResourceByName("global_articles")) { Children = articleButtons, GroupIcon = new Image("Assets/Images/Icons/Accordion/pos_backoffice_artigos.png") });
 
             nodes.Add("TopMenuDocuments", new AccordionNode(GeneralUtils.GetResourceByName("global_documents")) { Children = _accordionDocuments, GroupIcon = new Image("Assets/Images/Icons/Accordion/pos_backoffice_informacao_fiscal.png") });
-            
+
             var customerButtons = CreateCustomerButtons(criteriaOperatorCustomer);
             nodes.Add("TopMenuCustomers", new AccordionNode(GeneralUtils.GetResourceByName("global_customers")) { Children = customerButtons, GroupIcon = new Image("Assets/Images/Icons/Accordion/pos_backoffice_clientes.png") });
-           
+
             nodes.Add("TopMenuUsers", new AccordionNode(GeneralUtils.GetResourceByName("global_users")) { Children = _accordionChildUsers, GroupIcon = new Image("Assets/Images/Icons/Accordion/pos_backoffice_utilizadores.png") });
             nodes.Add("TopMenuDevices", new AccordionNode(GeneralUtils.GetResourceByName("global_devices")) { Children = _accordionDevices, GroupIcon = new Image("Assets/Images/Icons/Accordion/pos_backoffice_impressoras.png") });
             nodes.Add("TopMenuOtherTables", new AccordionNode(GeneralUtils.GetResourceByName("global_other_tables")) { Children = _accordionChildAuxiliarTables, GroupIcon = new Image("Assets/Images/Icons/Accordion/pos_backoffice_outras_tabelas.png") });

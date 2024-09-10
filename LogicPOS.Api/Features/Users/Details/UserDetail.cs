@@ -3,11 +3,14 @@ using System;
 
 namespace LogicPOS.Api.Entities
 {
-    public class UserDetail : ApiEntity
+    public class UserDetail : ApiEntity, IWithCode
     {
-        public const string DefaultAccessPin = "0000";
         public UserProfile Profile { get; set; }
         public Guid ProfileId { get; set; }
+
+        public CommissionGroup CommissionGroup { get; set; }
+        public Guid? CommissionGroupId { get; set; }
+        public string Name { get; set; }
         public string Residence { get; set; }
         public string Locality { get; set; }
         public string ZipCpde { get; set; }
@@ -24,13 +27,14 @@ namespace LogicPOS.Api.Entities
         public string Login { get; set; }
         public string Password { get; set; }
         public bool PasswordReset { get; set; }
-        public DateTime PasswordResetDate { get; set; }
+        public DateTime? PasswordResetDate { get; set; }
         public string BaseConsumption { get; set; }
         public string BaseOffers { get; set; }
         public string PVPOffers { get; set; }
         public string Remarks { get; set; }
         public string ButtonImage { get; set; }
 
-
+        public string Code { get; set; }
+        public uint Order { get; set; }
     }
 }
