@@ -189,7 +189,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
                     { "ConfigurationVatRate", new AccordionNode(GeneralUtils.GetResourceByName("global_vat_rates")) { Content = new VatRatesPage(this) } },
                     { "ConfigurationVatExemptionReason", new AccordionNode(GeneralUtils.GetResourceByName("global_vat_exemption_reason")) { Content = new VatExemptionReasonsPage(this) } },
                     { "ConfigurationPaymentCondition", new AccordionNode(GeneralUtils.GetResourceByName("global_payment_conditions")) { Content = new PaymentConditionsPage(this) } },
-                    { "ConfigurationPaymentMethod", new AccordionNode(GeneralUtils.GetResourceByName("global_payment_methods")) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPaymentMethod>(this) } }
+                    { "ConfigurationPaymentMethod", new AccordionNode(GeneralUtils.GetResourceByName("global_payment_methods")) { Content = new PaymentMethodsPage(this) } }
                 };
 
             //AuxiliarTables
