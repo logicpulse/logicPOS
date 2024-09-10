@@ -58,7 +58,24 @@ namespace LogicPOS.UI.Components.Pages
 
             AddCodeSorting(0);
             AddDesignationSorting(1);
-            AddUpdatedAtSorting(2);
+            AddValueSorting();
+            AddUpdatedAtSorting(3);
+        }
+
+        private void AddValueSorting()
+        {
+            GridViewSettings.Sort.SetSortFunc(2, (model, left, right) =>
+            {
+                var leftVatRate = (VatRate)model.GetValue(left, 0);
+                var rightVatRate = (VatRate)model.GetValue(right, 0);
+
+                if (leftVatRate == null || rightVatRate == null)
+                {
+                    return 0;
+                }
+
+                return leftVatRate.Value.CompareTo(rightVatRate.Value);
+            });
         }
     }
 }

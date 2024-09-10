@@ -17,7 +17,7 @@ namespace LogicPOS.Api.Features.Articles.Types.AddArticleType
             AddArticleTypeCommand command,
             CancellationToken cancellationToken = default)
         {
-            return await HandleAddCommandAsync("articles/types", command, cancellationToken);
+            return await HandleAddCommandAsync("article/types", command, cancellationToken);
         }
     }
 }

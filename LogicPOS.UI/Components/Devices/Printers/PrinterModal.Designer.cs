@@ -19,7 +19,7 @@ namespace LogicPOS.UI.Components.Modals
         #region Components
         private TextBox _txtOrder = TextBoxes.CreateOrderField();
         private TextBox _txtCode = TextBoxes.CreateCodeField();
-        private TextBox _txtNetworkName = new TextBox("global_networkname", true);
+        private TextBox _txtNetworkName = new TextBox("global_networkname");
         private ComboBox _comboDesignation;
         private Label _labelDesignation => CreateDesignationLabel("global_designation");
         private CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
@@ -62,12 +62,12 @@ namespace LogicPOS.UI.Components.Modals
             switch (_modalMode)
             {
                 case EntityModalMode.Insert:
-                    ValidatableFields.Add(_txtNetworkName);
                     ValidatableFields.Add(_comboPrinterTypes);
+                    ValidatableFields.Add(_txtNetworkName);
                     break;
                 case EntityModalMode.Update:
-                    ValidatableFields.Add(_txtNetworkName);
                     ValidatableFields.Add(_comboPrinterTypes);
+                    ValidatableFields.Add(_txtNetworkName);
                     break;
             }
         }
@@ -131,10 +131,13 @@ namespace LogicPOS.UI.Components.Modals
                 do
                 {
                     var designation = (string)comboBox.Model.GetValue(iter, 0);
-                    if (designation == _entity.Designation)
+                    if (_entity != null)
                     {
-                        comboBox.SetActiveIter(iter);
-                        break;
+                        if (designation == _entity.Designation)
+                        {
+                            comboBox.SetActiveIter(iter);
+                            break;
+                        }
                     }
 
                 } while (comboBox.Model.IterNext(ref iter));

@@ -46,6 +46,7 @@ namespace LogicPOS.UI.Components.Modals
                 NewCode = _txtCode.Text,
                 NewDesignation = _comboDesignation.ActiveText,
                 NewNotes = _txtNotes.Value.Text,
+                NewNetworkName = _txtNetworkName.Text,
                 IsDeleted = _checkDisabled.Active,
                 NewTypeId = _comboPrinterTypes.SelectedEntity.Id
             };

@@ -33,8 +33,8 @@ namespace LogicPOS.UI.Components.Pages
         protected override void AddColumns()
         {
             GridView.AppendColumn(Columns.CreateCodeColumn(0));
-            GridView.AppendColumn(Columns.CreateDesignationColumn(4));
-            GridView.AppendColumn(Columns.CreateUpdatedAtColumn(5));
+            GridView.AppendColumn(Columns.CreateDesignationColumn(1));
+            GridView.AppendColumn(Columns.CreateUpdatedAtColumn(2));
         }
 
         protected override void InitializeSort()

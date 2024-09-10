@@ -37,9 +37,9 @@ namespace LogicPOS.UI.Components.Pages
         protected override void AddColumns()
         {
             GridView.AppendColumn(Columns.CreateCodeColumn(0));
-            GridView.AppendColumn(Columns.CreateDesignationColumn(4));
+            GridView.AppendColumn(Columns.CreateDesignationColumn(1));
             GridView.AppendColumn(CreateAcronymColumn());
-            GridView.AppendColumn(Columns.CreateUpdatedAtColumn(6));
+            GridView.AppendColumn(Columns.CreateUpdatedAtColumn(3));
         }
 
         private TreeViewColumn CreateAcronymColumn()
@@ -51,7 +51,7 @@ namespace LogicPOS.UI.Components.Pages
             }
 
             var title = GeneralUtils.GetResourceByName("global_acronym");
-            return Columns.CreateColumn(title, 5, RenderMonth);
+            return Columns.CreateColumn(title, 2, RenderMonth);
         }
 
         protected override void InitializeSort()
@@ -61,7 +61,24 @@ namespace LogicPOS.UI.Components.Pages
 
             AddCodeSorting(0);
             AddDesignationSorting(1);
-            AddUpdatedAtSorting(2);
+            AddAcronymSorting();
+            AddUpdatedAtSorting(3);
+        }
+
+        private void AddAcronymSorting()
+        {
+            GridViewSettings.Sort.SetSortFunc(2, (model, left, right) =>
+            {
+                var leftMeasurementUnit = (MeasurementUnit)model.GetValue(left, 0);
+                var rightMeasurementUnit = (MeasurementUnit)model.GetValue(right, 0);
+
+                if (leftMeasurementUnit == null || rightMeasurementUnit == null)
+                {
+                    return 0;
+                }
+
+                return leftMeasurementUnit.Acronym.CompareTo(rightMeasurementUnit.Acronym);
+            });
         }
     }
     

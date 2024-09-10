@@ -58,8 +58,25 @@ namespace LogicPOS.UI.Components.Pages
             GridViewSettings.Sort = new TreeModelSort(GridViewSettings.Filter);
 
             AddCodeSorting(0);
-            AddDesignationSorting(1);
-            AddUpdatedAtSorting(2);
+            AddDesignationSorting(2);
+            AddPrinterTypeSorting();
+            AddUpdatedAtSorting(4);
+        }
+
+        private void AddPrinterTypeSorting()
+        {
+            GridViewSettings.Sort.SetSortFunc(3, (model, left, right) =>
+            {
+                var leftPrinter = (Printer)model.GetValue(left, 0);
+                var rightPrinter = (Printer)model.GetValue(right, 0);
+
+                if (leftPrinter == null || rightPrinter == null)
+                {
+                    return 0;
+                }
+
+                return leftPrinter.Type.Designation.CompareTo(rightPrinter.Type.Designation);
+            });
         }
     }
 }

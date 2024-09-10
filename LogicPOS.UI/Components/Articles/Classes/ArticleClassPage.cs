@@ -61,7 +61,24 @@ namespace LogicPOS.UI.Components.Pages
 
             AddCodeSorting(0);
             AddDesignationSorting(1);
-            AddUpdatedAtSorting(2);
+            AddAcronymSorting();
+            AddUpdatedAtSorting(3);
+        }
+
+        private void AddAcronymSorting()
+        {
+            GridViewSettings.Sort.SetSortFunc(2, (model, left, right) =>
+            {
+                var leftArticleClass = (ArticleClass)model.GetValue(left, 0);
+                var rightArticleClass = (ArticleClass)model.GetValue(right, 0);
+
+                if (leftArticleClass == null || rightArticleClass == null)
+                {
+                    return 0;
+                }
+
+                return leftArticleClass.Acronym.CompareTo(rightArticleClass.Acronym);
+            });
         }
     }
 }
