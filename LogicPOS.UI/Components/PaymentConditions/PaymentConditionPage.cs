@@ -47,7 +47,7 @@ namespace LogicPOS.UI.Components.Pages
                 (cell as CellRendererText).Text = paymentCondition.Acronym.ToString();
             }
 
-            var title = GeneralUtils.GetResourceByName("global_acronym");
+            var title = GeneralUtils.GetResourceByName("global_ConfigurationPaymentCondition_Acronym");
             return Columns.CreateColumn(title, 2, RenderMonth);
         }
 
