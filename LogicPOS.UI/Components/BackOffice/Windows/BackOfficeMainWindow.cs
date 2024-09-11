@@ -304,7 +304,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
         {
             return new Dictionary<string, AccordionNode>
                 {
-                    { "Customer", new AccordionNode(GeneralUtils.GetResourceByName("global_customers")) { Content = Utils.GetGenericTreeViewXPO<TreeViewCustomer>(this, criteriaOperatorCustomer) } },
+                    { "Customer", new AccordionNode(GeneralUtils.GetResourceByName("global_customers")) { Content = new CustomersPage(this) } },
                     { "CustomerType", new AccordionNode(GeneralUtils.GetResourceByName("global_customer_types")) { Content = new CustomerTypePage(this) } },
                     { "CustomerDiscountGroup", new AccordionNode(GeneralUtils.GetResourceByName("global_customer_discount_groups")) { Content = new DiscountGroupPage(this) } }
                 };

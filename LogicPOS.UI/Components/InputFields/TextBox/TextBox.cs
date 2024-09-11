@@ -40,19 +40,19 @@ namespace LogicPOS.UI.Components.InputFields
 
         public bool IsValid()
         {
-            if (IsRequired)
+            if (IsEmpty)
             {
-                if (IsEmpty)
+                if (IsRequired)
                 {
                     return false;
                 }
-
+            }
+            else
+            {
                 if (IsValidatable)
                 {
                     return Regex.IsMatch(Entry.Text, _regex);
                 }
-
-                return true;
             }
 
             return true;
