@@ -17,7 +17,7 @@ namespace LogicPOS.Api.Features.PrinterTypes.GetAllPrinterTypes
 
         public override async Task<ErrorOr<IEnumerable<PrinterType>>> Handle(GetAllPrinterTypesQuery query, CancellationToken cancellationToken = default)
         {
-            return await HandleGetAllQuery<PrinterType>("printers/types", cancellationToken);
+            return await HandleGetAllQueryAsync<PrinterType>("printers/types", cancellationToken);
         }
     }
 }

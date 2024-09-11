@@ -20,7 +20,7 @@ namespace LogicPOS.Api.Features.Common
 
         public abstract Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken = default);
 
-        protected async Task<ErrorOr<IEnumerable<TEntity>>> HandleGetAllQuery<TEntity>(
+        protected async Task<ErrorOr<IEnumerable<TEntity>>> HandleGetAllQueryAsync<TEntity>(
             string endpoint,
             CancellationToken cancellationToken = default)
         {

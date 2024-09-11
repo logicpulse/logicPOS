@@ -16,7 +16,7 @@ namespace LogicPOS.Api.Features.PoleDisplays.GetAllPoleDisplays
 
         public override async Task<ErrorOr<IEnumerable<PoleDisplay>>> Handle(GetAllPoleDisplaysQuery query, CancellationToken cancellationToken = default)
         {
-            return await HandleGetAllQuery<PoleDisplay>("poledisplays", cancellationToken);
+            return await HandleGetAllQueryAsync<PoleDisplay>("poledisplays", cancellationToken);
         }
     }
 }

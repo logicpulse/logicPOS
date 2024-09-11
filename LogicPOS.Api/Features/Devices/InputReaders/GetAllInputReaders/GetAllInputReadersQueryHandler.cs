@@ -17,7 +17,7 @@ namespace LogicPOS.Api.Features.InputReaders.GetAllInputReaders
 
         public override async Task<ErrorOr<IEnumerable<InputReader>>> Handle(GetAllInputReadersQuery query, CancellationToken cancellationToken = default)
         {
-            return await HandleGetAllQuery<InputReader>("inputreaders", cancellationToken);
+            return await HandleGetAllQueryAsync<InputReader>("inputreaders", cancellationToken);
         }
     }
 }

@@ -18,7 +18,7 @@ namespace LogicPOS.Api.Features.Articles.Classes.GetAllArticleClasses
         public override async Task<ErrorOr<IEnumerable<ArticleClass>>> Handle(GetAllArticleClassesQuery query,
                                                                      CancellationToken cancellationToken = default)
         {
-            return await HandleGetAllQuery<ArticleClass>("article/classes", cancellationToken);
+            return await HandleGetAllQueryAsync<ArticleClass>("article/classes", cancellationToken);
         }
     }
 }

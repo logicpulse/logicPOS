@@ -18,7 +18,7 @@ namespace LogicPOS.Api.Features.CommissionGroups.GetAllCommissionGroups
             GetAllCommissionGroupsQuery request,
             CancellationToken cancellationToken = default)
         {
-            return await HandleGetAllQuery<CommissionGroup>("users/commission-groups", cancellationToken);
+            return await HandleGetAllQueryAsync<CommissionGroup>("users/commission-groups", cancellationToken);
         }
     }
 }

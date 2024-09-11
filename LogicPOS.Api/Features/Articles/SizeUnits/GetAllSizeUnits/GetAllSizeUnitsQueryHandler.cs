@@ -18,7 +18,7 @@ namespace LogicPOS.Api.Features.SizeUnits.GetAllSizeUnits
         public override async Task<ErrorOr<IEnumerable<SizeUnit>>> Handle(GetAllSizeUnitsQuery query,
                                                                      CancellationToken cancellationToken = default)
         {
-            return await HandleGetAllQuery<SizeUnit>("articles/sizeunits", cancellationToken);
+            return await HandleGetAllQueryAsync<SizeUnit>("articles/sizeunits", cancellationToken);
         }
     }
 }

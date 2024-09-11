@@ -18,7 +18,7 @@ namespace LogicPOS.Api.Features.Users.Profiles.GetAllUserProfiles
         public async override Task<ErrorOr<IEnumerable<UserProfile>>> Handle(GetAllUserProfilesQuery request,
                                                                              CancellationToken cancellationToken = default)
         {
-            return await HandleGetAllQuery<UserProfile>("users/profiles", cancellationToken);
+            return await HandleGetAllQueryAsync<UserProfile>("users/profiles", cancellationToken);
         }
     }
 }
