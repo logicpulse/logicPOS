@@ -1,7 +1,5 @@
 ﻿using ErrorOr;
-using LogicPOS.Api.Entities;
 using LogicPOS.Api.Errors;
-using LogicPOS.Api.Features.Articles.Classes.GetAllArticleClasses;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -26,10 +24,10 @@ namespace LogicPOS.Api.Features.Common
         {
             try
             {
-                var items = await _httpClient.GetFromJsonAsync<List<TEntity>>(endpoint,cancellationToken);
+                var items = await _httpClient.GetFromJsonAsync<List<TEntity>>(endpoint, cancellationToken);
                 return items;
             }
-            catch (HttpRequestException)
+            catch (HttpRequestException ex)
             {
                 return ApiErrors.CommunicationError;
             }

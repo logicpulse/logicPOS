@@ -1,7 +1,7 @@
 ﻿using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Articles.Classes.GetAllArticleClasses;
+using LogicPOS.Api.Features.Articles.Families.GetAllArticleFamilies;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
@@ -11,9 +11,9 @@ using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Pages
 {
-    public class ArticleClassPage : Page<ArticleClass>
+    public class ArticleFamiliesPage : Page<ArticleFamily>
     {
-        public ArticleClassPage(Window parent) : base(parent)
+        public ArticleFamiliesPage(Window parent) : base(parent)
         {
         }
 
@@ -21,11 +21,12 @@ namespace LogicPOS.UI.Components.Pages
         {
             throw new NotImplementedException();
         }
-        protected override IRequest<ErrorOr<IEnumerable<ArticleClass>>> GetAllQuery => new GetAllArticleClassesQuery();
+
+        protected override IRequest<ErrorOr<IEnumerable<ArticleFamily>>> GetAllQuery => new GetAllArticleFamiliesQuery();
 
         public override void RunModal(EntityModalMode mode)
         {
-            var modal = new ArticleClassModal(mode, SelectedEntity as ArticleClass);
+            var modal = new ArticleFamilyModal(mode, SelectedEntity);
             modal.Run();
             modal.Destroy();
         }
@@ -34,46 +35,45 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridView.AppendColumn(Columns.CreateCodeColumn(0));
             GridView.AppendColumn(Columns.CreateDesignationColumn(1));
-            GridView.AppendColumn(CreateAcronymColumn());
+            GridView.AppendColumn(CreatePrinterColumn());
             GridView.AppendColumn(Columns.CreateUpdatedAtColumn(3));
         }
 
-        private TreeViewColumn CreateAcronymColumn()
+        private TreeViewColumn CreatePrinterColumn()
         {
             void RenderMonth(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var articleClass = (ArticleClass)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = articleClass.Acronym.ToString();
+                var family = (ArticleFamily)model.GetValue(iter, 0);
+                (cell as CellRendererText).Text = family.Printer?.Designation;
             }
 
-            var title = GeneralUtils.GetResourceByName("global_acronym");
+            var title = GeneralUtils.GetResourceByName("global_device_printer");
             return Columns.CreateColumn(title, 2, RenderMonth);
         }
 
         protected override void InitializeSort()
         {
-
             GridViewSettings.Sort = new TreeModelSort(GridViewSettings.Filter);
 
             AddCodeSorting(0);
             AddDesignationSorting(1);
-            AddAcronymSorting();
+            AddPrinterSorting();
             AddUpdatedAtSorting(3);
         }
 
-        private void AddAcronymSorting()
+        private void AddPrinterSorting()
         {
             GridViewSettings.Sort.SetSortFunc(2, (model, left, right) =>
             {
-                var leftArticleClass = (ArticleClass)model.GetValue(left, 0);
-                var rightArticleClass = (ArticleClass)model.GetValue(right, 0);
+                var leftArticleFamily = (ArticleFamily)model.GetValue(left, 0);
+                var rightArticleFamily = (ArticleFamily)model.GetValue(right, 0);
 
-                if (leftArticleClass == null || rightArticleClass == null)
+                if (leftArticleFamily == null || rightArticleFamily == null)
                 {
                     return 0;
                 }
 
-                return leftArticleClass.Acronym.CompareTo(rightArticleClass.Acronym);
+                return leftArticleFamily.Printer?.Designation.CompareTo(rightArticleFamily.Printer?.Designation) ?? 0;
             });
         }
     }

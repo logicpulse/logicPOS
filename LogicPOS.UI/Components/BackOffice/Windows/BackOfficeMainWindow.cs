@@ -335,7 +335,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
         {
             Dictionary<string, AccordionNode> articleButtons = new Dictionary<string, AccordionNode>
             {
-                { "ArticleFamily", new AccordionNode(GeneralUtils.GetResourceByName("global_families")) { Content = Utils.GetGenericTreeViewXPO<TreeViewArticleFamily>(this) } },
+                { "ArticleFamily", new AccordionNode(GeneralUtils.GetResourceByName("global_families")) { Content = new ArticleFamiliesPage(this) } },
                 { "ArticleSubFamily", new AccordionNode(GeneralUtils.GetResourceByName("global_subfamilies")) { Content = Utils.GetGenericTreeViewXPO<TreeViewArticleSubFamily>(this) } },
                 { "Article", new AccordionNode(GeneralUtils.GetResourceByName("global_articles")) { Content = Utils.GetGenericTreeViewXPO<TreeViewArticle>(this) } },
                 { "ArticleType", new AccordionNode(GeneralUtils.GetResourceByName("global_article_types")) { Content = new ArticleTypePage(this) } },
