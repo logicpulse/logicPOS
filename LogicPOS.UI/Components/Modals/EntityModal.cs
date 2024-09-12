@@ -341,6 +341,18 @@ namespace LogicPOS.UI.Components.Modals
 
         protected void ExecuteUpdateCommand(IRequest<ErrorOr<MediatR.Unit>> command) => ExecuteCommand(command);
 
+        protected IEnumerable<TE> ExecuteGetAllQuery<TE>(IRequest<ErrorOr<IEnumerable<TE>>> query)
+        {
+            var result = _mediator.Send(query).Result;
+
+            if (result.IsError)
+            {
+                return Enumerable.Empty<TE>();
+            }
+
+            return result.Value;
+        }
+
         protected abstract void UpdateEntity();
         protected abstract void AddEntity();
         protected abstract void AddSensitiveFields();

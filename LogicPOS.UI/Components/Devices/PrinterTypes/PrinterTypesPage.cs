@@ -14,7 +14,7 @@ namespace LogicPOS.UI.Components.Pages
 {
     public class PrinterTypesPage : Page<PrinterType>
     {
-       
+
         protected override IRequest<ErrorOr<IEnumerable<PrinterType>>> GetAllQuery => new GetAllPrinterTypesQuery();
         public PrinterTypesPage(Window parent) : base(parent)
         {
@@ -46,11 +46,7 @@ namespace LogicPOS.UI.Components.Pages
             void RenderValue(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var printerType = (PrinterType)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = GeneralUtils.GetResourceByName("global_treeview_true");
-                if (!printerType.ThermalPrinter)
-                {
-                    (cell as CellRendererText).Text = GeneralUtils.GetResourceByName("global_treeview_false");
-                }
+                (cell as CellRendererText).Text = printerType.ThermalPrinter ? GeneralUtils.GetResourceByName("global_treeview_true") : GeneralUtils.GetResourceByName("global_treeview_false"); 
             }
 
             var title = GeneralUtils.GetResourceByName("global_printer_thermal_printer");

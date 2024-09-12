@@ -13,10 +13,11 @@ namespace LogicPOS.UI.Components.InputFields
         public Label Label { get; }
         public VBox Component { get; private set; }
         public ComboBox ComboBox { get; private set; } = new ComboBox { HeightRequest = 23 };
+
         public bool IsRequired { get; }
 
         private ListStore _listStore = new ListStore(typeof(string), typeof(TEntity));
-        public IEnumerable<TEntity> Entities { get; private set; }
+        public IEnumerable<TEntity> Entities { get; set; }
         public TEntity SelectedEntity { get; private set; }
         public string FieldName => Label.Text;
 
@@ -48,6 +49,12 @@ namespace LogicPOS.UI.Components.InputFields
         private void InitializeComboBox()
         {
             ComboBox = CreateComboBox();
+            ReLoad();
+        }
+
+        public void ReLoad()
+        {
+            _listStore.Clear();
             AddDefaultItem();
             AddEntitiesToModel();
         }
@@ -77,6 +84,7 @@ namespace LogicPOS.UI.Components.InputFields
         private void AddEntitiesToModel()
         {
             TreeIter currentEntity = TreeIter.Zero;
+
 
             foreach (var entity in Entities)
             {
