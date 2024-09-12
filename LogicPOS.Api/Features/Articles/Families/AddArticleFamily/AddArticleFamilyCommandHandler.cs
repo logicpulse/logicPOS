@@ -15,7 +15,7 @@ namespace LogicPOS.Api.Features.Articles.Families.AddArticleFamily
         }
 
         public override async Task<ErrorOr<Guid>> Handle(AddArticleFamilyCommand command, CancellationToken cancellationToken = default)
-        {
+        {      
             return await HandleAddCommandAsync("articles/families", command, cancellationToken);
         }
     }

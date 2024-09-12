@@ -1,40 +1,51 @@
 ﻿using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Articles.Families.AddArticleFamily;
-using LogicPOS.Api.Features.Articles.Families.UpdateArticleFamily;
+using LogicPOS.Api.Features.Articles.Families.GetAllArticleFamilies;
+using LogicPOS.Api.Features.Articles.Subfamilies.AddArticleSubfamily;
+using LogicPOS.Api.Features.Articles.Subfamilies.UpdateArticleSubfamily;
 using LogicPOS.Api.Features.CommissionGroups.GetAllCommissionGroups;
+using LogicPOS.Api.Features.Customers.DiscountGroups.GetAllDiscountGroups;
 using LogicPOS.Api.Features.Printers.GetAllPrinters;
+using LogicPOS.Api.Features.VatRates.GetAllVatRate;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class ArticleFamilyModal : EntityModal<ArticleFamily>
+    public partial class ArticleSubfamilyModal : EntityModal<ArticleSubfamily>
     {
-        public ArticleFamilyModal(EntityModalMode modalMode, ArticleFamily entity = null) : base(modalMode, entity)
+        public ArticleSubfamilyModal(EntityModalMode modalMode, ArticleSubfamily entity = null) : base(modalMode, entity)
         {
         }
 
-        private AddArticleFamilyCommand CreateAddCommand()
+        private AddArticleSubfamilyCommand CreateAddCommand()
         {
-            return new AddArticleFamilyCommand
+            return new AddArticleSubfamilyCommand
             {
                 Designation = _txtDesignation.Text,
                 Button = GetButton(),
+                FamilyId = _comboFamilies.SelectedEntity.Id,
                 CommissionGroupId = _comboCommissionGroups.SelectedEntity?.Id,
                 PrinterId = _comboPrinters.SelectedEntity?.Id,
+                DiscountGroupId = _comboDiscountGroups.SelectedEntity?.Id,
+                VatOnTableId = _comboVatOnTable.SelectedEntity?.Id,
+                VatDirectSellingId = _comboVatDirectSelling.SelectedEntity?.Id,
                 Notes = _txtNotes.Value.Text
             };
         }
 
-        private UpdateArticleFamilyCommand CreateUpdateCommand()
+        private UpdateArticleSubfamilyCommand CreateUpdateCommand()
         {
-            return new UpdateArticleFamilyCommand
+            return new UpdateArticleSubfamilyCommand
             {
                 Id = _entity.Id,
                 NewOrder = uint.Parse(_txtOrder.Text),
                 NewCode = _txtCode.Text,
+                NewFamilyId = _comboFamilies.SelectedEntity.Id,
                 NewCommissionGroupId = _comboCommissionGroups.SelectedEntity?.Id,
                 NewPrinterId = _comboPrinters.SelectedEntity?.Id,
+                NewDiscountGroupId = _comboDiscountGroups.SelectedEntity?.Id,
+                NewVatOnTableId = _comboVatOnTable.SelectedEntity?.Id,
+                NewVatDirectSellingId = _comboVatDirectSelling.SelectedEntity?.Id,
                 NewDesignation = _txtDesignation.Text,
                 NewButton = GetButton(),
                 NewNotes = _txtNotes.Value.Text,
@@ -67,6 +78,42 @@ namespace LogicPOS.UI.Components.Modals
             }
 
             return printers.Value;
+        }
+
+        private IEnumerable<ArticleFamily> GetFamilies()
+        {
+            var families = _mediator.Send(new GetAllArticleFamiliesQuery()).Result;
+
+            if (families.IsError)
+            {
+                return Enumerable.Empty<ArticleFamily>();
+            }
+
+            return families.Value;
+        }
+
+        private IEnumerable<DiscountGroup> GetDiscountGroups()
+        {
+            var groups = _mediator.Send(new GetAllDiscountGroupsQuery()).Result;
+
+            if (groups.IsError)
+            {
+                return Enumerable.Empty<DiscountGroup>();
+            }
+
+            return groups.Value;
+        }
+
+        private IEnumerable<VatRate> GetVatRates()
+        {
+            var vatRates = _mediator.Send(new GetAllVatRatesQuery()).Result;
+
+            if (vatRates.IsError)
+            {
+                return Enumerable.Empty<VatRate>();
+            }
+
+            return vatRates.Value;
         }
 
         private IEnumerable<CommissionGroup> GetCommissionGroups()

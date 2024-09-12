@@ -8,10 +8,10 @@ using System.Drawing;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class ArticleFamilyModal
+    public partial class ArticleSubfamilyModal
     {
-        public override Size ModalSize => new Size(500, 500);
-        public override string ModalTitleResourceName => "global_article_class";
+        public override Size ModalSize => new Size(500, 445);
+        public override string ModalTitleResourceName => "window_title_edit_articlesubfamily";
 
         #region Components
         private TextBox _txtOrder = TextBoxes.CreateOrderField();
@@ -22,21 +22,20 @@ namespace LogicPOS.UI.Components.Modals
         private CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
         private EntityComboBox<Api.Entities.Printer> _comboPrinters;
         private EntityComboBox<CommissionGroup> _comboCommissionGroups;
+        private EntityComboBox<ArticleFamily> _comboFamilies;
+        private EntityComboBox<DiscountGroup> _comboDiscountGroups;
+        private EntityComboBox<VatRate> _comboVatOnTable;
+        private EntityComboBox<VatRate> _comboVatDirectSelling;
         #endregion
 
         protected override void BeforeDesign()
         {
             InitializePrintersComboBox();
             InitializeCommissionGroupsComboBox();
-        }
-
-        private Api.ValueObjects.Button GetButton()
-        {
-            return new Api.ValueObjects.Button
-            {
-                ButtonLabel = _txtButtonName.Text,
-                ButtonImage = _imagePicker.FileChooserButton.Filename
-            };
+            InitializeFamiliesComboBox();
+            InitializeDiscountGroupsComboBox();
+            InitializeVatOnTableComboBox();
+            InitializeVatDirectSellingComboBox();
         }
 
         private void InitializePrintersComboBox()
@@ -61,6 +60,60 @@ namespace LogicPOS.UI.Components.Modals
                                                              currentCommissionGroup);
         }
 
+        private void InitializeFamiliesComboBox()
+        {
+            var families = GetFamilies();
+            var labelText = GeneralUtils.GetResourceByName("global_families");
+            var currentFamily = _entity != null ? _entity.Family : null;
+
+            _comboFamilies = new EntityComboBox<ArticleFamily>(labelText,
+                                                             families,
+                                                             currentFamily,
+                                                             true);
+        }
+
+        private void InitializeDiscountGroupsComboBox()
+        {
+            var groups = GetDiscountGroups();
+            var labelText = GeneralUtils.GetResourceByName("global_discount_group");
+            var currentDiscountGroup = _entity != null ? _entity.DiscountGroup : null;
+
+            _comboDiscountGroups = new EntityComboBox<DiscountGroup>(labelText,
+                                                             groups,
+                                                             currentDiscountGroup);
+        }
+
+        private void InitializeVatOnTableComboBox()
+        {
+            var vatRates = GetVatRates();
+            var labelText = GeneralUtils.GetResourceByName("global_vat_on_table");
+            var currentVatRate = _entity != null ? _entity.VatOnTable : null;
+
+            _comboVatOnTable = new EntityComboBox<VatRate>(labelText,
+                                                             vatRates,
+                                                             currentVatRate);
+        }
+
+        private void InitializeVatDirectSellingComboBox()
+        {
+            var vatRates = GetVatRates();
+            var labelText = GeneralUtils.GetResourceByName("global_vat_direct_selling");
+            var currentVatRate = _entity != null ? _entity.VatDirectSelling : null;
+
+            _comboVatDirectSelling = new EntityComboBox<VatRate>(labelText,
+                                                             vatRates,
+                                                             currentVatRate);
+        }
+
+        private Api.ValueObjects.Button GetButton()
+        {
+            return new Api.ValueObjects.Button
+            {
+                ButtonLabel = _txtButtonName.Text,
+                ButtonImage = _imagePicker.FileChooserButton.Filename
+            };
+        }
+
         protected override void AddSensitiveFields()
         {
             SensitiveFields.Add(_txtOrder.Entry);
@@ -70,6 +123,12 @@ namespace LogicPOS.UI.Components.Modals
             SensitiveFields.Add(_txtNotes.TextView);
             SensitiveFields.Add(_checkDisabled);
             SensitiveFields.Add(_imagePicker.Component);
+            SensitiveFields.Add(_comboPrinters.Component);
+            SensitiveFields.Add(_comboCommissionGroups.Component);
+            SensitiveFields.Add(_comboFamilies.Component);
+            SensitiveFields.Add(_comboDiscountGroups.Component);
+            SensitiveFields.Add(_comboVatOnTable.Component);
+            SensitiveFields.Add(_comboVatDirectSelling.Component);
         }
 
         protected override void AddValidatableFields()
@@ -91,6 +150,7 @@ namespace LogicPOS.UI.Components.Modals
         protected override IEnumerable<(VBox Page, string Title)> CreateTabs()
         {
             yield return (CreateDetailsTab(), GeneralUtils.GetResourceByName("global_record_main_detail"));
+            yield return (CreateDetails2Tab(), GeneralUtils.GetResourceByName("dialog_edit_articlesubfamily_tab2_label"));
             yield return (CreateNotesTab(), GeneralUtils.GetResourceByName("global_notes"));
         }
 
@@ -106,9 +166,8 @@ namespace LogicPOS.UI.Components.Modals
 
             detailsTab.PackStart(_txtDesignation.Component, false, false, 0);
             detailsTab.PackStart(_txtButtonName.Component, false, false, 0);
+            detailsTab.PackStart(_comboFamilies.Component, false, false, 0);
             detailsTab.PackStart(_imagePicker.Component, false, false, 0);
-            detailsTab.PackStart(_comboPrinters.Component, false, false, 0);
-            detailsTab.PackStart(_comboCommissionGroups.Component, false, false, 0);
 
             if (_modalMode != EntityModalMode.Insert)
             {
@@ -116,6 +175,19 @@ namespace LogicPOS.UI.Components.Modals
             }
 
             return detailsTab;
+        }
+
+        private VBox CreateDetails2Tab()
+        {
+            var details2Tab = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
+
+            details2Tab.PackStart(_comboPrinters.Component, false, false, 0);
+            details2Tab.PackStart(_comboCommissionGroups.Component, false, false, 0);
+            details2Tab.PackStart(_comboDiscountGroups.Component, false, false, 0);
+            details2Tab.PackStart(_comboVatOnTable.Component, false, false, 0);
+            details2Tab.PackStart(_comboVatDirectSelling.Component, false, false, 0);
+
+            return details2Tab;
         }
     }
 }

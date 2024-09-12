@@ -27,7 +27,7 @@ namespace LogicPOS.Api.Features.Common
                 var items = await _httpClient.GetFromJsonAsync<List<TEntity>>(endpoint, cancellationToken);
                 return items;
             }
-            catch (HttpRequestException ex)
+            catch (HttpRequestException)
             {
                 return ApiErrors.CommunicationError;
             }

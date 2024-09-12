@@ -21,10 +21,18 @@ namespace LogicPOS.UI.Components.InputFields
 
         private void AddEventHandlers()
         {
-            FileChooserButton.SelectionChanged += (sender, eventArgs) =>
-            {
-                Preview.Pixbuf = logicpos.Utils.ResizeAndCropFileToPixBuf(FileChooserButton.Filename, new Size(Preview.WidthRequest, Preview.HeightRequest));
-            };
+            FileChooserButton.SelectionChanged += (sender, eventArgs) => ShowPreview();
+        }
+
+        private void ShowPreview()
+        {
+            Preview.Pixbuf = logicpos.Utils.ResizeAndCropFileToPixBuf(FileChooserButton.Filename, new Size(Preview.WidthRequest, Preview.HeightRequest));
+        }
+
+        public void SetImage(string location)
+        {
+            FileChooserButton.SetFilename(location);
+            ShowPreview();
         }
 
         private VBox CreateComponent()
