@@ -46,7 +46,11 @@ namespace LogicPOS.UI.Components.Pages
             void RenderValue(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var printerType = (PrinterType)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = printerType.ThermalPrinter.ToString();
+                (cell as CellRendererText).Text = GeneralUtils.GetResourceByName("global_treeview_true");
+                if (!printerType.ThermalPrinter)
+                {
+                    (cell as CellRendererText).Text = GeneralUtils.GetResourceByName("global_treeview_false");
+                }
             }
 
             var title = GeneralUtils.GetResourceByName("global_printer_thermal_printer");
