@@ -183,7 +183,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
             //Documents
             Dictionary<string, AccordionNode> _accordionDocuments = new Dictionary<string, AccordionNode>
                 {
-                    { "DocumentFinanceYears", new AccordionNode(GeneralUtils.GetResourceByName("global_documentfinance_years")) { Content = Utils.GetGenericTreeViewXPO<TreeViewDocumentFinanceYears>(this) } },
+                    { "DocumentFinanceYears", new AccordionNode(GeneralUtils.GetResourceByName("global_documentfinance_years")) { Content = new FiscalYearsPage(this) } },
                     { "DocumentFinanceSeries", new AccordionNode(GeneralUtils.GetResourceByName("global_documentfinance_series")) { Content = Utils.GetGenericTreeViewXPO<TreeViewDocumentFinanceSeries>(this) } },
                     { "DocumentFinanceType", new AccordionNode(GeneralUtils.GetResourceByName("global_documentfinance_type")) { Content = Utils.GetGenericTreeViewXPO<TreeViewDocumentFinanceType>(this) } },
                     { "ConfigurationVatRate", new AccordionNode(GeneralUtils.GetResourceByName("global_vat_rates")) { Content = new VatRatesPage(this) } },
