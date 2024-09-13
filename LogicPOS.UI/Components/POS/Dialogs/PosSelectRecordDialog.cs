@@ -140,27 +140,24 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             GenericTreeView.CheckBoxToggled += _genericTreeView_CheckBoxToggled;
 
             //Init Object
-            this.Initialize(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, fixedContent, GenericTreeView.Navigator.TreeViewSearch, ActionAreaButtons);
+            this.Initialize(this,
+                            pDialogFlags,
+                            fileDefaultWindowIcon,
+                            windowTitle,
+                            windowSize,
+                            fixedContent,
+                            GenericTreeView.Navigator.TreeViewSearch,
+                            ActionAreaButtons);
         }
 
         public ActionAreaButtons GetDefaultActionAreaButtons()
         {
-            //string fileActionMore = SharedUtils.OSSlash(GeneralSettings.Path["images"] + @"Icons\icon_pos_more.png");
-            //string fileActionFilter = SharedUtils.OSSlash(GeneralSettings.Path["images"] + @"Icons\icon_pos_filter.png");
-            //TouchButtonIconWithText _buttonMore = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.More, "touchButtonMore_Grey", string.Format(CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_button_label_more, SettingsApp.PaginationRowsPerPage), fileActionMore);
-            //TouchButtonIconWithText _buttonFilter = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Filter, "touchButtonMore_Green", string.Format(CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_button_label_filter, SettingsApp.PaginationRowsPerPage), fileActionFilter);
-            //_buttonMore.Clicked += _genericTreeView_ButtonMoreClicked;
-
-            //Default ActionArea Buttons
             _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
             _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
             _buttonOk.Sensitive = false;
 
-            //ActionArea Buttons
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons
             {
-                //actionAreaButtons.Add(new ActionAreaButton(_buttonMore, _responseTypeLoadMoreDocuments));
-                //actionAreaButtons.Add(new ActionAreaButton(_buttonFilter, _responseTypeFilter));
                 new ActionAreaButton(_buttonOk, ResponseType.Ok),
                 new ActionAreaButton(_buttonCancel, ResponseType.Cancel)
             };

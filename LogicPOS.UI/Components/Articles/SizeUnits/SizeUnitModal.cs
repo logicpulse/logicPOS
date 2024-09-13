@@ -5,9 +5,9 @@ using LogicPOS.UI.Components.Modals;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class SizeUnitModal: EntityModal<SizeUnit>
+    public partial class SizeUnitModal: EntityEditionModal<SizeUnit>
     {
-        public SizeUnitModal(EntityModalMode modalMode, SizeUnit entity = null) : base(modalMode, entity)
+        public SizeUnitModal(EntityEditionModalMode modalMode, SizeUnit entity = null) : base(modalMode, entity)
         {
         }
 

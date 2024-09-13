@@ -7,10 +7,10 @@ using System.Drawing;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class CustomerTypeModal : EntityModal<CustomerType>
+    public partial class CustomerTypeModal : EntityEditionModal<CustomerType>
     {
 
-        public CustomerTypeModal(EntityModalMode modalMode,
+        public CustomerTypeModal(EntityEditionModalMode modalMode,
                                  CustomerType customerType = null) : base(modalMode, customerType)
         {
         }

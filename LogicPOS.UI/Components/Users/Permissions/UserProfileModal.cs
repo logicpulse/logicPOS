@@ -4,10 +4,10 @@ using LogicPOS.Api.Features.Users.Profiles.UpdateUserProfile;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class UserProfileModal : EntityModal<UserProfile>
+    public partial class UserProfileModal : EntityEditionModal<UserProfile>
     {
         public UserProfileModal(
-            EntityModalMode modalMode,
+            EntityEditionModalMode modalMode,
             UserProfile userProfile = null) : base(modalMode, userProfile)
         {
         }

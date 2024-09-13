@@ -157,7 +157,7 @@ namespace LogicPOS.UI.Components.Pages
             _entities.ForEach(p => p.ResourceStringValue = GeneralUtils.GetResourceByName(p.ResourceString));
         }
 
-        public override void RunModal(EntityModalMode mode)
+        public override void RunModal(EntityEditionModalMode mode)
         {
             var modal = new PreferenceParameterModal(mode, SelectedEntity);
             modal.Run();

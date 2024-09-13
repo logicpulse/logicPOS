@@ -18,10 +18,10 @@ using System.Linq;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class ArticleModal : EntityModal<Article>
+    public partial class ArticleModal : EntityEditionModal<Article>
     {
         private IEnumerable<ArticleSubfamily> _subfamilies;
-        public ArticleModal(EntityModalMode modalMode, Article entity = null) : base(modalMode, entity)
+        public ArticleModal(EntityEditionModalMode modalMode, Article entity = null) : base(modalMode, entity)
         {
         }
 
@@ -40,7 +40,7 @@ namespace LogicPOS.UI.Components.Modals
                 PriceWithVat = _checkPriceWithVat.Active,
                 Discount = decimal.Parse(_txtDiscount.Text),
                 DefaultQuantity = uint.Parse(_txtDefaultQuantity.Text),
-                TotalStock = decimal.Parse(_txtAccounting.Text),
+                TotalStock = decimal.Parse(_txtTotalStock.Text),
                 MinimumStock = uint.Parse(_txtMinimumStock.Text),
                 Tare = decimal.Parse(_txtTare.Text),
                 Weight = float.Parse(_txtWeight.Text),
@@ -81,7 +81,7 @@ namespace LogicPOS.UI.Components.Modals
                 NewPriceWithVat = _checkPriceWithVat.Active,
                 NewDiscount = decimal.Parse(_txtDiscount.Text),
                 NewDefaultQuantity = uint.Parse(_txtDefaultQuantity.Text),
-                NewTotalStock = decimal.Parse(_txtAccounting.Text),
+                NewTotalStock = decimal.Parse(_txtTotalStock.Text),
                 NewMinimumStock = uint.Parse(_txtMinimumStock.Text),
                 NewTare = decimal.Parse(_txtTare.Text),
                 NewWeight = float.Parse(_txtWeight.Text),
@@ -122,14 +122,14 @@ namespace LogicPOS.UI.Components.Modals
             _checkPriceWithVat.Active = _entity.PriceWithVat;
             _txtDiscount.Text = _entity.Discount.ToString();
             _txtBarcode.Text = _entity.Barcode;
-            _txtAccounting.Text = _entity.TotalStock.ToString();
+            _txtTotalStock.Text = _entity.TotalStock.ToString();
             _txtMinimumStock.Text = _entity.MinimumStock.ToString();
             _txtTare.Text = _entity.Tare.ToString();
             _txtWeight.Text = _entity.Weight.ToString();
             _txtDefaultQuantity.Text = _entity.DefaultQuantity.ToString();
             _checkDisabled.Active = _entity.IsDeleted;
             _checkUniqueArticles.Active = _entity.UniqueArticles;
-            _txtAccounting.Text = _entity.TotalStock.ToString();
+            _txtTotalStock.Text = _entity.TotalStock.ToString();
         }
 
         protected override void UpdateEntity() => ExecuteUpdateCommand(CreateUpdateCommand());

@@ -4,9 +4,9 @@ using System;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class PreferenceParameterModal : EntityModal<PreferenceParameter>
+    public partial class PreferenceParameterModal : EntityEditionModal<PreferenceParameter>
     {
-        public PreferenceParameterModal(EntityModalMode modalMode,
+        public PreferenceParameterModal(EntityEditionModalMode modalMode,
                                         PreferenceParameter preferenceParameter = null) : base(modalMode, preferenceParameter)
         {
             _txtToken.Entry.Sensitive = false;

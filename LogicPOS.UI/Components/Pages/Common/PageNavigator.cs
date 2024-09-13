@@ -54,7 +54,6 @@ namespace LogicPOS.UI.Components.Pages
             buttonsComponent.PackStart(ButtonDelete, false, false, 0);
             buttonsComponent.PackStart(ButtonRefresh, false, false, 0);
 
-
             navigatorComponent.PackStart(SearchBox, false, false, 0);
             navigatorComponent.PackStart(ExtraButtonSpace, true, true, 0);
             navigatorComponent.PackStart(buttonsComponent, false, false, 0);
@@ -64,13 +63,7 @@ namespace LogicPOS.UI.Components.Pages
 
         private void InitializeSearchBox()
         {
-            bool showFilterAndMoreButtons = false;
-
-            if ((_page as object) is logicpos.Classes.Gui.Gtk.BackOffice.TreeViewDocumentFinanceMaster ||
-                (_page as object) is logicpos.Classes.Gui.Gtk.BackOffice.TreeViewDocumentFinancePayment)
-            {
-                showFilterAndMoreButtons = true;
-            }
+            bool showFilterAndMoreButtons = true;
 
             SearchBox = new PageSearchBox(_page.PageParentWindow, showFilterAndMoreButtons);
 
@@ -142,10 +135,9 @@ namespace LogicPOS.UI.Components.Pages
         {
             BtnPrevious.Clicked += delegate { Previous(); };
             ButtonNextRecord.Clicked += delegate { Next(); };
-
-            ButtonInsert.Clicked += delegate { _page.RunModal(EntityModalMode.Insert); };
-            ButtonView.Clicked += delegate { _page.RunModal(EntityModalMode.View); };
-            ButtonUpdate.Clicked += delegate { _page.RunModal(EntityModalMode.Update); };
+            ButtonInsert.Clicked += delegate { _page.RunModal(EntityEditionModalMode.Insert); };
+            ButtonView.Clicked += delegate { _page.RunModal(EntityEditionModalMode.View); };
+            ButtonUpdate.Clicked += delegate { _page.RunModal(EntityEditionModalMode.Update); };
             ButtonDelete.Clicked += delegate { _page.DeleteEntity(); };
             ButtonRefresh.Clicked += delegate { _page.Refresh(); };
         }

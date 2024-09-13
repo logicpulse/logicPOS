@@ -51,10 +51,10 @@ namespace LogicPOS.UI.Components.Modals
 
             switch (_modalMode)
             {
-                case EntityModalMode.Insert:
+                case EntityEditionModalMode.Insert:
                     ValidatableFields.Add(_txtDesignation);
                     break;
-                case EntityModalMode.Update:
+                case EntityEditionModalMode.Update:
                     ValidatableFields.Add(_txtDesignation);
                     ValidatableFields.Add(_txtOrder);
                     ValidatableFields.Add(_txtCode);
@@ -87,7 +87,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             var detailsTab = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
 
-            if (_modalMode != EntityModalMode.Insert)
+            if (_modalMode != EntityEditionModalMode.Insert)
             {
                 detailsTab.PackStart(_txtOrder.Component, false, false, 0);
                 detailsTab.PackStart(_txtCode.Component, false, false, 0);
@@ -96,7 +96,7 @@ namespace LogicPOS.UI.Components.Modals
             detailsTab.PackStart(_txtDesignation.Component, false, false, 0);
             detailsTab.PackStart(_checkDefaultWarehouse, false, false, 0);
 
-            if (_modalMode != EntityModalMode.Insert)
+            if (_modalMode != EntityEditionModalMode.Insert)
             {
                 detailsTab.PackStart(_checkDisabled, false, false, 0);
             }

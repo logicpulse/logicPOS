@@ -3,11 +3,9 @@ using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Errors;
 using LogicPOS.Api.Features.Common;
-using LogicPOS.Api.Features.Countries.GetAllCountries;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.GridViews;
 using LogicPOS.UI.Components.Modals;
-using LogicPOS.UI.Components.Pages.GridViews;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -32,9 +30,9 @@ namespace LogicPOS.UI.Components.Pages
 
         public GridViewSettings GridViewSettings { get; } = new GridViewSettings();
         internal PageNavigator<TEntity> Navigator { get; }
-        protected Dictionary<string,string> Options { get; set; }
+        public Dictionary<string, string> Options { get; private set; }
 
-        public Page(Window parent, Dictionary<string,string> options = null)
+        public Page(Window parent, Dictionary<string, string> options = null)
         {
             PageParentWindow = parent;
             Navigator = new PageNavigator<TEntity>(this);
@@ -127,7 +125,7 @@ namespace LogicPOS.UI.Components.Pages
                 search = search.Trim();
                 var entity = (IWithDesignation)model.GetValue(iterator, 0);
 
-                if (entity.Designation.ToLower().Contains(search))
+                if (entity != null && entity.Designation.ToLower().Contains(search))
                 {
                     return true;
                 }
@@ -183,9 +181,9 @@ namespace LogicPOS.UI.Components.Pages
         }
 
         protected abstract void InitializeSort();
-      
+
         protected abstract void AddColumns();
-        public abstract void RunModal(EntityModalMode mode);
+        public abstract void RunModal(EntityEditionModalMode mode);
         protected virtual void Design()
         {
             VBox verticalLayout = new VBox(false, 1);
@@ -197,9 +195,18 @@ namespace LogicPOS.UI.Components.Pages
             scrolledWindow.Add(GridView);
 
             verticalLayout.PackStart(scrolledWindow, true, true, 0);
-            verticalLayout.PackStart(Navigator, false, false, 0);
+
+            if (IsSelectionPage() == false)
+            {
+                verticalLayout.PackStart(Navigator, false, false, 0);
+            }
 
             PackStart(verticalLayout);
+        }
+
+        public bool IsSelectionPage()
+        {
+            return Options != null && Options.ContainsKey("selection-page");
         }
 
         protected virtual void GridViewRow_Changed(object sender, EventArgs e)
@@ -210,18 +217,27 @@ namespace LogicPOS.UI.Components.Pages
             {
                 GridViewSettings.Path = model.GetPath(GridViewSettings.Iterator);
                 Navigator.CurrentRecord = Convert.ToInt16(GridViewSettings.Path.ToString());
-                SelectedEntity = (TEntity)model.GetValue(GridViewSettings.Iterator, 0); 
+                SelectedEntity = (TEntity)model.GetValue(GridViewSettings.Iterator, 0);
             };
 
             Navigator.Update();
         }
-
         protected virtual void AddGridViewEventHandlers()
         {
             GridView.CursorChanged += GridViewRow_Changed;
-            GridView.RowActivated += delegate { RunModal(EntityModalMode.Update); };
+            GridView.RowActivated += GridView_RowActivated;
             GridView.Vadjustment.ValueChanged += delegate { Navigator.Update(); };
             GridView.Vadjustment.Changed += delegate { Navigator.Update(); };
+        }
+
+        private void GridView_RowActivated(object o, RowActivatedArgs args)
+        {
+            if (IsSelectionPage())
+            {
+                return;
+            }
+
+            RunModal(EntityEditionModalMode.Update);
         }
     }
 }

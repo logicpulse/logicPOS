@@ -5,9 +5,9 @@ using LogicPOS.UI.Components.Modals;
 
 namespace LogicPOS.UI.Components.PoleDisplays
 {
-    public partial class PoleDisplayModal : EntityModal<PoleDisplay>
+    public partial class PoleDisplayModal : EntityEditionModal<PoleDisplay>
     {
-        public PoleDisplayModal(EntityModalMode modalMode, PoleDisplay entity = null) : base(modalMode, entity)
+        public PoleDisplayModal(EntityEditionModalMode modalMode, PoleDisplay entity = null) : base(modalMode, entity)
         {
         }
 

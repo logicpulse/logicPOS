@@ -5,9 +5,9 @@ using LogicPOS.Api.Features.PaymentMethods.UpdatePaymentMethod;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class PaymentMethodModal : EntityModal<PaymentMethod>
+    public partial class PaymentMethodModal : EntityEditionModal<PaymentMethod>
     {
-        public PaymentMethodModal(EntityModalMode modalMode, PaymentMethod entity = null) : base(modalMode, entity)
+        public PaymentMethodModal(EntityEditionModalMode modalMode, PaymentMethod entity = null) : base(modalMode, entity)
         {
         }
 

@@ -24,7 +24,7 @@ namespace LogicPOS.UI.Components.Pages
 
         protected override IRequest<ErrorOr<IEnumerable<Article>>> GetAllQuery => new GetAllArticlesQuery();
 
-        public override void RunModal(EntityModalMode mode)
+        public override void RunModal(EntityEditionModalMode mode)
         {
             var modal = new ArticleModal(mode, SelectedEntity);
             modal.Run();

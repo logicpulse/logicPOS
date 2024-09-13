@@ -8,9 +8,9 @@ using System.Linq;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class UserDetailsModal : EntityModal<UserDetail>
+    public partial class UserDetailsModal : EntityEditionModal<UserDetail>
     {
-        public UserDetailsModal(EntityModalMode modalMode, UserDetail entity = null) : base(modalMode, entity)
+        public UserDetailsModal(EntityEditionModalMode modalMode, UserDetail entity = null) : base(modalMode, entity)
         {
 
         }

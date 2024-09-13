@@ -5,9 +5,9 @@ using LogicPOS.Api.Features.MovementTypes.UpdateMovementType;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class MovementTypeModal: EntityModal<MovementType>
+    public partial class MovementTypeModal: EntityEditionModal<MovementType>
     {
-        public MovementTypeModal(EntityModalMode modalMode, MovementType entity = null) : base(modalMode, entity)
+        public MovementTypeModal(EntityEditionModalMode modalMode, MovementType entity = null) : base(modalMode, entity)
         {
         }
 

@@ -6,9 +6,9 @@ using System.Globalization;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class VatRateModal: EntityModal<VatRate>
+    public partial class VatRateModal: EntityEditionModal<VatRate>
     {
-        public VatRateModal(EntityModalMode modalMode, VatRate entity = null) : base(modalMode, entity)
+        public VatRateModal(EntityEditionModalMode modalMode, VatRate entity = null) : base(modalMode, entity)
         {
         }
 

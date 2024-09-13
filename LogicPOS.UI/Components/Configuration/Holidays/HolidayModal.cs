@@ -5,9 +5,9 @@ using Holiday = LogicPOS.Api.Entities.Holiday;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class HolidayModal: EntityModal<Holiday>
+    public partial class HolidayModal: EntityEditionModal<Holiday>
     {
-        public HolidayModal(EntityModalMode modalMode, Holiday entity = null) : base(modalMode, entity)
+        public HolidayModal(EntityEditionModalMode modalMode, Holiday entity = null) : base(modalMode, entity)
         {
         }
 

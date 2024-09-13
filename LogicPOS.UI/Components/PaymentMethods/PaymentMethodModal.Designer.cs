@@ -37,14 +37,14 @@ namespace LogicPOS.UI.Components.Modals
 
             switch (_modalMode)
             {
-                case EntityModalMode.Insert:
+                case EntityEditionModalMode.Insert:
                     ValidatableFields.Add(_txtDesignation);
                     ValidatableFields.Add(_txtAcronym);
                     _txtAcronym.Entry.Sensitive=false;
                     _txtToken.Entry.Sensitive = false;
 
                     break;
-                case EntityModalMode.Update:
+                case EntityEditionModalMode.Update:
                     ValidatableFields.Add(_txtDesignation);
                     ValidatableFields.Add(_txtAcronym);
                     ValidatableFields.Add(_txtToken);
@@ -65,7 +65,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             var tab1 = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
 
-            if (_modalMode != EntityModalMode.Insert)
+            if (_modalMode != EntityEditionModalMode.Insert)
             {
                 tab1.PackStart(_txtOrder.Component, false, false, 0);
                 tab1.PackStart(_txtCode.Component, false, false, 0);
@@ -75,7 +75,7 @@ namespace LogicPOS.UI.Components.Modals
             tab1.PackStart(_txtAcronym.Component, false, false, 0);
             tab1.PackStart(_txtToken.Component,false, false, 0);
 
-            if (_modalMode != EntityModalMode.Insert)
+            if (_modalMode != EntityEditionModalMode.Insert)
             {
                 tab1.PackStart(_checkDisabled, false, false, 0);
             }

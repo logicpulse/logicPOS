@@ -6,9 +6,9 @@ using LogicPOS.Api.Features.WeighingMachines.UpdateWeighingMachine;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class WeighingMachineModal : EntityModal<WeighingMachine>
+    public partial class WeighingMachineModal : EntityEditionModal<WeighingMachine>
     {
-        public WeighingMachineModal(EntityModalMode modalMode, WeighingMachine weighingMachine = null) : base(modalMode, weighingMachine)
+        public WeighingMachineModal(EntityEditionModalMode modalMode, WeighingMachine weighingMachine = null) : base(modalMode, weighingMachine)
         {
         }
 

@@ -6,9 +6,9 @@ using LogicPOS.Api.Features.MeasurementUnits.UpdateMeasurementUnit;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class MeasurementUnitModal : EntityModal<MeasurementUnit>
+    public partial class MeasurementUnitModal : EntityEditionModal<MeasurementUnit>
     {
-        public MeasurementUnitModal(EntityModalMode modalMode, MeasurementUnit entity = null) : base(modalMode, entity)
+        public MeasurementUnitModal(EntityEditionModalMode modalMode, MeasurementUnit entity = null) : base(modalMode, entity)
         {
         }
 

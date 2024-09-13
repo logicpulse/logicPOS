@@ -5,9 +5,9 @@ using System;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class CurrencyModal : EntityModal<Currency>
+    public partial class CurrencyModal : EntityEditionModal<Currency>
     {
-        public CurrencyModal(EntityModalMode modalMode, Currency currency = null) : base(modalMode, currency)
+        public CurrencyModal(EntityEditionModalMode modalMode, Currency currency = null) : base(modalMode, currency)
         {
         }
 

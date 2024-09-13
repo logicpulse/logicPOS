@@ -8,10 +8,10 @@ using System;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    internal partial class CountryModal : EntityModal<Country>
+    internal partial class CountryModal : EntityEditionModal<Country>
     {
         public CountryModal(
-            EntityModalMode modalMode, 
+            EntityEditionModalMode modalMode, 
             Country country = null) : base(modalMode,country)
         {
         }

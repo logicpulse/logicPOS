@@ -6,9 +6,9 @@ using LogicPOS.Api.Features.PaymentConditions.UpdatePaymentCondition;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class PaymentConditionModal : EntityModal<PaymentCondition>
+    public partial class PaymentConditionModal : EntityEditionModal<PaymentCondition>
     {
-        public PaymentConditionModal(EntityModalMode modalMode, PaymentCondition entity = null) : base(modalMode, entity)
+        public PaymentConditionModal(EntityEditionModalMode modalMode, PaymentCondition entity = null) : base(modalMode, entity)
         {
         }
 

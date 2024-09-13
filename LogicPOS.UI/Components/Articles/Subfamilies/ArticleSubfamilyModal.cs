@@ -11,9 +11,9 @@ using System.Linq;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class ArticleSubfamilyModal : EntityModal<ArticleSubfamily>
+    public partial class ArticleSubfamilyModal : EntityEditionModal<ArticleSubfamily>
     {
-        public ArticleSubfamilyModal(EntityModalMode modalMode, ArticleSubfamily entity = null) : base(modalMode, entity)
+        public ArticleSubfamilyModal(EntityEditionModalMode modalMode, ArticleSubfamily entity = null) : base(modalMode, entity)
         {
         }
 

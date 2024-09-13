@@ -24,7 +24,7 @@ namespace LogicPOS.UI.Components.Pages
 
         protected override IRequest<ErrorOr<IEnumerable<PaymentMethod>>> GetAllQuery => new GetAllPaymentMethodsQuery();
 
-        public override void RunModal(EntityModalMode mode)
+        public override void RunModal(EntityEditionModalMode mode)
         {
             var modal = new PaymentMethodModal(mode, SelectedEntity);
             modal.Run();

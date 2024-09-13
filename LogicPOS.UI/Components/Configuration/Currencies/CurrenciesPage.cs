@@ -69,7 +69,7 @@ namespace LogicPOS.UI.Components.Pages
             return Columns.CreateColumn(title, 2, RenderAcronym);
         }
 
-        public override void RunModal(EntityModalMode mode)
+        public override void RunModal(EntityEditionModalMode mode)
         {
             var modal = new CurrencyModal(mode, SelectedEntity as Currency);
             modal.Run();

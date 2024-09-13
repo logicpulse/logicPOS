@@ -7,9 +7,9 @@ using System.Drawing;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class ArticleTypeModal: EntityModal<ArticleType>
+    public partial class ArticleTypeModal: EntityEditionModal<ArticleType>
     {
-        public ArticleTypeModal(EntityModalMode modalMode, ArticleType entity = null) : base(modalMode, entity)
+        public ArticleTypeModal(EntityEditionModalMode modalMode, ArticleType entity = null) : base(modalMode, entity)
         {
         }
 

@@ -6,9 +6,9 @@ using LogicPOS.Api.Features.InputReaders.UpdateInputReader;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class InputReaderModal : EntityModal<InputReader>
+    public partial class InputReaderModal : EntityEditionModal<InputReader>
     {
-        public InputReaderModal(EntityModalMode modalMode, InputReader inputReader = null) : base(modalMode, inputReader)
+        public InputReaderModal(EntityEditionModalMode modalMode, InputReader inputReader = null) : base(modalMode, inputReader)
         {
         }
 

@@ -24,7 +24,7 @@ namespace LogicPOS.UI.Components.PoleDisplays
             throw new NotImplementedException();
         }
 
-        public override void RunModal(EntityModalMode mode)
+        public override void RunModal(EntityEditionModalMode mode)
         {
             var modal = new PoleDisplayModal(mode, SelectedEntity);
             modal.Run();

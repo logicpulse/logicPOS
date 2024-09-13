@@ -6,9 +6,9 @@ using LogicPOS.Api.Features.PrinterTypes.UpdatePrinterType;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class PrinterTypeModal : EntityModal<PrinterType>
+    public partial class PrinterTypeModal : EntityEditionModal<PrinterType>
     {
-        public PrinterTypeModal(EntityModalMode modalMode, PrinterType printerType = null) : base(modalMode, printerType)
+        public PrinterTypeModal(EntityEditionModalMode modalMode, PrinterType printerType = null) : base(modalMode, printerType)
         {
         }
 

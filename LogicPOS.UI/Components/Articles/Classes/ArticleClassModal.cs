@@ -6,9 +6,9 @@ using LogicPOS.Api.Features.Articles.Classes.UpdateArticleClass;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class ArticleClassModal : EntityModal<ArticleClass>
+    public partial class ArticleClassModal : EntityEditionModal<ArticleClass>
     {
-        public ArticleClassModal(EntityModalMode modalMode, ArticleClass entity = null) : base(modalMode, entity)
+        public ArticleClassModal(EntityEditionModalMode modalMode, ArticleClass entity = null) : base(modalMode, entity)
         {
         }
 

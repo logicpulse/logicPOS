@@ -5,9 +5,9 @@ using LogicPOS.UI.Components.Modals;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class PriceTypeModal : EntityModal<PriceType>
+    public partial class PriceTypeModal : EntityEditionModal<PriceType>
     {
-        public PriceTypeModal(EntityModalMode modalMode, PriceType entity = null) : base(modalMode, entity)
+        public PriceTypeModal(EntityEditionModalMode modalMode, PriceType entity = null) : base(modalMode, entity)
         {
         }
 

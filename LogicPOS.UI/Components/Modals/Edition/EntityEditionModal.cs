@@ -19,11 +19,11 @@ using System.Linq;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public abstract class EntityModal<TEntity> : Dialog where TEntity : ApiEntity
+    public abstract class EntityEditionModal<TEntity> : Dialog where TEntity : ApiEntity
     {
         protected TEntity _entity;
         protected readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<ISender>();
-        protected readonly EntityModalMode _modalMode;
+        protected readonly EntityEditionModalMode _modalMode;
         protected int _boxSpacing = 5;
         public abstract Size ModalSize { get; }
         public abstract string ModalTitleResourceName { get; }
@@ -38,12 +38,12 @@ namespace LogicPOS.UI.Components.Modals
         protected MultilineTextBox _txtNotes = new MultilineTextBox();
         #endregion
 
-        public EntityModal(EntityModalMode modalMode,
+        public EntityEditionModal(EntityEditionModalMode modalMode,
                            TEntity entity = null)
         {
             _modalMode = modalMode;
 
-            if(modalMode != EntityModalMode.Insert)
+            if(modalMode != EntityEditionModalMode.Insert)
             {
                 _entity = entity;
             }
@@ -133,7 +133,7 @@ namespace LogicPOS.UI.Components.Modals
 
             VBox.PackStart(CreateNoteBook(), true, true, 0);
 
-            if(_modalMode != EntityModalMode.Insert)
+            if(_modalMode != EntityEditionModalMode.Insert)
             {
                 AddStatusBar();
             }
@@ -150,7 +150,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void HandleModalMode()
         {
-            if (_entity == null && _modalMode != EntityModalMode.Insert)
+            if (_entity == null && _modalMode != EntityEditionModalMode.Insert)
             {
                 throw new ArgumentNullException(nameof(_entity));
             }
@@ -162,7 +162,7 @@ namespace LogicPOS.UI.Components.Modals
 
             SetViewMode();
 
-            if (_modalMode != EntityModalMode.Insert)
+            if (_modalMode != EntityEditionModalMode.Insert)
             {
                 ShowEntityData();
             }
@@ -171,7 +171,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void SetViewMode()
         {
-            if (_modalMode == EntityModalMode.View)
+            if (_modalMode == EntityEditionModalMode.View)
             {
                 SensitiveFields.ForEach(field => field.Sensitive = false);
             }
@@ -231,7 +231,7 @@ namespace LogicPOS.UI.Components.Modals
 
             _buttonCancel = new IconButtonWithText(buttonCancelSettings);
 
-            if (_modalMode != EntityModalMode.View)
+            if (_modalMode != EntityEditionModalMode.View)
             {
                 this.AddActionWidget(_buttonOk, ResponseType.Ok);
             }
@@ -249,10 +249,10 @@ namespace LogicPOS.UI.Components.Modals
 
             switch (_modalMode)
             {
-                case EntityModalMode.Insert:
+                case EntityEditionModalMode.Insert:
                     AddEntity();
                     break;
-                case EntityModalMode.Update:
+                case EntityEditionModalMode.Update:
                     UpdateEntity();
                     break;
                 default:

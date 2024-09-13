@@ -3,6 +3,7 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Domain.Entities;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
+using LogicPOS.UI.Components.Pages;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -42,12 +43,12 @@ namespace LogicPOS.UI.Components.Modals
         private CheckButton _checkPriceWithVat = new CheckButton(GeneralUtils.GetResourceByName("global_price_with_vat"));
         private CheckButton _checkPVPVariable = new CheckButton(GeneralUtils.GetResourceByName("global_variable_price"));
         private TextBox _txtDiscount = new TextBox("global_discount",true,true,RegularExpressions.Money);
-        private TextBox _txtDefaultQuantity = new TextBox("global_article_default_quantity");
-        private TextBox _txtAccounting = new TextBox("global_total_stock");
-        private TextBox _txtMinimumStock = new TextBox("global_minimum_stock");
-        private TextBox _txtTare = new TextBox("global_tare");
-        private TextBox _txtWeight = new TextBox("global_weight");
-        private TextBox _txtBarcode = new TextBox("global_barcode");
+        private TextBox _txtDefaultQuantity = new TextBox("global_article_default_quantity",true,true,RegularExpressions.IntegerNumber);
+        private TextBox _txtTotalStock = new TextBox("global_total_stock") { Text = "0" };
+        private TextBox _txtMinimumStock = new TextBox("global_minimum_stock",true,true,RegularExpressions.IntegerNumber);
+        private TextBox _txtTare = new TextBox("global_tare", true, true, RegularExpressions.DecimalNumber) { Text = "0" };
+        private TextBox _txtWeight = new TextBox("global_weight", true, true, RegularExpressions.DecimalNumber) { Text= "0"};
+        private TextBox _txtBarcode = new TextBox("global_barcode", false, true, RegularExpressions.IntegerNumber);
         private ArticlePriceField _price1;
         private ArticlePriceField _price2;
         private ArticlePriceField _price3;
@@ -68,6 +69,16 @@ namespace LogicPOS.UI.Components.Modals
             InitializeSizeUnitsComboBox();
             InitializeArticleClassesComboBox();
             InitializeArticleTypesComboBox();
+
+            _txtTotalStock.Entry.IsEditable = false;
+
+            _checkIsComposed.Clicked += (sender, e) =>
+            {
+                var page = new ArticleFamiliesPage(this,new Dictionary<string, string> { { "selection-page", "" } });
+                var dialog = new EntitySelectionModal<ArticleFamily>(this, page, GeneralUtils.GetResourceByName("window_title_dialog_payments"));
+                dialog.Run();
+                dialog.Destroy();
+            };
         }
 
         private void InitializeArticlePriceFields()
@@ -246,7 +257,7 @@ namespace LogicPOS.UI.Components.Modals
             SensitiveFields.Add(_checkPVPVariable);
             SensitiveFields.Add(_txtDiscount.Entry);
             SensitiveFields.Add(_txtDefaultQuantity.Entry);
-            SensitiveFields.Add(_txtAccounting.Entry);
+            SensitiveFields.Add(_txtTotalStock.Entry);
             SensitiveFields.Add(_txtMinimumStock.Entry);
             SensitiveFields.Add(_txtTare.Entry);
             SensitiveFields.Add(_txtWeight.Entry);
@@ -256,11 +267,12 @@ namespace LogicPOS.UI.Components.Modals
             SensitiveFields.Add(_price3.Component);
             SensitiveFields.Add(_price4.Component);
             SensitiveFields.Add(_price5.Component);
+            SensitiveFields.Add(_txtCodeDealer.Entry);
         }
 
         protected override void AddValidatableFields()
         {
-            if (_modalMode != EntityModalMode.Update)
+            if (_modalMode == EntityEditionModalMode.Update)
             {
                 ValidatableFields.Add(_txtOrder);
                 ValidatableFields.Add(_txtCode);
@@ -268,8 +280,16 @@ namespace LogicPOS.UI.Components.Modals
 
             ValidatableFields.Add(_txtDesignation);
             ValidatableFields.Add(_txtDiscount);
-
-           
+            ValidatableFields.Add(_txtDefaultQuantity);
+            ValidatableFields.Add(_txtMinimumStock);
+            ValidatableFields.Add(_txtTare);
+            ValidatableFields.Add(_txtWeight);
+            ValidatableFields.Add(_txtBarcode);
+            ValidatableFields.Add(_price1);
+            ValidatableFields.Add(_price2);
+            ValidatableFields.Add(_price3);
+            ValidatableFields.Add(_price4);
+            ValidatableFields.Add(_price5);        
         }
 
         protected override IEnumerable<(VBox Page, string Title)> CreateTabs()
@@ -284,7 +304,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             var detailsTab = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
 
-            if (_modalMode != EntityModalMode.Insert)
+            if (_modalMode != EntityEditionModalMode.Insert)
             {
                 detailsTab.PackStart(_txtOrder.Component, false, false, 0);
                 detailsTab.PackStart(_txtCode.Component, false, false, 0);
@@ -302,7 +322,7 @@ namespace LogicPOS.UI.Components.Modals
             detailsTab.PackStart(_checkFavorite, false, false, 0);
             detailsTab.PackStart(_checkUseWeighingBalance, false, false, 0);
 
-            if (_modalMode != EntityModalMode.Insert)
+            if (_modalMode != EntityEditionModalMode.Insert)
             {
                 detailsTab.PackStart(_checkDisabled, false, false, 0);
             }
@@ -330,7 +350,7 @@ namespace LogicPOS.UI.Components.Modals
             var otherDetailsTab = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
             
             otherDetailsTab.PackStart(_txtBarcode.Component, false, false, 0);
-            otherDetailsTab.PackStart(_txtAccounting.Component, false, false, 0);
+            otherDetailsTab.PackStart(_txtTotalStock.Component, false, false, 0);
             otherDetailsTab.PackStart(_txtMinimumStock.Component, false, false, 0);
             otherDetailsTab.PackStart(_txtTare.Component, false, false, 0);
             otherDetailsTab.PackStart(_txtWeight.Component, false, false, 0);

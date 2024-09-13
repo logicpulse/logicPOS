@@ -7,9 +7,9 @@ using System.Linq;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class PrinterModal : EntityModal<Printer>
+    public partial class PrinterModal : EntityEditionModal<Printer>
     {
-        public PrinterModal(EntityModalMode modalMode, Printer entity = null) : base(modalMode, entity)
+        public PrinterModal(EntityEditionModalMode modalMode, Printer entity = null) : base(modalMode, entity)
         {
         }
 

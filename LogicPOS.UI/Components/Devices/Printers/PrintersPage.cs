@@ -25,7 +25,7 @@ namespace LogicPOS.UI.Components.Pages
             throw new NotImplementedException();
         }
 
-        public override void RunModal(EntityModalMode mode)
+        public override void RunModal(EntityEditionModalMode mode)
         {
             var modal = new PrinterModal(mode, SelectedEntity);
             modal.Run();

@@ -13,7 +13,7 @@ namespace LogicPOS.UI.Components.Pages
 {
     public class ArticleFamiliesPage : Page<ArticleFamily>
     {
-        public ArticleFamiliesPage(Window parent) : base(parent)
+        public ArticleFamiliesPage(Window parent, Dictionary<string,string> options = null) : base(parent,options)
         {
         }
 
@@ -24,7 +24,7 @@ namespace LogicPOS.UI.Components.Pages
 
         protected override IRequest<ErrorOr<IEnumerable<ArticleFamily>>> GetAllQuery => new GetAllArticleFamiliesQuery();
 
-        public override void RunModal(EntityModalMode mode)
+        public override void RunModal(EntityEditionModalMode mode)
         {
             var modal = new ArticleFamilyModal(mode, SelectedEntity);
             modal.Run();

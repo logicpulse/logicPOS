@@ -9,9 +9,9 @@ using System.Drawing;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class CommissionGroupModal: EntityModal<CommissionGroup>
+    public partial class CommissionGroupModal: EntityEditionModal<CommissionGroup>
     {
-        public CommissionGroupModal(EntityModalMode modalMode, CommissionGroup commissionGroup = null) : base(modalMode, commissionGroup)
+        public CommissionGroupModal(EntityEditionModalMode modalMode, CommissionGroup commissionGroup = null) : base(modalMode, commissionGroup)
         {
         }
 

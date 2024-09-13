@@ -1,6 +1,6 @@
 ﻿namespace LogicPOS.UI.Components.Modals
 {
-    public enum EntityModalMode
+    public enum EntityEditionModalMode
     {
         Insert,
         Update,

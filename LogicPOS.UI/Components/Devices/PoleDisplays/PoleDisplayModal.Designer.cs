@@ -10,7 +10,7 @@ namespace LogicPOS.UI.Components.PoleDisplays
 {
     public partial class PoleDisplayModal
     {
-        public override Size ModalSize => new Size(500, _modalMode == EntityModalMode.Insert ? 600: 750);
+        public override Size ModalSize => new Size(500, _modalMode == EntityEditionModalMode.Insert ? 600: 750);
         public override string ModalTitleResourceName => "window_title_edit_configurationpoledisplay";
 
         #region Components
@@ -58,7 +58,7 @@ namespace LogicPOS.UI.Components.PoleDisplays
             ValidatableFields.Add(_txtCharsPerLine);
             ValidatableFields.Add(_txtStandByInSeconds);
 
-            if(_modalMode == EntityModalMode.Update)
+            if(_modalMode == EntityEditionModalMode.Update)
             {
                 ValidatableFields.Add(_txtOrder);
                 ValidatableFields.Add(_txtCode);
@@ -75,7 +75,7 @@ namespace LogicPOS.UI.Components.PoleDisplays
         {
             var detailsTab = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
 
-            if (_modalMode != EntityModalMode.Insert)
+            if (_modalMode != EntityEditionModalMode.Insert)
             {
                 detailsTab.PackStart(_txtOrder.Component, false, false, 0);
                 detailsTab.PackStart(_txtCode.Component, false, false, 0);
@@ -97,7 +97,7 @@ namespace LogicPOS.UI.Components.PoleDisplays
             _txtStandByLine2.Label.Text = string.Format(standByLineResource, 2);
             detailsTab.PackStart(_txtStandByLine2.Component, false, false, 0);
 
-            if (_modalMode != EntityModalMode.Insert)
+            if (_modalMode != EntityEditionModalMode.Insert)
             {
                 detailsTab.PackStart(_checkDisabled, false, false, 0);
             }
