@@ -4,6 +4,7 @@ using LogicPOS.Domain.Entities;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Pages;
+using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -71,14 +72,7 @@ namespace LogicPOS.UI.Components.Modals
             InitializeArticleTypesComboBox();
 
             _txtTotalStock.Entry.IsEditable = false;
-
-            _checkIsComposed.Clicked += (sender, e) =>
-            {
-                var page = new ArticleFamiliesPage(this,new Dictionary<string, string> { { "selection-page", "" } });
-                var dialog = new EntitySelectionModal<ArticleFamily>(this, page, GeneralUtils.GetResourceByName("window_title_dialog_payments"));
-                dialog.Run();
-                dialog.Destroy();
-            };
+            _checkUniqueArticles.Sensitive = false;
         }
 
         private void InitializeArticlePriceFields()
@@ -297,6 +291,7 @@ namespace LogicPOS.UI.Components.Modals
             yield return (CreateDetailsTab(), GeneralUtils.GetResourceByName("global_record_main_detail"));
             yield return (CreateFinanceDetailsTab(), GeneralUtils.GetResourceByName("dialog_edit_article_tab2_label"));
             yield return (CreateOtherDetailsTab(), GeneralUtils.GetResourceByName("dialog_edit_article_tab3_label"));
+            yield return (CreateArticleCompositionTab(), GeneralUtils.GetResourceByName("dialog_edit_article_tab4_label1"));
             yield return (CreateNotesTab(), GeneralUtils.GetResourceByName("global_notes"));
         }
 
@@ -328,6 +323,13 @@ namespace LogicPOS.UI.Components.Modals
             }
 
             return detailsTab;
+        }
+
+        private VBox CreateArticleCompositionTab()
+        {
+            var articlesTab = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
+            articlesTab.PackStart( new ArticleField().Component, false, false, 0);
+            return articlesTab;
         }
 
         private VBox CreateFinanceDetailsTab()
