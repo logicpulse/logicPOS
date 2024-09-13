@@ -40,7 +40,7 @@ namespace LogicPOS.UI.Components.Modals
                 PriceWithVat = _checkPriceWithVat.Active,
                 Discount = decimal.Parse(_txtDiscount.Text),
                 DefaultQuantity = uint.Parse(_txtDefaultQuantity.Text),
-                Accounting = decimal.Parse(_txtAccounting.Text),
+                TotalStock = decimal.Parse(_txtAccounting.Text),
                 MinimumStock = uint.Parse(_txtMinimumStock.Text),
                 Tare = decimal.Parse(_txtTare.Text),
                 Weight = float.Parse(_txtWeight.Text),
@@ -81,7 +81,7 @@ namespace LogicPOS.UI.Components.Modals
                 NewPriceWithVat = _checkPriceWithVat.Active,
                 NewDiscount = decimal.Parse(_txtDiscount.Text),
                 NewDefaultQuantity = uint.Parse(_txtDefaultQuantity.Text),
-                NewAccounting = decimal.Parse(_txtAccounting.Text),
+                NewTotalStock = decimal.Parse(_txtAccounting.Text),
                 NewMinimumStock = uint.Parse(_txtMinimumStock.Text),
                 NewTare = decimal.Parse(_txtTare.Text),
                 NewWeight = float.Parse(_txtWeight.Text),
@@ -122,14 +122,14 @@ namespace LogicPOS.UI.Components.Modals
             _checkPriceWithVat.Active = _entity.PriceWithVat;
             _txtDiscount.Text = _entity.Discount.ToString();
             _txtBarcode.Text = _entity.Barcode;
-            _txtAccounting.Text = _entity.Accounting.ToString();
+            _txtAccounting.Text = _entity.TotalStock.ToString();
             _txtMinimumStock.Text = _entity.MinimumStock.ToString();
             _txtTare.Text = _entity.Tare.ToString();
             _txtWeight.Text = _entity.Weight.ToString();
             _txtDefaultQuantity.Text = _entity.DefaultQuantity.ToString();
             _checkDisabled.Active = _entity.IsDeleted;
             _checkUniqueArticles.Active = _entity.UniqueArticles;
-            _txtAccounting.Text = _entity.Accounting.ToString();
+            _txtAccounting.Text = _entity.TotalStock.ToString();
         }
 
         protected override void UpdateEntity() => ExecuteUpdateCommand(CreateUpdateCommand());

@@ -2,6 +2,7 @@
 using LogicPOS.Api.Entities;
 using LogicPOS.Domain.Entities;
 using LogicPOS.UI.Components.InputFields;
+using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -40,7 +41,7 @@ namespace LogicPOS.UI.Components.Modals
         private CheckButton _checkUseWeighingBalance = new CheckButton(GeneralUtils.GetResourceByName("global_use_weighing_balance"));
         private CheckButton _checkPriceWithVat = new CheckButton(GeneralUtils.GetResourceByName("global_price_with_vat"));
         private CheckButton _checkPVPVariable = new CheckButton(GeneralUtils.GetResourceByName("global_variable_price"));
-        private TextBox _txtDiscount = new TextBox("global_discount");
+        private TextBox _txtDiscount = new TextBox("global_discount",true,true,RegularExpressions.Money);
         private TextBox _txtDefaultQuantity = new TextBox("global_article_default_quantity");
         private TextBox _txtAccounting = new TextBox("global_total_stock");
         private TextBox _txtMinimumStock = new TextBox("global_minimum_stock");
@@ -226,17 +227,17 @@ namespace LogicPOS.UI.Components.Modals
             SensitiveFields.Add(_txtButtonName.Entry);
             SensitiveFields.Add(_txtNotes.TextView);
             SensitiveFields.Add(_checkDisabled);
-            SensitiveFields.Add(_imagePicker.Component);
-            SensitiveFields.Add(_comboCommissionGroups.Component);
-            SensitiveFields.Add(_comboFamilies.Component);
-            SensitiveFields.Add(_comboDiscountGroups.Component);
-            SensitiveFields.Add(_comboVatDirectSelling.Component);
-            SensitiveFields.Add(_comboVatExemptionReasons.Component);
-            SensitiveFields.Add(_comboMeasurementUnits.Component);
-            SensitiveFields.Add(_comboSizeUnits.Component);
-            SensitiveFields.Add(_comboTypes.Component);
-            SensitiveFields.Add(_comboSubfamilies.Component);
-            SensitiveFields.Add(_comboClasses.Component);
+            SensitiveFields.Add(_imagePicker.FileChooserButton);
+            SensitiveFields.Add(_comboCommissionGroups.ComboBox);
+            SensitiveFields.Add(_comboFamilies.ComboBox);
+            SensitiveFields.Add(_comboDiscountGroups.ComboBox);
+            SensitiveFields.Add(_comboVatDirectSelling.ComboBox);
+            SensitiveFields.Add(_comboVatExemptionReasons.ComboBox);
+            SensitiveFields.Add(_comboMeasurementUnits.ComboBox);
+            SensitiveFields.Add(_comboSizeUnits.ComboBox);
+            SensitiveFields.Add(_comboTypes.ComboBox);
+            SensitiveFields.Add(_comboSubfamilies.ComboBox);
+            SensitiveFields.Add(_comboClasses.ComboBox);
             SensitiveFields.Add(_checkIsComposed);
             SensitiveFields.Add(_checkUniqueArticles);
             SensitiveFields.Add(_checkFavorite);
@@ -259,18 +260,16 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override void AddValidatableFields()
         {
-
-            switch (_modalMode)
+            if (_modalMode != EntityModalMode.Update)
             {
-                case EntityModalMode.Insert:
-                    ValidatableFields.Add(_txtDesignation);
-                    ValidatableFields.Add(_txtButtonName);
-                    break;
-                case EntityModalMode.Update:
-                    ValidatableFields.Add(_txtDesignation);
-                    ValidatableFields.Add(_txtButtonName);
-                    break;
+                ValidatableFields.Add(_txtOrder);
+                ValidatableFields.Add(_txtCode);
             }
+
+            ValidatableFields.Add(_txtDesignation);
+            ValidatableFields.Add(_txtDiscount);
+
+           
         }
 
         protected override IEnumerable<(VBox Page, string Title)> CreateTabs()

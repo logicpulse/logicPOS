@@ -21,7 +21,7 @@ namespace LogicPOS.Api.Features.Articles.UpdateArticle
         public bool? NewPriceWithVat { get; set; }
         public decimal? NewDiscount { get; set; }
         public uint? NewDefaultQuantity { get; set; }
-        public decimal? NewAccounting { get; set; }
+        public decimal? NewTotalStock { get; set; }
         public uint? NewMinimumStock { get; set; }
         public decimal? NewTare { get; set; }
         public float? NewWeight { get; set; }

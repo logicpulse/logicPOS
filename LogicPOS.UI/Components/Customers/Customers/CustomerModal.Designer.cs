@@ -2,6 +2,7 @@
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.InputFields;
+using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -31,7 +32,7 @@ namespace LogicPOS.UI.Components.Modals
         private TextBox _txtMobile = new TextBox("global_mobile_phone");
         private TextBox _txtEmail = new TextBox("global_email_separator");
 
-        private TextBox _txtDiscount = new TextBox("global_discount", true,true, @"^\d+(\.\d+)?$");
+        private TextBox _txtDiscount = new TextBox("global_discount", true,true, RegularExpressions.Money);
         private TextBox _txtFiscalNumber = new TextBox("global_fiscal_number",true,true,@"^[a-zA-Z0-9]+$");
         private TextBox _txtCardNumber = new TextBox("global_card_number");
         private TextBox _txtCardCredit = new TextBox("global_card_credit_amount",true,true, @"^\d+(\.\d+)?$");
