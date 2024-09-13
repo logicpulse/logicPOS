@@ -329,6 +329,9 @@ namespace LogicPOS.UI.Components.Modals
         {
             var articlesTab = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
             articlesTab.PackStart( new ArticleField().Component, false, false, 0);
+            articlesTab.PackStart(new ArticleField().Component, false, false, 0);
+            articlesTab.PackStart(new ArticleField().Component, false, false, 0);
+            articlesTab.PackStart(new ArticleField().Component, false, false, 0);
             return articlesTab;
         }
 

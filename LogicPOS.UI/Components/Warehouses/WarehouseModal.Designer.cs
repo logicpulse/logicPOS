@@ -136,7 +136,6 @@ namespace LogicPOS.UI.Components.Modals
         {
             var locationField = new WarehouseLocationField(location);
             locationField.OnRemove += Button_RemoveLocation_Clicked;
-            locationField.OnUpdate += Button_UpdateLocation_Clicked;
             _boxLocations.PackStart(locationField.Component, false, true, 0);
             ValidatableFields.Add(locationField.TxtLocation);
             locationField.Component.ShowAll();

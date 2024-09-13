@@ -180,38 +180,5 @@ namespace LogicPOS.UI.Components.Modals
 
             _entity.Locations.Remove(warehouseLocation);
         }
-
-        private void Button_UpdateLocation_Clicked(WarehouseLocationField field)
-        {
-            var id = field.Location.Id;
-            var newDesignation = field.TxtLocation.Text;
-
-            foreach (var location in _entity.Locations)
-            {
-                if (location.Id == id)
-                {
-                    location.Designation = newDesignation;
-                    UpdateLocationCommand(location);
-                }
-            }
-        }
-
-        private void UpdateLocationCommand(WarehouseLocation location)
-        {
-            var command = new UpdateWarehouseLocationCommand()
-            {
-                Id = location.Id,
-                NewDesignation = location.Designation
-            };
-
-
-            var result = _mediator.Send(command).Result;
-
-            if (result.IsError)
-            {
-                HandleApiError(result.FirstError);
-                return;
-            }
-        }
     }
 }

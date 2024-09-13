@@ -14,7 +14,6 @@ namespace LogicPOS.UI.Components.Warehouses
         public TextBox TxtLocation { get; } =  new TextBox("global_ConfigurationDevice_PlaceTerminal", isRequired: true);
 
         public event System.Action<WarehouseLocationField, WarehouseLocation> OnRemove;
-        public event System.Action<WarehouseLocationField> OnUpdate;
 
         private readonly IconButton BtnRemove = new IconButton(new ButtonSettings
         {
@@ -23,15 +22,6 @@ namespace LogicPOS.UI.Components.Warehouses
             BackgroundColor = Color.LightGray,
             IconSize = new Size(15, 15),
             ButtonSize = new Size(30, 15)
-        });
-
-        private readonly IconButton BtnUpdate = new IconButton(new ButtonSettings
-        {
-            Name = "touchButtonIcon",
-            Icon = PathsSettings.ImagesFolderLocation + @"Icons\Dialogs\icon_pos_dialog_action_ok.png",
-            BackgroundColor = AppSettings.Instance.colorBaseDialogActionAreaButtonBackground,
-            IconSize = new Size(15, 15),
-            ButtonSize = new Size(30, 15),
         });
 
         public HBox Component { get; }
