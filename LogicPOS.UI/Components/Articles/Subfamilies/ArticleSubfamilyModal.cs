@@ -68,64 +68,11 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override void UpdateEntity() => ExecuteUpdateCommand(CreateUpdateCommand());
 
-        private IEnumerable<Printer> GetPrinters()
-        {
-            var printers = _mediator.Send(new GetAllPrintersQuery()).Result;
+        private IEnumerable<Printer> GetPrinters() => ExecuteGetAllQuery(new GetAllPrintersQuery());
+        private IEnumerable<ArticleFamily> GetFamilies() => ExecuteGetAllQuery(new GetAllArticleFamiliesQuery());
+        private IEnumerable<DiscountGroup> GetDiscountGroups()=> ExecuteGetAllQuery(new GetAllDiscountGroupsQuery());
+        private IEnumerable<VatRate> GetVatRates()=>ExecuteGetAllQuery(new GetAllVatRatesQuery());
 
-            if (printers.IsError)
-            {
-                return Enumerable.Empty<Printer>();
-            }
-
-            return printers.Value;
-        }
-
-        private IEnumerable<ArticleFamily> GetFamilies()
-        {
-            var families = _mediator.Send(new GetAllArticleFamiliesQuery()).Result;
-
-            if (families.IsError)
-            {
-                return Enumerable.Empty<ArticleFamily>();
-            }
-
-            return families.Value;
-        }
-
-        private IEnumerable<DiscountGroup> GetDiscountGroups()
-        {
-            var groups = _mediator.Send(new GetAllDiscountGroupsQuery()).Result;
-
-            if (groups.IsError)
-            {
-                return Enumerable.Empty<DiscountGroup>();
-            }
-
-            return groups.Value;
-        }
-
-        private IEnumerable<VatRate> GetVatRates()
-        {
-            var vatRates = _mediator.Send(new GetAllVatRatesQuery()).Result;
-
-            if (vatRates.IsError)
-            {
-                return Enumerable.Empty<VatRate>();
-            }
-
-            return vatRates.Value;
-        }
-
-        private IEnumerable<CommissionGroup> GetCommissionGroups()
-        {
-            var groups = _mediator.Send(new GetAllCommissionGroupsQuery()).Result;
-
-            if (groups.IsError)
-            {
-                return Enumerable.Empty<CommissionGroup>();
-            }
-
-            return groups.Value;
-        }
+        private IEnumerable<CommissionGroup> GetCommissionGroups() => ExecuteGetAllQuery(new GetAllCommissionGroupsQuery());
     }
 }

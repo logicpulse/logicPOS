@@ -2,6 +2,7 @@
 using LogicPOS.Api.Features.Articles.Families.AddArticleFamily;
 using LogicPOS.Api.Features.Articles.Families.UpdateArticleFamily;
 using LogicPOS.Api.Features.CommissionGroups.GetAllCommissionGroups;
+using LogicPOS.Api.Features.Customers.DiscountGroups.GetAllDiscountGroups;
 using LogicPOS.Api.Features.Printers.GetAllPrinters;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,28 +58,8 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override void UpdateEntity() => ExecuteUpdateCommand(CreateUpdateCommand());
 
-        private IEnumerable<Printer> GetPrinters()
-        {
-            var printers = _mediator.Send(new GetAllPrintersQuery()).Result;
+        private IEnumerable<Printer> GetPrinters() => ExecuteGetAllQuery(new GetAllPrintersQuery());
+        private IEnumerable<CommissionGroup> GetCommissionGroups() => ExecuteGetAllQuery(new GetAllCommissionGroupsQuery());
 
-            if (printers.IsError)
-            {
-                return Enumerable.Empty<Printer>();
-            }
-
-            return printers.Value;
-        }
-
-        private IEnumerable<CommissionGroup> GetCommissionGroups()
-        {
-            var groups = _mediator.Send(new GetAllCommissionGroupsQuery()).Result;
-
-            if (groups.IsError)
-            {
-                return Enumerable.Empty<CommissionGroup>();
-            }
-
-            return groups.Value;
-        }
     }
 }

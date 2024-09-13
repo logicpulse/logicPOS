@@ -14,30 +14,9 @@ namespace LogicPOS.UI.Components.Modals
         {
         }
 
-        private IEnumerable<PriceType> GetPriceTypes()
-        {
-            var getPriceTypesResult = _mediator.Send(new GetAllPriceTypesQuery()).Result;
+        private IEnumerable<PriceType> GetPriceTypes() => ExecuteGetAllQuery(new GetAllPriceTypesQuery());
 
-            if (getPriceTypesResult.IsError)
-            {
-                return Enumerable.Empty<PriceType>();
-            }
-
-            return getPriceTypesResult.Value;
-        }
-
-        private IEnumerable<MovementType> GetMovementTypes()
-        {
-
-            var getMovementTypesResult = _mediator.Send(new GetAllMovementTypesQuery()).Result;
-
-            if (getMovementTypesResult.IsError)
-            {
-                return Enumerable.Empty<MovementType>();
-            }
-
-            return getMovementTypesResult.Value;
-        }
+        private IEnumerable<MovementType> GetMovementTypes()=>ExecuteGetAllQuery(new GetAllMovementTypesQuery());
 
         protected override void ShowEntityData()
         {

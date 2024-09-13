@@ -13,17 +13,7 @@ namespace LogicPOS.UI.Components.Modals
         {
         }
 
-        private IEnumerable<Place> GetPlaces()
-        {
-            var getPlacesResult = _mediator.Send(new GetAllPlacesQuery()).Result;
-
-            if (getPlacesResult.IsError)
-            {
-                return Enumerable.Empty<Place>();
-            }
-
-            return getPlacesResult.Value;
-        }
+        private IEnumerable<Place> GetPlaces() => ExecuteGetAllQuery(new GetAllPlacesQuery());
 
         protected override void ShowEntityData()
         {

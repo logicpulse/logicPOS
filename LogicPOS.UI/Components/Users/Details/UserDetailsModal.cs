@@ -97,29 +97,8 @@ namespace LogicPOS.UI.Components.Modals
         
         protected override void AddEntity() => ExecuteAddCommand(CreateAddCommand());
 
-        private IEnumerable<UserProfile> GetProfiles()
-        {
-            var getProfilesResult = _mediator.Send(new GetAllUserProfilesQuery()).Result;
+        private IEnumerable<UserProfile> GetProfiles() => ExecuteGetAllQuery(new GetAllUserProfilesQuery());
 
-            if (getProfilesResult.IsError)
-            {
-                return Enumerable.Empty<UserProfile>();
-            }
-
-            return getProfilesResult.Value;
-        }
-
-        private IEnumerable<CommissionGroup> GetCommissionGroups()
-        {
-            var getCommissionGroupsResult = _mediator.Send(new GetAllCommissionGroupsQuery()).Result;
-
-            if (getCommissionGroupsResult.IsError)
-            {
-                return Enumerable.Empty<CommissionGroup>();
-            }
-
-            return getCommissionGroupsResult.Value;
-        }
-
+        private IEnumerable<CommissionGroup> GetCommissionGroups()=>ExecuteGetAllQuery(new GetAllCommissionGroupsQuery());
     }
 }

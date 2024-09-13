@@ -107,29 +107,9 @@ namespace LogicPOS.UI.Components.Modals
             return getCountriesResult.Value;
         }
 
-        private IEnumerable<PriceType> GetPriceTypes()
-        {
-            var getPriceTypesResult = _mediator.Send(new GetAllPriceTypesQuery()).Result;
+        private IEnumerable<PriceType> GetPriceTypes() => ExecuteGetAllQuery(new GetAllPriceTypesQuery());
 
-            if (getPriceTypesResult.IsError)
-            {
-                return Enumerable.Empty<PriceType>();
-            }
-
-            return getPriceTypesResult.Value;
-        }
-
-        private IEnumerable<CustomerType> GetCustomerTypes()
-        {
-            var getCustomerTypes = _mediator.Send(new GetAllCustomerTypesQuery()).Result;
-
-            if (getCustomerTypes.IsError)
-            {
-                return Enumerable.Empty<CustomerType>();
-            }
-
-            return getCustomerTypes.Value;
-        }
+        private IEnumerable<CustomerType> GetCustomerTypes()=>ExecuteGetAllQuery(new GetAllCustomerTypesQuery());
 
     }
 }
