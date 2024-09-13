@@ -35,7 +35,7 @@ namespace LogicPOS.UI.Components.Modals
             _txtCardCredit.Text = _entity.CardCredit.ToString();
             _checkDisabled.Active = _entity.IsDeleted;
             _txtNotes.Value.Text = _entity.Notes;
-            _checkSupplier.Active = _entity.Supplier;
+            _checkSupplier.Active = _entity?.Supplier ?? false;
             _txtDiscount.Text = _entity.Discount.ToString();
 
         }
