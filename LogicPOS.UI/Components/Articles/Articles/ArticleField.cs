@@ -3,7 +3,10 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields.Validation;
+using LogicPOS.UI.Components.Modals;
+using LogicPOS.UI.Components.Pages;
 using LogicPOS.Utility;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Text.RegularExpressions;
 
@@ -44,6 +47,7 @@ namespace LogicPOS.UI.Components.InputFields
             {
                 TxtCode.Text = Article.Code;
                 TxtDesignation.Text = Article.Designation;
+                TxtQuantity.Text = "1";
             }
         }
 
@@ -88,8 +92,22 @@ namespace LogicPOS.UI.Components.InputFields
         {
             BtnRemove.Clicked += (s, e) => OnRemove?.Invoke(this, Article);
             BtnAdd.Clicked += (s, e) => OnAdd?.Invoke();
-
             TxtQuantity.Changed += (s, e) => UpdateValidationColors();
+            BtnSelect.Clicked += BtnSelect_Clicked;
+        }
+
+        private void BtnSelect_Clicked(object sender, System.EventArgs e)
+        {
+            var page = new ArticlesPage(null, PageOptions.SelectionPageOptions);
+            var selectArticleModal = new EntitySelectionModal<Article>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            ResponseType response = (ResponseType)selectArticleModal.Run();
+            selectArticleModal.Destroy();
+
+            if(response == ResponseType.Ok && page.SelectedEntity != null)
+            {
+                Article = page.SelectedEntity;
+                ShowEntity();
+            }
         }
 
         public bool IsValid()

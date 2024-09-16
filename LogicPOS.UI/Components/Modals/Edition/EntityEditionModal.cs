@@ -32,7 +32,7 @@ namespace LogicPOS.UI.Components.Modals
         protected IconButtonWithText _buttonOk;
         protected IconButtonWithText _buttonCancel;
         public List<Widget> SensitiveFields { get; private set; } = new List<Widget>();
-        public List<IValidatableField> ValidatableFields { get; private set; } = new List<IValidatableField>();
+        public HashSet<IValidatableField> ValidatableFields { get; private set; } = new HashSet<IValidatableField>();
 
         protected HBox _statusBar;
         protected MultilineTextBox _txtNotes = new MultilineTextBox();

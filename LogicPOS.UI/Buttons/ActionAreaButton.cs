@@ -1,7 +1,6 @@
 ﻿using Gtk;
 using logicpos;
 using LogicPOS.Settings;
-using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -51,7 +50,7 @@ namespace LogicPOS.UI.Buttons
             System.Drawing.Size sizeBaseDialogActionAreaButton = AppSettings.Instance.sizeBaseDialogActionAreaButton;
             System.Drawing.Size sizeBaseDialogActionAreaButtonIcon = AppSettings.Instance.sizeBaseDialogActionAreaButtonIcon;
             System.Drawing.Color colorBaseDialogActionAreaButtonFont = AppSettings.Instance.colorBaseDialogActionAreaButtonFont;
-           
+
             string fontBaseDialogActionAreaButton = AppSettings.Instance.fontBaseDialogActionAreaButton;
             //Icons
             string fileActionDefault = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_default.png";

@@ -411,10 +411,24 @@ namespace LogicPOS.UI.Components.Modals
         private void UpdateCompositionTabVisibility()
         {
             _compositionTab.Visible = _checkIsComposed.Active;
+
+            if (_checkIsComposed.Active == false)
+            {
+                _articleFields.ForEach(field => ValidatableFields.Remove(field));
+            }
+            else
+            {
+                _articleFields.ForEach(field => ValidatableFields.Add(field));
+            }
         }
 
         private void AddArticleField(Article article = null)
         {
+            if(_articleFields.Any() && _articleFields.Last().Article == null)
+            {
+                return;
+            }
+
             var field = new ArticleField(article);
             field.OnRemove += Button_RemoveArticle_Clicked;
             field.OnAdd += () => AddArticleField();

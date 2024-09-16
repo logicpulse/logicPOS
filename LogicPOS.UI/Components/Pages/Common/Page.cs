@@ -39,7 +39,7 @@ namespace LogicPOS.UI.Components.Pages
             Options = options;
 
             LoadEntities();
-
+            
             InitializeGridView();
 
             Design();

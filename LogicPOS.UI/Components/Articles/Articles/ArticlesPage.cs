@@ -13,7 +13,7 @@ namespace LogicPOS.UI.Components.Pages
 {
     public class ArticlesPage : Page<Article>
     {
-        public ArticlesPage(Window parent) : base(parent)
+        public ArticlesPage(Window parent, Dictionary<string,string> options = null) : base(parent, options)
         {
         }
 

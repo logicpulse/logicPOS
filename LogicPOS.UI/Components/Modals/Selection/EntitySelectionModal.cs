@@ -21,7 +21,6 @@ namespace LogicPOS.UI.Components.Modals
         public EntitySelectionModalWindowSettings WindowSettings { get; set; } = new EntitySelectionModalWindowSettings();
 
         public EntitySelectionModal(
-            Window parent, 
             Page<TEntity> page,
             string title)
         {
@@ -30,7 +29,7 @@ namespace LogicPOS.UI.Components.Modals
             Page = page;
             Page.SetSizeRequest(SelectionPageSize.Width, SelectionPageSize.Height);
 
-            InitializeWindow(parent, title);
+            InitializeWindow(title);
 
             Design();
 
@@ -62,9 +61,9 @@ namespace LogicPOS.UI.Components.Modals
             VBox.PackStart(eventboxWindowBorderOuter, true, true, 0);
         }
 
-        private void InitializeWindow(Window parent, string title)
+        private void InitializeWindow(string title)
         {
-            WindowSettings.Source = parent;
+            WindowSettings.Source = Page.PageParentWindow;
             WindowSettings.Title = new Label(title);
 
             Modal = false;
@@ -97,7 +96,6 @@ namespace LogicPOS.UI.Components.Modals
         {
             _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
             _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
-            _buttonOk.Sensitive = false;
 
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons
             {
