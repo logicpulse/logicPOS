@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
-using DocumentFormat.OpenXml.Office2013.Drawing.Chart;
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Settings;
@@ -10,7 +8,6 @@ using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.Warehouses;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
-using Svg.Pathing;
 
 namespace LogicPOS.UI.Components.Modals
 {

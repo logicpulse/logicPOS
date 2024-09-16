@@ -2,33 +2,55 @@
 using LogicPOS.Api.Entities;
 using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
-using LogicPOS.UI.Components.Warehouses;
+using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.Utility;
 using System.Drawing;
+using System.Text.RegularExpressions;
 
 namespace LogicPOS.UI.Components.InputFields
 {
-    public class ArticleField
+    public class ArticleField : IValidatableField
     {
         public VBox Component { get; private set; } = new VBox(false, 2);
         public IconButton BtnSelect { get; set; }
         public IconButton BtnRemove { get; set; }
         public IconButton BtnAdd { get; set; }
         public Entry TxtDesignation { get; set; } = new Entry() { IsEditable = false };
-        public Entry TxtQuantity { get; set; } = new Entry() { WidthRequest = 50, IsEditable = false };
+        public Entry TxtQuantity { get; set; } = new Entry() { WidthRequest = 50};
         public Entry TxtCode { get; set; } = new Entry() { WidthRequest = 50, IsEditable = false };
         public Label Label { get; set; } = new Label(GeneralUtils.GetResourceByName("global_article"));
         public Article Article { get; set; }
 
+        public string FieldName => Label.Text;
+
         public event System.Action<ArticleField, Article> OnRemove;
         public event System.Action OnAdd;
 
-        public ArticleField()
+        public ArticleField(Article article = null, uint quantity = 0)
         {
+            Article = article;
+            TxtQuantity.Text = quantity.ToString();
             Label.SetAlignment(0, 0.5f);
             InitializeButtons();
             PackComponents();
             AddEventHandlers();
+            UpdateValidationColors();
+            ShowEntity();
+        }
+
+        private void ShowEntity()
+        {
+            if (Article != null)
+            {
+                TxtCode.Text = Article.Code;
+                TxtDesignation.Text = Article.Designation;
+            }
+        }
+
+        private void UpdateValidationColors()
+        {
+            ValidationColors.Default.UpdateComponentFontColor(Label, IsValid());
+            ValidationColors.Default.UpdateComponentBackgroundColor(TxtQuantity, IsValid());
         }
 
         private void InitializeButtons()
@@ -66,6 +88,13 @@ namespace LogicPOS.UI.Components.InputFields
         {
             BtnRemove.Clicked += (s, e) => OnRemove?.Invoke(this, Article);
             BtnAdd.Clicked += (s, e) => OnAdd?.Invoke();
+
+            TxtQuantity.Changed += (s, e) => UpdateValidationColors();
+        }
+
+        public bool IsValid()
+        {
+            return (Article != null) && Regex.IsMatch(TxtQuantity.Text, RegularExpressions.IntegerNumber) && int.Parse(TxtQuantity.Text) > 0;
         }
     }
 }

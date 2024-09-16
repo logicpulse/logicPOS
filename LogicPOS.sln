@@ -35,7 +35,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogicPOS.Printing", "LogicP
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicPOS.Persistence", "LogicPOS.Persistence\LogicPOS.Persistence.csproj", "{4B305A39-47C9-4F59-AC06-EF868B4903AD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogicPOS.Api", "LogicPOS.Api\LogicPOS.Api.csproj", "{267C627F-2248-4500-9247-CE7F30431A25}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicPOS.Api", "LogicPOS.Api\LogicPOS.Api.csproj", "{267C627F-2248-4500-9247-CE7F30431A25}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

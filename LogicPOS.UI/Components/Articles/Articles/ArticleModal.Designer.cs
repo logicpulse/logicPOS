@@ -4,6 +4,7 @@ using LogicPOS.Domain.Entities;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Pages;
+using LogicPOS.UI.Components.Warehouses;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using System;
@@ -55,6 +56,9 @@ namespace LogicPOS.UI.Components.Modals
         private ArticlePriceField _price3;
         private ArticlePriceField _price4;
         private ArticlePriceField _price5;
+        private List<ArticleField> _articleFields = new List<ArticleField>();
+        private VBox _compositionTab;
+        private VBox _boxChildren;
         #endregion
 
         protected override void BeforeDesign()
@@ -73,6 +77,13 @@ namespace LogicPOS.UI.Components.Modals
 
             _txtTotalStock.Entry.IsEditable = false;
             _checkUniqueArticles.Sensitive = false;
+
+            AddEventHandlers();
+        }
+
+        private void AddEventHandlers()
+        {
+            _checkIsComposed.Toggled += (sender, e) => UpdateCompositionTabVisibility();
         }
 
         private void InitializeArticlePriceFields()
@@ -291,7 +302,7 @@ namespace LogicPOS.UI.Components.Modals
             yield return (CreateDetailsTab(), GeneralUtils.GetResourceByName("global_record_main_detail"));
             yield return (CreateFinanceDetailsTab(), GeneralUtils.GetResourceByName("dialog_edit_article_tab2_label"));
             yield return (CreateOtherDetailsTab(), GeneralUtils.GetResourceByName("dialog_edit_article_tab3_label"));
-            yield return (CreateArticleCompositionTab(), GeneralUtils.GetResourceByName("dialog_edit_article_tab4_label1"));
+            yield return (CreateCompositionTab(), GeneralUtils.GetResourceByName("dialog_edit_article_tab4_label1"));
             yield return (CreateNotesTab(), GeneralUtils.GetResourceByName("global_notes"));
         }
 
@@ -325,14 +336,12 @@ namespace LogicPOS.UI.Components.Modals
             return detailsTab;
         }
 
-        private VBox CreateArticleCompositionTab()
+        private VBox CreateCompositionTab()
         {
-            var articlesTab = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
-            articlesTab.PackStart( new ArticleField().Component, false, false, 0);
-            articlesTab.PackStart(new ArticleField().Component, false, false, 0);
-            articlesTab.PackStart(new ArticleField().Component, false, false, 0);
-            articlesTab.PackStart(new ArticleField().Component, false, false, 0);
-            return articlesTab;
+            _compositionTab = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
+            _compositionTab.PackStart(CreateScrolledWindow(), true, true, 0);
+            AddArticleField();
+            return _compositionTab;
         }
 
         private VBox CreateFinanceDetailsTab()
@@ -397,6 +406,48 @@ namespace LogicPOS.UI.Components.Modals
             vbox.PackStart(_price5.Component, false, false, 0);
               
             return vbox;
+        }
+
+        private void UpdateCompositionTabVisibility()
+        {
+            _compositionTab.Visible = _checkIsComposed.Active;
+        }
+
+        private void AddArticleField(Article article = null)
+        {
+            var field = new ArticleField(article);
+            field.OnRemove += Button_RemoveArticle_Clicked;
+            field.OnAdd += () => AddArticleField();
+            _boxChildren.PackStart(field.Component, false, false, 0);
+            ValidatableFields.Add(field);
+            field.Component.ShowAll();
+            _articleFields.Add(field);
+        }
+
+        private void Button_RemoveArticle_Clicked(ArticleField field, Article article)
+        {
+            if(_articleFields.Count < 2)
+            {
+                return;
+            }
+
+            _boxChildren.Remove(field.Component);
+            _articleFields.Remove(field);
+            ValidatableFields.Remove(field);
+        }
+
+        private ScrolledWindow CreateScrolledWindow()
+        {
+            var swindow = new ScrolledWindow();
+            swindow.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
+            swindow.ModifyBg(StateType.Normal, Color.White.ToGdkColor());
+            swindow.ShadowType = ShadowType.None;
+
+            _boxChildren = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
+
+            swindow.AddWithViewport(_boxChildren);
+
+            return swindow;
         }
     }
 }
