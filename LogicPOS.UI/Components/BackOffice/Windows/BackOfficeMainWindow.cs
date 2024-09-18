@@ -184,7 +184,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
             Dictionary<string, AccordionNode> _accordionDocuments = new Dictionary<string, AccordionNode>
                 {
                     { "DocumentFinanceYears", new AccordionNode(GeneralUtils.GetResourceByName("global_documentfinance_years")) { Content = new FiscalYearsPage(this) } },
-                    { "DocumentFinanceSeries", new AccordionNode(GeneralUtils.GetResourceByName("global_documentfinance_series")) { Content = Utils.GetGenericTreeViewXPO<TreeViewDocumentFinanceSeries>(this) } },
+                    { "DocumentFinanceSeries", new AccordionNode(GeneralUtils.GetResourceByName("global_documentfinance_series")) { Content = new DocumentSeriesPage(this) } },
                     { "DocumentFinanceType", new AccordionNode(GeneralUtils.GetResourceByName("global_documentfinance_type")) { Content = new DocumentTypesPage(this) } },
                     { "ConfigurationVatRate", new AccordionNode(GeneralUtils.GetResourceByName("global_vat_rates")) { Content = new VatRatesPage(this) } },
                     { "ConfigurationVatExemptionReason", new AccordionNode(GeneralUtils.GetResourceByName("global_vat_exemption_reason")) { Content = new VatExemptionReasonsPage(this) } },
@@ -224,7 +224,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
                 {
                     { "ConfigurationPreferenceParameterCompany", new AccordionNode(GeneralUtils.GetResourceByName("global_preferenceparameter_company")) { Content = new PreferenceParametersPage(this, new Dictionary<string, string>{{"parameters","company"}}) } },
                     { "ConfigurationPreferenceParameterSystem", new AccordionNode(GeneralUtils.GetResourceByName("global_preferenceparameter_system")) {Content = new PreferenceParametersPage(this, new Dictionary<string, string>{{"parameters","system"}}) }  },
-                    { "ConfigurationPlaceTerminal", new AccordionNode(GeneralUtils.GetResourceByName("global_places_terminals")) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlaceTerminal>(this) } }
+                    { "ConfigurationPlaceTerminal", new AccordionNode(GeneralUtils.GetResourceByName("global_places_terminals")) { Content = new TerminalsPage(this) } }
                 };
 
 
