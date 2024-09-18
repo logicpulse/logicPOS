@@ -1,5 +1,6 @@
 ﻿using ErrorOr;
 using Gtk;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.PoleDisplays;
 using LogicPOS.Api.Features.PoleDisplays.GetAllPoleDisplays;
 using LogicPOS.UI.Components.Modals;

@@ -19,6 +19,5 @@ namespace LogicPOS.Api.Features.Terminals.AddTerminal
             return await HandleAddCommandAsync("terminals", command, cancellationToken);
         }
     }
-    {
-    }
+
 }

@@ -1,4 +1,5 @@
-﻿using LogicPOS.Api.Features.PoleDisplays;
+﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.PoleDisplays;
 using LogicPOS.Api.Features.PoleDisplays.AddPoleDisplay;
 using LogicPOS.Api.Features.PoleDisplays.UpdatePoleDisplay;
 using LogicPOS.UI.Components.Modals;

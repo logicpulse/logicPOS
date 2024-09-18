@@ -1,7 +1,7 @@
 ﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
 
-namespace LogicPOS.Api.Features.PoleDisplays
+namespace LogicPOS.Api.Entities
 {
     public class PoleDisplay : ApiEntity, IWithCode, IWithDesignation
     {
