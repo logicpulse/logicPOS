@@ -11,6 +11,7 @@ using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.UI;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Menus;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
@@ -52,12 +53,10 @@ namespace logicpos
 
         private readonly uint _borderWidth = 5;
 
-        internal TablePad TablePadFamily { get; set; }
-        internal TablePad TablePadSubFamily { get; set; }
-
-        internal TablePad TablePadArticle { get; set; }
+        internal ArticleFamiliesMenu MenuFamilies { get; set; }
+        internal ArticleSubfamiliesMenu MenuSubfamilies { get; set; }
+        internal ArticlesMenu MenuArticles { get; set; }
         public TextBuffer BufferTextView { get; set; }
-
         public Label LabelTerminalInfo { get; set; }
         public Label LabelCurrentTable { get; set; }
 
@@ -75,8 +74,6 @@ namespace logicpos
             UpdateWorkSessionUI();
 
             StartClock();
-
-            TablePadArticle.Filter = " AND (Favorite = 1)";
 
             TicketList.UpdateTicketListButtons();
 
@@ -122,8 +119,8 @@ namespace logicpos
                 InitUIEventBoxStatusBar1(themeWindow);
                 InitUIEventBoxStatusBar2(themeWindow);
                 InitUIButtonFavorites(themeWindow);
-                InitUITablePads(themeWindow);
                 InitUIEventBoxPosTicketList(themeWindow);
+                InitializeMenus(themeWindow);
                 InitUIEventBoxPosTicketPad(themeWindow);
                
                 InitUiEventboxToolbar(themeWindow);
@@ -351,63 +348,62 @@ namespace logicpos
                 });
 
 
-            buttonFavorites.Clicked += buttonFavorites_Clicked;
+            buttonFavorites.Clicked += ButtonFavorites_Clicked;
 
             if (buttonFavoritesVisible) _fixedWindow.Put(buttonFavorites, buttonFavoritesPosition.X, buttonFavoritesPosition.Y);
         }
 
-        private void InitUITablePads(dynamic pThemeWindow)
+        private void InitializeMenus(dynamic pThemeWindow)
         {
             dynamic themeWindow = pThemeWindow;
 
             //VARS
 
             //Objects:TablePadFamilyButtonPrev
-            Point TablePadFamilyButtonPrevPosition = Utils.StringToPosition(themeWindow.Objects.TablePadFamily.TablePadFamilyButtonPrev.Position);
+            Point btnMenuFamiliesPreviousPosition = Utils.StringToPosition(themeWindow.Objects.TablePadFamily.TablePadFamilyButtonPrev.Position);
             Size TablePadFamilyButtonPrevSize = (themeWindow.Objects.TablePadFamily.TablePadFamilyButtonPrev.Size as string).ToSize();
             string TablePadFamilyButtonPrevImageFileName = themeWindow.Objects.TablePadFamily.TablePadFamilyButtonPrev.ImageFileName;
             //Objects:TablePadFamilyButtonNext
-            Point TablePadFamilyButtonNextPosition = Utils.StringToPosition(themeWindow.Objects.TablePadFamily.TablePadFamilyButtonNext.Position);
+            Point btnMenuFamiliesNextPosition = Utils.StringToPosition(themeWindow.Objects.TablePadFamily.TablePadFamilyButtonNext.Position);
             Size TablePadFamilyButtonNextSize = (themeWindow.Objects.TablePadFamily.TablePadFamilyButtonNext.Size as string).ToSize();
             string TablePadFamilyButtonNextImageFileName = themeWindow.Objects.TablePadFamily.TablePadFamilyButtonNext.ImageFileName;
             //Objects:TablePadFamily
-            Point tablePadFamilyPosition = Utils.StringToPosition(themeWindow.Objects.TablePadFamily.Position);
+            Point menuFamiliesPosition = Utils.StringToPosition(themeWindow.Objects.TablePadFamily.Position);
             Size tablePadFamilyButtonSize = (themeWindow.Objects.TablePadFamily.ButtonSize as string).ToSize();
             TableConfig tablePadFamilyTableConfig = Utils.StringToTableConfig(themeWindow.Objects.TablePadFamily.TableConfig);
-            bool tablePadFamilyVisible = Convert.ToBoolean(themeWindow.Objects.TablePadFamily.Visible);
+            bool showFamiliesMenu = Convert.ToBoolean(themeWindow.Objects.TablePadFamily.Visible);
 
             //Objects:TablePadSubFamilyButtonPrev
-            Point TablePadSubFamilyButtonPrevPosition = Utils.StringToPosition(themeWindow.Objects.TablePadSubFamily.TablePadSubFamilyButtonPrev.Position);
+            Point btnMenuSubfamiliesPreviousPosition = Utils.StringToPosition(themeWindow.Objects.TablePadSubFamily.TablePadSubFamilyButtonPrev.Position);
             Size TablePadSubFamilyButtonPrevSize = (themeWindow.Objects.TablePadSubFamily.TablePadSubFamilyButtonPrev.Size as string).ToSize();
             string TablePadSubFamilyButtonPrevImageFileName = themeWindow.Objects.TablePadSubFamily.TablePadSubFamilyButtonPrev.ImageFileName;
             //Objects:TablePadSubFamilyButtonNext
-            Point TablePadSubFamilyButtonNextPosition = Utils.StringToPosition(themeWindow.Objects.TablePadSubFamily.TablePadSubFamilyButtonNext.Position);
+            Point btnMenuSubfamiliesNextPosition = Utils.StringToPosition(themeWindow.Objects.TablePadSubFamily.TablePadSubFamilyButtonNext.Position);
             Size TablePadSubFamilyButtonNextSize = (themeWindow.Objects.TablePadSubFamily.TablePadSubFamilyButtonNext.Size as string).ToSize();
             string TablePadSubFamilyButtonNextImageFileName = themeWindow.Objects.TablePadSubFamily.TablePadSubFamilyButtonNext.ImageFileName;
             //Objects:TablePadSubFamily
-            Point tablePadSubFamilyPosition = Utils.StringToPosition(themeWindow.Objects.TablePadSubFamily.Position);
+            Point menuSubfamiliesPosition = Utils.StringToPosition(themeWindow.Objects.TablePadSubFamily.Position);
             Size tablePadSubFamilyButtonSize = (themeWindow.Objects.TablePadSubFamily.ButtonSize as string).ToSize();
             TableConfig tablePadSubFamilyTableConfig = Utils.StringToTableConfig(themeWindow.Objects.TablePadSubFamily.TableConfig);
-            bool tablePadSubFamilyVisible = Convert.ToBoolean(themeWindow.Objects.TablePadSubFamily.Visible);
+            bool showSubfamiliesMenu = Convert.ToBoolean(themeWindow.Objects.TablePadSubFamily.Visible);
 
             //Objects:TablePadArticleButtonPrev
-            Point TablePadArticleButtonPrevPosition = Utils.StringToPosition(themeWindow.Objects.TablePadArticle.TablePadArticleButtonPrev.Position);
+            Point btnMenuArticlesPreviousPosition = Utils.StringToPosition(themeWindow.Objects.TablePadArticle.TablePadArticleButtonPrev.Position);
             Size TablePadArticleButtonPrevSize = (themeWindow.Objects.TablePadArticle.TablePadArticleButtonPrev.Size as string).ToSize();
             string TablePadArticleButtonPrevImageFileName = themeWindow.Objects.TablePadArticle.TablePadArticleButtonPrev.ImageFileName;
             //Objects:TablePadArticleButtonNext
-            Point TablePadArticleButtonNextPosition = Utils.StringToPosition(themeWindow.Objects.TablePadArticle.TablePadArticleButtonNext.Position);
+            Point btnMenuArticlesNextPosition = Utils.StringToPosition(themeWindow.Objects.TablePadArticle.TablePadArticleButtonNext.Position);
             Size TablePadArticleButtonNextSize = (themeWindow.Objects.TablePadArticle.TablePadArticleButtonNext.Size as string).ToSize();
             string TablePadArticleButtonNextImageFileName = themeWindow.Objects.TablePadArticle.TablePadArticleButtonNext.ImageFileName;
             //Objects:TablePadArticle
             Point tablePadArticlePosition = Utils.StringToPosition(themeWindow.Objects.TablePadArticle.Position);
             Size tablePadArticleButtonSize = (themeWindow.Objects.TablePadArticle.ButtonSize as string).ToSize();
             TableConfig tablePadArticleTableConfig = Utils.StringToTableConfig(themeWindow.Objects.TablePadArticle.TableConfig);
-            bool tablePadArticleVisible = Convert.ToBoolean(themeWindow.Objects.TablePadArticle.Visible);
+            bool showArticlesMenu = Convert.ToBoolean(themeWindow.Objects.TablePadArticle.Visible);
 
             //UI
 
-            //Objects:TablePadFamilyButtonPrev
-            IconButton TablePadFamilyButtonPrev = new IconButton(
+            IconButton btnFamiliesPrevious = new IconButton(
                 new ButtonSettings
                 {
                     Name = "TablePadFamilyButtonPrev",
@@ -416,12 +412,11 @@ namespace logicpos
                     ButtonSize = new Size(TablePadFamilyButtonPrevSize.Width, TablePadFamilyButtonPrevSize.Height)
                 });
 
-            TablePadFamilyButtonPrev.Relief = ReliefStyle.None;
-            TablePadFamilyButtonPrev.BorderWidth = 0;
-            TablePadFamilyButtonPrev.CanFocus = false;
+            btnFamiliesPrevious.Relief = ReliefStyle.None;
+            btnFamiliesPrevious.BorderWidth = 0;
+            btnFamiliesPrevious.CanFocus = false;
 
-            //Objects:TablePadFamilyButtonNext
-            IconButton TablePadFamilyButtonNext = new IconButton(
+            IconButton btnFamiliesNext = new IconButton(
                 new ButtonSettings
                 {
                     Name = "TablePadFamilyButtonNext",
@@ -430,46 +425,22 @@ namespace logicpos
                     ButtonSize = new Size(TablePadFamilyButtonNextSize.Width, TablePadFamilyButtonNextSize.Height)
                 });
 
-            TablePadFamilyButtonNext.Relief = ReliefStyle.None;
-            TablePadFamilyButtonNext.BorderWidth = 0;
-            TablePadFamilyButtonNext.CanFocus = false;
-            //Objects:TablePadFamily
-            string sqlTablePadFamily = @"
-                SELECT 
-                    Oid as id, Designation as name, ButtonLabel as label, ButtonImage as image,
-                    (SELECT COUNT(*) as childs FROM fin_articlesubfamily WHERE (Disabled IS NULL or Disabled  <> 1) AND Family = p.Oid) as childs
-                FROM 
-                    fin_articlefamily as p 
-                WHERE 
-                    (Disabled IS NULL or Disabled <> 1)
-            ";
-            TablePadFamily = new TablePad(
-                sqlTablePadFamily,
-                "ORDER BY Ord",
-                "",
-                Guid.Empty,
-                true,
-                tablePadFamilyTableConfig.Rows,
-                tablePadFamilyTableConfig.Columns,
-                "buttonFamilyId",
-                Color.Transparent,
-                tablePadFamilyButtonSize.Width,
-                tablePadFamilyButtonSize.Height,
-                TablePadFamilyButtonPrev,
-                TablePadFamilyButtonNext
-            );
-            TablePadFamily.SourceWindow = this;
-            TablePadFamily.Clicked += _tablePadFamily_Clicked;
-            //Put
-            if (tablePadFamilyVisible)
+            btnFamiliesNext.Relief = ReliefStyle.None;
+            btnFamiliesNext.BorderWidth = 0;
+            btnFamiliesNext.CanFocus = false;
+
+            
+            MenuFamilies = new ArticleFamiliesMenu(btnFamiliesPrevious, btnFamiliesNext);
+            MenuFamilies.SourceWindow = this;
+
+            if (showFamiliesMenu)
             {
-                _fixedWindow.Put(TablePadFamilyButtonPrev, TablePadFamilyButtonPrevPosition.X, TablePadFamilyButtonPrevPosition.Y);
-                _fixedWindow.Put(TablePadFamilyButtonNext, TablePadFamilyButtonNextPosition.X, TablePadFamilyButtonNextPosition.Y);
-                _fixedWindow.Put(TablePadFamily, tablePadFamilyPosition.X, tablePadFamilyPosition.Y);
+                _fixedWindow.Put(btnFamiliesPrevious, btnMenuFamiliesPreviousPosition.X, btnMenuFamiliesPreviousPosition.Y);
+                _fixedWindow.Put(btnFamiliesNext, btnMenuFamiliesNextPosition.X, btnMenuFamiliesNextPosition.Y);
+                _fixedWindow.Put(MenuFamilies, menuFamiliesPosition.X, menuFamiliesPosition.Y);
             }
 
-            //Objects:TablePadSubFamilyButtonPrev
-            IconButton TablePadSubFamilyButtonPrev = new IconButton(
+            IconButton btnSubfamiliesPrevious = new IconButton(
                 new ButtonSettings
                 {
                     Name = "TablePadSubFamilyButtonPrev",
@@ -478,94 +449,50 @@ namespace logicpos
                     ButtonSize = new Size(TablePadSubFamilyButtonPrevSize.Width, TablePadSubFamilyButtonPrevSize.Height)
                 });
 
-            TablePadSubFamilyButtonPrev.Relief = ReliefStyle.None;
-            TablePadSubFamilyButtonPrev.BorderWidth = 0;
-            TablePadSubFamilyButtonPrev.CanFocus = false;
-            //Objects:TablePadSubFamilyButtonNext
-            IconButton TablePadSubFamilyButtonNext = new IconButton(new ButtonSettings { Name = "TablePadSubFamilyButtonNext", Icon = TablePadSubFamilyButtonNextImageFileName, IconSize = new Size(TablePadSubFamilyButtonNextSize.Width - 6, TablePadSubFamilyButtonNextSize.Height - 6), ButtonSize = new Size(TablePadSubFamilyButtonNextSize.Width, TablePadSubFamilyButtonNextSize.Height) });
-            TablePadSubFamilyButtonNext.Relief = ReliefStyle.None;
-            TablePadSubFamilyButtonNext.BorderWidth = 0;
-            TablePadSubFamilyButtonNext.CanFocus = false;
-            //Objects:TablePadSubFamily
-            string sqlTablePadSubFamily = @"
-                SELECT 
-                    Oid as id, Designation as name, ButtonLabel as label, ButtonImage as image,
-                    (SELECT COUNT(*) as childs FROM fin_article WHERE (Disabled IS NULL or Disabled  <> 1) AND SubFamily = p.Oid) as childs
-                FROM 
-                    fin_articlesubfamily as p 
-                WHERE 
-                    (Disabled IS NULL or Disabled <> 1)
-            ";
-            string filterTablePadSubFamily = " AND (Family = '" + TablePadFamily.SelectedButtonOid + "')";
-            TablePadSubFamily = new TablePad(
-                sqlTablePadSubFamily,
-                "ORDER BY Ord",
-                filterTablePadSubFamily,
-                Guid.Empty,
-                true,
-                tablePadSubFamilyTableConfig.Rows,
-                tablePadSubFamilyTableConfig.Columns,
-                "buttonSubFamilyId",
-                Color.Transparent,
-                tablePadSubFamilyButtonSize.Width,
-                tablePadSubFamilyButtonSize.Height,
-                TablePadSubFamilyButtonPrev,
-                TablePadSubFamilyButtonNext
-            );
-            TablePadSubFamily.SourceWindow = this;
-            TablePadSubFamily.Clicked += _tablePadSubFamily_Clicked;
-            //Put
-            if (tablePadSubFamilyVisible)
+            btnSubfamiliesPrevious.Relief = ReliefStyle.None;
+            btnSubfamiliesPrevious.BorderWidth = 0;
+            btnSubfamiliesPrevious.CanFocus = false;
+
+
+            IconButton btnSubfamiliesNext = new IconButton(new ButtonSettings { Name = "TablePadSubFamilyButtonNext", Icon = TablePadSubFamilyButtonNextImageFileName, IconSize = new Size(TablePadSubFamilyButtonNextSize.Width - 6, TablePadSubFamilyButtonNextSize.Height - 6), ButtonSize = new Size(TablePadSubFamilyButtonNextSize.Width, TablePadSubFamilyButtonNextSize.Height) });
+            btnSubfamiliesNext.Relief = ReliefStyle.None;
+            btnSubfamiliesNext.BorderWidth = 0;
+            btnSubfamiliesNext.CanFocus = false;
+          
+            MenuSubfamilies = new ArticleSubfamiliesMenu(MenuFamilies, btnSubfamiliesPrevious, btnSubfamiliesNext);   
+            MenuSubfamilies.SourceWindow = this;
+
+            if (showSubfamiliesMenu)
             {
-                _fixedWindow.Put(TablePadSubFamilyButtonPrev, TablePadSubFamilyButtonPrevPosition.X, TablePadSubFamilyButtonPrevPosition.Y);
-                _fixedWindow.Put(TablePadSubFamilyButtonNext, TablePadSubFamilyButtonNextPosition.X, TablePadSubFamilyButtonNextPosition.Y);
-                _fixedWindow.Put(TablePadSubFamily, tablePadSubFamilyPosition.X, tablePadSubFamilyPosition.Y);
+                _fixedWindow.Put(btnSubfamiliesPrevious, btnMenuSubfamiliesPreviousPosition.X, btnMenuSubfamiliesPreviousPosition.Y);
+                _fixedWindow.Put(btnSubfamiliesNext, btnMenuSubfamiliesNextPosition.X, btnMenuSubfamiliesNextPosition.Y);
+                _fixedWindow.Put(MenuSubfamilies, menuSubfamiliesPosition.X, menuSubfamiliesPosition.Y);
             }
 
-            //Objects:TablePadArticleButtonPrev
-            IconButton TablePadArticleButtonPrev = new IconButton(new ButtonSettings { Name = "TablePadArticleButtonPrev", Icon = TablePadArticleButtonPrevImageFileName, IconSize = new Size(TablePadArticleButtonPrevSize.Width - 6, TablePadArticleButtonPrevSize.Height - 6), ButtonSize = new Size(TablePadArticleButtonPrevSize.Width, TablePadArticleButtonPrevSize.Height) });
-            TablePadArticleButtonPrev.Relief = ReliefStyle.None;
-            TablePadArticleButtonPrev.BorderWidth = 0;
-            TablePadArticleButtonPrev.CanFocus = false;
-            //Objects:TablePadArticleButtonNext
-            IconButton TablePadArticleButtonNext = new IconButton(new ButtonSettings { Name = "TablePadArticleButtonNext", Icon = TablePadArticleButtonNextImageFileName, IconSize = new Size(TablePadArticleButtonNextSize.Width - 6, TablePadArticleButtonNextSize.Height - 6), ButtonSize = new Size(TablePadArticleButtonNextSize.Width, TablePadArticleButtonNextSize.Height) });
-            TablePadArticleButtonNext.Relief = ReliefStyle.None;
-            TablePadArticleButtonNext.BorderWidth = 0;
-            TablePadArticleButtonNext.CanFocus = false;
-            //Objects:TablePadArticle
-            string sql = @"
-                SELECT 
-                    Oid as id, Designation as name, ButtonLabel as label, ButtonImage as image, Price1 as price, ButtonLabelHide 
-                FROM 
-                    fin_article 
-                WHERE 
-                    (Disabled IS NULL or Disabled <> 1)
-            ";
-            string filterTablePadArticle = " AND (SubFamily = '" + TablePadSubFamily.SelectedButtonOid + "')";
-            TablePadArticle = new TablePadArticle(
-                sql,
-                "ORDER BY Ord",
-                filterTablePadArticle,
-                Guid.Empty,
-                false,
-                tablePadArticleTableConfig.Rows,
-                tablePadArticleTableConfig.Columns,
-                "buttonArticleId",
-                Color.Transparent,
-                tablePadArticleButtonSize.Width,
-                tablePadArticleButtonSize.Height,
-                TablePadArticleButtonPrev,
-                TablePadArticleButtonNext
-            )
+            IconButton btnMenuArticlesPrevious = new IconButton(new ButtonSettings { Name = "TablePadArticleButtonPrev", Icon = TablePadArticleButtonPrevImageFileName, IconSize = new Size(TablePadArticleButtonPrevSize.Width - 6, TablePadArticleButtonPrevSize.Height - 6), ButtonSize = new Size(TablePadArticleButtonPrevSize.Width, TablePadArticleButtonPrevSize.Height) });
+            btnMenuArticlesPrevious.Relief = ReliefStyle.None;
+            btnMenuArticlesPrevious.BorderWidth = 0;
+            btnMenuArticlesPrevious.CanFocus = false;
+
+            IconButton btnMenuArticlesNext = new IconButton(new ButtonSettings { Name = "TablePadArticleButtonNext", Icon = TablePadArticleButtonNextImageFileName, IconSize = new Size(TablePadArticleButtonNextSize.Width - 6, TablePadArticleButtonNextSize.Height - 6), ButtonSize = new Size(TablePadArticleButtonNextSize.Width, TablePadArticleButtonNextSize.Height) });
+            btnMenuArticlesNext.Relief = ReliefStyle.None;
+            btnMenuArticlesNext.BorderWidth = 0;
+            btnMenuArticlesNext.CanFocus = false;
+
+
+            MenuArticles = new ArticlesMenu(MenuSubfamilies,
+                                            btnMenuArticlesPrevious,
+                                            btnMenuArticlesNext,
+                                            TicketList)
             { Sensitive = false };
-            TablePadArticle.SourceWindow = this;
-            TablePadArticle.Clicked += _tablePadArticle_Clicked;
-            //Put
-            if (tablePadArticleVisible)
+
+            MenuArticles.SourceWindow = this;
+           
+            if (showArticlesMenu)
             {
-                _fixedWindow.Put(TablePadArticleButtonPrev, TablePadArticleButtonPrevPosition.X, TablePadArticleButtonPrevPosition.Y);
-                _fixedWindow.Put(TablePadArticleButtonNext, TablePadArticleButtonNextPosition.X, TablePadArticleButtonNextPosition.Y);
-                _fixedWindow.Put(TablePadArticle, tablePadArticlePosition.X, tablePadArticlePosition.Y);
+                _fixedWindow.Put(btnMenuArticlesPrevious, btnMenuArticlesPreviousPosition.X, btnMenuArticlesPreviousPosition.Y);
+                _fixedWindow.Put(btnMenuArticlesNext, btnMenuArticlesNextPosition.X, btnMenuArticlesNextPosition.Y);
+                _fixedWindow.Put(MenuArticles, tablePadArticlePosition.X, tablePadArticlePosition.Y);
             }
         }
 

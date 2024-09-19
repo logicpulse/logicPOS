@@ -17,6 +17,7 @@ using LogicPOS.Shared.Orders;
 using LogicPOS.UI.Buttons;
 using LogicPOS.Utility;
 using System;
+using System.Linq;
 
 namespace logicpos
 {
@@ -28,11 +29,10 @@ namespace logicpos
         {
             if (args.Event.NewWindowState == Gdk.WindowState.Fullscreen)
             {
-                TablePadFamily.SelectedButtonOid = Guid.Empty;
-                TablePadFamily.Refresh();
-                TablePadSubFamily.Filter = string.Format("  AND (Family = '{0}')", TablePadFamily.SelectedButtonOid);
-                TablePadSubFamily.Refresh();
-                TablePadArticle.Refresh();
+                MenuFamilies.SelectedFamily = null;
+                MenuFamilies.Refresh();
+                MenuSubfamilies.Refresh();
+                MenuArticles.Refresh();
             }
         }
 
@@ -144,47 +144,19 @@ namespace logicpos
 
         }
 
-        private void buttonFavorites_Clicked(object sender, EventArgs e)
+        private void ButtonFavorites_Clicked(object sender, EventArgs e)
         {
-            TablePadArticle.Filter = " AND (Favorite = 1)";
-
-            if (TablePadFamily.SelectedButton != null && !TablePadFamily.SelectedButton.Sensitive) TablePadFamily.SelectedButton.Sensitive = true;
-            if (TablePadSubFamily.SelectedButton != null && !TablePadSubFamily.SelectedButton.Sensitive) TablePadSubFamily.SelectedButton.Sensitive = true;
+            if (MenuFamilies.SelectedButton != null && !MenuFamilies.SelectedButton.Sensitive) MenuFamilies.SelectedButton.Sensitive = true;
+            if (MenuSubfamilies.SelectedButton != null && !MenuSubfamilies.SelectedButton.Sensitive) MenuSubfamilies.SelectedButton.Sensitive = true;
         }
 
-        private void _tablePadFamily_Clicked(object sender, EventArgs e)
+        private void MenuSubfamiliesBtn_Clicked(object sender, EventArgs e)
         {
             CustomButton button = (CustomButton)sender;
-
-            TablePadFamily.SelectedButtonOid = button.CurrentButtonId;
-
-            TablePadSubFamily.Filter = string.Format(" AND (Family = '{0}')", button.CurrentButtonId);
-
-            string getFirstSubFamily = "0";
-            if (DatabaseSettings.DatabaseType.IsMySql() || DatabaseSettings.DatabaseType.IsSQLite())
-            {
-                string mysql = string.Format("SELECT Oid FROM fin_articlesubfamily WHERE Family = '{0}' Order by CODE Asc LIMIT 1", TablePadFamily.SelectedButtonOid);
-                getFirstSubFamily = XPOSettings.Session.ExecuteScalar(mysql).ToString();
-            }
-            else if (DatabaseSettings.DatabaseType.ToString() == "MSSqlServer")
-            {
-                string mssqlServer = string.Format("SELECT TOP 1 Oid FROM fin_articlesubfamily WHERE Family = '{0}' Order by CODE Asc", TablePadFamily.SelectedButtonOid);
-                getFirstSubFamily = XPOSettings.Session.ExecuteScalar(mssqlServer).ToString();
-            }
-
-            TablePadArticle.Filter = " AND (SubFamily = '" + getFirstSubFamily + "')";
+            MenuSubfamilies.SelectedSubfamily = MenuSubfamilies.Buttons.First(b => b.Button == button).Subfamily;
         }
 
-        private void _tablePadSubFamily_Clicked(object sender, EventArgs e)
-        {
-            CustomButton button = (CustomButton)sender;
-
-            TablePadSubFamily.SelectedButtonOid = button.CurrentButtonId;
-
-            TablePadArticle.Filter = string.Format(" AND (SubFamily = '{0}')", button.CurrentButtonId);
-        }
-
-        private void _tablePadArticle_Clicked(object sender, EventArgs e)
+        private void MenuArticlesBtn_Clicked(object sender, EventArgs e)
         {
             CustomButton button = (CustomButton)sender;
 
@@ -194,11 +166,10 @@ namespace logicpos
                 TicketList.UpdateModel();
             }
 
-            TablePadArticle.SelectedButtonOid = button.CurrentButtonId;
+            MenuArticles.SelectedArticle = MenuArticles.Buttons.First(b => b.Button == button).Article;
 
             TicketList.InsertOrUpdate(button.CurrentButtonId);
         }
-
 
         private void eventBoxImageLogo_ButtonPressEvent(object o, ButtonPressEventArgs args)
         {
@@ -258,9 +229,9 @@ namespace logicpos
         public void UpdateUI()
         {
             LabelTerminalInfo.Text = string.Format("{0} : {1}", TerminalSettings.LoggedTerminal.Designation, XPOSettings.LoggedUser.Name);
-            TablePadFamily.UpdateSql();
-            TablePadSubFamily.UpdateSql();
-            TablePadArticle.UpdateSql();
+            MenuFamilies.LoadEntities();
+            MenuSubfamilies.LoadEntities();
+            MenuArticles.LoadEntities();
 
             TicketList.UpdateTicketListButtons();
         }
@@ -319,7 +290,7 @@ namespace logicpos
                             _ticketPad.Sensitive = true;
                         }
                         if (!GeneralSettings.AppUseBackOfficeMode)
-                            TablePadArticle.Sensitive = true;
+                            MenuArticles.Sensitive = true;
 
                         if (!_ticketPad.Sensitive == true && !GeneralSettings.AppUseBackOfficeMode)
                             _ticketPad.Sensitive = true;
@@ -329,8 +300,8 @@ namespace logicpos
                     {
                         if (!_ticketPad.Sensitive == false)
                             _ticketPad.Sensitive = false;
-                        if (!TablePadArticle.Sensitive == false)
-                            TablePadArticle.Sensitive = false;
+                        if (!MenuArticles.Sensitive == false)
+                            MenuArticles.Sensitive = false;
                     }
                 }
             }
@@ -338,8 +309,8 @@ namespace logicpos
             {
                 if (!_ticketPad.Sensitive == false)
                     _ticketPad.Sensitive = false;
-                if (!TablePadArticle.Sensitive == false)
-                    TablePadArticle.Sensitive = false;
+                if (!MenuArticles.Sensitive == false)
+                    MenuArticles.Sensitive = false;
             }
         }
 

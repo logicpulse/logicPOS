@@ -711,13 +711,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         article.Notes = $"[{ean}]";
                         article.DefaultQuantity = Convert.ToInt32(parkingTicketResult.Quantity);
                     }
-                    /* 
-     * This was a unnecessary double-check already being done by ParkingTicket class.
-     * When a parking ticket is already in the order list, it is unique and its quantity is '1' ever. We can't have 2+ units of the same.
-     * But variable _listStoreModelSelectedIndex is settled to '0' without the line code below... Therefore, setting it to '-1'
-     */
-                    //Get current Index with LINQ : To Get OrderDetail articleId Index, If Exists
-                    // _listStoreModelSelectedIndex = _currentOrderDetails.Lines.FindIndex(item => item.Designation.Contains(pToken1));
+
                     _listStoreModelSelectedIndex = -1;
                 }
                 else

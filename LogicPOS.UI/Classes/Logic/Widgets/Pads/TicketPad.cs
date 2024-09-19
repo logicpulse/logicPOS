@@ -91,7 +91,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             _ticketList.UpdateModel();
 
             //Update PosMainWindow Components
-            GlobalApp.PosMainWindow.TablePadArticle.Sensitive = true;
+            GlobalApp.PosMainWindow.MenuArticles.Sensitive = true;
             _ticketList.UpdateArticleBag();
             _ticketList.UpdateTicketListOrderButtons();
             _ticketList.UpdateOrderStatusBar();
