@@ -9,17 +9,17 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class DocumentSerieModal
     {
-        public override Size ModalSize => new Size(500, 550);
-        public override string ModalTitleResourceName => "dialog_edit_ConfigurationPlaceTerminal_tab1_label";
+        public override Size ModalSize => new Size(500, 650);
+        public override string ModalTitleResourceName => "dialog_edit_DocumentFinanceSeries_tab1_label";
 
         #region Components
         private TextBox _txtOrder = TextBoxes.CreateOrderField();
         private TextBox _txtCode = TextBoxes.CreateCodeField();
         private TextBox _txtDesignation = TextBoxes.CreateDesignationField();
-        private TextBox _txtNextNumber = new TextBox("global_documentfinanceseries_NextDocumentNumber");
-        private TextBox _txtNumberRangeBegin = new TextBox("global_documentfinanceseries_DocumentNumberRangeBegin");
-        private TextBox _txtNumberRangeEnd = new TextBox("global_documentfinanceseries_DocumentNumberRangeEnd");
-        private TextBox _txtAcronym = new TextBox("global_acronym");
+        private TextBox _txtNextNumber = new TextBox("global_documentfinanceseries_NextDocumentNumber", true, true, @"^[1-9][0-9]*$");
+        private TextBox _txtNumberRangeBegin = new TextBox("global_documentfinanceseries_DocumentNumberRangeBegin", true, true, @"^0|[1-9][0-9]*$");
+        private TextBox _txtNumberRangeEnd = new TextBox("global_documentfinanceseries_DocumentNumberRangeEnd", true, true, @"^0|[1-9][0-9]*$");
+        private TextBox _txtAcronym = new TextBox("global_acronym", true, true, @"^[a-zA-Z0-9\s]{1,12}$");
         private TextBox _txtATDocCodeValidationSerie= new TextBox("global_at_atdoccodeid");
         private EntityComboBox<FiscalYear>  _comboFiscalYears;
         private EntityComboBox<DocumentType>  _comboDocumentTypes;
@@ -43,7 +43,7 @@ namespace LogicPOS.UI.Components.Modals
             _comboFiscalYears = new EntityComboBox<FiscalYear>(labelText,
                                                              fiscalYears,
                                                              currentFiscalYear,
-                                                             false);
+                                                             true);
         }
 
         private void InitializeDocumentTypesComboBox()
@@ -55,7 +55,7 @@ namespace LogicPOS.UI.Components.Modals
             _comboDocumentTypes = new EntityComboBox<DocumentType>(labelText,
                                                              documentTypes,
                                                              currentDocumentType,
-                                                             false);
+                                                             true);
         }
 
 
@@ -71,6 +71,8 @@ namespace LogicPOS.UI.Components.Modals
             SensitiveFields.Add(_txtATDocCodeValidationSerie.Entry);
             SensitiveFields.Add(_txtNotes.TextView);
             SensitiveFields.Add(_checkDisabled);
+            SensitiveFields.Add(_comboFiscalYears.ComboBox);
+            SensitiveFields.Add(_comboDocumentTypes.ComboBox);
         }
 
         protected override void AddValidatableFields()
@@ -85,6 +87,8 @@ namespace LogicPOS.UI.Components.Modals
                     ValidatableFields.Add(_txtNumberRangeEnd);
                     ValidatableFields.Add(_txtAcronym);
                     ValidatableFields.Add(_txtATDocCodeValidationSerie);
+                    ValidatableFields.Add(_comboFiscalYears);
+                    ValidatableFields.Add(_comboDocumentTypes);
                     break;
                 case EntityEditionModalMode.Update:
                     ValidatableFields.Add(_txtDesignation);
@@ -93,7 +97,8 @@ namespace LogicPOS.UI.Components.Modals
                     ValidatableFields.Add(_txtNumberRangeEnd);
                     ValidatableFields.Add(_txtAcronym);
                     ValidatableFields.Add(_txtATDocCodeValidationSerie);
-
+                    ValidatableFields.Add(_comboFiscalYears);
+                    ValidatableFields.Add(_comboDocumentTypes);
                     break;
             }
         }
@@ -110,8 +115,16 @@ namespace LogicPOS.UI.Components.Modals
 
             if (_modalMode != EntityEditionModalMode.Insert)
             {
+
                 tab1.PackStart(_txtOrder.Component, false, false, 0);
                 tab1.PackStart(_txtCode.Component, false, false, 0);
+                _comboFiscalYears.ComboBox.Sensitive = false;
+                _comboDocumentTypes.ComboBox.Sensitive = false;
+                _txtAcronym.Entry.Sensitive = false;
+                _txtNextNumber.Entry.Sensitive = false;
+                _txtNumberRangeBegin.Entry.Sensitive = false;
+                _txtNumberRangeEnd.Entry.Sensitive = false;
+                _txtATDocCodeValidationSerie.Entry.Sensitive = false;
 
             }
             tab1.PackStart(_comboFiscalYears.Component,false, false, 0);

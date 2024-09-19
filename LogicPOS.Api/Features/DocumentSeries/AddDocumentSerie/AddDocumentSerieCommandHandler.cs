@@ -16,7 +16,7 @@ namespace LogicPOS.Api.Features.Documents.Series.AddDocumentSerie
 
         public override async Task<ErrorOr<Guid>> Handle(AddDocumentSerieCommand command, CancellationToken cancellationToken = default)
         {
-            return await HandleAddCommandAsync("documents/series", command, cancellationToken);
+            return await HandleAddCommandAsync("document/series", command, cancellationToken);
         }
     }
 }

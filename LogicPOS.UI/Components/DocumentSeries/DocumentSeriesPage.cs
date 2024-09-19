@@ -71,24 +71,41 @@ namespace LogicPOS.UI.Components.Pages
             GridViewSettings.Sort = new TreeModelSort(GridViewSettings.Filter);
 
             AddCodeSorting(0);
-            AddDesignationSorting(1);
-            AddHardwareIdSorting();
-            AddUpdatedAtSorting(3);
+            AddFiscalYearSorting();
+            AddDocumentTypeSorting();
+            AddDesignationSorting(3);
+            AddUpdatedAtSorting(4);
         }
 
-        private void AddHardwareIdSorting()
+        private void AddFiscalYearSorting()
         {
-            GridViewSettings.Sort.SetSortFunc(2, (model, left, right) =>
+            GridViewSettings.Sort.SetSortFunc(1, (model, left, right) =>
             {
-                var leftTerminal = (Terminal)model.GetValue(left, 0);
-                var rightTerminal = (Terminal)model.GetValue(right, 0);
+                var leftDocumentSerie = (DocumentSerie)model.GetValue(left, 0);
+                var rightDocumentSerie = (DocumentSerie)model.GetValue(right, 0);
 
-                if (leftTerminal == null || rightTerminal == null)
+                if (leftDocumentSerie == null || rightDocumentSerie == null)
                 {
                     return 0;
                 }
 
-                return leftTerminal.HardwareId.CompareTo(rightTerminal.HardwareId);
+                return leftDocumentSerie.FiscalYear.Designation.CompareTo(rightDocumentSerie.FiscalYear.Designation);
+            });
+        }
+
+        private void AddDocumentTypeSorting()
+        {
+            GridViewSettings.Sort.SetSortFunc(2, (model, left, right) =>
+            {
+                var leftDocumentSerie = (DocumentSerie)model.GetValue(left, 0);
+                var rightDocumentSerie = (DocumentSerie)model.GetValue(right, 0);
+
+                if (leftDocumentSerie == null || rightDocumentSerie == null)
+                {
+                    return 0;
+                }
+
+                return leftDocumentSerie.DocumentType.Designation.CompareTo(rightDocumentSerie.DocumentType.Designation);
             });
         }
     }
