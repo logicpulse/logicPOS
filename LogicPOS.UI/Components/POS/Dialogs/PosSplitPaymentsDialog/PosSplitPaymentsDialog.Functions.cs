@@ -207,9 +207,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         article.Key.Vat
                     );
                     //Detect and Assign VatExemptionReason to ArticleBak Key
-                    if (article.Key.VatExemptionReasonOid != null && article.Key.VatExemptionReasonOid != Guid.Empty)
+                    if (article.Key.VatExemptionReasonId != null && article.Key.VatExemptionReasonId != Guid.Empty)
                     {
-                        articleBagKey.VatExemptionReasonOid = article.Key.VatExemptionReasonOid;
+                        articleBagKey.VatExemptionReasonId = article.Key.VatExemptionReasonId;
                     }
                     // ArticleBagProperties
                     ArticleBagProperties articleBagProps = articleBagProps = new ArticleBagProperties(

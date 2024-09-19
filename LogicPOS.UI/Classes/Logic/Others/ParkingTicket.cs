@@ -25,12 +25,12 @@ namespace logicpos.Classes.Logic.Others
         {
             _logger.Debug("void GetTicketDetailFromWS([ " + ean + " ])");
 
-            bool hasOrder = null != GlobalApp.PosMainWindow.TicketList.CurrentOrderDetails.Lines;
+            bool hasOrder = null != GlobalApp.PosMainWindow.TicketList.CurrentOrderDetail.Lines;
             bool ticketExists = false;
 
             if (hasOrder) /* Checks for duplicates in current order */
             {
-                foreach (var line in GlobalApp.PosMainWindow.TicketList.CurrentOrderDetails.Lines)
+                foreach (var line in GlobalApp.PosMainWindow.TicketList.CurrentOrderDetail.Lines)
                 {
                     if (line.Designation.Contains(ean))
                     {

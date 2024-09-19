@@ -896,7 +896,7 @@ namespace LogicPOS.Finance.DocumentProcessing
                     //validationFieldUnitMeasureAcronym.Value = item.Value.UnitMeasure;
                     validationFieldDiscount.Value = item.Key.Discount;
                     validationFieldVat.Value = item.Key.Vat;
-                    validationFieldVatExemptionReason.Value = item.Key.VatExemptionReasonOid;
+                    validationFieldVatExemptionReason.Value = item.Key.VatExemptionReasonId;
                     //Validate ValidationField: Oid
                     if (!GeneralUtils.Validate(validationFieldOid.Value.ToString(), validationFieldOid.Rule, validationFieldOid.Required))
                     {
@@ -954,7 +954,7 @@ namespace LogicPOS.Finance.DocumentProcessing
                             hasArticlesWithoutVatRateDutyFree = true;
                         }
 
-                        if (item.Key.VatExemptionReasonOid != InvoiceSettings.XpoOidConfigurationVatExemptionReasonM99)
+                        if (item.Key.VatExemptionReasonId != InvoiceSettings.XpoOidConfigurationVatExemptionReasonM99)
                         {
                             hasArticlesWithInvalidVatExemptionReason = true;
                             hasArticlesWithoutVatExemptionReasonM99 = true;
@@ -962,7 +962,7 @@ namespace LogicPOS.Finance.DocumentProcessing
                     }
 
                     //Detect Articles without Required TaxExceptionReason
-                    if (item.Key.Vat == 0.0m && item.Key.VatExemptionReasonOid == Guid.Empty)
+                    if (item.Key.Vat == 0.0m && item.Key.VatExemptionReasonId == Guid.Empty)
                     {
                         hasArticlesWithoutRequiredTaxExemptionReason = true;
                     }

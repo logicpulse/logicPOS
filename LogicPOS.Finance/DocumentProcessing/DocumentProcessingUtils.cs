@@ -398,10 +398,10 @@ namespace LogicPOS.Finance.DocumentProcessing
                                 if (vatRate != null) documentFinanceDetail.VatRate = vatRate;
 
                                 //Assign VatExemptionReason if Set, else Leave Null
-                                if (item.Key.VatExemptionReasonOid != new Guid())
+                                if (item.Key.VatExemptionReasonId != new Guid())
                                 {
                                     //Get Fresh Object to Prevent Mixing Sessions
-                                    vatExemptionReason = (fin_configurationvatexemptionreason)uowSession.GetObjectByKey(typeof(fin_configurationvatexemptionreason), item.Key.VatExemptionReasonOid);
+                                    vatExemptionReason = (fin_configurationvatexemptionreason)uowSession.GetObjectByKey(typeof(fin_configurationvatexemptionreason), item.Key.VatExemptionReasonId);
                                     documentFinanceDetail.VatExemptionReason = vatExemptionReason;
                                     documentFinanceDetail.VatExemptionReasonDesignation = vatExemptionReason.Designation;
                                 }

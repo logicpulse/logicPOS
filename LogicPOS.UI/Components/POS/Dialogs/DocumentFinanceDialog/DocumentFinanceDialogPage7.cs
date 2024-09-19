@@ -170,7 +170,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             };
 
             //Get ArticleBag from documentFinanceMasterSource
-            ArticleBag articleBag = ArticleBag.DocumentFinanceMasterToArticleBag(documentOrderReference);
+            ArticleBag articleBag = ArticleBag.ConvertDocumentToArticleBag(documentOrderReference);
 
             //Prepare ProcessFinanceDocumentParameter
             DocumentProcessingParameters processFinanceDocumentParameter = new DocumentProcessingParameters(
@@ -200,7 +200,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             };
 
             //Get ArticleBag from documentFinanceMasterSource
-            ArticleBag articleBag = ArticleBag.DocumentFinanceMasterToArticleBag(documentReference);
+            ArticleBag articleBag = ArticleBag.ConvertDocumentToArticleBag(documentReference);
 
             //Prepare ProcessFinanceDocumentParameter
             DocumentProcessingParameters processFinanceDocumentParameter = new DocumentProcessingParameters(

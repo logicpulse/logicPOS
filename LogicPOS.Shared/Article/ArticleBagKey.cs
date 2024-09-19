@@ -6,28 +6,24 @@ namespace LogicPOS.Shared.Article
     {
         public Guid ArticleId { get; set; }
         public string Designation { get; set; }
-
         public decimal Price { get; set; }
-
         public decimal Discount { get; set; }
-
         public decimal Vat { get; set; }
-        public Guid VatExemptionReasonOid { get; set; }
-       
-
-        public ArticleBagKey(Guid pArticleOid, string pDesignation, decimal pPrice, decimal pDiscount, decimal pVat)
-            : this(pArticleOid, pDesignation, pPrice, pDiscount, pVat, new Guid())
+        public Guid VatExemptionReasonId { get; set; }
+ 
+        public ArticleBagKey(Guid articleId,
+                             string designation,
+                             decimal price,
+                             decimal discount,
+                             decimal vat,
+                             Guid vatExemptionReasonId = new Guid())
         {
-        }
-
-        public ArticleBagKey(Guid pArticleOid, string pDesignation, decimal pPrice, decimal pDiscount, decimal pVat, Guid pVatExemptionReasonOid)
-        {
-            ArticleId = pArticleOid;
-            Designation = pDesignation;
-            Price = pPrice;
-            Discount = pDiscount;
-            Vat = pVat;
-            VatExemptionReasonOid = pVatExemptionReasonOid;
+            ArticleId = articleId;
+            Designation = designation;
+            Price = price;
+            Discount = discount;
+            Vat = vat;
+            VatExemptionReasonId = vatExemptionReasonId;
         }
     }
 }

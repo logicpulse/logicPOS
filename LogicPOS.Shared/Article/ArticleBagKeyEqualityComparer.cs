@@ -11,13 +11,13 @@ namespace LogicPOS.Shared.Article
               && x.Price == y.Price
               && x.Discount == y.Discount
               && x.Vat == y.Vat
-              && x.VatExemptionReasonOid == y.VatExemptionReasonOid
+              && x.VatExemptionReasonId == y.VatExemptionReasonId
             ;
         }
 
         int IEqualityComparer<ArticleBagKey>.GetHashCode(ArticleBagKey obj)
         {
-            int hashCode = $"{obj.ArticleId}{obj.Designation}{obj.Price}{obj.Discount}{obj.Vat}{obj.VatExemptionReasonOid}".GetHashCode();
+            int hashCode = $"{obj.ArticleId}{obj.Designation}{obj.Price}{obj.Discount}{obj.Vat}{obj.VatExemptionReasonId}".GetHashCode();
             return hashCode;
         }
     }

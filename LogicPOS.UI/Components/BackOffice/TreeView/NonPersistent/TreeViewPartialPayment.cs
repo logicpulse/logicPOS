@@ -85,9 +85,6 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
               dataTable,            //Created Here
               typeDialogClass       //Created Here
             );
-
-            //Use this in SelectRecord to format TreeView to Touch
-            //this.FormatColumnPropertiesForTouch();
         }
 
         private DataTable GetDataTable(List<GridViewColumn> pColumnProperties)
@@ -118,7 +115,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 article = XPOUtility.GetEntityById<fin_article>(item.Key.ArticleId);
                 if (article.Type.HavePrice)
                 {
-                    configurationPlace = XPOUtility.GetEntityById<pos_configurationplace>(item.Value.PlaceOid);
+                    configurationPlace = XPOUtility.GetEntityById<pos_configurationplace>(item.Value.PlaceId);
 
                     for (int i = 0; i < item.Value.Quantity; i++)
                     {
@@ -135,8 +132,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                             dataRow[7] = item.Key.Price;
                             dataRow[8] = 1;
                             dataRow[9] = item.Value.UnitMeasure;
-                            dataRow[10] = item.Value.PlaceOid;
-                            dataRow[11] = item.Value.TableOid;
+                            dataRow[10] = item.Value.PlaceId;
+                            dataRow[11] = item.Value.TableId;
                             dataRow[12] = item.Value.PriceType;
                             dataRow[13] = item.Value.Token1;
                             dataRow[14] = item.Value.Token2;
@@ -155,8 +152,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                             dataRow[7] = item.Key.Price;
                             dataRow[8] = remainQuantity;
                             dataRow[9] = item.Value.UnitMeasure;
-                            dataRow[10] = item.Value.PlaceOid;
-                            dataRow[11] = item.Value.TableOid;
+                            dataRow[10] = item.Value.PlaceId;
+                            dataRow[11] = item.Value.TableId;
                             dataRow[12] = item.Value.PriceType;
                             dataRow[13] = item.Value.Token1;
                             dataRow[14] = item.Value.Token2;

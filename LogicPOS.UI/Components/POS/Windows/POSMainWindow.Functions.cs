@@ -202,7 +202,7 @@ namespace logicpos
 
         private void HWBarCodeReader_Captured(object sender, EventArgs e)
         {
-            if (GlobalApp.PosMainWindow.TicketList.CurrentOrderDetails != null)
+            if (GlobalApp.PosMainWindow.TicketList.CurrentOrderDetail != null)
             {
                 switch (GlobalApp.BarCodeReader.Device)
                 {

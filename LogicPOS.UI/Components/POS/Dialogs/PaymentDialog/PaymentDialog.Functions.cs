@@ -1198,24 +1198,17 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     }
                     else
                     {
-                        //dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("PriceFinal")] = decimal.Round(newValuePrice,2);
-
                         string token1 = string.Empty;
                         string token2 = string.Empty;
 
-
-                        //Always get values from DataTable, this way we have Types :)
                         Guid itemGuid = (Guid)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Oid")];
-                        //_logger.Debug(string.Format("{0}:{1}:{2}", itemIndex, itemChecked, itemGuid));
-
-                        //Calculate values with new price
+                    
                         decimal vatRate = (decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Vat")];
                         decimal PriceNet = (newValuePrice / (vatRate / 100 + 1));
                         decimal totalTax = newValuePrice - PriceNet;
                         decimal oldQuantity = Convert.ToDecimal(dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Quantity")]);
                         decimal quantity = (newValuePrice * oldQuantity) / (decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("PriceFinal")];
 
-                        //Prepare articleBag Key and Props
                         articleBagKey = new ArticleBagKey(
                           (Guid)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Oid")],
                           (string)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Designation")],
@@ -1257,26 +1250,19 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         private void ProcessPartialPayment(ArticleBag pArticleBag, bool changePrice)
         {
-            bool debug = false;
-
-            //Update UI
             UpdateUIWhenAlternateFullToPartialPayment(true, changePrice);
-            //Debug
-            if (debug) pArticleBag.ShowInLog();
         }
 
         public void UpdateUIWhenAlternateFullToPartialPayment(bool pIsPartialPayment, bool changePrice, bool pResetPaymentMethodButton = true)
         {
-            //Update private member _partialPaymentEnabled
             _partialPaymentEnabled = pIsPartialPayment;
-            // Commented to Prevend Cleaning _totalDelivery and _totalChange
-            //Shared: Update Total Delivery and TotalChange 
+
             if (pResetPaymentMethodButton)
             {
                 TotalDelivery = 0;
                 TotalChange = 0;
             }
-            //Discount
+
             DiscountGlobal = LogicPOS.Utility.DataConversionUtils.StringToDecimal(_entryBoxCustomerDiscount.EntryValidation.Text);
 
             //PartialPayment
@@ -1297,20 +1283,18 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Full Payment
             else
             {
-                //Update Discount
                 ArticleBagFullPayment.DiscountGlobal = DiscountGlobal;
-                //Update Totals after Change Discount
+
                 ArticleBagFullPayment.UpdateTotals();
-                //Update UI to Default From OrderMain
+
                 _labelTotalValue.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(ArticleBagFullPayment.TotalFinal, XPOSettings.ConfigurationSystemCurrency.Acronym);
                 _labelDeliveryValue.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalDelivery, XPOSettings.ConfigurationSystemCurrency.Acronym);
                 _labelChangeValue.Text = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(TotalChange, XPOSettings.ConfigurationSystemCurrency.Acronym);
-                //Update UI Buttons
+
                 if (_buttonFullPayment != null) _buttonFullPayment.Sensitive = false;
                 if (_buttonPartialPayment != null) _buttonPartialPayment.Sensitive = true;
             }
 
-            //Shared: Disable Payment Method if it is Assigned
             if (pResetPaymentMethodButton)
             {
                 if (SelectedPaymentMethodButton != null && !SelectedPaymentMethodButton.Sensitive) SelectedPaymentMethodButton.Sensitive = true;

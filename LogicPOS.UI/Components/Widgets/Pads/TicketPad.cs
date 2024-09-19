@@ -290,12 +290,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             //Events
             ButtonKeySelectTable.Clicked += buttonKeySelectTable_Clicked;
             //Assign _ticketList Button References, EventHandlers logic in _ticketList
-            _ticketList.ButtonKeyPrev = _buttonPrev;
-            _ticketList.ButtonKeyNext = _buttonNext;
+            _ticketList.BtnPrevious = _buttonPrev;
+            _ticketList.BtnNext = _buttonNext;
             _ticketList.ButtonKeyDecrease = _buttonDecrease;
             _ticketList.ButtonKeyIncrease = _buttonIncrease;
-            _ticketList.ButtonKeyDelete = _buttonDelete;
-            _ticketList.ButtonKeyChangeQuantity = _buttonChangeQuantity;
+            _ticketList.BtnDelete = _buttonDelete;
+            _ticketList.BtnChangeQuantity = _buttonChangeQuantity;
             _ticketList.ButtonKeyChangePrice = _buttonChangePrice;
             _ticketList.ButtonKeyListMode = _buttonListMode;
             _ticketList.ButtonKeyListOrder = _buttonListOrder;
