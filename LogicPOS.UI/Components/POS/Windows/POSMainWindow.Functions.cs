@@ -15,6 +15,7 @@ using LogicPOS.Settings.Extensions;
 using LogicPOS.Shared;
 using LogicPOS.Shared.Orders;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Modals;
 using LogicPOS.Utility;
 using System;
 using System.Linq;
@@ -81,6 +82,10 @@ namespace logicpos
 
         private void BtnNewDocument_Clicked(object sender, EventArgs e)
         {
+            var modal = new CreateDocumentModal(this, DialogFlags.DestroyWithParent);
+            modal.Run();
+            modal.Destroy();
+
             PosDocumentFinanceDialog createDocumentModal = new PosDocumentFinanceDialog(this, DialogFlags.DestroyWithParent);
             ResponseType response = (ResponseType)createDocumentModal.Run();
             createDocumentModal.Destroy();
