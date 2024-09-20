@@ -2,7 +2,6 @@
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents.Series.GetAllDocumentSeries;
-using LogicPOS.Api.Features.Terminals.GetAllTerminals;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
@@ -12,9 +11,9 @@ using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Pages
 {
-    public class DocumentSeriesPage : Page<DocumentSerie>
+    public class DocumentSeriesPage : Page<DocumentSeries>
     {
-        protected override IRequest<ErrorOr<IEnumerable<DocumentSerie>>> GetAllQuery => new GetAllDocumentSeriesQuery();
+        protected override IRequest<ErrorOr<IEnumerable<DocumentSeries>>> GetAllQuery => new GetAllDocumentSeriesQuery();
         public DocumentSeriesPage(Window parent) : base(parent)
         {
         }
@@ -26,7 +25,7 @@ namespace LogicPOS.UI.Components.Pages
 
         public override void RunModal(EntityEditionModalMode mode)
         {
-            var modal = new DocumentSerieModal(mode, SelectedEntity as DocumentSerie);
+            var modal = new DocumentSerieModal(mode, SelectedEntity as DocumentSeries);
             modal.Run();
             modal.Destroy();
         }
@@ -40,13 +39,13 @@ namespace LogicPOS.UI.Components.Pages
             GridView.AppendColumn(Columns.CreateUpdatedAtColumn(4));
         }
 
-      
+
 
         private TreeViewColumn CreateFiscalYearColumn()
         {
             void RenderValue(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var terminal = (DocumentSerie)model.GetValue(iter, 0);
+                var terminal = (DocumentSeries)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = terminal.FiscalYear.Designation;
             }
 
@@ -58,7 +57,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             void RenderValue(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var terminal = (DocumentSerie)model.GetValue(iter, 0);
+                var terminal = (DocumentSeries)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = terminal.DocumentType.Designation;
             }
 
@@ -81,8 +80,8 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridViewSettings.Sort.SetSortFunc(1, (model, left, right) =>
             {
-                var leftDocumentSerie = (DocumentSerie)model.GetValue(left, 0);
-                var rightDocumentSerie = (DocumentSerie)model.GetValue(right, 0);
+                var leftDocumentSerie = (DocumentSeries)model.GetValue(left, 0);
+                var rightDocumentSerie = (DocumentSeries)model.GetValue(right, 0);
 
                 if (leftDocumentSerie == null || rightDocumentSerie == null)
                 {
@@ -97,8 +96,8 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridViewSettings.Sort.SetSortFunc(2, (model, left, right) =>
             {
-                var leftDocumentSerie = (DocumentSerie)model.GetValue(left, 0);
-                var rightDocumentSerie = (DocumentSerie)model.GetValue(right, 0);
+                var leftDocumentSerie = (DocumentSeries)model.GetValue(left, 0);
+                var rightDocumentSerie = (DocumentSeries)model.GetValue(right, 0);
 
                 if (leftDocumentSerie == null || rightDocumentSerie == null)
                 {

@@ -79,14 +79,11 @@ namespace logicpos
             dialog.Destroy();
         }
 
-        private void touchButtonPosToolbarNewFinanceDocument_Clicked(object sender, EventArgs e)
+        private void BtnNewDocument_Clicked(object sender, EventArgs e)
         {
-            PosDocumentFinanceDialog dialogNewDocument = new PosDocumentFinanceDialog(this, DialogFlags.DestroyWithParent);
-            ResponseType responseNewDocument = (ResponseType)dialogNewDocument.Run();
-            if (responseNewDocument == ResponseType.Ok)
-            {
-            }
-            dialogNewDocument.Destroy();
+            PosDocumentFinanceDialog createDocumentModal = new PosDocumentFinanceDialog(this, DialogFlags.DestroyWithParent);
+            ResponseType response = (ResponseType)createDocumentModal.Run();
+            createDocumentModal.Destroy();
         }
 
         private void touchButtonPosToolbarFinanceDocuments_Clicked(object sender, EventArgs e)

@@ -66,7 +66,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Prevent Cancel Document
             else if (pResponse == ResponseType.Cancel)
             {
-                if (_pagePad3.ArticleBag != null && _pagePad3.ArticleBag.Count > 0)
+                if (Page3.ArticleBag != null && Page3.ArticleBag.Count > 0)
                 {
                     ResponseType response = logicpos.Utils.ShowMessageTouch(WindowSettings.Source, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Question, ButtonsType.YesNo, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_message_dialog"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_finance_dialog_confirm_cancel"));
                     if (response == ResponseType.No)
@@ -87,7 +87,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             else if (pResponse == _responseTypeClearCustomer)
             {
                 //ClearCustomer
-                _pagePad2.ClearCustomerAndWayBill();
+                Page2.ClearCustomerAndWayBill();
 
                 //Always Keep Running
                 this.Run();
@@ -96,7 +96,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         public ArticleBag GetArticleBag()
         {
-            decimal customerDiscount = LogicPOS.Utility.DataConversionUtils.StringToDecimal(_pagePad2.EntryBoxCustomerDiscount.EntryValidation.Text);
+            decimal customerDiscount = LogicPOS.Utility.DataConversionUtils.StringToDecimal(Page2.EntryBoxCustomerDiscount.EntryValidation.Text);
             ArticleBag articleBag = new ArticleBag(customerDiscount);
             ArticleBagKey articleBagKey;
             ArticleBagProperties articleBagProps;
@@ -108,22 +108,22 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             fin_documentfinancemaster sourceFinanceMaster = null;
             string referencesReason = string.Empty;
             if (
-                _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid == CustomDocumentSettings.CreditNoteId
-                && _pagePad1.EntryBoxSelectSourceDocumentFinance.Value != null
-                && _pagePad1.EntryBoxSelectSourceDocumentFinance.Value.Oid != new Guid()
+                Page1.EntryBoxSelectDocumentFinanceType.Value.Oid == CustomDocumentSettings.CreditNoteId
+                && Page1.EntryBoxSelectSourceDocumentFinance.Value != null
+                && Page1.EntryBoxSelectSourceDocumentFinance.Value.Oid != new Guid()
             )
             {
-                Guid guidDocumentParent = _pagePad1.EntryBoxSelectSourceDocumentFinance.Value.Oid;
+                Guid guidDocumentParent = Page1.EntryBoxSelectSourceDocumentFinance.Value.Oid;
                 //Get Source Document
                 sourceFinanceMaster = (fin_documentfinancemaster)XPOSettings.Session.GetObjectByKey(typeof(fin_documentfinancemaster), guidDocumentParent);
-                referencesReason = _pagePad1.EntryBoxReason.EntryValidation.Text;
+                referencesReason = Page1.EntryBoxReason.EntryValidation.Text;
             };
 
-            if (_pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid == CustomDocumentSettings.CreditNoteId)
+            if (Page1.EntryBoxSelectDocumentFinanceType.Value.Oid == CustomDocumentSettings.CreditNoteId)
             {
 
                 List<DataRow> dataRows = new List<DataRow>();
-                foreach (DataRow item in _pagePad3.TreeViewArticles.Entities.Rows)
+                foreach (DataRow item in Page3.TreeViewArticles.Entities.Rows)
                 {
                     article = (item["Article.Code"] as fin_article);
                     if (article != null && article.UniqueArticles)
@@ -135,7 +135,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             var splitArticleSerialNumber = item["SerialNumber"].ToString().Split(';');
                             for (int i = 0; i < splitArticleWareHouse.Length; i++)
                             {
-                                DataRow newRow = _pagePad3.TreeViewArticles.Entities.NewRow();
+                                DataRow newRow = Page3.TreeViewArticles.Entities.NewRow();
                                 for (int j = 0; j < item.ItemArray.Length; j++)
                                 {
                                     newRow[j] = item[j];
@@ -154,16 +154,16 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 }
                 if (dataRows.Count > 0)
                 {
-                    _pagePad3.TreeViewArticles.Entities.Rows.Clear();
+                    Page3.TreeViewArticles.Entities.Rows.Clear();
                     foreach (var items in dataRows)
                     {
-                        _pagePad3.TreeViewArticles.Entities.Rows.Add(items);
+                        Page3.TreeViewArticles.Entities.Rows.Add(items);
                     }
                 }
             }
 
 
-            foreach (DataRow item in _pagePad3.TreeViewArticles.Entities.Rows)
+            foreach (DataRow item in Page3.TreeViewArticles.Entities.Rows)
             {
                 article = (item["Article.Code"] as fin_article);
                 configurationVatRate = (item["ConfigurationVatRate.Value"] as fin_configurationvatrate);
@@ -238,33 +238,33 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 articleBag.Add(articleBagKey, articleBagProps);
             }
-            _pagePad3.TreeViewArticles.Refresh();
+            Page3.TreeViewArticles.Refresh();
             return articleBag;
         }
 
         private DocumentProcessingParameters GetFinanceDocumentParameter()
         {
             //Always Recreate ArticleBag before contruct ProcessFinanceDocumentParameter
-            _pagePad3.ArticleBag = GetArticleBag();
-            bool wayBillMode = _pagePad1.EntryBoxSelectDocumentFinanceType.Value.WayBill;
+            Page3.ArticleBag = GetArticleBag();
+            bool wayBillMode = Page1.EntryBoxSelectDocumentFinanceType.Value.WayBill;
 
             object resultObject;
 
             resultObject = logicpos.Utils.SaveOrUpdateCustomer(
                 this,
-                _pagePad2.EntryBoxSelectCustomerName.Value,
-                _pagePad2.EntryBoxSelectCustomerName.EntryValidation.Text,
-                _pagePad2.EntryBoxCustomerAddress.EntryValidation.Text,
-                _pagePad2.EntryBoxCustomerLocality.EntryValidation.Text,
-                _pagePad2.EntryBoxCustomerZipCode.EntryValidation.Text,
-                _pagePad2.EntryBoxCustomerCity.EntryValidation.Text,
-_pagePad2.EntryBoxCustomerPhone.EntryValidation.Text,
-_pagePad2.EntryBoxCustomerEmail.EntryValidation.Text,
-                _pagePad2.EntryBoxSelectCustomerCountry.Value,
-                _pagePad2.EntryBoxSelectCustomerFiscalNumber.EntryValidation.Text,
-                _pagePad2.EntryBoxSelectCustomerCardNumber.EntryValidation.Text,
-                LogicPOS.Utility.DataConversionUtils.StringToDecimal(_pagePad2.EntryBoxCustomerDiscount.EntryValidation.Text),
-                _pagePad2.EntryBoxCustomerNotes.EntryValidation.Text
+                Page2.EntryBoxSelectCustomerName.Value,
+                Page2.EntryBoxSelectCustomerName.EntryValidation.Text,
+                Page2.EntryBoxCustomerAddress.EntryValidation.Text,
+                Page2.EntryBoxCustomerLocality.EntryValidation.Text,
+                Page2.EntryBoxCustomerZipCode.EntryValidation.Text,
+                Page2.EntryBoxCustomerCity.EntryValidation.Text,
+Page2.EntryBoxCustomerPhone.EntryValidation.Text,
+Page2.EntryBoxCustomerEmail.EntryValidation.Text,
+                Page2.EntryBoxSelectCustomerCountry.Value,
+                Page2.EntryBoxSelectCustomerFiscalNumber.EntryValidation.Text,
+                Page2.EntryBoxSelectCustomerCardNumber.EntryValidation.Text,
+                LogicPOS.Utility.DataConversionUtils.StringToDecimal(Page2.EntryBoxCustomerDiscount.EntryValidation.Text),
+                Page2.EntryBoxCustomerNotes.EntryValidation.Text
             );
 
 
@@ -291,24 +291,24 @@ _pagePad2.EntryBoxCustomerEmail.EntryValidation.Text,
 
             //Construct ProcessFinanceDocumentParameter
             DocumentProcessingParameters result = new DocumentProcessingParameters(
-              _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid, _pagePad3.ArticleBag
+              Page1.EntryBoxSelectDocumentFinanceType.Value.Oid, Page3.ArticleBag
             )
             {
                 Customer = (customer != null) ? customer.Oid : Guid.Empty,
             };
 
             //PaymentConditions
-            if (_pagePad1.EntryBoxSelectConfigurationPaymentCondition.Value != null
-                && _pagePad1.EntryBoxSelectConfigurationPaymentCondition.Value.Oid != new Guid())
+            if (Page1.EntryBoxSelectConfigurationPaymentCondition.Value != null
+                && Page1.EntryBoxSelectConfigurationPaymentCondition.Value.Oid != new Guid())
             {
-                result.PaymentCondition = _pagePad1.EntryBoxSelectConfigurationPaymentCondition.Value.Oid;
+                result.PaymentCondition = Page1.EntryBoxSelectConfigurationPaymentCondition.Value.Oid;
             }
 
             //PaymentMethod
-            if (_pagePad1.EntryBoxSelectConfigurationPaymentMethod.Value != null
-                && _pagePad1.EntryBoxSelectConfigurationPaymentMethod.Value.Oid != new Guid())
+            if (Page1.EntryBoxSelectConfigurationPaymentMethod.Value != null
+                && Page1.EntryBoxSelectConfigurationPaymentMethod.Value.Oid != new Guid())
             {
-                result.PaymentMethod = _pagePad1.EntryBoxSelectConfigurationPaymentMethod.Value.Oid;
+                result.PaymentMethod = Page1.EntryBoxSelectConfigurationPaymentMethod.Value.Oid;
             }
 
             //TotalDelivery: If Money force TotalDelivery to be equal to TotalFinal
@@ -317,21 +317,21 @@ _pagePad2.EntryBoxCustomerEmail.EntryValidation.Text,
                 fin_configurationpaymentmethod paymentMethod = (fin_configurationpaymentmethod)XPOSettings.Session.GetObjectByKey(typeof(fin_configurationpaymentmethod), result.PaymentMethod);
                 if (paymentMethod.Token == "MONEY")
                 {
-                    result.TotalDelivery = _pagePad3.ArticleBag.TotalFinal;
+                    result.TotalDelivery = Page3.ArticleBag.TotalFinal;
                 }
             }
 
             //Currency
-            if (_pagePad1.EntryBoxSelectConfigurationCurrency.Value.Oid != new Guid())
+            if (Page1.EntryBoxSelectConfigurationCurrency.Value.Oid != new Guid())
             {
-                result.Currency = _pagePad1.EntryBoxSelectConfigurationCurrency.Value.Oid;
-                result.ExchangeRate = (_pagePad1.EntryBoxSelectConfigurationCurrency.Value.ExchangeRate == 0) ? 1 : _pagePad1.EntryBoxSelectConfigurationCurrency.Value.ExchangeRate;
+                result.Currency = Page1.EntryBoxSelectConfigurationCurrency.Value.Oid;
+                result.ExchangeRate = (Page1.EntryBoxSelectConfigurationCurrency.Value.ExchangeRate == 0) ? 1 : Page1.EntryBoxSelectConfigurationCurrency.Value.ExchangeRate;
             }
 
             //DocumentParent
-            if (_pagePad1.EntryBoxSelectSourceDocumentFinance.Value != null && _pagePad1.EntryBoxSelectSourceDocumentFinance.Value.Oid != new Guid())
+            if (Page1.EntryBoxSelectSourceDocumentFinance.Value != null && Page1.EntryBoxSelectSourceDocumentFinance.Value.Oid != new Guid())
             {
-                result.DocumentParent = _pagePad1.EntryBoxSelectSourceDocumentFinance.Value.Oid;
+                result.DocumentParent = Page1.EntryBoxSelectSourceDocumentFinance.Value.Oid;
             }
 
             //SourceMode
@@ -343,11 +343,11 @@ _pagePad2.EntryBoxCustomerEmail.EntryValidation.Text,
             //TotalChange
 
             //OrderReferences
-            if (_pagePad1.EntryBoxSelectSourceDocumentFinance.Value != null)
+            if (Page1.EntryBoxSelectSourceDocumentFinance.Value != null)
             {
                 List<fin_documentfinancemaster> orderReferences = new List<fin_documentfinancemaster>
                 {
-                    _pagePad1.EntryBoxSelectSourceDocumentFinance.Value
+                    Page1.EntryBoxSelectSourceDocumentFinance.Value
                 };
                 result.OrderReferences = orderReferences;
             }
@@ -357,44 +357,44 @@ _pagePad2.EntryBoxCustomerEmail.EntryValidation.Text,
             {
                 //ShipTo: Not Used : Address, BuildingNumber, StreetName
                 result.ShipTo = new MovementOfGoodsProperties();
-                if (_pagePad4.EntryBoxShipToDeliveryID.EntryValidation.Text != string.Empty) result.ShipTo.DeliveryID = _pagePad4.EntryBoxShipToDeliveryID.EntryValidation.Text;
-                if (_pagePad4.EntryBoxShipToDeliveryDate.EntryValidation.Text != string.Empty) result.ShipTo.DeliveryDate = Convert.ToDateTime(_pagePad4.EntryBoxShipToDeliveryDate.EntryValidation.Text);
-                if (_pagePad4.EntryBoxShipToWarehouseID.EntryValidation.Text != string.Empty) result.ShipTo.WarehouseID = _pagePad4.EntryBoxShipToWarehouseID.EntryValidation.Text;
-                if (_pagePad4.EntryBoxShipToLocationID.EntryValidation.Text != string.Empty) result.ShipTo.LocationID = _pagePad4.EntryBoxShipToLocationID.EntryValidation.Text;
-                if (_pagePad4.EntryBoxShipToAddressDetail.EntryValidation.Text != string.Empty) result.ShipTo.AddressDetail = _pagePad4.EntryBoxShipToAddressDetail.EntryValidation.Text;
-                if (_pagePad4.EntryBoxShipToCity.EntryValidation.Text != string.Empty) result.ShipTo.City = _pagePad4.EntryBoxShipToCity.EntryValidation.Text;
-                if (_pagePad4.EntryBoxShipToPostalCode.EntryValidation.Text != string.Empty) result.ShipTo.PostalCode = _pagePad4.EntryBoxShipToPostalCode.EntryValidation.Text;
-                if (_pagePad4.EntryBoxShipToRegion.EntryValidation.Text != string.Empty) result.ShipTo.Region = _pagePad4.EntryBoxShipToRegion.EntryValidation.Text;
-                if (_pagePad4.EntryBoxSelectShipToCountry.Value.Oid != new Guid())
+                if (Page4.EntryBoxShipToDeliveryID.EntryValidation.Text != string.Empty) result.ShipTo.DeliveryID = Page4.EntryBoxShipToDeliveryID.EntryValidation.Text;
+                if (Page4.EntryBoxShipToDeliveryDate.EntryValidation.Text != string.Empty) result.ShipTo.DeliveryDate = Convert.ToDateTime(Page4.EntryBoxShipToDeliveryDate.EntryValidation.Text);
+                if (Page4.EntryBoxShipToWarehouseID.EntryValidation.Text != string.Empty) result.ShipTo.WarehouseID = Page4.EntryBoxShipToWarehouseID.EntryValidation.Text;
+                if (Page4.EntryBoxShipToLocationID.EntryValidation.Text != string.Empty) result.ShipTo.LocationID = Page4.EntryBoxShipToLocationID.EntryValidation.Text;
+                if (Page4.EntryBoxShipToAddressDetail.EntryValidation.Text != string.Empty) result.ShipTo.AddressDetail = Page4.EntryBoxShipToAddressDetail.EntryValidation.Text;
+                if (Page4.EntryBoxShipToCity.EntryValidation.Text != string.Empty) result.ShipTo.City = Page4.EntryBoxShipToCity.EntryValidation.Text;
+                if (Page4.EntryBoxShipToPostalCode.EntryValidation.Text != string.Empty) result.ShipTo.PostalCode = Page4.EntryBoxShipToPostalCode.EntryValidation.Text;
+                if (Page4.EntryBoxShipToRegion.EntryValidation.Text != string.Empty) result.ShipTo.Region = Page4.EntryBoxShipToRegion.EntryValidation.Text;
+                if (Page4.EntryBoxSelectShipToCountry.Value.Oid != new Guid())
                 {
-                    result.ShipTo.Country = _pagePad4.EntryBoxSelectShipToCountry.Value.Code2;
-                    result.ShipTo.CountryGuid = _pagePad4.EntryBoxSelectShipToCountry.Value.Oid;
+                    result.ShipTo.Country = Page4.EntryBoxSelectShipToCountry.Value.Code2;
+                    result.ShipTo.CountryGuid = Page4.EntryBoxSelectShipToCountry.Value.Oid;
                 }
                 //ShipFrom: Not Used : Address, BuildingNumber, StreetName
                 result.ShipFrom = new MovementOfGoodsProperties();
-                if (_pagePad5.EntryBoxShipFromDeliveryID.EntryValidation.Text != string.Empty) result.ShipFrom.DeliveryID = _pagePad5.EntryBoxShipFromDeliveryID.EntryValidation.Text;
-                if (_pagePad5.EntryBoxShipFromDeliveryDate.EntryValidation.Text != string.Empty) result.ShipFrom.DeliveryDate = Convert.ToDateTime(_pagePad5.EntryBoxShipFromDeliveryDate.EntryValidation.Text);
-                if (_pagePad5.EntryBoxShipFromWarehouseID.EntryValidation.Text != string.Empty) result.ShipFrom.WarehouseID = _pagePad5.EntryBoxShipFromWarehouseID.EntryValidation.Text;
-                if (_pagePad5.EntryBoxShipFromLocationID.EntryValidation.Text != string.Empty) result.ShipFrom.LocationID = _pagePad5.EntryBoxShipFromLocationID.EntryValidation.Text;
-                if (_pagePad5.EntryBoxShipFromAddressDetail.EntryValidation.Text != string.Empty) result.ShipFrom.AddressDetail = _pagePad5.EntryBoxShipFromAddressDetail.EntryValidation.Text;
-                if (_pagePad5.EntryBoxShipFromCity.EntryValidation.Text != string.Empty) result.ShipFrom.City = _pagePad5.EntryBoxShipFromCity.EntryValidation.Text;
-                if (_pagePad5.EntryBoxShipFromPostalCode.EntryValidation.Text != string.Empty) result.ShipFrom.PostalCode = _pagePad5.EntryBoxShipFromPostalCode.EntryValidation.Text;
-                if (_pagePad5.EntryBoxShipFromRegion.EntryValidation.Text != string.Empty) result.ShipFrom.Region = _pagePad5.EntryBoxShipFromRegion.EntryValidation.Text;
-                if (_pagePad5.EntryBoxSelectShipFromCountry.Value.Oid != new Guid())
+                if (Page5.EntryBoxShipFromDeliveryID.EntryValidation.Text != string.Empty) result.ShipFrom.DeliveryID = Page5.EntryBoxShipFromDeliveryID.EntryValidation.Text;
+                if (Page5.EntryBoxShipFromDeliveryDate.EntryValidation.Text != string.Empty) result.ShipFrom.DeliveryDate = Convert.ToDateTime(Page5.EntryBoxShipFromDeliveryDate.EntryValidation.Text);
+                if (Page5.EntryBoxShipFromWarehouseID.EntryValidation.Text != string.Empty) result.ShipFrom.WarehouseID = Page5.EntryBoxShipFromWarehouseID.EntryValidation.Text;
+                if (Page5.EntryBoxShipFromLocationID.EntryValidation.Text != string.Empty) result.ShipFrom.LocationID = Page5.EntryBoxShipFromLocationID.EntryValidation.Text;
+                if (Page5.EntryBoxShipFromAddressDetail.EntryValidation.Text != string.Empty) result.ShipFrom.AddressDetail = Page5.EntryBoxShipFromAddressDetail.EntryValidation.Text;
+                if (Page5.EntryBoxShipFromCity.EntryValidation.Text != string.Empty) result.ShipFrom.City = Page5.EntryBoxShipFromCity.EntryValidation.Text;
+                if (Page5.EntryBoxShipFromPostalCode.EntryValidation.Text != string.Empty) result.ShipFrom.PostalCode = Page5.EntryBoxShipFromPostalCode.EntryValidation.Text;
+                if (Page5.EntryBoxShipFromRegion.EntryValidation.Text != string.Empty) result.ShipFrom.Region = Page5.EntryBoxShipFromRegion.EntryValidation.Text;
+                if (Page5.EntryBoxSelectShipFromCountry.Value.Oid != new Guid())
                 {
-                    result.ShipFrom.Country = _pagePad5.EntryBoxSelectShipFromCountry.Value.Code2;
-                    result.ShipFrom.CountryGuid = _pagePad5.EntryBoxSelectShipFromCountry.Value.Oid;
+                    result.ShipFrom.Country = Page5.EntryBoxSelectShipFromCountry.Value.Code2;
+                    result.ShipFrom.CountryGuid = Page5.EntryBoxSelectShipFromCountry.Value.Oid;
                 }
             }
 
             //Notes
-            if (_pagePad1.EntryBoxDocumentMasterNotes.EntryValidation.Text != string.Empty)
+            if (Page1.EntryBoxDocumentMasterNotes.EntryValidation.Text != string.Empty)
             {
-                result.Notes = _pagePad1.EntryBoxDocumentMasterNotes.EntryValidation.Text;
+                result.Notes = Page1.EntryBoxDocumentMasterNotes.EntryValidation.Text;
             }
 
             //Always Recreate ArticleBag before contruct ProcessFinanceDocumentParameter
-            _pagePad3.ArticleBag = GetArticleBag();
+            Page3.ArticleBag = GetArticleBag();
 
             return result;
         }
@@ -404,7 +404,7 @@ _pagePad2.EntryBoxCustomerEmail.EntryValidation.Text,
             //Always Recreate ArticleBag before contruct ProcessFinanceDocumentParameter
             //_pagePad3.ArticleBag = GetArticleBag();            
 
-            DocumentFinanceDialogPreview dialog = new DocumentFinanceDialogPreview(this, DialogFlags.DestroyWithParent, pMode, _pagePad3.ArticleBag, _pagePad1.EntryBoxSelectConfigurationCurrency.Value);
+            DocumentFinanceDialogPreview dialog = new DocumentFinanceDialogPreview(this, DialogFlags.DestroyWithParent, pMode, Page3.ArticleBag, Page1.EntryBoxSelectConfigurationCurrency.Value);
             ResponseType response = (ResponseType)dialog.Run();
             dialog.Destroy();
             return response;
@@ -420,16 +420,16 @@ _pagePad2.EntryBoxCustomerEmail.EntryValidation.Text,
             //Protection to prevent Exceed Customer CardCredit
             if (
                 //Can be null if not in a Payable DocumentType
-                _pagePad1.EntryBoxSelectConfigurationPaymentMethod.Value != null
-                && _pagePad1.EntryBoxSelectConfigurationPaymentMethod.Value.Token == "CUSTOMER_CARD"
-                && articleBag.TotalFinal > _pagePad2.EntryBoxSelectCustomerName.Value.CardCredit
+                Page1.EntryBoxSelectConfigurationPaymentMethod.Value != null
+                && Page1.EntryBoxSelectConfigurationPaymentMethod.Value.Token == "CUSTOMER_CARD"
+                && articleBag.TotalFinal > Page2.EntryBoxSelectCustomerName.Value.CardCredit
             )
             {
                 logicpos.Utils.ShowMessageTouch(
                     this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"),
                     string.Format(
                         CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_value_exceed_customer_card_credit"),
-                        LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_pagePad2.EntryBoxSelectCustomerName.Value.CardCredit, XPOSettings.ConfigurationSystemCurrency.Acronym),
+                        LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(Page2.EntryBoxSelectCustomerName.Value.CardCredit, XPOSettings.ConfigurationSystemCurrency.Acronym),
                         LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(articleBag.TotalFinal, XPOSettings.ConfigurationSystemCurrency.Acronym)
                     )
                 );
@@ -437,7 +437,7 @@ _pagePad2.EntryBoxCustomerEmail.EntryValidation.Text,
             }
 
             //Protection to Prevent Recharge Customer Card with Invalid User (User without Card or FinalConsumer...)
-            if (result && !DocumentProcessingUtils.IsCustomerCardValidForArticleBag(articleBag, _pagePad2.EntryBoxSelectCustomerName.Value))
+            if (result && !DocumentProcessingUtils.IsCustomerCardValidForArticleBag(articleBag, Page2.EntryBoxSelectCustomerName.Value))
             {
                 logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_invalid_customer_card_detected"));
                 result = false;

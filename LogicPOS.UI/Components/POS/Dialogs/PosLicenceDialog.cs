@@ -283,6 +283,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             labelCountryLabel.SetAlignment(0.0F, 0.0F);
             labelCountryLabel.ModifyFont(FontDescription.FromString("Arial 10 bold"));
             vboxInnerRight.PackStart(labelCountryLabel, false, false, (uint)padding * 2);
+
+            if(_countrysList.Count == 0)
+            {
+                _countrysList[168] = "Default";
+            }
+
             ComboBoxCountry = new ListComboBox(_countrysListSource, _countrysList[168]);
             vboxInnerRight.PackStart(ComboBoxCountry, false, false, (uint)padding * 2);
 

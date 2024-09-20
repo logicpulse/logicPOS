@@ -15,19 +15,18 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
     internal partial class PosDocumentFinanceDialog : BaseDialog
     {
-        //Private
-        private List<PagePadPage> _listPages;
-        private DocumentFinanceDialogPage1 _pagePad1;
-        private DocumentFinanceDialogPage2 _pagePad2;
-        private DocumentFinanceDialogPage3 _pagePad3;
-        private DocumentFinanceDialogPage4 _pagePad4;
-        private DocumentFinanceDialogPage5 _pagePad5;
+        private List<PagePadPage> Pages { get; set; }
+        private DocumentFinanceDialogPage1 Page1 { get; set; }
+        private DocumentFinanceDialogPage2 Page2 { get; set; }
+        private DocumentFinanceDialogPage3 Page3 { get; set; }
+        private DocumentFinanceDialogPage4 Page4 { get; set; }
+        private DocumentFinanceDialogPage5 Page5 { get; set; }
 
         public IconButtonWithText ButtonClearCustomer { get; }
         private readonly IconButtonWithText _buttonOk;
         private readonly IconButtonWithText _buttonCancel;
         private readonly IconButtonWithText _buttonPreview;
-        //Custom Responses Types
+
         private readonly ResponseType _responseTypePreview = (ResponseType)11;
         private readonly ResponseType _responseTypeClearCustomer = (ResponseType)12;
 
@@ -35,22 +34,18 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         public DocumentFinanceDialogPagePad PagePad { get; set; }
 
-        public PosDocumentFinanceDialog(Window parentWindow, DialogFlags pDialogFlags)
-            : base(parentWindow, pDialogFlags)
+        public PosDocumentFinanceDialog(Window parent, DialogFlags flags)
+            : base(parent, flags)
         {
-            //Parameters
-            WindowSettings.Source = parentWindow;
-            //Init Local Vars
+            WindowSettings.Source = parent;
             Size windowSize = new Size(790, 546);
-            //Image Icons
+
             string fileDefaultWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_document_new.png";
             string fileActionPreview = PathsSettings.ImagesFolderLocation + @"Icons\Dialogs\icon_pos_dialog_preview.png";
             string fileIconClearCustomer = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_nav_delete.png";
 
             InitPages();
 
-            //Init Content
-            //Fixed fixedContent = new Fixed();
             VBox boxContent = new VBox();
             boxContent.PackStart(PagePad, true, true, 0);
 
@@ -72,7 +67,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             };
 
             //Init Object
-            this.Initialize(this, pDialogFlags, fileDefaultWindowIcon, WindowSettings.WindowTitle.Text, windowSize, boxContent, actionAreaButtons);
+            this.Initialize(this, flags, fileDefaultWindowIcon, WindowSettings.WindowTitle.Text, windowSize, boxContent, actionAreaButtons);
 
             //Hide After Init Show All
             ButtonClearCustomer.Visible = false;
@@ -84,12 +79,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         private void InitPages()
         {
-            //Init here before Creating Pages to Have PagePad Constructed for PagePadPage
+
             PagePad = new DocumentFinanceDialogPagePad(this);
             PagePad.PageChanged += _pagePad_PageChanged;
 
-            _listPages = new List<PagePadPage>();
-            //Assign Page Title
+            Pages = new List<PagePadPage>();
             WindowSettings.WindowTitle.Text = GetPageTitle(0);
 
             string icon1 = PathsSettings.ImagesFolderLocation + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_1_new_document.png";
@@ -98,59 +92,42 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             string icon4 = PathsSettings.ImagesFolderLocation + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_4_waybill_to.png";
             string icon5 = PathsSettings.ImagesFolderLocation + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_5_waybill_from.png";
 
-            _pagePad1 = new DocumentFinanceDialogPage1(this, GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page1"), icon1, null);
-            _pagePad2 = new DocumentFinanceDialogPage2(this, GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page2"), icon2, null);
-            _pagePad3 = new DocumentFinanceDialogPage3(this, GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page3"), icon3, null);
-            //Start in Invoice : Start Disabled
-            _pagePad4 = new DocumentFinanceDialogPage4(this, GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page4"), icon4, null, false);
-            _pagePad5 = new DocumentFinanceDialogPage5(this, GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page5"), icon5, null, false);
-            //Assign Reference Here, After Construction
-            //PagePad
-            _pagePad1.PagePad2 = _pagePad2;
-            _pagePad1.PagePad3 = _pagePad3;
-            _pagePad1.PagePad4 = _pagePad4;
-            _pagePad1.PagePad5 = _pagePad5;
-            //PagePad2
-            _pagePad2.PagePad1 = _pagePad1;
-            _pagePad2.PagePad3 = _pagePad3;
-            _pagePad2.PagePad4 = _pagePad4;
-            _pagePad2.PagePad5 = _pagePad5;
-            //PagePad3
-            _pagePad3.PagePad1 = _pagePad1;
-            _pagePad3.PagePad2 = _pagePad2;
-            //Developer
-            //PagePadPage page6 = new DocumentFinanceDialogPage6(this, "Page6");
-            //PagePadPage page7 = new DocumentFinanceDialogPage7(this, "Page7");
-            //PagePadPage page8 = new DocumentFinanceDialogPage8(this, "Page8");
+            Page1 = new DocumentFinanceDialogPage1(this, GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page1"), icon1, null);
+            Page2 = new DocumentFinanceDialogPage2(this, GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page2"), icon2, null);
+            Page3 = new DocumentFinanceDialogPage3(this, GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page3"), icon3, null);
 
-            //Call required Methods after Constructed pages
-            _pagePad2.ApplyCriteriaToCustomerInputs();
+            Page4 = new DocumentFinanceDialogPage4(this, GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page4"), icon4, null, false);
+            Page5 = new DocumentFinanceDialogPage5(this, GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page5"), icon5, null, false);
 
-            _listPages.Add(_pagePad1);
-            _listPages.Add(_pagePad2);
-            _listPages.Add(_pagePad3);
-            _listPages.Add(_pagePad4);
-            _listPages.Add(_pagePad5);
+            Page1.PagePad2 = Page2;
+            Page1.PagePad3 = Page3;
+            Page1.PagePad4 = Page4;
+            Page1.PagePad5 = Page5;
 
-            //Developer
-            //listPages.Add(page6);
-            //listPages.Add(page7);
-            //listPages.Add(page8);
+            Page2.PagePad1 = Page1;
+            Page2.PagePad3 = Page3;
+            Page2.PagePad4 = Page4;
+            Page2.PagePad5 = Page5;
 
-            //Init PagePage
-            PagePad.Init(_listPages);
+            Page3.PagePad1 = Page1;
+            Page3.PagePad2 = Page2;
 
-            //Start Validated
-            _pagePad1.Validate();
+            Page2.ApplyCriteriaToCustomerInputs();
 
-            //Prepare Other Pages - Enable/Disable WayBill Required Validation Entrys, Start with Disabled Validation for Invoices (Optional Mode)
-            _pagePad1.ToggleWayBillValidation(false);
-            //When Start in Invoice Mode, Start with Ship From Assigned, if disabled Invoice has WayBill comment above line
-            _pagePad5.AssignShipFromDefaults();
+            Pages.Add(Page1);
+            Pages.Add(Page2);
+            Pages.Add(Page3);
+            Pages.Add(Page4);
+            Pages.Add(Page5);
+
+            PagePad.Init(Pages);
+
+            Page1.Validate();
+
+            Page1.ToggleWayBillValidation(false);
+            Page5.AssignShipFromDefaults();
         }
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Events
 
         private void _pagePad_PageChanged(object sender, EventArgs e)
         {
@@ -158,40 +135,28 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             PagePad.ActivePage.Validate();
         }
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Methods
 
         public string GetPageTitle(int pPageIndex)
         {
-            string result = string.Format("{0} :: {1}",
-  GeneralUtils.GetResourceByName("window_title_dialog_new_finance_document"),
-  CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, string.Format("window_title_dialog_document_finance_page{0}", pPageIndex + 1))
-);
+            string result = $"{GeneralUtils.GetResourceByName("window_title_dialog_new_finance_document")} :: {CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, string.Format("window_title_dialog_document_finance_page{0}", pPageIndex + 1))}";
 
-            //Enable/Disable ClearCustomer
-            if (ButtonClearCustomer != null) ButtonClearCustomer.Visible = (_pagePad2 != null && pPageIndex == 1);
+            if (ButtonClearCustomer != null) ButtonClearCustomer.Visible = (Page2 != null && pPageIndex == 1);
 
-            //Enable/Disable Preview
-            if (_pagePad3 != null && _pagePad3.ArticleBag != null)
+            if (Page3 != null && Page3.ArticleBag != null)
             {
-                //Reference
-                cfg_configurationcurrency configurationCurrency = _pagePad1.EntryBoxSelectConfigurationCurrency.Value;
+                cfg_configurationcurrency configurationCurrency = Page1.EntryBoxSelectConfigurationCurrency.Value;
 
-                //Always Update Totals before Show Title
-                _pagePad3.ArticleBag.DiscountGlobal = DataConversionUtils.StringToDecimal(_pagePad2.EntryBoxCustomerDiscount.EntryValidation.Text);
-                _pagePad3.ArticleBag.UpdateTotals();
+                Page3.ArticleBag.DiscountGlobal = DataConversionUtils.StringToDecimal(Page2.EntryBoxCustomerDiscount.EntryValidation.Text);
+                Page3.ArticleBag.UpdateTotals();
 
-                if (_pagePad3.ArticleBag.TotalFinal > 0)
+                if (Page3.ArticleBag.TotalFinal > 0)
                 {
-                    //Always Recreate ArticleBag before contruct ProcessFinanceDocumentParameter
-                    _pagePad3.ArticleBag = GetArticleBag();
-                    result += string.Format(" : {0}", DataConversionUtils.DecimalToStringCurrency(_pagePad3.ArticleBag.TotalFinal * configurationCurrency.ExchangeRate, configurationCurrency.Acronym));
-                    //Enable or Disabled Preview Button
+                    Page3.ArticleBag = GetArticleBag();
+                    result += string.Format(" : {0}", DataConversionUtils.DecimalToStringCurrency(Page3.ArticleBag.TotalFinal * configurationCurrency.ExchangeRate, configurationCurrency.Acronym));
                     _buttonPreview.Visible = true;
                 }
                 else
                 {
-                    //Enable or Disabled Preview Button
                     _buttonPreview.Visible = false;
                 }
             }
@@ -203,13 +168,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             bool result = true;
 
-            for (int i = 0; i < _listPages.Count; i++)
+            for (int i = 0; i < Pages.Count; i++)
             {
-                if (_listPages[i].Enabled)
+                if (Pages[i].Enabled)
                 {
-                    //_logger.Debug(string.Format("listPages[{0}].Enabled: [{1}], Validated[{2}]", i, _listPages[i].Enabled, _listPages[i].Validated));
-                    //If Enabled and Not Validated return False
-                    if (!_listPages[i].Validated) result = false;
+                    if (!Pages[i].Validated) result = false;
                 }
             }
 

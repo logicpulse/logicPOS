@@ -9,15 +9,15 @@ using System.Threading.Tasks;
 namespace LogicPOS.Api.Features.Documents.Series.GetAllDocumentSeries
 {
     public class GetAllDocumentSeriesQueryHandler :
-        RequestHandler<GetAllDocumentSeriesQuery, ErrorOr<IEnumerable<DocumentSerie>>>
+        RequestHandler<GetAllDocumentSeriesQuery, ErrorOr<IEnumerable<DocumentSeries>>>
     {
         public GetAllDocumentSeriesQueryHandler(IHttpClientFactory factory) : base(factory)
         {
         }
 
-        public override async Task<ErrorOr<IEnumerable<DocumentSerie>>> Handle(GetAllDocumentSeriesQuery request, CancellationToken cancellationToken = default)
+        public override async Task<ErrorOr<IEnumerable<DocumentSeries>>> Handle(GetAllDocumentSeriesQuery request, CancellationToken cancellationToken = default)
         {
-            return await HandleGetAllQueryAsync<DocumentSerie>("document/series",cancellationToken);
+            return await HandleGetAllQueryAsync<DocumentSeries>("document/series",cancellationToken);
         }
     }
 }

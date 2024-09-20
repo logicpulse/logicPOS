@@ -3,7 +3,7 @@ using System;
 
 namespace LogicPOS.Api.Entities
 {
-    public class DocumentSerie : ApiEntity, IWithCode, IWithDesignation
+    public class DocumentSeries : ApiEntity, IWithCode, IWithDesignation
     {
         public uint Order { get; set; }
         public string Code { get; set; }
@@ -17,6 +17,5 @@ namespace LogicPOS.Api.Entities
         public FiscalYear FiscalYear { get; set; }
         public Guid FiscalYearId { get; set; }
         public string ATDocCodeValidationSerie { get; set; }
-        public string Notes { get; set; }
     }
 }

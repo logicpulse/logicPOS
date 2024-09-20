@@ -641,7 +641,7 @@ namespace logicpos
             _touchButtonPosToolbarLogoutUser.Clicked += touchButtonPosToolbarLogoutUser_Clicked;
             _touchButtonPosToolbarShowChangeUserDialog.Clicked += touchButtonPosToolbarShowChangeUserDialog_Clicked;
             _touchButtonPosToolbarCashDrawer.Clicked += touchButtonPosToolbarCashDrawer_Clicked;
-            TouchButtonPosToolbarNewFinanceDocument.Clicked += touchButtonPosToolbarNewFinanceDocument_Clicked;
+            TouchButtonPosToolbarNewFinanceDocument.Clicked += BtnNewDocument_Clicked;
             _touchButtonPosToolbarFinanceDocuments.Clicked += touchButtonPosToolbarFinanceDocuments_Clicked;
         }
 

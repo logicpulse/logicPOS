@@ -7,9 +7,9 @@ using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class DocumentSerieModal : EntityEditionModal<DocumentSerie>
+    public partial class DocumentSerieModal : EntityEditionModal<DocumentSeries>
     {
-        public DocumentSerieModal(EntityEditionModalMode modalMode, DocumentSerie entity = null) : base(modalMode, entity)
+        public DocumentSerieModal(EntityEditionModalMode modalMode, DocumentSeries entity = null) : base(modalMode, entity)
         {
         }
 

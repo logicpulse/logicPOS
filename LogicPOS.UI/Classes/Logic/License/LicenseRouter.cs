@@ -52,14 +52,22 @@ namespace logicpos.Classes.Logic.License
                     LicenseSettings.LicenseKeys);
 
 
-                int result = PluginSettings.LicenceManager.updateCurrentVersion(
-                    HardwareId,
-                    version,
-                    System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString());
+                int result = 0;
+                try
+                {
+                    result = PluginSettings.LicenceManager.updateCurrentVersion(
+                        HardwareId,
+                        version,
+                        System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString());
+                }
+                catch (Exception ex) {
+                    System.Windows.Forms.MessageBox.Show(ex.Message);
+                }
 
                 if (result <= 0)
                 {
-                    throw new Exception("Cannot update current version");
+                    //throw new Exception("Cannot update current version"); -> tchial0
+                    System.Windows.Forms.MessageBox.Show("Cannot update current version");
                 }
 
                 if (registredLicence.Length > 0)
