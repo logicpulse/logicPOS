@@ -263,7 +263,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             //Prepare KeyBoard
             if (keyboardMode != KeyboardMode.None)
             {
-                string iconKeyboard = string.Format("{0}{1}", PathsSettings.ImagesFolderLocation, @"Icons/Windows/icon_window_keyboard.png");
+                string iconKeyboard = $"{PathsSettings.ImagesFolderLocation}{@"Icons/Windows/icon_window_keyboard.png"}";
                 _buttonKeyBoard = GetButton(iconKeyboard);
                 _hbox.PackStart(_buttonKeyBoard, false, false, 0);
                 _buttonKeyBoard.Clicked += delegate

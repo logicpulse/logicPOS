@@ -82,7 +82,7 @@ namespace logicpos
 
         private void BtnNewDocument_Clicked(object sender, EventArgs e)
         {
-            var modal = new CreateDocumentModal(this, DialogFlags.DestroyWithParent);
+            var modal = new CreateDocumentModal(this);
             modal.Run();
             modal.Destroy();
 

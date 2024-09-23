@@ -1,18 +1,22 @@
 ﻿using Gtk;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
+using logicpos.Classes.Gui.Gtk.Widgets;
 using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Documents.CreateDocumentModal;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace LogicPOS.UI.Components.Modals
 {
     public class CreateDocumentModal : Modal
     {
+        #region Buttons
         private IconButtonWithText BtnOk { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
         private IconButtonWithText BtnCancel { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
         private IconButtonWithText BtnClearCustomer { get; set; } = ActionAreaButton.FactoryGetDialogButtonType("touchButtonClearCustomer_DialogActionArea",
@@ -25,12 +29,16 @@ namespace LogicPOS.UI.Components.Modals
      
         string BtnPreviewIcon => PathsSettings.ImagesFolderLocation + @"Icons\Dialogs\icon_pos_dialog_preview.png";
         string BtnClearCustomerIcon => PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_nav_delete.png";
+        #endregion
 
-        public CreateDocumentModal(Window parent, DialogFlags flags) : base(parent: parent,
-                                                                            title: GeneralUtils.GetResourceByName("window_title_dialog_new_finance_document"),
-                                                                            size: new System.Drawing.Size(790, 546),
-                                                                            icon: PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_document_new.png")
+        private ModalPagesNavigator Navigator { get; set; } 
+
+        public CreateDocumentModal(Window parent) : base(parent: parent,
+                                                         title: GeneralUtils.GetResourceByName("window_title_dialog_new_finance_document"),
+                                                         size: new System.Drawing.Size(790, 546),
+                                                         icon: PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_document_new.png")
         {
+
         }
 
         protected override ActionAreaButtons CreateActionAreaButtons()
@@ -48,12 +56,11 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override Widget CreateBody()
         {
-            return new Fixed();
-        }
+            Navigator = new ModalPagesNavigator(new DocumentTypePage(this), new DocumentTypePage(this), new DocumentTypePage(this));
 
-        protected override Widget CreateLeftContent()
-        {
-            return null;
+            VBox boxContent = new VBox();
+            boxContent.PackStart(Navigator, true, true, 0);
+            return boxContent;
         }
     }
 }

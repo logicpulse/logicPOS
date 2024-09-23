@@ -15,13 +15,14 @@ namespace LogicPOS.UI.Components.InputFields
         public bool IsValidatable { get; private set; }
         private readonly string _regex;
         public VBox Component { get; private set; }
-
+        public HBox ButtonsArea { get; private set; }
         public string FieldName => Label.Text;
 
         public TextBox(string labelResourceName,
                        bool isRequired = false,
                        bool isValidatable = false,
-                       string regex = null)
+                       string regex = null,
+                       HBox buttonsArea = null)
         {
             if (isValidatable && string.IsNullOrEmpty(regex))
             {
@@ -33,6 +34,7 @@ namespace LogicPOS.UI.Components.InputFields
             IsValidatable = isValidatable;
             _regex = regex;
             Entry = new Entry();
+            ButtonsArea = buttonsArea;
             Component = CreateComponent();
             AddEventHandlers();
             UpdateValidationColors();
@@ -83,7 +85,19 @@ namespace LogicPOS.UI.Components.InputFields
         {
             var box = new VBox(false, 2);
             box.PackStart(Label, false, false, 0);
-            box.PackStart(Entry, false, false, 0);
+
+            if (ButtonsArea == null)
+            {
+                box.PackStart(Entry, false, false, 0);
+            }
+            else
+            {
+                var hbox = new HBox(false, 2);
+                hbox.PackStart(Entry, true, true, 0);
+                hbox.PackStart(ButtonsArea, false, false, 0);
+                box.PackStart(hbox, false, false, 0);
+            }
+
             return box;
         }
 

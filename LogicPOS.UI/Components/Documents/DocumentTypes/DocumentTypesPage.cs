@@ -14,7 +14,7 @@ namespace LogicPOS.UI.Components.Pages
 {
     public class DocumentTypesPage : Page<DocumentType>
     {
-        public DocumentTypesPage(Window parent) : base(parent)
+        public DocumentTypesPage(Window parent, Dictionary<string,string> options = null) : base(parent,options)
         {
         }
 

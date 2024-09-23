@@ -51,9 +51,9 @@ namespace LogicPOS.UI.Components.Modals.Common
 
         protected abstract ActionAreaButtons CreateActionAreaButtons();
         protected abstract Widget CreateBody();
-        protected abstract Widget CreateLeftContent();
+        protected virtual Widget CreateLeftContent() => null;
 
-        protected void Design()
+        private void Design()
         {
             WindowSettings.RightButtons = CreateActionAreaButtons();
             WindowSettings.Body = CreateBody();
