@@ -12,7 +12,7 @@ namespace LogicPOS.UI.Components.Modals.Common
         public System.Drawing.Size Size { get; set; }
         public EventBox Close { get; set; }
         public EventBox Minimize { get; set; }
-        public Widget Body { get; set; }
+        public Widget Body { get; set; } = new Fixed();
         public Widget LeftContent { get; set; }
         public CustomButton BtnConfirm { get; set; }
         public ActionAreaButtons RightButtons { get; set; }
@@ -104,7 +104,7 @@ namespace LogicPOS.UI.Components.Modals.Common
 
         private Gtk.Image CreateIcon()
         {
-            Gdk.Pixbuf pixbufWindowIcon = new Gdk.Pixbuf(EntitySelectionModalIcons.WindowIcon);
+            Gdk.Pixbuf pixbufWindowIcon = new Gdk.Pixbuf(Icon);
 
             if (Icon != string.Empty && File.Exists(Icon))
             {
@@ -126,6 +126,14 @@ namespace LogicPOS.UI.Components.Modals.Common
             {
                 box.PackStart(Close, false, false, 2);
             }
+            return box;
+        }
+
+        public EventBox CreateBodyEventBox()
+        {
+            EventBox box = new EventBox();
+            box.ModifyBg(StateType.Normal, EntitySelectionModalColors.WindowBackground.ToGdkColor());
+            box.Add(Body);
             return box;
         }
     }
