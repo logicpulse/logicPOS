@@ -1,4 +1,4 @@
-﻿namespace LogicPOS.UI.Components.InputFields
+﻿namespace LogicPOS.UI.Components.InputFields.Validation
 {
     public interface IValidatableField
     {

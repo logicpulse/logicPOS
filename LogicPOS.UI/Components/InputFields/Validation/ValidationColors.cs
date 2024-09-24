@@ -2,7 +2,7 @@
 using LogicPOS.UI.Extensions;
 using System.Drawing;
 
-namespace LogicPOS.UI.Components.InputFields
+namespace LogicPOS.UI.Components.InputFields.Validation
 {
     public class ValidationColors
     {

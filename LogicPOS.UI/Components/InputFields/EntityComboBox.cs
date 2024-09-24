@@ -1,6 +1,7 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
+using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
