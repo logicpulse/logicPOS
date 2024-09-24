@@ -113,7 +113,13 @@ namespace LogicPOS.Shared.Article
 
         public decimal PriceFinal { get; set; }
 
-        public PriceProperties(PricePropertiesSourceMode pSourceMode, bool pPriceWithVat, decimal pSource, decimal pQuantity, decimal pDiscountArticle, decimal pDiscountGlobal, decimal pVat)
+        public PriceProperties(PricePropertiesSourceMode pSourceMode,
+                               bool pPriceWithVat,
+                               decimal pSource,
+                               decimal pQuantity,
+                               decimal pDiscountArticle,
+                               decimal pDiscountGlobal,
+                               decimal pVat)
         {
             //Fixed, Never Change
             SourceMode = pSourceMode;
@@ -226,9 +232,21 @@ namespace LogicPOS.Shared.Article
             sw.Close();
         }
 
-        public static PriceProperties GetPriceProperties(PricePropertiesSourceMode pSourceMode, bool pPriceWithVat, decimal pSource, decimal pQuantity, decimal pDiscountArticle, decimal pDiscountGlobal, decimal pVat)
+        public static PriceProperties GetPriceProperties(PricePropertiesSourceMode pSourceMode,
+                                                         bool pPriceWithVat,
+                                                         decimal pSource,
+                                                         decimal pQuantity,
+                                                         decimal pDiscountArticle,
+                                                         decimal pDiscountGlobal,
+                                                         decimal pVat)
         {
-            PriceProperties result = new PriceProperties(pSourceMode, pPriceWithVat, pSource, pQuantity, pDiscountArticle, pDiscountGlobal, pVat);
+            PriceProperties result = new PriceProperties(pSourceMode,
+                                                         pPriceWithVat,
+                                                         pSource,
+                                                         pQuantity,
+                                                         pDiscountArticle,
+                                                         pDiscountGlobal,
+                                                         pVat);
             return result;
         }
     }

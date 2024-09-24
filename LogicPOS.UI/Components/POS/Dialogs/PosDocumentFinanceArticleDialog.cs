@@ -132,7 +132,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
 
             //ActionArea Buttons
-            _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
+            _buttonOk =   ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
             _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
             _buttonClear = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.CleanFilter);
 

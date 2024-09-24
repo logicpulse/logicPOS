@@ -14,7 +14,7 @@ namespace LogicPOS.UI.Components.Pages
     public class VatRatesPage : Page<VatRate>
     {
         protected override IRequest<ErrorOr<IEnumerable<VatRate>>> GetAllQuery => new GetAllVatRatesQuery();
-        public VatRatesPage(Window parent) : base(parent)
+        public VatRatesPage(Window parent, Dictionary<string,string> options = null) : base(parent,options)
         {
         }
 

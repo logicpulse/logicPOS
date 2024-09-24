@@ -18,17 +18,17 @@ namespace LogicPOS.UI.Components.Modals.Common
         public string BtnPreviousIcon => $"{PathsSettings.ImagesFolderLocation}{@"Icons/icon_pos_pagepad_prev.png"}";
         public IconButtonWithText BtnNext { get; private set; }
         public string BtnNextIcon => $"{PathsSettings.ImagesFolderLocation}{@"Icons/icon_pos_pagepad_next.png"}";
-        internal List<ModalPage> Pages { get; set; }
+        internal List<ModalTab> Pages { get; set; }
         public int CurrentPageIndex { get; set; } = 0;
-        public ModalPage ActivePage { get; set; }
+        public ModalTab ActivePage { get; set; }
         public event EventHandler PageChanged;
         public string BtnNavigatorFont => AppSettings.Instance.fontPagePadNavigatorButton;
         public Size BtnNavigatorSize => AppSettings.Instance.sizePagesPadNavigatorButton;
         public Size BtnNavigatorIconSize => AppSettings.Instance.sizePagesPadNavigatorButtonIcon;
 
-        public ModalPagesNavigator(params ModalPage[] pages)
+        public ModalPagesNavigator(params ModalTab[] pages)
         {
-            Pages = new List<ModalPage>(pages);
+            Pages = new List<ModalTab>(pages);
             Build();
         }
 
@@ -40,7 +40,7 @@ namespace LogicPOS.UI.Components.Modals.Common
             AddEventHandlers();
 
             int i = 0;
-            foreach (ModalPage page in Pages)
+            foreach (ModalTab page in Pages)
             {
                 i++;
                 page.BtnNavigator = new IconButtonWithText(

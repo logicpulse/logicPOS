@@ -13,7 +13,7 @@ namespace LogicPOS.UI.Components.Pages
     {
         protected override IRequest<ErrorOr<IEnumerable<Country>>> GetAllQuery => new GetAllCountriesQuery();
 
-        public CountriesPage(Window parent) : base(parent)
+        public CountriesPage(Window parent, Dictionary<string,string> options = null) : base(parent, options)
         {
         }
 

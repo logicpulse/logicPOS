@@ -56,7 +56,9 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override Widget CreateBody()
         {
-            Navigator = new ModalPagesNavigator(new DocumentTypePage(this), new DocumentTypePage(this), new DocumentTypePage(this));
+            Navigator = new ModalPagesNavigator(new CreateDocumentDocumentTab(this),
+                                                new CreateDocumentCustomerTab(this),
+                                                new CreateDocumentArticlesTab(this));
 
             VBox boxContent = new VBox();
             boxContent.PackStart(Navigator, true, true, 0);

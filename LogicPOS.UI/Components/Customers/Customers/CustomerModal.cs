@@ -51,7 +51,7 @@ namespace LogicPOS.UI.Components.Modals
                 NewPriceTypeId = _comboPriceTypes.SelectedEntity.Id,
                 NewCustomerTypeId = _comboCustomerTypes.SelectedEntity?.Id,
                 NewCountryId = _comboCountries.SelectedEntity?.Id,
-                NewBirthDate = DateTime.Parse(_txtBirthDate.Text),
+                NewBirthDate =  string.IsNullOrWhiteSpace(_txtBirthDate.Text) ? (DateTime?)null : DateTime.Parse(_txtBirthDate.Text),
                 NewAddress = _txtAddress.Text,
                 NewLocality = _txtLocality.Text,
                 NewZipCode = _txtPostalCode.Text,
@@ -61,6 +61,7 @@ namespace LogicPOS.UI.Components.Modals
                 NewEmail = _txtEmail.Text,
                 NewFiscalNumber = _txtFiscalNumber.Text,
                 NewCardNumber = _txtCardNumber.Text,
+                NewCardCredit = decimal.Parse(_txtCardCredit.Text),
                 NewNotes = _txtNotes.Value.Text,
                 IsDeleted = _checkDisabled.Active,
                 Supplier = _checkSupplier.Active

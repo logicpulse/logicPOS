@@ -4,7 +4,7 @@ using LogicPOS.UI.Buttons;
 
 namespace LogicPOS.UI.Components.Modals.Common
 {
-    public abstract class ModalPage : Box
+    public abstract class ModalTab : Box
     {
         public string PageName { get; set; }
         public string PageIcon { get; set; }
@@ -12,7 +12,7 @@ namespace LogicPOS.UI.Components.Modals.Common
         public bool Enabled { get; set; } = true;
         public IconButtonWithText BtnNavigator { get; set; }
 
-        public ModalPage(Window parent,
+        public ModalTab(Window parent,
                          string name,
                          string icon,
                          bool enabled = true)

@@ -20,7 +20,7 @@ namespace LogicPOS.UI.Components.Pages
         protected readonly List<TEntity> _entities = new List<TEntity>();
         protected virtual IRequest<ErrorOr<IEnumerable<TEntity>>> GetAllQuery { get; set; }
 
-        public Window PageParentWindow { get; }
+        public Window SourceWindow { get; }
         public TreeView GridView { get; set; }
         public TEntity SelectedEntity { get; set; }
 
@@ -34,7 +34,7 @@ namespace LogicPOS.UI.Components.Pages
 
         public Page(Window parent, Dictionary<string, string> options = null)
         {
-            PageParentWindow = parent;
+            SourceWindow = parent;
             Navigator = new PageNavigator<TEntity>(this);
             Options = options;
 
@@ -54,7 +54,7 @@ namespace LogicPOS.UI.Components.Pages
         protected void ShowApiErrorAlert()
         {
             SimpleAlerts.Error()
-                .WithParent(PageParentWindow)
+                .WithParent(SourceWindow)
                 .WithTitle("API")
                 .WithMessage(ApiErrors.CommunicationError.Description)
                 .Show();

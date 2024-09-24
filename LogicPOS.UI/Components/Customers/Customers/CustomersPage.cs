@@ -15,7 +15,7 @@ namespace LogicPOS.UI.Components.Pages
     {
 
         protected override IRequest<ErrorOr<IEnumerable<Customer>>> GetAllQuery => new GetAllCustomersQuery();
-        public CustomersPage(Window parent) : base(parent)
+        public CustomersPage(Window parent, Dictionary<string,string> options = null) : base(parent,options)
         {
         }
 

@@ -173,5 +173,16 @@ namespace LogicPOS.UI.Components.InputFields
             Entry.GrabFocus();
 
         }
+
+        public static HBox CreateHbox(params PageTextBox[] textBoxes)
+        {
+            var hbox = new HBox(true, 2);
+
+            foreach (var textBox in textBoxes)
+            {
+                hbox.PackStart(textBox.Component, false, true, 0);
+            }
+            return hbox;
+        }
     }
 }

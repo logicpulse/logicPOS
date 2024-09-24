@@ -13,7 +13,7 @@ namespace LogicPOS.UI.Components.Pages
 {
     public class PaymentConditionsPage : Page<PaymentCondition>
     {
-        public PaymentConditionsPage(Window parent) : base(parent)
+        public PaymentConditionsPage(Window parent, Dictionary<string,string> options = null) : base(parent,options)
         {
         }
 

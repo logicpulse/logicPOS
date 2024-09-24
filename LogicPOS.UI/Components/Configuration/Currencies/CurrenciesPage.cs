@@ -14,7 +14,7 @@ namespace LogicPOS.UI.Components.Pages
     {
         protected override IRequest<ErrorOr<IEnumerable<Currency>>> GetAllQuery => new GetAllCurrenciesQuery();
 
-        public CurrenciesPage(Window parent) : base(parent)
+        public CurrenciesPage(Window parent, Dictionary<string,string> options = null) : base(parent, options)
         {
         }
 

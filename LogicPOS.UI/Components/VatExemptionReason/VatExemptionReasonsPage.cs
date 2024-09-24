@@ -2,7 +2,6 @@
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.VatExemptionReasons.GetAllVatExemptionReasons;
-using LogicPOS.Api.Features.VatRates.GetAllVatRate;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
@@ -15,7 +14,7 @@ namespace LogicPOS.UI.Components.Pages
     public class VatExemptionReasonsPage : Page<VatExemptionReason>
     {
         protected override IRequest<ErrorOr<IEnumerable<VatExemptionReason>>> GetAllQuery => new GetAllVatExemptionReasonsQuery();
-        public VatExemptionReasonsPage(Window parent) : base(parent)
+        public VatExemptionReasonsPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
         }
 
@@ -39,7 +38,7 @@ namespace LogicPOS.UI.Components.Pages
             GridView.AppendColumn(Columns.CreateUpdatedAtColumn(3));
         }
 
-      
+
 
         private TreeViewColumn CreateAcronymColumn()
         {

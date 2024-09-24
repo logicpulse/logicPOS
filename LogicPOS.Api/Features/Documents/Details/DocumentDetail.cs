@@ -3,8 +3,9 @@ using System;
 
 namespace LogicPOS.Api.Entities
 {
-    public class DocumentDetail : ApiEntity
+    public class DocumentDetail : ApiEntity, IWithCode, IWithDesignation
     {
+        public uint Order { get; set; }
         public Article Article { get; set; }
         public Guid ArticleId { get; set; }
 
@@ -26,5 +27,8 @@ namespace LogicPOS.Api.Entities
         public string Token1 { get; set; }
         public string Token2 { get; set; }
         public string Warehouse { get; set; }
+        public string Code { get; set; }
+        public string Designation { get; set; }
+
     }
 }

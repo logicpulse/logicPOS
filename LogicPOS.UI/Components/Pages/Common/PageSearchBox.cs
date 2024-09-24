@@ -4,7 +4,6 @@ using logicpos.App;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using LogicPOS.Settings;
-using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.Utility;
 using System;
@@ -14,29 +13,30 @@ namespace LogicPOS.UI.Components.Pages
 {
     public class PageSearchBox : Box
     {
-        private Window _parentWindow;
+        private Window SourceWindow { get; set; }
         public bool ShowMoreButton { get; set; }
         public bool ShowFilterButton { get; set; }
         internal EntryBoxValidation TxtSearch { get; set; }
         public string SearchText => TxtSearch.EntryValidation.Text;
-  
+        public HBox Bar { get; set; } = new HBox(false, 0);
+        public IconButtonWithText BtnMore { get; set; }
+        public IconButtonWithText BtnFilter { get; set; }
+        public string BtnMoreIcon => PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_more.png";
+        public string BtnFilterIcon => PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_filter.png";
 
         public PageSearchBox(Window parentWindow, bool showFilterAndMoreButtons)
         {
-            _parentWindow = parentWindow;
+            SourceWindow = parentWindow;
             Design(showFilterAndMoreButtons);
         }
+
         private void Design(bool showFilterAndMoreButtons)
         {
-            string fontBaseDialogActionAreaButton = AppSettings.Instance.fontBaseDialogActionAreaButton;
-            Color colorBaseDialogActionAreaButtonBackground = Color.Transparent;
-            Color colorBaseDialogActionAreaButtonFont = AppSettings.Instance.colorBaseDialogActionAreaButtonFont;
-            Size sizeBaseDialogActionAreaBackOfficeNavigatorButton = ExpressionEvaluatorExtended.sizePosToolbarButtonSizeDefault;
-            Size sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon = ExpressionEvaluatorExtended.sizePosToolbarButtonIconSizeDefault;
+           
             string regexAlfaNumericExtended = RegexUtils.RegexAlfaNumericExtended;
 
 
-            TxtSearch = new EntryBoxValidation(_parentWindow,
+            TxtSearch = new EntryBoxValidation(SourceWindow,
                                             GeneralUtils.GetResourceByName("widget_generictreeviewsearch_search_label"),
                                             KeyboardMode.AlfaNumeric,
                                             regexAlfaNumericExtended,
@@ -44,53 +44,49 @@ namespace LogicPOS.UI.Components.Pages
 
             TxtSearch.WidthRequest = GlobalApp.ScreenSize.Width == 800 && GlobalApp.ScreenSize.Height == 600 ? 150 : 250;
 
-            HBox horizontalBox = new HBox(false, 0);
-            horizontalBox.PackStart(TxtSearch, true, true, 0);
+            Bar.PackStart(TxtSearch, true, true, 0);
 
-            PackStart(horizontalBox);
+            PackStart(Bar);
 
 
             if (showFilterAndMoreButtons)
             {
-                IconButtonWithText btnMore;
-                IconButtonWithText btnFilter;
+                Size buttonSize = ExpressionEvaluatorExtended.sizePosToolbarButtonSizeDefault;
+                Size buttonIconSize = ExpressionEvaluatorExtended.sizePosToolbarButtonIconSizeDefault;
 
-                string iconMore = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_more.png";
-                string iconFilter = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_filter.png";
-
-                btnMore = new IconButtonWithText(
+                BtnMore = new IconButtonWithText(
                     new ButtonSettings
                     {
                         Name = "touchButtonSearchAdvanced_DialogActionArea",
-                        BackgroundColor = colorBaseDialogActionAreaButtonBackground,
+                        BackgroundColor = Color.Transparent,
                         Text = GeneralUtils.GetResourceByName("global_button_label_more"),
                         Font = ExpressionEvaluatorExtended.fontDocumentsSizeDefault,
-                        FontColor = colorBaseDialogActionAreaButtonFont,
-                        Icon = iconMore,
-                        IconSize = sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon,
-                        ButtonSize = sizeBaseDialogActionAreaBackOfficeNavigatorButton
+                        FontColor = AppSettings.Instance.colorBaseDialogActionAreaButtonFont,
+                        Icon = BtnMoreIcon,
+                        IconSize = buttonIconSize,
+                        ButtonSize = buttonSize
                     })
                 { Sensitive = true };
 
-                btnFilter = new IconButtonWithText(
+                BtnFilter = new IconButtonWithText(
                     new ButtonSettings
                     {
                         Name = "touchButtonSearchAdvanced_DialogActionArea",
-                        BackgroundColor = colorBaseDialogActionAreaButtonBackground,
+                        BackgroundColor = Color.Transparent,
                         Text = GeneralUtils.GetResourceByName("global_button_label_filter"),
                         Font = ExpressionEvaluatorExtended.fontDocumentsSizeDefault,
-                        FontColor = colorBaseDialogActionAreaButtonFont,
-                        Icon = iconFilter,
-                        IconSize = sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon,
-                        ButtonSize = sizeBaseDialogActionAreaBackOfficeNavigatorButton
+                        FontColor = AppSettings.Instance.colorBaseDialogActionAreaButtonFont,
+                        Icon = BtnFilterIcon,
+                        IconSize = buttonIconSize,
+                        ButtonSize = buttonSize
                     })
                 { Sensitive = true };
 
-                horizontalBox.PackStart(btnMore, false, false, 0);
-                horizontalBox.PackStart(btnFilter, false, false, 0);
+                Bar.PackStart(BtnMore, false, false, 0);
+                Bar.PackStart(BtnFilter, false, false, 0);
 
-                btnMore.Clicked += BtnMore_Clicked;
-                btnFilter.Clicked += BtnFilter_Clicked;
+                BtnMore.Clicked += BtnMore_Clicked;
+                BtnMore.Clicked += BtnFilter_Clicked;
             }
 
         }

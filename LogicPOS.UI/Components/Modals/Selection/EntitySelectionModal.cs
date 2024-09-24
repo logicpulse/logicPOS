@@ -63,7 +63,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void InitializeWindow(string title)
         {
-            WindowSettings.Source = Page.PageParentWindow;
+            WindowSettings.Source = Page.SourceWindow;
             WindowSettings.Title = new Label(title);
 
             Modal = false;
@@ -83,7 +83,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private Widget CreateSearchBox()
         {
-            var searchBox = new PageSearchBox(Page.PageParentWindow, true);
+            var searchBox = new PageSearchBox(Page.SourceWindow, true);
             searchBox.TxtSearch.EntryValidation.Changed += delegate
             {
                 Page.Navigator.SearchBox.TxtSearch.EntryValidation.Text = searchBox.TxtSearch.EntryValidation.Text;
