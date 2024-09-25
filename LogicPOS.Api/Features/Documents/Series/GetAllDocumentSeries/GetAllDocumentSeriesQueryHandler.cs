@@ -17,7 +17,7 @@ namespace LogicPOS.Api.Features.Documents.Series.GetAllDocumentSeries
 
         public override async Task<ErrorOr<IEnumerable<DocumentSeries>>> Handle(GetAllDocumentSeriesQuery request, CancellationToken cancellationToken = default)
         {
-            return await HandleGetAllQueryAsync<DocumentSeries>("document/series",cancellationToken);
+            return await HandleGetAllQueryAsync<DocumentSeries>("documents/series",cancellationToken);
         }
     }
 }

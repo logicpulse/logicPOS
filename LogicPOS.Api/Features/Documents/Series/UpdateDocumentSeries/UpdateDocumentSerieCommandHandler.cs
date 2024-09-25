@@ -16,7 +16,7 @@ namespace LogicPOS.Api.Features.Documents.Series.UpdateDocumentSerie
 
         public override async Task<ErrorOr<Unit>> Handle(UpdateDocumentSerieCommand command, CancellationToken cancellationToken = default)
         {
-            return await HandleUpdateCommandAsync($"document/series/{command.Id}", command, cancellationToken);
+            return await HandleUpdateCommandAsync($"documents/series/{command.Id}", command, cancellationToken);
         }
     }
 }
