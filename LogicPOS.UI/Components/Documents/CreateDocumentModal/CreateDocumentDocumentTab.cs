@@ -205,17 +205,17 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
 
         private void Design()
         {
-            var vbox = new VBox(false, 2);
-            vbox.PackStart(TxtDocumentType.Component, false, false, 0);
-            vbox.PackStart(TxtPaymnentCondition.Component, false, false, 0);
-            vbox.PackStart(TxtPaymentMethod.Component, false, false, 0);
-            vbox.PackStart(TxtCurrency.Component, false, false, 0);
+            var verticalLayout = new VBox(false, 2);
+            verticalLayout.PackStart(TxtDocumentType.Component, false, false, 0);
+            verticalLayout.PackStart(TxtPaymnentCondition.Component, false, false, 0);
+            verticalLayout.PackStart(TxtPaymentMethod.Component, false, false, 0);
+            verticalLayout.PackStart(TxtCurrency.Component, false, false, 0);
 
-            vbox.PackStart(PageTextBox.CreateHbox(TxtOriginDocument,TxtCopyDocument), false, false, 0);
+            verticalLayout.PackStart(PageTextBox.CreateHbox(TxtOriginDocument,TxtCopyDocument), false, false, 0);
 
-            vbox.PackStart(TxtNotes.Component, false, false, 0);
+            verticalLayout.PackStart(TxtNotes.Component, false, false, 0);
 
-            PackStart(vbox);
+            PackStart(verticalLayout);
         }
     }
 }

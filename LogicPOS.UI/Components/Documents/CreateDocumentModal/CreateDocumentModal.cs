@@ -31,7 +31,7 @@ namespace LogicPOS.UI.Components.Modals
         string BtnClearCustomerIcon => PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_nav_delete.png";
         #endregion
 
-        private ModalPagesNavigator Navigator { get; set; } 
+        private ModalTabsNavigator Navigator { get; set; } 
 
         public CreateDocumentModal(Window parent) : base(parent: parent,
                                                          title: GeneralUtils.GetResourceByName("window_title_dialog_new_finance_document"),
@@ -56,9 +56,11 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override Widget CreateBody()
         {
-            Navigator = new ModalPagesNavigator(new CreateDocumentDocumentTab(this),
+            Navigator = new ModalTabsNavigator(new CreateDocumentDocumentTab(this),
                                                 new CreateDocumentCustomerTab(this),
-                                                new CreateDocumentArticlesTab(this));
+                                                new CreateDocumentArticlesTab(this),
+                                                new CreateDocumentShipToTab(this),
+                                                new CreateDocumentShipFromTab(this));
 
             VBox boxContent = new VBox();
             boxContent.PackStart(Navigator, true, true, 0);

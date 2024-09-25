@@ -10,37 +10,38 @@ using System.Drawing;
 
 namespace LogicPOS.UI.Components.Modals.Common
 {
-    public class ModalPagesNavigator : VBox
+    public class ModalTabsNavigator : VBox
     {
-        public HBox Component { get; set; }
         public Color HotButtonBackgroundColor = AppSettings.Instance.colorPagePadHotButtonBackground;
-        public IconButtonWithText BtnPrevious { get; private set; }
+        public Size BtnNavigatorSize => AppSettings.Instance.sizePagesPadNavigatorButton;
+        public Size BtnNavigatorIconSize => AppSettings.Instance.sizePagesPadNavigatorButtonIcon;
         public string BtnPreviousIcon => $"{PathsSettings.ImagesFolderLocation}{@"Icons/icon_pos_pagepad_prev.png"}";
-        public IconButtonWithText BtnNext { get; private set; }
         public string BtnNextIcon => $"{PathsSettings.ImagesFolderLocation}{@"Icons/icon_pos_pagepad_next.png"}";
-        internal List<ModalTab> Pages { get; set; }
+        public string BtnNavigatorFont => AppSettings.Instance.fontPagePadNavigatorButton;
+        
+        public HBox Component { get; set; }
+        public IconButtonWithText BtnPrevious { get; private set; }
+        public IconButtonWithText BtnNext { get; private set; }
+        internal List<ModalTab> Tabs { get; set; }
         public int CurrentPageIndex { get; set; } = 0;
         public ModalTab ActivePage { get; set; }
         public event EventHandler PageChanged;
-        public string BtnNavigatorFont => AppSettings.Instance.fontPagePadNavigatorButton;
-        public Size BtnNavigatorSize => AppSettings.Instance.sizePagesPadNavigatorButton;
-        public Size BtnNavigatorIconSize => AppSettings.Instance.sizePagesPadNavigatorButtonIcon;
 
-        public ModalPagesNavigator(params ModalTab[] pages)
+        public ModalTabsNavigator(params ModalTab[] pages)
         {
-            Pages = new List<ModalTab>(pages);
+            Tabs = new List<ModalTab>(pages);
             Build();
         }
 
         private void Build()
         {
-            HBox navigatorButtons = new HBox(true, 0);
-
             InitializeButtons();
             AddEventHandlers();
 
+            HBox navigatorButtons = new HBox(true, 0);
+
             int i = 0;
-            foreach (ModalTab page in Pages)
+            foreach (ModalTab page in Tabs)
             {
                 i++;
                 page.BtnNavigator = new IconButtonWithText(
@@ -75,7 +76,7 @@ namespace LogicPOS.UI.Components.Modals.Common
             Component.PackStart(BtnNext, false, false, 2);
             PackStart(Component, false, false, 2);
 
-            ActivePage = Pages[0];
+            ActivePage = Tabs[0];
             PackStart(ActivePage);
         }
 
@@ -133,10 +134,10 @@ namespace LogicPOS.UI.Components.Modals.Common
                 BtnPrevious.Sensitive = false;
                 BtnNext.Sensitive = true;
             }
-            else if (CurrentPageIndex == Pages.Count - 1)
+            else if (CurrentPageIndex == Tabs.Count - 1)
             {
                 BtnPrevious.Sensitive = true;
-                BtnNext.Sensitive = ((CurrentPageIndex + 1 <= Pages.Count - 1) && (Pages[CurrentPageIndex + 1].Enabled));
+                BtnNext.Sensitive = ((CurrentPageIndex + 1 <= Tabs.Count - 1) && (Tabs[CurrentPageIndex + 1].Enabled));
             }
             else
             {
@@ -154,7 +155,7 @@ namespace LogicPOS.UI.Components.Modals.Common
 
             CurrentPageIndex = next ? CurrentPageIndex + 1 : CurrentPageIndex - 1;
 
-            ActivePage = Pages[CurrentPageIndex];
+            ActivePage = Tabs[CurrentPageIndex];
             this.PackStart(ActivePage);
             ActivePage.BtnNavigator.Sensitive = true;
             ActivePage.BtnNavigator.ModifyBg(StateType.Normal, HotButtonBackgroundColor.ToGdkColor());

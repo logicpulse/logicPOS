@@ -1,6 +1,4 @@
-﻿using DocumentFormat.OpenXml.VariantTypes;
-using FastReport.Export.Hpgl.Commands;
-using Gtk;
+﻿using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
@@ -12,15 +10,14 @@ using LogicPOS.UI.Components.Pages;
 using LogicPOS.Utility;
 using System;
 using System.Drawing;
-using System.Xml.Linq;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
 {
     public class CreateDocumentAddItemModal : Modal
     {
-        public  IconButtonWithText BtnOk { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
-        public  IconButtonWithText BtnCancel { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
-        public IconButtonWithText  BtnClear { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.CleanFilter);
+        public IconButtonWithText BtnOk { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
+        public IconButtonWithText BtnCancel { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
+        public IconButtonWithText BtnClear { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.CleanFilter);
         public PageTextBox TxtArticle { get; set; }
         public PageTextBox TxtQuantity { get; set; }
         public PageTextBox TxtPrice { get; set; }
@@ -205,12 +202,12 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
 
         private void ShowArticleData(Article article)
         {
-            
+
         }
 
         protected override ActionAreaButtons CreateActionAreaButtons()
         {
-            return  new ActionAreaButtons
+            return new ActionAreaButtons
             {
                 new ActionAreaButton(BtnOk, ResponseType.Ok),
                 new ActionAreaButton(BtnCancel, ResponseType.Cancel),
