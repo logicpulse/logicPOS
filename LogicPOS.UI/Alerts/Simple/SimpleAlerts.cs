@@ -1,4 +1,5 @@
 ﻿using Gtk;
+using LogicPOS.Api.Errors;
 
 namespace LogicPOS.UI.Alerts
 {
@@ -63,6 +64,14 @@ namespace LogicPOS.UI.Alerts
                 .WithTitleResource("global_composite_article")
                 .WithMessageResource("dialog_message_composite_article_same")
                 .Show();
+        }
+
+        public static void ShowApiErrorAlert(Window sourceWindow)
+        {
+           Error().WithParent(sourceWindow)
+                  .WithTitle("API")
+                  .WithMessage(ApiErrors.CommunicationError.Description)
+                  .Show();
         }
     }
 }

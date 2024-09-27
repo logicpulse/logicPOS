@@ -87,11 +87,7 @@ namespace LogicPOS.UI.Components.Modals
                     break;
 
                 default:
-                    SimpleAlerts.Error()
-                                .WithParent(this)
-                                .WithMessage(error.Description ?? "Ocorreu um erro")
-                                .WithTitle("Erro inesperado")
-                                .Show();
+                    SimpleAlerts.ShowApiErrorAlert(this);
                     break;
             }
 
@@ -103,21 +99,7 @@ namespace LogicPOS.UI.Components.Modals
             return ValidatableFields.All(txt => txt.IsValid());
         }
 
-        protected void ShowValidationErrors()
-        {
-            var invalidFields = string.Join(", ",
-                                            ValidatableFields.Where(field => field.IsValid() == false)
-                                                             .Select(field => field.FieldName));
-
-            Utils.ShowMessageBox(GlobalApp.BackOfficeMainWindow,
-                                 DialogFlags.DestroyWithParent | DialogFlags.Modal,
-                                 new Size(500, 500),
-                                 MessageType.Error,
-                                 ButtonsType.Ok,
-                                 GeneralUtils.GetResourceByName("window_title_dialog_validation_error"),
-                                 string.Format(GeneralUtils.GetResourceByName("dialog_message_field_validation_error"),
-                                               invalidFields));
-        }
+        protected void ShowValidationErrors() => Utilities.ShowValidationErrors(ValidatableFields);
 
         private void Design()
         {
@@ -256,9 +238,6 @@ namespace LogicPOS.UI.Components.Modals
                 case EntityEditionModalMode.Update:
                     UpdateEntity();
                     break;
-                default:
-                    throw new Exception("Invalid modal mode");
-
             }
         }
 

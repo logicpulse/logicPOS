@@ -1,45 +1,88 @@
 ﻿using Gtk;
-using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
-using System;
+using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
 {
-    public class CreateDocumentItemsPage : Page<DocumentDetail>
+    public class CreateDocumentItemsPage : Page<Item>
     {
+        public List<Item> Items => _entities;
         public CreateDocumentItemsPage(Window parent) : base(parent)
         {
         }
 
-        protected override void LoadEntities()
-        {
-            
-        }
+        protected override void LoadEntities() { }
 
         public override void DeleteEntity()
         {
-            throw new NotImplementedException();
+            if (SelectedEntity == null)
+            {
+                return;
+            }
+
+            _entities.Remove(SelectedEntity);
+            SelectedEntity = null;
+
+            Refresh();
         }
 
         public override void RunModal(EntityEditionModalMode mode)
         {
-            CreateDocumentAddItemModal modal = null;
-
             switch (mode)
             {
                 case EntityEditionModalMode.Insert:
-                    modal = new CreateDocumentAddItemModal(SourceWindow);
+                    RunInsertModal();
+                    break;
+                case EntityEditionModalMode.Update:
+                    RunUpdateModal();
+                    break;
+                default:
+                    RunViewModal();
                     break;
             }
 
-            if(modal != null)
+            Refresh();
+        }
+
+        private void RunViewModal()
+        {
+            if (SelectedEntity == null)
             {
-                modal.Run();
-                modal.Destroy();
+                return;
             }
+
+            var modal = new AddItemModal(SourceWindow, EntityEditionModalMode.View, SelectedEntity);
+            modal.Run();
+            modal.Destroy();
+        }
+
+        private void RunUpdateModal()
+        {
+            if (SelectedEntity == null)
+            {
+                return;
+            }
+
+            var modal = new AddItemModal(SourceWindow, EntityEditionModalMode.Update, SelectedEntity);
+            var response = (ResponseType)modal.Run();
+
+            modal.Destroy();
+        }
+
+        private void RunInsertModal()
+        {
+            var modal = new AddItemModal(SourceWindow, EntityEditionModalMode.Insert);
+            var response = (ResponseType)modal.Run();
+
+            if (response == ResponseType.Ok)
+            {
+                _entities.Add(modal.GetItem());
+            }
+
+            modal.Destroy();
         }
 
         protected override void AddColumns()
@@ -58,7 +101,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
         {
             void RenderTotalWithTax(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var item = (DocumentDetail)model.GetValue(iter, 0);
+                var item = (Item)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = item.TotalFinal.ToString();
             }
 
@@ -70,8 +113,8 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
         {
             void RenderPrice(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var item = (DocumentDetail)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = item.Price.ToString();
+                var item = (Item)model.GetValue(iter, 0);
+                (cell as CellRendererText).Text = item.UnitPrice.ToString();
             }
 
             var title = GeneralUtils.GetResourceByName("global_price");
@@ -82,7 +125,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
         {
             void RenderDiscount(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var item = (DocumentDetail)model.GetValue(iter, 0);
+                var item = (Item)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = item.Discount.ToString();
             }
 
@@ -94,8 +137,8 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
         {
             void RenderTax(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var item = (DocumentDetail)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = item.Vat.ToString();
+                var item = (Item)model.GetValue(iter, 0);
+                (cell as CellRendererText).Text = item.VatRate.Designation;
             }
 
             var title = GeneralUtils.GetResourceByName("global_vat_rate");
@@ -106,7 +149,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
         {
             void RenderQuantity(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var item = (DocumentDetail)model.GetValue(iter, 0);
+                var item = (Item)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = item.Quantity.ToString();
             }
 
@@ -118,7 +161,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
         {
             void RenderTotal(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var item = (DocumentDetail)model.GetValue(iter, 0);
+                var item = (Item)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = item.TotalNet.ToString();
             }
 
@@ -144,8 +187,8 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
         {
             GridViewSettings.Sort.SetSortFunc(7, (model, left, right) =>
             {
-                var leftItem = (DocumentDetail)model.GetValue(left, 0);
-                var rightItem = (DocumentDetail)model.GetValue(right, 0);
+                var leftItem = (Item)model.GetValue(left, 0);
+                var rightItem = (Item)model.GetValue(right, 0);
 
                 if (leftItem == null || rightItem == null)
                 {
@@ -160,8 +203,8 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
         {
             GridViewSettings.Sort.SetSortFunc(2, (model, left, right) =>
             {
-                var leftItem = (DocumentDetail)model.GetValue(left, 0);
-                var rightItem = (DocumentDetail)model.GetValue(right, 0);
+                var leftItem = (Item)model.GetValue(left, 0);
+                var rightItem = (Item)model.GetValue(right, 0);
 
                 if (leftItem == null || rightItem == null)
                 {
@@ -176,15 +219,15 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
         {
             GridViewSettings.Sort.SetSortFunc(3, (model, left, right) =>
             {
-                var leftItem = (DocumentDetail)model.GetValue(left, 0);
-                var rightItem = (DocumentDetail)model.GetValue(right, 0);
+                var leftItem = (Item)model.GetValue(left, 0);
+                var rightItem = (Item)model.GetValue(right, 0);
 
                 if (leftItem == null || rightItem == null)
                 {
                     return 0;
                 }
 
-                return leftItem.Price.CompareTo(rightItem.Price);
+                return leftItem.UnitPrice.CompareTo(rightItem.UnitPrice);
             });
         }
 
@@ -192,8 +235,8 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
         {
             GridViewSettings.Sort.SetSortFunc(4, (model, left, right) =>
             {
-                var leftItem = (DocumentDetail)model.GetValue(left, 0);
-                var rightItem = (DocumentDetail)model.GetValue(right, 0);
+                var leftItem = (Item)model.GetValue(left, 0);
+                var rightItem = (Item)model.GetValue(right, 0);
 
                 if (leftItem == null || rightItem == null)
                 {
@@ -208,15 +251,15 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
         {
             GridViewSettings.Sort.SetSortFunc(5, (model, left, right) =>
             {
-                var leftItem = (DocumentDetail)model.GetValue(left, 0);
-                var rightItem = (DocumentDetail)model.GetValue(right, 0);
+                var leftItem = (Item)model.GetValue(left, 0);
+                var rightItem = (Item)model.GetValue(right, 0);
 
                 if (leftItem == null || rightItem == null)
                 {
                     return 0;
                 }
 
-                return leftItem.Vat.CompareTo(rightItem.Vat);
+                return leftItem.VatRate.Designation.CompareTo(rightItem.VatRate.Designation);
             });
         }
 
@@ -224,8 +267,8 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
         {
             GridViewSettings.Sort.SetSortFunc(6, (model, left, right) =>
             {
-                var leftItem = (DocumentDetail)model.GetValue(left, 0);
-                var rightItem = (DocumentDetail)model.GetValue(right, 0);
+                var leftItem = (Item)model.GetValue(left, 0);
+                var rightItem = (Item)model.GetValue(right, 0);
 
                 if (leftItem == null || rightItem == null)
                 {
@@ -235,5 +278,6 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
                 return leftItem.TotalNet.CompareTo(rightItem.TotalNet);
             });
         }
+
     }
 }

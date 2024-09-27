@@ -1,5 +1,6 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Documents;
 using LogicPOS.Settings;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
@@ -13,18 +14,18 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
 {
     public class CreateDocumentCustomerTab : ModalTab
     {
-        private PageTextBox TxtCustomer { get; set; }
-        private PageTextBox TxtFiscalNumber { get; set; }
-        private PageTextBox TxtCardNumber { get; set; }
-        private PageTextBox TxtDiscount { get; set; }
-        private PageTextBox TxtAddress { get; set; }
-        private PageTextBox TxtLocality { get; set; }
-        private PageTextBox TxtZipCode { get; set; }
-        private PageTextBox TxtCity { get; set; }
-        private PageTextBox TxtCountry { get; set; }
-        private PageTextBox TxtPhone { get; set; }
-        private PageTextBox TxtEmail { get; set; }
-        private PageTextBox TxtNotes { get; set; }
+        public PageTextBox TxtCustomer { get; set; }
+        public PageTextBox TxtFiscalNumber { get; set; }
+        public PageTextBox TxtCardNumber { get; set; }
+        public PageTextBox TxtDiscount { get; set; }
+        public PageTextBox TxtAddress { get; set; }
+        public PageTextBox TxtLocality { get; set; }
+        public PageTextBox TxtZipCode { get; set; }
+        public PageTextBox TxtCity { get; set; }
+        public PageTextBox TxtCountry { get; set; }
+        public PageTextBox TxtPhone { get; set; }
+        public PageTextBox TxtEmail { get; set; }
+        public PageTextBox TxtNotes { get; set; }
 
         public CreateDocumentCustomerTab(Window parent) : base(parent: parent,
                                                   name: GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page2"),
@@ -94,6 +95,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
             if (response == ResponseType.Ok && page.SelectedEntity != null)
             {
                 TxtCountry.Text = page.SelectedEntity.Designation;
+                TxtCountry.SelectedEntity = page.SelectedEntity;
             }
         }
 
@@ -201,9 +203,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
                                           isRequired: true,
                                           isValidatable: false,
                                           includeSelectButton: true,
-                                          includeKeyBoardButton: false);
-
-            TxtCustomer.Entry.IsEditable = false;
+                                          includeKeyBoardButton: true);
 
             TxtCustomer.SelectEntityClicked += BtnSelectCustomer_Clicked;
         }
@@ -218,6 +218,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
             if (response == ResponseType.Ok && page.SelectedEntity != null)
             {
                 TxtCustomer.Text = page.SelectedEntity.Name;
+                TxtCustomer.SelectedEntity = page.SelectedEntity;
             }
 
             ShowCustomerData(page.SelectedEntity);
@@ -233,6 +234,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
             TxtZipCode.Text = customer.ZipCode;
             TxtCity.Text = customer.City;
             TxtCountry.Text = customer.Country.Designation;
+            TxtCountry.SelectedEntity = customer.Country;
             TxtPhone.Text = customer.Phone;
             TxtEmail.Text = customer.Email;
             TxtNotes.Text = customer.Notes;
@@ -264,6 +266,26 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
             verticalLayout.PackStart(TxtNotes.Component, false, false, 0);
 
             PackStart(verticalLayout);
+        }
+
+        public Customer GetCustomer()
+        {
+            return TxtCustomer.SelectedEntity as Customer;
+        }
+
+        public DocumentCustomer GetDocumentCustomer()
+        {
+            return new DocumentCustomer
+            {
+                Name = TxtCustomer.Text,
+                FiscalNumber = TxtFiscalNumber.Text,
+                Address = TxtAddress.Text,
+                Locality = TxtLocality.Text,
+                ZipCode = TxtZipCode.Text,
+                City = TxtCity.Text,
+                Country = TxtCountry.Text,
+                CountryId = (TxtCountry.SelectedEntity as Country).Id
+            };
         }
     }
 }

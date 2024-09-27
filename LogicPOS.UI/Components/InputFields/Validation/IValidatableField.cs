@@ -4,5 +4,6 @@
     {
         string FieldName { get; }
         bool IsValid();
+
     }
 }

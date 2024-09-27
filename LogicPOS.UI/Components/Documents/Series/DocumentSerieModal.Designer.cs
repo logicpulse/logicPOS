@@ -13,8 +13,6 @@ namespace LogicPOS.UI.Components.Modals
         public override string ModalTitleResourceName => "dialog_edit_DocumentFinanceSeries_tab1_label";
 
         #region Components
-        private TextBox _txtOrder = TextBoxes.CreateOrderField();
-        private TextBox _txtCode = TextBoxes.CreateCodeField();
         private TextBox _txtDesignation = TextBoxes.CreateDesignationField();
         private TextBox _txtNextNumber = new TextBox("global_documentfinanceseries_NextDocumentNumber", true, true, @"^[1-9][0-9]*$");
         private TextBox _txtNumberRangeBegin = new TextBox("global_documentfinanceseries_DocumentNumberRangeBegin", true, true, @"^0|[1-9][0-9]*$");
@@ -61,8 +59,6 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override void AddSensitiveFields()
         {
-            SensitiveFields.Add(_txtOrder.Entry);
-            SensitiveFields.Add(_txtCode.Entry);
             SensitiveFields.Add(_txtDesignation.Entry);
             SensitiveFields.Add(_txtNextNumber.Entry);
             SensitiveFields.Add(_txtNumberRangeBegin.Entry);
@@ -115,9 +111,6 @@ namespace LogicPOS.UI.Components.Modals
 
             if (_modalMode != EntityEditionModalMode.Insert)
             {
-
-                tab1.PackStart(_txtOrder.Component, false, false, 0);
-                tab1.PackStart(_txtCode.Component, false, false, 0);
                 _comboFiscalYears.ComboBox.Sensitive = false;
                 _comboDocumentTypes.ComboBox.Sensitive = false;
                 _txtAcronym.Entry.Sensitive = false;

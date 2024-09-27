@@ -1,30 +1,24 @@
 ﻿using Gtk;
-using logicpos;
-using logicpos.Classes.Enums.Keyboard;
-using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using LogicPOS.Api.Entities;
 using LogicPOS.Settings;
-using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Pages;
-using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using System;
-using System.Drawing;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
 {
     public class CreateDocumentDocumentTab : ModalTab
     {
-        private PageTextBox TxtDocumentType { get; set; }
-        private PageTextBox TxtPaymnentCondition { get; set; }
-        private PageTextBox TxtPaymentMethod { get; set; }
-        private PageTextBox TxtCurrency { get; set; }
-        private PageTextBox TxtOriginDocument { get; set; }
-        private PageTextBox TxtCopyDocument { get; set; }
-        private PageTextBox TxtNotes { get; set; }
+        public PageTextBox TxtDocumentType { get; set; }
+        public PageTextBox TxtPaymnentCondition { get; set; }
+        public PageTextBox TxtPaymentMethod { get; set; }
+        public PageTextBox TxtCurrency { get; set; }
+        public PageTextBox TxtOriginDocument { get; set; }
+        public PageTextBox TxtCopyDocument { get; set; }
+        public PageTextBox TxtNotes { get; set; }
 
         public CreateDocumentDocumentTab(Window parent) : base(parent: parent,
                                                   name: GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page1"),
@@ -92,7 +86,16 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
 
         private void BtnSelectOriginDocument_Clicked(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            var page = new DocumentsPage(null, PageOptions.SelectionPageOptions);
+            var selectModal = new EntitySelectionModal<Document>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            ResponseType response = (ResponseType)selectModal.Run();
+            selectModal.Destroy();
+
+            if (response == ResponseType.Ok && page.SelectedEntity != null)
+            {
+                TxtOriginDocument.Text = page.SelectedEntity.Number;
+                TxtOriginDocument.SelectedEntity = page.SelectedEntity;
+            }
         }
 
         private void InitializeTxtCurrency()
@@ -119,6 +122,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
             if (response == ResponseType.Ok && page.SelectedEntity != null)
             {
                 TxtCurrency.Text = page.SelectedEntity.Designation;
+                TxtCurrency.SelectedEntity = page.SelectedEntity;
             }
         }
 
@@ -146,6 +150,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
             if (response == ResponseType.Ok && page.SelectedEntity != null)
             {
                 TxtPaymentMethod.Text = page.SelectedEntity.Designation;
+                TxtPaymentMethod.SelectedEntity = page.SelectedEntity;
             }
         }
 
@@ -173,6 +178,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
             if (response == ResponseType.Ok && page.SelectedEntity != null)
             {
                 TxtPaymnentCondition.Text = page.SelectedEntity.Designation;
+                TxtPaymnentCondition.SelectedEntity = page.SelectedEntity;
             }
         }
 
@@ -200,6 +206,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
             if (response == ResponseType.Ok && page.SelectedEntity != null)
             {
                 TxtDocumentType.Text = page.SelectedEntity.Designation;
+                TxtDocumentType.SelectedEntity = page.SelectedEntity;
             }
         }
 
@@ -211,11 +218,33 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
             verticalLayout.PackStart(TxtPaymentMethod.Component, false, false, 0);
             verticalLayout.PackStart(TxtCurrency.Component, false, false, 0);
 
-            verticalLayout.PackStart(PageTextBox.CreateHbox(TxtOriginDocument,TxtCopyDocument), false, false, 0);
+            verticalLayout.PackStart(PageTextBox.CreateHbox(TxtOriginDocument, TxtCopyDocument), false, false, 0);
 
             verticalLayout.PackStart(TxtNotes.Component, false, false, 0);
 
             PackStart(verticalLayout);
         }
+
+        public PaymentMethod GetPaymentMethod()
+        {
+            return TxtPaymentMethod.SelectedEntity as PaymentMethod;
+        }
+
+        public PaymentCondition GetPaymentCondition()
+        {
+            return TxtPaymnentCondition.SelectedEntity as PaymentCondition;
+        }
+
+        public Currency GetCurrency()
+        {
+            return TxtCurrency.SelectedEntity as Currency;
+        }
+
+        public DocumentType GetDocumentType()
+        {
+            return TxtDocumentType.SelectedEntity as DocumentType;
+        }
+
+
     }
 }

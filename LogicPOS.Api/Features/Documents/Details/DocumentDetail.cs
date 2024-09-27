@@ -23,7 +23,7 @@ namespace LogicPOS.Api.Entities
         public decimal TotalDiscount { get; set; }
         public decimal TotalTax { get; set; }
         public decimal TotalFinal { get; set; }
-        public Common.Enums.PriceType PriceType { get; set; }
+        public Common.Enums.PriceType? PriceType { get; set; }
         public string Token1 { get; set; }
         public string Token2 { get; set; }
         public string Warehouse { get; set; }

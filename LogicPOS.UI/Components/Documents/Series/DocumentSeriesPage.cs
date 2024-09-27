@@ -16,6 +16,8 @@ namespace LogicPOS.UI.Components.Pages
         protected override IRequest<ErrorOr<IEnumerable<DocumentSeries>>> GetAllQuery => new GetAllDocumentSeriesQuery();
         public DocumentSeriesPage(Window parent) : base(parent)
         {
+            Navigator.BtnInsert.Visible = false;
+            Navigator.BtnDelete.Visible = false;
         }
 
         public override void DeleteEntity()
@@ -25,7 +27,12 @@ namespace LogicPOS.UI.Components.Pages
 
         public override void RunModal(EntityEditionModalMode mode)
         {
-            var modal = new DocumentSerieModal(mode, SelectedEntity as DocumentSeries);
+            if (mode == EntityEditionModalMode.Update)
+            {
+                mode = EntityEditionModalMode.View;
+            }
+
+            var modal = new DocumentSerieModal(mode, SelectedEntity);
             modal.Run();
             modal.Destroy();
         }

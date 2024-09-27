@@ -38,8 +38,6 @@ namespace LogicPOS.UI.Components.Modals
             return new UpdateDocumentSerieCommand
             {
                 Id = _entity.Id,
-                NewOrder = uint.Parse(_txtOrder.Text),
-                NewCode = _txtCode.Text,
                 NewDesignation = _txtDesignation.Text,
                 NewNotes = _txtNotes.Value.Text
             };
@@ -47,8 +45,6 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override void ShowEntityData()
         {
-            _txtOrder.Text = _entity.Order.ToString();
-            _txtCode.Text = _entity.Code;
             _txtDesignation.Text = _entity.Designation;
             _txtNextNumber.Text = _entity.NextNumber.ToString();
             _txtNumberRangeBegin.Text = _entity.NumberRangeBegin.ToString();
@@ -59,6 +55,7 @@ namespace LogicPOS.UI.Components.Modals
             _txtNotes.Value.Text = _entity.Notes;
         }
         protected override void AddEntity() => ExecuteAddCommand(CreateAddCommand());
+
         protected override void UpdateEntity() => ExecuteUpdateCommand(CreateUpdateCommand());
 
     }

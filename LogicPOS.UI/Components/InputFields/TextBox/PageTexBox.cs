@@ -24,6 +24,7 @@ namespace LogicPOS.UI.Components.InputFields
         public HBox ButtonsArea { get; private set; }
         public string FieldName => Label.Text;
         public event EventHandler SelectEntityClicked;
+        public object SelectedEntity { get; set; }
 
         public PageTextBox(Window sourceWindow,
                            string labelText,
@@ -172,6 +173,23 @@ namespace LogicPOS.UI.Components.InputFields
             Entry.Text = input;
             Entry.GrabFocus();
 
+        }
+
+        public void Clear()
+        {
+            Entry.Text = string.Empty;
+            SelectedEntity = null;
+        }
+
+        public void Disable()
+        {
+            Clear();
+            Component.Sensitive = false;
+        }
+
+        public void Enable()
+        {
+            Component.Sensitive = true;
         }
 
         public static HBox CreateHbox(params PageTextBox[] textBoxes)

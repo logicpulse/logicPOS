@@ -9,15 +9,20 @@ using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.Utility;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
 {
-    public class CreateDocumentAddItemModal : Modal
+    public class AddItemModal : Modal
     {
+        private EntityEditionModalMode _mode;
+        public Item Item { get; }
         public IconButtonWithText BtnOk { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
         public IconButtonWithText BtnCancel { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
         public IconButtonWithText BtnClear { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.CleanFilter);
+        public HashSet<IValidatableField> ValidatableFields { get; private set; } = new HashSet<IValidatableField>();
         public PageTextBox TxtArticle { get; set; }
         public PageTextBox TxtQuantity { get; set; }
         public PageTextBox TxtPrice { get; set; }
@@ -28,11 +33,34 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
         public PageTextBox TxtVatExemptionReason { get; set; }
         public PageTextBox TxtNotes { get; set; }
 
-        public CreateDocumentAddItemModal(Window parent) : base(parent,
-                                                                GeneralUtils.GetResourceByName("global_insert_articles"),
-                                                                new Size(900, 360),
-                                                                PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_finance_article.png")
+        public AddItemModal(Window parent,
+                            EntityEditionModalMode mode,
+                            Item item = null) : base(parent,
+                                                     GeneralUtils.GetResourceByName("global_insert_articles"),
+                                                     new Size(900, 360),
+                                                     PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_finance_article.png")
         {
+            _mode = mode;
+            Item = item;
+
+            if (_mode != EntityEditionModalMode.Insert)
+            {
+                ShowItemData(Item);
+            }
+        }
+
+        private void ShowItemData(Item item)
+        {
+            TxtArticle.SelectedEntity = item.Article;
+            TxtArticle.Text = item.Article.Designation;
+            TxtPrice.Text = item.UnitPrice.ToString();
+            TxtQuantity.Text = item.Quantity.ToString();
+            TxtDiscount.Text = item.Discount.ToString();
+            TxtVatExemptionReason.SelectedEntity = item.VatExemptionReason;
+            TxtVatExemptionReason.Text = item.VatExemptionReason.Designation;
+            TxtTax.SelectedEntity = item.VatRate;
+            TxtTax.Text = item.VatRate.Designation;
+            TxtNotes.Text = item.Notes;
         }
 
         private void Initialize()
@@ -46,6 +74,37 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
             InitializeTxtTax();
             InitializeTxtVatExemptionReason();
             InitializeTxtNotes();
+            BtnClear.Clicked += BtnClear_Clicked;
+            BtnOk.Clicked += BtnOk_Clicked;
+        }
+
+        private void BtnOk_Clicked(object sender, EventArgs e)
+        {
+            Validate();
+
+            if(AllFieldsAreValid() == false)
+            {
+                return;
+            }
+
+            if (_mode == EntityEditionModalMode.Update)
+            {
+                Item.Article = TxtArticle.SelectedEntity as Article;
+                Item.ArticleId = (TxtArticle.SelectedEntity as Article).Id;
+                Item.Designation = TxtArticle.Text;
+                Item.UnitPrice = decimal.Parse(TxtPrice.Text);
+                Item.Quantity = decimal.Parse(TxtQuantity.Text);
+                Item.Discount = decimal.Parse(TxtDiscount.Text);
+                Item.VatRate = TxtTax.SelectedEntity as VatRate;
+                Item.VatExemptionReason = TxtVatExemptionReason.SelectedEntity as VatExemptionReason;
+                Item.Notes = TxtNotes.Text;
+            }
+        }
+
+        private void BtnClear_Clicked(object sender, EventArgs e)
+        {
+            Clear();
+            this.Run();
         }
 
         private void InitializeTxtNotes()
@@ -62,7 +121,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
         {
             TxtVatExemptionReason = new PageTextBox(WindowSettings.Source,
                                                     GeneralUtils.GetResourceByName("global_vat_exemption_reason"),
-                                                    isRequired: false,
+                                                    isRequired: true,
                                                     isValidatable: false,
                                                     includeSelectButton: true,
                                                     includeKeyBoardButton: false);
@@ -70,6 +129,8 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
             TxtVatExemptionReason.Entry.IsEditable = false;
 
             TxtVatExemptionReason.SelectEntityClicked += BtnSelectVatExemptionReason_Clicked;
+
+            ValidatableFields.Add(TxtVatExemptionReason);
         }
 
         private void BtnSelectVatExemptionReason_Clicked(object sender, EventArgs e)
@@ -82,6 +143,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
             if (response == ResponseType.Ok && page.SelectedEntity != null)
             {
                 TxtVatExemptionReason.Text = page.SelectedEntity.Designation;
+                TxtVatExemptionReason.SelectedEntity = page.SelectedEntity;
             }
         }
 
@@ -98,6 +160,8 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
             TxtTax.Entry.IsEditable = false;
 
             TxtTax.SelectEntityClicked += BtnSelectTax_Clicked;
+
+            ValidatableFields.Add(TxtTax);
         }
 
         private void BtnSelectTax_Clicked(object sender, EventArgs e)
@@ -110,6 +174,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
             if (response == ResponseType.Ok && page.SelectedEntity != null)
             {
                 TxtTax.Text = page.SelectedEntity.Designation;
+                TxtTax.SelectedEntity = page.SelectedEntity;
             }
         }
 
@@ -148,6 +213,10 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
                                           includeSelectButton: false,
                                           includeKeyBoardButton: true,
                                           regex: RegularExpressions.DecimalNumber);
+
+            TxtDiscount.Text = "0";
+
+            ValidatableFields.Add(TxtDiscount);
         }
 
         private void InitializeTxtPrice()
@@ -159,6 +228,10 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
                                        includeSelectButton: false,
                                        includeKeyBoardButton: true,
                                        regex: RegularExpressions.Money);
+
+            TxtPrice.Text = "0";
+
+            ValidatableFields.Add(TxtPrice);
         }
 
         private void InitializeTxtQuantity()
@@ -170,6 +243,10 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
                                           includeSelectButton: false,
                                           includeKeyBoardButton: true,
                                           regex: RegularExpressions.DecimalNumber);
+
+            TxtQuantity.Text = "1";
+
+            ValidatableFields.Add(TxtQuantity);
         }
 
         private void InitializeTxtArticle()
@@ -184,6 +261,8 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
             TxtArticle.Entry.IsEditable = false;
 
             TxtArticle.SelectEntityClicked += BtnSelectArticle_Clicked;
+
+            ValidatableFields.Add(TxtArticle);
         }
 
         private void BtnSelectArticle_Clicked(object sender, EventArgs e)
@@ -196,13 +275,21 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
             if (response == ResponseType.Ok && page.SelectedEntity != null)
             {
                 TxtArticle.Text = page.SelectedEntity.Designation;
+                TxtArticle.SelectedEntity = page.SelectedEntity;
                 ShowArticleData(page.SelectedEntity);
             }
         }
 
         private void ShowArticleData(Article article)
         {
-
+            TxtPrice.Text = article.Price1.Value.ToString();
+            TxtQuantity.Text = article.DefaultQuantity.ToString();
+            TxtDiscount.Text = article.Discount.ToString();
+            TxtVatExemptionReason.SelectedEntity = article.VatExemptionReason;
+            TxtVatExemptionReason.Text = article?.VatExemptionReason?.Designation;
+            TxtTax.SelectedEntity = article.VatDirectSelling;
+            TxtTax.Text = article.VatDirectSelling?.Designation;
+            TxtNotes.Text = article.Notes;
         }
 
         protected override ActionAreaButtons CreateActionAreaButtons()
@@ -233,5 +320,54 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
 
             return vbox;
         }
+
+        private void Clear()
+        {
+            TxtArticle.Clear();
+            TxtPrice.Clear();
+            TxtQuantity.Clear();
+            TxtDiscount.Clear();
+            TxtTotal.Clear();
+            TxtTotalWithTax.Clear();
+            TxtTax.Clear();
+            TxtVatExemptionReason.Clear();
+            TxtNotes.Clear();
+        }
+        
+        public Item GetItem()
+        {
+            return new Item
+            {
+                Order = (TxtArticle.SelectedEntity as Article).Order,
+                Code = (TxtArticle.SelectedEntity as Article).Code,
+                Designation = TxtArticle.Text,
+                Article = TxtArticle.SelectedEntity as Article,
+                ArticleId = (TxtArticle.SelectedEntity as Article).Id,
+                UnitPrice = decimal.Parse(TxtPrice.Text),
+                Quantity = decimal.Parse(TxtQuantity.Text),
+                Discount = decimal.Parse(TxtDiscount.Text),
+                VatRate = (TxtTax.SelectedEntity as VatRate),
+                VatExemptionReason = (TxtVatExemptionReason.SelectedEntity as VatExemptionReason),
+                Notes = TxtNotes.Text
+            };
+        }
+
+        protected void Validate()
+        {
+            if (AllFieldsAreValid())
+            {
+                return;
+            }
+
+            Utilities.ShowValidationErrors(ValidatableFields);
+
+            this.Run();
+        }
+
+        protected bool AllFieldsAreValid()
+        {
+            return ValidatableFields.All(txt => txt.IsValid());
+        }
+
     }
 }

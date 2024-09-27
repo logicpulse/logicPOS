@@ -16,7 +16,6 @@ namespace LogicPOS.UI.Components.Pages
     public abstract class Page<TEntity> : Box where TEntity : ApiEntity
     {
         protected readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<ISender>();
-
         protected readonly List<TEntity> _entities = new List<TEntity>();
         protected virtual IRequest<ErrorOr<IEnumerable<TEntity>>> GetAllQuery { get; set; }
 
@@ -51,14 +50,7 @@ namespace LogicPOS.UI.Components.Pages
             Navigator.Update();
         }
 
-        protected void ShowApiErrorAlert()
-        {
-            SimpleAlerts.Error()
-                .WithParent(SourceWindow)
-                .WithTitle("API")
-                .WithMessage(ApiErrors.CommunicationError.Description)
-                .Show();
-        }
+        protected void ShowApiErrorAlert() => SimpleAlerts.ShowApiErrorAlert(SourceWindow);
 
         public virtual void Refresh()
         {
@@ -106,26 +98,27 @@ namespace LogicPOS.UI.Components.Pages
             InitializeFilter();
             InitializeSort();
         }
+
         protected virtual void AddEntitiesToModel()
         {
             var model = (ListStore)GridViewSettings.Model;
             _entities.ForEach(entity => model.AppendValues(entity));
         }
+        
         protected virtual void InitializeFilter()
         {
             GridViewSettings.Filter = new TreeModelFilter(GridViewSettings.Model, null);
             GridViewSettings.Filter.VisibleFunc = (model, iterator) =>
             {
-                var search = Navigator.SearchBox.SearchText.ToLower();
+                var search = Navigator.SearchBox.SearchText.Trim().ToLower();
                 if (string.IsNullOrWhiteSpace(search))
                 {
                     return true;
                 }
 
-                search = search.Trim();
-                var entity = (IWithDesignation)model.GetValue(iterator, 0);
+                var entity = model.GetValue(iterator, 0) as TEntity;
 
-                if (entity != null && entity.Designation.ToLower().Contains(search))
+                if (entity != null && (entity as IWithDesignation).Designation.ToLower().Contains(search))
                 {
                     return true;
                 }

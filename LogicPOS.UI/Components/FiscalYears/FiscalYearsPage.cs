@@ -16,6 +16,8 @@ namespace LogicPOS.UI.Components.Pages
         protected override IRequest<ErrorOr<IEnumerable<FiscalYear>>> GetAllQuery => new GetAllFiscalYearsQuery();
         public FiscalYearsPage(Window parent) : base(parent)
         {
+            Navigator.BtnUpdate.Visible = false;
+            Navigator.BtnDelete.Visible = false;
         }
 
         public override void DeleteEntity()
@@ -25,6 +27,11 @@ namespace LogicPOS.UI.Components.Pages
 
         public override void RunModal(EntityEditionModalMode mode)
         {
+            if(mode == EntityEditionModalMode.Update)
+            {
+                mode = EntityEditionModalMode.View;
+            }
+
             var modal = new FiscalYearModal(mode, SelectedEntity as FiscalYear);
             modal.Run();
             modal.Destroy();

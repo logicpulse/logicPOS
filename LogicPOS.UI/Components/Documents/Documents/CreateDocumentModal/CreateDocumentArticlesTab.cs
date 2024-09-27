@@ -1,7 +1,11 @@
 ﻿using Gtk;
+using LogicPOS.Api.Features.Documents.AddDocument;
 using LogicPOS.Settings;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.Utility;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
 {
@@ -29,6 +33,22 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
         private void Design()
         {
             PackStart(ItemsPage);
+        }
+
+        public List<DocumentDetail> GetDocumentDetails(int? priceType)
+        {
+            var details = ItemsPage.Items.Select(x => new DocumentDetail
+            {
+                ArticleId = x.ArticleId,
+                Quantity = x.Quantity,
+                UnitPrice = x.UnitPrice,
+                Vat = x.VatRate.Value,
+                VatExemptionReason = x.VatExemptionReason.Designation,
+                Discount = x.Discount,
+                PriceType = priceType
+            });
+
+            return details.ToList();
         }
     }
 }

@@ -55,12 +55,12 @@ namespace LogicPOS.Api.Entities
         public ArticlePrice Price4 { get; set; }
         public ArticlePrice Price5 { get; set; }
         public bool PriceWithVat { get; set; }
-        public decimal? Discount { get; set; }
-        public uint? DefaultQuantity { get; set; }
-        public decimal? TotalStock { get; set; }
-        public uint? MinimumStock { get; set; }
-        public decimal? Tare { get; set; }
-        public float? Weight { get; set; }
+        public decimal Discount { get; set; }
+        public uint DefaultQuantity { get; set; }
+        public decimal TotalStock { get; set; }
+        public uint MinimumStock { get; set; }
+        public decimal Tare { get; set; }
+        public float Weight { get; set; }
         public string Barcode { get; set; }
         public bool PVPVariable { get; set; }
         public bool Favorite { get; set; }

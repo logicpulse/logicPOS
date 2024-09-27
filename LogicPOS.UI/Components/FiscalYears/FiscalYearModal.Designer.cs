@@ -29,7 +29,6 @@ namespace LogicPOS.UI.Components.Modals
             SensitiveFields.Add(_txtYear.Entry);
             SensitiveFields.Add(_txtAcronym.Entry);
             SensitiveFields.Add(_txtNotes.TextView);
-            SensitiveFields.Add(_checkDisabled);
         }
 
         protected override void AddValidatableFields()
@@ -59,26 +58,27 @@ namespace LogicPOS.UI.Components.Modals
 
         private VBox CreateDetailsTab()
         {
-            var tab1 = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
+            var detailsTab = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
 
             if (_modalMode != EntityEditionModalMode.Insert)
             {
-                tab1.PackStart(_txtOrder.Component, false, false, 0);
-                tab1.PackStart(_txtCode.Component, false, false, 0);
+                detailsTab.PackStart(_txtOrder.Component, false, false, 0);
+                detailsTab.PackStart(_txtCode.Component, false, false, 0);
 
             }
 
-            tab1.PackStart(_txtDesignation.Component, false, false, 0);
-            tab1.PackStart(_txtYear.Component, false, false, 0);
-            tab1.PackStart(_txtAcronym.Component, false, false, 0);
-            tab1.PackStart(_checkSeriesForEachTerminal, false, false, 0);
+            detailsTab.PackStart(_txtDesignation.Component, false, false, 0);
+            detailsTab.PackStart(_txtYear.Component, false, false, 0);
+            detailsTab.PackStart(_txtAcronym.Component, false, false, 0);
+            detailsTab.PackStart(_checkSeriesForEachTerminal, false, false, 0);
 
             if (_modalMode != EntityEditionModalMode.Insert)
             {
-                tab1.PackStart(_checkDisabled, false, false, 0);
+                _checkDisabled.Sensitive = false;
+                detailsTab.PackStart(_checkDisabled, false, false, 0);
             }
 
-            return tab1;
+            return detailsTab;
         }
     }
 }
