@@ -66,7 +66,7 @@ namespace LogicPOS.UI.Components.Pages
             void RenderTotalFinal(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var document = (Document)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = document.TotalFinal.ToString("C");
+                (cell as CellRendererText).Text = document.TotalFinal.ToString("0.00");
             }
 
             var title = GeneralUtils.GetResourceByName("global_total_final");

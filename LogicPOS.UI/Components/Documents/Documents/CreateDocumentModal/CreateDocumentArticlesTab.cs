@@ -42,7 +42,8 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
                 ArticleId = x.ArticleId,
                 Quantity = x.Quantity,
                 UnitPrice = x.UnitPrice,
-                Vat = x.VatRate.Value,
+                VatRate = x.VatRate.Value,
+                VatDesignation = x.VatRate.Designation,
                 VatExemptionReason = x.VatExemptionReason.Designation,
                 Discount = x.Discount,
                 PriceType = priceType
