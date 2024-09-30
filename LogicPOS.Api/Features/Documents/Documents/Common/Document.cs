@@ -26,6 +26,7 @@ namespace LogicPOS.Api.Entities
         public Guid? ParentId { get; set; }
         public Guid? ChildId { get; set; }
         #endregion
+        public string Type { get; set; }
         public string Number { get; set; }
         public string Status { get; set; }
         public string StatusDate { get; set; }

@@ -1,7 +1,9 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents.AddDocument;
+using LogicPOS.Api.Features.Documents.Documents.GetDocumentPdf;
 using LogicPOS.Api.Features.Documents.Series.GetAllDocumentSeries;
+using LogicPOS.PDFViewer.Winforms;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
@@ -75,6 +77,26 @@ namespace LogicPOS.UI.Components.Modals
                 SimpleAlerts.ShowApiErrorAlert(this);
                 return;
             }
+
+            ShowPdf(result.Value);
+        }
+
+        private void ShowPdf(Guid documentId)
+        {
+            var command = new GetDocumentPdfQuery { Id = documentId };
+            var result = _mediator.Send(command).Result;
+
+            if (result.IsError)
+            {
+                SimpleAlerts.ShowApiErrorAlert(this);
+                return;
+            }
+
+            var fileLocation =  result.Value;
+
+            var pdfViewer = new PDFViewer.Winforms.PDFViewer(fileLocation);
+
+            pdfViewer.ShowDialog();
         }
 
         private IEnumerable<DocumentSeries> GetDocumentSeries()
@@ -141,7 +163,7 @@ namespace LogicPOS.UI.Components.Modals
             command.CurrencyId = DocumentTab.GetCurrency().Id;
             var customer = CustomerTab.GetCustomer();
 
-            if(customer != null)
+            if (customer != null)
             {
                 command.CustomerId = customer.Id;
             }
@@ -149,8 +171,9 @@ namespace LogicPOS.UI.Components.Modals
             command.Customer = CustomerTab.GetDocumentCustomer();
             command.Discount = decimal.Parse(CustomerTab.TxtDiscount.Text);
             command.Details = ArticlesTab.GetDocumentDetails(customer?.PriceType?.EnumValue);
-            command.ShipToAdress = ShipToTab.GetAddress();
-            command.ShipFromAdress = ShipFromTab.GetAddress();
+
+            //command.ShipToAdress = ShipToTab.GetAddress();
+            //command.ShipFromAdress = ShipFromTab.GetAddress();
 
             return command;
         }

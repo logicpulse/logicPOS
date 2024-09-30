@@ -7,10 +7,13 @@ namespace LogicPOS.PDFViewer.Winforms
     public partial class PDFViewer : Form
     {
 
-        public PDFViewer(string docPath, int widthPDF, int heightPDF, bool export = true)
+        public PDFViewer(string docPath,
+                         int width = 1980 / 2,
+                         int height = 1000,
+                         bool export = true)
         {
 
-            InitializeComponent(docPath, widthPDF, heightPDF);
+            InitializeComponent(docPath, width, height);
         }
 
         private void pdfToolStripMain1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)

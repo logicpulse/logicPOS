@@ -5,19 +5,15 @@ namespace LogicPOS.PDFViewer.Winforms
 {
     static class Program
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            var width = 1980 / 2;
-            var height = 1000;
+            var file = args.Length > 0 ? args[0] : "index.pdf";
 
-            Application.Run(new PDFViewer("index.pdf", width,height));
+            Application.Run(new PDFViewer(file));
         }
     }
 }
