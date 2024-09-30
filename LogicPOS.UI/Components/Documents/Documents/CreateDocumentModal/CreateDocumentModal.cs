@@ -149,6 +149,8 @@ namespace LogicPOS.UI.Components.Modals
             command.Customer = CustomerTab.GetDocumentCustomer();
             command.Discount = decimal.Parse(CustomerTab.TxtDiscount.Text);
             command.Details = ArticlesTab.GetDocumentDetails(customer?.PriceType?.EnumValue);
+            command.ShipToAdress = ShipToTab.GetAddress();
+            command.ShipFromAdress = ShipFromTab.GetAddress();
 
             return command;
         }
