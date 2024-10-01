@@ -2066,20 +2066,15 @@ namespace logicpos
         //TK016235 BackOffice - Mode
         public static void StartDocumentsMenuFromBackOffice(Window parentWindow, int docChoice)
         {
-            try
-            {
-                PosDocumentFinanceSelectRecordDialog dialog = new PosDocumentFinanceSelectRecordDialog(parentWindow, DialogFlags.DestroyWithParent, docChoice);
-                if (docChoice == 0)
-                {
-                    ResponseType response = (ResponseType)dialog.Run();
-                }
-                dialog.Destroy();
 
-            }
-            catch (Exception ex)
+            PosDocumentFinanceSelectRecordDialog dialog = new PosDocumentFinanceSelectRecordDialog(parentWindow, DialogFlags.DestroyWithParent, docChoice);
+            
+            if (docChoice == 0)
             {
-                _logger.Error(ex.Message, ex);
+                ResponseType response = (ResponseType)dialog.Run();
             }
+
+            dialog.Destroy();
         }
 
         //TK016235 BackOffice - Mode

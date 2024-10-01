@@ -15,14 +15,24 @@ namespace LogicPOS.UI.Components.Modals.Common
                      string title,
                      Size size,
                      string icon = null,
-                     DialogFlags flags = DialogFlags.DestroyWithParent) : base(title,parent, flags)
+                     DialogFlags flags = DialogFlags.DestroyWithParent,
+                     bool render = true) : base(title,parent, flags)
         {
             if (string.IsNullOrEmpty(icon))
             {
                 icon = ModalIconsSettings.Default.WindowIcon;
             }
-
+         
             InitializeWindow(parent, title, size, icon);
+
+            if (render)
+            {
+                Render();
+            }
+        }
+
+        protected void Render()
+        {
             Design();
             ShowAll();
             ActionArea.Visible = false;

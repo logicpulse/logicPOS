@@ -7,6 +7,7 @@ using LogicPOS.PDFViewer.Winforms;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Documents;
 using LogicPOS.UI.Components.Documents.CreateDocumentModal;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.Utility;
@@ -78,25 +79,7 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
-            ShowPdf(result.Value);
-        }
-
-        private void ShowPdf(Guid documentId)
-        {
-            var command = new GetDocumentPdfQuery { Id = documentId };
-            var result = _mediator.Send(command).Result;
-
-            if (result.IsError)
-            {
-                SimpleAlerts.ShowApiErrorAlert(this);
-                return;
-            }
-
-            var fileLocation =  result.Value;
-
-            var pdfViewer = new PDFViewer.Winforms.PDFViewer(fileLocation);
-
-            pdfViewer.ShowDialog();
+            DocumentUtils.ShowPdfFromApi(this,result.Value);
         }
 
         private IEnumerable<DocumentSeries> GetDocumentSeries()

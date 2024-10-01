@@ -34,6 +34,21 @@ namespace LogicPOS.Api.Features.Common
             }
         }
 
+        protected async Task<ErrorOr<TEntity>> HandleGetByIdQueryAsync<TEntity>(
+           string endpoint,
+           CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var entity = await _httpClient.GetFromJsonAsync<TEntity>(endpoint, cancellationToken);
+                return entity;
+            }
+            catch (HttpRequestException)
+            {
+                return ApiErrors.CommunicationError;
+            }
+        }
+
         protected async Task<ErrorOr<Guid>> HandleAddCommandAsync(
             string endpoint,
             TRequest command,

@@ -30,11 +30,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 _active = value;
                 if (_active)
                 {
-                    SetBackgroundColor(_colorKeyboardPadKeyBackgroundActive, _backgroundColorEventBox);
+                    SetBackgroundColor(_colorKeyboardPadKeyBackgroundActive, BackgroundColorEventBox);
                 }
                 else
                 {
-                    SetBackgroundColor(_colorKeyboardPadKeyBackground, _backgroundColorEventBox);
+                    SetBackgroundColor(_colorKeyboardPadKeyBackground, BackgroundColorEventBox);
                 }
             }
         }

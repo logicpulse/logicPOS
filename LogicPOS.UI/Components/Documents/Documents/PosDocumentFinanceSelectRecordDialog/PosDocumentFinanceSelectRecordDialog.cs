@@ -12,7 +12,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
     internal partial class PosDocumentFinanceSelectRecordDialog : BaseDialog
     {
-        private readonly IconButtonWithText _touchButtonPosToolbarFinanceDocuments;
+        private  IconButtonWithText BtnDocuments { get; set; }
         private readonly IconButtonWithText _toolbarFinanceDocumentsInvoicesUnpayed;
         private readonly IconButtonWithText _toolbarFinanceDocumentsPayments;
         private readonly IconButtonWithText _touchButtonPosToolbarCurrentAccountDocuments;
@@ -45,7 +45,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             string fileDefaultWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_documents.png";
 
             //Buttons
-            _touchButtonPosToolbarFinanceDocuments = new IconButtonWithText(new ButtonSettings { Name = "touchButtonPosToolbarFinanceDocuments_Green", BackgroundColor = ColorSettings.DefaultButtonBackground, Text = GeneralUtils.GetResourceByName("dialog_button_label_select_record_finance_documents"), Font = FontSettings.Button, FontColor = ColorSettings.DefaultButtonFont, Icon = _fileIconListFinanceDocuments, IconSize = sizeIcon, ButtonSize = new Size(buttonWidth, buttonHeight) }) { Token = "ALL" };
+             BtnDocuments = new IconButtonWithText(new ButtonSettings { Name = "touchButtonPosToolbarFinanceDocuments_Green", BackgroundColor = ColorSettings.DefaultButtonBackground, Text = GeneralUtils.GetResourceByName("dialog_button_label_select_record_finance_documents"), Font = FontSettings.Button, FontColor = ColorSettings.DefaultButtonFont, Icon = _fileIconListFinanceDocuments, IconSize = sizeIcon, ButtonSize = new Size(buttonWidth, buttonHeight) }) { Token = "ALL" };
             _toolbarFinanceDocumentsInvoicesUnpayed = new IconButtonWithText(new ButtonSettings { Name = "touchButtonPosToolbarFinanceDocumentsInvoicesForPayment_Green", BackgroundColor = ColorSettings.DefaultButtonBackground, Text = GeneralUtils.GetResourceByName("dialog_button_label_select_finance_documents_ft_unpaid"), Font = FontSettings.Button, FontColor = ColorSettings.DefaultButtonFont, Icon = _fileIconListFinanceDocuments, IconSize = sizeIcon, ButtonSize = new Size(buttonWidth, buttonHeight) }) { Token = "FT_UNPAYED" };
             _toolbarFinanceDocumentsPayments = new IconButtonWithText(new ButtonSettings { Name = "touchButtonPosToolbarFinanceDocumentsPayments_Green", BackgroundColor = ColorSettings.DefaultButtonBackground, Text = GeneralUtils.GetResourceByName("dialog_button_label_select_payments"), Font = FontSettings.Button, FontColor = ColorSettings.DefaultButtonFont, Icon = _fileIconListFinanceDocuments, IconSize = sizeIcon, ButtonSize = new Size(buttonWidth, buttonHeight) });
             _touchButtonPosToolbarCurrentAccountDocuments = new IconButtonWithText(new ButtonSettings { Name = "REPORT_CUSTOMER_BALANCE_DETAILS", BackgroundColor = ColorSettings.DefaultButtonBackground, Text = GeneralUtils.GetResourceByName("dialog_button_label_select_finance_documents_cc"), Font = FontSettings.Button, FontColor = ColorSettings.DefaultButtonFont, Icon = _fileIconListCurrentAccountDocuments, IconSize = sizeIcon, ButtonSize = new Size(buttonWidth, buttonHeight) }) { Token = "CC" };
@@ -58,7 +58,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             Table table = new Table(1, 1, true);
             table.BorderWidth = tablePadding;
             //Row 1
-            table.Attach(_touchButtonPosToolbarFinanceDocuments, 0, 1, 0, 1, AttachOptions.Fill, AttachOptions.Fill, tablePadding, tablePadding);
+            table.Attach(BtnDocuments, 0, 1, 0, 1, AttachOptions.Fill, AttachOptions.Fill, tablePadding, tablePadding);
             table.Attach(_toolbarFinanceDocumentsInvoicesUnpayed, 1, 2, 0, 1, AttachOptions.Fill, AttachOptions.Fill, tablePadding, tablePadding);
             table.Attach(_toolbarFinanceDocumentsPayments, 2, 3, 0, 1, AttachOptions.Fill, AttachOptions.Fill, tablePadding, tablePadding);
             //Row 2
@@ -73,10 +73,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             switch (docChoice)
             {
                 case 1:
-                    touchButtonPosToolbarFinanceDocuments_Clicked(_touchButtonPosToolbarFinanceDocuments, null);
+                    BtnDocuments_Clicked(BtnDocuments, null);
                     break;
                 case 2:
-                    touchButtonPosToolbarFinanceDocuments_Clicked(_toolbarFinanceDocumentsInvoicesUnpayed, null);
+                    BtnDocuments_Clicked(_toolbarFinanceDocumentsInvoicesUnpayed, null);
                     break;
                 case 3:
                     _toolbarFinanceDocumentsPayments_Clicked(_toolbarFinanceDocumentsPayments, null);
@@ -96,8 +96,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     this.Initialize(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, table, null);
 
                     //Shared Events 
-                    _touchButtonPosToolbarFinanceDocuments.Clicked += touchButtonPosToolbarFinanceDocuments_Clicked;
-                    _toolbarFinanceDocumentsInvoicesUnpayed.Clicked += touchButtonPosToolbarFinanceDocuments_Clicked;
+                    BtnDocuments.Clicked += BtnDocuments_Clicked;
+                    _toolbarFinanceDocumentsInvoicesUnpayed.Clicked += BtnDocuments_Clicked;
                     _touchButtonPosToolbarCurrentAccountDocuments.Clicked += delegate { reportsClicked.PrintReportRouter(_touchButtonPosToolbarCurrentAccountDocuments, null); };
                     //Non Shared Events
                     _toolbarFinanceDocumentsPayments.Clicked += _toolbarFinanceDocumentsPayments_Clicked;

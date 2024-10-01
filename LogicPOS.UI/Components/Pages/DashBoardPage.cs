@@ -32,8 +32,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private readonly IconButtonWithText botao6;
         private readonly IconButtonWithText botao7;
         private readonly IconButtonWithText botao8;
-        private readonly IconButtonWithText botao9;
-        private readonly IconButtonWithText botao10;
+        private readonly IconButtonWithText BtnDocuments;
+        private readonly IconButtonWithText BtnNewDocument;
         private readonly IconButtonWithText botao11;
         private readonly IconButtonWithText botao12;
         private readonly IconButtonWithText botao13;
@@ -197,8 +197,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 botao8 = new IconButtonWithText(new ButtonSettings { Name = "BACKOFFICE_MAN_CONFIGURATIONPLACETABLE_VIEW", BackgroundColor = _colorBaseDialogDefaultButtonBackground, Text = GeneralUtils.GetResourceByName("global_other_tables"), Font = _fontBaseDialogButton, FontColor = _colorBaseDialogDefaultButtonFont, Icon = _fileOtherTablesIcon, IconSize = sizeIcon, ButtonSize = new Size(105, 70) });
 
                 //Buttons Documentos
-                botao9 = new IconButtonWithText(new ButtonSettings { Name = "BACKOFFICE_MAN_DOCUMENTSSHOW_MENU", BackgroundColor = _colorBaseDialogDefaultButtonBackground, Text = GeneralUtils.GetResourceByName("global_worksession_resume_finance_documents"), Font = _fontBaseDialogButton, FontColor = _colorBaseDialogDefaultButtonFont, Icon = _fileNewDocumentIcon, IconSize = sizeIcon, ButtonSize = new Size(105, 70) });
-                botao10 = new IconButtonWithText(new ButtonSettings { Name = "BACKOFFICE_MAN_DOCUMENTSNEW_MENU", BackgroundColor = _colorBaseDialogDefaultButtonBackground, Text = GeneralUtils.GetResourceByName("window_title_dialog_new_document"), Font = _fontBaseDialogButton, FontColor = _colorBaseDialogDefaultButtonFont, Icon = _fileDocumentsIcon, IconSize = sizeIcon, ButtonSize = new Size(105, 70) });
+                BtnDocuments = new IconButtonWithText(new ButtonSettings { Name = "BACKOFFICE_MAN_DOCUMENTSSHOW_MENU", BackgroundColor = _colorBaseDialogDefaultButtonBackground, Text = GeneralUtils.GetResourceByName("global_worksession_resume_finance_documents"), Font = _fontBaseDialogButton, FontColor = _colorBaseDialogDefaultButtonFont, Icon = _fileNewDocumentIcon, IconSize = sizeIcon, ButtonSize = new Size(105, 70) });
+                BtnNewDocument = new IconButtonWithText(new ButtonSettings { Name = "BACKOFFICE_MAN_DOCUMENTSNEW_MENU", BackgroundColor = _colorBaseDialogDefaultButtonBackground, Text = GeneralUtils.GetResourceByName("window_title_dialog_new_document"), Font = _fontBaseDialogButton, FontColor = _colorBaseDialogDefaultButtonFont, Icon = _fileDocumentsIcon, IconSize = sizeIcon, ButtonSize = new Size(105, 70) });
                 botao11 = new IconButtonWithText(new ButtonSettings { Name = "BACKOFFICE_MAN_DOCUMENTSPAYMENTS_MENU", BackgroundColor = _colorBaseDialogDefaultButtonBackground, Text = GeneralUtils.GetResourceByName("dialog_button_label_select_payments"), Font = _fontBaseDialogButton, FontColor = _colorBaseDialogDefaultButtonFont, Icon = _filePayedDocumentsIcon, IconSize = sizeIcon, ButtonSize = new Size(105, 70) });
                 botao12 = new IconButtonWithText(new ButtonSettings { Name = "STOCK_MERCHANDISE_ENTRY_ACCESS", BackgroundColor = _colorBaseDialogDefaultButtonBackground, Text = GeneralUtils.GetResourceByName("global_documentticket_type_title_cs_short"), Font = _fontBaseDialogButton, FontColor = _colorBaseDialogDefaultButtonFont, Icon = _fileInsertMerchIcon, IconSize = sizeIcon, ButtonSize = new Size(105, 70) });
 
@@ -221,8 +221,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 botao7.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("BACKOFFICE_MAN_USERDETAIL_VIEW");
                 botao8.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("BACKOFFICE_MAN_CONFIGURATIONPLACETABLE_VIEW");
 
-                botao9.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("BACKOFFICE_MAN_DOCUMENTFINANCETYPE_MENU");
-                botao10.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("BACKOFFICE_MAN_DOCUMENTFINANCETYPE_CREATE");
+                BtnDocuments.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("BACKOFFICE_MAN_DOCUMENTFINANCETYPE_MENU");
+                BtnNewDocument.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("BACKOFFICE_MAN_DOCUMENTFINANCETYPE_CREATE");
                 botao11.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("BACKOFFICE_MAN_DOCUMENTFINANCEYEARS_VIEW");
                 botao12.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("STOCK_MERCHANDISE_ENTRY_ACCESS");
 
@@ -246,8 +246,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 botao8.Clicked += delegate { botao8.Page = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlaceTable>(parentWindow); GlobalApp.BackOfficeMainWindow.Button_Click(botao8, null); };
 
                 //Actions Documents
-                botao9.Clicked += delegate { logicpos.Utils.StartDocumentsMenuFromBackOffice(parentWindow, 0); };
-                botao10.Clicked += delegate { logicpos.Utils.StartNewDocumentFromBackOffice(parentWindow); };
+                BtnDocuments.Clicked += delegate { logicpos.Utils.StartDocumentsMenuFromBackOffice(parentWindow, 0); };
+                BtnNewDocument.Clicked += delegate { logicpos.Utils.StartNewDocumentFromBackOffice(parentWindow); };
                 botao11.Clicked += delegate { logicpos.Utils.StartDocumentsMenuFromBackOffice(parentWindow, 3); };
                 botao12.Clicked += delegate { logicpos.Utils.OpenArticleStockDialog(_parentWindow); };
 
@@ -272,8 +272,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 fix.Put(botao7, 245, 250);
                 fix.Put(botao8, 245, 345);
 
-                fix.Put(botao9, 440, 62);
-                fix.Put(botao10, 440, 155);
+                fix.Put(BtnDocuments, 440, 62);
+                fix.Put(BtnNewDocument, 440, 155);
                 fix.Put(botao11, 440, 250);
                 fix.Put(botao12, 440, 345);
 

@@ -86,37 +86,7 @@ FROM
 WHERE 
     DocumentPayed = '{0}';";
 
-            /* Fixed by IN009151 */
-            /*string query3 = @"
-SELECT 
-	 ISNULL(SUM(DocFinMasterPay.CreditAmount), 0)  +
-	 (
-		SELECT 
-			ISNULL(SUM(DocFinMaster.TotalFinal), 0) AS TotalFinal
-		FROM
-			fin_documentfinancemaster AS DocFinMaster
-		WHERE
-			DocumentType = 'fa924162-beed-4f2f-938d-919deafb7d47'
-			AND 
-				DocFinMaster.DocumentParent = '{0}'
-			AND
-				( DocFinMaster.DocumentStatusStatus <> 'A' AND DocFinMaster.Disabled <> 1)
-		GROUP BY
-			DocFinMaster.DocumentParent				 
-	 ) AS CreditAmount
-FROM
-	fin_documentfinancemasterpayment AS DocFinMasterPay
-LEFT JOIN 
-	fin_documentfinancepayment AS DocFinPay ON (DocFinPay.Oid = DocFinMasterPay.DocumentFinancePayment)
-WHERE
-	DocFinMasterPay.DocumentFinanceMaster = '{0}' 
-	AND
-		(DocFinPay.PaymentStatus <> 'A' AND DocFinPay.Disabled <> 1)
-GROUP BY
-	DocFinMasterPay.DocumentFinanceMaster;
 
-";
-            */
             columnProperties.Add(new GridViewColumn("TotalOfCredit")
             {
                 Query = queryForTotalOfCredit,
@@ -133,48 +103,8 @@ GROUP BY
                 }
             });
 
-            /* IN009067 - adding "ViewDocumentFinancePaymentDocumentTotal" result to TotalDebit column */
-            /*string queryForTotalDebit = @"
-SELECT 
-    fmaTotalFinal - (
-	    SELECT 
-            SUM(CreditAmount) as CreditTotals 
-        FROM 
-            view_documentfinancepaymentdocumenttotal 
-        WHERE 
-            DocumentPayed = '{0}'
-    ) AS Result 
-FROM 
-    view_documentfinancepayment 
-WHERE 
-    fmaOid = '{0}' AND 
-    fpaPaymentStatus <> 'A' 
-GROUP BY 
-    fmaOid, fmaTotalFinal;";*/
-
-            /* Fixed by IN009151 */
-            /*
-             * "UNION" with a "NOT EXISTS" was necessary to keep "0" value as part of calculation and then avoiding "NULL" cases that affect calculation result.
-             * 
-             * "CASE/WHEN" implemented to remove Debit values from credit-documents (NCs) and transport-documents (GTs)
-             * 
-             * Replacing use of "view_documentfinancepayment"
-             */
-            /* #TODO - SQL refactoring */
             string stringFormatIndexZero = "{0}";
-            /* The following document types has no debit amount:
-             * Orçamento
-             * Guia ou Nota de Devolução
-             * Guia de Transporte
-             * Fatura Simplificada
-             * Documento de Conferência
-             * Fatura Pró-Forma
-             * Fatura-Recibo
-             * Nota de Crédito
-             * Guia de Consignação
-             * Guia de Remessa
-             * Guia de Movimentação de Ativos Fixos Próprios
-             */
+
             string queryForTotalDebit = $@"
 SELECT
 (

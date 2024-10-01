@@ -3,7 +3,6 @@ using logicpos;
 using LogicPOS.Settings;
 using LogicPOS.Utility;
 using System;
-using System.Collections.Generic;
 
 namespace LogicPOS.UI.Buttons
 {
@@ -266,12 +265,5 @@ namespace LogicPOS.UI.Buttons
                 });
         }
 
-    }
-
-    public class ActionAreaButtons : List<ActionAreaButton>
-    {
-        public ActionAreaButtons()
-        {
-        }
     }
 }

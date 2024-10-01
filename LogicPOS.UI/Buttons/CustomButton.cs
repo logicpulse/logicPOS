@@ -7,7 +7,7 @@ namespace LogicPOS.UI.Buttons
 {
     public class CustomButton : Button
     {
-        protected EventBox _backgroundColorEventBox;
+        public EventBox BackgroundColorEventBox { get; set; }
         public string Token { get; set; }
         public Guid CurrentButtonId { get; set; }
         protected ButtonSettings _settings;
@@ -21,28 +21,33 @@ namespace LogicPOS.UI.Buttons
             _settings = settings;
         }
 
+   
         public void Initialize()
         {
             WidthRequest = _settings.ButtonSize.Width;
             HeightRequest = _settings.ButtonSize.Height;
 
-            _backgroundColorEventBox = new EventBox();
-            SetBackgroundColor(_settings.BackgroundColor, _backgroundColorEventBox);
+            BackgroundColorEventBox = new EventBox();
+            SetBackgroundColor(_settings.BackgroundColor, BackgroundColorEventBox);
 
-            if (_settings.Widget != null) _backgroundColorEventBox.Add(_settings.Widget);
-            Add(_backgroundColorEventBox);
-
+            if (_settings.Widget != null) BackgroundColorEventBox.Add(_settings.Widget);
+            Add(BackgroundColorEventBox);
+          
             ShowAll();
         }
 
         public void SetBackgroundColor(Color color,
-                                       EventBox eventBox)
+                                       EventBox eventBox = null)
         {
+            eventBox = eventBox ?? BackgroundColorEventBox;
+
             if (color == Color.Transparent)
             {
                 eventBox.VisibleWindow = false;
                 return;
             }
+
+            eventBox.VisibleWindow = true;
 
             Color normal = color;
             Color prelight = normal.Lighten();
