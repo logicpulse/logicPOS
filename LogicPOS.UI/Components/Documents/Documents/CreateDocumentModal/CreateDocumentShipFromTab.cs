@@ -1,5 +1,6 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Documents;
 using LogicPOS.Settings;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.Modals;
@@ -114,7 +115,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
 
             if (response == ResponseType.Ok)
             {
-                TxtDeliveryDate.Text = dateTimePicker.GetFormattedDateTime();
+                TxtDeliveryDate.Text = dateTimePicker.Calendar.Date.ToString();
             }
         }
 
@@ -183,6 +184,22 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
                                          isValidatable: false,
                                          includeSelectButton: false,
                                          includeKeyBoardButton: true);
+        }
+
+        public ShipAddress GetAddress()
+        {
+            return new ShipAddress
+            {
+                DeliveryID = TxtDeliveryId.Text,
+                DeliveryDate = DateTime.Parse(TxtDeliveryDate.Text),
+                WarehouseID = TxtWarehouseId.Text,
+                LocationID = TxtLocationId.Text,
+                AddressDetail = TxtAddress.Text,
+                PostalCode = TxtZipCode.Text,
+                Country = TxtCountry.Text,
+                City = TxtCity.Text,
+                Region = TxtRegion.Text
+            };
         }
     }
 }
