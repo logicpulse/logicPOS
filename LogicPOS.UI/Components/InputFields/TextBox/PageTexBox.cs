@@ -16,10 +16,10 @@ namespace LogicPOS.UI.Components.InputFields
         public Entry Entry { get; private set; } = new Entry();
         public string Text { get => Entry.Text; set => Entry.Text = value; }
         public Label Label { get; private set; }
-        public bool IsRequired { get; private set; }
+        public bool IsRequired { get; set; }
         private bool IsEmpty => string.IsNullOrEmpty(Entry.Text);
-        public bool IsValidatable { get; private set; }
-        public string Regex { get; private set; }
+        public bool IsValidatable { get; set; }
+        public string Regex { get; set; }
         public Widget Component { get; private set; }
         public HBox ButtonsArea { get; private set; }
         public string FieldName => Label.Text;
@@ -78,7 +78,7 @@ namespace LogicPOS.UI.Components.InputFields
             };
         }
 
-        private void UpdateValidationColors()
+        public void UpdateValidationColors()
         {
             ValidationColors.Default.UpdateComponentFontColor(Label, IsValid());
             ValidationColors.Default.UpdateComponent(Entry, IsValid());

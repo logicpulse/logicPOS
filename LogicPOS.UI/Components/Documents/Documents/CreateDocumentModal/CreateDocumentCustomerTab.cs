@@ -224,7 +224,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
             ShowCustomerData(page.SelectedEntity);
         }
 
-        private void ShowCustomerData(Customer customer)
+        public void ShowCustomerData(Customer customer)
         {
             TxtFiscalNumber.Text = customer.FiscalNumber;
             TxtCardNumber.Text = customer.CardNumber;
@@ -238,6 +238,18 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
             TxtPhone.Text = customer.Phone;
             TxtEmail.Text = customer.Email;
             TxtNotes.Text = customer.Notes;
+        }
+
+        public void ShowOriginDocumentData(Document document)
+        {
+            TxtCustomer.Text = document.Customer.Name;
+            TxtFiscalNumber.Text = document.Customer.FiscalNumber;
+            TxtAddress.Text = document.Customer.Address;
+            TxtLocality.Text = document.Customer.Locality;
+            TxtZipCode.Text = document.Customer.ZipCode;
+            TxtCity.Text = document.Customer.City;
+            TxtCountry.Text = document.Customer.Country;
+            TxtDiscount.Text = document.Discount.ToString();
         }
 
         private void Design()
@@ -286,6 +298,14 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
                 Country = TxtCountry.Text,
                 CountryId = (TxtCountry.SelectedEntity as Country).Id
             };
+        }
+
+        public override bool IsValid()
+        {
+            return TxtCustomer.IsValid() &&
+                   TxtFiscalNumber.IsValid() &&
+                   TxtDiscount.IsValid() &&
+                   TxtCountry.IsValid();
         }
     }
 }

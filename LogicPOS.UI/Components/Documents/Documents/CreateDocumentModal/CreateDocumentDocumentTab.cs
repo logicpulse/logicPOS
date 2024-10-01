@@ -2,23 +2,26 @@
 using LogicPOS.Api.Entities;
 using LogicPOS.Settings;
 using LogicPOS.UI.Components.InputFields;
+using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.Utility;
 using System;
+using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
 {
     public class CreateDocumentDocumentTab : ModalTab
     {
         public PageTextBox TxtDocumentType { get; set; }
-        public PageTextBox TxtPaymnentCondition { get; set; }
+        public PageTextBox TxtPaymentCondition { get; set; }
         public PageTextBox TxtPaymentMethod { get; set; }
         public PageTextBox TxtCurrency { get; set; }
         public PageTextBox TxtOriginDocument { get; set; }
         public PageTextBox TxtCopyDocument { get; set; }
         public PageTextBox TxtNotes { get; set; }
+        public event Action<Document> OriginDocumentSelected;
 
         public CreateDocumentDocumentTab(Window parent) : base(parent: parent,
                                                   name: GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page1"),
@@ -95,6 +98,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
             {
                 TxtOriginDocument.Text = page.SelectedEntity.Number;
                 TxtOriginDocument.SelectedEntity = page.SelectedEntity;
+                OriginDocumentSelected?.Invoke(page.SelectedEntity);
             }
         }
 
@@ -156,16 +160,16 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
 
         private void InitializeTxtPaymnentCondition()
         {
-            TxtPaymnentCondition = new PageTextBox(SourceWindow,
+            TxtPaymentCondition = new PageTextBox(SourceWindow,
                                                    GeneralUtils.GetResourceByName("global_payment_condition"),
                                                    isRequired: true,
                                                    isValidatable: false,
                                                    includeSelectButton: true,
                                                    includeKeyBoardButton: false);
 
-            TxtPaymnentCondition.Entry.IsEditable = false;
+            TxtPaymentCondition.Entry.IsEditable = false;
 
-            TxtPaymnentCondition.SelectEntityClicked += BtnSelectPaymentCondition_Clicked;
+            TxtPaymentCondition.SelectEntityClicked += BtnSelectPaymentCondition_Clicked;
         }
 
         private void BtnSelectPaymentCondition_Clicked(object sender, EventArgs e)
@@ -177,8 +181,8 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
 
             if (response == ResponseType.Ok && page.SelectedEntity != null)
             {
-                TxtPaymnentCondition.Text = page.SelectedEntity.Designation;
-                TxtPaymnentCondition.SelectedEntity = page.SelectedEntity;
+                TxtPaymentCondition.Text = page.SelectedEntity.Designation;
+                TxtPaymentCondition.SelectedEntity = page.SelectedEntity;
             }
         }
 
@@ -207,6 +211,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
             {
                 TxtDocumentType.Text = page.SelectedEntity.Designation;
                 TxtDocumentType.SelectedEntity = page.SelectedEntity;
+                UpdateValidatableFields();
             }
         }
 
@@ -214,7 +219,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
         {
             var verticalLayout = new VBox(false, 2);
             verticalLayout.PackStart(TxtDocumentType.Component, false, false, 0);
-            verticalLayout.PackStart(TxtPaymnentCondition.Component, false, false, 0);
+            verticalLayout.PackStart(TxtPaymentCondition.Component, false, false, 0);
             verticalLayout.PackStart(TxtPaymentMethod.Component, false, false, 0);
             verticalLayout.PackStart(TxtCurrency.Component, false, false, 0);
 
@@ -232,7 +237,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
 
         public PaymentCondition GetPaymentCondition()
         {
-            return TxtPaymnentCondition.SelectedEntity as PaymentCondition;
+            return TxtPaymentCondition.SelectedEntity as PaymentCondition;
         }
 
         public Currency GetCurrency()
@@ -245,6 +250,63 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
             return TxtDocumentType.SelectedEntity as DocumentType;
         }
 
+        public override bool IsValid()
+        {
+            if (TxtDocumentType.SelectedEntity == null)
+            {
+                return false;
+            }
 
+            return TxtPaymentCondition.IsValid() &&
+                   TxtPaymentMethod.IsValid() &&
+                   TxtCurrency.IsValid() &&
+                   TxtOriginDocument.IsValid() &&
+                   TxtCopyDocument.IsValid() &&
+                   TxtNotes.IsValid();
+        }
+
+        private void UpdateValidatableFields()
+        {
+            var documentType = GetDocumentType();
+
+            if (documentType.IsGuide())
+            {
+                RequireField(TxtOriginDocument, true);
+                RequireField(TxtPaymentCondition, false);
+                RequireField(TxtPaymentMethod, false);
+                RequireField(TxtNotes, false, false);
+            }
+            else if (documentType.IsInformative() || documentType.IsConsignmentInvoice())
+            {
+                RequireField(TxtOriginDocument, false);
+                RequireField(TxtPaymentCondition, true);
+                RequireField(TxtPaymentMethod, false);
+                RequireField(TxtNotes, false, false);
+
+            }
+            else if (documentType.IsInvoice())
+            {
+                RequireField(TxtOriginDocument, false);
+                RequireField(TxtPaymentCondition, true);
+                RequireField(TxtPaymentMethod, true);
+                RequireField(TxtNotes, false, false);
+
+            }
+            else if (documentType.IsCreditNote())
+            {
+                RequireField(TxtOriginDocument, true);
+                RequireField(TxtPaymentCondition, false);
+                RequireField(TxtPaymentMethod, false);
+                RequireField(TxtNotes, true);
+            }
+        }
+
+        private void RequireField(PageTextBox field,bool require = true, bool disable = true)
+        {
+            field.Clear();
+            field.IsRequired = require;
+            field.UpdateValidationColors();
+            field.Component.Sensitive = require ? true : !disable;
+        }
     }
 }

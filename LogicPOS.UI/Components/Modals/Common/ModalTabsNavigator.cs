@@ -1,5 +1,4 @@
 ﻿using Gtk;
-using logicpos.Classes.Gui.Gtk.Widgets;
 using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Extensions;
@@ -18,11 +17,11 @@ namespace LogicPOS.UI.Components.Modals.Common
         public string BtnPreviousIcon => $"{PathsSettings.ImagesFolderLocation}{@"Icons/icon_pos_pagepad_prev.png"}";
         public string BtnNextIcon => $"{PathsSettings.ImagesFolderLocation}{@"Icons/icon_pos_pagepad_next.png"}";
         public string BtnNavigatorFont => AppSettings.Instance.fontPagePadNavigatorButton;
-        
+
         public HBox Component { get; set; }
         public IconButtonWithText BtnPrevious { get; private set; }
         public IconButtonWithText BtnNext { get; private set; }
-        internal List<ModalTab> Tabs { get; set; }
+        public List<ModalTab> Tabs { get; set; }
         public int CurrentPageIndex { get; set; } = 0;
         public ModalTab ActivePage { get; set; }
         public event EventHandler PageChanged;
@@ -65,7 +64,7 @@ namespace LogicPOS.UI.Components.Modals.Common
                     StateType.Normal,
                     HotButtonBackgroundColor.ToGdkColor());
                 }
-             
+
 
                 navigatorButtons.PackStart(page.BtnNavigator, true, true, 2);
             }

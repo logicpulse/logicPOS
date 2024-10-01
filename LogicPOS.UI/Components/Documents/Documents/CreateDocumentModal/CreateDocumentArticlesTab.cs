@@ -51,5 +51,10 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
 
             return details.ToList();
         }
+
+        public override bool IsValid()
+        {
+            return ItemsPage.Items.Count > 0;
+        }
     }
 }

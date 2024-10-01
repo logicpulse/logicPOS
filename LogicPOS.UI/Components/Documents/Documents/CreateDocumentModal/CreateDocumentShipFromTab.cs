@@ -201,5 +201,18 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
                 Region = TxtRegion.Text
             };
         }
+
+        public override bool IsValid()
+        {
+            return TxtAddress.IsValid() &&
+                   TxtRegion.IsValid() &&
+                   TxtZipCode.IsValid() &&
+                   TxtCity.IsValid() &&
+                   TxtCountry.IsValid() &&
+                   TxtDeliveryDate.IsValid() &&
+                   TxtDeliveryId.IsValid() &&
+                   TxtWarehouseId.IsValid() &&
+                   TxtLocationId.IsValid();
+        }
     }
 }

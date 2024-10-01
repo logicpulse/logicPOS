@@ -9,6 +9,7 @@ using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Documents;
 using LogicPOS.UI.Components.Documents.CreateDocumentModal;
+using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.Utility;
 using MediatR;
@@ -70,6 +71,13 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnOk_Clicked(object sender, EventArgs e)
         {
+            if (!AllTabsAreValid())
+            {
+                ShowValidationErrors();
+                Run();
+                return;
+            }
+
             var command = CreateAddCommand();
             var result = _mediator.Send(command).Result;
 
@@ -130,10 +138,16 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTabs()
         {
             DocumentTab = new CreateDocumentDocumentTab(this);
+            DocumentTab.OriginDocumentSelected += OnOriginDocumentSelected;
             CustomerTab = new CreateDocumentCustomerTab(this);
             ArticlesTab = new CreateDocumentArticlesTab(this);
             ShipToTab = new CreateDocumentShipToTab(this);
             ShipFromTab = new CreateDocumentShipFromTab(this);
+        }
+
+        private void OnOriginDocumentSelected(Document document)
+        {
+            CustomerTab.ShowOriginDocumentData(document);
         }
 
         private AddDocumentCommand CreateAddCommand()
@@ -166,5 +180,31 @@ namespace LogicPOS.UI.Components.Modals
             var documentType = DocumentTab.GetDocumentType();
             return _documentSeries.First(series => series.DocumentType.Id == documentType.Id);
         }
+
+        public bool AllTabsAreValid() => GetValidatableTabs().All(tab => tab.IsValid());
+
+        public IEnumerable<IValidatableField> GetValidatableTabs()
+        {
+            var validatableTabs = new List<IValidatableField>
+            {
+                DocumentTab,
+                CustomerTab,
+                ArticlesTab
+            };
+
+            var documentType = DocumentTab.GetDocumentType();
+
+ 
+
+            if (documentType != null && documentType.IsGuide())
+            {
+                validatableTabs.Add(ShipToTab);
+                validatableTabs.Add(ShipFromTab);
+            }
+
+            return validatableTabs;
+        }
+
+        protected void ShowValidationErrors() => Utilities.ShowValidationErrors(GetValidatableTabs());
     }
 }
