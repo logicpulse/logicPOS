@@ -90,13 +90,14 @@ namespace LogicPOS.UI.Widgets
                 new ButtonSettings
                 {
                     Name = "touchButtonKeyPasswordReset",
-                    BackgroundColor = Color.Transparent,
+                    //BackgroundColor = Color.Transparent,
+                    BackgroundColor= Color.FromArgb(70, 167, 167, 167),
                     Icon = numberPadPinButtonPasswordResetImageFileName,
                     IconSize = new Size(20, 20),
                     ButtonSize = new Size(25, 25)
                 })
             { Sensitive = false };
-
+            
 
             //Start Validated
             EntryPin.Validate();
@@ -259,7 +260,8 @@ namespace LogicPOS.UI.Widgets
                     new ButtonSettings
                     {
                         Name = $"touchButtonKey{number}",
-                        BackgroundColor = pButtonColor,
+                        //BackgroundColor = pButtonColor,
+                        BackgroundColor = Color.FromArgb(70,167, 167, 167),
                         Text = number,
                         Font = pFont,
                         FontColor = pFontColor,
