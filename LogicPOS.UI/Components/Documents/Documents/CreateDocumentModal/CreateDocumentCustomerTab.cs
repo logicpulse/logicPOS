@@ -242,7 +242,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
             TxtNotes.Text = customer.Notes;
         }
 
-        public void ShowOriginDocumentData(Document document)
+        public void ImportDataFromDocument(Document document)
         {
             CustomerId = document.CustomerId;
             TxtCustomer.Text = document.Customer.Name;

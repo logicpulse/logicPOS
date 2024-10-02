@@ -186,6 +186,21 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
                                          includeKeyBoardButton: true);
         }
 
+        public void ImportDataFromDocument(Document document)
+        {
+            var shipAddress = document.ShipToAdress;
+
+            TxtAddress.Text = shipAddress.AddressDetail;
+            TxtRegion.Text = shipAddress.Region;
+            TxtZipCode.Text = shipAddress.PostalCode;
+            TxtCity.Text = shipAddress.City;
+            TxtCountry.Text = shipAddress.Country;
+            TxtDeliveryDate.Text = shipAddress.DeliveryDate.ToString();
+            TxtDeliveryId.Text = shipAddress.DeliveryID;
+            TxtWarehouseId.Text = shipAddress.WarehouseID;
+            TxtLocationId.Text = shipAddress.LocationID;
+        }
+
         public ShipAddress GetAddress()
         {
             return new ShipAddress

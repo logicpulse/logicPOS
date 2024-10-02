@@ -17,6 +17,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Linq;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -100,7 +101,7 @@ namespace LogicPOS.UI.Components.Modals
             }
 
             return getResult.Value;
-        }
+        }     
 
         protected override ActionAreaButtons CreateActionAreaButtons()
         {
@@ -139,6 +140,7 @@ namespace LogicPOS.UI.Components.Modals
             DocumentTab = new CreateDocumentDocumentTab(this);
             DocumentTab.OriginDocumentSelected += OnOriginDocumentSelected;
             DocumentTab.DocumentTypeSelected += OnDocumentTypeSelected;
+            DocumentTab.CopyDocumentSelected += OnCopyDocumentSelected;
             CustomerTab = new CreateDocumentCustomerTab(this);
             ArticlesTab = new CreateDocumentArticlesTab(this);
             ShipToTab = new CreateDocumentShipToTab(this);
@@ -147,16 +149,37 @@ namespace LogicPOS.UI.Components.Modals
 
         private void OnDocumentTypeSelected(DocumentType documentType)
         {
+            EnableAllTabs();
+
             if (documentType.IsGuide())
             {
                 CustomerTab.Disable();
             }
         }
 
+        private void EnableAllTabs()
+        {
+            Navigator.Tabs.ForEach(t => t.Enable());
+        }
+
         private void OnOriginDocumentSelected(Document document)
         {
-            CustomerTab.ShowOriginDocumentData(document);
-            ArticlesTab.AddOriginDocumentData(document);
+            CustomerTab.ImportDataFromDocument(document);
+            ArticlesTab.ImportDataFromDocument(document);
+        }
+
+        private void OnCopyDocumentSelected(Document document)
+        {
+            EnableAllTabs();
+
+            CustomerTab.ImportDataFromDocument(document);
+            ArticlesTab.ImportDataFromDocument(document);
+
+            if(document.IsGuide())
+            {
+                ShipFromTab.ImportDataFromDocument(document);
+                ShipToTab.ImportDataFromDocument(document);
+            }
         }
 
         private AddDocumentCommand CreateAddCommand()
@@ -164,7 +187,7 @@ namespace LogicPOS.UI.Components.Modals
             var command = new AddDocumentCommand();
 
             command.PaymentMethodId = DocumentTab.GetPaymentMethod()?.Id;
-            command.SeriesId = GetSeriesFroDocumentType().Id;
+            command.SeriesId = GetSeriesFromDocumentType().Id;
             command.PaymentConditionId = DocumentTab.GetPaymentCondition()?.Id;
             command.CurrencyId = DocumentTab.GetCurrency().Id;
             command.ParentId = DocumentTab.GetOriginDocumentId();
@@ -190,11 +213,12 @@ namespace LogicPOS.UI.Components.Modals
             return command;
         }
 
-        public DocumentSeries GetSeriesFroDocumentType()
+        public DocumentSeries GetSeriesFromDocumentType()
         {
             var documentType = DocumentTab.GetDocumentType();
             return _documentSeries.First(series => series.DocumentType.Id == documentType.Id);
         }
+
 
         public bool AllTabsAreValid() => GetValidatableTabs().All(tab => tab.IsValid());
 

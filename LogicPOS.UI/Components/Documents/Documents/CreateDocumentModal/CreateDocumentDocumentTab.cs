@@ -1,19 +1,26 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.DocumentTypes.GetAllDocumentTypes;
 using LogicPOS.Settings;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.Utility;
+using MediatR;
+using Microsoft.Extensions.DependencyInjection;
+using Patagames.Pdf.Enums;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
 {
     public class CreateDocumentDocumentTab : ModalTab
     {
+        public IEnumerable<DocumentType> DocumentTypes { get; private set; }
         public PageTextBox TxtDocumentType { get; set; }
         public PageTextBox TxtPaymentCondition { get; set; }
         public PageTextBox TxtPaymentMethod { get; set; }
@@ -23,6 +30,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
         public PageTextBox TxtNotes { get; set; }
         public event Action<Document> OriginDocumentSelected;
         public event Action<DocumentType> DocumentTypeSelected;
+        public event Action<Document> CopyDocumentSelected;
 
         public CreateDocumentDocumentTab(Window parent) : base(parent: parent,
                                                   name: GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page1"),
@@ -34,6 +42,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
 
         private void Initialize()
         {
+            DocumentTypes = GetDocumentTypes();
             InitializeTxtDocumentType();
             InitializeTxtPaymnentCondition();
             InitializeTxtPaymentMethod();
@@ -41,6 +50,20 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
             InitializeTxtOriginDocument();
             InitializeTxtCopyDocument();
             InitializeTxtNotes();
+        }
+
+        private IEnumerable<DocumentType> GetDocumentTypes()
+        {
+            var mediator = DependencyInjection.Services.GetRequiredService<ISender>();
+            var documentTypes = mediator.Send(new GetAllDocumentTypesQuery()).Result;
+
+            if(documentTypes.IsError)
+            {
+                SimpleAlerts.ShowApiErrorAlert(this.SourceWindow);
+                return Enumerable.Empty<DocumentType>();
+            }
+
+            return documentTypes.Value;
         }
 
         private void InitializeTxtNotes()
@@ -71,7 +94,38 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
 
         private void BtnSelectCopyDocument_Clicked(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            var page = new DocumentsPage(null, PageOptions.SelectionPageOptions);
+            var selectModal = new EntitySelectionModal<Document>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            ResponseType response = (ResponseType)selectModal.Run();
+            selectModal.Destroy();
+
+            if (response == ResponseType.Ok && page.SelectedEntity != null)
+            {
+                var docType = GetDocumentTypeFromDocument(page.SelectedEntity);
+                TxtDocumentType.SelectedEntity = docType;
+                TxtDocumentType.Text = docType.Designation;
+
+                UpdateValidatableFields();
+
+                TxtCopyDocument.Text = page.SelectedEntity.Number;
+                TxtCopyDocument.SelectedEntity = page.SelectedEntity;
+
+                TxtPaymentMethod.SelectedEntity = page.SelectedEntity.PaymentMethod;
+                TxtPaymentMethod.Text = page.SelectedEntity.PaymentMethod?.Designation;
+
+                TxtPaymentCondition.SelectedEntity = page.SelectedEntity.PaymentCondition;
+                TxtPaymentCondition.Text = page.SelectedEntity.PaymentCondition?.Designation;
+
+                TxtCurrency.SelectedEntity = page.SelectedEntity.Currency;
+                TxtCurrency.Text = page.SelectedEntity.Currency.Designation;
+             
+                CopyDocumentSelected?.Invoke(page.SelectedEntity);
+            }
+        }
+
+        private DocumentType GetDocumentTypeFromDocument(Document document)
+        {
+            return DocumentTypes.FirstOrDefault(type => type.Acronym == document.Type);
         }
 
         private void InitializeTxtOriginDocument()

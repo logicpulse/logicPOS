@@ -36,7 +36,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
             PackStart(ItemsPage);
         }
 
-        public void AddOriginDocumentData(Api.Entities.Document document)
+        public void ImportDataFromDocument(Api.Entities.Document document)
         {
             ItemsPage.Items.Clear();
 
