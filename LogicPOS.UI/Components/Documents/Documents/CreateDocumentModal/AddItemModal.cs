@@ -32,7 +32,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
         public PageTextBox TxtTax { get; set; }
         public PageTextBox TxtVatExemptionReason { get; set; }
         public PageTextBox TxtNotes { get; set; }
-        private Entry _txtVatRateValue = new Entry { Text = 0.ToString() };
+        private decimal _vatRateValue;
 
         public AddItemModal(Window parent,
                             EntityEditionModalMode mode,
@@ -61,7 +61,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
             TxtVatExemptionReason.Text = item.VatExemptionReason?.Designation ?? item.ExemptionReason;
             TxtTax.SelectedEntity = item.VatRate;
             TxtTax.Text = item.VatRate?.Designation ?? item.VatDesignation;
-            _txtVatRateValue.Text = item.VatRateValue.ToString();
+            _vatRateValue = item.VatRateValue;
             TxtNotes.Text = item.Notes;
         }
 
@@ -100,7 +100,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
                 Item.Discount = decimal.Parse(TxtDiscount.Text);
                 Item.VatRate = TxtTax.SelectedEntity as VatRate;
                 Item.VatDesignation = TxtTax.Text;
-                Item.VatRateValue = decimal.Parse(_txtVatRateValue.Text);
+                Item.VatRateValue = _vatRateValue;
                 Item.VatExemptionReason = TxtVatExemptionReason.SelectedEntity as VatExemptionReason;
                 Item.ExemptionReason = Item.VatExemptionReason is null ? TxtVatExemptionReason.Text : Item.VatExemptionReason.Designation;
                 Item.Notes = TxtNotes.Text;
@@ -181,7 +181,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
             {
                 TxtTax.Text = page.SelectedEntity.Designation;
                 TxtTax.SelectedEntity = page.SelectedEntity;
-                _txtVatRateValue.Text = page.SelectedEntity.Value.ToString();
+                _vatRateValue = page.SelectedEntity.Value;
             }
         }
 
@@ -355,7 +355,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
                 Discount = decimal.Parse(TxtDiscount.Text),
                 VatRate = (TxtTax.SelectedEntity as VatRate),
                 VatDesignation = TxtTax.Text,
-                VatRateValue = decimal.Parse(_txtVatRateValue.Text),
+                VatRateValue = _vatRateValue,
                 VatExemptionReason = (TxtVatExemptionReason.SelectedEntity as VatExemptionReason),
                 ExemptionReason = TxtVatExemptionReason.Text,
                 Notes = TxtNotes.Text

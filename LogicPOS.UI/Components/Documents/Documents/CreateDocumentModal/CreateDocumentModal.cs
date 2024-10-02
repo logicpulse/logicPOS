@@ -68,7 +68,6 @@ namespace LogicPOS.UI.Components.Modals
             BtnOk.Clicked += BtnOk_Clicked;
         }
 
-
         private void BtnOk_Clicked(object sender, EventArgs e)
         {
             if (!AllTabsAreValid())
@@ -169,6 +168,7 @@ namespace LogicPOS.UI.Components.Modals
             command.PaymentConditionId = DocumentTab.GetPaymentCondition()?.Id;
             command.CurrencyId = DocumentTab.GetCurrency().Id;
             command.ParentId = DocumentTab.GetOriginDocumentId();
+            command.CustomerId = CustomerTab.CustomerId;
 
             var customer = CustomerTab.GetCustomer();
 

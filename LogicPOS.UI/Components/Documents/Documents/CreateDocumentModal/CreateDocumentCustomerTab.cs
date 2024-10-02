@@ -26,6 +26,8 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
         public PageTextBox TxtPhone { get; set; }
         public PageTextBox TxtEmail { get; set; }
         public PageTextBox TxtNotes { get; set; }
+        public Guid? CustomerId { get; set; }
+        private Guid _countryId;
 
         public CreateDocumentCustomerTab(Window parent) : base(parent: parent,
                                                   name: GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page2"),
@@ -219,9 +221,9 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
             {
                 TxtCustomer.Text = page.SelectedEntity.Name;
                 TxtCustomer.SelectedEntity = page.SelectedEntity;
-            }
-
-            ShowCustomerData(page.SelectedEntity);
+                CustomerId = page.SelectedEntity.Id;
+                ShowCustomerData(page.SelectedEntity);
+            }    
         }
 
         public void ShowCustomerData(Customer customer)
@@ -242,6 +244,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
 
         public void ShowOriginDocumentData(Document document)
         {
+            CustomerId = document.CustomerId;
             TxtCustomer.Text = document.Customer.Name;
             TxtFiscalNumber.Text = document.Customer.FiscalNumber;
             TxtAddress.Text = document.Customer.Address;
@@ -252,6 +255,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
             TxtDiscount.Text = document.Discount.ToString();
             TxtPhone.Text = document.Customer.Phone;
             TxtEmail.Text = document.Customer.Email;
+            _countryId = document.Customer.CountryId;
         }
 
         private void Design()
@@ -298,7 +302,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
                 ZipCode = TxtZipCode.Text,
                 City = TxtCity.Text,
                 Country = TxtCountry.Text,
-                CountryId = (TxtCountry.SelectedEntity as Country).Id
+                CountryId = (TxtCountry.SelectedEntity as Country)?.Id ?? _countryId
             };
         }
 

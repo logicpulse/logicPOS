@@ -56,7 +56,6 @@ namespace LogicPOS.Api.Features.Common
         {
             try
             {
-                var test = JsonSerializer.Serialize(command);
                 var response = await _httpClient.PostAsJsonAsync(endpoint, command, cancellationToken);
                 return await HandleAddEntityHttpResponseAsync(response);
             }
