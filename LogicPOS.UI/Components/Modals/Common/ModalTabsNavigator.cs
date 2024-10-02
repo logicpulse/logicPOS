@@ -136,7 +136,7 @@ namespace LogicPOS.UI.Components.Modals.Common
             else if (CurrentPageIndex == Tabs.Count - 1)
             {
                 BtnPrevious.Sensitive = true;
-                BtnNext.Sensitive = ((CurrentPageIndex + 1 <= Tabs.Count - 1) && (Tabs[CurrentPageIndex + 1].Enabled));
+                BtnNext.Sensitive = (CurrentPageIndex + 1 <= Tabs.Count - 1);
             }
             else
             {

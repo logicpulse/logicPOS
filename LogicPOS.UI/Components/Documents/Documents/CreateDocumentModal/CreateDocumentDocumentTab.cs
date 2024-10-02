@@ -22,6 +22,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
         public PageTextBox TxtCopyDocument { get; set; }
         public PageTextBox TxtNotes { get; set; }
         public event Action<Document> OriginDocumentSelected;
+        public event Action<DocumentType> DocumentTypeSelected;
 
         public CreateDocumentDocumentTab(Window parent) : base(parent: parent,
                                                   name: GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page1"),
@@ -212,6 +213,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
                 TxtDocumentType.Text = page.SelectedEntity.Designation;
                 TxtDocumentType.SelectedEntity = page.SelectedEntity;
                 UpdateValidatableFields();
+                DocumentTypeSelected?.Invoke(page.SelectedEntity);
             }
         }
 
@@ -263,6 +265,11 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
                    TxtOriginDocument.IsValid() &&
                    TxtCopyDocument.IsValid() &&
                    TxtNotes.IsValid();
+        }
+
+        public Guid? GetOriginDocumentId()
+        {
+            return (TxtOriginDocument.SelectedEntity as Document)?.Id;
         }
 
         private void UpdateValidatableFields()
