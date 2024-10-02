@@ -12,5 +12,7 @@ namespace LogicPOS.Api.Features.Documents
         public string Country { get; set; }
         public Guid CountryId { get; set; }
         public string FiscalNumber { get; set; } 
+        public string Email { get; set; }
+        public string Phone { get; set; }
     }
 }

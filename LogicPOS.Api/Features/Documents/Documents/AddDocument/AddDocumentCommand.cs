@@ -14,7 +14,6 @@ namespace LogicPOS.Api.Features.Documents.AddDocument
         public Guid SeriesId { get; set; }
         public Guid? OrderId { get; set; }
         public Guid? ParentId { get; set; }
-        public Guid? ChildId { get; set; }
         public ShipAddress ShipToAdress { get; set; }
         public ShipAddress ShipFromAdress { get; set; }
         public decimal Discount { get; set; }

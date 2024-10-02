@@ -10,20 +10,27 @@ namespace LogicPOS.UI.Components.Modals.Common
         public string PageName { get; set; }
         public string PageIcon { get; set; }
         public Window SourceWindow { get; set; }
-        public bool Enabled { get; set; } = true;
         public IconButtonWithText BtnNavigator { get; set; }
 
         public string FieldName => PageName;
 
         public ModalTab(Window parent,
                          string name,
-                         string icon,
-                         bool enabled = true)
+                         string icon)
         {
             SourceWindow = parent;
             PageName = name;
             PageIcon = icon;
-            Enabled = enabled;
+        }
+
+        public void Disable()
+        {
+            Sensitive = false;
+        }
+
+        public void Enable()
+        {
+            Sensitive = true;
         }
 
         public abstract bool IsValid();     

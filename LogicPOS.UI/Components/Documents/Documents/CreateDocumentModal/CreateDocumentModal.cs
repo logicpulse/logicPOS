@@ -87,7 +87,7 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
-            DocumentUtils.ShowPdfFromApi(this,result.Value);
+            DocumentUtils.ShowPdfFromApi(this, result.Value);
         }
 
         private IEnumerable<DocumentSeries> GetDocumentSeries()
@@ -139,15 +139,25 @@ namespace LogicPOS.UI.Components.Modals
         {
             DocumentTab = new CreateDocumentDocumentTab(this);
             DocumentTab.OriginDocumentSelected += OnOriginDocumentSelected;
+            DocumentTab.DocumentTypeSelected += OnDocumentTypeSelected;
             CustomerTab = new CreateDocumentCustomerTab(this);
             ArticlesTab = new CreateDocumentArticlesTab(this);
             ShipToTab = new CreateDocumentShipToTab(this);
             ShipFromTab = new CreateDocumentShipFromTab(this);
         }
 
+        private void OnDocumentTypeSelected(DocumentType documentType)
+        {
+            if (documentType.IsGuide())
+            {
+                CustomerTab.Disable();
+            }
+        }
+
         private void OnOriginDocumentSelected(Document document)
         {
             CustomerTab.ShowOriginDocumentData(document);
+            ArticlesTab.AddOriginDocumentData(document);
         }
 
         private AddDocumentCommand CreateAddCommand()
@@ -158,6 +168,8 @@ namespace LogicPOS.UI.Components.Modals
             command.SeriesId = GetSeriesFroDocumentType().Id;
             command.PaymentConditionId = DocumentTab.GetPaymentCondition()?.Id;
             command.CurrencyId = DocumentTab.GetCurrency().Id;
+            command.ParentId = DocumentTab.GetOriginDocumentId();
+
             var customer = CustomerTab.GetCustomer();
 
             if (customer != null)
@@ -169,8 +181,11 @@ namespace LogicPOS.UI.Components.Modals
             command.Discount = decimal.Parse(CustomerTab.TxtDiscount.Text);
             command.Details = ArticlesTab.GetDocumentDetails(customer?.PriceType?.EnumValue);
 
-            //command.ShipToAdress = ShipToTab.GetAddress();
-            //command.ShipFromAdress = ShipFromTab.GetAddress();
+            if (DocumentTab.GetDocumentType().IsGuide())
+            {
+                command.ShipToAdress = ShipToTab.GetAddress();
+                command.ShipFromAdress = ShipFromTab.GetAddress();
+            }
 
             return command;
         }
@@ -194,7 +209,7 @@ namespace LogicPOS.UI.Components.Modals
 
             var documentType = DocumentTab.GetDocumentType();
 
- 
+
 
             if (documentType != null && documentType.IsGuide())
             {

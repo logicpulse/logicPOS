@@ -181,15 +181,12 @@ namespace LogicPOS.UI.Components.InputFields
             SelectedEntity = null;
         }
 
-        public void Disable()
+        public void Require(bool require = true, bool sensitive = true)
         {
             Clear();
-            Component.Sensitive = false;
-        }
-
-        public void Enable()
-        {
-            Component.Sensitive = true;
+            IsRequired = require;
+            UpdateValidationColors();
+            Component.Sensitive = require ? true : sensitive;
         }
 
         public static HBox CreateHbox(params PageTextBox[] textBoxes)

@@ -22,6 +22,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
         public PageTextBox TxtCopyDocument { get; set; }
         public PageTextBox TxtNotes { get; set; }
         public event Action<Document> OriginDocumentSelected;
+        public event Action<DocumentType> DocumentTypeSelected;
 
         public CreateDocumentDocumentTab(Window parent) : base(parent: parent,
                                                   name: GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page1"),
@@ -212,6 +213,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
                 TxtDocumentType.Text = page.SelectedEntity.Designation;
                 TxtDocumentType.SelectedEntity = page.SelectedEntity;
                 UpdateValidatableFields();
+                DocumentTypeSelected?.Invoke(page.SelectedEntity);
             }
         }
 
@@ -265,48 +267,52 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
                    TxtNotes.IsValid();
         }
 
+        public Guid? GetOriginDocumentId()
+        {
+            return (TxtOriginDocument.SelectedEntity as Document)?.Id;
+        }
+
         private void UpdateValidatableFields()
         {
             var documentType = GetDocumentType();
 
             if (documentType.IsGuide())
             {
-                RequireField(TxtOriginDocument, true);
-                RequireField(TxtPaymentCondition, false);
-                RequireField(TxtPaymentMethod, false);
-                RequireField(TxtNotes, false, false);
+                TxtOriginDocument.Require(true);
+                TxtPaymentCondition.Require(false,false);
+                TxtPaymentMethod.Require(false,false);
+                TxtNotes.Require(false);
             }
             else if (documentType.IsInformative() || documentType.IsConsignmentInvoice())
             {
-                RequireField(TxtOriginDocument, false);
-                RequireField(TxtPaymentCondition, true);
-                RequireField(TxtPaymentMethod, false);
-                RequireField(TxtNotes, false, false);
+                TxtOriginDocument.Require(false, false);
+                TxtPaymentCondition.Require(true);
+                TxtPaymentMethod.Require(false, false);
+                TxtNotes.Require(false);
 
             }
             else if (documentType.IsInvoice())
             {
-                RequireField(TxtOriginDocument, false);
-                RequireField(TxtPaymentCondition, true);
-                RequireField(TxtPaymentMethod, true);
-                RequireField(TxtNotes, false, false);
+                TxtOriginDocument.Require(false, false);
+                TxtPaymentCondition.Require(true);
+                TxtPaymentMethod.Require(true);
+                TxtNotes.Require(false);
 
+            } else if (documentType.IsInvoiceReceipt())
+            {
+                TxtOriginDocument.Require(false, false);
+                TxtPaymentCondition.Require(false,false);
+                TxtPaymentMethod.Require(true);
+                TxtNotes.Require(false);
             }
+
             else if (documentType.IsCreditNote())
             {
-                RequireField(TxtOriginDocument, true);
-                RequireField(TxtPaymentCondition, false);
-                RequireField(TxtPaymentMethod, false);
-                RequireField(TxtNotes, true);
+                TxtOriginDocument.Require(true);
+                TxtPaymentCondition.Require(false,false);
+                TxtPaymentMethod.Require(false, false);
+                TxtNotes.Require(true);
             }
-        }
-
-        private void RequireField(PageTextBox field,bool require = true, bool disable = true)
-        {
-            field.Clear();
-            field.IsRequired = require;
-            field.UpdateValidationColors();
-            field.Component.Sensitive = require ? true : !disable;
         }
     }
 }

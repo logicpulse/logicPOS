@@ -250,6 +250,8 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
             TxtCity.Text = document.Customer.City;
             TxtCountry.Text = document.Customer.Country;
             TxtDiscount.Text = document.Discount.ToString();
+            TxtPhone.Text = document.Customer.Phone;
+            TxtEmail.Text = document.Customer.Email;
         }
 
         private void Design()

@@ -13,10 +13,16 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
         public Guid ArticleId { get; set; }
         public decimal Quantity { get; set; }
         public decimal UnitPrice { get; set; }
+        public string VatDesignation { get; set; }
+        public decimal VatRateValue { get; set; }
         public VatRate VatRate { get; set; }
+        public string ExemptionReason { get; set; }
         public VatExemptionReason VatExemptionReason { get; set; }
         public decimal Discount { get; set; }
-        public decimal TotalFinal { get; set; }
-        public decimal TotalNet { get;  set; }
+        public decimal TotalFinal => TotalNet + VatRatePrice;
+        public decimal TotalNet => Quantity * UnitPrice - DiscountPrice;
+        public decimal DiscountPrice => Quantity * UnitPrice * Discount / 100;
+        public decimal VatRatePrice => TotalNet * VatRateValue / 100;
+
     }
 }
