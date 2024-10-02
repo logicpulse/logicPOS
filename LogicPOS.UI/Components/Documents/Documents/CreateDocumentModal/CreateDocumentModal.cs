@@ -148,6 +148,7 @@ namespace LogicPOS.UI.Components.Modals
         private void OnOriginDocumentSelected(Document document)
         {
             CustomerTab.ShowOriginDocumentData(document);
+            ArticlesTab.AddOriginDocumentData(document);
         }
 
         private AddDocumentCommand CreateAddCommand()

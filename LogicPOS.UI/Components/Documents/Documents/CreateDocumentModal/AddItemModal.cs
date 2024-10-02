@@ -32,6 +32,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
         public PageTextBox TxtTax { get; set; }
         public PageTextBox TxtVatExemptionReason { get; set; }
         public PageTextBox TxtNotes { get; set; }
+        private Entry _txtVatRateValue = new Entry { Text = 0.ToString() };
 
         public AddItemModal(Window parent,
                             EntityEditionModalMode mode,
@@ -52,14 +53,15 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
         private void ShowItemData(Item item)
         {
             TxtArticle.SelectedEntity = item.Article;
-            TxtArticle.Text = item.Article.Designation;
+            TxtArticle.Text = item.Designation;
             TxtPrice.Text = item.UnitPrice.ToString();
             TxtQuantity.Text = item.Quantity.ToString();
             TxtDiscount.Text = item.Discount.ToString();
             TxtVatExemptionReason.SelectedEntity = item.VatExemptionReason;
-            TxtVatExemptionReason.Text = item.VatExemptionReason.Designation;
+            TxtVatExemptionReason.Text = item.VatExemptionReason?.Designation ?? item.ExemptionReason;
             TxtTax.SelectedEntity = item.VatRate;
-            TxtTax.Text = item.VatRate.Designation;
+            TxtTax.Text = item.VatRate?.Designation ?? item.VatDesignation;
+            _txtVatRateValue.Text = item.VatRateValue.ToString();
             TxtNotes.Text = item.Notes;
         }
 
@@ -90,13 +92,17 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
             if (_mode == EntityEditionModalMode.Update)
             {
                 Item.Article = TxtArticle.SelectedEntity as Article;
-                Item.ArticleId = (TxtArticle.SelectedEntity as Article).Id;
-                Item.Designation = TxtArticle.Text;
+                Item.ArticleId = (TxtArticle.SelectedEntity as Article)?.Id ?? Item.ArticleId;
+                Item.Code = Item.Article?.Code ?? Item.Code;
+                Item.Designation = TxtArticle?.Text ?? Item.Designation;
                 Item.UnitPrice = decimal.Parse(TxtPrice.Text);
                 Item.Quantity = decimal.Parse(TxtQuantity.Text);
                 Item.Discount = decimal.Parse(TxtDiscount.Text);
                 Item.VatRate = TxtTax.SelectedEntity as VatRate;
+                Item.VatDesignation = TxtTax.Text;
+                Item.VatRateValue = decimal.Parse(_txtVatRateValue.Text);
                 Item.VatExemptionReason = TxtVatExemptionReason.SelectedEntity as VatExemptionReason;
+                Item.ExemptionReason = Item.VatExemptionReason is null ? TxtVatExemptionReason.Text : Item.VatExemptionReason.Designation;
                 Item.Notes = TxtNotes.Text;
             }
         }
@@ -175,6 +181,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
             {
                 TxtTax.Text = page.SelectedEntity.Designation;
                 TxtTax.SelectedEntity = page.SelectedEntity;
+                _txtVatRateValue.Text = page.SelectedEntity.Value.ToString();
             }
         }
 
@@ -347,7 +354,10 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
                 Quantity = decimal.Parse(TxtQuantity.Text),
                 Discount = decimal.Parse(TxtDiscount.Text),
                 VatRate = (TxtTax.SelectedEntity as VatRate),
+                VatDesignation = TxtTax.Text,
+                VatRateValue = decimal.Parse(_txtVatRateValue.Text),
                 VatExemptionReason = (TxtVatExemptionReason.SelectedEntity as VatExemptionReason),
+                ExemptionReason = TxtVatExemptionReason.Text,
                 Notes = TxtNotes.Text
             };
         }

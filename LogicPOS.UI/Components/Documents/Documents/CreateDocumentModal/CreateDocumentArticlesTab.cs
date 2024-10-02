@@ -1,4 +1,5 @@
-﻿using Gtk;
+﻿using ClosedXML.Excel;
+using Gtk;
 using LogicPOS.Api.Features.Documents.AddDocument;
 using LogicPOS.Settings;
 using LogicPOS.UI.Components.Modals.Common;
@@ -35,17 +36,40 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
             PackStart(ItemsPage);
         }
 
+        public void AddOriginDocumentData(Api.Entities.Document document)
+        {
+            ItemsPage.Items.Clear();
+
+            foreach (var detail in document.Details)
+            {
+                ItemsPage.Items.Add(new Item
+                {
+                    ArticleId = detail.ArticleId,
+                    Designation = detail.Designation,
+                    Code = detail.Code,
+                    Quantity = detail.Quantity,
+                    UnitPrice = detail.Price,
+                    VatRateValue = detail.VatRate,
+                    VatDesignation = detail.VatDesignation,
+                    ExemptionReason = detail.VatExemptionReason,
+                    Discount = detail.Discount
+                });
+            }
+
+            ItemsPage.Refresh();
+        }
+
         public List<DocumentDetail> GetDocumentDetails(int? priceType)
         {
-            var details = ItemsPage.Items.Select(x => new DocumentDetail
+            var details = ItemsPage.Items.Select(item => new DocumentDetail
             {
-                ArticleId = x.ArticleId,
-                Quantity = x.Quantity,
-                UnitPrice = x.UnitPrice,
-                VatRate = x.VatRate.Value,
-                VatDesignation = x.VatRate.Designation,
-                VatExemptionReason = x.VatExemptionReason.Designation,
-                Discount = x.Discount,
+                ArticleId = item.ArticleId,
+                Quantity = item.Quantity,
+                UnitPrice = item.UnitPrice,
+                VatRate = item.VatRate?.Value ?? item.VatRateValue,
+                VatDesignation = item.VatRate?.Designation ?? item.VatDesignation,
+                VatExemptionReason = item.VatExemptionReason?.Designation ?? item.ExemptionReason,
+                Discount = item.Discount,
                 PriceType = priceType
             });
 

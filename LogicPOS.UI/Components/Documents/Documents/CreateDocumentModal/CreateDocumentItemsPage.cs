@@ -138,7 +138,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
             void RenderTax(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var item = (Item)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = item.VatRate.Designation;
+                (cell as CellRendererText).Text = item.VatRate?.Designation ?? item.VatDesignation;
             }
 
             var title = GeneralUtils.GetResourceByName("global_vat_rate");
