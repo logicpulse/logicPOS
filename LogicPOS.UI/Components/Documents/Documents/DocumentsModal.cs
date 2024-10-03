@@ -1,21 +1,27 @@
 ﻿using Gtk;
 using logicpos.App;
+using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Documents.CancelDocument;
 using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.Utility;
+using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Drawing;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace LogicPOS.UI.Components.Documents
 {
     public class DocumentsModal : Modal
     {
-        private DocumentsPage Page { get; set; } 
+        private readonly ISender _meditaor = DependencyInjection.Services.GetRequiredService<IMediator>();
+        private DocumentsPage Page { get; set; }
         private IconButtonWithText BtnPrintDocument { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.Print, "btnPrintDocument");
         private IconButtonWithText BtnOpenDocument { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.OpenDocument, "btnOpenDocument");
-        private IconButtonWithText BtnClose { get; set; } =  ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.Close);
+        private IconButtonWithText BtnClose { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.Close);
         private IconButtonWithText BtnPrintDocumentAs { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.PrintAs, "btnPrintDocumentAs");
         private IconButtonWithText BtnSendDocumentEmail { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.SendEmailDocument, "btnSendDocumentEmail");
         private IconButtonWithText BtnCancelDocument { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("btnCancelDocument",
@@ -62,7 +68,79 @@ namespace LogicPOS.UI.Components.Documents
         {
             BtnOpenDocument.Clicked += BtnOpenDocument_Clicked;
             BtnPrintDocumentAs.Clicked += BtnPrintDocumentAs_Clicked;
+            BtnCancelDocument.Clicked += BtnCancelDocument_Clicked;
         }
+
+        private void BtnCancelDocument_Clicked(object sender, EventArgs e)
+        {
+            var selectedDocument = Page.SelectedEntity;
+            if (selectedDocument == null)
+            {
+                return;
+            }
+
+            if (CanCancelDocument(selectedDocument) == false)
+            {
+                ShowCannotCancelDocumentMessage(selectedDocument.Number);
+                return;
+            }
+
+            CancelDocument(selectedDocument);
+        }
+
+        private static bool CanCancelDocument(Document selectedDocument)
+        {
+            bool canCancel = true;
+
+            if (selectedDocument.IsCancelled || selectedDocument.HasPassed48Hours)
+            {
+                canCancel = false;
+            }
+            else if (selectedDocument.IsGuide() && selectedDocument.ShipFromAdress.DeliveryDate < DateTime.Now)
+            {
+                canCancel = false;
+            }
+
+            return canCancel;
+        }
+
+        private void CancelDocument(Document document)
+        {
+            var cancelReasonDialog = logicpos.Utils.GetInputText(this,
+                                                             DialogFlags.Modal,
+                                                             PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_input_text_default.png",
+                                                             string.Format(GeneralUtils.GetResourceByName("global_cancel_document_input_text_label"), document.Number),
+                                                             string.Empty,
+                                                             RegexUtils.RegexAlfaNumericExtendedForMotive,
+                                                             true);
+
+            if (cancelReasonDialog.ResponseType != ResponseType.Ok)
+            {
+                return;
+            }
+            var result = _meditaor.Send(new CancelDocumentCommand { Id = document.Id, Reason = cancelReasonDialog.Text }).Result;
+
+            if (result.IsError)
+            {
+                Alerts.SimpleAlerts.ShowApiErrorAlert(this);
+                return;
+            }
+
+            Page.Refresh();
+        }
+
+        private void ShowCannotCancelDocumentMessage(string documentNumber)
+        {
+            string infoMessage = string.Format(GeneralUtils.GetResourceByName("app_info_show_ignored_cancelled_documents"), documentNumber);
+            logicpos.Utils.ShowMessageBox(this,
+                                          DialogFlags.Modal,
+                                          new Size(600, 400),
+                                          MessageType.Info,
+                                          ButtonsType.Ok,
+                                          GeneralUtils.GetResourceByName("global_information"),
+                                          infoMessage);
+        }
+
 
         private void BtnPrintDocumentAs_Clicked(object sender, EventArgs e)
         {
@@ -81,15 +159,15 @@ namespace LogicPOS.UI.Components.Documents
 
         private void BtnOpenDocument_Clicked(object sender, EventArgs e)
         {
-            if(Page.SelectedEntity != null)
+            if (Page.SelectedEntity != null)
             {
-                DocumentPrintingUtils.ShowPdf(this,Page.SelectedEntity.Id);
+                DocumentPrintingUtils.ShowPdf(this, Page.SelectedEntity.Id);
             }
         }
 
         protected override void OnResponse(ResponseType response)
         {
-            if(response != ResponseType.Close)
+            if (response != ResponseType.Close)
             {
                 Run();
             }

@@ -1337,15 +1337,6 @@ WHERE
 
         private void CallCancelFinanceMasterDocumentsDialog(Window pDialog, List<fin_documentfinancemaster> pListSelectDocuments)
         {
-
-            //SAF-T Notes
-            //4.1: Documentos comerciais a clientes (SalesInvoices);
-            //  4.1.4.2.1. * Estado atual do documento (InvoiceStatus) : “A” — Documento anulado
-            //4.2: Documentos de movimentação de mercadorias (MovementOfGoods); 
-            //  4.2.3.2.1. * Estado atual do documento (Movement-Status) : “A” — Documento anulado
-            //4.3: Documentos de conferência de entrega de mercadorias ou da prestação de serviços (WorkingDocuments).
-            //  4.3.4.2.1. * Estado atual do documento (WorkStatus) : “A” — Documento anulado
-
             logicpos.Utils.ResponseText dialogResponse;
             DateTime currentDateTime;
             List<string> ignoredDocuments = new List<string>();
@@ -1358,7 +1349,13 @@ WHERE
                     string fileWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_input_text_default.png";
 
                     //Call Request Motive Dialog
-                    dialogResponse = logicpos.Utils.GetInputText(pDialog, DialogFlags.Modal, fileWindowIcon, string.Format(GeneralUtils.GetResourceByName("global_cancel_document_input_text_label"), documentMaster.DocumentNumber), string.Empty, RegexUtils.RegexAlfaNumericExtendedForMotive, true);
+                    dialogResponse = logicpos.Utils.GetInputText(pDialog,
+                                                                 DialogFlags.Modal,
+                                                                 fileWindowIcon,
+                                                                 string.Format(GeneralUtils.GetResourceByName("global_cancel_document_input_text_label"), documentMaster.DocumentNumber),
+                                                                 string.Empty,
+                                                                 RegexUtils.RegexAlfaNumericExtendedForMotive,
+                                                                 true);
 
                     if (dialogResponse.ResponseType == ResponseType.Ok)
                     {
@@ -2238,7 +2235,7 @@ WHERE
 
                 for (int i = 0; i < pIgnoredDocuments.Count; i++)
                 {
-                    ignoredDocumentsMessage += string.Format("{0}{1}", Environment.NewLine, pIgnoredDocuments[i]);
+                    ignoredDocumentsMessage += $"{Environment.NewLine}{pIgnoredDocuments[i]}";
                 }
 
                 string infoMessage = string.Format(GeneralUtils.GetResourceByName("app_info_show_ignored_cancelled_documents"), ignoredDocumentsMessage);

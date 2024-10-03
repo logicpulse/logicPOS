@@ -68,7 +68,8 @@ namespace LogicPOS.Api.Entities
         public bool ATResendDocument { get; set; }
         public string ATCUD { get; set; }
         public IList<DocumentDetail> Details { get; set; }
-
+        public bool IsCancelled => Status == "A";
+        public bool HasPassed48Hours => CreatedAt.AddHours(48) < DateTime.Now;
         public bool IsInvoice() => Type == "FT";
         public bool IsInvoiceReceipt() => Type == "FR";
         public bool IsCreditNote() => Type == "NC";
