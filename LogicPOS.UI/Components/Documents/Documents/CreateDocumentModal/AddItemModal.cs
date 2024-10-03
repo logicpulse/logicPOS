@@ -63,6 +63,8 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
             TxtTax.Text = item.VatRate?.Designation ?? item.VatDesignation;
             _vatRateValue = item.VatRateValue;
             TxtNotes.Text = item.Notes;
+
+            UpdateTotals();
         }
 
         private void Initialize()
@@ -182,6 +184,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
                 TxtTax.Text = page.SelectedEntity.Designation;
                 TxtTax.SelectedEntity = page.SelectedEntity;
                 _vatRateValue = page.SelectedEntity.Value;
+                UpdateTotals();
             }
         }
 
@@ -189,11 +192,10 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
         {
             TxtTotalWithTax = new PageTextBox(WindowSettings.Source,
                                               GeneralUtils.GetResourceByName("global_total_per_item_vat"),
-                                              isRequired: true,
-                                              isValidatable: true,
+                                              isRequired: false,
+                                              isValidatable: false,
                                               includeSelectButton: false,
-                                              includeKeyBoardButton: false,
-                                              regex: RegularExpressions.Money);
+                                              includeKeyBoardButton: false);
 
             TxtTotalWithTax.Entry.IsEditable = false;
         }
@@ -202,11 +204,10 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
         {
             TxtTotal = new PageTextBox(WindowSettings.Source,
                                        GeneralUtils.GetResourceByName("global_total_article_tab"),
-                                       isRequired: true,
-                                       isValidatable: true,
+                                       isRequired: false,
+                                       isValidatable: false,
                                        includeSelectButton: false,
-                                       includeKeyBoardButton: false,
-                                       regex: RegularExpressions.Money);
+                                       includeKeyBoardButton: false);
 
             TxtTotal.Entry.IsEditable = false;
         }
@@ -224,6 +225,8 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
             TxtDiscount.Text = "0";
 
             ValidatableFields.Add(TxtDiscount);
+
+            TxtDiscount.Entry.Changed += (sender, args) => UpdateTotals();
         }
 
         private void InitializeTxtPrice()
@@ -237,8 +240,8 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
                                        regex: RegularExpressions.Money);
 
             TxtPrice.Text = "0";
-
             ValidatableFields.Add(TxtPrice);
+            TxtPrice.Entry.Changed += (sender, args) => UpdateTotals();
         }
 
         private void InitializeTxtQuantity()
@@ -254,6 +257,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
             TxtQuantity.Text = "1";
 
             ValidatableFields.Add(TxtQuantity);
+            TxtQuantity.Entry.Changed += (sender, args) => UpdateTotals();
         }
 
         private void InitializeTxtArticle()
@@ -296,7 +300,10 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
             TxtVatExemptionReason.Text = article?.VatExemptionReason?.Designation;
             TxtTax.SelectedEntity = article.VatDirectSelling;
             TxtTax.Text = article.VatDirectSelling?.Designation;
+            _vatRateValue = article.VatDirectSelling.Value;
             TxtNotes.Text = article.Notes;
+
+            UpdateTotals();
         }
 
         protected override ActionAreaButtons CreateActionAreaButtons()
@@ -379,5 +386,25 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
             return ValidatableFields.All(txt => txt.IsValid());
         }
 
+        private void UpdateTotals()
+        {
+            if (decimal.TryParse(TxtPrice.Text, out decimal price) &&
+                decimal.TryParse(TxtQuantity.Text, out decimal quantity) &&
+                decimal.TryParse(TxtDiscount.Text, out decimal discount))
+            {
+                var subTotal = price * quantity;
+                var discountPrice = subTotal * discount / 100;
+                var totalNet = subTotal - discountPrice;
+                TxtTotal.Text = totalNet.ToString("0.00");
+                var vatRatePrice = totalNet * _vatRateValue / 100;
+                var totalWithTax = totalNet + vatRatePrice;
+                TxtTotalWithTax.Text = totalWithTax.ToString("0.00");
+
+                return;
+            }
+
+            TxtTotal.Clear();
+            TxtTotalWithTax.Clear();
+        }
     }
 }

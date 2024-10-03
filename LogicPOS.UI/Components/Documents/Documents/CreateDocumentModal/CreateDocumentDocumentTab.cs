@@ -349,7 +349,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
             {
                 TxtOriginDocument.Require(false, false);
                 TxtPaymentCondition.Require(true);
-                TxtPaymentMethod.Require(true);
+                TxtPaymentMethod.Require(false,false);
                 TxtNotes.Require(false);
 
             } else if (documentType.IsInvoiceReceipt())

@@ -95,7 +95,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             documentsModal.Destroy();
 
             _btnCaller = (sender as IconButtonWithText);
-            
+
             string fileActionMore = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_more.png";
             string fileActionFilter = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_filter.png";
             string fileActionClose = PathsSettings.ImagesFolderLocation + @"Icons\Dialogs\icon_pos_dialog_action_close.png";
@@ -118,7 +118,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             buttonCancelDocument.Sensitive = false;
             buttonOpenDocument.Sensitive = false;
             buttonSendEmailDocument.Sensitive = false;
-            
+
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
 
             _selectRecordWindowTitle = string.Empty;
@@ -174,7 +174,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         XPOSettings.WorkSessionPeriodTerminal != null
                         && XPOSettings.WorkSessionPeriodTerminal.SessionStatus == WorkSessionPeriodStatus.Open
                     );
-                    
+
                     actionAreaButtons.Add(_actionAreaButtonCancelDocument);
                     _filterChoice = ReportsQueryDialogMode.FILTER_DOCUMENTS_PAGINATION;
                     break;
@@ -247,7 +247,7 @@ WHERE
                     }
                     string countQuery = string.Empty;
 
-                    
+
                     countResult = resultList.Count.ToString();
 
                     if (DatabaseSettings.DatabaseType.ToString() == "MySql" || DatabaseSettings.DatabaseType.ToString() == "SQLite")
@@ -1578,7 +1578,7 @@ WHERE
 
             return false;
         }
-        
+
         private void _touchButtonPosToolbarWorkSessionPeriods_Clicked(object sender, EventArgs e)
         {
             //Default ActionArea Buttons

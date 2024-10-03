@@ -87,7 +87,7 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
-            DocumentUtils.ShowPdfFromApi(this, result.Value);
+            DocumentPrintingUtils.ShowPdf(this, result.Value);
         }
 
         private IEnumerable<DocumentSeries> GetDocumentSeries()

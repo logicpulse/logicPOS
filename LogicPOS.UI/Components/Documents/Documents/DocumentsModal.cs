@@ -5,6 +5,7 @@ using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.Utility;
+using System;
 using System.Drawing;
 
 namespace LogicPOS.UI.Components.Documents
@@ -60,13 +61,29 @@ namespace LogicPOS.UI.Components.Documents
         private void AddButtonsEventHandlers()
         {
             BtnOpenDocument.Clicked += BtnOpenDocument_Clicked;
+            BtnPrintDocumentAs.Clicked += BtnPrintDocumentAs_Clicked;
         }
 
-        private void BtnOpenDocument_Clicked(object sender, System.EventArgs e)
+        private void BtnPrintDocumentAs_Clicked(object sender, EventArgs e)
+        {
+            if (Page.SelectedEntity != null)
+            {
+                var pdfLocation = DocumentPrintingUtils.GetPdfFile(Page.SelectedEntity.Id);
+
+                if (pdfLocation == null)
+                {
+                    return;
+                }
+
+                DocumentPrintingUtils.PrintWithNativeDialog(pdfLocation);
+            }
+        }
+
+        private void BtnOpenDocument_Clicked(object sender, EventArgs e)
         {
             if(Page.SelectedEntity != null)
             {
-                DocumentUtils.ShowPdfFromApi(this,Page.SelectedEntity.Id);
+                DocumentPrintingUtils.ShowPdf(this,Page.SelectedEntity.Id);
             }
         }
 

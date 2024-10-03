@@ -21,6 +21,7 @@ using System.Threading;
 
 namespace LogicPOS.UI
 {
+
     internal class Program
     {
         private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
