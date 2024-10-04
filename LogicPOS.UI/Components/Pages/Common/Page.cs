@@ -22,6 +22,7 @@ namespace LogicPOS.UI.Components.Pages
         public Window SourceWindow { get; }
         public TreeView GridView { get; set; }
         public TEntity SelectedEntity { get; set; }
+        public event Action<TEntity> EntitySelected;
 
         public bool CanViewEntity { get; set; } = true;
         public bool CanUpdateEntity { get; set; } = true;
@@ -211,10 +212,12 @@ namespace LogicPOS.UI.Components.Pages
                 GridViewSettings.Path = model.GetPath(GridViewSettings.Iterator);
                 Navigator.CurrentRecord = Convert.ToInt16(GridViewSettings.Path.ToString());
                 SelectedEntity = (TEntity)model.GetValue(GridViewSettings.Iterator, 0);
+                EntitySelected?.Invoke(SelectedEntity);
             };
 
             Navigator.Update();
         }
+        
         protected virtual void AddGridViewEventHandlers()
         {
             GridView.CursorChanged += GridViewRow_Changed;

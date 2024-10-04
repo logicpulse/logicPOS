@@ -22,16 +22,53 @@ namespace LogicPOS.UI.Components.Modals
        
         public PageTextBox TxtPaymentMethod { get; private set; }
         public PageTextBox TxtCurrency { get; private set; }
+        public PageTextBox TxtExchangeRate { get; private set; }
         public PageTextBox TxtTotalPaid { get; private set; }
+        public PageTextBox TxtRealTotalPaid { get; private set; }
         public PageTextBox TxtDateTime { get; private set; }
         public PageTextBox TxtNotes { get; private set; }
         private List<IValidatableField> ValidatableFields { get; set; } = new List<IValidatableField>();
+        public  List<Document> Invoices { get; } = new List<Document>();
+        private readonly decimal _invoicesTotalFinal;
+        private string TitleBase { get; set; }
 
-        public PayInvoiceModal(Window parent) : base(parent,
+        public PayInvoiceModal(Window parent,
+                               IEnumerable<Document> invoices) : base(parent,
                                                      GeneralUtils.GetResourceByName("window_title_dialog_pay_invoices"),
-                                                     new Size(480, 444),
+                                                     new Size(500, 500),
                                                      PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_pay_invoice.png")
         {
+            TitleBase = WindowSettings.Title.Text;
+            Invoices.AddRange(invoices);
+            SetDefaultCurrency();
+            _invoicesTotalFinal = Invoices.Sum(x => x.TotalFinal);
+            TxtTotalPaid.Text = _invoicesTotalFinal.ToString("0.00");
+            TxtRealTotalPaid.Text = _invoicesTotalFinal.ToString("0.00");
+            UpdateTitle();
+        }
+
+        private void UpdateTitle()
+        {
+            var invoicesTotalFinal = Invoices.Sum(x => x.TotalFinal);
+            var totalPaidPercentage = (GetTotalPaid() / invoicesTotalFinal )*100;
+            totalPaidPercentage = Math.Round(totalPaidPercentage, 2);
+            WindowSettings.Title.Text = $"{TitleBase} ({Invoices.Count} = {invoicesTotalFinal:0.00}) - {totalPaidPercentage}%";
+        }
+
+        private decimal GetTotalPaid()
+        {
+            if(TxtTotalPaid.IsValid() == false || TxtExchangeRate.IsValid() == false)
+            {
+                return 0;
+            }
+
+            return decimal.Parse(TxtTotalPaid.Entry.Text) * decimal.Parse(TxtExchangeRate.Text);
+        }
+
+        private void SetDefaultCurrency()
+        {
+            TxtCurrency.SelectedEntity = Invoices.First().Currency;
+            TxtCurrency.Text = (TxtCurrency.SelectedEntity as Currency).Designation;
         }
 
         protected override ActionAreaButtons CreateActionAreaButtons()
@@ -50,7 +87,8 @@ namespace LogicPOS.UI.Components.Modals
             var body = new VBox(false, 2);
             body.PackStart(TxtPaymentMethod.Component, false, false, 0);
             body.PackStart(TxtCurrency.Component, false, false, 0);
-            body.PackStart(TxtTotalPaid.Component, false, false, 0);
+            body.PackStart(TxtExchangeRate.Component, false, false, 0);
+            body.PackStart(PageTextBox.CreateHbox(TxtTotalPaid, TxtRealTotalPaid), false, false, 0);
             body.PackStart(TxtDateTime.Component, false, false, 0);
             body.PackStart(TxtNotes.Component, false, false, 0);
 
@@ -61,7 +99,9 @@ namespace LogicPOS.UI.Components.Modals
         {
             InitializeTxtPaymentMethod();
             InitializeTxtCurrency();
+            InitializeTxtExchangeRate();
             InitializeTxtTotalPaid();
+            InitializeTxtRealTotalPaid();
             InitializeTxtDateTime();
             InitializeTxtNotes();
 
@@ -71,6 +111,47 @@ namespace LogicPOS.UI.Components.Modals
             ValidatableFields.Add(TxtDateTime);
 
             AddEventHandlers();
+        }
+
+        private void InitializeTxtRealTotalPaid()
+        {
+            TxtRealTotalPaid = new PageTextBox(this,
+                                               "",
+                                               isRequired: false,
+                                               isValidatable: false,
+                                               includeSelectButton: false,
+                                               includeKeyBoardButton: false);
+
+            TxtRealTotalPaid.Entry.Sensitive = false;
+        }
+
+        private void InitializeTxtExchangeRate()
+        {
+            TxtExchangeRate = new PageTextBox(this,
+                                              GeneralUtils.GetResourceByName("global_exchangerate"),
+                                              isRequired: true,
+                                              isValidatable: true,
+                                              regex: RegularExpressions.DecimalNumber,
+                                              includeSelectButton: false,
+                                              includeKeyBoardButton: true);
+
+            TxtExchangeRate.Text = "1.00";
+
+            TxtExchangeRate.Entry.Changed += TxtExchangeRate_Changed;
+        }
+
+        private void TxtExchangeRate_Changed(object sender, EventArgs e)
+        {
+            if(TxtExchangeRate.IsValid())
+            {
+                UpdateTitle();
+                UpdateRealTotalPaid();
+            }
+        }
+
+        private void UpdateRealTotalPaid()
+        {
+            TxtRealTotalPaid.Text = GetTotalPaid().ToString("0.00");
         }
 
         private void AddEventHandlers()
@@ -120,7 +201,29 @@ namespace LogicPOS.UI.Components.Modals
                                           regex: RegularExpressions.Money,
                                           includeSelectButton: false,
                                           includeKeyBoardButton: true);
+
+            TxtTotalPaid.Entry.Changed += TxtTotalPaid_Changed;
         }
+
+        private void TxtTotalPaid_Changed(object sender, EventArgs e)
+        {
+            if (!TxtTotalPaid.IsValid() || !TxtExchangeRate.IsValid())
+            {
+                return;
+            }
+
+            var totalPaid = GetTotalPaid();
+
+            if (totalPaid > _invoicesTotalFinal)
+            {
+                var exchangeRate = decimal.Parse(TxtExchangeRate.Text);
+                TxtTotalPaid.Text = (_invoicesTotalFinal / exchangeRate).ToString("0.00");
+            }
+
+            UpdateTitle();
+            UpdateRealTotalPaid();
+        }
+
 
         private void InitializeTxtPaymentMethod()
         {
@@ -175,6 +278,7 @@ namespace LogicPOS.UI.Components.Modals
             {
                 TxtCurrency.Text = page.SelectedEntity.Designation;
                 TxtCurrency.SelectedEntity = page.SelectedEntity;
+                TxtExchangeRate.Text = page.SelectedEntity.ExchangeRate.ToString("0.00");
             }
         }
 

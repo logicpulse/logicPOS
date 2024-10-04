@@ -19,7 +19,7 @@ namespace LogicPOS.UI.Components.Modals
         private CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
         #endregion
 
-        public override Size ModalSize => new Size(500, 500);
+        public override Size ModalSize => new Size(600, 500);
         public override string ModalTitleResourceName => "window_title_edit_configurationcurrency";
 
         protected override void AddSensitiveFields()

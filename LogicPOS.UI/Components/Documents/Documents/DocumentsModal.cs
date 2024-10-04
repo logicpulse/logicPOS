@@ -19,6 +19,7 @@ namespace LogicPOS.UI.Components.Documents
     {
         private readonly ISender _meditaor = DependencyInjection.Services.GetRequiredService<IMediator>();
         private DocumentsPage Page { get; set; }
+        private string WindowTitleBase => GeneralUtils.GetResourceByName("window_title_select_finance_document");
 
         private IconButtonWithText BtnPayInvoice = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("btnPayInvoice",
                                                                                                         GeneralUtils.GetResourceByName("global_button_label_pay_invoice"),
@@ -42,6 +43,8 @@ namespace LogicPOS.UI.Components.Documents
         {
 
         }
+
+
 
         protected override ActionAreaButtons CreateActionAreaButtons()
         {
@@ -86,7 +89,12 @@ namespace LogicPOS.UI.Components.Documents
 
         private void BtnPayInvoice_Clicked(object sender, EventArgs e)
         {
-            var modal = new PayInvoiceModal(this);
+            if(Page.SelectedDocuments.Count == 0)
+            {
+                return;
+            }
+
+            var modal = new PayInvoiceModal(this,Page.SelectedDocuments);
             modal.Run();
             modal.Destroy();
         }
@@ -168,7 +176,6 @@ namespace LogicPOS.UI.Components.Documents
                                           infoMessage);
         }
 
-
         private void BtnPrintDocumentAs_Clicked(object sender, EventArgs e)
         {
             if (Page.SelectedEntity != null)
@@ -210,7 +217,24 @@ namespace LogicPOS.UI.Components.Documents
             Fixed fixedContent = new Fixed();
             fixedContent.Put(page, 0, 0);
             Page = page;
+            AddPageEventHandlers();
             return fixedContent;
+        }
+
+        private void AddPageEventHandlers()
+        {
+            Page.EntitySelected += OnDocumentSelected;
+            Page.DocumentsSelectionChanged += Page_DocumentsSelectionChanged;
+        }
+
+        private void Page_DocumentsSelectionChanged(object sender, EventArgs e)
+        {
+            WindowSettings.Title.Text = $"{WindowTitleBase} ({Page.SelectedDocuments.Count}) = {Page.SelectedDocumentsTotalFinal:0.00}";
+        }
+
+        private void OnDocumentSelected(Document document)
+        {
+           BtnPayInvoice.Visible = document.IsInvoice() && !document.IsCancelled;
         }
 
         protected override Widget CreateLeftContent()
