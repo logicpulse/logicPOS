@@ -2,6 +2,7 @@
 using LogicPOS.Api.Entities;
 using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Documents.CreateDocument;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals;
@@ -13,7 +14,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
-namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
+namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
     public class AddItemModal : Modal
     {
@@ -86,7 +87,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
         {
             Validate();
 
-            if(AllFieldsAreValid() == false)
+            if (AllFieldsAreValid() == false)
             {
                 return;
             }
@@ -112,7 +113,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
         private void BtnClear_Clicked(object sender, EventArgs e)
         {
             Clear();
-            this.Run();
+            Run();
         }
 
         private void InitializeTxtNotes()
@@ -347,7 +348,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
             TxtVatExemptionReason.Clear();
             TxtNotes.Clear();
         }
-        
+
         public Item GetItem()
         {
             return new Item
@@ -360,10 +361,10 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
                 UnitPrice = decimal.Parse(TxtPrice.Text),
                 Quantity = decimal.Parse(TxtQuantity.Text),
                 Discount = decimal.Parse(TxtDiscount.Text),
-                VatRate = (TxtTax.SelectedEntity as VatRate),
+                VatRate = TxtTax.SelectedEntity as VatRate,
                 VatDesignation = TxtTax.Text,
                 VatRateValue = _vatRateValue,
-                VatExemptionReason = (TxtVatExemptionReason.SelectedEntity as VatExemptionReason),
+                VatExemptionReason = TxtVatExemptionReason.SelectedEntity as VatExemptionReason,
                 ExemptionReason = TxtVatExemptionReason.Text,
                 Notes = TxtNotes.Text
             };
@@ -378,7 +379,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
 
             Utilities.ShowValidationErrors(ValidatableFields);
 
-            this.Run();
+            Run();
         }
 
         protected bool AllFieldsAreValid()

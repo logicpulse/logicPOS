@@ -5,7 +5,7 @@ using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
 using System.Collections.Generic;
 
-namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
+namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
     public class CreateDocumentItemsPage : Page<Item>
     {

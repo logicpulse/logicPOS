@@ -9,7 +9,7 @@ using LogicPOS.UI.Components.Pages;
 using LogicPOS.Utility;
 using System;
 
-namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
+namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
     public class CreateDocumentShipFromTab : ModalTab
     {

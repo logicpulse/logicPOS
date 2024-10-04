@@ -16,7 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
+namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
     public class CreateDocumentDocumentTab : ModalTab
     {
@@ -186,6 +186,20 @@ namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
         }
 
         private void InitializeTxtPaymentMethod()
+        {
+            TxtPaymentMethod = new PageTextBox(SourceWindow,
+                                               GeneralUtils.GetResourceByName("global_payment_method"),
+                                               isRequired: true,
+                                               isValidatable: false,
+                                               includeSelectButton: true,
+                                               includeKeyBoardButton: false);
+
+            TxtPaymentMethod.Entry.IsEditable = false;
+
+            TxtPaymentMethod.SelectEntityClicked += BtnSelectPaymentMethod_Clicked;
+        }
+
+        private void InitializeTxtTotalPaid()
         {
             TxtPaymentMethod = new PageTextBox(SourceWindow,
                                                GeneralUtils.GetResourceByName("global_payment_method"),

@@ -4,6 +4,7 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents.CancelDocument;
 using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.Utility;
@@ -11,7 +12,6 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Drawing;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace LogicPOS.UI.Components.Documents
 {
@@ -19,6 +19,13 @@ namespace LogicPOS.UI.Components.Documents
     {
         private readonly ISender _meditaor = DependencyInjection.Services.GetRequiredService<IMediator>();
         private DocumentsPage Page { get; set; }
+
+        private IconButtonWithText BtnPayInvoice = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("btnPayInvoice",
+                                                                                                        GeneralUtils.GetResourceByName("global_button_label_pay_invoice"),
+                                                                                                        PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_payment_full.png");
+        private IconButtonWithText BtnNewDocument { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("btnNewDocument",
+                                                                                                                       GeneralUtils.GetResourceByName("global_button_label_new_financial_document"),
+                                                                                                                       PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_toolbar_finance_new_document.png");
         private IconButtonWithText BtnPrintDocument { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.Print, "btnPrintDocument");
         private IconButtonWithText BtnOpenDocument { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.OpenDocument, "btnOpenDocument");
         private IconButtonWithText BtnClose { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.Close);
@@ -44,6 +51,8 @@ namespace LogicPOS.UI.Components.Documents
 
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons
             {
+                new ActionAreaButton(BtnPayInvoice, ResponseType.Ok),
+                new ActionAreaButton(BtnNewDocument, ResponseType.Ok),
                 new ActionAreaButton(BtnPrintDocument, ResponseType.Ok),
                 new ActionAreaButton(BtnPrintDocumentAs, ResponseType.Ok),
                 new ActionAreaButton(BtnCancelDocument, ResponseType.Ok),
@@ -62,6 +71,8 @@ namespace LogicPOS.UI.Components.Documents
             BtnOpenDocument.SetBackgroundColor(greenColor);
             BtnSendDocumentEmail.SetBackgroundColor(greenColor);
             BtnCancelDocument.SetBackgroundColor(greenColor);
+            BtnNewDocument.SetBackgroundColor(greenColor);
+            BtnPayInvoice.SetBackgroundColor(greenColor);
         }
 
         private void AddButtonsEventHandlers()
@@ -69,6 +80,22 @@ namespace LogicPOS.UI.Components.Documents
             BtnOpenDocument.Clicked += BtnOpenDocument_Clicked;
             BtnPrintDocumentAs.Clicked += BtnPrintDocumentAs_Clicked;
             BtnCancelDocument.Clicked += BtnCancelDocument_Clicked;
+            BtnNewDocument.Clicked += BtnNewDocument_Clicked;
+            BtnPayInvoice.Clicked += BtnPayInvoice_Clicked;
+        }
+
+        private void BtnPayInvoice_Clicked(object sender, EventArgs e)
+        {
+            var modal = new PayInvoiceModal(this);
+            modal.Run();
+            modal.Destroy();
+        }
+
+        private void BtnNewDocument_Clicked(object sender, EventArgs e)
+        {
+            var createDocumentModal = new CreateDocumentModal(this);
+            createDocumentModal.Run();
+            createDocumentModal.Destroy();
         }
 
         private void BtnCancelDocument_Clicked(object sender, EventArgs e)

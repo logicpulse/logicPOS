@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
+namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
     public class CreateDocumentArticlesTab : ModalTab
     {

@@ -2,7 +2,7 @@
 using LogicPOS.Api.Features.Common;
 using System;
 
-namespace LogicPOS.UI.Components.Documents.CreateDocumentModal
+namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
     public class Item : ApiEntity, IWithCode, IWithDesignation
     {

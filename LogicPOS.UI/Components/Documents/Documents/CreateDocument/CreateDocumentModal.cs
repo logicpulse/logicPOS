@@ -8,7 +8,7 @@ using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Documents;
-using LogicPOS.UI.Components.Documents.CreateDocumentModal;
+using LogicPOS.UI.Components.Documents.CreateDocument;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.Utility;
