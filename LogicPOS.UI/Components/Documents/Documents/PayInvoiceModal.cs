@@ -1,12 +1,17 @@
-﻿using Gtk;
+﻿using ErrorOr;
+using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Documents.PayDocuments;
 using LogicPOS.Settings;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.Utility;
+using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 using Patagames.Pdf.Enums;
 using System;
 using System.Collections.Generic;
@@ -17,6 +22,7 @@ namespace LogicPOS.UI.Components.Modals
 {
     public class PayInvoiceModal : Modal
     {
+        private readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
         private IconButtonWithText BtnOk { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
         private IconButtonWithText BtnCancel { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
        
@@ -167,6 +173,29 @@ namespace LogicPOS.UI.Components.Modals
                 Run();
                 return;
             }
+
+            var result = _mediator.Send(CreateCommand()).Result;
+
+            if (result.IsError)
+            {
+                SimpleAlerts.ShowApiErrorAlert(this);
+                return;
+            }
+        }
+
+        private PayDocumentsCommand CreateCommand()
+        {
+            var command = new PayDocumentsCommand
+            {
+                PaymentMethodId = (TxtPaymentMethod.SelectedEntity as PaymentMethod).Id,
+                CurrencyId = (TxtCurrency.SelectedEntity as Currency).Id,
+                ExchangeRate = decimal.Parse(TxtExchangeRate.Text),
+                CurrencyAmount = decimal.Parse(TxtTotalPaid.Text),
+                Amount = GetTotalPaid(),
+                Documents = Invoices.Select(x => x.Id).ToList()
+            };
+
+            return command;
         }
 
         private void InitializeTxtNotes()
@@ -223,7 +252,6 @@ namespace LogicPOS.UI.Components.Modals
             UpdateTitle();
             UpdateRealTotalPaid();
         }
-
 
         private void InitializeTxtPaymentMethod()
         {

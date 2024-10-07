@@ -8,30 +8,10 @@ namespace LogicPOS.Utility
 {
     public class NumberToWordsUtility
     {
-        /// <summary>
-        /// Função para escrever por extenso os valores em Real (em C# - suporta até R$ 9.999.999.999,99)     
-        /// Rotina Criada para ler um número e transformá-lo em extenso                                       
-        /// Limite máximo de 9 Bilhões (9.999.999.999,99).
-        /// Não aceita números negativos. 
-        /// LinhadeCodigo.com.br Autor: José F. Mar / Milton P. Jr
-        /// https://social.msdn.microsoft.com/Forums/pt-BR/a5ce3477-babd-4c7c-8e1b-e64d4d273b61/valor-por-extenso?forum=504
-        /// Corrigido por Adriano Santos - 2007
-        /// </summary> 
-        /// <param name="pValue">Valor para converter em extenso. Limite máximo de 9 Bilhões (9.999.999.999,99).</param>
-        /// <returns>String do valor por Extenso</returns> 
-        /// Test With:
-        /// ExtendValue extendValue = new ExtendValue();
-        /// string extended = extendValue.Extenso_Valor(1772737377.33m);
-        public string GetExtendedValue(decimal pValue, string pAcronym)
+        public string GetExtendedValue(decimal amount, string currencyCode)
         {
-            //string moedaSingular = "Euro";//Real
-            //string moedaPlural = "Euros";//Reais
-            string moedaSingular = pAcronym;//Real
-
-            /* IN009185 */
-            string moedaPlural = ApplyPluralizationForCurrency(pAcronym);
-
-            /* IN009018 */
+            string curreyInSingular = currencyCode;
+            string currencyInPlural = GetCurrencyInPlural(currencyCode);
 
             string moedaDecimalSingular = CultureResources.GetResourceByLanguage("", "numbers_to_words_cent");//Centavo
             string moedaDecimalPlural = CultureResources.GetResourceByLanguage("", "numbers_to_words_cents");//Centavos
@@ -53,28 +33,28 @@ namespace LogicPOS.Utility
             //Verificar se foi informado um dado indevido 
             //Fix
             //if (pValue == 0 || pValue <= 0)
-            if (pValue == 0 || pValue <= 0.001M)
+            if (amount == 0 || amount <= 0.001M)
             {
                 //throw new Exception("Valor não suportado pela Função. Verificar se há valor negativo ou nada foi informado");
                 //return "Zero Euros";
-                return string.Format("Zero {0}", moedaPlural);
+                return string.Format("Zero {0}", currencyInPlural);
             }
-            if (pValue > (decimal)9999999999.99)
+            if (amount > (decimal)9999999999.99)
             {
                 throw new Exception("Valor não suportado pela Função. Verificar se o Valor está acima de 9999999999.99");
             }
             else //Entrada padrão do método
             {
                 //Gerar Extenso Centavos 
-                pValue = (decimal.Round(pValue, 2));
+                amount = (decimal.Round(amount, 2));
 
 
                 // Fix Force .00 2 zeros else errors arrise
-                pValue = decimal.Parse(pValue.ToString("F"));
-                dblCentavos = pValue - (long)pValue;
+                amount = decimal.Parse(amount.ToString("F"));
+                dblCentavos = amount - (long)amount;
 
                 //Gerar Extenso parte Inteira
-                decimal dblValorInteiro = (long)pValue;
+                decimal dblValorInteiro = (long)amount;
                 string strNumero;
                 if (dblValorInteiro > 0)
                 {
@@ -212,7 +192,7 @@ namespace LogicPOS.Utility
                                         {
                                             strValorExtenso = strValorExtenso + " e ";
                                         }
-                                        strValorExtenso = strValorExtenso + ((long.Parse(dblValorInteiro.ToString())) > 1 ? " " + moedaPlural : " " + moedaSingular);
+                                        strValorExtenso = strValorExtenso + ((long.Parse(dblValorInteiro.ToString())) > 1 ? " " + currencyInPlural : " " + curreyInSingular);
                                     }
                                     bln_Unidade = false;
                                     break;
@@ -285,33 +265,26 @@ namespace LogicPOS.Utility
             return strValorExtenso.Trim();
         }
 
-        /// <summary>
-        /// Generates the plural form of currency.
-        /// Now implemented for the ones that are not variables and the variables with 'L' at the end.
-		/// Please see #IN009185 for more details.
-        /// </summary>
-        /// <param name="pCurrency"></param>
-        /// <returns></returns>
-        private static string ApplyPluralizationForCurrency(string pCurrency)
+        private static string GetCurrencyInPlural(string currency)
         {
-            string currency = pCurrency;
-
-            if (!string.IsNullOrEmpty(currency))
+            if (string.IsNullOrEmpty(currency))
             {
-                /* #TODO: Improve this block of code */
-                if (currency.ToUpper().EndsWith("L")) /* Real, Metical, ... */
-                {
-                    int place = currency.LastIndexOf("l");
+                return currency;
+            }
 
-                    if (place != -1)
-                    {
-                        currency = currency.Remove(place, "l".Length).Insert(place, "is");
-                    }
-                }
-                else
+           
+            if (currency.ToUpper().EndsWith("L"))
+            {
+                int place = currency.LastIndexOf("l");
+
+                if (place != -1)
                 {
-                    currency = string.Format("{0}s", currency);/* Euros, ... */
+                    currency = currency.Remove(place, "l".Length).Insert(place, "is");
                 }
+            }
+            else
+            {
+                currency = string.Format("{0}s", currency);
             }
             return currency;
         }
@@ -420,15 +393,5 @@ namespace LogicPOS.Utility
             //return the result of the operation
             return result;
         }
-
-        public static string Mid(string param, int startIndex)
-        {
-            //start at the specified index and return all characters after it
-            //and assign it to a variable
-            string result = param.Substring(startIndex);
-            //return the result of the operation 
-            return result;
-        }
-        ////Acaba aqui os Métodos de Compatibilazação com VB 6 .........
     }
 }
