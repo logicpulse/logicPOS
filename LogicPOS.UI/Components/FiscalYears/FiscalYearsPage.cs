@@ -1,13 +1,18 @@
 ﻿using ErrorOr;
 using Gtk;
+using logicpos.App;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.FiscalYears.GetAllFiscalYears;
+using LogicPOS.Globalization;
+using LogicPOS.Settings;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
 using MediatR;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.Pages
 {
@@ -32,7 +37,31 @@ namespace LogicPOS.UI.Components.Pages
                 mode = EntityEditionModalMode.View;
             }
 
-            var modal = new FiscalYearModal(mode, SelectedEntity as FiscalYear);
+            if(mode == EntityEditionModalMode.Insert)
+            {
+                var currentFiscalYear = _entities.FirstOrDefault(f => f.IsDeleted == false);
+
+                if (currentFiscalYear != null)
+                {
+                    ResponseType dialog1Response = logicpos.Utils.ShowMessageBox(
+                        GlobalApp.BackOfficeMainWindow,
+                        DialogFlags.Modal,
+                        new Size(600, 400),
+                        MessageType.Question,
+                        ButtonsType.YesNo,
+                        CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_series_fiscal_year_close_current"),
+                        string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_series_fiscal_year_close_current"), currentFiscalYear.Designation)
+                    );
+
+                    if (dialog1Response == ResponseType.No)
+                    {
+                        return;
+                    }
+                }
+            }
+      
+            var modal = new FiscalYearModal(modalMode: mode,
+                                            entity: SelectedEntity);
             modal.Run();
             modal.Destroy();
         }

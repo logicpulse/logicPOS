@@ -1,13 +1,18 @@
-﻿using LogicPOS.Api.Entities;
+﻿using Gtk;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.FiscalYears.AddFiscalYear;
+using LogicPOS.Api.Features.FiscalYears.CreateDefaultSeries;
 using LogicPOS.Api.Features.FiscalYears.UpdateFiscalYear;
+using LogicPOS.Utility;
 using System;
+using System.Drawing;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class FiscalYearModal: EntityEditionModal<FiscalYear>
+    public partial class FiscalYearModal : EntityEditionModal<FiscalYear>
     {
-        public FiscalYearModal(EntityEditionModalMode modalMode, FiscalYear entity = null) : base(modalMode, entity)
+        public FiscalYearModal(EntityEditionModalMode modalMode,
+                               FiscalYear entity = null) : base(modalMode, entity)
         {
         }
 
@@ -49,7 +54,39 @@ namespace LogicPOS.UI.Components.Modals
             _checkDisabled.Active = _entity.IsDeleted;
             _txtNotes.Value.Text = _entity.Notes;
         }
-        protected override void AddEntity() => ExecuteAddCommand(CreateAddCommand());
+
+        protected override void AddEntity()
+        {
+            var result = _mediator.Send(CreateAddCommand()).Result;
+
+            if (result.IsError)
+            {
+                HandleApiError(result.FirstError);
+                return;
+            }
+
+            var fiscalYearId = result.Value;
+
+            ResponseType dialog2Response = logicpos.Utils.ShowMessageBox(
+               this,
+               DialogFlags.Modal,
+               new Size(600, 400),
+               MessageType.Question,
+               ButtonsType.YesNo,
+               GeneralUtils.GetResourceByName("window_title_series_create_series"),
+               GeneralUtils.GetResourceByName("dialog_message_series_create_document_type_series")
+            );
+
+            if (dialog2Response != ResponseType.Yes)
+            {
+                return;
+            }
+
+            var command = new CreateDefaultSeriesCommand(fiscalYearId);
+
+            ExecuteCommand(command);
+        }
+
         protected override void UpdateEntity() => ExecuteUpdateCommand(CreateUpdateCommand());
 
     }

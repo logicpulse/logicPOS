@@ -9,7 +9,6 @@ namespace LogicPOS.Api.Entities
         public string Designation { get; set; }
         public int Year { get; set; }
         public string Acronym { get; set; }
-        public bool Current { get; set; }
         public bool SeriesForEachTerminal { get; set; }
     }
 }

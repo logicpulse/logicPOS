@@ -150,7 +150,8 @@ namespace LogicPOS.UI.Components.Pages
 
             void RenderSelect(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                (cell as CellRendererToggle).Active = (bool)model.GetValue(iter, 1);
+                var document = (Document)model.GetValue(iter, 0);
+                (cell as CellRendererToggle).Active = SelectedDocuments.Contains(document);
             }
 
             selectColumn.SetCellDataFunc(selectCellRenderer, RenderSelect);
@@ -160,25 +161,19 @@ namespace LogicPOS.UI.Components.Pages
 
         private void CheckBox_Clicked(object o, ToggledArgs args)
         {
-            TreeIter iterator;
-            var path = new TreePath(args.Path);
-            
-            if (GridViewSettings.Model.GetIter(out iterator, path))
+            if (GridView.Model.GetIter(out TreeIter iterator, new TreePath(args.Path)))
             {
-                var document = (Document)GridViewSettings.Model.GetValue(iterator, 0);
+                var document = (Document)GridView.Model.GetValue(iterator, 0);
 
-                var currentValue = (bool)GridViewSettings.Model.GetValue(iterator, 1);
-                GridViewSettings.Model.SetValue(iterator, 1, !currentValue);   
-                
-                if(currentValue == false)
-                {
-                    SelectedDocuments.Add(document);
-                    SelectedDocumentsTotalFinal += document.TotalFinal;
-                }
-                else
+                if (SelectedDocuments.Contains(document))
                 {
                     SelectedDocuments.Remove(document);
                     SelectedDocumentsTotalFinal -= document.TotalFinal;
+                }
+                else
+                {
+                    SelectedDocuments.Add(document);
+                    SelectedDocumentsTotalFinal += document.TotalFinal;
                 }
 
                 DocumentsSelectionChanged?.Invoke(this, EventArgs.Empty);

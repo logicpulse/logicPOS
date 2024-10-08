@@ -73,7 +73,7 @@ namespace LogicPOS.Api.Features.Common
             try
             {
                 var response = await _httpClient.PutAsJsonAsync(endpoint, command, cancellationToken);
-                return await HandleUpdateEntityHttpResponseAsync(response);
+                return await HandleHttpResponseAsync(response);
             }
             catch (HttpRequestException)
             {
@@ -114,7 +114,7 @@ namespace LogicPOS.Api.Features.Common
             return Error.Validation(metadata: new Dictionary<string, object> { { "problem", problemDetails } });
         }
 
-        protected async Task<ErrorOr<Unit>> HandleUpdateEntityHttpResponseAsync(HttpResponseMessage httpResponse)
+        protected async Task<ErrorOr<Unit>> HandleHttpResponseAsync(HttpResponseMessage httpResponse)
         {
             switch (httpResponse.StatusCode)
             {
