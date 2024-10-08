@@ -83,7 +83,7 @@ namespace LogicPOS.UI.Components.Modals
 
             if (result.IsError)
             {
-                SimpleAlerts.ShowApiErrorAlert(this);
+                SimpleAlerts.ShowApiErrorAlert(this,result.FirstError);
                 return;
             }
 
@@ -96,7 +96,7 @@ namespace LogicPOS.UI.Components.Modals
 
             if (getResult.IsError)
             {
-                SimpleAlerts.ShowApiErrorAlert(this);
+                SimpleAlerts.ShowApiErrorAlert(this, getResult.FirstError);
                 return Enumerable.Empty<DocumentSeries>();
             }
 

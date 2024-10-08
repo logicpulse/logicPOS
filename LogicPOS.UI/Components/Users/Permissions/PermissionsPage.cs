@@ -41,7 +41,7 @@ namespace LogicPOS.UI.Components.Pages
 
             if (getPermissionItemsResult.IsError)
             {
-                ShowApiErrorAlert();
+                ShowApiErrorAlert(getPermissionItemsResult.FirstError);
                 return;
             }
 
@@ -55,7 +55,7 @@ namespace LogicPOS.UI.Components.Pages
 
             if (getPermissionProfiles.IsError)
             {
-                ShowApiErrorAlert();
+                ShowApiErrorAlert(getPermissionProfiles.FirstError);
                 return;
             }
 
@@ -223,7 +223,7 @@ namespace LogicPOS.UI.Components.Pages
 
             if (deleteResult.IsError)
             {
-                ShowApiErrorAlert();
+                ShowApiErrorAlert(deleteResult.FirstError);
             }
         }
 
@@ -244,7 +244,7 @@ namespace LogicPOS.UI.Components.Pages
 
             if (addResult.IsError)
             {
-                ShowApiErrorAlert();
+                ShowApiErrorAlert(addResult.FirstError);
             }
         }
 

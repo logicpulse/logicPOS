@@ -75,22 +75,7 @@ namespace LogicPOS.UI.Components.Modals
 
         protected virtual void HandleApiError(Error error)
         {
-            switch (error.Type)
-            {
-                case ErrorType.Validation:
-                    var problem = error.Metadata["problem"] as ProblemDetails;
-                    SimpleAlerts.Error()
-                                .WithParent(this)
-                                .WithMessage(problem.Errors.First().Reason)
-                                .WithTitle(problem.Title)
-                                .Show();
-                    break;
-
-                default:
-                    SimpleAlerts.ShowApiErrorAlert(this);
-                    break;
-            }
-
+            SimpleAlerts.ShowApiErrorAlert(this,error);
             this.Run();
         }
 

@@ -178,7 +178,7 @@ namespace LogicPOS.UI.Components.Modals
 
             if (result.IsError)
             {
-                SimpleAlerts.ShowApiErrorAlert(this);
+                SimpleAlerts.ShowApiErrorAlert(this, result.FirstError);
                 return;
             }
         }

@@ -157,7 +157,7 @@ namespace LogicPOS.UI.Components.Documents
 
             if (result.IsError)
             {
-                Alerts.SimpleAlerts.ShowApiErrorAlert(this);
+                Alerts.SimpleAlerts.ShowApiErrorAlert(this,result.FirstError);
                 return;
             }
 

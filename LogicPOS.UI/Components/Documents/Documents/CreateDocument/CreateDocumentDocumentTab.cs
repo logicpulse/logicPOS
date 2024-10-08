@@ -59,7 +59,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
             if(documentTypes.IsError)
             {
-                SimpleAlerts.ShowApiErrorAlert(this.SourceWindow);
+                SimpleAlerts.ShowApiErrorAlert(this.SourceWindow,documentTypes.FirstError);
                 return Enumerable.Empty<DocumentType>();
             }
 

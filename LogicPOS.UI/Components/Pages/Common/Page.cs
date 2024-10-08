@@ -51,7 +51,7 @@ namespace LogicPOS.UI.Components.Pages
             Navigator.Update();
         }
 
-        protected void ShowApiErrorAlert() => SimpleAlerts.ShowApiErrorAlert(SourceWindow);
+        protected void ShowApiErrorAlert(Error error) => SimpleAlerts.ShowApiErrorAlert(SourceWindow,error);
 
         public virtual void Refresh()
         {
@@ -69,7 +69,7 @@ namespace LogicPOS.UI.Components.Pages
 
             if (getEntitiesResult.IsError)
             {
-                ShowApiErrorAlert();
+                ShowApiErrorAlert(getEntitiesResult.FirstError);
                 return;
             }
 

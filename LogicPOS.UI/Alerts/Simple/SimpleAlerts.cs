@@ -1,5 +1,7 @@
-﻿using Gtk;
+﻿using ErrorOr;
+using Gtk;
 using LogicPOS.Api.Errors;
+using System.Text;
 
 namespace LogicPOS.UI.Alerts
 {
@@ -66,11 +68,38 @@ namespace LogicPOS.UI.Alerts
                 .Show();
         }
 
-        public static void ShowApiErrorAlert(Window sourceWindow)
+        public static void ShowApiErrorAlert(
+            Window sourceWindow,
+            Error error)
         {
-           Error().WithParent(sourceWindow)
+            var errorMessage = new StringBuilder();
+            errorMessage.AppendLine("Code: " + error.Code);
+            errorMessage.AppendLine("Title: " + error.Description);
+          
+
+            var metadata = error.Metadata;
+
+            if (metadata != null)
+            {
+                var problemDetails = (ProblemDetails)metadata["problem"];
+
+                errorMessage.AppendLine("\nProblem Details:");
+                errorMessage.AppendLine("Title: " + problemDetails.Title);
+                errorMessage.AppendLine("Status: " + problemDetails.Status);
+                errorMessage.AppendLine("Type: " + problemDetails.Type);
+                errorMessage.AppendLine("TraceId: " + problemDetails.TraceId);
+
+                foreach (var problemDetailsError in problemDetails.Errors)
+                {
+                    errorMessage.AppendLine("\nError:");
+                    errorMessage.AppendLine("Name: " + problemDetailsError.Name);
+                    errorMessage.AppendLine("Reson: " + problemDetailsError.Reason);
+                }
+            }
+
+            Error().WithParent(sourceWindow)
                   .WithTitle("API")
-                  .WithMessage(ApiErrors.CommunicationError.Description)
+                  .WithMessage(errorMessage.ToString())
                   .Show();
         }
     }

@@ -2,6 +2,7 @@
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents.GetAllDocuments;
+using LogicPOS.Api.Features.Documents.GetDocumentsTotals;
 using LogicPOS.Domain.Entities;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
@@ -9,12 +10,14 @@ using LogicPOS.Utility;
 using MediatR;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.Pages
 {
     public class DocumentsPage : Page<Document>
     {
         protected override IRequest<ErrorOr<IEnumerable<Document>>> GetAllQuery => new GetAllDocumentsQuery();
+        private List<DocumentTotals> _documentsTotals = new List<DocumentTotals>();
         public List<Document> SelectedDocuments { get; private set; } = new List<Document>();
         public decimal SelectedDocumentsTotalFinal { get; private set; }
         public event EventHandler DocumentsSelectionChanged;
@@ -22,6 +25,31 @@ namespace LogicPOS.UI.Components.Pages
         public DocumentsPage(Window parent,
                              Dictionary<string, string> options = null) : base(parent,options)
         {
+        }
+
+        protected override void LoadEntities()
+        {
+            LoadDocumentsTotals();
+            base.LoadEntities();
+        }
+
+        private void LoadDocumentsTotals()
+        {
+            var query = new GetDocumentsTotalsQuery();
+            var result = _mediator.Send(query).Result;
+
+            if (result.IsError)
+            {
+                ShowApiErrorAlert(result.FirstError);
+                return;
+            }
+
+            if(_documentsTotals.Count > 0)
+            {
+                _documentsTotals.Clear();
+            }
+
+            _documentsTotals.AddRange(result.Value);
         }
 
         public override void DeleteEntity()
@@ -65,6 +93,34 @@ namespace LogicPOS.UI.Components.Pages
             GridView.AppendColumn(CreateEntityColumn());
             GridView.AppendColumn(CreateFiscalNumberColumn());
             GridView.AppendColumn(CreateTotalFinalColumn());
+            GridView.AppendColumn(CreateTotalPaidColumn());
+            GridView.AppendColumn(CreateTotalToPayColumn());
+        }
+
+        private TreeViewColumn CreateTotalToPayColumn()
+        {
+            void RenderTotalToPay(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
+            {
+                var document = ((Document)model.GetValue(iter, 0));
+                var totalToPay = _documentsTotals.FirstOrDefault(x => x.DocumentId == document.Id)?.TotalToPay ?? document.TotalFinal;
+                (cell as CellRendererText).Text = totalToPay.ToString("0.00");
+            }
+
+            var title = GeneralUtils.GetResourceByName("global_debit");
+            return Columns.CreateColumn(title, 9, RenderTotalToPay);
+        }
+
+        private TreeViewColumn CreateTotalPaidColumn()
+        {
+            void RenderTotalPaid(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
+            {
+                var documentId = ((Document)model.GetValue(iter, 0)).Id;
+                var totalPaid = _documentsTotals.FirstOrDefault(x => x.DocumentId == documentId)?.TotalPaid ?? 0;
+                (cell as CellRendererText).Text = totalPaid.ToString("0.00");
+            }
+
+            var title = GeneralUtils.GetResourceByName("window_title_dialog_document_finance_column_total_credit_rc_nc_based");
+            return Columns.CreateColumn(title, 8, RenderTotalPaid);
         }
 
         private TreeViewColumn CreateTotalFinalColumn()
