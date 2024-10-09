@@ -2,6 +2,7 @@
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents.GetAllDocuments;
+using LogicPOS.Api.Features.Documents.GetDocumentsRelations;
 using LogicPOS.Api.Features.Documents.GetDocumentsTotals;
 using LogicPOS.Domain.Entities;
 using LogicPOS.UI.Components.Modals;
@@ -17,7 +18,8 @@ namespace LogicPOS.UI.Components.Pages
     public class DocumentsPage : Page<Document>
     {
         protected override IRequest<ErrorOr<IEnumerable<Document>>> GetAllQuery => new GetAllDocumentsQuery();
-        private List<DocumentTotals> _documentsTotals = new List<DocumentTotals>();
+        private List<DocumentTotals> _totals = new List<DocumentTotals>();
+        private List<DocumentRelation> _relations = new List<DocumentRelation>();
         public List<Document> SelectedDocuments { get; private set; } = new List<Document>();
         public decimal SelectedDocumentsTotalFinal { get; private set; }
         public event EventHandler DocumentsSelectionChanged;
@@ -31,6 +33,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             LoadDocumentsTotals();
             base.LoadEntities();
+            LoadDocumentsRelations();
         }
 
         private void LoadDocumentsTotals()
@@ -44,12 +47,31 @@ namespace LogicPOS.UI.Components.Pages
                 return;
             }
 
-            if(_documentsTotals.Count > 0)
+            if(_totals.Count > 0)
             {
-                _documentsTotals.Clear();
+                _totals.Clear();
             }
 
-            _documentsTotals.AddRange(result.Value);
+            _totals.AddRange(result.Value);
+        }
+
+        private void LoadDocumentsRelations()
+        {
+            var query = new GetDocumentsRelationsQuery(_entities.Select(x => x.Id));
+            var result = _mediator.Send(query).Result;
+
+            if (result.IsError)
+            {
+                ShowApiErrorAlert(result.FirstError);
+                return;
+            }
+
+            if (_relations.Count > 0)
+            {
+                _relations.Clear();
+            }
+
+            _relations.AddRange(result.Value);
         }
 
         public override void DeleteEntity()
@@ -95,6 +117,20 @@ namespace LogicPOS.UI.Components.Pages
             GridView.AppendColumn(CreateTotalFinalColumn());
             GridView.AppendColumn(CreateTotalPaidColumn());
             GridView.AppendColumn(CreateTotalToPayColumn());
+            GridView.AppendColumn(CreateRelatedDocumentsColumn());
+        }
+
+        private TreeViewColumn CreateRelatedDocumentsColumn()
+        {
+            void RenderRelatedDocuments(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
+            {
+                var docId = ((Document)model.GetValue(iter, 0)).Id;
+                var relatedDocuments = _relations.FirstOrDefault(x => x.DocumentId == docId)?.RelatedDocuments;
+                (cell as CellRendererText).Text = string.Join(",",relatedDocuments);
+            }
+
+            var title = GeneralUtils.GetResourceByName("window_title_dialog_document_finance_column_related_doc");
+            return Columns.CreateColumn(title, 10, RenderRelatedDocuments);
         }
 
         private TreeViewColumn CreateTotalToPayColumn()
@@ -102,7 +138,7 @@ namespace LogicPOS.UI.Components.Pages
             void RenderTotalToPay(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var document = ((Document)model.GetValue(iter, 0));
-                var totalToPay = _documentsTotals.FirstOrDefault(x => x.DocumentId == document.Id)?.TotalToPay ?? document.TotalFinal;
+                var totalToPay = _totals.FirstOrDefault(x => x.DocumentId == document.Id)?.TotalToPay ?? document.TotalFinal;
                 (cell as CellRendererText).Text = totalToPay.ToString("0.00");
             }
 
@@ -115,7 +151,7 @@ namespace LogicPOS.UI.Components.Pages
             void RenderTotalPaid(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var documentId = ((Document)model.GetValue(iter, 0)).Id;
-                var totalPaid = _documentsTotals.FirstOrDefault(x => x.DocumentId == documentId)?.TotalPaid ?? 0;
+                var totalPaid = _totals.FirstOrDefault(x => x.DocumentId == documentId)?.TotalPaid ?? 0;
                 (cell as CellRendererText).Text = totalPaid.ToString("0.00");
             }
 
@@ -176,7 +212,7 @@ namespace LogicPOS.UI.Components.Pages
             void RenderDate(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var document = (Document)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = document.Date;
+                (cell as CellRendererText).Text = document.CreatedAt.ToString();
             }
 
             var title = GeneralUtils.GetResourceByName("global_document_date");
@@ -368,6 +404,10 @@ namespace LogicPOS.UI.Components.Pages
             _entities.ForEach(entity => model.AppendValues(entity,false));
         }
 
+        public IEnumerable<(Document, DocumentTotals)> GetSelectedDocumentsWithTotals()
+        {
+            return SelectedDocuments.Select(document => (document, _totals.FirstOrDefault(x => x.DocumentId == document.Id)));
+        }
 
     }
 }

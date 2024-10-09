@@ -94,7 +94,7 @@ namespace LogicPOS.UI.Components.Documents
                 return;
             }
 
-            var modal = new PayInvoiceModal(this,Page.SelectedDocuments);
+            var modal = new PayInvoiceModal(this,Page.GetSelectedDocumentsWithTotals());
             modal.Run();
             modal.Destroy();
         }
@@ -234,7 +234,7 @@ namespace LogicPOS.UI.Components.Documents
 
         private void OnDocumentSelected(Document document)
         {
-           BtnPayInvoice.Visible = document.IsInvoice() && !document.IsCancelled;
+           BtnPayInvoice.Sensitive = document.IsInvoice() && !document.IsCancelled && !document.Paid;
         }
 
         protected override Widget CreateLeftContent()

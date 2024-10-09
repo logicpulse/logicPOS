@@ -14,6 +14,8 @@ namespace LogicPOS.UI.Components.Modals
         public FiscalYearModal(EntityEditionModalMode modalMode,
                                FiscalYear entity = null) : base(modalMode, entity)
         {
+            _txtYear.Text = DateTime.Now.Year.ToString();
+            _txtYear.Entry.Sensitive = false;
         }
 
         private AddFiscalYearCommand CreateAddCommand()
@@ -67,7 +69,7 @@ namespace LogicPOS.UI.Components.Modals
 
             var fiscalYearId = result.Value;
 
-            ResponseType dialog2Response = logicpos.Utils.ShowMessageBox(
+            ResponseType response = logicpos.Utils.ShowMessageBox(
                this,
                DialogFlags.Modal,
                new Size(600, 400),
@@ -77,7 +79,7 @@ namespace LogicPOS.UI.Components.Modals
                GeneralUtils.GetResourceByName("dialog_message_series_create_document_type_series")
             );
 
-            if (dialog2Response != ResponseType.Yes)
+            if (response != ResponseType.Yes)
             {
                 return;
             }
