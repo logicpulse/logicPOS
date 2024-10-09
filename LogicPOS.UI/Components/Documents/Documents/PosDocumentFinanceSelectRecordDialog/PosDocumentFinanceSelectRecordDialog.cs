@@ -13,11 +13,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
     internal partial class PosDocumentFinanceSelectRecordDialog : BaseDialog
     {
         private  IconButtonWithText BtnDocuments { get; set; }
-        private readonly IconButtonWithText _toolbarFinanceDocumentsInvoicesUnpayed;
-        private readonly IconButtonWithText _toolbarFinanceDocumentsPayments;
-        private readonly IconButtonWithText _touchButtonPosToolbarCurrentAccountDocuments;
-        private readonly IconButtonWithText _touchButtonPosToolbarWorkSessionPeriods;
-        private readonly IconButtonWithText _touchButtonPosToolbarMerchandiseEntry;
+        private IconButtonWithText BtnReceiptsEmission { get; set; }
+        private IconButtonWithText BtnReceipts { get; set; }
+        private IconButtonWithText BtnCurrentAccount { get; set; }
+        private IconButtonWithText BtnWorkSessionPeriods { get; set; }
+        private IconButtonWithText BtnStockEntry { get; set; }
 
         public PosDocumentFinanceSelectRecordDialog(Window parentWindow, DialogFlags pDialogFlags, int docChoice)
             : base(parentWindow, pDialogFlags)
@@ -46,25 +46,25 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             //Buttons
              BtnDocuments = new IconButtonWithText(new ButtonSettings { Name = "touchButtonPosToolbarFinanceDocuments_Green", BackgroundColor = ColorSettings.DefaultButtonBackground, Text = GeneralUtils.GetResourceByName("dialog_button_label_select_record_finance_documents"), Font = FontSettings.Button, FontColor = ColorSettings.DefaultButtonFont, Icon = _fileIconListFinanceDocuments, IconSize = sizeIcon, ButtonSize = new Size(buttonWidth, buttonHeight) }) { Token = "ALL" };
-            _toolbarFinanceDocumentsInvoicesUnpayed = new IconButtonWithText(new ButtonSettings { Name = "touchButtonPosToolbarFinanceDocumentsInvoicesForPayment_Green", BackgroundColor = ColorSettings.DefaultButtonBackground, Text = GeneralUtils.GetResourceByName("dialog_button_label_select_finance_documents_ft_unpaid"), Font = FontSettings.Button, FontColor = ColorSettings.DefaultButtonFont, Icon = _fileIconListFinanceDocuments, IconSize = sizeIcon, ButtonSize = new Size(buttonWidth, buttonHeight) }) { Token = "FT_UNPAYED" };
-            _toolbarFinanceDocumentsPayments = new IconButtonWithText(new ButtonSettings { Name = "touchButtonPosToolbarFinanceDocumentsPayments_Green", BackgroundColor = ColorSettings.DefaultButtonBackground, Text = GeneralUtils.GetResourceByName("dialog_button_label_select_payments"), Font = FontSettings.Button, FontColor = ColorSettings.DefaultButtonFont, Icon = _fileIconListFinanceDocuments, IconSize = sizeIcon, ButtonSize = new Size(buttonWidth, buttonHeight) });
-            _touchButtonPosToolbarCurrentAccountDocuments = new IconButtonWithText(new ButtonSettings { Name = "REPORT_CUSTOMER_BALANCE_DETAILS", BackgroundColor = ColorSettings.DefaultButtonBackground, Text = GeneralUtils.GetResourceByName("dialog_button_label_select_finance_documents_cc"), Font = FontSettings.Button, FontColor = ColorSettings.DefaultButtonFont, Icon = _fileIconListCurrentAccountDocuments, IconSize = sizeIcon, ButtonSize = new Size(buttonWidth, buttonHeight) }) { Token = "CC" };
-            _touchButtonPosToolbarWorkSessionPeriods = new IconButtonWithText(new ButtonSettings { Name = "touchButtonPosToolbarWorkSessionPeriods_Green", BackgroundColor = ColorSettings.DefaultButtonBackground, Text = GeneralUtils.GetResourceByName("dialog_button_label_select_worksession_period"), Font = FontSettings.Button, FontColor = ColorSettings.DefaultButtonFont, Icon = _fileIconListWorksessionPeriods, IconSize = sizeIcon, ButtonSize = new Size(buttonWidth, buttonHeight) });
-            _touchButtonPosToolbarMerchandiseEntry = new IconButtonWithText(new ButtonSettings { Name = "touchButtonPosToolbarMerchandiseEntry_Green", BackgroundColor = ColorSettings.DefaultButtonBackground, Text = GeneralUtils.GetResourceByName("dialog_button_label_select_merchandise_entry"), Font = FontSettings.Button, FontColor = ColorSettings.DefaultButtonFont, Icon = _fileIconListMerchandiseEntry, IconSize = sizeIcon, ButtonSize = new Size(buttonWidth, buttonHeight) });
+            BtnReceiptsEmission = new IconButtonWithText(new ButtonSettings { Name = "touchButtonPosToolbarFinanceDocumentsInvoicesForPayment_Green", BackgroundColor = ColorSettings.DefaultButtonBackground, Text = GeneralUtils.GetResourceByName("dialog_button_label_select_finance_documents_ft_unpaid"), Font = FontSettings.Button, FontColor = ColorSettings.DefaultButtonFont, Icon = _fileIconListFinanceDocuments, IconSize = sizeIcon, ButtonSize = new Size(buttonWidth, buttonHeight) }) { Token = "FT_UNPAYED" };
+            BtnReceipts = new IconButtonWithText(new ButtonSettings { Name = "touchButtonPosToolbarFinanceDocumentsPayments_Green", BackgroundColor = ColorSettings.DefaultButtonBackground, Text = GeneralUtils.GetResourceByName("dialog_button_label_select_payments"), Font = FontSettings.Button, FontColor = ColorSettings.DefaultButtonFont, Icon = _fileIconListFinanceDocuments, IconSize = sizeIcon, ButtonSize = new Size(buttonWidth, buttonHeight) });
+            BtnCurrentAccount = new IconButtonWithText(new ButtonSettings { Name = "REPORT_CUSTOMER_BALANCE_DETAILS", BackgroundColor = ColorSettings.DefaultButtonBackground, Text = GeneralUtils.GetResourceByName("dialog_button_label_select_finance_documents_cc"), Font = FontSettings.Button, FontColor = ColorSettings.DefaultButtonFont, Icon = _fileIconListCurrentAccountDocuments, IconSize = sizeIcon, ButtonSize = new Size(buttonWidth, buttonHeight) }) { Token = "CC" };
+            BtnWorkSessionPeriods = new IconButtonWithText(new ButtonSettings { Name = "touchButtonPosToolbarWorkSessionPeriods_Green", BackgroundColor = ColorSettings.DefaultButtonBackground, Text = GeneralUtils.GetResourceByName("dialog_button_label_select_worksession_period"), Font = FontSettings.Button, FontColor = ColorSettings.DefaultButtonFont, Icon = _fileIconListWorksessionPeriods, IconSize = sizeIcon, ButtonSize = new Size(buttonWidth, buttonHeight) });
+            BtnStockEntry = new IconButtonWithText(new ButtonSettings { Name = "touchButtonPosToolbarMerchandiseEntry_Green", BackgroundColor = ColorSettings.DefaultButtonBackground, Text = GeneralUtils.GetResourceByName("dialog_button_label_select_merchandise_entry"), Font = FontSettings.Button, FontColor = ColorSettings.DefaultButtonFont, Icon = _fileIconListMerchandiseEntry, IconSize = sizeIcon, ButtonSize = new Size(buttonWidth, buttonHeight) });
             //Permission
-            _touchButtonPosToolbarMerchandiseEntry.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("STOCK_MERCHANDISE_ENTRY_ACCESS");
+            BtnStockEntry.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("STOCK_MERCHANDISE_ENTRY_ACCESS");
 
             //Table
             Table table = new Table(1, 1, true);
             table.BorderWidth = tablePadding;
             //Row 1
             table.Attach(BtnDocuments, 0, 1, 0, 1, AttachOptions.Fill, AttachOptions.Fill, tablePadding, tablePadding);
-            table.Attach(_toolbarFinanceDocumentsInvoicesUnpayed, 1, 2, 0, 1, AttachOptions.Fill, AttachOptions.Fill, tablePadding, tablePadding);
-            table.Attach(_toolbarFinanceDocumentsPayments, 2, 3, 0, 1, AttachOptions.Fill, AttachOptions.Fill, tablePadding, tablePadding);
+            table.Attach(BtnReceiptsEmission, 1, 2, 0, 1, AttachOptions.Fill, AttachOptions.Fill, tablePadding, tablePadding);
+            table.Attach(BtnReceipts, 2, 3, 0, 1, AttachOptions.Fill, AttachOptions.Fill, tablePadding, tablePadding);
             //Row 2
-            table.Attach(_touchButtonPosToolbarCurrentAccountDocuments, 0, 1, 1, 2, AttachOptions.Fill, AttachOptions.Fill, tablePadding, tablePadding);
-            table.Attach(_touchButtonPosToolbarWorkSessionPeriods, 1, 2, 1, 2, AttachOptions.Fill, AttachOptions.Fill, tablePadding, tablePadding);
-            table.Attach(_touchButtonPosToolbarMerchandiseEntry, 2, 3, 1, 2, AttachOptions.Fill, AttachOptions.Fill, tablePadding, tablePadding);
+            table.Attach(BtnCurrentAccount, 0, 1, 1, 2, AttachOptions.Fill, AttachOptions.Fill, tablePadding, tablePadding);
+            table.Attach(BtnWorkSessionPeriods, 1, 2, 1, 2, AttachOptions.Fill, AttachOptions.Fill, tablePadding, tablePadding);
+            table.Attach(BtnStockEntry, 2, 3, 1, 2, AttachOptions.Fill, AttachOptions.Fill, tablePadding, tablePadding);
 
             PosReportsDialog reportsClicked = new PosReportsDialog();
 
@@ -76,19 +76,19 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     BtnDocuments_Clicked(BtnDocuments, null);
                     break;
                 case 2:
-                    BtnDocuments_Clicked(_toolbarFinanceDocumentsInvoicesUnpayed, null);
+                    BtnDocuments_Clicked(BtnReceiptsEmission, null);
                     break;
                 case 3:
-                    _toolbarFinanceDocumentsPayments_Clicked(_toolbarFinanceDocumentsPayments, null);
+                    _toolbarFinanceDocumentsPayments_Clicked(BtnReceipts, null);
                     break;
                 case 4:
-                    _touchButtonPosToolbarCurrentAccountDocuments.Clicked += delegate { reportsClicked.PrintReportRouter(_touchButtonPosToolbarCurrentAccountDocuments, null); };                    
+                    BtnCurrentAccount.Clicked += delegate { reportsClicked.PrintReportRouter(BtnCurrentAccount, null); };                    
                     break;
                 case 5:
-                    _touchButtonPosToolbarWorkSessionPeriods_Clicked(_touchButtonPosToolbarWorkSessionPeriods, null);
+                    _touchButtonPosToolbarWorkSessionPeriods_Clicked(BtnWorkSessionPeriods, null);
                     break;
                 case 6:
-                    _touchButtonPosToolbarMerchandiseEntry_Clicked(_touchButtonPosToolbarMerchandiseEntry, null);
+                    _touchButtonPosToolbarMerchandiseEntry_Clicked(BtnStockEntry, null);
                     break;
                 case 0:
 
@@ -97,12 +97,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                     //Shared Events 
                     BtnDocuments.Clicked += BtnDocuments_Clicked;
-                    _toolbarFinanceDocumentsInvoicesUnpayed.Clicked += BtnDocuments_Clicked;
-                    _touchButtonPosToolbarCurrentAccountDocuments.Clicked += delegate { reportsClicked.PrintReportRouter(_touchButtonPosToolbarCurrentAccountDocuments, null); };
+                    BtnReceiptsEmission.Clicked += BtnDocuments_Clicked;
+                    BtnCurrentAccount.Clicked += delegate { reportsClicked.PrintReportRouter(BtnCurrentAccount, null); };
                     //Non Shared Events
-                    _toolbarFinanceDocumentsPayments.Clicked += _toolbarFinanceDocumentsPayments_Clicked;
-                    _touchButtonPosToolbarWorkSessionPeriods.Clicked += _touchButtonPosToolbarWorkSessionPeriods_Clicked;
-                    _touchButtonPosToolbarMerchandiseEntry.Clicked += _touchButtonPosToolbarMerchandiseEntry_Clicked;
+                    BtnReceipts.Clicked += _toolbarFinanceDocumentsPayments_Clicked;
+                    BtnWorkSessionPeriods.Clicked += _touchButtonPosToolbarWorkSessionPeriods_Clicked;
+                    BtnStockEntry.Clicked += _touchButtonPosToolbarMerchandiseEntry_Clicked;
 
                     //Reference Objects
                     _printerGeneric = (sys_configurationprinters)XPOSettings.Session.GetObjectByKey(typeof(sys_configurationprinters), PrintingSettings.GenericPrinterId);

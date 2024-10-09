@@ -15,12 +15,15 @@ using System.Drawing;
 
 namespace LogicPOS.UI.Components.Documents
 {
-    public class DocumentsModal : Modal
+    public class InvoicesModal : Modal
     {
         private readonly ISender _meditaor = DependencyInjection.Services.GetRequiredService<IMediator>();
-        private DocumentsPage Page { get; set; }
+        private InvoicesPage Page { get; set; }
         private string WindowTitleBase => GeneralUtils.GetResourceByName("window_title_select_finance_document");
 
+        private IconButtonWithText BtnPayInvoice = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("btnPayInvoice",
+                                                                                                        GeneralUtils.GetResourceByName("global_button_label_pay_invoice"),
+                                                                                                        PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_payment_full.png");
         private IconButtonWithText BtnNewDocument { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("btnNewDocument",
                                                                                                                        GeneralUtils.GetResourceByName("global_button_label_new_financial_document"),
                                                                                                                        PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_toolbar_finance_new_document.png");
@@ -33,7 +36,7 @@ namespace LogicPOS.UI.Components.Documents
                                                                                          GeneralUtils.GetResourceByName("global_button_label_cancel_document"),
                                                                                          PathsSettings.ImagesFolderLocation + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png");
 
-        public DocumentsModal(Window parent) : base(parent,
+        public InvoicesModal(Window parent) : base(parent,
                                                     GeneralUtils.GetResourceByName("window_title_select_finance_document"),
                                                     GlobalApp.MaxWindowSize,
                                                     $"{PathsSettings.ImagesFolderLocation}{@"Icons/Windows/icon_window_select_record.png"}")
@@ -51,6 +54,7 @@ namespace LogicPOS.UI.Components.Documents
 
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons
             {
+                new ActionAreaButton(BtnPayInvoice, ResponseType.Ok),
                 new ActionAreaButton(BtnNewDocument, ResponseType.Ok),
                 new ActionAreaButton(BtnPrintDocument, ResponseType.Ok),
                 new ActionAreaButton(BtnPrintDocumentAs, ResponseType.Ok),
@@ -71,6 +75,7 @@ namespace LogicPOS.UI.Components.Documents
             BtnSendDocumentEmail.SetBackgroundColor(greenColor);
             BtnCancelDocument.SetBackgroundColor(greenColor);
             BtnNewDocument.SetBackgroundColor(greenColor);
+            BtnPayInvoice.SetBackgroundColor(greenColor);
         }
 
         private void AddButtonsEventHandlers()
@@ -79,6 +84,19 @@ namespace LogicPOS.UI.Components.Documents
             BtnPrintDocumentAs.Clicked += BtnPrintDocumentAs_Clicked;
             BtnCancelDocument.Clicked += BtnCancelDocument_Clicked;
             BtnNewDocument.Clicked += BtnNewDocument_Clicked;
+            BtnPayInvoice.Clicked += BtnPayInvoice_Clicked;
+        }
+
+        private void BtnPayInvoice_Clicked(object sender, EventArgs e)
+        {
+            if(Page.SelectedDocuments.Count == 0)
+            {
+                return;
+            }
+
+            var modal = new PayInvoiceModal(this,Page.GetSelectedDocumentsWithTotals());
+            modal.Run();
+            modal.Destroy();
         }
 
         private void BtnNewDocument_Clicked(object sender, EventArgs e)
@@ -191,10 +209,9 @@ namespace LogicPOS.UI.Components.Documents
             base.OnResponse(response);
         }
 
-
         protected override Widget CreateBody()
         {
-            var page = new DocumentsPage(this, PageOptions.SelectionPageOptions);
+            var page = new InvoicesPage(this, PageOptions.SelectionPageOptions);
             page.SetSizeRequest(WindowSettings.Size.Width - 14, WindowSettings.Size.Height - 124);
             Fixed fixedContent = new Fixed();
             fixedContent.Put(page, 0, 0);
@@ -216,7 +233,7 @@ namespace LogicPOS.UI.Components.Documents
 
         private void OnDocumentSelected(Document document)
         {
-           
+           BtnPayInvoice.Sensitive = document.IsInvoice() && !document.IsCancelled && !document.Paid;
         }
 
         protected override Widget CreateLeftContent()
