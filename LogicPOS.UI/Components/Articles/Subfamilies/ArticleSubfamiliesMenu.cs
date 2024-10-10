@@ -21,7 +21,6 @@ namespace LogicPOS.UI.Components.Menus
         public int MaxCharsPerButtonLabel { get; set; } = AppSettings.Instance.posBaseButtonMaxCharsPerLabel;
         public string ButtonOverlay { get; set; } = PathsSettings.ImagesFolderLocation + @"Buttons\Pos\button_overlay.png";
         public List<(ArticleSubfamily Subfamily, CustomButton Button)> Buttons { get; set; } = new List<(ArticleSubfamily, CustomButton)>();
-        public string ButtonName { get; set; }
         public string ButtonImage { get; set; }
         public string ButtonLabel { get; set; }
         public bool ToggleMode { get; set; } = true;
@@ -34,8 +33,6 @@ namespace LogicPOS.UI.Components.Menus
         public CustomButton BtnNext { get; set; }
         public uint Rows { get; set; } = 1;
         public uint Columns { get; set; } = 7;
-        public string ButtonNamePrefix { get; set; } = "buttonSubfamilyId";
-        public Color ButtonColor { get; set; } = Color.Transparent;
         public Size ButtonSize { get; set; } = new Size(176, 120);
         public Window SourceWindow { get; set; }
         public ArticleSubfamily SelectedSubfamily { get; set; }
@@ -73,8 +70,6 @@ namespace LogicPOS.UI.Components.Menus
             return new ImageButton(
                 new ButtonSettings
                 {
-                    Name = ButtonName,
-                    BackgroundColor = ButtonColor,
                     Text = ButtonLabel,
                     FontSize = ButtonFontSize,
                     Image = ButtonImage,
@@ -196,9 +191,8 @@ namespace LogicPOS.UI.Components.Menus
                     }
                 }
 
-                ButtonName = $"{ButtonNamePrefix}_{subfamily.Id}";
-                ButtonLabel = subfamily.Button.ButtonLabel ?? subfamily.Designation;
-                ButtonImage = subfamily.Button.ButtonImage ?? "";
+                ButtonLabel = subfamily.Button.Label ?? subfamily.Designation;
+                ButtonImage = subfamily.Button.Image ?? "";
 
                 if (ButtonLabel.Length > MaxCharsPerButtonLabel)
                 {

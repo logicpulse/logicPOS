@@ -20,7 +20,6 @@ namespace LogicPOS.UI.Components.Modals
         private TextBox _txtButtonName = new TextBox("global_button_name");
         private ImagePicker _imagePicker = new ImagePicker(GeneralUtils.GetResourceByName("global_button_image"));
         private CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
-        private EntityComboBox<Api.Entities.Printer> _comboPrinters;
         private EntityComboBox<CommissionGroup> _comboCommissionGroups;
         private EntityComboBox<ArticleFamily> _comboFamilies;
         private EntityComboBox<DiscountGroup> _comboDiscountGroups;
@@ -30,23 +29,11 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override void BeforeDesign()
         {
-            InitializePrintersComboBox();
             InitializeCommissionGroupsComboBox();
             InitializeFamiliesComboBox();
             InitializeDiscountGroupsComboBox();
             InitializeVatOnTableComboBox();
             InitializeVatDirectSellingComboBox();
-        }
-
-        private void InitializePrintersComboBox()
-        {
-            var printers = GetPrinters();
-            var labelText = GeneralUtils.GetResourceByName("global_device_printer");
-            var currentPrinter = _entity != null ? _entity.Printer : null;
-
-            _comboPrinters = new EntityComboBox<Api.Entities.Printer>(labelText,
-                                                             printers,
-                                                             currentPrinter);
         }
 
         private void InitializeCommissionGroupsComboBox()
@@ -109,8 +96,9 @@ namespace LogicPOS.UI.Components.Modals
         {
             return new Api.ValueObjects.Button
             {
-                ButtonLabel = _txtButtonName.Text,
-                ButtonImage = _imagePicker.FileChooserButton.Filename
+                Label = _txtButtonName.Text,
+                Image = _imagePicker.GetBase64Image(),
+                ImageExtension = _imagePicker.GetImageExtension()
             };
         }
 
@@ -123,7 +111,6 @@ namespace LogicPOS.UI.Components.Modals
             SensitiveFields.Add(_txtNotes.TextView);
             SensitiveFields.Add(_checkDisabled);
             SensitiveFields.Add(_imagePicker.Component);
-            SensitiveFields.Add(_comboPrinters.Component);
             SensitiveFields.Add(_comboCommissionGroups.Component);
             SensitiveFields.Add(_comboFamilies.Component);
             SensitiveFields.Add(_comboDiscountGroups.Component);
@@ -181,7 +168,6 @@ namespace LogicPOS.UI.Components.Modals
         {
             var details2Tab = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
 
-            details2Tab.PackStart(_comboPrinters.Component, false, false, 0);
             details2Tab.PackStart(_comboCommissionGroups.Component, false, false, 0);
             details2Tab.PackStart(_comboDiscountGroups.Component, false, false, 0);
             details2Tab.PackStart(_comboVatOnTable.Component, false, false, 0);

@@ -36,21 +36,10 @@ namespace LogicPOS.UI.Components.Pages
             GridView.AppendColumn(Columns.CreateCodeColumn(0));
             GridView.AppendColumn(Columns.CreateDesignationColumn(1));
             GridView.AppendColumn(CreateFamilyColumn());
-            GridView.AppendColumn(CreatePrinterColumn());
-            GridView.AppendColumn(Columns.CreateUpdatedAtColumn(4));
+            GridView.AppendColumn(Columns.CreateUpdatedAtColumn(3));
         }
 
-        private TreeViewColumn CreatePrinterColumn()
-        {
-            void RenderMonth(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
-            {
-                var family = (ArticleSubfamily)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = family.Printer?.Designation;
-            }
 
-            var title = GeneralUtils.GetResourceByName("global_device_printer");
-            return Columns.CreateColumn(title, 3, RenderMonth);
-        }
 
         private TreeViewColumn CreateFamilyColumn()
         {
@@ -71,24 +60,7 @@ namespace LogicPOS.UI.Components.Pages
             AddCodeSorting(0);
             AddDesignationSorting(1);
             AddFamilySorting();
-            AddPrinterSorting();
-            AddUpdatedAtSorting(4);
-        }
-
-        private void AddPrinterSorting()
-        {
-            GridViewSettings.Sort.SetSortFunc(3, (model, left, right) =>
-            {
-                var leftArticleSubfamily = (ArticleSubfamily)model.GetValue(left, 0);
-                var rightArticleSubfamily = (ArticleSubfamily)model.GetValue(right, 0);
-
-                if (leftArticleSubfamily == null || rightArticleSubfamily == null)
-                {
-                    return 0;
-                }
-
-                return leftArticleSubfamily.Printer?.Designation.CompareTo(rightArticleSubfamily.Printer?.Designation) ?? 0;
-            });
+            AddUpdatedAtSorting(3);
         }
 
         private void AddFamilySorting()

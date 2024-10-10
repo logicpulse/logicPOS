@@ -42,8 +42,6 @@ namespace LogicPOS.Api.Entities
         public VatExemptionReason VatExemptionReason { get; set; }
         public Guid? VatExemptionReasonId { get; set; }
 
-        public Printer Printer { get; set; }
-        public Guid? PrinterId { get; set; }
         #endregion
 
         #region Properties
@@ -57,7 +55,6 @@ namespace LogicPOS.Api.Entities
         public bool PriceWithVat { get; set; }
         public decimal Discount { get; set; }
         public uint DefaultQuantity { get; set; }
-        public decimal TotalStock { get; set; }
         public uint MinimumStock { get; set; }
         public decimal Tare { get; set; }
         public float Weight { get; set; }
@@ -65,9 +62,6 @@ namespace LogicPOS.Api.Entities
         public bool PVPVariable { get; set; }
         public bool Favorite { get; set; }
         public bool UseWeighingBalance { get; set; }
-        public string Token1 { get; set; }
-        public string Token2 { get; set; }
-        public string TemplateBarcode { get; set; }
         public bool IsComposed { get; set; }
         public bool UniqueArticles { get; set; }
         #endregion

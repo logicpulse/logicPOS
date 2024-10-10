@@ -29,9 +29,36 @@ namespace LogicPOS.UI.Components.InputFields
             Preview.Pixbuf = logicpos.Utils.ResizeAndCropFileToPixBuf(FileChooserButton.Filename, new Size(Preview.WidthRequest, Preview.HeightRequest));
         }
 
-        public void SetImage(string location)
+        public string GetBase64Image()
         {
-            FileChooserButton.SetFilename(location);
+            if (string.IsNullOrWhiteSpace(FileChooserButton.Filename))
+            {
+                return string.Empty;
+            }
+
+            return System.Convert.ToBase64String(System.IO.File.ReadAllBytes(FileChooserButton.Filename));
+        }
+
+        public string GetImageExtension()
+        {
+            if (string.IsNullOrWhiteSpace(FileChooserButton.Filename))
+            {
+                return string.Empty;
+            }
+
+            return System.IO.Path.GetExtension(FileChooserButton.Filename).Trim('.');
+        }
+
+        public void SetBase64Image(string content, string extension)
+        {
+            if (string.IsNullOrWhiteSpace(content))
+            {
+                return;
+            }
+
+            var tempFile = System.IO.Path.GetTempFileName() + "." + extension;
+            System.IO.File.WriteAllBytes(tempFile, System.Convert.FromBase64String(content));
+            FileChooserButton.SetFilename(tempFile);
             ShowPreview();
         }
 

@@ -21,6 +21,8 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class ArticleModal : EntityEditionModal<Article>
     {
+        private string _temporaryButtonImageLocation;
+
         private IEnumerable<ArticleSubfamily> _subfamilies;
         public ArticleModal(EntityEditionModalMode modalMode, Article entity = null) : base(modalMode, entity)
         {
@@ -114,8 +116,8 @@ namespace LogicPOS.UI.Components.Modals
             _txtOrder.Text = _entity.Order.ToString();
             _txtCode.Text = _entity.Code;
             _txtDesignation.Text = _entity.Designation;
-            _txtButtonName.Text = _entity.Button?.ButtonLabel;
-            _imagePicker.SetImage(_entity.Button?.ButtonImage);
+            _txtButtonName.Text = _entity.Button?.Label;
+            _imagePicker.SetBase64Image(_entity.Button?.Image, _entity.Button?.ImageExtension);
             _checkIsComposed.Active = _entity.IsComposed;
             _checkFavorite.Active = _entity.Favorite;
             _checkUseWeighingBalance.Active = _entity.UseWeighingBalance;
@@ -124,14 +126,12 @@ namespace LogicPOS.UI.Components.Modals
             _checkPriceWithVat.Active = _entity.PriceWithVat;
             _txtDiscount.Text = _entity.Discount.ToString();
             _txtBarcode.Text = _entity.Barcode;
-            _txtTotalStock.Text = _entity.TotalStock.ToString();
             _txtMinimumStock.Text = _entity.MinimumStock.ToString();
             _txtTare.Text = _entity.Tare.ToString();
             _txtWeight.Text = _entity.Weight.ToString();
             _txtDefaultQuantity.Text = _entity.DefaultQuantity.ToString();
             _checkDisabled.Active = _entity.IsDeleted;
             _checkUniqueArticles.Active = _entity.UniqueArticles;
-            _txtTotalStock.Text = _entity.TotalStock.ToString();
         }
 
         protected override void UpdateEntity() => ExecuteUpdateCommand(CreateUpdateCommand());

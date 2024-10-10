@@ -16,7 +16,6 @@ namespace LogicPOS.Api.Features.Articles.Subfamilies.UpdateArticleSubfamily
         public Guid? NewDiscountGroupId { get; set; }
         public Guid? NewVatOnTableId { get; set; }
         public Guid? NewVatDirectSellingId { get; set; }
-        public Guid? NewPrinterId { get; set; }
         public Button NewButton { get; set; }
         public string NewNotes { get; set; }
         public bool? IsDeleted { get; set; }

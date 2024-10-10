@@ -26,8 +26,6 @@ namespace LogicPOS.Api.Features.Articles.AddArticle
         public bool PVPVariable { get; set; }
         public bool Favorite { get; set; } 
         public bool UseWeighingBalance { get; set; }
-        public string Token1 { get; set; }
-        public string Token2 { get; set; }
         public Guid SubfamilyId { get; set; }
         public Guid TypeId { get; set; }
         public Guid ClassId { get; set; }
@@ -38,9 +36,6 @@ namespace LogicPOS.Api.Features.Articles.AddArticle
         public Guid? VatOnTableId { get; set; }
         public Guid VatDirectSellingId { get; set; } 
         public Guid? VatExemptionReasonId { get; set; }
-        public Guid? PrinterId { get; set; }
-        public Guid? PrinterTemplateId { get; set; }
-        public Guid? BarcodePrinterTemplateId { get; set; }
         public bool IsComposed { get; set; } 
         public bool UniqueArticles { get; set; } 
         public string Notes { get; set; }

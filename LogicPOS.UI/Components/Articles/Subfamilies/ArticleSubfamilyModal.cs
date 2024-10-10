@@ -25,7 +25,6 @@ namespace LogicPOS.UI.Components.Modals
                 Button = GetButton(),
                 FamilyId = _comboFamilies.SelectedEntity.Id,
                 CommissionGroupId = _comboCommissionGroups.SelectedEntity?.Id,
-                PrinterId = _comboPrinters.SelectedEntity?.Id,
                 DiscountGroupId = _comboDiscountGroups.SelectedEntity?.Id,
                 VatOnTableId = _comboVatOnTable.SelectedEntity?.Id,
                 VatDirectSellingId = _comboVatDirectSelling.SelectedEntity?.Id,
@@ -42,7 +41,6 @@ namespace LogicPOS.UI.Components.Modals
                 NewCode = _txtCode.Text,
                 NewFamilyId = _comboFamilies.SelectedEntity.Id,
                 NewCommissionGroupId = _comboCommissionGroups.SelectedEntity?.Id,
-                NewPrinterId = _comboPrinters.SelectedEntity?.Id,
                 NewDiscountGroupId = _comboDiscountGroups.SelectedEntity?.Id,
                 NewVatOnTableId = _comboVatOnTable.SelectedEntity?.Id,
                 NewVatDirectSellingId = _comboVatDirectSelling.SelectedEntity?.Id,
@@ -60,8 +58,8 @@ namespace LogicPOS.UI.Components.Modals
             _txtOrder.Text = _entity.Order.ToString();
             _txtCode.Text = _entity.Code;
             _txtDesignation.Text = _entity.Designation;
-            _txtButtonName.Text = _entity.Button?.ButtonLabel;
-            _imagePicker.SetImage(_entity.Button?.ButtonImage);
+            _txtButtonName.Text = _entity.Button?.Label;
+            _imagePicker.SetBase64Image(_entity.Button?.Image, _entity.Button?.ImageExtension);
             _checkDisabled.Active = _entity.IsDeleted;
             _txtNotes.Value.Text = _entity.Notes;
         }

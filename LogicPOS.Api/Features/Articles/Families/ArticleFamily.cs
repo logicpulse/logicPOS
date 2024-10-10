@@ -17,9 +17,6 @@ namespace LogicPOS.Api.Entities
         public DiscountGroup DiscountGroup { get; set; }
         public Guid? DiscountGroupId { get; set; }
 
-        public Printer Printer { get; set; }
-        public Guid? PrinterId { get; set; }
-
         public Button Button { get; set; }
     }
 }

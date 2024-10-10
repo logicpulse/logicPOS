@@ -19,7 +19,6 @@ namespace LogicPOS.UI.Components.Menus
         public int MaxCharsPerButtonLabel { get; set; } = AppSettings.Instance.posBaseButtonMaxCharsPerLabel;
         public string ButtonOverlay { get; set; } = PathsSettings.ImagesFolderLocation + @"Buttons\Pos\button_overlay.png";
         public List<(ArticleFamily Family,CustomButton Button)> Buttons { get; set; } = new List<(ArticleFamily,CustomButton)>();
-        public string ButtonName { get; set; }
         public string ButtonImage { get; set; }
         public string ButtonLabel { get; set; }
         public bool ToggleMode { get; set; } = true;
@@ -32,8 +31,6 @@ namespace LogicPOS.UI.Components.Menus
         public CustomButton BtnNext { get; set; }
         public uint Rows { get; set; } = 6;
         public uint Columns { get; set; } = 1;
-        public string ButtonNamePrefix { get; set; } = "buttonFamilyId";
-        public Color ButtonColor { get; set; } = Color.Transparent;
         public Size ButtonSize { get; set; } = new Size(176, 120);
 
         public Window SourceWindow { get; set; }
@@ -41,7 +38,6 @@ namespace LogicPOS.UI.Components.Menus
         public CustomButton SelectedButton { get; set; }
         public string Order { get; set; }
 
-        //public event EventHandler ButtonClicked;
         public event Action<ArticleFamily> FamilySelected;
 
         public ArticleFamiliesMenu(CustomButton btnPrevious, CustomButton btnNext) : base(6, 1, true)
@@ -63,8 +59,6 @@ namespace LogicPOS.UI.Components.Menus
             return new ImageButton(
                 new ButtonSettings
                 {
-                    Name = ButtonName,
-                    BackgroundColor = ButtonColor,
                     Text = ButtonLabel,
                     FontSize = ButtonFontSize,
                     Image = ButtonImage,
@@ -191,9 +185,8 @@ namespace LogicPOS.UI.Components.Menus
                         }
                     }
 
-                    ButtonName = $"{ButtonNamePrefix}_{family.Id}";
-                    ButtonLabel = family.Button.ButtonLabel ?? ButtonName;
-                    ButtonImage = family.Button.ButtonImage ?? "";
+                    ButtonLabel = family.Button.Label ?? family.Designation;
+                    ButtonImage = family.Button.Image ?? "";
 
                     if (ButtonLabel.Length > MaxCharsPerButtonLabel)
                     {

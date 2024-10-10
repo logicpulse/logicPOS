@@ -230,8 +230,9 @@ namespace LogicPOS.UI.Components.Modals
         {
             return new Api.ValueObjects.Button
             {
-                ButtonLabel = _txtButtonName.Text,
-                ButtonImage = _imagePicker.FileChooserButton.Filename
+                Label = _txtButtonName.Text,
+                Image = _imagePicker.GetBase64Image(),
+                ImageExtension = _imagePicker.GetImageExtension()
             };
         }
 

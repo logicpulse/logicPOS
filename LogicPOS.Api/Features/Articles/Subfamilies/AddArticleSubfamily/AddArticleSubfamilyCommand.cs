@@ -14,7 +14,6 @@ namespace LogicPOS.Api.Features.Articles.Subfamilies.AddArticleSubfamily
         public Guid? VatOnTableId { get; set; }
         public Guid? VatDirectSellingId { get; set; }
         public Button Button { get; set; }
-        public Guid? PrinterId { get; set; }
         public string Notes { get; set; }
     }
 }

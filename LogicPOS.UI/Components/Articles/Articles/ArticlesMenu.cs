@@ -198,8 +198,8 @@ namespace LogicPOS.UI.Components.Menus
                 }
 
                 ButtonName = $"{ButtonNamePrefix}_{article.Id}";
-                ButtonLabel = article.Button.ButtonLabel ?? ButtonName;
-                ButtonImage = article.Button.ButtonImage ?? "";
+                ButtonLabel = article.Button.Label ?? ButtonName;
+                ButtonImage = article.Button.Image ?? "";
 
                 if (ButtonLabel.Length > MaxCharsPerButtonLabel)
                 {

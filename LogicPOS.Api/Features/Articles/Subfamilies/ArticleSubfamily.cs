@@ -28,7 +28,5 @@ namespace LogicPOS.Api.Entities
 
         public Button Button { get; set; }
 
-        public Printer Printer { get; set; }
-        public Guid? PrinterId { get; set; }
     }
 }

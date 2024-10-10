@@ -20,13 +20,11 @@ namespace LogicPOS.UI.Components.Modals
         private TextBox _txtButtonName = new TextBox("global_button_name");
         private ImagePicker _imagePicker = new ImagePicker(GeneralUtils.GetResourceByName("global_button_image"));
         private CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
-        private EntityComboBox<Api.Entities.Printer> _comboPrinters;
         private EntityComboBox<CommissionGroup> _comboCommissionGroups;
         #endregion
 
         protected override void BeforeDesign()
         {
-            InitializePrintersComboBox();
             InitializeCommissionGroupsComboBox();
         }
 
@@ -34,20 +32,10 @@ namespace LogicPOS.UI.Components.Modals
         {
             return new Api.ValueObjects.Button
             {
-                ButtonLabel = _txtButtonName.Text,
-                ButtonImage = _imagePicker.FileChooserButton.Filename
+                Label = _txtButtonName.Text,
+                Image = _imagePicker.GetBase64Image(),
+                ImageExtension = _imagePicker.GetImageExtension()
             };
-        }
-
-        private void InitializePrintersComboBox()
-        {
-            var printers = GetPrinters();
-            var labelText = GeneralUtils.GetResourceByName("global_device_printer");
-            var currentPrinter = _entity != null ? _entity.Printer : null;
-
-            _comboPrinters = new EntityComboBox<Api.Entities.Printer>(labelText,
-                                                             printers,
-                                                             currentPrinter);
         }
 
         private void InitializeCommissionGroupsComboBox()
@@ -107,7 +95,6 @@ namespace LogicPOS.UI.Components.Modals
             detailsTab.PackStart(_txtDesignation.Component, false, false, 0);
             detailsTab.PackStart(_txtButtonName.Component, false, false, 0);
             detailsTab.PackStart(_imagePicker.Component, false, false, 0);
-            detailsTab.PackStart(_comboPrinters.Component, false, false, 0);
             detailsTab.PackStart(_comboCommissionGroups.Component, false, false, 0);
 
             if (_modalMode != EntityEditionModalMode.Insert)
