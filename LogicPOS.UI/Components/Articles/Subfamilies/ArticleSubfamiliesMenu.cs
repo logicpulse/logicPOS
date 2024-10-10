@@ -4,6 +4,7 @@ using LogicPOS.Api.Features.Articles.Families.GetAllArticleFamilies;
 using LogicPOS.Api.Features.Articles.Subfamilies.GetAllArticleSubfamilies;
 using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Articles;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -192,7 +193,15 @@ namespace LogicPOS.UI.Components.Menus
                 }
 
                 ButtonLabel = subfamily.Button.Label ?? subfamily.Designation;
-                ButtonImage = subfamily.Button.Image ?? "";
+
+                if (string.IsNullOrEmpty(subfamily.Button.ImageExtension) == false)
+                {
+                    ButtonImage = ArticleImageRepository.GetImage(subfamily.Id) ?? ArticleImageRepository.AddBase64Image(subfamily.Id, subfamily.Button.Image, subfamily.Button.ImageExtension);
+                }
+                else
+                {
+                    ButtonImage = null;
+                }
 
                 if (ButtonLabel.Length > MaxCharsPerButtonLabel)
                 {
