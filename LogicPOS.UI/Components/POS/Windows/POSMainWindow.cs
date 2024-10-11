@@ -165,7 +165,7 @@ namespace LogicPOS.UI.Components.Windows
             if (eventBoxImageLogoVisible) FixedWindow.Put(eventBoxImageLogo, eventBoxImageLogoPosition.X, eventBoxImageLogoPosition.Y);
 
             eventBoxImageLogo.Add(imageLogo);
-            eventBoxImageLogo.ButtonPressEvent += eventBoxImageLogo_ButtonPressEvent;
+            eventBoxImageLogo.ButtonPressEvent += ImageLogo_Clicked;
 
         }
 
@@ -605,29 +605,20 @@ namespace LogicPOS.UI.Components.Windows
             //PackIt
             eventboxToolbar.Add(hboxToolbar);
 
-            //Assign Toolbar Button references to TicketList
-            TicketList.ToolbarApplicationClose = BtnQuit;
-            TicketList.ToolbarBackOffice = BtnBackOffice;
-            // Deprecated
-            TicketList.ToolbarReports = BtnReports;
-            TicketList.ToolbarShowSystemDialog = BtnShowSystemDialog;
-            TicketList.ToolbarLogoutUser = BtnLogOut;
-            TicketList.ToolbarShowChangeUserDialog = BtnChangeUser;
-            TicketList.ToolbarCashDrawer = BtnCashDrawer;
-            TicketList.ToolbarFinanceDocuments = BtnDocuments;
-            TicketList.ToolbarNewFinanceDocument = BtnNewDocument;
+            AddEventHandlers();
+        }
 
-            //Events
-            BtnQuit.Clicked += touchButtonPosToolbarApplicationClose_Clicked;
-            BtnBackOffice.Clicked += touchButtonPosToolbarBackOffice_Clicked;
-            // Deprecated
-            BtnReports.Clicked += touchButtonPosToolbarReports_Clicked;
+        private void AddEventHandlers()
+        {
+            BtnQuit.Clicked += BtnQuit_Clicked;
+            BtnBackOffice.Clicked += BtnBackOffice_Clicked;
+            BtnReports.Clicked += BtnReports_Clicked;
             BtnShowSystemDialog.Clicked += delegate { throw new NotImplementedException(); };
-            BtnLogOut.Clicked += touchButtonPosToolbarLogoutUser_Clicked;
-            BtnChangeUser.Clicked += touchButtonPosToolbarShowChangeUserDialog_Clicked;
-            BtnCashDrawer.Clicked += touchButtonPosToolbarCashDrawer_Clicked;
+            BtnLogOut.Clicked += BtnLogOut_Clicked;
+            BtnChangeUser.Clicked += BtnChangeUser_Clicked;
+            BtnCashDrawer.Clicked += BtnCashDrawer_Clicked;
             BtnNewDocument.Clicked += BtnNewDocument_Clicked;
-            BtnDocuments.Clicked += touchButtonPosToolbarFinanceDocuments_Clicked;
+            BtnDocuments.Clicked += BtnDocuments_Clicked;
         }
 
         private void InitializeSaleOptionsPanel(dynamic pThemeWindow)
@@ -671,7 +662,7 @@ namespace LogicPOS.UI.Components.Windows
 
             //Get ThemeObject to send to TicketList Constructor
             dynamic theme = themeWindow.Objects.EventBoxPosTicketList;
-            TicketList = new TicketList(theme, SaleOptionsPanel) { SourceWindow = this };
+            TicketList = new TicketList(this,theme, SaleOptionsPanel);
             eventBoxPosTicketList.Add(TicketList);
             if (eventBoxPosTicketListVisible) FixedWindow.Put(eventBoxPosTicketList, eventBoxPosTicketListPosition.X, eventBoxPosTicketListPosition.Y);
         }

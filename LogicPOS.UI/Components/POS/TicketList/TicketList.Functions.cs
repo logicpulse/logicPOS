@@ -43,7 +43,7 @@ namespace LogicPOS.UI.Components
         {
             if (ListMode == TicketListMode.OrderMain)
             {
-                ResponseType responseType = logicpos.Utils.ShowMessageBox(SourceWindow, DialogFlags.Modal, new System.Drawing.Size(400, 280), MessageType.Question, ButtonsType.YesNo, string.Format(GeneralUtils.GetResourceByName("global_warning"), GeneralSettings.ServerVersion), GeneralUtils.GetResourceByName("dialog_message__pos_order_cancel"));
+                ResponseType responseType = logicpos.Utils.ShowMessageBox(POSWindow, DialogFlags.Modal, new System.Drawing.Size(400, 280), MessageType.Question, ButtonsType.YesNo, string.Format(GeneralUtils.GetResourceByName("global_warning"), GeneralSettings.ServerVersion), GeneralUtils.GetResourceByName("dialog_message__pos_order_cancel"));
 
                 if (responseType == ResponseType.Yes)
                 {
@@ -143,7 +143,7 @@ namespace LogicPOS.UI.Components
             decimal oldValueQnt = Convert.ToDecimal(((string)ListStore.GetValue(_treeIter, (int)TicketListColumns.Quantity)).Replace('.', ','));
             if (!logicpos.Utils.CheckStocks())
             {
-                if (logicpos.Utils.ShowMessageMinimumStock(SourceWindow, CurrentOrderDetail.Lines[SelectedIndex].ArticleOid, (oldValueQnt + defaultQuantity)))
+                if (logicpos.Utils.ShowMessageMinimumStock(POSWindow, CurrentOrderDetail.Lines[SelectedIndex].ArticleOid, (oldValueQnt + defaultQuantity)))
                 {
                     ChangeQuantity(oldValueQnt + defaultQuantity);
                     UpdateSaleOptionsPanelButtons();
@@ -165,13 +165,13 @@ namespace LogicPOS.UI.Components
         private void BtnQuantity_Clicked(object sender, EventArgs e)
         {
             decimal oldValueQnt = CurrentOrderDetail.Lines[SelectedIndex].Properties.Quantity;
-            decimal newValueQnt = PosKeyboardDialog.RequestDecimalValue(SourceWindow, oldValueQnt);
+            decimal newValueQnt = PosKeyboardDialog.RequestDecimalValue(POSWindow, oldValueQnt);
             bool showMessage;
             if (newValueQnt > 0)
             {
                 if (logicpos.Utils.CheckStocks())
                 {
-                    if (!logicpos.Utils.ShowMessageMinimumStock(SourceWindow, CurrentOrderDetail.Lines[SelectedIndex].ArticleOid, newValueQnt, out showMessage))
+                    if (!logicpos.Utils.ShowMessageMinimumStock(POSWindow, CurrentOrderDetail.Lines[SelectedIndex].ArticleOid, newValueQnt, out showMessage))
                     {
                         if (showMessage)
                         {
@@ -194,7 +194,7 @@ namespace LogicPOS.UI.Components
             decimal oldValueQuantity = CurrentOrderDetail.Lines[SelectedIndex].Properties.Quantity;
             decimal oldValuePrice = CurrentOrderDetail.Lines[SelectedIndex].Properties.PriceFinal;
 
-            MoneyPadResult result = PosMoneyPadDialog.RequestDecimalValue(SourceWindow, GeneralUtils.GetResourceByName("window_title_dialog_moneypad_product_price"), oldValuePrice);
+            MoneyPadResult result = PosMoneyPadDialog.RequestDecimalValue(POSWindow, GeneralUtils.GetResourceByName("window_title_dialog_moneypad_product_price"), oldValuePrice);
             decimal newValuePrice = result.Value;
 
             if (result.Response == ResponseType.Ok && newValuePrice > 0)
@@ -268,9 +268,9 @@ namespace LogicPOS.UI.Components
                 if (!GeneralSettings.AppUseParkingTicketModule && logicpos.Utils.PrintTicket())
                 {
                     // TK016249 Impressoras - Diferenciação entre Tipos 
-                    FrameworkCalls.PrintOrderRequest(SourceWindow, TerminalSettings.LoggedTerminal.ThermalPrinter, orderMain, orderTicket);
+                    FrameworkCalls.PrintOrderRequest(POSWindow, TerminalSettings.LoggedTerminal.ThermalPrinter, orderMain, orderTicket);
                 }
-                FrameworkCalls.PrintArticleRequest(SourceWindow, orderTicket);
+                FrameworkCalls.PrintArticleRequest(POSWindow, orderTicket);
             }
 
             //Change Mode
@@ -291,7 +291,7 @@ namespace LogicPOS.UI.Components
             //Request Finish Open Ticket
             if (TotalItemsTicketListMode > 0)
             {
-                ResponseType dialogResponse = logicpos.Utils.ShowMessageTouch(SourceWindow, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.OkCancel, GeneralUtils.GetResourceByName("window_title_dialog_message_dialog"), GeneralUtils.GetResourceByName("dialog_message_request_close_open_ticket"));
+                ResponseType dialogResponse = logicpos.Utils.ShowMessageTouch(POSWindow, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.OkCancel, GeneralUtils.GetResourceByName("window_title_dialog_message_dialog"), GeneralUtils.GetResourceByName("dialog_message_request_close_open_ticket"));
                 if (dialogResponse != ResponseType.Ok)
                 {
                     return;
@@ -328,12 +328,12 @@ namespace LogicPOS.UI.Components
             // Get Dialog Reference
             if (button.Name.Equals("touchButtonPosTicketPadPayments_Green"))
             {
-                dialog = new PaymentDialog(SourceWindow, DialogFlags.DestroyWithParent, articleBag);
+                dialog = new PaymentDialog(POSWindow, DialogFlags.DestroyWithParent, articleBag);
             }
             else
             if (button.Name.Equals("touchButtonPosTicketPadSplitAccount_Green"))
             {
-                dialog = new PosSplitPaymentsDialog(SourceWindow, DialogFlags.DestroyWithParent, ArticleBag, this);
+                dialog = new PosSplitPaymentsDialog(POSWindow, DialogFlags.DestroyWithParent, ArticleBag, this);
             }
 
             // Shared code to call Both Dialogs
@@ -356,7 +356,7 @@ namespace LogicPOS.UI.Components
         private void BtnBarcode_Clicked(object sender, EventArgs e)
         {
             string fileWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_input_text_barcode.png";
-            logicpos.Utils.ResponseText dialogResponse = logicpos.Utils.GetInputText(SourceWindow, DialogFlags.Modal, fileWindowIcon, GeneralUtils.GetResourceByName("global_barcode_articlecode"), string.Empty, RegexUtils.RegexAlfaNumericExtended, true);
+            logicpos.Utils.ResponseText dialogResponse = logicpos.Utils.GetInputText(POSWindow, DialogFlags.Modal, fileWindowIcon, GeneralUtils.GetResourceByName("global_barcode_articlecode"), string.Empty, RegexUtils.RegexAlfaNumericExtended, true);
 
             if (dialogResponse.ResponseType == ResponseType.Ok)
             {
@@ -374,7 +374,7 @@ namespace LogicPOS.UI.Components
         private void BtnCardCode_Clicked(object sender, EventArgs e)
         {
             string fileWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_pos_ticketpad_card_entry.png";
-            logicpos.Utils.ResponseText dialogResponse = logicpos.Utils.GetInputText(SourceWindow, DialogFlags.Modal, fileWindowIcon, GeneralUtils.GetResourceByName("global_cardcode_small"), string.Empty, RegexUtils.RegexAlfaNumericExtended, true);
+            logicpos.Utils.ResponseText dialogResponse = logicpos.Utils.GetInputText(POSWindow, DialogFlags.Modal, fileWindowIcon, GeneralUtils.GetResourceByName("global_cardcode_small"), string.Empty, RegexUtils.RegexAlfaNumericExtended, true);
 
             if (dialogResponse.ResponseType == ResponseType.Ok)
             {
@@ -392,7 +392,7 @@ namespace LogicPOS.UI.Components
         private void BtnListOrder_Clicked(object sender, EventArgs e)
         {
             OrderMain currentOrderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];
-            PosOrdersDialog dialog = new PosOrdersDialog(this.SourceWindow, DialogFlags.DestroyWithParent, currentOrderMain.Table.Name);
+            PosOrdersDialog dialog = new PosOrdersDialog(this.POSWindow, DialogFlags.DestroyWithParent, currentOrderMain.Table.Name);
             ResponseType response = (ResponseType)dialog.Run();
             dialog.Destroy();
 
@@ -400,7 +400,7 @@ namespace LogicPOS.UI.Components
 
         private void BtnChangeTable_Clicked(object sender, EventArgs e)
         {
-            PosTablesDialog dialog = new PosTablesDialog(this.SourceWindow, DialogFlags.DestroyWithParent, TableFilterMode.OnlyFreeTables);
+            PosTablesDialog dialog = new PosTablesDialog(this.POSWindow, DialogFlags.DestroyWithParent, TableFilterMode.OnlyFreeTables);
             ResponseType response = (ResponseType)dialog.Run();
 
             if (response == ResponseType.Ok || response == ResponseType.Cancel || response == ResponseType.DeleteEvent)
@@ -500,7 +500,7 @@ namespace LogicPOS.UI.Components
 
                 if (logicpos.Utils.CheckStocks())
                 {
-                    if (logicpos.Utils.ShowMessageMinimumStock(SourceWindow, CurrentOrderDetail.Lines[SelectedIndex].ArticleOid, quantity))
+                    if (logicpos.Utils.ShowMessageMinimumStock(POSWindow, CurrentOrderDetail.Lines[SelectedIndex].ArticleOid, quantity))
                     {
                         ChangeQuantity(quantity);
                     }
@@ -524,7 +524,7 @@ namespace LogicPOS.UI.Components
             CriteriaOperator criteria = CriteriaOperator.Parse("(Disabled = 0 OR Disabled IS NULL)");
             PosSelectRecordDialog<XPCollection, Entity, TreeViewConfigurationVatExceptionReason>
               dialog = new PosSelectRecordDialog<XPCollection, Entity, TreeViewConfigurationVatExceptionReason>(
-                SourceWindow,
+                POSWindow,
                 DialogFlags.DestroyWithParent,
                     GeneralUtils.GetResourceByName("global_vat_exemption_reason"),
                 GlobalApp.MaxWindowSize,
@@ -546,7 +546,7 @@ namespace LogicPOS.UI.Components
 
         private void BtnSelectTable_Clicked(object sender, EventArgs e)
         {
-            PosTablesDialog dialog = new PosTablesDialog(this.SourceWindow, DialogFlags.DestroyWithParent);
+            PosTablesDialog dialog = new PosTablesDialog(this.POSWindow, DialogFlags.DestroyWithParent);
             ResponseType response = (ResponseType)dialog.Run();
 
             if (response == ResponseType.Ok || response == ResponseType.Cancel || response == ResponseType.DeleteEvent)

@@ -25,6 +25,7 @@ using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components;
 using LogicPOS.UI.Components.Accordions;
 using LogicPOS.UI.Components.BackOffice.Windows;
+using LogicPOS.UI.Components.Documents;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Dialogs;
 using LogicPOS.UI.Extensions;
@@ -2065,19 +2066,6 @@ namespace logicpos
             }
         }
 
-        //TK016235 BackOffice - Mode
-        public static void StartDocumentsMenuFromBackOffice(Window parentWindow, int docChoice)
-        {
-
-            PosDocumentFinanceSelectRecordDialog dialog = new PosDocumentFinanceSelectRecordDialog(parentWindow, DialogFlags.DestroyWithParent, docChoice);
-            
-            if (docChoice == 0)
-            {
-                ResponseType response = (ResponseType)dialog.Run();
-            }
-
-            dialog.Destroy();
-        }
 
         //TK016235 BackOffice - Mode
         public static void OpenArticleStockDialog(Window parentWindow)
@@ -2102,11 +2090,17 @@ namespace logicpos
                     XPOSettings.Session.ExecuteScalar(query);
                     query = string.Format("UPDATE cfg_configurationpreferenceparameter SET Disabled = '1' WHERE Token = 'CHECK_STOCKS_MESSAGE';");
                     XPOSettings.Session.ExecuteScalar(query);
-                    StartDocumentsMenuFromBackOffice(parentWindow, 6);
+
+                    var documentsMenu = new DocumentsMenuModal(parentWindow);
+                    documentsMenu.Run();
+                    documentsMenu.Destroy();
+
                 }
                 else
                 {
-                    StartDocumentsMenuFromBackOffice(parentWindow, 6);
+                    var documentsMenu = new DocumentsMenuModal(parentWindow);
+                    documentsMenu.Run();
+                    documentsMenu.Destroy();
                 }
             }
             catch (Exception ex)
@@ -2115,7 +2109,7 @@ namespace logicpos
             }
         }
 
-        //Protecções de integridade das BD's e funcionamento da aplicação [IN:013327]
+
         public static bool IsPortOpen(string portName)
         {
             var port = new SerialPort(portName);

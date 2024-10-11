@@ -52,11 +52,7 @@ namespace logicpos.Classes.Logic.Others
                     GlobalApp.PosMainWindow.TicketList.ListMode = TicketListMode.Ticket;
                     GlobalApp.PosMainWindow.TicketList.UpdateModel();
                 }
-                ////If ticketModule and ticket not in the system
-                //if (GlobalFramework.AppUseParkingTicketModule && ticketExists)
-                //{
-                //    GlobalApp.WindowPos.TicketList.ArticleNotFound();
-                //}
+
                 if (GeneralSettings.AppUseParkingTicketModule && parkingTicketResult == null)
                 {
 
@@ -74,9 +70,6 @@ namespace logicpos.Classes.Logic.Others
                 }
                 else
                 {
-                    //GlobalApp.WindowPos.UpdateWorkSessionUI();
-                    //GlobalApp.WindowPos.TicketList.UpdateOrderStatusBar();
-                    //Guid XpoOidArticleParkingCard = Guid.NewGuid();
                     GlobalApp.PosMainWindow.TicketList.InsertOrUpdate(XPOSettings.XpoOidArticleParkingCard, parkingTicketResult);
                 }
             }

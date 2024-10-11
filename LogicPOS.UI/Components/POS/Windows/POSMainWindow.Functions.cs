@@ -5,7 +5,6 @@ using logicpos.App;
 using logicpos.Classes.Enums.Hardware;
 using logicpos.Classes.Enums.TicketList;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
-using logicpos.Classes.Gui.Gtk.Widgets;
 using LogicPOS.Data.Services;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
@@ -14,12 +13,10 @@ using LogicPOS.Domain.Enums;
 using LogicPOS.Settings;
 using LogicPOS.Shared;
 using LogicPOS.Shared.Orders;
-using LogicPOS.UI.Buttons;
-using LogicPOS.UI.Components;
+using LogicPOS.UI.Components.Documents;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.Utility;
 using System;
-using System.Linq;
 
 namespace LogicPOS.UI.Components.Windows
 {
@@ -46,30 +43,30 @@ namespace LogicPOS.UI.Components.Windows
             }
         }
 
-        private void touchButtonPosToolbarApplicationClose_Clicked(object sender, EventArgs e)
+        private void BtnQuit_Clicked(object sender, EventArgs e)
         {
             LogicPOSApp.Quit(this);
         }
 
-        private void touchButtonPosToolbarBackOffice_Clicked(object sender, EventArgs e)
+        private void BtnBackOffice_Clicked(object sender, EventArgs e)
         {
             Utils.ShowBackOffice(this);
         }
 
-        private void touchButtonPosToolbarReports_Clicked(object sender, EventArgs e)
+        private void BtnReports_Clicked(object sender, EventArgs e)
         {
             PosReportsDialog dialog = new PosReportsDialog(this, DialogFlags.DestroyWithParent);
             int response = dialog.Run();
             dialog.Destroy();
         }
 
-        private void touchButtonPosToolbarLogoutUser_Clicked(object sender, EventArgs e)
+        private void BtnLogOut_Clicked(object sender, EventArgs e)
         {
             Hide();
             GlobalApp.StartupWindow.LogOutUser(true);
         }
 
-        private void touchButtonPosToolbarCashDrawer_Clicked(object sender, EventArgs e)
+        private void BtnCashDrawer_Clicked(object sender, EventArgs e)
         {
             ShowCashDialog();
         }
@@ -92,14 +89,14 @@ namespace LogicPOS.UI.Components.Windows
             createDocumentModal.Destroy();
         }
 
-        private void touchButtonPosToolbarFinanceDocuments_Clicked(object sender, EventArgs e)
+        private void BtnDocuments_Clicked(object sender, EventArgs e)
         {
-            PosDocumentFinanceSelectRecordDialog dialog = new PosDocumentFinanceSelectRecordDialog(this, DialogFlags.DestroyWithParent, 0);
-            ResponseType response = (ResponseType)dialog.Run();
-            dialog.Destroy();
+            var documentsMenu = new DocumentsMenuModal(this);
+            documentsMenu.Run();
+            documentsMenu.Destroy();
         }
 
-        private void touchButtonPosToolbarShowChangeUserDialog_Clicked(object sender, EventArgs e)
+        private void BtnChangeUser_Clicked(object sender, EventArgs e)
         {
             PosChangeUserDialog dialogChangeUser = new PosChangeUserDialog(this, DialogFlags.DestroyWithParent);
 
@@ -153,28 +150,7 @@ namespace LogicPOS.UI.Components.Windows
             if (MenuSubfamilies.SelectedButton != null && !MenuSubfamilies.SelectedButton.Sensitive) MenuSubfamilies.SelectedButton.Sensitive = true;
         }
 
-        private void MenuSubfamiliesBtn_Clicked(object sender, EventArgs e)
-        {
-            CustomButton button = (CustomButton)sender;
-            MenuSubfamilies.SelectedSubfamily = MenuSubfamilies.Buttons.First(b => b.Button == button).Subfamily;
-        }
-
-        private void MenuArticlesBtn_Clicked(object sender, EventArgs e)
-        {
-            CustomButton button = (CustomButton)sender;
-
-            if (TicketList.ListMode != TicketListMode.Ticket)
-            {
-                TicketList.ListMode = TicketListMode.Ticket;
-                TicketList.UpdateModel();
-            }
-
-            MenuArticles.SelectedArticle = MenuArticles.Buttons.First(b => b.Button == button).Article;
-
-            TicketList.InsertOrUpdate(button.CurrentButtonId);
-        }
-
-        private void eventBoxImageLogo_ButtonPressEvent(object o, ButtonPressEventArgs args)
+        private void ImageLogo_Clicked(object o, ButtonPressEventArgs args)
         {
             if (TerminalSettings.HasLoggedTerminal)
             {

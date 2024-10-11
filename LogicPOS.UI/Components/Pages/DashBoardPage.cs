@@ -246,9 +246,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 botao8.Clicked += delegate { botao8.Page = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlaceTable>(parentWindow); GlobalApp.BackOfficeMainWindow.Button_Click(botao8, null); };
 
                 //Actions Documents
-                BtnDocuments.Clicked += delegate { logicpos.Utils.StartDocumentsMenuFromBackOffice(parentWindow, 0); };
+                BtnDocuments.Clicked += delegate {  };
                 BtnNewDocument.Clicked += delegate { logicpos.Utils.StartNewDocumentFromBackOffice(parentWindow); };
-                botao11.Clicked += delegate { logicpos.Utils.StartDocumentsMenuFromBackOffice(parentWindow, 3); };
+                botao11.Clicked += delegate {  };
                 botao12.Clicked += delegate { logicpos.Utils.OpenArticleStockDialog(_parentWindow); };
 
                 //Actions Reports

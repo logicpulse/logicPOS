@@ -323,10 +323,10 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
             return new Dictionary<string, AccordionNode>
                 {
                     { "DocumentsNew", new AccordionNode(GeneralUtils.GetResourceByName("dialog_button_label_new_finance_documents")) { Clicked = delegate { Utils.StartNewDocumentFromBackOffice(this); } } },
-                    { "DocumentsShow", new AccordionNode(GeneralUtils.GetResourceByName("dialog_button_label_select_record_finance_documents")) { Clicked = delegate { Utils.StartDocumentsMenuFromBackOffice(this, 1); } } },
-                    { "DocumentsPay", new AccordionNode(GeneralUtils.GetResourceByName("dialog_button_label_select_finance_documents_ft_unpaid")) { Clicked = delegate { Utils.StartDocumentsMenuFromBackOffice(this, 2); } } },
-                    { "DocumentsPayments", new AccordionNode(GeneralUtils.GetResourceByName("dialog_button_label_select_payments")) { Clicked = delegate { Utils.StartDocumentsMenuFromBackOffice(this, 3); } } },
-                    { "DocumentsCurrentAccount", new AccordionNode(GeneralUtils.GetResourceByName("dialog_button_label_select_finance_documents_cc")) { Clicked = delegate { Utils.StartDocumentsMenuFromBackOffice(this, 4); } } }
+                    { "DocumentsShow", new AccordionNode(GeneralUtils.GetResourceByName("dialog_button_label_select_record_finance_documents")) { Clicked = delegate {  } } },
+                    { "DocumentsPay", new AccordionNode(GeneralUtils.GetResourceByName("dialog_button_label_select_finance_documents_ft_unpaid")) { Clicked = delegate {  } } },
+                    { "DocumentsPayments", new AccordionNode(GeneralUtils.GetResourceByName("dialog_button_label_select_payments")) { Clicked = delegate { } } },
+                    { "DocumentsCurrentAccount", new AccordionNode(GeneralUtils.GetResourceByName("dialog_button_label_select_finance_documents_cc")) { Clicked = delegate { } } }
                 };
         }
 
