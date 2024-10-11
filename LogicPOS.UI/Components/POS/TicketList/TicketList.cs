@@ -37,14 +37,12 @@ namespace LogicPOS.UI.Components
         private int TotalItems { get; set; } = 0;
         private int TotalItemsTicketListMode { get; set; } = 0;
         public OrderDetail CurrentOrderDetail { get; set; }
-        private ArticleBag _articleBag;
-        private fin_article _currentDetailArticle;
-
+        private ArticleBag ArticleBag { get; set; }
+        private fin_article CurrentDetailArticle { get; set; }
 
         private TreeIter _treeIter;
         private TreePath TreePath { get; set; }
         private TreeView TreeView { get; set; }
-
         private Label LabelTotal { get; set; }
         private Label LabelTotalLabel { get; set; }
 
@@ -111,6 +109,11 @@ namespace LogicPOS.UI.Components
             SaleOptionsPanel = panel;
             InitUI(theme);
             ConfigureWeighingBalance();
+            AddEventHandlers();
+        }
+
+        private void AddEventHandlers()
+        {
             SaleOptionsPanel.BtnSelectTable.Clicked += BtnSelectTable_Clicked;
         }
 
@@ -341,7 +344,7 @@ namespace LogicPOS.UI.Components
                 int listIndex = 0;
 
                 //Loop ArticleBag, and create new FinanceDetail Document lines
-                foreach (var item in _articleBag)
+                foreach (var item in ArticleBag)
                 {
                     ArticleBagKey articleBagKey = new ArticleBagKey(item.Key.ArticleId, item.Key.Designation, item.Key.Price, item.Key.Discount, item.Key.Vat);
 
@@ -400,10 +403,10 @@ namespace LogicPOS.UI.Components
                 {
                     POSSession.CurrentSession.OrderMains[CurrentDocumentId].OrderTickets[CurrentTickedId].OrderDetails = new OrderDetail();
 
-                    if (_currentDetailArticle != null)
+                    if (CurrentDetailArticle != null)
                     {
-                        newLine = new OrderDetailLine(_currentDetailArticle.Oid, _currentDetailArticle.Designation,
-                            ArticleUtils.GetArticlePrice(XPOUtility.GetEntityById<fin_article>(_currentDetailArticle.Oid),
+                        newLine = new OrderDetailLine(CurrentDetailArticle.Oid, CurrentDetailArticle.Designation,
+                            ArticleUtils.GetArticlePrice(XPOUtility.GetEntityById<fin_article>(CurrentDetailArticle.Oid),
                             (AppOperationModeSettings.AppMode == AppOperationMode.Retail) ? TaxSellType.TakeAway : TaxSellType.Normal));
 
                         newLine.Properties.PriceNet = Convert.ToDecimal((string)ListStore.GetValue(_treeIter, (int)TicketListColumns.Price));
@@ -416,11 +419,11 @@ namespace LogicPOS.UI.Components
                 }
                 else
                 {
-                    if (_currentDetailArticle != null)
+                    if (CurrentDetailArticle != null)
                     {
                         for (int i = 0; i < POSSession.CurrentSession.OrderMains[CurrentDocumentId].OrderTickets[CurrentTickedId].OrderDetails.Lines.Count; i++)
                         {
-                            if (POSSession.CurrentSession.OrderMains[CurrentDocumentId].OrderTickets[CurrentTickedId].OrderDetails.Lines[i].ArticleOid == _currentDetailArticle.Oid &&
+                            if (POSSession.CurrentSession.OrderMains[CurrentDocumentId].OrderTickets[CurrentTickedId].OrderDetails.Lines[i].ArticleOid == CurrentDetailArticle.Oid &&
                                 POSSession.CurrentSession.OrderMains[CurrentDocumentId].OrderTickets[CurrentTickedId].OrderDetails.Lines[i].Properties.PriceNet == POSSession.CurrentSession.OrderMains[CurrentDocumentId].OrderTickets[CurrentTickedId].OrderDetails.Lines[i].Properties.PriceNet)
                             {
                                 POSSession.CurrentSession.OrderMains[CurrentDocumentId].OrderTickets[CurrentTickedId].OrderDetails.Lines[i].Properties.Quantity = -1;
@@ -433,11 +436,11 @@ namespace LogicPOS.UI.Components
                         if (newArticleLine)
                         {
 
-                            if (_currentDetailArticle != null)
+                            if (CurrentDetailArticle != null)
                             {
 
-                                newLine = new OrderDetailLine(_currentDetailArticle.Oid, _currentDetailArticle.Designation,
-                                    ArticleUtils.GetArticlePrice(XPOUtility.GetEntityById<fin_article>(_currentDetailArticle.Oid),
+                                newLine = new OrderDetailLine(CurrentDetailArticle.Oid, CurrentDetailArticle.Designation,
+                                    ArticleUtils.GetArticlePrice(XPOUtility.GetEntityById<fin_article>(CurrentDetailArticle.Oid),
                                     (AppOperationModeSettings.AppMode == AppOperationMode.Retail) ? TaxSellType.TakeAway : TaxSellType.Normal));
 
                                 newLine.Properties.PriceNet = Convert.ToDecimal((string)ListStore.GetValue(_treeIter, (int)TicketListColumns.Price));
@@ -855,9 +858,9 @@ namespace LogicPOS.UI.Components
 
             if (canDeleteItem)
             {
-                decimal currentTotalQuantity = _articleBag.DeleteFromDocumentOrder(articleBagKey, pRemoveQuantity);
+                decimal currentTotalQuantity = ArticleBag.DeleteFromDocumentOrder(articleBagKey, pRemoveQuantity);
 
-                decimal currentTotalFinal = currentTotalQuantity * _articleBag[articleBagKey].PriceFinal;
+                decimal currentTotalFinal = currentTotalQuantity * ArticleBag[articleBagKey].PriceFinal;
 
                 TicketDecrease();
 
@@ -903,7 +906,7 @@ namespace LogicPOS.UI.Components
 
             if (POSSession.CurrentSession.CurrentOrderMainId != Guid.Empty && POSSession.CurrentSession.OrderMains.ContainsKey(POSSession.CurrentSession.CurrentOrderMainId))
             {
-                _articleBag = ArticleBag.TicketOrderToArticleBag(POSSession.CurrentSession.OrderMains[CurrentDocumentId]);
+                ArticleBag = ArticleBag.TicketOrderToArticleBag(POSSession.CurrentSession.OrderMains[CurrentDocumentId]);
             }
         }
 
@@ -929,8 +932,8 @@ namespace LogicPOS.UI.Components
                     if (SaleOptionsPanel.BtnDelete != null && SelectedIndex > -1) SaleOptionsPanel.BtnDelete.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("TICKETLIST_DELETE");
                     if (SaleOptionsPanel.BtnPrice != null && !SaleOptionsPanel.BtnPrice.Sensitive) SaleOptionsPanel.BtnPrice.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("TICKETLIST_CHANGE_PRICE");
                     if (SaleOptionsPanel.BtnQuantity != null && !SaleOptionsPanel.BtnQuantity.Sensitive) SaleOptionsPanel.BtnQuantity.Sensitive = true;
-                    if (SaleOptionsPanel.BtnWeight != null) SaleOptionsPanel.BtnWeight.Sensitive = (GlobalApp.WeighingBalance != null && GlobalApp.WeighingBalance.IsPortOpen() && _currentDetailArticle.UseWeighingBalance);
-                    if (SaleOptionsPanel.BtnSplitAccount != null && !SaleOptionsPanel.BtnSplitAccount.Sensitive) SaleOptionsPanel.BtnSplitAccount.Sensitive = (_articleBag.Count > 1 && _articleBag.TotalFinal > 0.00m);
+                    if (SaleOptionsPanel.BtnWeight != null) SaleOptionsPanel.BtnWeight.Sensitive = (GlobalApp.WeighingBalance != null && GlobalApp.WeighingBalance.IsPortOpen() && CurrentDetailArticle.UseWeighingBalance);
+                    if (SaleOptionsPanel.BtnSplitAccount != null && !SaleOptionsPanel.BtnSplitAccount.Sensitive) SaleOptionsPanel.BtnSplitAccount.Sensitive = (ArticleBag.Count > 1 && ArticleBag.TotalFinal > 0.00m);
                 }
                 else
                 {
@@ -941,7 +944,7 @@ namespace LogicPOS.UI.Components
                     if (SaleOptionsPanel.BtnPrice != null && SaleOptionsPanel.BtnPrice.Sensitive) SaleOptionsPanel.BtnPrice.Sensitive = false;
                     if (SaleOptionsPanel.BtnQuantity != null && SaleOptionsPanel.BtnQuantity.Sensitive) SaleOptionsPanel.BtnQuantity.Sensitive = false;
                     if (SaleOptionsPanel.BtnWeight != null && SaleOptionsPanel.BtnWeight.Sensitive) SaleOptionsPanel.BtnWeight.Sensitive = false;
-                    if (SaleOptionsPanel.BtnSplitAccount != null && SaleOptionsPanel.BtnSplitAccount.Sensitive) SaleOptionsPanel.BtnSplitAccount.Sensitive = (_articleBag.Count > 1 && _articleBag.TotalFinal > 0.00m); ;
+                    if (SaleOptionsPanel.BtnSplitAccount != null && SaleOptionsPanel.BtnSplitAccount.Sensitive) SaleOptionsPanel.BtnSplitAccount.Sensitive = (ArticleBag.Count > 1 && ArticleBag.TotalFinal > 0.00m); ;
                 }
             };
 
@@ -1006,7 +1009,7 @@ namespace LogicPOS.UI.Components
                     else if (TotalItemsTicketListMode == 0)
                     {
                         if (POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId].OrderStatus == OrderStatus.Open &&
-                            _articleBag.TotalFinal > 0.00m)
+                            ArticleBag.TotalFinal > 0.00m)
                         {
                             SaleOptionsPanel.BtnPayments.Sensitive = true;
                             SaleOptionsPanel.BtnSplitAccount.Sensitive = true;
@@ -1033,7 +1036,7 @@ namespace LogicPOS.UI.Components
 
                 if (ListMode == TicketListMode.Ticket) UpdateArticleBag();
 
-                if (_articleBag != null && _articleBag.Count > 0)
+                if (ArticleBag != null && ArticleBag.Count > 0)
                 {
                     SaleOptionsPanel.BtnListMode.Sensitive = true;
                 }
@@ -1058,7 +1061,7 @@ namespace LogicPOS.UI.Components
             {
                 labelTotalFinal = GeneralUtils.GetResourceByName("global_total_table_tickets");
 
-                TotalFinal = _articleBag.TotalFinal;
+                TotalFinal = ArticleBag.TotalFinal;
             }
             LabelTotalLabel.Text = labelTotalFinal;
             LabelTotal.Text = DataConversionUtils.DecimalToStringCurrency(TotalFinal, XPOSettings.ConfigurationSystemCurrency.Acronym);
@@ -1146,7 +1149,7 @@ namespace LogicPOS.UI.Components
                 TreePath = model.GetPath(_treeIter);
 
                 CurrentDetailArticleId = (Guid)ListStore.GetValue(_treeIter, 0);
-                _currentDetailArticle = (fin_article)XPOSettings.Session.GetObjectByKey(typeof(fin_article), CurrentDetailArticleId);
+                CurrentDetailArticle = (fin_article)XPOSettings.Session.GetObjectByKey(typeof(fin_article), CurrentDetailArticleId);
 
                 if (ListMode == TicketListMode.Ticket)
                 {
@@ -1157,7 +1160,7 @@ namespace LogicPOS.UI.Components
                     ArticleBagKey articleBagKey = (ArticleBagKey)ListStore.GetValue(_treeIter, 7);
                     if (articleBagKey != null)
                     {
-                        SelectedIndex = _articleBag[articleBagKey].ListIndex;
+                        SelectedIndex = ArticleBag[articleBagKey].ListIndex;
                     }
                 }
 

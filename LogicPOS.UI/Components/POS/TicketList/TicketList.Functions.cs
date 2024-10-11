@@ -333,7 +333,7 @@ namespace LogicPOS.UI.Components
             else
             if (button.Name.Equals("touchButtonPosTicketPadSplitAccount_Green"))
             {
-                dialog = new PosSplitPaymentsDialog(SourceWindow, DialogFlags.DestroyWithParent, _articleBag, this);
+                dialog = new PosSplitPaymentsDialog(SourceWindow, DialogFlags.DestroyWithParent, ArticleBag, this);
             }
 
             // Shared code to call Both Dialogs
