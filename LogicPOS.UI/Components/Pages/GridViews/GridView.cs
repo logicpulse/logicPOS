@@ -1,7 +1,6 @@
 ﻿using DevExpress.Data.Filtering;
 using Gtk;
 using logicpos;
-using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;

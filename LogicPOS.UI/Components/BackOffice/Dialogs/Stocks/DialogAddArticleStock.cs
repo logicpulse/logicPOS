@@ -1,7 +1,6 @@
 ﻿using DevExpress.Data.Filtering;
 using DevExpress.Xpo;
 using Gtk;
-using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.BackOffice;
@@ -14,6 +13,7 @@ using LogicPOS.Domain.Entities;
 using LogicPOS.Modules.StockManagement;
 using LogicPOS.Settings;
 using LogicPOS.Shared;
+using LogicPOS.UI;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components;

@@ -12,6 +12,7 @@ using LogicPOS.Domain.Entities;
 using LogicPOS.Finance.Utility;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using LogicPOS.UI;
 using LogicPOS.UI.Components;
 using System;
 using System.Collections;

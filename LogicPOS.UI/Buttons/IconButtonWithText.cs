@@ -1,6 +1,5 @@
 ﻿using Gtk;
 using logicpos;
-using logicpos.App;
 using LogicPOS.UI.Extensions;
 using System.IO;
 

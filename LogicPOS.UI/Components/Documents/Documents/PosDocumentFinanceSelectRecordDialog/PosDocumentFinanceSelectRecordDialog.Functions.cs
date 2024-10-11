@@ -19,6 +19,7 @@ using LogicPOS.Settings;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.Shared.Article;
 using LogicPOS.Shared.CustomDocument;
+using LogicPOS.UI;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components;
 using LogicPOS.UI.Components.Documents;

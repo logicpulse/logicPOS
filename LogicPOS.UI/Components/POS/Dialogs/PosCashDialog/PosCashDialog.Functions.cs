@@ -1,7 +1,6 @@
 ﻿using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
 using Gtk;
-using logicpos.App;
 using logicpos.Classes.DataLayer;
 using LogicPOS.Data.Services;
 using LogicPOS.Data.XPO;
@@ -11,6 +10,7 @@ using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Enums;
 using LogicPOS.Globalization;
 using LogicPOS.Printing.Utility;
+using LogicPOS.UI;
 using System;
 using System.Collections;
 using System.Drawing;
@@ -202,7 +202,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_request_print_document_confirmation"));
 
                             //Enable UI Buttons When Have Open Session
-                            GlobalApp.PosMainWindow.TouchButtonPosToolbarNewFinanceDocument.Sensitive = false;
+                            GlobalApp.PosMainWindow.BtnNewDocument.Sensitive = false;
                             //Show ClosePeriodMessage
                             //ShowClosePeriodMessage(dialogCashDrawer, workSessionPeriodTerminal);
                             if (pResponse == ResponseType.Yes)
@@ -221,7 +221,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 }
                             }
                             //Enable UI Buttons When Have Open Session
-                            GlobalApp.PosMainWindow.TouchButtonPosToolbarNewFinanceDocument.Sensitive = true;
+                            GlobalApp.PosMainWindow.BtnNewDocument.Sensitive = true;
 
                         }
                         else
@@ -410,7 +410,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_request_print_document_confirmation"));
 
                             //Enable UI Buttons When Have Open Session
-                            GlobalApp.PosMainWindow.TouchButtonPosToolbarNewFinanceDocument.Sensitive = false;
+                            GlobalApp.PosMainWindow.BtnNewDocument.Sensitive = false;
                             //Show ClosePeriodMessage
                             ShowClosePeriodMessage(dialogCashDrawer, workSessionPeriodTerminal);
 

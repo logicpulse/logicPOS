@@ -1,6 +1,5 @@
 ﻿using ErrorOr;
 using Gtk;
-using logicpos.App;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.FiscalYears.GetAllFiscalYears;
 using LogicPOS.Globalization;

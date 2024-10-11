@@ -1,5 +1,4 @@
 ﻿using Gtk;
-using logicpos.App;
 using logicpos.Classes.Enums.Widgets;
 using System;
 using LogicPOS.Globalization;
@@ -9,8 +8,9 @@ using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
 using LogicPOS.UI.Buttons;
+using logicpos;
 
-namespace logicpos
+namespace LogicPOS.UI.Components.Windows
 {
     public partial class StartupWindow
     {

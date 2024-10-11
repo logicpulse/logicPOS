@@ -1,9 +1,9 @@
 ﻿using DevExpress.Data.Filtering;
 using Gtk;
-using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Settings;
+using LogicPOS.UI;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components;
 using LogicPOS.UI.Dialogs;

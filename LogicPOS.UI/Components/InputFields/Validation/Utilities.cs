@@ -1,6 +1,5 @@
 ﻿using Gtk;
 using logicpos;
-using logicpos.App;
 using LogicPOS.Utility;
 using System.Collections.Generic;
 using System.Drawing;

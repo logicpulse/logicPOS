@@ -14,6 +14,7 @@ using LogicPOS.Finance.Utility;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Shared.Article;
+using LogicPOS.UI;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components;
 using LogicPOS.UI.Extensions;

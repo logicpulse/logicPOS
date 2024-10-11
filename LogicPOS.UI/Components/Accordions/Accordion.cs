@@ -1,6 +1,5 @@
 ﻿using Gtk;
 using logicpos;
-using logicpos.App;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;

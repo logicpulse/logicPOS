@@ -1,6 +1,6 @@
 using Gdk;
 using Gtk;
-using logicpos.App;
+using logicpos;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Logic.Others;
@@ -8,7 +8,6 @@ using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Settings;
-using LogicPOS.UI;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Extensions;
@@ -16,7 +15,7 @@ using LogicPOS.UI.Widgets;
 using System;
 using Image = Gtk.Image;
 
-namespace logicpos
+namespace LogicPOS.UI.Components.Windows
 {
     public partial class StartupWindow : POSWindow
     {

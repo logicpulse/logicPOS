@@ -1,5 +1,4 @@
 ﻿using Gtk;
-using logicpos.App;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents.CancelDocument;
 using LogicPOS.Settings;

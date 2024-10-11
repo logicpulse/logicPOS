@@ -1,5 +1,4 @@
 ﻿using Gtk;
-using logicpos.App;
 using logicpos.Classes.Enums.App;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using LogicPOS.Persistence.Services;

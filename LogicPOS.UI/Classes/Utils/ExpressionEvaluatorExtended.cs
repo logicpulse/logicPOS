@@ -1,7 +1,7 @@
-﻿using logicpos.App;
-using logicpos.Classes.Enums.App;
+﻿using logicpos.Classes.Enums.App;
 using logicpos.Classes.Logic.Others;
 using LogicPOS.Settings;
+using LogicPOS.UI;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using System;

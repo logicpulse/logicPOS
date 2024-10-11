@@ -1,12 +1,12 @@
 ﻿using DevExpress.Data.Filtering;
 using DevExpress.Xpo;
 using Gtk;
-using logicpos.App;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using LogicPOS.UI;
 using LogicPOS.UI.Components;
 using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.Utility;

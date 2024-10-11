@@ -1,10 +1,10 @@
 ﻿using DevExpress.Data.Filtering;
 using DevExpress.Xpo;
 using Gtk;
-using logicpos.App;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Globalization;
+using LogicPOS.UI;
 using LogicPOS.UI.Components;
 using System;
 using System.Collections.Generic;

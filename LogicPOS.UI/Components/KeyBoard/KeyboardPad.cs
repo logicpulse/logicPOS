@@ -1,5 +1,4 @@
 ﻿using Gtk;
-using logicpos.App;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using System;
@@ -7,6 +6,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Extensions;
+using LogicPOS.UI;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {

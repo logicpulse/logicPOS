@@ -1,7 +1,6 @@
 ﻿using DevExpress.Data.Filtering;
 using DevExpress.Xpo;
 using Gtk;
-using logicpos.App;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Settings.Terminal;
@@ -13,6 +12,7 @@ using LogicPOS.Printing.Documents;
 using LogicPOS.Shared;
 using LogicPOS.Shared.Article;
 using LogicPOS.Shared.Orders;
+using LogicPOS.UI;
 using LogicPOS.UI.Components;
 using System;
 using System.Drawing;

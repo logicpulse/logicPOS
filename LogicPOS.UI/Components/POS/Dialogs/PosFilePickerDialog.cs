@@ -1,11 +1,11 @@
 ﻿using Gtk;
-using logicpos.App;
 using System.Drawing;
 using System.IO;
 using LogicPOS.Settings;
 using LogicPOS.Utility;
 using LogicPOS.UI.Dialogs;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {

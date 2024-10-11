@@ -1,5 +1,4 @@
-﻿using logicpos.App;
-using logicpos.Classes.Enums.Xml;
+﻿using logicpos.Classes.Enums.Xml;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
@@ -10,6 +9,7 @@ using System.Xml.Linq;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using System.Configuration;
+using LogicPOS.UI;
 
 //ThirdParty Lib - Adapted to LogicPos
 //Class Based on Third Party XmlToObjectParser

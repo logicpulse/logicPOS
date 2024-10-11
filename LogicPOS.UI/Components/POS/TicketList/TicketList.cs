@@ -1,4 +1,5 @@
 ﻿using Gtk;
+using logicpos;
 using logicpos.App;
 using logicpos.Classes.Enums.TicketList;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
@@ -15,18 +16,20 @@ using LogicPOS.Shared;
 using LogicPOS.Shared.Article;
 using LogicPOS.Shared.Orders;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using System;
 using System.Drawing;
 
-namespace logicpos.Classes.Gui.Gtk.Widgets
+namespace LogicPOS.UI.Components
 {
     public partial class TicketList : Box
     {
-        private  Color TicketModeBackgroundColor => AppSettings.Instance.colorPosTicketListModeTicketBackground;
-        private  Color DocumentModeBackgroundColor => AppSettings.Instance.colorPosTicketListModeOrderMainBackground;
-        private  Color EditModeEditBackgroundColor => AppSettings.Instance.colorPosTicketListModeEditBackground;
+        public SaleOptionsPanel SaleOptionsPanel { get; }
+        private Color TicketModeBackgroundColor => AppSettings.Instance.colorPosTicketListModeTicketBackground;
+        private Color DocumentModeBackgroundColor => AppSettings.Instance.colorPosTicketListModeOrderMainBackground;
+        private Color EditModeEditBackgroundColor => AppSettings.Instance.colorPosTicketListModeEditBackground;
         private Guid CurrentDocumentId { get; set; }
         private int CurrentTickedId { get; set; }
         private Guid CurrentDetailArticleId { get; set; }
@@ -48,110 +51,6 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         public POSMainWindow SourceWindow { get; set; }
         public ListStore ListStore { get; set; }
         internal TicketListMode ListMode { get; set; } = TicketListMode.Ticket;
-
-        private IconButtonWithText _btnPrevious;
-        public IconButtonWithText BtnPrevious
-        {
-            set { _btnPrevious = value; _btnPrevious.Clicked += BtnPrevious_Clicked; }
-        }
-
-        private IconButtonWithText _btnNext;
-        public IconButtonWithText BtnNext
-        {
-            set { _btnNext = value; _btnNext.Clicked += BtnNext_Clicked; }
-        }
-
-        private IconButtonWithText _btnDelete;
-        public IconButtonWithText BtnDelete
-        {
-            set { _btnDelete = value; _btnDelete.Clicked += BtnDelete_Clicked; }
-        }
-
-        private IconButtonWithText _btnChangeQuantity;
-        public IconButtonWithText BtnChangeQuantity
-        {
-            set { _btnChangeQuantity = value; _btnChangeQuantity.Clicked += _buttonKeyChangeQuantity_Clicked; }
-        }
-
-        private IconButtonWithText _buttonKeyChangePrice;
-        public IconButtonWithText ButtonKeyChangePrice
-        {
-            set { _buttonKeyChangePrice = value; _buttonKeyChangePrice.Clicked += _buttonKeyChangePrice_Clicked; }
-        }
-
-        private IconButtonWithText _buttonKeyWeight;
-        public IconButtonWithText ButtonKeyWeight
-        {
-            set { _buttonKeyWeight = value; _buttonKeyWeight.Clicked += _buttonKeyWeight_Clicked; }
-        }
-
-        private IconButtonWithText _buttonKeyGifts;
-        public IconButtonWithText ButtonKeyGifts
-        {
-            set { _buttonKeyGifts = value; _buttonKeyGifts.Clicked += _buttonKeyGifts_Clicked; }
-        }
-
-        private IconButtonWithText _buttonKeyFinishOrder;
-        public IconButtonWithText ButtonKeyFinishOrder
-        {
-            set { _buttonKeyFinishOrder = value; _buttonKeyFinishOrder.Clicked += _buttonKeyFinishOrder_Clicked; }
-        }
-
-        private IconButtonWithText _buttonKeyPayments;
-        public IconButtonWithText ButtonKeyPayments
-        {
-            // Shared Event for Payments and SplitAccount
-            set { _buttonKeyPayments = value; _buttonKeyPayments.Clicked += _buttonKeyPayments_Clicked; }
-        }
-
-        private IconButtonWithText _buttonKeySplitAccount;
-        public IconButtonWithText ButtonKeySplitAccount
-        {
-            // Shared Event for Payments and SplitAccount
-            set { _buttonKeySplitAccount = value; _buttonKeySplitAccount.Clicked += _buttonKeyPayments_Clicked; }
-        }
-
-        private IconButtonWithText _buttonKeyBarCode;
-        public IconButtonWithText ButtonKeyBarCode
-        {
-            set { _buttonKeyBarCode = value; _buttonKeyBarCode.Clicked += _buttonKeyBarCode_Clicked; }
-        }
-
-        private IconButtonWithText _buttonKeyCardCode;
-        public IconButtonWithText ButtonKeyCardCode
-        {
-            set { _buttonKeyCardCode = value; _buttonKeyCardCode.Clicked += _buttonKeyCardCode_Clicked; }
-        }
-
-        private IconButtonWithText _buttonKeyListOrder;
-        public IconButtonWithText ButtonKeyListOrder
-        {
-            set { _buttonKeyListOrder = value; _buttonKeyListOrder.Clicked += _buttonKeyListOrder_Clicked; }
-        }
-
-        private IconButtonWithText _buttonKeyChangeTable;
-        public IconButtonWithText ButtonKeyChangeTable
-        {
-            set { _buttonKeyChangeTable = value; _buttonKeyChangeTable.Clicked += _buttonKeyChangeTable_Clicked; }
-        }
-
-        private IconButtonWithText _buttonKeyListMode;
-        public IconButtonWithText ButtonKeyListMode
-        {
-            set { _buttonKeyListMode = value; _buttonKeyListMode.Clicked += _buttonKeyListMode_Clicked; }
-        }
-
-        private IconButtonWithText _buttonKeyDecrease;
-        public IconButtonWithText ButtonKeyDecrease
-        {
-            set { _buttonKeyDecrease = value; _buttonKeyDecrease.Clicked += _buttonKeyDecrease_Clicked; }
-        }
-
-        private IconButtonWithText _buttonKeyIncrease;
-        public IconButtonWithText ButtonKeyIncrease
-        {
-            set { _buttonKeyIncrease = value; _buttonKeyIncrease.Clicked += _buttonKeyIncrease_Clicked; }
-        }
 
         private IconButtonWithText _toolbarApplicationClose;
         public IconButtonWithText ToolbarApplicationClose
@@ -207,17 +106,19 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             set { _toolbarNewFinanceDocument = value; }
         }
 
-        public TicketList(dynamic theme)
+        public TicketList(dynamic theme, SaleOptionsPanel panel)
         {
+            SaleOptionsPanel = panel;
             InitUI(theme);
             ConfigureWeighingBalance();
+            SaleOptionsPanel.BtnSelectTable.Clicked += BtnSelectTable_Clicked;
         }
 
         private void ConfigureWeighingBalance()
         {
             if (GlobalApp.WeighingBalance != null && GlobalApp.WeighingBalance.IsPortOpen())
             {
-                GlobalApp.WeighingBalance.ComPort().DataReceived += WeighingBalanceDataReceived;
+                GlobalApp.WeighingBalance.ComPort().DataReceived += WeighingBalance_DataReceived;
             }
         }
 
@@ -479,7 +380,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             //Init _currentDetailArticleOid, If Model is Empty the Value 0 is Assigned
             if (ListStore.Data.Count > 0) CurrentDetailArticleId = (Guid)ListStore.GetValue(_treeIter, 0);
 
-            UpdateTicketListButtons();
+            UpdateSaleOptionsPanelButtons();
             UpdateTicketListTotal();
 
         }
@@ -494,7 +395,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 CurrentOrderDetail = POSSession.CurrentSession.OrderMains[CurrentDocumentId].OrderTickets[CurrentTickedId].OrderDetails;
                 int currentTicketAux = CurrentTickedId;
                 bool newArticleLine = true;
-             
+
                 if (POSSession.CurrentSession.OrderMains[CurrentDocumentId].OrderTickets[CurrentTickedId].OrderDetails.Lines.Count == 0)
                 {
                     POSSession.CurrentSession.OrderMains[CurrentDocumentId].OrderTickets[CurrentTickedId].OrderDetails = new OrderDetail();
@@ -507,7 +408,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
                         newLine.Properties.PriceNet = Convert.ToDecimal((string)ListStore.GetValue(_treeIter, (int)TicketListColumns.Price));
                         newLine.Properties.TotalFinal = Convert.ToDecimal((string)ListStore.GetValue(_treeIter, (int)TicketListColumns.Total)) - Convert.ToDecimal((string)ListStore.GetValue(_treeIter, (int)TicketListColumns.Price));
-                     
+
                         newLine.Properties.Quantity = -1;
 
                         POSSession.CurrentSession.OrderMains[CurrentDocumentId].OrderTickets[CurrentTickedId].OrderDetails.Lines.Add(newLine);
@@ -551,7 +452,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
 
                 POSSession.CurrentSession.OrderMains[CurrentDocumentId].FinishOrder(XPOSettings.Session, false, true);
-                _buttonKeyFinishOrder.Sensitive = true;
+                SaleOptionsPanel.BtnFinishOrder.Sensitive = true;
             }
 
         }
@@ -886,7 +787,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
                         UpdateModel();
 
-                        UpdateTicketListButtons();
+                        UpdateSaleOptionsPanelButtons();
                     }
                 }
                 else
@@ -899,7 +800,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             {
                 DeleteItem_ListModeOrderMain();
             }
-         
+
         }
 
         public void DeleteItem_ListModeTicket()
@@ -928,7 +829,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 if (ListMode == TicketListMode.Ticket) TotalItemsTicketListMode = ListStore.IterNChildren();
 
                 Previous();
-                UpdateTicketListButtons();
+                UpdateSaleOptionsPanelButtons();
             }
             else
             {
@@ -955,7 +856,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             if (canDeleteItem)
             {
                 decimal currentTotalQuantity = _articleBag.DeleteFromDocumentOrder(articleBagKey, pRemoveQuantity);
-                
+
                 decimal currentTotalFinal = currentTotalQuantity * _articleBag[articleBagKey].PriceFinal;
 
                 TicketDecrease();
@@ -968,12 +869,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
                     Previous();
 
-                    UpdateTicketListButtons();
+                    UpdateSaleOptionsPanelButtons();
                 }
                 else
                 {
                     ListStore.SetValue(_treeIter, (int)TicketListColumns.Quantity, DataConversionUtils.DecimalToString(currentTotalQuantity));
-                   
+
                     ListStore.SetValue(_treeIter, (int)TicketListColumns.Total, DataConversionUtils.DecimalToString(currentTotalFinal));
                 }
 
@@ -1006,57 +907,57 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             }
         }
 
-        public void UpdateTicketListButtons()
+        public void UpdateSaleOptionsPanelButtons()
         {
             if (TotalItems == 0)
             {
-                if (_buttonKeyIncrease != null && _buttonKeyIncrease.Sensitive) _buttonKeyIncrease.Sensitive = false;
-                if (_buttonKeyDecrease != null && _buttonKeyDecrease.Sensitive) _buttonKeyDecrease.Sensitive = false;
-                if (_btnDelete != null && _btnDelete.Sensitive) _btnDelete.Sensitive = false;
-                if (_btnChangeQuantity != null && _btnChangeQuantity.Sensitive) _btnChangeQuantity.Sensitive = false;
-                if (_buttonKeyChangePrice != null && _buttonKeyChangePrice.Sensitive) _buttonKeyChangePrice.Sensitive = false;
-                if (_buttonKeyWeight != null && _buttonKeyWeight.Sensitive) _buttonKeyWeight.Sensitive = false;
-                if (_buttonKeySplitAccount != null && _buttonKeySplitAccount.Sensitive) _buttonKeySplitAccount.Sensitive = false;
+                if (SaleOptionsPanel.BtnIncrease != null && SaleOptionsPanel.BtnIncrease.Sensitive) SaleOptionsPanel.BtnIncrease.Sensitive = false;
+                if (SaleOptionsPanel.BtnDecrease != null && SaleOptionsPanel.BtnDecrease.Sensitive) SaleOptionsPanel.BtnDecrease.Sensitive = false;
+                if (SaleOptionsPanel.BtnDelete != null && SaleOptionsPanel.BtnDelete.Sensitive) SaleOptionsPanel.BtnDelete.Sensitive = false;
+                if (SaleOptionsPanel.BtnQuantity != null && SaleOptionsPanel.BtnQuantity.Sensitive) SaleOptionsPanel.BtnQuantity.Sensitive = false;
+                if (SaleOptionsPanel.BtnPrice != null && SaleOptionsPanel.BtnPrice.Sensitive) SaleOptionsPanel.BtnPrice.Sensitive = false;
+                if (SaleOptionsPanel.BtnWeight != null && SaleOptionsPanel.BtnWeight.Sensitive) SaleOptionsPanel.BtnWeight.Sensitive = false;
+                if (SaleOptionsPanel.BtnSplitAccount != null && SaleOptionsPanel.BtnSplitAccount.Sensitive) SaleOptionsPanel.BtnSplitAccount.Sensitive = false;
             }
             else
             {
                 if (ListMode == TicketListMode.Ticket && SelectedIndex > -1)
                 {
-                    if (_buttonKeyIncrease != null && !_buttonKeyIncrease.Sensitive) _buttonKeyIncrease.Sensitive = true;
-                    if (_buttonKeyDecrease != null && !_buttonKeyDecrease.Sensitive) _buttonKeyDecrease.Sensitive = true;
-                    
-                    if (_btnDelete != null && SelectedIndex > -1) _btnDelete.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("TICKETLIST_DELETE");
-                    if (_buttonKeyChangePrice != null && !_buttonKeyChangePrice.Sensitive) _buttonKeyChangePrice.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("TICKETLIST_CHANGE_PRICE");
-                    if (_btnChangeQuantity != null && !_btnChangeQuantity.Sensitive) _btnChangeQuantity.Sensitive = true;
-                    if (_buttonKeyWeight != null) _buttonKeyWeight.Sensitive = (GlobalApp.WeighingBalance != null && GlobalApp.WeighingBalance.IsPortOpen() && _currentDetailArticle.UseWeighingBalance);
-                    if (_buttonKeySplitAccount != null && !_buttonKeySplitAccount.Sensitive) _buttonKeySplitAccount.Sensitive = (_articleBag.Count > 1 && _articleBag.TotalFinal > 0.00m);
+                    if (SaleOptionsPanel.BtnIncrease != null && !SaleOptionsPanel.BtnIncrease.Sensitive) SaleOptionsPanel.BtnIncrease.Sensitive = true;
+                    if (SaleOptionsPanel.BtnDecrease != null && !SaleOptionsPanel.BtnDecrease.Sensitive) SaleOptionsPanel.BtnDecrease.Sensitive = true;
+
+                    if (SaleOptionsPanel.BtnDelete != null && SelectedIndex > -1) SaleOptionsPanel.BtnDelete.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("TICKETLIST_DELETE");
+                    if (SaleOptionsPanel.BtnPrice != null && !SaleOptionsPanel.BtnPrice.Sensitive) SaleOptionsPanel.BtnPrice.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("TICKETLIST_CHANGE_PRICE");
+                    if (SaleOptionsPanel.BtnQuantity != null && !SaleOptionsPanel.BtnQuantity.Sensitive) SaleOptionsPanel.BtnQuantity.Sensitive = true;
+                    if (SaleOptionsPanel.BtnWeight != null) SaleOptionsPanel.BtnWeight.Sensitive = (GlobalApp.WeighingBalance != null && GlobalApp.WeighingBalance.IsPortOpen() && _currentDetailArticle.UseWeighingBalance);
+                    if (SaleOptionsPanel.BtnSplitAccount != null && !SaleOptionsPanel.BtnSplitAccount.Sensitive) SaleOptionsPanel.BtnSplitAccount.Sensitive = (_articleBag.Count > 1 && _articleBag.TotalFinal > 0.00m);
                 }
                 else
                 {
-                    if (_buttonKeyIncrease != null && _buttonKeyIncrease.Sensitive) _buttonKeyIncrease.Sensitive = false;
-                    if (_buttonKeyDecrease != null && _buttonKeyDecrease.Sensitive) _buttonKeyDecrease.Sensitive = false;
-                  
-                    if (_btnDelete != null && SelectedIndex > -1) _btnDelete.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("TICKETLIST_DELETE");
-                    if (_buttonKeyChangePrice != null && _buttonKeyChangePrice.Sensitive) _buttonKeyChangePrice.Sensitive = false;
-                    if (_btnChangeQuantity != null && _btnChangeQuantity.Sensitive) _btnChangeQuantity.Sensitive = false;
-                    if (_buttonKeyWeight != null && _buttonKeyWeight.Sensitive) _buttonKeyWeight.Sensitive = false;
-                    if (_buttonKeySplitAccount != null && _buttonKeySplitAccount.Sensitive) _buttonKeySplitAccount.Sensitive = (_articleBag.Count > 1 && _articleBag.TotalFinal > 0.00m); ;
+                    if (SaleOptionsPanel.BtnIncrease != null && SaleOptionsPanel.BtnIncrease.Sensitive) SaleOptionsPanel.BtnIncrease.Sensitive = false;
+                    if (SaleOptionsPanel.BtnDecrease != null && SaleOptionsPanel.BtnDecrease.Sensitive) SaleOptionsPanel.BtnDecrease.Sensitive = false;
+
+                    if (SaleOptionsPanel.BtnDelete != null && SelectedIndex > -1) SaleOptionsPanel.BtnDelete.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("TICKETLIST_DELETE");
+                    if (SaleOptionsPanel.BtnPrice != null && SaleOptionsPanel.BtnPrice.Sensitive) SaleOptionsPanel.BtnPrice.Sensitive = false;
+                    if (SaleOptionsPanel.BtnQuantity != null && SaleOptionsPanel.BtnQuantity.Sensitive) SaleOptionsPanel.BtnQuantity.Sensitive = false;
+                    if (SaleOptionsPanel.BtnWeight != null && SaleOptionsPanel.BtnWeight.Sensitive) SaleOptionsPanel.BtnWeight.Sensitive = false;
+                    if (SaleOptionsPanel.BtnSplitAccount != null && SaleOptionsPanel.BtnSplitAccount.Sensitive) SaleOptionsPanel.BtnSplitAccount.Sensitive = (_articleBag.Count > 1 && _articleBag.TotalFinal > 0.00m); ;
                 }
             };
 
             if (TotalItemsTicketListMode == 0)
             {
-                if (_buttonKeyFinishOrder != null && _buttonKeyFinishOrder.Sensitive) _buttonKeyFinishOrder.Sensitive = false;
-                
+                if (SaleOptionsPanel.BtnFinishOrder != null && SaleOptionsPanel.BtnFinishOrder.Sensitive) SaleOptionsPanel.BtnFinishOrder.Sensitive = false;
 
-                if (_toolbarBackOffice != null /*&& !_toolbarBackOffice.Sensitive*/) _toolbarBackOffice.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("BACKOFFICE_ACCESS");
-                if (_toolbarReports != null /*&& !_toolbarReports.Sensitive*/) _toolbarReports.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("REPORT_ACCESS");
+
+                if (_toolbarBackOffice != null) _toolbarBackOffice.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("BACKOFFICE_ACCESS");
+                if (_toolbarReports != null) _toolbarReports.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("REPORT_ACCESS");
                 if (_toolbarShowSystemDialog != null && !_toolbarShowSystemDialog.Sensitive) _toolbarShowSystemDialog.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("SYSTEM_ACCESS");
                 if (_toolbarLogoutUser != null && !_toolbarLogoutUser.Sensitive) _toolbarLogoutUser.Sensitive = true;
                 if (_toolbarShowChangeUserDialog != null && !_toolbarShowChangeUserDialog.Sensitive) _toolbarShowChangeUserDialog.Sensitive = true;
-                if (_toolbarCashDrawer != null /*&& !_toolbarCashDrawer.Sensitive*/) _toolbarCashDrawer.Sensitive = (GeneralSettings.LoggedUserHasPermissionTo("WORKSESSION_ALL"));
+                if (_toolbarCashDrawer != null) _toolbarCashDrawer.Sensitive = (GeneralSettings.LoggedUserHasPermissionTo("WORKSESSION_ALL"));
                 if (_toolbarFinanceDocuments != null && !_toolbarFinanceDocuments.Sensitive) _toolbarFinanceDocuments.Sensitive = true;
-                
+
                 if (XPOSettings.WorkSessionPeriodTerminal != null && XPOSettings.WorkSessionPeriodTerminal.SessionStatus == WorkSessionPeriodStatus.Open)
                 {
                     if (_toolbarNewFinanceDocument != null && !_toolbarNewFinanceDocument.Sensitive) _toolbarNewFinanceDocument.Sensitive = true;
@@ -1064,8 +965,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             }
             else
             {
-                if (_buttonKeyFinishOrder != null && !_buttonKeyFinishOrder.Sensitive) _buttonKeyFinishOrder.Sensitive = true;
-                
+                if (SaleOptionsPanel.BtnFinishOrder != null && !SaleOptionsPanel.BtnFinishOrder.Sensitive) SaleOptionsPanel.BtnFinishOrder.Sensitive = true;
+
                 if (_toolbarBackOffice != null && _toolbarBackOffice.Sensitive) _toolbarBackOffice.Sensitive = false;
                 if (_toolbarReports != null && _toolbarReports.Sensitive) _toolbarReports.Sensitive = false;
                 if (_toolbarShowSystemDialog != null && _toolbarShowSystemDialog.Sensitive) _toolbarShowSystemDialog.Sensitive = false;
@@ -1076,30 +977,30 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 if (_toolbarNewFinanceDocument != null && _toolbarNewFinanceDocument.Sensitive) _toolbarNewFinanceDocument.Sensitive = false;
             }
 
-            UpdateTicketListOrderButtons();
+            UpdateSaleOptionsPanelOrderButtons();
         }
 
-        public void UpdateTicketListOrderButtons()
+        public void UpdateSaleOptionsPanelOrderButtons()
         {
-            if (_buttonKeyPayments != null)
+            if (SaleOptionsPanel.BtnPayments != null)
             {
                 if (POSSession.CurrentSession.CurrentOrderMainId != Guid.Empty && POSSession.CurrentSession.OrderMains.ContainsKey(POSSession.CurrentSession.CurrentOrderMainId))
                 {
-                    _buttonKeyBarCode.Sensitive = true;
+                    SaleOptionsPanel.BtnBarcode.Sensitive = true;
 
                     if (TotalItemsTicketListMode > 0 &&
                             CurrentOrderDetail.TotalFinal > 0.00m)
                     {
-                        _buttonKeyPayments.Sensitive = true;
-                        _buttonKeySplitAccount.Sensitive = true;
-                        _buttonKeyChangeTable.Sensitive = false;
+                        SaleOptionsPanel.BtnPayments.Sensitive = true;
+                        SaleOptionsPanel.BtnSplitAccount.Sensitive = true;
+                        SaleOptionsPanel.BtnChangeTable.Sensitive = false;
                         if (POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId].OrderStatus == OrderStatus.Open)
                         {
-                            _buttonKeyListOrder.Sensitive = true;
+                            SaleOptionsPanel.BtnListOrder.Sensitive = true;
                         }
                         else
                         {
-                            _buttonKeyListOrder.Sensitive = false;
+                            SaleOptionsPanel.BtnListOrder.Sensitive = false;
                         }
                     }
                     else if (TotalItemsTicketListMode == 0)
@@ -1107,38 +1008,38 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         if (POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId].OrderStatus == OrderStatus.Open &&
                             _articleBag.TotalFinal > 0.00m)
                         {
-                            _buttonKeyPayments.Sensitive = true;
-                            _buttonKeySplitAccount.Sensitive = true;
-                            _buttonKeyChangeTable.Sensitive = true;
-                            _buttonKeyListOrder.Sensitive = true;
+                            SaleOptionsPanel.BtnPayments.Sensitive = true;
+                            SaleOptionsPanel.BtnSplitAccount.Sensitive = true;
+                            SaleOptionsPanel.BtnChangeTable.Sensitive = true;
+                            SaleOptionsPanel.BtnListOrder.Sensitive = true;
                         }
                         else
                         {
-                            _buttonKeyPayments.Sensitive = false;
-                            _buttonKeySplitAccount.Sensitive = false;
-                            _buttonKeyChangeTable.Sensitive = false;
-                            _buttonKeyListOrder.Sensitive = false;
+                            SaleOptionsPanel.BtnPayments.Sensitive = false;
+                            SaleOptionsPanel.BtnSplitAccount.Sensitive = false;
+                            SaleOptionsPanel.BtnChangeTable.Sensitive = false;
+                            SaleOptionsPanel.BtnListOrder.Sensitive = false;
                         }
                     }
                 }
                 else
                 {
-                    _buttonKeyPayments.Sensitive = false;
-                    _buttonKeySplitAccount.Sensitive = false;
-                    _buttonKeyChangeTable.Sensitive = false;
-                    _buttonKeyListOrder.Sensitive = false;
-                    _buttonKeyBarCode.Sensitive = false;
+                    SaleOptionsPanel.BtnPayments.Sensitive = false;
+                    SaleOptionsPanel.BtnSplitAccount.Sensitive = false;
+                    SaleOptionsPanel.BtnChangeTable.Sensitive = false;
+                    SaleOptionsPanel.BtnListOrder.Sensitive = false;
+                    SaleOptionsPanel.BtnBarcode.Sensitive = false;
                 }
 
                 if (ListMode == TicketListMode.Ticket) UpdateArticleBag();
 
                 if (_articleBag != null && _articleBag.Count > 0)
                 {
-                    _buttonKeyListMode.Sensitive = true;
+                    SaleOptionsPanel.BtnListMode.Sensitive = true;
                 }
                 else
                 {
-                    _buttonKeyListMode.Sensitive = false;
+                    SaleOptionsPanel.BtnListMode.Sensitive = false;
                 }
             }
         }
@@ -1156,7 +1057,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             else
             {
                 labelTotalFinal = GeneralUtils.GetResourceByName("global_total_table_tickets");
-               
+
                 TotalFinal = _articleBag.TotalFinal;
             }
             LabelTotalLabel.Text = labelTotalFinal;
@@ -1266,7 +1167,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 SelectedIndex = -1;
             }
 
-            UpdateTicketListButtons();
+            UpdateSaleOptionsPanelButtons();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Gtk;
+using logicpos;
 using logicpos.App;
 using logicpos.Classes.Enums.Finance;
 using logicpos.Classes.Enums.Tickets;
@@ -23,9 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 
-//Class to Link Project LogicPos to FrameWork API, used to Show Common Messages for LogicPos
-
-namespace logicpos
+namespace LogicPOS.UI
 {
     internal class FrameworkCalls
     {
@@ -78,7 +77,7 @@ namespace logicpos
                     foreach (var item in GeneralSettings.PendentPaidParkingTickets)
                     {
                         _logger.Debug("[PARKING TICKET] Informing Access.Track that the parking ticket has been payed...");
-                        AccessTrackParkingTicketService.TimeService accessTrackParkingTicketService = new AccessTrackParkingTicketService.TimeService();
+                        logicpos.AccessTrackParkingTicketService.TimeService accessTrackParkingTicketService = new logicpos.AccessTrackParkingTicketService.TimeService();
 
                         bool isTicketPayedInformed = accessTrackParkingTicketService.payTicket(item.Key);
 
@@ -104,7 +103,7 @@ namespace logicpos
                     foreach (var item in GeneralSettings.PendentPaidParkingCards)
                     {
                         _logger.Debug("[PARKING TICKET] Informing Access.Track that the parking card has been payed...");
-                        AccessTrackParkingTicketService.TimeService accessTrackParkingTicketService = new AccessTrackParkingTicketService.TimeService();
+                        logicpos.AccessTrackParkingTicketService.TimeService accessTrackParkingTicketService = new logicpos.AccessTrackParkingTicketService.TimeService();
 
                         //Number of months paid is passed by document notes
                         string sql = string.Format("SELECT Notes FROM fin_documentfinancemaster where SourceOrderMain = '{0}'", item.Value);
@@ -206,7 +205,7 @@ namespace logicpos
                     //If Enabled in Config and is not a FinalConsumer
                     //É obrigatório comunicar um documento de transporte à AT cujo destinatário seja um consumidor final?
                     //Não. Estão excluídos das obrigações de comunicação os documentos de transporte em que o destinatário ou adquirente seja consumidor final.
-                    result = (/*SettingsApp.ServiceATSendDocumentsWayBill &&*/ documentFinanceMaster.EntityOid != InvoiceSettings.FinalConsumerId);
+                    result = /*SettingsApp.ServiceATSendDocumentsWayBill &&*/ documentFinanceMaster.EntityOid != InvoiceSettings.FinalConsumerId;
                 }
             }
 
@@ -474,15 +473,15 @@ namespace logicpos
             {
                 //Both printer can be the same, if not Defined in DocumentType
                 //Printer for Drawer and Document, if not defined in DocumentType
-                printer = (pPrinter != null) ? pPrinter : TerminalSettings.LoggedTerminal.ThermalPrinter;
-                financeMasterPrinter = (financeMaster.DocumentType.Printer != null) ? financeMaster.DocumentType.Printer : printer;
+                printer = pPrinter != null ? pPrinter : TerminalSettings.LoggedTerminal.ThermalPrinter;
+                financeMasterPrinter = financeMaster.DocumentType.Printer != null ? financeMaster.DocumentType.Printer : printer;
             }
             else
             {
                 //Both printer can be the same, if not Defined in DocumentType
                 //Printer for Drawer and Document, if not defined in DocumentType
-                printer = (pPrinter != null) ? pPrinter : TerminalSettings.LoggedTerminal.Printer;
-                financeMasterPrinter = (financeMaster.DocumentType.Printer != null) ? financeMaster.DocumentType.Printer : printer;
+                printer = pPrinter != null ? pPrinter : TerminalSettings.LoggedTerminal.Printer;
+                financeMasterPrinter = financeMaster.DocumentType.Printer != null ? financeMaster.DocumentType.Printer : printer;
             }
 
             try
@@ -500,7 +499,7 @@ namespace logicpos
                         printDialogResponse = PosDocumentFinancePrintDialog.GetDocumentFinancePrintProperties(sourceWindow, financeMaster);
                         //Print with default DocumentFinanceYearSerieTerminal Template
                         var financeMasterDto = MappingUtils.GetPrintDocumentMasterDto(financeMaster);
-                        if (printDialogResponse.Response == ResponseType.Ok) result = LogicPOS.Printing.Utility.PrintingUtils.PrintFinanceDocument(financeMasterDto);
+                        if (printDialogResponse.Response == ResponseType.Ok) result = Printing.Utility.PrintingUtils.PrintFinanceDocument(financeMasterDto);
                     }
                 }
                 else
@@ -509,7 +508,7 @@ namespace logicpos
                     string extraMessage = string.Format(GeneralUtils.GetResourceByName("dialog_message_error_protected_files_invalid_files_detected_print_document_ignored"), financeMaster.DocumentNumber);
 
                     //Printer Drawer : Set openDrawer
-                    switch (LogicPOS.Printing.Utility.PrintingUtils.GetPrinterToken(printer.PrinterType.Token))
+                    switch (Printing.Utility.PrintingUtils.GetPrinterToken(printer.PrinterType.Token))
                     {
                         //ThermalPrinter : Ticket Files
                         case "THERMAL_PRINTER_WINDOWS":
@@ -520,7 +519,7 @@ namespace logicpos
                     }
 
                     //Printer Document : Set Valid Files
-                    switch (LogicPOS.Printing.Utility.PrintingUtils.GetPrinterToken(financeMasterPrinter.PrinterType.Token))
+                    switch (Printing.Utility.PrintingUtils.GetPrinterToken(financeMasterPrinter.PrinterType.Token))
                     {
                         //ThermalPrinter : Ticket Files
                         case "THERMAL_PRINTER_WINDOWS":
@@ -552,7 +551,7 @@ namespace logicpos
                         var financeMasterPrinterDto = MappingUtils.GetPrinterDto(financeMasterPrinter);
                         var financeMasterDto = MappingUtils.GetPrintDocumentMasterDto(financeMaster);
 
-                        result = LogicPOS.Printing.Utility.PrintingUtils.PrintFinanceDocument(
+                        result = Printing.Utility.PrintingUtils.PrintFinanceDocument(
                             financeMasterPrinterDto,
                             financeMasterDto,
                             printDialogResponse.CopyNames,
@@ -564,7 +563,7 @@ namespace logicpos
                         //OpenDoor use Printer Drawer
                         if (openDrawer && financeMaster.DocumentType.PrintOpenDrawer && !printDialogResponse.SecondCopy)
                         {
-                            var resultOpenDoor = LogicPOS.Printing.Utility.PrintingUtils.OpenDoor();
+                            var resultOpenDoor = Printing.Utility.PrintingUtils.OpenDoor();
                             if (!resultOpenDoor)
                             {
                                 Utils.ShowMessageTouch(sourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, GeneralUtils.GetResourceByName("global_information"), string.Format(GeneralUtils.GetResourceByName("open_cash_draw_permissions")));
@@ -639,7 +638,7 @@ namespace logicpos
                 //ProtectedFiles Protection
                 bool validFiles = true;
                 string extraMessage = string.Format(GeneralUtils.GetResourceByName("dialog_message_error_protected_files_invalid_files_detected_print_document_ignored"), pDocumentFinancePayment.PaymentRefNo);
-                switch (LogicPOS.Printing.Utility.PrintingUtils.GetPrinterToken(printer.Token))
+                switch (Printing.Utility.PrintingUtils.GetPrinterToken(printer.Token))
                 {
                     //ThermalPrinter : Ticket Files
                     case "THERMAL_PRINTER_WINDOWS":
@@ -659,25 +658,25 @@ namespace logicpos
                 //Recibos com impressão em impressora térmica
                 if (TerminalSettings.HasLoggedTerminal)
                 {
-                   
-                    
+
+
                     ResponseType responseType = Utils.ShowMessageTouch(parentWindow, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.YesNo, GeneralUtils.GetResourceByName("dialog_edit_DialogConfigurationPrintersType_tab1_label"), GeneralUtils.GetResourceByName("global_printer_choose_printer"));
 
                     if (responseType == ResponseType.Yes)
                     {
                         var printerDto = LoggedTerminalSettings.GetPrinterDto();
-                        
-                        result = LogicPOS.Printing.Utility.PrintingUtils.PrintFinanceDocumentPayment(printerDto, DocumentFinancePaymentDto);
+
+                        result = Printing.Utility.PrintingUtils.PrintFinanceDocumentPayment(printerDto, DocumentFinancePaymentDto);
                     }
                     else
                     {
-                        result = LogicPOS.Printing.Utility.PrintingUtils.PrintFinanceDocumentPayment(printer, DocumentFinancePaymentDto);
+                        result = Printing.Utility.PrintingUtils.PrintFinanceDocumentPayment(printer, DocumentFinancePaymentDto);
                     }
                 }
                 else
                 {
                     //Call Print Document A4
-                    result = LogicPOS.Printing.Utility.PrintingUtils.PrintFinanceDocumentPayment(printer, DocumentFinancePaymentDto);
+                    result = Printing.Utility.PrintingUtils.PrintFinanceDocumentPayment(printer, DocumentFinancePaymentDto);
                 }
 
             }
@@ -751,7 +750,7 @@ namespace logicpos
             {
                 if (SharedPrintTicket(parentWindow, pPrinter, TicketType.TableOrder))
                 {
-                    var printer=MappingUtils.GetPrinterDto(pPrinter);
+                    var printer = MappingUtils.GetPrinterDto(pPrinter);
                     var orderTicketDto = MappingUtils.GetPrintOrderTicketDto(orderTicket);
                     OrderRequest thermalPrinterInternalDocumentOrderRequest = new OrderRequest(printer, orderTicketDto);
                     thermalPrinterInternalDocumentOrderRequest.Print();
@@ -779,7 +778,7 @@ namespace logicpos
                 //if (SharedPrintTicket(parentWindow, null, TicketType.ArticleOrder))
                 //{
                 var orderTicketDto = MappingUtils.GetPrintOrderTicketDto(orderTicket);
-                result = LogicPOS.Printing.Utility.PrintingUtils.PrintArticleRequest(orderTicketDto);
+                result = Printing.Utility.PrintingUtils.PrintArticleRequest(orderTicketDto);
                 //}
             }
             catch (Exception ex)
@@ -794,8 +793,8 @@ namespace logicpos
         //PrintWorkSessionMovement
 
         public static bool PrintWorkSessionMovement(
-            Window parentWindow, 
-            sys_configurationprinters printerEntity, 
+            Window parentWindow,
+            sys_configurationprinters printerEntity,
             PrintWorkSessionDto workSessionPeriod)
         {
             bool result = false;
@@ -808,8 +807,8 @@ namespace logicpos
                     var printerDto = MappingUtils.GetPrinterDto(printerEntity);
                     string workSessionMovementPrintingFileTemplate = XPOUtility.WorkSession.GetWorkSessionMovementPrintingFileTemplate();
                     var sessionPeriodSummaryDetails = WorkSessionProcessor.GetSessionPeriodSummaryDetails(workSessionPeriod.Id);
-                    result = LogicPOS.Printing.Utility.PrintingUtils.PrintWorkSessionMovement(
-                        printerDto, 
+                    result = Printing.Utility.PrintingUtils.PrintWorkSessionMovement(
+                        printerDto,
                         workSessionPeriod,
                         workSessionMovementPrintingFileTemplate,
                         sessionPeriodSummaryDetails);
@@ -828,7 +827,8 @@ namespace logicpos
         //PrintCashDrawerOpenAndMoneyInOut
 
         public static bool PrintCashDrawerOpenAndMoneyInOut(Window parentWindow, sys_configurationprinters pPrinter, string pTicketTitle, decimal pMovementAmount, decimal pTotalAmountInCashDrawer, string pMovementDescription)
-        {   var printer = MappingUtils.GetPrinterDto(pPrinter);
+        {
+            var printer = MappingUtils.GetPrinterDto(pPrinter);
             bool result = false;
             sys_configurationprinterstemplates template = XPOUtility.GetEntityById<sys_configurationprinterstemplates>(PrintingSettings.CashDrawerMoneyMovementPrintingTemplateId);
 
@@ -836,8 +836,8 @@ namespace logicpos
             {
                 if (SharedPrintTicket(parentWindow, pPrinter, TicketType.CashDrawer))
                 {
-                   
-                    result = LogicPOS.Printing.Utility.PrintingUtils.PrintCashDrawerOpenAndMoneyInOut(printer, pTicketTitle, pMovementAmount, pTotalAmountInCashDrawer, pMovementDescription);
+
+                    result = Printing.Utility.PrintingUtils.PrintCashDrawerOpenAndMoneyInOut(printer, pTicketTitle, pMovementAmount, pTotalAmountInCashDrawer, pMovementDescription);
                 }
             }
             catch (Exception ex)

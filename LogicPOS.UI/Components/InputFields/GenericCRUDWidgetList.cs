@@ -1,5 +1,4 @@
 ﻿using Gtk;
-using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
@@ -11,6 +10,7 @@ using LogicPOS.Domain.Enums;
 using LogicPOS.Globalization;
 using LogicPOS.Modules;
 using LogicPOS.Modules.StockManagement;
+using LogicPOS.UI;
 using LogicPOS.UI.Components.InputFieds;
 using LogicPOS.UI.Components.InputFields;
 using System;

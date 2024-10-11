@@ -10,6 +10,7 @@ using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Settings;
+using LogicPOS.UI;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components;

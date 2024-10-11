@@ -210,7 +210,7 @@ namespace LogicPOS.UI.Components.Menus
                 }
 
                 currentButton = InitializeButton();
-                currentButton.Clicked += Button_Clicked;
+                currentButton.Clicked += BtnArticle_Clicked;
                 Buttons.Add((article, currentButton));
                 currentButton.CurrentButtonId = article.Id;
 
@@ -259,7 +259,7 @@ namespace LogicPOS.UI.Components.Menus
             AllArticles = new List<Article>();
         }
 
-        private void Button_Clicked(object sender, EventArgs e)
+        private void BtnArticle_Clicked(object sender, EventArgs e)
         {
             CustomButton button = (CustomButton)sender;
 

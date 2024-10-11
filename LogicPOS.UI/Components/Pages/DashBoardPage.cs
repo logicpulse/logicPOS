@@ -2,12 +2,12 @@
 using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
 using Gtk;
-using logicpos.App;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Settings;
 using LogicPOS.Shared.CustomDocument;
+using LogicPOS.UI;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;

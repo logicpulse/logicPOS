@@ -23,8 +23,9 @@ using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.IO.Ports;
+using System.Linq;
 
-namespace logicpos.Classes.Gui.Gtk.Widgets
+namespace LogicPOS.UI.Components
 {
     public partial class TicketList
     {
@@ -100,7 +101,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     TreeView.ModifyBase(StateType.Normal, colorListMode);
                     //UpdateModel();
                     UpdateOrderStatusBar();
-                    UpdateTicketListOrderButtons();
+                    UpdateSaleOptionsPanelOrderButtons();
                     //IMPORTANT & REQUIRED: Assign Current Order Details from New CurrentTicketId, ELSE we cant add items to OrderMain
                     CurrentOrderDetail = orderMain.OrderTickets[orderMain.CurrentTicketId].OrderDetails;
 
@@ -114,7 +115,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         }
 
-        private void _buttonKeyDecrease_Clicked(object sender, EventArgs e)
+        private void BtnDecrease_Clicked(object sender, EventArgs e)
         {
             int i = 0;
             var price = Convert.ToDecimal(((string)ListStore.GetValue(_treeIter, (int)TicketListColumns.Price)).Replace('.', ','));
@@ -129,12 +130,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             }
 
             DeleteItem_Event(TicketListDeleteMode.Decrease);
-            UpdateTicketListButtons();
+            UpdateSaleOptionsPanelButtons();
 
 
         }
 
-        private void _buttonKeyIncrease_Clicked(object sender, EventArgs e)
+        private void BtnIncrease_Clicked(object sender, EventArgs e)
         {
             decimal defaultQuantity = GetArticleDefaultQuantity(CurrentDetailArticleId);
             var price = Convert.ToDecimal(((string)ListStore.GetValue(_treeIter, (int)TicketListColumns.Price)).Replace('.', ','));
@@ -145,23 +146,23 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 if (logicpos.Utils.ShowMessageMinimumStock(SourceWindow, CurrentOrderDetail.Lines[SelectedIndex].ArticleOid, (oldValueQnt + defaultQuantity)))
                 {
                     ChangeQuantity(oldValueQnt + defaultQuantity);
-                    UpdateTicketListButtons();
+                    UpdateSaleOptionsPanelButtons();
                 }
                 else
                 {
-                    UpdateTicketListButtons();
+                    UpdateSaleOptionsPanelButtons();
                 }
             }
             else
             {
                 ChangeQuantity(oldValueQnt + defaultQuantity);
-                UpdateTicketListButtons();
+                UpdateSaleOptionsPanelButtons();
             }
 
 
         }
 
-        private void _buttonKeyChangeQuantity_Clicked(object sender, EventArgs e)
+        private void BtnQuantity_Clicked(object sender, EventArgs e)
         {
             decimal oldValueQnt = CurrentOrderDetail.Lines[SelectedIndex].Properties.Quantity;
             decimal newValueQnt = PosKeyboardDialog.RequestDecimalValue(SourceWindow, oldValueQnt);
@@ -181,11 +182,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 }
                 ChangeQuantity(newValueQnt);
             }
-            UpdateTicketListButtons();
+            UpdateSaleOptionsPanelButtons();
 
         }
 
-        private void _buttonKeyChangePrice_Clicked(object sender, EventArgs e)
+        private void BtnPrice_Clicked(object sender, EventArgs e)
         {
             SelectedIndex = CurrentOrderDetail.Lines.FindIndex(item => item.ArticleOid == (Guid)ListStore.GetValue(_treeIter,
                 (int)TicketListColumns.ArticleId));
@@ -240,11 +241,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             }
             UpdateTicketListTotal();
             UpdateModel();
-            UpdateTicketListButtons();
+            UpdateSaleOptionsPanelButtons();
 
         }
 
-        private void _buttonKeyFinishOrder_Clicked(object sender, EventArgs e)
+        private void BtnFinishOrder_Clicked(object sender, EventArgs e)
         {
 
             //Call Framework FinishOrder
@@ -281,7 +282,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         }
 
-        private void _buttonKeyPayments_Clicked(object sender, EventArgs e)
+        private void BtnPayments_Clicked(object sender, EventArgs e)
         {
             IconButtonWithText button = (sender as IconButtonWithText);
 
@@ -316,7 +317,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             //Update Model and Gui
             UpdateModel();
             UpdateOrderStatusBar();
-            UpdateTicketListOrderButtons();
+            UpdateSaleOptionsPanelOrderButtons();
 
             //Initialize ArticleBag to Send to Payment Dialog
             ArticleBag articleBag = ArticleBag.TicketOrderToArticleBag(orderMain);
@@ -343,7 +344,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 //Update Cleaned TreeView Model
                 UpdateModel();
                 UpdateOrderStatusBar();
-                UpdateTicketListOrderButtons();
+                UpdateSaleOptionsPanelOrderButtons();
                 //IMPORTANT & REQUIRED: Assign Current Order Details from New CurrentTicketId, ELSE we cant add items to OrderMain
                 CurrentOrderDetail = orderMain.OrderTickets[orderMain.CurrentTicketId].OrderDetails;
                 //Valid Result Destroy Dialog
@@ -352,7 +353,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         }
 
-        private void _buttonKeyBarCode_Clicked(object sender, EventArgs e)
+        private void BtnBarcode_Clicked(object sender, EventArgs e)
         {
             string fileWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_input_text_barcode.png";
             logicpos.Utils.ResponseText dialogResponse = logicpos.Utils.GetInputText(SourceWindow, DialogFlags.Modal, fileWindowIcon, GeneralUtils.GetResourceByName("global_barcode_articlecode"), string.Empty, RegexUtils.RegexAlfaNumericExtended, true);
@@ -370,7 +371,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             }
         }
 
-        private void _buttonKeyCardCode_Clicked(object sender, EventArgs e)
+        private void BtnCardCode_Clicked(object sender, EventArgs e)
         {
             string fileWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_pos_ticketpad_card_entry.png";
             logicpos.Utils.ResponseText dialogResponse = logicpos.Utils.GetInputText(SourceWindow, DialogFlags.Modal, fileWindowIcon, GeneralUtils.GetResourceByName("global_cardcode_small"), string.Empty, RegexUtils.RegexAlfaNumericExtended, true);
@@ -388,7 +389,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             }
         }
 
-        private void _buttonKeyListOrder_Clicked(object sender, EventArgs e)
+        private void BtnListOrder_Clicked(object sender, EventArgs e)
         {
             OrderMain currentOrderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];
             PosOrdersDialog dialog = new PosOrdersDialog(this.SourceWindow, DialogFlags.DestroyWithParent, currentOrderMain.Table.Name);
@@ -397,7 +398,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         }
 
-        private void _buttonKeyChangeTable_Clicked(object sender, EventArgs e)
+        private void BtnChangeTable_Clicked(object sender, EventArgs e)
         {
             PosTablesDialog dialog = new PosTablesDialog(this.SourceWindow, DialogFlags.DestroyWithParent, TableFilterMode.OnlyFreeTables);
             ResponseType response = (ResponseType)dialog.Run();
@@ -457,7 +458,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             };
         }
 
-        private void _buttonKeyListMode_Clicked(object sender, EventArgs e)
+        private void BtnListMode_Clicked(object sender, EventArgs e)
         {
             //Toggle Mode
             ListMode = (ListMode == TicketListMode.Ticket) ? TicketListMode.OrderMain : TicketListMode.Ticket;
@@ -470,12 +471,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         }
 
-        private void _buttonKeyGifts_Clicked(object sender, EventArgs e)
+        private void BtnGifts_Clicked(object sender, EventArgs e)
         {
             throw new NotImplementedException();
         }
 
-        private void _buttonKeyWeight_Clicked(object sender, EventArgs e)
+        private void BtnWeight_Clicked(object sender, EventArgs e)
         {
 
             SelectedIndex = CurrentOrderDetail.Lines.FindIndex(item => item.ArticleOid == (Guid)ListStore.GetValue(_treeIter,
@@ -486,9 +487,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         }
 
-        public void WeighingBalanceDataReceived(object sender, SerialDataReceivedEventArgs e)
+        public void WeighingBalance_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            //_logger.Debug("WeighingBalanceDataReceived");
+
             string inData = GlobalApp.WeighingBalance.ComPort().ReadLine() + "\n";
 
             if (inData.Substring(0, 2) == "99")
@@ -496,8 +497,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 List<int> result = GlobalApp.WeighingBalance.CalculateFromHex(inData);
 
                 decimal quantity = Convert.ToDecimal(result[0]) / 1000;
-                // Use ChangeQuantity to Change/Update Quantity in TicketList
-                //_currentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity = quantity;
+
                 if (logicpos.Utils.CheckStocks())
                 {
                     if (logicpos.Utils.ShowMessageMinimumStock(SourceWindow, CurrentOrderDetail.Lines[SelectedIndex].ArticleOid, quantity))
@@ -513,11 +513,10 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 {
                     ChangeQuantity(quantity);
                 }
-             
+
             }
         }
 
-   
         private Guid GetVatExemptionReason()
         {
             Guid result = new Guid();
@@ -543,6 +542,73 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             dialog.Destroy();
 
             return result;
+        }
+
+        private void BtnSelectTable_Clicked(object sender, EventArgs e)
+        {
+            PosTablesDialog dialog = new PosTablesDialog(this.SourceWindow, DialogFlags.DestroyWithParent);
+            ResponseType response = (ResponseType)dialog.Run();
+
+            if (response == ResponseType.Ok || response == ResponseType.Cancel || response == ResponseType.DeleteEvent)
+            {
+                if (response == ResponseType.Ok)
+                {
+                    SelectTableOrder(dialog.CurrentTableOid);
+                    UpdateArticleBag();
+                    UpdateSaleOptionsPanelOrderButtons();
+                    UpdateOrderStatusBar();
+                }
+                dialog.Destroy();
+            };
+        }
+
+        public void SelectTableOrder(Guid tableId)
+        {
+            OrderMain currentOrderMain = null;
+            if (tableId == POSSettings.XpoOidConfigurationPlaceTableDefaultOpenTable)
+            {
+                var configurationPlace = (pos_configurationplace)XPOSettings.Session.GetObjectByKey(typeof(pos_configurationplace), POSSettings.XpoOidConfigurationPlaceTableDefaultOpenTable);
+                if (configurationPlace == null)
+                {
+                    tableId = ((pos_configurationplacetable)XPOUtility.GetXPGuidObjectFromCriteria(typeof(pos_configurationplacetable), string.Format("(Code = '{0}')", "10")) as pos_configurationplacetable).Oid;
+                }
+            }
+
+            if (POSSession.CurrentSession.OrderMains.Count > 0)
+            {
+                currentOrderMain = POSSession.CurrentSession.OrderMains.Values.Where<OrderMain>(key => key.Table.Oid == tableId).FirstOrDefault<OrderMain>();
+            }
+
+            if (currentOrderMain != null && Convert.ToInt16(currentOrderMain.OrderStatus) != -1)
+            {
+                ListMode = TicketListMode.OrderMain;
+            }
+            else
+            {
+                ListMode = TicketListMode.Ticket;
+            }
+
+            if (currentOrderMain == null)
+            {
+                Guid newOrderMainOid = Guid.NewGuid();
+                POSSession.CurrentSession.OrderMains.Add(newOrderMainOid, new OrderMain(newOrderMainOid, tableId));
+                OrderMain newOrderMain = POSSession.CurrentSession.OrderMains[newOrderMainOid];
+                OrderTicket orderTicket = new OrderTicket(newOrderMain, (PriceType)newOrderMain.Table.PriceType);
+                newOrderMain.OrderTickets.Add(1, orderTicket);
+                currentOrderMain = newOrderMain;
+            }
+
+            currentOrderMain.PersistentOid = currentOrderMain.GetOpenTableFieldValueGuid(tableId, "Oid");
+            currentOrderMain.OrderStatus = (OrderStatus)currentOrderMain.GetOpenTableFieldValue(tableId, "OrderStatus");
+
+            POSSession.CurrentSession.CurrentOrderMainId = currentOrderMain.Table.OrderMainOid;
+            POSSession.CurrentSession.Save();
+            UpdateModel();
+
+            GlobalApp.PosMainWindow.MenuArticles.Sensitive = true;
+            UpdateArticleBag();
+            UpdateSaleOptionsPanelOrderButtons();
+            UpdateOrderStatusBar();
         }
     }
 }

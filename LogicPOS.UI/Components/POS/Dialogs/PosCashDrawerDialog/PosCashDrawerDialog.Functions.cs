@@ -4,6 +4,7 @@ using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Globalization;
+using LogicPOS.UI;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Extensions;
 using System;

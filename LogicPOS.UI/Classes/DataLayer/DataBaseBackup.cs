@@ -12,6 +12,7 @@ using LogicPOS.Domain.Entities;
 using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
+using LogicPOS.UI;
 using LogicPOS.UI.Components;
 using LogicPOS.Utility;
 using MySql.Data.MySqlClient;

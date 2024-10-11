@@ -1,6 +1,5 @@
 ﻿using DevExpress.Data.Filtering;
 using Gtk;
-using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets;
@@ -12,6 +11,7 @@ using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Enums;
 using LogicPOS.Modules;
 using LogicPOS.Settings;
+using LogicPOS.UI;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components;

@@ -1,5 +1,4 @@
 ﻿using Gtk;
-using logicpos.App;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;

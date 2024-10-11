@@ -1,16 +1,15 @@
 using DevExpress.Data.Filtering;
 using DevExpress.Xpo;
 using Gtk;
-using logicpos.App;
-using logicpos.Classes.Gui.Gtk.Widgets;
+using logicpos;
 using logicpos.Classes.Logic.Others;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
-using LogicPOS.UI;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components;
 using LogicPOS.UI.Components.Menus;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Extensions;
@@ -20,52 +19,39 @@ using System.Collections;
 using System.Drawing;
 using Image = Gtk.Image;
 
-namespace logicpos
+namespace LogicPOS.UI.Components.Windows
 {
     public partial class POSMainWindow : POSWindow
     {
-        private readonly string _fileBaseButtonOverlay = PathsSettings.ImagesFolderLocation + @"Buttons\Pos\button_overlay.png";
+        public string ClockTimeFormat => GeneralUtils.GetResourceByName("frontoffice_datetime_format_status_bar");
 
-        private readonly string _clockFormat = GeneralUtils.GetResourceByName("frontoffice_datetime_format_status_bar");
-
-        private readonly Color _colorPosNumberPadLeftButtonBackground = AppSettings.Instance.colorPosNumberPadLeftButtonBackground;
-        private readonly Color _colorPosNumberRightButtonBackground = AppSettings.Instance.colorPosNumberRightButtonBackground;
-        private readonly Color _colorPosHelperBoxsBackground = AppSettings.Instance.colorPosHelperBoxsBackground;
-
-        private readonly Fixed _fixedWindow;
-        private Label _labelClock;
-        private TextView _textviewLog;
-
-        public TicketList TicketList { get; private set; }
-
-        private IconButtonWithText _touchButtonPosToolbarApplicationClose;
-        private IconButtonWithText _touchButtonPosToolbarBackOffice;
-        private IconButtonWithText _touchButtonPosToolbarReports;
-        private IconButtonWithText _touchButtonPosToolbarShowSystemDialog;
-        private IconButtonWithText _touchButtonPosToolbarLogoutUser;
-        private IconButtonWithText _touchButtonPosToolbarShowChangeUserDialog;
-        private IconButtonWithText _touchButtonPosToolbarCashDrawer;
-        private IconButtonWithText _touchButtonPosToolbarFinanceDocuments;
-
-        public IconButtonWithText TouchButtonPosToolbarNewFinanceDocument { get; set; }
-
-        private TicketPad _ticketPad;
-
-        private readonly uint _borderWidth = 5;
-
+        #region Components
+        public Fixed FixedWindow { get; set; } = new Fixed();
+        public Label LabelClock { get; set; }
+        public TextView TextViewLog { get; set; }
+        public TicketList TicketList { get; set; }
+        public IconButtonWithText BtnQuit { get; set; }
+        public IconButtonWithText BtnBackOffice { get; set; }
+        public IconButtonWithText BtnReports { get; set; }
+        public IconButtonWithText BtnShowSystemDialog { get; set; }
+        public IconButtonWithText BtnLogOut { get; set; }
+        public IconButtonWithText BtnChangeUser { get; set; }
+        public IconButtonWithText BtnCashDrawer { get; set; }
+        public IconButtonWithText BtnDocuments { get; set; }
+        public IconButtonWithText BtnNewDocument { get; set; }
+        public SaleOptionsPanel SaleOptionsPanel { get; set; }
         internal ArticleFamiliesMenu MenuFamilies { get; set; }
         internal ArticleSubfamiliesMenu MenuSubfamilies { get; set; }
         internal ArticlesMenu MenuArticles { get; set; }
         public TextBuffer BufferTextView { get; set; }
         public Label LabelTerminalInfo { get; set; }
         public Label LabelCurrentTable { get; set; }
-
         public Label LabelTotalTable { get; set; }
+        #endregion
 
-        public POSMainWindow(string pBackgroundImage)
-            : base(pBackgroundImage)
+        public POSMainWindow(string backgroundImage)
+            : base(backgroundImage)
         {
-            _fixedWindow = new Fixed();
 
             InitUI();
 
@@ -75,16 +61,16 @@ namespace logicpos
 
             StartClock();
 
-            TicketList.UpdateTicketListButtons();
+            TicketList.UpdateSaleOptionsPanelButtons();
 
-            this.ScreenArea.Add(_fixedWindow);
+            this.ScreenArea.Add(FixedWindow);
 
             bool _showMinimize = AppSettings.Instance.appShowMinimize;
             if (_showMinimize)
             {
                 EventBox eventBoxMinimize = GtkUtils.CreateMinimizeButton();
                 eventBoxMinimize.ButtonReleaseEvent += delegate { Iconify(); };
-                _fixedWindow.Put(eventBoxMinimize, GlobalApp.ScreenSize.Width - 27 - 10, 10);
+                FixedWindow.Put(eventBoxMinimize, GlobalApp.ScreenSize.Width - 27 - 10, 10);
             }
 
             this.ShowAll();
@@ -103,27 +89,26 @@ namespace logicpos
         private void InitUI()
         {
             Predicate<dynamic> predicate = (Predicate<dynamic>)((dynamic x) => x.ID == "PosMainWindow");
-            dynamic themeWindow = GlobalApp.Theme.Theme.Frontoffice.Window.Find(predicate);
+            dynamic theme = GlobalApp.Theme.Theme.Frontoffice.Window.Find(predicate);
 
-            //Shared error Message
             string errorMessage = "Node: <Window ID=\"PosMainWindow\">";
 
-            //Assign Theme Vars + UI
-            if (themeWindow != null)
+            if (theme != null)
             {
                 //Globals
-                Name = Convert.ToString(themeWindow.Globals.Name);
+                Name = Convert.ToString(theme.Globals.Name);
 
                 //Init Components
-                InitUIEventBoxImageLogo(themeWindow);
-                InitUIEventBoxStatusBar1(themeWindow);
-                InitUIEventBoxStatusBar2(themeWindow);
-                InitUIButtonFavorites(themeWindow);
-                InitUIEventBoxPosTicketList(themeWindow);
-                InitializeMenus(themeWindow);
-                InitUIEventBoxPosTicketPad(themeWindow);
-               
-                InitUiEventboxToolbar(themeWindow);
+                InitUIEventBoxImageLogo(theme);
+                InitUIEventBoxStatusBar1(theme);
+                InitUIEventBoxStatusBar2(theme);
+                InitUIButtonFavorites(theme);
+                InitializeSaleOptionsPanel(theme);
+                InitializeTicketList(theme);
+                InitializeMenus(theme);
+
+
+                InitUiEventboxToolbar(theme);
 
                 GlobalApp.DialogThreadNotify.WakeupMain();
 
@@ -177,7 +162,7 @@ namespace logicpos
             eventBoxImageLogo.HeightRequest = eventBoxImageLogoSize.Height;
             eventBoxImageLogo.VisibleWindow = eventBoxImageLogoVisibleWindow;
             if (eventBoxImageLogoVisibleWindow) eventBoxImageLogo.ModifyBg(StateType.Normal, eventBoxImageLogoBackgroundColor);
-            if (eventBoxImageLogoVisible) _fixedWindow.Put(eventBoxImageLogo, eventBoxImageLogoPosition.X, eventBoxImageLogoPosition.Y);
+            if (eventBoxImageLogoVisible) FixedWindow.Put(eventBoxImageLogo, eventBoxImageLogoPosition.X, eventBoxImageLogoPosition.Y);
 
             eventBoxImageLogo.Add(imageLogo);
             eventBoxImageLogo.ButtonPressEvent += eventBoxImageLogo_ButtonPressEvent;
@@ -218,18 +203,18 @@ namespace logicpos
             LabelTerminalInfo.SetAlignment(labelTerminalInfoAlignmentX, 0.5F);
 
             //EventBoxStatusBar1:LabelClock
-            _labelClock = new Label(XPOUtility.CurrentDateTime(_clockFormat));
-            _labelClock.ModifyFont(labelClockFont);
-            _labelClock.ModifyFg(StateType.Normal, labelClockFontColor);
-            _labelClock.SetAlignment(labelClockAlignmentX, 0.5F);
+            LabelClock = new Label(XPOUtility.CurrentDateTime(ClockTimeFormat));
+            LabelClock.ModifyFont(labelClockFont);
+            LabelClock.ModifyFg(StateType.Normal, labelClockFontColor);
+            LabelClock.SetAlignment(labelClockAlignmentX, 0.5F);
 
             //Pack HBox EventBoxStatusBar1
-            HBox hboxStatusBar1 = new HBox(false, 0) { BorderWidth = _borderWidth };
+            HBox hboxStatusBar1 = new HBox(false, 0) { BorderWidth = 5 };
             hboxStatusBar1.PackStart(LabelTerminalInfo, false, false, 0);
-            hboxStatusBar1.PackStart(_labelClock, true, true, 0);
+            hboxStatusBar1.PackStart(LabelClock, true, true, 0);
             eventBoxStatusBar1.Add(hboxStatusBar1);
 
-            if (eventBoxStatusBar1Visible) _fixedWindow.Put(eventBoxStatusBar1, eventBoxStatusBar1Position.X, eventBoxStatusBar1Position.Y);
+            if (eventBoxStatusBar1Visible) FixedWindow.Put(eventBoxStatusBar1, eventBoxStatusBar1Position.X, eventBoxStatusBar1Position.Y);
         }
 
         private void InitUIEventBoxStatusBar2(dynamic pThemeWindow)
@@ -309,12 +294,12 @@ namespace logicpos
             vboxTotalTable.PackStart(LabelTotalTable);
 
             //Pack HBox StatusBar
-            HBox hboxStatusBar2 = new HBox(false, 0) { BorderWidth = _borderWidth };
+            HBox hboxStatusBar2 = new HBox(false, 0) { BorderWidth = 5 };
             hboxStatusBar2.PackStart(vboxCurrentTable, true, true, 0);
             hboxStatusBar2.PackStart(vboxTotalTable, false, false, 0);
             eventBoxStatusBar2.Add(hboxStatusBar2);
 
-            if (eventBoxStatusBar2Visible) _fixedWindow.Put(eventBoxStatusBar2, eventBoxStatusBar2Position.X, eventBoxStatusBar2Position.Y);
+            if (eventBoxStatusBar2Visible) FixedWindow.Put(eventBoxStatusBar2, eventBoxStatusBar2Position.X, eventBoxStatusBar2Position.Y);
         }
 
         private void InitUIButtonFavorites(dynamic pThemeWindow)
@@ -334,7 +319,7 @@ namespace logicpos
 
             //UI
 
-            string buttonFavoritesImageOverlay = (buttonFavoritesUseImageOverlay) ? _fileBaseButtonOverlay : string.Empty;
+            string buttonFavoritesImageOverlay = (buttonFavoritesUseImageOverlay) ? PathsSettings.ImagesFolderLocation + @"Buttons\Pos\button_overlay.png" : string.Empty;
 
             ImageButton buttonFavorites = new ImageButton(
                 new ButtonSettings
@@ -350,7 +335,7 @@ namespace logicpos
 
             buttonFavorites.Clicked += ButtonFavorites_Clicked;
 
-            if (buttonFavoritesVisible) _fixedWindow.Put(buttonFavorites, buttonFavoritesPosition.X, buttonFavoritesPosition.Y);
+            if (buttonFavoritesVisible) FixedWindow.Put(buttonFavorites, buttonFavoritesPosition.X, buttonFavoritesPosition.Y);
         }
 
         private void InitializeMenus(dynamic pThemeWindow)
@@ -429,15 +414,15 @@ namespace logicpos
             btnFamiliesNext.BorderWidth = 0;
             btnFamiliesNext.CanFocus = false;
 
-            
+
             MenuFamilies = new ArticleFamiliesMenu(btnFamiliesPrevious, btnFamiliesNext);
             MenuFamilies.SourceWindow = this;
 
             if (showFamiliesMenu)
             {
-                _fixedWindow.Put(btnFamiliesPrevious, btnMenuFamiliesPreviousPosition.X, btnMenuFamiliesPreviousPosition.Y);
-                _fixedWindow.Put(btnFamiliesNext, btnMenuFamiliesNextPosition.X, btnMenuFamiliesNextPosition.Y);
-                _fixedWindow.Put(MenuFamilies, menuFamiliesPosition.X, menuFamiliesPosition.Y);
+                FixedWindow.Put(btnFamiliesPrevious, btnMenuFamiliesPreviousPosition.X, btnMenuFamiliesPreviousPosition.Y);
+                FixedWindow.Put(btnFamiliesNext, btnMenuFamiliesNextPosition.X, btnMenuFamiliesNextPosition.Y);
+                FixedWindow.Put(MenuFamilies, menuFamiliesPosition.X, menuFamiliesPosition.Y);
             }
 
             IconButton btnSubfamiliesPrevious = new IconButton(
@@ -458,15 +443,15 @@ namespace logicpos
             btnSubfamiliesNext.Relief = ReliefStyle.None;
             btnSubfamiliesNext.BorderWidth = 0;
             btnSubfamiliesNext.CanFocus = false;
-          
-            MenuSubfamilies = new ArticleSubfamiliesMenu(MenuFamilies, btnSubfamiliesPrevious, btnSubfamiliesNext);   
+
+            MenuSubfamilies = new ArticleSubfamiliesMenu(MenuFamilies, btnSubfamiliesPrevious, btnSubfamiliesNext);
             MenuSubfamilies.SourceWindow = this;
 
             if (showSubfamiliesMenu)
             {
-                _fixedWindow.Put(btnSubfamiliesPrevious, btnMenuSubfamiliesPreviousPosition.X, btnMenuSubfamiliesPreviousPosition.Y);
-                _fixedWindow.Put(btnSubfamiliesNext, btnMenuSubfamiliesNextPosition.X, btnMenuSubfamiliesNextPosition.Y);
-                _fixedWindow.Put(MenuSubfamilies, menuSubfamiliesPosition.X, menuSubfamiliesPosition.Y);
+                FixedWindow.Put(btnSubfamiliesPrevious, btnMenuSubfamiliesPreviousPosition.X, btnMenuSubfamiliesPreviousPosition.Y);
+                FixedWindow.Put(btnSubfamiliesNext, btnMenuSubfamiliesNextPosition.X, btnMenuSubfamiliesNextPosition.Y);
+                FixedWindow.Put(MenuSubfamilies, menuSubfamiliesPosition.X, menuSubfamiliesPosition.Y);
             }
 
             IconButton btnMenuArticlesPrevious = new IconButton(new ButtonSettings { Name = "TablePadArticleButtonPrev", Icon = TablePadArticleButtonPrevImageFileName, IconSize = new Size(TablePadArticleButtonPrevSize.Width - 6, TablePadArticleButtonPrevSize.Height - 6), ButtonSize = new Size(TablePadArticleButtonPrevSize.Width, TablePadArticleButtonPrevSize.Height) });
@@ -487,12 +472,12 @@ namespace logicpos
             { Sensitive = false };
 
             MenuArticles.SourceWindow = this;
-           
+
             if (showArticlesMenu)
             {
-                _fixedWindow.Put(btnMenuArticlesPrevious, btnMenuArticlesPreviousPosition.X, btnMenuArticlesPreviousPosition.Y);
-                _fixedWindow.Put(btnMenuArticlesNext, btnMenuArticlesNextPosition.X, btnMenuArticlesNextPosition.Y);
-                _fixedWindow.Put(MenuArticles, tablePadArticlePosition.X, tablePadArticlePosition.Y);
+                FixedWindow.Put(btnMenuArticlesPrevious, btnMenuArticlesPreviousPosition.X, btnMenuArticlesPreviousPosition.Y);
+                FixedWindow.Put(btnMenuArticlesNext, btnMenuArticlesNextPosition.X, btnMenuArticlesNextPosition.Y);
+                FixedWindow.Put(MenuArticles, tablePadArticlePosition.X, tablePadArticlePosition.Y);
             }
         }
 
@@ -572,7 +557,7 @@ namespace logicpos
             eventboxToolbar.WidthRequest = eventboxToolbarSize.Width;
             eventboxToolbar.HeightRequest = eventboxToolbarSize.Height;
             if (eventboxToolbarVisibleWindow) eventboxToolbar.ModifyBg(StateType.Normal, eventboxToolbarBackgroundColor);
-            if (eventboxToolbarVisible) _fixedWindow.Put(eventboxToolbar, eventboxToolbarPosition.X, eventboxToolbarPosition.Y);
+            if (eventboxToolbarVisible) FixedWindow.Put(eventboxToolbar, eventboxToolbarPosition.X, eventboxToolbarPosition.Y);
 
             //_logger.Debug("Local Func to Get Shared Buttons");
             //Local Func to Get Shared Buttons
@@ -591,61 +576,61 @@ namespace logicpos
                     });
 
             //Create Button References with Local Func
-            _touchButtonPosToolbarApplicationClose = getButton(buttonApplicationCloseName, buttonApplicationCloseText, buttonApplicationCloseImageFileName);
-            _touchButtonPosToolbarBackOffice = getButton(buttonBackOfficeName, buttonBackOfficeText, buttonBackOfficeImageFileName);
-            _touchButtonPosToolbarReports = getButton(buttonReportsName, buttonReportsText, buttonReportsImageFileName);
-            _touchButtonPosToolbarShowSystemDialog = getButton(buttonShowSystemDialogName, buttonShowSystemDialogText, buttonShowSystemDialogImageFileName);
-            _touchButtonPosToolbarLogoutUser = getButton(buttonLogoutUserName, buttonLogoutUserText, buttonLogoutUserImageFileName);
-            _touchButtonPosToolbarShowChangeUserDialog = getButton(buttonShowChangeUserDialogName, buttonShowChangeUserDialogText, buttonShowChangeUserDialogImageFileName);
-            _touchButtonPosToolbarCashDrawer = getButton(buttonCashDrawerName, buttonCashDrawerText, buttonCashDrawerImageFileName);
-            _touchButtonPosToolbarFinanceDocuments = getButton(buttonFinanceDocumentsName, buttonFinanceDocumentsText, buttonFinanceDocumentsImageFileName);
-            TouchButtonPosToolbarNewFinanceDocument = getButton(buttonNewFinanceDocumentName, buttonNewFinanceDocumentText, buttonNewFinanceDocumentImageFileName);
+            BtnQuit = getButton(buttonApplicationCloseName, buttonApplicationCloseText, buttonApplicationCloseImageFileName);
+            BtnBackOffice = getButton(buttonBackOfficeName, buttonBackOfficeText, buttonBackOfficeImageFileName);
+            BtnReports = getButton(buttonReportsName, buttonReportsText, buttonReportsImageFileName);
+            BtnShowSystemDialog = getButton(buttonShowSystemDialogName, buttonShowSystemDialogText, buttonShowSystemDialogImageFileName);
+            BtnLogOut = getButton(buttonLogoutUserName, buttonLogoutUserText, buttonLogoutUserImageFileName);
+            BtnChangeUser = getButton(buttonShowChangeUserDialogName, buttonShowChangeUserDialogText, buttonShowChangeUserDialogImageFileName);
+            BtnCashDrawer = getButton(buttonCashDrawerName, buttonCashDrawerText, buttonCashDrawerImageFileName);
+            BtnDocuments = getButton(buttonFinanceDocumentsName, buttonFinanceDocumentsText, buttonFinanceDocumentsImageFileName);
+            BtnNewDocument = getButton(buttonNewFinanceDocumentName, buttonNewFinanceDocumentText, buttonNewFinanceDocumentImageFileName);
 
             //Toggle Sensitive Buttons
-            TouchButtonPosToolbarNewFinanceDocument.Sensitive = (XPOSettings.WorkSessionPeriodTerminal != null && XPOSettings.WorkSessionPeriodTerminal.SessionStatus == WorkSessionPeriodStatus.Open);
+            BtnNewDocument.Sensitive = (XPOSettings.WorkSessionPeriodTerminal != null && XPOSettings.WorkSessionPeriodTerminal.SessionStatus == WorkSessionPeriodStatus.Open);
             //Pack Buttons
             HBox hboxToolbar = new HBox(false, 0);
             hboxToolbar.BorderWidth = 10;
 
-            if (buttonApplicationCloseVisible) hboxToolbar.PackStart(_touchButtonPosToolbarApplicationClose, false, false, 0);
-            if (buttonBackOfficeVisible) hboxToolbar.PackStart(_touchButtonPosToolbarBackOffice, false, false, 0);
-            if (buttonShowSystemDialogVisible) hboxToolbar.PackStart(_touchButtonPosToolbarShowSystemDialog, false, false, 0);
-            if (buttonLogoutUserVisible) hboxToolbar.PackStart(_touchButtonPosToolbarLogoutUser, false, false, 0);
-            if (buttonShowChangeUserDialogVisible) hboxToolbar.PackStart(_touchButtonPosToolbarShowChangeUserDialog, false, false, 0);
-            if (buttonCashDrawerVisible) hboxToolbar.PackStart(_touchButtonPosToolbarCashDrawer, false, false, 0);
-            if (buttonReportsVisible) hboxToolbar.PackStart(_touchButtonPosToolbarReports, false, false, 0);
-            if (buttonFinanceDocumentsVisible) hboxToolbar.PackStart(_touchButtonPosToolbarFinanceDocuments, false, false, 0);
-            if (buttonNewFinanceDocumentVisible) hboxToolbar.PackStart(TouchButtonPosToolbarNewFinanceDocument, false, false, 0);
+            if (buttonApplicationCloseVisible) hboxToolbar.PackStart(BtnQuit, false, false, 0);
+            if (buttonBackOfficeVisible) hboxToolbar.PackStart(BtnBackOffice, false, false, 0);
+            if (buttonShowSystemDialogVisible) hboxToolbar.PackStart(BtnShowSystemDialog, false, false, 0);
+            if (buttonLogoutUserVisible) hboxToolbar.PackStart(BtnLogOut, false, false, 0);
+            if (buttonShowChangeUserDialogVisible) hboxToolbar.PackStart(BtnChangeUser, false, false, 0);
+            if (buttonCashDrawerVisible) hboxToolbar.PackStart(BtnCashDrawer, false, false, 0);
+            if (buttonReportsVisible) hboxToolbar.PackStart(BtnReports, false, false, 0);
+            if (buttonFinanceDocumentsVisible) hboxToolbar.PackStart(BtnDocuments, false, false, 0);
+            if (buttonNewFinanceDocumentVisible) hboxToolbar.PackStart(BtnNewDocument, false, false, 0);
 
             //PackIt
             eventboxToolbar.Add(hboxToolbar);
 
             //Assign Toolbar Button references to TicketList
-            TicketList.ToolbarApplicationClose = _touchButtonPosToolbarApplicationClose;
-            TicketList.ToolbarBackOffice = _touchButtonPosToolbarBackOffice;
+            TicketList.ToolbarApplicationClose = BtnQuit;
+            TicketList.ToolbarBackOffice = BtnBackOffice;
             // Deprecated
-            TicketList.ToolbarReports = _touchButtonPosToolbarReports;
-            TicketList.ToolbarShowSystemDialog = _touchButtonPosToolbarShowSystemDialog;
-            TicketList.ToolbarLogoutUser = _touchButtonPosToolbarLogoutUser;
-            TicketList.ToolbarShowChangeUserDialog = _touchButtonPosToolbarShowChangeUserDialog;
-            TicketList.ToolbarCashDrawer = _touchButtonPosToolbarCashDrawer;
-            TicketList.ToolbarFinanceDocuments = _touchButtonPosToolbarFinanceDocuments;
-            TicketList.ToolbarNewFinanceDocument = TouchButtonPosToolbarNewFinanceDocument;
+            TicketList.ToolbarReports = BtnReports;
+            TicketList.ToolbarShowSystemDialog = BtnShowSystemDialog;
+            TicketList.ToolbarLogoutUser = BtnLogOut;
+            TicketList.ToolbarShowChangeUserDialog = BtnChangeUser;
+            TicketList.ToolbarCashDrawer = BtnCashDrawer;
+            TicketList.ToolbarFinanceDocuments = BtnDocuments;
+            TicketList.ToolbarNewFinanceDocument = BtnNewDocument;
 
             //Events
-            _touchButtonPosToolbarApplicationClose.Clicked += touchButtonPosToolbarApplicationClose_Clicked;
-            _touchButtonPosToolbarBackOffice.Clicked += touchButtonPosToolbarBackOffice_Clicked;
+            BtnQuit.Clicked += touchButtonPosToolbarApplicationClose_Clicked;
+            BtnBackOffice.Clicked += touchButtonPosToolbarBackOffice_Clicked;
             // Deprecated
-            _touchButtonPosToolbarReports.Clicked += touchButtonPosToolbarReports_Clicked;
-            _touchButtonPosToolbarShowSystemDialog.Clicked += delegate { throw new NotImplementedException(); };
-            _touchButtonPosToolbarLogoutUser.Clicked += touchButtonPosToolbarLogoutUser_Clicked;
-            _touchButtonPosToolbarShowChangeUserDialog.Clicked += touchButtonPosToolbarShowChangeUserDialog_Clicked;
-            _touchButtonPosToolbarCashDrawer.Clicked += touchButtonPosToolbarCashDrawer_Clicked;
-            TouchButtonPosToolbarNewFinanceDocument.Clicked += BtnNewDocument_Clicked;
-            _touchButtonPosToolbarFinanceDocuments.Clicked += touchButtonPosToolbarFinanceDocuments_Clicked;
+            BtnReports.Clicked += touchButtonPosToolbarReports_Clicked;
+            BtnShowSystemDialog.Clicked += delegate { throw new NotImplementedException(); };
+            BtnLogOut.Clicked += touchButtonPosToolbarLogoutUser_Clicked;
+            BtnChangeUser.Clicked += touchButtonPosToolbarShowChangeUserDialog_Clicked;
+            BtnCashDrawer.Clicked += touchButtonPosToolbarCashDrawer_Clicked;
+            BtnNewDocument.Clicked += BtnNewDocument_Clicked;
+            BtnDocuments.Clicked += touchButtonPosToolbarFinanceDocuments_Clicked;
         }
 
-        private void InitUIEventBoxPosTicketPad(dynamic pThemeWindow)
+        private void InitializeSaleOptionsPanel(dynamic pThemeWindow)
         {
             dynamic themeWindow = pThemeWindow;
 
@@ -657,22 +642,16 @@ namespace logicpos
             bool eventBoxPosTicketPadVisibleWindow = Convert.ToBoolean(themeWindow.Objects.EventBoxPosTicketPad.VisibleWindow);
 
             //UI
-            _ticketPad = new TicketPad(
-                "posTicketPad",
-                TicketList,
-                themeWindow.Objects.EventBoxPosTicketPad.Buttons,
-                eventBoxPosTicketPadPosition
-             )
-            { Sensitive = false };
+            SaleOptionsPanel = new SaleOptionsPanel(themeWindow.Objects.EventBoxPosTicketPad.Buttons) { Sensitive = false };
 
-            _ticketPad.SourceWindow = this;
+            SaleOptionsPanel.SourceWindow = this;
             EventBox eventBoxPosTicketPad = new EventBox() { VisibleWindow = eventBoxPosTicketPadVisibleWindow, WidthRequest = eventBoxPosTicketPadSize.Width, HeightRequest = eventBoxPosTicketPadSize.Height };
             if (eventBoxPosTicketPadVisibleWindow) eventBoxPosTicketPad.ModifyBg(StateType.Normal, eventBoxPosTicketPadBackgroundColor);
-            eventBoxPosTicketPad.Add(_ticketPad);
-            if (eventBoxPosTicketPadVisible) _fixedWindow.Put(eventBoxPosTicketPad, eventBoxPosTicketPadPosition.X, eventBoxPosTicketPadPosition.Y);
+            eventBoxPosTicketPad.Add(SaleOptionsPanel);
+            if (eventBoxPosTicketPadVisible) FixedWindow.Put(eventBoxPosTicketPad, eventBoxPosTicketPadPosition.X, eventBoxPosTicketPadPosition.Y);
         }
 
-        private void InitUIEventBoxPosTicketList(dynamic pThemeWindow)
+        private void InitializeTicketList(dynamic pThemeWindow)
         {
             dynamic themeWindow = pThemeWindow;
 
@@ -691,10 +670,10 @@ namespace logicpos
             if (eventBoxPosTicketListVisibleWindow) eventBoxPosTicketList.ModifyBg(StateType.Normal, eventBoxPosTicketListBackgroundColor);
 
             //Get ThemeObject to send to TicketList Constructor
-            dynamic themeEventBoxPosTicketList = themeWindow.Objects.EventBoxPosTicketList;
-            TicketList = new TicketList(themeEventBoxPosTicketList) { SourceWindow = this };
+            dynamic theme = themeWindow.Objects.EventBoxPosTicketList;
+            TicketList = new TicketList(theme, SaleOptionsPanel) { SourceWindow = this };
             eventBoxPosTicketList.Add(TicketList);
-            if (eventBoxPosTicketListVisible) _fixedWindow.Put(eventBoxPosTicketList, eventBoxPosTicketListPosition.X, eventBoxPosTicketListPosition.Y);
+            if (eventBoxPosTicketListVisible) FixedWindow.Put(eventBoxPosTicketList, eventBoxPosTicketListPosition.X, eventBoxPosTicketListPosition.Y);
         }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using Gtk;
-using logicpos.App;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Globalization;
+using LogicPOS.UI;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;

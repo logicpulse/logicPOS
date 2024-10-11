@@ -1,6 +1,5 @@
 using Gtk;
 using logicpos;
-using logicpos.App;
 using logicpos.Classes.Enums.App;
 using logicpos.Classes.Logic.License;
 using LogicPOS.Api.Features.Countries.AddCountry;

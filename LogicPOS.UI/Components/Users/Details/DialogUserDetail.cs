@@ -11,6 +11,7 @@ using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
 using LogicPOS.UI.Components;
+using LogicPOS.UI;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {

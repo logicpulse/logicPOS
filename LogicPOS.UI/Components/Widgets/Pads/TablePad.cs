@@ -1,9 +1,9 @@
 ﻿using DevExpress.Xpo.DB;
 using Gtk;
-using logicpos.App;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Settings;
+using LogicPOS.UI;
 using LogicPOS.UI.Buttons;
 using LogicPOS.Utility;
 using System;

@@ -3,6 +3,7 @@ using logicpos.Classes.Gui.Gtk.Widgets;
 using LogicPOS.Settings;
 using LogicPOS.Shared.Article;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components;
 using LogicPOS.UI.Dialogs;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;

@@ -1,7 +1,6 @@
 ﻿using ClosedXML.Excel;
 using ExcelDataReader;
 using Gtk;
-using logicpos.App;
 using logicpos.Classes.DataLayer;
 using logicpos.Classes.Enums;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
@@ -10,6 +9,7 @@ using LogicPOS.Domain.Entities;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
 using LogicPOS.Settings.Extensions;
+using LogicPOS.UI;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;

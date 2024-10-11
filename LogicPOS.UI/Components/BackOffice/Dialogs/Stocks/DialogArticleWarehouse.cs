@@ -1,7 +1,6 @@
 ﻿using DevExpress.Data.Filtering;
 using DevExpress.Xpo;
 using Gtk;
-using logicpos.App;
 using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
@@ -11,6 +10,7 @@ using LogicPOS.Globalization;
 using LogicPOS.Domain.Entities;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components;
+using LogicPOS.UI;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 {

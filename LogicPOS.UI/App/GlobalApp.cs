@@ -3,10 +3,11 @@ using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Logic.Hardware;
 using logicpos.Classes.Logic.Others;
 using LogicPOS.UI.Components.BackOffice.Windows;
+using LogicPOS.UI.Components.Windows;
 using LogicPOS.Utility;
 using System.Collections.Generic;
 
-namespace logicpos.App
+namespace LogicPOS.UI
 {
     public static class GlobalApp
     {
@@ -20,14 +21,20 @@ namespace logicpos.App
         public static bool MultiUserEnvironment { get; set; }
         public static bool UseVirtualKeyBoard { get; set; }
 
-        public static dynamic Theme { 
-            get; 
-            set; }
+        public static dynamic Theme
+        {
+            get;
+            set;
+        }
 
         public static ExpressionEvaluationService ExpressionEvaluator { get; set; } = new ExpressionEvaluationService();
-        public static System.Drawing.Size ScreenSize { 
-            get; 
-            set; }
+
+        public static System.Drawing.Size ScreenSize
+        {
+            get;
+            set;
+        }
+
         public static System.Drawing.Size MaxWindowSize { get; set; }
         public static System.Drawing.Size BackOfficeScreenSize { get; set; }
         public static string OpenFileDialogStartPath { get; set; }

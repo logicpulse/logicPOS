@@ -10,6 +10,7 @@ using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Shared.Article;
 using LogicPOS.Shared.CustomDocument;
+using LogicPOS.UI;
 using System;
 using System.Collections.Generic;
 using System.Data;

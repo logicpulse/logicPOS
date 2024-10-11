@@ -1,5 +1,6 @@
 ﻿using DevExpress.Xpo.DB;
 using Gtk;
+using logicpos;
 using logicpos.App;
 using logicpos.Classes.Enums.Hardware;
 using logicpos.Classes.Enums.TicketList;
@@ -11,16 +12,16 @@ using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Enums;
 using LogicPOS.Settings;
-using LogicPOS.Settings.Extensions;
 using LogicPOS.Shared;
 using LogicPOS.Shared.Orders;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.Utility;
 using System;
 using System.Linq;
 
-namespace logicpos
+namespace LogicPOS.UI.Components.Windows
 {
     public partial class POSMainWindow
     {
@@ -112,7 +113,7 @@ namespace logicpos
                 {
                     XPOSettings.LoggedUser = XPOUtility.GetEntityById<sys_userdetail>(dialogChangeUser.UserDetail.Oid);
                     GeneralSettings.LoggedUserPermissions = XPOUtility.GetUserPermissions();
-                    TicketList.UpdateTicketListButtons();
+                    TicketList.UpdateSaleOptionsPanelButtons();
                     XPOUtility.Audit("USER_CHANGE", string.Format(GeneralUtils.GetResourceByName("audit_message_user_change"), XPOSettings.LoggedUser.Name));
                     terminalInfo = string.Format("{0} : {1}", TerminalSettings.LoggedTerminal.Designation, XPOSettings.LoggedUser.Name);
                     if (LabelTerminalInfo.Text != terminalInfo) LabelTerminalInfo.Text = terminalInfo;
@@ -129,7 +130,7 @@ namespace logicpos
                             POSSession.CurrentSession.Save();
                             XPOSettings.LoggedUser = XPOUtility.GetEntityById<sys_userdetail>(dialogChangeUser.UserDetail.Oid);
                             GeneralSettings.LoggedUserPermissions = XPOUtility.GetUserPermissions();
-                            TicketList.UpdateTicketListButtons();
+                            TicketList.UpdateSaleOptionsPanelButtons();
                             XPOUtility.Audit("USER_LOGIN", string.Format(GeneralUtils.GetResourceByName("audit_message_user_login"), XPOSettings.LoggedUser.Name));
                             terminalInfo = string.Format("{0} : {1}", TerminalSettings.LoggedTerminal.Designation, XPOSettings.LoggedUser.Name);
                             if (LabelTerminalInfo.Text != terminalInfo) LabelTerminalInfo.Text = terminalInfo;
@@ -235,7 +236,7 @@ namespace logicpos
             MenuSubfamilies.LoadEntities();
             MenuArticles.LoadEntities();
 
-            TicketList.UpdateTicketListButtons();
+            TicketList.UpdateSaleOptionsPanelButtons();
         }
 
         public void UpdateWorkSessionUI()
@@ -248,7 +249,7 @@ namespace logicpos
                     {
                         bool isTableOpened = POSSession.CurrentSession.OrderMains.ContainsKey(POSSession.CurrentSession.CurrentOrderMainId)
                           && POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId].Table != null;
-                         SelectedData xpoSelectedData = null;
+                        SelectedData xpoSelectedData = null;
 
                         if (DatabaseSettings.DatabaseType.ToString() == "MySql" || DatabaseSettings.DatabaseType.ToString() == "SQLite")
                         {
@@ -273,13 +274,13 @@ namespace logicpos
                             POSSession.CurrentSession.OrderMains.Add(newOrderMainOid, new OrderMain(newOrderMainOid, currentTableOid));
                             OrderMain newOrderMain = POSSession.CurrentSession.OrderMains[newOrderMainOid];
                             OrderTicket orderTicket = new OrderTicket(newOrderMain, (PriceType)newOrderMain.Table.PriceType);
-                          
+
                             newOrderMain.OrderTickets.Add(1, orderTicket);
 
                             OrderMain currentOrderMain = newOrderMain;
 
                             TicketList.UpdateArticleBag();
-                            TicketList.UpdateTicketListOrderButtons();
+                            TicketList.UpdateSaleOptionsPanelOrderButtons();
                             TicketList.UpdateOrderStatusBar();
 
                             currentOrderMain.PersistentOid = currentOrderMain.GetOpenTableFieldValueGuid(TableId, "Oid");
@@ -289,19 +290,19 @@ namespace logicpos
                             POSSession.CurrentSession.Save();
                             TicketList.UpdateModel();
 
-                            _ticketPad.Sensitive = true;
+                            SaleOptionsPanel.Sensitive = true;
                         }
                         if (!GeneralSettings.AppUseBackOfficeMode)
                             MenuArticles.Sensitive = true;
 
-                        if (!_ticketPad.Sensitive == true && !GeneralSettings.AppUseBackOfficeMode)
-                            _ticketPad.Sensitive = true;
+                        if (!SaleOptionsPanel.Sensitive == true && !GeneralSettings.AppUseBackOfficeMode)
+                            SaleOptionsPanel.Sensitive = true;
                     }
 
                     else if (!GeneralSettings.AppUseBackOfficeMode)
                     {
-                        if (!_ticketPad.Sensitive == false)
-                            _ticketPad.Sensitive = false;
+                        if (!SaleOptionsPanel.Sensitive == false)
+                            SaleOptionsPanel.Sensitive = false;
                         if (!MenuArticles.Sensitive == false)
                             MenuArticles.Sensitive = false;
                     }
@@ -309,8 +310,8 @@ namespace logicpos
             }
             else if (!GeneralSettings.AppUseBackOfficeMode)
             {
-                if (!_ticketPad.Sensitive == false)
-                    _ticketPad.Sensitive = false;
+                if (!SaleOptionsPanel.Sensitive == false)
+                    SaleOptionsPanel.Sensitive = false;
                 if (!MenuArticles.Sensitive == false)
                     MenuArticles.Sensitive = false;
             }
@@ -325,7 +326,7 @@ namespace logicpos
         {
             if (GlobalApp.PosMainWindow.Visible)
             {
-                _labelClock.Text = XPOUtility.CurrentDateTime(_clockFormat);
+                LabelClock.Text = XPOUtility.CurrentDateTime(ClockTimeFormat);
 
                 if (POSSession.CurrentSession.CurrentOrderMainId != Guid.Empty && POSSession.CurrentSession.OrderMains.ContainsKey(POSSession.CurrentSession.CurrentOrderMainId))
                 {
@@ -381,9 +382,9 @@ namespace logicpos
                     if (pTicketList.ListMode == TicketListMode.OrderMain) pTicketList.UpdateModel();
 
                     pTicketList.UpdateOrderStatusBar();
-                    pTicketList.UpdateTicketListOrderButtons();
+                    pTicketList.UpdateSaleOptionsPanelOrderButtons();
 
-                  
+
                     POSSession.CurrentSession.Save();
                 }
             }
@@ -395,7 +396,7 @@ namespace logicpos
                 if (pTicketList.ListMode == TicketListMode.OrderMain) pTicketList.UpdateModel();
 
                 pTicketList.UpdateOrderStatusBar();
-                pTicketList.UpdateTicketListOrderButtons();
+                pTicketList.UpdateSaleOptionsPanelOrderButtons();
 
                 POSSession.CurrentSession.Save();
             }
@@ -410,16 +411,16 @@ namespace logicpos
             }
             else
             {
-                _ticketPad.SelectTableOrder(POSSettings.XpoOidConfigurationPlaceTableDefaultOpenTable);
+                TicketList.SelectTableOrder(POSSettings.XpoOidConfigurationPlaceTableDefaultOpenTable);
                 TicketList.UpdateArticleBag();
-                TicketList.UpdateTicketListOrderButtons();
+                TicketList.UpdateSaleOptionsPanelOrderButtons();
                 TicketList.UpdateOrderStatusBar();
             }
         }
 
         private void ScrollTextViewLog(object o, SizeAllocatedArgs args)
         {
-            _textviewLog.ScrollToIter(_textviewLog.Buffer.EndIter, 0, false, 0, 0);
+            TextViewLog.ScrollToIter(TextViewLog.Buffer.EndIter, 0, false, 0, 0);
         }
     }
 }

@@ -1,10 +1,10 @@
 ﻿using DevExpress.Xpo;
 using Gtk;
-using logicpos.App;
 using System;
 using System.Diagnostics;
 using LogicPOS.Globalization;
 using LogicPOS.Domain.Entities;
+using LogicPOS.UI;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {

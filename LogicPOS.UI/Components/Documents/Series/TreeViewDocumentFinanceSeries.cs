@@ -1,7 +1,6 @@
 ﻿using DevExpress.Data.Filtering;
 using DevExpress.Xpo;
 using Gtk;
-using logicpos.App;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets.Entrys;
 using LogicPOS.Data.XPO.Settings;
@@ -9,6 +8,7 @@ using LogicPOS.Domain.Entities;
 using LogicPOS.DTOs.Common;
 using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Settings;
+using LogicPOS.UI;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components;
 using LogicPOS.UI.Components.BackOffice.Windows;

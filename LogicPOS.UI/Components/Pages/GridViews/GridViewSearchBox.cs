@@ -1,6 +1,5 @@
 ﻿using Gtk;
 using logicpos;
-using logicpos.App;
 using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets;

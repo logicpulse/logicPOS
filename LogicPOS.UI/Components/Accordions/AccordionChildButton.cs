@@ -1,5 +1,4 @@
 ﻿using Gtk;
-using logicpos.App;
 
 namespace LogicPOS.UI.Components.Accordions
 {
