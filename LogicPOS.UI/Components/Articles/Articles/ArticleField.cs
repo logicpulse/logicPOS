@@ -112,7 +112,7 @@ namespace LogicPOS.UI.Components.InputFields
 
         public bool IsValid()
         {
-            return (Article != null) && Regex.IsMatch(TxtQuantity.Text, RegularExpressions.IntegerNumber) && int.Parse(TxtQuantity.Text) > 0;
+            return (Article != null) && Regex.IsMatch(TxtQuantity.Text, RegularExpressions.IntegerNumber);
         }
     }
 }

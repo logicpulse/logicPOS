@@ -1,6 +1,7 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Domain.Entities;
+using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Pages;
@@ -56,9 +57,8 @@ namespace LogicPOS.UI.Components.Modals
         private ArticlePriceField _price3;
         private ArticlePriceField _price4;
         private ArticlePriceField _price5;
-        private List<ArticleField> _articleFields = new List<ArticleField>();
+        private AddArticlesBox _addArticlesBox = new AddArticlesBox();
         private VBox _compositionTab;
-        private VBox _boxChildren;
         #endregion
 
         protected override void BeforeDesign()
@@ -340,8 +340,7 @@ namespace LogicPOS.UI.Components.Modals
         private VBox CreateCompositionTab()
         {
             _compositionTab = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
-            _compositionTab.PackStart(CreateScrolledWindow(), true, true, 0);
-            AddArticleField();
+            _compositionTab.PackStart(_addArticlesBox.Component, true, true, 0);
             return _compositionTab;
         }
 
@@ -415,54 +414,13 @@ namespace LogicPOS.UI.Components.Modals
 
             if (_checkIsComposed.Active == false)
             {
-                _articleFields.ForEach(field => ValidatableFields.Remove(field));
+                ValidatableFields.Remove(_addArticlesBox);
             }
             else
             {
-                _articleFields.ForEach(field => ValidatableFields.Add(field));
+                ValidatableFields.Add(_addArticlesBox);
             }
         }
 
-        private void AddArticleField(Article article = null)
-        {
-            if(_articleFields.Any() && _articleFields.Last().Article == null)
-            {
-                return;
-            }
-
-            var field = new ArticleField(article);
-            field.OnRemove += Button_RemoveArticle_Clicked;
-            field.OnAdd += () => AddArticleField();
-            _boxChildren.PackStart(field.Component, false, false, 0);
-            ValidatableFields.Add(field);
-            field.Component.ShowAll();
-            _articleFields.Add(field);
-        }
-
-        private void Button_RemoveArticle_Clicked(ArticleField field, Article article)
-        {
-            if(_articleFields.Count < 2)
-            {
-                return;
-            }
-
-            _boxChildren.Remove(field.Component);
-            _articleFields.Remove(field);
-            ValidatableFields.Remove(field);
-        }
-
-        private ScrolledWindow CreateScrolledWindow()
-        {
-            var swindow = new ScrolledWindow();
-            swindow.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
-            swindow.ModifyBg(StateType.Normal, Color.White.ToGdkColor());
-            swindow.ShadowType = ShadowType.None;
-
-            _boxChildren = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
-
-            swindow.AddWithViewport(_boxChildren);
-
-            return swindow;
-        }
     }
 }

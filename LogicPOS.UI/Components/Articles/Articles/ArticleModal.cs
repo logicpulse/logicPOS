@@ -12,7 +12,6 @@ using LogicPOS.Api.Features.MeasurementUnits.GetAllMeasurementUnits;
 using LogicPOS.Api.Features.SizeUnits.GetAllSizeUnits;
 using LogicPOS.Api.Features.VatExemptionReasons.GetAllVatExemptionReasons;
 using LogicPOS.Api.Features.VatRates.GetAllVatRate;
-using LogicPOS.UI.Components.InputFields;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -23,9 +23,9 @@ using LogicPOS.UI;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components;
-using LogicPOS.UI.Components.Accordions;
 using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Documents;
+using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Dialogs;
 using LogicPOS.UI.Extensions;
@@ -2070,43 +2070,38 @@ namespace logicpos
         //TK016235 BackOffice - Mode
         public static void OpenArticleStockDialog(Window parentWindow)
         {
-            try
+
+            if (LicenseSettings.LicenseModuleStocks && ModulesSettings.StockManagementModule != null)
             {
-                if (LicenseSettings.LicenseModuleStocks && ModulesSettings.StockManagementModule != null)
-                {
-                    DialogArticleStock dialog = new DialogArticleStock(parentWindow);
-                    ResponseType response = (ResponseType)dialog.Run();
-                    dialog.Destroy();
-                }
-                else if (CheckStockMessage() && !LicenseSettings.LicenseModuleStocks)
-                {
-                    var messageDialog = ShowMessageTouch(parentWindow, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.OkCancel, GeneralUtils.GetResourceByName("global_warning"), GeneralUtils.GetResourceByName("global_warning_acquire_module_stocks"));
-                    if (messageDialog == ResponseType.Ok)
-                    {
-                        Process.Start("https://logic-pos.com/");
-                    }
-
-                    string query = string.Format("UPDATE cfg_configurationpreferenceparameter SET Value = 'False' WHERE Token = 'CHECK_STOCKS_MESSAGE';");
-                    XPOSettings.Session.ExecuteScalar(query);
-                    query = string.Format("UPDATE cfg_configurationpreferenceparameter SET Disabled = '1' WHERE Token = 'CHECK_STOCKS_MESSAGE';");
-                    XPOSettings.Session.ExecuteScalar(query);
-
-                    var documentsMenu = new DocumentsMenuModal(parentWindow);
-                    documentsMenu.Run();
-                    documentsMenu.Destroy();
-
-                }
-                else
-                {
-                    var documentsMenu = new DocumentsMenuModal(parentWindow);
-                    documentsMenu.Run();
-                    documentsMenu.Destroy();
-                }
+                DialogArticleStock dialog = new DialogArticleStock(parentWindow);
+                ResponseType response = (ResponseType)dialog.Run();
+                dialog.Destroy();
             }
-            catch (Exception ex)
+            else if (CheckStockMessage() && !LicenseSettings.LicenseModuleStocks)
             {
-                _logger.Error(ex.Message, ex);
+                var messageDialog = ShowMessageTouch(parentWindow, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.OkCancel, GeneralUtils.GetResourceByName("global_warning"), GeneralUtils.GetResourceByName("global_warning_acquire_module_stocks"));
+                if (messageDialog == ResponseType.Ok)
+                {
+                    Process.Start("https://logic-pos.com/");
+                }
+
+                string query = string.Format("UPDATE cfg_configurationpreferenceparameter SET Value = 'False' WHERE Token = 'CHECK_STOCKS_MESSAGE';");
+                XPOSettings.Session.ExecuteScalar(query);
+                query = string.Format("UPDATE cfg_configurationpreferenceparameter SET Disabled = '1' WHERE Token = 'CHECK_STOCKS_MESSAGE';");
+                XPOSettings.Session.ExecuteScalar(query);
+
+                var documentsMenu = new DocumentsMenuModal(parentWindow);
+                documentsMenu.Run();
+                documentsMenu.Destroy();
+
             }
+            else
+            {
+                var addStockModal = new AddStockModal(parentWindow);
+                addStockModal.Run();
+                addStockModal.Destroy();
+            }
+
         }
 
 

@@ -1,11 +1,10 @@
 ﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.SizeUnits.AddSizeUnit;
 using LogicPOS.Api.Features.SizeUnits.UpdateSizeUnit;
-using LogicPOS.UI.Components.Modals;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class SizeUnitModal: EntityEditionModal<SizeUnit>
+    public partial class SizeUnitModal : EntityEditionModal<SizeUnit>
     {
         public SizeUnitModal(EntityEditionModalMode modalMode, SizeUnit entity = null) : base(modalMode, entity)
         {
