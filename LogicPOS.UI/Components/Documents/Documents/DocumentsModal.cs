@@ -83,6 +83,19 @@ namespace LogicPOS.UI.Components.Documents
             BtnCancelDocument.Clicked += BtnCancelDocument_Clicked;
             BtnNewDocument.Clicked += BtnNewDocument_Clicked;
             BtnPayInvoice.Clicked += BtnPayInvoice_Clicked;
+            BtnPrintDocument.Clicked += BtnPrintDocument_Clicked;
+        }
+
+        private void BtnPrintDocument_Clicked(object sender, EventArgs e)
+        {
+            if (Page.SelectedEntity == null)
+            {
+                return;
+            }
+
+            var modal = new RePrintDocumentModal(this,Page.SelectedEntity);
+            modal.Run();
+            modal.Destroy();
         }
 
         private void BtnPayInvoice_Clicked(object sender, EventArgs e)
@@ -186,17 +199,23 @@ namespace LogicPOS.UI.Components.Documents
 
         private void BtnPrintDocumentAs_Clicked(object sender, EventArgs e)
         {
-            if (Page.SelectedEntity != null)
+            if (Page.SelectedEntity == null)
             {
-                var pdfLocation = DocumentPdfUtils.GetDocumentPdfFileLocation(Page.SelectedEntity.Id);
-
-                if (pdfLocation == null)
-                {
-                    return;
-                }
-
-                DocumentPrintingUtils.PrintWithNativeDialog(pdfLocation);
+                return;
             }
+
+            var modal = new RePrintDocumentModal(this, Page.SelectedEntity);
+            modal.Run();
+            modal.Destroy();
+
+            var pdfLocation = DocumentPdfUtils.GetDocumentPdfFileLocation(Page.SelectedEntity.Id);
+
+            if (pdfLocation == null)
+            {
+                return;
+            }
+
+            DocumentPrintingUtils.PrintWithNativeDialog(pdfLocation);
         }
 
         private void BtnOpenDocument_Clicked(object sender, EventArgs e)

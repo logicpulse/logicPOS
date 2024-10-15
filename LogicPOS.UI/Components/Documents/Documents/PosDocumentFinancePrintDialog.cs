@@ -74,11 +74,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 { GeneralUtils.GetResourceByName("global_print_copy_title3"), (_printCopies >= 3) },
                 { GeneralUtils.GetResourceByName("global_print_copy_title4"), (_printCopies >= 4) }
             };
-            //Not Used Anymore
-            //buttonGroup.Add(CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_print_copy_title5, (_printCopies >= 5));
-            //buttonGroup.Add(CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_print_copy_title6, (_printCopies >= 6));
-
-            //Construct,Pack and Event
+          
             _checkButtonCopyNamesBoxGroup = new CheckButtonBoxGroup(GeneralUtils.GetResourceByName("global_print_copies"), buttonGroup);
             _vboxContent.PackStart(_checkButtonCopyNamesBoxGroup);
             _checkButtonCopyNamesBoxGroup.Clicked += checkButtonCopyNamesBoxGroup_Clicked;
