@@ -1,9 +1,7 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
-using Gtk;
+﻿using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
-using LogicPOS.UI.Components.Documents.CreateDocument;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals;
@@ -198,7 +196,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
         private void UpdateValidatableFields()
         {
-            if(_vatRateValue == 0)
+            if (_vatRateValue != 0)
             {
                 TxtVatExemptionReason.Clear();
                 ValidatableFields.Remove(TxtVatExemptionReason);
@@ -207,6 +205,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             else
             {
                 ValidatableFields.Add(TxtVatExemptionReason);
+                TxtVatExemptionReason.IsRequired = true;
                 TxtVatExemptionReason.Component.Sensitive = true;
             }
         }
@@ -399,7 +398,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 return;
             }
 
-            Utilities.ShowValidationErrors(ValidatableFields);
+            ValidationUtilities.ShowValidationErrors(ValidatableFields);
 
             Run();
         }

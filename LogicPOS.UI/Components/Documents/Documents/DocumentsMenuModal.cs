@@ -99,7 +99,9 @@ namespace LogicPOS.UI.Components.Documents
 
         private void BtnReceipts_Clicked(object sender, EventArgs e)
         {
-
+            var modal = new ReceiptsModal(WindowSettings.Source);
+            modal.Run();
+            modal.Destroy();
         }
 
         private void BtnCurrentAccount_Clicked(object sender, EventArgs e)

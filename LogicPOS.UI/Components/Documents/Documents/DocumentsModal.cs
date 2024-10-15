@@ -3,6 +3,7 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents.CancelDocument;
 using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Pages;
@@ -20,6 +21,9 @@ namespace LogicPOS.UI.Components.Documents
         private DocumentsPage Page { get; set; }
         private string WindowTitleBase => GeneralUtils.GetResourceByName("window_title_select_finance_document");
 
+        private IconButtonWithText BtnPayInvoice = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("btnPayInvoice",
+                                                                                                       GeneralUtils.GetResourceByName("global_button_label_pay_invoice"),
+                                                                                                       PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_payment_full.png");
         private IconButtonWithText BtnNewDocument { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("btnNewDocument",
                                                                                                                        GeneralUtils.GetResourceByName("global_button_label_new_financial_document"),
                                                                                                                        PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_toolbar_finance_new_document.png");
@@ -40,8 +44,6 @@ namespace LogicPOS.UI.Components.Documents
 
         }
 
-
-
         protected override ActionAreaButtons CreateActionAreaButtons()
         {
             ColorButtons();
@@ -50,6 +52,7 @@ namespace LogicPOS.UI.Components.Documents
 
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons
             {
+                new ActionAreaButton(BtnPayInvoice, ResponseType.Ok),
                 new ActionAreaButton(BtnNewDocument, ResponseType.Ok),
                 new ActionAreaButton(BtnPrintDocument, ResponseType.Ok),
                 new ActionAreaButton(BtnPrintDocumentAs, ResponseType.Ok),
@@ -70,6 +73,7 @@ namespace LogicPOS.UI.Components.Documents
             BtnSendDocumentEmail.SetBackgroundColor(greenColor);
             BtnCancelDocument.SetBackgroundColor(greenColor);
             BtnNewDocument.SetBackgroundColor(greenColor);
+            BtnPayInvoice.SetBackgroundColor(greenColor);
         }
 
         private void AddButtonsEventHandlers()
@@ -78,6 +82,19 @@ namespace LogicPOS.UI.Components.Documents
             BtnPrintDocumentAs.Clicked += BtnPrintDocumentAs_Clicked;
             BtnCancelDocument.Clicked += BtnCancelDocument_Clicked;
             BtnNewDocument.Clicked += BtnNewDocument_Clicked;
+            BtnPayInvoice.Clicked += BtnPayInvoice_Clicked;
+        }
+
+        private void BtnPayInvoice_Clicked(object sender, EventArgs e)
+        {
+            if (Page.SelectedDocuments.Count == 0)
+            {
+                return;
+            }
+
+            var modal = new PayInvoiceModal(this, Page.GetSelectedDocumentsWithTotals());
+            modal.Run();
+            modal.Destroy();
         }
 
         private void BtnNewDocument_Clicked(object sender, EventArgs e)
@@ -161,7 +178,7 @@ namespace LogicPOS.UI.Components.Documents
         {
             if (Page.SelectedEntity != null)
             {
-                var pdfLocation = DocumentPrintingUtils.GetPdfFile(Page.SelectedEntity.Id);
+                var pdfLocation = DocumentPdfUtils.GetDocumentPdfFileLocation(Page.SelectedEntity.Id);
 
                 if (pdfLocation == null)
                 {
@@ -176,7 +193,7 @@ namespace LogicPOS.UI.Components.Documents
         {
             if (Page.SelectedEntity != null)
             {
-                DocumentPrintingUtils.ShowPdf(this, Page.SelectedEntity.Id);
+                DocumentPdfUtils.ViewDocumentPdf(this, Page.SelectedEntity.Id);
             }
         }
 
@@ -189,7 +206,6 @@ namespace LogicPOS.UI.Components.Documents
 
             base.OnResponse(response);
         }
-
 
         protected override Widget CreateBody()
         {

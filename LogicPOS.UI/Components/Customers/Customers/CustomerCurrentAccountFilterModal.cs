@@ -5,6 +5,7 @@ using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Documents;
+using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
@@ -69,7 +70,7 @@ namespace LogicPOS.UI.Components.Modals
                 Run();
             }
 
-            DocumentPrintingUtils.ShowPdf(this, result.Value);
+            DocumentPdfUtils.ViewPdf(this, result.Value);
         }
 
         private GetCustomerCurrentAccountPdfQuery CreateQuery()
@@ -195,7 +196,7 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
-            Utilities.ShowValidationErrors(ValidatableFields);
+            ValidationUtilities.ShowValidationErrors(ValidatableFields);
 
             Run();
         }

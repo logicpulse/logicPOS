@@ -28,5 +28,8 @@ namespace LogicPOS.Api.Entities
         public decimal ExchangeRate { get; set; }
         public decimal WithholdingTaxAmount { get; set; }
         public string ExtendedValue { get; set; }
+
+        public bool IsCancelled => Status == "A";
+        public bool HasPassed48Hours => CreatedAt.AddHours(48) < DateTime.Now;
     }
 }

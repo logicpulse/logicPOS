@@ -6,6 +6,7 @@ using LogicPOS.Api.Features.Documents.PayDocuments;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
@@ -13,6 +14,7 @@ using LogicPOS.UI.Components.Pages;
 using LogicPOS.Utility;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using Patagames.Pdf;
 using Patagames.Pdf.Enums;
 using System;
 using System.Collections.Generic;
@@ -49,7 +51,7 @@ namespace LogicPOS.UI.Components.Modals
             TitleBase = WindowSettings.Title.Text;
             Invoices.AddRange(invoices);
             SetDefaultCurrency();
-            _invoicesTotalFinal = Invoices.Sum(x => x.Totals.TotalToPay);
+            _invoicesTotalFinal = Invoices.Sum(x => x.Totals?.TotalToPay ?? x.Invoice.TotalFinal);
             TxtTotalPaid.Text = _invoicesTotalFinal.ToString("0.00");
             TxtSystemCurrencyTotalPaid.Text = _invoicesTotalFinal.ToString("0.00");
             UpdateTitle();
@@ -57,10 +59,9 @@ namespace LogicPOS.UI.Components.Modals
 
         private void UpdateTitle()
         {
-            var invoicesTotalFinal = Invoices.Sum(x => x.Totals.TotalToPay);
-            var totalPaidPercentage = (CalculateSystemCurrencyTotalPaid() / invoicesTotalFinal )*100;
+            var totalPaidPercentage = (CalculateSystemCurrencyTotalPaid() / _invoicesTotalFinal )*100;
             totalPaidPercentage = Math.Round(totalPaidPercentage, 2);
-            WindowSettings.Title.Text = $"{TitleBase} ({Invoices.Count} = {invoicesTotalFinal:0.00}) - {totalPaidPercentage}%";
+            WindowSettings.Title.Text = $"{TitleBase} ({Invoices.Count} = {_invoicesTotalFinal:0.00}) - {totalPaidPercentage}%";
         }
 
         private decimal CalculateSystemCurrencyTotalPaid()
@@ -183,6 +184,8 @@ namespace LogicPOS.UI.Components.Modals
                 SimpleAlerts.ShowApiErrorAlert(this, result.FirstError);
                 return;
             }
+
+            DocumentPdfUtils.ViewReceiptPdf(this,result.Value);
         }
 
         private PayDocumentsCommand CreateCommand()
@@ -314,7 +317,7 @@ namespace LogicPOS.UI.Components.Modals
 
         public bool AllFieldsAreValid() => ValidatableFields.All(tab => tab.IsValid());
 
-        protected void ShowValidationErrors() => Utilities.ShowValidationErrors(ValidatableFields);
+        protected void ShowValidationErrors() => ValidationUtilities.ShowValidationErrors(ValidatableFields);
 
     }
 }

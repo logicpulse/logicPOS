@@ -2,7 +2,9 @@
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents.CancelDocument;
 using LogicPOS.Settings;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Pages;
@@ -14,18 +16,12 @@ using System.Drawing;
 
 namespace LogicPOS.UI.Components.Documents
 {
-    public class InvoicesModal : Modal
+    public class ReceiptsModal : Modal
     {
         private readonly ISender _meditaor = DependencyInjection.Services.GetRequiredService<IMediator>();
-        private InvoicesPage Page { get; set; }
-        private string WindowTitleBase => GeneralUtils.GetResourceByName("window_title_select_finance_document");
+        private ReceiptsPage Page { get; set; }
+        private string WindowTitleBase => GeneralUtils.GetResourceByName("window_title_dialog_document_finance_payment");
 
-        private IconButtonWithText BtnPayInvoice = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("btnPayInvoice",
-                                                                                                        GeneralUtils.GetResourceByName("global_button_label_pay_invoice"),
-                                                                                                        PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_payment_full.png");
-        private IconButtonWithText BtnNewDocument { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("btnNewDocument",
-                                                                                                                       GeneralUtils.GetResourceByName("global_button_label_new_financial_document"),
-                                                                                                                       PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_toolbar_finance_new_document.png");
         private IconButtonWithText BtnPrintDocument { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.Print, "btnPrintDocument");
         private IconButtonWithText BtnOpenDocument { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.OpenDocument, "btnOpenDocument");
         private IconButtonWithText BtnClose { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.Close);
@@ -35,10 +31,10 @@ namespace LogicPOS.UI.Components.Documents
                                                                                          GeneralUtils.GetResourceByName("global_button_label_cancel_document"),
                                                                                          PathsSettings.ImagesFolderLocation + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png");
 
-        public InvoicesModal(Window parent) : base(parent,
-                                                    GeneralUtils.GetResourceByName("window_title_select_finance_document"),
-                                                    GlobalApp.MaxWindowSize,
-                                                    $"{PathsSettings.ImagesFolderLocation}{@"Icons/Windows/icon_window_select_record.png"}")
+        public ReceiptsModal(Window parent) : base(parent,
+                                                   GeneralUtils.GetResourceByName("window_title_dialog_document_finance_payment"),
+                                                   GlobalApp.MaxWindowSize,
+                                                   $"{PathsSettings.ImagesFolderLocation}{@"Icons/Windows/icon_window_select_record.png"}")
         {
 
         }
@@ -53,8 +49,6 @@ namespace LogicPOS.UI.Components.Documents
 
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons
             {
-                new ActionAreaButton(BtnPayInvoice, ResponseType.Ok),
-                new ActionAreaButton(BtnNewDocument, ResponseType.Ok),
                 new ActionAreaButton(BtnPrintDocument, ResponseType.Ok),
                 new ActionAreaButton(BtnPrintDocumentAs, ResponseType.Ok),
                 new ActionAreaButton(BtnCancelDocument, ResponseType.Ok),
@@ -73,29 +67,13 @@ namespace LogicPOS.UI.Components.Documents
             BtnOpenDocument.SetBackgroundColor(greenColor);
             BtnSendDocumentEmail.SetBackgroundColor(greenColor);
             BtnCancelDocument.SetBackgroundColor(greenColor);
-            BtnNewDocument.SetBackgroundColor(greenColor);
-            BtnPayInvoice.SetBackgroundColor(greenColor);
         }
 
         private void AddButtonsEventHandlers()
         {
             BtnOpenDocument.Clicked += BtnOpenDocument_Clicked;
             BtnPrintDocumentAs.Clicked += BtnPrintDocumentAs_Clicked;
-            BtnCancelDocument.Clicked += BtnCancelDocument_Clicked;
-            BtnNewDocument.Clicked += BtnNewDocument_Clicked;
-            BtnPayInvoice.Clicked += BtnPayInvoice_Clicked;
-        }
-
-        private void BtnPayInvoice_Clicked(object sender, EventArgs e)
-        {
-            if(Page.SelectedDocuments.Count == 0)
-            {
-                return;
-            }
-
-            var modal = new PayInvoiceModal(this,Page.GetSelectedDocumentsWithTotals());
-            modal.Run();
-            modal.Destroy();
+            BtnCancelDocument.Clicked += BtnCancelReceipt_Clicked;
         }
 
         private void BtnNewDocument_Clicked(object sender, EventArgs e)
@@ -105,32 +83,28 @@ namespace LogicPOS.UI.Components.Documents
             createDocumentModal.Destroy();
         }
 
-        private void BtnCancelDocument_Clicked(object sender, EventArgs e)
+        private void BtnCancelReceipt_Clicked(object sender, EventArgs e)
         {
-            var selectedDocument = Page.SelectedEntity;
-            if (selectedDocument == null)
+            var receipt = Page.SelectedEntity;
+            if (receipt == null)
             {
                 return;
             }
 
-            if (CanCancelDocument(selectedDocument) == false)
+            if (CanCancelReceipt(receipt) == false)
             {
-                ShowCannotCancelDocumentMessage(selectedDocument.Number);
+                ShowCannotCancelReceiptMessage(receipt.RefNo);
                 return;
             }
 
-            CancelDocument(selectedDocument);
+            CancelReceipt(receipt);
         }
 
-        private static bool CanCancelDocument(Document selectedDocument)
+        private static bool CanCancelReceipt(Receipt receipt)
         {
             bool canCancel = true;
 
-            if (selectedDocument.IsCancelled || selectedDocument.HasPassed48Hours)
-            {
-                canCancel = false;
-            }
-            else if (selectedDocument.IsGuide() && selectedDocument.ShipFromAdress.DeliveryDate < DateTime.Now)
+            if (receipt.IsCancelled || receipt.HasPassed48Hours)
             {
                 canCancel = false;
             }
@@ -138,12 +112,12 @@ namespace LogicPOS.UI.Components.Documents
             return canCancel;
         }
 
-        private void CancelDocument(Document document)
+        private void CancelReceipt(Receipt receipt)
         {
             var cancelReasonDialog = logicpos.Utils.GetInputText(this,
                                                              DialogFlags.Modal,
                                                              PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_input_text_default.png",
-                                                             string.Format(GeneralUtils.GetResourceByName("global_cancel_document_input_text_label"), document.Number),
+                                                             string.Format(GeneralUtils.GetResourceByName("global_cancel_document_input_text_label"), receipt.RefNo),
                                                              string.Empty,
                                                              RegexUtils.RegexAlfaNumericExtendedForMotive,
                                                              true);
@@ -152,20 +126,20 @@ namespace LogicPOS.UI.Components.Documents
             {
                 return;
             }
-            var result = _meditaor.Send(new CancelDocumentCommand { Id = document.Id, Reason = cancelReasonDialog.Text }).Result;
+            var result = _meditaor.Send(new CancelDocumentCommand { Id = receipt.Id, Reason = cancelReasonDialog.Text }).Result;
 
             if (result.IsError)
             {
-                Alerts.SimpleAlerts.ShowApiErrorAlert(this,result.FirstError);
+                SimpleAlerts.ShowApiErrorAlert(this, result.FirstError);
                 return;
             }
 
             Page.Refresh();
         }
 
-        private void ShowCannotCancelDocumentMessage(string documentNumber)
+        private void ShowCannotCancelReceiptMessage(string refNo)
         {
-            string infoMessage = string.Format(GeneralUtils.GetResourceByName("app_info_show_ignored_cancelled_documents"), documentNumber);
+            string infoMessage = string.Format(GeneralUtils.GetResourceByName("app_info_show_ignored_cancelled_documents"), refNo);
             logicpos.Utils.ShowMessageBox(this,
                                           DialogFlags.Modal,
                                           new Size(600, 400),
@@ -179,7 +153,7 @@ namespace LogicPOS.UI.Components.Documents
         {
             if (Page.SelectedEntity != null)
             {
-                var pdfLocation = DocumentPrintingUtils.GetPdfFile(Page.SelectedEntity.Id);
+                var pdfLocation = DocumentPdfUtils.GetReceiptPdfFileLocation(Page.SelectedEntity.Id);
 
                 if (pdfLocation == null)
                 {
@@ -194,7 +168,7 @@ namespace LogicPOS.UI.Components.Documents
         {
             if (Page.SelectedEntity != null)
             {
-                DocumentPrintingUtils.ShowPdf(this, Page.SelectedEntity.Id);
+                DocumentPdfUtils.ViewReceiptPdf(this, Page.SelectedEntity.Id);
             }
         }
 
@@ -210,7 +184,7 @@ namespace LogicPOS.UI.Components.Documents
 
         protected override Widget CreateBody()
         {
-            var page = new InvoicesPage(this, PageOptions.SelectionPageOptions);
+            var page = new ReceiptsPage(this, PageOptions.SelectionPageOptions);
             page.SetSizeRequest(WindowSettings.Size.Width - 14, WindowSettings.Size.Height - 124);
             Fixed fixedContent = new Fixed();
             fixedContent.Put(page, 0, 0);
@@ -221,18 +195,18 @@ namespace LogicPOS.UI.Components.Documents
 
         private void AddPageEventHandlers()
         {
-            Page.EntitySelected += OnDocumentSelected;
-            Page.DocumentsSelectionChanged += Page_DocumentsSelectionChanged;
+            Page.EntitySelected += OnReceiptSelected;
+            Page.ReceiptsSelectionChanged += Page_ReceiptsSelectionChanged;
         }
 
-        private void Page_DocumentsSelectionChanged(object sender, EventArgs e)
+        private void Page_ReceiptsSelectionChanged(object sender, EventArgs e)
         {
-            WindowSettings.Title.Text = $"{WindowTitleBase} ({Page.SelectedDocuments.Count}) = {Page.SelectedDocumentsTotalFinal:0.00}";
+            WindowSettings.Title.Text = $"{WindowTitleBase} ({Page.SelectedReceipts.Count}) = {Page.SelectedReceiptsTotalAmount:0.00}";
         }
 
-        private void OnDocumentSelected(Document document)
+        private void OnReceiptSelected(Receipt receipt)
         {
-           BtnPayInvoice.Sensitive = document.IsInvoice() && !document.IsCancelled && !document.Paid;
+
         }
 
         protected override Widget CreateLeftContent()

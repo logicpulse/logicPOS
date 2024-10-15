@@ -9,6 +9,7 @@ using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Documents;
 using LogicPOS.UI.Components.Documents.CreateDocument;
+using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.Utility;
@@ -87,7 +88,7 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
-            DocumentPrintingUtils.ShowPdf(this, result.Value);
+            DocumentPdfUtils.ViewDocumentPdf(this, result.Value);
         }
 
         private IEnumerable<DocumentSeries> GetDocumentSeries()
@@ -243,6 +244,6 @@ namespace LogicPOS.UI.Components.Modals
             return validatableTabs;
         }
 
-        protected void ShowValidationErrors() => Utilities.ShowValidationErrors(GetValidatableTabs());
+        protected void ShowValidationErrors() => ValidationUtilities.ShowValidationErrors(GetValidatableTabs());
     }
 }

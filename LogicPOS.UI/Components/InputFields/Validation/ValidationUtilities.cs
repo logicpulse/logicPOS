@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace LogicPOS.UI.Components.InputFields.Validation
 {
-    public static class Utilities
+    public static class ValidationUtilities
     {
         public static void ShowValidationErrors(IEnumerable<IValidatableField> fields)
         {
