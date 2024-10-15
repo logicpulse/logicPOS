@@ -93,15 +93,25 @@ namespace LogicPOS.UI.Components.Documents
             }
 
             var modal = new PayInvoiceModal(this, Page.GetSelectedDocumentsWithTotals());
-            modal.Run();
+            var response = (ResponseType)modal.Run();
             modal.Destroy();
+
+            if (response == ResponseType.Ok)
+            {
+                Page.Refresh();
+            }
         }
 
         private void BtnNewDocument_Clicked(object sender, EventArgs e)
         {
             var createDocumentModal = new CreateDocumentModal(this);
-            createDocumentModal.Run();
+            var response = (ResponseType)createDocumentModal.Run();
             createDocumentModal.Destroy();
+
+            if (response == ResponseType.Ok)
+            {
+                Page.Refresh();
+            }
         }
 
         private void BtnCancelDocument_Clicked(object sender, EventArgs e)

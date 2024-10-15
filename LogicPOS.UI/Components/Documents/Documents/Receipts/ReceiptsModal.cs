@@ -1,6 +1,7 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents.CancelDocument;
+using LogicPOS.Api.Features.Documents.Receipts.CancelReceipt;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
@@ -126,7 +127,7 @@ namespace LogicPOS.UI.Components.Documents
             {
                 return;
             }
-            var result = _meditaor.Send(new CancelDocumentCommand { Id = receipt.Id, Reason = cancelReasonDialog.Text }).Result;
+            var result = _meditaor.Send(new CancelReceiptCommand { Id = receipt.Id, Reason = cancelReasonDialog.Text }).Result;
 
             if (result.IsError)
             {
