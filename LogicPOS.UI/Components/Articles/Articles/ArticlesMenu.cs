@@ -1,11 +1,19 @@
 ﻿using Gtk;
+using logicpos;
 using logicpos.Classes.Enums.TicketList;
 using logicpos.Classes.Gui.Gtk.Widgets;
+using logicpos.shared.Enums;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Articles.GetAllArticles;
+using LogicPOS.Api.Features.Articles.GetTotalStocks;
 using LogicPOS.Settings;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Articles;
+using LogicPOS.UI.Components.Modals;
+using LogicPOS.UI.Components.Windows;
+using LogicPOS.Utility;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -40,6 +48,7 @@ namespace LogicPOS.UI.Components.Menus
         public CustomButton SelectedButton { get; set; }
         public ArticleSubfamiliesMenu SubfamiliesMenu { get; set; }
         public List<Article> AllArticles { get; set; }
+        public IEnumerable<ArticleStock> Stocks { get; private set; }
         public TicketList TicketList { get; set; }
 
         public ArticlesMenu(
@@ -53,7 +62,23 @@ namespace LogicPOS.UI.Components.Menus
             BtnNext = btnNext;
             SubfamiliesMenu = subfamiliesMenu;
             AddEventHandlers();
-            LoadEntities();
+            LoadStocks();
+            PresentArticles();
+        }
+
+
+        private void LoadStocks()
+        {
+            var query = new GetArticlesTotalStocksQuery();
+            var result = _mediator.Send(query).Result;
+
+            if (result.IsError)
+            {
+                SimpleAlerts.ShowApiErrorAlert(SourceWindow,result.FirstError);
+                return;
+            }
+
+            Stocks = result.Value;
         }
 
         private void AddEventHandlers()
@@ -160,7 +185,7 @@ namespace LogicPOS.UI.Components.Menus
             Update();
         }
 
-        public void LoadEntities(bool favorites = false)
+        public void PresentArticles(bool favorites = false)
         {
             if (AppSettings.Instance.useImageOverlay == false)
             {
@@ -194,8 +219,8 @@ namespace LogicPOS.UI.Components.Menus
                 }
 
                 ButtonLabel = article.Button.Label ?? article.Designation;
-               
-                if(string.IsNullOrEmpty(article.Button.ImageExtension) == false)
+
+                if (string.IsNullOrEmpty(article.Button.ImageExtension) == false)
                 {
                     ButtonImage = ArticleImageRepository.GetImage(article.Id) ?? ArticleImageRepository.AddBase64Image(article.Id, article.Button.Image, article.Button.ImageExtension);
                 }
@@ -243,7 +268,7 @@ namespace LogicPOS.UI.Components.Menus
         }
 
         private List<Article> GetFavoriteArticles()
-        {   
+        {
             return AllArticles?.Where(a => a.Favorite).ToList();
         }
 
@@ -276,11 +301,29 @@ namespace LogicPOS.UI.Components.Menus
             }
 
             SelectedArticle = Buttons.Find(x => x.Button == SelectedButton).Article;
+            var totalStock = Stocks.FirstOrDefault(x => x.Id == SelectedArticle.Id)?.Quantity ?? 0;
 
-            if (TicketList.ListMode != TicketListMode.Ticket)
+            if (totalStock - SelectedArticle.DefaultQuantity <= SelectedArticle.MinimumStock)
             {
-                TicketList.ListMode = TicketListMode.Ticket;
-                TicketList.UpdateModel();
+                var stockWarningResponse = Utils.ShowMessageBox(SourceWindow,
+                                                                DialogFlags.DestroyWithParent,
+                                                                new Size(500, 350),
+                                                                MessageType.Question,
+                                                                ButtonsType.YesNo,
+                                                                GeneralUtils.GetResourceByName("global_stock_movements"),
+                                                                $"{GeneralUtils.GetResourceByName("window_check_stock_question")}\n\n{GeneralUtils.GetResourceByName("global_article")}: {SelectedArticle.Designation}\n{GeneralUtils.GetResourceByName("global_total_stock")}: {totalStock}\n{GeneralUtils.GetResourceByName("global_minimum_stock")}: {SelectedArticle.MinimumStock.ToString()}");
+               
+                if (stockWarningResponse == ResponseType.No)
+                {
+                    return;
+                }
+            }
+
+            InsertMoneyModalResponse result = InsertMoneyModal.RequestDecimalValue(SourceWindow, GeneralUtils.GetResourceByName("window_title_dialog_moneypad_product_price"), SelectedArticle.Price1.Value);
+           
+            if (result.Response == ResponseType.Cancel)
+            {
+                return;
             }
 
             TicketList.InsertOrUpdate(new Guid("6aa32272-d0b0-40af-a0ee-b5aa38fa8b3e"));
@@ -289,7 +332,7 @@ namespace LogicPOS.UI.Components.Menus
         internal void Refresh()
         {
             Buttons.Clear();
-            LoadEntities();
+            PresentArticles();
         }
     }
 }

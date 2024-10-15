@@ -17,6 +17,7 @@ using LogicPOS.Shared.Article;
 using LogicPOS.UI;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components;
+using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Extensions;
 using System;
 using System.Collections.Generic;
@@ -351,7 +352,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //If Has a _articleBagPartialPayment Defined use its Total else use _articleBagFullPayment TotalFinal
             decimal _totalOrder = (ArticleBagPartialPayment == null) ? ArticleBagFullPayment.TotalFinal : ArticleBagPartialPayment.TotalFinal;
 
-            MoneyPadResult result = PosMoneyPadDialog.RequestDecimalValue(this, _totalOrder);
+            InsertMoneyModalResponse result = InsertMoneyModal.RequestDecimalValue(this, _totalOrder);
             if (result.Response == ResponseType.Ok)
             {
                 TotalDelivery = result.Value;
@@ -1180,7 +1181,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     priceFinalText);
 
 
-                MoneyPadResult result = PosMoneyPadDialog.RequestDecimalValue(WindowSettings.Source,
+                InsertMoneyModalResponse result = InsertMoneyModal.RequestDecimalValue(WindowSettings.Source,
                                                                               moneyPadTitle,
                                                                               priceFinal,
                                                                               priceFinal);

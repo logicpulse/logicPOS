@@ -1,6 +1,10 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Articles;
+using LogicPOS.Api.Features.Articles.Common;
+using LogicPOS.Api.Features.Common;
 using LogicPOS.Settings;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.InputFields;
@@ -9,6 +13,8 @@ using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
+using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -18,6 +24,8 @@ namespace LogicPOS.UI.Components.Modals
 {
     public class AddStockModal : Modal
     {
+        private readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
+
         #region Components
         private IconButtonWithText BtnOk { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
         private IconButtonWithText BtnCancel { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
@@ -54,13 +62,33 @@ namespace LogicPOS.UI.Components.Modals
         private void BtnOk_Clicked(object sender, EventArgs e)
         {
             Validate();
-
+            
             if (AllFieldsAreValid() == false)
             {
                 return;
             }
 
+            var result = _mediator.Send(CreateCommand()).Result;
 
+            if (result.IsError)
+            {
+                SimpleAlerts.ShowApiErrorAlert(this, result.FirstError);
+                Run();
+            }
+        }
+
+        private AddArticlesStockCommand CreateCommand()
+        {
+            var command = new AddArticlesStockCommand
+            {
+                Date = TxtDate.Text,
+                DocumentNumber = TxtDocumnetNumber.Text,
+                Notes = TxtNotes.Text,
+                SupplierId = (TxtSupplier.SelectedEntity as Customer).Id,
+                Articles = AddArticlesBox.GetArticlesStocks()
+            };
+
+            return command;
         }
 
         private void InitializeTxtNotes()
@@ -93,6 +121,7 @@ namespace LogicPOS.UI.Components.Modals
                                       includeKeyBoardButton: false);
 
             TxtDate.Entry.IsEditable = false;
+            TxtDate.Text = DateTime.Now.ToString("yyyy-MM-dd");
 
             TxtDate.SelectEntityClicked += TxtDate_SelectEntityClicked;
         }

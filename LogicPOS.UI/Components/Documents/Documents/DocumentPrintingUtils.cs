@@ -40,6 +40,14 @@ namespace LogicPOS.UI.Components.Documents
             }
         }
 
+        public static void ShowPdf(Gtk.Window source, string fileLocation)
+        {
+            using (var pdfViewer = new LogicPOS.PDFViewer.Winforms.PDFViewer(fileLocation))
+            {
+                pdfViewer.ShowDialog();
+            }
+        }
+
         public static void PrintWithNativeDialog(string fileLocation)
         {
             PrintDialog printDialog = new PrintDialog();

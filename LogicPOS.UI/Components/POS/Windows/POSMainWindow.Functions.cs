@@ -210,7 +210,7 @@ namespace LogicPOS.UI.Components.Windows
             LabelTerminalInfo.Text = string.Format("{0} : {1}", TerminalSettings.LoggedTerminal.Designation, XPOSettings.LoggedUser.Name);
             MenuFamilies.LoadEntities();
             MenuSubfamilies.LoadEntities();
-            MenuArticles.LoadEntities();
+            MenuArticles.PresentArticles();
 
             TicketList.UpdateSaleOptionsPanelButtons();
         }

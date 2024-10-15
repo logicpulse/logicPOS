@@ -26,6 +26,7 @@ namespace LogicPOS.UI.Components.Modals
         public ArticleModal(EntityEditionModalMode modalMode, Article entity = null) : base(modalMode, entity)
         {
             UpdateCompositionTabVisibility();
+            UpdateValidatableFields();
         }
 
         private AddArticleCommand CreateAddCommand()
@@ -131,6 +132,33 @@ namespace LogicPOS.UI.Components.Modals
             _txtDefaultQuantity.Text = _entity.DefaultQuantity.ToString();
             _checkDisabled.Active = _entity.IsDeleted;
             _checkUniqueArticles.Active = _entity.UniqueArticles;
+        }
+
+        private void ComboBox_Changed(object sender, EventArgs e)
+        {
+            UpdateValidatableFields();
+        }
+
+        private void UpdateValidatableFields()
+        {
+            if (_comboVatDirectSelling.SelectedEntity == null)
+            {
+                return;
+            }
+
+            if (_comboVatDirectSelling.SelectedEntity.Value != 0)
+            {
+                _comboVatExemptionReasons.ComboBox.Sensitive = false;
+                ValidatableFields.Remove(_comboVatExemptionReasons);
+                _comboVatExemptionReasons.IsRequired = false;
+                _comboVatExemptionReasons.UpdateValidationColors();
+                return;
+            }
+
+            _comboVatExemptionReasons.ComboBox.Sensitive = true;
+            ValidatableFields.Add(_comboVatExemptionReasons);
+            _comboVatExemptionReasons.IsRequired = true;
+            _comboVatExemptionReasons.UpdateValidationColors();
         }
 
         protected override void UpdateEntity() => ExecuteUpdateCommand(CreateUpdateCommand());

@@ -219,7 +219,6 @@ namespace LogicPOS.UI.Components.Modals
             return _documentSeries.First(series => series.DocumentType.Id == documentType.Id);
         }
 
-
         public bool AllTabsAreValid() => GetValidatableTabs().All(tab => tab.IsValid());
 
         public IEnumerable<IValidatableField> GetValidatableTabs()

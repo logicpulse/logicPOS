@@ -1,7 +1,11 @@
 ﻿using ErrorOr;
+using FastReport.Data;
 using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Articles.GetAllArticles;
+using LogicPOS.Api.Features.Articles.GetTotalStocks;
+using LogicPOS.Api.Features.Documents.GetDocumentsTotals;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
@@ -13,16 +17,42 @@ namespace LogicPOS.UI.Components.Pages
 {
     public class ArticlesPage : Page<Article>
     {
+        protected override IRequest<ErrorOr<IEnumerable<Article>>> GetAllQuery => new GetAllArticlesQuery();
+        private List<ArticleStock> _totalStocks = new List<ArticleStock>();
+
         public ArticlesPage(Window parent, Dictionary<string,string> options = null) : base(parent, options)
         {
+        }
+
+        protected override void LoadEntities()
+        {
+            LoadTotalStocks();
+            base.LoadEntities();
+        }
+
+        private void LoadTotalStocks()
+        {
+            var query = new GetArticlesTotalStocksQuery();
+            var result = _mediator.Send(query).Result;
+
+            if (result.IsError)
+            {
+                ShowApiErrorAlert(result.FirstError);
+                return;
+            }
+
+            if (_totalStocks.Count > 0)
+            {
+                _totalStocks.Clear();
+            }
+
+            _totalStocks.AddRange(result.Value);
         }
 
         public override void DeleteEntity()
         {
             throw new NotImplementedException();
         }
-
-        protected override IRequest<ErrorOr<IEnumerable<Article>>> GetAllQuery => new GetAllArticlesQuery();
 
         public override void RunModal(EntityEditionModalMode mode)
         {
@@ -83,8 +113,8 @@ namespace LogicPOS.UI.Components.Pages
         {
             void RenderMonth(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var article = (Article)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = 0.ToString();
+                var articleId = ((Article)model.GetValue(iter, 0)).Id;
+                (cell as CellRendererText).Text = _totalStocks.Find(x => x.Id == articleId)?.Quantity.ToString() ?? "0";
             }
 
             var title = GeneralUtils.GetResourceByName("global_total_stock");

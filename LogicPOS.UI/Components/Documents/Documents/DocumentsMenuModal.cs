@@ -104,12 +104,16 @@ namespace LogicPOS.UI.Components.Documents
 
         private void BtnCurrentAccount_Clicked(object sender, EventArgs e)
         {
-
+            var modal = new CustomerCurrentAccountFilterModal(WindowSettings.Source);
+            modal.Run();
+            modal.Destroy();
         }
 
         private void BtnDocuments_Clicked(object sender, EventArgs e)
         {
-
+            var modal = new DocumentsModal(WindowSettings.Source);
+            modal.Run();
+            modal.Destroy();
         }
     }
 }

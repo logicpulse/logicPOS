@@ -5,7 +5,6 @@ using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace LogicPOS.UI.Components.InputFields
 {
@@ -15,22 +14,22 @@ namespace LogicPOS.UI.Components.InputFields
         public VBox Component { get; private set; }
         public ComboBox ComboBox { get; private set; } = new ComboBox { HeightRequest = 23 };
 
-        public bool IsRequired { get; }
+        public bool IsRequired { get; set; }
 
         private ListStore _listStore = new ListStore(typeof(string), typeof(TEntity));
         public IEnumerable<TEntity> Entities { get; set; }
-        public TEntity SelectedEntity { get; private set; }
+        public TEntity SelectedEntity { get; set; }
         public string FieldName => Label.Text;
 
         public EntityComboBox(
             string labelText,
-            IEnumerable<TEntity> entities, 
+            IEnumerable<TEntity> entities,
             TEntity currentEntity = null,
             bool isRequired = false)
         {
             IsRequired = isRequired;
-            Label =  CreateLabel(labelText);
-            Entities = entities;   
+            Label = CreateLabel(labelText);
+            Entities = entities;
             SelectedEntity = currentEntity;
 
             InitializeComboBox();
@@ -42,7 +41,7 @@ namespace LogicPOS.UI.Components.InputFields
 
         private Label CreateLabel(string text)
         {
-           var label = new Label(text);
+            var label = new Label(text);
             label.SetAlignment(0, 0);
             return label;
         }
@@ -93,13 +92,13 @@ namespace LogicPOS.UI.Components.InputFields
 
                 if (SelectedEntity != null && entity.Id == SelectedEntity.Id)
                 {
-                   currentEntity = iterator;
-                } 
+                    currentEntity = iterator;
+                }
             }
 
             ComboBox.Model = _listStore;
 
-            if(SelectedEntity != null)
+            if (SelectedEntity != null)
             {
                 ComboBox.SetActiveIter(currentEntity);
             }
@@ -109,7 +108,7 @@ namespace LogicPOS.UI.Components.InputFields
         {
             var iterator = _listStore.AppendValues(GeneralUtils.GetResourceByName("widget_combobox_undefined"), null);
             ComboBox.SetActiveIter(iterator);
-           
+
             if (SelectedEntity == null)
             {
                 ComboBox.Active = 0;
@@ -129,7 +128,7 @@ namespace LogicPOS.UI.Components.InputFields
             return IsRequired ? SelectedEntity != null : true;
         }
 
-        private void UpdateValidationColors()
+        public void UpdateValidationColors()
         {
             ValidationColors.Default.UpdateComponentFontColor(Label, IsValid());
             ValidationColors.Default.UpdateComponent(ComboBox, IsValid());

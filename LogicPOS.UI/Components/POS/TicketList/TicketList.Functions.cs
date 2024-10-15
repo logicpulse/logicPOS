@@ -17,6 +17,7 @@ using LogicPOS.Shared.Article;
 using LogicPOS.Shared.Orders;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components;
+using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Dialogs;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
@@ -187,62 +188,9 @@ namespace LogicPOS.UI.Components
         }
 
         private void BtnPrice_Clicked(object sender, EventArgs e)
-        {
-            SelectedIndex = CurrentOrderDetail.Lines.FindIndex(item => item.ArticleOid == (Guid)ListStore.GetValue(_treeIter,
-                (int)TicketListColumns.ArticleId));
-
-            decimal oldValueQuantity = CurrentOrderDetail.Lines[SelectedIndex].Properties.Quantity;
-            decimal oldValuePrice = CurrentOrderDetail.Lines[SelectedIndex].Properties.PriceFinal;
-
-            MoneyPadResult result = PosMoneyPadDialog.RequestDecimalValue(POSWindow, GeneralUtils.GetResourceByName("window_title_dialog_moneypad_product_price"), oldValuePrice);
+        {  
+            InsertMoneyModalResponse result = InsertMoneyModal.RequestDecimalValue(POSWindow, GeneralUtils.GetResourceByName("window_title_dialog_moneypad_product_price"), 0);
             decimal newValuePrice = result.Value;
-
-            if (result.Response == ResponseType.Ok && newValuePrice > 0)
-            {
-                //Create a Fresh Object to Get Input Price and Calc from TotalFinal with Quantity 1, Without Touch Quantity in current Line
-                PriceProperties priceProperties = PriceProperties.GetPriceProperties(
-                  PricePropertiesSourceMode.FromTotalFinal,
-                  CurrentOrderDetail.Lines[SelectedIndex].Properties.PriceWithVat,
-                  newValuePrice,
-                  1.0m,
-                  CurrentOrderDetail.Lines[SelectedIndex].Properties.DiscountArticle,
-                  CurrentOrderDetail.Lines[SelectedIndex].Properties.DiscountGlobal,
-                  CurrentOrderDetail.Lines[SelectedIndex].Properties.Vat
-                );
-                int countDuplicatedArticles = 0;
-                int i = 0;
-                foreach (var line in CurrentOrderDetail.Lines)
-                {
-                    if (SelectedIndex == i)
-                    {
-                        countDuplicatedArticles++;
-                    }
-                    if (line.ArticleOid == CurrentOrderDetail.Lines[SelectedIndex].ArticleOid && line.Properties.PriceUser == priceProperties.PriceUser) countDuplicatedArticles++;
-                    i++;
-                }
-
-                if (countDuplicatedArticles > 1)
-                {
-                    int oldIndex = SelectedIndex;
-                    SelectedIndex = CurrentOrderDetail.Lines.FindIndex(item => item.ArticleOid == (Guid)ListStore.GetValue(_treeIter, (int)TicketListColumns.ArticleId)
-                    && item.Properties.PriceFinal == priceProperties.PriceFinal);
-                    oldValueQuantity += CurrentOrderDetail.Lines[SelectedIndex].Properties.Quantity;
-                    CurrentOrderDetail.Delete(oldIndex);
-                    ListStore.Remove(ref _treeIter);
-                }
-
-                //Update orderDetails 
-                CurrentOrderDetail.Update(SelectedIndex, oldValueQuantity, priceProperties.PriceUser);
-                //Update TreeView Model Price
-                ListStore.SetValue(_treeIter, (int)TicketListColumns.Price, DataConversionUtils.DecimalToString(newValuePrice));
-                //Update Total
-                decimal totalLine = CurrentOrderDetail.Lines[SelectedIndex].Properties.TotalFinal;
-                ListStore.SetValue(_treeIter, (int)TicketListColumns.Total, DataConversionUtils.DecimalToString(totalLine));
-            }
-            UpdateTicketListTotal();
-            UpdateModel();
-            UpdateSaleOptionsPanelButtons();
-
         }
 
         private void BtnFinishOrder_Clicked(object sender, EventArgs e)

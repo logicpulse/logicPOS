@@ -2,7 +2,6 @@
 using logicpos;
 using logicpos.App;
 using logicpos.Classes.Enums.TicketList;
-using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Logic.Others;
 using logicpos.shared.Enums;
 using LogicPOS.Data.XPO.Settings;
@@ -16,6 +15,7 @@ using LogicPOS.Shared;
 using LogicPOS.Shared.Article;
 using LogicPOS.Shared.Orders;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
@@ -599,7 +599,7 @@ namespace LogicPOS.UI.Components
                 }
                 else if (price <= 0.0m || article.PVPVariable == true)
                 {
-                    MoneyPadResult result = PosMoneyPadDialog.RequestDecimalValue(POSWindow, GeneralUtils.GetResourceByName("window_title_dialog_moneypad_product_price"), price);
+                    InsertMoneyModalResponse result = InsertMoneyModal.RequestDecimalValue(POSWindow, GeneralUtils.GetResourceByName("window_title_dialog_moneypad_product_price"), price);
                     if (result.Response == ResponseType.Cancel) return;
                     sourceMode = PricePropertiesSourceMode.FromTotalFinal;
                     price = result.Value;
@@ -805,7 +805,7 @@ namespace LogicPOS.UI.Components
 
             UpdateTicketListTotal();
         }
-
+        
         public void DeleteItem_ListModeOrderMain()
         {
             decimal defaultQuantity = GetArticleDefaultQuantity(CurrentDetailArticleId);
@@ -853,7 +853,6 @@ namespace LogicPOS.UI.Components
             if (TreePath is null) return;
             TreePath.Prev();
             TreeView.SetCursor(TreePath, null, false);
-
         }
 
         public void Next()
@@ -875,6 +874,8 @@ namespace LogicPOS.UI.Components
 
         public void UpdateSaleOptionsPanelButtons()
         {
+            return; //tchial0 -> To enable all buttons
+
             if (TotalItems == 0)
             {
                 if (SaleOptionsPanel.BtnIncrease != null && SaleOptionsPanel.BtnIncrease.Sensitive) SaleOptionsPanel.BtnIncrease.Sensitive = false;

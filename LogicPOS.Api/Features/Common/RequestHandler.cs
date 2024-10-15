@@ -1,8 +1,10 @@
 ﻿using ErrorOr;
 using LogicPOS.Api.Errors;
+using LogicPOS.Api.Features.Documents.Documents.GetDocumentPdf;
 using MediatR;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -139,6 +141,21 @@ namespace LogicPOS.Api.Features.Common
                     return await GetProblemDetailsErrorAsync(httpResponse);
                 default:
                     return ApiErrors.CommunicationError;
+            }
+        }
+
+        protected async Task<ErrorOr<string>> HandleGetPdfQueryAsync(string endpoint, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var fileContent = await _httpClient.GetByteArrayAsync(endpoint);
+                var fileName = Path.GetTempFileName();
+                File.WriteAllBytes(fileName, fileContent);
+                return fileName;
+            }
+            catch (HttpRequestException)
+            {
+                return ApiErrors.CommunicationError;
             }
         }
     }

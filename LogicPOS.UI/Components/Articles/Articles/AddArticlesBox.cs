@@ -1,9 +1,11 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -63,6 +65,15 @@ namespace LogicPOS.UI.Components.Articles
         public bool IsValid()
         {
             return Fields.All(f => f.IsValid());
+        }
+
+        public IEnumerable<ArticleStock> GetArticlesStocks()
+        {
+            return Fields.Select(f => new ArticleStock
+            {
+                Id = f.Article.Id,
+                Quantity = decimal.Parse(f.TxtQuantity.Text)
+            });
         }
     }
 }

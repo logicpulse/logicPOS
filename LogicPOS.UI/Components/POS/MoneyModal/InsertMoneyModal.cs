@@ -8,25 +8,12 @@ using LogicPOS.Utility;
 using LogicPOS.UI.Dialogs;
 using LogicPOS.UI.Buttons;
 
-namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
+namespace LogicPOS.UI.Components.Modals
 {
-    internal class MoneyPadResult
-    {
-        public ResponseType Response { get; set; }
-
-        public decimal Value { get; set; }
-
-        public MoneyPadResult(ResponseType pResponse, decimal pValue)
-        {
-            Response = pResponse;
-            Value = pValue;
-        }
-    }
-
-    internal class PosMoneyPadDialog : BaseDialog
+    public class InsertMoneyModal : BaseDialog
     {
         //UI
-        private MoneyPad _moneyPad;
+        private InsertMoneyBox _moneyPad;
         private IconButtonWithText _buttonOk;
         private IconButtonWithText _buttonCancel;
 
@@ -34,7 +21,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         public decimal TotalOrder { get; set; } = 0.0m;
 
-        public PosMoneyPadDialog(Window parentWindow, DialogFlags pDialogFlags, decimal pInitialValue = 0.0m, decimal pTotalOrder = 0.0m)
+        public InsertMoneyModal(Window parentWindow,
+                                DialogFlags pDialogFlags,
+                                decimal pInitialValue = 0.0m,
+                                decimal pTotalOrder = 0.0m)
             : base(parentWindow, pDialogFlags)
         {
             //Init Local Vars
@@ -48,14 +38,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 windowTitle = GeneralUtils.GetResourceByName("window_title_dialog_moneypad");
             }
 
-            this.InitObject(parentWindow, pDialogFlags, windowTitle, pInitialValue, pTotalOrder);
+            InitObject(parentWindow, pDialogFlags, windowTitle, pInitialValue, pTotalOrder);
         }
 
-        public PosMoneyPadDialog(Window parentWindow, DialogFlags pDialogFlags, string pWindowTitle, decimal pInitialValue = 0.0m, decimal pTotalOrder = 0.0m)
+        public InsertMoneyModal(Window parentWindow, DialogFlags pDialogFlags, string pWindowTitle, decimal pInitialValue = 0.0m, decimal pTotalOrder = 0.0m)
             : base(parentWindow, pDialogFlags)
         {
             //Init Object
-            this.InitObject(parentWindow, pDialogFlags, pWindowTitle, pInitialValue, pTotalOrder);
+            InitObject(parentWindow, pDialogFlags, pWindowTitle, pInitialValue, pTotalOrder);
         }
 
         public void InitObject(Window parentWindow, DialogFlags pDialogFlags, string pWindowTitle, decimal pInitialValue = 0.0m, decimal pTotalOrder = 0.0m)
@@ -64,10 +54,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             string fileDefaultWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_payments.png";
 
             //Init MoneyPad
-            _moneyPad = new MoneyPad(parentWindow, pInitialValue);
+            _moneyPad = new InsertMoneyBox(parentWindow, pInitialValue);
             _moneyPad.EntryChanged += _moneyPad_EntryChanged;
             //If pInitialValue defined, Assign it
-            Amount = (pInitialValue > 0) ? pInitialValue : 0.0m;
+            Amount = pInitialValue > 0 ? pInitialValue : 0.0m;
             TotalOrder = pTotalOrder;
 
             //Init Content
@@ -78,7 +68,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
             _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
             //Start Enable or Disable
-            _buttonOk.Sensitive = (pInitialValue > 0 && pInitialValue >= pTotalOrder);
+            _buttonOk.Sensitive = pInitialValue > 0 && pInitialValue >= pTotalOrder;
 
             //ActionArea
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons
@@ -88,7 +78,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             };
 
             //Init Object
-            this.Initialize(this, pDialogFlags, fileDefaultWindowIcon, pWindowTitle, windowSize, fixedContent, actionAreaButtons);
+            Initialize(this, pDialogFlags, fileDefaultWindowIcon, pWindowTitle, windowSize, fixedContent, actionAreaButtons);
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -112,37 +102,40 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Static Methods
-        public static MoneyPadResult RequestDecimalValue(Window parentWindow, decimal pInitialValue = 0.0m, decimal pTotalOrder = 0.0m)
+        public static InsertMoneyModalResponse RequestDecimalValue(Window parentWindow, decimal pInitialValue = 0.0m, decimal pTotalOrder = 0.0m)
         {
             return RequestDecimalValue(parentWindow, string.Empty, pInitialValue, pTotalOrder);
         }
 
-        public static MoneyPadResult RequestDecimalValue(Window parentWindow, string pWindowTitle = "", decimal pInitialValue = 0.0m, decimal pTotalOrder = 0.0m)
+        public static InsertMoneyModalResponse RequestDecimalValue(Window parentWindow,
+                                                                   string pWindowTitle = "",
+                                                                   decimal pInitialValue = 0.0m,
+                                                                   decimal pTotalOrder = 0.0m)
         {
             ResponseType resultResponse;
             decimal resultValue = -1.0m;
             string defaultValue = DataConversionUtils.DecimalToString(pInitialValue);
 
-            PosMoneyPadDialog dialog;
+            InsertMoneyModal modal;
 
             if (pWindowTitle != string.Empty)
             {
-                dialog = new PosMoneyPadDialog(parentWindow, DialogFlags.DestroyWithParent, pWindowTitle, pInitialValue, pTotalOrder);
+                modal = new InsertMoneyModal(parentWindow, DialogFlags.DestroyWithParent, pWindowTitle, pInitialValue, pTotalOrder);
             }
             else
             {
-                dialog = new PosMoneyPadDialog(parentWindow, DialogFlags.DestroyWithParent, pInitialValue, pTotalOrder);
+                modal = new InsertMoneyModal(parentWindow, DialogFlags.DestroyWithParent, pInitialValue, pTotalOrder);
             }
 
-            int response = dialog.Run();
+            int response = modal.Run();
             if (response == (int)ResponseType.Ok)
             {
-                resultValue = dialog.Amount;
+                resultValue = modal.Amount;
             }
             resultResponse = (ResponseType)response;
-            dialog.Destroy();
+            modal.Destroy();
 
-            MoneyPadResult result = new MoneyPadResult(resultResponse, resultValue);
+            InsertMoneyModalResponse result = new InsertMoneyModalResponse(resultResponse, resultValue);
 
             return result;
         }

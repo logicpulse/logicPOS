@@ -164,6 +164,8 @@ namespace LogicPOS.UI.Components.Modals
                                                              vatRates,
                                                              currentVatRate,
                                                              true);
+
+            _comboVatDirectSelling.ComboBox.Changed += ComboBox_Changed;
         }
 
         private void InitializeVatExemptionReasonsComboBox()
@@ -175,7 +177,7 @@ namespace LogicPOS.UI.Components.Modals
             _comboVatExemptionReasons = new EntityComboBox<VatExemptionReason>(labelText,
                                                              reasons,
                                                              currentReason,
-                                                             true);
+                                                             false);
         }
 
         private void InitializeArticleTypesComboBox()

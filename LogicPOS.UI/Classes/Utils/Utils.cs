@@ -373,7 +373,14 @@ namespace logicpos
                 }
                 else
                 {
-                    var response = ShowMessageBox(parentWindow, DialogFlags.DestroyWithParent, size, MessageType.Question, ButtonsType.YesNo, GeneralUtils.GetResourceByName("global_stock_movements"), GeneralUtils.GetResourceByName("window_check_stock_question") + Environment.NewLine + Environment.NewLine + GeneralUtils.GetResourceByName("global_article") + ": " + article.Designation + Environment.NewLine + GeneralUtils.GetResourceByName("global_total_stock") + ": " + DataConversionUtils.DecimalToString(Convert.ToDecimal(articleStock), "0.00") + Environment.NewLine + GeneralUtils.GetResourceByName("global_minimum_stock") + ": " + DataConversionUtils.DecimalToString(Convert.ToDecimal(article.MinimumStock), "0.00"));
+                    var response = ShowMessageBox(parentWindow,
+                                                  DialogFlags.DestroyWithParent,
+                                                  size,
+                                                  MessageType.Question,
+                                                  ButtonsType.YesNo,
+                                                  GeneralUtils.GetResourceByName("global_stock_movements"),
+                                                  GeneralUtils.GetResourceByName("window_check_stock_question") + Environment.NewLine + Environment.NewLine + GeneralUtils.GetResourceByName("global_article") + ": " + article.Designation + Environment.NewLine + GeneralUtils.GetResourceByName("global_total_stock") + ": " + DataConversionUtils.DecimalToString(Convert.ToDecimal(articleStock), "0.00") + Environment.NewLine + GeneralUtils.GetResourceByName("global_minimum_stock") + ": " + DataConversionUtils.DecimalToString(Convert.ToDecimal(article.MinimumStock), "0.00"));
+                    
                     if (response == ResponseType.Yes)
                     {
                         showMessage = true;
@@ -1303,7 +1310,7 @@ namespace logicpos
         //Windows
 
         //Helpers
-        public static void ShowFrontOffice(Window pHideWindow)
+        public static void ShowFrontOffice(Window window)
         {
 
             if (GlobalApp.PosMainWindow == null)
@@ -1320,7 +1327,7 @@ namespace logicpos
                 GlobalApp.PosMainWindow.UpdateUI();
                 GlobalApp.PosMainWindow.Show();
             };
-            pHideWindow.Hide();
+            window.Hide();
 
         }
 

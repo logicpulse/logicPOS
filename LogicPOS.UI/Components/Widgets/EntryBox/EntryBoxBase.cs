@@ -4,6 +4,7 @@ using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
+using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using System.Drawing;
@@ -337,7 +338,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             }
             else if (keyboardMode == KeyboardMode.Money)
             {
-                PosMoneyPadDialog dialog = new PosMoneyPadDialog(_sourceWindow, DialogFlags.DestroyWithParent, DataConversionUtils.StringToDecimal(text));
+                InsertMoneyModal dialog = new InsertMoneyModal(_sourceWindow, DialogFlags.DestroyWithParent, DataConversionUtils.StringToDecimal(text));
                 int response = dialog.Run();
                 if (response == (int)ResponseType.Ok)
                 {

@@ -9,7 +9,7 @@ using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
-    internal class MoneyPad : Box
+    internal class InsertMoneyBox : Box
     {
         //Log4Net
         private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -48,7 +48,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //Public Event Handlers
         public event EventHandler EntryChanged;
 
-        public MoneyPad(Window parentWindow, decimal pInitialValue = 0.0m)
+        public InsertMoneyBox(Window parentWindow, decimal pInitialValue = 0.0m)
         {
             //Settings
             string fontMoneyPadButtonKeys = AppSettings.Instance.fontMoneyPadButtonKeys;

@@ -1,4 +1,5 @@
-﻿using Gtk;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
@@ -64,8 +65,8 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             TxtTax.Text = item.VatRate?.Designation ?? item.VatDesignation;
             _vatRateValue = item.VatRateValue;
             TxtNotes.Text = item.Notes;
-
             UpdateTotals();
+            UpdateValidatableFields();
         }
 
         private void Initialize()
@@ -79,6 +80,11 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             InitializeTxtTax();
             InitializeTxtVatExemptionReason();
             InitializeTxtNotes();
+            AddEventHandlers();
+        }
+
+        private void AddEventHandlers()
+        {
             BtnClear.Clicked += BtnClear_Clicked;
             BtnOk.Clicked += BtnOk_Clicked;
         }
@@ -186,6 +192,22 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 TxtTax.SelectedEntity = page.SelectedEntity;
                 _vatRateValue = page.SelectedEntity.Value;
                 UpdateTotals();
+                UpdateValidatableFields();
+            }
+        }
+
+        private void UpdateValidatableFields()
+        {
+            if(_vatRateValue == 0)
+            {
+                TxtVatExemptionReason.Clear();
+                ValidatableFields.Remove(TxtVatExemptionReason);
+                TxtVatExemptionReason.Component.Sensitive = false;
+            }
+            else
+            {
+                ValidatableFields.Add(TxtVatExemptionReason);
+                TxtVatExemptionReason.Component.Sensitive = true;
             }
         }
 
@@ -253,7 +275,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                                           isValidatable: true,
                                           includeSelectButton: false,
                                           includeKeyBoardButton: true,
-                                          regex: RegularExpressions.DecimalNumber);
+                                          regex: RegularExpressions.PositiveQuantity);
 
             TxtQuantity.Text = "1";
 
