@@ -1,8 +1,6 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles;
-using LogicPOS.Api.Features.Articles.Common;
-using LogicPOS.Api.Features.Common;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
@@ -11,7 +9,6 @@ using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Pages;
-using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using LogicPOS.Api.Extensions;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -62,7 +60,7 @@ namespace LogicPOS.UI.Components.Modals
         private void BtnOk_Clicked(object sender, EventArgs e)
         {
             Validate();
-            
+
             if (AllFieldsAreValid() == false)
             {
                 return;
@@ -81,7 +79,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             var command = new AddArticlesStockCommand
             {
-                Date = TxtDate.Text,
+                Date = TxtDate.Text.FromISO8601DateOnly(),
                 DocumentNumber = TxtDocumnetNumber.Text,
                 Notes = TxtNotes.Text,
                 SupplierId = (TxtSupplier.SelectedEntity as Customer).Id,

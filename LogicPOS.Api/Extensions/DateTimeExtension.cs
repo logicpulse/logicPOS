@@ -15,9 +15,14 @@ namespace LogicPOS.Api.Extensions
             return dateTime.ToString("yyyy-MM-dd");
         }
 
-        public static DateTime FromISO8601(this string datetime)
+        public static DateTime FromISO8601DateTime(this string datetime)
         {
             return DateTime.ParseExact(datetime, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
+        }
+
+        public static DateTime FromISO8601DateOnly(this string date)
+        {
+            return DateTime.ParseExact(date, "yyyy-MM-dd", CultureInfo.InvariantCulture);
         }
     }
 }

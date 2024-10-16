@@ -16,7 +16,7 @@ namespace LogicPOS.Api.Features.Documents.GetDocumentById
 
         public override async Task<ErrorOr<Document>> Handle(GetDocumentByIdQuery query, CancellationToken cancellationToken = default)
         {
-            return await HandleGetByIdQueryAsync<Document>($"documents/{query.Id}", cancellationToken);
+            return await HandleGetEntityQueryAsync<Document>($"documents/{query.Id}", cancellationToken);
         }
     }
 }

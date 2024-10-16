@@ -1,5 +1,6 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Company.GetCompanyCurreny;
 using LogicPOS.Api.Features.DocumentTypes.GetAllDocumentTypes;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
@@ -20,6 +21,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
     public class CreateDocumentDocumentTab : ModalTab
     {
+        private readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<ISender>();
         public IEnumerable<DocumentType> DocumentTypes { get; private set; }
         public PageTextBox TxtDocumentType { get; set; }
         public PageTextBox TxtPaymentCondition { get; set; }
@@ -50,6 +52,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             InitializeTxtOriginDocument();
             InitializeTxtCopyDocument();
             InitializeTxtNotes();
+            UpdateValidatableFields();
         }
 
         private IEnumerable<DocumentType> GetDocumentTypes()
@@ -90,6 +93,11 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             TxtCopyDocument.Entry.IsEditable = false;
 
             TxtCopyDocument.SelectEntityClicked += BtnSelectCopyDocument_Clicked;
+        }
+
+        private DocumentType GetDefaultDocumentType()
+        {
+            return DocumentTypes.FirstOrDefault(type => type.Acronym == "FT");
         }
 
         private void BtnSelectCopyDocument_Clicked(object sender, EventArgs e)
@@ -168,7 +176,29 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
             TxtCurrency.Entry.IsEditable = false;
 
+            var companyCurrency = GetDefaultCurreny();
+
+            if (companyCurrency != null)
+            {
+                TxtCurrency.Text = companyCurrency.Designation;
+                TxtCurrency.SelectedEntity = companyCurrency;
+                TxtCurrency.Component.Sensitive = false;
+            }
+            
             TxtCurrency.SelectEntityClicked += BtnSelectCurrency_Clicked;
+        }
+
+        private Currency GetDefaultCurreny()
+        {
+            var getCurrency = _mediator.Send(new GetCompanyCurrencyQuery()).Result;
+
+            if (getCurrency.IsError)
+            {
+                SimpleAlerts.ShowApiErrorAlert(this.SourceWindow, getCurrency.FirstError);
+                return null;
+            }
+
+            return getCurrency.Value;
         }
 
         private void BtnSelectCurrency_Clicked(object sender, EventArgs e)
@@ -263,6 +293,9 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                                               isValidatable: false,
                                               includeSelectButton: true,
                                               includeKeyBoardButton: false);
+
+            TxtDocumentType.SelectedEntity = GetDefaultDocumentType();
+            TxtDocumentType.Text = (TxtDocumentType.SelectedEntity as DocumentType).Designation;
 
             TxtDocumentType.Entry.IsEditable = false;
 

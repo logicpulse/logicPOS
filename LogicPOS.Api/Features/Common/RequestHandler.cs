@@ -36,7 +36,7 @@ namespace LogicPOS.Api.Features.Common
             }
         }
 
-        protected async Task<ErrorOr<TEntity>> HandleGetByIdQueryAsync<TEntity>(
+        protected async Task<ErrorOr<TEntity>> HandleGetEntityQueryAsync<TEntity>(
            string endpoint,
            CancellationToken cancellationToken = default)
         {

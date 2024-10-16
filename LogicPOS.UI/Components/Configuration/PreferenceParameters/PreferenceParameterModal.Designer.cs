@@ -22,18 +22,21 @@ namespace LogicPOS.UI.Components.Modals
         private PreferenceParameterInputField _field;
         #endregion
 
+        protected override void BeforeDesign()
+        {
+            if (_modalMode != EntityEditionModalMode.Insert)
+            {
+                InitializeField();
+            }
+        }
+
         private void InitializeField()
         {
             _field = new PreferenceParameterInputField(_entity as PreferenceParameter);
         }
 
         protected override void AddSensitiveFields()
-        {
-            if(_field == null)
-            {
-                InitializeField();
-            }
-            
+        {       
             SensitiveFields.Add(_txtOrder.Entry);
             SensitiveFields.Add(_txtCode.Entry);
             SensitiveFields.Add(_txtNotes.TextView);
