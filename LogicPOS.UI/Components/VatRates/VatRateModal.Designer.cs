@@ -19,7 +19,7 @@ namespace LogicPOS.UI.Components.Modals
         private TextBox _txtTaxType = new TextBox("global_vat_rate_tax_type", true, true, @"^[a-zA-Z]+$");
         private TextBox _txtTaxCode = new TextBox("global_vat_rate_tax_code", true, true, @"^[a-zA-Z]+$");
         private TextBox _txtCountryRegionCode = new TextBox("global_vat_rate_tax_country_region", true, true, @"^[a-zA-Z0-9]+$");
-        private TextBox _txtDescription= new TextBox("global_vat_rate_description", true, true, @"^[a-zA-Z0-9]+$");
+        private TextBox _txtDescription= new TextBox("global_vat_rate_description",true);
         private CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
         #endregion
 
