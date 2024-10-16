@@ -12,6 +12,7 @@ using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.Modals;
+using LogicPOS.UI.Components.POS;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.Utility;
 using MediatR;
@@ -49,15 +50,15 @@ namespace LogicPOS.UI.Components.Menus
         public ArticleSubfamiliesMenu SubfamiliesMenu { get; set; }
         public List<Article> AllArticles { get; set; }
         public IEnumerable<ArticleStock> Stocks { get; private set; }
-        public TicketList TicketList { get; set; }
+        public SaleItemsPage SaleItemsPage { get;  }
 
         public ArticlesMenu(
             ArticleSubfamiliesMenu subfamiliesMenu,
             CustomButton btnPrevious,
             CustomButton btnNext,
-            TicketList ticketList) : base(6, 7, true)
+            SaleItemsPage saleItemsPage) : base(6, 7, true)
         {
-            TicketList = ticketList;
+            SaleItemsPage = saleItemsPage;
             BtnPrevious = btnPrevious;
             BtnNext = btnNext;
             SubfamiliesMenu = subfamiliesMenu;
@@ -319,14 +320,23 @@ namespace LogicPOS.UI.Components.Menus
                 }
             }
 
-            InsertMoneyModalResponse result = InsertMoneyModal.RequestDecimalValue(SourceWindow, GeneralUtils.GetResourceByName("window_title_dialog_moneypad_product_price"), SelectedArticle.Price1.Value);
-           
-            if (result.Response == ResponseType.Cancel)
-            {
-                return;
-            }
+            var item = new SaleItem(SelectedArticle);
 
-            TicketList.InsertOrUpdate(new Guid("6aa32272-d0b0-40af-a0ee-b5aa38fa8b3e"));
+
+            if(item.UnitPrice <= 0)
+            {
+                InsertMoneyModalResponse result = InsertMoneyModal.RequestDecimalValue(SourceWindow, GeneralUtils.GetResourceByName("window_title_dialog_moneypad_product_price"), item.UnitPrice);
+              
+                if (result.Response == ResponseType.Cancel)
+                {
+                    return;
+                }
+
+                item.UnitPrice = result.Value;
+            }
+           
+
+            SaleItemsPage.AddItem(item);
         }
 
         internal void Refresh()

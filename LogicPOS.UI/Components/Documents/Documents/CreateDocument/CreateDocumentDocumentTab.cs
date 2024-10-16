@@ -384,7 +384,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 TxtPaymentMethod.Require(false,false);
                 TxtNotes.Require(false);
             }
-            else if (documentType.IsInformative() || documentType.IsConsignmentInvoice())
+            else if (documentType.IsInformative())
             {
                 TxtOriginDocument.Require(false, false);
                 TxtPaymentCondition.Require(true);

@@ -152,7 +152,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             EnableAllTabs();
 
-            if (documentType.IsGuide())
+            if (documentType.IsGuide() || documentType.IsCreditNote() || documentType.IsDebitNote())
             {
                 CustomerTab.Disable();
             }

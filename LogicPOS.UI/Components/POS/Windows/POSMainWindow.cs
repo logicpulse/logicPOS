@@ -11,6 +11,8 @@ using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components;
 using LogicPOS.UI.Components.Menus;
+using LogicPOS.UI.Components.Pages;
+using LogicPOS.UI.Components.POS;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
@@ -30,6 +32,7 @@ namespace LogicPOS.UI.Components.Windows
         public Label LabelClock { get; set; }
         public TextView TextViewLog { get; set; }
         public TicketList TicketList { get; set; }
+        public SaleItemsPage SaleItemsPage { get; set; }
         public IconButtonWithText BtnQuit { get; set; }
         public IconButtonWithText BtnBackOffice { get; set; }
         public IconButtonWithText BtnReports { get; set; }
@@ -468,7 +471,7 @@ namespace LogicPOS.UI.Components.Windows
             MenuArticles = new ArticlesMenu(MenuSubfamilies,
                                             btnMenuArticlesPrevious,
                                             btnMenuArticlesNext,
-                                            TicketList)
+                                            SaleItemsPage)
             { Sensitive = false };
 
             MenuArticles.SourceWindow = this;
@@ -642,29 +645,21 @@ namespace LogicPOS.UI.Components.Windows
             if (eventBoxPosTicketPadVisible) FixedWindow.Put(eventBoxPosTicketPad, eventBoxPosTicketPadPosition.X, eventBoxPosTicketPadPosition.Y);
         }
 
-        private void InitializeTicketList(dynamic pThemeWindow)
+        private void InitializeTicketList(dynamic theme)
         {
-            dynamic themeWindow = pThemeWindow;
+            Point position = Utils.StringToPosition(theme.Objects.EventBoxPosTicketList.Position);
+            Size size = (theme.Objects.EventBoxPosTicketList.Size as string).ToSize();
 
-            //Objects:EventBoxPosTicketList
-            Point eventBoxPosTicketListPosition = Utils.StringToPosition(themeWindow.Objects.EventBoxPosTicketList.Position);
-            Size eventBoxPosTicketListSize = (themeWindow.Objects.EventBoxPosTicketList.Size as string).ToSize();
-            bool eventBoxPosTicketListVisible = Convert.ToBoolean(themeWindow.Objects.EventBoxPosTicketList.Visible);
-            bool eventBoxPosTicketListVisibleWindow = Convert.ToBoolean(themeWindow.Objects.EventBoxPosTicketList.VisibleWindow);
-            Gdk.Color eventBoxPosTicketListBackgroundColor = (themeWindow.Objects.EventBoxPosTicketList.BackgroundColor as string).StringToGdkColor();
+            EventBox saleItemsPageEventBox = new EventBox() { VisibleWindow = false, BorderWidth = 0 };
+            saleItemsPageEventBox.WidthRequest = size.Width;
+            saleItemsPageEventBox.HeightRequest = size.Height;
 
-            //UI
-
-            EventBox eventBoxPosTicketList = new EventBox() { VisibleWindow = eventBoxPosTicketListVisibleWindow, BorderWidth = 0 };
-            eventBoxPosTicketList.WidthRequest = eventBoxPosTicketListSize.Width;
-            eventBoxPosTicketList.HeightRequest = eventBoxPosTicketListSize.Height;
-            if (eventBoxPosTicketListVisibleWindow) eventBoxPosTicketList.ModifyBg(StateType.Normal, eventBoxPosTicketListBackgroundColor);
-
-            //Get ThemeObject to send to TicketList Constructor
-            dynamic theme = themeWindow.Objects.EventBoxPosTicketList;
-            TicketList = new TicketList(this,theme, SaleOptionsPanel);
-            eventBoxPosTicketList.Add(TicketList);
-            if (eventBoxPosTicketListVisible) FixedWindow.Put(eventBoxPosTicketList, eventBoxPosTicketListPosition.X, eventBoxPosTicketListPosition.Y);
+            dynamic saleItemsPageTheme = theme.Objects.EventBoxPosTicketList;
+            TicketList = new TicketList(this,saleItemsPageTheme, SaleOptionsPanel);
+            SaleItemsPage = new SaleItemsPage(this, saleItemsPageTheme);
+            saleItemsPageEventBox.Add(SaleItemsPage);
+            
+            FixedWindow.Put(saleItemsPageEventBox, position.X, position.Y);
         }
     }
 }

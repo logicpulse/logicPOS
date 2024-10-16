@@ -302,7 +302,9 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 ZipCode = TxtZipCode.Text,
                 City = TxtCity.Text,
                 Country = TxtCountry.Text,
-                CountryId = (TxtCountry.SelectedEntity as Country)?.Id ?? _countryId
+                CountryId = (TxtCountry.SelectedEntity as Country)?.Id ?? _countryId,
+                Email = TxtEmail.Text,
+                Phone = TxtPhone.Text
             };
         }
 

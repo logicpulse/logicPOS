@@ -9,13 +9,23 @@ namespace LogicPOS.UI.Components.Articles
 
         public static string AddBase64Image(Guid articleId, string content, string extension)
         {
-            if (string.IsNullOrWhiteSpace(content) || string.IsNullOrWhiteSpace(extension))
+            if (string.IsNullOrWhiteSpace(content) || string.IsNullOrWhiteSpace(extension) || extension.Length != 3)
             {
                 return null;
             }
 
             var tempFile = System.IO.Path.GetTempFileName() + "." + extension;
-            System.IO.File.WriteAllBytes(tempFile, Convert.FromBase64String(content));
+            byte[] bytes;
+            try
+            {
+                bytes = Convert.FromBase64String(content);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
+            System.IO.File.WriteAllBytes(tempFile, bytes);
 
             _images[articleId] = tempFile;
 

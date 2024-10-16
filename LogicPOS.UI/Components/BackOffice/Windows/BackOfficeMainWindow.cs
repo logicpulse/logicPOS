@@ -155,11 +155,6 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
         {
             Dictionary<string, AccordionNode> nodes = new Dictionary<string, AccordionNode>();
 
-            //Define used CriteriaOperators/Override Defaults from TreeViews
-            CriteriaOperator criteriaOperatorCustomer = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1) AND (Hidden IS NULL OR Hidden = 0)");
-            CriteriaOperator criteriaConfigurationPreferenceParameterCompany = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1) AND (Token <> 'COMPANY_COUNTRY_OID' AND Token <> 'SYSTEM_CURRENCY_OID' AND FormType = 1)");
-            CriteriaOperator criteriaConfigurationPreferenceParameterSystem = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1) AND (FormType = 2)");
-
             //START WORK SESSION AND DAY FOR BACKOFFICE MODE
             if (GeneralSettings.AppUseBackOfficeMode)
             {
@@ -250,21 +245,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
             }
             _accordionChildExport.Add("System_Export_Articles", new AccordionNode(GeneralUtils.GetResourceByName("global_export_articles")) { Clicked = delegate { ExcelProcessing.OpenFilePicker(this, ImportExportFileOpen.ExportArticles); } });
             _accordionChildExport.Add("System_Export_Costumers", new AccordionNode(GeneralUtils.GetResourceByName("global_export_costumers")) { Clicked = delegate { ExcelProcessing.OpenFilePicker(this, ImportExportFileOpen.ExportCustomers); } });
-            //System
-            Dictionary<string, AccordionNode> _accordionChildSystem = new Dictionary<string, AccordionNode>
-                {
-                    /* IN006001 - "System" > "Notification" menu option */
-                    { "System_Notification", new AccordionNode(GeneralUtils.GetResourceByName("window_title_dialog_notification")) { Clicked = delegate { Utils.ShowNotifications(this, true); } } },
-                    { "System_ChangeLog", new AccordionNode(GeneralUtils.GetResourceByName("change_log")) { Clicked = delegate { Utils.ShowChangeLog(this); } } }
-                };
-            // Add Menu Items Based On Plugins PluginSoftwareVendor
-            if (PluginSettings.HasSoftwareVendorPlugin)
-            {
-                _accordionChildSystem.Add("System_DataBaseBackup", new AccordionNode(GeneralUtils.GetResourceByName("global_database_backup")) { Clicked = delegate { DataBaseBackup.Backup(this); } });
-                _accordionChildSystem.Add("System_DataBaseRestore_FromSystem", new AccordionNode(GeneralUtils.GetResourceByName("global_database_restore")) { Clicked = delegate { DataBaseBackup.Restore(this, DataBaseRestoreFrom.SystemBackup); } });
-                _accordionChildSystem.Add("System_DataBaseRestore_FromFile", new AccordionNode(GeneralUtils.GetResourceByName("global_database_restore_from_file")) { Clicked = delegate { DataBaseBackup.Restore(this, DataBaseRestoreFrom.ChooseFromFilePickerDialog); } });
-            }
-            _accordionChildSystem.Add("System_Menu", new AccordionNode(GeneralUtils.GetResourceByName("global_application_logout_user")) { Clicked = ClickedSystemLogout });
+            
 
             if (GeneralSettings.AppUseBackOfficeMode)
             {
@@ -280,7 +261,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
 
             nodes.Add("TopMenuDocuments", new AccordionNode(GeneralUtils.GetResourceByName("global_documents")) { Children = _accordionDocuments, GroupIcon = new Image("Assets/Images/Icons/Accordion/pos_backoffice_informacao_fiscal.png") });
 
-            var customerButtons = CreateCustomerButtons(criteriaOperatorCustomer);
+            var customerButtons = CreateCustomerButtons();
             nodes.Add("TopMenuCustomers", new AccordionNode(GeneralUtils.GetResourceByName("global_customers")) { Children = customerButtons, GroupIcon = new Image("Assets/Images/Icons/Accordion/pos_backoffice_clientes.png") });
 
             nodes.Add("TopMenuUsers", new AccordionNode(GeneralUtils.GetResourceByName("global_users")) { Children = _accordionChildUsers, GroupIcon = new Image("Assets/Images/Icons/Accordion/pos_backoffice_utilizadores.png") });
@@ -296,11 +277,27 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
                 nodes.Add("TopMenuExport", new AccordionNode(GeneralUtils.GetResourceByName("global_export")) { Children = _accordionChildExport, GroupIcon = new Image("Assets/Images/Icons/Accordion/pos_backoffice_export.png") });
             }
 
+            nodes.Add("System", new AccordionNode(GeneralUtils.GetResourceByName("global_system")) { Children = CreateSystemButtons(), GroupIcon = new Image("Assets/Images/Icons/Accordion/pos_backoffice_sistema.png") });
 
             return nodes;
         }
 
-        private Dictionary<string, AccordionNode> CreateCustomerButtons(CriteriaOperator criteriaOperatorCustomer)
+        private Dictionary<string, AccordionNode> CreateSystemButtons()
+        {
+            Dictionary<string, AccordionNode> buttons = new Dictionary<string, AccordionNode>
+            {
+                { "System_Notification", new AccordionNode(GeneralUtils.GetResourceByName("window_title_dialog_notification")) { Clicked = delegate { Utils.ShowNotifications(this, true); } } },
+                { "System_ChangeLog", new AccordionNode(GeneralUtils.GetResourceByName("change_log")) { Clicked = delegate { Utils.ShowChangeLog(this); } } },
+                { "System_DataBaseBackup", new AccordionNode(GeneralUtils.GetResourceByName("global_database_backup")) { Clicked = delegate { DataBaseBackup.Backup(this); } } },
+                { "System_DataBaseRestore_FromSystem", new AccordionNode(GeneralUtils.GetResourceByName("global_database_restore")) { Clicked = delegate { DataBaseBackup.Restore(this, DataBaseRestoreFrom.SystemBackup); } } },
+                { "System_DataBaseRestore_FromFile", new AccordionNode(GeneralUtils.GetResourceByName("global_database_restore_from_file")) { Clicked = delegate { DataBaseBackup.Restore(this, DataBaseRestoreFrom.ChooseFromFilePickerDialog); } } },
+                { "System_Menu", new AccordionNode(GeneralUtils.GetResourceByName("global_application_logout_user")) { Clicked = ClickedSystemLogout } }
+            };
+
+            return buttons;
+        }
+
+        private Dictionary<string, AccordionNode> CreateCustomerButtons()
         {
             return new Dictionary<string, AccordionNode>
                 {
@@ -350,14 +347,12 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
         private void ClickedSystemLogout(object sender, EventArgs e)
         {
             Hide();
-            //Call Shared WindowStartup LogOutUser, and Show WindowStartup
             GlobalApp.StartupWindow.LogOutUser(true);
         }
 
         private void ClickedSystemPos(object sender, EventArgs e)
         {
             Hide();
-            //Show WindowStartup
             GlobalApp.PosMainWindow.ShowAll();
         }
     }
