@@ -14,6 +14,7 @@ using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
 using LogicPOS.UI;
 using LogicPOS.UI.Components;
+using LogicPOS.UI.Components.Pickers;
 using LogicPOS.Utility;
 using MySql.Data.MySqlClient;
 using System;
@@ -268,12 +269,12 @@ namespace logicpos.Classes.DataLayer
                         }
                         break;
                     case DataBaseRestoreFrom.ChooseFromFilePickerDialog:
-                        FileFilter fileFilterBackups = logicpos.Utils.GetFileFilterBackups();
-                        PosFilePickerDialog dialog = new PosFilePickerDialog(parentWindow, DialogFlags.DestroyWithParent, fileFilterBackups, FileChooserAction.Open);
+                        FileFilter fileFilterBackups = FilePicker.GetFileFilterBackups();
+                        FilePicker dialog = new FilePicker(parentWindow, DialogFlags.DestroyWithParent, fileFilterBackups, FileChooserAction.Open);
                         ResponseType response = (ResponseType)dialog.Run();
                         if (response == ResponseType.Ok)
                         {
-                            fileNamePacked = dialog.FilePicker.Filename;
+                            fileNamePacked = dialog.FileChooser.Filename;
                             //Override Default pathBackups
                             pathBackups = string.Format("{0}/", Path.GetDirectoryName(fileNamePacked));
 

@@ -3,13 +3,13 @@ using ExcelDataReader;
 using Gtk;
 using logicpos.Classes.DataLayer;
 using logicpos.Classes.Enums;
-using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
 using LogicPOS.Settings.Extensions;
 using LogicPOS.UI;
+using LogicPOS.UI.Components.Pickers;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -58,12 +58,12 @@ namespace logicpos
                     case ImportExportFileOpen.OpenExcelArticles:
 
                         string windowName = (GeneralUtils.GetResourceByName("global_articles"));
-                        FileFilter fileFilterBackups = Utils.GetFileFilterImportExport();
-                        PosFilePickerDialog dialog = new PosFilePickerDialog(parentWindow, DialogFlags.DestroyWithParent, fileFilterBackups, FileChooserAction.Open, windowName);
+                        FileFilter fileFilterBackups = FilePicker.GetFileFilterImportExport();
+                        FilePicker dialog = new FilePicker(parentWindow, DialogFlags.DestroyWithParent, fileFilterBackups, FileChooserAction.Open, windowName);
                         ResponseType response = (ResponseType)dialog.Run();
                         if (response == ResponseType.Ok)
                         {
-                            fileNamePacked = dialog.FilePicker.Filename;
+                            fileNamePacked = dialog.FileChooser.Filename;
                             //Override Default pathBackups
                             pathBackups = string.Format("{0}/", Path.GetDirectoryName(fileNamePacked));
                             dialog.Destroy();
@@ -91,12 +91,12 @@ namespace logicpos
                     case ImportExportFileOpen.OpenExcelCostumers:
 
                         windowName = (GeneralUtils.GetResourceByName("global_customer"));
-                        fileFilterBackups = Utils.GetFileFilterImportExport();
-                        dialog = new PosFilePickerDialog(parentWindow, DialogFlags.DestroyWithParent, fileFilterBackups, FileChooserAction.Open, windowName);
+                        fileFilterBackups = FilePicker.GetFileFilterImportExport();
+                        dialog = new FilePicker(parentWindow, DialogFlags.DestroyWithParent, fileFilterBackups, FileChooserAction.Open, windowName);
                         response = (ResponseType)dialog.Run();
                         if (response == ResponseType.Ok)
                         {
-                            fileNamePacked = dialog.FilePicker.Filename;
+                            fileNamePacked = dialog.FileChooser.Filename;
                             //Override Default pathBackups
                             pathBackups = string.Format("{0}/", Path.GetDirectoryName(fileNamePacked));
                             dialog.Destroy();
@@ -124,12 +124,12 @@ namespace logicpos
                     case ImportExportFileOpen.ExportArticles:
 
                         windowName = (GeneralUtils.GetResourceByName("global_articles"));
-                        fileFilterBackups = Utils.GetFileFilterImportExport();
-                        dialog = new PosFilePickerDialog(parentWindow, DialogFlags.DestroyWithParent, fileFilterBackups, FileChooserAction.Save, windowName);
+                        fileFilterBackups = FilePicker.GetFileFilterImportExport();
+                        dialog = new FilePicker(parentWindow, DialogFlags.DestroyWithParent, fileFilterBackups, FileChooserAction.Save, windowName);
                         response = (ResponseType)dialog.Run();
                         if (response == ResponseType.Ok)
                         {
-                            fileNamePacked = dialog.FilePicker.Filename;
+                            fileNamePacked = dialog.FileChooser.Filename;
                             //Override Default pathBackups
                             pathBackups = string.Format("{0}/", Path.GetDirectoryName(fileNamePacked));
                             dialog.Destroy();
@@ -158,12 +158,12 @@ namespace logicpos
                     case ImportExportFileOpen.ExportCustomers:
 
                         windowName = (GeneralUtils.GetResourceByName("global_customer"));
-                        fileFilterBackups = Utils.GetFileFilterImportExport();
-                        dialog = new PosFilePickerDialog(parentWindow, DialogFlags.DestroyWithParent, fileFilterBackups, FileChooserAction.Save, windowName);
+                        fileFilterBackups = FilePicker.GetFileFilterImportExport();
+                        dialog = new FilePicker(parentWindow, DialogFlags.DestroyWithParent, fileFilterBackups, FileChooserAction.Save, windowName);
                         response = (ResponseType)dialog.Run();
                         if (response == ResponseType.Ok)
                         {
-                            fileNamePacked = dialog.FilePicker.Filename;
+                            fileNamePacked = dialog.FileChooser.Filename;
                             //Override Default pathBackups
                             pathBackups = string.Format("{0}/", Path.GetDirectoryName(fileNamePacked));
                             dialog.Destroy();

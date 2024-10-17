@@ -85,7 +85,7 @@ namespace LogicPOS.UI.Components.Pages
 
             BtnApply.Clicked += delegate
             {
-                GlobalApp.BackOfficeMainWindow.Accordion.UpdateMenuPrivileges();
+                GlobalApp.BackOfficeMainWindow.Menu.UpdateMenuPrivileges();
                 GlobalApp.PosMainWindow.TicketList.UpdateSaleOptionsPanelButtons();
             };
 

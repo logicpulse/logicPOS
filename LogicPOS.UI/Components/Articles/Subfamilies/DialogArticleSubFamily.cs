@@ -7,6 +7,7 @@ using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Components;
+using LogicPOS.UI.Components.Pickers;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -66,7 +67,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 fileChooserFrameImagePreviewButtonImage.ShadowType = ShadowType.None;
                 fileChooserFrameImagePreviewButtonImage.Add(fileChooserImagePreviewButtonImage);
                 fileChooserButtonImage.SetFilename(((fin_articlesubfamily)Entity).ButtonImage);
-                fileChooserButtonImage.Filter = logicpos.Utils.GetFileFilterImages();
+                fileChooserButtonImage.Filter = FilePicker.GetFileFilterImages();
                 fileChooserButtonImage.SelectionChanged += (sender, eventArgs) => fileChooserImagePreviewButtonImage.Pixbuf = logicpos.Utils.ResizeAndCropFileToPixBuf((sender as FileChooserButton).Filename, new System.Drawing.Size(fileChooserImagePreviewButtonImage.WidthRequest, fileChooserImagePreviewButtonImage.HeightRequest));
                 BOWidgetBox boxfileChooserButtonImage = new BOWidgetBox(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_button_image"), fileChooserButtonImage);
                 HBox hboxfileChooserAndimagePreviewButtonImage = new HBox(false, _boxSpacing);

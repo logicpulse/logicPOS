@@ -92,8 +92,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             //Store Reference to BackOffice TreeViewDocumentFinanceYearSerieTerminal
             TreeViewDocumentFinanceYearSerieTerminal treeViewDocumentFinanceYearSerieTerminal =
-                ((_parentWindow as BackOfficeMainWindow).Accordion.Nodes["TopMenuDocuments"].Children.ContainsKey("DocumentFinanceYearSerieTerminal"))
-                ? ((_parentWindow as BackOfficeMainWindow).Accordion.Nodes["TopMenuDocuments"].Children["DocumentFinanceYearSerieTerminal"].Content as TreeViewDocumentFinanceYearSerieTerminal)
+                ((_parentWindow as BackOfficeWindow).Menu.Nodes["TopMenuDocuments"].Children.ContainsKey("DocumentFinanceYearSerieTerminal"))
+                ? ((_parentWindow as BackOfficeWindow).Menu.Nodes["TopMenuDocuments"].Children["DocumentFinanceYearSerieTerminal"].Content as TreeViewDocumentFinanceYearSerieTerminal)
                 : null;
 
             //Internal Shared Action to Refresh Components
@@ -151,14 +151,14 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             //Store Reference to BackOffice TreeViewDocumentFinanceYearSerieTerminal
             TreeViewDocumentFinanceSeries treeViewDocumentFinanceSeries =
-                ((parentWindow as BackOfficeMainWindow).Accordion.Nodes["TopMenuDocuments"].Children.ContainsKey("DocumentFinanceSeries"))
-                ? ((parentWindow as BackOfficeMainWindow).Accordion.Nodes["TopMenuDocuments"].Children["DocumentFinanceSeries"].Content as TreeViewDocumentFinanceSeries)
+                ((parentWindow as BackOfficeWindow).Menu.Nodes["TopMenuDocuments"].Children.ContainsKey("DocumentFinanceSeries"))
+                ? ((parentWindow as BackOfficeWindow).Menu.Nodes["TopMenuDocuments"].Children["DocumentFinanceSeries"].Content as TreeViewDocumentFinanceSeries)
                 : null;
 
             //Store Reference to BackOffice TreeViewDocumentFinanceYearSerieTerminal
             TreeViewDocumentFinanceYearSerieTerminal treeViewDocumentFinanceYearSerieTerminal =
-                ((parentWindow as BackOfficeMainWindow).Accordion.Nodes["TopMenuDocuments"].Children.ContainsKey("DocumentFinanceYearSerieTerminal"))
-                ? ((parentWindow as BackOfficeMainWindow).Accordion.Nodes["TopMenuDocuments"].Children["DocumentFinanceYearSerieTerminal"].Content as TreeViewDocumentFinanceYearSerieTerminal)
+                ((parentWindow as BackOfficeWindow).Menu.Nodes["TopMenuDocuments"].Children.ContainsKey("DocumentFinanceYearSerieTerminal"))
+                ? ((parentWindow as BackOfficeWindow).Menu.Nodes["TopMenuDocuments"].Children["DocumentFinanceYearSerieTerminal"].Content as TreeViewDocumentFinanceYearSerieTerminal)
                 : null;
 
             if (dataTableSelectedTerminals != null && dataTableSelectedTerminals.Rows.Count > 0)

@@ -11,6 +11,7 @@ using LogicPOS.UI;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components;
+using LogicPOS.UI.Components.Pickers;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using System;
@@ -188,12 +189,12 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 
         private void AttachPDFButton_Clicked(object sender, EventArgs e)
         {
-            FileFilter fileFilterPDF = logicpos.Utils.GetFileFilterPDF();
-            Pos.Dialogs.PosFilePickerDialog dialog = new Pos.Dialogs.PosFilePickerDialog(this, DialogFlags.DestroyWithParent, fileFilterPDF, FileChooserAction.Open);
+            FileFilter fileFilterPDF = FilePicker.GetFileFilterPDF();
+            FilePicker dialog = new FilePicker(this, DialogFlags.DestroyWithParent, fileFilterPDF, FileChooserAction.Open);
             ResponseType response = (ResponseType)dialog.Run();
             if (response == ResponseType.Ok)
             {
-                string fileNamePacked = dialog.FilePicker.Filename;
+                string fileNamePacked = dialog.FileChooser.Filename;
                 string fileName = string.Format("{0}/", System.IO.Path.GetFileNameWithoutExtension(fileNamePacked));
                 AttachedFile = File.ReadAllBytes(fileNamePacked);
                 _entryBoxDocumentNumber.EntryValidation.Text = fileName.Replace("/", "");

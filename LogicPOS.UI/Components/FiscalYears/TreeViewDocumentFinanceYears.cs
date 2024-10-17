@@ -99,11 +99,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         {
 
             //Get References to TreeViewDocumentFinanceSeries and TreeViewDocumentFinanceYearSerieTerminal
-            TreeViewDocumentFinanceSeries treeViewDocumentFinanceSeries = ((_parentWindow as BackOfficeMainWindow).Accordion.Nodes["TopMenuDocuments"].Children["DocumentFinanceSeries"].Content as TreeViewDocumentFinanceSeries);
+            TreeViewDocumentFinanceSeries treeViewDocumentFinanceSeries = ((_parentWindow as BackOfficeWindow).Menu.Nodes["TopMenuDocuments"].Children["DocumentFinanceSeries"].Content as TreeViewDocumentFinanceSeries);
             //Store Reference to BackOffice TreeViewDocumentFinanceYearSerieTerminal
             TreeViewDocumentFinanceYearSerieTerminal treeViewDocumentFinanceYearSerieTerminal =
-                ((_parentWindow as BackOfficeMainWindow).Accordion.Nodes["TopMenuDocuments"].Children.ContainsKey("DocumentFinanceYearSerieTerminal"))
-                ? ((_parentWindow as BackOfficeMainWindow).Accordion.Nodes["TopMenuDocuments"].Children["DocumentFinanceYearSerieTerminal"].Content as TreeViewDocumentFinanceYearSerieTerminal)
+                ((_parentWindow as BackOfficeWindow).Menu.Nodes["TopMenuDocuments"].Children.ContainsKey("DocumentFinanceYearSerieTerminal"))
+                ? ((_parentWindow as BackOfficeWindow).Menu.Nodes["TopMenuDocuments"].Children["DocumentFinanceYearSerieTerminal"].Content as TreeViewDocumentFinanceYearSerieTerminal)
                 : null;
             //Refresh TreeViews after Insert Record, and Hide old Series
             Refresh();

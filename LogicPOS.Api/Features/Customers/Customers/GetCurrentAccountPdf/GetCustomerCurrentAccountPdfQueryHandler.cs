@@ -17,7 +17,7 @@ namespace LogicPOS.Api.Features.Customers.GetCurrentAccountPdf
         public async override Task<ErrorOr<string>> Handle(GetCustomerCurrentAccountPdfQuery query, CancellationToken cancellationToken = default)
         {
             string endpoint = $"customers/{query.CustomerId}/currentaccount/pdf?startDate={query.StartDate.ToISO8601DateOnly()}&endDate={query.EndDate.ToISO8601DateOnly()}";
-            return await HandleGetPdfQueryAsync(endpoint, cancellationToken);
+            return await HandleGetFileQueryAsync(endpoint, cancellationToken);
         }
     }
 }

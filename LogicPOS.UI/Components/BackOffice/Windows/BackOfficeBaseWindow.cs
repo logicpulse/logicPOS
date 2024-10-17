@@ -16,24 +16,23 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
 {
     public abstract class BackOfficeBaseWindow : Window
     {
-        protected Fixed _panelButtons;
-        protected HBox _panelContent;
-        protected Widget _currentPage;
-        protected Label _labelActivePage;
-        protected Label _labelTerminalInfo;
-        protected Label _labelDateTime;
-        protected Label _labelUpdate;
-        protected HBox _statusBar;
-        protected string _dataTimeFormat;
-        protected Image _imageLogo = new Image();
-        protected Label _reseller;
-        public System.Drawing.Size _buttonsSize = new System.Drawing.Size(200, 38);
-        public Accordion Accordion { get; set; }
-
-        public IconButtonWithText _btnDashboard;
-        public IconButtonWithText _btnExit;
-        public IconButtonWithText _btnPOS;
-        public IconButtonWithText _btnNewVersion;
+        protected Fixed PanelButtons { get; set; }
+        protected HBox PanelContent { get; set; }
+        protected Widget CurrentPage { get; set; }
+        protected Label LabelActivePage { get; set; }
+        protected Label LabelTerminalInfo { get; set; }
+        protected Label LabelDateTime { get; set; }
+        protected Label LabelUpdate { get; set; }
+        protected HBox StatusBar { get; set; }
+        protected string DateTimeFormat { get; set; }
+        protected Image Logo { get; set; } = new Image();
+        protected Label Reseller { get; set; }
+        public System.Drawing.Size ButtonSize = new System.Drawing.Size(200, 38);
+        public Accordion Menu { get; set; }
+        public IconButtonWithText BtnDashboard { get; set; }
+        public IconButtonWithText BtnExit { get; set; }
+        public IconButtonWithText BtnPOS { get; set; }
+        public IconButtonWithText BtnNewVersion { get; set; }
 
         public BackOfficeBaseWindow()
             : base(WindowType.Toplevel)
@@ -67,7 +66,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
 
             if (GlobalApp.BackOfficeScreenSize.Height <= 800)
             {
-                _buttonsSize = new System.Drawing.Size(200, 38);
+                ButtonSize = new System.Drawing.Size(200, 38);
                 sizeIcon = new System.Drawing.Size(20, 20);
                 sizeButton = new System.Drawing.Size(15, 15);
                 sizeIconQuit = new System.Drawing.Size(20, 20);
@@ -75,7 +74,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
                 fontDescription = fontDescriptionParentLowRes;
             }
 
-            _dataTimeFormat = GeneralUtils.GetResourceByName("backoffice_datetime_format_status_bar");
+            DateTimeFormat = GeneralUtils.GetResourceByName("backoffice_datetime_format_status_bar");
 
             string fontBackOfficeStatusBar = AppSettings.Instance.fontPosStatusBar;
             string fileImageBackOfficeLogoLong = PathsSettings.Paths["themes"] + @"Default\Images\logo_backoffice_long.png";
@@ -97,19 +96,19 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
             statusBar.ModifyBg(StateType.Normal, colorBackOfficeStatusBarBackground.ToGdkColor());
 
             //Reseller
-            _reseller = new Label();
-            _reseller.Text = string.Format(" Powered by {0} ©", LicenseSettings.LicenseReseller);
-            _reseller.ModifyFont(Pango.FontDescription.FromString("Trebuchet MS 8 Bold"));
-            _reseller.ModifyFg(StateType.Normal, colorBackOfficeStatusBarFont.ToGdkColor());
-            _reseller.Justify = Justification.Left;
+            Reseller = new Label();
+            Reseller.Text = string.Format(" Powered by {0} ©", LicenseSettings.LicenseReseller);
+            Reseller.ModifyFont(Pango.FontDescription.FromString("Trebuchet MS 8 Bold"));
+            Reseller.ModifyFg(StateType.Normal, colorBackOfficeStatusBarFont.ToGdkColor());
+            Reseller.Justify = Justification.Left;
 
-            _imageLogo = new Image(fileImageBackOfficeLogoLong);
+            Logo = new Image(fileImageBackOfficeLogoLong);
 
             if (LicenseSettings.LicenseReseller != null &&
                 LicenseSettings.LicenseReseller.ToString() != "Logicpulse" &&
                 LicenseSettings.LicenseReseller.ToString().ToLower() != "")
             {
-                _imageLogo = new Image(fileImageBackOfficeLogo);
+                Logo = new Image(fileImageBackOfficeLogo);
             }
 
 
@@ -122,39 +121,39 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
             string _iconDashBoard = PathsSettings.ImagesFolderLocation + @"Icons\BackOffice\icon_other_tables.png";
 
             //Active Content
-            _labelActivePage = new Label() { WidthRequest = 300 };
-            _labelActivePage.ModifyFont(fontDescriptionStatusBar);
-            _labelActivePage.ModifyFg(StateType.Normal, colorBackOfficeStatusBarFont.ToGdkColor());
-            _labelActivePage.SetAlignment(0.0F, 0.5F);
+            LabelActivePage = new Label() { WidthRequest = 300 };
+            LabelActivePage.ModifyFont(fontDescriptionStatusBar);
+            LabelActivePage.ModifyFg(StateType.Normal, colorBackOfficeStatusBarFont.ToGdkColor());
+            LabelActivePage.SetAlignment(0.0F, 0.5F);
 
             //TerminalInfo : Terminal : User
-            _labelTerminalInfo = new Label(string.Format("{0} : {1}", TerminalSettings.LoggedTerminal.Designation, XPOSettings.LoggedUser.Name));
-            _labelTerminalInfo.ModifyFont(fontDescriptionStatusBar);
-            _labelTerminalInfo.ModifyFg(StateType.Normal, colorBackOfficeStatusBarFont.ToGdkColor());
-            _labelTerminalInfo.SetAlignment(0.5F, 0.5F);
+            LabelTerminalInfo = new Label(string.Format("{0} : {1}", TerminalSettings.LoggedTerminal.Designation, XPOSettings.LoggedUser.Name));
+            LabelTerminalInfo.ModifyFont(fontDescriptionStatusBar);
+            LabelTerminalInfo.ModifyFg(StateType.Normal, colorBackOfficeStatusBarFont.ToGdkColor());
+            LabelTerminalInfo.SetAlignment(0.5F, 0.5F);
 
             //Clock
-            _labelDateTime = new Label(XPOUtility.CurrentDateTime(_dataTimeFormat));
-            _labelDateTime.ModifyFont(fontDescriptionStatusBar);
-            _labelDateTime.ModifyFg(StateType.Normal, colorBackOfficeStatusBarFont.ToGdkColor());
-            _labelDateTime.SetAlignment(1.0F, 0.5F);
+            LabelDateTime = new Label(XPOUtility.CurrentDateTime(DateTimeFormat));
+            LabelDateTime.ModifyFont(fontDescriptionStatusBar);
+            LabelDateTime.ModifyFg(StateType.Normal, colorBackOfficeStatusBarFont.ToGdkColor());
+            LabelDateTime.SetAlignment(1.0F, 0.5F);
 
             //Pack HBox StatusBar
-            _statusBar = new HBox(false, 0) { BorderWidth = borderWidth };
-            _statusBar.PackStart(_imageLogo, false, false, 0);
-            if (LicenseSettings.LicenseReseller != null && LicenseSettings.LicenseReseller.ToString() != "Logicpulse" && LicenseSettings.LicenceRegistered) _statusBar.PackStart(_reseller, false, false, 0);
-            _statusBar.PackStart(_labelActivePage, false, false, 0);
-            _statusBar.PackStart(_labelTerminalInfo, true, true, 0);
+            StatusBar = new HBox(false, 0) { BorderWidth = borderWidth };
+            StatusBar.PackStart(Logo, false, false, 0);
+            if (LicenseSettings.LicenseReseller != null && LicenseSettings.LicenseReseller.ToString() != "Logicpulse" && LicenseSettings.LicenceRegistered) StatusBar.PackStart(Reseller, false, false, 0);
+            StatusBar.PackStart(LabelActivePage, false, false, 0);
+            StatusBar.PackStart(LabelTerminalInfo, true, true, 0);
 
 
             //TODO:THEME
             if (GlobalApp.BackOfficeScreenSize.Width < 1024 || GlobalApp.BackOfficeScreenSize.Height < 768)
             {
-                _labelTerminalInfo.SetAlignment(1.0F, 0.5F);
+                LabelTerminalInfo.SetAlignment(1.0F, 0.5F);
             }
             else
             {
-                _statusBar.PackStart(_labelDateTime, false, false, 0);
+                StatusBar.PackStart(LabelDateTime, false, false, 0);
 
             }
 
@@ -165,12 +164,12 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
                 {
                     Iconify();
                 };
-                _statusBar.PackStart(eventBoxMinimize, false, false, 0);
+                StatusBar.PackStart(eventBoxMinimize, false, false, 0);
             }
 
-            _imageLogo.Dispose();
+            Logo.Dispose();
 
-            _btnDashboard = new IconButtonWithText(
+            BtnDashboard = new IconButtonWithText(
                 new ButtonSettings
                 {
                     Name = "DASHBOARD_ICON",
@@ -180,11 +179,11 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
                     FontColor = "61, 61, 61".StringToColor(),
                     Icon = _dashboardIcon,
                     IconSize = sizeIconDashboard,
-                    ButtonSize = _buttonsSize,
+                    ButtonSize = ButtonSize,
                     LeftImage = true
                 });
 
-            _btnExit = new IconButtonWithText(
+            BtnExit = new IconButtonWithText(
                 new ButtonSettings
                 {
                     Name = "EXIT_BUTTON",
@@ -194,11 +193,11 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
                     FontColor = "255, 255, 255".StringToColor(),
                     Icon = _exitIcon,
                     IconSize = sizeButton,
-                    ButtonSize = _buttonsSize,
+                    ButtonSize = ButtonSize,
                     LeftImage = true
                 });
 
-            _btnPOS = new IconButtonWithText(
+            BtnPOS = new IconButtonWithText(
                 new ButtonSettings
                 {
                     Name = "POS",
@@ -208,11 +207,11 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
                     FontColor = "61, 61, 61".StringToColor(),
                     Icon = _backPOSIcon,
                     IconSize = sizeButton,
-                    ButtonSize = _buttonsSize,
+                    ButtonSize = ButtonSize,
                     LeftImage = true
                 });
 
-            _btnNewVersion = new IconButtonWithText(
+            BtnNewVersion = new IconButtonWithText(
                 new ButtonSettings
                 {
                     Name = "Update_Button",
@@ -222,51 +221,51 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
                     FontColor = "61, 61, 61".StringToColor(),
                     Icon = _updateIcon,
                     IconSize = sizeButton,
-                    ButtonSize = _buttonsSize,
+                    ButtonSize = ButtonSize,
                     LeftImage = true
                 });
 
-            _labelDateTime.ModifyFont(fontDescriptionStatusBar);
+            LabelDateTime.ModifyFont(fontDescriptionStatusBar);
 
-            _panelContent = new HBox(false, (int)borderWidth) { BorderWidth = borderWidth };
+            PanelContent = new HBox(false, (int)borderWidth) { BorderWidth = borderWidth };
 
-            _panelButtons = new Fixed() { HasWindow = true, BorderWidth = borderWidth };
-            _panelButtons.ModifyBg(StateType.Normal, colorBackOfficeAccordionFixBackground.ToGdkColor());
-            _panelButtons.Put(_btnDashboard, 0, 0);
+            PanelButtons = new Fixed() { HasWindow = true, BorderWidth = borderWidth };
+            PanelButtons.ModifyBg(StateType.Normal, colorBackOfficeAccordionFixBackground.ToGdkColor());
+            PanelButtons.Put(BtnDashboard, 0, 0);
 
             if (GeneralSettings.AppUseBackOfficeMode == false)
             {
                 if (GlobalApp.BackOfficeScreenSize.Height <= 800)
                 {
-                    _panelButtons.Put(_btnPOS, 0, GlobalApp.BackOfficeScreenSize.Height - 112);
+                    PanelButtons.Put(BtnPOS, 0, GlobalApp.BackOfficeScreenSize.Height - 112);
 
                 }
                 else
                 {
-                    _panelButtons.Put(_btnPOS, 0, GlobalApp.BackOfficeScreenSize.Height - 135);
+                    PanelButtons.Put(BtnPOS, 0, GlobalApp.BackOfficeScreenSize.Height - 135);
                 }
             }
 
             if (GlobalApp.BackOfficeScreenSize.Height <= 800)
             {
-                _panelButtons.Put(_btnExit, 0, GlobalApp.BackOfficeScreenSize.Height - 85);
+                PanelButtons.Put(BtnExit, 0, GlobalApp.BackOfficeScreenSize.Height - 85);
             }
             else
             {
-                _panelButtons.Put(_btnExit, 0, GlobalApp.BackOfficeScreenSize.Height - 95);
+                PanelButtons.Put(BtnExit, 0, GlobalApp.BackOfficeScreenSize.Height - 95);
             }
 
             CheckForUpdates(fontDescriptionStatusBar);
 
-            _panelContent.PackStart(_panelButtons, false, false, 0);
+            PanelContent.PackStart(PanelButtons, false, false, 0);
 
             VBox verticalContent = new VBox(false, 0);
 
-            statusBar.Add(_statusBar);
+            statusBar.Add(StatusBar);
 
             verticalContent.PackStart(statusBar, false, false, 0);
 
-            verticalContent.PackStart(_panelContent);
+            verticalContent.PackStart(PanelContent);
 
             HeightRequest = 50;
 
@@ -303,50 +302,50 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
                     {
                         if (GlobalApp.BackOfficeScreenSize.Height <= 800)
                         {
-                            _labelUpdate = new Label(string.Format(string.Format(GeneralUtils.GetResourceByName("global_new_version"), GeneralSettings.ServerVersion.ToString())));
-                            _labelUpdate.ModifyFont(fontDescriptionStatusBar);
-                            _labelUpdate.ModifyFg(StateType.Normal, "61, 61, 61".StringToColor().ToGdkColor());
-                            _labelUpdate.SetAlignment(1.0F, 0.5F);
-                            _panelButtons.Put(_labelUpdate, 5, GlobalApp.BackOfficeScreenSize.Height - 165);
-                            _panelButtons.Add(_labelUpdate);
-                            _panelButtons.Put(_btnNewVersion, 0, GlobalApp.BackOfficeScreenSize.Height - 140);
-                            _panelButtons.Add(_btnNewVersion);
+                            LabelUpdate = new Label(string.Format(string.Format(GeneralUtils.GetResourceByName("global_new_version"), GeneralSettings.ServerVersion.ToString())));
+                            LabelUpdate.ModifyFont(fontDescriptionStatusBar);
+                            LabelUpdate.ModifyFg(StateType.Normal, "61, 61, 61".StringToColor().ToGdkColor());
+                            LabelUpdate.SetAlignment(1.0F, 0.5F);
+                            PanelButtons.Put(LabelUpdate, 5, GlobalApp.BackOfficeScreenSize.Height - 165);
+                            PanelButtons.Add(LabelUpdate);
+                            PanelButtons.Put(BtnNewVersion, 0, GlobalApp.BackOfficeScreenSize.Height - 140);
+                            PanelButtons.Add(BtnNewVersion);
                         }
                         else
                         {
-                            _labelUpdate = new Label(string.Format(string.Format(GeneralUtils.GetResourceByName("global_new_version"), GeneralSettings.ServerVersion.ToString())));
-                            _labelUpdate.ModifyFont(fontDescriptionStatusBar);
-                            _labelUpdate.ModifyFg(StateType.Normal, "61, 61, 61".StringToColor().ToGdkColor());
-                            _labelUpdate.SetAlignment(1.0F, 0.5F);
-                            _panelButtons.Put(_labelUpdate, 5, GlobalApp.BackOfficeScreenSize.Height - 160);
-                            _panelButtons.Add(_labelUpdate);
-                            _panelButtons.Put(_btnNewVersion, 0, GlobalApp.BackOfficeScreenSize.Height - 135);
-                            _panelButtons.Add(_btnNewVersion);
+                            LabelUpdate = new Label(string.Format(string.Format(GeneralUtils.GetResourceByName("global_new_version"), GeneralSettings.ServerVersion.ToString())));
+                            LabelUpdate.ModifyFont(fontDescriptionStatusBar);
+                            LabelUpdate.ModifyFg(StateType.Normal, "61, 61, 61".StringToColor().ToGdkColor());
+                            LabelUpdate.SetAlignment(1.0F, 0.5F);
+                            PanelButtons.Put(LabelUpdate, 5, GlobalApp.BackOfficeScreenSize.Height - 160);
+                            PanelButtons.Add(LabelUpdate);
+                            PanelButtons.Put(BtnNewVersion, 0, GlobalApp.BackOfficeScreenSize.Height - 135);
+                            PanelButtons.Add(BtnNewVersion);
                         }
                     }
                     else
                     {
                         if (GlobalApp.BackOfficeScreenSize.Height <= 800)
                         {
-                            _labelUpdate = new Label(string.Format(string.Format(GeneralUtils.GetResourceByName("global_new_version"), GeneralSettings.ServerVersion.ToString())));
-                            _labelUpdate.ModifyFont(fontDescriptionStatusBar);
-                            _labelUpdate.ModifyFg(StateType.Normal, "61, 61, 61".StringToColor().ToGdkColor());
-                            _labelUpdate.SetAlignment(1.0F, 0.5F);
-                            _panelButtons.Put(_labelUpdate, 5, GlobalApp.BackOfficeScreenSize.Height - 165);
-                            _panelButtons.Add(_labelUpdate);
-                            _panelButtons.Put(_btnNewVersion, 0, GlobalApp.BackOfficeScreenSize.Height - 140);
-                            _panelButtons.Add(_btnNewVersion);
+                            LabelUpdate = new Label(string.Format(string.Format(GeneralUtils.GetResourceByName("global_new_version"), GeneralSettings.ServerVersion.ToString())));
+                            LabelUpdate.ModifyFont(fontDescriptionStatusBar);
+                            LabelUpdate.ModifyFg(StateType.Normal, "61, 61, 61".StringToColor().ToGdkColor());
+                            LabelUpdate.SetAlignment(1.0F, 0.5F);
+                            PanelButtons.Put(LabelUpdate, 5, GlobalApp.BackOfficeScreenSize.Height - 165);
+                            PanelButtons.Add(LabelUpdate);
+                            PanelButtons.Put(BtnNewVersion, 0, GlobalApp.BackOfficeScreenSize.Height - 140);
+                            PanelButtons.Add(BtnNewVersion);
                         }
                         else
                         {
-                            _labelUpdate = new Label(string.Format(string.Format(GeneralUtils.GetResourceByName("global_new_version"), GeneralSettings.ServerVersion.ToString())));
-                            _labelUpdate.ModifyFont(fontDescriptionStatusBar);
-                            _labelUpdate.ModifyFg(StateType.Normal, "61, 61, 61".StringToColor().ToGdkColor());
-                            _labelUpdate.SetAlignment(1.0F, 0.5F);
-                            _panelButtons.Put(_labelUpdate, 5, GlobalApp.BackOfficeScreenSize.Height - 200);
-                            _panelButtons.Add(_labelUpdate);
-                            _panelButtons.Put(_btnNewVersion, 0, GlobalApp.BackOfficeScreenSize.Height - 175);
-                            _panelButtons.Add(_btnNewVersion);
+                            LabelUpdate = new Label(string.Format(string.Format(GeneralUtils.GetResourceByName("global_new_version"), GeneralSettings.ServerVersion.ToString())));
+                            LabelUpdate.ModifyFont(fontDescriptionStatusBar);
+                            LabelUpdate.ModifyFg(StateType.Normal, "61, 61, 61".StringToColor().ToGdkColor());
+                            LabelUpdate.SetAlignment(1.0F, 0.5F);
+                            PanelButtons.Put(LabelUpdate, 5, GlobalApp.BackOfficeScreenSize.Height - 200);
+                            PanelButtons.Add(LabelUpdate);
+                            PanelButtons.Put(BtnNewVersion, 0, GlobalApp.BackOfficeScreenSize.Height - 175);
+                            PanelButtons.Add(BtnNewVersion);
                         }
 
                     }
@@ -367,7 +366,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
             args.RetVal = true;
         }
 
-        protected void AccordionButton_Click(object sender, EventArgs e)
+        protected void MenuButton_Clicked(object sender, EventArgs e)
         {
             if (sender.GetType() == typeof(AccordionParentButton))
             {
@@ -378,18 +377,18 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
 
             if (button.Page != null)
             {
-                if (_currentPage != null)
+                if (CurrentPage != null)
                 {
-                    _panelContent.Remove(_currentPage);
+                    PanelContent.Remove(CurrentPage);
                 }
 
-                _currentPage = button.Page;
-                Accordion.CurrentPageChildButton = button;
-                _labelActivePage.Text = button.Label;
+                CurrentPage = button.Page;
+                Menu.CurrentPageChildButton = button;
+                LabelActivePage.Text = button.Label;
 
-                _currentPage.Visible = true;
+                CurrentPage.Visible = true;
 
-                _panelContent.PackStart(_currentPage);
+                PanelContent.PackStart(CurrentPage);
 
                 return;
             }
@@ -407,7 +406,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
 
         private bool UpdateClock()
         {
-            _labelDateTime.Text = XPOUtility.CurrentDateTime(_dataTimeFormat);
+            LabelDateTime.Text = XPOUtility.CurrentDateTime(DateTimeFormat);
             return true;
         }
     }

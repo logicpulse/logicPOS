@@ -1,7 +1,7 @@
 ﻿using Gtk;
-using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using System;
 using logicpos.Classes.Enums.Keyboard;
+using LogicPOS.UI.Components.Pickers;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -31,11 +31,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             try
             {
-                PosFilePickerDialog dialog = new PosFilePickerDialog(_sourceWindow, DialogFlags.DestroyWithParent, _fileFilter, FileChooserAction.Open);
+                FilePicker dialog = new FilePicker(_sourceWindow, DialogFlags.DestroyWithParent, _fileFilter, FileChooserAction.Open);
                 ResponseType response = (ResponseType)dialog.Run();
                 if (response == ResponseType.Ok)
                 {
-                    Value = dialog.FilePicker.Filename;
+                    Value = dialog.FileChooser.Filename;
                     _entryValidation.Text = Value;
                     _entryValidation.Validate();
 

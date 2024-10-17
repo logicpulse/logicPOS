@@ -1,8 +1,8 @@
 ﻿using Gtk;
 using logicpos.Classes.Enums.Keyboard;
-using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Pickers;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -136,7 +136,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
             try
             {
-                FileFilter fileFilter = logicpos.Utils.GetFileFilterImages();
+                FileFilter fileFilter = FilePicker.GetFileFilterImages();
 
                 //Get Current FileList Index Position
                 int currentFileListIndexPosition = -1;
@@ -150,24 +150,24 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     }
                 }
 
-                PosFilePickerDialog dialog = new PosFilePickerDialog(_sourceWindow, DialogFlags.DestroyWithParent, fileFilter, FileChooserAction.Open);
+                FilePicker dialog = new FilePicker(_sourceWindow, DialogFlags.DestroyWithParent, fileFilter, FileChooserAction.Open);
                 ResponseType response = (ResponseType)dialog.Run();
                 if (response == ResponseType.Ok)
                 {
-                    if (entryBoxValidationButton.EntryValidation.Text == dialog.FilePicker.Filename)
+                    if (entryBoxValidationButton.EntryValidation.Text == dialog.FileChooser.Filename)
                     {
                         //Do Nothing
                     }
-                    else if (Value.Contains(dialog.FilePicker.Filename))
+                    else if (Value.Contains(dialog.FileChooser.Filename))
                     {
                         logicpos.Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"), GeneralUtils.GetResourceByName("dialog_message_filepicker_existing_file_error"));
                     }
                     else
                     {
                         //Update fileList with Changed Value
-                        Value[currentFileListIndexPosition] = dialog.FilePicker.Filename;
+                        Value[currentFileListIndexPosition] = dialog.FileChooser.Filename;
                         //Update and Validate Entry
-                        entryBoxValidationButton.EntryValidation.Text = dialog.FilePicker.Filename;
+                        entryBoxValidationButton.EntryValidation.Text = dialog.FileChooser.Filename;
                         entryBoxValidationButton.EntryValidation.Validate();
 
                         //Trigger Event

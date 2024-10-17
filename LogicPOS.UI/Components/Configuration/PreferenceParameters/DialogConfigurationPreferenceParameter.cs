@@ -12,6 +12,7 @@ using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Enums;
 using LogicPOS.UI.Components;
 using LogicPOS.UI.Components.InputFields;
+using LogicPOS.UI.Components.Pickers;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -220,11 +221,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                             fileChooser.SetFilename(dataSourceRow.Value);
                             if (_XPGuidObject != null && _XPGuidObject.Oid == Guid.Parse("9bc7099e-d2ef-43dc-b761-ef1a33c6f07a"))
                             {
-                                fileChooser.Filter = logicpos.Utils.GetFileFilterBMPImages();
+                                fileChooser.Filter = FilePicker.GetFileFilterBMPImages();
                             }
                             else
                             {
-                                fileChooser.Filter = logicpos.Utils.GetFileFilterImages();
+                                fileChooser.Filter = FilePicker.GetFileFilterImages();
                             }
 
                         }

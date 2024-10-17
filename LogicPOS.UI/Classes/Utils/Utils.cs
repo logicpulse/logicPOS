@@ -779,117 +779,6 @@ namespace logicpos
             return regex.IsMatch(Convert.ToString(input));
         }
 
-        public static FileFilter GetFileFilterImages()
-        {
-            FileFilter filter = new FileFilter();
-            filter.Name = "PNG and JPEG images";
-            filter.AddMimeType("image/png");
-            filter.AddPattern("*.png");
-            filter.AddMimeType("image/jpeg");
-            filter.AddPattern("*.jpg");
-            return filter;
-        }
-
-        public static FileFilter GetFileFilterBMPImages()
-        {
-            FileFilter filter = new FileFilter();
-            filter.Name = "BMP, PNG and JPEG images";
-            filter.AddMimeType("image/png");
-            filter.AddPattern("*.png");
-            filter.AddMimeType("image/jpeg");
-            filter.AddPattern("*.jpg");
-            filter.AddMimeType("image/bmp");
-            filter.AddPattern("*.bmp");
-            return filter;
-        }
-
-        public static FileFilter GetFileFilterTemplates()
-        {
-            FileFilter filter = new FileFilter();
-            filter.Name = "Printing Templates";
-            filter.AddMimeType("Template/xml");
-            filter.AddPattern("*.poson");
-            return filter;
-        }
-
-        public static FileFilter GetFileFilterBackups()
-        {
-            string databaseType = AppSettings.Instance.databaseType;
-            FileFilter filter = new FileFilter();
-
-            filter.Name = "Database Backups";
-            /* OLD Method With diferent Extension, Now we use .bak for all BAckup Types
-            switch (databaseType)
-            {
-                case "MSSqlServer":
-                    filter.AddMimeType("application/octet-stream");
-                    filter.AddPattern("*.bak");
-                    break;
-                case "SQLite":
-                    filter.AddMimeType("application/octet-stream");
-                    filter.AddPattern("*.db");
-                    break;
-                case "MySql":
-                    filter.AddMimeType("text/sql");
-                    filter.AddPattern("*.sql");
-                    break;
-                default:
-                    break;
-            }
-            */
-
-            //New: Shared for All database Types
-            filter.AddMimeType("application/octet-stream");
-            filter.AddPattern("*.bak");
-
-            return filter;
-        }
-
-
-        public static FileFilter GetFileFilterPDF()
-        {
-            FileFilter filter = new FileFilter();
-
-            filter.Name = "PDF Files";
-            filter.AddMimeType("application/pdf");
-            filter.AddPattern("*.pdf");
-
-            return filter;
-        }
-
-        public static FileFilter GetFileFilterImportExport()
-        {
-
-            FileFilter filter = new FileFilter();
-
-            filter.Name = "Import/export xls";
-            /* OLD Method With diferent Extension, Now we use .bak for all BAckup Types
-            switch (databaseType)
-            {
-                case "MSSqlServer":
-                    filter.AddMimeType("application/octet-stream");
-                    filter.AddPattern("*.bak");
-                    break;
-                case "SQLite":
-                    filter.AddMimeType("application/octet-stream");
-                    filter.AddPattern("*.db");
-                    break;
-                case "MySql":
-                    filter.AddMimeType("text/sql");
-                    filter.AddPattern("*.sql");
-                    break;
-                default:
-                    break;
-            }
-            */
-
-            //New: Shared for All database Types
-            filter.AddMimeType("application/octet-stream");
-            filter.AddPattern("*.xls");
-            filter.AddPattern("*.xlsx");
-            return filter;
-        }
-
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Windows
 
@@ -1335,7 +1224,7 @@ namespace logicpos
         {
             if (GlobalApp.BackOfficeMainWindow == null)
             {
-                GlobalApp.BackOfficeMainWindow = new BackOfficeMainWindow();
+                GlobalApp.BackOfficeMainWindow = new BackOfficeWindow();
             }
             else
             {

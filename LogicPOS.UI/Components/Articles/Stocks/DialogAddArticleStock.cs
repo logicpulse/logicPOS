@@ -17,6 +17,7 @@ using LogicPOS.UI;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components;
+using LogicPOS.UI.Components.Pickers;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using System;
@@ -393,12 +394,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         private void AttachPDFButton_Clicked(object sender, EventArgs e)
         {
-            FileFilter fileFilterPDF = logicpos.Utils.GetFileFilterPDF();
-            PosFilePickerDialog dialog = new PosFilePickerDialog(this, DialogFlags.DestroyWithParent, fileFilterPDF, FileChooserAction.Open);
+            FileFilter fileFilterPDF = FilePicker.GetFileFilterPDF();
+            FilePicker dialog = new FilePicker(this, DialogFlags.DestroyWithParent, fileFilterPDF, FileChooserAction.Open);
             ResponseType response = (ResponseType)dialog.Run();
             if (response == ResponseType.Ok)
             {
-                string fileNamePacked = dialog.FilePicker.Filename;
+                string fileNamePacked = dialog.FileChooser.Filename;
                 string fileName = string.Format("{0}/", System.IO.Path.GetFileNameWithoutExtension(fileNamePacked));
                 AttachedFile = File.ReadAllBytes(fileNamePacked);
                 _entryBoxDocumentNumber.EntryValidation.Text = fileName.Replace("/", "");
@@ -410,23 +411,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private void ValidateDialog()
         {
             int validateEntrys = 0;
-            foreach (var item in _articleEntryWidgetCollection)
-            {
-                foreach (var widgt in item)
-                {
-                    //if(widgt.GetType() == typeOf())
-                }
-                //item.EntryCodeValidation.Validate();
-                //item.EntryQtdValidation.Validate();
-                //item.EntryValidation.Validate();
-                //if (!item.EntryCodeValidation.Validated || !item.EntryQtdValidation.Validated || !item.EntryValidation.Validated)
-                //{
-                //    validateEntrys++;
-                //}
-            }
+            
             bool multiEntrysValidated = true;
-            //_entryBoxPrice1.Sensitive = _articleCollection.Count > 0;
-            //_entryBoxSerialNumber1.Sensitive = _articleCollection.Count > 0;
+
             if (validateEntrys > 0) multiEntrysValidated = false;
             ButtonOk.Sensitive = (
                 _entryBoxSelectSupplier.EntryValidation.Validated &&
@@ -1223,12 +1210,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public static void AttachPDFtoStockMoviment(Window parentWindow)
         {
 
-            FileFilter fileFilterBackups = logicpos.Utils.GetFileFilterBackups();
-            PosFilePickerDialog dialog = new PosFilePickerDialog(parentWindow, DialogFlags.DestroyWithParent, fileFilterBackups, FileChooserAction.Open);
+            FileFilter fileFilterBackups = FilePicker.GetFileFilterBackups();
+            FilePicker dialog = new FilePicker(parentWindow, DialogFlags.DestroyWithParent, fileFilterBackups, FileChooserAction.Open);
             ResponseType response = (ResponseType)dialog.Run();
             if (response == ResponseType.Ok)
             {
-                string fileNamePacked = dialog.FilePicker.Filename;
+                string fileNamePacked = dialog.FileChooser.Filename;
                 //string pathFile = string.Format("{0}/", Path.GetDirectoryName(fileNamePacked));
 
                 dialog.Destroy();

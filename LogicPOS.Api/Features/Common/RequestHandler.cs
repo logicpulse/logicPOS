@@ -144,7 +144,7 @@ namespace LogicPOS.Api.Features.Common
             }
         }
 
-        protected async Task<ErrorOr<string>> HandleGetPdfQueryAsync(string endpoint, CancellationToken cancellationToken = default)
+        protected async Task<ErrorOr<string>> HandleGetFileQueryAsync(string endpoint, CancellationToken cancellationToken = default)
         {
             try
             {
