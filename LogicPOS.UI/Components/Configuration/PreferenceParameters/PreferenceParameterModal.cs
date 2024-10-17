@@ -25,8 +25,21 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override void UpdateEntity() => ExecuteUpdateCommand(CreateUpdateCommand());
 
+        public void GetBase64Image()
+        {
+            if (_entity.Token.Contains("LOGO"))
+            {
+                if (string.IsNullOrWhiteSpace(_field.TextBox.Text))
+                {
+                    return;
+                }
+
+                _field.TextBox.Text = System.Convert.ToBase64String(System.IO.File.ReadAllBytes(_field.TextBox.Text));
+            }
+        }
         private UpdatePreferenceParameterCommand CreateUpdateCommand()
         {
+            GetBase64Image();
             return new UpdatePreferenceParameterCommand
             {
                 Id = _entity.Id,
