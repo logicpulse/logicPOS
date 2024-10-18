@@ -55,16 +55,17 @@ namespace LogicPOS.UI.Components.Windows
         public POSMainWindow(string backgroundImage)
             : base(backgroundImage)
         {
+            SaleContext.Initialize();
 
             InitUI();
 
-            TicketList.UpdateOrderStatusBar();
+            //TicketList.UpdateOrderStatusBar();
 
             UpdateWorkSessionUI();
 
             StartClock();
 
-            TicketList.UpdateSaleOptionsPanelButtons();
+            //TicketList.UpdateSaleOptionsPanelButtons();
 
             this.ScreenArea.Add(FixedWindow);
 
@@ -106,8 +107,8 @@ namespace LogicPOS.UI.Components.Windows
                 InitUIEventBoxStatusBar1(theme);
                 InitUIEventBoxStatusBar2(theme);
                 InitUIButtonFavorites(theme);
+                InitializeSaleItemsPage(theme);
                 InitializeSaleOptionsPanel(theme);
-                InitializeTicketList(theme);
                 InitializeMenus(theme);
 
 
@@ -624,28 +625,21 @@ namespace LogicPOS.UI.Components.Windows
             BtnDocuments.Clicked += BtnDocuments_Clicked;
         }
 
-        private void InitializeSaleOptionsPanel(dynamic pThemeWindow)
+        private void InitializeSaleOptionsPanel(dynamic theme)
         {
-            dynamic themeWindow = pThemeWindow;
+            Point position = Utils.StringToPosition(theme.Objects.EventBoxPosTicketPad.Position);
+            Size size = (theme.Objects.EventBoxPosTicketPad.Size as string).ToSize();
 
-            //Objects:EventBoxPosTicketPad
-            Point eventBoxPosTicketPadPosition = Utils.StringToPosition(themeWindow.Objects.EventBoxPosTicketPad.Position);
-            Size eventBoxPosTicketPadSize = (themeWindow.Objects.EventBoxPosTicketPad.Size as string).ToSize();
-            Gdk.Color eventBoxPosTicketPadBackgroundColor = (themeWindow.Objects.EventBoxPosTicketPad.BackgroundColor as string).StringToGdkColor();
-            bool eventBoxPosTicketPadVisible = Convert.ToBoolean(themeWindow.Objects.EventBoxPosTicketPad.Visible);
-            bool eventBoxPosTicketPadVisibleWindow = Convert.ToBoolean(themeWindow.Objects.EventBoxPosTicketPad.VisibleWindow);
-
-            //UI
-            SaleOptionsPanel = new SaleOptionsPanel(themeWindow.Objects.EventBoxPosTicketPad.Buttons) { Sensitive = false };
+            SaleOptionsPanel = new SaleOptionsPanel(SaleItemsPage,theme.Objects.EventBoxPosTicketPad.Buttons) { Sensitive = false };
 
             SaleOptionsPanel.SourceWindow = this;
-            EventBox eventBoxPosTicketPad = new EventBox() { VisibleWindow = eventBoxPosTicketPadVisibleWindow, WidthRequest = eventBoxPosTicketPadSize.Width, HeightRequest = eventBoxPosTicketPadSize.Height };
-            if (eventBoxPosTicketPadVisibleWindow) eventBoxPosTicketPad.ModifyBg(StateType.Normal, eventBoxPosTicketPadBackgroundColor);
-            eventBoxPosTicketPad.Add(SaleOptionsPanel);
-            if (eventBoxPosTicketPadVisible) FixedWindow.Put(eventBoxPosTicketPad, eventBoxPosTicketPadPosition.X, eventBoxPosTicketPadPosition.Y);
+            EventBox saleOptionsPanelEventBox = new EventBox() { VisibleWindow = false, WidthRequest = size.Width, HeightRequest = size.Height };
+
+            saleOptionsPanelEventBox.Add(SaleOptionsPanel);
+            FixedWindow.Put(saleOptionsPanelEventBox, position.X, position.Y);
         }
 
-        private void InitializeTicketList(dynamic theme)
+        private void InitializeSaleItemsPage(dynamic theme)
         {
             Point position = Utils.StringToPosition(theme.Objects.EventBoxPosTicketList.Position);
             Size size = (theme.Objects.EventBoxPosTicketList.Size as string).ToSize();
@@ -655,7 +649,6 @@ namespace LogicPOS.UI.Components.Windows
             saleItemsPageEventBox.HeightRequest = size.Height;
 
             dynamic saleItemsPageTheme = theme.Objects.EventBoxPosTicketList;
-            TicketList = new TicketList(this,saleItemsPageTheme, SaleOptionsPanel);
             SaleItemsPage = new SaleItemsPage(this, saleItemsPageTheme);
             saleItemsPageEventBox.Add(SaleItemsPage);
             

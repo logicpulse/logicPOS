@@ -16,14 +16,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
     public partial class PosTablesDialog : BaseDialog
     {
-        //Sizes
         private Size _sizePosSmallButtonScroller = AppSettings.Instance.sizePosSmallButtonScroller;
         private Size _sizePosTableButton = AppSettings.Instance.sizePosTableButton;
         private Size _sizeIconScrollLeftRight = new Size(62, 31);
-        //Files
         private readonly string _fileScrollLeftImage = PathsSettings.ImagesFolderLocation + @"Buttons\Pos\button_subfamily_article_scroll_left.png";
         private readonly string _fileScrollRightImage = PathsSettings.ImagesFolderLocation + @"Buttons\Pos\button_subfamily_article_scroll_right.png";
-        //UI
         private readonly Fixed _fixedContent;
         private TablePad _tablePadPlace;
         private TablePad _tablePadOrder;
@@ -36,28 +33,21 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private readonly IconButtonWithText _buttonTableFilterFree;
         private readonly IconButtonWithText _buttonTableFilterOpen;
         private readonly IconButtonWithText _buttonTableFilterReserved;
-        //private TouchButtonIconWithText _buttonOrderChangeTable;
         private readonly IconButtonWithText _buttonTableReservation;
         private readonly IconButtonWithText _buttonTableViewOrders;
         private readonly IconButtonWithText _buttonTableViewTables;
-        //Used when we need to access CurrentButton Reference
         private TableButton _currentButton;
-        //ResponseType (Above 10)
-        //private ResponseType _responseTypeOrderChangeTable = (ResponseType)11;
         private readonly ResponseType _responseTypeViewOrders = (ResponseType)12;
         private readonly ResponseType _responseTypeViewTables = (ResponseType)13;
         private readonly ResponseType _responseTypeTableReservation = (ResponseType)14;
-        //Other    
         private readonly int _tablesStatusShowAllIndex = 10;
         private int _currentTableStatusId = 10;
         private TableViewMode _currentViewMode = TableViewMode.Orders;
         private readonly TableFilterMode _FilterMode;
-        //Base Queries
         private readonly string _sqlPlaceBase;
         private readonly string _sqlPlaceBaseOrder;
         private readonly string _sqlPlaceBaseTable;
 
-        //Public Properties
         private Guid _currentTableButtonOid;
         public Guid CurrentTableOid
         {
@@ -67,15 +57,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public PosTablesDialog(Window parentWindow, DialogFlags pDialogFlags, TableFilterMode pFilterMode = TableFilterMode.Default)
             : base(parentWindow, pDialogFlags)
         {
-            //Init Local Vars
             string windowTitle = GeneralUtils.GetResourceByName("window_title_dialog_orders");
-            //TODO:THEME
-            //Size windowSize = new Size(837, 650);
             Size windowSize = new Size(720, 580);
             string fileDefaultWindowIcon = string.Empty;
-            /* IN009035 */
             string fileActionViewOrders = string.Empty;
-            /* IN008024 */
+
             if (!AppOperationModeSettings.IsDefaultTheme)
             {
                 fileDefaultWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_tables_retail.png";
@@ -87,7 +73,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 fileActionViewOrders = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_table_view_order.png";
             }
 
-            //ActionArea Icons
             string fileActionTableReservation = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_table_reservation.png";
             string fileActionTableFilterAll = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_table_filter_all.png";
             string fileActionTableFilterFree = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_table_filter_free.png";
@@ -225,12 +210,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     ButtonSize = SizeSettings.ActionAreaButton
                 });
 
-            //ActionArea
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
-            //Orders
-            //actionAreaButtons.Add(new ActionAreaButton(_buttonOrderChangeTable, _responseTypeOrderChangeTable));
-            //Tables
-            if (AppOperationModeSettings.IsDefaultTheme)/* IN008024 */
+
+            if (AppOperationModeSettings.IsDefaultTheme)
             {
                 actionAreaButtons.Add(new ActionAreaButton(_buttonTableFilterAll, (ResponseType)_tablesStatusShowAllIndex));
                 actionAreaButtons.Add(new ActionAreaButton(_buttonTableFilterFree, (ResponseType)TableStatus.Free));
@@ -250,7 +232,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             this.ExposeEvent += delegate
             {
-                //Disable Buttons if in OnlyFreeTables FilterMode
                 if (_FilterMode == TableFilterMode.OnlyFreeTables)
                 {
                     //Filter Buttons
@@ -278,8 +259,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     BackgroundColor = Color.White,
                     Icon = _fileScrollLeftImage,
                     IconSize = _sizeIconScrollLeftRight,
-                    ButtonSize = new Size(_sizePosSmallButtonScroller.Width,
-                                          _sizePosSmallButtonScroller.Height)
+                    ButtonSize = _sizePosSmallButtonScroller
                 });
 
             IconButton buttonPosScrollersPlaceNext = new IconButton(
@@ -289,8 +269,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     BackgroundColor = Color.White,
                     Icon = _fileScrollRightImage,
                     IconSize = _sizeIconScrollLeftRight,
-                    ButtonSize = new Size(_sizePosSmallButtonScroller.Width,
-                                          _sizePosSmallButtonScroller.Height)
+                    ButtonSize = _sizePosSmallButtonScroller
                 });
 
 
@@ -304,9 +283,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             hboxPlaceScrollers.PackStart(buttonPosScrollersPlacePrev);
             hboxPlaceScrollers.PackStart(buttonPosScrollersPlaceNext);
 
-            //TablePad Places
-            //TODO:THEME
-            //TableConfig tableConfig = new TableConfig(6, 1);
             TableConfig tableConfig = new TableConfig(5, 1);
             _tablePadPlace = new TablePad(
                 _sqlPlaceBaseOrder,
@@ -323,21 +299,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 buttonPosScrollersPlacePrev,
                 buttonPosScrollersPlaceNext
             );
-            //Click Event
             _tablePadPlace.Clicked += tablePadPlace_Clicked;
 
             _fixedContent.Put(_tablePadPlace, 0, 0);
-            //TODO:THEME
-            //_fixedContent.Put(hboxPlaceScrollers, 0, 493);
-            _fixedContent.Put(hboxPlaceScrollers, 0, 493 - _sizePosTableButton.Height);
+            _fixedContent.Put(hboxPlaceScrollers, 0, 493 - AppSettings.Instance.sizePosTableButton.Height);
         }
 
         private void BuildOrders()
         {
-            //Colors
-            //Color colorPosButtonArticleBackground = FrameworkUtils.StringToColor(LogicPOS.Settings.AppSettings.Instance.colorPosButtonArticleBackground"]);
-
-            //Scrollers
             IconButton buttonPosScrollersOrderPrev = new IconButton(new ButtonSettings { Name = "buttonPosScrollersOrderPrev", BackgroundColor = Color.White, Icon = _fileScrollLeftImage, IconSize = _sizeIconScrollLeftRight, ButtonSize = new Size(_sizePosSmallButtonScroller.Width, _sizePosSmallButtonScroller.Height) });
             IconButton buttonPosScrollersOrderNext = new IconButton(new ButtonSettings { Name = "buttonPosScrollersOrderNext", BackgroundColor = Color.White, Icon = _fileScrollRightImage, IconSize = _sizeIconScrollLeftRight, ButtonSize = new Size(_sizePosSmallButtonScroller.Width, _sizePosSmallButtonScroller.Height) });
             buttonPosScrollersOrderPrev.Relief = ReliefStyle.None;
@@ -351,8 +320,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _hboxOrderScrollers.PackStart(buttonPosScrollersOrderPrev, false, false, 0);
             _hboxOrderScrollers.PackStart(buttonPosScrollersOrderNext, false, false, 0);
 
-            //TablePad Tables
-            //String sql = string.Format(@"SELECT om.Oid as id, concat(om.Oid, ':', om.OrderStatus, ':',PrinterType) as name, NULL as label, NULL as image 
             string sql = string.Format(@"
                 SELECT 
                     om.Oid as id, Designation as name, NULL as label, NULL as image, TableStatus as status, TotalOpen as total, DateTableOpen as dateopen, DateTableClosed as dateclosed 
@@ -366,8 +333,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             ;
             string filter = string.Format("AND (Place = '{0}')", _tablePadPlace.SelectedButtonOid);
 
-            //TODO:THEME
-            //TableConfig tableConfig = new TableConfig(6, 5);
             TableConfig tableConfig = new TableConfig(5, 4);
             _tablePadOrder = new TablePadTable(
                 sql,
@@ -385,21 +350,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 buttonPosScrollersOrderNext
               );
 
-            //Events
             _tablePadOrder.Clicked += _tablePadOrder_Clicked;
 
             _fixedContent.Put(_tablePadOrder, 143, 0);
-            //TODO:THEME
-            //_fixedContent.Put(_hboxOrderScrollers, 690, 493);
-            _fixedContent.Put(_hboxOrderScrollers, 690, 493 - _sizePosTableButton.Height);
+            _fixedContent.Put(_hboxOrderScrollers, 690, 493 - AppSettings.Instance.sizePosTableButton.Height);
         }
 
         private void BuildTable()
         {
-            //Colors
-            //Color colorPosButtonArticleBackground = FrameworkUtils.StringToColor(LogicPOS.Settings.AppSettings.Instance.colorPosButtonArticleBackground"]);
-
-            //Scrollers
             IconButton buttonPosScrollersTablePrev = new IconButton(new ButtonSettings { Name = "buttonPosScrollersTablePrev", BackgroundColor = Color.White, Icon = _fileScrollLeftImage, IconSize = _sizeIconScrollLeftRight, ButtonSize = new Size(_sizePosSmallButtonScroller.Width, _sizePosSmallButtonScroller.Height) });
             IconButton buttonPosScrollersTableNext = new IconButton(new ButtonSettings { Name = "buttonPosScrollersTableNext", BackgroundColor = Color.White, Icon = _fileScrollRightImage, IconSize = _sizeIconScrollLeftRight, ButtonSize = new Size(_sizePosSmallButtonScroller.Width, _sizePosSmallButtonScroller.Height) });
             buttonPosScrollersTablePrev.Relief = ReliefStyle.None;
@@ -413,14 +371,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _hboxTableScrollers.PackStart(buttonPosScrollersTablePrev, false, false, 0);
             _hboxTableScrollers.PackStart(buttonPosScrollersTableNext, false, false, 0);
 
-            //TablePad Tables
             string sql = @"SELECT Oid as id, Designation as name, NULL as label, NULL as image, TableStatus as status, TotalOpen as total, DateTableOpen as dateopen, DateTableClosed as dateclosed FROM pos_configurationplacetable WHERE (Disabled IS NULL or Disabled  <> 1)";
             string filter = string.Format("AND (Place = '{0}')", _tablePadPlace.SelectedButtonOid);
 
-            //if in FilterMode (Change Table) OnlyFreeTables add TableStatus Filter
             if (_FilterMode == TableFilterMode.OnlyFreeTables) filter = string.Format("{0} AND (TableStatus = {1}  OR TableStatus IS NULL)", filter, (int)TableStatus.Free);
 
-            //Prepare current table
             Guid currentTableOid = Guid.Empty;
             if (POSSession.CurrentSession.OrderMains.ContainsKey(POSSession.CurrentSession.CurrentOrderMainId)
               && POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId].Table != null)
@@ -428,7 +383,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 currentTableOid = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId].Table.Oid;
             }
 
-            //Initialize TablePad
             TableConfig tableConfig = new TableConfig(5, 4);
             _tablePadTable = new TablePadTable(
                 sql,
@@ -446,15 +400,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 buttonPosScrollersTableNext
             );
 
-            //Always Assign SelectedButton Reference to Dialog Reference, Prevent OK Withou Select Table (Toggle Mode)
             _currentTableButtonOid = _tablePadTable.SelectedButtonOid;
 
-            //Events
             _tablePadTable.Clicked += tablePadTable_Clicked;
 
             _fixedContent.Put(_tablePadTable, 143, 0);
-            //TODO:THEME
-            //_fixedContent.Put(_hboxTableScrollers, 690, 493);
             _fixedContent.Put(_hboxTableScrollers, 690 - _sizePosTableButton.Width, 493 - _sizePosTableButton.Height);
         }
     }

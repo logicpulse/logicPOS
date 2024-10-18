@@ -558,7 +558,7 @@ namespace logicpos
             //Run in BackOffice Mode
             if (pAppMode == AppMode.Backoffice)
             {
-                GlobalApp.BackOfficeMainWindow = new BackOfficeMainWindow();
+                GlobalApp.BackOffice = new BackOfficeWindow();
             }
             //Run in POS Mode
             else
@@ -583,14 +583,11 @@ namespace logicpos
 
             try
             {
-                //Audit
                 if (pAudit) XPOUtility.Audit("APP_CLOSE");
-                //Before use DeleteSession()
-                /* IN005943 */
+
                 POSSession.CurrentSession.CleanSession();
                 POSSession.CurrentSession.Save();
-                //GlobalFramework.SessionApp.DeleteSession();
-                //Disconnect SessionXpo
+
                 XPOSettings.Session.Disconnect();
             }
             catch (Exception ex)
@@ -621,9 +618,6 @@ namespace logicpos
             }
         }
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //BackupTimer
-
         private void StartBackupTimer()
         {
             try
@@ -646,14 +640,11 @@ namespace logicpos
             DateTime currentDateTimeLastBackup = DataBaseBackup.GetLastBackupDate();
             TimeSpan timeSpanDiference = currentDateTime - currentDateTimeLastBackup;
 
-            //Check if is in Start end Range
             if (currentDateTime.TimeOfDay > _databaseBackupTimeSpanRangeStart && currentDateTime.TimeOfDay < _databaseBackupTimeSpanRangeEnd)
             {
                 if (timeSpanDiference >= _backupDatabaseTimeSpan)
                 {
-                    /* ERR201810#15 - Database backup issues */
                     DataBaseBackup.Backup(null);
-                    //DataBaseBackup.Backup();
                 }
                 else
                 {
@@ -665,9 +656,6 @@ namespace logicpos
                 if (debug) _logger.Debug(string.Format("Outside of TimeRange: [{0}] > [{1}] && [{2}] < [{3}]", currentDateTime.TimeOfDay, _databaseBackupTimeSpanRangeStart, currentDateTime.TimeOfDay, _databaseBackupTimeSpanRangeEnd));
             }
 
-            // Returning true means that the timeout routine should be invoked
-            // again after the timeout period expires. Returning false would
-            // terminate the timeout.
             return true;
         }
     }

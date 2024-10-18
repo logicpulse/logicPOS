@@ -1,12 +1,15 @@
 ﻿using Gtk;
 using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
+using System;
+using System.Linq;
 
-namespace LogicPOS.UI.Components
+namespace LogicPOS.UI.Components.POS
 {
-    public class SaleOptionsPanel : Box
+    public partial class SaleOptionsPanel : Box
     {
         public SaleOptionsPanelSettings PanelSettings { get; }
+        public SaleItemsPage ItemsPage { get; set; }
 
         #region Components
         public IconButtonWithText BtnPrevious { get; set; }
@@ -32,14 +35,38 @@ namespace LogicPOS.UI.Components
 
         public Window SourceWindow { get; set; }
 
-
-        public SaleOptionsPanel(dynamic buttonsTheme)
+        public SaleOptionsPanel(SaleItemsPage itemsPage, dynamic buttonsTheme)
         {
             PanelSettings = new SaleOptionsPanelSettings(buttonsTheme);
+            ItemsPage = itemsPage;
             InitializeButtons();
             SetButtonsVisibility();
             Add(CreateButtonsBox());
+            AddEventHandlers();
         }
+
+        private void AddEventHandlers()
+        {
+            BtnSelectTable.Clicked += BtnSelectTable_Clicked;
+            BtnIncrease.Clicked += BtnIncrease_Clicked;
+            BtnDecrease.Clicked += BtnDecrease_Clicked;
+            BtnDelete.Clicked += BtnDelete_Clicked;
+            BtnFinishOrder.Clicked += BtnFinishOrder_Clicked;
+            BtnChangeTable.Clicked += BtnChangeTable_Clicked;
+            BtnWeight.Clicked += BtnWeight_Clicked;
+            BtnGifts.Clicked += BtnGifts_Clicked;
+            BtnBarcode.Clicked += BtnBarcode_Clicked;
+            BtnCardCode.Clicked += BtnCardCode_Clicked;
+            BtnListMode.Clicked += BtnListMode_Clicked;
+            BtnListOrder.Clicked += BtnListOrder_Clicked;
+            BtnPrice.Clicked += BtnPrice_Clicked;
+            BtnQuantity.Clicked += BtnQuantity_Clicked;
+            BtnPayments.Clicked += BtnPayments_Clicked; ;
+            BtnNext.Clicked += BtnNext_Clicked;
+            BtnPrevious.Clicked += BtnPrevious_Clicked;
+            ItemsPage.TicketOpened += ItemsPage_TicketOpened;
+        }
+
         private Fixed CreateButtonsBox()
         {
             Fixed box = new Fixed() { BorderWidth = 10 };
@@ -106,6 +133,15 @@ namespace LogicPOS.UI.Components
             }
         }
 
+        public void UpdateButtonsSensitivity()
+        {
+            BtnIncrease.Sensitive = ItemsPage.Ticket  != null;
+            BtnDecrease.Sensitive = ItemsPage.Ticket != null;
+            BtnPrice.Sensitive = ItemsPage.Ticket != null;
+            BtnQuantity.Sensitive = ItemsPage.Ticket != null;
+            BtnWeight.Sensitive = ItemsPage.Ticket != null;
+            BtnFinishOrder.Sensitive = ItemsPage.Ticket != null && ItemsPage.Ticket.Items.Any();
+        }
 
     }
 }

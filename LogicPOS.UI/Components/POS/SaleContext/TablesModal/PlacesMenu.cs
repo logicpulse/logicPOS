@@ -1,9 +1,8 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Articles.Families.GetAllArticleFamilies;
+using LogicPOS.Api.Features.Places.GetAllPlaces;
 using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
-using LogicPOS.UI.Components.Articles;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -12,33 +11,35 @@ using System.Drawing;
 
 namespace LogicPOS.UI.Components.Menus
 {
-    public class ArticleFamiliesMenu : Gtk.Table
+    public class PlacesMenu : Gtk.Table
     {
         private readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
+        public int ScrollerHeight { get; set; } = 0;
         public int ButtonFontSize = Convert.ToInt16(AppSettings.Instance.fontPosBaseButtonSize);
         public int MaxCharsPerButtonLabel { get; set; } = AppSettings.Instance.posBaseButtonMaxCharsPerLabel;
         public string ButtonOverlay { get; set; } = PathsSettings.ImagesFolderLocation + @"Buttons\Pos\button_overlay.png";
-        public List<(ArticleFamily Family,CustomButton Button)> Buttons { get; set; } = new List<(ArticleFamily,CustomButton)>();
+        public List<(Place Place, CustomButton Button)> Buttons { get; set; } = new List<(Place, CustomButton)>();
         public string ButtonImage { get; set; }
         public string ButtonLabel { get; set; }
         public bool ToggleMode { get; set; } = true;
-        public ArticleFamily InitialFamily { get; set; }
+        public Place InitialPlace { get; set; }
         public int TotalItems { get; set; }
         public int ItemsPerPage { get; set; }
         public int CurrentPage { get; set; }
         public int TotalPages { get; set; }
         public CustomButton BtnPrevious { get; set; }
         public CustomButton BtnNext { get; set; }
-        public uint Rows { get; set; } = 6;
+        public uint Rows { get; set; } = 5;
         public uint Columns { get; set; } = 1;
-        public Size ButtonSize { get; set; } = new Size(176, 120);
+        public Size ButtonSize { get; set; } = AppSettings.Instance.sizePosTableButton;
+
         public Window SourceWindow { get; set; }
-        public ArticleFamily SelectedFamily { get; set; }
+        public Place SelectedPlace { get; set; }
         public CustomButton SelectedButton { get; set; }
 
-        public event Action<ArticleFamily> FamilySelected;
+        public event Action<Place> PlaceSelected;
 
-        public ArticleFamiliesMenu(CustomButton btnPrevious, CustomButton btnNext) : base(6, 1, true)
+        public PlacesMenu(CustomButton btnPrevious, CustomButton btnNext) : base(5, 1, true)
         {
             BtnPrevious = btnPrevious;
             BtnNext = btnNext;
@@ -154,45 +155,38 @@ namespace LogicPOS.UI.Components.Menus
             CurrentPage = 1;
             CustomButton currentButton = null;
 
-            SelectedFamily = (InitialFamily != null) ? InitialFamily : null;
+            SelectedPlace = InitialPlace;
 
             if (Buttons.Count > 0)
             {
                 Buttons.Clear();
             }
 
-            var getFamiliesResult = _mediator.Send(new GetAllArticleFamiliesQuery()).Result;
-            var families = new List<ArticleFamily>();
+            var getPlacesResult = _mediator.Send(new GetAllPlacesQuery()).Result;
+            var places = new List<Place>();
 
-            if (getFamiliesResult.IsError == false)
+            if (getPlacesResult.IsError == false)
             {
-                families.AddRange(getFamiliesResult.Value);
+                places.AddRange(getPlacesResult.Value);
             }
 
-            if (families.Count > 0)
+            if (places.Count > 0)
             {
-                foreach (var family in families)
+                foreach (var place in places)
                 {
-                    if (SelectedFamily == null)
+                    if (SelectedPlace == null)
                     {
-                        SelectedFamily = family;
+                        SelectedPlace = place;
 
-                        if (InitialFamily == null)
+                        if (InitialPlace == null)
                         {
-                            InitialFamily = SelectedFamily;
+                            InitialPlace = SelectedPlace;
                         }
                     }
 
-                    ButtonLabel = family.Button.Label ?? family.Designation;
+                    ButtonLabel = place.Designation;
 
-                    if (string.IsNullOrEmpty(family.Button.ImageExtension) == false)
-                    {
-                        ButtonImage = ArticleImageRepository.GetImage(family.Id) ?? ArticleImageRepository.AddBase64Image(family.Id, family.Button.Image, family.Button.ImageExtension);
-                    }
-                    else
-                    {
-                        ButtonImage = null;
-                    }
+                    ButtonImage = null;
 
                     if (ButtonLabel.Length > MaxCharsPerButtonLabel)
                     {
@@ -201,10 +195,10 @@ namespace LogicPOS.UI.Components.Menus
 
                     currentButton = InitializeButton();
                     currentButton.Clicked += Button_Clicked;
-                    Buttons.Add((family,currentButton));
-                    currentButton.CurrentButtonId = family.Id;
+                    Buttons.Add((place, currentButton));
+                    currentButton.CurrentButtonId = place.Id;
 
-                    if (family.Id == InitialFamily.Id)
+                    if (place.Id == InitialPlace.Id)
                     {
                         if (ToggleMode)
                         {
@@ -244,14 +238,14 @@ namespace LogicPOS.UI.Components.Menus
                 SelectedButton.Sensitive = false;
             }
 
-            SelectedFamily = Buttons.Find(x => x.Button == SelectedButton).Family;
+            SelectedPlace = Buttons.Find(x => x.Button == SelectedButton).Place;
 
-            FamilySelected?.Invoke(SelectedFamily);
+            PlaceSelected?.Invoke(SelectedPlace);
         }
 
         internal void Refresh()
         {
-            Buttons = new List<(ArticleFamily, CustomButton)>();
+            Buttons = new List<(Place, CustomButton)>();
             LoadEntities();
         }
     }

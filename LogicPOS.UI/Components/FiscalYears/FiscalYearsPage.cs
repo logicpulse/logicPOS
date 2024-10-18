@@ -43,7 +43,7 @@ namespace LogicPOS.UI.Components.Pages
                 if (currentFiscalYear != null)
                 {
                     ResponseType dialog1Response = logicpos.Utils.ShowMessageBox(
-                        GlobalApp.BackOfficeMainWindow,
+                        GlobalApp.BackOffice,
                         DialogFlags.Modal,
                         new Size(600, 400),
                         MessageType.Question,

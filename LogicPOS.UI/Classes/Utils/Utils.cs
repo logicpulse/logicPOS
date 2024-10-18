@@ -1222,13 +1222,13 @@ namespace logicpos
 
         public static void ShowBackOffice(Window pHideWindow)
         {
-            if (GlobalApp.BackOfficeMainWindow == null)
+            if (GlobalApp.BackOffice == null)
             {
-                GlobalApp.BackOfficeMainWindow = new BackOfficeWindow();
+                GlobalApp.BackOffice = new BackOfficeWindow();
             }
             else
             {
-                GlobalApp.BackOfficeMainWindow.Show();
+                GlobalApp.BackOffice.Show();
             }
 
             pHideWindow.Hide();

@@ -42,7 +42,15 @@ namespace LogicPOS.Api.Features.Common
         {
             try
             {
-                var entity = await _httpClient.GetFromJsonAsync<TEntity>(endpoint, cancellationToken);
+                var response = await _httpClient.GetAsync(endpoint, cancellationToken);
+
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    return default(TEntity);
+                }
+
+                var entity = await response.Content.ReadFromJsonAsync<TEntity>(cancellationToken);
+
                 return entity;
             }
             catch (HttpRequestException)

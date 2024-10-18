@@ -288,7 +288,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     {
                         if (entryCode.Text == item.Code.ToString())
                         {
-                            logicpos.Utils.ShowMessageTouch(GlobalApp.BackOfficeMainWindow, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_validation_error"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_code_number_exists"));
+                            logicpos.Utils.ShowMessageTouch(GlobalApp.BackOffice, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_validation_error"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_code_number_exists"));
                             entryCode.Text = "";
                         }
                     }
@@ -300,7 +300,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     {
                         if (entryOrd.Text == item.Code.ToString())
                         {
-                            logicpos.Utils.ShowMessageTouch(GlobalApp.BackOfficeMainWindow, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_validation_error"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_code_number_exists"));
+                            logicpos.Utils.ShowMessageTouch(GlobalApp.BackOffice, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_validation_error"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_code_number_exists"));
                             entryOrd.Text = "";
                         }
                     }
@@ -387,7 +387,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 {
                     fiscalNumberAlreadyExists = true;
                     _genericCRUDWidgetXPOFiscalNumber.Validated = false;
-                    logicpos.Utils.ShowMessageTouch(GlobalApp.BackOfficeMainWindow, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_validation_error"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_customer_fiscal_number_exists"));
+                    logicpos.Utils.ShowMessageTouch(GlobalApp.BackOffice, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_validation_error"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_customer_fiscal_number_exists"));
 
                 }
                 //IN:009268 BackOffice - NIF auto-complete 

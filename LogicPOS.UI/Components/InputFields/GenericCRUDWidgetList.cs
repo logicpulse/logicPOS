@@ -158,7 +158,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 
             if (!result)
             {
-                ResponseType response = logicpos.Utils.ShowMessageBox(GlobalApp.BackOfficeMainWindow,
+                ResponseType response = logicpos.Utils.ShowMessageBox(GlobalApp.BackOffice,
                                                                       DialogFlags.DestroyWithParent | DialogFlags.Modal,
                                                                       new Size(500, 500),
                                                                       MessageType.Error,

@@ -434,7 +434,7 @@ namespace LogicPOS.UI.Components
             if (!SkipRecordDelete && _allowRecordDelete)
             {
                 ResponseType response = response = Utils.ShowMessageTouch(
-                      GlobalApp.BackOfficeMainWindow,
+                      GlobalApp.BackOffice,
                       DialogFlags.DestroyWithParent | DialogFlags.Modal,
                       MessageType.Question,
                       ButtonsType.YesNo,
@@ -887,7 +887,7 @@ namespace LogicPOS.UI.Components
                                     AppSettings.Instance.customCultureResourceDefinition = cultureFromDb;
                                     CultureResources.UpdateLanguage(cultureFromDb);
                                 }
-                                Utils.ShowMessageBox(GlobalApp.BackOfficeMainWindow, DialogFlags.Modal, new System.Drawing.Size(600, 400), MessageType.Warning, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_language"), string.Format(GeneralUtils.GetResourceByName("dialog_message_culture_change"), CultureSettings.CurrentCultureName));
+                                Utils.ShowMessageBox(GlobalApp.BackOffice, DialogFlags.Modal, new System.Drawing.Size(600, 400), MessageType.Warning, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_language"), string.Format(GeneralUtils.GetResourceByName("dialog_message_culture_change"), CultureSettings.CurrentCultureName));
 
                             }
                             //IN009296 ENDS

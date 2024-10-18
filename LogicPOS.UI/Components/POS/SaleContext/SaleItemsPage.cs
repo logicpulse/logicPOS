@@ -1,29 +1,28 @@
-﻿using ErrorOr;
-using Gtk;
-using LogicPOS.Api.Entities;
+﻿using Gtk;
 using LogicPOS.Data.XPO.Settings;
-using LogicPOS.UI.Alerts;
+using LogicPOS.Settings;
 using LogicPOS.UI.Components.GridViews;
-using LogicPOS.UI.Components.Modals;
-using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
-using MediatR;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.POS
 {
     public class SaleItemsPage : Box
     {
-        public List<SaleItem> Items { get; } = new List<SaleItem>();
+        public PosOrder Order { get; } = SaleContext.GetCurrentOrder();
+        public PosTicket Ticket { get; set; }
+
         public Window SourceWindow { get; }
         public TreeView GridView { get; set; }
         public SaleItem SelectedItem { get; private set; }
         public GridViewSettings GridViewSettings { get; } = new GridViewSettings();
         public Label LabelTotalLabel { get; private set; }
         public Label LabelTotal { get; private set; }
+        public event EventHandler TicketOpened;
         public dynamic Theme { get; }
 
         public SaleItemsPage(Window parent, dynamic theme)
@@ -39,22 +38,21 @@ namespace LogicPOS.UI.Components.POS
 
         public void Refresh()
         {
-            var model = (ListStore)GridViewSettings.Model;
-            model.Clear();
-            PresentItems();
+            Clear();
+            PresentTicketItems();
         }
 
-        public void AddItem(SaleItem item)
+        public void Clear()
         {
-            Items.Add(item);
-            Refresh();
+            var model = (ListStore)GridViewSettings.Model;
+            model.Clear();
         }
 
         private void InitializeGridView()
         {
             GridViewSettings.Model = new ListStore(typeof(SaleItem));
 
-            GridView = new TreeView() { CanFocus = false, RulesHint = false };
+            GridView = new TreeView();
             GridView.Model = GridViewSettings.Model;
             GridView.ModifyBase(StateType.Active, new Gdk.Color(215, 215, 215));
 
@@ -62,10 +60,15 @@ namespace LogicPOS.UI.Components.POS
             AddGridViewEventHandlers();
         }
 
-        private void PresentItems()
+        public void PresentTicketItems()
         {
+            if(Ticket == null)
+            {
+                return;
+            }
+
             var model = (ListStore)GridViewSettings.Model;
-            Items.ForEach(entity => model.AppendValues(entity));
+            Ticket.Items.ForEach(entity => model.AppendValues(entity));
         }
 
         private void AddColumns()
@@ -85,7 +88,7 @@ namespace LogicPOS.UI.Components.POS
             }
 
             var title = GeneralUtils.GetResourceByName("pos_ticketlist_label_designation");
-            return Columns.CreateColumn(title, 1, RenderDesignation,resizable:false,clickable:false);
+            return Columns.CreateColumn(title, 1, RenderDesignation, resizable: false, clickable: false);
         }
 
         private TreeViewColumn CreatePriceColumn()
@@ -179,7 +182,7 @@ namespace LogicPOS.UI.Components.POS
             return eventBoxTotal;
         }
 
-        private  void GridViewRow_Changed(object sender, EventArgs e)
+        private void GridViewRow_Changed(object sender, EventArgs e)
         {
             TreeSelection selection = GridView.Selection;
 
@@ -195,12 +198,162 @@ namespace LogicPOS.UI.Components.POS
             GridView.CursorChanged += GridViewRow_Changed;
             GridView.RowActivated += GridView_RowActivated;
             GridView.Vadjustment.ValueChanged += delegate { };
-            GridView.Vadjustment.Changed += delegate {  };
+            GridView.Vadjustment.Changed += delegate { };
         }
 
         private void GridView_RowActivated(object o, RowActivatedArgs args)
         {
-          
+
+        }
+
+        public void Next()
+        {
+            if (GridViewSettings.Path == null)
+            {
+                return;
+            }
+
+            GridViewSettings.Path.Next();
+            GridView.SetCursor(GridViewSettings.Path, null, false);
+        }
+
+        public void Previous()
+        {
+            if (GridViewSettings.Path == null)
+            {
+                return;
+            }
+
+            GridViewSettings.Path.Prev();
+            GridView.SetCursor(GridViewSettings.Path, null, false);
+        }
+
+        public void DecreaseQuantity(Guid articleId)
+        {
+            var item = Ticket.Items.FirstOrDefault(x => x.Article.Id == articleId);
+
+            if (item == null)
+            {
+                return;
+            }
+
+            var defaultQuantity = item.Article.DefaultQuantity > 0 ? item.Article.DefaultQuantity : 1;
+            item.Quantity -= defaultQuantity;
+
+            if (item.Quantity <= 0)
+            {
+                RemoveItem(item);
+                return;
+            }
+
+            Refresh();
+            SelectItem(item);
+        }
+
+        public void RemoveItem(SaleItem item)
+        {
+            Ticket.Items.Remove(item);
+
+            if (SelectedItem == item)
+            {
+                SelectedItem = null;
+            }
+
+            Refresh();
+        }
+
+        public void IncreaseQuantity(Guid articleId)
+        {
+            var item = Ticket.Items.FirstOrDefault(x => x.Article.Id == articleId);
+
+            if (item == null)
+            {
+                return;
+            }
+
+            var defaultQuantity = item.Article.DefaultQuantity > 0 ? item.Article.DefaultQuantity : 1;
+            item.Quantity += defaultQuantity;
+
+            Refresh();
+            SelectItem(item);
+        }
+
+        public void AddItem(SaleItem item)
+        {
+            if(Ticket == null)
+            {
+                OpenTicket(item);
+                return;
+            }
+
+            if (ContainsItem(item))
+            {
+                IncreaseQuantity(item.Article.Id);
+                return;
+            }
+
+            Ticket.Items.Add(item);
+            PresentLastItem();
+            SelectItem(item);
+        }
+
+        private void OpenTicket(SaleItem item)
+        {
+            Clear();
+            GridView.ModifyBase(StateType.Normal, AppSettings.Instance.colorPosTicketListModeTicketBackground.ToGdkColor());
+            Ticket = Order.AddTicket(new List<SaleItem> { item });
+            PresentLastItem();
+            SelectItem(item);
+            TicketOpened?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void PresentLastItem()
+        {
+            var model = (ListStore)GridViewSettings.Model;
+            model.AppendValues(Ticket.Items.Last());
+        }
+
+        public bool ContainsItem(SaleItem item)
+        {
+            return Ticket.Items.Any(x => x.Article.Id == item.Article.Id);
+        }
+
+        private void SelectItem(SaleItem item)
+        {
+            var model = (ListStore)GridViewSettings.Model;
+            var index = Ticket.Items.IndexOf(item);
+            var path = new TreePath(new int[] { index });
+            GridView.SetCursor(path, null, false);
+            SelectedItem = item;
+        }
+
+        public void FinishTicket()
+        {
+            Ticket = null;
+            Clear();
+            PresentOrderItems();
+            GridView.ModifyBase(StateType.Normal, AppSettings.Instance.colorPosTicketListModeOrderMainBackground.ToGdkColor());
+        }
+
+        public void PresentOrderItems()
+        {
+            var model = (ListStore)GridViewSettings.Model;
+            var orderItems = Order.Tickets.SelectMany(x => x.Items).ToList();
+            orderItems.ForEach(entity => model.AppendValues(entity));
+        }
+
+        public void ChangeItemQuantity(SaleItem item, decimal quantity)
+        {
+            item.Quantity = quantity;
+            Refresh();
+            SelectItem(item);
+        }
+
+        public void ChangeItemPrice(SaleItem item, decimal price)
+        {
+            item.UnitPrice = price;
+            Refresh();
+            SelectItem(item);
         }
     }
 }

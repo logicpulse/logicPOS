@@ -15,7 +15,7 @@ namespace LogicPOS.UI.Components.InputFields.Validation
                                             fields.Where(field => field.IsValid() == false)
                                                              .Select(field => field.FieldName));
 
-            Utils.ShowMessageBox(GlobalApp.BackOfficeMainWindow,
+            Utils.ShowMessageBox(GlobalApp.BackOffice,
                                  DialogFlags.DestroyWithParent | DialogFlags.Modal,
                                  new Size(500, 500),
                                  MessageType.Error,

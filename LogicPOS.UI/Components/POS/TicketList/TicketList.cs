@@ -16,6 +16,7 @@ using LogicPOS.Shared.Article;
 using LogicPOS.Shared.Orders;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Modals;
+using LogicPOS.UI.Components.POS;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
@@ -26,7 +27,7 @@ namespace LogicPOS.UI.Components
 {
     public partial class TicketList : Box
     {
-        public SaleOptionsPanel SaleOptionsPanel { get; }
+        public SaleOptionsPanel SaleOptionsPanel { get; set; }
         private Color TicketModeBackgroundColor => AppSettings.Instance.colorPosTicketListModeTicketBackground;
         private Color DocumentModeBackgroundColor => AppSettings.Instance.colorPosTicketListModeOrderMainBackground;
         private Color EditModeEditBackgroundColor => AppSettings.Instance.colorPosTicketListModeEditBackground;
@@ -52,33 +53,11 @@ namespace LogicPOS.UI.Components
 
         public TicketList(
             POSMainWindow posWIndow,
-            dynamic theme, 
-            SaleOptionsPanel panel)
+            dynamic theme)
         {
             POSWindow = posWIndow;
-            SaleOptionsPanel = panel;
             InitUI(theme);
             ConfigureWeighingBalance();
-            AddEventHandlers();
-        }
-
-        private void AddEventHandlers()
-        {
-            SaleOptionsPanel.BtnSelectTable.Clicked += BtnSelectTable_Clicked;
-            SaleOptionsPanel.BtnIncrease.Clicked += BtnIncrease_Clicked;
-            SaleOptionsPanel.BtnDecrease.Clicked += BtnDecrease_Clicked;
-            SaleOptionsPanel.BtnDelete.Clicked += BtnDelete_Clicked;
-            SaleOptionsPanel.BtnFinishOrder.Clicked += BtnFinishOrder_Clicked;
-            SaleOptionsPanel.BtnChangeTable.Clicked += BtnChangeTable_Clicked;
-            SaleOptionsPanel.BtnWeight.Clicked += BtnWeight_Clicked;
-            SaleOptionsPanel.BtnGifts.Clicked += BtnGifts_Clicked;
-            SaleOptionsPanel.BtnBarcode.Clicked += BtnBarcode_Clicked;
-            SaleOptionsPanel.BtnCardCode.Clicked += BtnCardCode_Clicked;
-            SaleOptionsPanel.BtnListMode.Clicked += BtnListMode_Clicked;
-            SaleOptionsPanel.BtnListOrder.Clicked += BtnListOrder_Clicked;
-            SaleOptionsPanel.BtnPrice.Clicked += BtnPrice_Clicked;
-            SaleOptionsPanel.BtnQuantity.Clicked += BtnQuantity_Clicked;
-            SaleOptionsPanel.BtnPayments.Clicked += BtnPayments_Clicked;
         }
 
         private void ConfigureWeighingBalance()
