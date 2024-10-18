@@ -12,7 +12,7 @@ namespace LogicPOS.UI.Components.Pages
 {
     public class PreferenceParametersPage : Page<PreferenceParameter>
     {
-        public PreferenceParametersPage(Window parent, Dictionary<string,string> options) : base(parent,options)
+        public PreferenceParametersPage(Gtk.Window parent, Dictionary<string, string> options) : base(parent, options)
         {
             CanDeleteEntity = false;
             Navigator.BtnInsert.Sensitive = false;
@@ -36,7 +36,16 @@ namespace LogicPOS.UI.Components.Pages
             void RenderValue(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var parameter = (PreferenceParameter)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = parameter.Value;
+
+
+                if (parameter.Token.Contains("LOGO"))
+                {
+                    (cell as CellRendererText).Text = "...";
+                }
+                else
+                {
+                    (cell as CellRendererText).Text = parameter.Value;
+                }
             }
 
             var title = GeneralUtils.GetResourceByName("global_value");
