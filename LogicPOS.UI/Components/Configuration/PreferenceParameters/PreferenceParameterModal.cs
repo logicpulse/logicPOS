@@ -1,6 +1,7 @@
 ﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.PreferenceParameters.UpdatePreferenceParameter;
 using System;
+using System.IO;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -25,27 +26,29 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override void UpdateEntity() => ExecuteUpdateCommand(CreateUpdateCommand());
 
-        public void GetBase64Image()
+        public string logoGetBase64Image()
         {
             if (_entity.Token.Contains("LOGO"))
             {
                 if (string.IsNullOrWhiteSpace(_field.TextBox.Text))
                 {
-                    return;
+                    return null;
                 }
 
-                _field.TextBox.Text = System.Convert.ToBase64String(System.IO.File.ReadAllBytes(_field.TextBox.Text));
+                var result = Convert.ToBase64String(File.ReadAllBytes(_field.TextBox.Text));
+                return result;
             }
+            return _field.TextBox.Text;
         }
         private UpdatePreferenceParameterCommand CreateUpdateCommand()
         {
-            GetBase64Image();
+            ;
             return new UpdatePreferenceParameterCommand
             {
                 Id = _entity.Id,
                 NewOrder = uint.Parse(_txtOrder.Text),
                 NewCode = _txtCode.Text,
-                NewValue = _field.TextBox.Text,
+                NewValue = logoGetBase64Image(),
                 NewNotes = _txtNotes.Value.Text
             };
         }
