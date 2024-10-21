@@ -32,7 +32,6 @@ namespace LogicPOS.UI.Components.Windows
         public Label LabelClock { get; set; }
         public TextView TextViewLog { get; set; }
         public TicketList TicketList { get; set; }
-        public SaleItemsPage SaleItemsPage { get; set; }
         public IconButtonWithText BtnQuit { get; set; }
         public IconButtonWithText BtnBackOffice { get; set; }
         public IconButtonWithText BtnReports { get; set; }
@@ -48,24 +47,21 @@ namespace LogicPOS.UI.Components.Windows
         internal ArticlesMenu MenuArticles { get; set; }
         public TextBuffer BufferTextView { get; set; }
         public Label LabelTerminalInfo { get; set; }
-        public Label LabelCurrentTable { get; set; }
+        public Label LabelCurrentTable { get; set; } = new Label();
         public Label LabelTotalTable { get; set; }
         #endregion
 
         public POSMainWindow(string backgroundImage)
             : base(backgroundImage)
         {
-            SaleContext.Initialize();
+            SaleContext.Initialize(this);
 
             InitUI();
-
-            //TicketList.UpdateOrderStatusBar();
 
             UpdateWorkSessionUI();
 
             StartClock();
 
-            //TicketList.UpdateSaleOptionsPanelButtons();
 
             this.ScreenArea.Add(FixedWindow);
 
@@ -270,7 +266,6 @@ namespace LogicPOS.UI.Components.Windows
             labelCurrentTableLabel.SetAlignment(labelCurrentTableLabelAlignmentX, 0.5F);
 
             //EventBoxStatusBar2:vboxCurrentTable:LabelCurrentTable
-            LabelCurrentTable = new Label();//Text assigned on TicketList.UpdateOrderStatusBar()
             LabelCurrentTable.ModifyFont(labelCurrentTableFont);
             LabelCurrentTable.ModifyFg(StateType.Normal, labelCurrentTableFontColor);
             LabelCurrentTable.SetAlignment(labelCurrentTableAlignmentX, 0.5F);
@@ -472,7 +467,7 @@ namespace LogicPOS.UI.Components.Windows
             MenuArticles = new ArticlesMenu(MenuSubfamilies,
                                             btnMenuArticlesPrevious,
                                             btnMenuArticlesNext,
-                                            SaleItemsPage)
+                                            SaleContext.ItemsPage)
             { Sensitive = false };
 
             MenuArticles.SourceWindow = this;
@@ -630,7 +625,7 @@ namespace LogicPOS.UI.Components.Windows
             Point position = Utils.StringToPosition(theme.Objects.EventBoxPosTicketPad.Position);
             Size size = (theme.Objects.EventBoxPosTicketPad.Size as string).ToSize();
 
-            SaleOptionsPanel = new SaleOptionsPanel(SaleItemsPage,theme.Objects.EventBoxPosTicketPad.Buttons) { Sensitive = false };
+            SaleOptionsPanel = new SaleOptionsPanel(SaleContext.ItemsPage,theme.Objects.EventBoxPosTicketPad.Buttons) { Sensitive = false };
 
             SaleOptionsPanel.SourceWindow = this;
             EventBox saleOptionsPanelEventBox = new EventBox() { VisibleWindow = false, WidthRequest = size.Width, HeightRequest = size.Height };
@@ -649,8 +644,8 @@ namespace LogicPOS.UI.Components.Windows
             saleItemsPageEventBox.HeightRequest = size.Height;
 
             dynamic saleItemsPageTheme = theme.Objects.EventBoxPosTicketList;
-            SaleItemsPage = new SaleItemsPage(this, saleItemsPageTheme);
-            saleItemsPageEventBox.Add(SaleItemsPage);
+            SaleContext.ItemsPage = new SaleItemsPage(this, saleItemsPageTheme);
+            saleItemsPageEventBox.Add(SaleContext.ItemsPage);
             
             FixedWindow.Put(saleItemsPageEventBox, position.X, position.Y);
         }

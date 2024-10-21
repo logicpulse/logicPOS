@@ -129,6 +129,7 @@ namespace LogicPOS.UI.Components.POS
             if(MenuTables.SelectedTable != null)
             {
                 SaleContext.SetCurrentTable(MenuTables.SelectedTable);
+
             }
         }
 

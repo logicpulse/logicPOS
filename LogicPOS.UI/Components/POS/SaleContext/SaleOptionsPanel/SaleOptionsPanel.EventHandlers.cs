@@ -110,6 +110,11 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnFinishOrder_Clicked(object sender, EventArgs e)
         {
+            if(ItemsPage.Ticket == null || ItemsPage.Ticket.Items.Any() == false)
+            {
+                return;
+            }
+
             ItemsPage.FinishTicket();
             UpdateButtonsSensitivity();
         }

@@ -13,7 +13,7 @@ namespace LogicPOS.UI.Components.POS
 {
     public class SaleItemsPage : Box
     {
-        public PosOrder Order { get; } = SaleContext.GetCurrentOrder();
+        public PosOrder Order { get; set; } = SaleContext.GetCurrentOrder();
         public PosTicket Ticket { get; set; }
 
         public Window SourceWindow { get; }
@@ -42,8 +42,13 @@ namespace LogicPOS.UI.Components.POS
             PresentTicketItems();
         }
 
-        public void Clear()
+        public void Clear(bool removeTicket = false)
         {
+            if (removeTicket)
+            {
+                Ticket = null;
+            }
+ 
             var model = (ListStore)GridViewSettings.Model;
             model.Clear();
         }
@@ -58,6 +63,14 @@ namespace LogicPOS.UI.Components.POS
 
             AddColumns();
             AddGridViewEventHandlers();
+        }
+
+        public void PresentOrderItems()
+        {
+            SetOrderModeBackGround();
+            var model = (ListStore)GridViewSettings.Model;
+            var orderItems = Order.GetOrderItems();
+            orderItems.ForEach(entity => model.AppendValues(entity));
         }
 
         public void PresentTicketItems()
@@ -300,11 +313,28 @@ namespace LogicPOS.UI.Components.POS
         private void OpenTicket(SaleItem item)
         {
             Clear();
-            GridView.ModifyBase(StateType.Normal, AppSettings.Instance.colorPosTicketListModeTicketBackground.ToGdkColor());
+            SetTicketModeBackGround();
             Ticket = Order.AddTicket(new List<SaleItem> { item });
             PresentLastItem();
             SelectItem(item);
             TicketOpened?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void FinishTicket()
+        {
+            Clear(true);
+            SetOrderModeBackGround();
+            PresentOrderItems();
+        }
+
+        public void SetOrderModeBackGround()
+        {
+            GridView.ModifyBase(StateType.Normal, AppSettings.Instance.colorPosTicketListModeOrderMainBackground.ToGdkColor());
+        }
+
+        public void SetTicketModeBackGround()
+        {
+            GridView.ModifyBase(StateType.Normal, AppSettings.Instance.colorPosTicketListModeTicketBackground.ToGdkColor());
         }
 
         private void PresentLastItem()
@@ -325,21 +355,6 @@ namespace LogicPOS.UI.Components.POS
             var path = new TreePath(new int[] { index });
             GridView.SetCursor(path, null, false);
             SelectedItem = item;
-        }
-
-        public void FinishTicket()
-        {
-            Ticket = null;
-            Clear();
-            PresentOrderItems();
-            GridView.ModifyBase(StateType.Normal, AppSettings.Instance.colorPosTicketListModeOrderMainBackground.ToGdkColor());
-        }
-
-        public void PresentOrderItems()
-        {
-            var model = (ListStore)GridViewSettings.Model;
-            var orderItems = Order.Tickets.SelectMany(x => x.Items).ToList();
-            orderItems.ForEach(entity => model.AppendValues(entity));
         }
 
         public void ChangeItemQuantity(SaleItem item, decimal quantity)
