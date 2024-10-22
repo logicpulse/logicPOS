@@ -49,7 +49,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                     Code = detail.Code,
                     Quantity = detail.Quantity,
                     UnitPrice = detail.Price,
-                    VatRateValue = detail.VatRate,
+                    Vat = detail.VatRate,
                     VatDesignation = detail.VatDesignation,
                     ExemptionReason = detail.VatExemptionReason,
                     Discount = detail.Discount
@@ -66,7 +66,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 ArticleId = item.ArticleId,
                 Quantity = item.Quantity,
                 UnitPrice = item.UnitPrice,
-                VatRate = item.VatRate?.Value ?? item.VatRateValue,
+                VatRate = item.VatRate?.Value ?? item.Vat,
                 VatDesignation = item.VatRate?.Designation ?? item.VatDesignation,
                 VatExemptionReason = item.VatExemptionReason?.Designation ?? item.ExemptionReason,
                 Discount = item.Discount,

@@ -2,8 +2,6 @@
 using LogicPOS.Api.Features.Tables.GetAllTables;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
-using LogicPOS.Shared.Orders;
-using LogicPOS.Shared;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Windows;
 using MediatR;
@@ -32,6 +30,7 @@ namespace LogicPOS.UI.Components.POS
             ItemsPage.Clear(true);
             ItemsPage.Order = GetCurrentOrder();
             ItemsPage.PresentOrderItems();
+            ItemsPage.UpdateLabelTotalValue();
         }
 
         public static void UpdatePOSLabels()
@@ -43,7 +42,7 @@ namespace LogicPOS.UI.Components.POS
 
         public static PosOrder GetCurrentOrder()
         {
-            var currentOrder  = Orders.FirstOrDefault(o => o.Table.Id == CurrentTable.Id);
+            var currentOrder = Orders.FirstOrDefault(o => o.Table.Id == CurrentTable.Id);
 
             if (currentOrder == null)
             {

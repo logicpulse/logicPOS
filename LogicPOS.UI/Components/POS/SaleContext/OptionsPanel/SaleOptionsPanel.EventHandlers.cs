@@ -121,16 +121,25 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnPayments_Clicked(object sender, EventArgs e)
         {
-            IconButtonWithText button = (sender as IconButtonWithText);
-
-            bool printTicket = false;
-
-
-            ResponseType dialogResponse = logicpos.Utils.ShowMessageTouch(GlobalApp.PosMainWindow, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.OkCancel, GeneralUtils.GetResourceByName("window_title_dialog_message_dialog"), GeneralUtils.GetResourceByName("dialog_message_request_close_open_ticket"));
-            if (dialogResponse != ResponseType.Ok)
+            if(ItemsPage.Ticket != null)
             {
-                return;
+                ResponseType dialogResponse = logicpos.Utils.ShowMessageTouch(GlobalApp.PosMainWindow,
+                                                                        DialogFlags.DestroyWithParent,
+                                                                        MessageType.Question,
+                                                                        ButtonsType.OkCancel,
+                                                                        GeneralUtils.GetResourceByName("window_title_dialog_message_dialog"),
+                                                                        GeneralUtils.GetResourceByName("dialog_message_request_close_open_ticket"));
+                if (dialogResponse != ResponseType.Ok)
+                {
+                    return;
+                }
+
+                ItemsPage.FinishTicket();
             }
+
+            var modal = new PaymentsModal(SourceWindow);
+            modal.Run();
+            modal.Destroy();
         }
 
         private void BtnBarcode_Clicked(object sender, EventArgs e)

@@ -61,7 +61,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             TxtVatExemptionReason.Text = item.VatExemptionReason?.Designation ?? item.ExemptionReason;
             TxtTax.SelectedEntity = item.VatRate;
             TxtTax.Text = item.VatRate?.Designation ?? item.VatDesignation;
-            _vatRateValue = item.VatRateValue;
+            _vatRateValue = item.Vat;
             TxtNotes.Text = item.Notes;
             UpdateTotals();
             UpdateValidatableFields();
@@ -107,7 +107,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 Item.Discount = decimal.Parse(TxtDiscount.Text);
                 Item.VatRate = TxtTax.SelectedEntity as VatRate;
                 Item.VatDesignation = TxtTax.Text;
-                Item.VatRateValue = _vatRateValue;
+                Item.Vat = _vatRateValue;
                 Item.VatExemptionReason = TxtVatExemptionReason.SelectedEntity as VatExemptionReason;
                 Item.ExemptionReason = Item.VatExemptionReason is null ? TxtVatExemptionReason.Text : Item.VatExemptionReason.Designation;
                 Item.Notes = TxtNotes.Text;
@@ -384,7 +384,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 Discount = decimal.Parse(TxtDiscount.Text),
                 VatRate = TxtTax.SelectedEntity as VatRate,
                 VatDesignation = TxtTax.Text,
-                VatRateValue = _vatRateValue,
+                Vat = _vatRateValue,
                 VatExemptionReason = TxtVatExemptionReason.SelectedEntity as VatExemptionReason,
                 ExemptionReason = TxtVatExemptionReason.Text,
                 Notes = TxtNotes.Text

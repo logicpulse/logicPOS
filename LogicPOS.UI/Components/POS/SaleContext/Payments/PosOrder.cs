@@ -6,7 +6,7 @@ namespace LogicPOS.UI.Components.POS
 {
     public class PosOrder
     {
-        public Table Table { get;  }
+        public Table Table { get; }
 
         public List<PosTicket> Tickets { get; } = new List<PosTicket>();
 
@@ -38,7 +38,7 @@ namespace LogicPOS.UI.Components.POS
                 }
             }
 
-            return orderItems; 
+            return orderItems;
         }
 
         public PosTicket AddTicket(IEnumerable<SaleItem> items)
@@ -48,6 +48,8 @@ namespace LogicPOS.UI.Components.POS
             Tickets.Add(ticket);
             return ticket;
         }
+
+        public decimal TotalFinal => Tickets.Sum(t => t.TotalFinal);
 
     }
 }

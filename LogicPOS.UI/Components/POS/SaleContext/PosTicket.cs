@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.POS
 {
@@ -11,5 +12,7 @@ namespace LogicPOS.UI.Components.POS
         {
             Number = number;
         }
+
+        public decimal TotalFinal => Items.Sum(i => i.TotalFinal);
     }
 }

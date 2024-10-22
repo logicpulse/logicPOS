@@ -20,9 +20,11 @@ namespace LogicPOS.UI.Components.POS
         public TreeView GridView { get; set; }
         public SaleItem SelectedItem { get; private set; }
         public GridViewSettings GridViewSettings { get; } = new GridViewSettings();
-        public Label LabelTotalLabel { get; private set; }
         public Label LabelTotal { get; private set; }
+        public Label LabelTotalValue { get; private set; }
+
         public event EventHandler TicketOpened;
+
         public dynamic Theme { get; }
 
         public SaleItemsPage(Window parent, dynamic theme)
@@ -40,6 +42,7 @@ namespace LogicPOS.UI.Components.POS
         {
             Clear();
             PresentTicketItems();
+            UpdateLabelTotalValue();
         }
 
         public void Clear(bool removeTicket = false)
@@ -89,6 +92,8 @@ namespace LogicPOS.UI.Components.POS
             GridView.AppendColumn(CreateDesignationColumn());
             GridView.AppendColumn(CreatePriceColumn());
             GridView.AppendColumn(CreateQuantityColumn());
+            GridView.AppendColumn(CreateDiscountColumn());
+            GridView.AppendColumn(CreateVatColumn());
             GridView.AppendColumn(CreateTotalColumn());
         }
 
@@ -128,16 +133,40 @@ namespace LogicPOS.UI.Components.POS
             return Columns.CreateColumn(title, 3, RenderQuantity, resizable: false, clickable: false);
         }
 
+        private TreeViewColumn CreateDiscountColumn()
+        {
+            void RenderDiscount(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
+            {
+                var item = (SaleItem)model.GetValue(iter, 0);
+                (cell as CellRendererText).Text = item.Discount.ToString();
+            }
+
+            var title = GeneralUtils.GetResourceByName("pos_ticketlist_label_discount");
+            return Columns.CreateColumn(title, 4, RenderDiscount, resizable: false, clickable: false);
+        }
+
+        private TreeViewColumn CreateVatColumn()
+        {
+            void RenderVat(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
+            {
+                var item = (SaleItem)model.GetValue(iter, 0);
+                (cell as CellRendererText).Text = item.Vat.ToString();
+            }
+
+            var title = GeneralUtils.GetResourceByName("pos_ticketlist_label_vat");
+            return Columns.CreateColumn(title, 5, RenderVat, resizable: false, clickable: false);
+        }
+
         private TreeViewColumn CreateTotalColumn()
         {
             void RenderTotal(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var item = (SaleItem)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = item.TotalPrice.ToString();
+                (cell as CellRendererText).Text = item.TotalFinal.ToString();
             }
 
             var title = GeneralUtils.GetResourceByName("pos_ticketlist_label_total");
-            return Columns.CreateColumn(title, 4, RenderTotal, resizable: false, clickable: false);
+            return Columns.CreateColumn(title, 6, RenderTotal, resizable: false, clickable: false);
         }
 
         private void Design()
@@ -158,9 +187,7 @@ namespace LogicPOS.UI.Components.POS
 
         private EventBox CreateTotalPanel()
         {
-            Gdk.Color eventBoxTotalBackgroundColor = (Theme.EventBoxTotal.BackgroundColor as string).StringToGdkColor();
-            Pango.FontDescription columnsFontTitle = Pango.FontDescription.FromString(Theme.Columns.FontTitle);
-            Pango.FontDescription columnsFontData = Pango.FontDescription.FromString(Theme.Columns.FontData);
+            Gdk.Color bgColor = (Theme.EventBoxTotal.BackgroundColor as string).StringToGdkColor();
             Pango.FontDescription labelLabelTotalFont = Pango.FontDescription.FromString(Theme.EventBoxTotal.LabelLabelTotal.Font);
             Gdk.Color labelLabelTotalFontColor = (Theme.EventBoxTotal.LabelLabelTotal.FontColor as string).StringToGdkColor();
             float labelLabelTotalAlignmentX = Convert.ToSingle(Theme.EventBoxTotal.LabelLabelTotal.AlignmentX);
@@ -173,26 +200,32 @@ namespace LogicPOS.UI.Components.POS
             ScrolledWindow scrolledWindow = new ScrolledWindow();
             scrolledWindow.SetPolicy(PolicyType.Never, PolicyType.Always);
 
-            LabelTotalLabel = new Label(GeneralUtils.GetResourceByName("global_total_ticket"));
-            LabelTotalLabel.ModifyFont(labelLabelTotalFont);
-            LabelTotalLabel.ModifyFg(StateType.Normal, labelLabelTotalFontColor);
-            LabelTotalLabel.SetAlignment(labelLabelTotalAlignmentX, 0.0F);
+            LabelTotal = new Label(GeneralUtils.GetResourceByName("global_total_ticket"));
+            LabelTotal.ModifyFont(labelLabelTotalFont);
+            LabelTotal.ModifyFg(StateType.Normal, labelLabelTotalFontColor);
+            LabelTotal.SetAlignment(labelLabelTotalAlignmentX, 0.0F);
 
-            LabelTotal = new Label();
-            LabelTotal.ModifyFont(labelTotalFont);
-            LabelTotal.ModifyFg(StateType.Normal, labelTotalFontColor);
-            LabelTotal.SetAlignment(labelTotalAlignmentX, 0.0F);
-            LabelTotal.Text = DataConversionUtils.DecimalToStringCurrency(0, XPOSettings.ConfigurationSystemCurrency.Acronym);
+            LabelTotalValue = new Label();
+            LabelTotalValue.ModifyFont(labelTotalFont);
+            LabelTotalValue.ModifyFg(StateType.Normal, labelTotalFontColor);
+            LabelTotalValue.SetAlignment(labelTotalAlignmentX, 0.0F);
+            LabelTotalValue.Text = DataConversionUtils.DecimalToStringCurrency(0, XPOSettings.ConfigurationSystemCurrency.Acronym);
 
             HBox hboxTotal = new HBox(false, 4);
-            hboxTotal.PackStart(LabelTotalLabel, true, true, 5);
-            hboxTotal.PackStart(LabelTotal, false, false, 5);
+            hboxTotal.PackStart(LabelTotal, true, true, 5);
+            hboxTotal.PackStart(LabelTotalValue, false, false, 5);
 
             EventBox eventBoxTotal = new EventBox() { BorderWidth = 0 };
-            eventBoxTotal.ModifyBg(StateType.Normal, eventBoxTotalBackgroundColor);
+            eventBoxTotal.ModifyBg(StateType.Normal, bgColor);
             eventBoxTotal.Add(hboxTotal);
 
             return eventBoxTotal;
+        }
+
+        public void UpdateLabelTotalValue()
+        {
+            var total = Ticket?.TotalFinal ?? Order?.TotalFinal ?? 0;
+            LabelTotalValue.Text = total.ToString("0.00");
         }
 
         private void GridViewRow_Changed(object sender, EventArgs e)
@@ -308,15 +341,17 @@ namespace LogicPOS.UI.Components.POS
             Ticket.Items.Add(item);
             PresentLastItem();
             SelectItem(item);
+            UpdateLabelTotalValue();
         }
 
         private void OpenTicket(SaleItem item)
         {
-            Clear();
+            Clear(true);
             SetTicketModeBackGround();
             Ticket = Order.AddTicket(new List<SaleItem> { item });
             PresentLastItem();
             SelectItem(item);
+            UpdateLabelTotalValue();
             TicketOpened?.Invoke(this, EventArgs.Empty);
         }
 
@@ -325,6 +360,7 @@ namespace LogicPOS.UI.Components.POS
             Clear(true);
             SetOrderModeBackGround();
             PresentOrderItems();
+            UpdateLabelTotalValue();
         }
 
         public void SetOrderModeBackGround()
@@ -362,6 +398,7 @@ namespace LogicPOS.UI.Components.POS
             item.Quantity = quantity;
             Refresh();
             SelectItem(item);
+
         }
 
         public void ChangeItemPrice(SaleItem item, decimal price)
