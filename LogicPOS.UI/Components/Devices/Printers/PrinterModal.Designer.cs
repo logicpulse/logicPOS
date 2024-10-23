@@ -28,11 +28,11 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override void BeforeDesign()
         {
-            InitializePriceTypesComboBox();
+            InitializePrinterTypesComboBox();
             _comboDesignation = CreatePrinterDesignationCombobox();
         }
 
-        private void InitializePriceTypesComboBox()
+        private void InitializePrinterTypesComboBox()
         {
             var printerTypes = GetPrinterTypes();
             var labelText = GeneralUtils.GetResourceByName("global_printer_type");

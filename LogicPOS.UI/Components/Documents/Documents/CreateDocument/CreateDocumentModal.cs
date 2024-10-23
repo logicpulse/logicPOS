@@ -188,7 +188,7 @@ namespace LogicPOS.UI.Components.Modals
             var command = new AddDocumentCommand();
 
             command.PaymentMethodId = DocumentTab.GetPaymentMethod()?.Id;
-            command.SeriesId = GetSeriesFromDocumentType().Id;
+            command.Type = DocumentTab.GetDocumentType().Acronym;
             command.PaymentConditionId = DocumentTab.GetPaymentCondition()?.Id;
             command.CurrencyId = DocumentTab.GetCurrency().Id;
             command.ParentId = DocumentTab.GetOriginDocumentId();
@@ -213,12 +213,6 @@ namespace LogicPOS.UI.Components.Modals
             }
 
             return command;
-        }
-
-        public DocumentSeries GetSeriesFromDocumentType()
-        {
-            var documentType = DocumentTab.GetDocumentType();
-            return _documentSeries.First(series => series.DocumentType.Id == documentType.Id);
         }
 
         public bool AllTabsAreValid() => GetValidatableTabs().All(tab => tab.IsValid());

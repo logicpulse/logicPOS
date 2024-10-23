@@ -504,7 +504,7 @@ namespace LogicPOS.UI.Components.POS
         {
             if (!decimal.TryParse(TxtDiscount.Text, out decimal discount))
             {
-                return;
+                discount = 0;
             }
 
             var discountPrice = OrderTotalFinal * discount / 100;

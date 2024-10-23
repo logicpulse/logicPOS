@@ -4,15 +4,19 @@ using logicpos.Classes.Enums.App;
 using logicpos.Classes.Logic.License;
 using LogicPOS.Api.Features.Countries.AddCountry;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.DTOs.Printing;
 using LogicPOS.Modules;
 using LogicPOS.Modules.StockManagement;
 using LogicPOS.Persistence.Services;
 using LogicPOS.Plugin.Abstractions;
+using LogicPOS.Printing.Common;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using System;
 using System.Configuration;
+using System.Drawing.Printing;
 using System.Globalization;
+using System.Linq;
 using System.Net.Http;
 using System.Threading;
 
@@ -60,7 +64,6 @@ namespace LogicPOS.UI
         [STAThread]
         public static void Main(string[] args)
         {
-
             using (var singleProgramInstance = new SingleProgramInstance())
             {
                 PathsSettings.InitializePaths();
