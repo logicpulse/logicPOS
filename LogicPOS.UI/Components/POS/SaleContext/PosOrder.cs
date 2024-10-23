@@ -1,6 +1,8 @@
 ﻿using LogicPOS.Api.Entities;
 using System.Collections.Generic;
 using System.Linq;
+using DocumentDetailDto = LogicPOS.Api.Features.Documents.AddDocument.DocumentDetail;
+
 
 namespace LogicPOS.UI.Components.POS
 {
@@ -50,6 +52,25 @@ namespace LogicPOS.UI.Components.POS
         }
 
         public decimal TotalFinal => Tickets.Sum(t => t.TotalFinal);
+
+        public IEnumerable<DocumentDetailDto> GetDocumentDetails()
+        {
+            var saleItems = GetOrderItems();
+            var details = saleItems.Select(item =>
+            {
+                return new DocumentDetailDto
+                {
+                    ArticleId = item.Article.Id,
+                    Quantity = item.Quantity,
+                    UnitPrice = item.UnitPrice,
+                    VatDesignation = item.Article.VatDirectSelling?.Designation,
+                    VatRate = item.Vat,
+                    Discount = item.Discount
+                };
+            });
+
+            return details;
+        }
 
     }
 }
