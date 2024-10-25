@@ -87,8 +87,8 @@ namespace LogicPOS.Finance.Saft
                     _xmlWriter.WriteStartDocument();
 
                     //<AuditFile>
-                    string standardAuditFileTax = string.Format("{0}_{1}", SaftSettings.SaftVersionPrefixAO, SaftSettings.SaftVersionAO);
-                    _xmlWriter.WriteStartElement("AuditFile", string.Format("urn:OECD:StandardAuditFile-Tax:{0}", standardAuditFileTax));
+                    string standardAuditFileTax = $"{SaftSettings.SaftVersionPrefixAO}_{SaftSettings.SaftVersionAO}";
+                    _xmlWriter.WriteStartElement("AuditFile", $"urn:OECD:StandardAuditFile-Tax:{standardAuditFileTax}");
                     _xmlWriter.WriteAttributeString("xmlns", "xsi", null, "http://www.w3.org/2001/XMLSchema-instance");
                     _xmlWriter.WriteAttributeString("xmlns", "xsd", null, "http://www.w3.org/2001/XMLSchema");
 

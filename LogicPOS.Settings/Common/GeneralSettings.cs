@@ -20,7 +20,7 @@ namespace LogicPOS.Settings
             {
                 Assembly assembly = Assembly.GetExecutingAssembly();
                 FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
-                return string.Format("v{0}", fileVersionInfo.ProductVersion);
+                return $"v{fileVersionInfo.ProductVersion}";
             }
         }
         public static Assembly ProductAssembly

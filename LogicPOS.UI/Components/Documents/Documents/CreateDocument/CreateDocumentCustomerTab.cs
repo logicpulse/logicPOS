@@ -28,6 +28,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         public PageTextBox TxtNotes { get; set; }
         public Guid? CustomerId { get; set; }
         private Guid _countryId;
+        private string _countryCode2;
 
         public CreateDocumentCustomerTab(Window parent) : base(parent: parent,
                                                   name: GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page2"),
@@ -256,6 +257,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             TxtPhone.Text = document.Customer.Phone;
             TxtEmail.Text = document.Customer.Email;
             _countryId = document.Customer.CountryId;
+            _countryCode2 = document.Customer.Country;
         }
 
         private void Design()
@@ -301,7 +303,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 Locality = TxtLocality.Text,
                 ZipCode = TxtZipCode.Text,
                 City = TxtCity.Text,
-                Country = TxtCountry.Text,
+                Country = (TxtCountry.SelectedEntity as Country)?.Code2 ?? _countryCode2,
                 CountryId = (TxtCountry.SelectedEntity as Country)?.Id ?? _countryId,
                 Email = TxtEmail.Text,
                 Phone = TxtPhone.Text
