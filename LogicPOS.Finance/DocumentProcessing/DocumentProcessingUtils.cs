@@ -784,7 +784,7 @@ namespace LogicPOS.Finance.DocumentProcessing
             string sql = string.Format(@"SELECT Hash, HashControl, Date AS InvoiceDate, SystemEntryDate, DocumentNumber AS InvoiceNo, TotalFinalRound FROM fin_documentfinancemaster WHERE DocumentType = '{0}' and  DocumentSerie = '{1}' ORDER BY Date DESC;", pDocType.Oid, pDocSerie.Oid);
             var olastDocumentHash = pSession.ExecuteScalar(sql);
             string lastDocumentHash = (olastDocumentHash != null) ? olastDocumentHash.ToString() : "";
-            string signTargetString = string.Format("{0};{1};{2};{3};{4}", doc.DocumentDate, doc.SystemEntryDate, doc.DocumentNumber, TotalFinalRound, lastDocumentHash);
+            string signTargetString = $"{doc.DocumentDate};{doc.SystemEntryDate};{doc.DocumentNumber};{TotalFinalRound};{lastDocumentHash}";
 
             string resultSignedHash;
             // Old Method without Plugin
