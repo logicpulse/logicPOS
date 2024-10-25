@@ -66,9 +66,8 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 ArticleId = item.ArticleId,
                 Quantity = item.Quantity,
                 UnitPrice = item.UnitPrice,
-                VatRate = item.VatRate?.Value ?? item.Vat,
-                VatDesignation = item.VatRate?.Designation ?? item.VatDesignation,
-                VatExemptionReason = item.VatExemptionReason?.Designation ?? item.ExemptionReason,
+                VatRateId = item.VatRate.Id,
+                VatExemptionId = item.VatExemptionReason?.Id,
                 Discount = item.Discount,
                 PriceType = priceType
             });

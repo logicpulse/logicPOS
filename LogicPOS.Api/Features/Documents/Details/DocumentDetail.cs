@@ -18,6 +18,7 @@ namespace LogicPOS.Api.Entities
         public string VatDesignation { get; set; }
         public decimal VatRate { get; set; }
         public string VatExemptionReason { get; set; }
+        public string VatExemptionCode { get; set; }
         public decimal Discount { get; set; }
         public decimal TotalNet { get; set; }
         public decimal TotalGross { get; set; }

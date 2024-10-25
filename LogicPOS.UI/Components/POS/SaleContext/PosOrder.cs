@@ -63,8 +63,6 @@ namespace LogicPOS.UI.Components.POS
                     ArticleId = item.Article.Id,
                     Quantity = item.Quantity,
                     UnitPrice = item.UnitPrice,
-                    VatDesignation = item.Article.VatDirectSelling?.Designation,
-                    VatRate = item.Vat,
                     Discount = item.Discount
                 };
             });
