@@ -1,19 +1,24 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Countries.GetCountryById;
 using LogicPOS.Api.Features.Documents;
 using LogicPOS.Settings;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.Utility;
+using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
     public class CreateDocumentCustomerTab : ModalTab
     {
+        private readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
         public PageTextBox TxtCustomer { get; set; }
         public PageTextBox TxtFiscalNumber { get; set; }
         public PageTextBox TxtCardNumber { get; set; }
@@ -27,8 +32,6 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         public PageTextBox TxtEmail { get; set; }
         public PageTextBox TxtNotes { get; set; }
         public Guid? CustomerId { get; set; }
-        private Guid _countryId;
-        private string _countryCode2;
 
         public CreateDocumentCustomerTab(Window parent) : base(parent: parent,
                                                   name: GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page2"),
@@ -52,6 +55,18 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             InitializeTxtPhone();
             InitializeTxtEmail();
             InitializeTxtNotes();
+        }
+
+        private Country GetCountryById(Guid countryId)
+        {
+            var getResult = _mediator.Send(new GetCountryByIdQuery(countryId)).Result;
+            if (getResult.IsError)
+            {
+                SimpleAlerts.ShowApiErrorAlert(SourceWindow, getResult.FirstError);
+                return null;
+            }
+
+            return getResult.Value;
         }
 
         private void InitializeTxtEmail()
@@ -224,7 +239,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 TxtCustomer.SelectedEntity = page.SelectedEntity;
                 CustomerId = page.SelectedEntity.Id;
                 ShowCustomerData(page.SelectedEntity);
-            }    
+            }
         }
 
         public void ShowCustomerData(Customer customer)
@@ -252,12 +267,13 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             TxtLocality.Text = document.Customer.Locality;
             TxtZipCode.Text = document.Customer.ZipCode;
             TxtCity.Text = document.Customer.City;
-            TxtCountry.Text = document.Customer.Country;
             TxtDiscount.Text = document.Discount.ToString();
             TxtPhone.Text = document.Customer.Phone;
             TxtEmail.Text = document.Customer.Email;
-            _countryId = document.Customer.CountryId;
-            _countryCode2 = document.Customer.Country;
+
+            var country = GetCountryById(document.Customer.CountryId);
+            TxtCountry.Text = country?.Designation;
+            TxtCountry.SelectedEntity = country;
         }
 
         private void Design()
@@ -303,8 +319,8 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 Locality = TxtLocality.Text,
                 ZipCode = TxtZipCode.Text,
                 City = TxtCity.Text,
-                Country = (TxtCountry.SelectedEntity as Country)?.Code2 ?? _countryCode2,
-                CountryId = (TxtCountry.SelectedEntity as Country)?.Id ?? _countryId,
+                Country = (TxtCountry.SelectedEntity as Country)?.Code2,
+                CountryId = (TxtCountry.SelectedEntity as Country).Id,
                 Email = TxtEmail.Text,
                 Phone = TxtPhone.Text
             };
