@@ -1,4 +1,5 @@
-﻿using Gtk;
+﻿using ExcelDataReader.Log.Logger;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Company.GetCompanyCurreny;
 using LogicPOS.Api.Features.DocumentTypes.GetAllDocumentTypes;
@@ -27,9 +28,12 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         public PageTextBox TxtPaymentCondition { get; set; }
         public PageTextBox TxtPaymentMethod { get; set; }
         public PageTextBox TxtCurrency { get; set; }
+        public Currency CompanyCurrency { get; private set; }
+        public PageTextBox TxtExchangeRate { get; private set; }
         public PageTextBox TxtOriginDocument { get; set; }
         public PageTextBox TxtCopyDocument { get; set; }
         public PageTextBox TxtNotes { get; set; }
+
         public event Action<Document> OriginDocumentSelected;
         public event Action<DocumentType> DocumentTypeSelected;
         public event Action<Document> CopyDocumentSelected;
@@ -48,7 +52,9 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             InitializeTxtDocumentType();
             InitializeTxtPaymnentCondition();
             InitializeTxtPaymentMethod();
+            CompanyCurrency = GetCompanyCurreny();
             InitializeTxtCurrency();
+            InitializeTxtExchangeRate();
             InitializeTxtOriginDocument();
             InitializeTxtCopyDocument();
             InitializeTxtNotes();
@@ -60,9 +66,9 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             var mediator = DependencyInjection.Services.GetRequiredService<ISender>();
             var documentTypes = mediator.Send(new GetAllDocumentTypesQuery()).Result;
 
-            if(documentTypes.IsError)
+            if (documentTypes.IsError)
             {
-                SimpleAlerts.ShowApiErrorAlert(this.SourceWindow,documentTypes.FirstError);
+                SimpleAlerts.ShowApiErrorAlert(this.SourceWindow, documentTypes.FirstError);
                 return Enumerable.Empty<DocumentType>();
             }
 
@@ -126,7 +132,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
                 TxtCurrency.SelectedEntity = page.SelectedEntity.Currency;
                 TxtCurrency.Text = page.SelectedEntity.Currency.Designation;
-             
+
                 CopyDocumentSelected?.Invoke(page.SelectedEntity);
             }
         }
@@ -176,19 +182,17 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
             TxtCurrency.Entry.IsEditable = false;
 
-            var companyCurrency = GetDefaultCurreny();
 
-            if (companyCurrency != null)
+            if (CompanyCurrency != null)
             {
-                TxtCurrency.Text = companyCurrency.Designation;
-                TxtCurrency.SelectedEntity = companyCurrency;
-                TxtCurrency.Component.Sensitive = false;
+                TxtCurrency.Text = CompanyCurrency.Designation;
+                TxtCurrency.SelectedEntity = CompanyCurrency;
             }
-            
+
             TxtCurrency.SelectEntityClicked += BtnSelectCurrency_Clicked;
         }
 
-        private Currency GetDefaultCurreny()
+        private Currency GetCompanyCurreny()
         {
             var getCurrency = _mediator.Send(new GetCompanyCurrencyQuery()).Result;
 
@@ -212,7 +216,31 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             {
                 TxtCurrency.Text = page.SelectedEntity.Designation;
                 TxtCurrency.SelectedEntity = page.SelectedEntity;
+                var selectedCurrency = page.SelectedEntity as Currency;
+                TxtExchangeRate.Entry.Sensitive = selectedCurrency.Id != CompanyCurrency.Id;
+
+                if (selectedCurrency.Id != CompanyCurrency.Id)
+                {
+                    TxtExchangeRate.Text = selectedCurrency.ExchangeRate.ToString();
+                }
+                else
+                {
+                    TxtExchangeRate.Text = "1.00";
+                }
             }
+        }
+
+        private void InitializeTxtExchangeRate()
+        {
+            TxtExchangeRate = new PageTextBox(SourceWindow,
+                                              GeneralUtils.GetResourceByName("global_exchangerate"),
+                                              isRequired: true,
+                                              isValidatable: true,
+                                              regex: RegularExpressions.DecimalNumber,
+                                              includeSelectButton: false,
+                                              includeKeyBoardButton: true);
+            TxtExchangeRate.Text = "1.00";
+            TxtExchangeRate.Entry.Sensitive = false;
         }
 
         private void InitializeTxtPaymentMethod()
@@ -324,7 +352,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             verticalLayout.PackStart(TxtDocumentType.Component, false, false, 0);
             verticalLayout.PackStart(TxtPaymentCondition.Component, false, false, 0);
             verticalLayout.PackStart(TxtPaymentMethod.Component, false, false, 0);
-            verticalLayout.PackStart(TxtCurrency.Component, false, false, 0);
+            verticalLayout.PackStart(PageTextBox.CreateHbox(TxtCurrency, TxtExchangeRate), false, false, 0);
 
             verticalLayout.PackStart(PageTextBox.CreateHbox(TxtOriginDocument, TxtCopyDocument), false, false, 0);
 
@@ -363,6 +391,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             return TxtPaymentCondition.IsValid() &&
                    TxtPaymentMethod.IsValid() &&
                    TxtCurrency.IsValid() &&
+                   TxtExchangeRate.IsValid() &&
                    TxtOriginDocument.IsValid() &&
                    TxtCopyDocument.IsValid() &&
                    TxtNotes.IsValid();
@@ -380,8 +409,8 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             if (documentType.IsGuide())
             {
                 TxtOriginDocument.Require(true);
-                TxtPaymentCondition.Require(false,false);
-                TxtPaymentMethod.Require(false,false);
+                TxtPaymentCondition.Require(false, false);
+                TxtPaymentMethod.Require(false, false);
                 TxtNotes.Require(false);
             }
             else if (documentType.IsInformative())
@@ -396,13 +425,14 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             {
                 TxtOriginDocument.Require(false, false);
                 TxtPaymentCondition.Require(true);
-                TxtPaymentMethod.Require(false,false);
+                TxtPaymentMethod.Require(false, false);
                 TxtNotes.Require(false);
 
-            } else if (documentType.IsInvoiceReceipt())
+            }
+            else if (documentType.IsInvoiceReceipt())
             {
                 TxtOriginDocument.Require(false, false);
-                TxtPaymentCondition.Require(false,false);
+                TxtPaymentCondition.Require(false, false);
                 TxtPaymentMethod.Require(true);
                 TxtNotes.Require(false);
             }
@@ -410,10 +440,21 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             else if (documentType.IsCreditNote())
             {
                 TxtOriginDocument.Require(true);
-                TxtPaymentCondition.Require(false,false);
+                TxtPaymentCondition.Require(false, false);
                 TxtPaymentMethod.Require(false, false);
                 TxtNotes.Require(true);
             }
+        }
+
+        public decimal GetExchangeRate()
+        {
+            var selectedCurrency = TxtCurrency.SelectedEntity as Currency;
+            if(selectedCurrency.Id == CompanyCurrency.Id)
+            {
+                return 1;
+            }
+
+            return decimal.Parse(TxtExchangeRate.Text);
         }
     }
 }

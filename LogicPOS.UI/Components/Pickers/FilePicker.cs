@@ -102,6 +102,17 @@ namespace LogicPOS.UI.Components.Pickers
             return filter;
         }
 
+        public static FileFilter GetFileFilterAll()
+        {
+            string databaseType = AppSettings.Instance.databaseType;
+            FileFilter filter = new FileFilter();
+
+            filter.Name = "All";
+            filter.AddPattern("*.*");
+
+            return filter;
+        }
+
 
         public static FileFilter GetFileFilterPDF()
         {
@@ -124,6 +135,30 @@ namespace LogicPOS.UI.Components.Pickers
             filter.AddPattern("*.xls");
             filter.AddPattern("*.xlsx");
             return filter;
+        }
+
+        public static string GetSaveFilePath(Window sourceWindow, string title)
+        {
+            FilePicker picker = new FilePicker(sourceWindow,
+                                               DialogFlags.DestroyWithParent,
+                                               GetFileFilterAll(),
+                                               FileChooserAction.Save,
+                                               title);
+
+            picker.FileChooser.SelectMultiple = false;
+
+            var result = (ResponseType)picker.Run();
+
+            if (result != ResponseType.Ok || Directory.Exists(picker.FileChooser.Filename))
+            {
+                picker.Destroy();
+                return null;
+            }
+
+            string backupFileDestination = picker.FileChooser.Filename;
+            picker.Destroy();
+
+            return backupFileDestination;
         }
     }
 }

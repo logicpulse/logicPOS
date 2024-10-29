@@ -152,14 +152,27 @@ namespace LogicPOS.Api.Features.Common
             }
         }
 
+        protected async Task<ErrorOr<byte[]>> HandleGetFileInBytesQueryAsync(string endpoint, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var fileContent = await _httpClient.GetByteArrayAsync(endpoint);
+                return fileContent;
+            }
+            catch (HttpRequestException)
+            {
+                return ApiErrors.CommunicationError;
+            }
+        }
+
         protected async Task<ErrorOr<string>> HandleGetFileQueryAsync(string endpoint, CancellationToken cancellationToken = default)
         {
             try
             {
                 var fileContent = await _httpClient.GetByteArrayAsync(endpoint);
-                var fileName = Path.GetTempFileName();
-                File.WriteAllBytes(fileName, fileContent);
-                return fileName;
+                var filePath = Path.GetTempFileName();
+                File.WriteAllBytes(filePath, fileContent);
+                return filePath;
             }
             catch (HttpRequestException)
             {

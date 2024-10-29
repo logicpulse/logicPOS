@@ -194,6 +194,7 @@ namespace LogicPOS.UI.Components.Modals
             command.ParentId = DocumentTab.GetOriginDocumentId();
             command.CustomerId = CustomerTab.CustomerId;
             command.Notes = DocumentTab.TxtNotes.Text;
+            command.ExchangeRate = DocumentTab.GetExchangeRate();
 
             var customer = CustomerTab.GetCustomer();
 

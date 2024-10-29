@@ -14,6 +14,8 @@ using Microsoft.Extensions.DependencyInjection;
 using MediatR;
 using LogicPOS.Api.Features.Database.GetBackup;
 using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Components.Modals;
+using LogicPOS.Api.Features.Company.GetAngolaSaft;
 
 namespace LogicPOS.UI.Components.BackOffice.Windows
 {
@@ -114,7 +116,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
             }
 
             string backupFileDestination = picker.FileChooser.Filename + ".bak";
-            
+
             var getBackup = DependencyInjection.Services.GetRequiredService<ISender>().Send(new GetSqliteBackupQuery()).Result;
 
             if (getBackup.IsError)
@@ -137,6 +139,44 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
         {
             DataBaseBackup.Restore(this, DataBaseRestoreFrom.ChooseFromFilePickerDialog);
         }
+        #endregion
+
+        #region Export
+        private void BtnExportCustomSaft_Clicked(object sender, EventArgs e)
+        {
+            PosDatePickerStartEndDateDialog dateRangeModal = new PosDatePickerStartEndDateDialog(this, DialogFlags.DestroyWithParent);
+            ResponseType response = (ResponseType)dateRangeModal.Run();
+            if (response != ResponseType.Ok)
+            {
+                dateRangeModal.Destroy();
+                return;
+            }
+            var startDate = dateRangeModal.DateStart;
+            var endDate = dateRangeModal.DateEnd;
+
+            var filePath = FilePicker.GetSaveFilePath(this, "Export Angola SAFT");
+
+            if (filePath == null)
+            {
+                dateRangeModal.Destroy();
+                return;
+            }
+
+            var getSaft = DependencyInjection.Services.GetRequiredService<ISender>().Send(new GetAngolaSaftQuery(startDate,endDate)).Result;
+
+            if (getSaft.IsError)
+            {
+                SimpleAlerts.ShowApiErrorAlert(this, getSaft.FirstError);
+                dateRangeModal.Destroy();
+                return;
+            }
+
+            string saftFileDestination = filePath + ".xml";
+
+            File.WriteAllBytes(filePath, getSaft.Value);
+            dateRangeModal.Destroy();
+        }
+
         #endregion
 
     }
