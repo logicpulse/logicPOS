@@ -173,7 +173,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
 
             string saftFileDestination = filePath + ".xml";
 
-            File.WriteAllBytes(filePath, getSaft.Value);
+            File.WriteAllBytes(saftFileDestination, getSaft.Value);
             dateRangeModal.Destroy();
         }
 

@@ -1,10 +1,8 @@
-﻿using ClosedXML.Excel;
-using Gtk;
+﻿using Gtk;
 using LogicPOS.Api.Features.Documents.AddDocument;
 using LogicPOS.Settings;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.Utility;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -49,8 +47,8 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                     Code = detail.Code,
                     Quantity = detail.Quantity,
                     UnitPrice = detail.Price,
-                    Vat = detail.VatRate,
-                    VatDesignation = detail.VatDesignation,
+                    Vat = detail.Tax.Percentage,
+                    VatDesignation = detail.Tax.Designation,
                     ExemptionReason = detail.VatExemptionReason,
                     Discount = detail.Discount
                 });

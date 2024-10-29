@@ -1,4 +1,5 @@
 ﻿using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Documents.Details;
 using System;
 
 namespace LogicPOS.Api.Entities
@@ -15,8 +16,7 @@ namespace LogicPOS.Api.Entities
         public decimal Quantity { get; set; }
         public string Unit { get; set; }
         public decimal Price { get; set; }
-        public string VatDesignation { get; set; }
-        public decimal VatRate { get; set; }
+        public DocumentDetailTax Tax { get; set; }
         public string VatExemptionReason { get; set; }
         public string VatExemptionCode { get; set; }
         public decimal Discount { get; set; }
