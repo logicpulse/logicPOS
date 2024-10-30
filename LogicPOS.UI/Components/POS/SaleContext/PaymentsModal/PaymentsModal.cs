@@ -28,8 +28,8 @@ namespace LogicPOS.UI.Components.POS
         private readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
         private PaymentMethod _selectedPaymentMethod;
         private PaymentCondition _selectedPaymentCondition;
-        private decimal OrderTotalFinal { get; } = SaleContext.GetCurrentOrder().TotalFinal;
-        private decimal TotalFinal { get; set; } = SaleContext.GetCurrentOrder().TotalFinal;
+        private decimal OrderTotalFinal { get; } = SaleContext.CurrentOrder.TotalFinal;
+        private decimal TotalFinal { get; set; } = SaleContext.CurrentOrder.TotalFinal;
         private decimal TotalDelivery { get; set; }
         private decimal TotalChange { get; set; }
 
@@ -281,7 +281,7 @@ namespace LogicPOS.UI.Components.POS
 
         private IEnumerable<DocumentDetailDto> GetDocumentDetails()
         {
-            return SaleContext.GetCurrentOrder().GetDocumentDetails();
+            return SaleContext.CurrentOrder.GetDocumentDetails();
         }
 
         private AddDocumentCommand CreateAddDocumentCommand()

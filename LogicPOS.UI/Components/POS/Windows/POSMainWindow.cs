@@ -54,9 +54,9 @@ namespace LogicPOS.UI.Components.Windows
         public POSMainWindow(string backgroundImage)
             : base(backgroundImage)
         {
-            SaleContext.Initialize(this);
-
             InitUI();
+
+            SaleContext.Initialize(this);
 
             UpdateWorkSessionUI();
 
@@ -644,7 +644,7 @@ namespace LogicPOS.UI.Components.Windows
             saleItemsPageEventBox.HeightRequest = size.Height;
 
             dynamic saleItemsPageTheme = theme.Objects.EventBoxPosTicketList;
-            SaleContext.ItemsPage = new SaleItemsPage(this, saleItemsPageTheme);
+            SaleContext.ItemsPage = new SaleItemsPage(this, saleItemsPageTheme, SaleContext.CurrentOrder);
             saleItemsPageEventBox.Add(SaleContext.ItemsPage);
             
             FixedWindow.Put(saleItemsPageEventBox, position.X, position.Y);

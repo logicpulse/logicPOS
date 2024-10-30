@@ -1,4 +1,5 @@
 ﻿using LogicPOS.Api.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using DocumentDetailDto = LogicPOS.Api.Features.Documents.AddDocument.DocumentDetail;
@@ -70,5 +71,9 @@ namespace LogicPOS.UI.Components.POS
             return details;
         }
 
+        public void Clear()
+        {
+            Tickets.Clear();
+        }
     }
 }

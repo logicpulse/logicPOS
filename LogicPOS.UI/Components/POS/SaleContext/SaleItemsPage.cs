@@ -13,7 +13,7 @@ namespace LogicPOS.UI.Components.POS
 {
     public class SaleItemsPage : Box
     {
-        public PosOrder Order { get; set; } = SaleContext.GetCurrentOrder();
+        public PosOrder Order { get; set; }
         public PosTicket Ticket { get; set; }
 
         public Window SourceWindow { get; }
@@ -27,8 +27,13 @@ namespace LogicPOS.UI.Components.POS
 
         public dynamic Theme { get; }
 
-        public SaleItemsPage(Window parent, dynamic theme)
+        public SaleItemsPage(
+            Window parent, 
+            dynamic theme,
+            PosOrder order
+            )
         {
+            Order = Order;
             SourceWindow = parent;
             this.BorderWidth = 10;
             Theme = theme;
@@ -70,10 +75,20 @@ namespace LogicPOS.UI.Components.POS
 
         public void PresentOrderItems()
         {
+            var orderItems = Order.GetOrderItems();
+
+            if(orderItems.Any() == false)
+            {
+                SetTicketModeBackGround();
+                return;
+            }
+
             SetOrderModeBackGround();
             var model = (ListStore)GridViewSettings.Model;
-            var orderItems = Order.GetOrderItems();
+          
             orderItems.ForEach(entity => model.AppendValues(entity));
+
+           
         }
 
         public void PresentTicketItems()
@@ -361,6 +376,7 @@ namespace LogicPOS.UI.Components.POS
             SetOrderModeBackGround();
             PresentOrderItems();
             UpdateLabelTotalValue();
+            SaleContext.UpdatePOSLabels();
         }
 
         public void SetOrderModeBackGround()

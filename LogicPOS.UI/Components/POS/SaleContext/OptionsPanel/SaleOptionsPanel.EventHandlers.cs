@@ -50,6 +50,15 @@ namespace LogicPOS.UI.Components.POS
                                                                       ButtonsType.YesNo,
                                                                       string.Format(GeneralUtils.GetResourceByName("global_warning"), GeneralSettings.ServerVersion),
                                                                       GeneralUtils.GetResourceByName("dialog_message__pos_order_cancel"));
+            if(responseType != ResponseType.Yes && responseType != ResponseType.Ok)
+            {
+                return;
+            }
+
+            SaleContext.ItemsPage.Clear(true);
+            SaleContext.CurrentOrder.Clear();
+            SaleContext.ItemsPage.SetTicketModeBackGround();
+            SaleContext.UpdatePOSLabels();
         }
 
         private void BtnDecrease_Clicked(object sender, EventArgs e)
@@ -121,7 +130,12 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnPayments_Clicked(object sender, EventArgs e)
         {
-            if(ItemsPage.Ticket != null)
+            if(ItemsPage.Ticket == null || ItemsPage.Ticket.Items.Any() == false)
+            {
+                return;
+            }
+
+            if (ItemsPage.Ticket != null)
             {
                 ResponseType dialogResponse = logicpos.Utils.ShowMessageTouch(GlobalApp.PosMainWindow,
                                                                         DialogFlags.DestroyWithParent,

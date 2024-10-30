@@ -15,50 +15,54 @@ namespace LogicPOS.UI.Components.POS
     {
         public static SaleItemsPage ItemsPage { get; set; }
         public static Table CurrentTable { get; private set; }
+        public static PosOrder CurrentOrder { get; private set; }
         public static List<PosOrder> Orders { get; private set; } = new List<PosOrder>();
         public static POSMainWindow POSWindow { get; private set; }
+       
         public static void SetCurrentTable(Table table)
         {
             CurrentTable = table;
-            UpdatePOSLabels();
-
-            if (ItemsPage == null)
+            CurrentOrder = Orders.FirstOrDefault(o => o.Table.Id == table.Id);
+            
+            if(CurrentOrder == null)
             {
-                return;
+                CurrentOrder = new PosOrder(table);
+                Orders.Add(CurrentOrder);
             }
 
-            ItemsPage.Clear(true);
-            ItemsPage.Order = GetCurrentOrder();
-            ItemsPage.PresentOrderItems();
-            ItemsPage.UpdateLabelTotalValue();
+            UpdatePOSLabels();
+
+            if (ItemsPage != null)
+            {
+                ItemsPage.Clear(true);
+                ItemsPage.Order = CurrentOrder;
+                ItemsPage.PresentOrderItems();
+                ItemsPage.UpdateLabelTotalValue();
+            }
         }
 
         public static void UpdatePOSLabels()
         {
-            string tableDenomination = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, string.Format("global_table_appmode_{0}", AppOperationModeSettings.CustomAppOperationMode.AppOperationTheme).ToLower());
-
-            POSWindow.LabelCurrentTable.Text = $"{tableDenomination} {CurrentTable.Designation}";
-        }
-
-        public static PosOrder GetCurrentOrder()
-        {
-            var currentOrder = Orders.FirstOrDefault(o => o.Table.Id == CurrentTable.Id);
-
-            if (currentOrder == null)
+            if (CurrentTable != null)
             {
-                currentOrder = new PosOrder(CurrentTable);
-                Orders.Add(currentOrder);
+                string tableDenomination = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, string.Format("global_table_appmode_{0}", AppOperationModeSettings.CustomAppOperationMode.AppOperationTheme).ToLower());
+                POSWindow.LabelCurrentTable.Text = $"{tableDenomination} {CurrentTable.Designation}";
             }
 
-            return currentOrder;
+            if (CurrentOrder != null)
+            {
+                POSWindow.LabelTotalTable.Text = POSWindow.LabelTotalTable.Text = $"{CurrentOrder.TotalFinal:0.00} : #{CurrentOrder.Tickets.Count}";
+            }
         }
 
         public static void Initialize(POSMainWindow posWindow)
         {
             POSWindow = posWindow;
-            SetCurrentTable(GetDefaultTable());
-            Orders.Add(new PosOrder(CurrentTable));
-
+            if (CurrentTable == null)
+            {
+                var defaultTable = GetDefaultTable();
+                SetCurrentTable(defaultTable);
+            }
         }
 
         private static Table GetDefaultTable()
