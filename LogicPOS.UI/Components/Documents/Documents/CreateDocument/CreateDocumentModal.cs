@@ -1,5 +1,6 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Countries.GetAllCountries;
 using LogicPOS.Api.Features.Documents.AddDocument;
 using LogicPOS.Api.Features.Documents.Documents.GetDocumentPdf;
 using LogicPOS.Api.Features.Documents.Series.GetAllDocumentSeries;
@@ -24,8 +25,8 @@ namespace LogicPOS.UI.Components.Modals
 {
     public class CreateDocumentModal : Modal
     {
-        private IEnumerable<DocumentSeries> _documentSeries;
         private readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
+        private static IEnumerable<Country> _countries;
 
         #region Buttons
         private IconButtonWithText BtnOk { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
@@ -61,7 +62,6 @@ namespace LogicPOS.UI.Components.Modals
 
         private void Initialize()
         {
-            _documentSeries = GetDocumentSeries();
             AddEventHandlers();
         }
 
@@ -241,5 +241,22 @@ namespace LogicPOS.UI.Components.Modals
         }
 
         protected void ShowValidationErrors() => ValidationUtilities.ShowValidationErrors(GetValidatableTabs());
+
+        public static IEnumerable<Country> GetCountries()
+        {
+            if (_countries == null)
+            {
+                var getResult = DependencyInjection.Services.GetRequiredService<IMediator>().Send(new GetAllCountriesQuery()).Result;
+
+                if (getResult.IsError)
+                {
+                    return Enumerable.Empty<Country>();
+                }
+
+                _countries = getResult.Value;
+            }
+
+            return _countries;
+        }
     }
 }

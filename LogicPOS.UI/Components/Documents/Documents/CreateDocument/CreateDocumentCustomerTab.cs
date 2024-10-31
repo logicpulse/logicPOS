@@ -1,9 +1,7 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Countries.GetCountryById;
 using LogicPOS.Api.Features.Documents;
 using LogicPOS.Settings;
-using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals;
@@ -13,6 +11,7 @@ using LogicPOS.Utility;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
@@ -34,8 +33,8 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         public Guid? CustomerId { get; set; }
 
         public CreateDocumentCustomerTab(Window parent) : base(parent: parent,
-                                                  name: GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page2"),
-                                                  icon: PathsSettings.ImagesFolderLocation + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_2_customer.png")
+                                                               name: GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page2"),
+                                                               icon: PathsSettings.ImagesFolderLocation + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_2_customer.png")
         {
             Initialize();
             Design();
@@ -59,14 +58,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
         private Country GetCountryById(Guid countryId)
         {
-            var getResult = _mediator.Send(new GetCountryByIdQuery(countryId)).Result;
-            if (getResult.IsError)
-            {
-                SimpleAlerts.ShowApiErrorAlert(SourceWindow, getResult.FirstError);
-                return null;
-            }
-
-            return getResult.Value;
+            return CreateDocumentModal.GetCountries().FirstOrDefault(c => c.Id == countryId);
         }
 
         private void InitializeTxtEmail()

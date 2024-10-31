@@ -8,6 +8,7 @@ using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.Utility;
 using System;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
@@ -194,7 +195,11 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             TxtRegion.Text = shipAddress.Region;
             TxtZipCode.Text = shipAddress.PostalCode;
             TxtCity.Text = shipAddress.City;
-            TxtCountry.Text = shipAddress.Country;
+            TxtCountry.Text = CreateDocumentModal.GetCountries()
+                                                 .Where(c => c.Code2 == shipAddress.Country)
+                                                 .Select(c => c.Code2)
+                                                 .FirstOrDefault() ?? shipAddress.Country;
+
             TxtDeliveryDate.Text = shipAddress.DeliveryDate.ToString();
             TxtDeliveryId.Text = shipAddress.DeliveryID;
             TxtWarehouseId.Text = shipAddress.WarehouseID;
@@ -211,7 +216,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 LocationID = TxtLocationId.Text,
                 AddressDetail = TxtAddress.Text,
                 PostalCode = TxtZipCode.Text,
-                Country = TxtCountry.Text,
+                Country = (TxtCountry.SelectedEntity as Country).Code2,
                 City = TxtCity.Text,
                 Region = TxtRegion.Text
             };
