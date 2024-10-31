@@ -170,7 +170,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                                           includeSelectButton: false,
                                           includeKeyBoardButton: true,
                                           regex: RegularExpressions.DecimalNumber);
-            TxtDiscount.Text = 0.00M.ToString("");
+            TxtDiscount.Text = "0";
         }
 
         private void BtnSelectCurrency_Clicked(object sender, EventArgs e)

@@ -225,7 +225,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 }
                 else
                 {
-                    TxtExchangeRate.Text = "1.00";
+                    TxtExchangeRate.Text = "1";
                 }
             }
         }

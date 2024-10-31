@@ -15,6 +15,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         public decimal UnitPrice { get; set; }
         public string VatDesignation { get; set; }
         public decimal Vat { get; set; }
+        public Guid VatRateId { get; set; }
         public VatRate VatRate { get; set; }
         public string ExemptionReason { get; set; }
         public VatExemptionReason VatExemptionReason { get; set; }
