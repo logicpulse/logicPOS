@@ -144,6 +144,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             if (response == ResponseType.Ok && page.SelectedEntity != null)
             {
                 TxtCountry.Text = page.SelectedEntity.Designation;
+                TxtCountry.SelectedEntity = page.SelectedEntity;
             }
         }
 

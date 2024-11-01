@@ -106,6 +106,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 Item.Quantity = decimal.Parse(TxtQuantity.Text);
                 Item.Discount = decimal.Parse(TxtDiscount.Text);
                 Item.VatRate = TxtTax.SelectedEntity as VatRate;
+                Item.VatRateId = (TxtTax.SelectedEntity as VatRate)?.Id ?? Item.VatRateId;
                 Item.VatDesignation = TxtTax.Text;
                 Item.Vat = _vatRateValue;
                 Item.VatExemptionReason = TxtVatExemptionReason.SelectedEntity as VatExemptionReason;
@@ -385,6 +386,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 VatRate = TxtTax.SelectedEntity as VatRate,
                 VatDesignation = TxtTax.Text,
                 Vat = _vatRateValue,
+                VatRateId = (TxtTax.SelectedEntity as VatRate).Id,
                 VatExemptionReason = TxtVatExemptionReason.SelectedEntity as VatExemptionReason,
                 ExemptionReason = TxtVatExemptionReason.Text,
                 Notes = TxtNotes.Text

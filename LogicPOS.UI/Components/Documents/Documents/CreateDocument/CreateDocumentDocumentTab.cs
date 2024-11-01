@@ -239,7 +239,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                                               regex: RegularExpressions.DecimalNumber,
                                               includeSelectButton: false,
                                               includeKeyBoardButton: true);
-            TxtExchangeRate.Text = "1.00";
+            TxtExchangeRate.Text = "1";
             TxtExchangeRate.Entry.Sensitive = false;
         }
 
